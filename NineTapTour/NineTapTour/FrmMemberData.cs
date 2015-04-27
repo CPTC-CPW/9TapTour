@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace NineTapTour
 {
-    public partial class frmMemberData : Form
+    public partial class FrmMemberData : Form
     {
-        public frmMemberData()
+        public FrmMemberData()
         {
             InitializeComponent();
         }
@@ -22,9 +22,5 @@ namespace NineTapTour
 
         }
 
-        private void textBox3_TextChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }
