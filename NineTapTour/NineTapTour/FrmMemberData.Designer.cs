@@ -64,7 +64,7 @@
             this.txtStreet = new System.Windows.Forms.TextBox();
             this.txtSSN = new System.Windows.Forms.TextBox();
             this.txtCity = new System.Windows.Forms.TextBox();
-            this.txtAddress2 = new System.Windows.Forms.TextBox();
+            this.txtEmail = new System.Windows.Forms.TextBox();
             this.txtAdress = new System.Windows.Forms.TextBox();
             this.txtYearEndT = new System.Windows.Forms.TextBox();
             this.txtMoneyEarned = new System.Windows.Forms.TextBox();
@@ -72,8 +72,9 @@
             this.lblYET = new System.Windows.Forms.Label();
             this.lblMoneyEarned = new System.Windows.Forms.Label();
             this.lblLastBowled = new System.Windows.Forms.Label();
-            this.memberChecked = new System.Windows.Forms.CheckedListBox();
+            this.memberActive = new System.Windows.Forms.CheckedListBox();
             this.groupRecord = new System.Windows.Forms.GroupBox();
+            this.btnSave = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
             this.grpRecordNumber = new System.Windows.Forms.GroupBox();
@@ -93,6 +94,9 @@
             this.btnRecapByDate = new System.Windows.Forms.Button();
             this.btnThisRecap = new System.Windows.Forms.Button();
             this.btnAllRecaps = new System.Windows.Forms.Button();
+            this.isSenior = new System.Windows.Forms.CheckedListBox();
+            this.memberGender = new System.Windows.Forms.CheckedListBox();
+            this.lblEmail = new System.Windows.Forms.Label();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -107,7 +111,7 @@
             this.txtLastName.Multiline = true;
             this.txtLastName.Name = "txtLastName";
             this.txtLastName.Size = new System.Drawing.Size(206, 30);
-            this.txtLastName.TabIndex = 0;
+            this.txtLastName.TabIndex = 1;
             // 
             // txtFirstName
             // 
@@ -115,7 +119,7 @@
             this.txtFirstName.Multiline = true;
             this.txtFirstName.Name = "txtFirstName";
             this.txtFirstName.Size = new System.Drawing.Size(177, 30);
-            this.txtFirstName.TabIndex = 0;
+            this.txtFirstName.TabIndex = 2;
             // 
             // txtMiddleInitial
             // 
@@ -123,7 +127,7 @@
             this.txtMiddleInitial.Multiline = true;
             this.txtMiddleInitial.Name = "txtMiddleInitial";
             this.txtMiddleInitial.Size = new System.Drawing.Size(86, 30);
-            this.txtMiddleInitial.TabIndex = 0;
+            this.txtMiddleInitial.TabIndex = 3;
             // 
             // lblLastName
             // 
@@ -171,7 +175,7 @@
             this.txtMemberNumber.Multiline = true;
             this.txtMemberNumber.Name = "txtMemberNumber";
             this.txtMemberNumber.Size = new System.Drawing.Size(119, 73);
-            this.txtMemberNumber.TabIndex = 16;
+            this.txtMemberNumber.TabIndex = 0;
             // 
             // txtBonus
             // 
@@ -179,7 +183,7 @@
             this.txtBonus.Multiline = true;
             this.txtBonus.Name = "txtBonus";
             this.txtBonus.Size = new System.Drawing.Size(89, 54);
-            this.txtBonus.TabIndex = 16;
+            this.txtBonus.TabIndex = 6;
             // 
             // txtHandicap
             // 
@@ -187,7 +191,7 @@
             this.txtHandicap.Multiline = true;
             this.txtHandicap.Name = "txtHandicap";
             this.txtHandicap.Size = new System.Drawing.Size(89, 54);
-            this.txtHandicap.TabIndex = 16;
+            this.txtHandicap.TabIndex = 5;
             // 
             // lblAverage
             // 
@@ -230,7 +234,7 @@
             this.txtAverage.Multiline = true;
             this.txtAverage.Name = "txtAverage";
             this.txtAverage.Size = new System.Drawing.Size(99, 54);
-            this.txtAverage.TabIndex = 16;
+            this.txtAverage.TabIndex = 4;
             // 
             // lblNotes
             // 
@@ -244,6 +248,7 @@
             // 
             // grpMemberInfo
             // 
+            this.grpMemberInfo.Controls.Add(this.lblEmail);
             this.grpMemberInfo.Controls.Add(this.txtPhoneNumber2);
             this.grpMemberInfo.Controls.Add(this.txtPhoneNumber);
             this.grpMemberInfo.Controls.Add(this.lblPhoneNumber2);
@@ -263,7 +268,7 @@
             this.grpMemberInfo.Controls.Add(this.txtStreet);
             this.grpMemberInfo.Controls.Add(this.txtSSN);
             this.grpMemberInfo.Controls.Add(this.txtCity);
-            this.grpMemberInfo.Controls.Add(this.txtAddress2);
+            this.grpMemberInfo.Controls.Add(this.txtEmail);
             this.grpMemberInfo.Controls.Add(this.txtAdress);
             this.grpMemberInfo.Location = new System.Drawing.Point(340, 86);
             this.grpMemberInfo.Name = "grpMemberInfo";
@@ -277,7 +282,7 @@
             this.txtPhoneNumber2.Location = new System.Drawing.Point(195, 188);
             this.txtPhoneNumber2.Name = "txtPhoneNumber2";
             this.txtPhoneNumber2.Size = new System.Drawing.Size(135, 20);
-            this.txtPhoneNumber2.TabIndex = 9;
+            this.txtPhoneNumber2.TabIndex = 10;
             // 
             // txtPhoneNumber
             // 
@@ -370,7 +375,7 @@
             // lblAddress
             // 
             this.lblAddress.AutoSize = true;
-            this.lblAddress.Location = new System.Drawing.Point(21, 27);
+            this.lblAddress.Location = new System.Drawing.Point(21, 16);
             this.lblAddress.Name = "lblAddress";
             this.lblAddress.Size = new System.Drawing.Size(45, 13);
             this.lblAddress.TabIndex = 1;
@@ -381,60 +386,60 @@
             this.txtDateJoined.Location = new System.Drawing.Point(257, 149);
             this.txtDateJoined.Name = "txtDateJoined";
             this.txtDateJoined.Size = new System.Drawing.Size(54, 20);
-            this.txtDateJoined.TabIndex = 0;
+            this.txtDateJoined.TabIndex = 7;
             // 
             // txtRefferals
             // 
             this.txtRefferals.Location = new System.Drawing.Point(317, 149);
             this.txtRefferals.Name = "txtRefferals";
             this.txtRefferals.Size = new System.Drawing.Size(54, 20);
-            this.txtRefferals.TabIndex = 0;
+            this.txtRefferals.TabIndex = 8;
             // 
             // txtZip
             // 
             this.txtZip.Location = new System.Drawing.Point(257, 106);
             this.txtZip.Name = "txtZip";
             this.txtZip.Size = new System.Drawing.Size(73, 20);
-            this.txtZip.TabIndex = 0;
+            this.txtZip.TabIndex = 4;
             // 
             // txtreJoinDate
             // 
             this.txtreJoinDate.Location = new System.Drawing.Point(138, 149);
             this.txtreJoinDate.Name = "txtreJoinDate";
             this.txtreJoinDate.Size = new System.Drawing.Size(100, 20);
-            this.txtreJoinDate.TabIndex = 0;
+            this.txtreJoinDate.TabIndex = 6;
             // 
             // txtStreet
             // 
             this.txtStreet.Location = new System.Drawing.Point(138, 106);
             this.txtStreet.Name = "txtStreet";
             this.txtStreet.Size = new System.Drawing.Size(100, 20);
-            this.txtStreet.TabIndex = 0;
+            this.txtStreet.TabIndex = 3;
             // 
             // txtSSN
             // 
             this.txtSSN.Location = new System.Drawing.Point(24, 149);
             this.txtSSN.Name = "txtSSN";
             this.txtSSN.Size = new System.Drawing.Size(100, 20);
-            this.txtSSN.TabIndex = 0;
+            this.txtSSN.TabIndex = 5;
             // 
             // txtCity
             // 
             this.txtCity.Location = new System.Drawing.Point(24, 106);
             this.txtCity.Name = "txtCity";
             this.txtCity.Size = new System.Drawing.Size(100, 20);
-            this.txtCity.TabIndex = 0;
+            this.txtCity.TabIndex = 2;
             // 
-            // txtAddress2
+            // txtEmail
             // 
-            this.txtAddress2.Location = new System.Drawing.Point(24, 69);
-            this.txtAddress2.Name = "txtAddress2";
-            this.txtAddress2.Size = new System.Drawing.Size(266, 20);
-            this.txtAddress2.TabIndex = 0;
+            this.txtEmail.Location = new System.Drawing.Point(24, 69);
+            this.txtEmail.Name = "txtEmail";
+            this.txtEmail.Size = new System.Drawing.Size(266, 20);
+            this.txtEmail.TabIndex = 1;
             // 
             // txtAdress
             // 
-            this.txtAdress.Location = new System.Drawing.Point(24, 43);
+            this.txtAdress.Location = new System.Drawing.Point(25, 32);
             this.txtAdress.Name = "txtAdress";
             this.txtAdress.Size = new System.Drawing.Size(266, 20);
             this.txtAdress.TabIndex = 0;
@@ -444,21 +449,21 @@
             this.txtYearEndT.Location = new System.Drawing.Point(365, 403);
             this.txtYearEndT.Name = "txtYearEndT";
             this.txtYearEndT.Size = new System.Drawing.Size(41, 20);
-            this.txtYearEndT.TabIndex = 24;
+            this.txtYearEndT.TabIndex = 7;
             // 
             // txtMoneyEarned
             // 
             this.txtMoneyEarned.Location = new System.Drawing.Point(489, 403);
             this.txtMoneyEarned.Name = "txtMoneyEarned";
             this.txtMoneyEarned.Size = new System.Drawing.Size(100, 20);
-            this.txtMoneyEarned.TabIndex = 24;
+            this.txtMoneyEarned.TabIndex = 8;
             // 
             // txtLastBowled
             // 
             this.txtLastBowled.Location = new System.Drawing.Point(617, 403);
             this.txtLastBowled.Name = "txtLastBowled";
             this.txtLastBowled.Size = new System.Drawing.Size(100, 20);
-            this.txtLastBowled.TabIndex = 24;
+            this.txtLastBowled.TabIndex = 9;
             // 
             // lblYET
             // 
@@ -487,22 +492,20 @@
             this.lblLastBowled.TabIndex = 27;
             this.lblLastBowled.Text = "Last Bowled";
             // 
-            // memberChecked
+            // memberActive
             // 
-            this.memberChecked.FormattingEnabled = true;
-            this.memberChecked.Items.AddRange(new object[] {
+            this.memberActive.FormattingEnabled = true;
+            this.memberActive.Items.AddRange(new object[] {
             "Active",
-            "InActive",
-            "Senior",
-            "Female",
-            "Male"});
-            this.memberChecked.Location = new System.Drawing.Point(12, 155);
-            this.memberChecked.Name = "memberChecked";
-            this.memberChecked.Size = new System.Drawing.Size(120, 109);
-            this.memberChecked.TabIndex = 28;
+            "InActive"});
+            this.memberActive.Location = new System.Drawing.Point(12, 158);
+            this.memberActive.Name = "memberActive";
+            this.memberActive.Size = new System.Drawing.Size(120, 34);
+            this.memberActive.TabIndex = 10;
             // 
             // groupRecord
             // 
+            this.groupRecord.Controls.Add(this.btnSave);
             this.groupRecord.Controls.Add(this.btnDelete);
             this.groupRecord.Controls.Add(this.btnNew);
             this.groupRecord.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -513,20 +516,31 @@
             this.groupRecord.TabStop = false;
             this.groupRecord.Text = "Record";
             // 
+            // btnSave
+            // 
+            this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSave.Location = new System.Drawing.Point(14, 45);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.TabIndex = 0;
+            this.btnSave.Text = "Save";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
             // btnDelete
             // 
             this.btnDelete.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDelete.Location = new System.Drawing.Point(14, 54);
+            this.btnDelete.Location = new System.Drawing.Point(14, 71);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(75, 23);
-            this.btnDelete.TabIndex = 1;
+            this.btnDelete.TabIndex = 2;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             // 
             // btnNew
             // 
             this.btnNew.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnNew.Location = new System.Drawing.Point(14, 25);
+            this.btnNew.Location = new System.Drawing.Point(14, 19);
             this.btnNew.Name = "btnNew";
             this.btnNew.Size = new System.Drawing.Size(75, 23);
             this.btnNew.TabIndex = 0;
@@ -715,17 +729,49 @@
             this.btnAllRecaps.Text = "All Recaps";
             this.btnAllRecaps.UseVisualStyleBackColor = true;
             // 
+            // isSenior
+            // 
+            this.isSenior.FormattingEnabled = true;
+            this.isSenior.Items.AddRange(new object[] {
+            "Senior"});
+            this.isSenior.Location = new System.Drawing.Point(12, 198);
+            this.isSenior.Name = "isSenior";
+            this.isSenior.Size = new System.Drawing.Size(120, 19);
+            this.isSenior.TabIndex = 11;
+            // 
+            // memberGender
+            // 
+            this.memberGender.FormattingEnabled = true;
+            this.memberGender.Items.AddRange(new object[] {
+            "Female",
+            "Male"});
+            this.memberGender.Location = new System.Drawing.Point(12, 221);
+            this.memberGender.Name = "memberGender";
+            this.memberGender.Size = new System.Drawing.Size(120, 34);
+            this.memberGender.TabIndex = 12;
+            // 
+            // lblEmail
+            // 
+            this.lblEmail.AutoSize = true;
+            this.lblEmail.Location = new System.Drawing.Point(22, 55);
+            this.lblEmail.Name = "lblEmail";
+            this.lblEmail.Size = new System.Drawing.Size(32, 13);
+            this.lblEmail.TabIndex = 10;
+            this.lblEmail.Text = "Email";
+            // 
             // FrmMemberData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(779, 545);
+            this.Controls.Add(this.memberGender);
+            this.Controls.Add(this.isSenior);
             this.Controls.Add(this.grpPrinter);
             this.Controls.Add(this.grpSearchBy);
             this.Controls.Add(this.grpStats);
             this.Controls.Add(this.grpRecordNumber);
             this.Controls.Add(this.groupRecord);
-            this.Controls.Add(this.memberChecked);
+            this.Controls.Add(this.memberActive);
             this.Controls.Add(this.lblLastBowled);
             this.Controls.Add(this.lblMoneyEarned);
             this.Controls.Add(this.lblYET);
@@ -786,7 +832,7 @@
         private System.Windows.Forms.TextBox txtZip;
         private System.Windows.Forms.TextBox txtStreet;
         private System.Windows.Forms.TextBox txtCity;
-        private System.Windows.Forms.TextBox txtAddress2;
+        private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.TextBox txtAdress;
         private System.Windows.Forms.Label lblAddress;
         private System.Windows.Forms.Label lblZip;
@@ -810,7 +856,7 @@
         private System.Windows.Forms.Label lblYET;
         private System.Windows.Forms.Label lblMoneyEarned;
         private System.Windows.Forms.Label lblLastBowled;
-        private System.Windows.Forms.CheckedListBox memberChecked;
+        private System.Windows.Forms.CheckedListBox memberActive;
         private System.Windows.Forms.GroupBox groupRecord;
         private System.Windows.Forms.GroupBox grpRecordNumber;
         private System.Windows.Forms.GroupBox grpStats;
@@ -831,6 +877,10 @@
         private System.Windows.Forms.Button btnThisRecap;
         private System.Windows.Forms.Button btnAllRecaps;
         private System.Windows.Forms.Button btnRecapByPin;
+        private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.CheckedListBox isSenior;
+        private System.Windows.Forms.CheckedListBox memberGender;
+        private System.Windows.Forms.Label lblEmail;
     }
 }
 

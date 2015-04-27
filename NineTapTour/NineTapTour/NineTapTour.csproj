@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Database\Member.cs" />
+    <Compile Include="Database\MemberDB.cs" />
     <Compile Include="FrmMemberData.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -65,6 +66,14 @@
     <Compile Include="Migrations\201504272037146_Initial Database.Designer.cs">
       <DependentUpon>201504272037146_Initial Database.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201504272241395_Added Email.cs" />
+    <Compile Include="Migrations\201504272241395_Added Email.Designer.cs">
+      <DependentUpon>201504272241395_Added Email.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
+    <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
+      <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -73,6 +82,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201504272037146_Initial Database.resx">
       <DependentUpon>201504272037146_Initial Database.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504272241395_Added Email.resx">
+      <DependentUpon>201504272241395_Added Email.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
+      <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
