@@ -45,6 +45,7 @@
             this.txtAverage = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.grpMemberInfo = new System.Windows.Forms.GroupBox();
+            this.lblEmail = new System.Windows.Forms.Label();
             this.txtPhoneNumber2 = new System.Windows.Forms.TextBox();
             this.txtPhoneNumber = new System.Windows.Forms.TextBox();
             this.lblPhoneNumber2 = new System.Windows.Forms.Label();
@@ -96,7 +97,6 @@
             this.btnAllRecaps = new System.Windows.Forms.Button();
             this.isSenior = new System.Windows.Forms.CheckedListBox();
             this.memberGender = new System.Windows.Forms.CheckedListBox();
-            this.lblEmail = new System.Windows.Forms.Label();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -171,11 +171,15 @@
             // 
             // txtMemberNumber
             // 
+            this.txtMemberNumber.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMemberNumber.Location = new System.Drawing.Point(38, 26);
             this.txtMemberNumber.Multiline = true;
             this.txtMemberNumber.Name = "txtMemberNumber";
+            this.txtMemberNumber.ReadOnly = true;
             this.txtMemberNumber.Size = new System.Drawing.Size(119, 73);
             this.txtMemberNumber.TabIndex = 0;
+            this.txtMemberNumber.Text = "1";
+            this.txtMemberNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtBonus
             // 
@@ -276,6 +280,15 @@
             this.grpMemberInfo.TabIndex = 23;
             this.grpMemberInfo.TabStop = false;
             this.grpMemberInfo.Text = "Member Information";
+            // 
+            // lblEmail
+            // 
+            this.lblEmail.AutoSize = true;
+            this.lblEmail.Location = new System.Drawing.Point(22, 55);
+            this.lblEmail.Name = "lblEmail";
+            this.lblEmail.Size = new System.Drawing.Size(32, 13);
+            this.lblEmail.TabIndex = 10;
+            this.lblEmail.Text = "Email";
             // 
             // txtPhoneNumber2
             // 
@@ -546,6 +559,7 @@
             this.btnNew.TabIndex = 0;
             this.btnNew.Text = "New";
             this.btnNew.UseVisualStyleBackColor = true;
+            this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
             // 
             // grpRecordNumber
             // 
@@ -570,6 +584,7 @@
             this.btnLastRecord.TabIndex = 2;
             this.btnLastRecord.Text = "Last Record";
             this.btnLastRecord.UseVisualStyleBackColor = true;
+            this.btnLastRecord.Click += new System.EventHandler(this.btnLastRecord_Click);
             // 
             // btnFirstRecord
             // 
@@ -580,6 +595,7 @@
             this.btnFirstRecord.TabIndex = 1;
             this.btnFirstRecord.Text = "First Record";
             this.btnFirstRecord.UseVisualStyleBackColor = true;
+            this.btnFirstRecord.Click += new System.EventHandler(this.btnFirstRecord_Click);
             // 
             // btnRightArrow
             // 
@@ -590,6 +606,7 @@
             this.btnRightArrow.TabIndex = 0;
             this.btnRightArrow.Text = ">";
             this.btnRightArrow.UseVisualStyleBackColor = true;
+            this.btnRightArrow.Click += new System.EventHandler(this.btnRightArrow_Click);
             // 
             // btnArrowLeft
             // 
@@ -600,6 +617,7 @@
             this.btnArrowLeft.TabIndex = 0;
             this.btnArrowLeft.Text = "<";
             this.btnArrowLeft.UseVisualStyleBackColor = true;
+            this.btnArrowLeft.Click += new System.EventHandler(this.btnArrowLeft_Click);
             // 
             // grpStats
             // 
@@ -749,15 +767,6 @@
             this.memberGender.Name = "memberGender";
             this.memberGender.Size = new System.Drawing.Size(120, 34);
             this.memberGender.TabIndex = 12;
-            // 
-            // lblEmail
-            // 
-            this.lblEmail.AutoSize = true;
-            this.lblEmail.Location = new System.Drawing.Point(22, 55);
-            this.lblEmail.Name = "lblEmail";
-            this.lblEmail.Size = new System.Drawing.Size(32, 13);
-            this.lblEmail.TabIndex = 10;
-            this.lblEmail.Text = "Email";
             // 
             // FrmMemberData
             // 

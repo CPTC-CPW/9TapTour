@@ -10,7 +10,7 @@ namespace NineTapTour.Database
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MiddleInitial { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         public MemberGenders Gender { get; set; }
         public bool IsSenior { get; set; }
         public bool IsActive { get; set; }

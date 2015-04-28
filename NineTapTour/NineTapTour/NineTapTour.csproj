@@ -70,6 +70,10 @@
     <Compile Include="Migrations\201504272241395_Added Email.Designer.cs">
       <DependentUpon>201504272241395_Added Email.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201504281911445_Birthday Nul-alble.cs" />
+    <Compile Include="Migrations\201504281911445_Birthday Nul-alble.Designer.cs">
+      <DependentUpon>201504281911445_Birthday Nul-alble.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -85,6 +89,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201504272241395_Added Email.resx">
       <DependentUpon>201504272241395_Added Email.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504281911445_Birthday Nul-alble.resx">
+      <DependentUpon>201504281911445_Birthday Nul-alble.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
