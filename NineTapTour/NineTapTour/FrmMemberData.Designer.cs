@@ -1,6 +1,6 @@
 ﻿namespace NineTapTour
 {
-    partial class rdoActive
+    partial class FrmMemberData
     {
         /// <summary>
         /// Required designer variable.
@@ -45,6 +45,8 @@
             this.txtAverage = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.grpMemberInfo = new System.Windows.Forms.GroupBox();
+            this.lblDOB = new System.Windows.Forms.Label();
+            this.txtDOB = new System.Windows.Forms.TextBox();
             this.lblEmail = new System.Windows.Forms.Label();
             this.txtPhoneNumber2 = new System.Windows.Forms.TextBox();
             this.txtPhoneNumber = new System.Windows.Forms.TextBox();
@@ -96,11 +98,9 @@
             this.btnAllRecaps = new System.Windows.Forms.Button();
             this.rdoSenior = new System.Windows.Forms.RadioButton();
             this.rdoFemale = new System.Windows.Forms.RadioButton();
-            this.memberActive = new System.Windows.Forms.RadioButton();
+            this.rdoActive = new System.Windows.Forms.RadioButton();
             this.rdoInActive = new System.Windows.Forms.RadioButton();
             this.rdoMale = new System.Windows.Forms.RadioButton();
-            this.lblDOB = new System.Windows.Forms.Label();
-            this.txtDOB = new System.Windows.Forms.TextBox();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -298,6 +298,22 @@
             this.grpMemberInfo.TabIndex = 23;
             this.grpMemberInfo.TabStop = false;
             this.grpMemberInfo.Text = "Member Information";
+            // 
+            // lblDOB
+            // 
+            this.lblDOB.AutoSize = true;
+            this.lblDOB.Location = new System.Drawing.Point(296, 55);
+            this.lblDOB.Name = "lblDOB";
+            this.lblDOB.Size = new System.Drawing.Size(39, 13);
+            this.lblDOB.TabIndex = 31;
+            this.lblDOB.Text = "D.O.B.";
+            // 
+            // txtDOB
+            // 
+            this.txtDOB.Location = new System.Drawing.Point(299, 69);
+            this.txtDOB.Name = "txtDOB";
+            this.txtDOB.Size = new System.Drawing.Size(111, 20);
+            this.txtDOB.TabIndex = 32;
             // 
             // lblEmail
             // 
@@ -778,16 +794,16 @@
             this.rdoFemale.Text = "Female";
             this.rdoFemale.UseVisualStyleBackColor = true;
             // 
-            // memberActive
+            // rdoActive
             // 
-            this.memberActive.AutoSize = true;
-            this.memberActive.Location = new System.Drawing.Point(12, 158);
-            this.memberActive.Name = "memberActive";
-            this.memberActive.Size = new System.Drawing.Size(55, 17);
-            this.memberActive.TabIndex = 30;
-            this.memberActive.TabStop = true;
-            this.memberActive.Text = "Active";
-            this.memberActive.UseVisualStyleBackColor = true;
+            this.rdoActive.AutoSize = true;
+            this.rdoActive.Location = new System.Drawing.Point(12, 158);
+            this.rdoActive.Name = "rdoActive";
+            this.rdoActive.Size = new System.Drawing.Size(55, 17);
+            this.rdoActive.TabIndex = 30;
+            this.rdoActive.TabStop = true;
+            this.rdoActive.Text = "Active";
+            this.rdoActive.UseVisualStyleBackColor = true;
             // 
             // rdoInActive
             // 
@@ -811,29 +827,13 @@
             this.rdoMale.Text = "Male";
             this.rdoMale.UseVisualStyleBackColor = true;
             // 
-            // lblDOB
-            // 
-            this.lblDOB.AutoSize = true;
-            this.lblDOB.Location = new System.Drawing.Point(296, 55);
-            this.lblDOB.Name = "lblDOB";
-            this.lblDOB.Size = new System.Drawing.Size(39, 13);
-            this.lblDOB.TabIndex = 31;
-            this.lblDOB.Text = "D.O.B.";
-            // 
-            // txtDOB
-            // 
-            this.txtDOB.Location = new System.Drawing.Point(299, 69);
-            this.txtDOB.Name = "txtDOB";
-            this.txtDOB.Size = new System.Drawing.Size(111, 20);
-            this.txtDOB.TabIndex = 32;
-            // 
-            // rdoActive
+            // FrmMemberData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(779, 545);
             this.Controls.Add(this.rdoInActive);
-            this.Controls.Add(this.memberActive);
+            this.Controls.Add(this.rdoActive);
             this.Controls.Add(this.rdoMale);
             this.Controls.Add(this.rdoFemale);
             this.Controls.Add(this.rdoSenior);
@@ -865,7 +865,7 @@
             this.Controls.Add(this.txtMiddleInitial);
             this.Controls.Add(this.txtFirstName);
             this.Controls.Add(this.txtLastName);
-            this.Name = "rdoActive";
+            this.Name = "FrmMemberData";
             this.Text = "Member Data";
             this.Load += new System.EventHandler(this.MemberDataForm_Load);
             this.grpMemberInfo.ResumeLayout(false);
@@ -950,7 +950,7 @@
         private System.Windows.Forms.Label lblEmail;
         private System.Windows.Forms.RadioButton rdoSenior;
         private System.Windows.Forms.RadioButton rdoFemale;
-        private System.Windows.Forms.RadioButton memberActive;
+        private System.Windows.Forms.RadioButton rdoActive;
         private System.Windows.Forms.RadioButton rdoInActive;
         private System.Windows.Forms.RadioButton rdoMale;
         private System.Windows.Forms.Label lblDOB;
