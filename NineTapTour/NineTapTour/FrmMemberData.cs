@@ -22,6 +22,11 @@ namespace NineTapTour
 
         public void UpdateMemberInfo()
         {
+            memberActive.SetItemCheckState(0, CheckState.Unchecked);
+            memberActive.SetItemCheckState(1, CheckState.Unchecked);
+            isSenior.SetItemCheckState(0, CheckState.Unchecked);
+            memberGender.SetItemCheckState(0, CheckState.Unchecked);
+            memberGender.SetItemCheckState(1, CheckState.Unchecked);
             Member currentMem = new Member();
             foreach(Member m in membersList)
             {
@@ -69,13 +74,33 @@ namespace NineTapTour
                 txtPhoneNumber.Text = currentMem.PrimaryPhone;
                 txtPhoneNumber2.Text = currentMem.SecondaryPhone;
             }
-            else
+            else if(membersList.Count !=0)
             {
                 this.Controls.Clear();
                 this.InitializeComponent();
                 UpdateMemberInfo();
             }
         }
+
+        //public static string ShowDialog(string text, string caption)
+        //{
+        //    Form prompt = new Form();
+        //    prompt.Width = 500;
+        //    prompt.Height = 150;
+        //    prompt.FormBorderStyle = FormBorderStyle.FixedDialog;
+        //    prompt.Text = caption;
+        //    prompt.StartPosition = FormStartPosition.CenterScreen;
+        //    Label lblInfo = new Label() { Left = 50, Top = 20, Text = text };
+        //    TextBox txtSearch = new TextBox() { Left = 50, Top = 50, Width = 400 };
+        //    Button confirmation = new Button() { Text = "Ok", Left = 350, Width = 100, Top = 70 };
+        //    confirmation.Click += (sender, e) => { prompt.Close(); };
+        //    prompt.Controls.Add(txtSearch);
+        //    prompt.Controls.Add(confirmation);
+        //    prompt.Controls.Add(lblInfo);
+        //    prompt.AcceptButton = confirmation;
+        //    prompt.ShowDialog();
+        //    return txtSearch.Text;
+        //}
 
         private void MemberDataForm_Load(object sender, EventArgs e)
         {
@@ -134,6 +159,10 @@ namespace NineTapTour
                 temp.City = txtCity.Text;
                 temp.PostalCode = txtZip.Text;
                 temp.JoinDate = DateTime.Now;
+                if(txtRefferals.Text == "")
+                {
+                    temp.Referals = 0;
+                }
                 temp.Referals = Convert.ToInt16(txtRefferals.Text);
                 temp.PrimaryPhone = txtPhoneNumber.Text;
                 temp.SecondaryPhone = txtPhoneNumber2.Text;
@@ -193,6 +222,11 @@ namespace NineTapTour
         {
             txtMemberNumber.Text = membersList.Count().ToString();
             UpdateMemberInfo();
+        }
+
+        private void btnMemberNumber_Click(object sender, EventArgs e)
+        {
+            //string schNumber = ShowDialog("Seach By Number", "Member Number To Search:");
         }
 
     }

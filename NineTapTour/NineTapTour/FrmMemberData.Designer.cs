@@ -681,6 +681,7 @@
             this.btnMemberNumber.TabIndex = 30;
             this.btnMemberNumber.Text = "Member Number";
             this.btnMemberNumber.UseVisualStyleBackColor = true;
+            this.btnMemberNumber.Click += new System.EventHandler(this.btnMemberNumber_Click);
             // 
             // grpPrinter
             // 
