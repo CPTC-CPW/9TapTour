@@ -154,7 +154,11 @@ namespace NineTapTour
                 {
                     temp.Referals = 0;
                 }
-                temp.Referals = Convert.ToInt16(txtRefferals.Text);
+                else
+                {
+                    temp.Referals = Convert.ToInt16(txtRefferals.Text);
+                }
+                
                 temp.PrimaryPhone = txtPhoneNumber.Text;
                 temp.SecondaryPhone = txtPhoneNumber2.Text;
 
