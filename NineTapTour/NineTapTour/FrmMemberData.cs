@@ -11,23 +11,26 @@ using System.Windows.Forms;
 
 namespace NineTapTour
 {
-    public partial class FrmMemberData : Form
+    public partial class rdoActive : Form
     {
         List<Member> membersList = MemberDB.getMember();
 
-        public FrmMemberData()
+        public rdoActive()
         {
             InitializeComponent(); 
         }
 
         public void UpdateMemberInfo()
         {
+            
             memberActive.SetItemCheckState(0, CheckState.Unchecked);
             memberActive.SetItemCheckState(1, CheckState.Unchecked);
             isSenior.SetItemCheckState(0, CheckState.Unchecked);
             memberGender.SetItemCheckState(0, CheckState.Unchecked);
             memberGender.SetItemCheckState(1, CheckState.Unchecked);
+             
             Member currentMem = new Member();
+         
             foreach(Member m in membersList)
             {
                 if(m.MemberNumber == Convert.ToInt32(txtMemberNumber.Text))
