@@ -13,7 +13,7 @@ namespace NineTapTour.Database
             using (NineTapDb db = new NineTapDb())
             {
                 Member newMember = new Member();
-                newMember.MemberNumber = temp.MemberNumber; 
+                newMember.Number = temp.Number; 
                 newMember.LastName = temp.LastName; 
                 newMember.FirstName = temp.FirstName;
                 newMember.MiddleInitial = temp.MiddleInitial;
@@ -21,12 +21,12 @@ namespace NineTapTour.Database
                 newMember.IsSenior = temp.IsSenior; 
                 newMember.Gender = temp.Gender; 
                 newMember.Notes = temp.Notes;
-                newMember.StreetAddress = temp.StreetAddress;
+                newMember.Street = temp.Street;
                 newMember.Email = temp.Email;
                 newMember.City = temp.City;
                 newMember.PostalCode = temp.PostalCode;
                 newMember.JoinDate = temp.JoinDate;
-                newMember.Referals = temp.Referals;
+                newMember.Referrals = temp.Referrals;
                 newMember.PrimaryPhone = temp.PrimaryPhone;
                 newMember.SecondaryPhone = temp.SecondaryPhone;
 
@@ -54,7 +54,7 @@ namespace NineTapTour.Database
         //    using (NineTapDb db = new NineTapDb())
         //    {
         //        var currentMem = from m in db.Members
-        //                         where ID == m.MemberNumber
+        //                         where ID == m.Number
         //                         select m;
 
         //        if (!currentMem.Any())

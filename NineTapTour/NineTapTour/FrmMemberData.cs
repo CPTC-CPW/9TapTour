@@ -27,15 +27,15 @@ namespace NineTapTour
 
             foreach (Member m in membersList)
             {
-                if (m.MemberNumber == Convert.ToInt32(txtMemberNumber.Text))
+                if (m.Number == Convert.ToInt32(txtMemberNumber.Text))
                 {
                     currentMem = m;
                 }
             }
 
-            if (currentMem.MemberNumber != 0)
+            if (currentMem.Number != 0)
             {
-                txtMemberNumber.Text = currentMem.MemberNumber.ToString();
+                txtMemberNumber.Text = currentMem.Number.ToString();
                 txtLastName.Text = currentMem.LastName;
                 txtFirstName.Text = currentMem.FirstName;
                 txtMiddleInitial.Text = currentMem.MiddleInitial;
@@ -62,12 +62,12 @@ namespace NineTapTour
                     rdoMale.Checked = true;
                 }
                 txtNotes.Text = currentMem.Notes;
-                txtAdress.Text = currentMem.StreetAddress;
+                txtAdress.Text = currentMem.Street;
                 txtEmail.Text = currentMem.Email;
                 txtCity.Text = currentMem.City;
                 txtZip.Text = currentMem.PostalCode;
                 txtDateJoined.Text = currentMem.JoinDate.ToString();
-                txtRefferals.Text = currentMem.Referals.ToString();
+                txtRefferals.Text = currentMem.Referrals.ToString();
                 txtPhoneNumber.Text = currentMem.PrimaryPhone;
                 txtPhoneNumber2.Text = currentMem.SecondaryPhone;
             }
@@ -111,7 +111,7 @@ namespace NineTapTour
             if (confirm == DialogResult.Yes)
             {
                 Member temp = new Member();
-                temp.MemberNumber = Convert.ToInt32(txtMemberNumber.Text);
+                temp.Number = Convert.ToInt32(txtMemberNumber.Text);
                 temp.LastName = txtLastName.Text;
                 temp.FirstName = txtFirstName.Text;
                 temp.MiddleInitial = txtMiddleInitial.Text;
@@ -145,18 +145,18 @@ namespace NineTapTour
 
 
                 temp.Notes = txtNotes.Text;
-                temp.StreetAddress = txtAdress.Text;
+                temp.Street = txtAdress.Text;
                 temp.Email = txtEmail.Text;
                 temp.City = txtCity.Text;
                 temp.PostalCode = txtZip.Text;
                 temp.JoinDate = DateTime.Now;
                 if (txtRefferals.Text == "")
                 {
-                    temp.Referals = 0;
+                    temp.Referrals = 0;
                 }
                 else
                 {
-                    temp.Referals = Convert.ToInt16(txtRefferals.Text);
+                    temp.Referrals = Convert.ToInt16(txtRefferals.Text);
                 }
                 
                 temp.PrimaryPhone = txtPhoneNumber.Text;
