@@ -74,9 +74,9 @@
     <Compile Include="Migrations\201504281911445_Birthday Nul-alble.Designer.cs">
       <DependentUpon>201504281911445_Birthday Nul-alble.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201504302332452_Add Missing Columns.cs" />
-    <Compile Include="Migrations\201504302332452_Add Missing Columns.Designer.cs">
-      <DependentUpon>201504302332452_Add Missing Columns.cs</DependentUpon>
+    <Compile Include="Migrations\201504302343207_Add Missing Columns.cs" />
+    <Compile Include="Migrations\201504302343207_Add Missing Columns.Designer.cs">
+      <DependentUpon>201504302343207_Add Missing Columns.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
@@ -97,8 +97,8 @@
     <EmbeddedResource Include="Migrations\201504281911445_Birthday Nul-alble.resx">
       <DependentUpon>201504281911445_Birthday Nul-alble.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201504302332452_Add Missing Columns.resx">
-      <DependentUpon>201504302332452_Add Missing Columns.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201504302343207_Add Missing Columns.resx">
+      <DependentUpon>201504302343207_Add Missing Columns.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>

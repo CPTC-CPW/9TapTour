@@ -13,7 +13,7 @@ namespace NineTapTour.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201504302332452_Add Missing Columns"; }
+            get { return "201504302343207_Add Missing Columns"; }
         }
         
         string IMigrationMetadata.Source
