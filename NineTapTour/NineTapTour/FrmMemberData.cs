@@ -62,12 +62,12 @@ namespace NineTapTour
                     rdoMale.Checked = true;
                 }
                 txtNotes.Text = currentMem.Notes;
-                txtAdress.Text = currentMem.Street;
+                txtAddress.Text = currentMem.Street;
                 txtEmail.Text = currentMem.Email;
                 txtCity.Text = currentMem.City;
                 txtZip.Text = currentMem.PostalCode;
                 txtDateJoined.Text = currentMem.JoinDate.ToString();
-                txtRefferals.Text = currentMem.Referrals.ToString();
+                txtReferrals.Text = currentMem.Referrals.ToString();
                 txtPhoneNumber.Text = currentMem.PrimaryPhone;
                 txtPhoneNumber2.Text = currentMem.SecondaryPhone;
             }
@@ -145,18 +145,18 @@ namespace NineTapTour
 
 
                 temp.Notes = txtNotes.Text;
-                temp.Street = txtAdress.Text;
+                temp.Street = txtAddress.Text;
                 temp.Email = txtEmail.Text;
                 temp.City = txtCity.Text;
                 temp.PostalCode = txtZip.Text;
                 temp.JoinDate = DateTime.Now;
-                if (txtRefferals.Text == "")
+                if (txtReferrals.Text == "")
                 {
                     temp.Referrals = 0;
                 }
                 else
                 {
-                    temp.Referrals = Convert.ToInt16(txtRefferals.Text);
+                    temp.Referrals = Convert.ToInt16(txtReferrals.Text);
                 }
                 
                 temp.PrimaryPhone = txtPhoneNumber.Text;
@@ -224,5 +224,116 @@ namespace NineTapTour
             //string schNumber = ShowDialog("Seach By Number", "Member Number To Search:");
         }
 
+        private void txtLastName_TextChanged(object sender, EventArgs e)
+        {
+            if (txtLastName.Text == "")
+            {
+                MessageBox.Show("Last Name is a required field!");
+            }
+        }
+
+        private void txtFirstName_TextChanged(object sender, EventArgs e)
+        {
+            if (txtFirstName.Text == "")
+            {
+                MessageBox.Show("First Name is a required field!");
+            }
+        }
+
+        private void txtMiddleInitial_TextChanged(object sender, EventArgs e)
+        {
+            if (txtMiddleInitial.Text == "")
+            {
+                MessageBox.Show("Middle Initial is a required field!");
+            }
+        }
+
+        private void txtAdress_TextChanged(object sender, EventArgs e)
+        {
+            if (txtAddress.Text == "")
+            {
+                MessageBox.Show("Address is a required field!");
+            }
+        }
+
+        private void txtEmail_TextChanged(object sender, EventArgs e)
+        {
+            if (txtEmail.Text == "")
+            {
+                MessageBox.Show("Email is a required field!");
+            }
+        }
+
+        private void txtDOB_TextChanged(object sender, EventArgs e)
+        {
+            if (txtDOB.Text == "")
+            {
+                MessageBox.Show("Date of Birth is a required field!");
+            }
+        }
+
+        private void txtCity_TextChanged(object sender, EventArgs e)
+        {
+            if (txtCity.Text == "")
+            {
+                MessageBox.Show("City is a required field!");
+            }
+        }
+
+        private void txtStreet_TextChanged(object sender, EventArgs e)
+        {
+            if (txtStreet.Text == "")
+            {
+                MessageBox.Show("Street is a required field!");
+            }
+        }
+
+        private void txtZip_TextChanged(object sender, EventArgs e)
+        {
+            if (txtZip.Text == "")
+            {
+                MessageBox.Show("Zip code is a required field!");
+            }
+        }
+
+        private void txtSSN_TextChanged(object sender, EventArgs e)
+        {
+            if (txtSSN.Text == "")
+            {
+                MessageBox.Show("Social Security Number is a required field!");
+            }
+        }
+
+        private void txtreJoinDate_TextChanged(object sender, EventArgs e)
+        {
+            if (txtreJoinDate.Text == "")
+            {
+                MessageBox.Show("reJoin Date is a required field!");
+            }
+        }
+
+        private void txtDateJoined_TextChanged(object sender, EventArgs e)
+        {
+            if (txtDateJoined.Text == "")
+            {
+                MessageBox.Show("Date Joined is a required field!");
+            }
+        }
+
+        private void txtReferrals_TextChanged(object sender, EventArgs e)
+        {
+            if (txtReferrals.Text == "")
+            {
+                MessageBox.Show("Referrals is a required field!");
+            }
+        }
+
+        private void txtPhoneNumber_TextChanged(object sender, EventArgs e)
+        {
+            if (txtPhoneNumber.Text == "")
+            {
+                MessageBox.Show("Phone Number is a required field!");
+            }
+        }
     }
 }

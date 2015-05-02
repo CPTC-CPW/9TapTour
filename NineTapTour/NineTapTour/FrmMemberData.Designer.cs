@@ -61,14 +61,14 @@
             this.label1 = new System.Windows.Forms.Label();
             this.lblAddress = new System.Windows.Forms.Label();
             this.txtDateJoined = new System.Windows.Forms.TextBox();
-            this.txtRefferals = new System.Windows.Forms.TextBox();
+            this.txtReferrals = new System.Windows.Forms.TextBox();
             this.txtZip = new System.Windows.Forms.TextBox();
             this.txtreJoinDate = new System.Windows.Forms.TextBox();
             this.txtStreet = new System.Windows.Forms.TextBox();
             this.txtSSN = new System.Windows.Forms.TextBox();
             this.txtCity = new System.Windows.Forms.TextBox();
             this.txtEmail = new System.Windows.Forms.TextBox();
-            this.txtAdress = new System.Windows.Forms.TextBox();
+            this.txtAddress = new System.Windows.Forms.TextBox();
             this.txtYearEndT = new System.Windows.Forms.TextBox();
             this.txtMoneyEarned = new System.Windows.Forms.TextBox();
             this.txtLastBowled = new System.Windows.Forms.TextBox();
@@ -101,43 +101,50 @@
             this.rdoActive = new System.Windows.Forms.RadioButton();
             this.rdoInActive = new System.Windows.Forms.RadioButton();
             this.rdoMale = new System.Windows.Forms.RadioButton();
+            this.grpGender = new System.Windows.Forms.GroupBox();
+            this.grpStatus = new System.Windows.Forms.GroupBox();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
             this.grpStats.SuspendLayout();
             this.grpSearchBy.SuspendLayout();
             this.grpPrinter.SuspendLayout();
+            this.grpGender.SuspendLayout();
+            this.grpStatus.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtLastName
             // 
             this.txtLastName.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtLastName.Location = new System.Drawing.Point(181, 50);
+            this.txtLastName.MaxLength = 50;
             this.txtLastName.Multiline = true;
             this.txtLastName.Name = "txtLastName";
             this.txtLastName.Size = new System.Drawing.Size(206, 30);
             this.txtLastName.TabIndex = 1;
-            this.txtLastName.Text = "Test";
+            this.txtLastName.TextChanged += new System.EventHandler(this.txtLastName_TextChanged);
             // 
             // txtFirstName
             // 
             this.txtFirstName.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtFirstName.Location = new System.Drawing.Point(442, 50);
+            this.txtFirstName.MaxLength = 50;
             this.txtFirstName.Multiline = true;
             this.txtFirstName.Name = "txtFirstName";
             this.txtFirstName.Size = new System.Drawing.Size(177, 30);
             this.txtFirstName.TabIndex = 2;
-            this.txtFirstName.Text = "Test";
+            this.txtFirstName.TextChanged += new System.EventHandler(this.txtFirstName_TextChanged);
             // 
             // txtMiddleInitial
             // 
             this.txtMiddleInitial.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMiddleInitial.Location = new System.Drawing.Point(639, 50);
+            this.txtMiddleInitial.MaxLength = 10;
             this.txtMiddleInitial.Multiline = true;
             this.txtMiddleInitial.Name = "txtMiddleInitial";
             this.txtMiddleInitial.Size = new System.Drawing.Size(86, 30);
             this.txtMiddleInitial.TabIndex = 3;
-            this.txtMiddleInitial.Text = "Test";
+            this.txtMiddleInitial.TextChanged += new System.EventHandler(this.txtMiddleInitial_TextChanged);
             // 
             // lblLastName
             // 
@@ -195,21 +202,21 @@
             // 
             this.txtBonus.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtBonus.Location = new System.Drawing.Point(624, 327);
+            this.txtBonus.MaxLength = 20;
             this.txtBonus.Multiline = true;
             this.txtBonus.Name = "txtBonus";
             this.txtBonus.Size = new System.Drawing.Size(89, 54);
             this.txtBonus.TabIndex = 6;
-            this.txtBonus.Text = "Test";
             // 
             // txtHandicap
             // 
             this.txtHandicap.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtHandicap.Location = new System.Drawing.Point(496, 327);
+            this.txtHandicap.MaxLength = 20;
             this.txtHandicap.Multiline = true;
             this.txtHandicap.Name = "txtHandicap";
             this.txtHandicap.Size = new System.Drawing.Size(89, 54);
             this.txtHandicap.TabIndex = 5;
-            this.txtHandicap.Text = "Test";
             // 
             // lblAverage
             // 
@@ -241,20 +248,22 @@
             // txtNotes
             // 
             this.txtNotes.Location = new System.Drawing.Point(138, 155);
+            this.txtNotes.MaxLength = 750;
             this.txtNotes.Multiline = true;
             this.txtNotes.Name = "txtNotes";
             this.txtNotes.Size = new System.Drawing.Size(196, 141);
-            this.txtNotes.TabIndex = 18;
+            this.txtNotes.TabIndex = 18;        
             // 
             // txtAverage
             // 
             this.txtAverage.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtAverage.Location = new System.Drawing.Point(356, 324);
+            this.txtAverage.MaxLength = 20;
             this.txtAverage.Multiline = true;
             this.txtAverage.Name = "txtAverage";
             this.txtAverage.Size = new System.Drawing.Size(99, 54);
             this.txtAverage.TabIndex = 4;
-            this.txtAverage.Text = "Test";
+     
             // 
             // lblNotes
             // 
@@ -284,14 +293,14 @@
             this.grpMemberInfo.Controls.Add(this.label1);
             this.grpMemberInfo.Controls.Add(this.lblAddress);
             this.grpMemberInfo.Controls.Add(this.txtDateJoined);
-            this.grpMemberInfo.Controls.Add(this.txtRefferals);
+            this.grpMemberInfo.Controls.Add(this.txtReferrals);
             this.grpMemberInfo.Controls.Add(this.txtZip);
             this.grpMemberInfo.Controls.Add(this.txtreJoinDate);
             this.grpMemberInfo.Controls.Add(this.txtStreet);
             this.grpMemberInfo.Controls.Add(this.txtSSN);
             this.grpMemberInfo.Controls.Add(this.txtCity);
             this.grpMemberInfo.Controls.Add(this.txtEmail);
-            this.grpMemberInfo.Controls.Add(this.txtAdress);
+            this.grpMemberInfo.Controls.Add(this.txtAddress);
             this.grpMemberInfo.Location = new System.Drawing.Point(340, 86);
             this.grpMemberInfo.Name = "grpMemberInfo";
             this.grpMemberInfo.Size = new System.Drawing.Size(416, 216);
@@ -311,9 +320,11 @@
             // txtDOB
             // 
             this.txtDOB.Location = new System.Drawing.Point(299, 69);
+            this.txtDOB.MaxLength = 20;
             this.txtDOB.Name = "txtDOB";
             this.txtDOB.Size = new System.Drawing.Size(111, 20);
             this.txtDOB.TabIndex = 32;
+            this.txtDOB.TextChanged += new System.EventHandler(this.txtDOB_TextChanged);
             // 
             // lblEmail
             // 
@@ -327,16 +338,20 @@
             // txtPhoneNumber2
             // 
             this.txtPhoneNumber2.Location = new System.Drawing.Point(195, 188);
+            this.txtPhoneNumber2.MaxLength = 20;
             this.txtPhoneNumber2.Name = "txtPhoneNumber2";
             this.txtPhoneNumber2.Size = new System.Drawing.Size(135, 20);
             this.txtPhoneNumber2.TabIndex = 10;
+      
             // 
             // txtPhoneNumber
             // 
             this.txtPhoneNumber.Location = new System.Drawing.Point(24, 188);
+            this.txtPhoneNumber.MaxLength = 20;
             this.txtPhoneNumber.Name = "txtPhoneNumber";
             this.txtPhoneNumber.Size = new System.Drawing.Size(146, 20);
             this.txtPhoneNumber.TabIndex = 9;
+            this.txtPhoneNumber.TextChanged += new System.EventHandler(this.txtPhoneNumber_TextChanged);
             // 
             // lblPhoneNumber2
             // 
@@ -363,7 +378,7 @@
             this.lblRefferals.Name = "lblRefferals";
             this.lblRefferals.Size = new System.Drawing.Size(49, 13);
             this.lblRefferals.TabIndex = 6;
-            this.lblRefferals.Text = "Refferals";
+            this.lblRefferals.Text = "Referrals";
             // 
             // lblDateJoined
             // 
@@ -431,37 +446,47 @@
             // txtDateJoined
             // 
             this.txtDateJoined.Location = new System.Drawing.Point(237, 149);
+            this.txtDateJoined.MaxLength = 20;
             this.txtDateJoined.Name = "txtDateJoined";
             this.txtDateJoined.Size = new System.Drawing.Size(98, 20);
             this.txtDateJoined.TabIndex = 7;
+            this.txtDateJoined.TextChanged += new System.EventHandler(this.txtDateJoined_TextChanged);
             // 
-            // txtRefferals
+            // txtReferrals
             // 
-            this.txtRefferals.Location = new System.Drawing.Point(341, 149);
-            this.txtRefferals.Name = "txtRefferals";
-            this.txtRefferals.Size = new System.Drawing.Size(54, 20);
-            this.txtRefferals.TabIndex = 8;
+            this.txtReferrals.Location = new System.Drawing.Point(341, 149);
+            this.txtReferrals.MaxLength = 50;
+            this.txtReferrals.Name = "txtReferrals";
+            this.txtReferrals.Size = new System.Drawing.Size(54, 20);
+            this.txtReferrals.TabIndex = 8;
+            this.txtReferrals.TextChanged += new System.EventHandler(this.txtReferrals_TextChanged);
             // 
             // txtZip
             // 
             this.txtZip.Location = new System.Drawing.Point(257, 106);
+            this.txtZip.MaxLength = 20;
             this.txtZip.Name = "txtZip";
             this.txtZip.Size = new System.Drawing.Size(73, 20);
             this.txtZip.TabIndex = 4;
+            this.txtZip.TextChanged += new System.EventHandler(this.txtZip_TextChanged);
             // 
             // txtreJoinDate
             // 
             this.txtreJoinDate.Location = new System.Drawing.Point(121, 149);
+            this.txtreJoinDate.MaxLength = 20;
             this.txtreJoinDate.Name = "txtreJoinDate";
             this.txtreJoinDate.Size = new System.Drawing.Size(102, 20);
             this.txtreJoinDate.TabIndex = 6;
+            this.txtreJoinDate.TextChanged += new System.EventHandler(this.txtreJoinDate_TextChanged);
             // 
             // txtStreet
             // 
             this.txtStreet.Location = new System.Drawing.Point(138, 106);
+            this.txtStreet.MaxLength = 20;
             this.txtStreet.Name = "txtStreet";
             this.txtStreet.Size = new System.Drawing.Size(100, 20);
             this.txtStreet.TabIndex = 3;
+            this.txtStreet.TextChanged += new System.EventHandler(this.txtStreet_TextChanged);
             // 
             // txtSSN
             // 
@@ -470,31 +495,39 @@
             this.txtSSN.Name = "txtSSN";
             this.txtSSN.Size = new System.Drawing.Size(75, 20);
             this.txtSSN.TabIndex = 5;
+            this.txtSSN.TextChanged += new System.EventHandler(this.txtSSN_TextChanged);
             // 
             // txtCity
             // 
             this.txtCity.Location = new System.Drawing.Point(24, 106);
+            this.txtCity.MaxLength = 20;
             this.txtCity.Name = "txtCity";
             this.txtCity.Size = new System.Drawing.Size(100, 20);
             this.txtCity.TabIndex = 2;
+            this.txtCity.TextChanged += new System.EventHandler(this.txtCity_TextChanged);
             // 
             // txtEmail
             // 
             this.txtEmail.Location = new System.Drawing.Point(24, 69);
+            this.txtEmail.MaxLength = 50;
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(266, 20);
             this.txtEmail.TabIndex = 1;
+            this.txtEmail.TextChanged += new System.EventHandler(this.txtEmail_TextChanged);
             // 
-            // txtAdress
+            // txtAddress
             // 
-            this.txtAdress.Location = new System.Drawing.Point(25, 32);
-            this.txtAdress.Name = "txtAdress";
-            this.txtAdress.Size = new System.Drawing.Size(266, 20);
-            this.txtAdress.TabIndex = 0;
+            this.txtAddress.Location = new System.Drawing.Point(25, 32);
+            this.txtAddress.MaxLength = 75;
+            this.txtAddress.Name = "txtAddress";
+            this.txtAddress.Size = new System.Drawing.Size(266, 20);
+            this.txtAddress.TabIndex = 0;
+            this.txtAddress.TextChanged += new System.EventHandler(this.txtAdress_TextChanged);
             // 
             // txtYearEndT
             // 
             this.txtYearEndT.Location = new System.Drawing.Point(387, 403);
+            this.txtYearEndT.MaxLength = 20;
             this.txtYearEndT.Name = "txtYearEndT";
             this.txtYearEndT.Size = new System.Drawing.Size(35, 20);
             this.txtYearEndT.TabIndex = 7;
@@ -509,6 +542,7 @@
             // txtLastBowled
             // 
             this.txtLastBowled.Location = new System.Drawing.Point(617, 403);
+            this.txtLastBowled.MaxLength = 50;
             this.txtLastBowled.Name = "txtLastBowled";
             this.txtLastBowled.Size = new System.Drawing.Size(100, 20);
             this.txtLastBowled.TabIndex = 9;
@@ -775,7 +809,7 @@
             // rdoSenior
             // 
             this.rdoSenior.AutoSize = true;
-            this.rdoSenior.Location = new System.Drawing.Point(12, 204);
+            this.rdoSenior.Location = new System.Drawing.Point(23, 236);
             this.rdoSenior.Name = "rdoSenior";
             this.rdoSenior.Size = new System.Drawing.Size(55, 17);
             this.rdoSenior.TabIndex = 30;
@@ -786,7 +820,7 @@
             // rdoFemale
             // 
             this.rdoFemale.AutoSize = true;
-            this.rdoFemale.Location = new System.Drawing.Point(12, 227);
+            this.rdoFemale.Location = new System.Drawing.Point(11, 19);
             this.rdoFemale.Name = "rdoFemale";
             this.rdoFemale.Size = new System.Drawing.Size(59, 17);
             this.rdoFemale.TabIndex = 30;
@@ -797,7 +831,7 @@
             // rdoActive
             // 
             this.rdoActive.AutoSize = true;
-            this.rdoActive.Location = new System.Drawing.Point(12, 158);
+            this.rdoActive.Location = new System.Drawing.Point(11, 23);
             this.rdoActive.Name = "rdoActive";
             this.rdoActive.Size = new System.Drawing.Size(55, 17);
             this.rdoActive.TabIndex = 30;
@@ -808,7 +842,7 @@
             // rdoInActive
             // 
             this.rdoInActive.AutoSize = true;
-            this.rdoInActive.Location = new System.Drawing.Point(12, 181);
+            this.rdoInActive.Location = new System.Drawing.Point(11, 46);
             this.rdoInActive.Name = "rdoInActive";
             this.rdoInActive.Size = new System.Drawing.Size(64, 17);
             this.rdoInActive.TabIndex = 30;
@@ -819,7 +853,7 @@
             // rdoMale
             // 
             this.rdoMale.AutoSize = true;
-            this.rdoMale.Location = new System.Drawing.Point(12, 247);
+            this.rdoMale.Location = new System.Drawing.Point(11, 42);
             this.rdoMale.Name = "rdoMale";
             this.rdoMale.Size = new System.Drawing.Size(48, 17);
             this.rdoMale.TabIndex = 30;
@@ -827,15 +861,35 @@
             this.rdoMale.Text = "Male";
             this.rdoMale.UseVisualStyleBackColor = true;
             // 
+            // grpGender
+            // 
+            this.grpGender.Controls.Add(this.rdoFemale);
+            this.grpGender.Controls.Add(this.rdoMale);
+            this.grpGender.Location = new System.Drawing.Point(12, 258);
+            this.grpGender.Name = "grpGender";
+            this.grpGender.Size = new System.Drawing.Size(101, 71);
+            this.grpGender.TabIndex = 31;
+            this.grpGender.TabStop = false;
+            this.grpGender.Text = "Gender";
+            // 
+            // grpStatus
+            // 
+            this.grpStatus.Controls.Add(this.rdoInActive);
+            this.grpStatus.Controls.Add(this.rdoActive);
+            this.grpStatus.Location = new System.Drawing.Point(12, 150);
+            this.grpStatus.Name = "grpStatus";
+            this.grpStatus.Size = new System.Drawing.Size(101, 79);
+            this.grpStatus.TabIndex = 32;
+            this.grpStatus.TabStop = false;
+            this.grpStatus.Text = "Status";
+            // 
             // FrmMemberData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(779, 545);
-            this.Controls.Add(this.rdoInActive);
-            this.Controls.Add(this.rdoActive);
-            this.Controls.Add(this.rdoMale);
-            this.Controls.Add(this.rdoFemale);
+            this.Controls.Add(this.grpStatus);
+            this.Controls.Add(this.grpGender);
             this.Controls.Add(this.rdoSenior);
             this.Controls.Add(this.grpPrinter);
             this.Controls.Add(this.grpSearchBy);
@@ -875,6 +929,10 @@
             this.grpStats.ResumeLayout(false);
             this.grpSearchBy.ResumeLayout(false);
             this.grpPrinter.ResumeLayout(false);
+            this.grpGender.ResumeLayout(false);
+            this.grpGender.PerformLayout();
+            this.grpStatus.ResumeLayout(false);
+            this.grpStatus.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -903,13 +961,13 @@
         private System.Windows.Forms.TextBox txtStreet;
         private System.Windows.Forms.TextBox txtCity;
         private System.Windows.Forms.TextBox txtEmail;
-        private System.Windows.Forms.TextBox txtAdress;
+        private System.Windows.Forms.TextBox txtAddress;
         private System.Windows.Forms.Label lblAddress;
         private System.Windows.Forms.Label lblZip;
         private System.Windows.Forms.Label lblState;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtDateJoined;
-        private System.Windows.Forms.TextBox txtRefferals;
+        private System.Windows.Forms.TextBox txtReferrals;
         private System.Windows.Forms.TextBox txtreJoinDate;
         private System.Windows.Forms.TextBox txtSSN;
         private System.Windows.Forms.TextBox txtPhoneNumber2;
@@ -955,6 +1013,8 @@
         private System.Windows.Forms.RadioButton rdoMale;
         private System.Windows.Forms.Label lblDOB;
         private System.Windows.Forms.TextBox txtDOB;
+        private System.Windows.Forms.GroupBox grpGender;
+        private System.Windows.Forms.GroupBox grpStatus;
     }
 }
 
