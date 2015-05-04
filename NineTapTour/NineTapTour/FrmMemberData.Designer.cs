@@ -64,7 +64,7 @@
             this.txtReferrals = new System.Windows.Forms.TextBox();
             this.txtZip = new System.Windows.Forms.TextBox();
             this.txtreJoinDate = new System.Windows.Forms.TextBox();
-            this.txtStreet = new System.Windows.Forms.TextBox();
+            this.txtState = new System.Windows.Forms.TextBox();
             this.txtSSN = new System.Windows.Forms.TextBox();
             this.txtCity = new System.Windows.Forms.TextBox();
             this.txtEmail = new System.Windows.Forms.TextBox();
@@ -252,7 +252,7 @@
             this.txtNotes.Multiline = true;
             this.txtNotes.Name = "txtNotes";
             this.txtNotes.Size = new System.Drawing.Size(196, 141);
-            this.txtNotes.TabIndex = 18;        
+            this.txtNotes.TabIndex = 18;
             // 
             // txtAverage
             // 
@@ -263,7 +263,6 @@
             this.txtAverage.Name = "txtAverage";
             this.txtAverage.Size = new System.Drawing.Size(99, 54);
             this.txtAverage.TabIndex = 4;
-     
             // 
             // lblNotes
             // 
@@ -296,7 +295,7 @@
             this.grpMemberInfo.Controls.Add(this.txtReferrals);
             this.grpMemberInfo.Controls.Add(this.txtZip);
             this.grpMemberInfo.Controls.Add(this.txtreJoinDate);
-            this.grpMemberInfo.Controls.Add(this.txtStreet);
+            this.grpMemberInfo.Controls.Add(this.txtState);
             this.grpMemberInfo.Controls.Add(this.txtSSN);
             this.grpMemberInfo.Controls.Add(this.txtCity);
             this.grpMemberInfo.Controls.Add(this.txtEmail);
@@ -342,7 +341,6 @@
             this.txtPhoneNumber2.Name = "txtPhoneNumber2";
             this.txtPhoneNumber2.Size = new System.Drawing.Size(135, 20);
             this.txtPhoneNumber2.TabIndex = 10;
-      
             // 
             // txtPhoneNumber
             // 
@@ -479,14 +477,14 @@
             this.txtreJoinDate.TabIndex = 6;
             this.txtreJoinDate.TextChanged += new System.EventHandler(this.txtreJoinDate_TextChanged);
             // 
-            // txtStreet
+            // txtState
             // 
-            this.txtStreet.Location = new System.Drawing.Point(138, 106);
-            this.txtStreet.MaxLength = 20;
-            this.txtStreet.Name = "txtStreet";
-            this.txtStreet.Size = new System.Drawing.Size(100, 20);
-            this.txtStreet.TabIndex = 3;
-            this.txtStreet.TextChanged += new System.EventHandler(this.txtStreet_TextChanged);
+            this.txtState.Location = new System.Drawing.Point(138, 106);
+            this.txtState.MaxLength = 20;
+            this.txtState.Name = "txtState";
+            this.txtState.Size = new System.Drawing.Size(100, 20);
+            this.txtState.TabIndex = 3;
+            this.txtState.TextChanged += new System.EventHandler(this.txtStreet_TextChanged);
             // 
             // txtSSN
             // 
@@ -958,7 +956,7 @@
         private System.Windows.Forms.Label lblNotes;
         private System.Windows.Forms.GroupBox grpMemberInfo;
         private System.Windows.Forms.TextBox txtZip;
-        private System.Windows.Forms.TextBox txtStreet;
+        private System.Windows.Forms.TextBox txtState;
         private System.Windows.Forms.TextBox txtCity;
         private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.TextBox txtAddress;

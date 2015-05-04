@@ -35,10 +35,49 @@ namespace NineTapTour
 
             if (currentMem.Number != 0)
             {
+                #region Personal Info
                 txtMemberNumber.Text = currentMem.Number.ToString();
                 txtLastName.Text = currentMem.LastName;
                 txtFirstName.Text = currentMem.FirstName;
                 txtMiddleInitial.Text = currentMem.MiddleInitial;
+                txtDOB.Text = currentMem.DateOfBirth.ToString();
+                txtSSN.Text = currentMem.SSN;
+                #endregion
+
+                #region Postal Address
+                txtAddress.Text = currentMem.Street;
+                txtCity.Text = currentMem.City;
+                txtState.Text = currentMem.State;
+                txtZip.Text = currentMem.PostalCode;
+                #endregion
+
+                #region Contact Info
+                txtEmail.Text = currentMem.Email;
+                txtPhoneNumber.Text = currentMem.PrimaryPhone;
+                txtPhoneNumber2.Text = currentMem.SecondaryPhone;
+                #endregion
+
+                #region Score Info
+                txtAverage.Text = currentMem.Average.ToString();
+                txtHandicap.Text = currentMem.Handicap.ToString();
+                txtBonus.Text = currentMem.Bonus.ToString();
+                #endregion
+
+                #region Misc. Info
+                txtDateJoined.Text = currentMem.JoinDate.ToString();
+                txtreJoinDate.Text = currentMem.RejoinDate.ToString();
+                txtLastBowled.Text = currentMem.LastBowled.ToString();
+                txtMoneyEarned.Text = currentMem.MoneyEarned.ToString();
+                txtNotes.Text = currentMem.Notes;
+                txtReferrals.Text = currentMem.Referrals.ToString();
+                if (currentMem.IsSenior)
+                {
+                    rdoSenior.Checked = true;
+                }
+                else
+                {
+                    rdoSenior.Checked = false;
+                }
                 if (currentMem.IsActive)
                 {
                     rdoActive.Checked = true;
@@ -47,12 +86,6 @@ namespace NineTapTour
                 {
                     rdoInActive.Checked = true;
                 }
-
-                if (currentMem.IsSenior)
-                {
-                    rdoSenior.Checked = true;
-                }
-
                 if (currentMem.Gender.ToString() == MemberGenders.Female.ToString())
                 {
                     rdoFemale.Checked = true;
@@ -61,21 +94,14 @@ namespace NineTapTour
                 {
                     rdoMale.Checked = true;
                 }
-                txtNotes.Text = currentMem.Notes;
-                txtAddress.Text = currentMem.Street;
-                txtEmail.Text = currentMem.Email;
-                txtCity.Text = currentMem.City;
-                txtZip.Text = currentMem.PostalCode;
-                txtDateJoined.Text = currentMem.JoinDate.ToString();
-                txtReferrals.Text = currentMem.Referrals.ToString();
-                txtPhoneNumber.Text = currentMem.PrimaryPhone;
-                txtPhoneNumber2.Text = currentMem.SecondaryPhone;
+                #endregion
+
             }
             else if (membersList.Count != 0)
             {
                 this.Controls.Clear();
                 this.InitializeComponent();
-                UpdateMemberInfo();
+                //UpdateMemberInfo();
             }
         }
 
@@ -111,19 +137,78 @@ namespace NineTapTour
             if (confirm == DialogResult.Yes)
             {
                 Member temp = new Member();
+                #region Personal Info
                 temp.Number = Convert.ToInt32(txtMemberNumber.Text);
                 temp.LastName = txtLastName.Text;
                 temp.FirstName = txtFirstName.Text;
                 temp.MiddleInitial = txtMiddleInitial.Text;
-                if (rdoActive.Checked)
-                {
-                    temp.IsActive = true;
-                }
-                else if(rdoInActive.Checked)
-                {
-                    temp.IsActive = false;
-                }
+                temp.DateOfBirth = Convert.ToDateTime(txtDOB.Text);
+                temp.SSN = txtSSN.Text;
+                #endregion
 
+                #region Postal Address
+                temp.Street = txtAddress.Text;
+                temp.City = txtCity.Text;
+                temp.State = txtState.Text;
+                temp.PostalCode = txtZip.Text;
+                #endregion
+
+                #region Contact Info
+                temp.Email = txtEmail.Text;
+                temp.PrimaryPhone = txtPhoneNumber.Text;
+                temp.SecondaryPhone = txtPhoneNumber2.Text;
+                #endregion
+
+                #region Score Info
+                if (txtAverage.Text == "")
+                {
+                    temp.Average = 0;
+                }
+                else
+                {
+                    temp.Average = Convert.ToInt16(txtAverage.Text);
+                }
+                if (txtHandicap.Text == "")
+                {
+                    temp.Handicap = 0;
+                }
+                else
+                {
+                    temp.Handicap = Convert.ToInt16(txtHandicap.Text);
+                }
+                if (txtBonus.Text == "")
+                {
+                    temp.Bonus = 0;
+                }
+                else
+                {
+                    temp.Bonus = Convert.ToInt16(txtBonus.Text);
+                }
+                #endregion
+
+                #region Misc. Info
+                temp.JoinDate = DateTime.Now;
+                if(txtreJoinDate.Text != "")
+                {
+                    temp.RejoinDate = Convert.ToDateTime(txtreJoinDate.Text);
+                }
+                if(txtLastBowled.Text != "")
+                {
+                    temp.LastBowled = Convert.ToDateTime(txtLastBowled.Text);
+                }
+                if(txtMoneyEarned.Text !="")
+                {
+                    temp.MoneyEarned = Convert.ToDecimal(txtMoneyEarned.Text);
+                }
+                temp.Notes = txtNotes.Text;
+                if (txtReferrals.Text == "")
+                {
+                    temp.Referrals = 0;
+                }
+                else
+                {
+                    temp.Referrals = Convert.ToInt16(txtReferrals.Text);
+                }
 
                 if (rdoSenior.Checked)
                 {
@@ -132,6 +217,14 @@ namespace NineTapTour
                 else
                 {
                     temp.IsSenior = false;
+                }
+                if (rdoActive.Checked)
+                {
+                    temp.IsActive = true;
+                }
+                else if(rdoInActive.Checked)
+                {
+                    temp.IsActive = false;
                 }
 
                 if (rdoFemale.Checked)
@@ -142,25 +235,7 @@ namespace NineTapTour
                 {
                     temp.Gender = MemberGenders.Male;
                 }
-
-
-                temp.Notes = txtNotes.Text;
-                temp.Street = txtAddress.Text;
-                temp.Email = txtEmail.Text;
-                temp.City = txtCity.Text;
-                temp.PostalCode = txtZip.Text;
-                temp.JoinDate = DateTime.Now;
-                if (txtReferrals.Text == "")
-                {
-                    temp.Referrals = 0;
-                }
-                else
-                {
-                    temp.Referrals = Convert.ToInt16(txtReferrals.Text);
-                }
-                
-                temp.PrimaryPhone = txtPhoneNumber.Text;
-                temp.SecondaryPhone = txtPhoneNumber2.Text;
+                #endregion
 
                 if (MemberDB.addMember(temp))
                 {
@@ -282,7 +357,7 @@ namespace NineTapTour
 
         private void txtStreet_TextChanged(object sender, EventArgs e)
         {
-            if (txtStreet.Text == "")
+            if (txtState.Text == "")
             {
                 MessageBox.Show("Street is a required field!");
             }
