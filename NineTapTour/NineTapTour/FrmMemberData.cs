@@ -30,6 +30,7 @@ namespace NineTapTour
                 if (m.Number == Convert.ToInt32(txtMemberNumber.Text))
                 {
                     currentMem = m;
+                    break;
                 }
             }
 
@@ -70,14 +71,8 @@ namespace NineTapTour
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString();
                 txtNotes.Text = currentMem.Notes;
                 txtReferrals.Text = currentMem.Referrals.ToString();
-                if (currentMem.IsSenior)
-                {
-                    rdoSenior.Checked = true;
-                }
-                else
-                {
-                    rdoSenior.Checked = false;
-                }
+                rdoSenior.Checked = currentMem.IsSenior;
+                
                 if (currentMem.IsActive)
                 {
                     rdoActive.Checked = true;
@@ -270,7 +265,7 @@ namespace NineTapTour
             }
             else
             {
-                MessageBox.Show("Please Create New Member before advancing Member Number.", "Notice");
+                MessageBox.Show("End of file.", "Notice");
             }
 
         }
