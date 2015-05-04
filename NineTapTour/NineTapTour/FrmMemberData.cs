@@ -22,17 +22,9 @@ namespace NineTapTour
 
         public void UpdateMemberInfo()
         {
-
-            Member currentMem = new Member();
-
-            foreach (Member m in membersList)
-            {
-                if (m.Number == Convert.ToInt32(txtMemberNumber.Text))
-                {
-                    currentMem = m;
-                    break;
-                }
-            }
+            Member currentMem = membersList.First(
+                    m => m.Number == Convert.ToInt32(txtMemberNumber.Text)
+                );
 
             if (currentMem.Number != 0)
             {
