@@ -7,13 +7,13 @@ namespace NineTapTour.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class RemovedMattsuniquelimit : IMigrationMetadata
+    public sealed partial class UniqueSSNAgainAgain : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(RemovedMattsuniquelimit));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(UniqueSSNAgainAgain));
         
         string IMigrationMetadata.Id
         {
-            get { return "201505042239274_Removed Matt's unique limit"; }
+            get { return "201505052023530_Unique SSN Again Again"; }
         }
         
         string IMigrationMetadata.Source

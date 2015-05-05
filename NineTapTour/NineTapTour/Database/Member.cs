@@ -16,8 +16,8 @@ namespace NineTapTour.Database
         public string MiddleInitial { get; set; }
         public DateTime DateOfBirth { get; set; }
 
-        //[Index("IX_MemberSSN", IsUnique = true)]
-        //[Column(TypeName = "char(9)")]
+        [StringLength(9), Column(TypeName = "char")]
+        [Index("IX_MemberSSN", IsUnique = true)]
         public string SSN { get; set; }
 
         public MemberGenders Gender { get; set; }
@@ -47,7 +47,6 @@ namespace NineTapTour.Database
         public DateTime? LastBowled { get; set; }
         [Column(TypeName = "Money")]
         public decimal MoneyEarned { get; set; }
-        //[Column(TypeName = "nvarchar(4000)")]
         public string Notes { get; set; }
         public int? Referrals { get; set; }
         public bool IsSenior { get; set; }

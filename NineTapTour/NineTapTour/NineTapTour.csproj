@@ -82,9 +82,9 @@
     <Compile Include="Migrations\201505042228178_SSN Money Earned Fix.Designer.cs">
       <DependentUpon>201505042228178_SSN Money Earned Fix.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201505042239274_Removed Matt%27s unique limit.cs" />
-    <Compile Include="Migrations\201505042239274_Removed Matt%27s unique limit.Designer.cs">
-      <DependentUpon>201505042239274_Removed Matt%27s unique limit.cs</DependentUpon>
+    <Compile Include="Migrations\201505052023530_Unique SSN Again Again.cs" />
+    <Compile Include="Migrations\201505052023530_Unique SSN Again Again.Designer.cs">
+      <DependentUpon>201505052023530_Unique SSN Again Again.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
@@ -111,8 +111,8 @@
     <EmbeddedResource Include="Migrations\201505042228178_SSN Money Earned Fix.resx">
       <DependentUpon>201505042228178_SSN Money Earned Fix.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201505042239274_Removed Matt%27s unique limit.resx">
-      <DependentUpon>201505042239274_Removed Matt%27s unique limit.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201505052023530_Unique SSN Again Again.resx">
+      <DependentUpon>201505052023530_Unique SSN Again Again.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
