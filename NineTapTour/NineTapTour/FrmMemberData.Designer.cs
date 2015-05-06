@@ -127,11 +127,11 @@
             // txtFirstName
             // 
             this.txtFirstName.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFirstName.Location = new System.Drawing.Point(442, 50);
+            this.txtFirstName.Location = new System.Drawing.Point(414, 50);
             this.txtFirstName.MaxLength = 50;
             this.txtFirstName.Multiline = true;
             this.txtFirstName.Name = "txtFirstName";
-            this.txtFirstName.Size = new System.Drawing.Size(177, 30);
+            this.txtFirstName.Size = new System.Drawing.Size(202, 30);
             this.txtFirstName.TabIndex = 2;
             this.txtFirstName.TextChanged += new System.EventHandler(this.txtFirstName_TextChanged);
             // 
@@ -160,7 +160,7 @@
             // 
             this.lblFirstName.AutoSize = true;
             this.lblFirstName.Font = new System.Drawing.Font("Rockwell", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFirstName.Location = new System.Drawing.Point(438, 28);
+            this.lblFirstName.Location = new System.Drawing.Point(410, 28);
             this.lblFirstName.Name = "lblFirstName";
             this.lblFirstName.Size = new System.Drawing.Size(97, 19);
             this.lblFirstName.TabIndex = 4;
@@ -207,6 +207,7 @@
             this.txtBonus.Name = "txtBonus";
             this.txtBonus.Size = new System.Drawing.Size(89, 54);
             this.txtBonus.TabIndex = 6;
+            this.txtBonus.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtHandicap
             // 
@@ -217,6 +218,7 @@
             this.txtHandicap.Name = "txtHandicap";
             this.txtHandicap.Size = new System.Drawing.Size(89, 54);
             this.txtHandicap.TabIndex = 5;
+            this.txtHandicap.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // lblAverage
             // 
@@ -251,7 +253,7 @@
             this.txtNotes.MaxLength = 750;
             this.txtNotes.Multiline = true;
             this.txtNotes.Name = "txtNotes";
-            this.txtNotes.Size = new System.Drawing.Size(196, 141);
+            this.txtNotes.Size = new System.Drawing.Size(196, 266);
             this.txtNotes.TabIndex = 18;
             // 
             // txtAverage
@@ -263,6 +265,7 @@
             this.txtAverage.Name = "txtAverage";
             this.txtAverage.Size = new System.Drawing.Size(99, 54);
             this.txtAverage.TabIndex = 4;
+            this.txtAverage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // lblNotes
             // 
