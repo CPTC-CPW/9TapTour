@@ -70,7 +70,7 @@ namespace NineTapTour
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString();
                 txtNotes.Text = currentMem.Notes;
                 txtReferrals.Text = currentMem.Referrals.ToString();
-                rdoSenior.Checked = currentMem.IsSenior;
+                chbSenior.Checked = currentMem.IsSenior;
                 
                 if (currentMem.IsActive)
                 {
@@ -204,7 +204,7 @@ namespace NineTapTour
                     temp.Referrals = Convert.ToInt16(txtReferrals.Text);
                 }
 
-                if (rdoSenior.Checked)
+                if (chbSenior.Checked)
                 {
                     temp.IsSenior = true;
                 }
@@ -293,115 +293,18 @@ namespace NineTapTour
             //string schNumber = ShowDialog("Seach By Number", "Member Number To Search:");
         }
 
-        private void txtLastName_TextChanged(object sender, EventArgs e)
-        {
-            if (txtLastName.Text == "")
-            {
-                MessageBox.Show("Last Name is a required field!");
-            }
-        }
 
-        private void txtFirstName_TextChanged(object sender, EventArgs e)
+        private void inputRequired (object sender, EventArgs e)
         {
-            if (txtFirstName.Text == "")
+            if (sender is TextBox)
             {
-                MessageBox.Show("First Name is a required field!");
-            }
-        }
-
-        private void txtMiddleInitial_TextChanged(object sender, EventArgs e)
-        {
-            if (txtMiddleInitial.Text == "")
-            {
-                MessageBox.Show("Middle Initial is a required field!");
-            }
-        }
-
-        private void txtAdress_TextChanged(object sender, EventArgs e)
-        {
-            if (txtAddress.Text == "")
-            {
-                MessageBox.Show("Address is a required field!");
-            }
-        }
-
-        private void txtEmail_TextChanged(object sender, EventArgs e)
-        {
-            if (txtEmail.Text == "")
-            {
-                MessageBox.Show("Email is a required field!");
-            }
-        }
-
-        private void txtDOB_TextChanged(object sender, EventArgs e)
-        {
-            if (txtDOB.Text == "")
-            {
-                MessageBox.Show("Date of Birth is a required field!");
-            }
-        }
-
-        private void txtCity_TextChanged(object sender, EventArgs e)
-        {
-            if (txtCity.Text == "")
-            {
-                MessageBox.Show("City is a required field!");
-            }
-        }
-
-        private void txtStreet_TextChanged(object sender, EventArgs e)
-        {
-            if (txtState.Text == "")
-            {
-                MessageBox.Show("Street is a required field!");
-            }
-        }
-
-        private void txtZip_TextChanged(object sender, EventArgs e)
-        {
-            if (txtZip.Text == "")
-            {
-                MessageBox.Show("Zip code is a required field!");
-            }
-        }
-
-        private void txtSSN_TextChanged(object sender, EventArgs e)
-        {
-            if (txtSSN.Text == "")
-            {
-                MessageBox.Show("Social Security Number is a required field!");
-            }
-        }
-
-        private void txtreJoinDate_TextChanged(object sender, EventArgs e)
-        {
-            if (txtreJoinDate.Text == "")
-            {
-                MessageBox.Show("reJoin Date is a required field!");
-            }
-        }
-
-        private void txtDateJoined_TextChanged(object sender, EventArgs e)
-        {
-            if (txtDateJoined.Text == "")
-            {
-                MessageBox.Show("Date Joined is a required field!");
-            }
-        }
-
-        private void txtReferrals_TextChanged(object sender, EventArgs e)
-        {
-            if (txtReferrals.Text == "")
-            {
-                MessageBox.Show("Referrals is a required field!");
-            }
-        }
-
-        private void txtPhoneNumber_TextChanged(object sender, EventArgs e)
-        {
-            if (txtPhoneNumber.Text == "")
-            {
-                MessageBox.Show("Phone Number is a required field!");
+                TextBox tb = (TextBox)sender;
+                if (tb.Text == "")
+                {
+                    tb.BackColor = System.Drawing.Color.IndianRed;
+                }
+                else
+                    tb.BackColor = System.Drawing.Color.White;
             }
         }
     }
