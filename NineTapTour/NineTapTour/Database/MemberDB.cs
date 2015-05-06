@@ -12,47 +12,50 @@ namespace NineTapTour.Database
         {
             using (NineTapDb db = new NineTapDb())
             {
-                Member newMember = new Member();
-                #region Personal Info
-                newMember.Number = temp.Number; 
-                newMember.LastName = temp.LastName; 
-                newMember.FirstName = temp.FirstName;
-                newMember.MiddleInitial = temp.MiddleInitial;
-                newMember.DateOfBirth = temp.DateOfBirth;
-                newMember.SSN = temp.SSN;
+                #region Redacted Code
+                //Member newMember = new Member();
+                //#region Personal Info
+                //newMember.Number = temp.Number; 
+                //newMember.LastName = temp.LastName; 
+                //newMember.FirstName = temp.FirstName;
+                //newMember.MiddleInitial = temp.MiddleInitial;
+                //newMember.DateOfBirth = temp.DateOfBirth;
+                //newMember.SSN = temp.SSN;
+                //#endregion
+
+                //#region Postal Address 
+                //newMember.Street = temp.Street;
+                //newMember.City = temp.City;
+                //newMember.State = temp.State;
+                //newMember.PostalCode = temp.PostalCode;
+                //#endregion
+
+                //#region Contact Info
+                //newMember.Email = temp.Email;
+                //newMember.PrimaryPhone = temp.PrimaryPhone;
+                //newMember.SecondaryPhone = temp.SecondaryPhone;
+                //#endregion
+
+                //#region Score Info
+                //newMember.Average = temp.Average;
+                //newMember.Handicap = temp.Handicap;
+                //newMember.Bonus = temp.Bonus;
+                //#endregion
+
+                //#region Misc. Info
+                //newMember.JoinDate = temp.JoinDate;
+                //newMember.RejoinDate = temp.RejoinDate;
+                //newMember.LastBowled = temp.LastBowled;
+                //newMember.MoneyEarned = temp.MoneyEarned;
+                //newMember.Notes = temp.Notes;
+                //newMember.Referrals = temp.Referrals;
+                //newMember.IsSenior = temp.IsSenior; 
+                //newMember.IsActive = temp.IsActive; 
+                //newMember.Gender = temp.Gender;
+                //#endregion
                 #endregion
 
-                #region Postal Address 
-                newMember.Street = temp.Street;
-                newMember.City = temp.City;
-                newMember.State = temp.State;
-                newMember.PostalCode = temp.PostalCode;
-                #endregion
-
-                #region Contact Info
-                newMember.Email = temp.Email;
-                newMember.PrimaryPhone = temp.PrimaryPhone;
-                newMember.SecondaryPhone = temp.SecondaryPhone;
-                #endregion
-
-                #region Score Info
-                newMember.Average = temp.Average;
-                newMember.Handicap = temp.Handicap;
-                newMember.Bonus = temp.Bonus;
-                #endregion
-
-                #region Misc. Info
-                newMember.JoinDate = temp.JoinDate;
-                newMember.RejoinDate = temp.RejoinDate;
-                newMember.LastBowled = temp.LastBowled;
-                newMember.MoneyEarned = temp.MoneyEarned;
-                newMember.Notes = temp.Notes;
-                newMember.Referrals = temp.Referrals;
-                newMember.IsSenior = temp.IsSenior; 
-                newMember.IsActive = temp.IsActive; 
-                newMember.Gender = temp.Gender;
-                #endregion
-                db.Members.Add(newMember);
+                db.Members.Add(temp);
                 db.SaveChanges();
                 return true;
             }
