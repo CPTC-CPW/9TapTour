@@ -1,4 +1,4 @@
-﻿namespace NineTapTour
+﻿namespace NineTapTour.Forms
 {
     partial class FrmMemberData
     {

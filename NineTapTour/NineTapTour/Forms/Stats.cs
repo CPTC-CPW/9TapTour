@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace NineTapTour
+namespace NineTapTour.Forms
 {
     public partial class FrmStats : Form
     {

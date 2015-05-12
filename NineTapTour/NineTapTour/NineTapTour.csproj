@@ -55,10 +55,10 @@
   <ItemGroup>
     <Compile Include="Database\Member.cs" />
     <Compile Include="Database\MemberDB.cs" />
-    <Compile Include="FrmMemberData.cs">
+    <Compile Include="Forms\FrmMemberData.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmMemberData.Designer.cs">
+    <Compile Include="Forms\FrmMemberData.Designer.cs">
       <DependentUpon>FrmMemberData.cs</DependentUpon>
     </Compile>
     <Compile Include="Database\NineTapDb.cs" />
@@ -93,13 +93,13 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Stats.cs">
+    <Compile Include="Forms\Stats.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Stats.Designer.cs">
+    <Compile Include="Forms\Stats.Designer.cs">
       <DependentUpon>Stats.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="FrmMemberData.resx">
+    <EmbeddedResource Include="Forms\FrmMemberData.resx">
       <DependentUpon>FrmMemberData.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201504272037146_Initial Database.resx">
@@ -132,7 +132,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Stats.resx">
+    <EmbeddedResource Include="Forms\Stats.resx">
       <DependentUpon>Stats.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />

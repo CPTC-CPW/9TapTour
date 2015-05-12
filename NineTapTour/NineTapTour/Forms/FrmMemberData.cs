@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace NineTapTour
+namespace NineTapTour.Forms
 {
     public partial class FrmMemberData : Form
     {
@@ -40,7 +40,7 @@ namespace NineTapTour
                 txtLastName.Text = currentMem.LastName;
                 txtFirstName.Text = currentMem.FirstName;
                 txtMiddleInitial.Text = currentMem.MiddleInitial;
-                txtDOB.Text = currentMem.DateOfBirth.ToString();
+                txtDOB.Text = currentMem.DateOfBirth.ToShortDateString();
                 txtSSN.Text = currentMem.SSN;
                 #endregion
 
@@ -64,9 +64,15 @@ namespace NineTapTour
                 #endregion
 
                 #region Misc. Info
-                txtDateJoined.Text = currentMem.JoinDate.ToString();
-                txtreJoinDate.Text = currentMem.RejoinDate.ToString();
-                txtLastBowled.Text = currentMem.LastBowled.ToString();
+                txtDateJoined.Text = currentMem.JoinDate.ToShortDateString();
+                if (currentMem.RejoinDate.HasValue)
+                {
+                    txtreJoinDate.Text = currentMem.RejoinDate.GetValueOrDefault().ToShortDateString();
+                }
+                if (currentMem.LastBowled.HasValue)
+                {
+                    txtLastBowled.Text = currentMem.LastBowled.GetValueOrDefault().ToShortDateString();
+                }
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString();
                 txtNotes.Text = currentMem.Notes;
                 txtReferrals.Text = currentMem.Referrals.ToString();
