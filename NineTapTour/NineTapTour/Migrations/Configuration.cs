@@ -43,12 +43,33 @@ namespace NineTapTour.Migrations
                         DateOfBirth = DateTime.Parse("04/04/1985"),
                         Gender = MemberGenders.Male,
                         SSN = "123456789",
-                        Street = "8510 Idlewood Dr. SW",
-                        City = "Lakewood",
-                        State = "WA",
-                        PostalCode = "98498",
-                        PrimaryPhone = "(253) 353-2451",
-                        Email = "dahl8677@student.cptc.edu"
+                        Street = "Matt Dr. SW",
+                        City = "Mattville",
+                        State = "MD",
+                        PostalCode = "54321",
+                        PrimaryPhone = "(555) 555-5555",
+                        Email = "matt-mail@mail-matt.com",
+                        Notes = "Some notes because we can."
+                    },
+                    new Member
+                    {
+                        Number = 2,
+                        IsActive = true,
+                        JoinDate = DateTime.Today,
+                        IsSenior = false,
+                        FirstName = "Joshua",
+                        LastName = "Bachman",
+                        MiddleInitial = "M",
+                        DateOfBirth = DateTime.Parse("05/05/1990"),
+                        Gender = MemberGenders.Male,
+                        SSN = "987654321",
+                        Street = "Josh St. NW",
+                        City = "Josh Towne",
+                        State = "JB",
+                        PostalCode = "12345",
+                        PrimaryPhone = "(555) 555-5555",
+                        Email = "bachmanMailer@joshua.com",
+                        Notes = "Notes here too."
                     }
                 );
         }
