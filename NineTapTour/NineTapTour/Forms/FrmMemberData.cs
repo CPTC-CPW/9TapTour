@@ -4,12 +4,14 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using NineTapTour.Database;
+using System.Globalization;
 
 namespace NineTapTour.Forms
 {
     public partial class FrmMemberData : Form
     {
         List<Member> _membersList = MemberDb.GetMemberList();
+        int memberID;
 
         public FrmMemberData()
         {
@@ -23,6 +25,7 @@ namespace NineTapTour.Forms
             if (currentMem != null)
             {
                 #region Personal Info
+                memberID = currentMem.Id;
                 txtMemberNumber.Text = currentMem.Number.ToString();
                 txtLastName.Text = currentMem.LastName;
                 txtFirstName.Text = currentMem.FirstName;
@@ -124,6 +127,7 @@ namespace NineTapTour.Forms
             if (confirm == DialogResult.No) return;
             var temp = new Member
             {
+                Id = memberID,
                 Number = Convert.ToInt32(txtMemberNumber.Text),
                 IsActive = rdoActive.Checked,
                 JoinDate = DateTime.Now,
@@ -160,7 +164,8 @@ namespace NineTapTour.Forms
                 #region Misc. Info
                 RejoinDate = (txtRejoinDate.Text == string.Empty) ? (DateTime?)null : Convert.ToDateTime(txtRejoinDate.Text),
                 LastBowled = (txtLastBowled.Text == string.Empty) ? (DateTime?)null : Convert.ToDateTime(txtLastBowled.Text),
-                MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
+                MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
+                //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
                 Notes = txtNotes.Text,
                 Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text)
                 #endregion

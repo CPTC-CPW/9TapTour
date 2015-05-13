@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,8 +13,18 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
-                db.Members.Add(temp);
-                db.SaveChanges();
+                //if (db.Members.Any(m => m.Number == temp.Number))
+                //{
+                //    db.Entry(temp).State = EntityState.Modified;
+                //    db.SaveChanges();
+                //}
+                //else
+                //{
+                //    db.Members.Add(temp);
+                //}
+                //db.SaveChanges();
+                db.Entry(temp).State = db.Members.Any(m => m.Number == temp.Number) ? EntityState.Modified : EntityState.Added;
+                db.SaveChanges();                            
                 return true;
             }
             
