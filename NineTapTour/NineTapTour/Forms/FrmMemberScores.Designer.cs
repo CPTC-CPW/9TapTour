@@ -31,10 +31,10 @@
             this.grpMemberNum = new System.Windows.Forms.GroupBox();
             this.txtMemberNum = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.rdoSquadOne = new System.Windows.Forms.RadioButton();
+            this.rdoSquadFour = new System.Windows.Forms.RadioButton();
             this.rdoSquad3 = new System.Windows.Forms.RadioButton();
             this.rdoSquadTwo = new System.Windows.Forms.RadioButton();
-            this.rdoSquadFour = new System.Windows.Forms.RadioButton();
+            this.rdoSquadOne = new System.Windows.Forms.RadioButton();
             this.txtLastName = new System.Windows.Forms.TextBox();
             this.txtFirstName = new System.Windows.Forms.TextBox();
             this.txtMiddleInitial = new System.Windows.Forms.TextBox();
@@ -42,6 +42,7 @@
             this.lblFirstName = new System.Windows.Forms.Label();
             this.lblMiddleInitial = new System.Windows.Forms.Label();
             this.grpMemberStatus = new System.Windows.Forms.GroupBox();
+            this.rdoActive = new System.Windows.Forms.RadioButton();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
@@ -53,59 +54,38 @@
             this.textBox9 = new System.Windows.Forms.TextBox();
             this.textBox10 = new System.Windows.Forms.TextBox();
             this.grpRecord = new System.Windows.Forms.GroupBox();
-            this.btnNew = new System.Windows.Forms.Button();
-            this.btnLeftArrow = new System.Windows.Forms.Button();
             this.btnRightArrow = new System.Windows.Forms.Button();
-            this.btnLastFile = new System.Windows.Forms.Button();
+            this.btnLeftArrow = new System.Windows.Forms.Button();
+            this.btnDelete = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
+            this.btnLastFile = new System.Windows.Forms.Button();
+            this.btnNew = new System.Windows.Forms.Button();
             this.lblStratchScores = new System.Windows.Forms.Label();
             this.lblHandiCap = new System.Windows.Forms.Label();
             this.grpStats = new System.Windows.Forms.GroupBox();
-            this.textBox11 = new System.Windows.Forms.TextBox();
-            this.textBox12 = new System.Windows.Forms.TextBox();
-            this.lblCap = new System.Windows.Forms.Label();
             this.lblBonusPins = new System.Windows.Forms.Label();
-            this.btnDelete = new System.Windows.Forms.Button();
+            this.lblCap = new System.Windows.Forms.Label();
+            this.textBox12 = new System.Windows.Forms.TextBox();
+            this.textBox11 = new System.Windows.Forms.TextBox();
             this.grpTournamentFile = new System.Windows.Forms.GroupBox();
-            this.grpLeaders = new System.Windows.Forms.GroupBox();
             this.txtTournamentFile = new System.Windows.Forms.RichTextBox();
-            this.grpReports = new System.Windows.Forms.GroupBox();
-            this.btnSenior = new System.Windows.Forms.Button();
-            this.btnGame = new System.Windows.Forms.Button();
-            this.btnSeries = new System.Windows.Forms.Button();
-            this.lblGameSenior = new System.Windows.Forms.Label();
-            this.lblSeries = new System.Windows.Forms.Label();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
-            this.richTextBox3 = new System.Windows.Forms.RichTextBox();
-            this.btnRefresh = new System.Windows.Forms.Button();
-            this.btnRefresh2 = new System.Windows.Forms.Button();
-            this.btnRefresh3 = new System.Windows.Forms.Button();
-            this.lblHighGame = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.grpLeaders = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.grpGameSeries = new System.Windows.Forms.GroupBox();
-            this.txtFirst = new System.Windows.Forms.TextBox();
-            this.txtSecond = new System.Windows.Forms.TextBox();
-            this.txtThird = new System.Windows.Forms.TextBox();
-            this.txtForth = new System.Windows.Forms.TextBox();
-            this.txtFifth = new System.Windows.Forms.TextBox();
-            this.lblFirst = new System.Windows.Forms.Label();
-            this.lblSecond = new System.Windows.Forms.Label();
-            this.lblThird = new System.Windows.Forms.Label();
-            this.lblForth = new System.Windows.Forms.Label();
-            this.lblFifth = new System.Windows.Forms.Label();
-            this.btnGameSeries = new System.Windows.Forms.Button();
-            this.btnSeriesGame = new System.Windows.Forms.Button();
-            this.btnGameSenior = new System.Windows.Forms.Button();
-            this.monthCalendar1 = new System.Windows.Forms.MonthCalendar();
-            this.rdoLife = new System.Windows.Forms.RadioButton();
-            this.rdoActive = new System.Windows.Forms.RadioButton();
-            this.rdoPrePaid = new System.Windows.Forms.RadioButton();
-            this.rdoSenior = new System.Windows.Forms.RadioButton();
-            this.rdoFemale = new System.Windows.Forms.RadioButton();
-            this.rdoMale = new System.Windows.Forms.RadioButton();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lblHighGame = new System.Windows.Forms.Label();
+            this.btnRefresh3 = new System.Windows.Forms.Button();
+            this.btnRefresh2 = new System.Windows.Forms.Button();
+            this.btnRefresh = new System.Windows.Forms.Button();
+            this.richTextBox3 = new System.Windows.Forms.RichTextBox();
+            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.lblSeries = new System.Windows.Forms.Label();
+            this.lblGameSenior = new System.Windows.Forms.Label();
+            this.grpReports = new System.Windows.Forms.GroupBox();
+            this.btnSeries = new System.Windows.Forms.Button();
+            this.btnGame = new System.Windows.Forms.Button();
+            this.btnSenior = new System.Windows.Forms.Button();
             this.grpComments = new System.Windows.Forms.GroupBox();
             this.richTextBox4 = new System.Windows.Forms.RichTextBox();
             this.grpMemberNum.SuspendLayout();
@@ -116,7 +96,6 @@
             this.grpTournamentFile.SuspendLayout();
             this.grpLeaders.SuspendLayout();
             this.grpReports.SuspendLayout();
-            this.grpGameSeries.SuspendLayout();
             this.grpComments.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -150,16 +129,16 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Squad Number";
             // 
-            // rdoSquadOne
+            // rdoSquadFour
             // 
-            this.rdoSquadOne.AutoSize = true;
-            this.rdoSquadOne.Location = new System.Drawing.Point(6, 20);
-            this.rdoSquadOne.Name = "rdoSquadOne";
-            this.rdoSquadOne.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquadOne.TabIndex = 0;
-            this.rdoSquadOne.TabStop = true;
-            this.rdoSquadOne.Text = "Squad 1";
-            this.rdoSquadOne.UseVisualStyleBackColor = true;
+            this.rdoSquadFour.AutoSize = true;
+            this.rdoSquadFour.Location = new System.Drawing.Point(108, 43);
+            this.rdoSquadFour.Name = "rdoSquadFour";
+            this.rdoSquadFour.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquadFour.TabIndex = 0;
+            this.rdoSquadFour.TabStop = true;
+            this.rdoSquadFour.Text = "Squad 4";
+            this.rdoSquadFour.UseVisualStyleBackColor = true;
             // 
             // rdoSquad3
             // 
@@ -183,16 +162,16 @@
             this.rdoSquadTwo.Text = "Squad 2";
             this.rdoSquadTwo.UseVisualStyleBackColor = true;
             // 
-            // rdoSquadFour
+            // rdoSquadOne
             // 
-            this.rdoSquadFour.AutoSize = true;
-            this.rdoSquadFour.Location = new System.Drawing.Point(108, 43);
-            this.rdoSquadFour.Name = "rdoSquadFour";
-            this.rdoSquadFour.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquadFour.TabIndex = 0;
-            this.rdoSquadFour.TabStop = true;
-            this.rdoSquadFour.Text = "Squad 4";
-            this.rdoSquadFour.UseVisualStyleBackColor = true;
+            this.rdoSquadOne.AutoSize = true;
+            this.rdoSquadOne.Location = new System.Drawing.Point(6, 20);
+            this.rdoSquadOne.Name = "rdoSquadOne";
+            this.rdoSquadOne.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquadOne.TabIndex = 0;
+            this.rdoSquadOne.TabStop = true;
+            this.rdoSquadOne.Text = "Squad 1";
+            this.rdoSquadOne.UseVisualStyleBackColor = true;
             // 
             // txtLastName
             // 
@@ -250,18 +229,24 @@
             // 
             // grpMemberStatus
             // 
-            this.grpMemberStatus.Controls.Add(this.rdoMale);
-            this.grpMemberStatus.Controls.Add(this.rdoFemale);
-            this.grpMemberStatus.Controls.Add(this.rdoSenior);
-            this.grpMemberStatus.Controls.Add(this.rdoPrePaid);
             this.grpMemberStatus.Controls.Add(this.rdoActive);
-            this.grpMemberStatus.Controls.Add(this.rdoLife);
             this.grpMemberStatus.Location = new System.Drawing.Point(225, 101);
             this.grpMemberStatus.Name = "grpMemberStatus";
-            this.grpMemberStatus.Size = new System.Drawing.Size(147, 233);
+            this.grpMemberStatus.Size = new System.Drawing.Size(110, 61);
             this.grpMemberStatus.TabIndex = 5;
             this.grpMemberStatus.TabStop = false;
             this.grpMemberStatus.Text = "Member Status";
+            // 
+            // rdoActive
+            // 
+            this.rdoActive.AutoSize = true;
+            this.rdoActive.Location = new System.Drawing.Point(18, 27);
+            this.rdoActive.Name = "rdoActive";
+            this.rdoActive.Size = new System.Drawing.Size(55, 17);
+            this.rdoActive.TabIndex = 0;
+            this.rdoActive.TabStop = true;
+            this.rdoActive.Text = "Active";
+            this.rdoActive.UseVisualStyleBackColor = true;
             // 
             // textBox1
             // 
@@ -364,14 +349,14 @@
             this.grpRecord.TabStop = false;
             this.grpRecord.Text = "Record";
             // 
-            // btnNew
+            // btnRightArrow
             // 
-            this.btnNew.Location = new System.Drawing.Point(19, 19);
-            this.btnNew.Name = "btnNew";
-            this.btnNew.Size = new System.Drawing.Size(156, 25);
-            this.btnNew.TabIndex = 0;
-            this.btnNew.Text = "New";
-            this.btnNew.UseVisualStyleBackColor = true;
+            this.btnRightArrow.Location = new System.Drawing.Point(103, 50);
+            this.btnRightArrow.Name = "btnRightArrow";
+            this.btnRightArrow.Size = new System.Drawing.Size(72, 29);
+            this.btnRightArrow.TabIndex = 1;
+            this.btnRightArrow.Text = ">";
+            this.btnRightArrow.UseVisualStyleBackColor = true;
             // 
             // btnLeftArrow
             // 
@@ -382,14 +367,23 @@
             this.btnLeftArrow.Text = "<";
             this.btnLeftArrow.UseVisualStyleBackColor = true;
             // 
-            // btnRightArrow
+            // btnDelete
             // 
-            this.btnRightArrow.Location = new System.Drawing.Point(103, 50);
-            this.btnRightArrow.Name = "btnRightArrow";
-            this.btnRightArrow.Size = new System.Drawing.Size(72, 29);
-            this.btnRightArrow.TabIndex = 1;
-            this.btnRightArrow.Text = ">";
-            this.btnRightArrow.UseVisualStyleBackColor = true;
+            this.btnDelete.Location = new System.Drawing.Point(19, 147);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(156, 25);
+            this.btnDelete.TabIndex = 0;
+            this.btnDelete.Text = "Delete";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(19, 116);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(156, 25);
+            this.button5.TabIndex = 0;
+            this.button5.Text = "Stats";
+            this.button5.UseVisualStyleBackColor = true;
             // 
             // btnLastFile
             // 
@@ -400,14 +394,14 @@
             this.btnLastFile.Text = "Last File";
             this.btnLastFile.UseVisualStyleBackColor = true;
             // 
-            // button5
+            // btnNew
             // 
-            this.button5.Location = new System.Drawing.Point(19, 116);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(156, 25);
-            this.button5.TabIndex = 0;
-            this.button5.Text = "Stats";
-            this.button5.UseVisualStyleBackColor = true;
+            this.btnNew.Location = new System.Drawing.Point(19, 19);
+            this.btnNew.Name = "btnNew";
+            this.btnNew.Size = new System.Drawing.Size(156, 25);
+            this.btnNew.TabIndex = 0;
+            this.btnNew.Text = "New";
+            this.btnNew.UseVisualStyleBackColor = true;
             // 
             // lblStratchScores
             // 
@@ -433,39 +427,12 @@
             this.grpStats.Controls.Add(this.lblCap);
             this.grpStats.Controls.Add(this.textBox12);
             this.grpStats.Controls.Add(this.textBox11);
-            this.grpStats.Location = new System.Drawing.Point(225, 345);
+            this.grpStats.Location = new System.Drawing.Point(225, 349);
             this.grpStats.Name = "grpStats";
             this.grpStats.Size = new System.Drawing.Size(147, 151);
             this.grpStats.TabIndex = 11;
             this.grpStats.TabStop = false;
             this.grpStats.Text = "Stats";
-            // 
-            // textBox11
-            // 
-            this.textBox11.Enabled = false;
-            this.textBox11.Location = new System.Drawing.Point(40, 33);
-            this.textBox11.Multiline = true;
-            this.textBox11.Name = "textBox11";
-            this.textBox11.Size = new System.Drawing.Size(76, 35);
-            this.textBox11.TabIndex = 6;
-            // 
-            // textBox12
-            // 
-            this.textBox12.Enabled = false;
-            this.textBox12.Location = new System.Drawing.Point(40, 102);
-            this.textBox12.Multiline = true;
-            this.textBox12.Name = "textBox12";
-            this.textBox12.Size = new System.Drawing.Size(76, 35);
-            this.textBox12.TabIndex = 6;
-            // 
-            // lblCap
-            // 
-            this.lblCap.AutoSize = true;
-            this.lblCap.Location = new System.Drawing.Point(50, 16);
-            this.lblCap.Name = "lblCap";
-            this.lblCap.Size = new System.Drawing.Size(54, 13);
-            this.lblCap.TabIndex = 7;
-            this.lblCap.Text = "HandiCap";
             // 
             // lblBonusPins
             // 
@@ -476,24 +443,51 @@
             this.lblBonusPins.TabIndex = 8;
             this.lblBonusPins.Text = "Bonus Pins";
             // 
-            // btnDelete
+            // lblCap
             // 
-            this.btnDelete.Location = new System.Drawing.Point(19, 147);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(156, 25);
-            this.btnDelete.TabIndex = 0;
-            this.btnDelete.Text = "Delete";
-            this.btnDelete.UseVisualStyleBackColor = true;
+            this.lblCap.AutoSize = true;
+            this.lblCap.Location = new System.Drawing.Point(50, 16);
+            this.lblCap.Name = "lblCap";
+            this.lblCap.Size = new System.Drawing.Size(54, 13);
+            this.lblCap.TabIndex = 7;
+            this.lblCap.Text = "HandiCap";
+            // 
+            // textBox12
+            // 
+            this.textBox12.Enabled = false;
+            this.textBox12.Location = new System.Drawing.Point(40, 102);
+            this.textBox12.Multiline = true;
+            this.textBox12.Name = "textBox12";
+            this.textBox12.Size = new System.Drawing.Size(76, 35);
+            this.textBox12.TabIndex = 6;
+            // 
+            // textBox11
+            // 
+            this.textBox11.Enabled = false;
+            this.textBox11.Location = new System.Drawing.Point(40, 33);
+            this.textBox11.Multiline = true;
+            this.textBox11.Name = "textBox11";
+            this.textBox11.Size = new System.Drawing.Size(76, 35);
+            this.textBox11.TabIndex = 6;
             // 
             // grpTournamentFile
             // 
             this.grpTournamentFile.Controls.Add(this.txtTournamentFile);
-            this.grpTournamentFile.Location = new System.Drawing.Point(225, 502);
+            this.grpTournamentFile.Location = new System.Drawing.Point(225, 525);
             this.grpTournamentFile.Name = "grpTournamentFile";
-            this.grpTournamentFile.Size = new System.Drawing.Size(328, 171);
+            this.grpTournamentFile.Size = new System.Drawing.Size(328, 148);
             this.grpTournamentFile.TabIndex = 12;
             this.grpTournamentFile.TabStop = false;
             this.grpTournamentFile.Text = "Tournament File";
+            // 
+            // txtTournamentFile
+            // 
+            this.txtTournamentFile.Enabled = false;
+            this.txtTournamentFile.Location = new System.Drawing.Point(18, 28);
+            this.txtTournamentFile.Name = "txtTournamentFile";
+            this.txtTournamentFile.Size = new System.Drawing.Size(291, 97);
+            this.txtTournamentFile.TabIndex = 0;
+            this.txtTournamentFile.Text = "";
             // 
             // grpLeaders
             // 
@@ -509,7 +503,7 @@
             this.grpLeaders.Controls.Add(this.richTextBox1);
             this.grpLeaders.Controls.Add(this.lblSeries);
             this.grpLeaders.Controls.Add(this.lblGameSenior);
-            this.grpLeaders.Location = new System.Drawing.Point(400, 101);
+            this.grpLeaders.Location = new System.Drawing.Point(378, 105);
             this.grpLeaders.Name = "grpLeaders";
             this.grpLeaders.Size = new System.Drawing.Size(361, 395);
             this.grpLeaders.TabIndex = 13;
@@ -517,14 +511,113 @@
             this.grpLeaders.Text = "Leaders";
             this.grpLeaders.Enter += new System.EventHandler(this.groupBox3_Enter);
             // 
-            // txtTournamentFile
+            // label3
             // 
-            this.txtTournamentFile.Enabled = false;
-            this.txtTournamentFile.Location = new System.Drawing.Point(18, 19);
-            this.txtTournamentFile.Name = "txtTournamentFile";
-            this.txtTournamentFile.Size = new System.Drawing.Size(291, 97);
-            this.txtTournamentFile.TabIndex = 0;
-            this.txtTournamentFile.Text = "";
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(22, 290);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(149, 13);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Series [Member No.] -- (Name)";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(144, 274);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(61, 13);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "High Series";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(22, 167);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(200, 13);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Game [Member No.] -- (Name) *=Pre paid";
+            // 
+            // lblHighGame
+            // 
+            this.lblHighGame.AutoSize = true;
+            this.lblHighGame.Location = new System.Drawing.Point(151, 148);
+            this.lblHighGame.Name = "lblHighGame";
+            this.lblHighGame.Size = new System.Drawing.Size(60, 13);
+            this.lblHighGame.TabIndex = 4;
+            this.lblHighGame.Text = "High Game";
+            // 
+            // btnRefresh3
+            // 
+            this.btnRefresh3.Location = new System.Drawing.Point(25, 353);
+            this.btnRefresh3.Name = "btnRefresh3";
+            this.btnRefresh3.Size = new System.Drawing.Size(317, 23);
+            this.btnRefresh3.TabIndex = 3;
+            this.btnRefresh3.Text = "Refresh";
+            this.btnRefresh3.UseVisualStyleBackColor = true;
+            // 
+            // btnRefresh2
+            // 
+            this.btnRefresh2.Location = new System.Drawing.Point(25, 233);
+            this.btnRefresh2.Name = "btnRefresh2";
+            this.btnRefresh2.Size = new System.Drawing.Size(317, 23);
+            this.btnRefresh2.TabIndex = 3;
+            this.btnRefresh2.Text = "Refresh";
+            this.btnRefresh2.UseVisualStyleBackColor = true;
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(25, 110);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(317, 23);
+            this.btnRefresh.TabIndex = 3;
+            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            // 
+            // richTextBox3
+            // 
+            this.richTextBox3.Enabled = false;
+            this.richTextBox3.Location = new System.Drawing.Point(25, 306);
+            this.richTextBox3.Name = "richTextBox3";
+            this.richTextBox3.Size = new System.Drawing.Size(317, 47);
+            this.richTextBox3.TabIndex = 2;
+            this.richTextBox3.Text = "";
+            // 
+            // richTextBox2
+            // 
+            this.richTextBox2.Enabled = false;
+            this.richTextBox2.Location = new System.Drawing.Point(25, 183);
+            this.richTextBox2.Name = "richTextBox2";
+            this.richTextBox2.Size = new System.Drawing.Size(317, 44);
+            this.richTextBox2.TabIndex = 2;
+            this.richTextBox2.Text = "";
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Enabled = false;
+            this.richTextBox1.Location = new System.Drawing.Point(25, 60);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(317, 47);
+            this.richTextBox1.TabIndex = 2;
+            this.richTextBox1.Text = "";
+            // 
+            // lblSeries
+            // 
+            this.lblSeries.AutoSize = true;
+            this.lblSeries.Location = new System.Drawing.Point(22, 44);
+            this.lblSeries.Name = "lblSeries";
+            this.lblSeries.Size = new System.Drawing.Size(149, 13);
+            this.lblSeries.TabIndex = 1;
+            this.lblSeries.Text = "Series [Member No.] -- (Name)";
+            // 
+            // lblGameSenior
+            // 
+            this.lblGameSenior.AutoSize = true;
+            this.lblGameSenior.Location = new System.Drawing.Point(130, 16);
+            this.lblGameSenior.Name = "lblGameSenior";
+            this.lblGameSenior.Size = new System.Drawing.Size(93, 13);
+            this.lblGameSenior.TabIndex = 0;
+            this.lblGameSenior.Text = "High Game Senior";
             // 
             // grpReports
             // 
@@ -538,14 +631,14 @@
             this.grpReports.TabStop = false;
             this.grpReports.Text = "Reports";
             // 
-            // btnSenior
+            // btnSeries
             // 
-            this.btnSenior.Location = new System.Drawing.Point(18, 23);
-            this.btnSenior.Name = "btnSenior";
-            this.btnSenior.Size = new System.Drawing.Size(82, 37);
-            this.btnSenior.TabIndex = 0;
-            this.btnSenior.Text = "Senior";
-            this.btnSenior.UseVisualStyleBackColor = true;
+            this.btnSeries.Location = new System.Drawing.Point(18, 114);
+            this.btnSeries.Name = "btnSeries";
+            this.btnSeries.Size = new System.Drawing.Size(82, 37);
+            this.btnSeries.TabIndex = 0;
+            this.btnSeries.Text = "Series";
+            this.btnSeries.UseVisualStyleBackColor = true;
             // 
             // btnGame
             // 
@@ -556,328 +649,14 @@
             this.btnGame.Text = "Game";
             this.btnGame.UseVisualStyleBackColor = true;
             // 
-            // btnSeries
-            // 
-            this.btnSeries.Location = new System.Drawing.Point(18, 114);
-            this.btnSeries.Name = "btnSeries";
-            this.btnSeries.Size = new System.Drawing.Size(82, 37);
-            this.btnSeries.TabIndex = 0;
-            this.btnSeries.Text = "Series";
-            this.btnSeries.UseVisualStyleBackColor = true;
-            // 
-            // lblGameSenior
-            // 
-            this.lblGameSenior.AutoSize = true;
-            this.lblGameSenior.Location = new System.Drawing.Point(130, 16);
-            this.lblGameSenior.Name = "lblGameSenior";
-            this.lblGameSenior.Size = new System.Drawing.Size(93, 13);
-            this.lblGameSenior.TabIndex = 0;
-            this.lblGameSenior.Text = "High Game Senior";
-            // 
-            // lblSeries
-            // 
-            this.lblSeries.AutoSize = true;
-            this.lblSeries.Location = new System.Drawing.Point(22, 44);
-            this.lblSeries.Name = "lblSeries";
-            this.lblSeries.Size = new System.Drawing.Size(149, 13);
-            this.lblSeries.TabIndex = 1;
-            this.lblSeries.Text = "Series [Member No.] -- (Name)";
-            // 
-            // richTextBox1
-            // 
-            this.richTextBox1.Enabled = false;
-            this.richTextBox1.Location = new System.Drawing.Point(25, 60);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(317, 47);
-            this.richTextBox1.TabIndex = 2;
-            this.richTextBox1.Text = "";
-            // 
-            // richTextBox2
-            // 
-            this.richTextBox2.Enabled = false;
-            this.richTextBox2.Location = new System.Drawing.Point(25, 183);
-            this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.Size = new System.Drawing.Size(317, 44);
-            this.richTextBox2.TabIndex = 2;
-            this.richTextBox2.Text = "";
-            // 
-            // richTextBox3
-            // 
-            this.richTextBox3.Enabled = false;
-            this.richTextBox3.Location = new System.Drawing.Point(25, 306);
-            this.richTextBox3.Name = "richTextBox3";
-            this.richTextBox3.Size = new System.Drawing.Size(317, 47);
-            this.richTextBox3.TabIndex = 2;
-            this.richTextBox3.Text = "";
-            // 
-            // btnRefresh
-            // 
-            this.btnRefresh.Location = new System.Drawing.Point(25, 110);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(317, 23);
-            this.btnRefresh.TabIndex = 3;
-            this.btnRefresh.Text = "Refresh";
-            this.btnRefresh.UseVisualStyleBackColor = true;
-            // 
-            // btnRefresh2
-            // 
-            this.btnRefresh2.Location = new System.Drawing.Point(25, 233);
-            this.btnRefresh2.Name = "btnRefresh2";
-            this.btnRefresh2.Size = new System.Drawing.Size(317, 23);
-            this.btnRefresh2.TabIndex = 3;
-            this.btnRefresh2.Text = "Refresh";
-            this.btnRefresh2.UseVisualStyleBackColor = true;
-            // 
-            // btnRefresh3
-            // 
-            this.btnRefresh3.Location = new System.Drawing.Point(25, 353);
-            this.btnRefresh3.Name = "btnRefresh3";
-            this.btnRefresh3.Size = new System.Drawing.Size(317, 23);
-            this.btnRefresh3.TabIndex = 3;
-            this.btnRefresh3.Text = "Refresh";
-            this.btnRefresh3.UseVisualStyleBackColor = true;
-            // 
-            // lblHighGame
-            // 
-            this.lblHighGame.AutoSize = true;
-            this.lblHighGame.Location = new System.Drawing.Point(151, 148);
-            this.lblHighGame.Name = "lblHighGame";
-            this.lblHighGame.Size = new System.Drawing.Size(60, 13);
-            this.lblHighGame.TabIndex = 4;
-            this.lblHighGame.Text = "High Game";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(22, 167);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(200, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Game [Member No.] -- (Name) *=Pre paid";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(144, 274);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(61, 13);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "High Series";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(22, 290);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(149, 13);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "Series [Member No.] -- (Name)";
-            // 
-            // grpGameSeries
-            // 
-            this.grpGameSeries.Controls.Add(this.btnGameSenior);
-            this.grpGameSeries.Controls.Add(this.btnSeriesGame);
-            this.grpGameSeries.Controls.Add(this.btnGameSeries);
-            this.grpGameSeries.Controls.Add(this.lblFifth);
-            this.grpGameSeries.Controls.Add(this.lblForth);
-            this.grpGameSeries.Controls.Add(this.lblThird);
-            this.grpGameSeries.Controls.Add(this.lblSecond);
-            this.grpGameSeries.Controls.Add(this.lblFirst);
-            this.grpGameSeries.Controls.Add(this.txtFifth);
-            this.grpGameSeries.Controls.Add(this.txtForth);
-            this.grpGameSeries.Controls.Add(this.txtThird);
-            this.grpGameSeries.Controls.Add(this.txtSecond);
-            this.grpGameSeries.Controls.Add(this.txtFirst);
-            this.grpGameSeries.Location = new System.Drawing.Point(779, 105);
-            this.grpGameSeries.Name = "grpGameSeries";
-            this.grpGameSeries.Size = new System.Drawing.Size(266, 267);
-            this.grpGameSeries.TabIndex = 14;
-            this.grpGameSeries.TabStop = false;
-            this.grpGameSeries.Text = "Game";
-            // 
-            // txtFirst
-            // 
-            this.txtFirst.Enabled = false;
-            this.txtFirst.Location = new System.Drawing.Point(20, 33);
-            this.txtFirst.Name = "txtFirst";
-            this.txtFirst.Size = new System.Drawing.Size(230, 20);
-            this.txtFirst.TabIndex = 0;
-            // 
-            // txtSecond
-            // 
-            this.txtSecond.Enabled = false;
-            this.txtSecond.Location = new System.Drawing.Point(20, 75);
-            this.txtSecond.Name = "txtSecond";
-            this.txtSecond.Size = new System.Drawing.Size(230, 20);
-            this.txtSecond.TabIndex = 0;
-            // 
-            // txtThird
-            // 
-            this.txtThird.Enabled = false;
-            this.txtThird.Location = new System.Drawing.Point(20, 118);
-            this.txtThird.Name = "txtThird";
-            this.txtThird.Size = new System.Drawing.Size(230, 20);
-            this.txtThird.TabIndex = 0;
-            // 
-            // txtForth
-            // 
-            this.txtForth.Enabled = false;
-            this.txtForth.Location = new System.Drawing.Point(20, 163);
-            this.txtForth.Name = "txtForth";
-            this.txtForth.Size = new System.Drawing.Size(230, 20);
-            this.txtForth.TabIndex = 0;
-            // 
-            // txtFifth
-            // 
-            this.txtFifth.Enabled = false;
-            this.txtFifth.Location = new System.Drawing.Point(20, 203);
-            this.txtFifth.Name = "txtFifth";
-            this.txtFifth.Size = new System.Drawing.Size(230, 20);
-            this.txtFifth.TabIndex = 0;
-            // 
-            // lblFirst
-            // 
-            this.lblFirst.AutoSize = true;
-            this.lblFirst.Location = new System.Drawing.Point(114, 16);
-            this.lblFirst.Name = "lblFirst";
-            this.lblFirst.Size = new System.Drawing.Size(26, 13);
-            this.lblFirst.TabIndex = 1;
-            this.lblFirst.Text = "First";
-            // 
-            // lblSecond
-            // 
-            this.lblSecond.AutoSize = true;
-            this.lblSecond.Location = new System.Drawing.Point(114, 56);
-            this.lblSecond.Name = "lblSecond";
-            this.lblSecond.Size = new System.Drawing.Size(44, 13);
-            this.lblSecond.TabIndex = 1;
-            this.lblSecond.Text = "Second";
-            // 
-            // lblThird
-            // 
-            this.lblThird.AutoSize = true;
-            this.lblThird.Location = new System.Drawing.Point(114, 98);
-            this.lblThird.Name = "lblThird";
-            this.lblThird.Size = new System.Drawing.Size(31, 13);
-            this.lblThird.TabIndex = 1;
-            this.lblThird.Text = "Third";
-            // 
-            // lblForth
-            // 
-            this.lblForth.AutoSize = true;
-            this.lblForth.Location = new System.Drawing.Point(114, 144);
-            this.lblForth.Name = "lblForth";
-            this.lblForth.Size = new System.Drawing.Size(31, 13);
-            this.lblForth.TabIndex = 1;
-            this.lblForth.Text = "Forth";
-            // 
-            // lblFifth
-            // 
-            this.lblFifth.AutoSize = true;
-            this.lblFifth.Location = new System.Drawing.Point(121, 186);
-            this.lblFifth.Name = "lblFifth";
-            this.lblFifth.Size = new System.Drawing.Size(27, 13);
-            this.lblFifth.TabIndex = 1;
-            this.lblFifth.Text = "Fifth";
-            // 
-            // btnGameSeries
-            // 
-            this.btnGameSeries.Location = new System.Drawing.Point(20, 231);
-            this.btnGameSeries.Name = "btnGameSeries";
-            this.btnGameSeries.Size = new System.Drawing.Size(69, 35);
-            this.btnGameSeries.TabIndex = 2;
-            this.btnGameSeries.Text = "Series";
-            this.btnGameSeries.UseVisualStyleBackColor = true;
-            // 
-            // btnSeriesGame
-            // 
-            this.btnSeriesGame.Location = new System.Drawing.Point(95, 232);
-            this.btnSeriesGame.Name = "btnSeriesGame";
-            this.btnSeriesGame.Size = new System.Drawing.Size(69, 35);
-            this.btnSeriesGame.TabIndex = 2;
-            this.btnSeriesGame.Text = "Game";
-            this.btnSeriesGame.UseVisualStyleBackColor = true;
-            // 
-            // btnGameSenior
-            // 
-            this.btnGameSenior.Location = new System.Drawing.Point(170, 231);
-            this.btnGameSenior.Name = "btnGameSenior";
-            this.btnGameSenior.Size = new System.Drawing.Size(69, 35);
-            this.btnGameSenior.TabIndex = 2;
-            this.btnGameSenior.Text = "Senior";
-            this.btnGameSenior.UseVisualStyleBackColor = true;
-            // 
-            // monthCalendar1
-            // 
-            this.monthCalendar1.Location = new System.Drawing.Point(790, 378);
-            this.monthCalendar1.Name = "monthCalendar1";
-            this.monthCalendar1.TabIndex = 15;
-            // 
-            // rdoLife
-            // 
-            this.rdoLife.AutoSize = true;
-            this.rdoLife.Location = new System.Drawing.Point(35, 27);
-            this.rdoLife.Name = "rdoLife";
-            this.rdoLife.Size = new System.Drawing.Size(42, 17);
-            this.rdoLife.TabIndex = 0;
-            this.rdoLife.TabStop = true;
-            this.rdoLife.Text = "Life";
-            this.rdoLife.UseVisualStyleBackColor = true;
-            // 
-            // rdoActive
-            // 
-            this.rdoActive.AutoSize = true;
-            this.rdoActive.Location = new System.Drawing.Point(35, 56);
-            this.rdoActive.Name = "rdoActive";
-            this.rdoActive.Size = new System.Drawing.Size(55, 17);
-            this.rdoActive.TabIndex = 0;
-            this.rdoActive.TabStop = true;
-            this.rdoActive.Text = "Active";
-            this.rdoActive.UseVisualStyleBackColor = true;
-            // 
-            // rdoPrePaid
-            // 
-            this.rdoPrePaid.AutoSize = true;
-            this.rdoPrePaid.Location = new System.Drawing.Point(35, 90);
-            this.rdoPrePaid.Name = "rdoPrePaid";
-            this.rdoPrePaid.Size = new System.Drawing.Size(65, 17);
-            this.rdoPrePaid.TabIndex = 0;
-            this.rdoPrePaid.TabStop = true;
-            this.rdoPrePaid.Text = "Pre Paid";
-            this.rdoPrePaid.UseVisualStyleBackColor = true;
-            // 
-            // rdoSenior
-            // 
-            this.rdoSenior.AutoSize = true;
-            this.rdoSenior.Location = new System.Drawing.Point(35, 125);
-            this.rdoSenior.Name = "rdoSenior";
-            this.rdoSenior.Size = new System.Drawing.Size(55, 17);
-            this.rdoSenior.TabIndex = 0;
-            this.rdoSenior.TabStop = true;
-            this.rdoSenior.Text = "Senior";
-            this.rdoSenior.UseVisualStyleBackColor = true;
-            // 
-            // rdoFemale
-            // 
-            this.rdoFemale.AutoSize = true;
-            this.rdoFemale.Location = new System.Drawing.Point(35, 165);
-            this.rdoFemale.Name = "rdoFemale";
-            this.rdoFemale.Size = new System.Drawing.Size(59, 17);
-            this.rdoFemale.TabIndex = 0;
-            this.rdoFemale.TabStop = true;
-            this.rdoFemale.Text = "Female";
-            this.rdoFemale.UseVisualStyleBackColor = true;
-            // 
-            // rdoMale
-            // 
-            this.rdoMale.AutoSize = true;
-            this.rdoMale.Location = new System.Drawing.Point(35, 199);
-            this.rdoMale.Name = "rdoMale";
-            this.rdoMale.Size = new System.Drawing.Size(48, 17);
-            this.rdoMale.TabIndex = 0;
-            this.rdoMale.TabStop = true;
-            this.rdoMale.Text = "Male";
-            this.rdoMale.UseVisualStyleBackColor = true;
+            // btnSenior
+            // 
+            this.btnSenior.Location = new System.Drawing.Point(18, 23);
+            this.btnSenior.Name = "btnSenior";
+            this.btnSenior.Size = new System.Drawing.Size(82, 37);
+            this.btnSenior.TabIndex = 0;
+            this.btnSenior.Text = "Senior";
+            this.btnSenior.UseVisualStyleBackColor = true;
             // 
             // grpComments
             // 
@@ -903,8 +682,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1043, 686);
             this.Controls.Add(this.grpComments);
-            this.Controls.Add(this.monthCalendar1);
-            this.Controls.Add(this.grpGameSeries);
             this.Controls.Add(this.grpReports);
             this.Controls.Add(this.grpLeaders);
             this.Controls.Add(this.grpTournamentFile);
@@ -947,8 +724,6 @@
             this.grpLeaders.ResumeLayout(false);
             this.grpLeaders.PerformLayout();
             this.grpReports.ResumeLayout(false);
-            this.grpGameSeries.ResumeLayout(false);
-            this.grpGameSeries.PerformLayout();
             this.grpComments.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -1014,27 +789,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.GroupBox grpGameSeries;
-        private System.Windows.Forms.Label lblFifth;
-        private System.Windows.Forms.Label lblForth;
-        private System.Windows.Forms.Label lblThird;
-        private System.Windows.Forms.Label lblSecond;
-        private System.Windows.Forms.Label lblFirst;
-        private System.Windows.Forms.TextBox txtFifth;
-        private System.Windows.Forms.TextBox txtForth;
-        private System.Windows.Forms.TextBox txtThird;
-        private System.Windows.Forms.TextBox txtSecond;
-        private System.Windows.Forms.TextBox txtFirst;
-        private System.Windows.Forms.Button btnGameSenior;
-        private System.Windows.Forms.Button btnSeriesGame;
-        private System.Windows.Forms.Button btnGameSeries;
-        private System.Windows.Forms.RadioButton rdoMale;
-        private System.Windows.Forms.RadioButton rdoFemale;
-        private System.Windows.Forms.RadioButton rdoSenior;
-        private System.Windows.Forms.RadioButton rdoPrePaid;
         private System.Windows.Forms.RadioButton rdoActive;
-        private System.Windows.Forms.RadioButton rdoLife;
-        private System.Windows.Forms.MonthCalendar monthCalendar1;
         private System.Windows.Forms.GroupBox grpComments;
         private System.Windows.Forms.RichTextBox richTextBox4;
     }
