@@ -1,6 +1,6 @@
 ﻿namespace NineTapTour.Forms
 {
-    partial class FrmStats
+    partial class FrmMemberScores
     {
         /// <summary>
         /// Required designer variable.
@@ -676,7 +676,7 @@
             this.richTextBox4.TabIndex = 0;
             this.richTextBox4.Text = "";
             // 
-            // FrmStats
+            // FrmMemberScores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -708,8 +708,8 @@
             this.Controls.Add(this.txtLastName);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grpMemberNum);
-            this.Name = "FrmStats";
-            this.Text = "Stats";
+            this.Name = "FrmMemberScores";
+            this.Text = "Member Scores";
             this.Load += new System.EventHandler(this.Stats_Load);
             this.grpMemberNum.ResumeLayout(false);
             this.grpMemberNum.PerformLayout();

@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace NineTapTour.Forms
 {
-    public partial class FrmStats : Form
+    public partial class FrmMemberScores : Form
     {
-        public FrmStats()
+        public FrmMemberScores()
         {
             InitializeComponent();
         }
