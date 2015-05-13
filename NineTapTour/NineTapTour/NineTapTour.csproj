@@ -93,10 +93,6 @@
     <Compile Include="Migrations\201505130601598_Add Score Form Tables.Designer.cs">
       <DependentUpon>201505130601598_Add Score Form Tables.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201505130623123_Ordering Member Columns.cs" />
-    <Compile Include="Migrations\201505130623123_Ordering Member Columns.Designer.cs">
-      <DependentUpon>201505130623123_Ordering Member Columns.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -133,9 +129,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201505130601598_Add Score Form Tables.resx">
       <DependentUpon>201505130601598_Add Score Form Tables.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201505130623123_Ordering Member Columns.resx">
-      <DependentUpon>201505130623123_Ordering Member Columns.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>

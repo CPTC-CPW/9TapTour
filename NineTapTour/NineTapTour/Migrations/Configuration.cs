@@ -30,7 +30,7 @@ namespace NineTapTour.Migrations
             //
 
             context.Members.AddOrUpdate(
-                m => new { m.Id, m.Number, m.SSN},
+                m => new { m.Number, m.SSN },
                     new Member
                     {
                         Number = 1,
