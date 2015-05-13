@@ -1,0 +1,17 @@
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace NineTapTour.Database
+{
+    public class Tournament
+    {
+        [Key]
+        public int Id { get; set; }
+        [Required]
+        public DateTime Date { get; set; }
+        [Required]
+        public string Location { get; set; }
+        public string Event { get; set; }
+        public string Notes { get; set; }
+    }
+}

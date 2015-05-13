@@ -53,8 +53,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\Game.cs" />
     <Compile Include="Database\Member.cs" />
-    <Compile Include="Database\MemberDB.cs" />
+    <Compile Include="Database\MemberDb.cs" />
+    <Compile Include="Database\Participant.cs" />
+    <Compile Include="Database\Tournament.cs" />
     <Compile Include="Forms\FrmMemberData.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,6 +88,14 @@
     <Compile Include="Migrations\201505052023530_Unique SSN Again Again.cs" />
     <Compile Include="Migrations\201505052023530_Unique SSN Again Again.Designer.cs">
       <DependentUpon>201505052023530_Unique SSN Again Again.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201505130601598_Add Score Form Tables.cs" />
+    <Compile Include="Migrations\201505130601598_Add Score Form Tables.Designer.cs">
+      <DependentUpon>201505130601598_Add Score Form Tables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201505130623123_Ordering Member Columns.cs" />
+    <Compile Include="Migrations\201505130623123_Ordering Member Columns.Designer.cs">
+      <DependentUpon>201505130623123_Ordering Member Columns.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
@@ -119,6 +130,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201505052023530_Unique SSN Again Again.resx">
       <DependentUpon>201505052023530_Unique SSN Again Again.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505130601598_Add Score Form Tables.resx">
+      <DependentUpon>201505130601598_Add Score Form Tables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505130623123_Ordering Member Columns.resx">
+      <DependentUpon>201505130623123_Ordering Member Columns.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>

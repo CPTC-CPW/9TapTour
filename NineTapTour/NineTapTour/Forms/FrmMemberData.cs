@@ -1,19 +1,15 @@
-﻿using NineTapTour.Database;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using NineTapTour.Database;
 
 namespace NineTapTour.Forms
 {
     public partial class FrmMemberData : Form
     {
-        List<Member> membersList = MemberDB.getMember();
+        List<Member> _membersList = MemberDb.GetMemberList();
 
         public FrmMemberData()
         {
@@ -22,18 +18,9 @@ namespace NineTapTour.Forms
 
         public void UpdateMemberInfo()
         {
+            var currentMem = _membersList.FirstOrDefault(m => m.Number == Convert.ToInt32(txtMemberNumber.Text));
 
-            Member currentMem = new Member();
-
-            foreach (Member m in membersList)
-            {
-                if (m.Number == Convert.ToInt32(txtMemberNumber.Text))
-                {
-                    currentMem = m;
-                }
-            }
-
-            if (currentMem.Number != 0)
+            if (currentMem != null)
             {
                 #region Personal Info
                 txtMemberNumber.Text = currentMem.Number.ToString();
@@ -67,13 +54,13 @@ namespace NineTapTour.Forms
                 txtDateJoined.Text = currentMem.JoinDate.ToShortDateString();
                 if (currentMem.RejoinDate.HasValue)
                 {
-                    txtreJoinDate.Text = currentMem.RejoinDate.GetValueOrDefault().ToShortDateString();
+                    txtRejoinDate.Text = currentMem.RejoinDate.GetValueOrDefault().ToShortDateString();
                 }
                 if (currentMem.LastBowled.HasValue)
                 {
                     txtLastBowled.Text = currentMem.LastBowled.GetValueOrDefault().ToShortDateString();
                 }
-                txtMoneyEarned.Text = currentMem.MoneyEarned.ToString();
+                txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
                 txtNotes.Text = currentMem.Notes;
                 txtReferrals.Text = currentMem.Referrals.ToString();
                 chbSenior.Checked = currentMem.IsSenior;
@@ -97,10 +84,10 @@ namespace NineTapTour.Forms
                 #endregion
 
             }
-            else if (membersList.Count != 0)
+            else if (_membersList.Count != 0)
             {
-                this.Controls.Clear();
-                this.InitializeComponent();
+                Controls.Clear();
+                InitializeComponent();
                 //UpdateMemberInfo();
             }
         }
@@ -132,119 +119,56 @@ namespace NineTapTour.Forms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            DialogResult confirm = MessageBox.Show("Are You Sure?", "Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            if (confirm == DialogResult.Yes)
+            if (confirm == DialogResult.No) return;
+            var temp = new Member
             {
-                Member temp = new Member();
+                Number = Convert.ToInt32(txtMemberNumber.Text),
+                IsActive = rdoActive.Checked,
+                JoinDate = DateTime.Now,
+
                 #region Personal Info
-                temp.Number = Convert.ToInt32(txtMemberNumber.Text);
-                temp.LastName = txtLastName.Text;
-                temp.FirstName = txtFirstName.Text;
-                temp.MiddleInitial = txtMiddleInitial.Text;
-                temp.DateOfBirth = Convert.ToDateTime(txtDOB.Text);
-                temp.SSN = txtSSN.Text;
+                LastName = txtLastName.Text,
+                FirstName = txtFirstName.Text,
+                MiddleInitial = txtMiddleInitial.Text,
+                DateOfBirth = Convert.ToDateTime(txtDOB.Text),
+                SSN = txtSSN.Text,
+                IsSenior = chbSenior.Checked,
+                Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
                 #endregion
 
                 #region Postal Address
-                temp.Street = txtAddress.Text;
-                temp.City = txtCity.Text;
-                temp.State = txtState.Text;
-                temp.PostalCode = txtZip.Text;
+                Street = txtAddress.Text,
+                City = txtCity.Text,
+                State = txtState.Text,
+                PostalCode = txtZip.Text,
                 #endregion
 
                 #region Contact Info
-                temp.Email = txtEmail.Text;
-                temp.PrimaryPhone = txtPhoneNumber.Text;
-                temp.SecondaryPhone = txtPhoneNumber2.Text;
+                Email = txtEmail.Text,
+                PrimaryPhone = txtPhoneNumber.Text,
+                SecondaryPhone = txtPhoneNumber2.Text,
                 #endregion
 
                 #region Score Info
-                if (txtAverage.Text == "")
-                {
-                    temp.Average = 0;
-                }
-                else
-                {
-                    temp.Average = Convert.ToInt16(txtAverage.Text);
-                }
-                if (txtHandicap.Text == "")
-                {
-                    temp.Handicap = 0;
-                }
-                else
-                {
-                    temp.Handicap = Convert.ToInt16(txtHandicap.Text);
-                }
-                if (txtBonus.Text == "")
-                {
-                    temp.Bonus = 0;
-                }
-                else
-                {
-                    temp.Bonus = Convert.ToInt16(txtBonus.Text);
-                }
+                Average = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text),
+                Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text),
+                Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text),
                 #endregion
 
                 #region Misc. Info
-                temp.JoinDate = DateTime.Now;
-                if(txtreJoinDate.Text != "")
-                {
-                    temp.RejoinDate = Convert.ToDateTime(txtreJoinDate.Text);
-                }
-                if(txtLastBowled.Text != "")
-                {
-                    temp.LastBowled = Convert.ToDateTime(txtLastBowled.Text);
-                }
-                if(txtMoneyEarned.Text !="")
-                {
-                    temp.MoneyEarned = Convert.ToDecimal(txtMoneyEarned.Text);
-                }
-                temp.Notes = txtNotes.Text;
-                if (txtReferrals.Text == "")
-                {
-                    temp.Referrals = 0;
-                }
-                else
-                {
-                    temp.Referrals = Convert.ToInt16(txtReferrals.Text);
-                }
-
-                if (chbSenior.Checked)
-                {
-                    temp.IsSenior = true;
-                }
-                else
-                {
-                    temp.IsSenior = false;
-                }
-                if (rdoActive.Checked)
-                {
-                    temp.IsActive = true;
-                }
-                else if(rdoInActive.Checked)
-                {
-                    temp.IsActive = false;
-                }
-
-                if (rdoFemale.Checked)
-                {
-                    temp.Gender = MemberGenders.Female;
-                }
-                else if(rdoMale.Checked)
-                {
-                    temp.Gender = MemberGenders.Male;
-                }
+                RejoinDate = (txtRejoinDate.Text == string.Empty) ? (DateTime?)null : Convert.ToDateTime(txtRejoinDate.Text),
+                LastBowled = (txtLastBowled.Text == string.Empty) ? (DateTime?)null : Convert.ToDateTime(txtLastBowled.Text),
+                MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
+                Notes = txtNotes.Text,
+                Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text)
                 #endregion
+            };
 
-                if (MemberDB.addMember(temp))
-                {
-                    MessageBox.Show("Bowler Added Successfully.");
-                    membersList = MemberDB.getMember();
-                }
-
-
-            }
+            if (!MemberDb.AddMember(temp)) return;
+            MessageBox.Show(@"Bowler Added Successfully.");
+            _membersList = MemberDb.GetMemberList();
         }
 
         private void btnArrowLeft_Click(object sender, EventArgs e)
@@ -256,41 +180,41 @@ namespace NineTapTour.Forms
             }
             else
             {
-                MessageBox.Show("Beginning of file.", "Notice");
+                MessageBox.Show(@"Beginning of file.", @"Notice");
             }
 
         }
 
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
-            if (Convert.ToInt32(txtMemberNumber.Text) < membersList.Count())
+            if (Convert.ToInt32(txtMemberNumber.Text) < _membersList.Count())
             {
                 txtMemberNumber.Text = (Convert.ToInt32(txtMemberNumber.Text) + 1).ToString();
                 UpdateMemberInfo();
             }
             else
             {
-                MessageBox.Show("End of file.", "Notice");
+                MessageBox.Show(@"End of file.", @"Notice");
             }
 
         }
 
         private void btnNew_Click(object sender, EventArgs e)
         {
-            this.Controls.Clear();
-            this.InitializeComponent();
-            txtMemberNumber.Text = (membersList.Count + 1).ToString();
+            Controls.Clear();
+            InitializeComponent();
+            txtMemberNumber.Text = (_membersList.Count + 1).ToString();
         }
 
         private void btnFirstRecord_Click(object sender, EventArgs e)
         {
-            txtMemberNumber.Text = "1";
+            txtMemberNumber.Text = @"1";
             UpdateMemberInfo();
         }
 
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
-            txtMemberNumber.Text = membersList.Count().ToString();
+            txtMemberNumber.Text = _membersList.Count().ToString();
             UpdateMemberInfo();
         }
 
@@ -300,17 +224,12 @@ namespace NineTapTour.Forms
         }
 
 
-        private void inputRequired (object sender, EventArgs e)
+        private void InputRequired (object sender, EventArgs e)
         {
-            if (sender is TextBox)
+            var textBox = sender as TextBox;
+            if (textBox != null)
             {
-                TextBox tb = (TextBox)sender;
-                if (tb.Text == "")
-                {
-                    tb.BackColor = System.Drawing.Color.IndianRed;
-                }
-                else
-                    tb.BackColor = System.Drawing.Color.White;
+                textBox.BackColor = textBox.Text == string.Empty ? Color.LightPink : Color.White;
             }
         }
     }

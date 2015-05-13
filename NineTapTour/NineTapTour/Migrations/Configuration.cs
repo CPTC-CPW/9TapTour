@@ -1,3 +1,5 @@
+using NineTapTour.Database;
+
 namespace NineTapTour.Migrations
 {
     using System;
@@ -26,6 +28,29 @@ namespace NineTapTour.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
+
+            context.Members.AddOrUpdate(
+                m => new { m.Id, m.Number, m.SSN},
+                    new Member
+                    {
+                        Number = 1,
+                        IsActive = true,
+                        JoinDate = DateTime.Today,
+                        IsSenior = false,
+                        FirstName = "Matthew",
+                        LastName = "Dahl",
+                        MiddleInitial = "S",
+                        DateOfBirth = DateTime.Parse("04/04/1985"),
+                        Gender = MemberGenders.Male,
+                        SSN = "123456789",
+                        Street = "8510 Idlewood Dr. SW",
+                        City = "Lakewood",
+                        State = "WA",
+                        PostalCode = "98498",
+                        PrimaryPhone = "(253) 353-2451",
+                        Email = "dahl8677@student.cptc.edu"
+                    }
+                );
         }
     }
 }

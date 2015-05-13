@@ -63,7 +63,7 @@
             this.txtDateJoined = new System.Windows.Forms.TextBox();
             this.txtReferrals = new System.Windows.Forms.TextBox();
             this.txtZip = new System.Windows.Forms.TextBox();
-            this.txtreJoinDate = new System.Windows.Forms.TextBox();
+            this.txtRejoinDate = new System.Windows.Forms.TextBox();
             this.txtState = new System.Windows.Forms.TextBox();
             this.txtSSN = new System.Windows.Forms.TextBox();
             this.txtCity = new System.Windows.Forms.TextBox();
@@ -122,7 +122,7 @@
             this.txtLastName.Name = "txtLastName";
             this.txtLastName.Size = new System.Drawing.Size(206, 38);
             this.txtLastName.TabIndex = 1;
-            this.txtLastName.TextChanged += new System.EventHandler(this.inputRequired);
+            this.txtLastName.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtFirstName
             // 
@@ -133,7 +133,7 @@
             this.txtFirstName.Name = "txtFirstName";
             this.txtFirstName.Size = new System.Drawing.Size(202, 38);
             this.txtFirstName.TabIndex = 2;
-            this.txtFirstName.TextChanged += new System.EventHandler(this.inputRequired);
+            this.txtFirstName.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtMiddleInitial
             // 
@@ -144,7 +144,7 @@
             this.txtMiddleInitial.Name = "txtMiddleInitial";
             this.txtMiddleInitial.Size = new System.Drawing.Size(86, 38);
             this.txtMiddleInitial.TabIndex = 3;
-            this.txtMiddleInitial.TextChanged += new System.EventHandler(this.inputRequired);
+            this.txtMiddleInitial.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // lblLastName
             // 
@@ -299,7 +299,7 @@
             this.grpMemberInfo.Controls.Add(this.txtDateJoined);
             this.grpMemberInfo.Controls.Add(this.txtReferrals);
             this.grpMemberInfo.Controls.Add(this.txtZip);
-            this.grpMemberInfo.Controls.Add(this.txtreJoinDate);
+            this.grpMemberInfo.Controls.Add(this.txtRejoinDate);
             this.grpMemberInfo.Controls.Add(this.txtState);
             this.grpMemberInfo.Controls.Add(this.txtSSN);
             this.grpMemberInfo.Controls.Add(this.txtCity);
@@ -328,7 +328,7 @@
             this.txtDOB.Name = "txtDOB";
             this.txtDOB.Size = new System.Drawing.Size(111, 20);
             this.txtDOB.TabIndex = 6;
-            this.txtDOB.TextChanged += new System.EventHandler(this.inputRequired);
+            this.txtDOB.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // lblEmail
             // 
@@ -354,7 +354,7 @@
             this.txtPhoneNumber.Name = "txtPhoneNumber";
             this.txtPhoneNumber.Size = new System.Drawing.Size(146, 20);
             this.txtPhoneNumber.TabIndex = 14;
-            this.txtPhoneNumber.TextChanged += new System.EventHandler(this.inputRequired);
+            this.txtPhoneNumber.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // lblPhoneNumber2
             // 
@@ -453,7 +453,7 @@
             this.txtDateJoined.Name = "txtDateJoined";
             this.txtDateJoined.Size = new System.Drawing.Size(98, 20);
             this.txtDateJoined.TabIndex = 12;
-            this.txtDateJoined.TextChanged += new System.EventHandler(this.inputRequired);
+            this.txtDateJoined.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtReferrals
             // 
@@ -462,7 +462,7 @@
             this.txtReferrals.Name = "txtReferrals";
             this.txtReferrals.Size = new System.Drawing.Size(54, 20);
             this.txtReferrals.TabIndex = 13;
-            this.txtReferrals.TextChanged += new System.EventHandler(this.inputRequired);
+            this.txtReferrals.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtZip
             // 
@@ -471,16 +471,16 @@
             this.txtZip.Name = "txtZip";
             this.txtZip.Size = new System.Drawing.Size(73, 20);
             this.txtZip.TabIndex = 9;
-            this.txtZip.TextChanged += new System.EventHandler(this.inputRequired);
+            this.txtZip.TextChanged += new System.EventHandler(this.InputRequired);
             // 
-            // txtreJoinDate
+            // txtRejoinDate
             // 
-            this.txtreJoinDate.Location = new System.Drawing.Point(121, 149);
-            this.txtreJoinDate.MaxLength = 20;
-            this.txtreJoinDate.Name = "txtreJoinDate";
-            this.txtreJoinDate.Size = new System.Drawing.Size(102, 20);
-            this.txtreJoinDate.TabIndex = 11;
-            this.txtreJoinDate.TextChanged += new System.EventHandler(this.inputRequired);
+            this.txtRejoinDate.Location = new System.Drawing.Point(121, 149);
+            this.txtRejoinDate.MaxLength = 20;
+            this.txtRejoinDate.Name = "txtRejoinDate";
+            this.txtRejoinDate.Size = new System.Drawing.Size(102, 20);
+            this.txtRejoinDate.TabIndex = 11;
+            this.txtRejoinDate.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtState
             // 
@@ -489,7 +489,7 @@
             this.txtState.Name = "txtState";
             this.txtState.Size = new System.Drawing.Size(100, 20);
             this.txtState.TabIndex = 8;
-            this.txtState.TextChanged += new System.EventHandler(this.inputRequired);
+            this.txtState.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtSSN
             // 
@@ -498,7 +498,7 @@
             this.txtSSN.Name = "txtSSN";
             this.txtSSN.Size = new System.Drawing.Size(75, 20);
             this.txtSSN.TabIndex = 10;
-            this.txtSSN.TextChanged += new System.EventHandler(this.inputRequired);
+            this.txtSSN.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtCity
             // 
@@ -507,7 +507,7 @@
             this.txtCity.Name = "txtCity";
             this.txtCity.Size = new System.Drawing.Size(100, 20);
             this.txtCity.TabIndex = 7;
-            this.txtCity.TextChanged += new System.EventHandler(this.inputRequired);
+            this.txtCity.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtEmail
             // 
@@ -516,7 +516,7 @@
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(266, 20);
             this.txtEmail.TabIndex = 5;
-            this.txtEmail.TextChanged += new System.EventHandler(this.inputRequired);
+            this.txtEmail.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtAddress
             // 
@@ -525,7 +525,7 @@
             this.txtAddress.Name = "txtAddress";
             this.txtAddress.Size = new System.Drawing.Size(266, 20);
             this.txtAddress.TabIndex = 4;
-            this.txtAddress.TextChanged += new System.EventHandler(this.inputRequired);
+            this.txtAddress.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtYearEndT
             // 
@@ -981,7 +981,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtDateJoined;
         private System.Windows.Forms.TextBox txtReferrals;
-        private System.Windows.Forms.TextBox txtreJoinDate;
+        private System.Windows.Forms.TextBox txtRejoinDate;
         private System.Windows.Forms.TextBox txtSSN;
         private System.Windows.Forms.TextBox txtPhoneNumber2;
         private System.Windows.Forms.TextBox txtPhoneNumber;
