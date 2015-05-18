@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu));
             this.btnMemberData = new System.Windows.Forms.Button();
             this.btnMemberScores = new System.Windows.Forms.Button();
             this.btnAbout = new System.Windows.Forms.Button();
@@ -92,6 +93,7 @@
             this.Controls.Add(this.btnMemberScores);
             this.Controls.Add(this.btnMemberData);
             this.DoubleBuffered = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainMenu";
             this.Text = "MainMenu";
             this.ResumeLayout(false);
