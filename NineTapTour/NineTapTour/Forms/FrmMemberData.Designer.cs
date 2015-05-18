@@ -934,6 +934,7 @@
             this.Controls.Add(this.txtFirstName);
             this.Controls.Add(this.txtLastName);
             this.Name = "FrmMemberData";
+            this.Text = "Member Info";
             this.Load += new System.EventHandler(this.MemberDataForm_Load);
             this.grpMemberInfo.ResumeLayout(false);
             this.grpMemberInfo.PerformLayout();

@@ -58,6 +58,12 @@
     <Compile Include="Database\MemberDb.cs" />
     <Compile Include="Database\Participant.cs" />
     <Compile Include="Database\Tournament.cs" />
+    <Compile Include="Forms\FrmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmMain.Designer.cs">
+      <DependentUpon>FrmMain.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmMemberData.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -65,6 +71,12 @@
       <DependentUpon>FrmMemberData.cs</DependentUpon>
     </Compile>
     <Compile Include="Database\NineTapDb.cs" />
+    <Compile Include="Forms\FrmStart.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmStart.Designer.cs">
+      <DependentUpon>FrmStart.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\201504272037146_Initial Database.cs" />
     <Compile Include="Migrations\201504272037146_Initial Database.Designer.cs">
       <DependentUpon>201504272037146_Initial Database.cs</DependentUpon>
@@ -106,8 +118,14 @@
     <Compile Include="Forms\FrmMemberScores.Designer.cs">
       <DependentUpon>FrmMemberScores.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Forms\FrmMain.resx">
+      <DependentUpon>FrmMain.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmMemberData.resx">
       <DependentUpon>FrmMemberData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmStart.resx">
+      <DependentUpon>FrmStart.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201504272037146_Initial Database.resx">
       <DependentUpon>201504272037146_Initial Database.cs</DependentUpon>
@@ -141,6 +159,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="Forms\FrmMemberScores.resx">
       <DependentUpon>FrmMemberScores.cs</DependentUpon>
@@ -161,6 +180,9 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\9tap.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
