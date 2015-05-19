@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NineTapTour.Forms
@@ -15,79 +8,60 @@ namespace NineTapTour.Forms
         public FrmMain()
         {
             InitializeComponent();
-            FrmStart newfrmStart = Application.OpenForms["frmStart"] as FrmStart;
-            newfrmStart = new FrmStart();
-            newfrmStart.MdiParent = this;
+            var newfrmStart = new MainMenu {MdiParent = this};
             //newStart.Dock = DockStyle.Fill;
-            this.Width = newfrmStart.Width;
-            this.Height = newfrmStart.Height + 20;
+            Width = newfrmStart.Width;
+            Height = newfrmStart.Height + 20;
             newfrmStart.Show();
             newfrmStart.WindowState = FormWindowState.Maximized;
         }
-        private void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            FrmStart newfrmStart = Application.OpenForms["frmStart"] as FrmStart;
 
-            if (newfrmStart != null)
+        public void OpenOrDisplayForm<T>(ref T form) where T : Form, new()
+        {
+            if (form != null)
             {
-                newfrmStart.WindowState = FormWindowState.Maximized;
-                newfrmStart.BringToFront();
-                newfrmStart.Activate();
+                form.BringToFront();
+                form.Activate();
             }
             else
             {
-                newfrmStart = new FrmStart();
-                newfrmStart.MdiParent = this;
-                //newStart.Dock = DockStyle.Fill;
-                this.Width = newfrmStart.Width;
-                this.Height = newfrmStart.Height + 20;
-                newfrmStart.Show();
-                newfrmStart.WindowState = FormWindowState.Maximized;
+                form = new T { MdiParent = this};
+                Width = form.Width;
+                Height = form.Height + 20;
             }
+
+            form.Show();
+            form.WindowState = FormWindowState.Maximized;
         }
-        private void memberToolStripMenuItem_Click(object sender, EventArgs e)
+
+        public void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
+            OpenOrDisplayForm(ref mainMenu);
+        }
+
+        public void memberToolStripMenuItem_Click(object sender, EventArgs e)
         {   
 
-            FrmMemberData newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
-            
-            if(newfrmMemberData != null)
-            {
-                newfrmMemberData.WindowState = FormWindowState.Maximized;
-                newfrmMemberData.BringToFront();
-                newfrmMemberData.Activate();
-            }
-            else
-            {
-                newfrmMemberData = new FrmMemberData();
-                newfrmMemberData.MdiParent = this;
-                //newfrmMemberData.Dock = DockStyle.Fill;
-                this.Width = newfrmMemberData.Width;
-                this.Height = newfrmMemberData.Height + 20;
-                newfrmMemberData.Show();
-                newfrmMemberData.WindowState = FormWindowState.Maximized;
-            }
-            
+            var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
+
+            OpenOrDisplayForm(ref newfrmMemberData);
+
         }
 
-        private void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
+        public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmMemberScores newfrmMemberScores = Application.OpenForms["frmMemberScores"] as FrmMemberScores;
-            
-            if(newfrmMemberScores != null)
+            var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as FrmMemberScores;
+
+            OpenOrDisplayForm(ref newfrmMemberScores);
+        }
+
+        private void menMain_ItemAdded(object sender, ToolStripItemEventArgs e)
+        {
+            var s = e.Item.GetType().ToString();
+            if (s == "System.Windows.Forms.MdiControlStrip+ControlBoxMenuItem")
             {
-                newfrmMemberScores.WindowState = FormWindowState.Maximized;
-                newfrmMemberScores.BringToFront();
-                newfrmMemberScores.Activate();
-            }
-            else
-            {
-                newfrmMemberScores = new FrmMemberScores();
-                newfrmMemberScores.MdiParent = this;
-                //newfrmMemberScores.Dock = DockStyle.Fill;
-                this.Width = newfrmMemberScores.Width;
-                this.Height = newfrmMemberScores.Height + 20;
-                newfrmMemberScores.Show();
-                newfrmMemberScores.WindowState = FormWindowState.Maximized;
+                e.Item.Visible = false;
             }
         }
     }

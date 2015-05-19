@@ -92,7 +92,6 @@
             this.Controls.Add(this.btnAbout);
             this.Controls.Add(this.btnMemberScores);
             this.Controls.Add(this.btnMemberData);
-            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainMenu";
             this.Text = "MainMenu";
