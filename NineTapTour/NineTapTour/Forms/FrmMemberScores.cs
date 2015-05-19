@@ -26,5 +26,17 @@ namespace NineTapTour.Forms
         {
 
         }
+
+        private void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            var form = new MainMenu();
+            form.Show();
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
     }
 }

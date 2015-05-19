@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMemberData));
             this.txtLastName = new System.Windows.Forms.TextBox();
             this.txtFirstName = new System.Windows.Forms.TextBox();
             this.txtMiddleInitial = new System.Windows.Forms.TextBox();
@@ -767,7 +768,7 @@
             this.grpPrinter.Size = new System.Drawing.Size(207, 109);
             this.grpPrinter.TabIndex = 29;
             this.grpPrinter.TabStop = false;
-            this.grpPrinter.Text = "Senior";
+            this.grpPrinter.Text = "Print";
             // 
             // btnRecapByPin
             // 
@@ -799,7 +800,7 @@
             this.btnRecapByDate.Size = new System.Drawing.Size(99, 23);
             this.btnRecapByDate.TabIndex = 30;
             this.btnRecapByDate.TabStop = false;
-            this.btnRecapByDate.Text = "Recap By Date";
+            this.btnRecapByDate.Text = "Recap Date";
             this.btnRecapByDate.UseVisualStyleBackColor = true;
             // 
             // btnThisRecap
@@ -810,7 +811,7 @@
             this.btnThisRecap.Size = new System.Drawing.Size(84, 23);
             this.btnThisRecap.TabIndex = 34;
             this.btnThisRecap.TabStop = false;
-            this.btnThisRecap.Text = "Senior";
+            this.btnThisRecap.Text = "Print single";
             this.btnThisRecap.UseVisualStyleBackColor = true;
             // 
             // btnAllRecaps
@@ -933,6 +934,7 @@
             this.Controls.Add(this.txtMiddleInitial);
             this.Controls.Add(this.txtFirstName);
             this.Controls.Add(this.txtLastName);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmMemberData";
             this.Text = "Member Info";
             this.Load += new System.EventHandler(this.MemberDataForm_Load);
