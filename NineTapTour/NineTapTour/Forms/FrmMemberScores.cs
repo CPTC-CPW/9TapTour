@@ -16,27 +16,5 @@ namespace NineTapTour.Forms
         {
             InitializeComponent();
         }
-
-        private void Stats_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void groupBox3_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-            var form = new MainMenu();
-            form.Show();
-        }
-
-        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-
-        }
     }
 }

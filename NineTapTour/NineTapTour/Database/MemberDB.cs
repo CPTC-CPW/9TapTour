@@ -23,8 +23,8 @@ namespace NineTapTour.Database
                 //    db.Members.Add(temp);
                 //}
                 //db.SaveChanges();
-                db.Entry(temp).State = db.Members.Any(m => m.Number == temp.Number) ? EntityState.Modified : EntityState.Added;
-                db.SaveChanges();                            
+                db.Entry(temp).State = db.Members.Any(m => m.Id == temp.Id) ? EntityState.Modified : EntityState.Added;
+                db.SaveChanges();
                 return true;
             }
             

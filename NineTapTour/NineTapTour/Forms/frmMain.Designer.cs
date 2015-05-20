@@ -66,8 +66,8 @@
             // tournamentToolStripMenuItem
             // 
             this.tournamentToolStripMenuItem.Name = "tournamentToolStripMenuItem";
-            this.tournamentToolStripMenuItem.Size = new System.Drawing.Size(85, 20);
-            this.tournamentToolStripMenuItem.Text = "Tournament";
+            this.tournamentToolStripMenuItem.Size = new System.Drawing.Size(101, 20);
+            this.tournamentToolStripMenuItem.Text = "Member Scores";
             this.tournamentToolStripMenuItem.Click += new System.EventHandler(this.tournamentToolStripMenuItem_Click);
             // 
             // FrmMain

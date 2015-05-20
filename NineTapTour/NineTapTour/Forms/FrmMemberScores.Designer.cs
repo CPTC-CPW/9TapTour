@@ -176,35 +176,41 @@
             // 
             // txtLastName
             // 
+            this.txtLastName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtLastName.Enabled = false;
             this.txtLastName.Location = new System.Drawing.Point(218, 27);
             this.txtLastName.Multiline = true;
             this.txtLastName.Name = "txtLastName";
-            this.txtLastName.Size = new System.Drawing.Size(316, 53);
+            this.txtLastName.ReadOnly = true;
+            this.txtLastName.Size = new System.Drawing.Size(208, 53);
             this.txtLastName.TabIndex = 2;
             // 
             // txtFirstName
             // 
+            this.txtFirstName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtFirstName.Enabled = false;
-            this.txtFirstName.Location = new System.Drawing.Point(568, 27);
+            this.txtFirstName.Location = new System.Drawing.Point(452, 27);
             this.txtFirstName.Multiline = true;
             this.txtFirstName.Name = "txtFirstName";
-            this.txtFirstName.Size = new System.Drawing.Size(316, 53);
+            this.txtFirstName.ReadOnly = true;
+            this.txtFirstName.Size = new System.Drawing.Size(208, 53);
             this.txtFirstName.TabIndex = 2;
             // 
             // txtMiddleInitial
             // 
+            this.txtMiddleInitial.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtMiddleInitial.Enabled = false;
-            this.txtMiddleInitial.Location = new System.Drawing.Point(907, 27);
+            this.txtMiddleInitial.Location = new System.Drawing.Point(686, 27);
             this.txtMiddleInitial.Multiline = true;
             this.txtMiddleInitial.Name = "txtMiddleInitial";
+            this.txtMiddleInitial.ReadOnly = true;
             this.txtMiddleInitial.Size = new System.Drawing.Size(86, 53);
             this.txtMiddleInitial.TabIndex = 3;
             // 
             // lblLastName
             // 
             this.lblLastName.AutoSize = true;
-            this.lblLastName.Location = new System.Drawing.Point(215, 10);
+            this.lblLastName.Location = new System.Drawing.Point(218, 10);
             this.lblLastName.Name = "lblLastName";
             this.lblLastName.Size = new System.Drawing.Size(58, 13);
             this.lblLastName.TabIndex = 4;
@@ -213,7 +219,7 @@
             // lblFirstName
             // 
             this.lblFirstName.AutoSize = true;
-            this.lblFirstName.Location = new System.Drawing.Point(565, 9);
+            this.lblFirstName.Location = new System.Drawing.Point(452, 9);
             this.lblFirstName.Name = "lblFirstName";
             this.lblFirstName.Size = new System.Drawing.Size(57, 13);
             this.lblFirstName.TabIndex = 4;
@@ -222,7 +228,7 @@
             // lblMiddleInitial
             // 
             this.lblMiddleInitial.AutoSize = true;
-            this.lblMiddleInitial.Location = new System.Drawing.Point(904, 10);
+            this.lblMiddleInitial.Location = new System.Drawing.Point(686, 10);
             this.lblMiddleInitial.Name = "lblMiddleInitial";
             this.lblMiddleInitial.Size = new System.Drawing.Size(65, 13);
             this.lblMiddleInitial.TabIndex = 4;
@@ -259,10 +265,12 @@
             // 
             // textBox2
             // 
+            this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox2.Enabled = false;
             this.textBox2.Location = new System.Drawing.Point(124, 213);
             this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";
+            this.textBox2.ReadOnly = true;
             this.textBox2.Size = new System.Drawing.Size(57, 49);
             this.textBox2.TabIndex = 6;
             // 
@@ -276,10 +284,12 @@
             // 
             // textBox4
             // 
+            this.textBox4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox4.Enabled = false;
             this.textBox4.Location = new System.Drawing.Point(124, 268);
             this.textBox4.Multiline = true;
             this.textBox4.Name = "textBox4";
+            this.textBox4.ReadOnly = true;
             this.textBox4.Size = new System.Drawing.Size(57, 49);
             this.textBox4.TabIndex = 6;
             // 
@@ -293,10 +303,12 @@
             // 
             // textBox6
             // 
+            this.textBox6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox6.Enabled = false;
             this.textBox6.Location = new System.Drawing.Point(124, 323);
             this.textBox6.Multiline = true;
             this.textBox6.Name = "textBox6";
+            this.textBox6.ReadOnly = true;
             this.textBox6.Size = new System.Drawing.Size(57, 49);
             this.textBox6.TabIndex = 6;
             // 
@@ -310,10 +322,12 @@
             // 
             // textBox8
             // 
+            this.textBox8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox8.Enabled = false;
             this.textBox8.Location = new System.Drawing.Point(124, 378);
             this.textBox8.Multiline = true;
             this.textBox8.Name = "textBox8";
+            this.textBox8.ReadOnly = true;
             this.textBox8.Size = new System.Drawing.Size(57, 49);
             this.textBox8.TabIndex = 6;
             // 
@@ -328,10 +342,12 @@
             // 
             // textBox10
             // 
+            this.textBox10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox10.Enabled = false;
             this.textBox10.Location = new System.Drawing.Point(124, 433);
             this.textBox10.Multiline = true;
             this.textBox10.Name = "textBox10";
+            this.textBox10.ReadOnly = true;
             this.textBox10.Size = new System.Drawing.Size(83, 55);
             this.textBox10.TabIndex = 7;
             // 
@@ -455,19 +471,23 @@
             // 
             // textBox12
             // 
+            this.textBox12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox12.Enabled = false;
             this.textBox12.Location = new System.Drawing.Point(40, 102);
             this.textBox12.Multiline = true;
             this.textBox12.Name = "textBox12";
+            this.textBox12.ReadOnly = true;
             this.textBox12.Size = new System.Drawing.Size(76, 35);
             this.textBox12.TabIndex = 6;
             // 
             // textBox11
             // 
+            this.textBox11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox11.Enabled = false;
             this.textBox11.Location = new System.Drawing.Point(40, 33);
             this.textBox11.Multiline = true;
             this.textBox11.Name = "textBox11";
+            this.textBox11.ReadOnly = true;
             this.textBox11.Size = new System.Drawing.Size(76, 35);
             this.textBox11.TabIndex = 6;
             // 
@@ -476,7 +496,7 @@
             this.grpTournamentFile.Controls.Add(this.txtTournamentFile);
             this.grpTournamentFile.Location = new System.Drawing.Point(225, 525);
             this.grpTournamentFile.Name = "grpTournamentFile";
-            this.grpTournamentFile.Size = new System.Drawing.Size(328, 148);
+            this.grpTournamentFile.Size = new System.Drawing.Size(201, 148);
             this.grpTournamentFile.TabIndex = 12;
             this.grpTournamentFile.TabStop = false;
             this.grpTournamentFile.Text = "Tournament File";
@@ -486,7 +506,7 @@
             this.txtTournamentFile.Enabled = false;
             this.txtTournamentFile.Location = new System.Drawing.Point(18, 28);
             this.txtTournamentFile.Name = "txtTournamentFile";
-            this.txtTournamentFile.Size = new System.Drawing.Size(291, 97);
+            this.txtTournamentFile.Size = new System.Drawing.Size(164, 97);
             this.txtTournamentFile.TabIndex = 0;
             this.txtTournamentFile.Text = "";
             // 
@@ -504,13 +524,12 @@
             this.grpLeaders.Controls.Add(this.richTextBox1);
             this.grpLeaders.Controls.Add(this.lblSeries);
             this.grpLeaders.Controls.Add(this.lblGameSenior);
-            this.grpLeaders.Location = new System.Drawing.Point(378, 105);
+            this.grpLeaders.Location = new System.Drawing.Point(412, 102);
             this.grpLeaders.Name = "grpLeaders";
             this.grpLeaders.Size = new System.Drawing.Size(361, 395);
             this.grpLeaders.TabIndex = 13;
             this.grpLeaders.TabStop = false;
             this.grpLeaders.Text = "Leaders";
-            this.grpLeaders.Enter += new System.EventHandler(this.groupBox3_Enter);
             // 
             // label3
             // 
@@ -625,7 +644,7 @@
             this.grpReports.Controls.Add(this.btnSeries);
             this.grpReports.Controls.Add(this.btnGame);
             this.grpReports.Controls.Add(this.btnSenior);
-            this.grpReports.Location = new System.Drawing.Point(568, 502);
+            this.grpReports.Location = new System.Drawing.Point(443, 503);
             this.grpReports.Name = "grpReports";
             this.grpReports.Size = new System.Drawing.Size(123, 171);
             this.grpReports.TabIndex = 0;
@@ -662,18 +681,21 @@
             // grpComments
             // 
             this.grpComments.Controls.Add(this.richTextBox4);
-            this.grpComments.Location = new System.Drawing.Point(711, 548);
+            this.grpComments.Location = new System.Drawing.Point(572, 525);
             this.grpComments.Name = "grpComments";
-            this.grpComments.Size = new System.Drawing.Size(320, 126);
+            this.grpComments.Size = new System.Drawing.Size(201, 148);
             this.grpComments.TabIndex = 16;
             this.grpComments.TabStop = false;
             this.grpComments.Text = "Comments";
             // 
             // richTextBox4
             // 
-            this.richTextBox4.Location = new System.Drawing.Point(27, 25);
+            this.richTextBox4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.richTextBox4.Enabled = false;
+            this.richTextBox4.Location = new System.Drawing.Point(19, 28);
             this.richTextBox4.Name = "richTextBox4";
-            this.richTextBox4.Size = new System.Drawing.Size(267, 80);
+            this.richTextBox4.ReadOnly = true;
+            this.richTextBox4.Size = new System.Drawing.Size(164, 97);
             this.richTextBox4.TabIndex = 0;
             this.richTextBox4.Text = "";
             // 
@@ -681,7 +703,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1043, 686);
+            this.ClientSize = new System.Drawing.Size(790, 686);
             this.Controls.Add(this.grpComments);
             this.Controls.Add(this.grpReports);
             this.Controls.Add(this.grpLeaders);
@@ -712,7 +734,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmMemberScores";
             this.Text = "Member Scores";
-            this.Load += new System.EventHandler(this.Stats_Load);
             this.grpMemberNum.ResumeLayout(false);
             this.grpMemberNum.PerformLayout();
             this.groupBox1.ResumeLayout(false);

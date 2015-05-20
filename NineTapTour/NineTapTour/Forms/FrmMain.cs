@@ -1,13 +1,19 @@
-﻿using System;
+﻿using NineTapTour.Database;
+using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace NineTapTour.Forms
 {
     public partial class FrmMain : Form
     {
+
+        public List<Member> _membersList { get; set; }
+
         public FrmMain()
         {
             InitializeComponent();
+            _membersList = MemberDb.GetMemberList();
             var newfrmStart = new MainMenu {MdiParent = this};
             //newStart.Dock = DockStyle.Fill;
             Width = newfrmStart.Width;

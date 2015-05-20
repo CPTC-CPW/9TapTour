@@ -10,7 +10,7 @@ namespace NineTapTour.Forms
 {
     public partial class FrmMemberData : Form
     {
-        List<Member> _membersList = MemberDb.GetMemberList();
+        List<Member> _membersList;
         int memberID;
 
         public FrmMemberData()
@@ -20,7 +20,7 @@ namespace NineTapTour.Forms
 
         public void UpdateMemberInfo()
         {
-            var currentMem = _membersList.FirstOrDefault(m => m.Number == Convert.ToInt32(txtMemberNumber.Text));
+            var currentMem = this._membersList.FirstOrDefault(m => m.Number == Convert.ToInt32(txtMemberNumber.Text));
 
             if (currentMem != null)
             {
@@ -87,7 +87,7 @@ namespace NineTapTour.Forms
                 #endregion
 
             }
-            else if (_membersList.Count != 0)
+            else if (_membersList.Count == 0)
             {
                 Controls.Clear();
                 InitializeComponent();
@@ -117,6 +117,8 @@ namespace NineTapTour.Forms
 
         private void MemberDataForm_Load(object sender, EventArgs e)
         {
+            this._membersList = ((FrmMain)MdiParent)._membersList;
+
             UpdateMemberInfo();
         }
 
@@ -171,9 +173,11 @@ namespace NineTapTour.Forms
                 #endregion
             };
 
+            // Adds Member to Database
             if (!MemberDb.AddMember(temp)) return;
+
             MessageBox.Show(@"Bowler Added Successfully.");
-            _membersList = MemberDb.GetMemberList();
+            this._membersList = MemberDb.GetMemberList();
         }
 
         private void btnArrowLeft_Click(object sender, EventArgs e)
