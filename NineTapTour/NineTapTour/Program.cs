@@ -17,7 +17,7 @@ namespace NineTapTour
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new NineTapTour.Forms.MainMenu());
+            Application.Run(new FrmMain());
         }
     }
 }

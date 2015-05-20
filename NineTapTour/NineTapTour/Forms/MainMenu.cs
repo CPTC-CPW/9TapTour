@@ -19,7 +19,7 @@ namespace NineTapTour.Forms
 
         private void Exit_Click(object sender, EventArgs e)
         {
-            Close();
+            this.MdiParent.Close();
         }
 
         private void btnAbout_Click(object sender, EventArgs e)
@@ -30,17 +30,12 @@ namespace NineTapTour.Forms
 
         private void btnMemberData_Click(object sender, EventArgs e)
         {
-            this.Hide();
-            var form = new FrmMemberData();
-            form.Show();
+            ((FrmMain)MdiParent).memberToolStripMenuItem_Click(sender, e);
         }
 
         private void btnMemberScores_Click(object sender, EventArgs e)
         {
-            this.Hide();
-            var form = new FrmMemberScores();
-            form.Show();
-            
+            ((FrmMain)MdiParent).tournamentToolStripMenuItem_Click(sender, e);
         }  
     }
 }

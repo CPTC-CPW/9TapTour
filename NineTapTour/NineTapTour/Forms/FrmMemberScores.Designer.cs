@@ -89,9 +89,6 @@
             this.btnSenior = new System.Windows.Forms.Button();
             this.grpComments = new System.Windows.Forms.GroupBox();
             this.richTextBox4 = new System.Windows.Forms.RichTextBox();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.mainMenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.memberDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpMemberStatus.SuspendLayout();
@@ -101,7 +98,6 @@
             this.grpLeaders.SuspendLayout();
             this.grpReports.SuspendLayout();
             this.grpComments.SuspendLayout();
-            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // grpMemberNum
@@ -681,31 +677,6 @@
             this.richTextBox4.TabIndex = 0;
             this.richTextBox4.Text = "";
             // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mainMenuToolStripMenuItem,
-            this.memberDataToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1043, 24);
-            this.menuStrip1.TabIndex = 17;
-            this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip1_ItemClicked);
-            // 
-            // mainMenuToolStripMenuItem
-            // 
-            this.mainMenuToolStripMenuItem.Name = "mainMenuToolStripMenuItem";
-            this.mainMenuToolStripMenuItem.Size = new System.Drawing.Size(80, 20);
-            this.mainMenuToolStripMenuItem.Text = "Main Menu";
-            this.mainMenuToolStripMenuItem.Click += new System.EventHandler(this.mainMenuToolStripMenuItem_Click);
-            // 
-            // memberDataToolStripMenuItem
-            // 
-            this.memberDataToolStripMenuItem.Name = "memberDataToolStripMenuItem";
-            this.memberDataToolStripMenuItem.Size = new System.Drawing.Size(91, 20);
-            this.memberDataToolStripMenuItem.Text = "Member Data";
-            // 
             // FrmMemberScores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -738,7 +709,6 @@
             this.Controls.Add(this.txtLastName);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grpMemberNum);
-            this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmMemberScores";
             this.Text = "Member Scores";
@@ -757,8 +727,6 @@
             this.grpLeaders.PerformLayout();
             this.grpReports.ResumeLayout(false);
             this.grpComments.ResumeLayout(false);
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -826,8 +794,5 @@
         private System.Windows.Forms.RadioButton rdoActive;
         private System.Windows.Forms.GroupBox grpComments;
         private System.Windows.Forms.RichTextBox richTextBox4;
-        private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem mainMenuToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem memberDataToolStripMenuItem;
     }
 }

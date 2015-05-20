@@ -936,6 +936,7 @@
             this.Controls.Add(this.txtLastName);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmMemberData";
+            this.Text = "Member Info";
             this.Load += new System.EventHandler(this.MemberDataForm_Load);
             this.grpMemberInfo.ResumeLayout(false);
             this.grpMemberInfo.PerformLayout();
