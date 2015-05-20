@@ -63,6 +63,11 @@ namespace NineTapTour.Forms
             {
                 e.Item.Visible = false;
             }
+
+            if (e.Item.Text == "")
+            {
+                e.Item.Visible = false;
+            }
         }
     }
 }
