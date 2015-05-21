@@ -11,21 +11,34 @@ namespace NineTapTour.Forms
     public partial class FrmMemberData : Form
     {
         List<Member> _membersList;
-        int memberID;
+        int _memberId;
 
         public FrmMemberData()
         {
             InitializeComponent();
         }
 
+        private void MemberDataForm_Load(object sender, EventArgs e)
+        {
+            _membersList = ((FrmMain)MdiParent)._membersList;
+
+            dateRejoin.Format = DateTimePickerFormat.Custom;
+            dateRejoin.CustomFormat = @" ";
+
+            dateLastBowled.Format = DateTimePickerFormat.Custom;
+            dateLastBowled.CustomFormat = @" ";
+
+            UpdateMemberInfo();
+        }
+
         public void UpdateMemberInfo()
         {
-            var currentMem = this._membersList.FirstOrDefault(m => m.Number == Convert.ToInt32(txtMemberNumber.Text));
+            var currentMem = _membersList.FirstOrDefault(m => m.Number == Convert.ToInt32(txtMemberNumber.Text));
 
             if (currentMem != null)
             {
                 #region Personal Info
-                memberID = currentMem.Id;
+                _memberId = currentMem.Id;
                 txtMemberNumber.Text = currentMem.Number.ToString();
                 txtLastName.Text = currentMem.LastName;
                 txtFirstName.Text = currentMem.FirstName;
@@ -54,14 +67,15 @@ namespace NineTapTour.Forms
                 #endregion
 
                 #region Misc. Info
-                txtDateJoined.Text = currentMem.JoinDate.ToShortDateString();
+                //TODO: Pull datetime from database correctly
+                dateJoined.Value = currentMem.JoinDate;
                 if (currentMem.RejoinDate.HasValue)
                 {
-                    txtRejoinDate.Text = currentMem.RejoinDate.GetValueOrDefault().ToShortDateString();
+                    dateRejoin.Value = (DateTime) currentMem.RejoinDate;
                 }
                 if (currentMem.LastBowled.HasValue)
                 {
-                    txtLastBowled.Text = currentMem.LastBowled.GetValueOrDefault().ToShortDateString();
+                    dateLastBowled.Value = (DateTime) currentMem.LastBowled;
                 }
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
                 txtNotes.Text = currentMem.Notes;
@@ -91,35 +105,7 @@ namespace NineTapTour.Forms
             {
                 Controls.Clear();
                 InitializeComponent();
-                //UpdateMemberInfo();
             }
-        }
-
-        //public static string ShowDialog(string text, string caption)
-        //{
-        //    Form prompt = new Form();
-        //    prompt.Width = 500;
-        //    prompt.Height = 150;
-        //    prompt.FormBorderStyle = FormBorderStyle.FixedDialog;
-        //    prompt.Text = caption;
-        //    prompt.StartPosition = FormStartPosition.CenterScreen;
-        //    Label lblInfo = new Label() { Left = 50, Top = 20, Text = text };
-        //    TextBox txtSearch = new TextBox() { Left = 50, Top = 50, Width = 400 };
-        //    Button confirmation = new Button() { Text = "Ok", Left = 350, Width = 100, Top = 70 };
-        //    confirmation.Click += (sender, e) => { prompt.Close(); };
-        //    prompt.Controls.Add(txtSearch);
-        //    prompt.Controls.Add(confirmation);
-        //    prompt.Controls.Add(lblInfo);
-        //    prompt.AcceptButton = confirmation;
-        //    prompt.ShowDialog();
-        //    return txtSearch.Text;
-        //}
-
-        private void MemberDataForm_Load(object sender, EventArgs e)
-        {
-            this._membersList = ((FrmMain)MdiParent)._membersList;
-
-            UpdateMemberInfo();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -127,9 +113,10 @@ namespace NineTapTour.Forms
             var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (confirm == DialogResult.No) return;
+
             var temp = new Member
             {
-                Id = memberID,
+                Id = _memberId,
                 Number = Convert.ToInt32(txtMemberNumber.Text),
                 IsActive = rdoActive.Checked,
                 JoinDate = DateTime.Now,
@@ -164,8 +151,8 @@ namespace NineTapTour.Forms
                 #endregion
 
                 #region Misc. Info
-                RejoinDate = (txtRejoinDate.Text == string.Empty) ? (DateTime?)null : Convert.ToDateTime(txtRejoinDate.Text),
-                LastBowled = (txtLastBowled.Text == string.Empty) ? (DateTime?)null : Convert.ToDateTime(txtLastBowled.Text),
+                RejoinDate = (dateRejoin.CustomFormat ==  @" ") ? (DateTime?) null : dateRejoin.Value,
+                LastBowled = (dateLastBowled.CustomFormat == @" ") ? (DateTime?) null : dateLastBowled.Value,
                 MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
                 //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
                 Notes = txtNotes.Text,
@@ -177,7 +164,7 @@ namespace NineTapTour.Forms
             if (!MemberDb.AddMember(temp)) return;
 
             MessageBox.Show(@"Bowler Added Successfully.");
-            this._membersList = MemberDb.GetMemberList();
+            _membersList = MemberDb.GetMemberList();
         }
 
         private void btnArrowLeft_Click(object sender, EventArgs e)
@@ -227,19 +214,32 @@ namespace NineTapTour.Forms
             UpdateMemberInfo();
         }
 
-        private void btnMemberNumber_Click(object sender, EventArgs e)
-        {
-            //string schNumber = ShowDialog("Seach By Number", "Member Number To Search:");
-        }
-
-
-        private void InputRequired (object sender, EventArgs e)
+        private void InputRequired(object sender, EventArgs e)
         {
             var textBox = sender as TextBox;
             if (textBox != null)
             {
                 textBox.BackColor = textBox.Text == string.Empty ? Color.LightPink : Color.White;
             }
+        }
+
+        private void ApplyCalendarForm(object sender, EventArgs e)
+        {
+            var datePicker = sender as DateTimePicker;
+            if (datePicker != null)
+            {
+                datePicker.Format = DateTimePickerFormat.Short;
+            }
+        }
+
+        private void ClearCalendar(object sender, KeyEventArgs e)
+        {
+            var datePicker = sender as DateTimePicker;
+
+            if (datePicker == null || (e.KeyCode != Keys.Delete && e.KeyCode != Keys.Back)) return;
+
+            datePicker.Format = DateTimePickerFormat.Custom;
+            datePicker.CustomFormat = @" ";
         }
     }
 }

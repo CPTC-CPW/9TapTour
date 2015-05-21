@@ -178,33 +178,36 @@
             // 
             this.txtLastName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtLastName.Enabled = false;
+            this.txtLastName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtLastName.Location = new System.Drawing.Point(218, 27);
             this.txtLastName.Multiline = true;
             this.txtLastName.Name = "txtLastName";
             this.txtLastName.ReadOnly = true;
-            this.txtLastName.Size = new System.Drawing.Size(208, 53);
+            this.txtLastName.Size = new System.Drawing.Size(206, 38);
             this.txtLastName.TabIndex = 2;
             // 
             // txtFirstName
             // 
             this.txtFirstName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtFirstName.Enabled = false;
+            this.txtFirstName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtFirstName.Location = new System.Drawing.Point(452, 27);
             this.txtFirstName.Multiline = true;
             this.txtFirstName.Name = "txtFirstName";
             this.txtFirstName.ReadOnly = true;
-            this.txtFirstName.Size = new System.Drawing.Size(208, 53);
+            this.txtFirstName.Size = new System.Drawing.Size(206, 38);
             this.txtFirstName.TabIndex = 2;
             // 
             // txtMiddleInitial
             // 
             this.txtMiddleInitial.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtMiddleInitial.Enabled = false;
+            this.txtMiddleInitial.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMiddleInitial.Location = new System.Drawing.Point(686, 27);
             this.txtMiddleInitial.Multiline = true;
             this.txtMiddleInitial.Name = "txtMiddleInitial";
             this.txtMiddleInitial.ReadOnly = true;
-            this.txtMiddleInitial.Size = new System.Drawing.Size(86, 53);
+            this.txtMiddleInitial.Size = new System.Drawing.Size(86, 38);
             this.txtMiddleInitial.TabIndex = 3;
             // 
             // lblLastName

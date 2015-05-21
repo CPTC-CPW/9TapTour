@@ -31,7 +31,11 @@ namespace NineTapTour.Forms
             }
             else
             {
-                form = new T { MdiParent = this};
+                form = new T
+                {
+                    MdiParent = this,
+                    Dock = DockStyle.Fill
+                };
                 Width = form.Width;
                 Height = form.Height + 20;
             }
