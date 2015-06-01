@@ -213,27 +213,30 @@
             // lblLastName
             // 
             this.lblLastName.AutoSize = true;
-            this.lblLastName.Location = new System.Drawing.Point(218, 10);
+            this.lblLastName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
+            this.lblLastName.Location = new System.Drawing.Point(218, 8);
             this.lblLastName.Name = "lblLastName";
-            this.lblLastName.Size = new System.Drawing.Size(58, 13);
+            this.lblLastName.Size = new System.Drawing.Size(80, 19);
             this.lblLastName.TabIndex = 4;
             this.lblLastName.Text = "Last Name";
             // 
             // lblFirstName
             // 
             this.lblFirstName.AutoSize = true;
-            this.lblFirstName.Location = new System.Drawing.Point(452, 9);
+            this.lblFirstName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
+            this.lblFirstName.Location = new System.Drawing.Point(452, 8);
             this.lblFirstName.Name = "lblFirstName";
-            this.lblFirstName.Size = new System.Drawing.Size(57, 13);
+            this.lblFirstName.Size = new System.Drawing.Size(82, 19);
             this.lblFirstName.TabIndex = 4;
             this.lblFirstName.Text = "First Name";
             // 
             // lblMiddleInitial
             // 
             this.lblMiddleInitial.AutoSize = true;
-            this.lblMiddleInitial.Location = new System.Drawing.Point(686, 10);
+            this.lblMiddleInitial.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
+            this.lblMiddleInitial.Location = new System.Drawing.Point(680, 8);
             this.lblMiddleInitial.Name = "lblMiddleInitial";
-            this.lblMiddleInitial.Size = new System.Drawing.Size(65, 13);
+            this.lblMiddleInitial.Size = new System.Drawing.Size(99, 19);
             this.lblMiddleInitial.TabIndex = 4;
             this.lblMiddleInitial.Text = "Middle Initial";
             // 

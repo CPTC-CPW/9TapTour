@@ -305,6 +305,7 @@ namespace NineTapTour.Forms
         private void ApplyCalendarForm(object sender, EventArgs e)
         {
             var datePicker = sender as DateTimePicker;
+
             if (datePicker != null)
             {
                 datePicker.Format = DateTimePickerFormat.Short;
