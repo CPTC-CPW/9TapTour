@@ -319,13 +319,13 @@
             // 
             // dateRejoin
             // 
+            this.dateRejoin.Checked = false;
             this.dateRejoin.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dateRejoin.Location = new System.Drawing.Point(299, 143);
             this.dateRejoin.Name = "dateRejoin";
-            this.dateRejoin.Size = new System.Drawing.Size(98, 23);
+            this.dateRejoin.Size = new System.Drawing.Size(103, 23);
             this.dateRejoin.TabIndex = 35;
-            this.dateRejoin.Value = new System.DateTime(2015, 5, 21, 13, 51, 29, 0);
-            this.dateRejoin.ValueChanged += new System.EventHandler(this.ApplyCalendarForm);
+            this.dateRejoin.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
             this.dateRejoin.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ClearCalendar);
             // 
             // dateJoined
@@ -333,7 +333,7 @@
             this.dateJoined.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dateJoined.Location = new System.Drawing.Point(299, 106);
             this.dateJoined.Name = "dateJoined";
-            this.dateJoined.Size = new System.Drawing.Size(98, 23);
+            this.dateJoined.Size = new System.Drawing.Size(103, 23);
             this.dateJoined.TabIndex = 32;
             // 
             // lblEmail
@@ -908,9 +908,9 @@
             this.dateLastBowled.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dateLastBowled.Location = new System.Drawing.Point(618, 403);
             this.dateLastBowled.Name = "dateLastBowled";
-            this.dateLastBowled.Size = new System.Drawing.Size(98, 23);
+            this.dateLastBowled.Size = new System.Drawing.Size(103, 23);
             this.dateLastBowled.TabIndex = 34;
-            this.dateLastBowled.ValueChanged += new System.EventHandler(this.ApplyCalendarForm);
+            this.dateLastBowled.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
             this.dateLastBowled.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ClearCalendar);
             // 
             // FrmMemberData
