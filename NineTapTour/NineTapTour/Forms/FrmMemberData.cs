@@ -73,9 +73,19 @@ namespace NineTapTour.Forms
                 {
                     dateRejoin.Value = (DateTime) currentMem.RejoinDate;
                 }
+                else
+                {
+                    dateRejoin.Format = DateTimePickerFormat.Custom;
+                    dateRejoin.CustomFormat = @" ";
+                }
                 if (currentMem.LastBowled.HasValue)
                 {
                     dateLastBowled.Value = (DateTime) currentMem.LastBowled;
+                }
+                else
+                {
+                    dateLastBowled.Format = DateTimePickerFormat.Custom;
+                    dateLastBowled.CustomFormat = @" ";
                 }
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
                 txtNotes.Text = currentMem.Notes;
