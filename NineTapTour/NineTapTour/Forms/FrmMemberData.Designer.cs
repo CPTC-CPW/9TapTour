@@ -459,7 +459,6 @@
             this.txtReferrals.Name = "txtReferrals";
             this.txtReferrals.Size = new System.Drawing.Size(54, 23);
             this.txtReferrals.TabIndex = 11;
-            this.txtReferrals.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // lblAddress
             // 
@@ -614,6 +613,7 @@
             this.btnDelete.TabStop = false;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // btnNew
             // 

@@ -2,18 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace NineTapTour.Forms
 {
     public partial class FrmMain : Form
     {
 
-        public List<Member> _membersList { get; set; }
+        public IOrderedEnumerable<Member> _membersList { get; set; }
 
         public FrmMain()
         {
             InitializeComponent();
-            _membersList = MemberDb.GetMemberList();
+            _membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
             var newfrmStart = new MainMenu {MdiParent = this};
             //newStart.Dock = DockStyle.Fill;
             Width = newfrmStart.Width;
