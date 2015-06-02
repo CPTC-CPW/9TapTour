@@ -37,7 +37,86 @@ namespace NineTapTour.Forms
             var memberNumber = Convert.ToInt32(txtMemberNumber.Text);
             currentMem = _membersList.FirstOrDefault(m => m.Number == memberNumber);
 
-            if (currentMem != null)
+            if (currentMem == null)
+            {
+                  currentMem = new Member
+                {
+                    Number = memberNumber
+                };
+                //Controls.Clear();
+                //InitializeComponent();
+                txtMemberNumber.Text = memberNumber.ToString();
+                _memberId = -1;
+
+                #region Personal Info
+                txtMemberNumber.Text = currentMem.Number.ToString();
+                txtLastName.Text = "";
+                txtFirstName.Text = "";
+                txtMiddleInitial.Text = "";
+                txtDOB.Text = "";
+                txtSSN.Text = "";
+                #endregion
+
+                #region Postal Address
+                txtAddress.Text = "";
+                txtCity.Text = "";
+                txtState.Text = "";
+                txtZip.Text = "";
+                #endregion
+
+                #region Contact Info
+                txtEmail.Text = "";
+                txtPhoneNumber.Text = "";
+                txtPhoneNumber2.Text = "";
+                #endregion
+
+                #region Score Info
+                txtAverage.Text = "";
+                txtHandicap.Text = "";
+                txtBonus.Text = "";
+                #endregion
+
+                #region Misc. Info
+
+                dateJoined.Format = DateTimePickerFormat.Custom;
+                dateJoined.CustomFormat = @" ";
+
+                //dateJoined.Value = currentMem.JoinDate;
+                //if (currentMem.RejoinDate.HasValue)
+                //{
+                //    dateRejoin.Value = (DateTime)currentMem.RejoinDate;
+                //}
+                //else
+                //{
+                //    dateRejoin.Format = DateTimePickerFormat.Custom;
+                //    dateRejoin.CustomFormat = @" ";
+                //}
+                //if (currentMem.LastBowled.HasValue)
+                //{
+                //    dateLastBowled.Value = (DateTime)currentMem.LastBowled;
+                //}
+                //else
+                //{
+                //    dateLastBowled.Format = DateTimePickerFormat.Custom;
+                //    dateLastBowled.CustomFormat = @" ";
+                //}
+                txtMoneyEarned.Text = "";
+                txtNotes.Text = "";
+                txtReferrals.Text = "";
+                chbSenior.Checked = false;
+
+                foreach(var check in grpStatus.Controls.OfType<RadioButton>())
+                {
+                    check.Checked = false;
+                }
+
+                foreach (var check in grpGender.Controls.OfType<RadioButton>())
+                {
+                    check.Checked = false;
+                }
+                #endregion
+            }
+            else
             {
                 #region Personal Info
                 _memberId = currentMem.Id;
@@ -70,6 +149,7 @@ namespace NineTapTour.Forms
 
                 #region Misc. Info
                 //TODO: Pull datetime from database correctly
+                
                 dateJoined.Value = currentMem.JoinDate;
                 if (currentMem.RejoinDate.HasValue)
                 {
@@ -113,17 +193,17 @@ namespace NineTapTour.Forms
                 #endregion
 
             }
-            else
-            {
-                currentMem = new Member
-                {
-                    Number = memberNumber
-                };
-                Controls.Clear();
-                InitializeComponent();
-                txtMemberNumber.Text = memberNumber.ToString();
-                _memberId = -1;
-            }
+            //else
+            //{
+            //    currentMem = new Member
+            //    {
+            //        Number = memberNumber
+            //    };
+            //    //Controls.Clear();
+            //    //InitializeComponent();
+            //    txtMemberNumber.Text = memberNumber.ToString();
+            //    _memberId = -1;
+            //}
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -239,6 +319,7 @@ namespace NineTapTour.Forms
 
                 MessageBox.Show(@"Bowler Added Successfully.");
                 _membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+                UpdateMemberInfo();
             }
             catch (MemberTableException ex)
             {
@@ -278,7 +359,12 @@ namespace NineTapTour.Forms
         {
             Controls.Clear();
             InitializeComponent();
-            txtMemberNumber.Text = (_membersList.Last().Number + 1).ToString();
+            _memberId = -1;
+            txtMemberNumber.Text = (_membersList.Last().Number + 1).ToString(); 
+            currentMem = new Member
+            {
+                Number = (_membersList.Last().Number + 1),
+            };
         }
 
         private void btnFirstRecord_Click(object sender, EventArgs e)
@@ -289,7 +375,7 @@ namespace NineTapTour.Forms
 
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
-            txtMemberNumber.Text = _membersList.Last().ToString();
+            txtMemberNumber.Text = _membersList.Last().Number.ToString();
             UpdateMemberInfo();
         }
 

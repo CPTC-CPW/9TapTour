@@ -335,6 +335,7 @@
             this.dateJoined.Name = "dateJoined";
             this.dateJoined.Size = new System.Drawing.Size(103, 23);
             this.dateJoined.TabIndex = 32;
+            this.dateJoined.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
             // 
             // lblEmail
             // 
