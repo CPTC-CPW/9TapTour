@@ -14,6 +14,12 @@ namespace NineTapTour.Forms
         IOrderedEnumerable<Member> _membersList;
         int _memberId;
         Member currentMem;
+        private int _memberNum;
+        public int MemberNum
+        {
+            set { _memberNum = value; }
+        }
+        
 
         public FrmMemberData()
         {
@@ -32,20 +38,28 @@ namespace NineTapTour.Forms
             UpdateMemberInfo();
         }
 
-        public void UpdateMemberInfo()
+        public void UpdateMemberInfo(Member searchMem = null)
         {
-            var memberNumber = Convert.ToInt32(txtMemberNumber.Text);
-            currentMem = _membersList.FirstOrDefault(m => m.Number == memberNumber);
+            _memberNum = Convert.ToInt32(txtMemberNumber.Text);
+            if(searchMem == null)
+            {
+                currentMem = _membersList.FirstOrDefault(m => m.Number == _memberNum);
+            }
+            else
+            {
+                currentMem = searchMem;
+                _memberNum = currentMem.Number;
+            }
 
             if (currentMem == null)
             {
-                  currentMem = new Member
+                currentMem = new Member
                 {
-                    Number = memberNumber
+                    Number = _memberNum
                 };
                 //Controls.Clear();
                 //InitializeComponent();
-                txtMemberNumber.Text = memberNumber.ToString();
+                txtMemberNumber.Text = _memberNum.ToString();
                 _memberId = -1;
 
                 #region Personal Info
@@ -206,6 +220,12 @@ namespace NineTapTour.Forms
             //}
         }
 
+        public Member searchList(int memberNumber)
+        {
+            currentMem = _membersList.FirstOrDefault(m => m.Number == memberNumber);
+            return currentMem;
+        }
+
         private void btnSave_Click(object sender, EventArgs e)
         {
             var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -319,7 +339,6 @@ namespace NineTapTour.Forms
 
                 MessageBox.Show(@"Bowler Added Successfully.");
                 _membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-                UpdateMemberInfo();
             }
             catch (MemberTableException ex)
             {
