@@ -67,7 +67,16 @@ namespace NineTapTour.Forms
 
         private void FrmMemberScores_Activated(object sender, EventArgs e)
         {
-            _membersList = ((FrmMain)MdiParent)._membersList;
+            if(!_membersList.Equals(((FrmMain)MdiParent)._membersList))
+            {
+                _membersList = ((FrmMain)MdiParent)._membersList;
+                txtMemberNum.Clear();
+                txtLastName.Clear();
+                txtFirstName.Clear();
+                txtMiddleInitial.Clear();
+                txtHandicap.Clear();
+                txtBonusPins.Clear();
+            }
         } 
     }
 }
