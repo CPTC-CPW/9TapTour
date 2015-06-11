@@ -338,7 +338,9 @@ namespace NineTapTour.Forms
                 MemberDb.AddMember(temp);
 
                 MessageBox.Show(@"Bowler Added Successfully.");
-                _membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+                //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+                ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+                _membersList = ((FrmMain)MdiParent)._membersList;
             }
             catch (MemberTableException ex)
             {
@@ -437,7 +439,9 @@ namespace NineTapTour.Forms
                 MemberDb.DeleteMember(currentMem);
 
                 MessageBox.Show(@"Bowler Removed Successfully.");
-                _membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+                //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+                ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+                _membersList = ((FrmMain)MdiParent)._membersList;
                 UpdateMemberInfo();
             }
             catch (MemberTableException ex)
