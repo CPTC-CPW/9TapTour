@@ -62,7 +62,7 @@ namespace NineTapTour.Forms
 
         public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as FrmMemberScores;
+            var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as pnlMemberStatus;
 
             OpenOrDisplayForm(ref newfrmMemberScores);
         }
