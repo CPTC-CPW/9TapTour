@@ -40,9 +40,9 @@ namespace NineTapTour.Forms
                 Width = form.Width;
                 Height = form.Height + 20;
             }
-
-            form.Show();
             form.WindowState = FormWindowState.Maximized;
+            form.Show();
+           
         }
 
         public void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)

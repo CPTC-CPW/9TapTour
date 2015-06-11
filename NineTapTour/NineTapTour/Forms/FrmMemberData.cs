@@ -11,7 +11,7 @@ namespace NineTapTour.Forms
 {
     public partial class FrmMemberData : Form
     {
-        IOrderedEnumerable<Member> _membersList;
+        //IOrderedEnumerable<Member> _membersList;
         int _memberId;
         Member currentMem;
         private int _memberNum;
@@ -28,7 +28,7 @@ namespace NineTapTour.Forms
 
         private void MemberDataForm_Load(object sender, EventArgs e)
         {
-            _membersList = ((FrmMain)MdiParent)._membersList;
+            //_membersList = ((FrmMain)MdiParent)._membersList;
             dateRejoin.Format = DateTimePickerFormat.Custom;
             dateRejoin.CustomFormat = @" ";
 
@@ -43,7 +43,7 @@ namespace NineTapTour.Forms
             _memberNum = Convert.ToInt32(txtMemberNumber.Text);
             if(searchMem == null)
             {
-                currentMem = _membersList.FirstOrDefault(m => m.Number == _memberNum);
+                currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == _memberNum);
             }
             else
             {
@@ -207,24 +207,13 @@ namespace NineTapTour.Forms
                 #endregion
 
             }
-            //else
-            //{
-            //    currentMem = new Member
-            //    {
-            //        Number = memberNumber
-            //    };
-            //    //Controls.Clear();
-            //    //InitializeComponent();
-            //    txtMemberNumber.Text = memberNumber.ToString();
-            //    _memberId = -1;
-            //}
         }
 
-        public Member searchList(int memberNumber)
-        {
-            currentMem = _membersList.FirstOrDefault(m => m.Number == memberNumber);
-            return currentMem;
-        }
+        //public Member searchList(int memberNumber)
+        //{
+        //    currentMem = _membersList.FirstOrDefault(m => m.Number == memberNumber);
+        //    return currentMem;
+        //}
 
         private void btnSave_Click(object sender, EventArgs e)
         {
@@ -340,7 +329,7 @@ namespace NineTapTour.Forms
                 MessageBox.Show(@"Bowler Added Successfully.");
                 //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
                 ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-                _membersList = ((FrmMain)MdiParent)._membersList;
+                //_membersList = ((FrmMain)MdiParent)._membersList;
             }
             catch (MemberTableException ex)
             {
@@ -350,7 +339,7 @@ namespace NineTapTour.Forms
 
         private void btnArrowLeft_Click(object sender, EventArgs e)
         {
-            if (currentMem.Number <= _membersList.First().Number)
+            if (currentMem.Number <= ((FrmMain)MdiParent)._membersList.First().Number)
             {
                 MessageBox.Show(@"Beginning of file.", @"Notice");
             }
@@ -364,7 +353,7 @@ namespace NineTapTour.Forms
 
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
-            if (currentMem.Number >= _membersList.Last().Number)
+            if (currentMem.Number >= ((FrmMain)MdiParent)._membersList.Last().Number)
             {
                 MessageBox.Show(@"End of file.", @"Notice");
             }
@@ -381,22 +370,22 @@ namespace NineTapTour.Forms
             Controls.Clear();
             InitializeComponent();
             _memberId = -1;
-            txtMemberNumber.Text = (_membersList.Last().Number + 1).ToString(); 
+            txtMemberNumber.Text = (((FrmMain)MdiParent)._membersList.Last().Number + 1).ToString(); 
             currentMem = new Member
             {
-                Number = (_membersList.Last().Number + 1),
+                Number = (((FrmMain)MdiParent)._membersList.Last().Number + 1),
             };
         }
 
         private void btnFirstRecord_Click(object sender, EventArgs e)
         {
-            txtMemberNumber.Text = _membersList.First().Number.ToString();
+            txtMemberNumber.Text = ((FrmMain)MdiParent)._membersList.First().Number.ToString();
             UpdateMemberInfo();
         }
 
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
-            txtMemberNumber.Text = _membersList.Last().Number.ToString();
+            txtMemberNumber.Text = ((FrmMain)MdiParent)._membersList.Last().Number.ToString();
             UpdateMemberInfo();
         }
 
@@ -441,13 +430,18 @@ namespace NineTapTour.Forms
                 MessageBox.Show(@"Bowler Removed Successfully.");
                 //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
                 ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-                _membersList = ((FrmMain)MdiParent)._membersList;
+                //_membersList = ((FrmMain)MdiParent)._membersList;
                 UpdateMemberInfo();
             }
             catch (MemberTableException ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void FrmMemberData_Activated(object sender, EventArgs e)
+        {
+
         }
     }
 }

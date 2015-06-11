@@ -13,7 +13,7 @@ namespace NineTapTour.Forms
 {
     public partial class FrmMemberScores : Form
     {
-        IOrderedEnumerable<Member> _membersList;
+        //IOrderedEnumerable<Member> _membersList;
         Member currentMem;
 
         public FrmMemberScores()
@@ -23,7 +23,7 @@ namespace NineTapTour.Forms
 
         private void FrmMemberScores_Load(object sender, EventArgs e)
         {
-            _membersList = ((FrmMain)MdiParent)._membersList;
+            //_membersList = ((FrmMain)MdiParent)._membersList;
         }
 
         private void txtMemberNum_TextChanged(object sender, EventArgs e)
@@ -45,7 +45,7 @@ namespace NineTapTour.Forms
                    }
                 }
                 int memberNumber = Convert.ToInt16(txtMemberNum.Text);
-                currentMem = _membersList.FirstOrDefault(m => m.Number == memberNumber);
+                currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber);
                 if(currentMem != null)
                 {
                     txtLastName.Text = currentMem.LastName;
@@ -67,16 +67,12 @@ namespace NineTapTour.Forms
 
         private void FrmMemberScores_Activated(object sender, EventArgs e)
         {
-            if(!_membersList.Equals(((FrmMain)MdiParent)._membersList))
-            {
-                _membersList = ((FrmMain)MdiParent)._membersList;
-                txtMemberNum.Clear();
-                txtLastName.Clear();
-                txtFirstName.Clear();
-                txtMiddleInitial.Clear();
-                txtHandicap.Clear();
-                txtBonusPins.Clear();
-            }
+            txtMemberNum.Clear();
+            txtLastName.Clear();
+            txtFirstName.Clear();
+            txtMiddleInitial.Clear();
+            txtHandicap.Clear();
+            txtBonusPins.Clear();
         } 
     }
 }
