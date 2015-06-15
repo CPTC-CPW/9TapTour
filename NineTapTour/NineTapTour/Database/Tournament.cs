@@ -13,5 +13,6 @@ namespace NineTapTour.Database
         public string Location { get; set; }
         public string Event { get; set; }
         public string Notes { get; set; }
+        public string Sponsors { get; set; }
     }
 }
