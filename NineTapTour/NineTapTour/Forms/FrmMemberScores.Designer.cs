@@ -254,13 +254,13 @@
             // 
             // txtScratchScore1
             // 
-            this.txtScratchScore1.BackColor = System.Drawing.SystemColors.Window;
             this.txtScratchScore1.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtScratchScore1.Location = new System.Drawing.Point(27, 42);
-            this.txtScratchScore1.Multiline = true;
+            this.txtScratchScore1.Location = new System.Drawing.Point(27, 41);
+            this.txtScratchScore1.MaxLength = 3;
             this.txtScratchScore1.Name = "txtScratchScore1";
-            this.txtScratchScore1.Size = new System.Drawing.Size(57, 49);
+            this.txtScratchScore1.Size = new System.Drawing.Size(57, 37);
             this.txtScratchScore1.TabIndex = 6;
+            this.txtScratchScore1.TextChanged += new System.EventHandler(this.scratchTotal);
             // 
             // txtHandicapScore1
             // 
@@ -278,10 +278,11 @@
             // 
             this.txtScratchScore2.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtScratchScore2.Location = new System.Drawing.Point(27, 97);
-            this.txtScratchScore2.Multiline = true;
+            this.txtScratchScore2.MaxLength = 3;
             this.txtScratchScore2.Name = "txtScratchScore2";
-            this.txtScratchScore2.Size = new System.Drawing.Size(57, 49);
+            this.txtScratchScore2.Size = new System.Drawing.Size(57, 37);
             this.txtScratchScore2.TabIndex = 6;
+            this.txtScratchScore2.TextChanged += new System.EventHandler(this.scratchTotal);
             // 
             // txtHandicapScore2
             // 
@@ -299,10 +300,11 @@
             // 
             this.txtScratchScore3.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtScratchScore3.Location = new System.Drawing.Point(27, 152);
-            this.txtScratchScore3.Multiline = true;
+            this.txtScratchScore3.MaxLength = 3;
             this.txtScratchScore3.Name = "txtScratchScore3";
-            this.txtScratchScore3.Size = new System.Drawing.Size(57, 49);
+            this.txtScratchScore3.Size = new System.Drawing.Size(57, 37);
             this.txtScratchScore3.TabIndex = 6;
+            this.txtScratchScore3.TextChanged += new System.EventHandler(this.scratchTotal);
             // 
             // txtHandicapScore3
             // 
@@ -320,10 +322,11 @@
             // 
             this.txtScratchScore4.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtScratchScore4.Location = new System.Drawing.Point(27, 207);
-            this.txtScratchScore4.Multiline = true;
+            this.txtScratchScore4.MaxLength = 3;
             this.txtScratchScore4.Name = "txtScratchScore4";
-            this.txtScratchScore4.Size = new System.Drawing.Size(57, 49);
+            this.txtScratchScore4.Size = new System.Drawing.Size(57, 37);
             this.txtScratchScore4.TabIndex = 6;
+            this.txtScratchScore4.TextChanged += new System.EventHandler(this.scratchTotal);
             // 
             // txtHandicapScore4
             // 

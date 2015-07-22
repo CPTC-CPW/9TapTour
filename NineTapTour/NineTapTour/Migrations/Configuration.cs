@@ -70,6 +70,26 @@ namespace NineTapTour.Migrations
                         PrimaryPhone = "(555) 555-5555",
                         Email = "bachmanMailer@joshua.com",
                         Notes = "Notes here too."
+                    },
+                    new Member
+                    {
+                        Number = 3,
+                        IsActive = false,
+                        JoinDate = DateTime.Today,
+                        IsSenior = true,
+                        FirstName= "Strikes",
+                        LastName= "McGee",
+                        MiddleInitial = "X",
+                        DateOfBirth = DateTime.Parse("6/07/1956"),
+                        Gender = MemberGenders.Male,
+                        SSN = "039451295",
+                        Street = "McGuckit Lane",
+                        City = "Gravity Falls",
+                        State = "GF",
+                        PostalCode = "89654",
+                        PrimaryPhone = "(190) 564-4518",
+                        Email = "OMMcGuckit@GoldChainsQuarterly.com",
+                        Notes = "Here we go again! \"Banjo Noises\" "
                     }
                 );
         }
