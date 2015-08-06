@@ -27,6 +27,8 @@ namespace NineTapTour.Forms
         {
             if (form != null)
             {
+                Width = form.Right + Math.Abs(form.Left) + 4;
+                Height = form.Height + 28;
                 form.BringToFront();
                 form.Activate();
             }
@@ -62,7 +64,7 @@ namespace NineTapTour.Forms
 
         public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as pnlMemberStatus;
+            var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
 
             OpenOrDisplayForm(ref newfrmMemberScores);
         }

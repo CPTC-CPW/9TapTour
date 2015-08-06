@@ -56,9 +56,11 @@
     <Compile Include="Database\Game.cs" />
     <Compile Include="Database\Member.cs" />
     <Compile Include="Database\MemberDb.cs" />
+    <Compile Include="Database\TournamentDb.cs" />
     <Compile Include="Exceptions\MemberTableException.cs" />
     <Compile Include="Database\Participant.cs" />
     <Compile Include="Database\Tournament.cs" />
+    <Compile Include="Exceptions\TournamentTableException.cs" />
     <Compile Include="Forms\FrmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -72,6 +74,12 @@
       <DependentUpon>FrmMemberData.cs</DependentUpon>
     </Compile>
     <Compile Include="Database\NineTapDb.cs" />
+    <Compile Include="Forms\frmNewTournament.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmNewTournament.Designer.cs">
+      <DependentUpon>frmNewTournament.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MainMenu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -128,6 +136,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmMemberData.resx">
       <DependentUpon>FrmMemberData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmNewTournament.resx">
+      <DependentUpon>frmNewTournament.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainMenu.resx">
       <DependentUpon>MainMenu.cs</DependentUpon>

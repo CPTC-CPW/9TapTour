@@ -12,14 +12,14 @@ using System.Windows.Forms;
 
 namespace NineTapTour.Forms
 {
-    public partial class pnlMemberStatus : Form
+    public partial class frmMemberScores : Form
     {
         //IOrderedEnumerable<Member> _membersList;
         Member currentMem;
         TextBox[] scratchArray = new TextBox[4];
         TextBox[] handicappArray = new TextBox[4];
 
-        public pnlMemberStatus()
+        public frmMemberScores()
         {
             InitializeComponent();
         }
@@ -173,6 +173,12 @@ namespace NineTapTour.Forms
                 }
             }
             txtHandicapTotal.Text = Convert.ToString(totalScore);
+        }
+        public void newTourney(object sender, EventArgs e)
+        {
+            var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
+            ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
+            newfrmNewTournament.Dock = DockStyle.None;
         }
     }
 }

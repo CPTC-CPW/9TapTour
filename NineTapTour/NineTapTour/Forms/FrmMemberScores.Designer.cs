@@ -1,6 +1,6 @@
 ﻿namespace NineTapTour.Forms
 {
-    partial class pnlMemberStatus
+    partial class frmMemberScores
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(pnlMemberStatus));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMemberScores));
             this.grpMemberNum = new System.Windows.Forms.GroupBox();
             this.txtMemberNum = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -57,7 +57,7 @@
             this.btnRightArrow = new System.Windows.Forms.Button();
             this.btnLeftArrow = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
+            this.btnStats = new System.Windows.Forms.Button();
             this.btnLastFile = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
             this.lblStratchScores = new System.Windows.Forms.Label();
@@ -369,7 +369,7 @@
             this.grpRecord.Controls.Add(this.btnRightArrow);
             this.grpRecord.Controls.Add(this.btnLeftArrow);
             this.grpRecord.Controls.Add(this.btnDelete);
-            this.grpRecord.Controls.Add(this.button5);
+            this.grpRecord.Controls.Add(this.btnStats);
             this.grpRecord.Controls.Add(this.btnLastFile);
             this.grpRecord.Controls.Add(this.btnNew);
             this.grpRecord.Location = new System.Drawing.Point(12, 494);
@@ -406,14 +406,14 @@
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             // 
-            // button5
+            // btnStats
             // 
-            this.button5.Location = new System.Drawing.Point(19, 116);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(156, 25);
-            this.button5.TabIndex = 0;
-            this.button5.Text = "Stats";
-            this.button5.UseVisualStyleBackColor = true;
+            this.btnStats.Location = new System.Drawing.Point(19, 116);
+            this.btnStats.Name = "btnStats";
+            this.btnStats.Size = new System.Drawing.Size(156, 25);
+            this.btnStats.TabIndex = 0;
+            this.btnStats.Text = "Stats";
+            this.btnStats.UseVisualStyleBackColor = true;
             // 
             // btnLastFile
             // 
@@ -432,6 +432,7 @@
             this.btnNew.TabIndex = 0;
             this.btnNew.Text = "New";
             this.btnNew.UseVisualStyleBackColor = true;
+            this.btnNew.Click += new System.EventHandler(this.newTourney);
             // 
             // lblStratchScores
             // 
@@ -746,7 +747,7 @@
             this.lblMemberL.TabIndex = 1;
             this.lblMemberL.Text = "MemberStatus:";
             // 
-            // pnlMemberStatus
+            // frmMemberScores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -769,7 +770,7 @@
             this.Controls.Add(this.grpMemberNum);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "pnlMemberStatus";
+            this.Name = "frmMemberScores";
             this.Text = "Member Scores";
             this.Activated += new System.EventHandler(this.FrmMemberScores_Activated);
             this.Load += new System.EventHandler(this.FrmMemberScores_Load);
@@ -820,7 +821,7 @@
         private System.Windows.Forms.GroupBox grpRecord;
         private System.Windows.Forms.Button btnRightArrow;
         private System.Windows.Forms.Button btnLeftArrow;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button btnStats;
         private System.Windows.Forms.Button btnLastFile;
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Label lblStratchScores;

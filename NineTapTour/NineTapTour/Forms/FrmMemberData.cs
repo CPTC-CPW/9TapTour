@@ -438,10 +438,5 @@ namespace NineTapTour.Forms
                 MessageBox.Show(ex.Message);
             }
         }
-
-        private void FrmMemberData_Activated(object sender, EventArgs e)
-        {
-
-        }
     }
 }
