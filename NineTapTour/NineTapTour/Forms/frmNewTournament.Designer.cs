@@ -33,11 +33,11 @@
             this.lblEvent = new System.Windows.Forms.Label();
             this.lblSponors = new System.Windows.Forms.Label();
             this.lblNotes = new System.Windows.Forms.Label();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.dtpDate = new System.Windows.Forms.DateTimePicker();
             this.txtLocation = new System.Windows.Forms.TextBox();
             this.txtEvent = new System.Windows.Forms.TextBox();
             this.txtSponsors = new System.Windows.Forms.TextBox();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.rtxtNotes = new System.Windows.Forms.RichTextBox();
             this.btnSubmit = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -87,13 +87,13 @@
             this.lblNotes.TabIndex = 4;
             this.lblNotes.Text = "Tournament Notes:";
             // 
-            // dateTimePicker1
+            // dtpDate
             // 
-            this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTimePicker1.Location = new System.Drawing.Point(129, 13);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(123, 20);
-            this.dateTimePicker1.TabIndex = 5;
+            this.dtpDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpDate.Location = new System.Drawing.Point(129, 13);
+            this.dtpDate.Name = "dtpDate";
+            this.dtpDate.Size = new System.Drawing.Size(123, 20);
+            this.dtpDate.TabIndex = 5;
             // 
             // txtLocation
             // 
@@ -116,13 +116,13 @@
             this.txtSponsors.Size = new System.Drawing.Size(123, 20);
             this.txtSponsors.TabIndex = 8;
             // 
-            // richTextBox1
+            // rtxtNotes
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(11, 171);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(241, 96);
-            this.richTextBox1.TabIndex = 9;
-            this.richTextBox1.Text = "";
+            this.rtxtNotes.Location = new System.Drawing.Point(11, 171);
+            this.rtxtNotes.Name = "rtxtNotes";
+            this.rtxtNotes.Size = new System.Drawing.Size(241, 96);
+            this.rtxtNotes.TabIndex = 9;
+            this.rtxtNotes.Text = "";
             // 
             // btnSubmit
             // 
@@ -132,6 +132,7 @@
             this.btnSubmit.TabIndex = 10;
             this.btnSubmit.Text = "Create Tournament";
             this.btnSubmit.UseVisualStyleBackColor = true;
+            this.btnSubmit.Click += new System.EventHandler(this.btnSubmit_Click);
             // 
             // btnCancel
             // 
@@ -150,11 +151,11 @@
             this.ClientSize = new System.Drawing.Size(264, 307);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSubmit);
-            this.Controls.Add(this.richTextBox1);
+            this.Controls.Add(this.rtxtNotes);
             this.Controls.Add(this.txtSponsors);
             this.Controls.Add(this.txtEvent);
             this.Controls.Add(this.txtLocation);
-            this.Controls.Add(this.dateTimePicker1);
+            this.Controls.Add(this.dtpDate);
             this.Controls.Add(this.lblNotes);
             this.Controls.Add(this.lblSponors);
             this.Controls.Add(this.lblEvent);
@@ -174,11 +175,11 @@
         private System.Windows.Forms.Label lblEvent;
         private System.Windows.Forms.Label lblSponors;
         private System.Windows.Forms.Label lblNotes;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
+        private System.Windows.Forms.DateTimePicker dtpDate;
         private System.Windows.Forms.TextBox txtLocation;
         private System.Windows.Forms.TextBox txtEvent;
         private System.Windows.Forms.TextBox txtSponsors;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.RichTextBox rtxtNotes;
         private System.Windows.Forms.Button btnSubmit;
         private System.Windows.Forms.Button btnCancel;
     }

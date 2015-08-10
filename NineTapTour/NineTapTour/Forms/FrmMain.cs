@@ -10,11 +10,13 @@ namespace NineTapTour.Forms
     {
 
         public IOrderedEnumerable<Member> _membersList { get; set; }
+        public List<Tournament> _tournamentList { get; set; }
 
         public FrmMain()
         {
             InitializeComponent();
             _membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+            _tournamentList = TournamentDb.GetTournamentList();
             var newfrmStart = new MainMenu {MdiParent = this};
             //newStart.Dock = DockStyle.Fill;
             Width = newfrmStart.Width;

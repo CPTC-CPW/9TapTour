@@ -56,6 +56,9 @@ namespace NineTapTour.Forms
             txtHandicap.Clear();
             txtBonusPins.Clear();
             MemberStatus("", Color.Black, SystemColors.Control, true);
+            lsbTournaments.DataSource = ((FrmMain)MdiParent)._tournamentList;
+            lsbTournaments.DisplayMember = "Event";
+            lsbTournaments.ValueMember = "Id";
         }
 
         private void GetMember(object sender, KeyEventArgs e)

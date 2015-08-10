@@ -68,7 +68,6 @@
             this.txtBonusPins = new System.Windows.Forms.TextBox();
             this.txtHandicap = new System.Windows.Forms.TextBox();
             this.grpTournamentFile = new System.Windows.Forms.GroupBox();
-            this.txtTournamentFile = new System.Windows.Forms.RichTextBox();
             this.grpLeaders = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -90,6 +89,7 @@
             this.rtxtComments = new System.Windows.Forms.RichTextBox();
             this.pnlMemStat = new System.Windows.Forms.Panel();
             this.lblMemberL = new System.Windows.Forms.Label();
+            this.lsbTournaments = new System.Windows.Forms.ListBox();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpRecord.SuspendLayout();
@@ -523,22 +523,13 @@
             // 
             // grpTournamentFile
             // 
-            this.grpTournamentFile.Controls.Add(this.txtTournamentFile);
+            this.grpTournamentFile.Controls.Add(this.lsbTournaments);
             this.grpTournamentFile.Location = new System.Drawing.Point(225, 525);
             this.grpTournamentFile.Name = "grpTournamentFile";
             this.grpTournamentFile.Size = new System.Drawing.Size(201, 148);
             this.grpTournamentFile.TabIndex = 12;
             this.grpTournamentFile.TabStop = false;
             this.grpTournamentFile.Text = "Tournament File";
-            // 
-            // txtTournamentFile
-            // 
-            this.txtTournamentFile.Enabled = false;
-            this.txtTournamentFile.Location = new System.Drawing.Point(18, 28);
-            this.txtTournamentFile.Name = "txtTournamentFile";
-            this.txtTournamentFile.Size = new System.Drawing.Size(164, 97);
-            this.txtTournamentFile.TabIndex = 0;
-            this.txtTournamentFile.Text = "";
             // 
             // grpLeaders
             // 
@@ -747,6 +738,14 @@
             this.lblMemberL.TabIndex = 1;
             this.lblMemberL.Text = "MemberStatus:";
             // 
+            // lsbTournaments
+            // 
+            this.lsbTournaments.FormattingEnabled = true;
+            this.lsbTournaments.Location = new System.Drawing.Point(6, 19);
+            this.lsbTournaments.Name = "lsbTournaments";
+            this.lsbTournaments.Size = new System.Drawing.Size(189, 121);
+            this.lsbTournaments.TabIndex = 1;
+            // 
             // frmMemberScores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -834,7 +833,6 @@
         private System.Windows.Forms.TextBox txtHandicap;
         private System.Windows.Forms.GroupBox grpTournamentFile;
         private System.Windows.Forms.GroupBox grpLeaders;
-        private System.Windows.Forms.RichTextBox txtTournamentFile;
         private System.Windows.Forms.GroupBox grpReports;
         private System.Windows.Forms.Button btnSeries;
         private System.Windows.Forms.Button btnGame;
@@ -856,5 +854,6 @@
         private System.Windows.Forms.Label lblMemberStatus;
         private System.Windows.Forms.Panel pnlMemStat;
         private System.Windows.Forms.Label lblMemberL;
+        private System.Windows.Forms.ListBox lsbTournaments;
     }
 }
