@@ -49,7 +49,10 @@ namespace NineTapTour.Migrations
                         PostalCode = "54321",
                         PrimaryPhone = "(555) 555-5555",
                         Email = "matt-mail@mail-matt.com",
-                        Notes = "Some notes because we can."
+                        Notes = "Some notes because we can.",
+                        Average = 150,
+                        Handicap = 10,
+                        Bonus = 3
                     },
                     new Member
                     {
@@ -69,7 +72,10 @@ namespace NineTapTour.Migrations
                         PostalCode = "12345",
                         PrimaryPhone = "(555) 555-5555",
                         Email = "bachmanMailer@joshua.com",
-                        Notes = "Notes here too."
+                        Notes = "Notes here too.",
+                        Average = 186,
+                        Handicap = 7,
+                        Bonus = 1
                     },
                     new Member
                     {
@@ -89,7 +95,10 @@ namespace NineTapTour.Migrations
                         PostalCode = "89654",
                         PrimaryPhone = "(190) 564-4518",
                         Email = "OMMcGuckit@GoldChainsQuarterly.com",
-                        Notes = "Here we go again! \"Banjo Noises\" "
+                        Notes = "Here we go again! \"Banjo Noises\" ",
+                        Average = 280,
+                        Handicap = -15,
+                        Bonus = 0
                     }
                 );
         }
