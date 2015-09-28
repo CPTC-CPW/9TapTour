@@ -365,10 +365,16 @@ namespace NineTapTour.Forms
 
         }
 
+        //After the InitializeComponent(); call, the dateRejoin Format & dateLastBowled are reused.
         private void btnNew_Click(object sender, EventArgs e)
         {
             Controls.Clear();
             InitializeComponent();
+            dateRejoin.Format = DateTimePickerFormat.Custom;
+            dateRejoin.CustomFormat = @" ";
+
+            dateLastBowled.Format = DateTimePickerFormat.Custom;
+            dateLastBowled.CustomFormat = @" ";
             _memberId = -1;
             txtMemberNumber.Text = (((FrmMain)MdiParent)._membersList.Last().Number + 1).ToString(); 
             currentMem = new Member

@@ -413,9 +413,9 @@
             this.lblDateJoined.AutoSize = true;
             this.lblDateJoined.Location = new System.Drawing.Point(299, 91);
             this.lblDateJoined.Name = "lblDateJoined";
-            this.lblDateJoined.Size = new System.Drawing.Size(67, 15);
+            this.lblDateJoined.Size = new System.Drawing.Size(70, 15);
             this.lblDateJoined.TabIndex = 5;
-            this.lblDateJoined.Text = "DateJoined";
+            this.lblDateJoined.Text = "Date Joined";
             // 
             // lblRejoinDate
             // 
