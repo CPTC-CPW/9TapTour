@@ -217,6 +217,23 @@ namespace NineTapTour.Forms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            //prototype of data validation
+            if (txtSSN.Text == "") //| txtState.Text == "" || txtZip.Text =="" || txtAddress.Text == "")  //include rest 
+            {
+                MessageBox.Show("information is missing");
+                return;
+            }
+            // check if Active radio button is checked
+            if (!rdoActive.Checked && !rdoInActive.Checked)
+            {
+                MessageBox.Show("member must be checked active or inactive");
+                return;
+            }
+            if (!rdoMale.Checked && !rdoFemale.Checked)
+            {
+                MessageBox.Show(" a gender must be shown");
+                return;
+            }
             var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (confirm == DialogResult.No) return;
