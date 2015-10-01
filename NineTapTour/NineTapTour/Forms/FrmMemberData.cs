@@ -140,6 +140,7 @@ namespace NineTapTour.Forms
                 txtMiddleInitial.Text = currentMem.MiddleInitial;
                 txtDOB.Text = currentMem.DateOfBirth.ToShortDateString();
                 txtSSN.Text = currentMem.SSN;
+                //txtSSN.PasswordChar = '*'; This hides the SSN within the form of '*'.
                 #endregion
 
                 #region Postal Address
@@ -231,7 +232,7 @@ namespace NineTapTour.Forms
             }
             if (!rdoMale.Checked && !rdoFemale.Checked)
             {
-                MessageBox.Show(" a gender must be shown");
+                MessageBox.Show("a gender must be shown");
                 return;
             }
             var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -396,7 +397,7 @@ namespace NineTapTour.Forms
             txtMemberNumber.Text = (((FrmMain)MdiParent)._membersList.Last().Number + 1).ToString(); 
             currentMem = new Member
             {
-                Number = (((FrmMain)MdiParent)._membersList.Last().Number + 1),
+                Number = (((FrmMain)MdiParent)._membersList.Last().Number + 1)
             };
         }
 
@@ -460,6 +461,15 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void btnMemberNumber_Click(object sender, EventArgs e)
+        {
+            var newfrmStart = new FrmSearch();
+            Width = newfrmStart.Width;
+            Height = newfrmStart.Height + 20;
+            newfrmStart.Show();
+            //newfrmStart.WindowState = FormWindowState.Maximized; for maximizing the window.
         }
     }
 }
