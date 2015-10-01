@@ -217,21 +217,28 @@ namespace NineTapTour.Forms
         //    return currentMem;
         //}
         // method checks for valid characters. 
-        public bool isAlpha( String firstName)
+        public void isValid( String firstName, String lastName, String zip)
         {
             firstName = txtFirstName.Text;
-            //lastName = txtLastName.Text;
-            if( !Regex.IsMatch(firstName, "^[a-zA-Z]+$"))
+            lastName = txtLastName.Text;
+            zip = txtZip.Text;
+            if(!Regex.IsMatch(firstName, "^[a-zA-Z]+$"))
             {
                  MessageBox.Show("Invalid Characters in first name field"); 
                  txtFirstName.Clear();
             }
              
-           /* if(!Regex.IsMatch(lastName, "^[a-zA-Z]+$"))
+           if(!Regex.IsMatch(lastName, "^[a-zA-Z]+$"))
              {
                  MessageBox.Show("Invalid Characters in last name field");
-             } */
-             return Regex.IsMatch(firstName, "^[a-zA-Z]+$");
+                 txtLastName.Clear();
+             } 
+            if(!Regex.IsMatch(zip, "^\\d{5}(?:[-\\s]\\d{4})?$"))
+            {
+                MessageBox.Show("Invalid zip code field");
+                 txtZip.Clear();
+            }
+             //return Regex.IsMatch(firstName, "^[a-zA-Z]+$");
         
         }
 
@@ -240,7 +247,7 @@ namespace NineTapTour.Forms
             //prototype of data validation
             //if ( e) //| txtState.Text == "" || txtZip.Text =="" || txtAddress.Text == "")  //include rest 
 
-            isAlpha(txtFirstName.Text);
+            isValid(txtFirstName.Text, txtLastName.Text,txtZip.Text);
             // check if Active radio button is checked
             if (!rdoActive.Checked && !rdoInActive.Checked)
             {
