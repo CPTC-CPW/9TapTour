@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using NineTapTour.Database;
 using System.Globalization;
 using NineTapTour.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace NineTapTour.Forms
 {
@@ -140,7 +141,7 @@ namespace NineTapTour.Forms
                 txtMiddleInitial.Text = currentMem.MiddleInitial;
                 txtDOB.Text = currentMem.DateOfBirth.ToShortDateString();
                 txtSSN.Text = currentMem.SSN;
-                //txtSSN.PasswordChar = '*'; This hides the SSN within the form of '*'.
+               // txtSSN.PasswordChar = '*'; //This hides the SSN within the form of '*'.
                 #endregion
 
                 #region Postal Address
@@ -215,24 +216,41 @@ namespace NineTapTour.Forms
         //    currentMem = _membersList.FirstOrDefault(m => m.Number == memberNumber);
         //    return currentMem;
         //}
+        // method checks for valid characters. 
+        public bool isAlpha( String firstName)
+        {
+            firstName = txtFirstName.Text;
+            //lastName = txtLastName.Text;
+            if( !Regex.IsMatch(firstName, "^[a-zA-Z]+$"))
+            {
+                 MessageBox.Show("Invalid Characters in first name field"); 
+                 txtFirstName.Clear();
+            }
+             
+           /* if(!Regex.IsMatch(lastName, "^[a-zA-Z]+$"))
+             {
+                 MessageBox.Show("Invalid Characters in last name field");
+             } */
+             return Regex.IsMatch(firstName, "^[a-zA-Z]+$");
+        
+        }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
             //prototype of data validation
-            if (txtSSN.Text == "") //| txtState.Text == "" || txtZip.Text =="" || txtAddress.Text == "")  //include rest 
-            {
-                MessageBox.Show("information is missing");
-                return;
-            }
+            //if ( e) //| txtState.Text == "" || txtZip.Text =="" || txtAddress.Text == "")  //include rest 
+
+            isAlpha(txtFirstName.Text);
             // check if Active radio button is checked
             if (!rdoActive.Checked && !rdoInActive.Checked)
             {
                 MessageBox.Show("member must be checked active or inactive");
                 return;
             }
+            // check if gender radio button is checked
             if (!rdoMale.Checked && !rdoFemale.Checked)
             {
-                MessageBox.Show("a gender must be shown");
+                MessageBox.Show("a gender must be chosen");
                 return;
             }
             var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
