@@ -38,7 +38,7 @@ namespace NineTapTour.Forms
 
             UpdateMemberInfo();
         }
-        //Here is a comment to test commits.
+
         public void UpdateMemberInfo(Member searchMem = null)
         {
             _memberNum = Convert.ToInt32(txtMemberNumber.Text);
@@ -242,7 +242,6 @@ namespace NineTapTour.Forms
                  MessageBox.Show("field cannot be blank"); 
                  txtFirstName.Clear();
                  return false;
-                 return false;
                 
             }
             
@@ -251,14 +250,12 @@ namespace NineTapTour.Forms
                  MessageBox.Show("field cannot be blank");
                  txtLastName.Clear();
                  return false;
-                 return false;
                  
              } 
             if(!Regex.IsMatch(zip, "^\\d{5}(?:[-\\s]\\d{4})?$"))
             {
                 MessageBox.Show("Invalid zip code field");
-                 txtZip.Clear();
-                 return false;
+                 mtxtBoxZip.Clear();
                  return false;
                 
             }
@@ -274,7 +271,7 @@ namespace NineTapTour.Forms
             //checks to see if firstname,lastname, and zip is valid.
             //Then runs the rest of the btnSave_Click and adds a member into the database.
             //TODO: needs more fields to validate inorder for the user to save a new member. (SSN, Address, Phone Number, etc...)
-            if (isValid(txtFirstName.Text, txtLastName.Text, txtZip.Text))
+            if (isValid(txtFirstName.Text, txtLastName.Text, mtxtBoxZip.Text))
             {
             var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
