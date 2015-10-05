@@ -38,7 +38,7 @@ namespace NineTapTour.Forms
 
             UpdateMemberInfo();
         }
-
+        //Here is a comment to test commits.
         public void UpdateMemberInfo(Member searchMem = null)
         {
             _memberNum = Convert.ToInt32(txtMemberNumber.Text);
