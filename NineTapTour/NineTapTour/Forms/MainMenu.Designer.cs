@@ -43,7 +43,7 @@
             this.btnMemberData.Name = "btnMemberData";
             this.btnMemberData.Size = new System.Drawing.Size(118, 70);
             this.btnMemberData.TabIndex = 0;
-            this.btnMemberData.Text = "Memeber Data";
+            this.btnMemberData.Text = "Member Data";
             this.btnMemberData.UseVisualStyleBackColor = true;
             this.btnMemberData.Click += new System.EventHandler(this.btnMemberData_Click);
             // 
@@ -92,6 +92,7 @@
             this.Controls.Add(this.btnAbout);
             this.Controls.Add(this.btnMemberScores);
             this.Controls.Add(this.btnMemberData);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainMenu";
             this.Text = "MainMenu";
