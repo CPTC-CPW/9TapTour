@@ -218,7 +218,8 @@ namespace NineTapTour.Forms
         //}
 
         // method checks for valid characters. 
-        public void isValid( String firstName, String lastName, String zip )
+        // UPDATE THIS METHOD: add more textfields to validate for the whole form to submit
+        public bool isValid( String firstName, String lastName, String zip)
         {
             firstName = txtFirstName.Text;
             lastName = txtLastName.Text;
@@ -227,46 +228,59 @@ namespace NineTapTour.Forms
             // check if Active radio button is checked
             if (!rdoActive.Checked && !rdoInActive.Checked)
             {
-                MessageBox.Show("member must be active or inactive");
-                return;
-               }
+                MessageBox.Show("member must be checked active or inactive");
+                return false;
+            }
             // check if gender radio button is checked
             if (!rdoMale.Checked && !rdoFemale.Checked)
             {
                 MessageBox.Show("a gender must be chosen");
-                return;
+                return false;
             }
             if(!Regex.IsMatch(firstName, "^[a-zA-Z]+$"))
             {
                  MessageBox.Show("field cannot be blank"); 
-                 txtFirstName.Clear();   
+                 txtFirstName.Clear();
+                 return false;
+                 return false;
+                
             }
             
            if(!Regex.IsMatch(lastName, "^[a-zA-Z]+$"))
              {
                  MessageBox.Show("field cannot be blank");
                  txtLastName.Clear();
-                             } 
+                 return false;
+                 return false;
+                 
+             } 
             if(!Regex.IsMatch(zip, "^\\d{5}(?:[-\\s]\\d{4})?$"))
             {
-                MessageBox.Show(" field cannot be blank");
-                 mtxtBoxZip.Clear();
+                MessageBox.Show("Invalid zip code field");
+                 txtZip.Clear();
+                 return false;
+                 return false;
+                
             }
-            
-  
+            return true;
+             //return Regex.IsMatch(firstName, "^[a-zA-Z]+$");
+        
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
             isValid(txtFirstName.Text, txtLastName.Text, mtxtBoxZip.Text);
-       
 
+            //checks to see if firstname,lastname, and zip is valid.
+            //Then runs the rest of the btnSave_Click and adds a member into the database.
+            //TODO: needs more fields to validate inorder for the user to save a new member. (SSN, Address, Phone Number, etc...)
+            if (isValid(txtFirstName.Text, txtLastName.Text, txtZip.Text))
+            {
             var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            
+
 
             if (confirm == DialogResult.No) 
                 return;
-
             Member temp;
 
             if(_memberId != -1)
@@ -381,6 +395,14 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show(ex.Message);
             }
+
+            }
+            //else, there must be a validation error. Either something is null or the format of how the user entered was incorrect.
+            else
+            {
+                MessageBox.Show("You have validation problems");
+            }
+
         }
 
         private void btnArrowLeft_Click(object sender, EventArgs e)

@@ -124,6 +124,10 @@
     <Compile Include="Migrations\201507072131431_pending.Designer.cs">
       <DependentUpon>201507072131431_pending.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201510051837156_middle initial nullable.cs" />
+    <Compile Include="Migrations\201510051837156_middle initial nullable.Designer.cs">
+      <DependentUpon>201510051837156_middle initial nullable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -175,6 +179,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201507072131431_pending.resx">
       <DependentUpon>201507072131431_pending.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510051837156_middle initial nullable.resx">
+      <DependentUpon>201510051837156_middle initial nullable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
