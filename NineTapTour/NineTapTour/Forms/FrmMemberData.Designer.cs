@@ -46,13 +46,13 @@
             this.txtAverage = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.grpMemberInfo = new System.Windows.Forms.GroupBox();
+            this.mtxtBoxSSN = new System.Windows.Forms.MaskedTextBox();
+            this.mtxtBoxPhone2 = new System.Windows.Forms.MaskedTextBox();
+            this.mtxtBoxPhone = new System.Windows.Forms.MaskedTextBox();
             this.dateRejoin = new System.Windows.Forms.DateTimePicker();
             this.dateJoined = new System.Windows.Forms.DateTimePicker();
             this.lblEmail = new System.Windows.Forms.Label();
-            this.txtPhoneNumber2 = new System.Windows.Forms.TextBox();
             this.lblDOB = new System.Windows.Forms.Label();
-            this.txtPhoneNumber = new System.Windows.Forms.TextBox();
-            this.txtDOB = new System.Windows.Forms.TextBox();
             this.lblRefferals = new System.Windows.Forms.Label();
             this.lblPhoneNumber2 = new System.Windows.Forms.Label();
             this.lblPhoneNumber = new System.Windows.Forms.Label();
@@ -64,11 +64,9 @@
             this.txtReferrals = new System.Windows.Forms.TextBox();
             this.lblAddress = new System.Windows.Forms.Label();
             this.lblSSN = new System.Windows.Forms.Label();
-            this.txtZip = new System.Windows.Forms.TextBox();
             this.txtState = new System.Windows.Forms.TextBox();
             this.txtCity = new System.Windows.Forms.TextBox();
             this.txtAddress = new System.Windows.Forms.TextBox();
-            this.txtSSN = new System.Windows.Forms.TextBox();
             this.txtEmail = new System.Windows.Forms.TextBox();
             this.txtYearEndT = new System.Windows.Forms.TextBox();
             this.txtMoneyEarned = new System.Windows.Forms.TextBox();
@@ -104,6 +102,8 @@
             this.grpStatus = new System.Windows.Forms.GroupBox();
             this.chbSenior = new System.Windows.Forms.CheckBox();
             this.dateLastBowled = new System.Windows.Forms.DateTimePicker();
+            this.mtxtBoxZip = new System.Windows.Forms.MaskedTextBox();
+            this.mtxtBoxDOB = new System.Windows.Forms.MaskedTextBox();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -285,13 +285,15 @@
             // 
             // grpMemberInfo
             // 
+            this.grpMemberInfo.Controls.Add(this.mtxtBoxDOB);
+            this.grpMemberInfo.Controls.Add(this.mtxtBoxZip);
+            this.grpMemberInfo.Controls.Add(this.mtxtBoxSSN);
+            this.grpMemberInfo.Controls.Add(this.mtxtBoxPhone2);
+            this.grpMemberInfo.Controls.Add(this.mtxtBoxPhone);
             this.grpMemberInfo.Controls.Add(this.dateRejoin);
             this.grpMemberInfo.Controls.Add(this.dateJoined);
             this.grpMemberInfo.Controls.Add(this.lblEmail);
-            this.grpMemberInfo.Controls.Add(this.txtPhoneNumber2);
             this.grpMemberInfo.Controls.Add(this.lblDOB);
-            this.grpMemberInfo.Controls.Add(this.txtPhoneNumber);
-            this.grpMemberInfo.Controls.Add(this.txtDOB);
             this.grpMemberInfo.Controls.Add(this.lblRefferals);
             this.grpMemberInfo.Controls.Add(this.lblPhoneNumber2);
             this.grpMemberInfo.Controls.Add(this.lblPhoneNumber);
@@ -303,11 +305,9 @@
             this.grpMemberInfo.Controls.Add(this.txtReferrals);
             this.grpMemberInfo.Controls.Add(this.lblAddress);
             this.grpMemberInfo.Controls.Add(this.lblSSN);
-            this.grpMemberInfo.Controls.Add(this.txtZip);
             this.grpMemberInfo.Controls.Add(this.txtState);
             this.grpMemberInfo.Controls.Add(this.txtCity);
             this.grpMemberInfo.Controls.Add(this.txtAddress);
-            this.grpMemberInfo.Controls.Add(this.txtSSN);
             this.grpMemberInfo.Controls.Add(this.txtEmail);
             this.grpMemberInfo.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.grpMemberInfo.Location = new System.Drawing.Point(340, 86);
@@ -316,6 +316,32 @@
             this.grpMemberInfo.TabIndex = 4;
             this.grpMemberInfo.TabStop = false;
             this.grpMemberInfo.Text = "Member Information";
+            // 
+            // mtxtBoxSSN
+            // 
+            this.mtxtBoxSSN.Location = new System.Drawing.Point(137, 36);
+            this.mtxtBoxSSN.Mask = "000-00-0000";
+            this.mtxtBoxSSN.Name = "mtxtBoxSSN";
+            this.mtxtBoxSSN.PasswordChar = '*';
+            this.mtxtBoxSSN.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.mtxtBoxSSN.Size = new System.Drawing.Size(100, 23);
+            this.mtxtBoxSSN.TabIndex = 38;
+            // 
+            // mtxtBoxPhone2
+            // 
+            this.mtxtBoxPhone2.Location = new System.Drawing.Point(164, 147);
+            this.mtxtBoxPhone2.Mask = "(999) 000-0000";
+            this.mtxtBoxPhone2.Name = "mtxtBoxPhone2";
+            this.mtxtBoxPhone2.Size = new System.Drawing.Size(100, 23);
+            this.mtxtBoxPhone2.TabIndex = 37;
+            // 
+            // mtxtBoxPhone
+            // 
+            this.mtxtBoxPhone.Location = new System.Drawing.Point(19, 143);
+            this.mtxtBoxPhone.Mask = "(999) 000-0000";
+            this.mtxtBoxPhone.Name = "mtxtBoxPhone";
+            this.mtxtBoxPhone.Size = new System.Drawing.Size(100, 23);
+            this.mtxtBoxPhone.TabIndex = 36;
             // 
             // dateRejoin
             // 
@@ -346,14 +372,6 @@
             this.lblEmail.TabIndex = 10;
             this.lblEmail.Text = "Email";
             // 
-            // txtPhoneNumber2
-            // 
-            this.txtPhoneNumber2.Location = new System.Drawing.Point(167, 143);
-            this.txtPhoneNumber2.MaxLength = 20;
-            this.txtPhoneNumber2.Name = "txtPhoneNumber2";
-            this.txtPhoneNumber2.Size = new System.Drawing.Size(115, 23);
-            this.txtPhoneNumber2.TabIndex = 7;
-            // 
             // lblDOB
             // 
             this.lblDOB.AutoSize = true;
@@ -362,24 +380,6 @@
             this.lblDOB.Size = new System.Drawing.Size(40, 15);
             this.lblDOB.TabIndex = 31;
             this.lblDOB.Text = "D.O.B.";
-            // 
-            // txtPhoneNumber
-            // 
-            this.txtPhoneNumber.Location = new System.Drawing.Point(16, 143);
-            this.txtPhoneNumber.MaxLength = 20;
-            this.txtPhoneNumber.Name = "txtPhoneNumber";
-            this.txtPhoneNumber.Size = new System.Drawing.Size(115, 23);
-            this.txtPhoneNumber.TabIndex = 6;
-            this.txtPhoneNumber.TextChanged += new System.EventHandler(this.InputRequired);
-            // 
-            // txtDOB
-            // 
-            this.txtDOB.Location = new System.Drawing.Point(16, 32);
-            this.txtDOB.MaxLength = 20;
-            this.txtDOB.Name = "txtDOB";
-            this.txtDOB.Size = new System.Drawing.Size(111, 23);
-            this.txtDOB.TabIndex = 0;
-            this.txtDOB.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // lblRefferals
             // 
@@ -479,15 +479,6 @@
             this.lblSSN.TabIndex = 3;
             this.lblSSN.Text = "SSN";
             // 
-            // txtZip
-            // 
-            this.txtZip.Location = new System.Drawing.Point(209, 106);
-            this.txtZip.MaxLength = 20;
-            this.txtZip.Name = "txtZip";
-            this.txtZip.Size = new System.Drawing.Size(73, 23);
-            this.txtZip.TabIndex = 5;
-            this.txtZip.TextChanged += new System.EventHandler(this.InputRequired);
-            // 
             // txtState
             // 
             this.txtState.Location = new System.Drawing.Point(146, 106);
@@ -514,15 +505,6 @@
             this.txtAddress.Size = new System.Drawing.Size(266, 23);
             this.txtAddress.TabIndex = 2;
             this.txtAddress.TextChanged += new System.EventHandler(this.InputRequired);
-            // 
-            // txtSSN
-            // 
-            this.txtSSN.Location = new System.Drawing.Point(134, 32);
-            this.txtSSN.MaxLength = 11;
-            this.txtSSN.Name = "txtSSN";
-            this.txtSSN.Size = new System.Drawing.Size(75, 23);
-            this.txtSSN.TabIndex = 1;
-            this.txtSSN.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtEmail
             // 
@@ -915,6 +897,25 @@
             this.dateLastBowled.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
             this.dateLastBowled.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ClearCalendar);
             // 
+            // mtxtBoxZip
+            // 
+            this.mtxtBoxZip.HideSelection = false;
+            this.mtxtBoxZip.Location = new System.Drawing.Point(193, 106);
+            this.mtxtBoxZip.Mask = "00000";
+            this.mtxtBoxZip.Name = "mtxtBoxZip";
+            this.mtxtBoxZip.ShortcutsEnabled = false;
+            this.mtxtBoxZip.Size = new System.Drawing.Size(100, 23);
+            this.mtxtBoxZip.TabIndex = 39;
+            // 
+            // mtxtBoxDOB
+            // 
+            this.mtxtBoxDOB.Location = new System.Drawing.Point(19, 35);
+            this.mtxtBoxDOB.Mask = "00/00/0000";
+            this.mtxtBoxDOB.Name = "mtxtBoxDOB";
+            this.mtxtBoxDOB.Size = new System.Drawing.Size(100, 23);
+            this.mtxtBoxDOB.TabIndex = 40;
+            this.mtxtBoxDOB.ValidatingType = typeof(System.DateTime);
+            // 
             // FrmMemberData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -993,7 +994,6 @@
         private System.Windows.Forms.TextBox txtAverage;
         private System.Windows.Forms.Label lblNotes;
         private System.Windows.Forms.GroupBox grpMemberInfo;
-        private System.Windows.Forms.TextBox txtZip;
         private System.Windows.Forms.TextBox txtState;
         private System.Windows.Forms.TextBox txtCity;
         private System.Windows.Forms.TextBox txtEmail;
@@ -1003,9 +1003,6 @@
         private System.Windows.Forms.Label lblState;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtReferrals;
-        private System.Windows.Forms.TextBox txtSSN;
-        private System.Windows.Forms.TextBox txtPhoneNumber2;
-        private System.Windows.Forms.TextBox txtPhoneNumber;
         private System.Windows.Forms.Label lblPhoneNumber2;
         private System.Windows.Forms.Label lblPhoneNumber;
         private System.Windows.Forms.Label lblRefferals;
@@ -1044,13 +1041,17 @@
         private System.Windows.Forms.RadioButton rdoInActive;
         private System.Windows.Forms.RadioButton rdoMale;
         private System.Windows.Forms.Label lblDOB;
-        private System.Windows.Forms.TextBox txtDOB;
         private System.Windows.Forms.GroupBox grpGender;
         private System.Windows.Forms.GroupBox grpStatus;
         private System.Windows.Forms.CheckBox chbSenior;
         private System.Windows.Forms.DateTimePicker dateRejoin;
         private System.Windows.Forms.DateTimePicker dateJoined;
         private System.Windows.Forms.DateTimePicker dateLastBowled;
+        private System.Windows.Forms.MaskedTextBox mtxtBoxPhone;
+        private System.Windows.Forms.MaskedTextBox mtxtBoxPhone2;
+        private System.Windows.Forms.MaskedTextBox mtxtBoxSSN;
+        private System.Windows.Forms.MaskedTextBox mtxtBoxZip;
+        private System.Windows.Forms.MaskedTextBox mtxtBoxDOB;
     }
 }
 

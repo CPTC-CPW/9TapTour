@@ -68,21 +68,21 @@ namespace NineTapTour.Forms
                 txtLastName.Text = "";
                 txtFirstName.Text = "";
                 txtMiddleInitial.Text = "";
-                txtDOB.Text = "";
-                txtSSN.Text = "";
+                mtxtBoxDOB.Text = "";
+                mtxtBoxSSN.Text = "";
                 #endregion
 
                 #region Postal Address
                 txtAddress.Text = "";
                 txtCity.Text = "";
                 txtState.Text = "";
-                txtZip.Text = "";
+                mtxtBoxZip.Text = "";
                 #endregion
 
                 #region Contact Info
                 txtEmail.Text = "";
-                txtPhoneNumber.Text = "";
-                txtPhoneNumber2.Text = "";
+                mtxtBoxPhone.Text = "";
+                mtxtBoxPhone2.Text = "";
                 #endregion
 
                 #region Score Info
@@ -139,8 +139,8 @@ namespace NineTapTour.Forms
                 txtLastName.Text = currentMem.LastName;
                 txtFirstName.Text = currentMem.FirstName;
                 txtMiddleInitial.Text = currentMem.MiddleInitial;
-                txtDOB.Text = currentMem.DateOfBirth.ToShortDateString();
-                txtSSN.Text = currentMem.SSN;
+                mtxtBoxDOB.Text = currentMem.DateOfBirth.ToShortDateString();
+                mtxtBoxSSN.Text = currentMem.SSN;
                // txtSSN.PasswordChar = '*'; //This hides the SSN within the form of '*'.
                 #endregion
 
@@ -148,13 +148,13 @@ namespace NineTapTour.Forms
                 txtAddress.Text = currentMem.Street;
                 txtCity.Text = currentMem.City;
                 txtState.Text = currentMem.State;
-                txtZip.Text = currentMem.PostalCode;
+                mtxtBoxZip.Text = currentMem.PostalCode;
                 #endregion
 
                 #region Contact Info
                 txtEmail.Text = currentMem.Email;
-                txtPhoneNumber.Text = currentMem.PrimaryPhone;
-                txtPhoneNumber2.Text = currentMem.SecondaryPhone;
+                mtxtBoxPhone.Text = currentMem.PrimaryPhone;
+                mtxtBoxPhone2.Text = currentMem.SecondaryPhone;
                 #endregion
 
                 #region Score Info
@@ -216,18 +216,20 @@ namespace NineTapTour.Forms
         //    currentMem = _membersList.FirstOrDefault(m => m.Number == memberNumber);
         //    return currentMem;
         //}
+
         // method checks for valid characters. 
-        public void isValid( String firstName, String lastName, String zip)
+        public void isValid( String firstName, String lastName, String zip )
         {
             firstName = txtFirstName.Text;
             lastName = txtLastName.Text;
-            zip = txtZip.Text;
+            zip = mtxtBoxZip.Text;
+           
             // check if Active radio button is checked
             if (!rdoActive.Checked && !rdoInActive.Checked)
             {
-                MessageBox.Show("member must be checked active or inactive");
+                MessageBox.Show("member must be active or inactive");
                 return;
-            }
+               }
             // check if gender radio button is checked
             if (!rdoMale.Checked && !rdoFemale.Checked)
             {
@@ -236,37 +238,31 @@ namespace NineTapTour.Forms
             }
             if(!Regex.IsMatch(firstName, "^[a-zA-Z]+$"))
             {
-                 MessageBox.Show("Invalid Characters in first name field"); 
-                 txtFirstName.Clear();
-                
+                 MessageBox.Show("field cannot be blank"); 
+                 txtFirstName.Clear();   
             }
             
-             
            if(!Regex.IsMatch(lastName, "^[a-zA-Z]+$"))
              {
-                 MessageBox.Show("Invalid Characters in last name field");
+                 MessageBox.Show("field cannot be blank");
                  txtLastName.Clear();
-                 
-             } 
+                             } 
             if(!Regex.IsMatch(zip, "^\\d{5}(?:[-\\s]\\d{4})?$"))
             {
-                MessageBox.Show("Invalid zip code field");
-                 txtZip.Clear();
-                
+                MessageBox.Show(" field cannot be blank");
+                 mtxtBoxZip.Clear();
             }
-             //return Regex.IsMatch(firstName, "^[a-zA-Z]+$");
-        
+            
+  
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            //prototype of data validation
-            //if ( e) //| txtState.Text == "" || txtZip.Text =="" || txtAddress.Text == "")  //include rest 
+            isValid(txtFirstName.Text, txtLastName.Text, mtxtBoxZip.Text);
+       
 
-            isValid(txtFirstName.Text, txtLastName.Text,txtZip.Text);
-            return;
-          
             var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            
 
             if (confirm == DialogResult.No) 
                 return;
@@ -286,8 +282,8 @@ namespace NineTapTour.Forms
                     LastName = txtLastName.Text,
                     FirstName = txtFirstName.Text,
                     MiddleInitial = txtMiddleInitial.Text,
-                    DateOfBirth = Convert.ToDateTime(txtDOB.Text),
-                    SSN = txtSSN.Text,
+                    DateOfBirth = Convert.ToDateTime(mtxtBoxDOB),
+                    SSN = mtxtBoxSSN.Text,
                     IsSenior = chbSenior.Checked,
                     Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
                     #endregion
@@ -296,13 +292,13 @@ namespace NineTapTour.Forms
                     Street = txtAddress.Text,
                     City = txtCity.Text,
                     State = txtState.Text,
-                    PostalCode = txtZip.Text,
+                    PostalCode = mtxtBoxZip.Text,
                     #endregion
 
                     #region Contact Info
                     Email = txtEmail.Text,
-                    PrimaryPhone = txtPhoneNumber.Text,
-                    SecondaryPhone = txtPhoneNumber2.Text,
+                    PrimaryPhone =  mtxtBoxPhone.Text,
+                    SecondaryPhone = mtxtBoxPhone2.Text,
                     #endregion
 
                     #region Score Info
@@ -334,8 +330,8 @@ namespace NineTapTour.Forms
                     LastName = txtLastName.Text,
                     FirstName = txtFirstName.Text,
                     MiddleInitial = txtMiddleInitial.Text,
-                    DateOfBirth = Convert.ToDateTime(txtDOB.Text),
-                    SSN = txtSSN.Text,
+                    DateOfBirth = Convert.ToDateTime(mtxtBoxDOB),
+                    SSN = mtxtBoxSSN.Text,
                     IsSenior = chbSenior.Checked,
                     Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
                     #endregion
@@ -344,13 +340,13 @@ namespace NineTapTour.Forms
                     Street = txtAddress.Text,
                     City = txtCity.Text,
                     State = txtState.Text,
-                    PostalCode = txtZip.Text,
+                    PostalCode = mtxtBoxZip.Text,
                     #endregion
 
                     #region Contact Info
                     Email = txtEmail.Text,
-                    PrimaryPhone = txtPhoneNumber.Text,
-                    SecondaryPhone = txtPhoneNumber2.Text,
+                    PrimaryPhone = mtxtBoxPhone.Text,
+                    SecondaryPhone = mtxtBoxPhone2.Text,
                     #endregion
 
                     #region Score Info
