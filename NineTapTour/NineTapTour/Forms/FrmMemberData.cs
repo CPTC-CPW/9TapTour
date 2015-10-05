@@ -222,32 +222,6 @@ namespace NineTapTour.Forms
             firstName = txtFirstName.Text;
             lastName = txtLastName.Text;
             zip = txtZip.Text;
-            if(!Regex.IsMatch(firstName, "^[a-zA-Z]+$"))
-            {
-                 MessageBox.Show("Invalid Characters in first name field"); 
-                 txtFirstName.Clear();
-            }
-             
-           if(!Regex.IsMatch(lastName, "^[a-zA-Z]+$"))
-             {
-                 MessageBox.Show("Invalid Characters in last name field");
-                 txtLastName.Clear();
-             } 
-            if(!Regex.IsMatch(zip, "^\\d{5}(?:[-\\s]\\d{4})?$"))
-            {
-                MessageBox.Show("Invalid zip code field");
-                 txtZip.Clear();
-            }
-             //return Regex.IsMatch(firstName, "^[a-zA-Z]+$");
-        
-        }
-
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            //prototype of data validation
-            //if ( e) //| txtState.Text == "" || txtZip.Text =="" || txtAddress.Text == "")  //include rest 
-
-            isValid(txtFirstName.Text, txtLastName.Text,txtZip.Text);
             // check if Active radio button is checked
             if (!rdoActive.Checked && !rdoInActive.Checked)
             {
@@ -260,9 +234,42 @@ namespace NineTapTour.Forms
                 MessageBox.Show("a gender must be chosen");
                 return;
             }
+            if(!Regex.IsMatch(firstName, "^[a-zA-Z]+$"))
+            {
+                 MessageBox.Show("Invalid Characters in first name field"); 
+                 txtFirstName.Clear();
+                
+            }
+            
+             
+           if(!Regex.IsMatch(lastName, "^[a-zA-Z]+$"))
+             {
+                 MessageBox.Show("Invalid Characters in last name field");
+                 txtLastName.Clear();
+                 
+             } 
+            if(!Regex.IsMatch(zip, "^\\d{5}(?:[-\\s]\\d{4})?$"))
+            {
+                MessageBox.Show("Invalid zip code field");
+                 txtZip.Clear();
+                
+            }
+             //return Regex.IsMatch(firstName, "^[a-zA-Z]+$");
+        
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            //prototype of data validation
+            //if ( e) //| txtState.Text == "" || txtZip.Text =="" || txtAddress.Text == "")  //include rest 
+
+            isValid(txtFirstName.Text, txtLastName.Text,txtZip.Text);
+            return;
+          
             var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            if (confirm == DialogResult.No) return;
+            if (confirm == DialogResult.No) 
+                return;
 
             Member temp;
 
