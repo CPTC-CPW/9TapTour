@@ -20,7 +20,7 @@ namespace NineTapTour.Database
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
-        [Required]
+
         public string MiddleInitial { get; set; }
         [Required]
         public DateTime DateOfBirth { get; set; }
