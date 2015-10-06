@@ -219,12 +219,8 @@ namespace NineTapTour.Forms
 
         // method checks for valid characters. 
         // UPDATE THIS METHOD: add more textfields to validate for the whole form to submit
-        public bool isValid( String firstName, String lastName, String zip)
+        public bool isValid( )
         {
-            firstName = txtFirstName.Text;
-            lastName = txtLastName.Text;
-            zip = mtxtBoxZip.Text;
-           
             // check if Active radio button is checked
             if (!rdoActive.Checked && !rdoInActive.Checked)
             {
@@ -237,45 +233,79 @@ namespace NineTapTour.Forms
                 MessageBox.Show("a gender must be chosen");
                 return false;
             }
-            if(!Regex.IsMatch(firstName, "^[a-zA-Z]+$"))
+            if (!Regex.IsMatch(txtFirstName.Text, "^[a-zA-Z]+$"))
             {
-                 MessageBox.Show("field cannot be blank"); 
-                 txtFirstName.Clear();
-                 return false;
-                
+                MessageBox.Show("field cannot be blank");
+                txtFirstName.Clear();
+                return false;
             }
-            
-           if(!Regex.IsMatch(lastName, "^[a-zA-Z]+$"))
-             {
-                 MessageBox.Show("field cannot be blank");
-                 txtLastName.Clear();
-                 return false;
-                 
-             } 
-            if(!Regex.IsMatch(zip, "^\\d{5}(?:[-\\s]\\d{4})?$"))
+            //use better regex expression that includes spaces and hyphens
+            if (!Regex.IsMatch(txtLastName.Text, "^[a-zA-Z]+$"))
+            {
+                MessageBox.Show("field cannot be blank");
+                txtLastName.Clear();
+                return false;
+            }
+            if (!Regex.IsMatch(mtxtBoxZip.Text, "^\\d{5}(?:[-\\s]\\d{4})?$"))
             {
                 MessageBox.Show("Invalid zip code field");
-                 mtxtBoxZip.Clear();
-                 return false;
-                
+                mtxtBoxZip.Clear();
+                return false;
+            }
+            if (!Regex.IsMatch(mtxtBoxPhone.Text, "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$"))
+            {
+                MessageBox.Show("Invalid Primary Phone field");
+                mtxtBoxPhone.Clear();
+                return false;
+            }
+            if (!Regex.IsMatch(mtxtBoxSSN.Text, "^\\d{3}-?\\d{2}-?\\d{4}$"))
+            {
+                MessageBox.Show("Invalid Social Security field");
+                mtxtBoxSSN.Clear();
+                return false;
+            }
+            //ToDO improve address, city, state, email validation, DOB. just a prototype
+            if(mtxtBoxSSN.Text == "")
+            {
+                MessageBox.Show(" DOB field cannot be null");
+                mtxtBoxDOB.Clear();
+                return false;
+            }
+            if (txtAddress.Text == "")
+            {
+                MessageBox.Show("Address field cannot be null");
+                txtAddress.Clear();
+                return false;
+            }
+            if (txtCity.Text == "")
+            {
+                MessageBox.Show(" City field cannot be null");
+                txtCity.Clear();
+                return false;
+            }
+            if (txtEmail.Text == "") 
+            {
+                MessageBox.Show("email field cannot be null");
+                txtEmail.Clear();
+                return false;
+            }
+            if (txtState.Text == "")
+            {
+                MessageBox.Show("state field cannot be null");
+                txtState.Clear();
+                return false;
             }
             return true;
-             //return Regex.IsMatch(firstName, "^[a-zA-Z]+$");
-        
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            isValid(txtFirstName.Text, txtLastName.Text, mtxtBoxZip.Text);
-
             //checks to see if firstname,lastname, and zip is valid.
             //Then runs the rest of the btnSave_Click and adds a member into the database.
             //TODO: needs more fields to validate inorder for the user to save a new member. (SSN, Address, Phone Number, etc...)
-            if (isValid(txtFirstName.Text, txtLastName.Text, mtxtBoxZip.Text))
+            if (isValid())
             {
             var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-
             if (confirm == DialogResult.No) 
                 return;
             Member temp;

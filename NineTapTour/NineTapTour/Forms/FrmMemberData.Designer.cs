@@ -46,6 +46,8 @@
             this.txtAverage = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.grpMemberInfo = new System.Windows.Forms.GroupBox();
+            this.mtxtBoxDOB = new System.Windows.Forms.MaskedTextBox();
+            this.mtxtBoxZip = new System.Windows.Forms.MaskedTextBox();
             this.mtxtBoxSSN = new System.Windows.Forms.MaskedTextBox();
             this.mtxtBoxPhone2 = new System.Windows.Forms.MaskedTextBox();
             this.mtxtBoxPhone = new System.Windows.Forms.MaskedTextBox();
@@ -102,8 +104,6 @@
             this.grpStatus = new System.Windows.Forms.GroupBox();
             this.chbSenior = new System.Windows.Forms.CheckBox();
             this.dateLastBowled = new System.Windows.Forms.DateTimePicker();
-            this.mtxtBoxZip = new System.Windows.Forms.MaskedTextBox();
-            this.mtxtBoxDOB = new System.Windows.Forms.MaskedTextBox();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -316,6 +316,24 @@
             this.grpMemberInfo.TabIndex = 4;
             this.grpMemberInfo.TabStop = false;
             this.grpMemberInfo.Text = "Member Information";
+            // 
+            // mtxtBoxDOB
+            // 
+            this.mtxtBoxDOB.Location = new System.Drawing.Point(19, 35);
+            this.mtxtBoxDOB.Mask = "00/00/00";
+            this.mtxtBoxDOB.Name = "mtxtBoxDOB";
+            this.mtxtBoxDOB.Size = new System.Drawing.Size(100, 23);
+            this.mtxtBoxDOB.TabIndex = 40;
+            // 
+            // mtxtBoxZip
+            // 
+            this.mtxtBoxZip.HideSelection = false;
+            this.mtxtBoxZip.Location = new System.Drawing.Point(193, 106);
+            this.mtxtBoxZip.Mask = "00000";
+            this.mtxtBoxZip.Name = "mtxtBoxZip";
+            this.mtxtBoxZip.ShortcutsEnabled = false;
+            this.mtxtBoxZip.Size = new System.Drawing.Size(100, 23);
+            this.mtxtBoxZip.TabIndex = 39;
             // 
             // mtxtBoxSSN
             // 
@@ -896,25 +914,6 @@
             this.dateLastBowled.TabIndex = 34;
             this.dateLastBowled.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
             this.dateLastBowled.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ClearCalendar);
-            // 
-            // mtxtBoxZip
-            // 
-            this.mtxtBoxZip.HideSelection = false;
-            this.mtxtBoxZip.Location = new System.Drawing.Point(193, 106);
-            this.mtxtBoxZip.Mask = "00000";
-            this.mtxtBoxZip.Name = "mtxtBoxZip";
-            this.mtxtBoxZip.ShortcutsEnabled = false;
-            this.mtxtBoxZip.Size = new System.Drawing.Size(100, 23);
-            this.mtxtBoxZip.TabIndex = 39;
-            // 
-            // mtxtBoxDOB
-            // 
-            this.mtxtBoxDOB.Location = new System.Drawing.Point(19, 35);
-            this.mtxtBoxDOB.Mask = "00/00/0000";
-            this.mtxtBoxDOB.Name = "mtxtBoxDOB";
-            this.mtxtBoxDOB.Size = new System.Drawing.Size(100, 23);
-            this.mtxtBoxDOB.TabIndex = 40;
-            this.mtxtBoxDOB.ValidatingType = typeof(System.DateTime);
             // 
             // FrmMemberData
             // 
