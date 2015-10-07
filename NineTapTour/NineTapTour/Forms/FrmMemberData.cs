@@ -218,8 +218,8 @@ namespace NineTapTour.Forms
         //}
 
         // method checks for valid characters. 
-        // UPDATE THIS METHOD: add more textfields to validate for the whole form to submit
-        public bool isValid( )
+        // TODO: add more textfields to validate for the whole form to submit
+        public bool isValid()
         {
             // check if Active radio button is checked
             if (!rdoActive.Checked && !rdoInActive.Checked)
@@ -264,7 +264,7 @@ namespace NineTapTour.Forms
                 mtxtBoxSSN.Clear();
                 return false;
             }
-            //ToDO improve address, city, state, email validation, DOB. just a prototype
+            //TODO: improve address, city, state, email validation, DOB. just a prototype
             if(mtxtBoxSSN.Text == "")
             {
                 MessageBox.Show(" DOB field cannot be null");

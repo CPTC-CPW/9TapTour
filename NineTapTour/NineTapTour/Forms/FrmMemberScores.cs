@@ -152,6 +152,25 @@ namespace NineTapTour.Forms
                 }
                 txtScratchTotal.Text = scratchTotal.ToString();
             }
+            //AutoTabs to the next textbox when textbox1's length is 3.
+
+            if (scratchArray[0].Text.Length == 3)
+            {
+                scratchArray[1].Focus();
+            }
+            if(scratchArray[1].Text.Length == 3) 
+            {
+                scratchArray[2].Focus();
+            }
+            if (scratchArray[2].Text.Length == 3)
+            {
+                scratchArray[3].Focus();
+            }
+            
+            if (scratchArray[3].Text.Length == 3)
+            {
+                btnNew.Focus();
+            }
         }
 
         private void handicapTotal(string id, int score)
