@@ -10,14 +10,18 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace NineTapTour.Forms
 {
     public partial class frmMemberScores : Form
     {
+        
         //IOrderedEnumerable<Member> _membersList;
         Member currentMem;
         TextBox[] scratchArray = new TextBox[4];
         TextBox[] handicappArray = new TextBox[4];
+        //Count for record counting
+        int count = 0;
 
         public frmMemberScores()
         {
@@ -196,7 +200,39 @@ namespace NineTapTour.Forms
             }
             txtHandicapTotal.Text = Convert.ToString(totalScore);
         }
-        public void newTourney(object sender, EventArgs e)
+        public void newRecap(object sender, EventArgs e)
+        {
+            Participant player = new Participant();
+            player.Scores = new int[4] { 
+                Convert.ToInt16(scratchArray[0].Text), 
+                Convert.ToInt16(scratchArray[1].Text), 
+                Convert.ToInt16(scratchArray[2].Text), 
+                Convert.ToInt16(scratchArray[3].Text) 
+            };
+
+            
+        }
+
+        private void btnRightArrow_Click(object sender, EventArgs e)
+        {
+            count++;
+            lblRecord.Text = "Record " + count + " / " + "?";
+        }
+
+        private void btnLeftArrow_Click(object sender, EventArgs e)
+        {
+            if (count <= 0)
+            {
+                MessageBox.Show("There are no more players to go back to!");
+            }
+            else
+            {
+                count--;
+                lblRecord.Text = "Record " + count + " / " + "?";
+            }
+        }
+
+        private void btnNewTournament_Click(object sender, EventArgs e)
         {
             var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
             ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);

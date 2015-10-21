@@ -68,6 +68,7 @@
             this.txtBonusPins = new System.Windows.Forms.TextBox();
             this.txtHandicap = new System.Windows.Forms.TextBox();
             this.grpTournamentFile = new System.Windows.Forms.GroupBox();
+            this.lsbTournaments = new System.Windows.Forms.ListBox();
             this.grpLeaders = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -89,7 +90,8 @@
             this.rtxtComments = new System.Windows.Forms.RichTextBox();
             this.pnlMemStat = new System.Windows.Forms.Panel();
             this.lblMemberL = new System.Windows.Forms.Label();
-            this.lsbTournaments = new System.Windows.Forms.ListBox();
+            this.lblRecord = new System.Windows.Forms.Label();
+            this.btnNewTournament = new System.Windows.Forms.Button();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpRecord.SuspendLayout();
@@ -387,6 +389,7 @@
             this.btnRightArrow.TabIndex = 1;
             this.btnRightArrow.Text = ">";
             this.btnRightArrow.UseVisualStyleBackColor = true;
+            this.btnRightArrow.Click += new System.EventHandler(this.btnRightArrow_Click);
             // 
             // btnLeftArrow
             // 
@@ -396,6 +399,7 @@
             this.btnLeftArrow.TabIndex = 1;
             this.btnLeftArrow.Text = "<";
             this.btnLeftArrow.UseVisualStyleBackColor = true;
+            this.btnLeftArrow.Click += new System.EventHandler(this.btnLeftArrow_Click);
             // 
             // btnDelete
             // 
@@ -432,7 +436,7 @@
             this.btnNew.TabIndex = 0;
             this.btnNew.Text = "New";
             this.btnNew.UseVisualStyleBackColor = true;
-            this.btnNew.Click += new System.EventHandler(this.newTourney);
+            this.btnNew.Click += new System.EventHandler(this.newRecap);
             // 
             // lblStratchScores
             // 
@@ -530,6 +534,14 @@
             this.grpTournamentFile.TabIndex = 12;
             this.grpTournamentFile.TabStop = false;
             this.grpTournamentFile.Text = "Tournament File";
+            // 
+            // lsbTournaments
+            // 
+            this.lsbTournaments.FormattingEnabled = true;
+            this.lsbTournaments.Location = new System.Drawing.Point(6, 19);
+            this.lsbTournaments.Name = "lsbTournaments";
+            this.lsbTournaments.Size = new System.Drawing.Size(189, 121);
+            this.lsbTournaments.TabIndex = 1;
             // 
             // grpLeaders
             // 
@@ -738,19 +750,32 @@
             this.lblMemberL.TabIndex = 1;
             this.lblMemberL.Text = "MemberStatus:";
             // 
-            // lsbTournaments
+            // lblRecord
             // 
-            this.lsbTournaments.FormattingEnabled = true;
-            this.lsbTournaments.Location = new System.Drawing.Point(6, 19);
-            this.lsbTournaments.Name = "lsbTournaments";
-            this.lsbTournaments.Size = new System.Drawing.Size(189, 121);
-            this.lsbTournaments.TabIndex = 1;
+            this.lblRecord.AutoSize = true;
+            this.lblRecord.Location = new System.Drawing.Point(232, 494);
+            this.lblRecord.Name = "lblRecord";
+            this.lblRecord.Size = new System.Drawing.Size(62, 13);
+            this.lblRecord.TabIndex = 18;
+            this.lblRecord.Text = "Record 0/0";
+            // 
+            // btnNewTournament
+            // 
+            this.btnNewTournament.Location = new System.Drawing.Point(300, 496);
+            this.btnNewTournament.Name = "btnNewTournament";
+            this.btnNewTournament.Size = new System.Drawing.Size(106, 23);
+            this.btnNewTournament.TabIndex = 11;
+            this.btnNewTournament.Text = "New Tournament";
+            this.btnNewTournament.UseVisualStyleBackColor = true;
+            this.btnNewTournament.Click += new System.EventHandler(this.btnNewTournament_Click);
             // 
             // frmMemberScores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(790, 686);
+            this.Controls.Add(this.btnNewTournament);
+            this.Controls.Add(this.lblRecord);
             this.Controls.Add(this.lblMemberL);
             this.Controls.Add(this.pnlMemStat);
             this.Controls.Add(this.grpComments);
@@ -855,5 +880,7 @@
         private System.Windows.Forms.Panel pnlMemStat;
         private System.Windows.Forms.Label lblMemberL;
         private System.Windows.Forms.ListBox lsbTournaments;
+        private System.Windows.Forms.Label lblRecord;
+        private System.Windows.Forms.Button btnNewTournament;
     }
 }
