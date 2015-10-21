@@ -210,7 +210,15 @@ namespace NineTapTour.Forms
                 Convert.ToInt16(scratchArray[3].Text) 
             };
 
-            
+            try
+            {
+                TournamentDb.AddMemberToTournament(player);
+                MessageBox.Show(@"Bowler Added Successfully to Tournament!");
+            }
+            catch (MemberAccessException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void btnRightArrow_Click(object sender, EventArgs e)

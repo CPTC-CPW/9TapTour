@@ -20,7 +20,7 @@ namespace NineTapTour.Forms
         {
             set { _memberNum = value; }
         }
-        
+
 
         public FrmMemberData()
         {
@@ -42,7 +42,7 @@ namespace NineTapTour.Forms
         public void UpdateMemberInfo(Member searchMem = null)
         {
             _memberNum = Convert.ToInt32(txtMemberNumber.Text);
-            if(searchMem == null)
+            if (searchMem == null)
             {
                 currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == _memberNum);
             }
@@ -120,7 +120,7 @@ namespace NineTapTour.Forms
                 txtReferrals.Text = "";
                 chbSenior.Checked = false;
 
-                foreach(var check in grpStatus.Controls.OfType<RadioButton>())
+                foreach (var check in grpStatus.Controls.OfType<RadioButton>())
                 {
                     check.Checked = false;
                 }
@@ -141,7 +141,7 @@ namespace NineTapTour.Forms
                 txtMiddleInitial.Text = currentMem.MiddleInitial;
                 mtxtBoxDOB.Text = currentMem.DateOfBirth.ToShortDateString();
                 mtxtBoxSSN.Text = currentMem.SSN;
-               // txtSSN.PasswordChar = '*'; //This hides the SSN within the form of '*'.
+                // txtSSN.PasswordChar = '*'; //This hides the SSN within the form of '*'.
                 #endregion
 
                 #region Postal Address
@@ -165,11 +165,11 @@ namespace NineTapTour.Forms
 
                 #region Misc. Info
                 //TODO: Pull datetime from database correctly
-                
+
                 dateJoined.Value = currentMem.JoinDate;
                 if (currentMem.RejoinDate.HasValue)
                 {
-                    dateRejoin.Value = (DateTime) currentMem.RejoinDate;
+                    dateRejoin.Value = (DateTime)currentMem.RejoinDate;
                 }
                 else
                 {
@@ -178,7 +178,7 @@ namespace NineTapTour.Forms
                 }
                 if (currentMem.LastBowled.HasValue)
                 {
-                    dateLastBowled.Value = (DateTime) currentMem.LastBowled;
+                    dateLastBowled.Value = (DateTime)currentMem.LastBowled;
                 }
                 else
                 {
@@ -189,7 +189,7 @@ namespace NineTapTour.Forms
                 txtNotes.Text = currentMem.Notes;
                 txtReferrals.Text = currentMem.Referrals.ToString();
                 chbSenior.Checked = currentMem.IsSenior;
-                
+
                 if (currentMem.IsActive)
                 {
                     rdoActive.Checked = true;
@@ -265,7 +265,7 @@ namespace NineTapTour.Forms
                 return false;
             }
             //TODO: improve address, city, state, email validation, DOB. just a prototype
-            if(mtxtBoxSSN.Text == "")
+            if (mtxtBoxSSN.Text == "")
             {
                 MessageBox.Show(" DOB field cannot be null");
                 mtxtBoxDOB.Clear();
@@ -283,7 +283,7 @@ namespace NineTapTour.Forms
                 txtCity.Clear();
                 return false;
             }
-            if (txtEmail.Text == "") 
+            if (txtEmail.Text == "")
             {
                 MessageBox.Show("email field cannot be null");
                 txtEmail.Clear();
@@ -305,123 +305,123 @@ namespace NineTapTour.Forms
             //TODO: needs more fields to validate inorder for the user to save a new member. (SSN, Address, Phone Number, etc...)
             if (isValid())
             {
-            var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (confirm == DialogResult.No) 
-                return;
-            Member temp;
+                var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (confirm == DialogResult.No)
+                    return;
+                Member temp;
 
-            if(_memberId != -1)
-            {
-                temp = new Member
+                if (_memberId != -1)
                 {
-                    Id = _memberId,
-                    Number = Convert.ToInt32(txtMemberNumber.Text),
-                    IsActive = rdoActive.Checked,
-                    JoinDate = DateTime.Now,
+                    temp = new Member
+                    {
+                        Id = _memberId,
+                        Number = Convert.ToInt32(txtMemberNumber.Text),
+                        IsActive = rdoActive.Checked,
+                        JoinDate = DateTime.Now,
 
-                    #region Personal Info
-                    LastName = txtLastName.Text,
-                    FirstName = txtFirstName.Text,
-                    MiddleInitial = txtMiddleInitial.Text,
-                    DateOfBirth = Convert.ToDateTime(mtxtBoxDOB),
-                    SSN = mtxtBoxSSN.Text,
-                    IsSenior = chbSenior.Checked,
-                    Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
-                    #endregion
+                        #region Personal Info
+                        LastName = txtLastName.Text,
+                        FirstName = txtFirstName.Text,
+                        MiddleInitial = txtMiddleInitial.Text,
+                        DateOfBirth = Convert.ToDateTime(mtxtBoxDOB),
+                        SSN = mtxtBoxSSN.Text,
+                        IsSenior = chbSenior.Checked,
+                        Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
+                        #endregion
 
-                    #region Postal Address
-                    Street = txtAddress.Text,
-                    City = txtCity.Text,
-                    State = txtState.Text,
-                    PostalCode = mtxtBoxZip.Text,
-                    #endregion
+                        #region Postal Address
+                        Street = txtAddress.Text,
+                        City = txtCity.Text,
+                        State = txtState.Text,
+                        PostalCode = mtxtBoxZip.Text,
+                        #endregion
 
-                    #region Contact Info
-                    Email = txtEmail.Text,
-                    PrimaryPhone =  mtxtBoxPhone.Text,
-                    SecondaryPhone = mtxtBoxPhone2.Text,
-                    #endregion
+                        #region Contact Info
+                        Email = txtEmail.Text,
+                        PrimaryPhone = mtxtBoxPhone.Text,
+                        SecondaryPhone = mtxtBoxPhone2.Text,
+                        #endregion
 
-                    #region Score Info
-                    Average = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text),
-                    Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text),
-                    Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text),
-                    #endregion
+                        #region Score Info
+                        Average = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text),
+                        Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text),
+                        Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text),
+                        #endregion
 
-                    #region Misc. Info
-                    RejoinDate = (dateRejoin.CustomFormat ==  @" ") ? (DateTime?) null : dateRejoin.Value,
-                    LastBowled = (dateLastBowled.CustomFormat == @" ") ? (DateTime?) null : dateLastBowled.Value,
-                    MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
-                    //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
-                    Notes = txtNotes.Text,
-                    Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text)
-                    #endregion
-                };
+                        #region Misc. Info
+                        RejoinDate = (dateRejoin.CustomFormat == @" ") ? (DateTime?)null : dateRejoin.Value,
+                        LastBowled = (dateLastBowled.CustomFormat == @" ") ? (DateTime?)null : dateLastBowled.Value,
+                        MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
+                        //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
+                        Notes = txtNotes.Text,
+                        Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text)
+                        #endregion
+                    };
 
-            }
-            else
-            {
-                temp = new Member()
+                }
+                else
                 {
-                    Number = Convert.ToInt32(txtMemberNumber.Text),
-                    IsActive = rdoActive.Checked,
-                    JoinDate = DateTime.Now,
+                    temp = new Member()
+                    {
+                        Number = Convert.ToInt32(txtMemberNumber.Text),
+                        IsActive = rdoActive.Checked,
+                        JoinDate = DateTime.Now,
 
-                    #region Personal Info
-                    LastName = txtLastName.Text,
-                    FirstName = txtFirstName.Text,
-                    MiddleInitial = txtMiddleInitial.Text,
-                    DateOfBirth = Convert.ToDateTime(mtxtBoxDOB),
-                    SSN = mtxtBoxSSN.Text,
-                    IsSenior = chbSenior.Checked,
-                    Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
-                    #endregion
+                        #region Personal Info
+                        LastName = txtLastName.Text,
+                        FirstName = txtFirstName.Text,
+                        MiddleInitial = txtMiddleInitial.Text,
+                        DateOfBirth = Convert.ToDateTime(mtxtBoxDOB),
+                        SSN = mtxtBoxSSN.Text,
+                        IsSenior = chbSenior.Checked,
+                        Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
+                        #endregion
 
-                    #region Postal Address
-                    Street = txtAddress.Text,
-                    City = txtCity.Text,
-                    State = txtState.Text,
-                    PostalCode = mtxtBoxZip.Text,
-                    #endregion
+                        #region Postal Address
+                        Street = txtAddress.Text,
+                        City = txtCity.Text,
+                        State = txtState.Text,
+                        PostalCode = mtxtBoxZip.Text,
+                        #endregion
 
-                    #region Contact Info
-                    Email = txtEmail.Text,
-                    PrimaryPhone = mtxtBoxPhone.Text,
-                    SecondaryPhone = mtxtBoxPhone2.Text,
-                    #endregion
+                        #region Contact Info
+                        Email = txtEmail.Text,
+                        PrimaryPhone = mtxtBoxPhone.Text,
+                        SecondaryPhone = mtxtBoxPhone2.Text,
+                        #endregion
 
-                    #region Score Info
-                    Average = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text),
-                    Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text),
-                    Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text),
-                    #endregion
+                        #region Score Info
+                        Average = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text),
+                        Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text),
+                        Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text),
+                        #endregion
 
-                    #region Misc. Info
-                    RejoinDate = (dateRejoin.CustomFormat == @" ") ? (DateTime?)null : dateRejoin.Value,
-                    LastBowled = (dateLastBowled.CustomFormat == @" ") ? (DateTime?)null : dateLastBowled.Value,
-                    MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
-                    //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
-                    Notes = txtNotes.Text,
-                    Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text)
-                    #endregion
-                };
-            }
+                        #region Misc. Info
+                        RejoinDate = (dateRejoin.CustomFormat == @" ") ? (DateTime?)null : dateRejoin.Value,
+                        LastBowled = (dateLastBowled.CustomFormat == @" ") ? (DateTime?)null : dateLastBowled.Value,
+                        MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
+                        //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
+                        Notes = txtNotes.Text,
+                        Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text)
+                        #endregion
+                    };
+                }
 
-            // Adds Member to Database
+                // Adds Member to Database
 
-            try
-            {
-                MemberDb.AddMember(temp);
+                try
+                {
+                    MemberDb.AddMember(temp);
 
-                MessageBox.Show(@"Bowler Added Successfully.");
-                //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-                ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-                //_membersList = ((FrmMain)MdiParent)._membersList;
-            }
-            catch (MemberTableException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+                    MessageBox.Show(@"Bowler Added Successfully.");
+                    //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+                    ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+                    //_membersList = ((FrmMain)MdiParent)._membersList;
+                }
+                catch (MemberTableException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
 
             }
             //else, there must be a validation error. Either something is null or the format of how the user entered was incorrect.
@@ -471,7 +471,7 @@ namespace NineTapTour.Forms
             dateLastBowled.Format = DateTimePickerFormat.Custom;
             dateLastBowled.CustomFormat = @" ";
             _memberId = -1;
-            txtMemberNumber.Text = (((FrmMain)MdiParent)._membersList.Last().Number + 1).ToString(); 
+            txtMemberNumber.Text = (((FrmMain)MdiParent)._membersList.Last().Number + 1).ToString();
             currentMem = new Member
             {
                 Number = (((FrmMain)MdiParent)._membersList.Last().Number + 1)
