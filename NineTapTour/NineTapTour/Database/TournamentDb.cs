@@ -49,7 +49,7 @@ namespace NineTapTour.Database
                     //    EntityState.Modified :
                     //    EntityState.Added;
                     db.Participants.Add(player);
-                    db.SaveChanges();
+                    db.SaveChanges();   // 'System.Data.Entity.Validation.DbEntityValidationException' occurred in EntityFramework.dll
                 }
             }
             catch (SqlException ex)

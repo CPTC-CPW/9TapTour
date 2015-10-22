@@ -33,7 +33,7 @@
             this.txtMemberNum = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.rdoSquadFour = new System.Windows.Forms.RadioButton();
-            this.rdoSquad3 = new System.Windows.Forms.RadioButton();
+            this.rdoSquadThree = new System.Windows.Forms.RadioButton();
             this.rdoSquadTwo = new System.Windows.Forms.RadioButton();
             this.rdoSquadOne = new System.Windows.Forms.RadioButton();
             this.txtLastName = new System.Windows.Forms.TextBox();
@@ -125,7 +125,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.rdoSquadFour);
-            this.groupBox1.Controls.Add(this.rdoSquad3);
+            this.groupBox1.Controls.Add(this.rdoSquadThree);
             this.groupBox1.Controls.Add(this.rdoSquadTwo);
             this.groupBox1.Controls.Add(this.rdoSquadOne);
             this.groupBox1.Location = new System.Drawing.Point(21, 85);
@@ -146,16 +146,16 @@
             this.rdoSquadFour.Text = "Squad 4";
             this.rdoSquadFour.UseVisualStyleBackColor = true;
             // 
-            // rdoSquad3
+            // rdoSquadThree
             // 
-            this.rdoSquad3.AutoSize = true;
-            this.rdoSquad3.Location = new System.Drawing.Point(6, 43);
-            this.rdoSquad3.Name = "rdoSquad3";
-            this.rdoSquad3.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquad3.TabIndex = 0;
-            this.rdoSquad3.TabStop = true;
-            this.rdoSquad3.Text = "Squad 3";
-            this.rdoSquad3.UseVisualStyleBackColor = true;
+            this.rdoSquadThree.AutoSize = true;
+            this.rdoSquadThree.Location = new System.Drawing.Point(6, 43);
+            this.rdoSquadThree.Name = "rdoSquadThree";
+            this.rdoSquadThree.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquadThree.TabIndex = 0;
+            this.rdoSquadThree.TabStop = true;
+            this.rdoSquadThree.Text = "Squad 3";
+            this.rdoSquadThree.UseVisualStyleBackColor = true;
             // 
             // rdoSquadTwo
             // 
@@ -824,7 +824,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton rdoSquadOne;
         private System.Windows.Forms.RadioButton rdoSquadFour;
-        private System.Windows.Forms.RadioButton rdoSquad3;
+        private System.Windows.Forms.RadioButton rdoSquadThree;
         private System.Windows.Forms.RadioButton rdoSquadTwo;
         private System.Windows.Forms.TextBox txtLastName;
         private System.Windows.Forms.TextBox txtFirstName;
