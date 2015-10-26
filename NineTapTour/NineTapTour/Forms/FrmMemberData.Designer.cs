@@ -208,7 +208,7 @@
             this.txtBonus.Multiline = true;
             this.txtBonus.Name = "txtBonus";
             this.txtBonus.Size = new System.Drawing.Size(89, 54);
-            this.txtBonus.TabIndex = 7;
+            this.txtBonus.TabIndex = 77;
             this.txtBonus.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtHandicap
@@ -219,7 +219,7 @@
             this.txtHandicap.Multiline = true;
             this.txtHandicap.Name = "txtHandicap";
             this.txtHandicap.Size = new System.Drawing.Size(89, 54);
-            this.txtHandicap.TabIndex = 6;
+            this.txtHandicap.TabIndex = 66;
             this.txtHandicap.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // lblAverage
@@ -270,7 +270,7 @@
             this.txtAverage.Multiline = true;
             this.txtAverage.Name = "txtAverage";
             this.txtAverage.Size = new System.Drawing.Size(99, 54);
-            this.txtAverage.TabIndex = 5;
+            this.txtAverage.TabIndex = 44;
             this.txtAverage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // lblNotes
@@ -323,7 +323,7 @@
             this.mtxtBoxDOB.Mask = "00/00/00";
             this.mtxtBoxDOB.Name = "mtxtBoxDOB";
             this.mtxtBoxDOB.Size = new System.Drawing.Size(100, 23);
-            this.mtxtBoxDOB.TabIndex = 40;
+            this.mtxtBoxDOB.TabIndex = 7;
             // 
             // mtxtBoxZip
             // 
@@ -333,7 +333,7 @@
             this.mtxtBoxZip.Name = "mtxtBoxZip";
             this.mtxtBoxZip.ShortcutsEnabled = false;
             this.mtxtBoxZip.Size = new System.Drawing.Size(100, 23);
-            this.mtxtBoxZip.TabIndex = 39;
+            this.mtxtBoxZip.TabIndex = 12;
             // 
             // mtxtBoxSSN
             // 
@@ -343,7 +343,7 @@
             this.mtxtBoxSSN.PasswordChar = '*';
             this.mtxtBoxSSN.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.mtxtBoxSSN.Size = new System.Drawing.Size(100, 23);
-            this.mtxtBoxSSN.TabIndex = 38;
+            this.mtxtBoxSSN.TabIndex = 8;
             // 
             // mtxtBoxPhone2
             // 
@@ -351,7 +351,7 @@
             this.mtxtBoxPhone2.Mask = "(999) 000-0000";
             this.mtxtBoxPhone2.Name = "mtxtBoxPhone2";
             this.mtxtBoxPhone2.Size = new System.Drawing.Size(100, 23);
-            this.mtxtBoxPhone2.TabIndex = 37;
+            this.mtxtBoxPhone2.TabIndex = 14;
             // 
             // mtxtBoxPhone
             // 
@@ -359,7 +359,7 @@
             this.mtxtBoxPhone.Mask = "(999) 000-0000";
             this.mtxtBoxPhone.Name = "mtxtBoxPhone";
             this.mtxtBoxPhone.Size = new System.Drawing.Size(100, 23);
-            this.mtxtBoxPhone.TabIndex = 36;
+            this.mtxtBoxPhone.TabIndex = 13;
             // 
             // dateRejoin
             // 
@@ -368,7 +368,7 @@
             this.dateRejoin.Location = new System.Drawing.Point(344, 185);
             this.dateRejoin.Name = "dateRejoin";
             this.dateRejoin.Size = new System.Drawing.Size(103, 23);
-            this.dateRejoin.TabIndex = 35;
+            this.dateRejoin.TabIndex = 17;
             this.dateRejoin.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
             this.dateRejoin.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ClearCalendar);
             // 
@@ -378,7 +378,7 @@
             this.dateJoined.Location = new System.Drawing.Point(344, 137);
             this.dateJoined.Name = "dateJoined";
             this.dateJoined.Size = new System.Drawing.Size(103, 23);
-            this.dateJoined.TabIndex = 32;
+            this.dateJoined.TabIndex = 16;
             this.dateJoined.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
             // 
             // lblEmail
@@ -477,7 +477,7 @@
             this.txtReferrals.MaxLength = 50;
             this.txtReferrals.Name = "txtReferrals";
             this.txtReferrals.Size = new System.Drawing.Size(54, 23);
-            this.txtReferrals.TabIndex = 11;
+            this.txtReferrals.TabIndex = 18;
             // 
             // lblAddress
             // 
@@ -503,7 +503,7 @@
             this.txtState.MaxLength = 20;
             this.txtState.Name = "txtState";
             this.txtState.Size = new System.Drawing.Size(32, 23);
-            this.txtState.TabIndex = 4;
+            this.txtState.TabIndex = 11;
             this.txtState.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtCity
@@ -512,7 +512,7 @@
             this.txtCity.MaxLength = 20;
             this.txtCity.Name = "txtCity";
             this.txtCity.Size = new System.Drawing.Size(100, 23);
-            this.txtCity.TabIndex = 3;
+            this.txtCity.TabIndex = 10;
             this.txtCity.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtAddress
@@ -521,7 +521,7 @@
             this.txtAddress.MaxLength = 75;
             this.txtAddress.Name = "txtAddress";
             this.txtAddress.Size = new System.Drawing.Size(290, 23);
-            this.txtAddress.TabIndex = 2;
+            this.txtAddress.TabIndex = 9;
             this.txtAddress.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtEmail
@@ -530,7 +530,7 @@
             this.txtEmail.MaxLength = 50;
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(290, 23);
-            this.txtEmail.TabIndex = 8;
+            this.txtEmail.TabIndex = 15;
             this.txtEmail.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtYearEndT
@@ -540,7 +540,7 @@
             this.txtYearEndT.MaxLength = 20;
             this.txtYearEndT.Name = "txtYearEndT";
             this.txtYearEndT.Size = new System.Drawing.Size(124, 23);
-            this.txtYearEndT.TabIndex = 8;
+            this.txtYearEndT.TabIndex = 85;
             // 
             // txtMoneyEarned
             // 
@@ -548,7 +548,7 @@
             this.txtMoneyEarned.Location = new System.Drawing.Point(573, 517);
             this.txtMoneyEarned.Name = "txtMoneyEarned";
             this.txtMoneyEarned.Size = new System.Drawing.Size(100, 23);
-            this.txtMoneyEarned.TabIndex = 9;
+            this.txtMoneyEarned.TabIndex = 95;
             // 
             // lblYET
             // 
@@ -834,7 +834,7 @@
             this.rdoFemale.Location = new System.Drawing.Point(11, 19);
             this.rdoFemale.Name = "rdoFemale";
             this.rdoFemale.Size = new System.Drawing.Size(64, 19);
-            this.rdoFemale.TabIndex = 30;
+            this.rdoFemale.TabIndex = 6;
             this.rdoFemale.Text = "Female";
             this.rdoFemale.UseVisualStyleBackColor = true;
             // 
@@ -844,7 +844,7 @@
             this.rdoActive.Location = new System.Drawing.Point(11, 23);
             this.rdoActive.Name = "rdoActive";
             this.rdoActive.Size = new System.Drawing.Size(57, 19);
-            this.rdoActive.TabIndex = 30;
+            this.rdoActive.TabIndex = 4;
             this.rdoActive.Text = "Active";
             this.rdoActive.UseVisualStyleBackColor = true;
             // 
@@ -854,7 +854,7 @@
             this.rdoInActive.Location = new System.Drawing.Point(11, 46);
             this.rdoInActive.Name = "rdoInActive";
             this.rdoInActive.Size = new System.Drawing.Size(68, 19);
-            this.rdoInActive.TabIndex = 30;
+            this.rdoInActive.TabIndex = 4;
             this.rdoInActive.Text = "InActive";
             this.rdoInActive.UseVisualStyleBackColor = true;
             // 
@@ -899,7 +899,7 @@
             this.chbSenior.Location = new System.Drawing.Point(156, 179);
             this.chbSenior.Name = "chbSenior";
             this.chbSenior.Size = new System.Drawing.Size(61, 19);
-            this.chbSenior.TabIndex = 33;
+            this.chbSenior.TabIndex = 5;
             this.chbSenior.TabStop = false;
             this.chbSenior.Text = "Senior";
             this.chbSenior.UseVisualStyleBackColor = true;
@@ -956,6 +956,7 @@
             this.Controls.Add(this.txtLastName);
             this.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(900, 750);
             this.Name = "FrmMemberData";
             this.Text = "Member Info";
             this.Load += new System.EventHandler(this.MemberDataForm_Load);

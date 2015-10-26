@@ -45,9 +45,11 @@ namespace NineTapTour.Database
             {
                 using (var db = new NineTapDb())
                 {
-                    //db.Entry(player).State = db.Participants.Any(m => m.Scores == player.Scores) ?
-                    //    EntityState.Modified :
-                    //    EntityState.Added;
+                   
+                   // db.Entry(player).State = db.Participants.Any(m => m.Member == player.Member) ?
+                  //  EntityState.Modified :
+                   // EntityState.Added;
+
                     db.Participants.Add(player);
                     db.SaveChanges();   // 'System.Data.Entity.Validation.DbEntityValidationException' occurred in EntityFramework.dll
                 }

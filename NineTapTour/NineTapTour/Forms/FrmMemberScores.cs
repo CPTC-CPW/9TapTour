@@ -67,7 +67,8 @@ namespace NineTapTour.Forms
 
         private void GetMember(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode != Keys.Enter) return;
+            if (e.KeyCode != Keys.Enter) 
+                return;
 
             string searchNumber = txtMemberNum.Text;
             //if(searchNumber.Trim()=="") return;
@@ -233,16 +234,17 @@ namespace NineTapTour.Forms
                 
                    
            if (rdoSquadFour.Checked == true){   player.Squad = 4;}
-                
-                 
-                
 
 
+
+
+       
 
            
 
             try
             {
+                player.Member = currentMem;
                 TournamentDb.AddMemberToTournament(player);
                 MessageBox.Show(@"Bowler Added Successfully to Tournament!");
             }

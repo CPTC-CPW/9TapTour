@@ -13,7 +13,7 @@ namespace NineTapTour.Database
         public int[] Scores { get; set; }
         #region Foreign Keys
         [Required]
-        public Member Member { get; set; }
+         public Member Member { get; set; }
         [Required]
         public Tournament Tournament { get; set; }
         [Required]
