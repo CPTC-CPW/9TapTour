@@ -37,7 +37,7 @@
             // 
             // btnMemberData
             // 
-            this.btnMemberData.Font = new System.Drawing.Font("Monotype Corsiva", 14.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnMemberData.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnMemberData.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnMemberData.Location = new System.Drawing.Point(44, 347);
             this.btnMemberData.Name = "btnMemberData";
@@ -49,7 +49,7 @@
             // 
             // btnMemberScores
             // 
-            this.btnMemberScores.Font = new System.Drawing.Font("Monotype Corsiva", 14.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnMemberScores.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnMemberScores.Location = new System.Drawing.Point(44, 488);
             this.btnMemberScores.Name = "btnMemberScores";
             this.btnMemberScores.Size = new System.Drawing.Size(118, 71);
@@ -60,8 +60,8 @@
             // 
             // btnAbout
             // 
-            this.btnAbout.Font = new System.Drawing.Font("Monotype Corsiva", 14.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAbout.Location = new System.Drawing.Point(632, 347);
+            this.btnAbout.Font = new System.Drawing.Font("Arial Narrow", 14.25F);
+            this.btnAbout.Location = new System.Drawing.Point(721, 347);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.Size = new System.Drawing.Size(118, 71);
             this.btnAbout.TabIndex = 0;
@@ -71,8 +71,8 @@
             // 
             // Exit
             // 
-            this.Exit.Font = new System.Drawing.Font("Monotype Corsiva", 14.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Exit.Location = new System.Drawing.Point(632, 488);
+            this.Exit.Font = new System.Drawing.Font("Arial Narrow", 14.25F);
+            this.Exit.Location = new System.Drawing.Point(722, 488);
             this.Exit.Name = "Exit";
             this.Exit.Size = new System.Drawing.Size(118, 71);
             this.Exit.TabIndex = 0;
@@ -84,10 +84,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.BackColor = System.Drawing.Color.LightBlue;
             this.BackgroundImage = global::NineTapTour.Properties.Resources._9tap;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(796, 665);
+            this.ClientSize = new System.Drawing.Size(884, 712);
             this.Controls.Add(this.Exit);
             this.Controls.Add(this.btnAbout);
             this.Controls.Add(this.btnMemberScores);
