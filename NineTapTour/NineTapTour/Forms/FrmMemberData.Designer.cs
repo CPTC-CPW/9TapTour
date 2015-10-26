@@ -117,33 +117,33 @@
             // txtLastName
             // 
             this.txtLastName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLastName.Location = new System.Drawing.Point(179, 31);
+            this.txtLastName.Location = new System.Drawing.Point(226, 31);
             this.txtLastName.MaxLength = 50;
             this.txtLastName.Multiline = true;
             this.txtLastName.Name = "txtLastName";
-            this.txtLastName.Size = new System.Drawing.Size(206, 38);
+            this.txtLastName.Size = new System.Drawing.Size(226, 38);
             this.txtLastName.TabIndex = 1;
             this.txtLastName.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtFirstName
             // 
             this.txtFirstName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFirstName.Location = new System.Drawing.Point(414, 31);
+            this.txtFirstName.Location = new System.Drawing.Point(477, 31);
             this.txtFirstName.MaxLength = 50;
             this.txtFirstName.Multiline = true;
             this.txtFirstName.Name = "txtFirstName";
-            this.txtFirstName.Size = new System.Drawing.Size(202, 38);
+            this.txtFirstName.Size = new System.Drawing.Size(232, 38);
             this.txtFirstName.TabIndex = 2;
             this.txtFirstName.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtMiddleInitial
             // 
             this.txtMiddleInitial.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMiddleInitial.Location = new System.Drawing.Point(639, 31);
+            this.txtMiddleInitial.Location = new System.Drawing.Point(731, 31);
             this.txtMiddleInitial.MaxLength = 10;
             this.txtMiddleInitial.Multiline = true;
             this.txtMiddleInitial.Name = "txtMiddleInitial";
-            this.txtMiddleInitial.Size = new System.Drawing.Size(86, 38);
+            this.txtMiddleInitial.Size = new System.Drawing.Size(119, 38);
             this.txtMiddleInitial.TabIndex = 3;
             this.txtMiddleInitial.TextChanged += new System.EventHandler(this.InputRequired);
             // 
@@ -151,7 +151,7 @@
             // 
             this.lblLastName.AutoSize = true;
             this.lblLastName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLastName.Location = new System.Drawing.Point(179, 9);
+            this.lblLastName.Location = new System.Drawing.Point(222, 9);
             this.lblLastName.Name = "lblLastName";
             this.lblLastName.Size = new System.Drawing.Size(80, 19);
             this.lblLastName.TabIndex = 3;
@@ -161,7 +161,7 @@
             // 
             this.lblFirstName.AutoSize = true;
             this.lblFirstName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFirstName.Location = new System.Drawing.Point(414, 9);
+            this.lblFirstName.Location = new System.Drawing.Point(473, 9);
             this.lblFirstName.Name = "lblFirstName";
             this.lblFirstName.Size = new System.Drawing.Size(82, 19);
             this.lblFirstName.TabIndex = 2;
@@ -171,7 +171,7 @@
             // 
             this.lblMiddleIntial.AutoSize = true;
             this.lblMiddleIntial.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMiddleIntial.Location = new System.Drawing.Point(639, 9);
+            this.lblMiddleIntial.Location = new System.Drawing.Point(727, 9);
             this.lblMiddleIntial.Name = "lblMiddleIntial";
             this.lblMiddleIntial.Size = new System.Drawing.Size(103, 19);
             this.lblMiddleIntial.TabIndex = 5;
@@ -203,7 +203,7 @@
             // txtBonus
             // 
             this.txtBonus.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtBonus.Location = new System.Drawing.Point(624, 327);
+            this.txtBonus.Location = new System.Drawing.Point(761, 438);
             this.txtBonus.MaxLength = 20;
             this.txtBonus.Multiline = true;
             this.txtBonus.Name = "txtBonus";
@@ -214,7 +214,7 @@
             // txtHandicap
             // 
             this.txtHandicap.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtHandicap.Location = new System.Drawing.Point(496, 327);
+            this.txtHandicap.Location = new System.Drawing.Point(573, 438);
             this.txtHandicap.MaxLength = 20;
             this.txtHandicap.Multiline = true;
             this.txtHandicap.Name = "txtHandicap";
@@ -226,7 +226,7 @@
             // 
             this.lblAverage.AutoSize = true;
             this.lblAverage.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAverage.Location = new System.Drawing.Point(353, 308);
+            this.lblAverage.Location = new System.Drawing.Point(389, 420);
             this.lblAverage.Name = "lblAverage";
             this.lblAverage.Size = new System.Drawing.Size(50, 15);
             this.lblAverage.TabIndex = 17;
@@ -236,7 +236,7 @@
             // 
             this.lblHandicap.AutoSize = true;
             this.lblHandicap.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblHandicap.Location = new System.Drawing.Point(493, 311);
+            this.lblHandicap.Location = new System.Drawing.Point(570, 420);
             this.lblHandicap.Name = "lblHandicap";
             this.lblHandicap.Size = new System.Drawing.Size(60, 15);
             this.lblHandicap.TabIndex = 17;
@@ -246,7 +246,7 @@
             // 
             this.lblBonus.AutoSize = true;
             this.lblBonus.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBonus.Location = new System.Drawing.Point(621, 311);
+            this.lblBonus.Location = new System.Drawing.Point(758, 420);
             this.lblBonus.Name = "lblBonus";
             this.lblBonus.Size = new System.Drawing.Size(41, 15);
             this.lblBonus.TabIndex = 17;
@@ -254,18 +254,18 @@
             // 
             // txtNotes
             // 
-            this.txtNotes.Location = new System.Drawing.Point(138, 155);
+            this.txtNotes.Location = new System.Drawing.Point(38, 319);
             this.txtNotes.MaxLength = 750;
             this.txtNotes.Multiline = true;
             this.txtNotes.Name = "txtNotes";
-            this.txtNotes.Size = new System.Drawing.Size(196, 266);
+            this.txtNotes.Size = new System.Drawing.Size(298, 218);
             this.txtNotes.TabIndex = 18;
             this.txtNotes.TabStop = false;
             // 
             // txtAverage
             // 
             this.txtAverage.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAverage.Location = new System.Drawing.Point(356, 324);
+            this.txtAverage.Location = new System.Drawing.Point(392, 438);
             this.txtAverage.MaxLength = 20;
             this.txtAverage.Multiline = true;
             this.txtAverage.Name = "txtAverage";
@@ -277,7 +277,7 @@
             // 
             this.lblNotes.AutoSize = true;
             this.lblNotes.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNotes.Location = new System.Drawing.Point(134, 133);
+            this.lblNotes.Location = new System.Drawing.Point(36, 297);
             this.lblNotes.Name = "lblNotes";
             this.lblNotes.Size = new System.Drawing.Size(49, 19);
             this.lblNotes.TabIndex = 22;
@@ -310,16 +310,16 @@
             this.grpMemberInfo.Controls.Add(this.txtAddress);
             this.grpMemberInfo.Controls.Add(this.txtEmail);
             this.grpMemberInfo.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpMemberInfo.Location = new System.Drawing.Point(340, 86);
+            this.grpMemberInfo.Location = new System.Drawing.Point(382, 121);
             this.grpMemberInfo.Name = "grpMemberInfo";
-            this.grpMemberInfo.Size = new System.Drawing.Size(416, 216);
+            this.grpMemberInfo.Size = new System.Drawing.Size(469, 277);
             this.grpMemberInfo.TabIndex = 4;
             this.grpMemberInfo.TabStop = false;
             this.grpMemberInfo.Text = "Member Information";
             // 
             // mtxtBoxDOB
             // 
-            this.mtxtBoxDOB.Location = new System.Drawing.Point(19, 35);
+            this.mtxtBoxDOB.Location = new System.Drawing.Point(25, 41);
             this.mtxtBoxDOB.Mask = "00/00/00";
             this.mtxtBoxDOB.Name = "mtxtBoxDOB";
             this.mtxtBoxDOB.Size = new System.Drawing.Size(100, 23);
@@ -328,7 +328,7 @@
             // mtxtBoxZip
             // 
             this.mtxtBoxZip.HideSelection = false;
-            this.mtxtBoxZip.Location = new System.Drawing.Point(193, 106);
+            this.mtxtBoxZip.Location = new System.Drawing.Point(215, 137);
             this.mtxtBoxZip.Mask = "00000";
             this.mtxtBoxZip.Name = "mtxtBoxZip";
             this.mtxtBoxZip.ShortcutsEnabled = false;
@@ -337,7 +337,7 @@
             // 
             // mtxtBoxSSN
             // 
-            this.mtxtBoxSSN.Location = new System.Drawing.Point(137, 36);
+            this.mtxtBoxSSN.Location = new System.Drawing.Point(344, 41);
             this.mtxtBoxSSN.Mask = "000-00-0000";
             this.mtxtBoxSSN.Name = "mtxtBoxSSN";
             this.mtxtBoxSSN.PasswordChar = '*';
@@ -347,7 +347,7 @@
             // 
             // mtxtBoxPhone2
             // 
-            this.mtxtBoxPhone2.Location = new System.Drawing.Point(164, 147);
+            this.mtxtBoxPhone2.Location = new System.Drawing.Point(155, 185);
             this.mtxtBoxPhone2.Mask = "(999) 000-0000";
             this.mtxtBoxPhone2.Name = "mtxtBoxPhone2";
             this.mtxtBoxPhone2.Size = new System.Drawing.Size(100, 23);
@@ -355,7 +355,7 @@
             // 
             // mtxtBoxPhone
             // 
-            this.mtxtBoxPhone.Location = new System.Drawing.Point(19, 143);
+            this.mtxtBoxPhone.Location = new System.Drawing.Point(25, 185);
             this.mtxtBoxPhone.Mask = "(999) 000-0000";
             this.mtxtBoxPhone.Name = "mtxtBoxPhone";
             this.mtxtBoxPhone.Size = new System.Drawing.Size(100, 23);
@@ -365,7 +365,7 @@
             // 
             this.dateRejoin.Checked = false;
             this.dateRejoin.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateRejoin.Location = new System.Drawing.Point(299, 143);
+            this.dateRejoin.Location = new System.Drawing.Point(344, 185);
             this.dateRejoin.Name = "dateRejoin";
             this.dateRejoin.Size = new System.Drawing.Size(103, 23);
             this.dateRejoin.TabIndex = 35;
@@ -375,7 +375,7 @@
             // dateJoined
             // 
             this.dateJoined.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateJoined.Location = new System.Drawing.Point(299, 106);
+            this.dateJoined.Location = new System.Drawing.Point(344, 137);
             this.dateJoined.Name = "dateJoined";
             this.dateJoined.Size = new System.Drawing.Size(103, 23);
             this.dateJoined.TabIndex = 32;
@@ -384,7 +384,7 @@
             // lblEmail
             // 
             this.lblEmail.AutoSize = true;
-            this.lblEmail.Location = new System.Drawing.Point(16, 165);
+            this.lblEmail.Location = new System.Drawing.Point(22, 215);
             this.lblEmail.Name = "lblEmail";
             this.lblEmail.Size = new System.Drawing.Size(38, 15);
             this.lblEmail.TabIndex = 10;
@@ -393,16 +393,16 @@
             // lblDOB
             // 
             this.lblDOB.AutoSize = true;
-            this.lblDOB.Location = new System.Drawing.Point(16, 17);
+            this.lblDOB.Location = new System.Drawing.Point(22, 23);
             this.lblDOB.Name = "lblDOB";
-            this.lblDOB.Size = new System.Drawing.Size(40, 15);
+            this.lblDOB.Size = new System.Drawing.Size(107, 15);
             this.lblDOB.TabIndex = 31;
-            this.lblDOB.Text = "D.O.B.";
+            this.lblDOB.Text = "D.O.B. (mm/dd/yy)";
             // 
             // lblRefferals
             // 
             this.lblRefferals.AutoSize = true;
-            this.lblRefferals.Location = new System.Drawing.Point(299, 165);
+            this.lblRefferals.Location = new System.Drawing.Point(341, 215);
             this.lblRefferals.Name = "lblRefferals";
             this.lblRefferals.Size = new System.Drawing.Size(57, 15);
             this.lblRefferals.TabIndex = 6;
@@ -411,7 +411,7 @@
             // lblPhoneNumber2
             // 
             this.lblPhoneNumber2.AutoSize = true;
-            this.lblPhoneNumber2.Location = new System.Drawing.Point(167, 128);
+            this.lblPhoneNumber2.Location = new System.Drawing.Point(152, 167);
             this.lblPhoneNumber2.Name = "lblPhoneNumber2";
             this.lblPhoneNumber2.Size = new System.Drawing.Size(97, 15);
             this.lblPhoneNumber2.TabIndex = 8;
@@ -420,7 +420,7 @@
             // lblPhoneNumber
             // 
             this.lblPhoneNumber.AutoSize = true;
-            this.lblPhoneNumber.Location = new System.Drawing.Point(16, 128);
+            this.lblPhoneNumber.Location = new System.Drawing.Point(22, 167);
             this.lblPhoneNumber.Name = "lblPhoneNumber";
             this.lblPhoneNumber.Size = new System.Drawing.Size(87, 15);
             this.lblPhoneNumber.TabIndex = 7;
@@ -429,7 +429,7 @@
             // lblDateJoined
             // 
             this.lblDateJoined.AutoSize = true;
-            this.lblDateJoined.Location = new System.Drawing.Point(299, 91);
+            this.lblDateJoined.Location = new System.Drawing.Point(341, 119);
             this.lblDateJoined.Name = "lblDateJoined";
             this.lblDateJoined.Size = new System.Drawing.Size(70, 15);
             this.lblDateJoined.TabIndex = 5;
@@ -438,7 +438,7 @@
             // lblRejoinDate
             // 
             this.lblRejoinDate.AutoSize = true;
-            this.lblRejoinDate.Location = new System.Drawing.Point(299, 128);
+            this.lblRejoinDate.Location = new System.Drawing.Point(341, 167);
             this.lblRejoinDate.Name = "lblRejoinDate";
             this.lblRejoinDate.Size = new System.Drawing.Size(70, 15);
             this.lblRejoinDate.TabIndex = 4;
@@ -447,7 +447,7 @@
             // lblZip
             // 
             this.lblZip.AutoSize = true;
-            this.lblZip.Location = new System.Drawing.Point(209, 91);
+            this.lblZip.Location = new System.Drawing.Point(212, 119);
             this.lblZip.Name = "lblZip";
             this.lblZip.Size = new System.Drawing.Size(24, 15);
             this.lblZip.TabIndex = 2;
@@ -456,7 +456,7 @@
             // lblState
             // 
             this.lblState.AutoSize = true;
-            this.lblState.Location = new System.Drawing.Point(146, 91);
+            this.lblState.Location = new System.Drawing.Point(152, 119);
             this.lblState.Name = "lblState";
             this.lblState.Size = new System.Drawing.Size(34, 15);
             this.lblState.TabIndex = 2;
@@ -465,7 +465,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 91);
+            this.label1.Location = new System.Drawing.Point(22, 119);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(28, 15);
             this.label1.TabIndex = 2;
@@ -473,7 +473,7 @@
             // 
             // txtReferrals
             // 
-            this.txtReferrals.Location = new System.Drawing.Point(299, 180);
+            this.txtReferrals.Location = new System.Drawing.Point(344, 233);
             this.txtReferrals.MaxLength = 50;
             this.txtReferrals.Name = "txtReferrals";
             this.txtReferrals.Size = new System.Drawing.Size(54, 23);
@@ -482,7 +482,7 @@
             // lblAddress
             // 
             this.lblAddress.AutoSize = true;
-            this.lblAddress.Location = new System.Drawing.Point(16, 54);
+            this.lblAddress.Location = new System.Drawing.Point(22, 71);
             this.lblAddress.Name = "lblAddress";
             this.lblAddress.Size = new System.Drawing.Size(51, 15);
             this.lblAddress.TabIndex = 3;
@@ -491,7 +491,7 @@
             // lblSSN
             // 
             this.lblSSN.AutoSize = true;
-            this.lblSSN.Location = new System.Drawing.Point(134, 17);
+            this.lblSSN.Location = new System.Drawing.Point(341, 23);
             this.lblSSN.Name = "lblSSN";
             this.lblSSN.Size = new System.Drawing.Size(27, 15);
             this.lblSSN.TabIndex = 3;
@@ -499,7 +499,7 @@
             // 
             // txtState
             // 
-            this.txtState.Location = new System.Drawing.Point(146, 106);
+            this.txtState.Location = new System.Drawing.Point(155, 137);
             this.txtState.MaxLength = 20;
             this.txtState.Name = "txtState";
             this.txtState.Size = new System.Drawing.Size(32, 23);
@@ -508,7 +508,7 @@
             // 
             // txtCity
             // 
-            this.txtCity.Location = new System.Drawing.Point(16, 106);
+            this.txtCity.Location = new System.Drawing.Point(25, 137);
             this.txtCity.MaxLength = 20;
             this.txtCity.Name = "txtCity";
             this.txtCity.Size = new System.Drawing.Size(100, 23);
@@ -517,35 +517,35 @@
             // 
             // txtAddress
             // 
-            this.txtAddress.Location = new System.Drawing.Point(16, 69);
+            this.txtAddress.Location = new System.Drawing.Point(25, 89);
             this.txtAddress.MaxLength = 75;
             this.txtAddress.Name = "txtAddress";
-            this.txtAddress.Size = new System.Drawing.Size(266, 23);
+            this.txtAddress.Size = new System.Drawing.Size(290, 23);
             this.txtAddress.TabIndex = 2;
             this.txtAddress.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(16, 180);
+            this.txtEmail.Location = new System.Drawing.Point(25, 233);
             this.txtEmail.MaxLength = 50;
             this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(266, 23);
+            this.txtEmail.Size = new System.Drawing.Size(290, 23);
             this.txtEmail.TabIndex = 8;
             this.txtEmail.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtYearEndT
             // 
             this.txtYearEndT.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtYearEndT.Location = new System.Drawing.Point(387, 403);
+            this.txtYearEndT.Location = new System.Drawing.Point(392, 517);
             this.txtYearEndT.MaxLength = 20;
             this.txtYearEndT.Name = "txtYearEndT";
-            this.txtYearEndT.Size = new System.Drawing.Size(35, 23);
+            this.txtYearEndT.Size = new System.Drawing.Size(124, 23);
             this.txtYearEndT.TabIndex = 8;
             // 
             // txtMoneyEarned
             // 
             this.txtMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMoneyEarned.Location = new System.Drawing.Point(489, 403);
+            this.txtMoneyEarned.Location = new System.Drawing.Point(573, 517);
             this.txtMoneyEarned.Name = "txtMoneyEarned";
             this.txtMoneyEarned.Size = new System.Drawing.Size(100, 23);
             this.txtMoneyEarned.TabIndex = 9;
@@ -554,7 +554,7 @@
             // 
             this.lblYET.AutoSize = true;
             this.lblYET.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblYET.Location = new System.Drawing.Point(349, 390);
+            this.lblYET.Location = new System.Drawing.Point(389, 499);
             this.lblYET.Name = "lblYET";
             this.lblYET.Size = new System.Drawing.Size(127, 15);
             this.lblYET.TabIndex = 25;
@@ -564,7 +564,7 @@
             // 
             this.lblMoneyEarned.AutoSize = true;
             this.lblMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMoneyEarned.Location = new System.Drawing.Point(487, 390);
+            this.lblMoneyEarned.Location = new System.Drawing.Point(570, 499);
             this.lblMoneyEarned.Name = "lblMoneyEarned";
             this.lblMoneyEarned.Size = new System.Drawing.Size(85, 15);
             this.lblMoneyEarned.TabIndex = 26;
@@ -574,7 +574,7 @@
             // 
             this.lblLastBowled.AutoSize = true;
             this.lblLastBowled.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLastBowled.Location = new System.Drawing.Point(615, 390);
+            this.lblLastBowled.Location = new System.Drawing.Point(744, 499);
             this.lblLastBowled.Name = "lblLastBowled";
             this.lblLastBowled.Size = new System.Drawing.Size(72, 15);
             this.lblLastBowled.TabIndex = 27;
@@ -586,7 +586,7 @@
             this.groupRecord.Controls.Add(this.btnDelete);
             this.groupRecord.Controls.Add(this.btnNew);
             this.groupRecord.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupRecord.Location = new System.Drawing.Point(24, 427);
+            this.groupRecord.Location = new System.Drawing.Point(23, 583);
             this.groupRecord.Name = "groupRecord";
             this.groupRecord.Size = new System.Drawing.Size(108, 100);
             this.groupRecord.TabIndex = 11;
@@ -635,7 +635,7 @@
             this.grpRecordNumber.Controls.Add(this.btnRightArrow);
             this.grpRecordNumber.Controls.Add(this.btnArrowLeft);
             this.grpRecordNumber.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpRecordNumber.Location = new System.Drawing.Point(138, 427);
+            this.grpRecordNumber.Location = new System.Drawing.Point(149, 583);
             this.grpRecordNumber.Name = "grpRecordNumber";
             this.grpRecordNumber.Size = new System.Drawing.Size(195, 100);
             this.grpRecordNumber.TabIndex = 29;
@@ -694,9 +694,9 @@
             // 
             this.grpStats.Controls.Add(this.btnStats);
             this.grpStats.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpStats.Location = new System.Drawing.Point(349, 427);
+            this.grpStats.Location = new System.Drawing.Point(376, 583);
             this.grpStats.Name = "grpStats";
-            this.grpStats.Size = new System.Drawing.Size(79, 100);
+            this.grpStats.Size = new System.Drawing.Size(79, 94);
             this.grpStats.TabIndex = 29;
             this.grpStats.TabStop = false;
             this.grpStats.Text = "Stats";
@@ -717,7 +717,7 @@
             this.grpSearchBy.Controls.Add(this.btnFirstName);
             this.grpSearchBy.Controls.Add(this.btnMemberNumber);
             this.grpSearchBy.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpSearchBy.Location = new System.Drawing.Point(439, 427);
+            this.grpSearchBy.Location = new System.Drawing.Point(496, 583);
             this.grpSearchBy.Name = "grpSearchBy";
             this.grpSearchBy.Size = new System.Drawing.Size(115, 111);
             this.grpSearchBy.TabIndex = 29;
@@ -766,7 +766,7 @@
             this.grpPrinter.Controls.Add(this.btnThisRecap);
             this.grpPrinter.Controls.Add(this.btnAllRecaps);
             this.grpPrinter.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpPrinter.Location = new System.Drawing.Point(560, 427);
+            this.grpPrinter.Location = new System.Drawing.Point(643, 585);
             this.grpPrinter.Name = "grpPrinter";
             this.grpPrinter.Size = new System.Drawing.Size(207, 109);
             this.grpPrinter.TabIndex = 29;
@@ -873,7 +873,7 @@
             this.grpGender.Controls.Add(this.rdoFemale);
             this.grpGender.Controls.Add(this.rdoMale);
             this.grpGender.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpGender.Location = new System.Drawing.Point(12, 258);
+            this.grpGender.Location = new System.Drawing.Point(236, 164);
             this.grpGender.Name = "grpGender";
             this.grpGender.Size = new System.Drawing.Size(101, 71);
             this.grpGender.TabIndex = 31;
@@ -885,7 +885,7 @@
             this.grpStatus.Controls.Add(this.rdoInActive);
             this.grpStatus.Controls.Add(this.rdoActive);
             this.grpStatus.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpStatus.Location = new System.Drawing.Point(12, 150);
+            this.grpStatus.Location = new System.Drawing.Point(38, 156);
             this.grpStatus.Name = "grpStatus";
             this.grpStatus.Size = new System.Drawing.Size(101, 79);
             this.grpStatus.TabIndex = 32;
@@ -896,7 +896,7 @@
             // 
             this.chbSenior.AutoSize = true;
             this.chbSenior.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chbSenior.Location = new System.Drawing.Point(23, 235);
+            this.chbSenior.Location = new System.Drawing.Point(156, 179);
             this.chbSenior.Name = "chbSenior";
             this.chbSenior.Size = new System.Drawing.Size(61, 19);
             this.chbSenior.TabIndex = 33;
@@ -908,7 +908,7 @@
             // 
             this.dateLastBowled.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateLastBowled.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateLastBowled.Location = new System.Drawing.Point(618, 403);
+            this.dateLastBowled.Location = new System.Drawing.Point(747, 517);
             this.dateLastBowled.Name = "dateLastBowled";
             this.dateLastBowled.Size = new System.Drawing.Size(103, 23);
             this.dateLastBowled.TabIndex = 34;
@@ -921,7 +921,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(779, 545);
+            this.BackColor = System.Drawing.Color.LightBlue;
+            this.ClientSize = new System.Drawing.Size(884, 712);
             this.Controls.Add(this.dateLastBowled);
             this.Controls.Add(this.chbSenior);
             this.Controls.Add(this.grpStatus);
