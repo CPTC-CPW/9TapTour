@@ -17,6 +17,7 @@ namespace NineTapTour.Database
             {
                 using (var db = new NineTapDb())
                 {
+                    //checks if tournament is new or already existing in db
                     db.Entry(New).State = db.Tournaments.Any(t => t.Id == New.Id) ?
                         EntityState.Modified :
                         EntityState.Added;
@@ -45,11 +46,10 @@ namespace NineTapTour.Database
             {
                 using (var db = new NineTapDb())
                 {
-                    //db.Entry(player).State = db.Participants.Any(m => m.Scores == player.Scores) ?
-                    //    EntityState.Modified :
-                    //    EntityState.Added;
+                  
                     db.Participants.Add(player);
                     db.SaveChanges();
+                    
                 }
             }
             catch (SqlException ex)

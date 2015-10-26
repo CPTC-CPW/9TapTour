@@ -203,12 +203,34 @@ namespace NineTapTour.Forms
         public void newRecap(object sender, EventArgs e)
         {
             Participant player = new Participant();
-            player.Scores = new int[4] { 
+            player.Game = new Game();
+            player.Game.Score = new List<int> { 
                 Convert.ToInt16(scratchArray[0].Text), 
                 Convert.ToInt16(scratchArray[1].Text), 
                 Convert.ToInt16(scratchArray[2].Text), 
                 Convert.ToInt16(scratchArray[3].Text) 
             };
+
+            #region radio button
+            if (rdoSquadOne.Checked) {
+                player.Squad = 1;
+            }
+            else if (rdoSquadTwo.Checked)
+            {
+                player.Squad = 2;
+            }
+            else if (rdoSquad3.Checked)
+            {
+                player.Squad = 3;
+            }
+            else
+            {
+                player.Squad = 4;
+            }
+            #endregion
+
+            player.Member = currentMem;
+
 
             try
             {

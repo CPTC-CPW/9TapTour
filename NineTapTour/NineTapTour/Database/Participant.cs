@@ -10,11 +10,10 @@ namespace NineTapTour.Database
         [Required]
         [Column("SquadNumber")]
         public int Squad { get; set; }
-        public int[] Scores { get; set; }
         #region Foreign Keys
         [Required]
         public Member Member { get; set; }
-        [Required]
+
         public Tournament Tournament { get; set; }
         [Required]
         public Game Game { get; set; }
