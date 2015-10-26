@@ -68,6 +68,7 @@
             this.txtBonusPins = new System.Windows.Forms.TextBox();
             this.txtHandicap = new System.Windows.Forms.TextBox();
             this.grpTournamentFile = new System.Windows.Forms.GroupBox();
+            this.lsbTournaments = new System.Windows.Forms.ListBox();
             this.grpLeaders = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -89,7 +90,6 @@
             this.rtxtComments = new System.Windows.Forms.RichTextBox();
             this.pnlMemStat = new System.Windows.Forms.Panel();
             this.lblMemberL = new System.Windows.Forms.Label();
-            this.lsbTournaments = new System.Windows.Forms.ListBox();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpRecord.SuspendLayout();
@@ -531,6 +531,14 @@
             this.grpTournamentFile.TabStop = false;
             this.grpTournamentFile.Text = "Tournament File";
             // 
+            // lsbTournaments
+            // 
+            this.lsbTournaments.FormattingEnabled = true;
+            this.lsbTournaments.Location = new System.Drawing.Point(6, 19);
+            this.lsbTournaments.Name = "lsbTournaments";
+            this.lsbTournaments.Size = new System.Drawing.Size(189, 121);
+            this.lsbTournaments.TabIndex = 1;
+            // 
             // grpLeaders
             // 
             this.grpLeaders.Controls.Add(this.label3);
@@ -737,14 +745,6 @@
             this.lblMemberL.Size = new System.Drawing.Size(78, 13);
             this.lblMemberL.TabIndex = 1;
             this.lblMemberL.Text = "MemberStatus:";
-            // 
-            // lsbTournaments
-            // 
-            this.lsbTournaments.FormattingEnabled = true;
-            this.lsbTournaments.Location = new System.Drawing.Point(6, 19);
-            this.lsbTournaments.Name = "lsbTournaments";
-            this.lsbTournaments.Size = new System.Drawing.Size(189, 121);
-            this.lsbTournaments.TabIndex = 1;
             // 
             // frmMemberScores
             // 

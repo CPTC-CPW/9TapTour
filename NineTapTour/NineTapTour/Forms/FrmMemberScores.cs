@@ -180,7 +180,7 @@ namespace NineTapTour.Forms
         public void newTourney(object sender, EventArgs e)
         {
             var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
-            ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
+            ((FrmMain)MdiParent).OpenOrDisplayTourneyForm(ref newfrmNewTournament);
             newfrmNewTournament.Dock = DockStyle.None;
         }
     }

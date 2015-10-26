@@ -161,8 +161,11 @@
             this.Controls.Add(this.lblEvent);
             this.Controls.Add(this.lblLocation);
             this.Controls.Add(this.lblDate);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "frmNewTournament";
             this.Text = "New Tournament";
+            this.TopMost = true;
+            this.Load += new System.EventHandler(this.frmNewTournament_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
