@@ -10,14 +10,18 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace NineTapTour.Forms
 {
     public partial class frmMemberScores : Form
     {
+
         //IOrderedEnumerable<Member> _membersList;
         Member currentMem;
         TextBox[] scratchArray = new TextBox[4];
         TextBox[] handicappArray = new TextBox[4];
+        //Count for record counting
+        int count = 0;
 
         public frmMemberScores()
         {
@@ -28,23 +32,23 @@ namespace NineTapTour.Forms
         {
             //_membersList = ((FrmMain)MdiParent)._membersList;
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
-            handicappArray = new TextBox[4]{txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4};
-            
+            handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
+
         }
 
         private void txtMemberNum_TextChanged(object sender, EventArgs e)
         {
-            
-                if(currentMem == null || ((TextBox)sender).Text=="")
-                {
-                    txtLastName.Clear();
-                    txtFirstName.Clear();
-                    txtMiddleInitial.Clear();
-                    txtHandicap.Clear();
-                    txtBonusPins.Clear();
-                    MemberStatus("", Color.Black, SystemColors.Control, true);
-                }
-                    
+
+            if (currentMem == null || ((TextBox)sender).Text == "")
+            {
+                txtLastName.Clear();
+                txtFirstName.Clear();
+                txtMiddleInitial.Clear();
+                txtHandicap.Clear();
+                txtBonusPins.Clear();
+                MemberStatus("", Color.Black, SystemColors.Control, true);
+            }
+
         }
 
         private void FrmMemberScores_Activated(object sender, EventArgs e)
@@ -117,7 +121,7 @@ namespace NineTapTour.Forms
             lblMemberStatus.Text = text;
             lblMemberStatus.ForeColor = forColor;
             pnlMemStat.BackColor = backColor;
-            foreach(TextBox scratch in scratchArray)
+            foreach (TextBox scratch in scratchArray)
             {
                 scratch.Clear();
                 scratch.ReadOnly = active;
@@ -152,16 +156,35 @@ namespace NineTapTour.Forms
                 }
                 txtScratchTotal.Text = scratchTotal.ToString();
             }
+            //AutoTabs to the next textbox when textbox1's length is 3.
+
+            if (scratchArray[0].Text.Length == 3)
+            {
+                scratchArray[1].Focus();
+            }
+            if (scratchArray[1].Text.Length == 3)
+            {
+                scratchArray[2].Focus();
+            }
+            if (scratchArray[2].Text.Length == 3)
+            {
+                scratchArray[3].Focus();
+            }
+
+            if (scratchArray[3].Text.Length == 3)
+            {
+                btnNew.Focus();
+            }
         }
 
         private void handicapTotal(string id, int score)
         {
             int totalScore = 0;
-            foreach(TextBox hScore in handicappArray)
+            foreach (TextBox hScore in handicappArray)
             {
-                if(hScore.Name.Contains(id))
+                if (hScore.Name.Contains(id))
                 {
-                    if(score!= 0 && txtHandicap.Text !="" && txtBonusPins.Text !="")
+                    if (score != 0 && txtHandicap.Text != "" && txtBonusPins.Text != "")
                     {
                         hScore.Text = Convert.ToString(score + Convert.ToInt32(txtHandicap.Text) + Convert.ToInt32(txtBonusPins.Text));
                     }
@@ -170,14 +193,107 @@ namespace NineTapTour.Forms
                         hScore.Clear();
                     }
                 }
-                if(hScore.Text!="")
+                if (hScore.Text != "")
                 {
                     totalScore += Convert.ToInt32(hScore.Text);
                 }
             }
             txtHandicapTotal.Text = Convert.ToString(totalScore);
         }
-        public void newTourney(object sender, EventArgs e)
+        public void newRecap(object sender, EventArgs e)
+        {
+
+
+            Participant player = new Participant();
+            player.Game = new Game();
+            player.Game.Score = new List<int> { 
+                Convert.ToInt16(scratchArray[0].Text), 
+                Convert.ToInt16(scratchArray[1].Text), 
+                Convert.ToInt16(scratchArray[2].Text), 
+                Convert.ToInt16(scratchArray[3].Text) 
+           
+            };
+          
+
+
+            // following rdo button validation for checking if squad button is checked. might need to be moved to its own isvalid method
+            // not refined 
+            if (rdoSquadOne.Checked == false && rdoSquadTwo.Checked == false && rdoSquadThree.Checked == false && rdoSquadFour.Checked == false)
+            {
+                MessageBox.Show(" member must be apart of a squad");
+                return;
+            }
+            if (rdoSquadOne.Checked == true){ player.Squad = 1;}
+            
+              
+           if (rdoSquadTwo.Checked == true){   player.Squad = 2;}
+                
+                 
+                
+           if (rdoSquadThree.Checked == true){ player.Squad = 3;}
+                
+                   
+           if (rdoSquadFour.Checked == true){   player.Squad = 4;}
+                
+                 
+                
+
+
+
+           
+
+            #region radio button
+            if (rdoSquadOne.Checked) {
+                player.Squad = 1;
+            }
+            else if (rdoSquadTwo.Checked)
+            {
+                player.Squad = 2;
+            }
+            else if (rdoSquad3.Checked)
+            {
+                player.Squad = 3;
+            }
+            else
+            {
+                player.Squad = 4;
+            }
+            #endregion
+
+            player.Member = currentMem;
+
+
+            try
+            {
+                TournamentDb.AddMemberToTournament(player);
+                MessageBox.Show(@"Bowler Added Successfully to Tournament!");
+            }
+            catch (MemberAccessException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void btnRightArrow_Click(object sender, EventArgs e)
+        {
+            count++;
+            lblRecord.Text = "Record " + count + " / " + "?";
+        }
+
+        private void btnLeftArrow_Click(object sender, EventArgs e)
+        {
+            if (count <= 0)
+            {
+                MessageBox.Show("There are no more players to go back to!");
+            }
+            else
+            {
+                count--;
+                lblRecord.Text = "Record " + count + " / " + "?";
+            }
+        }
+
+        private void btnNewTournament_Click(object sender, EventArgs e)
         {
             var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
             ((FrmMain)MdiParent).OpenOrDisplayTourneyForm(ref newfrmNewTournament);

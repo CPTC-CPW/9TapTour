@@ -17,6 +17,7 @@ namespace NineTapTour.Database
             {
                 using (var db = new NineTapDb())
                 {
+                    //checks if tournament is new or already existing in db
                     db.Entry(New).State = db.Tournaments.Any(t => t.Id == New.Id) ?
                         EntityState.Modified :
                         EntityState.Added;
@@ -36,6 +37,25 @@ namespace NineTapTour.Database
                 return (from t in db.Tournaments
                         orderby t.Date
                         select t).ToList();
+            }
+        }
+
+        public static void AddMemberToTournament(Participant player)
+        {
+            try
+            {
+                using (var db = new NineTapDb())
+                {
+                  
+                    db.Participants.Add(player);
+                    db.SaveChanges();
+                    
+                }
+            }
+            catch (SqlException ex)
+            {
+                
+                throw new MemberTableException("Error number : " + ex.Number + " - " + ex.Message);
             }
         }
     }

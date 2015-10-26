@@ -33,7 +33,7 @@
             this.txtMemberNum = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.rdoSquadFour = new System.Windows.Forms.RadioButton();
-            this.rdoSquad3 = new System.Windows.Forms.RadioButton();
+            this.rdoSquadThree = new System.Windows.Forms.RadioButton();
             this.rdoSquadTwo = new System.Windows.Forms.RadioButton();
             this.rdoSquadOne = new System.Windows.Forms.RadioButton();
             this.txtLastName = new System.Windows.Forms.TextBox();
@@ -90,6 +90,9 @@
             this.rtxtComments = new System.Windows.Forms.RichTextBox();
             this.pnlMemStat = new System.Windows.Forms.Panel();
             this.lblMemberL = new System.Windows.Forms.Label();
+            this.lblRecord = new System.Windows.Forms.Label();
+            this.btnNewTournament = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpRecord.SuspendLayout();
@@ -113,9 +116,10 @@
             // 
             // txtMemberNum
             // 
+            this.txtMemberNum.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtMemberNum.Location = new System.Drawing.Point(6, 19);
             this.txtMemberNum.Name = "txtMemberNum";
-            this.txtMemberNum.Size = new System.Drawing.Size(86, 20);
+            this.txtMemberNum.Size = new System.Drawing.Size(112, 20);
             this.txtMemberNum.TabIndex = 0;
             this.txtMemberNum.TextChanged += new System.EventHandler(this.txtMemberNum_TextChanged);
             this.txtMemberNum.KeyUp += new System.Windows.Forms.KeyEventHandler(this.GetMember);
@@ -123,7 +127,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.rdoSquadFour);
-            this.groupBox1.Controls.Add(this.rdoSquad3);
+            this.groupBox1.Controls.Add(this.rdoSquadThree);
             this.groupBox1.Controls.Add(this.rdoSquadTwo);
             this.groupBox1.Controls.Add(this.rdoSquadOne);
             this.groupBox1.Location = new System.Drawing.Point(21, 85);
@@ -144,16 +148,16 @@
             this.rdoSquadFour.Text = "Squad 4";
             this.rdoSquadFour.UseVisualStyleBackColor = true;
             // 
-            // rdoSquad3
+            // rdoSquadThree
             // 
-            this.rdoSquad3.AutoSize = true;
-            this.rdoSquad3.Location = new System.Drawing.Point(6, 43);
-            this.rdoSquad3.Name = "rdoSquad3";
-            this.rdoSquad3.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquad3.TabIndex = 0;
-            this.rdoSquad3.TabStop = true;
-            this.rdoSquad3.Text = "Squad 3";
-            this.rdoSquad3.UseVisualStyleBackColor = true;
+            this.rdoSquadThree.AutoSize = true;
+            this.rdoSquadThree.Location = new System.Drawing.Point(6, 43);
+            this.rdoSquadThree.Name = "rdoSquadThree";
+            this.rdoSquadThree.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquadThree.TabIndex = 0;
+            this.rdoSquadThree.TabStop = true;
+            this.rdoSquadThree.Text = "Squad 3";
+            this.rdoSquadThree.UseVisualStyleBackColor = true;
             // 
             // rdoSquadTwo
             // 
@@ -182,7 +186,7 @@
             this.txtLastName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtLastName.Enabled = false;
             this.txtLastName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLastName.Location = new System.Drawing.Point(218, 27);
+            this.txtLastName.Location = new System.Drawing.Point(233, 30);
             this.txtLastName.Multiline = true;
             this.txtLastName.Name = "txtLastName";
             this.txtLastName.ReadOnly = true;
@@ -194,7 +198,7 @@
             this.txtFirstName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtFirstName.Enabled = false;
             this.txtFirstName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFirstName.Location = new System.Drawing.Point(452, 27);
+            this.txtFirstName.Location = new System.Drawing.Point(474, 30);
             this.txtFirstName.Multiline = true;
             this.txtFirstName.Name = "txtFirstName";
             this.txtFirstName.ReadOnly = true;
@@ -206,18 +210,18 @@
             this.txtMiddleInitial.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtMiddleInitial.Enabled = false;
             this.txtMiddleInitial.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMiddleInitial.Location = new System.Drawing.Point(686, 27);
+            this.txtMiddleInitial.Location = new System.Drawing.Point(713, 30);
             this.txtMiddleInitial.Multiline = true;
             this.txtMiddleInitial.Name = "txtMiddleInitial";
             this.txtMiddleInitial.ReadOnly = true;
-            this.txtMiddleInitial.Size = new System.Drawing.Size(86, 38);
+            this.txtMiddleInitial.Size = new System.Drawing.Size(105, 38);
             this.txtMiddleInitial.TabIndex = 3;
             // 
             // lblLastName
             // 
             this.lblLastName.AutoSize = true;
             this.lblLastName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.lblLastName.Location = new System.Drawing.Point(218, 8);
+            this.lblLastName.Location = new System.Drawing.Point(229, 8);
             this.lblLastName.Name = "lblLastName";
             this.lblLastName.Size = new System.Drawing.Size(80, 19);
             this.lblLastName.TabIndex = 4;
@@ -227,7 +231,7 @@
             // 
             this.lblFirstName.AutoSize = true;
             this.lblFirstName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.lblFirstName.Location = new System.Drawing.Point(452, 8);
+            this.lblFirstName.Location = new System.Drawing.Point(470, 8);
             this.lblFirstName.Name = "lblFirstName";
             this.lblFirstName.Size = new System.Drawing.Size(82, 19);
             this.lblFirstName.TabIndex = 4;
@@ -237,7 +241,7 @@
             // 
             this.lblMiddleInitial.AutoSize = true;
             this.lblMiddleInitial.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.lblMiddleInitial.Location = new System.Drawing.Point(680, 8);
+            this.lblMiddleInitial.Location = new System.Drawing.Point(709, 8);
             this.lblMiddleInitial.Name = "lblMiddleInitial";
             this.lblMiddleInitial.Size = new System.Drawing.Size(99, 19);
             this.lblMiddleInitial.TabIndex = 4;
@@ -254,6 +258,7 @@
             // 
             // txtScratchScore1
             // 
+            this.txtScratchScore1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtScratchScore1.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtScratchScore1.Location = new System.Drawing.Point(27, 41);
             this.txtScratchScore1.MaxLength = 3;
@@ -264,6 +269,7 @@
             // 
             // txtHandicapScore1
             // 
+            this.txtHandicapScore1.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.txtHandicapScore1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtHandicapScore1.Enabled = false;
             this.txtHandicapScore1.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -271,11 +277,12 @@
             this.txtHandicapScore1.Multiline = true;
             this.txtHandicapScore1.Name = "txtHandicapScore1";
             this.txtHandicapScore1.ReadOnly = true;
-            this.txtHandicapScore1.Size = new System.Drawing.Size(57, 49);
+            this.txtHandicapScore1.Size = new System.Drawing.Size(57, 37);
             this.txtHandicapScore1.TabIndex = 6;
             // 
             // txtScratchScore2
             // 
+            this.txtScratchScore2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtScratchScore2.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtScratchScore2.Location = new System.Drawing.Point(27, 97);
             this.txtScratchScore2.MaxLength = 3;
@@ -286,6 +293,7 @@
             // 
             // txtHandicapScore2
             // 
+            this.txtHandicapScore2.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.txtHandicapScore2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtHandicapScore2.Enabled = false;
             this.txtHandicapScore2.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -293,11 +301,12 @@
             this.txtHandicapScore2.Multiline = true;
             this.txtHandicapScore2.Name = "txtHandicapScore2";
             this.txtHandicapScore2.ReadOnly = true;
-            this.txtHandicapScore2.Size = new System.Drawing.Size(57, 49);
+            this.txtHandicapScore2.Size = new System.Drawing.Size(57, 37);
             this.txtHandicapScore2.TabIndex = 6;
             // 
             // txtScratchScore3
             // 
+            this.txtScratchScore3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtScratchScore3.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtScratchScore3.Location = new System.Drawing.Point(27, 152);
             this.txtScratchScore3.MaxLength = 3;
@@ -308,6 +317,7 @@
             // 
             // txtHandicapScore3
             // 
+            this.txtHandicapScore3.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.txtHandicapScore3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtHandicapScore3.Enabled = false;
             this.txtHandicapScore3.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -315,11 +325,12 @@
             this.txtHandicapScore3.Multiline = true;
             this.txtHandicapScore3.Name = "txtHandicapScore3";
             this.txtHandicapScore3.ReadOnly = true;
-            this.txtHandicapScore3.Size = new System.Drawing.Size(57, 49);
+            this.txtHandicapScore3.Size = new System.Drawing.Size(57, 37);
             this.txtHandicapScore3.TabIndex = 6;
             // 
             // txtScratchScore4
             // 
+            this.txtScratchScore4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtScratchScore4.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtScratchScore4.Location = new System.Drawing.Point(27, 207);
             this.txtScratchScore4.MaxLength = 3;
@@ -330,6 +341,7 @@
             // 
             // txtHandicapScore4
             // 
+            this.txtHandicapScore4.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.txtHandicapScore4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtHandicapScore4.Enabled = false;
             this.txtHandicapScore4.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -337,11 +349,12 @@
             this.txtHandicapScore4.Multiline = true;
             this.txtHandicapScore4.Name = "txtHandicapScore4";
             this.txtHandicapScore4.ReadOnly = true;
-            this.txtHandicapScore4.Size = new System.Drawing.Size(57, 49);
+            this.txtHandicapScore4.Size = new System.Drawing.Size(57, 37);
             this.txtHandicapScore4.TabIndex = 6;
             // 
             // txtScratchTotal
             // 
+            this.txtScratchTotal.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.txtScratchTotal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtScratchTotal.Enabled = false;
             this.txtScratchTotal.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -349,11 +362,12 @@
             this.txtScratchTotal.Multiline = true;
             this.txtScratchTotal.Name = "txtScratchTotal";
             this.txtScratchTotal.ReadOnly = true;
-            this.txtScratchTotal.Size = new System.Drawing.Size(83, 55);
+            this.txtScratchTotal.Size = new System.Drawing.Size(70, 50);
             this.txtScratchTotal.TabIndex = 7;
             // 
             // txtHandicapTotal
             // 
+            this.txtHandicapTotal.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.txtHandicapTotal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtHandicapTotal.Enabled = false;
             this.txtHandicapTotal.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -361,47 +375,50 @@
             this.txtHandicapTotal.Multiline = true;
             this.txtHandicapTotal.Name = "txtHandicapTotal";
             this.txtHandicapTotal.ReadOnly = true;
-            this.txtHandicapTotal.Size = new System.Drawing.Size(83, 55);
+            this.txtHandicapTotal.Size = new System.Drawing.Size(70, 50);
             this.txtHandicapTotal.TabIndex = 7;
             // 
             // grpRecord
             // 
             this.grpRecord.Controls.Add(this.btnRightArrow);
+            this.grpRecord.Controls.Add(this.lblRecord);
             this.grpRecord.Controls.Add(this.btnLeftArrow);
             this.grpRecord.Controls.Add(this.btnDelete);
             this.grpRecord.Controls.Add(this.btnStats);
             this.grpRecord.Controls.Add(this.btnLastFile);
             this.grpRecord.Controls.Add(this.btnNew);
-            this.grpRecord.Location = new System.Drawing.Point(12, 494);
+            this.grpRecord.Location = new System.Drawing.Point(21, 520);
             this.grpRecord.Name = "grpRecord";
-            this.grpRecord.Size = new System.Drawing.Size(200, 180);
+            this.grpRecord.Size = new System.Drawing.Size(218, 180);
             this.grpRecord.TabIndex = 8;
             this.grpRecord.TabStop = false;
             this.grpRecord.Text = "Record";
             // 
             // btnRightArrow
             // 
-            this.btnRightArrow.Location = new System.Drawing.Point(103, 50);
+            this.btnRightArrow.Location = new System.Drawing.Point(147, 50);
             this.btnRightArrow.Name = "btnRightArrow";
-            this.btnRightArrow.Size = new System.Drawing.Size(72, 29);
+            this.btnRightArrow.Size = new System.Drawing.Size(53, 29);
             this.btnRightArrow.TabIndex = 1;
             this.btnRightArrow.Text = ">";
             this.btnRightArrow.UseVisualStyleBackColor = true;
+            this.btnRightArrow.Click += new System.EventHandler(this.btnRightArrow_Click);
             // 
             // btnLeftArrow
             // 
             this.btnLeftArrow.Location = new System.Drawing.Point(19, 50);
             this.btnLeftArrow.Name = "btnLeftArrow";
-            this.btnLeftArrow.Size = new System.Drawing.Size(72, 29);
+            this.btnLeftArrow.Size = new System.Drawing.Size(52, 29);
             this.btnLeftArrow.TabIndex = 1;
             this.btnLeftArrow.Text = "<";
             this.btnLeftArrow.UseVisualStyleBackColor = true;
+            this.btnLeftArrow.Click += new System.EventHandler(this.btnLeftArrow_Click);
             // 
             // btnDelete
             // 
             this.btnDelete.Location = new System.Drawing.Point(19, 147);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(156, 25);
+            this.btnDelete.Size = new System.Drawing.Size(181, 25);
             this.btnDelete.TabIndex = 0;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
@@ -410,7 +427,7 @@
             // 
             this.btnStats.Location = new System.Drawing.Point(19, 116);
             this.btnStats.Name = "btnStats";
-            this.btnStats.Size = new System.Drawing.Size(156, 25);
+            this.btnStats.Size = new System.Drawing.Size(181, 25);
             this.btnStats.TabIndex = 0;
             this.btnStats.Text = "Stats";
             this.btnStats.UseVisualStyleBackColor = true;
@@ -419,7 +436,7 @@
             // 
             this.btnLastFile.Location = new System.Drawing.Point(19, 85);
             this.btnLastFile.Name = "btnLastFile";
-            this.btnLastFile.Size = new System.Drawing.Size(156, 25);
+            this.btnLastFile.Size = new System.Drawing.Size(181, 25);
             this.btnLastFile.TabIndex = 0;
             this.btnLastFile.Text = "Last File";
             this.btnLastFile.UseVisualStyleBackColor = true;
@@ -428,11 +445,11 @@
             // 
             this.btnNew.Location = new System.Drawing.Point(19, 19);
             this.btnNew.Name = "btnNew";
-            this.btnNew.Size = new System.Drawing.Size(156, 25);
+            this.btnNew.Size = new System.Drawing.Size(181, 25);
             this.btnNew.TabIndex = 0;
             this.btnNew.Text = "New";
             this.btnNew.UseVisualStyleBackColor = true;
-            this.btnNew.Click += new System.EventHandler(this.newTourney);
+            this.btnNew.Click += new System.EventHandler(this.newRecap);
             // 
             // lblStratchScores
             // 
@@ -470,7 +487,7 @@
             this.grpStats.Controls.Add(this.txtHandicapScore4);
             this.grpStats.Controls.Add(this.txtHandicapScore3);
             this.grpStats.Controls.Add(this.txtScratchScore4);
-            this.grpStats.Location = new System.Drawing.Point(12, 160);
+            this.grpStats.Location = new System.Drawing.Point(21, 172);
             this.grpStats.Name = "grpStats";
             this.grpStats.Size = new System.Drawing.Size(360, 328);
             this.grpStats.TabIndex = 11;
@@ -497,6 +514,7 @@
             // 
             // txtBonusPins
             // 
+            this.txtBonusPins.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.txtBonusPins.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtBonusPins.Enabled = false;
             this.txtBonusPins.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -510,6 +528,7 @@
             // 
             // txtHandicap
             // 
+            this.txtHandicap.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.txtHandicap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtHandicap.Enabled = false;
             this.txtHandicap.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -523,20 +542,21 @@
             // 
             // grpTournamentFile
             // 
-            this.grpTournamentFile.Controls.Add(this.lsbTournaments);
-            this.grpTournamentFile.Location = new System.Drawing.Point(225, 525);
+            this.grpTournamentFile.Controls.Add(this.comboBox1);
+            this.grpTournamentFile.Location = new System.Drawing.Point(268, 605);
             this.grpTournamentFile.Name = "grpTournamentFile";
-            this.grpTournamentFile.Size = new System.Drawing.Size(201, 148);
+            this.grpTournamentFile.Size = new System.Drawing.Size(201, 60);
             this.grpTournamentFile.TabIndex = 12;
             this.grpTournamentFile.TabStop = false;
             this.grpTournamentFile.Text = "Tournament File";
             // 
             // lsbTournaments
             // 
+            this.lsbTournaments.BackColor = System.Drawing.Color.Crimson;
             this.lsbTournaments.FormattingEnabled = true;
-            this.lsbTournaments.Location = new System.Drawing.Point(6, 19);
+            this.lsbTournaments.Location = new System.Drawing.Point(272, 521);
             this.lsbTournaments.Name = "lsbTournaments";
-            this.lsbTournaments.Size = new System.Drawing.Size(189, 121);
+            this.lsbTournaments.Size = new System.Drawing.Size(189, 30);
             this.lsbTournaments.TabIndex = 1;
             // 
             // grpLeaders
@@ -553,7 +573,7 @@
             this.grpLeaders.Controls.Add(this.richTextBox1);
             this.grpLeaders.Controls.Add(this.lblSeries);
             this.grpLeaders.Controls.Add(this.lblGameSenior);
-            this.grpLeaders.Location = new System.Drawing.Point(412, 102);
+            this.grpLeaders.Location = new System.Drawing.Point(500, 105);
             this.grpLeaders.Name = "grpLeaders";
             this.grpLeaders.Size = new System.Drawing.Size(361, 395);
             this.grpLeaders.TabIndex = 13;
@@ -673,7 +693,7 @@
             this.grpReports.Controls.Add(this.btnSeries);
             this.grpReports.Controls.Add(this.btnGame);
             this.grpReports.Controls.Add(this.btnSenior);
-            this.grpReports.Location = new System.Drawing.Point(443, 503);
+            this.grpReports.Location = new System.Drawing.Point(500, 521);
             this.grpReports.Name = "grpReports";
             this.grpReports.Size = new System.Drawing.Size(123, 171);
             this.grpReports.TabIndex = 0;
@@ -710,9 +730,9 @@
             // grpComments
             // 
             this.grpComments.Controls.Add(this.rtxtComments);
-            this.grpComments.Location = new System.Drawing.Point(572, 525);
+            this.grpComments.Location = new System.Drawing.Point(660, 520);
             this.grpComments.Name = "grpComments";
-            this.grpComments.Size = new System.Drawing.Size(201, 148);
+            this.grpComments.Size = new System.Drawing.Size(201, 172);
             this.grpComments.TabIndex = 16;
             this.grpComments.TabStop = false;
             this.grpComments.Text = "Comments";
@@ -724,7 +744,7 @@
             this.rtxtComments.Location = new System.Drawing.Point(19, 28);
             this.rtxtComments.Name = "rtxtComments";
             this.rtxtComments.ReadOnly = true;
-            this.rtxtComments.Size = new System.Drawing.Size(164, 97);
+            this.rtxtComments.Size = new System.Drawing.Size(164, 124);
             this.rtxtComments.TabIndex = 0;
             this.rtxtComments.Text = "";
             // 
@@ -746,11 +766,41 @@
             this.lblMemberL.TabIndex = 1;
             this.lblMemberL.Text = "MemberStatus:";
             // 
+            // lblRecord
+            // 
+            this.lblRecord.AutoSize = true;
+            this.lblRecord.Location = new System.Drawing.Point(79, 58);
+            this.lblRecord.Name = "lblRecord";
+            this.lblRecord.Size = new System.Drawing.Size(62, 13);
+            this.lblRecord.TabIndex = 18;
+            this.lblRecord.Text = "Record 0/0";
+            // 
+            // btnNewTournament
+            // 
+            this.btnNewTournament.Location = new System.Drawing.Point(272, 576);
+            this.btnNewTournament.Name = "btnNewTournament";
+            this.btnNewTournament.Size = new System.Drawing.Size(191, 23);
+            this.btnNewTournament.TabIndex = 11;
+            this.btnNewTournament.Text = "New Tournament";
+            this.btnNewTournament.UseVisualStyleBackColor = true;
+            this.btnNewTournament.Click += new System.EventHandler(this.btnNewTournament_Click);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(6, 19);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(189, 21);
+            this.comboBox1.TabIndex = 2;
+            // 
             // frmMemberScores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(790, 686);
+            this.BackColor = System.Drawing.Color.LightBlue;
+            this.ClientSize = new System.Drawing.Size(884, 712);
+            this.Controls.Add(this.btnNewTournament);
+            this.Controls.Add(this.lsbTournaments);
             this.Controls.Add(this.lblMemberL);
             this.Controls.Add(this.pnlMemStat);
             this.Controls.Add(this.grpComments);
@@ -778,6 +828,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.grpRecord.ResumeLayout(false);
+            this.grpRecord.PerformLayout();
             this.grpStats.ResumeLayout(false);
             this.grpStats.PerformLayout();
             this.grpTournamentFile.ResumeLayout(false);
@@ -799,7 +850,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton rdoSquadOne;
         private System.Windows.Forms.RadioButton rdoSquadFour;
-        private System.Windows.Forms.RadioButton rdoSquad3;
+        private System.Windows.Forms.RadioButton rdoSquadThree;
         private System.Windows.Forms.RadioButton rdoSquadTwo;
         private System.Windows.Forms.TextBox txtLastName;
         private System.Windows.Forms.TextBox txtFirstName;
@@ -855,5 +906,8 @@
         private System.Windows.Forms.Panel pnlMemStat;
         private System.Windows.Forms.Label lblMemberL;
         private System.Windows.Forms.ListBox lsbTournaments;
+        private System.Windows.Forms.Label lblRecord;
+        private System.Windows.Forms.Button btnNewTournament;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }

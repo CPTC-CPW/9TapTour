@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace NineTapTour.Database
@@ -14,5 +15,6 @@ namespace NineTapTour.Database
         public string Event { get; set; }
         public string Notes { get; set; }
         public string Sponsors { get; set; }
+        public List<Participant> Participant { get; set; }
     }
 }

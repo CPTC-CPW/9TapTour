@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace NineTapTour.Database
 {
@@ -9,6 +10,6 @@ namespace NineTapTour.Database
         [Required]
         public int Number { get; set; }
         [Required]
-        public int Score { get; set; }
+        public List<int> Score { get; set; }
     }
 }

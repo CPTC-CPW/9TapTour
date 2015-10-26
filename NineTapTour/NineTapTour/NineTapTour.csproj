@@ -128,6 +128,14 @@
     <Compile Include="Migrations\201510051837156_middle initial nullable.Designer.cs">
       <DependentUpon>201510051837156_middle initial nullable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201510212018305_Added list of scores.cs" />
+    <Compile Include="Migrations\201510212018305_Added list of scores.Designer.cs">
+      <DependentUpon>201510212018305_Added list of scores.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201510212045217_Tournament is nullable.cs" />
+    <Compile Include="Migrations\201510212045217_Tournament is nullable.Designer.cs">
+      <DependentUpon>201510212045217_Tournament is nullable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -182,6 +190,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201510051837156_middle initial nullable.resx">
       <DependentUpon>201510051837156_middle initial nullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510212018305_Added list of scores.resx">
+      <DependentUpon>201510212018305_Added list of scores.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510212045217_Tournament is nullable.resx">
+      <DependentUpon>201510212045217_Tournament is nullable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
