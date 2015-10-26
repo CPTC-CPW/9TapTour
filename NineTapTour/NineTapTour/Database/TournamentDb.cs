@@ -38,5 +38,25 @@ namespace NineTapTour.Database
                         select t).ToList();
             }
         }
+
+        public static void AddMemberToTournament(Participant player)
+        {
+            try
+            {
+                using (var db = new NineTapDb())
+                {
+                    //db.Entry(player).State = db.Participants.Any(m => m.Scores == player.Scores) ?
+                    //    EntityState.Modified :
+                    //    EntityState.Added;
+                    db.Participants.Add(player);
+                    db.SaveChanges();   // 'System.Data.Entity.Validation.DbEntityValidationException' occurred in EntityFramework.dll
+                }
+            }
+            catch (SqlException ex)
+            {
+                
+                throw new MemberTableException("Error number : " + ex.Number + " - " + ex.Message);
+            }
+        }
     }
 }
