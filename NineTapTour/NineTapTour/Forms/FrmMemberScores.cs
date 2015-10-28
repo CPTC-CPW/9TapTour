@@ -250,7 +250,7 @@ namespace NineTapTour.Forms
             {
                 player.Squad = 2;
             }
-            else if (rdoSquad3.Checked)
+            else if (rdoSquadThree.Checked)
             {
                 player.Squad = 3;
             }
