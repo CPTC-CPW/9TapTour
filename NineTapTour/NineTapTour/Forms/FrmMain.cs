@@ -49,6 +49,29 @@ namespace NineTapTour.Forms
            
         }
 
+        public void OpenOrDisplayTourneyForm<T>(ref T form) where T : Form, new()
+        {
+            if (form != null)
+            {
+                Width = form.Right + Math.Abs(form.Left) + 4;
+                Height = form.Height + 28;
+                form.BringToFront();
+                form.Activate();
+            }
+            else
+            {
+                form = new T
+                {
+                    Dock = DockStyle.Fill
+                };
+                Width = form.Width;
+                Height = form.Height + 20;
+            }
+            //form.WindowState = FormWindowState.Maximized;
+            form.Show();
+
+        }
+
         public void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;

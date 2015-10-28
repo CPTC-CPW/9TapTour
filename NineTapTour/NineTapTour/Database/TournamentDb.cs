@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,7 @@ namespace NineTapTour.Database
             {
                 using (var db = new NineTapDb())
                 {
+                    //checks if tournament is new or already existing in db
                     db.Entry(New).State = db.Tournaments.Any(t => t.Id == New.Id) ?
                         EntityState.Modified :
                         EntityState.Added;
@@ -45,13 +47,15 @@ namespace NineTapTour.Database
             {
                 using (var db = new NineTapDb())
                 {
-                   
-                   // db.Entry(player).State = db.Participants.Any(m => m.Member == player.Member) ?
-                  //  EntityState.Modified :
-                   // EntityState.Added;
-
+                    //Adds player inside NineTapDb
                     db.Participants.Add(player);
-                    db.SaveChanges();   // 'System.Data.Entity.Validation.DbEntityValidationException' occurred in EntityFramework.dll
+                    //Uses AddObject because you cannot have object graph where part of objects are connected to context and part of not.
+                    //Changed so that context knows that department already exists.
+                    var manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
+                    manager.ChangeObjectState(player.Member,
+                                                EntityState.Unchanged);
+                    db.SaveChanges();
+                    
                 }
             }
             catch (SqlException ex)

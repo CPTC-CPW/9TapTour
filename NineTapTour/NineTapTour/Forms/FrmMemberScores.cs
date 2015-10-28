@@ -206,7 +206,8 @@ namespace NineTapTour.Forms
 
 
             Participant player = new Participant();
-            player.Scores = new int[4] { 
+            player.Game = new Game();
+            player.Game.Score = new List<int> { 
                 Convert.ToInt16(scratchArray[0].Text), 
                 Convert.ToInt16(scratchArray[1].Text), 
                 Convert.ToInt16(scratchArray[2].Text), 
@@ -242,6 +243,27 @@ namespace NineTapTour.Forms
 
            
 
+            #region radio button
+            if (rdoSquadOne.Checked) {
+                player.Squad = 1;
+            }
+            else if (rdoSquadTwo.Checked)
+            {
+                player.Squad = 2;
+            }
+            else if (rdoSquadThree.Checked)
+            {
+                player.Squad = 3;
+            }
+            else
+            {
+                player.Squad = 4;
+            }
+            #endregion
+
+            player.Member = currentMem;
+
+
             try
             {
                 player.Member = currentMem;
@@ -276,7 +298,7 @@ namespace NineTapTour.Forms
         private void btnNewTournament_Click(object sender, EventArgs e)
         {
             var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
-            ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
+            ((FrmMain)MdiParent).OpenOrDisplayTourneyForm(ref newfrmNewTournament);
             newfrmNewTournament.Dock = DockStyle.None;
         }
     }
