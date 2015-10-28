@@ -296,7 +296,7 @@ namespace NineTapTour.Forms
         private void btnNewTournament_Click(object sender, EventArgs e)
         {
             var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
-            ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
+            ((FrmMain)MdiParent).OpenOrDisplayTourneyForm(ref newfrmNewTournament);
             newfrmNewTournament.Dock = DockStyle.None;
         }
     }
