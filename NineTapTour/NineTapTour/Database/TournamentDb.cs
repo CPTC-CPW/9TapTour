@@ -30,13 +30,16 @@ namespace NineTapTour.Database
                 throw new TournamentTableException("Error Number : " + ex.Number + " - " + ex.Message);
             }
         }
-
+        /// <summary>
+        /// returns the list of tournaments in descending order by date
+        /// </summary>
+        /// <returns></returns>
         public static List<Tournament> GetTournamentList()
         {
             using (var db = new NineTapDb())
             {
                 return (from t in db.Tournaments
-                        orderby t.Date
+                        orderby t.Date descending
                         select t).ToList();
             }
         }
