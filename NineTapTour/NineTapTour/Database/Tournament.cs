@@ -16,5 +16,13 @@ namespace NineTapTour.Database
         public string Notes { get; set; }
         public string Sponsors { get; set; }
         public List<Participant> Participant { get; set; }
+        private string myVar;
+
+        public string  TourneyNameDate
+        {
+            get { return Event + " " +  Date.ToShortDateString(); }
+           
+        }
+        
     }
 }

@@ -61,7 +61,7 @@ namespace NineTapTour.Forms
             txtBonusPins.Clear();
             MemberStatus("", Color.Black, SystemColors.Control, true);
             cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
-            cbxTourneyDropDown.DisplayMember = "Event";
+            cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             cbxTourneyDropDown.ValueMember = "Id";
         }
 
@@ -287,8 +287,9 @@ namespace NineTapTour.Forms
         private void btnNewTournament_Click(object sender, EventArgs e)
         {
             var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
-            ((FrmMain)MdiParent).OpenOrDisplayTourneyForm(ref newfrmNewTournament);
+            ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
             newfrmNewTournament.Dock = DockStyle.None;
+            rdoSquadOne.Checked = true;
 
         }
 

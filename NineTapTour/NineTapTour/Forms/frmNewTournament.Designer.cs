@@ -148,6 +148,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(264, 307);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSubmit);
@@ -165,7 +166,6 @@
             this.Name = "frmNewTournament";
             this.Text = "New Tournament";
             this.TopMost = true;
-            this.Load += new System.EventHandler(this.frmNewTournament_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
