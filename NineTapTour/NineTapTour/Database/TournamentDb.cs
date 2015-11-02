@@ -52,8 +52,9 @@ namespace NineTapTour.Database
                     //Uses AddObject because you cannot have object graph where part of objects are connected to context and part of not.
                     //Changed so that context knows that department already exists.
                     var manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
-                    manager.ChangeObjectState(player.Member,
+                    manager.ChangeObjectState(player.Game.Member,
                                                 EntityState.Unchanged);
+                    manager.ChangeObjectState(player.Member, EntityState.Unchanged);
                     db.SaveChanges();
                     
                 }

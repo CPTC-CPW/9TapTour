@@ -60,9 +60,9 @@ namespace NineTapTour.Forms
             txtHandicap.Clear();
             txtBonusPins.Clear();
             MemberStatus("", Color.Black, SystemColors.Control, true);
-            lsbTournaments.DataSource = ((FrmMain)MdiParent)._tournamentList;
-            lsbTournaments.DisplayMember = "Event";
-            lsbTournaments.ValueMember = "Id";
+            cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
+            cbxTourneyDropDown.DisplayMember = "Event";
+            cbxTourneyDropDown.ValueMember = "Id";
         }
 
         private void GetMember(object sender, KeyEventArgs e)
@@ -214,34 +214,12 @@ namespace NineTapTour.Forms
                 Convert.ToInt16(scratchArray[3].Text) 
            
             };
+            player.Game.Member = currentMem;
+            player.Game.Game1 = Convert.ToInt16(handicappArray[0].Text);
+            player.Game.Game2 = Convert.ToInt16(handicappArray[1].Text);
+            player.Game.Game3 = Convert.ToInt16(handicappArray[2].Text);
+            player.Game.Game4 = Convert.ToInt16(handicappArray[3].Text);
           
-
-
-            // following rdo button validation for checking if squad button is checked. might need to be moved to its own isvalid method
-            // not refined 
-            if (rdoSquadOne.Checked == false && rdoSquadTwo.Checked == false && rdoSquadThree.Checked == false && rdoSquadFour.Checked == false)
-            {
-                MessageBox.Show(" member must be apart of a squad");
-                return;
-            }
-            if (rdoSquadOne.Checked == true){ player.Squad = 1;}
-            
-              
-           if (rdoSquadTwo.Checked == true){   player.Squad = 2;}
-                
-                 
-                
-           if (rdoSquadThree.Checked == true){ player.Squad = 3;}
-                
-                   
-           if (rdoSquadFour.Checked == true){   player.Squad = 4;}
-
-
-
-
-       
-
-           
 
             #region radio button
             if (rdoSquadOne.Checked) {
@@ -273,9 +251,20 @@ namespace NineTapTour.Forms
             catch (MemberAccessException ex)
             {
                 MessageBox.Show(ex.Message);
+                
             }
+            clear();
+            
         }
+        private void clear()
+        {
+            txtScratchScore1.Clear();
+            txtScratchScore2.Clear();
+            txtScratchScore3.Clear();
+            txtScratchScore4.Clear();
+            txtMemberNum.Clear();
 
+        }
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
             count++;
@@ -300,6 +289,11 @@ namespace NineTapTour.Forms
             var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
             ((FrmMain)MdiParent).OpenOrDisplayTourneyForm(ref newfrmNewTournament);
             newfrmNewTournament.Dock = DockStyle.None;
+
         }
+
+       
+
+      
     }
 }
