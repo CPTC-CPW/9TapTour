@@ -214,6 +214,11 @@ namespace NineTapTour.Forms
                 Convert.ToInt16(scratchArray[3].Text) 
            
             };
+            //Selects the ID of the combobox of tournaments and stores the
+            //Tournament property within the participants class.
+            int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
+            Tournament selectedTourney = GetTournamentById(selectedTournamentId);
+            player.Tournament = selectedTourney;
             player.Game.Member = currentMem;
             player.Game.Game1 = Convert.ToInt16(handicappArray[0].Text);
             player.Game.Game2 = Convert.ToInt16(handicappArray[1].Text);
@@ -256,6 +261,15 @@ namespace NineTapTour.Forms
             clear();
             
         }
+
+        private static Tournament GetTournamentById(int selectedTournamentId)
+        {
+            Tournament selectedTournament = (from t in TournamentDb.GetTournamentList()
+                                             where t.Id == selectedTournamentId
+                                             select t
+                                                 ).Single();
+            return selectedTournament;
+        }
         private void clear()
         {
             txtScratchScore1.Clear();
@@ -287,13 +301,9 @@ namespace NineTapTour.Forms
         private void btnNewTournament_Click(object sender, EventArgs e)
         {
             var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
-            ((FrmMain)MdiParent).OpenOrDisplayTourneyForm(ref newfrmNewTournament);
+            ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
             newfrmNewTournament.Dock = DockStyle.None;
 
         }
-
-       
-
-      
     }
 }

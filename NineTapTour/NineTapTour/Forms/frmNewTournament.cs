@@ -36,7 +36,7 @@ namespace NineTapTour.Forms
             {
                 TournamentDb.AddTournament(New);
                 MessageBox.Show(@"Tournament Created Successfully.");
-                 ((FrmMain)MdiParent)._tournamentList = TournamentDb.GetTournamentList();
+                ((FrmMain)MdiParent)._tournamentList = TournamentDb.GetTournamentList();
                  
             }
             catch (TournamentTableException ex)
@@ -45,7 +45,7 @@ namespace NineTapTour.Forms
             }
 
         }
-
+        
         private void frmNewTournament_Load(object sender, EventArgs e)
         {
 

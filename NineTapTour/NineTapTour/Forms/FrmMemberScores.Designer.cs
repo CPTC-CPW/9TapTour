@@ -560,6 +560,7 @@
             // 
             // cbxTourneyDropDown
             // 
+            this.cbxTourneyDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxTourneyDropDown.FormattingEnabled = true;
             this.cbxTourneyDropDown.Location = new System.Drawing.Point(6, 19);
             this.cbxTourneyDropDown.Name = "cbxTourneyDropDown";
