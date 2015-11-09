@@ -12,6 +12,11 @@ namespace NineTapTour.Forms
         public IOrderedEnumerable<Member> _membersList { get; set; }
         public List<Tournament> _tournamentList { get; set; }
 
+        /// <summary>
+        /// Opens Main form 
+        /// Retrieves information from the database in order.
+        /// </summary>
+      
         public FrmMain()
         {
             InitializeComponent();
@@ -19,18 +24,25 @@ namespace NineTapTour.Forms
             _tournamentList = TournamentDb.GetTournamentList();
             var newfrmStart = new MainMenu {MdiParent = this};
             //newStart.Dock = DockStyle.Fill;
-            Width = newfrmStart.Width;
-            Height = newfrmStart.Height + 20;
+            //Width and Height not needed here?
+            //Width = newfrmStart.Width;
+            //Height = newfrmStart.Height + 20;
             newfrmStart.Show();
             newfrmStart.WindowState = FormWindowState.Maximized;
         }
 
+        /// <summary>
+        /// Opens/Displays the specified form. Ensures the form is on top when selected.
+        /// </summary>
+        /// <typeparam name="T">forms that have already been opened(?)</typeparam>
+        /// <param name="form">forms that haven't been opened yet(?)</param>
         public void OpenOrDisplayForm<T>(ref T form) where T : Form, new()
         {
             if (form != null)
             {
-                Width = form.Right + Math.Abs(form.Left) + 4;
-                Height = form.Height + 28;
+                //Width and Height not needed here?
+                //Width = form.Right + Math.Abs(form.Left) + 4;
+                //Height = form.Height + 28;
                 form.BringToFront();
                 form.Activate();
             }
@@ -41,43 +53,31 @@ namespace NineTapTour.Forms
                     MdiParent = this,
                     Dock = DockStyle.Fill
                 };
-                Width = form.Width;
-                Height = form.Height + 20;
+                //Width and Height not needed here?
+                //Width = form.Width;
+                //Height = form.Height + 20;
             }
             form.WindowState = FormWindowState.Maximized;
             form.Show();
            
         }
 
-        public void OpenOrDisplayTourneyForm<T>(ref T form) where T : Form, new()
-        {
-            if (form != null)
-            {
-                Width = form.Right + Math.Abs(form.Left) + 4;
-                Height = form.Height + 28;
-                form.BringToFront();
-                form.Activate();
-            }
-            else
-            {
-                form = new T
-                {
-                    Dock = DockStyle.Fill
-                };
-                Width = form.Width;
-                Height = form.Height + 20;
-            }
-            //form.WindowState = FormWindowState.Maximized;
-            form.Show();
-
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
             OpenOrDisplayForm(ref mainMenu);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void memberToolStripMenuItem_Click(object sender, EventArgs e)
         {   
 
@@ -87,6 +87,11 @@ namespace NineTapTour.Forms
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
@@ -94,6 +99,11 @@ namespace NineTapTour.Forms
             OpenOrDisplayForm(ref newfrmMemberScores);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void menMain_ItemAdded(object sender, ToolStripItemEventArgs e)
         {
             var s = e.Item.GetType().ToString();
