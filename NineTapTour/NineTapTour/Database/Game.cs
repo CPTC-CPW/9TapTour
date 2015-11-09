@@ -16,5 +16,8 @@ namespace NineTapTour.Database
         public List<int> Score { get; set; }
         [Required]
         public Member Member { get; set; }
+        public int Handicap { get; set; }
+        public int Bonus { get; set; }
+
     }
 }
