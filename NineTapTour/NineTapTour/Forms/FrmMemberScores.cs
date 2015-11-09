@@ -22,6 +22,7 @@ namespace NineTapTour.Forms
         TextBox[] handicappArray = new TextBox[4];
         //Count for record counting
         int count = 0;
+        int totalCount = 0;
 
         public frmMemberScores()
         {
@@ -220,10 +221,10 @@ namespace NineTapTour.Forms
             Tournament selectedTourney = GetTournamentById(selectedTournamentId);
             player.Tournament = selectedTourney;
             player.Game.Member = currentMem;
-            player.Game.Game1 = Convert.ToInt16(handicappArray[0].Text);
-            player.Game.Game2 = Convert.ToInt16(handicappArray[1].Text);
-            player.Game.Game3 = Convert.ToInt16(handicappArray[2].Text);
-            player.Game.Game4 = Convert.ToInt16(handicappArray[3].Text);
+            player.Game.Game1 = Convert.ToInt16(scratchArray[0].Text);
+            player.Game.Game2 = Convert.ToInt16(scratchArray[1].Text);
+            player.Game.Game3 = Convert.ToInt16(scratchArray[2].Text);
+            player.Game.Game4 = Convert.ToInt16(scratchArray[3].Text);
           
 
             #region radio button
@@ -249,9 +250,22 @@ namespace NineTapTour.Forms
 
             try
             {
+
+
                 player.Member = currentMem;
                 TournamentDb.AddMemberToTournament(player);
+                #if DEBUG
                 MessageBox.Show(@"Bowler Added Successfully to Tournament!");
+                #endif
+                count++;
+
+                NineTapDb db = new NineTapDb();
+                selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
+                totalCount = (from r in db.Tournaments
+                                where r.Id == selectedTournamentId
+                                select r.Participant).Count();
+                lblRecord.Text = "Record " + count + " / " + totalCount;
+       
             }
             catch (MemberAccessException ex)
             {
@@ -281,12 +295,21 @@ namespace NineTapTour.Forms
         }
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
-            count++;
-            lblRecord.Text = "Record " + count + " / " + "?";
+            if (count >= totalCount)
+            {
+                MessageBox.Show("There are no more players to go to!");
+            }
+            else
+            {
+                count++;
+                lblRecord.Text = "Record " + count + " / " + totalCount;
+            }
+
         }
 
         private void btnLeftArrow_Click(object sender, EventArgs e)
         {
+
             if (count <= 0)
             {
                 MessageBox.Show("There are no more players to go back to!");
@@ -294,13 +317,13 @@ namespace NineTapTour.Forms
             else
             {
                 count--;
-                lblRecord.Text = "Record " + count + " / " + "?";
+                lblRecord.Text = "Record " + count + " / " + totalCount;
             }
         }
 
         private void btnNewTournament_Click(object sender, EventArgs e)
         {
-            var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
+                        var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
             ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
             newfrmNewTournament.Dock = DockStyle.None;
             rdoSquadOne.Checked = true;
