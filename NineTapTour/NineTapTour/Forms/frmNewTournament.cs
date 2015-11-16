@@ -26,29 +26,29 @@ namespace NineTapTour.Forms
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            Tournament New = new Tournament();
-            New.Date = dtpDate.Value.Date;
-            New.Location = txtLocation.Text;
-            New.Event = txtEvent.Text;
-            New.Sponsors = txtSponsors.Text;
-            New.Notes = rtxtNotes.Text;
+            Tournament NewTournament = new Tournament();
+            NewTournament.Date = dtpDate.Value.Date;
+            NewTournament.Location = txtLocation.Text;
+            NewTournament.Event = txtEvent.Text;
+            NewTournament.Sponsors = txtSponsors.Text;
+            NewTournament.Notes = rtxtNotes.Text;
+
+
             try
             {
-                TournamentDb.AddTournament(New);
+                TournamentDb.AddTournament(NewTournament);
                 MessageBox.Show(@"Tournament Created Successfully.");
                  ((FrmMain)MdiParent)._tournamentList = TournamentDb.GetTournamentList();
+                this.Close();
                  
             }
             catch (TournamentTableException ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
 
         }
 
-        private void frmNewTournament_Load(object sender, EventArgs e)
-        {
 
         }
-    }
-}

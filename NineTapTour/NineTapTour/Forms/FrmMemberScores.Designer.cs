@@ -55,6 +55,7 @@
             this.txtHandicapTotal = new System.Windows.Forms.TextBox();
             this.grpRecord = new System.Windows.Forms.GroupBox();
             this.btnRightArrow = new System.Windows.Forms.Button();
+            this.lblRecord = new System.Windows.Forms.Label();
             this.btnLeftArrow = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnStats = new System.Windows.Forms.Button();
@@ -68,7 +69,7 @@
             this.txtBonusPins = new System.Windows.Forms.TextBox();
             this.txtHandicap = new System.Windows.Forms.TextBox();
             this.grpTournamentFile = new System.Windows.Forms.GroupBox();
-            this.lsbTournaments = new System.Windows.Forms.ListBox();
+            this.cbxTourneyDropDown = new System.Windows.Forms.ComboBox();
             this.grpLeaders = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -90,9 +91,7 @@
             this.rtxtComments = new System.Windows.Forms.RichTextBox();
             this.pnlMemStat = new System.Windows.Forms.Panel();
             this.lblMemberL = new System.Windows.Forms.Label();
-            this.lblRecord = new System.Windows.Forms.Label();
             this.btnNewTournament = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpRecord.SuspendLayout();
@@ -404,6 +403,15 @@
             this.btnRightArrow.UseVisualStyleBackColor = true;
             this.btnRightArrow.Click += new System.EventHandler(this.btnRightArrow_Click);
             // 
+            // lblRecord
+            // 
+            this.lblRecord.AutoSize = true;
+            this.lblRecord.Location = new System.Drawing.Point(79, 58);
+            this.lblRecord.Name = "lblRecord";
+            this.lblRecord.Size = new System.Drawing.Size(62, 13);
+            this.lblRecord.TabIndex = 18;
+            this.lblRecord.Text = "Record 0/0";
+            // 
             // btnLeftArrow
             // 
             this.btnLeftArrow.Location = new System.Drawing.Point(19, 50);
@@ -542,7 +550,7 @@
             // 
             // grpTournamentFile
             // 
-            this.grpTournamentFile.Controls.Add(this.comboBox1);
+            this.grpTournamentFile.Controls.Add(this.cbxTourneyDropDown);
             this.grpTournamentFile.Location = new System.Drawing.Point(268, 605);
             this.grpTournamentFile.Name = "grpTournamentFile";
             this.grpTournamentFile.Size = new System.Drawing.Size(201, 60);
@@ -550,14 +558,14 @@
             this.grpTournamentFile.TabStop = false;
             this.grpTournamentFile.Text = "Tournament File";
             // 
-            // lsbTournaments
+            // cbxTourneyDropDown
             // 
-            this.lsbTournaments.BackColor = System.Drawing.Color.Crimson;
-            this.lsbTournaments.FormattingEnabled = true;
-            this.lsbTournaments.Location = new System.Drawing.Point(272, 521);
-            this.lsbTournaments.Name = "lsbTournaments";
-            this.lsbTournaments.Size = new System.Drawing.Size(189, 30);
-            this.lsbTournaments.TabIndex = 1;
+            this.cbxTourneyDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxTourneyDropDown.FormattingEnabled = true;
+            this.cbxTourneyDropDown.Location = new System.Drawing.Point(6, 19);
+            this.cbxTourneyDropDown.Name = "cbxTourneyDropDown";
+            this.cbxTourneyDropDown.Size = new System.Drawing.Size(189, 21);
+            this.cbxTourneyDropDown.TabIndex = 2;
             // 
             // grpLeaders
             // 
@@ -766,15 +774,6 @@
             this.lblMemberL.TabIndex = 1;
             this.lblMemberL.Text = "MemberStatus:";
             // 
-            // lblRecord
-            // 
-            this.lblRecord.AutoSize = true;
-            this.lblRecord.Location = new System.Drawing.Point(79, 58);
-            this.lblRecord.Name = "lblRecord";
-            this.lblRecord.Size = new System.Drawing.Size(62, 13);
-            this.lblRecord.TabIndex = 18;
-            this.lblRecord.Text = "Record 0/0";
-            // 
             // btnNewTournament
             // 
             this.btnNewTournament.Location = new System.Drawing.Point(272, 576);
@@ -785,14 +784,6 @@
             this.btnNewTournament.UseVisualStyleBackColor = true;
             this.btnNewTournament.Click += new System.EventHandler(this.btnNewTournament_Click);
             // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(6, 19);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(189, 21);
-            this.comboBox1.TabIndex = 2;
-            // 
             // frmMemberScores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -800,7 +791,6 @@
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(884, 712);
             this.Controls.Add(this.btnNewTournament);
-            this.Controls.Add(this.lsbTournaments);
             this.Controls.Add(this.lblMemberL);
             this.Controls.Add(this.pnlMemStat);
             this.Controls.Add(this.grpComments);
@@ -819,6 +809,7 @@
             this.Controls.Add(this.grpMemberNum);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(900, 750);
             this.Name = "frmMemberScores";
             this.Text = "Member Scores";
             this.Activated += new System.EventHandler(this.FrmMemberScores_Activated);
@@ -905,9 +896,8 @@
         private System.Windows.Forms.Label lblMemberStatus;
         private System.Windows.Forms.Panel pnlMemStat;
         private System.Windows.Forms.Label lblMemberL;
-        private System.Windows.Forms.ListBox lsbTournaments;
         private System.Windows.Forms.Label lblRecord;
         private System.Windows.Forms.Button btnNewTournament;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cbxTourneyDropDown;
     }
 }

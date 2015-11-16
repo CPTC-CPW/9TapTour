@@ -136,6 +136,18 @@
     <Compile Include="Migrations\201510212045217_Tournament is nullable.Designer.cs">
       <DependentUpon>201510212045217_Tournament is nullable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201510282007545_update2.cs" />
+    <Compile Include="Migrations\201510282007545_update2.Designer.cs">
+      <DependentUpon>201510282007545_update2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201510301824083_game table.cs" />
+    <Compile Include="Migrations\201510301824083_game table.Designer.cs">
+      <DependentUpon>201510301824083_game table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511092114484_HandicapAndBonus.cs" />
+    <Compile Include="Migrations\201511092114484_HandicapAndBonus.Designer.cs">
+      <DependentUpon>201511092114484_HandicapAndBonus.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -196,6 +208,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201510212045217_Tournament is nullable.resx">
       <DependentUpon>201510212045217_Tournament is nullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510282007545_update2.resx">
+      <DependentUpon>201510282007545_update2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510301824083_game table.resx">
+      <DependentUpon>201510301824083_game table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511092114484_HandicapAndBonus.resx">
+      <DependentUpon>201511092114484_HandicapAndBonus.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>

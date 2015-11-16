@@ -84,6 +84,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menMain;
+            this.MinimumSize = new System.Drawing.Size(900, 750);
             this.Name = "FrmMain";
             this.Text = "Nine Tap Tour Main";
             this.menMain.ResumeLayout(false);

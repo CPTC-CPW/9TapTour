@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -29,13 +30,16 @@ namespace NineTapTour.Database
                 throw new TournamentTableException("Error Number : " + ex.Number + " - " + ex.Message);
             }
         }
-
+        /// <summary>
+        /// returns the list of tournaments in descending order by date
+        /// </summary>
+        /// <returns></returns>
         public static List<Tournament> GetTournamentList()
         {
             using (var db = new NineTapDb())
             {
                 return (from t in db.Tournaments
-                        orderby t.Date
+                        orderby t.Date descending
                         select t).ToList();
             }
         }
@@ -46,8 +50,14 @@ namespace NineTapTour.Database
             {
                 using (var db = new NineTapDb())
                 {
-                  
+                    //Adds player inside NineTapDb
                     db.Participants.Add(player);
+                    //Uses AddObject because you cannot have object graph where part of objects are connected to context and part of not.
+                    //Changed so that context knows that department already exists.
+                    var manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
+                    manager.ChangeObjectState(player.Game.Member,
+                                                EntityState.Unchanged);
+                    manager.ChangeObjectState(player.Member, EntityState.Unchanged);
                     db.SaveChanges();
                     
                 }
