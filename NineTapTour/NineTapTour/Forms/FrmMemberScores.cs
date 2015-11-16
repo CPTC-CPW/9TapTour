@@ -34,12 +34,15 @@ namespace NineTapTour.Forms
             //_membersList = ((FrmMain)MdiParent)._membersList;
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
-
         }
 
+        /// <summary>
+        /// entering a member number clears members data
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txtMemberNum_TextChanged(object sender, EventArgs e)
         {
-
             if (currentMem == null || ((TextBox)sender).Text == "")
             {
                 txtLastName.Clear();
@@ -49,9 +52,13 @@ namespace NineTapTour.Forms
                 txtBonusPins.Clear();
                 MemberStatus("", Color.Black, SystemColors.Control, true);
             }
-
         }
 
+        /// <summary>
+        /// clears the forms member scores
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FrmMemberScores_Activated(object sender, EventArgs e)
         {
             txtMemberNum.Clear();
@@ -66,9 +73,14 @@ namespace NineTapTour.Forms
             cbxTourneyDropDown.ValueMember = "Id";
         }
 
+        /// <summary>
+        /// Gets the members information based on the member number
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GetMember(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode != Keys.Enter) 
+            if (e.KeyCode != Keys.Enter)
                 return;
 
             string searchNumber = txtMemberNum.Text;
@@ -115,9 +127,16 @@ namespace NineTapTour.Forms
                     MessageBox.Show(string.Format("A member with the number {0} does not exist", txtMemberNum.Text), "Your Attention Please.");
                     txtMemberNum.Clear();
                 }
-
             }
         }
+        
+        /// <summary>
+        /// method to set the member status colors on lblMemberStatus forecolor and pnlMemStat background color
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="forColor"></param>
+        /// <param name="backColor"></param>
+        /// <param name="active"></param>
         public void MemberStatus(string text, Color forColor, Color backColor, bool active)
         {
             lblMemberStatus.Text = text;
@@ -130,6 +149,11 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// txtScratchScore 1, 2 ,3, 4 textboxes are added. the result is put into the txtScratchTotal textbox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void scratchTotal(object sender, EventArgs e)
         {
             int scratchTotal = 0;
@@ -158,8 +182,8 @@ namespace NineTapTour.Forms
                 }
                 txtScratchTotal.Text = scratchTotal.ToString();
             }
-            //AutoTabs to the next textbox when textbox1's length is 3.
-
+            
+            //auto tab to the next textbox when textbox1's length is 3.
             if (scratchArray[0].Text.Length == 3)
             {
                 scratchArray[1].Focus();
@@ -172,13 +196,17 @@ namespace NineTapTour.Forms
             {
                 scratchArray[3].Focus();
             }
-
             if (scratchArray[3].Text.Length == 3)
             {
                 btnNew.Focus();
             }
         }
 
+        /// <summary>
+        /// finds the handycap score
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="score"></param>
         private void handicapTotal(string id, int score)
         {
             int totalScore = 0;
@@ -202,10 +230,15 @@ namespace NineTapTour.Forms
             }
             txtHandicapTotal.Text = Convert.ToString(totalScore);
         }
+        
+        /// <summary>
+        /// enter a tournamnet participant into a specific tournament
+        /// save scores and info in database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void newRecap(object sender, EventArgs e)
         {
-
-
             Participant player = new Participant();
             player.Game = new Game();
             player.Game.Score = new List<int> { 
@@ -213,10 +246,10 @@ namespace NineTapTour.Forms
                 Convert.ToInt16(scratchArray[1].Text), 
                 Convert.ToInt16(scratchArray[2].Text), 
                 Convert.ToInt16(scratchArray[3].Text) 
-           
             };
-            //Selects the ID of the combobox of tournaments and stores the
-            //Tournament property within the participants class.
+            
+            //selects the ID of the combobox of tournaments and stores the
+            //tournament property within the participants class.
             int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
             Tournament selectedTourney = GetTournamentById(selectedTournamentId);
             player.Tournament = selectedTourney;
@@ -225,10 +258,11 @@ namespace NineTapTour.Forms
             player.Game.Game2 = Convert.ToInt16(scratchArray[1].Text);
             player.Game.Game3 = Convert.ToInt16(scratchArray[2].Text);
             player.Game.Game4 = Convert.ToInt16(scratchArray[3].Text);
-          
+
 
             #region radio button
-            if (rdoSquadOne.Checked) {
+            if (rdoSquadOne.Checked)
+            {
                 player.Squad = 1;
             }
             else if (rdoSquadTwo.Checked)
@@ -247,35 +281,37 @@ namespace NineTapTour.Forms
 
             player.Member = currentMem;
 
-
             try
             {
-
-
                 player.Member = currentMem;
                 TournamentDb.AddMemberToTournament(player);
-                #if DEBUG
+#if DEBUG
                 MessageBox.Show(@"Bowler Added Successfully to Tournament!");
-                #endif
+#endif
                 count++;
 
                 NineTapDb db = new NineTapDb();
                 selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
                 totalCount = (from r in db.Tournaments
-                                where r.Id == selectedTournamentId
-                                select r.Participant).Count();
+                              where r.Id == selectedTournamentId
+                              select r.Participant).Count();
                 lblRecord.Text = "Record " + count + " / " + totalCount;
-       
+
             }
             catch (MemberAccessException ex)
             {
                 MessageBox.Show(ex.Message);
-                
+
             }
             clear();
-            
+
         }
 
+        /// <summary>
+        /// get a tournament by selected id
+        /// </summary>
+        /// <param name="selectedTournamentId"></param>
+        /// <returns></returns>
         private static Tournament GetTournamentById(int selectedTournamentId)
         {
             Tournament selectedTournament = (from t in TournamentDb.GetTournamentList()
@@ -284,6 +320,10 @@ namespace NineTapTour.Forms
                                                  ).Single();
             return selectedTournament;
         }
+        
+        /// <summary>
+        /// clears txtScratchScores textboxes
+        /// </summary>
         private void clear()
         {
             txtScratchScore1.Clear();
@@ -293,6 +333,12 @@ namespace NineTapTour.Forms
             txtMemberNum.Clear();
 
         }
+        
+        /// <summary>
+        /// increments to the next participant in the tournament
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
             if (count >= totalCount)
@@ -307,9 +353,13 @@ namespace NineTapTour.Forms
 
         }
 
+        /// <summary>
+        /// decrements to the previous participant in the tournament
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnLeftArrow_Click(object sender, EventArgs e)
         {
-
             if (count <= 0)
             {
                 MessageBox.Show("There are no more players to go back to!");
@@ -321,13 +371,17 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// opens the new tournament form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnNewTournament_Click(object sender, EventArgs e)
         {
-                        var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
+            var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
             ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
             newfrmNewTournament.Dock = DockStyle.None;
             rdoSquadOne.Checked = true;
-
         }
     }
 }
