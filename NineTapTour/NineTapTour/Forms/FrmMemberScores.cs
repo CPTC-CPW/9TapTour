@@ -23,6 +23,7 @@ namespace NineTapTour.Forms
         //Count for record counting
         int count = 0;
         int totalCount = 0;
+        Participant player = new Participant();
 
         public frmMemberScores()
         {
@@ -121,6 +122,7 @@ namespace NineTapTour.Forms
                     txtMiddleInitial.Text = currentMem.MiddleInitial;
                     txtHandicap.Text = currentMem.Handicap.ToString();
                     txtBonusPins.Text = currentMem.Bonus.ToString();
+                    
                 }
                 else
                 {
@@ -128,6 +130,67 @@ namespace NineTapTour.Forms
                     txtMemberNum.Clear();
                 }
             }
+        }
+
+        private void FillMember()
+        {
+            string searchNumber = count.ToString();
+            //if(searchNumber.Trim()=="") return;
+            for (int i = 0; i < searchNumber.Length; i++)
+            {
+                if (!char.IsNumber(searchNumber[i]))
+                {
+                    MessageBox.Show("Please input numbers only.", "Your Attention Please.");
+                    txtMemberNum.Clear();
+                    return;
+                }
+            }
+            if (searchNumber.Trim() != "")
+            {
+                int memberNumber = count;
+                currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber);
+                if (currentMem != null)
+                {
+                    if (currentMem.IsActive)
+                    {
+                        MemberStatus("Active", Color.Green, Color.Lime, false);
+                    }
+                    else
+                    {
+                        //lblMemberStatus.Text = "Inactive";
+                        //lblMemberStatus.ForeColor = System.Drawing.Color.Red;
+                        //pnlMemStat.BackColor = System.Drawing.Color.Pink;
+                        ////Will change later, just for presentation
+                        //txtScratchScore1.ReadOnly = true;
+                        //txtScratchScore2.ReadOnly = true;
+                        //txtScratchScore3.ReadOnly = true;
+                        //txtScratchScore4.ReadOnly = true;
+                        MemberStatus("Inactive", Color.Red, Color.Pink, true);
+                    }
+                    txtLastName.Text = currentMem.LastName;
+                    txtFirstName.Text = currentMem.FirstName;
+                    txtMiddleInitial.Text = currentMem.MiddleInitial;
+                    txtHandicap.Text = currentMem.Handicap.ToString();
+                    txtBonusPins.Text = currentMem.Bonus.ToString();
+                    txtScratchScore1.Text = Convert.ToString(player.Game.Game1);
+                    txtScratchScore2.Text = Convert.ToString(player.Game.Game2);
+                    txtScratchScore3.Text = Convert.ToString(player.Game.Game3);
+                    txtScratchScore4.Text = Convert.ToString(player.Game.Game4);
+                }
+                else
+                {
+                    MessageBox.Show(string.Format("A member with the number {0} does not exist", txtMemberNum.Text), "Your Attention Please.");
+                    txtMemberNum.Clear();
+                }
+            }
+        }
+
+        public int GetParticipant()
+        {
+            NineTapDb db = new NineTapDb();
+            int totalCount = (from t in db.Tournaments
+                              select t.Participant).Count();
+            return totalCount;
         }
         
         /// <summary>
@@ -239,7 +302,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void newRecap(object sender, EventArgs e)
         {
-            Participant player = new Participant();
+            
             player.Game = new Game();
             player.Game.Score = new List<int> { 
                 Convert.ToInt16(scratchArray[0].Text), 
@@ -341,6 +404,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
+            totalCount = GetParticipant();
             if (count >= totalCount)
             {
                 MessageBox.Show("There are no more players to go to!");
@@ -349,6 +413,7 @@ namespace NineTapTour.Forms
             {
                 count++;
                 lblRecord.Text = "Record " + count + " / " + totalCount;
+                FillMember();
             }
 
         }
@@ -360,6 +425,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnLeftArrow_Click(object sender, EventArgs e)
         {
+            totalCount = GetParticipant();
             if (count <= 0)
             {
                 MessageBox.Show("There are no more players to go back to!");
@@ -368,6 +434,7 @@ namespace NineTapTour.Forms
             {
                 count--;
                 lblRecord.Text = "Record " + count + " / " + totalCount;
+                FillMember();
             }
         }
 
