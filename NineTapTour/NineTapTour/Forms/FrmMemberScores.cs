@@ -35,6 +35,7 @@ namespace NineTapTour.Forms
             //_membersList = ((FrmMain)MdiParent)._membersList;
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
+            int selectedIndex = cbxTourneyDropDown.SelectedIndex;
         }
 
         /// <summary>
@@ -70,6 +71,8 @@ namespace NineTapTour.Forms
             txtBonusPins.Clear();
             MemberStatus("", Color.Black, SystemColors.Control, true);
             cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
+                //TODO: On monday find the highest tournament ID
+            //cbxTourneyDropDown.SelectedItem = Convert.ToInt32(GetTournamentById());
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             cbxTourneyDropDown.ValueMember = "Id";
         }
@@ -122,7 +125,7 @@ namespace NineTapTour.Forms
                     txtMiddleInitial.Text = currentMem.MiddleInitial;
                     txtHandicap.Text = currentMem.Handicap.ToString();
                     txtBonusPins.Text = currentMem.Bonus.ToString();
-                    
+
                 }
                 else
                 {
@@ -192,7 +195,7 @@ namespace NineTapTour.Forms
                               select t.Participant).Count();
             return totalCount;
         }
-        
+
         /// <summary>
         /// method to set the member status colors on lblMemberStatus forecolor and pnlMemStat background color
         /// </summary>
@@ -245,7 +248,7 @@ namespace NineTapTour.Forms
                 }
                 txtScratchTotal.Text = scratchTotal.ToString();
             }
-            
+
             //auto tab to the next textbox when textbox1's length is 3.
             if (scratchArray[0].Text.Length == 3)
             {
@@ -266,7 +269,7 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// finds the handycap score
+        /// finds the handicap score
         /// </summary>
         /// <param name="id"></param>
         /// <param name="score"></param>
@@ -293,7 +296,7 @@ namespace NineTapTour.Forms
             }
             txtHandicapTotal.Text = Convert.ToString(totalScore);
         }
-        
+
         /// <summary>
         /// enter a tournamnet participant into a specific tournament
         /// save scores and info in database
@@ -302,15 +305,15 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void newRecap(object sender, EventArgs e)
         {
-            
+
             player.Game = new Game();
-            player.Game.Score = new List<int> { 
-                Convert.ToInt16(scratchArray[0].Text), 
-                Convert.ToInt16(scratchArray[1].Text), 
-                Convert.ToInt16(scratchArray[2].Text), 
-                Convert.ToInt16(scratchArray[3].Text) 
+            player.Game.Score = new List<int> {
+                Convert.ToInt16(scratchArray[0].Text),
+                Convert.ToInt16(scratchArray[1].Text),
+                Convert.ToInt16(scratchArray[2].Text),
+                Convert.ToInt16(scratchArray[3].Text)
             };
-            
+
             //selects the ID of the combobox of tournaments and stores the
             //tournament property within the participants class.
             int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
@@ -383,7 +386,7 @@ namespace NineTapTour.Forms
                                                  ).Single();
             return selectedTournament;
         }
-        
+
         /// <summary>
         /// clears txtScratchScores textboxes
         /// </summary>
@@ -396,7 +399,7 @@ namespace NineTapTour.Forms
             txtMemberNum.Clear();
 
         }
-        
+
         /// <summary>
         /// increments to the next participant in the tournament
         /// </summary>
@@ -449,6 +452,8 @@ namespace NineTapTour.Forms
             ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
             newfrmNewTournament.Dock = DockStyle.None;
             rdoSquadOne.Checked = true;
+
         }
+
     }
 }

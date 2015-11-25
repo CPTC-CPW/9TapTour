@@ -71,6 +71,9 @@
             this.grpTournamentFile = new System.Windows.Forms.GroupBox();
             this.cbxTourneyDropDown = new System.Windows.Forms.ComboBox();
             this.grpLeaders = new System.Windows.Forms.GroupBox();
+            this.grpScoreType = new System.Windows.Forms.GroupBox();
+            this.rdoHandicapScore = new System.Windows.Forms.RadioButton();
+            this.rdoScratchScore = new System.Windows.Forms.RadioButton();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -98,6 +101,7 @@
             this.grpStats.SuspendLayout();
             this.grpTournamentFile.SuspendLayout();
             this.grpLeaders.SuspendLayout();
+            this.grpScoreType.SuspendLayout();
             this.grpReports.SuspendLayout();
             this.grpComments.SuspendLayout();
             this.pnlMemStat.SuspendLayout();
@@ -565,10 +569,12 @@
             this.cbxTourneyDropDown.Location = new System.Drawing.Point(6, 19);
             this.cbxTourneyDropDown.Name = "cbxTourneyDropDown";
             this.cbxTourneyDropDown.Size = new System.Drawing.Size(189, 21);
+            this.cbxTourneyDropDown.Sorted = true;
             this.cbxTourneyDropDown.TabIndex = 2;
             // 
             // grpLeaders
             // 
+            this.grpLeaders.Controls.Add(this.grpScoreType);
             this.grpLeaders.Controls.Add(this.label3);
             this.grpLeaders.Controls.Add(this.label2);
             this.grpLeaders.Controls.Add(this.label1);
@@ -581,12 +587,45 @@
             this.grpLeaders.Controls.Add(this.richTextBox1);
             this.grpLeaders.Controls.Add(this.lblSeries);
             this.grpLeaders.Controls.Add(this.lblGameSenior);
-            this.grpLeaders.Location = new System.Drawing.Point(500, 105);
+            this.grpLeaders.Location = new System.Drawing.Point(405, 105);
             this.grpLeaders.Name = "grpLeaders";
-            this.grpLeaders.Size = new System.Drawing.Size(361, 395);
+            this.grpLeaders.Size = new System.Drawing.Size(456, 395);
             this.grpLeaders.TabIndex = 13;
             this.grpLeaders.TabStop = false;
             this.grpLeaders.Text = "Leaders";
+            // 
+            // grpScoreType
+            // 
+            this.grpScoreType.Controls.Add(this.rdoHandicapScore);
+            this.grpScoreType.Controls.Add(this.rdoScratchScore);
+            this.grpScoreType.Location = new System.Drawing.Point(348, 299);
+            this.grpScoreType.Name = "grpScoreType";
+            this.grpScoreType.Size = new System.Drawing.Size(102, 73);
+            this.grpScoreType.TabIndex = 8;
+            this.grpScoreType.TabStop = false;
+            this.grpScoreType.Text = "Score Type";
+            // 
+            // rdoHandicapScore
+            // 
+            this.rdoHandicapScore.AutoSize = true;
+            this.rdoHandicapScore.Location = new System.Drawing.Point(7, 44);
+            this.rdoHandicapScore.Name = "rdoHandicapScore";
+            this.rdoHandicapScore.Size = new System.Drawing.Size(71, 17);
+            this.rdoHandicapScore.TabIndex = 1;
+            this.rdoHandicapScore.TabStop = true;
+            this.rdoHandicapScore.Text = "Handicap";
+            this.rdoHandicapScore.UseVisualStyleBackColor = true;
+            // 
+            // rdoScratchScore
+            // 
+            this.rdoScratchScore.AutoSize = true;
+            this.rdoScratchScore.Location = new System.Drawing.Point(7, 20);
+            this.rdoScratchScore.Name = "rdoScratchScore";
+            this.rdoScratchScore.Size = new System.Drawing.Size(62, 17);
+            this.rdoScratchScore.TabIndex = 0;
+            this.rdoScratchScore.TabStop = true;
+            this.rdoScratchScore.Text = "Scratch";
+            this.rdoScratchScore.UseVisualStyleBackColor = true;
             // 
             // label3
             // 
@@ -690,11 +729,11 @@
             // lblGameSenior
             // 
             this.lblGameSenior.AutoSize = true;
-            this.lblGameSenior.Location = new System.Drawing.Point(130, 16);
+            this.lblGameSenior.Location = new System.Drawing.Point(130, 26);
             this.lblGameSenior.Name = "lblGameSenior";
-            this.lblGameSenior.Size = new System.Drawing.Size(93, 13);
+            this.lblGameSenior.Size = new System.Drawing.Size(109, 13);
             this.lblGameSenior.TabIndex = 0;
-            this.lblGameSenior.Text = "High Game Senior";
+            this.lblGameSenior.Text = "High Game Handicap";
             // 
             // grpReports
             // 
@@ -825,6 +864,8 @@
             this.grpTournamentFile.ResumeLayout(false);
             this.grpLeaders.ResumeLayout(false);
             this.grpLeaders.PerformLayout();
+            this.grpScoreType.ResumeLayout(false);
+            this.grpScoreType.PerformLayout();
             this.grpReports.ResumeLayout(false);
             this.grpComments.ResumeLayout(false);
             this.pnlMemStat.ResumeLayout(false);
@@ -899,5 +940,8 @@
         private System.Windows.Forms.Label lblRecord;
         private System.Windows.Forms.Button btnNewTournament;
         private System.Windows.Forms.ComboBox cbxTourneyDropDown;
+        private System.Windows.Forms.GroupBox grpScoreType;
+        private System.Windows.Forms.RadioButton rdoHandicapScore;
+        private System.Windows.Forms.RadioButton rdoScratchScore;
     }
 }

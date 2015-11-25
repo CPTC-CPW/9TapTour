@@ -87,6 +87,7 @@
             this.MinimumSize = new System.Drawing.Size(900, 750);
             this.Name = "FrmMain";
             this.Text = "Nine Tap Tour Main";
+            this.Load += new System.EventHandler(this.FrmMain_Load);
             this.menMain.ResumeLayout(false);
             this.menMain.PerformLayout();
             this.ResumeLayout(false);
