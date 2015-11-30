@@ -72,8 +72,8 @@
             this.cbxTourneyDropDown = new System.Windows.Forms.ComboBox();
             this.grpLeaders = new System.Windows.Forms.GroupBox();
             this.grpScoreType = new System.Windows.Forms.GroupBox();
-            this.rdoHandicapScore = new System.Windows.Forms.RadioButton();
             this.rdoScratchScore = new System.Windows.Forms.RadioButton();
+            this.rdoHandicapScore = new System.Windows.Forms.RadioButton();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -596,8 +596,8 @@
             // 
             // grpScoreType
             // 
-            this.grpScoreType.Controls.Add(this.rdoHandicapScore);
             this.grpScoreType.Controls.Add(this.rdoScratchScore);
+            this.grpScoreType.Controls.Add(this.rdoHandicapScore);
             this.grpScoreType.Location = new System.Drawing.Point(348, 299);
             this.grpScoreType.Name = "grpScoreType";
             this.grpScoreType.Size = new System.Drawing.Size(102, 73);
@@ -605,27 +605,27 @@
             this.grpScoreType.TabStop = false;
             this.grpScoreType.Text = "Score Type";
             // 
-            // rdoHandicapScore
-            // 
-            this.rdoHandicapScore.AutoSize = true;
-            this.rdoHandicapScore.Location = new System.Drawing.Point(7, 44);
-            this.rdoHandicapScore.Name = "rdoHandicapScore";
-            this.rdoHandicapScore.Size = new System.Drawing.Size(71, 17);
-            this.rdoHandicapScore.TabIndex = 1;
-            this.rdoHandicapScore.TabStop = true;
-            this.rdoHandicapScore.Text = "Handicap";
-            this.rdoHandicapScore.UseVisualStyleBackColor = true;
-            // 
             // rdoScratchScore
             // 
             this.rdoScratchScore.AutoSize = true;
-            this.rdoScratchScore.Location = new System.Drawing.Point(7, 20);
+            this.rdoScratchScore.Location = new System.Drawing.Point(7, 44);
             this.rdoScratchScore.Name = "rdoScratchScore";
             this.rdoScratchScore.Size = new System.Drawing.Size(62, 17);
-            this.rdoScratchScore.TabIndex = 0;
+            this.rdoScratchScore.TabIndex = 1;
             this.rdoScratchScore.TabStop = true;
             this.rdoScratchScore.Text = "Scratch";
             this.rdoScratchScore.UseVisualStyleBackColor = true;
+            // 
+            // rdoHandicapScore
+            // 
+            this.rdoHandicapScore.AutoSize = true;
+            this.rdoHandicapScore.Location = new System.Drawing.Point(7, 20);
+            this.rdoHandicapScore.Name = "rdoHandicapScore";
+            this.rdoHandicapScore.Size = new System.Drawing.Size(71, 17);
+            this.rdoHandicapScore.TabIndex = 0;
+            this.rdoHandicapScore.TabStop = true;
+            this.rdoHandicapScore.Text = "Handicap";
+            this.rdoHandicapScore.UseVisualStyleBackColor = true;
             // 
             // label3
             // 
@@ -941,7 +941,7 @@
         private System.Windows.Forms.Button btnNewTournament;
         private System.Windows.Forms.ComboBox cbxTourneyDropDown;
         private System.Windows.Forms.GroupBox grpScoreType;
-        private System.Windows.Forms.RadioButton rdoHandicapScore;
         private System.Windows.Forms.RadioButton rdoScratchScore;
+        private System.Windows.Forms.RadioButton rdoHandicapScore;
     }
 }
