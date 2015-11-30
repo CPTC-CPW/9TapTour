@@ -147,7 +147,6 @@
             this.rdoSquadFour.Name = "rdoSquadFour";
             this.rdoSquadFour.Size = new System.Drawing.Size(65, 17);
             this.rdoSquadFour.TabIndex = 0;
-            this.rdoSquadFour.TabStop = true;
             this.rdoSquadFour.Text = "Squad 4";
             this.rdoSquadFour.UseVisualStyleBackColor = true;
             // 
@@ -158,7 +157,6 @@
             this.rdoSquadThree.Name = "rdoSquadThree";
             this.rdoSquadThree.Size = new System.Drawing.Size(65, 17);
             this.rdoSquadThree.TabIndex = 0;
-            this.rdoSquadThree.TabStop = true;
             this.rdoSquadThree.Text = "Squad 3";
             this.rdoSquadThree.UseVisualStyleBackColor = true;
             // 
@@ -169,13 +167,13 @@
             this.rdoSquadTwo.Name = "rdoSquadTwo";
             this.rdoSquadTwo.Size = new System.Drawing.Size(65, 17);
             this.rdoSquadTwo.TabIndex = 0;
-            this.rdoSquadTwo.TabStop = true;
             this.rdoSquadTwo.Text = "Squad 2";
             this.rdoSquadTwo.UseVisualStyleBackColor = true;
             // 
             // rdoSquadOne
             // 
             this.rdoSquadOne.AutoSize = true;
+            this.rdoSquadOne.Checked = true;
             this.rdoSquadOne.Location = new System.Drawing.Point(6, 20);
             this.rdoSquadOne.Name = "rdoSquadOne";
             this.rdoSquadOne.Size = new System.Drawing.Size(65, 17);
@@ -612,13 +610,13 @@
             this.rdoScratchScore.Name = "rdoScratchScore";
             this.rdoScratchScore.Size = new System.Drawing.Size(62, 17);
             this.rdoScratchScore.TabIndex = 1;
-            this.rdoScratchScore.TabStop = true;
             this.rdoScratchScore.Text = "Scratch";
             this.rdoScratchScore.UseVisualStyleBackColor = true;
             // 
             // rdoHandicapScore
             // 
             this.rdoHandicapScore.AutoSize = true;
+            this.rdoHandicapScore.Checked = true;
             this.rdoHandicapScore.Location = new System.Drawing.Point(7, 20);
             this.rdoHandicapScore.Name = "rdoHandicapScore";
             this.rdoHandicapScore.Size = new System.Drawing.Size(71, 17);
