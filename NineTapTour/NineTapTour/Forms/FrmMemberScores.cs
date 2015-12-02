@@ -35,6 +35,7 @@ namespace NineTapTour.Forms
             //_membersList = ((FrmMain)MdiParent)._membersList;
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
+            int selectedIndex = cbxTourneyDropDown.SelectedIndex;
         }
 
         /// <summary>
@@ -70,6 +71,8 @@ namespace NineTapTour.Forms
             txtBonusPins.Clear();
             MemberStatus("", Color.Black, SystemColors.Control, true);
             cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
+                //TODO: On monday find the highest tournament ID
+            //cbxTourneyDropDown.SelectedItem = Convert.ToInt32(GetTournamentById());
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             cbxTourneyDropDown.ValueMember = "Id";
         }
@@ -268,7 +271,7 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// finds the handycap score
+        /// finds the handicap score
         /// </summary>
         /// <param name="id"></param>
         /// <param name="score"></param>
@@ -386,7 +389,7 @@ namespace NineTapTour.Forms
                                                  ).Single();
             return selectedTournament;
         }
-
+        
         public Game GetScoresById(int memberID)
         {
             int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
@@ -462,6 +465,9 @@ namespace NineTapTour.Forms
             ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
             newfrmNewTournament.Dock = DockStyle.None;
             rdoSquadOne.Checked = true;
+
         }
+
+
     }
 }
