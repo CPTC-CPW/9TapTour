@@ -57,6 +57,7 @@ namespace NineTapTour.Database
                     var manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
                     manager.ChangeObjectState(player.Game.Member,
                                                 EntityState.Unchanged);
+                    manager.ChangeObjectState(player.Tournament, EntityState.Unchanged);
                     manager.ChangeObjectState(player.Member, EntityState.Unchanged);
                     db.SaveChanges();
                     

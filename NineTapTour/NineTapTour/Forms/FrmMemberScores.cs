@@ -172,10 +172,12 @@ namespace NineTapTour.Forms
                     txtMiddleInitial.Text = currentMem.MiddleInitial;
                     txtHandicap.Text = currentMem.Handicap.ToString();
                     txtBonusPins.Text = currentMem.Bonus.ToString();
-                    txtScratchScore1.Text = Convert.ToString(player.Game.Game1);
-                    txtScratchScore2.Text = Convert.ToString(player.Game.Game2);
-                    txtScratchScore3.Text = Convert.ToString(player.Game.Game3);
-                    txtScratchScore4.Text = Convert.ToString(player.Game.Game4);
+
+                    Game temp = GetScoresById(currentMem.Id);
+                    txtScratchScore1.Text = Convert.ToString(temp.Game1);
+                    txtScratchScore2.Text = Convert.ToString(temp.Game2);
+                    txtScratchScore3.Text = Convert.ToString(temp.Game3);
+                    txtScratchScore4.Text = Convert.ToString(temp.Game4);
                 }
                 else
                 {
@@ -355,9 +357,10 @@ namespace NineTapTour.Forms
 
                 NineTapDb db = new NineTapDb();
                 selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
-                totalCount = (from r in db.Tournaments
-                              where r.Id == selectedTournamentId
-                              select r.Participant).Count();
+                //totalCount = (from r in db.Tournaments
+                //              where r.Id == selectedTournamentId
+                //              select r.Participant).Count();
+                totalCount++;
                 lblRecord.Text = "Record " + count + " / " + totalCount;
 
             }
@@ -383,7 +386,17 @@ namespace NineTapTour.Forms
                                                  ).Single();
             return selectedTournament;
         }
-        
+
+        public Game GetScoresById(int memberID)
+        {
+            int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
+            var db = new NineTapDb();
+            var memScores = (from t in db.Tournaments
+                             join p in db.Participants on t.Id equals p.Tournament.Id
+                             where t.Id == p.Tournament.Id && memberID == p.Member.Id && selectedTournamentId == t.Id
+                             select p.Game).Single();
+            return memScores;
+        }
         /// <summary>
         /// clears txtScratchScores textboxes
         /// </summary>
