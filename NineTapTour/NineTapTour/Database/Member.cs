@@ -26,7 +26,7 @@ namespace NineTapTour.Database
         public DateTime DateOfBirth { get; set; }
         [Required]
         [Index("IX_MemberSSN", IsUnique = true)]
-        [StringLength(9), Column(TypeName = "char")]
+        [StringLength(11), Column(TypeName = "char")]
         public string SSN { get; set; }
         [Required]
         public MemberGenders Gender { get; set; }

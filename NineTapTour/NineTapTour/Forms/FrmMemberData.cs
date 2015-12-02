@@ -323,7 +323,7 @@ namespace NineTapTour.Forms
                         LastName = txtLastName.Text,
                         FirstName = txtFirstName.Text,
                         MiddleInitial = txtMiddleInitial.Text,
-                        DateOfBirth = Convert.ToDateTime(mtxtBoxDOB),
+                        DateOfBirth = Convert.ToDateTime(mtxtBoxDOB.Text),
                         SSN = mtxtBoxSSN.Text,
                         IsSenior = chbSenior.Checked,
                         Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
@@ -363,6 +363,8 @@ namespace NineTapTour.Forms
                 {
                     temp = new Member()
                     {
+                        
+                        Id = Convert.ToInt32(txtMemberNumber.Text),
                         Number = Convert.ToInt32(txtMemberNumber.Text),
                         IsActive = rdoActive.Checked,
                         JoinDate = DateTime.Now,
@@ -371,7 +373,7 @@ namespace NineTapTour.Forms
                         LastName = txtLastName.Text,
                         FirstName = txtFirstName.Text,
                         MiddleInitial = txtMiddleInitial.Text,
-                        DateOfBirth = Convert.ToDateTime(mtxtBoxDOB),
+                        DateOfBirth = Convert.ToDateTime(mtxtBoxDOB.Text),
                         SSN = mtxtBoxSSN.Text,
                         IsSenior = chbSenior.Checked,
                         Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,

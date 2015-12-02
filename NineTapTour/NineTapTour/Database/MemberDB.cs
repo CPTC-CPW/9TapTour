@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NineTapTour.Exceptions;
 using System.Data.SqlClient;
+using System.Data.Entity.Validation;
 
 namespace NineTapTour.Database
 {
@@ -14,19 +15,35 @@ namespace NineTapTour.Database
         public static void AddMember(Member temp)
         {
             try
-            { 
-                using (var db = new NineTapDb())
             {
-                db.Entry(temp).State = db.Members.Any(m => m.Id == temp.Id) ?
-                                        EntityState.Modified :
-                                        EntityState.Added;
-                db.SaveChanges();
+                using (var db = new NineTapDb())
+                {
+                    db.Entry(temp).State = db.Members.Any(m => m.Id == temp.Id) ?
+                                            EntityState.Modified :
+                                            EntityState.Added;
+                    db.SaveChanges();
+                }
             }
+            catch (DbEntityValidationException ex)
+            {
+                Exception raise = ex;
+                foreach (var validationErrors in ex.EntityValidationErrors)
+                {
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        string message = string.Format("{0}:{1}",
+                            validationErrors.Entry.Entity.ToString(),
+                            validationError.ErrorMessage);
+                        // raise a new exception nesting
+                        // the current instance as InnerException
+                        raise = new InvalidOperationException(message, raise);
+                    }
+                }
 
             }
-            catch(SqlException ex)
+            catch (SystemException ex)
             {
-                throw new MemberTableException("Error Number : " + ex.Number + " - " + ex.Message);
+                // throw new MemberTableException("Error Number : " + ex.Number + " - " + ex.Message);
             }
            
        
