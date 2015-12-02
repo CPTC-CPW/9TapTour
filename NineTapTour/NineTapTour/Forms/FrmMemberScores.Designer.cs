@@ -567,7 +567,6 @@
             this.cbxTourneyDropDown.Location = new System.Drawing.Point(6, 19);
             this.cbxTourneyDropDown.Name = "cbxTourneyDropDown";
             this.cbxTourneyDropDown.Size = new System.Drawing.Size(189, 21);
-            this.cbxTourneyDropDown.Sorted = true;
             this.cbxTourneyDropDown.TabIndex = 2;
             // 
             // grpLeaders

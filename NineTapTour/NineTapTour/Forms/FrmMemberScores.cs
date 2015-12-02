@@ -35,7 +35,6 @@ namespace NineTapTour.Forms
             //_membersList = ((FrmMain)MdiParent)._membersList;
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
-            int selectedIndex = cbxTourneyDropDown.SelectedIndex;
         }
 
         /// <summary>
@@ -420,7 +419,6 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
-            totalCount = GetParticipant();
             if (count >= totalCount)
             {
                 MessageBox.Show("There are no more players to go to!");
@@ -441,7 +439,6 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnLeftArrow_Click(object sender, EventArgs e)
         {
-            totalCount = GetParticipant();
             if (count <= 0)
             {
                 MessageBox.Show("There are no more players to go back to!");
@@ -467,7 +464,5 @@ namespace NineTapTour.Forms
             rdoSquadOne.Checked = true;
 
         }
-
-
     }
 }
