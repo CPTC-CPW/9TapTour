@@ -20,7 +20,7 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// close the tournament form
+        /// Closes the tournament form.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -30,7 +30,9 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// create a new tournament
+        /// Creates a new tournament.
+        /// Saves the date, location, event, sponsors, and extra notes.
+        /// If all the information fits the criteria then the tournament is saved.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
