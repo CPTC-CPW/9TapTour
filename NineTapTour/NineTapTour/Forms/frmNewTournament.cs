@@ -28,7 +28,7 @@ namespace NineTapTour.Forms
         {
             this.Close();
         }
-
+   
         /// <summary>
         /// create a new tournament
         /// </summary>
@@ -42,6 +42,10 @@ namespace NineTapTour.Forms
             NewTournament.Event = txtEvent.Text;
             NewTournament.Sponsors = txtSponsors.Text;
             NewTournament.Notes = rtxtNotes.Text;
+
+            //// validation prototype of the only non-nullable text box on the form
+            if (String.IsNullOrEmpty(txtEvent.Text) == true)
+                MessageBox.Show("Event cannot be blank");
 
             try
             {

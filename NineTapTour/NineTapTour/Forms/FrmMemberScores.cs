@@ -70,8 +70,6 @@ namespace NineTapTour.Forms
             txtBonusPins.Clear();
             MemberStatus("", Color.Black, SystemColors.Control, true);
             cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
-                //TODO: On monday find the highest tournament ID
-            //cbxTourneyDropDown.SelectedItem = Convert.ToInt32(GetTournamentById());
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             cbxTourneyDropDown.ValueMember = "Id";
         }
@@ -359,9 +357,7 @@ namespace NineTapTour.Forms
 
                 NineTapDb db = new NineTapDb();
                 selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
-                //totalCount = (from r in db.Tournaments
-                //              where r.Id == selectedTournamentId
-                //              select r.Participant).Count();
+               
                 totalCount++;
                 lblRecord.Text = "Record " + count + " / " + totalCount;
 
@@ -379,25 +375,43 @@ namespace NineTapTour.Forms
         /// get a tournament by selected id
         /// </summary>
         /// <param name="selectedTournamentId"></param>
-        /// <returns></returns>
+        
         private static Tournament GetTournamentById(int selectedTournamentId)
         {
             Tournament selectedTournament = (from t in TournamentDb.GetTournamentList()
                                              where t.Id == selectedTournamentId
-                                             select t
-                                                 ).Single();
+                                             select t).Single();
             return selectedTournament;
         }
+
+        /// <summary>
+        /// gets the scores from games table by joining participants and tourneys by id 
+        /// where member id = participant.member ID and selectedtourney id = tourney id
+        /// </summary>
+        /// <param name="memberID"></param>
+        /// <returns></returns>
+
         
         public Game GetScoresById(int memberID)
         {
-            int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
             var db = new NineTapDb();
-            var memScores = (from t in db.Tournaments
-                             join p in db.Participants on t.Id equals p.Tournament.Id
-                             where t.Id == p.Tournament.Id && memberID == p.Member.Id && selectedTournamentId == t.Id
-                             select p.Game).Single();
+            var memScores =  new Game();
+            try
+            {
+                int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
+                
+                 memScores = (from t in db.Tournaments
+                                 join p in db.Participants on t.Id equals p.Tournament.Id
+                                 where t.Id == p.Tournament.Id && memberID == p.Member.Id && selectedTournamentId == t.Id
+                                 select p.Game).Single();
+                
+            }
+            catch(SystemException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             return memScores;
+                     
         }
         /// <summary>
         /// clears txtScratchScores textboxes
@@ -414,9 +428,9 @@ namespace NineTapTour.Forms
         
         /// <summary>
         /// increments to the next participant in the tournament
+       
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
             if (count >= totalCount)
@@ -435,8 +449,6 @@ namespace NineTapTour.Forms
         /// <summary>
         /// decrements to the previous participant in the tournament
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnLeftArrow_Click(object sender, EventArgs e)
         {
             if (count <= 0)
@@ -452,10 +464,8 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// opens the new tournament form
+        /// opens the new tournament form via creating a new from by referencing the form itself
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnNewTournament_Click(object sender, EventArgs e)
         {
             var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
