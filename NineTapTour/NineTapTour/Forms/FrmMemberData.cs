@@ -307,7 +307,11 @@ namespace NineTapTour.Forms
             }
             return true;
         }
-
+        /// <summary>
+        /// Saves the information entered in the "Member Data" form.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnSave_Click(object sender, EventArgs e)
         {
             //checks to see if firstname,lastname, and zip is valid.
@@ -444,6 +448,11 @@ namespace NineTapTour.Forms
 
         }
 
+        /// <summary>
+        /// Displays the previous "Member Number"'s information when the left arrow button is clicked.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnArrowLeft_Click(object sender, EventArgs e)
         {
             if (currentMem.Number <= ((FrmMain)MdiParent)._membersList.First().Number)
@@ -458,6 +467,11 @@ namespace NineTapTour.Forms
 
         }
 
+        /// <summary>
+        /// Displays the next "Member Number"'s information when the right arrow button is clicked.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
             if (currentMem.Number >= ((FrmMain)MdiParent)._membersList.Last().Number)
@@ -473,6 +487,11 @@ namespace NineTapTour.Forms
         }
 
         //After the InitializeComponent(); call, the dateRejoin Format & dateLastBowled are reused.
+        /// <summary>
+        /// Adds a new "Member Number".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnNew_Click(object sender, EventArgs e)
         {
             Controls.Clear();
@@ -490,12 +509,22 @@ namespace NineTapTour.Forms
             };
         }
 
+        /// <summary>
+        /// Brings up the first "Member Number".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnFirstRecord_Click(object sender, EventArgs e)
         {
             txtMemberNumber.Text = ((FrmMain)MdiParent)._membersList.First().Number.ToString();
             UpdateMemberInfo();
         }
 
+        /// <summary>
+        /// Brings up the last "Member Number".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
             txtMemberNumber.Text = ((FrmMain)MdiParent)._membersList.Last().Number.ToString();
@@ -510,7 +539,11 @@ namespace NineTapTour.Forms
                 textBox.BackColor = textBox.Text == string.Empty ? Color.LightPink : Color.White;
             }
         }
-
+        /// <summary>
+        /// Brings up the datePicker.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ApplyCalendarForm(object sender, EventArgs e)
         {
             var datePicker = sender as DateTimePicker;
@@ -520,7 +553,11 @@ namespace NineTapTour.Forms
                 datePicker.Format = DateTimePickerFormat.Short;
             }
         }
-
+        /// <summary>
+        /// Puts the calendar back to the default selection.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ClearCalendar(object sender, KeyEventArgs e)
         {
             var datePicker = sender as DateTimePicker;
@@ -530,7 +567,11 @@ namespace NineTapTour.Forms
             datePicker.Format = DateTimePickerFormat.Custom;
             datePicker.CustomFormat = @" ";
         }
-
+        /// <summary>
+        /// Removes a bowler's information from the database.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnDelete_Click(object sender, EventArgs e)
         {
             var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
