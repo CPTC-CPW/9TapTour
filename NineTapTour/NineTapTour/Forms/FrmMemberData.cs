@@ -21,12 +21,18 @@ namespace NineTapTour.Forms
             set { _memberNum = value; }
         }
 
-
+        /// <summary>
+        /// Opens the "Member Data" Form.
+        /// </summary>
         public FrmMemberData()
         {
             InitializeComponent();
         }
-
+        /// <summary>
+        /// Updates information in the "Member Data" form.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MemberDataForm_Load(object sender, EventArgs e)
         {
             //_membersList = ((FrmMain)MdiParent)._membersList;
@@ -38,7 +44,11 @@ namespace NineTapTour.Forms
 
             UpdateMemberInfo();
         }
-
+        /// <summary>
+        /// Finds "Member Number" in the database and populates the "Member Data" form.
+        /// If that "Member Number" is not assigned then display error box.
+        /// </summary>
+        /// <param name="searchMem"></param>
         public void UpdateMemberInfo(Member searchMem = null)
         {
             _memberNum = Convert.ToInt32(txtMemberNumber.Text);
