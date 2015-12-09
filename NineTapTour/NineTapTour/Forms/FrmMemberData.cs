@@ -243,14 +243,14 @@ namespace NineTapTour.Forms
                 MessageBox.Show("a gender must be chosen");
                 return false;
             }
-            if (!Regex.IsMatch(txtFirstName.Text, "^[a-zA-Z]+$"))
+            if (!Regex.IsMatch(txtFirstName.Text, "^[a-zA-Z'- ]+$"))
             {
                 MessageBox.Show("field cannot be blank");
                 txtFirstName.Clear();
                 return false;
             }
             //use better regex expression that includes spaces and hyphens
-            if (!Regex.IsMatch(txtLastName.Text, "^[a-zA-Z]+$"))
+            if (!Regex.IsMatch(txtLastName.Text, "^[a-zA-Z'- ]+$"))
             {
                 MessageBox.Show("field cannot be blank");
                 txtLastName.Clear();
@@ -274,7 +274,7 @@ namespace NineTapTour.Forms
                 mtxtBoxSSN.Clear();
                 return false;
             }
-            //TODO: improve address, city, state, email validation, DOB. just a prototype
+         
             if (mtxtBoxSSN.Text == "")
             {
                 MessageBox.Show(" DOB field cannot be null");
@@ -316,7 +316,7 @@ namespace NineTapTour.Forms
         {
             //checks to see if firstname,lastname, and zip is valid.
             //Then runs the rest of the btnSave_Click and adds a member into the database.
-            //TODO: needs more fields to validate inorder for the user to save a new member. (SSN, Address, Phone Number, etc...)
+      
             if (isValid())
             {
                 var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -599,7 +599,7 @@ namespace NineTapTour.Forms
             Width = newfrmStart.Width;
             Height = newfrmStart.Height + 20;
             newfrmStart.Show();
-            //newfrmStart.WindowState = FormWindowState.Maximized; for maximizing the window.
+           
         }
     }
 }
