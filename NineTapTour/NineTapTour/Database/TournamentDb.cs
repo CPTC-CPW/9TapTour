@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace NineTapTour.Database
 {
     class TournamentDb
@@ -41,6 +42,17 @@ namespace NineTapTour.Database
                 return (from t in db.Tournaments
                         orderby t.Date descending
                         select t).ToList();
+            }
+        }
+
+        public static List<Participant> GetTournamentMemberList(Tournament currTourney)
+        {
+            
+            using (var db = new NineTapDb())
+            {
+                return (from m in db.Participants
+                        where m.Tournament.Id == currTourney.Id
+                        select m).ToList();
             }
         }
 

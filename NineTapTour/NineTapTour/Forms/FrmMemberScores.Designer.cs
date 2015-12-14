@@ -136,7 +136,7 @@
             this.groupBox1.Location = new System.Drawing.Point(21, 85);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(179, 73);
-            this.groupBox1.TabIndex = 1;
+            this.groupBox1.TabIndex = 22;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Squad Number";
             // 
@@ -146,7 +146,7 @@
             this.rdoSquadFour.Location = new System.Drawing.Point(108, 43);
             this.rdoSquadFour.Name = "rdoSquadFour";
             this.rdoSquadFour.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquadFour.TabIndex = 0;
+            this.rdoSquadFour.TabIndex = 23;
             this.rdoSquadFour.Text = "Squad 4";
             this.rdoSquadFour.UseVisualStyleBackColor = true;
             // 
@@ -156,7 +156,7 @@
             this.rdoSquadThree.Location = new System.Drawing.Point(6, 43);
             this.rdoSquadThree.Name = "rdoSquadThree";
             this.rdoSquadThree.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquadThree.TabIndex = 0;
+            this.rdoSquadThree.TabIndex = 22;
             this.rdoSquadThree.Text = "Squad 3";
             this.rdoSquadThree.UseVisualStyleBackColor = true;
             // 
@@ -166,7 +166,7 @@
             this.rdoSquadTwo.Location = new System.Drawing.Point(108, 20);
             this.rdoSquadTwo.Name = "rdoSquadTwo";
             this.rdoSquadTwo.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquadTwo.TabIndex = 0;
+            this.rdoSquadTwo.TabIndex = 21;
             this.rdoSquadTwo.Text = "Squad 2";
             this.rdoSquadTwo.UseVisualStyleBackColor = true;
             // 
@@ -177,7 +177,7 @@
             this.rdoSquadOne.Location = new System.Drawing.Point(6, 20);
             this.rdoSquadOne.Name = "rdoSquadOne";
             this.rdoSquadOne.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquadOne.TabIndex = 0;
+            this.rdoSquadOne.TabIndex = 20;
             this.rdoSquadOne.TabStop = true;
             this.rdoSquadOne.Text = "Squad 1";
             this.rdoSquadOne.UseVisualStyleBackColor = true;
@@ -192,7 +192,8 @@
             this.txtLastName.Name = "txtLastName";
             this.txtLastName.ReadOnly = true;
             this.txtLastName.Size = new System.Drawing.Size(206, 38);
-            this.txtLastName.TabIndex = 2;
+            this.txtLastName.TabIndex = 24;
+            this.txtLastName.TabStop = false;
             // 
             // txtFirstName
             // 
@@ -204,7 +205,8 @@
             this.txtFirstName.Name = "txtFirstName";
             this.txtFirstName.ReadOnly = true;
             this.txtFirstName.Size = new System.Drawing.Size(206, 38);
-            this.txtFirstName.TabIndex = 2;
+            this.txtFirstName.TabIndex = 24;
+            this.txtFirstName.TabStop = false;
             // 
             // txtMiddleInitial
             // 
@@ -216,7 +218,8 @@
             this.txtMiddleInitial.Name = "txtMiddleInitial";
             this.txtMiddleInitial.ReadOnly = true;
             this.txtMiddleInitial.Size = new System.Drawing.Size(105, 38);
-            this.txtMiddleInitial.TabIndex = 3;
+            this.txtMiddleInitial.TabIndex = 24;
+            this.txtMiddleInitial.TabStop = false;
             // 
             // lblLastName
             // 
@@ -225,7 +228,7 @@
             this.lblLastName.Location = new System.Drawing.Point(229, 8);
             this.lblLastName.Name = "lblLastName";
             this.lblLastName.Size = new System.Drawing.Size(80, 19);
-            this.lblLastName.TabIndex = 4;
+            this.lblLastName.TabIndex = 24;
             this.lblLastName.Text = "Last Name";
             // 
             // lblFirstName
@@ -235,7 +238,7 @@
             this.lblFirstName.Location = new System.Drawing.Point(470, 8);
             this.lblFirstName.Name = "lblFirstName";
             this.lblFirstName.Size = new System.Drawing.Size(82, 19);
-            this.lblFirstName.TabIndex = 4;
+            this.lblFirstName.TabIndex = 24;
             this.lblFirstName.Text = "First Name";
             // 
             // lblMiddleInitial
@@ -245,7 +248,7 @@
             this.lblMiddleInitial.Location = new System.Drawing.Point(709, 8);
             this.lblMiddleInitial.Name = "lblMiddleInitial";
             this.lblMiddleInitial.Size = new System.Drawing.Size(99, 19);
-            this.lblMiddleInitial.TabIndex = 4;
+            this.lblMiddleInitial.TabIndex = 24;
             this.lblMiddleInitial.Text = "Middle Initial";
             // 
             // lblMemberStatus
@@ -265,7 +268,7 @@
             this.txtScratchScore1.MaxLength = 3;
             this.txtScratchScore1.Name = "txtScratchScore1";
             this.txtScratchScore1.Size = new System.Drawing.Size(57, 37);
-            this.txtScratchScore1.TabIndex = 6;
+            this.txtScratchScore1.TabIndex = 0;
             this.txtScratchScore1.TextChanged += new System.EventHandler(this.scratchTotal);
             // 
             // txtHandicapScore1
@@ -280,6 +283,7 @@
             this.txtHandicapScore1.ReadOnly = true;
             this.txtHandicapScore1.Size = new System.Drawing.Size(57, 37);
             this.txtHandicapScore1.TabIndex = 6;
+            this.txtHandicapScore1.TabStop = false;
             // 
             // txtScratchScore2
             // 
@@ -289,7 +293,7 @@
             this.txtScratchScore2.MaxLength = 3;
             this.txtScratchScore2.Name = "txtScratchScore2";
             this.txtScratchScore2.Size = new System.Drawing.Size(57, 37);
-            this.txtScratchScore2.TabIndex = 6;
+            this.txtScratchScore2.TabIndex = 1;
             this.txtScratchScore2.TextChanged += new System.EventHandler(this.scratchTotal);
             // 
             // txtHandicapScore2
@@ -304,6 +308,7 @@
             this.txtHandicapScore2.ReadOnly = true;
             this.txtHandicapScore2.Size = new System.Drawing.Size(57, 37);
             this.txtHandicapScore2.TabIndex = 6;
+            this.txtHandicapScore2.TabStop = false;
             // 
             // txtScratchScore3
             // 
@@ -313,7 +318,7 @@
             this.txtScratchScore3.MaxLength = 3;
             this.txtScratchScore3.Name = "txtScratchScore3";
             this.txtScratchScore3.Size = new System.Drawing.Size(57, 37);
-            this.txtScratchScore3.TabIndex = 6;
+            this.txtScratchScore3.TabIndex = 2;
             this.txtScratchScore3.TextChanged += new System.EventHandler(this.scratchTotal);
             // 
             // txtHandicapScore3
@@ -328,6 +333,7 @@
             this.txtHandicapScore3.ReadOnly = true;
             this.txtHandicapScore3.Size = new System.Drawing.Size(57, 37);
             this.txtHandicapScore3.TabIndex = 6;
+            this.txtHandicapScore3.TabStop = false;
             // 
             // txtScratchScore4
             // 
@@ -337,7 +343,7 @@
             this.txtScratchScore4.MaxLength = 3;
             this.txtScratchScore4.Name = "txtScratchScore4";
             this.txtScratchScore4.Size = new System.Drawing.Size(57, 37);
-            this.txtScratchScore4.TabIndex = 6;
+            this.txtScratchScore4.TabIndex = 3;
             this.txtScratchScore4.TextChanged += new System.EventHandler(this.scratchTotal);
             // 
             // txtHandicapScore4
@@ -352,6 +358,7 @@
             this.txtHandicapScore4.ReadOnly = true;
             this.txtHandicapScore4.Size = new System.Drawing.Size(57, 37);
             this.txtHandicapScore4.TabIndex = 6;
+            this.txtHandicapScore4.TabStop = false;
             // 
             // txtScratchTotal
             // 
@@ -365,6 +372,7 @@
             this.txtScratchTotal.ReadOnly = true;
             this.txtScratchTotal.Size = new System.Drawing.Size(70, 50);
             this.txtScratchTotal.TabIndex = 7;
+            this.txtScratchTotal.TabStop = false;
             // 
             // txtHandicapTotal
             // 
@@ -378,6 +386,7 @@
             this.txtHandicapTotal.ReadOnly = true;
             this.txtHandicapTotal.Size = new System.Drawing.Size(70, 50);
             this.txtHandicapTotal.TabIndex = 7;
+            this.txtHandicapTotal.TabStop = false;
             // 
             // grpRecord
             // 
@@ -391,7 +400,7 @@
             this.grpRecord.Location = new System.Drawing.Point(21, 520);
             this.grpRecord.Name = "grpRecord";
             this.grpRecord.Size = new System.Drawing.Size(218, 180);
-            this.grpRecord.TabIndex = 8;
+            this.grpRecord.TabIndex = 2;
             this.grpRecord.TabStop = false;
             this.grpRecord.Text = "Record";
             // 
@@ -401,6 +410,7 @@
             this.btnRightArrow.Name = "btnRightArrow";
             this.btnRightArrow.Size = new System.Drawing.Size(53, 29);
             this.btnRightArrow.TabIndex = 1;
+            this.btnRightArrow.TabStop = false;
             this.btnRightArrow.Text = ">";
             this.btnRightArrow.UseVisualStyleBackColor = true;
             this.btnRightArrow.Click += new System.EventHandler(this.btnRightArrow_Click);
@@ -420,6 +430,7 @@
             this.btnLeftArrow.Name = "btnLeftArrow";
             this.btnLeftArrow.Size = new System.Drawing.Size(52, 29);
             this.btnLeftArrow.TabIndex = 1;
+            this.btnLeftArrow.TabStop = false;
             this.btnLeftArrow.Text = "<";
             this.btnLeftArrow.UseVisualStyleBackColor = true;
             this.btnLeftArrow.Click += new System.EventHandler(this.btnLeftArrow_Click);
@@ -430,6 +441,7 @@
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(181, 25);
             this.btnDelete.TabIndex = 0;
+            this.btnDelete.TabStop = false;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             // 
@@ -439,6 +451,7 @@
             this.btnStats.Name = "btnStats";
             this.btnStats.Size = new System.Drawing.Size(181, 25);
             this.btnStats.TabIndex = 0;
+            this.btnStats.TabStop = false;
             this.btnStats.Text = "Stats";
             this.btnStats.UseVisualStyleBackColor = true;
             // 
@@ -448,6 +461,7 @@
             this.btnLastFile.Name = "btnLastFile";
             this.btnLastFile.Size = new System.Drawing.Size(181, 25);
             this.btnLastFile.TabIndex = 0;
+            this.btnLastFile.TabStop = false;
             this.btnLastFile.Text = "Last File";
             this.btnLastFile.UseVisualStyleBackColor = true;
             // 
@@ -500,7 +514,7 @@
             this.grpStats.Location = new System.Drawing.Point(21, 172);
             this.grpStats.Name = "grpStats";
             this.grpStats.Size = new System.Drawing.Size(360, 328);
-            this.grpStats.TabIndex = 11;
+            this.grpStats.TabIndex = 1;
             this.grpStats.TabStop = false;
             this.grpStats.Text = "Stats";
             // 
@@ -534,6 +548,7 @@
             this.txtBonusPins.ReadOnly = true;
             this.txtBonusPins.Size = new System.Drawing.Size(76, 35);
             this.txtBonusPins.TabIndex = 6;
+            this.txtBonusPins.TabStop = false;
             this.txtBonusPins.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtHandicap
@@ -548,6 +563,7 @@
             this.txtHandicap.ReadOnly = true;
             this.txtHandicap.Size = new System.Drawing.Size(76, 35);
             this.txtHandicap.TabIndex = 6;
+            this.txtHandicap.TabStop = false;
             this.txtHandicap.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // grpTournamentFile
@@ -556,7 +572,7 @@
             this.grpTournamentFile.Location = new System.Drawing.Point(268, 605);
             this.grpTournamentFile.Name = "grpTournamentFile";
             this.grpTournamentFile.Size = new System.Drawing.Size(201, 60);
-            this.grpTournamentFile.TabIndex = 12;
+            this.grpTournamentFile.TabIndex = 28;
             this.grpTournamentFile.TabStop = false;
             this.grpTournamentFile.Text = "Tournament File";
             // 
@@ -568,6 +584,7 @@
             this.cbxTourneyDropDown.Name = "cbxTourneyDropDown";
             this.cbxTourneyDropDown.Size = new System.Drawing.Size(189, 21);
             this.cbxTourneyDropDown.TabIndex = 2;
+            this.cbxTourneyDropDown.TabStop = false;
             // 
             // grpLeaders
             // 
@@ -587,7 +604,7 @@
             this.grpLeaders.Location = new System.Drawing.Point(405, 105);
             this.grpLeaders.Name = "grpLeaders";
             this.grpLeaders.Size = new System.Drawing.Size(456, 395);
-            this.grpLeaders.TabIndex = 13;
+            this.grpLeaders.TabIndex = 29;
             this.grpLeaders.TabStop = false;
             this.grpLeaders.Text = "Leaders";
             // 
@@ -665,7 +682,8 @@
             this.btnRefresh3.Location = new System.Drawing.Point(25, 353);
             this.btnRefresh3.Name = "btnRefresh3";
             this.btnRefresh3.Size = new System.Drawing.Size(317, 23);
-            this.btnRefresh3.TabIndex = 3;
+            this.btnRefresh3.TabIndex = 23;
+            this.btnRefresh3.TabStop = false;
             this.btnRefresh3.Text = "Refresh";
             this.btnRefresh3.UseVisualStyleBackColor = true;
             // 
@@ -674,7 +692,8 @@
             this.btnRefresh2.Location = new System.Drawing.Point(25, 233);
             this.btnRefresh2.Name = "btnRefresh2";
             this.btnRefresh2.Size = new System.Drawing.Size(317, 23);
-            this.btnRefresh2.TabIndex = 3;
+            this.btnRefresh2.TabIndex = 23;
+            this.btnRefresh2.TabStop = false;
             this.btnRefresh2.Text = "Refresh";
             this.btnRefresh2.UseVisualStyleBackColor = true;
             // 
@@ -683,7 +702,8 @@
             this.btnRefresh.Location = new System.Drawing.Point(25, 110);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(317, 23);
-            this.btnRefresh.TabIndex = 3;
+            this.btnRefresh.TabIndex = 23;
+            this.btnRefresh.TabStop = false;
             this.btnRefresh.Text = "Refresh";
             this.btnRefresh.UseVisualStyleBackColor = true;
             // 
@@ -693,7 +713,8 @@
             this.richTextBox3.Location = new System.Drawing.Point(25, 306);
             this.richTextBox3.Name = "richTextBox3";
             this.richTextBox3.Size = new System.Drawing.Size(317, 47);
-            this.richTextBox3.TabIndex = 2;
+            this.richTextBox3.TabIndex = 22;
+            this.richTextBox3.TabStop = false;
             this.richTextBox3.Text = "";
             // 
             // richTextBox2
@@ -702,7 +723,8 @@
             this.richTextBox2.Location = new System.Drawing.Point(25, 183);
             this.richTextBox2.Name = "richTextBox2";
             this.richTextBox2.Size = new System.Drawing.Size(317, 44);
-            this.richTextBox2.TabIndex = 2;
+            this.richTextBox2.TabIndex = 22;
+            this.richTextBox2.TabStop = false;
             this.richTextBox2.Text = "";
             // 
             // richTextBox1
@@ -711,7 +733,8 @@
             this.richTextBox1.Location = new System.Drawing.Point(25, 60);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.Size = new System.Drawing.Size(317, 47);
-            this.richTextBox1.TabIndex = 2;
+            this.richTextBox1.TabIndex = 22;
+            this.richTextBox1.TabStop = false;
             this.richTextBox1.Text = "";
             // 
             // lblSeries
@@ -750,6 +773,7 @@
             this.btnSeries.Name = "btnSeries";
             this.btnSeries.Size = new System.Drawing.Size(82, 37);
             this.btnSeries.TabIndex = 0;
+            this.btnSeries.TabStop = false;
             this.btnSeries.Text = "Series";
             this.btnSeries.UseVisualStyleBackColor = true;
             // 
@@ -759,6 +783,7 @@
             this.btnGame.Name = "btnGame";
             this.btnGame.Size = new System.Drawing.Size(82, 37);
             this.btnGame.TabIndex = 0;
+            this.btnGame.TabStop = false;
             this.btnGame.Text = "Game";
             this.btnGame.UseVisualStyleBackColor = true;
             // 
@@ -768,6 +793,7 @@
             this.btnSenior.Name = "btnSenior";
             this.btnSenior.Size = new System.Drawing.Size(82, 37);
             this.btnSenior.TabIndex = 0;
+            this.btnSenior.TabStop = false;
             this.btnSenior.Text = "Senior";
             this.btnSenior.UseVisualStyleBackColor = true;
             // 
@@ -777,7 +803,7 @@
             this.grpComments.Location = new System.Drawing.Point(660, 520);
             this.grpComments.Name = "grpComments";
             this.grpComments.Size = new System.Drawing.Size(201, 172);
-            this.grpComments.TabIndex = 16;
+            this.grpComments.TabIndex = 31;
             this.grpComments.TabStop = false;
             this.grpComments.Text = "Comments";
             // 
@@ -799,7 +825,7 @@
             this.pnlMemStat.Location = new System.Drawing.Point(254, 101);
             this.pnlMemStat.Name = "pnlMemStat";
             this.pnlMemStat.Size = new System.Drawing.Size(110, 57);
-            this.pnlMemStat.TabIndex = 17;
+            this.pnlMemStat.TabIndex = 32;
             // 
             // lblMemberL
             // 
@@ -807,7 +833,7 @@
             this.lblMemberL.Location = new System.Drawing.Point(269, 85);
             this.lblMemberL.Name = "lblMemberL";
             this.lblMemberL.Size = new System.Drawing.Size(78, 13);
-            this.lblMemberL.TabIndex = 1;
+            this.lblMemberL.TabIndex = 30;
             this.lblMemberL.Text = "MemberStatus:";
             // 
             // btnNewTournament
@@ -815,7 +841,8 @@
             this.btnNewTournament.Location = new System.Drawing.Point(272, 576);
             this.btnNewTournament.Name = "btnNewTournament";
             this.btnNewTournament.Size = new System.Drawing.Size(191, 23);
-            this.btnNewTournament.TabIndex = 11;
+            this.btnNewTournament.TabIndex = 26;
+            this.btnNewTournament.TabStop = false;
             this.btnNewTournament.Text = "New Tournament";
             this.btnNewTournament.UseVisualStyleBackColor = true;
             this.btnNewTournament.Click += new System.EventHandler(this.btnNewTournament_Click);

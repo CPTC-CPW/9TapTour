@@ -148,6 +148,10 @@
     <Compile Include="Migrations\201511092114484_HandicapAndBonus.Designer.cs">
       <DependentUpon>201511092114484_HandicapAndBonus.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201512022241424_SSN Length Change 9 to 11.cs" />
+    <Compile Include="Migrations\201512022241424_SSN Length Change 9 to 11.Designer.cs">
+      <DependentUpon>201512022241424_SSN Length Change 9 to 11.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -217,6 +221,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511092114484_HandicapAndBonus.resx">
       <DependentUpon>201511092114484_HandicapAndBonus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512022241424_SSN Length Change 9 to 11.resx">
+      <DependentUpon>201512022241424_SSN Length Change 9 to 11.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>

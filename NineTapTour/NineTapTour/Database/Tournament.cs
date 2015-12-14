@@ -20,7 +20,7 @@ namespace NineTapTour.Database
 
         public string  TourneyNameDate
         {
-            get { return Event + " " +  Date.ToShortDateString(); }
+            get { return Location + " " +  Date.ToShortDateString(); }
            
         }
         
