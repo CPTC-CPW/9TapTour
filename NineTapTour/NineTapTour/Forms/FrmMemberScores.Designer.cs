@@ -686,6 +686,7 @@
             this.btnRefresh3.TabStop = false;
             this.btnRefresh3.Text = "Refresh";
             this.btnRefresh3.UseVisualStyleBackColor = true;
+            this.btnRefresh3.Click += new System.EventHandler(this.btnRefresh3_Click);
             // 
             // btnRefresh2
             // 
@@ -696,6 +697,7 @@
             this.btnRefresh2.TabStop = false;
             this.btnRefresh2.Text = "Refresh";
             this.btnRefresh2.UseVisualStyleBackColor = true;
+            this.btnRefresh2.Click += new System.EventHandler(this.btnRefresh2_Click);
             // 
             // btnRefresh
             // 
@@ -709,7 +711,6 @@
             // 
             // richTextBox3
             // 
-            this.richTextBox3.Enabled = false;
             this.richTextBox3.Location = new System.Drawing.Point(25, 306);
             this.richTextBox3.Name = "richTextBox3";
             this.richTextBox3.Size = new System.Drawing.Size(317, 47);
@@ -719,7 +720,6 @@
             // 
             // richTextBox2
             // 
-            this.richTextBox2.Enabled = false;
             this.richTextBox2.Location = new System.Drawing.Point(25, 183);
             this.richTextBox2.Name = "richTextBox2";
             this.richTextBox2.Size = new System.Drawing.Size(317, 44);

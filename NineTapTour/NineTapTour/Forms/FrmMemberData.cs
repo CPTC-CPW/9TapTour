@@ -243,14 +243,14 @@ namespace NineTapTour.Forms
                 MessageBox.Show("a gender must be chosen");
                 return false;
             }
-            if (!Regex.IsMatch(txtFirstName.Text, "^[a-zA-Z'- ]+$"))
+            if (!Regex.IsMatch(txtFirstName.Text, "^[a-zA-Z]+$"))
             {
                 MessageBox.Show("field cannot be blank");
                 txtFirstName.Clear();
                 return false;
             }
             //use better regex expression that includes spaces and hyphens
-            if (!Regex.IsMatch(txtLastName.Text, "^[a-zA-Z'- ]+$"))
+            if (!Regex.IsMatch(txtLastName.Text, "^[-a-zA-Z]+$"))
             {
                 MessageBox.Show("field cannot be blank");
                 txtLastName.Clear();

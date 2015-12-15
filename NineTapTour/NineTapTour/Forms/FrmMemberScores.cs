@@ -120,13 +120,22 @@ namespace NineTapTour.Forms
                         //txtScratchScore3.ReadOnly = true;
                         //txtScratchScore4.ReadOnly = true;
                         MemberStatus("Inactive", Color.Red, Color.Pink, true);
-                    }
+                    } 
                     txtScratchScore1.Focus();
+
                     txtLastName.Text = currentMem.LastName;
                     txtFirstName.Text = currentMem.FirstName;
                     txtMiddleInitial.Text = currentMem.MiddleInitial;
                     txtHandicap.Text = currentMem.Handicap.ToString();
                     txtBonusPins.Text = currentMem.Bonus.ToString();
+                    Game temp = GetScoresById(currentMem.Id);
+                    if(temp != null)
+                    {
+                        txtScratchScore1.Text = Convert.ToString(temp.Game1);
+                        txtScratchScore2.Text = Convert.ToString(temp.Game2);
+                        txtScratchScore3.Text = Convert.ToString(temp.Game3);
+                        txtScratchScore4.Text = Convert.ToString(temp.Game4);
+                    }
                     
                 }
                 else
@@ -485,6 +494,96 @@ namespace NineTapTour.Forms
             ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
             newfrmNewTournament.Dock = DockStyle.None;
             rdoSquadOne.Checked = true;
+        }
+
+        private void btnRefresh2_Click(object sender, EventArgs e)
+        {
+            richTextBox2.Clear();
+            richTextBox2.Text = ("#" + "\t" + "Name" + "\t\t" + "HighScore" + "\n");
+            int counter = 1;
+            int index = 0;
+            var db = new NineTapDb();
+            int selectedTourney = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
+            var top5 = (from t in db.Tournaments
+                        join p in db.Participants on t.Id equals p.Tournament.Id
+                        join g in db.Participants on p.Game.Id equals g.Id
+                        where p.Tournament.Id == selectedTourney
+                        orderby p.Game.Game1 descending
+                        select p.Game).Take(5).ToList();
+            var top5Names = (from t in db.Tournaments
+                             join p in db.Participants on t.Id equals p.Tournament.Id
+                             join g in db.Participants on p.Game.Id equals g.Id
+                             where p.Tournament.Id == selectedTourney
+                             orderby p.Game.Game1 descending
+                             select p.Member).Take(5).ToList();
+
+            foreach (var i in top5)
+            {
+                int highestGame = i.Game1;
+                var mem = i.Member;
+                if(i.Game2 > highestGame)
+                {
+                    highestGame = i.Game2;
+                }
+                else if(i.Game3 > highestGame) 
+                {
+                    highestGame = i.Game3;
+                }
+                else if(i.Game4 > highestGame)
+                {
+                    highestGame = i.Game4;
+                }
+                richTextBox2.AppendText(counter + "\t" + Convert.ToString(top5Names[index].FirstName + " " + top5Names[index].LastName) + "\t" + Convert.ToString(highestGame) + "\n");
+                counter++;
+                index++;
+            }
+        }
+
+        private void btnRefresh3_Click(object sender, EventArgs e)
+        {
+            richTextBox3.Clear();
+            int scratch = 0;
+            int counter = 1;
+            int index = 0;
+            richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
+            var db = new NineTapDb();
+            int selectedTourney = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
+            var top5 = (from t in db.Tournaments
+                        join p in db.Participants on t.Id equals p.Tournament.Id
+                        join g in db.Participants on p.Game.Id equals g.Id
+                        where p.Tournament.Id == selectedTourney
+                        orderby (p.Game.Game1 + p.Game.Game2 + p.Game.Game3 + p.Game.Game4) descending
+                        select p.Game).Take(5).ToList();
+            var top5Names = (from t in db.Tournaments
+                                join p in db.Participants on t.Id equals p.Tournament.Id
+                                join g in db.Participants on p.Game.Id equals g.Id
+                                where p.Tournament.Id == selectedTourney
+                                orderby (p.Game.Game1 + p.Game.Game2 + p.Game.Game3 + p.Game.Game4) descending
+                                select p.Member).Take(5).ToList();
+            if (rdoScratchScore.Checked)
+            {
+                foreach (var i in top5)
+                {
+                    scratch = i.Game1 + i.Game2 + i.Game3 + i.Game4;
+                    richTextBox3.AppendText(counter + "\t" + Convert.ToString(top5Names[index].FirstName + " " + top5Names[index].LastName) + "\t" + Convert.ToString(scratch) + "\n");
+                    counter++;
+                    index++;
+                }
+
+            }
+            else if(rdoHandicapScore.Checked) 
+            {
+                foreach (var i in top5)
+                {
+                    scratch = (i.Game1 + Convert.ToInt32(top5Names[index].Handicap) + Convert.ToInt32(top5Names[index].Bonus)) 
+                        + (i.Game2 + Convert.ToInt32(top5Names[index].Handicap) + Convert.ToInt32(top5Names[index].Bonus)) 
+                        + (i.Game3 + Convert.ToInt32(top5Names[index].Handicap) + Convert.ToInt32(top5Names[index].Bonus))
+                        + (i.Game4 + Convert.ToInt32(top5Names[index].Handicap) + Convert.ToInt32(top5Names[index].Bonus));
+                    richTextBox3.AppendText(counter + "\t" + Convert.ToString(top5Names[index].FirstName + " " + top5Names[index].LastName) + "\t" + Convert.ToString(scratch) + "\n");
+                    counter++;
+                    index++;
+                }
+            }
         }
     }
 }
