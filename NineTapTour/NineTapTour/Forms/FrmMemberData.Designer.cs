@@ -320,10 +320,11 @@
             // mtxtBoxDOB
             // 
             this.mtxtBoxDOB.Location = new System.Drawing.Point(25, 41);
-            this.mtxtBoxDOB.Mask = "00/00/00";
+            this.mtxtBoxDOB.Mask = "00/00/0000";
             this.mtxtBoxDOB.Name = "mtxtBoxDOB";
             this.mtxtBoxDOB.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxDOB.TabIndex = 7;
+            this.mtxtBoxDOB.ValidatingType = typeof(System.DateTime);
             // 
             // mtxtBoxZip
             // 

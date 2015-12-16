@@ -32,7 +32,7 @@ namespace NineTapTour.Migrations
              
 #if DEBUG //test data for debugging purposes
             context.Members.AddOrUpdate(
-                m => new { m.Number, m.SSN },
+                m => new { m.Number },
                     new Member
                     {
                         Number = 1,

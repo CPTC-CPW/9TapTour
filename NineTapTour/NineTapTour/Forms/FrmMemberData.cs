@@ -149,7 +149,7 @@ namespace NineTapTour.Forms
                 txtLastName.Text = currentMem.LastName;
                 txtFirstName.Text = currentMem.FirstName;
                 txtMiddleInitial.Text = currentMem.MiddleInitial;
-                mtxtBoxDOB.Text = currentMem.DateOfBirth.ToShortDateString();
+                mtxtBoxDOB.Text = currentMem.DateOfBirth.ToString("MM/dd/yyyy");
                 mtxtBoxSSN.Text = currentMem.SSN;
                 // txtSSN.PasswordChar = '*'; //This hides the SSN within the form of '*'.
                 #endregion

@@ -50,9 +50,10 @@ namespace NineTapTour.Database
             
             using (var db = new NineTapDb())
             {
-                return (from m in db.Participants
-                        where m.Tournament.Id == currTourney.Id
-                        select m).ToList();
+                return (from p in db.Participants
+                        join m in db.Members on p.Member.Id equals m.Id
+                        where p.Tournament.Id == currTourney.Id
+                        select p).ToList();
             }
         }
 

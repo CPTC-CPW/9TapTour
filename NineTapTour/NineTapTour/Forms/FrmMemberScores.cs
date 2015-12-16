@@ -128,13 +128,16 @@ namespace NineTapTour.Forms
                     txtMiddleInitial.Text = currentMem.MiddleInitial;
                     txtHandicap.Text = currentMem.Handicap.ToString();
                     txtBonusPins.Text = currentMem.Bonus.ToString();
-                    Game temp = GetScoresById(currentMem.Id);
-                    if(temp != null)
+                    Game currentGame = GetScoresById(currentMem.Id);
+                    if(currentGame != null)
                     {
-                        txtScratchScore1.Text = Convert.ToString(temp.Game1);
-                        txtScratchScore2.Text = Convert.ToString(temp.Game2);
-                        txtScratchScore3.Text = Convert.ToString(temp.Game3);
-                        txtScratchScore4.Text = Convert.ToString(temp.Game4);
+                        currentGame.Member = currentMem;
+                        currentGame.Bonus = currentMem.Bonus;
+                        currentGame.Handicap = currentMem.Handicap;
+                        txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
+                        txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
+                        txtScratchScore3.Text = Convert.ToString(currentGame.Game3);
+                        txtScratchScore4.Text = Convert.ToString(currentGame.Game4);
                     }
                     
                 }
@@ -148,6 +151,16 @@ namespace NineTapTour.Forms
 
         private void FillMember()
         {
+            //listOfParticipants brings back a list of participants but does not carry over "member/tournament/game"
+            //So I implemented a new query which brings back members and store it within the listOfParticipants
+            var currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+            List<Participant> listOfParticipants = TournamentDb.GetTournamentMemberList(currTourney);
+            var db = new NineTapDb();
+            var temp = (from p in db.Participants
+                    join m in db.Members on p.Member.Id equals m.Id
+                    where p.Tournament.Id == currTourney.Id
+                    select p.Member).ToList();
+            
             string searchNumber = count.ToString();
             //if(searchNumber.Trim()=="") return;
             for (int i = 0; i < searchNumber.Length; i++)
@@ -161,7 +174,12 @@ namespace NineTapTour.Forms
             }
             if (searchNumber.Trim() != "")
             {
-                int memberNumber = count;
+                if (count == 0)
+                {
+                    return;
+                }
+                listOfParticipants[count-1].Member = temp[count-1];
+                int memberNumber = listOfParticipants[count-1].Member.Id;
                 currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber);
                 if (currentMem != null)
                 {
@@ -187,11 +205,17 @@ namespace NineTapTour.Forms
                     txtHandicap.Text = currentMem.Handicap.ToString();
                     txtBonusPins.Text = currentMem.Bonus.ToString();
 
-                    Game temp = GetScoresById(currentMem.Id);
-                    txtScratchScore1.Text = Convert.ToString(temp.Game1);
-                    txtScratchScore2.Text = Convert.ToString(temp.Game2);
-                    txtScratchScore3.Text = Convert.ToString(temp.Game3);
-                    txtScratchScore4.Text = Convert.ToString(temp.Game4);
+                    Game currentGame = GetScoresById(currentMem.Id);
+                    if (currentGame != null)
+                    {
+                        currentGame.Member = currentMem;
+                        currentGame.Bonus = currentMem.Bonus;
+                        currentGame.Handicap = currentMem.Handicap;
+                        txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
+                        txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
+                        txtScratchScore3.Text = Convert.ToString(currentGame.Game3);
+                        txtScratchScore4.Text = Convert.ToString(currentGame.Game4);
+                    }
                 }
                 else
                 {
@@ -336,7 +360,8 @@ namespace NineTapTour.Forms
             player.Game.Game2 = Convert.ToInt16(scratchArray[1].Text);
             player.Game.Game3 = Convert.ToInt16(scratchArray[2].Text);
             player.Game.Game4 = Convert.ToInt16(scratchArray[3].Text);
-
+            player.Game.Bonus = currentMem.Bonus;
+            player.Game.Handicap = currentMem.Handicap;
 
             #region radio button
             if (rdoSquadOne.Checked)
@@ -415,9 +440,9 @@ namespace NineTapTour.Forms
                                  select p.Game).Single();
                 
             }
-            catch(SystemException ex)
+            catch(InvalidOperationException ex)
             {
-                MessageBox.Show(ex.Message);
+                return null;
             }
             return memScores;
                      
@@ -470,7 +495,7 @@ namespace NineTapTour.Forms
             }
             else
             {
-                if (count == 0)
+                if (count <= 0)
                 {
                     MessageBox.Show("You can't go back!");
                 }
@@ -499,6 +524,7 @@ namespace NineTapTour.Forms
         private void btnRefresh2_Click(object sender, EventArgs e)
         {
             richTextBox2.Clear();
+            richTextBox2.Font = new Font(FontFamily.GenericMonospace, richTextBox2.Font.Size);
             richTextBox2.Text = ("#" + "\t" + "Name" + "\t\t" + "HighScore" + "\n");
             int counter = 1;
             int index = 0;
@@ -519,21 +545,21 @@ namespace NineTapTour.Forms
 
             foreach (var i in top5)
             {
-                int highestGame = i.Game1;
+                int? highestGame = i.Game1;
                 var mem = i.Member;
-                if(i.Game2 > highestGame)
+                if (i.Game2 > highestGame)
                 {
                     highestGame = i.Game2;
                 }
-                else if(i.Game3 > highestGame) 
+                else if (i.Game3 > highestGame)
                 {
                     highestGame = i.Game3;
                 }
-                else if(i.Game4 > highestGame)
+                else if (i.Game4 > highestGame)
                 {
                     highestGame = i.Game4;
                 }
-                richTextBox2.AppendText(counter + "\t" + Convert.ToString(top5Names[index].FirstName + " " + top5Names[index].LastName) + "\t" + Convert.ToString(highestGame) + "\n");
+                richTextBox2.AppendText(counter + "\t" + String.Format("{0, -20}", Convert.ToString(top5Names[index].FirstName + " " + top5Names[index].LastName)) + "\t" + String.Format("{0, -5}", Convert.ToString(highestGame)) + "\n");
                 counter++;
                 index++;
             }
@@ -542,9 +568,10 @@ namespace NineTapTour.Forms
         private void btnRefresh3_Click(object sender, EventArgs e)
         {
             richTextBox3.Clear();
-            int scratch = 0;
+            int? scratch = 0;
             int counter = 1;
             int index = 0;
+            richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
             richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
             var db = new NineTapDb();
             int selectedTourney = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
@@ -555,31 +582,31 @@ namespace NineTapTour.Forms
                         orderby (p.Game.Game1 + p.Game.Game2 + p.Game.Game3 + p.Game.Game4) descending
                         select p.Game).Take(5).ToList();
             var top5Names = (from t in db.Tournaments
-                                join p in db.Participants on t.Id equals p.Tournament.Id
-                                join g in db.Participants on p.Game.Id equals g.Id
-                                where p.Tournament.Id == selectedTourney
-                                orderby (p.Game.Game1 + p.Game.Game2 + p.Game.Game3 + p.Game.Game4) descending
-                                select p.Member).Take(5).ToList();
+                             join p in db.Participants on t.Id equals p.Tournament.Id
+                             join g in db.Participants on p.Game.Id equals g.Id
+                             where p.Tournament.Id == selectedTourney
+                             orderby (p.Game.Game1 + p.Game.Game2 + p.Game.Game3 + p.Game.Game4) descending
+                             select p.Member).Take(5).ToList();
             if (rdoScratchScore.Checked)
             {
                 foreach (var i in top5)
                 {
                     scratch = i.Game1 + i.Game2 + i.Game3 + i.Game4;
-                    richTextBox3.AppendText(counter + "\t" + Convert.ToString(top5Names[index].FirstName + " " + top5Names[index].LastName) + "\t" + Convert.ToString(scratch) + "\n");
+                    richTextBox3.AppendText(counter + "\t" + String.Format("{0, -20}", Convert.ToString(top5Names[index].FirstName + " " + top5Names[index].LastName)) + "\t" + String.Format("{0,-5}",Convert.ToString(scratch)) + "\n");
                     counter++;
                     index++;
                 }
 
             }
-            else if(rdoHandicapScore.Checked) 
+            else if (rdoHandicapScore.Checked)
             {
                 foreach (var i in top5)
                 {
-                    scratch = (i.Game1 + Convert.ToInt32(top5Names[index].Handicap) + Convert.ToInt32(top5Names[index].Bonus)) 
-                        + (i.Game2 + Convert.ToInt32(top5Names[index].Handicap) + Convert.ToInt32(top5Names[index].Bonus)) 
-                        + (i.Game3 + Convert.ToInt32(top5Names[index].Handicap) + Convert.ToInt32(top5Names[index].Bonus))
-                        + (i.Game4 + Convert.ToInt32(top5Names[index].Handicap) + Convert.ToInt32(top5Names[index].Bonus));
-                    richTextBox3.AppendText(counter + "\t" + Convert.ToString(top5Names[index].FirstName + " " + top5Names[index].LastName) + "\t" + Convert.ToString(scratch) + "\n");
+                    scratch = (i.Game1 + i.Handicap + i.Bonus)
+                        + (i.Game2 + i.Handicap + i.Bonus)
+                        + (i.Game3 + i.Handicap + i.Bonus)
+                        + (i.Game4 + i.Handicap + i.Bonus);
+                    richTextBox3.AppendText(counter + "\t" + String.Format("{0, -20}", Convert.ToString(top5Names[index].FirstName + " " + top5Names[index].LastName)) + "\t" + String.Format("{0, -5}", Convert.ToString(scratch)) + "\n");
                     counter++;
                     index++;
                 }
