@@ -585,6 +585,7 @@
             this.cbxTourneyDropDown.Size = new System.Drawing.Size(189, 21);
             this.cbxTourneyDropDown.TabIndex = 2;
             this.cbxTourneyDropDown.TabStop = false;
+            this.cbxTourneyDropDown.SelectedIndexChanged += new System.EventHandler(this.cbxTourneyDropDown_SelectedIndexChanged);
             // 
             // grpLeaders
             // 

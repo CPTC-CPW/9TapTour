@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Entity.Validation;
 
 
 namespace NineTapTour.Database
@@ -63,16 +64,56 @@ namespace NineTapTour.Database
             {
                 using (var db = new NineTapDb())
                 {
+                    var check = (from p in db.Participants
+                                 where player.Member.Id == p.Member.Id
+                                 && player.Tournament.Id == p.Tournament.Id
+                                 select p).Count();
+                    if (check == 0)
+                    {
+                        db.Participants.Add(player);
+                        //Uses AddObject because you cannot have object graph where part of objects are connected to context and part of not.
+                        //Changed so that context knows that department already exists.
+                        var manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
+                        manager.ChangeObjectState(player.Game.Member,
+                                                    EntityState.Unchanged);
+                        manager.ChangeObjectState(player.Tournament, EntityState.Unchanged);
+                        manager.ChangeObjectState(player.Member, EntityState.Unchanged);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        try
+                        {
+                            var manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
+                            var result = db.Games.SingleOrDefault(g => g.Id == player.Game.Id);
+                            var result2 = db.Participants.SingleOrDefault(p => p.Game.Id == player.Game.Id);
+                            result2.Game.Game1 = player.Game.Game1;
+                            result2.Game.Game2 = player.Game.Game2;
+                            result2.Game.Game3 = player.Game.Game3;
+                            result2.Game.Game4 = player.Game.Game4;
+                            result2.Member = player.Member;
+                            result2.Tournament = player.Tournament;
+                            db.SaveChanges();
+                        }
+                        catch (DbEntityValidationException ex)
+                        {
+                            // Retrieve the error messages as a list of strings.
+                            var errorMessages = ex.EntityValidationErrors
+                                    .SelectMany(x => x.ValidationErrors)
+                                    .Select(x => x.ErrorMessage);
+
+                            // Join the list to a single string.
+                            var fullErrorMessage = string.Join("; ", errorMessages);
+
+                            // Combine the original exception message with the new one.
+                            var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
+
+                            // Throw a new DbEntityValidationException with the improved exception message.
+                            throw new DbEntityValidationException(exceptionMessage, ex.EntityValidationErrors);
+                        }
+                        
+                    }
                     //Adds player inside NineTapDb
-                    db.Participants.Add(player);
-                    //Uses AddObject because you cannot have object graph where part of objects are connected to context and part of not.
-                    //Changed so that context knows that department already exists.
-                    var manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
-                    manager.ChangeObjectState(player.Game.Member,
-                                                EntityState.Unchanged);
-                    manager.ChangeObjectState(player.Tournament, EntityState.Unchanged);
-                    manager.ChangeObjectState(player.Member, EntityState.Unchanged);
-                    db.SaveChanges();
                     
                 }
             }

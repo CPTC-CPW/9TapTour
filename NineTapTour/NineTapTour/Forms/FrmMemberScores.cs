@@ -342,18 +342,19 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void newRecap(object sender, EventArgs e)
         {
+
             player.Game = new Game();
-            player.Game.Score = new List<int> { 
-                Convert.ToInt16(scratchArray[0].Text), 
-                Convert.ToInt16(scratchArray[1].Text), 
-                Convert.ToInt16(scratchArray[2].Text), 
-                Convert.ToInt16(scratchArray[3].Text) 
-            };
-            
-            //selects the ID of the combobox of tournaments and stores the
-            //tournament property within the participants class.
             int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
             Tournament selectedTourney = GetTournamentById(selectedTournamentId);
+            var db = new NineTapDb();
+            var gameId = (from p in db.Participants
+                            where p.Member.Id == currentMem.Id 
+                            && p.Tournament.Id == selectedTourney.Id
+                            select p.Game.Id).FirstOrDefault();
+
+            player.Game.Id = gameId;
+            //selects the ID of the combobox of tournaments and stores the
+            //tournament property within the participants class.
             player.Tournament = selectedTourney;
             player.Game.Member = currentMem;
             player.Game.Game1 = Convert.ToInt16(scratchArray[0].Text);
@@ -386,7 +387,6 @@ namespace NineTapTour.Forms
 
             try
             {
-                player.Member = currentMem;
                 TournamentDb.AddMemberToTournament(player);
 #if DEBUG
                 MessageBox.Show(@"Bowler Added Successfully to Tournament!");
@@ -611,6 +611,11 @@ namespace NineTapTour.Forms
                     index++;
                 }
             }
+        }
+
+        private void cbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            lblRecord.Text = "Record 0" + " / " + "0";
         }
     }
 }
