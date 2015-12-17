@@ -180,6 +180,10 @@
     <Compile Include="Migrations\201512172126218_Deleted Scores in Game Class.Designer.cs">
       <DependentUpon>201512172126218_Deleted Scores in Game Class.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201512172205125_Deleted member from Game Class.cs" />
+    <Compile Include="Migrations\201512172205125_Deleted member from Game Class.Designer.cs">
+      <DependentUpon>201512172205125_Deleted member from Game Class.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -261,6 +265,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201512172126218_Deleted Scores in Game Class.resx">
       <DependentUpon>201512172126218_Deleted Scores in Game Class.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512172205125_Deleted member from Game Class.resx">
+      <DependentUpon>201512172205125_Deleted member from Game Class.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>

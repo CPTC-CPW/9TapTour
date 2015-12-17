@@ -11,8 +11,6 @@ namespace NineTapTour.Database
         public int? Game2 { get; set; }
         public int? Game3 { get; set; }
         public int? Game4 { get; set; }
-        [Required]
-        public Member Member { get; set; }
         public int? Handicap { get; set; }
         public int? Bonus { get; set; }
 

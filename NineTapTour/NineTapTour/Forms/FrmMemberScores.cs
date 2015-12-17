@@ -131,7 +131,6 @@ namespace NineTapTour.Forms
                     Game currentGame = GetScoresById(currentMem.Id);
                     if(currentGame != null)
                     {
-                        currentGame.Member = currentMem;
                         currentGame.Bonus = currentMem.Bonus;
                         currentGame.Handicap = currentMem.Handicap;
                         txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
@@ -208,7 +207,6 @@ namespace NineTapTour.Forms
                     Game currentGame = GetScoresById(currentMem.Id);
                     if (currentGame != null)
                     {
-                        currentGame.Member = currentMem;
                         currentGame.Bonus = currentMem.Bonus;
                         currentGame.Handicap = currentMem.Handicap;
                         txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
@@ -356,7 +354,6 @@ namespace NineTapTour.Forms
             //selects the ID of the combobox of tournaments and stores the
             //tournament property within the participants class.
             player.Tournament = selectedTourney;
-            player.Game.Member = currentMem;
             player.Game.Game1 = Convert.ToInt16(scratchArray[0].Text);
             player.Game.Game2 = Convert.ToInt16(scratchArray[1].Text);
             player.Game.Game3 = Convert.ToInt16(scratchArray[2].Text);
@@ -392,8 +389,22 @@ namespace NineTapTour.Forms
                 MessageBox.Show(@"Bowler Added Successfully to Tournament!");
 #endif
                 List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-                int temp = total.IndexOf(total[count]);
-                count++;
+                bool alreadyParticipant = false;
+                foreach (var i in total)
+	            {
+		            if (player.Id == i.Id) {
+                        alreadyParticipant = true;
+                    }else{
+                        alreadyParticipant = false;
+                    }
+	            }
+                int temp = total.IndexOf(total[count - 1]);
+                if(alreadyParticipant)
+                { 
+                    count++;
+                }
+                
+                
                 lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
             }
             catch (MemberAccessException ex)
@@ -495,12 +506,12 @@ namespace NineTapTour.Forms
             }
             else
             {
-                if (count <= 0)
+                if (count <= 1)
                 {
                     MessageBox.Show("You can't go back!");
                 }
                 else
-                {
+                 {
                     count--;
                     var temp = total.IndexOf(total[count]);
                     lblRecord.Text = "Record " + temp + " / " + total.Count();
@@ -546,7 +557,6 @@ namespace NineTapTour.Forms
             foreach (var i in top5)
             {
                 int? highestGame = i.Game1;
-                var mem = i.Member;
                 if (i.Game2 > highestGame)
                 {
                     highestGame = i.Game2;

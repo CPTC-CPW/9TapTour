@@ -74,8 +74,6 @@ namespace NineTapTour.Database
                         //Uses AddObject because you cannot have object graph where part of objects are connected to context and part of not.
                         //Changed so that context knows that department already exists.
                         var manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
-                        manager.ChangeObjectState(player.Game.Member,
-                                                    EntityState.Unchanged);
                         manager.ChangeObjectState(player.Tournament, EntityState.Unchanged);
                         manager.ChangeObjectState(player.Member, EntityState.Unchanged);
                         db.SaveChanges();
@@ -86,13 +84,10 @@ namespace NineTapTour.Database
                         {
                             var manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
                             var result = db.Games.SingleOrDefault(g => g.Id == player.Game.Id);
-                            var result2 = db.Participants.SingleOrDefault(p => p.Game.Id == player.Game.Id);
-                            result2.Game.Game1 = player.Game.Game1;
-                            result2.Game.Game2 = player.Game.Game2;
-                            result2.Game.Game3 = player.Game.Game3;
-                            result2.Game.Game4 = player.Game.Game4;
-                            result2.Member = player.Member;
-                            result2.Tournament = player.Tournament;
+                            result.Game1 = player.Game.Game1;
+                            result.Game2 = player.Game.Game2;
+                            result.Game3 = player.Game.Game3;
+                            result.Game4 = player.Game.Game4;
                             db.SaveChanges();
                         }
                         catch (DbEntityValidationException ex)
