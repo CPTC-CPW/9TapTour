@@ -455,7 +455,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnArrowLeft_Click(object sender, EventArgs e)
         {
-            if (currentMem.Number <= ((FrmMain)MdiParent)._membersList.First().Number)
+            if (((FrmMain)MdiParent)._membersList.Count() == 0 || currentMem.Number <= ((FrmMain)MdiParent)._membersList.First().Number)
             {
                 MessageBox.Show(@"Beginning of file.", @"Notice");
             }
@@ -474,7 +474,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
-            if (currentMem.Number >= ((FrmMain)MdiParent)._membersList.Last().Number)
+            if (((FrmMain)MdiParent)._membersList.Count() == 0 || currentMem.Number >= ((FrmMain)MdiParent)._membersList.Last().Number)
             {
                 MessageBox.Show(@"End of file.", @"Notice");
             }
@@ -600,6 +600,12 @@ namespace NineTapTour.Forms
             Height = newfrmStart.Height + 20;
             newfrmStart.Show();
            
+        }
+
+        private void btnStats_Click(object sender, EventArgs e)
+        {
+            var newfrmStart = new FrmStats(Convert.ToInt32(txtMemberNumber.Text), (txtFirstName.Text + " " + txtLastName.Text));
+            newfrmStart.Show();
         }
     }
 }

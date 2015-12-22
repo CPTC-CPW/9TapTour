@@ -102,6 +102,12 @@
     <Compile Include="Forms\FrmSearch.Designer.cs">
       <DependentUpon>FrmSearch.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FrmStats.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmStats.Designer.cs">
+      <DependentUpon>FrmStats.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MainMenu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -197,6 +203,11 @@
     <Compile Include="Forms\FrmMemberScores.Designer.cs">
       <DependentUpon>FrmMemberScores.cs</DependentUpon>
     </Compile>
+    <Compile Include="_NineTapTour_NineTapDbDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Forms\FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -208,6 +219,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmSearch.resx">
       <DependentUpon>FrmSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmStats.resx">
+      <DependentUpon>FrmStats.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainMenu.resx">
       <DependentUpon>MainMenu.cs</DependentUpon>
@@ -295,6 +309,17 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="_NineTapTour_NineTapDbDataSet.xsc">
+      <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="_NineTapTour_NineTapDbDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>_NineTapTour_NineTapDbDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="_NineTapTour_NineTapDbDataSet.xss">
+      <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

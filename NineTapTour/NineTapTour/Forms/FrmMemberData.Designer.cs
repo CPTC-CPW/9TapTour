@@ -711,6 +711,7 @@
             this.btnStats.TabStop = false;
             this.btnStats.Text = "Stats";
             this.btnStats.UseVisualStyleBackColor = true;
+            this.btnStats.Click += new System.EventHandler(this.btnStats_Click);
             // 
             // grpSearchBy
             // 
