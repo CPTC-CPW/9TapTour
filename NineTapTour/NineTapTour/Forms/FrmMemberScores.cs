@@ -355,10 +355,10 @@ namespace NineTapTour.Forms
                 //selects the ID of the combobox of tournaments and stores the
                 //tournament property within the participants class.
                 player.Tournament = selectedTourney;
-                player.Game.Game1 = Convert.ToInt16(scratchArray[0].Text);
-                player.Game.Game2 = Convert.ToInt16(scratchArray[1].Text);
-                player.Game.Game3 = Convert.ToInt16(scratchArray[2].Text);
-                player.Game.Game4 = Convert.ToInt16(scratchArray[3].Text);
+                player.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[0].Text));
+                player.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[1].Text));
+                player.Game.Game3 = IsEmpty(txtScratchScore3) ? null : (int?)Convert.ToInt32((scratchArray[2].Text));
+                player.Game.Game4 = IsEmpty(txtScratchScore4) ? null : (int?)Convert.ToInt32((scratchArray[3].Text));
                 player.Game.Bonus = currentMem.Bonus;
                 player.Game.Handicap = currentMem.Handicap;
 
@@ -391,7 +391,6 @@ namespace NineTapTour.Forms
     #endif
                     List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
                     bool alreadyParticipant = false;
-                    int temp = total.IndexOf(total[count]);
                     foreach (var i in total)
 	                {
 		                if (player.Id == i.Id) {
@@ -404,6 +403,7 @@ namespace NineTapTour.Forms
                     { 
                         count++;
                     }
+                    int temp = total.IndexOf(total[count - 1]);
                     lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
                 }
                 catch (MemberAccessException ex)
@@ -418,6 +418,15 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show("Please Fill out the Participants information!");
             }
+        }
+
+        private bool IsEmpty(TextBox box)
+        {
+            if (box.Text == "")
+            {
+                return true;
+            }
+            return false;
         } 
         /// <summary>
         /// get a tournament by selected id
@@ -561,31 +570,50 @@ namespace NineTapTour.Forms
                         join p in db.Participants on t.Id equals p.Tournament.Id
                         join g in db.Participants on p.Game.Id equals g.Id
                         where p.Tournament.Id == selectedTourney
-                        orderby p.Game.Game1 descending
-                        select p.Game).Take(5).ToList();
+                        orderby g.Game.Game1 descending
+                        select p.Game)
+                        .Union(from t in db.Tournaments
+                                join p in db.Participants on t.Id equals p.Tournament.Id
+                                join g in db.Participants on p.Game.Id equals g.Id
+                                where p.Tournament.Id == selectedTourney
+                                orderby g.Game.Game2 descending
+                                select p.Game)
+                        .Union(from t in db.Tournaments
+                               join p in db.Participants on t.Id equals p.Tournament.Id
+                               join g in db.Participants on p.Game.Id equals g.Id
+                               where p.Tournament.Id == selectedTourney
+                               orderby g.Game.Game3 descending
+                               select p.Game)
+                        .Union(from t in db.Tournaments
+                               join p in db.Participants on t.Id equals p.Tournament.Id
+                               join g in db.Participants on p.Game.Id equals g.Id
+                               where p.Tournament.Id == selectedTourney
+                               orderby g.Game.Game4 descending
+                               select p.Game).Take(5).ToList();
             var top5Names = (from t in db.Tournaments
                              join p in db.Participants on t.Id equals p.Tournament.Id
                              join g in db.Participants on p.Game.Id equals g.Id
                              where p.Tournament.Id == selectedTourney
-                             orderby p.Game.Game1 descending
+                             orderby g.Game descending
                              select p.Member).Take(5).ToList();
 
             foreach (var i in top5)
             {
-                int? highestGame = i.Game1;
+                int? highestGame = i.Game1.HasValue ? i.Game1 : 0;
                 if (i.Game2 > highestGame)
                 {
                     highestGame = i.Game2;
                 }
-                else if (i.Game3 > highestGame)
+                if (i.Game3 > highestGame)
                 {
                     highestGame = i.Game3;
                 }
-                else if (i.Game4 > highestGame)
+                if (i.Game4 > highestGame)
                 {
                     highestGame = i.Game4;
                 }
-                richTextBox2.AppendText(counter + "\t" + String.Format("{0, -20}", Convert.ToString(top5Names[index].FirstName + " " + top5Names[index].LastName)) + "\t" + String.Format("{0, -5}", Convert.ToString(highestGame)) + "\n");
+                richTextBox2.AppendText(counter + "\t" + String.Format("{0, -20}", Convert.ToString(top5Names[index].FirstName + " " + top5Names[index].LastName)) 
+                                        + "\t" + String.Format("{0, -5}", Convert.ToString(highestGame)) + "\n");
                 counter++;
                 index++;
             }
@@ -597,6 +625,7 @@ namespace NineTapTour.Forms
             int? scratch = 0;
             int counter = 1;
             int index = 0;
+            int nullValues = 0;
             richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
             richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
             var db = new NineTapDb();
@@ -628,10 +657,30 @@ namespace NineTapTour.Forms
             {
                 foreach (var i in top5)
                 {
-                    scratch = (i.Game1 + i.Handicap + i.Bonus)
-                        + (i.Game2 + i.Handicap + i.Bonus)
-                        + (i.Game3 + i.Handicap + i.Bonus)
-                        + (i.Game4 + i.Handicap + i.Bonus);
+                    nullValues = 0;
+                    #region conditions for highest handicap scores
+                    i.Game1 = i.Game1.HasValue ? i.Game1 : 0;
+                    i.Game2 = i.Game2.HasValue ? i.Game2 : 0;
+                    i.Game3 = i.Game3.HasValue ? i.Game3 : 0;
+                    i.Game4 = i.Game4.HasValue ? i.Game4 : 0;
+                    if (i.Game1 == 0)
+                    {
+                        nullValues += 1;
+                    }
+                    if (i.Game2 == 0)
+                    {
+                        nullValues += 1;
+                    }
+                    if (i.Game3 == 0)
+                    {
+                        nullValues += 1;
+                    }
+                    if (i.Game4 == 0)
+                    {
+                        nullValues += 1;
+                    }
+                    #endregion
+                    scratch = (i.Game1) + (i.Game2) + (i.Game3) + (i.Game4) + (nullValues * (i.Handicap + i.Bonus));
                     richTextBox3.AppendText(counter + "\t" + String.Format("{0, -20}", Convert.ToString(top5Names[index].FirstName + " " + top5Names[index].LastName)) + "\t" + String.Format("{0, -5}", Convert.ToString(scratch)) + "\n");
                     counter++;
                     index++;
