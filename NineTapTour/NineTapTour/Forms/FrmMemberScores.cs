@@ -9,6 +9,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data.Entity;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Expressions;
 
 namespace NineTapTour.Forms
 {
@@ -566,63 +569,56 @@ namespace NineTapTour.Forms
             int index = 0;
             var db = new NineTapDb();
             int selectedTourney = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
-            var top5 = (from t in db.Tournaments
-                        join p in db.Participants on t.Id equals p.Tournament.Id
-                        join g in db.Participants on p.Game.Id equals g.Id
-                        where p.Tournament.Id == selectedTourney
-                        orderby g.Game.Game1 descending
-                        select p.Game)
-                        .Union(from t in db.Tournaments
-                                join p in db.Participants on t.Id equals p.Tournament.Id
-                                join g in db.Participants on p.Game.Id equals g.Id
-                                where p.Tournament.Id == selectedTourney
-                                orderby g.Game.Game2 descending
-                                select p.Game)
-                        .Union(from t in db.Tournaments
-                               join p in db.Participants on t.Id equals p.Tournament.Id
-                               join g in db.Participants on p.Game.Id equals g.Id
-                               where p.Tournament.Id == selectedTourney
-                               orderby g.Game.Game3 descending
-                               select p.Game)
-                        .Union(from t in db.Tournaments
-                               join p in db.Participants on t.Id equals p.Tournament.Id
-                               join g in db.Participants on p.Game.Id equals g.Id
-                               where p.Tournament.Id == selectedTourney
-                               orderby g.Game.Game4 descending
-                               select p.Game).Take(5).ToList();
-            var top5Names = (from t in db.Tournaments
-                             join p in db.Participants on t.Id equals p.Tournament.Id
-                             join g in db.Participants on p.Game.Id equals g.Id
-                             where p.Tournament.Id == selectedTourney
-                             orderby g.Game descending
-                             select p.Member).Take(5).ToList();
 
-            foreach (var i in top5)
+            var top5 = db.Participants.Include(b => b.Member)
+                .Include(b => b.Game)
+                .Where(b => b.Tournament.Id == selectedTourney);
+            List<MemberScores> scores = new List<MemberScores>();
+            var temp = (from g in top5
+                        orderby g.Game.Game1
+                        select new { g.Game.Game1, g.Member.FirstName, g.Member.LastName }).Take(5);
+            var temp2 = (from g in top5
+                        orderby g.Game.Game2
+                        select new { g.Game.Game2, g.Member.FirstName, g.Member.LastName }).Take(5);
+            var temp3 = (from g in top5
+                        orderby g.Game.Game3
+                        select new { g.Game.Game3, g.Member.FirstName, g.Member.LastName }).Take(5);
+            var temp4 = (from g in top5
+                        orderby g.Game.Game4
+                        select new { g.Game.Game4, g.Member.FirstName, g.Member.LastName }).Take(5);
+            foreach (var s in temp)
             {
-                int? highestGame = i.Game1.HasValue ? i.Game1 : 0;
-                if (i.Game2 > highestGame)
-                {
-                    highestGame = i.Game2;
-                }
-                if (i.Game3 > highestGame)
-                {
-                    highestGame = i.Game3;
-                }
-                if (i.Game4 > highestGame)
-                {
-                    highestGame = i.Game4;
-                }
-                richTextBox2.AppendText(counter + "\t" + String.Format("{0, -20}", Convert.ToString(top5Names[index].FirstName + " " + top5Names[index].LastName)) 
-                                        + "\t" + String.Format("{0, -5}", Convert.ToString(highestGame)) + "\n");
+                scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game1 });
+            }
+            foreach (var s in temp2)
+            {
+                scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game2 });
+            }
+            foreach (var s in temp3)
+            {
+                scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game3 });
+            }
+            foreach (var s in temp4)
+            {
+                scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game4 });
+            }
+            IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
+            scores.Sort(scoreComparer);
+            scores.Reverse();
+            scores = scores.Take(5).ToList();
+            for (int i = 0; i < scores.Count(); i++)
+            {
+                richTextBox2.AppendText(counter + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
+                                        + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
                 counter++;
                 index++;
             }
+            
         }
 
         private void btnRefresh3_Click(object sender, EventArgs e)
         {
             richTextBox3.Clear();
-            int? scratch = 0;
             int counter = 1;
             int index = 0;
             int nullValues = 0;
@@ -630,60 +626,76 @@ namespace NineTapTour.Forms
             richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
             var db = new NineTapDb();
             int selectedTourney = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
-            var top5 = (from t in db.Tournaments
-                        join p in db.Participants on t.Id equals p.Tournament.Id
-                        join g in db.Participants on p.Game.Id equals g.Id
-                        where p.Tournament.Id == selectedTourney
-                        orderby (p.Game.Game1 + p.Game.Game2 + p.Game.Game3 + p.Game.Game4) descending
-                        select p.Game).Take(5).ToList();
-            var top5Names = (from t in db.Tournaments
-                             join p in db.Participants on t.Id equals p.Tournament.Id
-                             join g in db.Participants on p.Game.Id equals g.Id
-                             where p.Tournament.Id == selectedTourney
-                             orderby (p.Game.Game1 + p.Game.Game2 + p.Game.Game3 + p.Game.Game4) descending
-                             select p.Member).Take(5).ToList();
-            if (rdoScratchScore.Checked)
+
+            var top5 = db.Participants.Include(b => b.Member)
+                        .Include(b => b.Game)
+                        .Where(b => b.Tournament.Id == selectedTourney);
+            List<MemberScores> scores = new List<MemberScores>();
+            var temp = (from g in top5
+                        orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4) descending
+                        select g).Take(5).ToList();
+
+            //populate total score
+            for (int i = 0; i < temp.Count; i++)
             {
-                foreach (var i in top5)
+                temp[i].Game.Game1 = temp[i].Game.Game1 == null ? 0 : temp[i].Game.Game1;
+                temp[i].Game.Game2 = temp[i].Game.Game2 == null ? 0 : temp[i].Game.Game2;
+                temp[i].Game.Game3 = temp[i].Game.Game3 == null ? 0 : temp[i].Game.Game3;
+                temp[i].Game.Game4 = temp[i].Game.Game4 == null ? 0 : temp[i].Game.Game4;
+            }
+            if (rdoScratchScore.Checked) {
+                foreach (var s in temp)
                 {
-                    scratch = i.Game1 + i.Game2 + i.Game3 + i.Game4;
-                    richTextBox3.AppendText(counter + "\t" + String.Format("{0, -20}", Convert.ToString(top5Names[index].FirstName + " " + top5Names[index].LastName)) + "\t" + String.Format("{0,-5}",Convert.ToString(scratch)) + "\n");
+                    scores.Add(new MemberScores { FirstName = s.Member.FirstName, LastName = s.Member.LastName, Score = s.Game.Game1 + s.Game.Game2 + s.Game.Game3 + s.Game.Game4 });
+                }
+                IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
+                scores.Sort(scoreComparer);
+                scores.Reverse();
+                scores = scores.Take(5).ToList();
+                for (int i = 0; i < scores.Count(); i++)
+                {
+                    richTextBox3.AppendText(counter + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
+                                            + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
                     counter++;
                     index++;
                 }
-
             }
             else if (rdoHandicapScore.Checked)
             {
-                foreach (var i in top5)
+                foreach (var i in temp)
                 {
-                    nullValues = 0;
                     #region conditions for highest handicap scores
-                    i.Game1 = i.Game1.HasValue ? i.Game1 : 0;
-                    i.Game2 = i.Game2.HasValue ? i.Game2 : 0;
-                    i.Game3 = i.Game3.HasValue ? i.Game3 : 0;
-                    i.Game4 = i.Game4.HasValue ? i.Game4 : 0;
-                    if (i.Game1 == 0)
+                    nullValues = 0;
+                    if (i.Game.Game1 == 0)
                     {
                         nullValues += 1;
                     }
-                    if (i.Game2 == 0)
+                    if (i.Game.Game2 == 0)
                     {
                         nullValues += 1;
                     }
-                    if (i.Game3 == 0)
+                    if (i.Game.Game3 == 0)
                     {
                         nullValues += 1;
                     }
-                    if (i.Game4 == 0)
+                    if (i.Game.Game4 == 0)
                     {
                         nullValues += 1;
                     }
                     #endregion
-                    scratch = (i.Game1) + (i.Game2) + (i.Game3) + (i.Game4) + (nullValues * (i.Handicap + i.Bonus));
-                    richTextBox3.AppendText(counter + "\t" + String.Format("{0, -20}", Convert.ToString(top5Names[index].FirstName + " " + top5Names[index].LastName)) + "\t" + String.Format("{0, -5}", Convert.ToString(scratch)) + "\n");
+                    scores.Add(new MemberScores { FirstName = i.Member.FirstName, LastName = i.Member.LastName, Score = (i.Game.Game1) + (i.Game.Game2) + (i.Game.Game3) + (i.Game.Game4) + ((4 - nullValues) * (i.Game.Handicap + i.Game.Bonus)) });
+                }
+
+
+                IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
+                scores.Sort(scoreComparer);
+                scores.Reverse();
+                scores = scores.Take(5).ToList();
+                for (int i = 0; i < scores.Count(); i++) {
+                    richTextBox3.AppendText(counter + "\t" + String.Format("{0, -20}", Convert.ToString(scores[i].FirstName + " " + scores[i].LastName)) + "\t" + String.Format("{0, -5}", scores[i].Score) + "\n");
                     counter++;
                     index++;
+
                 }
             }
         }
@@ -699,7 +711,30 @@ namespace NineTapTour.Forms
             {
                 return false;
             }
+            if (txtMemberNum.Text == "")
+            {
+                return false;
+            }
             return true;
+        }
+    }
+    class MemberScores
+    {
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public int? Score { get; set; }
+
+    }
+
+    class MemberScoresComparer : IComparer<MemberScores>
+    {
+        int IComparer<MemberScores>.Compare(MemberScores x, MemberScores y)
+        {
+            int score1 = x.Score.HasValue ? (int)x.Score : 0;
+            int score2 = y.Score.HasValue ? (int)y.Score : 0;
+            return score1.CompareTo(score2);
         }
     }
 }
