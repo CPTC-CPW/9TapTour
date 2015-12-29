@@ -35,7 +35,6 @@ namespace NineTapTour.Forms
         private void FrmMemberScores_Load(object sender, EventArgs e)
         {
             txtMemberNum.Focus();
-            //_membersList = ((FrmMain)MdiParent)._membersList;
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
         }
@@ -76,9 +75,12 @@ namespace NineTapTour.Forms
             cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             cbxTourneyDropDown.ValueMember = "Id";
-            var temp2 = TournamentDb.GetTournamentList();
-            var item = temp2.Max(x => x.Id);
-            cbxTourneyDropDown.SelectedValue = item;
+            List<Tournament> temp2 = TournamentDb.GetTournamentList();
+            if (temp2.Count() > 0)
+            {
+                var item = temp2.Max(x => x.Id);
+                cbxTourneyDropDown.SelectedValue = item;
+            }
         }
 
         /// <summary>
@@ -286,24 +288,31 @@ namespace NineTapTour.Forms
                 }
                 txtScratchTotal.Text = scratchTotal.ToString();
             }
-            
+            TextBox tx = (TextBox)sender;
             //auto tab to the next textbox when textbox1's length is 3.
-            if (scratchArray[0].Text.Length == 3)
+            if (tx.Text.Length == 3)
             {
-                scratchArray[1].Focus();
+                SendKeys.Send("{TAB}");
             }
-            if (scratchArray[1].Text.Length == 3)
-            {
-                scratchArray[2].Focus();
-            }
-            if (scratchArray[2].Text.Length == 3)
-            {
-                scratchArray[3].Focus();
-            }
-            if (scratchArray[3].Text.Length == 3)
-            {
-                btnNew.Focus();
-            }
+            //if (tx.Text.Length == 3)
+            //{
+            //    if (tx.Equals(scratchArray[0]))
+            //    {
+            //        scratchArray[1].Focus();
+            //    }
+            //    else if (tx.Equals(scratchArray[1]))
+            //    {
+            //        scratchArray[2].Focus();
+            //    }
+            //    else if (tx.Equals(scratchArray[2]))
+            //    {
+            //        scratchArray[3].Focus();
+            //    }
+            //    else if (tx.Equals(scratchArray[3]))
+            //    {
+            //        btnNew.Focus();
+            //    }
+            //}
         }
 
         /// <summary>
@@ -388,25 +397,17 @@ namespace NineTapTour.Forms
 
                 try
                 {
+                    int temp;
                     TournamentDb.AddMemberToTournament(player);
     #if DEBUG
                     MessageBox.Show(@"Bowler Added Successfully to Tournament!");
     #endif
                     List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-                    bool alreadyParticipant = false;
-                    foreach (var i in total)
-	                {
-		                if (player.Id == i.Id) {
-                            alreadyParticipant = true;
-                        }else{
-                            alreadyParticipant = false;
-                        }
-	                }
-                    if(alreadyParticipant)
-                    { 
-                        count++;
+                    if (total.Count() < 0)
+                    {
+                        temp = total.IndexOf(total[count - 2]);
                     }
-                    int temp = total.IndexOf(total[count - 1]);
+                    temp = total.IndexOf(total[count - 1]);
                     lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
                 }
                 catch (MemberAccessException ex)
@@ -493,25 +494,18 @@ namespace NineTapTour.Forms
         
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
-            if (IsValid())
+            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
+            if (count >= total.Count())
             {
-                List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-                if (count >= total.Count())
-                {
-                    MessageBox.Show("There are no more players to go to!");
-                }
-                else
-                {
-                    var temp = total.IndexOf(total[count]);
-                    count++;
-                    lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
-                    txtMemberNum.Text = Convert.ToString(temp + 1);
-                    FillMember();
-                }
+                MessageBox.Show("There are no more players to go to!");
             }
             else
             {
-                MessageBox.Show("Please check to see if all required fields are filled!");
+                var temp = total.IndexOf(total[count]);
+                count++;
+                lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
+                txtMemberNum.Text = Convert.ToString(temp + 1);
+                FillMember();
             }
         }
 
@@ -520,32 +514,25 @@ namespace NineTapTour.Forms
         /// </summary>
         private void btnLeftArrow_Click(object sender, EventArgs e)
         {
-            if (IsValid())
+            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
+            if (count < 0)
             {
-                List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-                if (count < 0)
-                {
-                    MessageBox.Show("There are no more players to go back to!");
-                }
-                else
-                {
-                    if (count <= 1)
-                    {
-                        MessageBox.Show("You can't go back!");
-                    }
-                    else
-                        {
-                        count--;
-                        var temp = total.IndexOf(total[count]);
-                        lblRecord.Text = "Record " + temp + " / " + total.Count();
-                        txtMemberNum.Text = Convert.ToString(temp);
-                        FillMember();
-                    }
-                }
+                MessageBox.Show("There are no more players to go back to!");
             }
             else
             {
-                MessageBox.Show("Please check to see if all required fields are filled!");
+                if (count <= 1)
+                {
+                    MessageBox.Show("You can't go back!");
+                }
+                else
+                {
+                    count--;
+                    var temp = total.IndexOf(total[count]);
+                    lblRecord.Text = "Record " + temp + " / " + total.Count();
+                    txtMemberNum.Text = Convert.ToString(temp);
+                    FillMember();
+                }
             }
         }
 
@@ -711,7 +698,7 @@ namespace NineTapTour.Forms
             {
                 return false;
             }
-            if (txtMemberNum.Text == "")
+            if (txtMemberNum.Text == "" && txtScratchScore1.Text == "" && txtScratchScore2.Text == "" && txtScratchScore3.Text == "" && txtScratchScore4.Text == "")
             {
                 return false;
             }

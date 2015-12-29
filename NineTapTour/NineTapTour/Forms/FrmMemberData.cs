@@ -440,12 +440,6 @@ namespace NineTapTour.Forms
                 }
 
             }
-            //else, there must be a validation error. Either something is null or the format of how the user entered was incorrect.
-            else
-            {
-                MessageBox.Show("You have validation problems");
-            }
-
         }
 
         /// <summary>
@@ -494,19 +488,22 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnNew_Click(object sender, EventArgs e)
         {
-            Controls.Clear();
-            InitializeComponent();
-            dateRejoin.Format = DateTimePickerFormat.Custom;
-            dateRejoin.CustomFormat = @" ";
-
-            dateLastBowled.Format = DateTimePickerFormat.Custom;
-            dateLastBowled.CustomFormat = @" ";
-            _memberId = -1;
-            txtMemberNumber.Text = (((FrmMain)MdiParent)._membersList.Last().Number + 1).ToString();
-            currentMem = new Member
+            if (isValid())
             {
-                Number = (((FrmMain)MdiParent)._membersList.Last().Number + 1)
-            };
+                Controls.Clear();
+                InitializeComponent();
+                dateRejoin.Format = DateTimePickerFormat.Custom;
+                dateRejoin.CustomFormat = @" ";
+
+                dateLastBowled.Format = DateTimePickerFormat.Custom;
+                dateLastBowled.CustomFormat = @" ";
+                _memberId = -1;
+                txtMemberNumber.Text = (((FrmMain)MdiParent)._membersList.Last().Number + 1).ToString();
+                currentMem = new Member
+                {
+                    Number = (((FrmMain)MdiParent)._membersList.Last().Number + 1)
+                };
+            }
         }
 
         /// <summary>
@@ -574,22 +571,26 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (confirm == DialogResult.No) return;
-            try
+            if (isValid())
             {
-                MemberDb.DeleteMember(currentMem);
+                var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-                MessageBox.Show(@"Bowler Removed Successfully.");
-                //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-                ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-                //_membersList = ((FrmMain)MdiParent)._membersList;
-                UpdateMemberInfo();
-            }
-            catch (MemberTableException ex)
-            {
-                MessageBox.Show(ex.Message);
+                if (confirm == DialogResult.No) return;
+                try
+                {
+                    MemberDb.DeleteMember(currentMem);
+
+                    MessageBox.Show(@"Bowler Removed Successfully.");
+                    ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+                    if (((FrmMain)MdiParent)._membersList.Count() > 0)
+                    {
+                        UpdateMemberInfo();
+                    }
+                }
+                catch (MemberTableException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
 
@@ -604,7 +605,7 @@ namespace NineTapTour.Forms
 
         private void btnStats_Click(object sender, EventArgs e)
         {
-            var newfrmStart = new FrmStats(Convert.ToInt32(txtMemberNumber.Text), (txtFirstName.Text + " " + txtLastName.Text));
+            var newfrmStart = new FrmStats(Convert.ToInt32(txtMemberNumber.Text), (txtFirstName.Text + " " + txtLastName.Text), currentMem);
             newfrmStart.Show();
         }
     }
