@@ -23,7 +23,7 @@ namespace NineTapTour.Forms
         TextBox[] scratchArray = new TextBox[4];
         TextBox[] handicappArray = new TextBox[4];
         //Count for record counting
-        int count = 0;
+        int currentIndex = 0;
         Participant player = new Participant();
 
 
@@ -165,7 +165,7 @@ namespace NineTapTour.Forms
                     where p.Tournament.Id == currTourney.Id
                     select p.Member).ToList();
             
-            string searchNumber = count.ToString();
+            string searchNumber = currentIndex.ToString();
             //if(searchNumber.Trim()=="") return;
             for (int i = 0; i < searchNumber.Length; i++)
             {
@@ -178,12 +178,12 @@ namespace NineTapTour.Forms
             }
             if (searchNumber.Trim() != "")
             {
-                if (count == 0)
+                if (currentIndex == 0)
                 {
                     return;
                 }
-                listOfParticipants[count-1].Member = temp[count-1];
-                int memberNumber = listOfParticipants[count-1].Member.Id;
+                listOfParticipants[currentIndex-1].Member = temp[currentIndex-1];
+                int memberNumber = listOfParticipants[currentIndex-1].Member.Id;
                 currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Id == memberNumber);
                 if (currentMem != null)
                 {
@@ -294,25 +294,6 @@ namespace NineTapTour.Forms
             {
                 SendKeys.Send("{TAB}");
             }
-            //if (tx.Text.Length == 3)
-            //{
-            //    if (tx.Equals(scratchArray[0]))
-            //    {
-            //        scratchArray[1].Focus();
-            //    }
-            //    else if (tx.Equals(scratchArray[1]))
-            //    {
-            //        scratchArray[2].Focus();
-            //    }
-            //    else if (tx.Equals(scratchArray[2]))
-            //    {
-            //        scratchArray[3].Focus();
-            //    }
-            //    else if (tx.Equals(scratchArray[3]))
-            //    {
-            //        btnNew.Focus();
-            //    }
-            //}
         }
 
         /// <summary>
@@ -403,11 +384,14 @@ namespace NineTapTour.Forms
                     MessageBox.Show(@"Bowler Added Successfully to Tournament!");
     #endif
                     List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-                    if (total.Count() < 0)
+                    if (total.Count() <= 0)
                     {
-                        temp = total.IndexOf(total[count - 2]);
+                        temp = total.IndexOf(total[currentIndex]);
                     }
-                    temp = total.IndexOf(total[count - 1]);
+                    else
+                    {
+                        temp = total.IndexOf(total[currentIndex - 1]);
+                    }
                     lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
                 }
                 catch (MemberAccessException ex)
@@ -495,16 +479,32 @@ namespace NineTapTour.Forms
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
             List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-            if (count >= total.Count())
+            if (currentIndex >= total.Count())
             {
                 MessageBox.Show("There are no more players to go to!");
             }
             else
             {
-                var temp = total.IndexOf(total[count]);
-                count++;
+                var temp = total.IndexOf(total[currentIndex]);
+                currentIndex++;
                 lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
-                txtMemberNum.Text = Convert.ToString(temp + 1);
+                txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
+                    if (total[currentIndex - 1].Squad == 1)
+                    {
+                        rdoSquadOne.Checked = true;
+                    }
+                    else if (total[currentIndex - 1].Squad == 2)
+                    {
+                        rdoSquadTwo.Checked = true;
+                    }
+                    else if (total[currentIndex - 1].Squad == 3)
+                    {
+                        rdoSquadThree.Checked = true;
+                    }
+                    else
+                    {
+                        rdoSquadFour.Checked = true;
+                    }
                 FillMember();
             }
         }
@@ -515,22 +515,38 @@ namespace NineTapTour.Forms
         private void btnLeftArrow_Click(object sender, EventArgs e)
         {
             List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-            if (count < 0)
+            if (currentIndex <= 0)
             {
                 MessageBox.Show("There are no more players to go back to!");
             }
             else
             {
-                if (count <= 1)
+                if (currentIndex <= 1)
                 {
                     MessageBox.Show("You can't go back!");
                 }
                 else
                 {
-                    count--;
-                    var temp = total.IndexOf(total[count]);
+                    currentIndex--;
+                    var temp = total.IndexOf(total[currentIndex]);
                     lblRecord.Text = "Record " + temp + " / " + total.Count();
-                    txtMemberNum.Text = Convert.ToString(temp);
+                    txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
+                    if (total[currentIndex - 1].Squad == 1)
+                    {
+                        rdoSquadOne.Checked = true;
+                    }
+                    else if (total[currentIndex - 1].Squad == 2)
+                    {
+                        rdoSquadTwo.Checked = true;
+                    }
+                    else if (total[currentIndex - 1].Squad == 3)
+                    {
+                        rdoSquadThree.Checked = true;
+                    }
+                    else
+                    {
+                        rdoSquadFour.Checked = true;
+                    }
                     FillMember();
                 }
             }
@@ -690,6 +706,7 @@ namespace NineTapTour.Forms
         private void cbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
             lblRecord.Text = "Record 0" + " / " + "0";
+            currentIndex = 1;
         }
 
         public bool IsValid()

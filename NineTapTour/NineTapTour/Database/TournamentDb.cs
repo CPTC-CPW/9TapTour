@@ -54,7 +54,7 @@ namespace NineTapTour.Database
                 return (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
                         where p.Tournament.Id == currTourney.Id
-                        select p).ToList();
+                        select p).Include(m =>m.Member).ToList();
             }
         }
 
