@@ -335,6 +335,7 @@ namespace NineTapTour.Forms
         {
             if (IsValid()) 
             {
+                List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
                 player.Game = new Game();
                 int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
                 Tournament selectedTourney = GetTournamentById(selectedTournamentId);
@@ -375,7 +376,7 @@ namespace NineTapTour.Forms
                 #endregion
 
                 player.Member = currentMem;
-
+                player.Id = total[currentIndex - 1].Id;
                 try
                 {
                     int temp;
@@ -383,7 +384,6 @@ namespace NineTapTour.Forms
     #if DEBUG
                     MessageBox.Show(@"Bowler Added Successfully to Tournament!");
     #endif
-                    List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
                     if (total.Count() <= 0)
                     {
                         temp = total.IndexOf(total[currentIndex]);
@@ -489,22 +489,22 @@ namespace NineTapTour.Forms
                 currentIndex++;
                 lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
                 txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
-                    if (total[currentIndex - 1].Squad == 1)
-                    {
-                        rdoSquadOne.Checked = true;
-                    }
-                    else if (total[currentIndex - 1].Squad == 2)
-                    {
-                        rdoSquadTwo.Checked = true;
-                    }
-                    else if (total[currentIndex - 1].Squad == 3)
-                    {
-                        rdoSquadThree.Checked = true;
-                    }
-                    else
-                    {
-                        rdoSquadFour.Checked = true;
-                    }
+                if (total[currentIndex - 1].Squad == 1)
+                {
+                    rdoSquadOne.Checked = true;
+                }
+                else if (total[currentIndex - 1].Squad == 2)
+                {
+                    rdoSquadTwo.Checked = true;
+                }
+                else if (total[currentIndex - 1].Squad == 3)
+                {
+                    rdoSquadThree.Checked = true;
+                }
+                else
+                {
+                    rdoSquadFour.Checked = true;
+                }
                 FillMember();
             }
         }
