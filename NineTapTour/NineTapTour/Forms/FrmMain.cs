@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
+using System.Drawing;
 
 namespace NineTapTour.Forms
 {
@@ -80,11 +81,8 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void memberToolStripMenuItem_Click(object sender, EventArgs e)
         {   
-
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
-
             OpenOrDisplayForm(ref newfrmMemberData);
-
         }
 
         /// <summary>
@@ -95,7 +93,6 @@ namespace NineTapTour.Forms
         public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
-
             OpenOrDisplayForm(ref newfrmMemberScores);
         }
 

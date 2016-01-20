@@ -51,6 +51,7 @@
             // 
             // mainMenuToolStripMenuItem
             // 
+            this.mainMenuToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
             this.mainMenuToolStripMenuItem.Name = "mainMenuToolStripMenuItem";
             this.mainMenuToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.mainMenuToolStripMenuItem.Text = "Home";
@@ -58,6 +59,7 @@
             // 
             // memberToolStripMenuItem
             // 
+            this.memberToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
             this.memberToolStripMenuItem.Name = "memberToolStripMenuItem";
             this.memberToolStripMenuItem.Size = new System.Drawing.Size(64, 20);
             this.memberToolStripMenuItem.Text = "Member";
@@ -65,6 +67,7 @@
             // 
             // tournamentToolStripMenuItem
             // 
+            this.tournamentToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
             this.tournamentToolStripMenuItem.Name = "tournamentToolStripMenuItem";
             this.tournamentToolStripMenuItem.Size = new System.Drawing.Size(101, 20);
             this.tournamentToolStripMenuItem.Text = "Member Scores";

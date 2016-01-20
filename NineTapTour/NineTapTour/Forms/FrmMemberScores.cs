@@ -94,7 +94,6 @@ namespace NineTapTour.Forms
                 return;
 
             string searchNumber = txtMemberNum.Text;
-            //if(searchNumber.Trim()=="") return;
             for (int i = 0; i < searchNumber.Length; i++)
             {
                 if (!char.IsNumber(searchNumber[i]))
@@ -116,14 +115,6 @@ namespace NineTapTour.Forms
                     }
                     else
                     {
-                        //lblMemberStatus.Text = "Inactive";
-                        //lblMemberStatus.ForeColor = System.Drawing.Color.Red;
-                        //pnlMemStat.BackColor = System.Drawing.Color.Pink;
-                        ////Will change later, just for presentation
-                        //txtScratchScore1.ReadOnly = true;
-                        //txtScratchScore2.ReadOnly = true;
-                        //txtScratchScore3.ReadOnly = true;
-                        //txtScratchScore4.ReadOnly = true;
                         MemberStatus("Inactive", Color.Red, Color.Pink, true);
                     } 
                     txtScratchScore1.Focus();
@@ -166,7 +157,6 @@ namespace NineTapTour.Forms
                     select p.Member).ToList();
             
             string searchNumber = currentIndex.ToString();
-            //if(searchNumber.Trim()=="") return;
             for (int i = 0; i < searchNumber.Length; i++)
             {
                 if (!char.IsNumber(searchNumber[i]))
@@ -193,14 +183,6 @@ namespace NineTapTour.Forms
                     }
                     else
                     {
-                        //lblMemberStatus.Text = "Inactive";
-                        //lblMemberStatus.ForeColor = System.Drawing.Color.Red;
-                        //pnlMemStat.BackColor = System.Drawing.Color.Pink;
-                        ////Will change later, just for presentation
-                        //txtScratchScore1.ReadOnly = true;
-                        //txtScratchScore2.ReadOnly = true;
-                        //txtScratchScore3.ReadOnly = true;
-                        //txtScratchScore4.ReadOnly = true;
                         MemberStatus("Inactive", Color.Red, Color.Pink, true);
                     }
                     txtLastName.Text = currentMem.LastName;
@@ -335,7 +317,6 @@ namespace NineTapTour.Forms
         {
             if (IsValid()) 
             {
-                List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
                 player.Game = new Game();
                 int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
                 Tournament selectedTourney = GetTournamentById(selectedTournamentId);
@@ -376,7 +357,6 @@ namespace NineTapTour.Forms
                 #endregion
 
                 player.Member = currentMem;
-                player.Id = total[currentIndex - 1].Id;
                 try
                 {
                     int temp;
@@ -384,6 +364,7 @@ namespace NineTapTour.Forms
     #if DEBUG
                     MessageBox.Show(@"Bowler Added Successfully to Tournament!");
     #endif
+                    List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
                     if (total.Count() <= 0)
                     {
                         temp = total.IndexOf(total[currentIndex]);
