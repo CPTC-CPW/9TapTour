@@ -24,7 +24,7 @@ namespace NineTapTour
 #if !DEBUG //if app is set to release mode
             SetConnectionString(@"localhost\SQLExpress");
 #elif DEBUG //set connection to dev database
-            SetConnectionString(@"(localdb)\v11.0");
+            SetConnectionString(@"(localdb)\MSSQLLocalDB");
 #endif
 
             Application.Run(new FrmMain());

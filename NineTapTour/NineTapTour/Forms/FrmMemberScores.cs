@@ -376,7 +376,14 @@ namespace NineTapTour.Forms
                 #endregion
 
                 player.Member = currentMem;
-                player.Id = total[currentIndex - 1].Id;
+                if(total.Count() == 0)
+                {
+                    player.Id = 1;
+                }
+                else
+                {
+                    player.Id = total[currentIndex - 1].Id;
+                }
                 try
                 {
                     int temp;
