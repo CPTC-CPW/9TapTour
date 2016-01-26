@@ -89,6 +89,7 @@
     <Compile Include="Database\Game.cs" />
     <Compile Include="Database\Member.cs" />
     <Compile Include="Database\MemberDb.cs" />
+    <Compile Include="Database\Squad.cs" />
     <Compile Include="Database\TournamentDb.cs" />
     <Compile Include="Exceptions\MemberTableException.cs" />
     <Compile Include="Database\Participant.cs" />
@@ -207,6 +208,10 @@
     <Compile Include="Migrations\201512172205125_Deleted member from Game Class.Designer.cs">
       <DependentUpon>201512172205125_Deleted member from Game Class.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201601260003161_Added Squads Table.cs" />
+    <Compile Include="Migrations\201601260003161_Added Squads Table.Designer.cs">
+      <DependentUpon>201601260003161_Added Squads Table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -299,6 +304,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201512172205125_Deleted member from Game Class.resx">
       <DependentUpon>201512172205125_Deleted member from Game Class.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601260003161_Added Squads Table.resx">
+      <DependentUpon>201601260003161_Added Squads Table.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
