@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NineTapTour", "NineTapTour\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NineTapTourTest", "NineTapTourTest\NineTapTourTest.csproj", "{93676808-B4D9-42C4-BE62-45824AAFA78A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Member_Import_Test", "Member_Import_Test\Member_Import_Test\Member_Import_Test.csproj", "{8B480B0C-419E-49E4-ADB8-CB9509DDE39D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{93676808-B4D9-42C4-BE62-45824AAFA78A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93676808-B4D9-42C4-BE62-45824AAFA78A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93676808-B4D9-42C4-BE62-45824AAFA78A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B480B0C-419E-49E4-ADB8-CB9509DDE39D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B480B0C-419E-49E4-ADB8-CB9509DDE39D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B480B0C-419E-49E4-ADB8-CB9509DDE39D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B480B0C-419E-49E4-ADB8-CB9509DDE39D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
