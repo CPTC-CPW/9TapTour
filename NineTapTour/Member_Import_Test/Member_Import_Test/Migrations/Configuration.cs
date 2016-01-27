@@ -27,33 +27,6 @@ namespace Member_Import_Test.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
-
-            context.Members.AddOrUpdate(
-                m => new { m.Number },
-                    new Member
-                    {
-                        Number = 1,
-                        IsActive = true,
-                        JoinDate = DateTime.Today,
-                        IsSenior = false,
-                        FirstName = "Matthew",
-                        LastName = "Dahl",
-                        MiddleInitial = "S",
-                        DateOfBirth = DateTime.Parse("04/04/1985"),
-                        Gender = MemberGenders.Male,
-                        SSN = "123456789",
-                        Street = "Matt Dr. SW",
-                        City = "Mattville",
-                        State = "MD",
-                        PostalCode = "54321",
-                        PrimaryPhone = "(555) 555-5555",
-                        Email = "matt-mail@mail-matt.com",
-                        Notes = "Some notes because we can.",
-                        Average = 150,
-                        Handicap = 10,
-                        Bonus = 3
-                    }
-                    );
         }
     }
 }
