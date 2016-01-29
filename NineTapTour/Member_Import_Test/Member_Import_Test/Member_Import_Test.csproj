@@ -58,7 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\DBQueries.cs" />
-    <Compile Include="Classes\Member.cs" />
+    <Compile Include="Migrations\Member.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>

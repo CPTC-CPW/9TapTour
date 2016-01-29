@@ -73,6 +73,36 @@ namespace Member_Import_Test.Classes
         [Required]
         public bool IsSenior { get; set; }
         #endregion
+
+
+        public override string ToString()
+        {
+            return "Member Number:" + Number + ", " 
+                    + "Active Member:" + IsActive + ", " 
+                    + "First Name:" + FirstName + ", " 
+                    + "Last Name:" + LastName + ", " 
+                    + "Middle Initial:" + MiddleInitial + ", " 
+                    + "Date of Birth:" + DateOfBirth + ", " 
+                    + "Social Security Number" + SSN + ", " 
+                    + "Gender:" + Gender + ", " 
+                    + "Street Address:" + Street + ", " 
+                    + "City:" + City + ", " 
+                    + "State:" + State + ", " 
+                    + "Postal Code:" + PostalCode + ", " 
+                    + "Email:" + Email + ", " 
+                    + "Primary Phone:" + PrimaryPhone + ", " 
+                    + "Secondary Phone:" + SecondaryPhone + ", " 
+                    + "Average:" + Average + ", " 
+                    + "Handicap:" + Handicap + ", " 
+                    + "Bonus:" + Bonus + ", " 
+                    + "Join Date:" + JoinDate + ", " 
+                    + "Rejoin Date:" + RejoinDate + ", " 
+                    + "Last Bowled:" + LastBowled + ", " 
+                    + "Money Earned:" + MoneyEarned + ", " 
+                    + "Notes:" + Notes + ", " 
+                    + "Referrals:" + Referrals + ", " 
+                    + "Senior:" + IsSenior;
+        }
     }
 
     public enum MemberGenders

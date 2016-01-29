@@ -20,6 +20,21 @@ namespace Member_Import_Test.Classes
                 db.SaveChanges();
             }
         }
+
+        public static bool MemberExists(Member Temp)
+        {
+            using (var db = new MembersDB())
+            {
+                if(db.Members.Any(m => m.Number == Temp.Number))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
            
     }
 }
