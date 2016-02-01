@@ -89,6 +89,7 @@
     <Compile Include="Database\Game.cs" />
     <Compile Include="Database\Member.cs" />
     <Compile Include="Database\MemberDb.cs" />
+    <Compile Include="Database\Squad.cs" />
     <Compile Include="Database\TournamentDb.cs" />
     <Compile Include="Exceptions\MemberTableException.cs" />
     <Compile Include="Database\Participant.cs" />

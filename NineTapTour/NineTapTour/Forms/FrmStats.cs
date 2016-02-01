@@ -31,7 +31,7 @@ namespace NineTapTour.Forms
             //changes in the database.
             var db = new NineTapDb();
             var stats = (from p in db.Participants
-                         join g in db.Games on p.Game.Id equals g.Id
+                         join g in db.Games on p.Squad.Game.Id equals g.Id
                          join t in db.Tournaments on p.Tournament.Id equals t.Id
                          where memNum == p.Member.Number
                          select new { t.Date, g.Game1, g.Game2, g.Game3, g.Game4

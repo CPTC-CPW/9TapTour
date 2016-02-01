@@ -11,7 +11,7 @@ namespace NineTapTour.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(NineTapTour.Database.NineTapDb context)
@@ -28,7 +28,6 @@ namespace NineTapTour.Migrations
 //      new Person { FullName = "Rowan Miller" }
 //    );
 //
-
              
 #if DEBUG //test data for debugging purposes
             context.Members.AddOrUpdate(
