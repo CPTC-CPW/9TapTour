@@ -19,13 +19,14 @@ namespace Member_Import_Test
         {
             set { _memberNum = value; }
         }
-
         /// <summary>
         /// Opens the "Member Data" Form.
         /// </summary>
-        public FrmMemberData()
+        List<Member> invalidMembers;
+        public FrmMemberData(List<Member> Invalid)
         {
             InitializeComponent();
+            invalidMembers = Invalid;
         }
         /// <summary>
         /// Updates information in the "Member Data" form.
@@ -53,7 +54,7 @@ namespace Member_Import_Test
             _memberNum = Convert.ToInt32(txtMemberNumber.Text);
             if (searchMem == null)
             {
-                currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == _memberNum);
+                currentMem = invalidMembers.FirstOrDefault(m => m.Number == _memberNum);
             }
             else
             {
@@ -444,7 +445,7 @@ namespace Member_Import_Test
         /// <param name="e"></param>
         private void btnArrowLeft_Click(object sender, EventArgs e)
         {
-            if (((FrmMain)MdiParent)._membersList.Count() == 0 || currentMem.Number <= ((FrmMain)MdiParent)._membersList.First().Number)
+            if (invalidMembers.Count() == 0 || currentMem.Number <= invalidMembers.First().Number)
             {
                 MessageBox.Show(@"Beginning of file.", @"Notice");
             }
@@ -463,7 +464,7 @@ namespace Member_Import_Test
         /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
-            if (((FrmMain)MdiParent)._membersList.Count() == 0 || currentMem.Number >= ((FrmMain)MdiParent)._membersList.Last().Number)
+            if (invalidMembers.Count() == 0 || currentMem.Number >= invalidMembers.Last().Number)
             {
                 MessageBox.Show(@"End of file.", @"Notice");
             }
@@ -483,22 +484,7 @@ namespace Member_Import_Test
         /// <param name="e"></param>
         private void btnNew_Click(object sender, EventArgs e)
         {
-            if (isValid())
-            {
-                Controls.Clear();
-                InitializeComponent();
-                dateRejoin.Format = DateTimePickerFormat.Custom;
-                dateRejoin.CustomFormat = @" ";
-
-                dateLastBowled.Format = DateTimePickerFormat.Custom;
-                dateLastBowled.CustomFormat = @" ";
-                _memberId = -1;
-                txtMemberNumber.Text = (((FrmMain)MdiParent)._membersList.Last().Number + 1).ToString();
-                currentMem = new Member
-                {
-                    Number = (((FrmMain)MdiParent)._membersList.Last().Number + 1)
-                };
-            }
+          
         }
 
         /// <summary>
@@ -508,7 +494,7 @@ namespace Member_Import_Test
         /// <param name="e"></param>
         private void btnFirstRecord_Click(object sender, EventArgs e)
         {
-            txtMemberNumber.Text = ((FrmMain)MdiParent)._membersList.First().Number.ToString();
+            txtMemberNumber.Text = invalidMembers.First().Number.ToString();
             UpdateMemberInfo();
         }
 
@@ -519,7 +505,7 @@ namespace Member_Import_Test
         /// <param name="e"></param>
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
-            txtMemberNumber.Text = ((FrmMain)MdiParent)._membersList.Last().Number.ToString();
+            txtMemberNumber.Text = invalidMembers.Last().Number.ToString();
             UpdateMemberInfo();
         }
 

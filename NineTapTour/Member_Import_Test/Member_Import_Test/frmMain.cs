@@ -44,7 +44,7 @@ namespace Member_Import_Test
         static int DOBSpace = 8;// Date Of Birth.
 
         List<Member> validMembers = new List<Member>(); //list of valid members
-        List<Member> invalidMembers = new List<Member>();//list of invalid members
+        public List<Member> invalidMembers = new List<Member>();//list of invalid members
 
         //Create array of spaces
         int[] Spaces = new int[] { MemNumSpace, DJoinedSpace, LNameSpace, FNameSpace, MISpace, EPhoneSpace, DPhoneSpace, CPhoneSpace,
@@ -365,8 +365,16 @@ namespace Member_Import_Test
 
         private void btnInvalid_Click(object sender, EventArgs e)
         {
-            var message = string.Join(Environment.NewLine, invalidMembers);
-            MessageBox.Show(message);
+            if(invalidMembers.Count <=0)
+            {
+                MessageBox.Show("No invalid members processed.");
+            }
+            else
+            {
+                var md = new FrmMemberData(invalidMembers);
+                md.Show();
+                this.Hide();
+            }
         }
     }
 }
