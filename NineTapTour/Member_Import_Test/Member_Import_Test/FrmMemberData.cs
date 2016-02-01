@@ -14,6 +14,7 @@ namespace Member_Import_Test
         //IOrderedEnumerable<Member> _membersList;
         int _memberId;
         Member currentMem;
+        //need to find out a way to check what is the first member number from list
         private int _memberNum;
         public int MemberNum
         {
@@ -27,6 +28,7 @@ namespace Member_Import_Test
         {
             InitializeComponent();
             invalidMembers = Invalid;
+            _memberNum = invalidMembers.First().Number;
         }
         /// <summary>
         /// Updates information in the "Member Data" form.
@@ -176,7 +178,14 @@ namespace Member_Import_Test
                 #region Misc. Info
                 //TODO: Pull datetime from database correctly
 
-                dateJoined.Value = currentMem.JoinDate;
+                //need to set up some sort of check if they don't have a join
+                Console.WriteLine(currentMem.JoinDate);
+                DateTime nullDate = new DateTime(1/1/0001);
+                if (currentMem.JoinDate.Date != nullDate)
+                {
+                    dateJoined.Value = currentMem.JoinDate;
+                }
+
                 if (currentMem.RejoinDate.HasValue)
                 {
                     dateRejoin.Value = (DateTime)currentMem.RejoinDate;

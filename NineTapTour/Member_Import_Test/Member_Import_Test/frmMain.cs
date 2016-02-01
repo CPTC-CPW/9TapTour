@@ -345,14 +345,14 @@ namespace Member_Import_Test
                     newMem = new Member();
                 } while (currentIndex <= File.Length);
 
-                for(int j = 0; j < validMembers.Count; j++)
-                {
-                    if(!DBQueries.MemberExists(validMembers[j]))
-                    {
-                        DBQueries.AddMember(validMembers[j]);
-                    }
-                    
-                }
+               //for(int j = 0; j < validMembers.Count; j++)
+               //{
+               //    if(!DBQueries.MemberExists(validMembers[j]))
+               //    {
+               //         DBQueries.AddMember(validMembers[j]);
+               //    }
+
+               //}
                 MessageBox.Show(validCount + " valid members processed, " + invalidCount + " invalid members processed.", "Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
