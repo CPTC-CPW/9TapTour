@@ -53,6 +53,9 @@ namespace Member_Import_Test
 
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
+            //Filter to limit the types of files that can be opened with the file open dialog
+            ofdOpen.Filter = "Text Files (*.txt)|*.txt|Data Files (*.dat)|*.dat";
+            ofdOpen.Title = "Please Select a member file to open";
             if (ofdOpen.ShowDialog() == DialogResult.OK)
             {
                 System.IO.StreamReader sr = new System.IO.StreamReader(ofdOpen.FileName);
@@ -122,11 +125,12 @@ namespace Member_Import_Test
                                     validMember = false;
                                 }
                                 break;
-                            case 6://Secondary Phone
+                            //case 6://Secondary Phone
+                            //    newMem.SecondaryPhone = (File.Substring(currentIndex, Spaces[i]).Trim());
+                            //    break;
+                            case 7://Cell Phone
                                 newMem.SecondaryPhone = (File.Substring(currentIndex, Spaces[i]).Trim());
                                 break;
-                            /*case 7:
-                                    This is the cell phone from the old form*/
                             case 8://Street Address
                                 if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                 {
@@ -333,32 +337,39 @@ namespace Member_Import_Test
                     }
                     if(validMember)
                     {
+                        //valid count to show user at end
                         validCount++;
+                        //add good members to valid list to add to database once done reading file
                         validMembers.Add(newMem);
                     }
                     else
                     {
+                        //invalid count to show the user at the end
                         invalidCount++;
+                        //add invalid members to invalid list to be edited by user before adding to the database.
                         invalidMembers.Add(newMem);
                     }
                     MemberCount++;
                     newMem = new Member();
                 } while (currentIndex <= File.Length);
-
+                
+                // go through the members on the valid list and add them to the database
                 for (int j = 0; j < validMembers.Count; j++)
                 {
+                    //only add the member after checking if the memeber isn't already in the database.
                     if (!DBQueries.MemberExists(validMembers[j]))
                     {
                         DBQueries.AddMember(validMembers[j]);
                     }
-
                 }
+                //show the results to the user
                 MessageBox.Show(validCount + " valid members processed, " + invalidCount + " invalid members processed.", "Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         private void btnValid_Click(object sender, EventArgs e)
         {
+            //show the valid members processed tempory
             if(validMembers.Count <= 0)
             {
                 MessageBox.Show("No Valid members processed");
@@ -379,7 +390,8 @@ namespace Member_Import_Test
             }
             else
             {
-                var md = new FrmMemberData(invalidMembers);
+                //open the memberdata copied from main project in order to edit the invalid user information
+                var md = new FrmMemberData(invalidMembers, this);
                 md.Show();
                 Hide();
             }

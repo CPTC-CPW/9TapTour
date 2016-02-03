@@ -206,7 +206,7 @@
             this.txtBonus.Multiline = true;
             this.txtBonus.Name = "txtBonus";
             this.txtBonus.Size = new System.Drawing.Size(89, 54);
-            this.txtBonus.TabIndex = 77;
+            this.txtBonus.TabIndex = 25;
             this.txtBonus.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtHandicap
@@ -217,7 +217,7 @@
             this.txtHandicap.Multiline = true;
             this.txtHandicap.Name = "txtHandicap";
             this.txtHandicap.Size = new System.Drawing.Size(89, 54);
-            this.txtHandicap.TabIndex = 66;
+            this.txtHandicap.TabIndex = 24;
             this.txtHandicap.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // lblAverage
@@ -257,7 +257,7 @@
             this.txtNotes.Multiline = true;
             this.txtNotes.Name = "txtNotes";
             this.txtNotes.Size = new System.Drawing.Size(298, 218);
-            this.txtNotes.TabIndex = 18;
+            this.txtNotes.TabIndex = 22;
             this.txtNotes.TabStop = false;
             // 
             // txtAverage
@@ -268,7 +268,7 @@
             this.txtAverage.Multiline = true;
             this.txtAverage.Name = "txtAverage";
             this.txtAverage.Size = new System.Drawing.Size(99, 54);
-            this.txtAverage.TabIndex = 44;
+            this.txtAverage.TabIndex = 23;
             this.txtAverage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // lblNotes
@@ -311,7 +311,7 @@
             this.grpMemberInfo.Location = new System.Drawing.Point(382, 121);
             this.grpMemberInfo.Name = "grpMemberInfo";
             this.grpMemberInfo.Size = new System.Drawing.Size(469, 277);
-            this.grpMemberInfo.TabIndex = 4;
+            this.grpMemberInfo.TabIndex = 7;
             this.grpMemberInfo.TabStop = false;
             this.grpMemberInfo.Text = "Member Information";
             // 
@@ -320,14 +320,14 @@
             this.txtrejoinDate.Location = new System.Drawing.Point(344, 186);
             this.txtrejoinDate.Name = "txtrejoinDate";
             this.txtrejoinDate.Size = new System.Drawing.Size(100, 23);
-            this.txtrejoinDate.TabIndex = 33;
+            this.txtrejoinDate.TabIndex = 19;
             // 
             // txtdateJoined
             // 
             this.txtdateJoined.Location = new System.Drawing.Point(344, 138);
             this.txtdateJoined.Name = "txtdateJoined";
             this.txtdateJoined.Size = new System.Drawing.Size(100, 23);
-            this.txtdateJoined.TabIndex = 32;
+            this.txtdateJoined.TabIndex = 15;
             this.txtdateJoined.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // mtxtBoxDOB
@@ -336,8 +336,9 @@
             this.mtxtBoxDOB.Mask = "00/00/0000";
             this.mtxtBoxDOB.Name = "mtxtBoxDOB";
             this.mtxtBoxDOB.Size = new System.Drawing.Size(100, 23);
-            this.mtxtBoxDOB.TabIndex = 7;
+            this.mtxtBoxDOB.TabIndex = 9;
             this.mtxtBoxDOB.ValidatingType = typeof(System.DateTime);
+            this.mtxtBoxDOB.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // mtxtBoxZip
             // 
@@ -347,7 +348,7 @@
             this.mtxtBoxZip.Name = "mtxtBoxZip";
             this.mtxtBoxZip.ShortcutsEnabled = false;
             this.mtxtBoxZip.Size = new System.Drawing.Size(100, 23);
-            this.mtxtBoxZip.TabIndex = 12;
+            this.mtxtBoxZip.TabIndex = 14;
             // 
             // mtxtBoxSSN
             // 
@@ -357,7 +358,7 @@
             this.mtxtBoxSSN.PasswordChar = '*';
             this.mtxtBoxSSN.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.mtxtBoxSSN.Size = new System.Drawing.Size(100, 23);
-            this.mtxtBoxSSN.TabIndex = 8;
+            this.mtxtBoxSSN.TabIndex = 10;
             // 
             // mtxtBoxPhone2
             // 
@@ -365,7 +366,7 @@
             this.mtxtBoxPhone2.Mask = "(999) 000-0000";
             this.mtxtBoxPhone2.Name = "mtxtBoxPhone2";
             this.mtxtBoxPhone2.Size = new System.Drawing.Size(100, 23);
-            this.mtxtBoxPhone2.TabIndex = 14;
+            this.mtxtBoxPhone2.TabIndex = 17;
             // 
             // mtxtBoxPhone
             // 
@@ -373,7 +374,7 @@
             this.mtxtBoxPhone.Mask = "(999) 000-0000";
             this.mtxtBoxPhone.Name = "mtxtBoxPhone";
             this.mtxtBoxPhone.Size = new System.Drawing.Size(100, 23);
-            this.mtxtBoxPhone.TabIndex = 13;
+            this.mtxtBoxPhone.TabIndex = 16;
             // 
             // lblEmail
             // 
@@ -471,7 +472,7 @@
             this.txtReferrals.MaxLength = 50;
             this.txtReferrals.Name = "txtReferrals";
             this.txtReferrals.Size = new System.Drawing.Size(54, 23);
-            this.txtReferrals.TabIndex = 18;
+            this.txtReferrals.TabIndex = 21;
             // 
             // lblAddress
             // 
@@ -497,7 +498,7 @@
             this.txtState.MaxLength = 20;
             this.txtState.Name = "txtState";
             this.txtState.Size = new System.Drawing.Size(32, 23);
-            this.txtState.TabIndex = 11;
+            this.txtState.TabIndex = 13;
             this.txtState.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtCity
@@ -506,7 +507,7 @@
             this.txtCity.MaxLength = 20;
             this.txtCity.Name = "txtCity";
             this.txtCity.Size = new System.Drawing.Size(100, 23);
-            this.txtCity.TabIndex = 10;
+            this.txtCity.TabIndex = 12;
             this.txtCity.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtAddress
@@ -515,7 +516,7 @@
             this.txtAddress.MaxLength = 75;
             this.txtAddress.Name = "txtAddress";
             this.txtAddress.Size = new System.Drawing.Size(290, 23);
-            this.txtAddress.TabIndex = 9;
+            this.txtAddress.TabIndex = 11;
             this.txtAddress.Text = "Default";
             this.txtAddress.TextChanged += new System.EventHandler(this.InputRequired);
             // 
@@ -525,7 +526,7 @@
             this.txtEmail.MaxLength = 50;
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(290, 23);
-            this.txtEmail.TabIndex = 15;
+            this.txtEmail.TabIndex = 20;
             this.txtEmail.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtYearEndT
@@ -535,7 +536,7 @@
             this.txtYearEndT.MaxLength = 20;
             this.txtYearEndT.Name = "txtYearEndT";
             this.txtYearEndT.Size = new System.Drawing.Size(124, 23);
-            this.txtYearEndT.TabIndex = 85;
+            this.txtYearEndT.TabIndex = 26;
             // 
             // txtMoneyEarned
             // 
@@ -543,7 +544,7 @@
             this.txtMoneyEarned.Location = new System.Drawing.Point(573, 517);
             this.txtMoneyEarned.Name = "txtMoneyEarned";
             this.txtMoneyEarned.Size = new System.Drawing.Size(100, 23);
-            this.txtMoneyEarned.TabIndex = 95;
+            this.txtMoneyEarned.TabIndex = 27;
             // 
             // lblYET
             // 
@@ -582,7 +583,7 @@
             this.groupRecord.Location = new System.Drawing.Point(23, 583);
             this.groupRecord.Name = "groupRecord";
             this.groupRecord.Size = new System.Drawing.Size(108, 100);
-            this.groupRecord.TabIndex = 11;
+            this.groupRecord.TabIndex = 29;
             this.groupRecord.TabStop = false;
             this.groupRecord.Text = "Record";
             // 
@@ -592,7 +593,7 @@
             this.btnSave.Location = new System.Drawing.Point(15, 48);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 0;
+            this.btnSave.TabIndex = 29;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -804,7 +805,7 @@
             this.rdoFemale.Location = new System.Drawing.Point(11, 19);
             this.rdoFemale.Name = "rdoFemale";
             this.rdoFemale.Size = new System.Drawing.Size(64, 19);
-            this.rdoFemale.TabIndex = 6;
+            this.rdoFemale.TabIndex = 7;
             this.rdoFemale.Text = "Female";
             this.rdoFemale.UseVisualStyleBackColor = true;
             // 
@@ -834,7 +835,7 @@
             this.rdoMale.Location = new System.Drawing.Point(11, 42);
             this.rdoMale.Name = "rdoMale";
             this.rdoMale.Size = new System.Drawing.Size(53, 19);
-            this.rdoMale.TabIndex = 30;
+            this.rdoMale.TabIndex = 8;
             this.rdoMale.Text = "Male";
             this.rdoMale.UseVisualStyleBackColor = true;
             // 
@@ -846,7 +847,7 @@
             this.grpGender.Location = new System.Drawing.Point(236, 164);
             this.grpGender.Name = "grpGender";
             this.grpGender.Size = new System.Drawing.Size(101, 71);
-            this.grpGender.TabIndex = 31;
+            this.grpGender.TabIndex = 6;
             this.grpGender.TabStop = false;
             this.grpGender.Text = "Gender";
             // 
@@ -858,7 +859,7 @@
             this.grpStatus.Location = new System.Drawing.Point(38, 156);
             this.grpStatus.Name = "grpStatus";
             this.grpStatus.Size = new System.Drawing.Size(101, 79);
-            this.grpStatus.TabIndex = 32;
+            this.grpStatus.TabIndex = 4;
             this.grpStatus.TabStop = false;
             this.grpStatus.Text = "Status";
             // 
@@ -879,7 +880,7 @@
             this.txtlastBowled.Location = new System.Drawing.Point(747, 519);
             this.txtlastBowled.Name = "txtlastBowled";
             this.txtlastBowled.Size = new System.Drawing.Size(100, 21);
-            this.txtlastBowled.TabIndex = 96;
+            this.txtlastBowled.TabIndex = 28;
             // 
             // FrmMemberData
             // 

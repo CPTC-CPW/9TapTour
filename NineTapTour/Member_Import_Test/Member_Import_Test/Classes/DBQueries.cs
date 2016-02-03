@@ -21,6 +21,7 @@ namespace Member_Import_Test.Classes
             }
         }
 
+        //method to check if the user aleady exists in the database when trying to add from member file
         public static bool MemberExists(Member Temp)
         {
             using (var db = new MembersDB())

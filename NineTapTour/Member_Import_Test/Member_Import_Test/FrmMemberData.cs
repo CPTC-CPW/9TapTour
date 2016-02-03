@@ -23,10 +23,12 @@ namespace Member_Import_Test
         /// </summary>
         List<Member> invalidMembers;
         int listPosition = 0;
-        public FrmMemberData(List<Member> Invalid)
+        Form home;
+        public FrmMemberData(List<Member> Invalid, frmMain main)
         {
             InitializeComponent();
             invalidMembers = Invalid;
+            home = main;
         }
         /// <summary>
         /// Updates information in the "Member Data" form.
@@ -134,24 +136,24 @@ namespace Member_Import_Test
             // check if Active radio button is checked
             if (!rdoActive.Checked && !rdoInActive.Checked)
             {
-                MessageBox.Show("member must be checked active or inactive");
+                MessageBox.Show("Member must be checked active or inactive");
                 return false;
             }
             // check if gender radio button is checked
             if (!rdoMale.Checked && !rdoFemale.Checked)
             {
-                MessageBox.Show("a gender must be chosen");
+                MessageBox.Show("A gender must be chosen");
                 return false;
             }
-            if (!Regex.IsMatch(txtFirstName.Text, "^[a-zA-Z]+$"))
-            {
-                MessageBox.Show("First Name field cannot be blank");
+            if (!Regex.IsMatch(txtFirstName.Text, "^[a-zA-Z0-9_]+( +[a-zA-Z0-9_]+)*$"))
+            {// old regex : "^[a-zA-Z]+$"
+                MessageBox.Show("First Name field is invalid");
                 return false;
             }
             //use better regex expression that includes spaces and hyphens
-            if (!Regex.IsMatch(txtLastName.Text, "^[-a-zA-Z]+$"))
+            if (!Regex.IsMatch(txtLastName.Text, "^[a-zA-Z0-9_]+( +[a-zA-Z0-9_]+)*$"))
             {
-                MessageBox.Show("Last Name field cannot be blank");
+                MessageBox.Show("Last Name field is invalid");
                 return false;
             }
             if (!Regex.IsMatch(mtxtBoxZip.Text, "^\\d{5}(?:[-\\s]\\d{4})?$"))
@@ -195,7 +197,12 @@ namespace Member_Import_Test
                 MessageBox.Show("state field cannot be null");
                 return false;
             }
-            if(!DateTime.TryParse(txtdateJoined.Text, out outPut))
+            if (mtxtBoxDOB.Text == "01/01/0001" && !DateTime.TryParse(mtxtBoxDOB.Text, out outPut))
+            {
+                MessageBox.Show("Date Of Birth Must be a valid date.");
+                return false;
+            }
+            if(txtdateJoined.Text!="01/01/0001" && !DateTime.TryParse(txtdateJoined.Text, out outPut))
             {
                 MessageBox.Show("Join Date must be a valid Date.");
                 return false;
@@ -436,8 +443,7 @@ namespace Member_Import_Test
 
         private void FrmMemberData_FormClosed(object sender, FormClosedEventArgs e)
         {
-            var fm = new frmMain();
-            fm.Show();
+            home.Show();
         }
     }
 }
