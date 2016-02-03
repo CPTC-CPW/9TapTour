@@ -46,13 +46,13 @@
             this.txtAverage = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.grpMemberInfo = new System.Windows.Forms.GroupBox();
+            this.txtrejoinDate = new System.Windows.Forms.TextBox();
+            this.txtdateJoined = new System.Windows.Forms.TextBox();
             this.mtxtBoxDOB = new System.Windows.Forms.MaskedTextBox();
             this.mtxtBoxZip = new System.Windows.Forms.MaskedTextBox();
             this.mtxtBoxSSN = new System.Windows.Forms.MaskedTextBox();
             this.mtxtBoxPhone2 = new System.Windows.Forms.MaskedTextBox();
             this.mtxtBoxPhone = new System.Windows.Forms.MaskedTextBox();
-            this.dateRejoin = new System.Windows.Forms.DateTimePicker();
-            this.dateJoined = new System.Windows.Forms.DateTimePicker();
             this.lblEmail = new System.Windows.Forms.Label();
             this.lblDOB = new System.Windows.Forms.Label();
             this.lblRefferals = new System.Windows.Forms.Label();
@@ -77,8 +77,6 @@
             this.lblLastBowled = new System.Windows.Forms.Label();
             this.groupRecord = new System.Windows.Forms.GroupBox();
             this.btnSave = new System.Windows.Forms.Button();
-            this.btnDelete = new System.Windows.Forms.Button();
-            this.btnNew = new System.Windows.Forms.Button();
             this.grpRecordNumber = new System.Windows.Forms.GroupBox();
             this.btnLastRecord = new System.Windows.Forms.Button();
             this.btnFirstRecord = new System.Windows.Forms.Button();
@@ -103,7 +101,7 @@
             this.grpGender = new System.Windows.Forms.GroupBox();
             this.grpStatus = new System.Windows.Forms.GroupBox();
             this.chbSenior = new System.Windows.Forms.CheckBox();
-            this.dateLastBowled = new System.Windows.Forms.DateTimePicker();
+            this.txtlastBowled = new System.Windows.Forms.TextBox();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -285,13 +283,13 @@
             // 
             // grpMemberInfo
             // 
+            this.grpMemberInfo.Controls.Add(this.txtrejoinDate);
+            this.grpMemberInfo.Controls.Add(this.txtdateJoined);
             this.grpMemberInfo.Controls.Add(this.mtxtBoxDOB);
             this.grpMemberInfo.Controls.Add(this.mtxtBoxZip);
             this.grpMemberInfo.Controls.Add(this.mtxtBoxSSN);
             this.grpMemberInfo.Controls.Add(this.mtxtBoxPhone2);
             this.grpMemberInfo.Controls.Add(this.mtxtBoxPhone);
-            this.grpMemberInfo.Controls.Add(this.dateRejoin);
-            this.grpMemberInfo.Controls.Add(this.dateJoined);
             this.grpMemberInfo.Controls.Add(this.lblEmail);
             this.grpMemberInfo.Controls.Add(this.lblDOB);
             this.grpMemberInfo.Controls.Add(this.lblRefferals);
@@ -316,6 +314,21 @@
             this.grpMemberInfo.TabIndex = 4;
             this.grpMemberInfo.TabStop = false;
             this.grpMemberInfo.Text = "Member Information";
+            // 
+            // txtrejoinDate
+            // 
+            this.txtrejoinDate.Location = new System.Drawing.Point(344, 186);
+            this.txtrejoinDate.Name = "txtrejoinDate";
+            this.txtrejoinDate.Size = new System.Drawing.Size(100, 23);
+            this.txtrejoinDate.TabIndex = 33;
+            // 
+            // txtdateJoined
+            // 
+            this.txtdateJoined.Location = new System.Drawing.Point(344, 138);
+            this.txtdateJoined.Name = "txtdateJoined";
+            this.txtdateJoined.Size = new System.Drawing.Size(100, 23);
+            this.txtdateJoined.TabIndex = 32;
+            this.txtdateJoined.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // mtxtBoxDOB
             // 
@@ -361,26 +374,6 @@
             this.mtxtBoxPhone.Name = "mtxtBoxPhone";
             this.mtxtBoxPhone.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxPhone.TabIndex = 13;
-            // 
-            // dateRejoin
-            // 
-            this.dateRejoin.Checked = false;
-            this.dateRejoin.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateRejoin.Location = new System.Drawing.Point(344, 185);
-            this.dateRejoin.Name = "dateRejoin";
-            this.dateRejoin.Size = new System.Drawing.Size(103, 23);
-            this.dateRejoin.TabIndex = 17;
-            this.dateRejoin.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
-            this.dateRejoin.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ClearCalendar);
-            // 
-            // dateJoined
-            // 
-            this.dateJoined.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateJoined.Location = new System.Drawing.Point(344, 137);
-            this.dateJoined.Name = "dateJoined";
-            this.dateJoined.Size = new System.Drawing.Size(103, 23);
-            this.dateJoined.TabIndex = 16;
-            this.dateJoined.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
             // 
             // lblEmail
             // 
@@ -523,6 +516,7 @@
             this.txtAddress.Name = "txtAddress";
             this.txtAddress.Size = new System.Drawing.Size(290, 23);
             this.txtAddress.TabIndex = 9;
+            this.txtAddress.Text = "Default";
             this.txtAddress.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtEmail
@@ -584,8 +578,6 @@
             // groupRecord
             // 
             this.groupRecord.Controls.Add(this.btnSave);
-            this.groupRecord.Controls.Add(this.btnDelete);
-            this.groupRecord.Controls.Add(this.btnNew);
             this.groupRecord.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupRecord.Location = new System.Drawing.Point(23, 583);
             this.groupRecord.Name = "groupRecord";
@@ -597,37 +589,13 @@
             // btnSave
             // 
             this.btnSave.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSave.Location = new System.Drawing.Point(17, 45);
+            this.btnSave.Location = new System.Drawing.Point(15, 48);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 0;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDelete.Location = new System.Drawing.Point(17, 71);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(75, 23);
-            this.btnDelete.TabIndex = 2;
-            this.btnDelete.TabStop = false;
-            this.btnDelete.Text = "Delete";
-            this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
-            // btnNew
-            // 
-            this.btnNew.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnNew.Location = new System.Drawing.Point(17, 19);
-            this.btnNew.Name = "btnNew";
-            this.btnNew.Size = new System.Drawing.Size(75, 23);
-            this.btnNew.TabIndex = 1;
-            this.btnNew.TabStop = false;
-            this.btnNew.Text = "New";
-            this.btnNew.UseVisualStyleBackColor = true;
-            this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
             // 
             // grpRecordNumber
             // 
@@ -906,16 +874,12 @@
             this.chbSenior.Text = "Senior";
             this.chbSenior.UseVisualStyleBackColor = true;
             // 
-            // dateLastBowled
+            // txtlastBowled
             // 
-            this.dateLastBowled.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dateLastBowled.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateLastBowled.Location = new System.Drawing.Point(747, 517);
-            this.dateLastBowled.Name = "dateLastBowled";
-            this.dateLastBowled.Size = new System.Drawing.Size(103, 23);
-            this.dateLastBowled.TabIndex = 34;
-            this.dateLastBowled.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
-            this.dateLastBowled.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ClearCalendar);
+            this.txtlastBowled.Location = new System.Drawing.Point(747, 519);
+            this.txtlastBowled.Name = "txtlastBowled";
+            this.txtlastBowled.Size = new System.Drawing.Size(100, 21);
+            this.txtlastBowled.TabIndex = 96;
             // 
             // FrmMemberData
             // 
@@ -925,7 +889,7 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(884, 712);
-            this.Controls.Add(this.dateLastBowled);
+            this.Controls.Add(this.txtlastBowled);
             this.Controls.Add(this.chbSenior);
             this.Controls.Add(this.grpStatus);
             this.Controls.Add(this.grpGender);
@@ -961,6 +925,7 @@
             this.MinimumSize = new System.Drawing.Size(900, 750);
             this.Name = "FrmMemberData";
             this.Text = "Member Info";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmMemberData_FormClosed);
             this.Load += new System.EventHandler(this.MemberDataForm_Load);
             this.grpMemberInfo.ResumeLayout(false);
             this.grpMemberInfo.PerformLayout();
@@ -1022,8 +987,6 @@
         private System.Windows.Forms.GroupBox grpStats;
         private System.Windows.Forms.GroupBox grpSearchBy;
         private System.Windows.Forms.GroupBox grpPrinter;
-        private System.Windows.Forms.Button btnDelete;
-        private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnLastRecord;
         private System.Windows.Forms.Button btnFirstRecord;
         private System.Windows.Forms.Button btnRightArrow;
@@ -1047,14 +1010,14 @@
         private System.Windows.Forms.GroupBox grpGender;
         private System.Windows.Forms.GroupBox grpStatus;
         private System.Windows.Forms.CheckBox chbSenior;
-        private System.Windows.Forms.DateTimePicker dateRejoin;
-        private System.Windows.Forms.DateTimePicker dateJoined;
-        private System.Windows.Forms.DateTimePicker dateLastBowled;
         private System.Windows.Forms.MaskedTextBox mtxtBoxPhone;
         private System.Windows.Forms.MaskedTextBox mtxtBoxPhone2;
         private System.Windows.Forms.MaskedTextBox mtxtBoxSSN;
         private System.Windows.Forms.MaskedTextBox mtxtBoxZip;
         private System.Windows.Forms.MaskedTextBox mtxtBoxDOB;
+        private System.Windows.Forms.TextBox txtrejoinDate;
+        private System.Windows.Forms.TextBox txtdateJoined;
+        private System.Windows.Forms.TextBox txtlastBowled;
     }
 }
 

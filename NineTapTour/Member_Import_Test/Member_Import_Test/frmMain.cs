@@ -345,22 +345,30 @@ namespace Member_Import_Test
                     newMem = new Member();
                 } while (currentIndex <= File.Length);
 
-               //for(int j = 0; j < validMembers.Count; j++)
-               //{
-               //    if(!DBQueries.MemberExists(validMembers[j]))
-               //    {
-               //         DBQueries.AddMember(validMembers[j]);
-               //    }
+                for (int j = 0; j < validMembers.Count; j++)
+                {
+                    if (!DBQueries.MemberExists(validMembers[j]))
+                    {
+                        DBQueries.AddMember(validMembers[j]);
+                    }
 
-               //}
+                }
                 MessageBox.Show(validCount + " valid members processed, " + invalidCount + " invalid members processed.", "Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         private void btnValid_Click(object sender, EventArgs e)
         {
-            var message = string.Join(Environment.NewLine, validMembers);
-            MessageBox.Show(message);
+            if(validMembers.Count <= 0)
+            {
+                MessageBox.Show("No Valid members processed");
+            }
+            else
+            {
+                var message = string.Join(Environment.NewLine, validMembers);
+                MessageBox.Show(message);
+            }
+            
         }
 
         private void btnInvalid_Click(object sender, EventArgs e)
@@ -373,7 +381,7 @@ namespace Member_Import_Test
             {
                 var md = new FrmMemberData(invalidMembers);
                 md.Show();
-                this.Hide();
+                Hide();
             }
         }
     }

@@ -11,10 +11,8 @@ namespace Member_Import_Test
 {
     public partial class FrmMemberData : Form
     {
-        //IOrderedEnumerable<Member> _membersList;
         int _memberId;
         Member currentMem;
-        //need to find out a way to check what is the first member number from list
         private int _memberNum;
         public int MemberNum
         {
@@ -24,11 +22,11 @@ namespace Member_Import_Test
         /// Opens the "Member Data" Form.
         /// </summary>
         List<Member> invalidMembers;
+        int listPosition = 0;
         public FrmMemberData(List<Member> Invalid)
         {
             InitializeComponent();
             invalidMembers = Invalid;
-            _memberNum = invalidMembers.First().Number;
         }
         /// <summary>
         /// Updates information in the "Member Data" form.
@@ -37,13 +35,6 @@ namespace Member_Import_Test
         /// <param name="e"></param>
         private void MemberDataForm_Load(object sender, EventArgs e)
         {
-            //_membersList = ((FrmMain)MdiParent)._membersList;
-            dateRejoin.Format = DateTimePickerFormat.Custom;
-            dateRejoin.CustomFormat = @" ";
-
-            dateLastBowled.Format = DateTimePickerFormat.Custom;
-            dateLastBowled.CustomFormat = @" ";
-
             UpdateMemberInfo();
         }
         /// <summary>
@@ -53,181 +44,80 @@ namespace Member_Import_Test
         /// <param name="searchMem"></param>
         public void UpdateMemberInfo(Member searchMem = null)
         {
-            _memberNum = Convert.ToInt32(txtMemberNumber.Text);
-            if (searchMem == null)
+            
+            //if (searchMem == null)
+            //{
+            //    currentMem = invalidMembers.FirstOrDefault(m => m.Number == _memberNum);
+            //}
+            //else
+            //{
+            //    currentMem = searchMem;
+            //    _memberNum = currentMem.Number;
+            //}
+            currentMem = invalidMembers[listPosition];
+
+            #region Personal Info
+            _memberId = currentMem.Id;
+            txtMemberNumber.Text = currentMem.Number.ToString();
+            txtLastName.Text = currentMem.LastName;
+            txtFirstName.Text = currentMem.FirstName;
+            txtMiddleInitial.Text = currentMem.MiddleInitial;
+            mtxtBoxDOB.Text = currentMem.DateOfBirth.ToString("MM/dd/yyyy");
+            mtxtBoxSSN.Text = currentMem.SSN;
+            // txtSSN.PasswordChar = '*'; //This hides the SSN within the form of '*'.
+            #endregion
+
+            #region Postal Address
+            txtAddress.Text = currentMem.Street;
+            txtCity.Text = currentMem.City;
+            txtState.Text = currentMem.State;
+            mtxtBoxZip.Text = currentMem.PostalCode;
+            #endregion
+
+            #region Contact Info
+            txtEmail.Text = currentMem.Email;
+            mtxtBoxPhone.Text = currentMem.PrimaryPhone;
+            mtxtBoxPhone2.Text = currentMem.SecondaryPhone;
+            #endregion
+
+            #region Score Info
+            txtAverage.Text = currentMem.Average.ToString();
+            txtHandicap.Text = currentMem.Handicap.ToString();
+            txtBonus.Text = currentMem.Bonus.ToString();
+            #endregion
+
+            #region Misc. Info
+            //TODO: Pull datetime from database correctly
+
+            //need to set up some sort of check if they don't have a join
+            Console.WriteLine(currentMem.JoinDate);
+            DateTime nullDate = new DateTime(1/1/0001);
+            txtdateJoined.Text = currentMem.JoinDate.ToString();
+            txtrejoinDate.Text = currentMem.RejoinDate.ToString();
+            txtlastBowled.Text = currentMem.LastBowled.ToString();
+            txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
+            txtNotes.Text = currentMem.Notes;
+            txtReferrals.Text = currentMem.Referrals.ToString();
+            chbSenior.Checked = currentMem.IsSenior;
+
+            if (currentMem.IsActive)
             {
-                currentMem = invalidMembers.FirstOrDefault(m => m.Number == _memberNum);
+                rdoActive.Checked = true;
             }
             else
             {
-                currentMem = searchMem;
-                _memberNum = currentMem.Number;
+                rdoInActive.Checked = true;
             }
-
-            if (currentMem == null)
+            if (currentMem.Gender.ToString() == MemberGenders.Female.ToString())
             {
-                currentMem = new Member
-                {
-                    Number = _memberNum
-                };
-                //Controls.Clear();
-                //InitializeComponent();
-                txtMemberNumber.Text = _memberNum.ToString();
-                _memberId = -1;
-
-                #region Personal Info
-                txtMemberNumber.Text = currentMem.Number.ToString();
-                txtLastName.Text = "";
-                txtFirstName.Text = "";
-                txtMiddleInitial.Text = "";
-                mtxtBoxDOB.Text = "";
-                mtxtBoxSSN.Text = "";
-                #endregion
-
-                #region Postal Address
-                txtAddress.Text = "";
-                txtCity.Text = "";
-                txtState.Text = "";
-                mtxtBoxZip.Text = "";
-                #endregion
-
-                #region Contact Info
-                txtEmail.Text = "";
-                mtxtBoxPhone.Text = "";
-                mtxtBoxPhone2.Text = "";
-                #endregion
-
-                #region Score Info
-                txtAverage.Text = "";
-                txtHandicap.Text = "";
-                txtBonus.Text = "";
-                #endregion
-
-                #region Misc. Info
-
-                dateJoined.Format = DateTimePickerFormat.Custom;
-                dateJoined.CustomFormat = @" ";
-
-                //dateJoined.Value = currentMem.JoinDate;
-                //if (currentMem.RejoinDate.HasValue)
-                //{
-                //    dateRejoin.Value = (DateTime)currentMem.RejoinDate;
-                //}
-                //else
-                //{
-                //    dateRejoin.Format = DateTimePickerFormat.Custom;
-                //    dateRejoin.CustomFormat = @" ";
-                //}
-                //if (currentMem.LastBowled.HasValue)
-                //{
-                //    dateLastBowled.Value = (DateTime)currentMem.LastBowled;
-                //}
-                //else
-                //{
-                //    dateLastBowled.Format = DateTimePickerFormat.Custom;
-                //    dateLastBowled.CustomFormat = @" ";
-                //}
-                txtMoneyEarned.Text = "";
-                txtNotes.Text = "";
-                txtReferrals.Text = "";
-                chbSenior.Checked = false;
-
-                foreach (var check in grpStatus.Controls.OfType<RadioButton>())
-                {
-                    check.Checked = false;
-                }
-
-                foreach (var check in grpGender.Controls.OfType<RadioButton>())
-                {
-                    check.Checked = false;
-                }
-                #endregion
+                rdoFemale.Checked = true;
             }
             else
             {
-                #region Personal Info
-                _memberId = currentMem.Id;
-                txtMemberNumber.Text = currentMem.Number.ToString();
-                txtLastName.Text = currentMem.LastName;
-                txtFirstName.Text = currentMem.FirstName;
-                txtMiddleInitial.Text = currentMem.MiddleInitial;
-                mtxtBoxDOB.Text = currentMem.DateOfBirth.ToString("MM/dd/yyyy");
-                mtxtBoxSSN.Text = currentMem.SSN;
-                // txtSSN.PasswordChar = '*'; //This hides the SSN within the form of '*'.
-                #endregion
-
-                #region Postal Address
-                txtAddress.Text = currentMem.Street;
-                txtCity.Text = currentMem.City;
-                txtState.Text = currentMem.State;
-                mtxtBoxZip.Text = currentMem.PostalCode;
-                #endregion
-
-                #region Contact Info
-                txtEmail.Text = currentMem.Email;
-                mtxtBoxPhone.Text = currentMem.PrimaryPhone;
-                mtxtBoxPhone2.Text = currentMem.SecondaryPhone;
-                #endregion
-
-                #region Score Info
-                txtAverage.Text = currentMem.Average.ToString();
-                txtHandicap.Text = currentMem.Handicap.ToString();
-                txtBonus.Text = currentMem.Bonus.ToString();
-                #endregion
-
-                #region Misc. Info
-                //TODO: Pull datetime from database correctly
-
-                //need to set up some sort of check if they don't have a join
-                Console.WriteLine(currentMem.JoinDate);
-                DateTime nullDate = new DateTime(1/1/0001);
-                if (currentMem.JoinDate.Date != nullDate)
-                {
-                    dateJoined.Value = currentMem.JoinDate;
-                }
-
-                if (currentMem.RejoinDate.HasValue)
-                {
-                    dateRejoin.Value = (DateTime)currentMem.RejoinDate;
-                }
-                else
-                {
-                    dateRejoin.Format = DateTimePickerFormat.Custom;
-                    dateRejoin.CustomFormat = @" ";
-                }
-                if (currentMem.LastBowled.HasValue)
-                {
-                    dateLastBowled.Value = (DateTime)currentMem.LastBowled;
-                }
-                else
-                {
-                    dateLastBowled.Format = DateTimePickerFormat.Custom;
-                    dateLastBowled.CustomFormat = @" ";
-                }
-                txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
-                txtNotes.Text = currentMem.Notes;
-                txtReferrals.Text = currentMem.Referrals.ToString();
-                chbSenior.Checked = currentMem.IsSenior;
-
-                if (currentMem.IsActive)
-                {
-                    rdoActive.Checked = true;
-                }
-                else
-                {
-                    rdoInActive.Checked = true;
-                }
-                if (currentMem.Gender.ToString() == MemberGenders.Female.ToString())
-                {
-                    rdoFemale.Checked = true;
-                }
-                else
-                {
-                    rdoMale.Checked = true;
-                }
-                #endregion
-
+                rdoMale.Checked = true;
             }
+            #endregion
+
         }
 
         //public Member searchList(int memberNumber)
@@ -240,6 +130,7 @@ namespace Member_Import_Test
         // TODO: add more textfields to validate for the whole form to submit
         public bool isValid()
         {
+            DateTime outPut;
             // check if Active radio button is checked
             if (!rdoActive.Checked && !rdoInActive.Checked)
             {
@@ -254,65 +145,76 @@ namespace Member_Import_Test
             }
             if (!Regex.IsMatch(txtFirstName.Text, "^[a-zA-Z]+$"))
             {
-                MessageBox.Show("field cannot be blank");
-                txtFirstName.Clear();
+                MessageBox.Show("First Name field cannot be blank");
                 return false;
             }
             //use better regex expression that includes spaces and hyphens
             if (!Regex.IsMatch(txtLastName.Text, "^[-a-zA-Z]+$"))
             {
-                MessageBox.Show("field cannot be blank");
-                txtLastName.Clear();
+                MessageBox.Show("Last Name field cannot be blank");
                 return false;
             }
             if (!Regex.IsMatch(mtxtBoxZip.Text, "^\\d{5}(?:[-\\s]\\d{4})?$"))
             {
                 MessageBox.Show("Invalid zip code field");
-                mtxtBoxZip.Clear();
                 return false;
             }
             if (!Regex.IsMatch(mtxtBoxPhone.Text, "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$"))
             {
                 MessageBox.Show("Invalid Primary Phone field");
-                mtxtBoxPhone.Clear();
                 return false;
             }
             if (!Regex.IsMatch(mtxtBoxSSN.Text, "^\\d{3}-?\\d{2}-?\\d{4}$"))
             {
                 MessageBox.Show("Invalid Social Security field");
-                mtxtBoxSSN.Clear();
                 return false;
             }
          
             if (mtxtBoxSSN.Text == "")
             {
-                MessageBox.Show(" DOB field cannot be null");
-                mtxtBoxDOB.Clear();
+                MessageBox.Show("SSN field cannot be null");
                 return false;
             }
             if (txtAddress.Text == "")
             {
                 MessageBox.Show("Address field cannot be null");
-                txtAddress.Clear();
                 return false;
             }
             if (txtCity.Text == "")
             {
                 MessageBox.Show(" City field cannot be null");
-                txtCity.Clear();
                 return false;
             }
             if (txtEmail.Text == "")
             {
                 MessageBox.Show("email field cannot be null");
-                txtEmail.Clear();
                 return false;
             }
             if (txtState.Text == "")
             {
                 MessageBox.Show("state field cannot be null");
-                txtState.Clear();
                 return false;
+            }
+            if(!DateTime.TryParse(txtdateJoined.Text, out outPut))
+            {
+                MessageBox.Show("Join Date must be a valid Date.");
+                return false;
+            }
+            if(txtrejoinDate.Text != "")
+            {
+                if (!DateTime.TryParse(txtrejoinDate.Text, out outPut))
+                {
+                    MessageBox.Show("Rejoin Date must be a valid Date.");
+                    return false;
+                }
+            }
+            if (txtlastBowled.Text != "")
+            {
+                if (!DateTime.TryParse(txtlastBowled.Text, out outPut))
+                {
+                    MessageBox.Show("Last Bowled Date must be a valid Date.");
+                    return false;
+                }
             }
             return true;
         }
@@ -333,117 +235,117 @@ namespace Member_Import_Test
                     return;
                 Member temp;
 
-                if (_memberId != -1)
+                //if (_memberId != -1)
+                //{
+                //    temp = new Member
+                //    {
+                //        Id = _memberId,
+                //        Number = Convert.ToInt32(txtMemberNumber.Text),
+                //        IsActive = rdoActive.Checked,
+                //        JoinDate = DateTime.Now,
+
+                //        #region Personal Info
+                //        LastName = txtLastName.Text,
+                //        FirstName = txtFirstName.Text,
+                //        MiddleInitial = txtMiddleInitial.Text,
+                //        DateOfBirth = Convert.ToDateTime(mtxtBoxDOB.Text),
+                //        SSN = mtxtBoxSSN.Text,
+                //        IsSenior = chbSenior.Checked,
+                //        Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
+                //        #endregion
+
+                //        #region Postal Address
+                //        Street = txtAddress.Text,
+                //        City = txtCity.Text,
+                //        State = txtState.Text,
+                //        PostalCode = mtxtBoxZip.Text,
+                //        #endregion
+
+                //        #region Contact Info
+                //        Email = txtEmail.Text,
+                //        PrimaryPhone = mtxtBoxPhone.Text,
+                //        SecondaryPhone = mtxtBoxPhone2.Text,
+                //        #endregion
+
+                //        #region Score Info
+                //        Average = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text),
+                //        Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text),
+                //        Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text),
+                //        #endregion
+
+                //        #region Misc. Info
+                //        RejoinDate = Convert.ToDateTime(txtdateJoined.Text),
+                //        LastBowled = Convert.ToDateTime(txtlastBowled.Text),
+                //        MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
+                //        //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
+                //        Notes = txtNotes.Text,
+                //        Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text)
+                //        #endregion
+                //    };
+
+                //}
+                //else
+                //{
+                temp = new Member()
                 {
-                    temp = new Member
-                    {
-                        Id = _memberId,
-                        Number = Convert.ToInt32(txtMemberNumber.Text),
-                        IsActive = rdoActive.Checked,
-                        JoinDate = DateTime.Now,
 
-                        #region Personal Info
-                        LastName = txtLastName.Text,
-                        FirstName = txtFirstName.Text,
-                        MiddleInitial = txtMiddleInitial.Text,
-                        DateOfBirth = Convert.ToDateTime(mtxtBoxDOB.Text),
-                        SSN = mtxtBoxSSN.Text,
-                        IsSenior = chbSenior.Checked,
-                        Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
-                        #endregion
+                    Id = Convert.ToInt32(txtMemberNumber.Text),
+                    Number = Convert.ToInt32(txtMemberNumber.Text),
+                    IsActive = rdoActive.Checked,
+                    JoinDate = DateTime.Now,
 
-                        #region Postal Address
-                        Street = txtAddress.Text,
-                        City = txtCity.Text,
-                        State = txtState.Text,
-                        PostalCode = mtxtBoxZip.Text,
-                        #endregion
+                    #region Personal Info
+                    LastName = txtLastName.Text,
+                    FirstName = txtFirstName.Text,
+                    MiddleInitial = txtMiddleInitial.Text,
+                    DateOfBirth = Convert.ToDateTime(mtxtBoxDOB.Text),
+                    SSN = mtxtBoxSSN.Text,
+                    IsSenior = chbSenior.Checked,
+                    Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
+                    #endregion
 
-                        #region Contact Info
-                        Email = txtEmail.Text,
-                        PrimaryPhone = mtxtBoxPhone.Text,
-                        SecondaryPhone = mtxtBoxPhone2.Text,
-                        #endregion
+                    #region Postal Address
+                    Street = txtAddress.Text,
+                    City = txtCity.Text,
+                    State = txtState.Text,
+                    PostalCode = mtxtBoxZip.Text,
+                    #endregion
 
-                        #region Score Info
-                        Average = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text),
-                        Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text),
-                        Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text),
-                        #endregion
+                    #region Contact Info
+                    Email = txtEmail.Text,
+                    PrimaryPhone = mtxtBoxPhone.Text,
+                    SecondaryPhone = mtxtBoxPhone2.Text,
+                    #endregion
 
-                        #region Misc. Info
-                        RejoinDate = (dateRejoin.CustomFormat == @" ") ? (DateTime?)null : dateRejoin.Value,
-                        LastBowled = (dateLastBowled.CustomFormat == @" ") ? (DateTime?)null : dateLastBowled.Value,
-                        MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
-                        //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
-                        Notes = txtNotes.Text,
-                        Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text)
-                        #endregion
-                    };
+                    #region Score Info
+                    Average = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text),
+                    Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text),
+                    Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text),
+                    #endregion
 
-                }
-                else
-                {
-                    temp = new Member()
-                    {
-                        
-                        Id = Convert.ToInt32(txtMemberNumber.Text),
-                        Number = Convert.ToInt32(txtMemberNumber.Text),
-                        IsActive = rdoActive.Checked,
-                        JoinDate = DateTime.Now,
-
-                        #region Personal Info
-                        LastName = txtLastName.Text,
-                        FirstName = txtFirstName.Text,
-                        MiddleInitial = txtMiddleInitial.Text,
-                        DateOfBirth = Convert.ToDateTime(mtxtBoxDOB.Text),
-                        SSN = mtxtBoxSSN.Text,
-                        IsSenior = chbSenior.Checked,
-                        Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
-                        #endregion
-
-                        #region Postal Address
-                        Street = txtAddress.Text,
-                        City = txtCity.Text,
-                        State = txtState.Text,
-                        PostalCode = mtxtBoxZip.Text,
-                        #endregion
-
-                        #region Contact Info
-                        Email = txtEmail.Text,
-                        PrimaryPhone = mtxtBoxPhone.Text,
-                        SecondaryPhone = mtxtBoxPhone2.Text,
-                        #endregion
-
-                        #region Score Info
-                        Average = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text),
-                        Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text),
-                        Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text),
-                        #endregion
-
-                        #region Misc. Info
-                        RejoinDate = (dateRejoin.CustomFormat == @" ") ? (DateTime?)null : dateRejoin.Value,
-                        LastBowled = (dateLastBowled.CustomFormat == @" ") ? (DateTime?)null : dateLastBowled.Value,
-                        MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
-                        //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
-                        Notes = txtNotes.Text,
-                        Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text)
-                        #endregion
-                    };
-                }
+                    #region Misc. Info
+                    RejoinDate = Convert.ToDateTime(txtdateJoined.Text),
+                    LastBowled = Convert.ToDateTime(txtlastBowled.Text),
+                    MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
+                    //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
+                    Notes = txtNotes.Text,
+                    Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text)
+                    #endregion
+                };
+                //}
 
                 // Adds Member to Database
-
-       
+                try
+                {
                     DBQueries.AddMember(temp);
-
-                MessageBox.Show(@"Bowler Added Successfully.");
-                //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-                //((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-                //_membersList = ((FrmMain)MdiParent)._membersList;
-        
-               
-
+                    MessageBox.Show(@"Bowler Added Successfully.");
+                    invalidMembers.RemoveAt(listPosition);
+                    UpdateMemberInfo();
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
 
@@ -460,7 +362,7 @@ namespace Member_Import_Test
             }
             else
             {
-                txtMemberNumber.Text = (currentMem.Number - 1).ToString();
+                listPosition--;
                 UpdateMemberInfo();
             }
 
@@ -479,7 +381,7 @@ namespace Member_Import_Test
             }
             else
             {
-                txtMemberNumber.Text = (currentMem.Number + 1).ToString();
+                listPosition++;
                 UpdateMemberInfo();
             }
 
@@ -487,23 +389,13 @@ namespace Member_Import_Test
 
         //After the InitializeComponent(); call, the dateRejoin Format & dateLastBowled are reused.
         /// <summary>
-        /// Adds a new "Member Number".
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnNew_Click(object sender, EventArgs e)
-        {
-          
-        }
-
-        /// <summary>
         /// Brings up the first "Member Number".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btnFirstRecord_Click(object sender, EventArgs e)
         {
-            txtMemberNumber.Text = invalidMembers.First().Number.ToString();
+            listPosition = 0;
             UpdateMemberInfo();
         }
 
@@ -514,7 +406,7 @@ namespace Member_Import_Test
         /// <param name="e"></param>
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
-            txtMemberNumber.Text = invalidMembers.Last().Number.ToString();
+            listPosition = invalidMembers.Count - 1;
             UpdateMemberInfo();
         }
 
@@ -525,43 +417,6 @@ namespace Member_Import_Test
             {
                 textBox.BackColor = textBox.Text == string.Empty ? Color.LightPink : Color.White;
             }
-        }
-        /// <summary>
-        /// Brings up the datePicker.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ApplyCalendarForm(object sender, EventArgs e)
-        {
-            var datePicker = sender as DateTimePicker;
-
-            if (datePicker != null)
-            {
-                datePicker.Format = DateTimePickerFormat.Short;
-            }
-        }
-        /// <summary>
-        /// Puts the calendar back to the default selection.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ClearCalendar(object sender, KeyEventArgs e)
-        {
-            var datePicker = sender as DateTimePicker;
-
-            if (datePicker == null || (e.KeyCode != Keys.Delete && e.KeyCode != Keys.Back)) return;
-
-            datePicker.Format = DateTimePickerFormat.Custom;
-            datePicker.CustomFormat = @" ";
-        }
-        /// <summary>
-        /// Removes a bowler's information from the database.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnDelete_Click(object sender, EventArgs e)
-        {
-           
         }
 
         private void btnMemberNumber_Click(object sender, EventArgs e)
@@ -577,6 +432,12 @@ namespace Member_Import_Test
         {
             //var newfrmStart = new FrmStats(Convert.ToInt32(txtMemberNumber.Text), (txtFirstName.Text + " " + txtLastName.Text), currentMem);
             //newfrmStart.Show();
+        }
+
+        private void FrmMemberData_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            var fm = new frmMain();
+            fm.Show();
         }
     }
 }
