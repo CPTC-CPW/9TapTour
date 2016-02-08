@@ -197,12 +197,12 @@ namespace Member_Import_Test
                 MessageBox.Show("state field cannot be null");
                 return false;
             }
-            if (mtxtBoxDOB.Text == "01/01/0001" && !DateTime.TryParse(mtxtBoxDOB.Text, out outPut))
+            if (mtxtBoxDOB.Text == "01/01/0001" || !DateTime.TryParse(mtxtBoxDOB.Text, out outPut))
             {
                 MessageBox.Show("Date Of Birth Must be a valid date.");
                 return false;
             }
-            if(txtdateJoined.Text!="01/01/0001" && !DateTime.TryParse(txtdateJoined.Text, out outPut))
+            if(txtdateJoined.Text== "1/1/0001 12:00:00 AM" || !DateTime.TryParse(txtdateJoined.Text, out outPut))
             {
                 MessageBox.Show("Join Date must be a valid Date.");
                 return false;
@@ -222,6 +222,13 @@ namespace Member_Import_Test
                     MessageBox.Show("Last Bowled Date must be a valid Date.");
                     return false;
                 }
+            }
+            int num;
+            bool isNum = int.TryParse(txtReferrals.Text, out num);
+            if (!isNum)
+            {
+                MessageBox.Show("Referals Must be a valid number");
+                return false;
             }
             return true;
         }
@@ -336,7 +343,7 @@ namespace Member_Import_Test
                     MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
                     //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
                     Notes = txtNotes.Text,
-                    Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text)
+                    Referrals = txtReferrals.Text
                     #endregion
                 };
                 //}
@@ -419,26 +426,46 @@ namespace Member_Import_Test
 
         private void InputRequired(object sender, EventArgs e)
         {
-            var textBox = sender as TextBox;
-            if (textBox != null)
+            if(sender is TextBox)
             {
-                textBox.BackColor = textBox.Text == string.Empty ? Color.LightPink : Color.White;
+                var textBox = sender as TextBox;
+                if(textBox.Name == "txtdateJoined")
+                {
+                    textBox.BackColor = textBox.Text == "1/1/0001 12:00:00 AM" ? Color.LightPink : Color.White;
+                }
+                else if(textBox.Name == "txtReferrals")    
+                {
+                    int num;
+                    bool isNum = int.TryParse(textBox.Text, out num);
+                    textBox.BackColor = isNum || textBox.Text.Trim()=="" ? Color.White : Color.LightPink;
+                }
+                else if(textBox != null && textBox.Name != "txtReferrals")
+                {
+                    textBox.BackColor = textBox.Text == string.Empty ? Color.LightPink : Color.White;
+                }
             }
-        }
+            else if(sender is MaskedTextBox)
+            {
+                var maskedtextBox = sender as MaskedTextBox;
+                if(maskedtextBox.Name=="mtxtBoxSSN")
+                {
+                    maskedtextBox.BackColor = maskedtextBox.Text == "   -  -" ? Color.LightPink : Color.White;
+                }
+                else if(maskedtextBox.Name=="mtxtBoxPhone")
+                {
+                    maskedtextBox.BackColor = maskedtextBox.Text == "(   )    -" ? Color.LightPink : Color.White;
+                }
+                else if (maskedtextBox.Name == "mtxtBoxDOB")
+                {
+                    maskedtextBox.BackColor = maskedtextBox.Text == "01/01/0001" ? Color.LightPink : Color.White;
+                }
+                else if (maskedtextBox != null)
+                {
+                    maskedtextBox.BackColor = maskedtextBox.Text == string.Empty ? Color.LightPink : Color.White;
+                }
+            }
 
-        private void btnMemberNumber_Click(object sender, EventArgs e)
-        {
-            //var newfrmStart = new FrmSearch();
-            //Width = newfrmStart.Width;
-            //Height = newfrmStart.Height + 20;
-            //newfrmStart.Show();
-           
-        }
-
-        private void btnStats_Click(object sender, EventArgs e)
-        {
-            //var newfrmStart = new FrmStats(Convert.ToInt32(txtMemberNumber.Text), (txtFirstName.Text + " " + txtLastName.Text), currentMem);
-            //newfrmStart.Show();
+            
         }
 
         private void FrmMemberData_FormClosed(object sender, FormClosedEventArgs e)

@@ -76,6 +76,10 @@
     <Compile Include="Migrations\201601202102300_Initial.Designer.cs">
       <DependentUpon>201601202102300_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602082225132_ReferralsChange.cs" />
+    <Compile Include="Migrations\201602082225132_ReferralsChange.Designer.cs">
+      <DependentUpon>201602082225132_ReferralsChange.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,6 +91,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201601202102300_Initial.resx">
       <DependentUpon>201601202102300_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602082225132_ReferralsChange.resx">
+      <DependentUpon>201602082225132_ReferralsChange.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

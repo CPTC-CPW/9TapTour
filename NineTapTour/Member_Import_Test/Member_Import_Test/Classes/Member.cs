@@ -69,7 +69,7 @@ namespace Member_Import_Test.Classes
         [Column(TypeName = "Money")]
         public decimal MoneyEarned { get; set; }
         public string Notes { get; set; }
-        public int? Referrals { get; set; }
+        public string Referrals { get; set; }
         [Required]
         public bool IsSenior { get; set; }
         #endregion

@@ -105,24 +105,28 @@ namespace Member_Import_Test
                             case 3://First Name
                                 if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                 {
-                                    newMem.FirstName = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                    
+
+                                    //newMem.FirstName = (File.Substring(currentIndex, Spaces[i]).Trim());
+
                                     //Idea #1: Using String.Replace\\
                                     //Simple method, but would have to account for all possible cases of extra data
-                                    //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
-                                    //fName = fName.Replace("life", " ");
-                                    //fName = fName.Replace("gst", " ");
-                                    //fName = fName.Replace("(Haw.)", " ");
-                                    //newMem.FirstName = fName;
+
+                                    string fName = File.Substring(currentIndex, Spaces[i]).Trim();
+                                    fName = fName.Replace("life", " ").Trim();
+                                    fName = fName.Replace("gst", " ").Trim();
+                                    fName = fName.Replace("(Haw.)", " ").Trim();
+                                    newMem.FirstName = fName;
 
                                     //Idea #2 Using String.Split\\
                                     //Issue if name contains space, would have to check for additional parts of name
+
                                     //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
                                     //string[] split = fName.Split(' ');
                                     //newMem.FirstName = split[0];
 
                                     //Idea #3 Using String.Substring\\
                                     //Issue arises if spaces between names.
+
                                     //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
                                     //if(fName.Contains(' '))
                                     //{
@@ -133,6 +137,7 @@ namespace Member_Import_Test
                                     //Idea #4: Using String.Contains\\
                                     //Could improve this with an array to check for each indivual possibilty of extra data, to be able
                                     //then to use the the indexOf whatever data it found.
+
                                     //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
                                     //if (fName.ToLower().Contains("life") || fName.ToLower().Contains("gst") || fName.ToLower().Contains("(haw.)"))
                                     //{
@@ -140,6 +145,14 @@ namespace Member_Import_Test
                                     //}
                                     //newMem.FirstName = fName;
 
+                                    //Idea #5 Using String.EndsWith
+
+                                    //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
+                                    //if(fName.ToLower().EndsWith("life") || fName.ToLower().EndsWith("gst") || fName.ToLower().EndsWith(")"))
+                                    //{
+                                    //    fName = fName.Substring(0, fName.LastIndexOf(' ')).Trim();
+                                    //}
+                                    //newMem.FirstName = fName;
                                 }
                                 else
                                 {
@@ -265,13 +278,18 @@ namespace Member_Import_Test
                                     bool isNum = int.TryParse(str, out num);
                                     if(isNum)
                                     {
-                                        newMem.Referrals = Convert.ToInt32((File.Substring(currentIndex, Spaces[i]).Trim()));
+                                        newMem.Referrals = (File.Substring(currentIndex, Spaces[i]).Trim());
                                     }
                                     else
                                     {
+                                        newMem.Referrals = (File.Substring(currentIndex, Spaces[i]).Trim());
                                         validMember = false;
                                     }
                                     
+                                }
+                                else
+                                {
+                                    newMem.Referrals = "";
                                 }
                                 break;
                             case 22://Social Security Number
@@ -386,16 +404,16 @@ namespace Member_Import_Test
                     MemberCount++;
                     newMem = new Member();
                 } while (currentIndex <= File.Length);
-                
+
                 // go through the members on the valid list and add them to the database
-                //for (int j = 0; j < validMembers.Count; j++)
-                //{
-                //    //only add the member after checking if the memeber isn't already in the database.
-                //    if (!DBQueries.MemberExists(validMembers[j]))
-                //    {
-                //        DBQueries.AddMember(validMembers[j]);
-                //    }
-                //}
+                for (int j = 0; j < validMembers.Count; j++)
+                {
+                    //only add the member after checking if the memeber isn't already in the database.
+                    if (!DBQueries.MemberExists(validMembers[j]))
+                    {
+                        DBQueries.AddMember(validMembers[j]);
+                    }
+                }
                 //show the results to the user
                 MessageBox.Show(validCount + " valid members processed, " + invalidCount + " invalid members processed.", "Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
