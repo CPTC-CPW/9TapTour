@@ -95,6 +95,7 @@
             this.pnlMemStat = new System.Windows.Forms.Panel();
             this.lblMemberL = new System.Windows.Forms.Label();
             this.btnNewTournament = new System.Windows.Forms.Button();
+            this.txtMemberNum2 = new System.Windows.Forms.TextBox();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpRecord.SuspendLayout();
@@ -109,10 +110,11 @@
             // 
             // grpMemberNum
             // 
+            this.grpMemberNum.Controls.Add(this.txtMemberNum2);
             this.grpMemberNum.Controls.Add(this.txtMemberNum);
             this.grpMemberNum.Location = new System.Drawing.Point(21, 23);
             this.grpMemberNum.Name = "grpMemberNum";
-            this.grpMemberNum.Size = new System.Drawing.Size(179, 57);
+            this.grpMemberNum.Size = new System.Drawing.Size(179, 75);
             this.grpMemberNum.TabIndex = 0;
             this.grpMemberNum.TabStop = false;
             this.grpMemberNum.Text = "Enter Member Number";
@@ -133,7 +135,7 @@
             this.groupBox1.Controls.Add(this.rdoSquadThree);
             this.groupBox1.Controls.Add(this.rdoSquadTwo);
             this.groupBox1.Controls.Add(this.rdoSquadOne);
-            this.groupBox1.Location = new System.Drawing.Point(21, 85);
+            this.groupBox1.Location = new System.Drawing.Point(21, 93);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(179, 73);
             this.groupBox1.TabIndex = 22;
@@ -849,6 +851,14 @@
             this.btnNewTournament.UseVisualStyleBackColor = true;
             this.btnNewTournament.Click += new System.EventHandler(this.btnNewTournament_Click);
             // 
+            // txtMemberNum2
+            // 
+            this.txtMemberNum2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtMemberNum2.Location = new System.Drawing.Point(6, 45);
+            this.txtMemberNum2.Name = "txtMemberNum2";
+            this.txtMemberNum2.Size = new System.Drawing.Size(112, 20);
+            this.txtMemberNum2.TabIndex = 1;
+            // 
             // frmMemberScores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -969,5 +979,6 @@
         private System.Windows.Forms.GroupBox grpScoreType;
         private System.Windows.Forms.RadioButton rdoScratchScore;
         private System.Windows.Forms.RadioButton rdoHandicapScore;
+        private System.Windows.Forms.TextBox txtMemberNum2;
     }
 }

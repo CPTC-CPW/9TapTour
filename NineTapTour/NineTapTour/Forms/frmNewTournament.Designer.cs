@@ -40,12 +40,14 @@
             this.rtxtNotes = new System.Windows.Forms.RichTextBox();
             this.btnSubmit = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.lblDoubles = new System.Windows.Forms.Label();
+            this.ckbxDoubles = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lblDate
             // 
             this.lblDate.AutoSize = true;
-            this.lblDate.Location = new System.Drawing.Point(8, 19);
+            this.lblDate.Location = new System.Drawing.Point(26, 19);
             this.lblDate.Name = "lblDate";
             this.lblDate.Size = new System.Drawing.Size(93, 13);
             this.lblDate.TabIndex = 0;
@@ -54,7 +56,7 @@
             // lblLocation
             // 
             this.lblLocation.AutoSize = true;
-            this.lblLocation.Location = new System.Drawing.Point(29, 50);
+            this.lblLocation.Location = new System.Drawing.Point(26, 50);
             this.lblLocation.Name = "lblLocation";
             this.lblLocation.Size = new System.Drawing.Size(51, 13);
             this.lblLocation.TabIndex = 1;
@@ -63,7 +65,7 @@
             // lblEvent
             // 
             this.lblEvent.AutoSize = true;
-            this.lblEvent.Location = new System.Drawing.Point(35, 81);
+            this.lblEvent.Location = new System.Drawing.Point(26, 81);
             this.lblEvent.Name = "lblEvent";
             this.lblEvent.Size = new System.Drawing.Size(38, 13);
             this.lblEvent.TabIndex = 2;
@@ -72,7 +74,7 @@
             // lblSponors
             // 
             this.lblSponors.AutoSize = true;
-            this.lblSponors.Location = new System.Drawing.Point(27, 112);
+            this.lblSponors.Location = new System.Drawing.Point(26, 112);
             this.lblSponors.Name = "lblSponors";
             this.lblSponors.Size = new System.Drawing.Size(54, 13);
             this.lblSponors.TabIndex = 3;
@@ -81,7 +83,7 @@
             // lblNotes
             // 
             this.lblNotes.AutoSize = true;
-            this.lblNotes.Location = new System.Drawing.Point(5, 143);
+            this.lblNotes.Location = new System.Drawing.Point(12, 194);
             this.lblNotes.Name = "lblNotes";
             this.lblNotes.Size = new System.Drawing.Size(98, 13);
             this.lblNotes.TabIndex = 4;
@@ -118,7 +120,7 @@
             // 
             // rtxtNotes
             // 
-            this.rtxtNotes.Location = new System.Drawing.Point(11, 171);
+            this.rtxtNotes.Location = new System.Drawing.Point(11, 220);
             this.rtxtNotes.Name = "rtxtNotes";
             this.rtxtNotes.Size = new System.Drawing.Size(241, 96);
             this.rtxtNotes.TabIndex = 9;
@@ -126,7 +128,7 @@
             // 
             // btnSubmit
             // 
-            this.btnSubmit.Location = new System.Drawing.Point(12, 273);
+            this.btnSubmit.Location = new System.Drawing.Point(8, 332);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(136, 23);
             this.btnSubmit.TabIndex = 10;
@@ -136,7 +138,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(168, 273);
+            this.btnCancel.Location = new System.Drawing.Point(177, 332);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 11;
@@ -144,12 +146,33 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // lblDoubles
+            // 
+            this.lblDoubles.AutoSize = true;
+            this.lblDoubles.Location = new System.Drawing.Point(26, 146);
+            this.lblDoubles.Name = "lblDoubles";
+            this.lblDoubles.Size = new System.Drawing.Size(49, 13);
+            this.lblDoubles.TabIndex = 12;
+            this.lblDoubles.Text = "Doubles:";
+            // 
+            // ckbxDoubles
+            // 
+            this.ckbxDoubles.AutoSize = true;
+            this.ckbxDoubles.Location = new System.Drawing.Point(129, 146);
+            this.ckbxDoubles.Name = "ckbxDoubles";
+            this.ckbxDoubles.Size = new System.Drawing.Size(44, 17);
+            this.ckbxDoubles.TabIndex = 13;
+            this.ckbxDoubles.Text = "Yes";
+            this.ckbxDoubles.UseVisualStyleBackColor = true;
+            // 
             // frmNewTournament
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
-            this.ClientSize = new System.Drawing.Size(264, 307);
+            this.ClientSize = new System.Drawing.Size(285, 379);
+            this.Controls.Add(this.ckbxDoubles);
+            this.Controls.Add(this.lblDoubles);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSubmit);
             this.Controls.Add(this.rtxtNotes);
@@ -185,5 +208,7 @@
         private System.Windows.Forms.RichTextBox rtxtNotes;
         private System.Windows.Forms.Button btnSubmit;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Label lblDoubles;
+        private System.Windows.Forms.CheckBox ckbxDoubles;
     }
 }

@@ -89,7 +89,6 @@
     <Compile Include="Database\Game.cs" />
     <Compile Include="Database\Member.cs" />
     <Compile Include="Database\MemberDb.cs" />
-    <Compile Include="Database\Squad.cs" />
     <Compile Include="Database\TournamentDb.cs" />
     <Compile Include="Exceptions\MemberTableException.cs" />
     <Compile Include="Database\Participant.cs" />
@@ -208,6 +207,14 @@
     <Compile Include="Migrations\201512172205125_Deleted member from Game Class.Designer.cs">
       <DependentUpon>201512172205125_Deleted member from Game Class.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602082010332_Reverse to Original.cs" />
+    <Compile Include="Migrations\201602082010332_Reverse to Original.Designer.cs">
+      <DependentUpon>201602082010332_Reverse to Original.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602082019380_AddedBoolforDoubles.cs" />
+    <Compile Include="Migrations\201602082019380_AddedBoolforDoubles.Designer.cs">
+      <DependentUpon>201602082019380_AddedBoolforDoubles.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -300,6 +307,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201512172205125_Deleted member from Game Class.resx">
       <DependentUpon>201512172205125_Deleted member from Game Class.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602082010332_Reverse to Original.resx">
+      <DependentUpon>201602082010332_Reverse to Original.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602082019380_AddedBoolforDoubles.resx">
+      <DependentUpon>201602082019380_AddedBoolforDoubles.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>

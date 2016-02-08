@@ -83,14 +83,14 @@ namespace NineTapTour.Database
                         try
                         {
                             var manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
-                            var result = db.Games.SingleOrDefault(g => g.Id == player.Squad.Game.Id);
+                            var result = db.Games.SingleOrDefault(g => g.Id == player.Game.Id);
                             var squadResult = db.Participants.SingleOrDefault(p => p.Id == player.Id);
                             var memberQuery = db.Participants.Include(m => m.Member)
-                                .Where(m => m.Member.Id == player.Member.Id).SingleOrDefault();
-                            result.Game1 = player.Squad.Game.Game1;
-                            result.Game2 = player.Squad.Game.Game2;
-                            result.Game3 = player.Squad.Game.Game3;
-                            result.Game4 = player.Squad.Game.Game4;
+                                .Where(m => m.Member.Id == player.Member.Id).FirstOrDefault();
+                            result.Game1 = player.Game.Game1;
+                            result.Game2 = player.Game.Game2;
+                            result.Game3 = player.Game.Game3;
+                            result.Game4 = player.Game.Game4;
                             squadResult.Squad = player.Squad;
                             squadResult.Member = memberQuery.Member;
                             db.SaveChanges();
