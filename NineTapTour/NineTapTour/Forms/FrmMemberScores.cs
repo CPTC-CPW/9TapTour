@@ -135,8 +135,6 @@ namespace NineTapTour.Forms
                         txtMemberNum.Clear();
                     }
                 }
-                if (e.KeyCode != Keys.Enter)
-                    return;
 
                 string searchNumber2 = txtMemberNum2.Text;
                 for (int i = 0; i < searchNumber2.Length; i++)
@@ -150,8 +148,8 @@ namespace NineTapTour.Forms
                 }
                 if (searchNumber2.Trim() != "")
                 {
-                    int memberNumber = Convert.ToInt16(txtMemberNum2.Text);
-                    currentMem2 = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber);
+                    int memberNumber2 = Convert.ToInt16(txtMemberNum2.Text);
+                    currentMem2 = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber2);
                     if (currentMem2 != null)
                     {
                         if (currentMem2.IsActive)
@@ -162,14 +160,13 @@ namespace NineTapTour.Forms
                         {
                             MemberStatus("Inactive", Color.Red, Color.Pink, true);
                         }
-                        txtScratchScore1.Focus();
                         Game currentGame2 = GetScoresById(currentMem2.Id);
                         if (currentGame2 != null)
                         {
                             currentGame2.Bonus = currentMem2.Bonus;
                             currentGame2.Handicap = currentMem2.Handicap;
-                            txtScratchScore1.Text = Convert.ToString(currentGame2.Game1);
-                            txtScratchScore2.Text = Convert.ToString(currentGame2.Game2);
+                            txtScratchScore3.Text = Convert.ToString(currentGame2.Game1);
+                            txtScratchScore4.Text = Convert.ToString(currentGame2.Game2);
                         }
                     }
                     else
@@ -179,12 +176,13 @@ namespace NineTapTour.Forms
                     }
                 }
             }
+            //IF the tournament is not DOUBLES
             else
             {
                 if (e.KeyCode != Keys.Enter)
                     return;
 
-                string searchNumber = txtMemberNum2.Text;
+                string searchNumber = txtMemberNum.Text;
                 for (int i = 0; i < searchNumber.Length; i++)
                 {
                     if (!char.IsNumber(searchNumber[i]))
@@ -467,9 +465,9 @@ namespace NineTapTour.Forms
                     #endregion
 
                     player.Member = currentMem;
-                    player.Id = total[currentIndex - 1].Id;
+                    player.Id = total.Count;
                     player2.Member = currentMem2;
-                    player2.Id = total[currentIndex].Id;
+                    player2.Id = total.Count + 1;
                     try
                     {
                         int temp;
@@ -480,7 +478,7 @@ namespace NineTapTour.Forms
 #endif
                         if (total.Count() <= 0)
                         {
-                            temp = total.IndexOf(total[currentIndex]);
+                            temp = 0;
                         }
                         else
                         {
@@ -496,7 +494,7 @@ namespace NineTapTour.Forms
                     clear();
                     txtMemberNum.Focus();
                 }
-
+                //IF the tournament type is a DOUBLES tournament
                 else
                 {
                     player.Game = new Game();
@@ -548,7 +546,7 @@ namespace NineTapTour.Forms
         #endif
                         if (total.Count() <= 0)
                         {
-                            temp = total.IndexOf(total[currentIndex]);
+                            temp = 0;
                         }
                         else
                         {
@@ -598,7 +596,6 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="memberID"></param>
         /// <returns></returns>
-
         
         public Game GetScoresById(int memberID)
         {
