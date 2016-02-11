@@ -419,21 +419,6 @@ namespace Member_Import_Test
             }
         }
 
-        private void btnValid_Click(object sender, EventArgs e)
-        {
-            //show the valid members processed tempory
-            if(validMembers.Count <= 0)
-            {
-                MessageBox.Show("No Valid members processed");
-            }
-            else
-            {
-                var message = string.Join(Environment.NewLine, validMembers);
-                MessageBox.Show(message);
-            }
-            
-        }
-
         private void btnInvalid_Click(object sender, EventArgs e)
         {
             if(invalidMembers.Count <=0)

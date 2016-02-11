@@ -225,7 +225,7 @@ namespace Member_Import_Test
             }
             int num;
             bool isNum = int.TryParse(txtReferrals.Text, out num);
-            if (!isNum)
+            if (!isNum && txtReferrals.Text != "")
             {
                 MessageBox.Show("Referals Must be a valid number");
                 return false;
@@ -354,7 +354,17 @@ namespace Member_Import_Test
                     DBQueries.AddMember(temp);
                     MessageBox.Show(@"Bowler Added Successfully.");
                     invalidMembers.RemoveAt(listPosition);
-                    UpdateMemberInfo();
+                    if(invalidMembers.Count() != 0)
+                    {
+                        UpdateMemberInfo();
+                    }
+                    else
+                    {
+                        MessageBox.Show("All invalid members processed, returning to main menu.");
+                        this.Close();
+                        home.Show();
+                    }
+                    
                 }
                 catch(Exception ex)
                 {
