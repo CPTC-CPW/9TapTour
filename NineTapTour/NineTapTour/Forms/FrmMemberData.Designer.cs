@@ -818,6 +818,7 @@
             this.btnThisRecap.TabStop = false;
             this.btnThisRecap.Text = "Print single";
             this.btnThisRecap.UseVisualStyleBackColor = true;
+            this.btnThisRecap.Click += new System.EventHandler(this.btnThisRecap_Click);
             // 
             // btnAllRecaps
             // 
