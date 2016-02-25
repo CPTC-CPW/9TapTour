@@ -881,6 +881,11 @@ namespace NineTapTour.Forms
             }
             return true;
         }
+
+        private void txtMemberNum2_TextChanged(object sender, EventArgs e)
+        {
+            txtMemberNum.Focus();
+        }
     }
     class MemberScores
     {
