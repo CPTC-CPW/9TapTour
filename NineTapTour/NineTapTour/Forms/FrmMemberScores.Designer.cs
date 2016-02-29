@@ -65,6 +65,8 @@
             this.lblStratchScores = new System.Windows.Forms.Label();
             this.lblHandiCap = new System.Windows.Forms.Label();
             this.grpStats = new System.Windows.Forms.GroupBox();
+            this.lblPlayer2 = new System.Windows.Forms.Label();
+            this.lblPlayer1 = new System.Windows.Forms.Label();
             this.lblBonusPins = new System.Windows.Forms.Label();
             this.lblCap = new System.Windows.Forms.Label();
             this.txtBonusPins = new System.Windows.Forms.TextBox();
@@ -96,8 +98,6 @@
             this.pnlMemStat = new System.Windows.Forms.Panel();
             this.lblMemberL = new System.Windows.Forms.Label();
             this.btnNewTournament = new System.Windows.Forms.Button();
-            this.lblPlayer1 = new System.Windows.Forms.Label();
-            this.lblPlayer2 = new System.Windows.Forms.Label();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpRecord.SuspendLayout();
@@ -128,6 +128,7 @@
             this.txtMemberNum2.Name = "txtMemberNum2";
             this.txtMemberNum2.Size = new System.Drawing.Size(112, 20);
             this.txtMemberNum2.TabIndex = 1;
+            this.txtMemberNum2.Visible = false;
             this.txtMemberNum2.TextChanged += new System.EventHandler(this.txtMemberNum2_TextChanged);
             // 
             // txtMemberNum
@@ -533,6 +534,24 @@
             this.grpStats.TabStop = false;
             this.grpStats.Text = "Stats";
             // 
+            // lblPlayer2
+            // 
+            this.lblPlayer2.AutoSize = true;
+            this.lblPlayer2.Location = new System.Drawing.Point(193, 189);
+            this.lblPlayer2.Name = "lblPlayer2";
+            this.lblPlayer2.Size = new System.Drawing.Size(42, 13);
+            this.lblPlayer2.TabIndex = 12;
+            this.lblPlayer2.Text = "Player2";
+            // 
+            // lblPlayer1
+            // 
+            this.lblPlayer1.AutoSize = true;
+            this.lblPlayer1.Location = new System.Drawing.Point(194, 80);
+            this.lblPlayer1.Name = "lblPlayer1";
+            this.lblPlayer1.Size = new System.Drawing.Size(42, 13);
+            this.lblPlayer1.TabIndex = 11;
+            this.lblPlayer1.Text = "Player1";
+            // 
             // lblBonusPins
             // 
             this.lblBonusPins.AutoSize = true;
@@ -863,24 +882,6 @@
             this.btnNewTournament.Text = "New Tournament";
             this.btnNewTournament.UseVisualStyleBackColor = true;
             this.btnNewTournament.Click += new System.EventHandler(this.btnNewTournament_Click);
-            // 
-            // lblPlayer1
-            // 
-            this.lblPlayer1.AutoSize = true;
-            this.lblPlayer1.Location = new System.Drawing.Point(194, 80);
-            this.lblPlayer1.Name = "lblPlayer1";
-            this.lblPlayer1.Size = new System.Drawing.Size(42, 13);
-            this.lblPlayer1.TabIndex = 11;
-            this.lblPlayer1.Text = "Player1";
-            // 
-            // lblPlayer2
-            // 
-            this.lblPlayer2.AutoSize = true;
-            this.lblPlayer2.Location = new System.Drawing.Point(193, 189);
-            this.lblPlayer2.Name = "lblPlayer2";
-            this.lblPlayer2.Size = new System.Drawing.Size(42, 13);
-            this.lblPlayer2.TabIndex = 12;
-            this.lblPlayer2.Text = "Player2";
             // 
             // frmMemberScores
             // 

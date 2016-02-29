@@ -23,6 +23,7 @@ namespace NineTapTour.Forms
         int currentIndex = 0;
         Participant player = new Participant();
         Participant player2 = new Participant();
+        bool doubles = true;
 
 
         public frmMemberScores()
@@ -32,7 +33,7 @@ namespace NineTapTour.Forms
 
         private void FrmMemberScores_Load(object sender, EventArgs e)
         {
-            txtMemberNum.Focus();
+            txtMemberNum2.Visible = doubles;
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
 
@@ -102,6 +103,7 @@ namespace NineTapTour.Forms
                     {
                         MessageBox.Show("Please input numbers only.", "Your Attention Please.");
                         txtMemberNum.Clear();
+                        txtMemberNum2.Clear();
                         return;
                     }
                 }
@@ -133,6 +135,7 @@ namespace NineTapTour.Forms
                     {
                         MessageBox.Show(string.Format("A member with the number {0} does not exist", txtMemberNum.Text), "Your Attention Please.");
                         txtMemberNum.Clear();
+                        txtMemberNum2.Clear();
                     }
                 }
 
@@ -142,6 +145,7 @@ namespace NineTapTour.Forms
                     if (!char.IsNumber(searchNumber2[i]))
                     {
                         MessageBox.Show("Please input numbers only.", "Your Attention Please.");
+                        txtMemberNum2.Clear();
                         txtMemberNum2.Clear();
                         return;
                     }
@@ -173,6 +177,7 @@ namespace NineTapTour.Forms
                     {
                         MessageBox.Show(string.Format("A member with the number {0} does not exist", txtMemberNum.Text), "Your Attention Please.");
                         txtMemberNum.Clear();
+                        txtMemberNum2.Clear();
                     }
                 }
             }
@@ -254,6 +259,7 @@ namespace NineTapTour.Forms
                 {
                     MessageBox.Show("Please input numbers only.", "Your Attention Please.");
                     txtMemberNum.Clear();
+                    txtMemberNum2.Clear();
                     return;
                 }
             }
@@ -297,6 +303,7 @@ namespace NineTapTour.Forms
                 {
                     MessageBox.Show(string.Format("A member with the number {0} does not exist", txtMemberNum.Text), "Your Attention Please.");
                     txtMemberNum.Clear();
+                    txtMemberNum2.Clear();
                 }
             }
         }
