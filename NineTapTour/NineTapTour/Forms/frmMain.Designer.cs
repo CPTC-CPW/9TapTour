@@ -48,9 +48,11 @@
             this.menMain.TabIndex = 1;
             this.menMain.Text = "menuStrip1";
             this.menMain.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.menMain_ItemAdded);
+            this.menMain.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menMain_ItemClicked);
             // 
             // mainMenuToolStripMenuItem
             // 
+            this.mainMenuToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
             this.mainMenuToolStripMenuItem.Name = "mainMenuToolStripMenuItem";
             this.mainMenuToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.mainMenuToolStripMenuItem.Text = "Home";
@@ -86,7 +88,7 @@
             this.MainMenuStrip = this.menMain;
             this.MinimumSize = new System.Drawing.Size(900, 750);
             this.Name = "FrmMain";
-            this.Text = "Nine Tap Tour Main";
+            this.Text = "7";
             this.Load += new System.EventHandler(this.FrmMain_Load);
             this.menMain.ResumeLayout(false);
             this.menMain.PerformLayout();

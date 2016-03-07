@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
+using System.Drawing;
 
 namespace NineTapTour.Forms
 {
@@ -11,6 +12,7 @@ namespace NineTapTour.Forms
 
         public IOrderedEnumerable<Member> _membersList { get; set; }
         public List<Tournament> _tournamentList { get; set; }
+        public ToolStripItem activeItem;
 
         /// <summary>
         /// Opens Main form 
@@ -27,6 +29,9 @@ namespace NineTapTour.Forms
             //Width and Height not needed here?
             //Width = newfrmStart.Width;
             //Height = newfrmStart.Height + 20;
+            //sets the first item of the menu bar to the active item and highlights it.
+            activeItem = menMain.Items[0];
+            activeItem.BackColor = SystemColors.ActiveCaption;
             newfrmStart.Show();
             newfrmStart.WindowState = FormWindowState.Maximized;
         }
@@ -62,6 +67,23 @@ namespace NineTapTour.Forms
            
         }
 
+        //method to highlight menu item to show user which page they have open
+        private void menMain_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if(activeItem != null)
+            {
+                activeItem.BackColor = SystemColors.Control;
+            }
+            activeItem = e.ClickedItem;
+
+            activeItem.BackColor = SystemColors.ActiveCaption;
+
+            //System.Text.StringBuilder messageBoxCS = new System.Text.StringBuilder();
+            //messageBoxCS.AppendFormat("{0} = {1}", "ClickedItem", e.ClickedItem);
+            //messageBoxCS.AppendLine();
+            //MessageBox.Show(messageBoxCS.ToString(), "ItemClicked Event");
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -80,9 +102,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void memberToolStripMenuItem_Click(object sender, EventArgs e)
         {   
-
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
-
             OpenOrDisplayForm(ref newfrmMemberData);
 
         }
@@ -95,7 +115,6 @@ namespace NineTapTour.Forms
         public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
-
             OpenOrDisplayForm(ref newfrmMemberScores);
         }
 
