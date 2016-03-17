@@ -45,6 +45,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnMemberData_Click(object sender, EventArgs e)
         {
+            ((FrmMain)MdiParent).menuHighlight(btnMemberData.Text);
             ((FrmMain)MdiParent).memberToolStripMenuItem_Click(sender, e);
         }
         /// <summary>
@@ -54,6 +55,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnMemberScores_Click(object sender, EventArgs e)
         {
+            ((FrmMain)MdiParent).menuHighlight(btnMemberScores.Text);
             ((FrmMain)MdiParent).tournamentToolStripMenuItem_Click(sender, e);
         }  
     }

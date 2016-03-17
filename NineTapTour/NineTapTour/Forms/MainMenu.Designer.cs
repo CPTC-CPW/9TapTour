@@ -37,19 +37,19 @@
             // 
             // btnMemberData
             // 
-            this.btnMemberData.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnMemberData.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnMemberData.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnMemberData.Location = new System.Drawing.Point(44, 347);
             this.btnMemberData.Name = "btnMemberData";
             this.btnMemberData.Size = new System.Drawing.Size(118, 70);
             this.btnMemberData.TabIndex = 0;
-            this.btnMemberData.Text = "Member Data";
+            this.btnMemberData.Text = "Member Info";
             this.btnMemberData.UseVisualStyleBackColor = true;
             this.btnMemberData.Click += new System.EventHandler(this.btnMemberData_Click);
             // 
             // btnMemberScores
             // 
-            this.btnMemberScores.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnMemberScores.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnMemberScores.Location = new System.Drawing.Point(44, 488);
             this.btnMemberScores.Name = "btnMemberScores";
             this.btnMemberScores.Size = new System.Drawing.Size(118, 71);
@@ -60,7 +60,7 @@
             // 
             // btnAbout
             // 
-            this.btnAbout.Font = new System.Drawing.Font("Arial Narrow", 14.25F);
+            this.btnAbout.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
             this.btnAbout.Location = new System.Drawing.Point(721, 347);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.Size = new System.Drawing.Size(118, 71);
@@ -71,7 +71,7 @@
             // 
             // Exit
             // 
-            this.Exit.Font = new System.Drawing.Font("Arial Narrow", 14.25F);
+            this.Exit.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
             this.Exit.Location = new System.Drawing.Point(722, 488);
             this.Exit.Name = "Exit";
             this.Exit.Size = new System.Drawing.Size(118, 71);

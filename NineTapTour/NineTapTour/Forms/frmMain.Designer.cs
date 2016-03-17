@@ -61,8 +61,8 @@
             // memberToolStripMenuItem
             // 
             this.memberToolStripMenuItem.Name = "memberToolStripMenuItem";
-            this.memberToolStripMenuItem.Size = new System.Drawing.Size(64, 20);
-            this.memberToolStripMenuItem.Text = "Member";
+            this.memberToolStripMenuItem.Size = new System.Drawing.Size(88, 20);
+            this.memberToolStripMenuItem.Text = "Member Info";
             this.memberToolStripMenuItem.Click += new System.EventHandler(this.memberToolStripMenuItem_Click);
             // 
             // tournamentToolStripMenuItem
@@ -88,7 +88,7 @@
             this.MainMenuStrip = this.menMain;
             this.MinimumSize = new System.Drawing.Size(900, 750);
             this.Name = "FrmMain";
-            this.Text = "7";
+            this.Text = "9 Tap Tour";
             this.Load += new System.EventHandler(this.FrmMain_Load);
             this.menMain.ResumeLayout(false);
             this.menMain.PerformLayout();

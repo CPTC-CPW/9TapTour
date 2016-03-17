@@ -77,13 +77,24 @@ namespace NineTapTour.Forms
             activeItem = e.ClickedItem;
 
             activeItem.BackColor = SystemColors.ActiveCaption;
-
-            //System.Text.StringBuilder messageBoxCS = new System.Text.StringBuilder();
-            //messageBoxCS.AppendFormat("{0} = {1}", "ClickedItem", e.ClickedItem);
-            //messageBoxCS.AppendLine();
-            //MessageBox.Show(messageBoxCS.ToString(), "ItemClicked Event");
         }
-
+        //this method is for the buttons on the main form
+        public void menuHighlight(string itemName)
+        {
+            if (activeItem != null)
+            {
+                activeItem.BackColor = SystemColors.Control;
+            }
+            for(int i = 0; i <= menMain.Items.Count; i++)
+            {
+                if (itemName == menMain.Items[i].Text)
+                {
+                    activeItem = menMain.Items[i];
+                    break;
+                }
+            }
+            activeItem.BackColor = SystemColors.ActiveCaption;
+        }
         /// <summary>
         /// 
         /// </summary>
