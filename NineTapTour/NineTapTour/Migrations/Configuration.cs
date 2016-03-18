@@ -11,7 +11,7 @@ namespace NineTapTour.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(NineTapTour.Database.NineTapDb context)

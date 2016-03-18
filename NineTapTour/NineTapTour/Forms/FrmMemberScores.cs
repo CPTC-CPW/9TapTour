@@ -393,7 +393,7 @@ namespace NineTapTour.Forms
     #endif
                     if (total.Count() <= 0)
                     {
-                        temp = total.IndexOf(total[currentIndex]);
+                        temp = 0;
                     }
                     else
                     {
