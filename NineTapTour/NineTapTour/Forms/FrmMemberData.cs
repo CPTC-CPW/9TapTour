@@ -322,12 +322,11 @@ namespace NineTapTour.Forms
                 var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (confirm == DialogResult.No)
                     return;
-                Member temp;
 
                 //use existing memberId if present or select the member id from the form
                 int memId = (_memberId != -1) ? _memberId : Convert.ToInt32(txtMemberNumber.Text);
 
-                temp = new Member
+                Member temp = new Member
                 {
                     Id = memId,
                     Number = Convert.ToInt32(txtMemberNumber.Text),
