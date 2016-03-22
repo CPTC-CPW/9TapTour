@@ -57,6 +57,17 @@ namespace NineTapTour.Forms
         {
             ((FrmMain)MdiParent).menuHighlight(btnMemberScores.Text);
             ((FrmMain)MdiParent).tournamentToolStripMenuItem_Click(sender, e);
-        }  
+        }
+
+        private void MainMenu_Paint(object sender, PaintEventArgs e)
+        {
+#if DEBUG
+            Graphics g = e.Graphics;
+            Font drawFont = new Font("Arial", 12);
+            SolidBrush drawBrush = new SolidBrush(Color.Red);
+            PointF drawPoint = new PointF(10, 2);
+            g.DrawString("DEVELOPMENT VERSION NOT FOR PRODUCTION", drawFont, drawBrush, drawPoint);
+#endif
+        }
     }
 }
