@@ -11,7 +11,7 @@ namespace NineTapTour.Database
         // If you wish to target a different database and/or database provider, modify the 'NineTapDb' 
         // connection string in the application configuration file.
         public NineTapDb()
-            : base("name=NineTapDb")
+            : base("name=NineTapDbConnection")
         {
         }
 
