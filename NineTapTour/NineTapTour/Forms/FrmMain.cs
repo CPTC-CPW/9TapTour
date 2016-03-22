@@ -5,6 +5,9 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Drawing;
 
+using NineTapTour.Migrations;
+using System.Data.Entity;
+
 namespace NineTapTour.Forms
 {
     public partial class FrmMain : Form
@@ -22,6 +25,11 @@ namespace NineTapTour.Forms
         public FrmMain()
         {
             InitializeComponent();
+
+            //run any pending database migrations on start
+            NineTapDb db = new NineTapDb();
+            System.Data.Entity.Database.SetInitializer<NineTapDb>(new MigrateDatabaseToLatestVersion<NineTapDb, Configuration>());
+
             _membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
             _tournamentList = TournamentDb.GetTournamentList();
             var newfrmStart = new MainMenu {MdiParent = this};

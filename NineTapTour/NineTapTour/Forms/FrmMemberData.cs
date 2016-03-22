@@ -274,7 +274,7 @@ namespace NineTapTour.Forms
                 mtxtBoxSSN.Clear();
                 return false;
             }
-         
+
             if (mtxtBoxSSN.Text == "")
             {
                 MessageBox.Show(" DOB field cannot be null");
@@ -316,7 +316,7 @@ namespace NineTapTour.Forms
         {
             //checks to see if firstname,lastname, and zip is valid.
             //Then runs the rest of the btnSave_Click and adds a member into the database.
-      
+
             if (isValid())
             {
                 var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -377,7 +377,7 @@ namespace NineTapTour.Forms
                 {
                     temp = new Member()
                     {
-                        
+
                         Id = Convert.ToInt32(txtMemberNumber.Text),
                         Number = Convert.ToInt32(txtMemberNumber.Text),
                         IsActive = rdoActive.Checked,
@@ -498,10 +498,13 @@ namespace NineTapTour.Forms
                 dateLastBowled.Format = DateTimePickerFormat.Custom;
                 dateLastBowled.CustomFormat = @" ";
                 _memberId = -1;
-                txtMemberNumber.Text = (((FrmMain)MdiParent)._membersList.Last().Number + 1).ToString();
+
+                //get latest member number, or set to 1 if no members in database
+                int nextMemberNumber = ((FrmMain)MdiParent)._membersList.Any() ? (((FrmMain)MdiParent)._membersList.Last().Number + 1) : 1;
+                txtMemberNumber.Text = nextMemberNumber.ToString();
                 currentMem = new Member
                 {
-                    Number = (((FrmMain)MdiParent)._membersList.Last().Number + 1)
+                    Number = nextMemberNumber
                 };
             }
         }
@@ -600,7 +603,7 @@ namespace NineTapTour.Forms
             Width = newfrmStart.Width;
             Height = newfrmStart.Height + 20;
             newfrmStart.Show();
-           
+
         }
 
         private void btnStats_Click(object sender, EventArgs e)
