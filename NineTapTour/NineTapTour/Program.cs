@@ -33,7 +33,7 @@ namespace NineTapTour
         private static void SetConnectionString(string dataSource)
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            config.ConnectionStrings.ConnectionStrings["NineTapDb"].ConnectionString = String.Format("data source={0};initial catalog=NineTapTour.NineTapDb;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework", dataSource);
+            config.ConnectionStrings.ConnectionStrings["NineTapDbConnection"].ConnectionString = String.Format("data source={0};initial catalog=NineTapTour.NineTapDb;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework", dataSource);
             config.Save(ConfigurationSaveMode.Modified, true);
             ConfigurationManager.RefreshSection("connectionStrings");
         }
