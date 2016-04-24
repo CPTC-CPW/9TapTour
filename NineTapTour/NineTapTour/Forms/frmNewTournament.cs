@@ -44,7 +44,14 @@ namespace NineTapTour.Forms
             NewTournament.Event = txtEvent.Text;
             NewTournament.Sponsors = txtSponsors.Text;
             NewTournament.Notes = rtxtNotes.Text;
-
+            if (ckbxDoubles.Checked)
+            {
+                NewTournament.Doubles = true;
+            }
+            else
+            {
+                NewTournament.Doubles = false;
+            }
             //// validation prototype of the only non-nullable text box on the form
             if (String.IsNullOrEmpty(txtEvent.Text) == true)
                 MessageBox.Show("Event cannot be blank");

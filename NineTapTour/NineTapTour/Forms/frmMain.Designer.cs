@@ -60,6 +60,7 @@
             // 
             // memberToolStripMenuItem
             // 
+            this.memberToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
             this.memberToolStripMenuItem.Name = "memberToolStripMenuItem";
             this.memberToolStripMenuItem.Size = new System.Drawing.Size(88, 20);
             this.memberToolStripMenuItem.Text = "Member Info";
@@ -67,6 +68,7 @@
             // 
             // tournamentToolStripMenuItem
             // 
+            this.tournamentToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
             this.tournamentToolStripMenuItem.Name = "tournamentToolStripMenuItem";
             this.tournamentToolStripMenuItem.Size = new System.Drawing.Size(101, 20);
             this.tournamentToolStripMenuItem.Text = "Member Scores";

@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMemberScores));
             this.grpMemberNum = new System.Windows.Forms.GroupBox();
+            this.txtMemberNum2 = new System.Windows.Forms.TextBox();
             this.txtMemberNum = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.rdoSquadFour = new System.Windows.Forms.RadioButton();
@@ -64,6 +65,8 @@
             this.lblStratchScores = new System.Windows.Forms.Label();
             this.lblHandiCap = new System.Windows.Forms.Label();
             this.grpStats = new System.Windows.Forms.GroupBox();
+            this.lblPlayer2 = new System.Windows.Forms.Label();
+            this.lblPlayer1 = new System.Windows.Forms.Label();
             this.lblBonusPins = new System.Windows.Forms.Label();
             this.lblCap = new System.Windows.Forms.Label();
             this.txtBonusPins = new System.Windows.Forms.TextBox();
@@ -109,13 +112,24 @@
             // 
             // grpMemberNum
             // 
+            this.grpMemberNum.Controls.Add(this.txtMemberNum2);
             this.grpMemberNum.Controls.Add(this.txtMemberNum);
             this.grpMemberNum.Location = new System.Drawing.Point(21, 23);
             this.grpMemberNum.Name = "grpMemberNum";
-            this.grpMemberNum.Size = new System.Drawing.Size(179, 57);
+            this.grpMemberNum.Size = new System.Drawing.Size(179, 75);
             this.grpMemberNum.TabIndex = 0;
             this.grpMemberNum.TabStop = false;
             this.grpMemberNum.Text = "Enter Member Number";
+            // 
+            // txtMemberNum2
+            // 
+            this.txtMemberNum2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtMemberNum2.Location = new System.Drawing.Point(6, 45);
+            this.txtMemberNum2.Name = "txtMemberNum2";
+            this.txtMemberNum2.Size = new System.Drawing.Size(112, 20);
+            this.txtMemberNum2.TabIndex = 1;
+            this.txtMemberNum2.Visible = false;
+            this.txtMemberNum2.TextChanged += new System.EventHandler(this.txtMemberNum2_TextChanged);
             // 
             // txtMemberNum
             // 
@@ -133,7 +147,7 @@
             this.groupBox1.Controls.Add(this.rdoSquadThree);
             this.groupBox1.Controls.Add(this.rdoSquadTwo);
             this.groupBox1.Controls.Add(this.rdoSquadOne);
-            this.groupBox1.Location = new System.Drawing.Point(21, 85);
+            this.groupBox1.Location = new System.Drawing.Point(21, 93);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(179, 73);
             this.groupBox1.TabIndex = 22;
@@ -495,6 +509,8 @@
             // 
             // grpStats
             // 
+            this.grpStats.Controls.Add(this.lblPlayer2);
+            this.grpStats.Controls.Add(this.lblPlayer1);
             this.grpStats.Controls.Add(this.lblBonusPins);
             this.grpStats.Controls.Add(this.lblCap);
             this.grpStats.Controls.Add(this.txtBonusPins);
@@ -517,6 +533,24 @@
             this.grpStats.TabIndex = 1;
             this.grpStats.TabStop = false;
             this.grpStats.Text = "Stats";
+            // 
+            // lblPlayer2
+            // 
+            this.lblPlayer2.AutoSize = true;
+            this.lblPlayer2.Location = new System.Drawing.Point(193, 189);
+            this.lblPlayer2.Name = "lblPlayer2";
+            this.lblPlayer2.Size = new System.Drawing.Size(42, 13);
+            this.lblPlayer2.TabIndex = 12;
+            this.lblPlayer2.Text = "Player2";
+            // 
+            // lblPlayer1
+            // 
+            this.lblPlayer1.AutoSize = true;
+            this.lblPlayer1.Location = new System.Drawing.Point(194, 80);
+            this.lblPlayer1.Name = "lblPlayer1";
+            this.lblPlayer1.Size = new System.Drawing.Size(42, 13);
+            this.lblPlayer1.TabIndex = 11;
+            this.lblPlayer1.Text = "Player1";
             // 
             // lblBonusPins
             // 
@@ -969,5 +1003,8 @@
         private System.Windows.Forms.GroupBox grpScoreType;
         private System.Windows.Forms.RadioButton rdoScratchScore;
         private System.Windows.Forms.RadioButton rdoHandicapScore;
+        private System.Windows.Forms.TextBox txtMemberNum2;
+        private System.Windows.Forms.Label lblPlayer2;
+        private System.Windows.Forms.Label lblPlayer1;
     }
 }
