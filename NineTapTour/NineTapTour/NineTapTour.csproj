@@ -212,6 +212,18 @@
     <Compile Include="Migrations\201601260003161_Added Squads Table.Designer.cs">
       <DependentUpon>201601260003161_Added Squads Table.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602082010332_Reverse to Original.cs" />
+    <Compile Include="Migrations\201602082010332_Reverse to Original.Designer.cs">
+      <DependentUpon>201602082010332_Reverse to Original.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602082019380_AddedBoolforDoubles.cs" />
+    <Compile Include="Migrations\201602082019380_AddedBoolforDoubles.Designer.cs">
+      <DependentUpon>201602082019380_AddedBoolforDoubles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604242119516_doubles.cs" />
+    <Compile Include="Migrations\201604242119516_doubles.Designer.cs">
+      <DependentUpon>201604242119516_doubles.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -307,6 +319,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201601260003161_Added Squads Table.resx">
       <DependentUpon>201601260003161_Added Squads Table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602082010332_Reverse to Original.resx">
+      <DependentUpon>201602082010332_Reverse to Original.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602082019380_AddedBoolforDoubles.resx">
+      <DependentUpon>201602082019380_AddedBoolforDoubles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604242119516_doubles.resx">
+      <DependentUpon>201604242119516_doubles.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>

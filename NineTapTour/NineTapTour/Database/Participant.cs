@@ -14,9 +14,8 @@ namespace NineTapTour.Database
         [Required]
         public Member Member { get; set; }
 
-        public Tournament Tournament { get; set; }
-        [Required]
         public Game Game { get; set; }
+        public Tournament Tournament { get; set; }
         #endregion
     }
 }

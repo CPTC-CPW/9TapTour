@@ -1,17 +1,13 @@
 ﻿using NineTapTour.Database;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.Entity;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq.Expressions;
+
 
 namespace NineTapTour.Forms
 {
@@ -20,11 +16,14 @@ namespace NineTapTour.Forms
 
         //IOrderedEnumerable<Member> _membersList;
         Member currentMem;
+        Member currentMem2;
         TextBox[] scratchArray = new TextBox[4];
         TextBox[] handicappArray = new TextBox[4];
         //Count for record counting
         int currentIndex = 0;
         Participant player = new Participant();
+        Participant player2 = new Participant();
+        bool doubles = true;
 
 
         public frmMemberScores()
@@ -34,9 +33,10 @@ namespace NineTapTour.Forms
 
         private void FrmMemberScores_Load(object sender, EventArgs e)
         {
-            txtMemberNum.Focus();
+            txtMemberNum2.Visible = doubles;
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
+
         }
 
         /// <summary>
@@ -90,66 +90,153 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void GetMember(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode != Keys.Enter)
-                return;
-
-            string searchNumber = txtMemberNum.Text;
-            //if(searchNumber.Trim()=="") return;
-            for (int i = 0; i < searchNumber.Length; i++)
+            var currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+            if(currTourney.Doubles)
             {
-                if (!char.IsNumber(searchNumber[i]))
-                {
-                    MessageBox.Show("Please input numbers only.", "Your Attention Please.");
-                    txtMemberNum.Clear();
+                if (e.KeyCode != Keys.Enter)
                     return;
-                }
-            }
-            if (searchNumber.Trim() != "")
-            {
-                int memberNumber = Convert.ToInt16(txtMemberNum.Text);
-                currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber);
-                if (currentMem != null)
+
+                string searchNumber = txtMemberNum.Text;
+                for (int i = 0; i < searchNumber.Length; i++)
                 {
-                    if (currentMem.IsActive)
+                    if (!char.IsNumber(searchNumber[i]))
                     {
-                        MemberStatus("Active", Color.Green, Color.Lime, false);
+                        MessageBox.Show("Please input numbers only.", "Your Attention Please.");
+                        txtMemberNum.Clear();
+                        txtMemberNum2.Clear();
+                        return;
+                    }
+                }
+                if (searchNumber.Trim() != "")
+                {
+                    int memberNumber = Convert.ToInt16(txtMemberNum.Text);
+                    currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber);
+                    if (currentMem != null)
+                    {
+                        if (currentMem.IsActive)
+                        {
+                            MemberStatus("Active", Color.Green, Color.Lime, false);
+                        }
+                        else
+                        {
+                            MemberStatus("Inactive", Color.Red, Color.Pink, true);
+                        }
+                        txtScratchScore1.Focus();
+                        Game currentGame = GetScoresById(currentMem.Id);
+                        if (currentGame != null)
+                        {
+                            currentGame.Bonus = currentMem.Bonus;
+                            currentGame.Handicap = currentMem.Handicap;
+                            txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
+                            txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
+                        }
                     }
                     else
                     {
-                        //lblMemberStatus.Text = "Inactive";
-                        //lblMemberStatus.ForeColor = System.Drawing.Color.Red;
-                        //pnlMemStat.BackColor = System.Drawing.Color.Pink;
-                        ////Will change later, just for presentation
-                        //txtScratchScore1.ReadOnly = true;
-                        //txtScratchScore2.ReadOnly = true;
-                        //txtScratchScore3.ReadOnly = true;
-                        //txtScratchScore4.ReadOnly = true;
-                        MemberStatus("Inactive", Color.Red, Color.Pink, true);
-                    } 
-                    txtScratchScore1.Focus();
-
-                    txtLastName.Text = currentMem.LastName;
-                    txtFirstName.Text = currentMem.FirstName;
-                    txtMiddleInitial.Text = currentMem.MiddleInitial;
-                    txtHandicap.Text = currentMem.Handicap.ToString();
-                    txtBonusPins.Text = currentMem.Bonus.ToString();
-                    Game currentGame = GetScoresById(currentMem.Id);
-                    if(currentGame != null)
-                    {
-                        currentGame.Bonus = currentMem.Bonus;
-                        currentGame.Handicap = currentMem.Handicap;
-                        txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
-                        txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
-                        txtScratchScore3.Text = Convert.ToString(currentGame.Game3);
-                        txtScratchScore4.Text = Convert.ToString(currentGame.Game4);
+                        MessageBox.Show(string.Format("A member with the number {0} does not exist", txtMemberNum.Text), "Your Attention Please.");
+                        txtMemberNum.Clear();
+                        txtMemberNum2.Clear();
                     }
-                    
                 }
-                else
+
+                string searchNumber2 = txtMemberNum2.Text;
+                for (int i = 0; i < searchNumber2.Length; i++)
                 {
-                    MessageBox.Show(string.Format("A member with the number {0} does not exist", txtMemberNum.Text), "Your Attention Please.");
-                    txtMemberNum.Clear();
+                    if (!char.IsNumber(searchNumber2[i]))
+                    {
+                        MessageBox.Show("Please input numbers only.", "Your Attention Please.");
+                        txtMemberNum2.Clear();
+                        txtMemberNum2.Clear();
+                        return;
+                    }
                 }
+                if (searchNumber2.Trim() != "")
+                {
+                    int memberNumber2 = Convert.ToInt16(txtMemberNum2.Text);
+                    currentMem2 = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber2);
+                    if (currentMem2 != null)
+                    {
+                        if (currentMem2.IsActive)
+                        {
+                            MemberStatus("Active", Color.Green, Color.Lime, false);
+                        }
+                        else
+                        {
+                            MemberStatus("Inactive", Color.Red, Color.Pink, true);
+                        }
+                        Game currentGame2 = GetScoresById(currentMem2.Id);
+                        if (currentGame2 != null)
+                        {
+                            currentGame2.Bonus = currentMem2.Bonus;
+                            currentGame2.Handicap = currentMem2.Handicap;
+                            txtScratchScore3.Text = Convert.ToString(currentGame2.Game1);
+                            txtScratchScore4.Text = Convert.ToString(currentGame2.Game2);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show(string.Format("A member with the number {0} does not exist", txtMemberNum.Text), "Your Attention Please.");
+                        txtMemberNum.Clear();
+                        txtMemberNum2.Clear();
+                    }
+                }
+            }
+            //IF the tournament is not DOUBLES
+            else
+            {
+                if (e.KeyCode != Keys.Enter)
+                    return;
+
+                string searchNumber = txtMemberNum.Text;
+                for (int i = 0; i < searchNumber.Length; i++)
+                {
+                    if (!char.IsNumber(searchNumber[i]))
+                    {
+                        MessageBox.Show("Please input numbers only.", "Your Attention Please.");
+                        txtMemberNum.Clear();
+                        return;
+                    }
+                }
+                if (searchNumber.Trim() != "")
+                {
+                    int memberNumber = Convert.ToInt16(txtMemberNum.Text);
+                    currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber);
+                    if (currentMem != null)
+                    {
+                        if (currentMem.IsActive)
+                        {
+                            MemberStatus("Active", Color.Green, Color.Lime, false);
+                        }
+                        else
+                        {
+                            MemberStatus("Inactive", Color.Red, Color.Pink, true);
+                        } 
+                        txtScratchScore1.Focus();
+
+                        txtLastName.Text = currentMem.LastName;
+                        txtFirstName.Text = currentMem.FirstName;
+                        txtMiddleInitial.Text = currentMem.MiddleInitial;
+                        txtHandicap.Text = currentMem.Handicap.ToString();
+                        txtBonusPins.Text = currentMem.Bonus.ToString();
+                        Game currentGame = GetScoresById(currentMem.Id);
+                        if(currentGame != null)
+                        {
+                            currentGame.Bonus = currentMem.Bonus;
+                            currentGame.Handicap = currentMem.Handicap;
+                            txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
+                            txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
+                            txtScratchScore3.Text = Convert.ToString(currentGame.Game3);
+                            txtScratchScore4.Text = Convert.ToString(currentGame.Game4);
+                        }
+                    
+                    }
+                    else
+                    {
+                        MessageBox.Show(string.Format("A member with the number {0} does not exist", txtMemberNum.Text), "Your Attention Please.");
+                        txtMemberNum.Clear();
+                    }
+                }
+
             }
         }
 
@@ -166,13 +253,13 @@ namespace NineTapTour.Forms
                     select p.Member).ToList();
             
             string searchNumber = currentIndex.ToString();
-            //if(searchNumber.Trim()=="") return;
             for (int i = 0; i < searchNumber.Length; i++)
             {
                 if (!char.IsNumber(searchNumber[i]))
                 {
                     MessageBox.Show("Please input numbers only.", "Your Attention Please.");
                     txtMemberNum.Clear();
+                    txtMemberNum2.Clear();
                     return;
                 }
             }
@@ -193,14 +280,6 @@ namespace NineTapTour.Forms
                     }
                     else
                     {
-                        //lblMemberStatus.Text = "Inactive";
-                        //lblMemberStatus.ForeColor = System.Drawing.Color.Red;
-                        //pnlMemStat.BackColor = System.Drawing.Color.Pink;
-                        ////Will change later, just for presentation
-                        //txtScratchScore1.ReadOnly = true;
-                        //txtScratchScore2.ReadOnly = true;
-                        //txtScratchScore3.ReadOnly = true;
-                        //txtScratchScore4.ReadOnly = true;
                         MemberStatus("Inactive", Color.Red, Color.Pink, true);
                     }
                     txtLastName.Text = currentMem.LastName;
@@ -224,6 +303,7 @@ namespace NineTapTour.Forms
                 {
                     MessageBox.Show(string.Format("A member with the number {0} does not exist", txtMemberNum.Text), "Your Attention Please.");
                     txtMemberNum.Clear();
+                    txtMemberNum2.Clear();
                 }
             }
         }
@@ -335,79 +415,160 @@ namespace NineTapTour.Forms
         {
             if (IsValid()) 
             {
+                var currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
                 List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-                player.Game = new Game();
-                int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
-                Tournament selectedTourney = GetTournamentById(selectedTournamentId);
-                var db = new NineTapDb();
-                var gameId = (from p in db.Participants
-                                where p.Member.Id == currentMem.Id 
-                                && p.Tournament.Id == selectedTourney.Id
-                                select p.Game.Id).FirstOrDefault();
+                if (currTourney.Doubles)
+                {
+                    player.Game = new Game();
+                    player2.Game = new Game();
+                    int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
+                    Tournament selectedTourney = GetTournamentById(selectedTournamentId);
+                    var db = new NineTapDb();
+                    var gameId = (from p in db.Participants
+                                  where p.Member.Id == currentMem.Id
+                                  && p.Tournament.Id == selectedTourney.Id
+                                  select p.Game.Id).FirstOrDefault();
+                    var gameId2 = (from p in db.Participants
+                                  where p.Member.Id == currentMem2.Id
+                                  && p.Tournament.Id == selectedTourney.Id
+                                  select p.Game.Id).FirstOrDefault();
+                    player.Game.Id = gameId;
+                    //selects the ID of the combobox of tournaments and stores the
+                    //tournament property within the participants class.
+                    player.Tournament = selectedTourney;
+                    player.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[0].Text));
+                    player.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[1].Text));
+                    player.Game.Bonus = currentMem.Bonus;
+                    player.Game.Handicap = currentMem.Handicap;
 
-                player.Game.Id = gameId;
-                //selects the ID of the combobox of tournaments and stores the
-                //tournament property within the participants class.
-                player.Tournament = selectedTourney;
-                player.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[0].Text));
-                player.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[1].Text));
-                player.Game.Game3 = IsEmpty(txtScratchScore3) ? null : (int?)Convert.ToInt32((scratchArray[2].Text));
-                player.Game.Game4 = IsEmpty(txtScratchScore4) ? null : (int?)Convert.ToInt32((scratchArray[3].Text));
-                player.Game.Bonus = currentMem.Bonus;
-                player.Game.Handicap = currentMem.Handicap;
+                    player2.Game.Id = gameId2;
+                    player2.Tournament = selectedTourney;
+                    player2.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[2].Text));
+                    player2.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[3].Text));
+                    player2.Game.Bonus = currentMem2.Bonus;
+                    player2.Game.Handicap = currentMem2.Handicap;
 
-                #region radio button
-                if (rdoSquadOne.Checked)
-                {
-                    player.Squad = 1;
-                }
-                else if (rdoSquadTwo.Checked)
-                {
-                    player.Squad = 2;
-                }
-                else if (rdoSquadThree.Checked)
-                {
-                    player.Squad = 3;
-                }
-                else
-                {
-                    player.Squad = 4;
-                }
-                #endregion
-
-                player.Member = currentMem;
-                if(total.Count() == 0)
-                {
-                    player.Id = 1;
-                }
-                else
-                {
-                    player.Id = total[currentIndex - 1].Id;
-                }
-                try
-                {
-                    int temp;
-                    TournamentDb.AddMemberToTournament(player);
-    #if DEBUG
-                    MessageBox.Show(@"Bowler Added Successfully to Tournament!");
-    #endif
-                    if (total.Count() <= 0)
+                    #region radio button
+                    if (rdoSquadOne.Checked)
                     {
-                        temp = 0;
+                        player.Squad = 1;
+                        player2.Squad = 1;
+                    }
+                    else if (rdoSquadTwo.Checked)
+                    {
+                        player.Squad = 2;
+                        player2.Squad = 2;
+                    }
+                    else if (rdoSquadThree.Checked)
+                    {
+                        player.Squad = 3;
+                        player2.Squad = 3;
                     }
                     else
                     {
-                        temp = total.IndexOf(total[currentIndex - 1]);
+                        player.Squad = 4;
+                        player2.Squad = 4;
                     }
-                    lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
-                }
-                catch (MemberAccessException ex)
-                {
-                    MessageBox.Show(ex.Message);
+                    #endregion
 
+                    player.Member = currentMem;
+                    player.Id = total.Count;
+                    player2.Member = currentMem2;
+                    player2.Id = total.Count + 1;
+                    try
+                    {
+                        int temp;
+                        TournamentDb.AddMemberToTournament(player);
+                        TournamentDb.AddMemberToTournament(player2);
+#if DEBUG
+                        MessageBox.Show(@"Bowlers Added Successfully to Tournament!");
+#endif
+                        if (total.Count() <= 0)
+                        {
+                            temp = 0;
+                        }
+                        else
+                        {
+                            temp = total.IndexOf(total[currentIndex - 1]);
+                        }
+                        lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
+                    }
+                    catch (MemberAccessException ex)
+                    {
+                        MessageBox.Show(ex.Message);
+
+                    }
+                    clear();
+                    txtMemberNum.Focus();
                 }
-                clear();
-                txtMemberNum.Focus();
+                //IF the tournament type is a DOUBLES tournament
+                else
+                {
+                    player.Game = new Game();
+                    int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
+                    Tournament selectedTourney = GetTournamentById(selectedTournamentId);
+                    var db = new NineTapDb();
+                    var gameId = (from p in db.Participants
+                                    where p.Member.Id == currentMem.Id 
+                                    && p.Tournament.Id == selectedTourney.Id
+                                    select p.Game.Id).FirstOrDefault();
+
+                    player.Game.Id = gameId;
+                    //selects the ID of the combobox of tournaments and stores the
+                    //tournament property within the participants class.
+                    player.Tournament = selectedTourney;
+                    player.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[0].Text));
+                    player.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[1].Text));
+                    player.Game.Game3 = IsEmpty(txtScratchScore3) ? null : (int?)Convert.ToInt32((scratchArray[2].Text));
+                    player.Game.Game4 = IsEmpty(txtScratchScore4) ? null : (int?)Convert.ToInt32((scratchArray[3].Text));
+                    player.Game.Bonus = currentMem.Bonus;
+                    player.Game.Handicap = currentMem.Handicap;
+
+                    #region radio button
+                    if (rdoSquadOne.Checked)
+                    {
+                        player.Squad = 1;
+                    }
+                    else if (rdoSquadTwo.Checked)
+                    {
+                        player.Squad = 2;
+                    }
+                    else if (rdoSquadThree.Checked)
+                    {
+                        player.Squad = 3;
+                    }
+                    else
+                    {
+                        player.Squad = 4;
+                    }
+                    #endregion
+
+                    player.Member = currentMem;
+                    try
+                    {
+                        int temp;
+                        TournamentDb.AddMemberToTournament(player);
+        #if DEBUG
+                        MessageBox.Show(@"Bowler Added Successfully to Tournament!");
+        #endif
+                        if (total.Count() <= 0)
+                        {
+                            temp = 0;
+                        }
+                        else
+                        {
+                            temp = total.IndexOf(total[currentIndex - 1]);
+                        }
+                        lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
+                    }
+                    catch (MemberAccessException ex)
+                    {
+                        MessageBox.Show(ex.Message);
+
+                    }
+                    clear();
+                    txtMemberNum.Focus();
+                }
             }
             else 
             {
@@ -442,7 +603,6 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="memberID"></param>
         /// <returns></returns>
-
         
         public Game GetScoresById(int memberID)
         {
@@ -727,6 +887,11 @@ namespace NineTapTour.Forms
                 return false;
             }
             return true;
+        }
+
+        private void txtMemberNum2_TextChanged(object sender, EventArgs e)
+        {
+            txtMemberNum.Focus();
         }
     }
     class MemberScores

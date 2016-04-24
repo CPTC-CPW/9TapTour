@@ -123,7 +123,6 @@ namespace NineTapTour.Forms
         {   
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
             OpenOrDisplayForm(ref newfrmMemberData);
-
         }
 
         /// <summary>
