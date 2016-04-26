@@ -155,10 +155,5 @@ namespace NineTapTour.Forms
                 e.Item.Visible = false;
             }
         }
-
-        private void FrmMain_Load(object sender, EventArgs e)
-        {
-
-        }
     }
 }
