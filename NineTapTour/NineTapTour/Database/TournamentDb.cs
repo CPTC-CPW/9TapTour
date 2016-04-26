@@ -36,20 +36,42 @@ namespace NineTapTour.Database
         /// returns the list of tournaments in descending order by date
         /// </summary>
         /// <returns></returns>
-        public static List<Tournament> GetTournamentList()
+        public static List<Tournament> GetTournamentList(string searchParam = null)
         {
-            using (var db = new NineTapDb())
-            {
-                return (from t in db.Tournaments
-                        orderby t.Date descending
-                        select t).ToList();
+            if (String.IsNullOrWhiteSpace(searchParam)) {
+                using (NineTapDb db = new NineTapDb())
+                {
+                    return (from t in db.Tournaments
+                            orderby t.Date descending
+                            select t).ToList();
+                }
+            } else {
+                try {
+                    DateTime dt = Convert.ToDateTime(searchParam);
+                    using (NineTapDb db = new NineTapDb())
+                    {
+                        return (from t in db.Tournaments
+                                where t.Date.CompareTo(dt) == 0
+                                orderby t.Date descending
+                                select t).ToList();
+                    }
+                } catch
+                {
+                    using (NineTapDb db = new NineTapDb())
+                    {
+                        return (from t in db.Tournaments
+                                where t.Location.Contains(searchParam)
+                                orderby t.Date descending
+                                select t).ToList();
+                    }
+                }
             }
         }
 
         public static List<Participant> GetTournamentMemberList(Tournament currTourney)
         {
             
-            using (var db = new NineTapDb())
+            using (NineTapDb db = new NineTapDb())
             {
                 return (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
