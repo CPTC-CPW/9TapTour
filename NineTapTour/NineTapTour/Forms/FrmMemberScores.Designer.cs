@@ -98,6 +98,7 @@
             this.pnlMemStat = new System.Windows.Forms.Panel();
             this.lblMemberL = new System.Windows.Forms.Label();
             this.btnNewTournament = new System.Windows.Forms.Button();
+            this.btnTourSearch = new System.Windows.Forms.Button();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpRecord.SuspendLayout();
@@ -883,12 +884,23 @@
             this.btnNewTournament.UseVisualStyleBackColor = true;
             this.btnNewTournament.Click += new System.EventHandler(this.btnNewTournament_Click);
             // 
+            // btnTourSearch
+            // 
+            this.btnTourSearch.Location = new System.Drawing.Point(274, 677);
+            this.btnTourSearch.Name = "btnTourSearch";
+            this.btnTourSearch.Size = new System.Drawing.Size(189, 23);
+            this.btnTourSearch.TabIndex = 33;
+            this.btnTourSearch.Text = "Search Tournaments...";
+            this.btnTourSearch.UseVisualStyleBackColor = true;
+            this.btnTourSearch.Click += new System.EventHandler(this.btnTourSearch_Click);
+            // 
             // frmMemberScores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(884, 712);
+            this.Controls.Add(this.btnTourSearch);
             this.Controls.Add(this.btnNewTournament);
             this.Controls.Add(this.lblMemberL);
             this.Controls.Add(this.pnlMemStat);
@@ -1006,5 +1018,6 @@
         private System.Windows.Forms.TextBox txtMemberNum2;
         private System.Windows.Forms.Label lblPlayer2;
         private System.Windows.Forms.Label lblPlayer1;
+        private System.Windows.Forms.Button btnTourSearch;
     }
 }

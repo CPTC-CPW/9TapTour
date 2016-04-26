@@ -893,6 +893,28 @@ namespace NineTapTour.Forms
         {
             txtMemberNum.Focus();
         }
+
+        /// <summary>
+        /// Search for tours by location.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnTourSearch_Click(object sender, EventArgs e)
+        {
+            List<Tournament> tours = new List<Tournament>();
+            FrmTourSearch tourSearch = new FrmTourSearch(tours);
+            tourSearch.ShowDialog();
+#if DEBUG
+            foreach (Tournament tour in tours)
+            {
+                Console.WriteLine(tour.TourneyNameDate);
+            }
+#endif
+            if (tours.Count() > 0) {
+                cbxTourneyDropDown.DataSource = tours;
+                cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
+            }
+        }
     }
     class MemberScores
     {
