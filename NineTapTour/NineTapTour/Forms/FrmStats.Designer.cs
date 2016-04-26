@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             this.nineTapTourNineTapDbDataSetBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this._NineTapTour_NineTapDbDataSet = new NineTapTour._NineTapTour_NineTapDbDataSet();
-            this.button1 = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.lblName = new System.Windows.Forms.Label();
             this.lblMemberNumber = new System.Windows.Forms.Label();
@@ -49,16 +48,6 @@
             // 
             this._NineTapTour_NineTapDbDataSet.DataSetName = "_NineTapTour_NineTapDbDataSet";
             this._NineTapTour_NineTapDbDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(2, 191);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Refresh";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // dataGridView1
             // 
@@ -97,7 +86,6 @@
             this.Controls.Add(this.lblMemberNumber);
             this.Controls.Add(this.lblName);
             this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.button1);
             this.Name = "FrmStats";
             this.Text = "FrmStats";
             this.Load += new System.EventHandler(this.FrmStats_Load);
@@ -113,7 +101,6 @@
 
         private System.Windows.Forms.BindingSource nineTapTourNineTapDbDataSetBindingSource;
         private _NineTapTour_NineTapDbDataSet _NineTapTour_NineTapDbDataSet;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.Label lblMemberNumber;
