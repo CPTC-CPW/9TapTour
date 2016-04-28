@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NineTapTour.Database;
+using System.Linq.Dynamic;
+using System.Text;
 
 namespace NineTapTour.Forms
 {
@@ -29,16 +31,72 @@ namespace NineTapTour.Forms
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            if (!String.IsNullOrWhiteSpace(txtSearch.Text.Trim()))
+            listSearch.DataSource = null;
+
+            List<Tournament> tourList = new List<Tournament>();
+            StringBuilder whereClause = new StringBuilder();
+
+            using (NineTapDb db = new NineTapDb())
             {
-                List<Tournament> tourList = TournamentDb.GetTournamentList(txtSearch.Text.Trim());
+                var query = from t in db.Tournaments
+                                //orderby t.Date descending
+                            select t;
+
+                // Location?
+                if (!String.IsNullOrWhiteSpace(txtSearch.Text))
+                {
+                    query = query.Where(t => t.Location == txtSearch.Text);
+                }
+                // Event?
+                if (!String.IsNullOrWhiteSpace(txtEvent.Text))
+                {
+                    query = query.Where(t => t.Event == txtEvent.Text);
+                }
+                // Date?
+                if (!String.IsNullOrWhiteSpace(txtDate.Text))
+                {
+                    try {
+                        DateTime date = Convert.ToDateTime(txtDate.Text);
+                        query = query.Where(t => t.Date == date);
+                    } finally
+                    {
+
+                    }
+                }
+                query = query.OrderBy(t => t.Date);
+
+                var results = query.Select(t => new
+                {
+                    Location = t.Location,
+                    Event = t.Event,
+                    Date = t.Date,
+                    Id = t.Id,
+                    Sponsors = t.Sponsors,
+                    Participant = t.Participant,
+                    Notes = t.Notes
+                }).ToList();
+
+                tourList = results.Select(x=> new Tournament
+                {
+                    Location = x.Location,
+                    Event = x.Event,
+                    Date = x.Date,
+                    Id = x.Id,
+                    Sponsors = x.Sponsors,
+                    Participant = x.Participant,
+                    Notes = x.Notes
+                }).ToList();
+
+                foreach (Tournament t in tourList)
+                {
+                    Console.WriteLine(t.Event);
+                }
+            }
+
+            if (tourList.Count > 0)
+            {
                 listSearch.DataSource = tourList;
                 listSearch.DisplayMember = "TourneyNameDate";
-
-            } else
-            {
-                listSearch.DataSource = null;
-                decideCanClear();
             }
         }
 
@@ -66,6 +124,8 @@ namespace NineTapTour.Forms
         {
             listSearch.DataSource = null;
             txtSearch.Text = null;
+            txtEvent.Text = null;
+            txtDate.Text = null;
             btnClear.Enabled = false;
         }
 
@@ -76,7 +136,7 @@ namespace NineTapTour.Forms
 
         private void decideCanClear()
         {
-            if (txtSearch.Text.Trim() == "")
+            if (String.IsNullOrWhiteSpace(txtSearch.Text.Trim()) && String.IsNullOrWhiteSpace(txtEvent.Text.Trim()) && String.IsNullOrWhiteSpace(txtDate.Text.Trim()))
             {
                 btnSearch.Enabled = false;
                 if (listSearch.SelectedIndex == -1)
@@ -89,6 +149,16 @@ namespace NineTapTour.Forms
                 btnSearch.Enabled = true;
                 btnClear.Enabled = true;
             }
+        }
+
+        private void txtEvent_TextChanged(object sender, EventArgs e)
+        {
+            decideCanClear();
+        }
+
+        private void txtDate_TextChanged(object sender, EventArgs e)
+        {
+            decideCanClear();
         }
     }
 }
