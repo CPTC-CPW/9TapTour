@@ -8,6 +8,7 @@ using System.Globalization;
 using NineTapTour.Exceptions;
 using System.Text.RegularExpressions;
 using System.Drawing.Printing;
+using System.ComponentModel.DataAnnotations;
 
 namespace NineTapTour.Forms
 {
@@ -297,6 +298,14 @@ namespace NineTapTour.Forms
             if (txtEmail.Text == "")
             {
                 MessageBox.Show("email field cannot be null");
+                txtEmail.Clear();
+                return false;
+            }
+            // email validation
+            // Author: Toby Fortuner
+            if (!(new EmailAddressAttribute().IsValid(txtEmail.Text)))
+            {
+                MessageBox.Show("email field must be a valid email address");
                 txtEmail.Clear();
                 return false;
             }
