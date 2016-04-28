@@ -626,16 +626,14 @@ namespace NineTapTour.Forms
                      
         }
         /// <summary>
-        /// clears txtScratchScores textboxes
+        /// clears memberNum, txtScratchScores, and High Game textboxes
         /// </summary>
         private void clear()
         {
-            txtScratchScore1.Clear();
-            txtScratchScore2.Clear();
-            txtScratchScore3.Clear();
-            txtScratchScore4.Clear();
             txtMemberNum.Clear();
-
+            richTextBox1.Clear();
+            richTextBox2.Clear();
+            richTextBox3.Clear();
         }
         
         /// <summary>
@@ -872,6 +870,7 @@ namespace NineTapTour.Forms
 
         private void cbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
+            clear();
             lblRecord.Text = "Record 0" + " / " + "0";
             currentIndex = 1;
         }
