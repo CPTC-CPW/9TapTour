@@ -114,9 +114,11 @@ namespace NineTapTour.Forms
             if (listSearch.SelectedIndex != -1)
             {
                 btnAccept.Enabled = true;
+                listSearch.TabStop = true;
             } else
             {
                 btnAccept.Enabled = false;
+                listSearch.TabStop = false;
             }
         }
 

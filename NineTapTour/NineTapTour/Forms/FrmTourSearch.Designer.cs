@@ -55,7 +55,7 @@
             this.btnSearch.Location = new System.Drawing.Point(11, 205);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(75, 23);
-            this.btnSearch.TabIndex = 1;
+            this.btnSearch.TabIndex = 3;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
@@ -67,7 +67,8 @@
             this.listSearch.Name = "listSearch";
             this.listSearch.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
             this.listSearch.Size = new System.Drawing.Size(260, 160);
-            this.listSearch.TabIndex = 2;
+            this.listSearch.TabIndex = 6;
+            this.listSearch.TabStop = false;
             this.listSearch.SelectedIndexChanged += new System.EventHandler(this.listSearch_SelectedIndexChanged);
             // 
             // btnAccept
@@ -76,7 +77,7 @@
             this.btnAccept.Location = new System.Drawing.Point(196, 205);
             this.btnAccept.Name = "btnAccept";
             this.btnAccept.Size = new System.Drawing.Size(75, 23);
-            this.btnAccept.TabIndex = 3;
+            this.btnAccept.TabIndex = 5;
             this.btnAccept.Text = "Accept";
             this.btnAccept.UseVisualStyleBackColor = true;
             this.btnAccept.Click += new System.EventHandler(this.btnAccept_Click);
@@ -100,6 +101,7 @@
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(259, 38);
             this.textBox1.TabIndex = 5;
+            this.textBox1.TabStop = false;
             this.textBox1.Text = "You may search by Tournament location OR date, but not both.";
             // 
             // txtEvent
@@ -107,7 +109,7 @@
             this.txtEvent.Location = new System.Drawing.Point(12, 124);
             this.txtEvent.Name = "txtEvent";
             this.txtEvent.Size = new System.Drawing.Size(259, 20);
-            this.txtEvent.TabIndex = 6;
+            this.txtEvent.TabIndex = 1;
             this.txtEvent.TextChanged += new System.EventHandler(this.txtEvent_TextChanged);
             // 
             // label1
@@ -142,7 +144,7 @@
             this.txtDate.Location = new System.Drawing.Point(15, 174);
             this.txtDate.Name = "txtDate";
             this.txtDate.Size = new System.Drawing.Size(256, 20);
-            this.txtDate.TabIndex = 11;
+            this.txtDate.TabIndex = 2;
             this.txtDate.TextChanged += new System.EventHandler(this.txtDate_TextChanged);
             // 
             // FrmTourSearch
@@ -162,7 +164,7 @@
             this.Controls.Add(this.listSearch);
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.txtSearch);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "FrmTourSearch";
             this.Text = "Search Tournaments";
             this.ResumeLayout(false);
