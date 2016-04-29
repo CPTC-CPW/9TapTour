@@ -477,7 +477,7 @@
             this.btnLastFile.Size = new System.Drawing.Size(181, 25);
             this.btnLastFile.TabIndex = 0;
             this.btnLastFile.TabStop = false;
-            this.btnLastFile.Text = "Last File";
+            this.btnLastFile.Text = "Last Recap";
             this.btnLastFile.UseVisualStyleBackColor = true;
             // 
             // btnNew
@@ -920,7 +920,7 @@
             this.Controls.Add(this.grpMemberNum);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(900, 750);
+            this.MinimumSize = new System.Drawing.Size(900, 726);
             this.Name = "frmMemberScores";
             this.Text = "Member Scores";
             this.Activated += new System.EventHandler(this.FrmMemberScores_Activated);
