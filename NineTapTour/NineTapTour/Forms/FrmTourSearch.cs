@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NineTapTour.Database;
 using System.Linq.Dynamic;
-using System.Text;
 
 namespace NineTapTour.Forms
 {
