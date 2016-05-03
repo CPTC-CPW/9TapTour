@@ -50,12 +50,10 @@
             this.txtAveragePerGame = new System.Windows.Forms.TextBox();
             this.txtAverageOnFile = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.txtHandicap = new System.Windows.Forms.TextBox();
+            this.txtBonus = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nineTapTourNineTapDbDataSetBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._NineTapTour_NineTapDbDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -80,7 +78,6 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(2072, 1388);
             this.dataGridView1.TabIndex = 3;
-            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // lblName
             // 
@@ -107,192 +104,175 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(276, 1505);
+            this.label1.Location = new System.Drawing.Point(222, 1346);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(70, 25);
+            this.label1.Size = new System.Drawing.Size(183, 25);
             this.label1.TabIndex = 6;
-            this.label1.Text = "label1";
+            this.label1.Text = "Overall Averages:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(459, 1461);
+            this.label2.Location = new System.Drawing.Point(544, 1296);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(70, 25);
+            this.label2.Size = new System.Drawing.Size(87, 25);
             this.label2.TabIndex = 7;
-            this.label2.Text = "label2";
+            this.label2.Text = "Game 1";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(643, 1461);
+            this.label3.Location = new System.Drawing.Point(738, 1296);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(70, 25);
+            this.label3.Size = new System.Drawing.Size(87, 25);
             this.label3.TabIndex = 8;
-            this.label3.Text = "label3";
+            this.label3.Text = "Game 2";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(821, 1461);
+            this.label4.Location = new System.Drawing.Point(932, 1296);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(70, 25);
+            this.label4.Size = new System.Drawing.Size(87, 25);
             this.label4.TabIndex = 9;
-            this.label4.Text = "label4";
+            this.label4.Text = "Game 3";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(1002, 1461);
+            this.label5.Location = new System.Drawing.Point(1126, 1296);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(70, 25);
+            this.label5.Size = new System.Drawing.Size(87, 25);
             this.label5.TabIndex = 10;
-            this.label5.Text = "label5";
+            this.label5.Text = "Game 4";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(1189, 1461);
+            this.label6.Location = new System.Drawing.Point(1302, 1296);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(70, 25);
+            this.label6.Size = new System.Drawing.Size(123, 25);
             this.label6.TabIndex = 11;
-            this.label6.Text = "label6";
+            this.label6.Text = "Game Total";
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(1378, 1461);
+            this.label7.Location = new System.Drawing.Point(1504, 1296);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(70, 25);
+            this.label7.Size = new System.Drawing.Size(107, 25);
             this.label7.TabIndex = 12;
-            this.label7.Text = "label7";
+            this.label7.Text = "Avr/Game";
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(1553, 1461);
+            this.label8.Location = new System.Drawing.Point(1681, 1296);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(70, 25);
+            this.label8.Size = new System.Drawing.Size(141, 25);
             this.label8.TabIndex = 13;
-            this.label8.Text = "label8";
+            this.label8.Text = "AvrOnRecord";
             // 
             // txtGame1
             // 
-            this.txtGame1.Location = new System.Drawing.Point(408, 1505);
+            this.txtGame1.Location = new System.Drawing.Point(490, 1346);
             this.txtGame1.Name = "txtGame1";
-            this.txtGame1.Size = new System.Drawing.Size(177, 31);
+            this.txtGame1.Size = new System.Drawing.Size(194, 31);
             this.txtGame1.TabIndex = 14;
             // 
             // txtGame2
             // 
-            this.txtGame2.Location = new System.Drawing.Point(591, 1505);
+            this.txtGame2.Location = new System.Drawing.Point(684, 1346);
             this.txtGame2.Name = "txtGame2";
-            this.txtGame2.Size = new System.Drawing.Size(177, 31);
+            this.txtGame2.Size = new System.Drawing.Size(194, 31);
             this.txtGame2.TabIndex = 15;
             // 
             // txtGame3
             // 
-            this.txtGame3.Location = new System.Drawing.Point(774, 1505);
+            this.txtGame3.Location = new System.Drawing.Point(878, 1346);
             this.txtGame3.Name = "txtGame3";
-            this.txtGame3.Size = new System.Drawing.Size(177, 31);
+            this.txtGame3.Size = new System.Drawing.Size(194, 31);
             this.txtGame3.TabIndex = 16;
             // 
             // txtGame4
             // 
-            this.txtGame4.Location = new System.Drawing.Point(957, 1505);
+            this.txtGame4.Location = new System.Drawing.Point(1072, 1346);
             this.txtGame4.Name = "txtGame4";
-            this.txtGame4.Size = new System.Drawing.Size(177, 31);
+            this.txtGame4.Size = new System.Drawing.Size(194, 31);
             this.txtGame4.TabIndex = 17;
             // 
             // txtGameTotal
             // 
-            this.txtGameTotal.Location = new System.Drawing.Point(1140, 1505);
+            this.txtGameTotal.Location = new System.Drawing.Point(1266, 1346);
             this.txtGameTotal.Name = "txtGameTotal";
-            this.txtGameTotal.Size = new System.Drawing.Size(177, 31);
+            this.txtGameTotal.Size = new System.Drawing.Size(194, 31);
             this.txtGameTotal.TabIndex = 18;
             // 
             // txtAveragePerGame
             // 
-            this.txtAveragePerGame.Location = new System.Drawing.Point(1323, 1505);
+            this.txtAveragePerGame.Location = new System.Drawing.Point(1460, 1346);
             this.txtAveragePerGame.Name = "txtAveragePerGame";
-            this.txtAveragePerGame.Size = new System.Drawing.Size(177, 31);
+            this.txtAveragePerGame.Size = new System.Drawing.Size(194, 31);
             this.txtAveragePerGame.TabIndex = 19;
             // 
             // txtAverageOnFile
             // 
-            this.txtAverageOnFile.Location = new System.Drawing.Point(1506, 1505);
+            this.txtAverageOnFile.Location = new System.Drawing.Point(1654, 1346);
             this.txtAverageOnFile.Name = "txtAverageOnFile";
-            this.txtAverageOnFile.Size = new System.Drawing.Size(177, 31);
+            this.txtAverageOnFile.Size = new System.Drawing.Size(194, 31);
             this.txtAverageOnFile.TabIndex = 20;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(2056, 1337);
+            this.button1.Location = new System.Drawing.Point(1977, 1399);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(148, 83);
+            this.button1.Size = new System.Drawing.Size(242, 83);
             this.button1.TabIndex = 21;
-            this.button1.Text = "button1";
+            this.button1.Text = "Print";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // textBox1
+            // txtHandicap
             // 
-            this.textBox1.Location = new System.Drawing.Point(1689, 1505);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(177, 31);
-            this.textBox1.TabIndex = 22;
+            this.txtHandicap.Location = new System.Drawing.Point(1848, 1346);
+            this.txtHandicap.Name = "txtHandicap";
+            this.txtHandicap.Size = new System.Drawing.Size(194, 31);
+            this.txtHandicap.TabIndex = 22;
             // 
-            // textBox2
+            // txtBonus
             // 
-            this.textBox2.Location = new System.Drawing.Point(2055, 1505);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(177, 31);
-            this.textBox2.TabIndex = 23;
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(1872, 1505);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(177, 31);
-            this.textBox3.TabIndex = 24;
+            this.txtBonus.Location = new System.Drawing.Point(2042, 1346);
+            this.txtBonus.Name = "txtBonus";
+            this.txtBonus.Size = new System.Drawing.Size(194, 31);
+            this.txtBonus.TabIndex = 24;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(1561, 1469);
+            this.label9.Location = new System.Drawing.Point(1894, 1296);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(70, 25);
+            this.label9.Size = new System.Drawing.Size(103, 25);
             this.label9.TabIndex = 25;
-            this.label9.Text = "label9";
+            this.label9.Text = "Handicap";
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(1569, 1477);
+            this.label10.Location = new System.Drawing.Point(2103, 1296);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(82, 25);
+            this.label10.Size = new System.Drawing.Size(73, 25);
             this.label10.TabIndex = 26;
-            this.label10.Text = "label10";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(2080, 1469);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(82, 25);
-            this.label11.TabIndex = 27;
-            this.label11.Text = "label11";
+            this.label10.Text = "Bonus";
             // 
             // FrmStats
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(2316, 1633);
-            this.Controls.Add(this.label11);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.txtBonus);
+            this.Controls.Add(this.txtHandicap);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.txtAverageOnFile);
             this.Controls.Add(this.txtAveragePerGame);
@@ -347,11 +327,9 @@
         private System.Windows.Forms.TextBox txtAveragePerGame;
         private System.Windows.Forms.TextBox txtAverageOnFile;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox txtHandicap;
+        private System.Windows.Forms.TextBox txtBonus;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label11;
     }
 }
