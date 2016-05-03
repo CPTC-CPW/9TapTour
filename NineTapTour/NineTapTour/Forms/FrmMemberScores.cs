@@ -928,7 +928,7 @@ namespace NineTapTour.Forms
         private void cbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
             clear();
-            lblRecord.Text = "Record 0" + " / " + "0"; // This needs to display a real generated count
+            lblRecord.Text = "Record 0" + " / " + "0"; // This needs to display a real generated count 
             currentIndex = 1;
         }
 
