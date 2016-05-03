@@ -62,5 +62,10 @@ namespace NineTapTour.Forms
             lblName.Text = memName;
             lblMemberNumber.Text = Convert.ToString(memNum);
         }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
 }
