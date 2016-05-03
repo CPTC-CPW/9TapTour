@@ -49,7 +49,7 @@
             this.txtGameTotal = new System.Windows.Forms.TextBox();
             this.txtAveragePerGame = new System.Windows.Forms.TextBox();
             this.txtAverageOnFile = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnPrint = new System.Windows.Forms.Button();
             this.txtHandicap = new System.Windows.Forms.TextBox();
             this.txtBonus = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -222,15 +222,15 @@
             this.txtAverageOnFile.Size = new System.Drawing.Size(194, 31);
             this.txtAverageOnFile.TabIndex = 20;
             // 
-            // button1
+            // btnPrint
             // 
-            this.button1.Location = new System.Drawing.Point(1977, 1399);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(242, 83);
-            this.button1.TabIndex = 21;
-            this.button1.Text = "Print";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnPrint.Location = new System.Drawing.Point(1977, 1399);
+            this.btnPrint.Name = "btnPrint";
+            this.btnPrint.Size = new System.Drawing.Size(242, 83);
+            this.btnPrint.TabIndex = 21;
+            this.btnPrint.Text = "Print";
+            this.btnPrint.UseVisualStyleBackColor = true;
+            this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
             // 
             // txtHandicap
             // 
@@ -273,7 +273,7 @@
             this.Controls.Add(this.label9);
             this.Controls.Add(this.txtBonus);
             this.Controls.Add(this.txtHandicap);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.txtAverageOnFile);
             this.Controls.Add(this.txtAveragePerGame);
             this.Controls.Add(this.txtGameTotal);
@@ -326,7 +326,7 @@
         private System.Windows.Forms.TextBox txtGameTotal;
         private System.Windows.Forms.TextBox txtAveragePerGame;
         private System.Windows.Forms.TextBox txtAverageOnFile;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnPrint;
         private System.Windows.Forms.TextBox txtHandicap;
         private System.Windows.Forms.TextBox txtBonus;
         private System.Windows.Forms.Label label9;
