@@ -175,49 +175,49 @@
             // 
             // txtGame1
             // 
-            this.txtGame1.Location = new System.Drawing.Point(490, 1346);
+            this.txtGame1.Location = new System.Drawing.Point(488, 1346);
             this.txtGame1.Name = "txtGame1";
             this.txtGame1.Size = new System.Drawing.Size(194, 31);
             this.txtGame1.TabIndex = 14;
             // 
             // txtGame2
             // 
-            this.txtGame2.Location = new System.Drawing.Point(684, 1346);
+            this.txtGame2.Location = new System.Drawing.Point(682, 1346);
             this.txtGame2.Name = "txtGame2";
             this.txtGame2.Size = new System.Drawing.Size(194, 31);
             this.txtGame2.TabIndex = 15;
             // 
             // txtGame3
             // 
-            this.txtGame3.Location = new System.Drawing.Point(878, 1346);
+            this.txtGame3.Location = new System.Drawing.Point(876, 1346);
             this.txtGame3.Name = "txtGame3";
             this.txtGame3.Size = new System.Drawing.Size(194, 31);
             this.txtGame3.TabIndex = 16;
             // 
             // txtGame4
             // 
-            this.txtGame4.Location = new System.Drawing.Point(1072, 1346);
+            this.txtGame4.Location = new System.Drawing.Point(1070, 1346);
             this.txtGame4.Name = "txtGame4";
             this.txtGame4.Size = new System.Drawing.Size(194, 31);
             this.txtGame4.TabIndex = 17;
             // 
             // txtGameTotal
             // 
-            this.txtGameTotal.Location = new System.Drawing.Point(1266, 1346);
+            this.txtGameTotal.Location = new System.Drawing.Point(1264, 1346);
             this.txtGameTotal.Name = "txtGameTotal";
             this.txtGameTotal.Size = new System.Drawing.Size(194, 31);
             this.txtGameTotal.TabIndex = 18;
             // 
             // txtAveragePerGame
             // 
-            this.txtAveragePerGame.Location = new System.Drawing.Point(1460, 1346);
+            this.txtAveragePerGame.Location = new System.Drawing.Point(1458, 1346);
             this.txtAveragePerGame.Name = "txtAveragePerGame";
             this.txtAveragePerGame.Size = new System.Drawing.Size(194, 31);
             this.txtAveragePerGame.TabIndex = 19;
             // 
             // txtAverageOnFile
             // 
-            this.txtAverageOnFile.Location = new System.Drawing.Point(1654, 1346);
+            this.txtAverageOnFile.Location = new System.Drawing.Point(1652, 1346);
             this.txtAverageOnFile.Name = "txtAverageOnFile";
             this.txtAverageOnFile.Size = new System.Drawing.Size(194, 31);
             this.txtAverageOnFile.TabIndex = 20;
@@ -234,14 +234,14 @@
             // 
             // txtHandicap
             // 
-            this.txtHandicap.Location = new System.Drawing.Point(1848, 1346);
+            this.txtHandicap.Location = new System.Drawing.Point(1846, 1346);
             this.txtHandicap.Name = "txtHandicap";
             this.txtHandicap.Size = new System.Drawing.Size(194, 31);
             this.txtHandicap.TabIndex = 22;
             // 
             // txtBonus
             // 
-            this.txtBonus.Location = new System.Drawing.Point(2042, 1346);
+            this.txtBonus.Location = new System.Drawing.Point(2040, 1346);
             this.txtBonus.Name = "txtBonus";
             this.txtBonus.Size = new System.Drawing.Size(194, 31);
             this.txtBonus.TabIndex = 24;
