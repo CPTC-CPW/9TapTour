@@ -28,6 +28,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Populates the stats page for the member selected
         /// </summary>
+        
         public void populateStats()
         {
             var db = new NineTapDb();
@@ -54,6 +55,16 @@ namespace NineTapTour.Forms
                              ,
                              g.Bonus
                          }).ToList();
+            double sum = 0;
+            double count = 0;
+            #region Game 1 Average
+            for(int i = 0; i < stats.Count; i++)
+            {
+                count++;
+                sum += Convert.ToInt32(stats[i].Game1);
+            }
+            txtGame1.Text = (sum / count).ToString();
+            #endregion
             dataGridView1.DataSource = stats;
         }
 
