@@ -13,18 +13,15 @@ namespace NineTapTour.Forms
 {
     public partial class frmMemberScores : Form
     {
-
         //IOrderedEnumerable<Member> _membersList;
         Member currentMem;
         Member currentMem2;
         TextBox[] scratchArray = new TextBox[4];
         TextBox[] handicappArray = new TextBox[4];
-        //Count for record counting
-        int currentIndex = 0;
+        int currentIndex = 0;         //Count for record counting
         Participant player = new Participant();
         Participant player2 = new Participant();
         bool doubles = true;
-
 
         public frmMemberScores()
         {
@@ -38,14 +35,12 @@ namespace NineTapTour.Forms
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
 
         }
-
         /// <summary>
         /// entering a member number clears members data
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void txtMemberNum_TextChanged(object sender, EventArgs e)
-        
+        private void txtMemberNum_TextChanged(object sender, EventArgs e)       
         {
             if (currentMem == null || ((TextBox)sender).Text == "")
             {
@@ -75,6 +70,7 @@ namespace NineTapTour.Forms
             cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             cbxTourneyDropDown.ValueMember = "Id";
+            cbxTourneyDropDown.SelectedIndex = -1;
             List<Tournament> temp2 = TournamentDb.GetTournamentList();
             if (temp2.Count() > 0)
             {
@@ -307,7 +303,10 @@ namespace NineTapTour.Forms
                 }
             }
         }
-
+        /// <summary>
+        /// May be unused
+        /// </summary>
+        /// <returns></returns>
         public int GetParticipant()
         {
             NineTapDb db = new NineTapDb();
@@ -416,33 +415,31 @@ namespace NineTapTour.Forms
             if (IsValid()) 
             {
                 var currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
-                List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
+                List<Participant> total = TournamentDb.GetTournamentMemberList(currTourney);
                 if (currTourney.Doubles)
                 {
                     player.Game = new Game();
                     player2.Game = new Game();
-                    int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
-                    Tournament selectedTourney = GetTournamentById(selectedTournamentId);
                     var db = new NineTapDb();
                     var gameId = (from p in db.Participants
                                   where p.Member.Id == currentMem.Id
-                                  && p.Tournament.Id == selectedTourney.Id
+                                  && p.Tournament.Id == currTourney.Id
                                   select p.Game.Id).FirstOrDefault();
                     var gameId2 = (from p in db.Participants
                                   where p.Member.Id == currentMem2.Id
-                                  && p.Tournament.Id == selectedTourney.Id
+                                  && p.Tournament.Id == currTourney.Id
                                   select p.Game.Id).FirstOrDefault();
                     player.Game.Id = gameId;
                     //selects the ID of the combobox of tournaments and stores the
                     //tournament property within the participants class.
-                    player.Tournament = selectedTourney;
+                    player.Tournament = currTourney;
                     player.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[0].Text));
                     player.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[1].Text));
                     player.Game.Bonus = currentMem.Bonus;
                     player.Game.Handicap = currentMem.Handicap;
 
                     player2.Game.Id = gameId2;
-                    player2.Tournament = selectedTourney;
+                    player2.Tournament = currTourney;
                     player2.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[2].Text));
                     player2.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[3].Text));
                     player2.Game.Bonus = currentMem2.Bonus;
@@ -477,21 +474,13 @@ namespace NineTapTour.Forms
                     player2.Id = total.Count + 1;
                     try
                     {
-                        int temp;
                         TournamentDb.AddMemberToTournament(player);
                         TournamentDb.AddMemberToTournament(player2);
 #if DEBUG
                         MessageBox.Show(@"Bowlers Added Successfully to Tournament!");
 #endif
-                        if (total.Count() <= 0)
-                        {
-                            temp = 0;
-                        }
-                        else
-                        {
-                            temp = total.IndexOf(total[currentIndex - 1]);
-                        }
-                        lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
+                        RecordIndex(TournamentDb.GetTournamentMemberList(currTourney));
+
                     }
                     catch (MemberAccessException ex)
                     {
@@ -505,18 +494,16 @@ namespace NineTapTour.Forms
                 else
                 {
                     player.Game = new Game();
-                    int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
-                    Tournament selectedTourney = GetTournamentById(selectedTournamentId);
                     var db = new NineTapDb();
                     var gameId = (from p in db.Participants
                                     where p.Member.Id == currentMem.Id 
-                                    && p.Tournament.Id == selectedTourney.Id
+                                    && p.Tournament.Id == currTourney.Id
                                     select p.Game.Id).FirstOrDefault();
 
                     player.Game.Id = gameId;
                     //selects the ID of the combobox of tournaments and stores the
                     //tournament property within the participants class.
-                    player.Tournament = selectedTourney;
+                    player.Tournament = currTourney;
                     player.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[0].Text));
                     player.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[1].Text));
                     player.Game.Game3 = IsEmpty(txtScratchScore3) ? null : (int?)Convert.ToInt32((scratchArray[2].Text));
@@ -546,20 +533,11 @@ namespace NineTapTour.Forms
                     player.Member = currentMem;
                     try
                     {
-                        int temp;
                         TournamentDb.AddMemberToTournament(player);
         #if DEBUG
                         MessageBox.Show(@"Bowler Added Successfully to Tournament!");
-        #endif
-                        if (total.Count() <= 0)
-                        {
-                            temp = 0;
-                        }
-                        else
-                        {
-                            temp = total.IndexOf(total[currentIndex - 1]);
-                        }
-                        lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
+#endif
+                        RecordIndex(TournamentDb.GetTournamentMemberList(currTourney));
                     }
                     catch (MemberAccessException ex)
                     {
@@ -576,19 +554,44 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// updates the index and total count of the record label
+        /// </summary>
+        /// <param name="players"> a list of participant objects </param>
+        public void RecordIndex(List<Participant> players)
+        {
+            int temp;
+
+            if (players.Count() <= 0)
+            {
+                temp = 0;
+            }
+            else
+            {
+                temp = players.IndexOf(players[currentIndex - 1]);
+            }
+
+            lblRecord.Text = "Record " + (temp + 1) + " / " + players.Count();
+        }
+
+        /// <summary>
+        /// check for empty text box
+        /// </summary>
+        /// <param name="box"></param>
+        /// <returns></returns>
         private bool IsEmpty(TextBox box)
         {
-            if (box.Text == "")
+            if (string.IsNullOrEmpty(box.ToString().Trim()))
             {
                 return true;
             }
             return false;
         } 
+
         /// <summary>
         /// get a tournament by selected id
         /// </summary>
-        /// <param name="selectedTournamentId"></param>
-        
+        /// <param name="selectedTournamentId"></param>    
         private static Tournament GetTournamentById(int selectedTournamentId)
         {
             Tournament selectedTournament = (from t in TournamentDb.GetTournamentList()
@@ -924,14 +927,26 @@ namespace NineTapTour.Forms
                 }
             }
         }
-
+        /// <summary>
+        /// updates record index when tourney is changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            clear();
-            lblRecord.Text = "Record 0" + " / " + "0"; // This needs to display a real generated count 
-            currentIndex = 1;
+            if (cbxTourneyDropDown.SelectedIndex <= 0)
+            {
+                lblRecord.Text = "Record 0" + " / " + "0";
+            }
+            else
+            {
+                RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue))));
+            }
         }
-
+        /// <summary>
+        /// validation method for form fields
+        /// </summary>
+        /// <returns>boolean</returns>
         public bool IsValid()
         {
             if (cbxTourneyDropDown.SelectedValue == null)
