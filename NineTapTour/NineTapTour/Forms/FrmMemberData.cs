@@ -235,7 +235,8 @@ namespace NineTapTour.Forms
                 }
                 else
                 {
-                    datePaid.Value = DateTime.Now;
+                    dateRejoin.Format = DateTimePickerFormat.Custom;
+                    dateRejoin.CustomFormat = @" ";
                     lblPaymentInfo.Visible = false;
                 }
             }
@@ -682,6 +683,7 @@ namespace NineTapTour.Forms
         private void datePaid_ValueChanged(object sender, EventArgs e)
         {
             checkPayment();
+            Console.WriteLine(datePaid.Visible);
         }
         private void checkPayment()
         {
