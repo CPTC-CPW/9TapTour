@@ -153,30 +153,20 @@ namespace NineTapTour.Forms
             lblName.Text = memName;
             lblMemberNumber.Text = Convert.ToString(memNum);
         }
-        private Button printButton = new Button();
-        private PrintDocument printDocument1 = new PrintDocument();
+        
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
-            CaptureScreen();
-            printDocument1.Print();
+            printDialog1.Document = printDocument1;
+            if (printDialog1.ShowDialog()==DialogResult.OK)
+            {
+                printDocument1.Print();
+            }
         }
-        Bitmap memoryImage;
 
-        private void CaptureScreen()
+        private void printDocument1_PrintPage(object sender, PrintPageEventArgs e)
         {
-            Graphics myGraphics = this.CreateGraphics();
-            Size s = this.Size;
-            memoryImage = new Bitmap(s.Width, s.Height, myGraphics);
-            Graphics memoryGraphics = Graphics.FromImage(memoryImage);
-            memoryGraphics.CopyFromScreen(this.Location.X, this.Location.Y, 0, 0, s);
+            e.Graphics.DrawString(dataGridView1.ToString(),new Font("Arial", 40, FontStyle.Bold),Brushes.Black,150,125);
         }
-
-        private void printDocument1_PrintPage(System.Object sender,
-               System.Drawing.Printing.PrintPageEventArgs e)
-        {
-            e.Graphics.DrawImage(memoryImage, 0, 0);
-        }
-
     }
 }
