@@ -132,6 +132,12 @@
     <Compile Include="Forms\FrmTournaments.Designer.cs">
       <DependentUpon>FrmTournaments.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FrmTournamentStats.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmTournamentStats.Designer.cs">
+      <DependentUpon>FrmTournamentStats.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MainMenu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -265,6 +271,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmTournaments.resx">
       <DependentUpon>FrmTournaments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmTournamentStats.resx">
+      <DependentUpon>FrmTournamentStats.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainMenu.resx">
       <DependentUpon>MainMenu.cs</DependentUpon>

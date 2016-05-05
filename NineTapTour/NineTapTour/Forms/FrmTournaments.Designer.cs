@@ -141,6 +141,7 @@
             this.btnTournamentInfo.TabIndex = 2;
             this.btnTournamentInfo.Text = "Tournament Info";
             this.btnTournamentInfo.UseVisualStyleBackColor = true;
+            this.btnTournamentInfo.Click += new System.EventHandler(this.btnTournamentInfo_Click);
             // 
             // FrmTournaments
             // 
