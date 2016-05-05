@@ -44,6 +44,9 @@ namespace NineTapTour.Forms
             dateLastBowled.Format = DateTimePickerFormat.Custom;
             dateLastBowled.CustomFormat = @" ";
 
+            datePaid.Format = DateTimePickerFormat.Custom;
+            datePaid.CustomFormat = @" ";
+
             UpdateMemberInfo();
         }
         /// <summary>
@@ -142,6 +145,10 @@ namespace NineTapTour.Forms
                     check.Checked = false;
                 }
                 #endregion
+
+                chbLifetime.Checked = false;
+                datePaid.Format = DateTimePickerFormat.Custom;
+                datePaid.CustomFormat = @" ";
             }
             else
             {
@@ -221,7 +228,7 @@ namespace NineTapTour.Forms
                 #endregion
 
                 chbLifetime.Checked = currentMem.IsLifetimeMember;
-                if (!currentMem.IsLifetimeMember && currentMem.LastPayment.HasValue)
+                if ((!currentMem.IsLifetimeMember) && currentMem.LastPayment.HasValue)
                 {
                     datePaid.Value = (DateTime)currentMem.LastPayment;
                     checkPayment();
@@ -391,10 +398,12 @@ namespace NineTapTour.Forms
                     Notes = txtNotes.Text,
                     Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text),
                     #endregion
-                    LastPayment = dateJoined.Value,
+                    LastPayment = (datePaid.CustomFormat == @" ") ? (DateTime?)null : datePaid.Value,
                     IsLifetimeMember = chbLifetime.Checked
                     
                 };
+                Console.WriteLine(temp.LastPayment);
+                Console.WriteLine(datePaid.Value);
 
                 // Adds Member to Database
 
