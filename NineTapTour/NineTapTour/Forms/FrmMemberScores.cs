@@ -893,6 +893,12 @@ namespace NineTapTour.Forms
         {
             txtMemberNum.Focus();
         }
+
+        private void btnTournamentStats_Click(object sender, EventArgs e)
+        {
+            FrmTournaments tournamentForm = new FrmTournaments();
+            tournamentForm.ShowDialog();
+        }
     }
     class MemberScores
     {
