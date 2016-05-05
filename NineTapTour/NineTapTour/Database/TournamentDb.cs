@@ -38,7 +38,7 @@ namespace NineTapTour.Database
         /// <returns></returns>
         public static List<Tournament> GetTournamentList()
         {
-            using (var db = new NineTapDb())
+            using (NineTapDb db = new NineTapDb())
             {
                 return (from t in db.Tournaments
                         orderby t.Date descending
@@ -49,7 +49,7 @@ namespace NineTapTour.Database
         public static List<Participant> GetTournamentMemberList(Tournament currTourney)
         {
             
-            using (var db = new NineTapDb())
+            using (NineTapDb db = new NineTapDb())
             {
                 return (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id

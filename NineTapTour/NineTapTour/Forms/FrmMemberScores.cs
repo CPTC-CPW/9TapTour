@@ -626,16 +626,14 @@ namespace NineTapTour.Forms
                      
         }
         /// <summary>
-        /// clears txtScratchScores textboxes
+        /// clears memberNum, txtScratchScores, and High Game textboxes
         /// </summary>
         private void clear()
         {
-            txtScratchScore1.Clear();
-            txtScratchScore2.Clear();
-            txtScratchScore3.Clear();
-            txtScratchScore4.Clear();
             txtMemberNum.Clear();
-
+            richTextBox1.Clear();
+            richTextBox2.Clear();
+            richTextBox3.Clear();
         }
         
         /// <summary>
@@ -728,6 +726,63 @@ namespace NineTapTour.Forms
             ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
             newfrmNewTournament.Dock = DockStyle.None;
             rdoSquadOne.Checked = true;
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Clear();
+            richTextBox1.Font = new Font(FontFamily.GenericMonospace, richTextBox1.Font.Size);
+            richTextBox1.Text = ("#" + "\t" + "Name" + "\t\t" + "Handicap" + "\n");
+            int counter = 1;
+            int index = 0;
+            int nullValues = 0;
+            var db = new NineTapDb();
+            int selectedTourney = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
+
+            var top5 = db.Participants.Include(b => b.Member)
+                .Include(b => b.Game)
+                .Where(b => b.Tournament.Id == selectedTourney);
+            List<MemberScores> scores = new List<MemberScores>();
+            
+            var temp = (from g in top5
+                        orderby (g.Game.Handicap) descending
+                        select g).Take(5).ToList();
+            
+            foreach (var i in temp)
+            {
+                #region conditions for highest handicap scores
+                nullValues = 0;
+                if (i.Game.Game1 == 0)
+                {
+                    nullValues += 1;
+                }
+                if (i.Game.Game2 == 0)
+                {
+                    nullValues += 1;
+                }
+                if (i.Game.Game3 == 0)
+                {
+                    nullValues += 1;
+                }
+                if (i.Game.Game4 == 0)
+                {
+                    nullValues += 1;
+                }
+                #endregion
+                scores.Add(new MemberScores { FirstName = i.Member.FirstName, LastName = i.Member.LastName, Score =  i.Game.Handicap });
+            }
+
+            IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
+            scores.Sort(scoreComparer);
+            scores.Reverse();
+            scores = scores.Take(5).ToList();
+            for (int i = 0; i < scores.Count(); i++)
+            {
+                richTextBox1.AppendText(counter + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
+                                        + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
+                counter++;
+                index++;
+            }
         }
 
         private void btnRefresh2_Click(object sender, EventArgs e)
@@ -872,7 +927,8 @@ namespace NineTapTour.Forms
 
         private void cbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            lblRecord.Text = "Record 0" + " / " + "0";
+            clear();
+            lblRecord.Text = "Record 0" + " / " + "0"; // This needs to display a real generated count 
             currentIndex = 1;
         }
 
@@ -892,6 +948,28 @@ namespace NineTapTour.Forms
         private void txtMemberNum2_TextChanged(object sender, EventArgs e)
         {
             txtMemberNum.Focus();
+        }
+
+        /// <summary>
+        /// Search for tours by location.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnTourSearch_Click(object sender, EventArgs e)
+        {
+            List<Tournament> tours = new List<Tournament>();
+            FrmTourSearch tourSearch = new FrmTourSearch(tours);
+            tourSearch.ShowDialog();
+#if DEBUG
+            foreach (Tournament tour in tours)
+            {
+                Console.WriteLine(tour.TourneyNameDate);
+            }
+#endif
+            if (tours.Count() > 0) {
+                cbxTourneyDropDown.DataSource = tours;
+                cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
+            }
         }
     }
     class MemberScores

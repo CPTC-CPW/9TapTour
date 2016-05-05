@@ -8,6 +8,7 @@ using System.Globalization;
 using NineTapTour.Exceptions;
 using System.Text.RegularExpressions;
 using System.Drawing.Printing;
+using System.ComponentModel.DataAnnotations;
 
 namespace NineTapTour.Forms
 {
@@ -300,6 +301,14 @@ namespace NineTapTour.Forms
                 txtEmail.Clear();
                 return false;
             }
+            // email validation
+            // Author: Toby Fortuner
+            if (!(new EmailAddressAttribute().IsValid(txtEmail.Text)))
+            {
+                MessageBox.Show("email field must be a valid email address");
+                txtEmail.Clear();
+                return false;
+            }
             if (txtState.Text == "")
             {
                 MessageBox.Show("state field cannot be null");
@@ -559,6 +568,7 @@ namespace NineTapTour.Forms
         private void btnStats_Click(object sender, EventArgs e)
         {
             var newfrmStart = new FrmStats(Convert.ToInt32(txtMemberNumber.Text), (txtFirstName.Text + " " + txtLastName.Text), currentMem);
+            newfrmStart.populateStats();            
             newfrmStart.Show();
         }
 
