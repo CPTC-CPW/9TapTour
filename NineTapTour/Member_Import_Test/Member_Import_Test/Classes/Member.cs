@@ -66,6 +66,8 @@ namespace Member_Import_Test.Classes
         public DateTime JoinDate { get; set; }
         public DateTime? RejoinDate { get; set; }
         public DateTime? LastBowled { get; set; }
+        public DateTime? LastPayment { get; set; }
+        public bool IsLifetimeMember { get; set; }
         [Column(TypeName = "Money")]
         public decimal MoneyEarned { get; set; }
         public string Notes { get; set; }

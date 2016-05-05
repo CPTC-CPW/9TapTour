@@ -220,6 +220,17 @@ namespace NineTapTour.Forms
                 }
                 #endregion
 
+                chbLifetime.Checked = currentMem.IsLifetimeMember;
+                if (!currentMem.IsLifetimeMember && currentMem.LastPayment.HasValue)
+                {
+                    datePaid.Value = (DateTime)currentMem.LastPayment;
+                    checkPayment();
+                }
+                else
+                {
+                    datePaid.Value = DateTime.Now;
+                    lblPaymentInfo.Visible = false;
+                }
             }
         }
 
@@ -378,8 +389,11 @@ namespace NineTapTour.Forms
                     MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
                     //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
                     Notes = txtNotes.Text,
-                    Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text)
+                    Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text),
                     #endregion
+                    LastPayment = dateJoined.Value,
+                    IsLifetimeMember = chbLifetime.Checked
+                    
                 };
 
                 // Adds Member to Database
@@ -642,5 +656,34 @@ namespace NineTapTour.Forms
             graphic.DrawString(txtMemberNumber.Text, font, dBrush, startX + 80, startY + 215);
 
         }
+
+        private void chbLifetime_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chbLifetime.Checked)
+            {
+                lblPaymentInfo.Visible = false;
+                datePaid.Enabled = false;
+            } else
+            {
+                datePaid.Enabled = true;
+                checkPayment();
+            }
+        }
+
+        private void datePaid_ValueChanged(object sender, EventArgs e)
+        {
+            checkPayment();
+        }
+        private void checkPayment()
+        {
+            if (datePaid.Value != null && datePaid.Value <= DateTime.Now.AddYears(-1))
+            {
+                lblPaymentInfo.Visible = true;
+            } else
+            {
+                lblPaymentInfo.Visible = false;
+            }
+        }
     }
 }
+
