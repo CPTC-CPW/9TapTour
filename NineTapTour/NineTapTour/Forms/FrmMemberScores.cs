@@ -568,7 +568,7 @@ namespace NineTapTour.Forms
             }
             else
             {
-                temp = players.IndexOf(players[currentIndex - 1]);
+                temp = players.IndexOf(players[currentIndex]);
             }
 
             lblRecord.Text = "Record " + (temp + 1) + " / " + players.Count();
@@ -611,13 +611,35 @@ namespace NineTapTour.Forms
         {
             var db = new NineTapDb();
             var memScores =  new Game();
+            int squad = 0;
+
+            if (rdoSquadOne.Checked)
+            {
+                squad = 1;
+            }
+            else if (rdoSquadTwo.Checked)
+            {
+                squad = 2;
+            }
+            else if (rdoSquadThree.Checked)
+            {
+                squad = 3;
+            }
+            else
+            {
+                squad = 4;
+            }
+
             try
             {
                 int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
                 
                  memScores = (from t in db.Tournaments
                                  join p in db.Participants on t.Id equals p.Tournament.Id
-                                 where t.Id == p.Tournament.Id && memberID == p.Member.Id && selectedTournamentId == t.Id
+                                 where t.Id == p.Tournament.Id 
+                                 && memberID == p.Member.Id 
+                                 && selectedTournamentId == t.Id
+                                 && p.Squad == squad
                                  select p.Game).Single();
                 
             }
