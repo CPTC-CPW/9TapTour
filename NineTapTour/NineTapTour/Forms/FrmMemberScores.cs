@@ -89,8 +89,8 @@ namespace NineTapTour.Forms
             var currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
             if(currTourney.Doubles)
             {
-                if (e.KeyCode != Keys.Enter)
-                    return;
+                //if (e.KeyCode != Keys.Enter) // manually press Enter to populate Names
+                //    return;
 
                 string searchNumber = txtMemberNum.Text;
                 for (int i = 0; i < searchNumber.Length; i++)
@@ -180,8 +180,8 @@ namespace NineTapTour.Forms
             //IF the tournament is not DOUBLES
             else
             {
-                if (e.KeyCode != Keys.Enter)
-                    return;
+                //if (e.KeyCode != Keys.Enter) // manually press Enter to populate Names
+                //    return;
 
                 string searchNumber = txtMemberNum.Text;
                 for (int i = 0; i < searchNumber.Length; i++)
