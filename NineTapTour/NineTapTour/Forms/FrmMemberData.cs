@@ -235,8 +235,8 @@ namespace NineTapTour.Forms
                 }
                 else
                 {
-                    dateRejoin.Format = DateTimePickerFormat.Custom;
-                    dateRejoin.CustomFormat = @" ";
+                    datePaid.Format = DateTimePickerFormat.Custom;
+                    datePaid.CustomFormat = @" ";
                     lblPaymentInfo.Visible = false;
                 }
             }
@@ -480,6 +480,9 @@ namespace NineTapTour.Forms
 
                 dateLastBowled.Format = DateTimePickerFormat.Custom;
                 dateLastBowled.CustomFormat = @" ";
+
+                datePaid.Format = DateTimePickerFormat.Custom;
+                datePaid.CustomFormat = @" ";
                 _memberId = -1;
 
                 //get latest member number, or set to 1 if no members in database
@@ -683,7 +686,6 @@ namespace NineTapTour.Forms
         private void datePaid_ValueChanged(object sender, EventArgs e)
         {
             checkPayment();
-            Console.WriteLine(datePaid.Visible);
         }
         private void checkPayment()
         {
