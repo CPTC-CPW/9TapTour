@@ -1,6 +1,5 @@
 namespace Member_Import_Test.Migrations
 {
-    using Classes;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -10,7 +9,7 @@ namespace Member_Import_Test.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(Member_Import_Test.MembersDB context)

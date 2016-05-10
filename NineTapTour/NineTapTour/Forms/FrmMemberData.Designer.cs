@@ -926,7 +926,7 @@
             // 
             this.chbLifetime.AutoSize = true;
             this.chbLifetime.Font = new System.Drawing.Font("Calibri", 9.75F);
-            this.chbLifetime.Location = new System.Drawing.Point(38, 223);
+            this.chbLifetime.Location = new System.Drawing.Point(38, 216);
             this.chbLifetime.Name = "chbLifetime";
             this.chbLifetime.Size = new System.Drawing.Size(116, 19);
             this.chbLifetime.TabIndex = 96;
