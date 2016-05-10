@@ -67,6 +67,7 @@ namespace NineTapTour.Database
                     var check = (from p in db.Participants
                                  where player.Member.Id == p.Member.Id
                                  && player.Tournament.Id == p.Tournament.Id
+                                 && player.Squad == p.Squad
                                  select p).Count();
                     if (check == 0)
                     {

@@ -611,13 +611,35 @@ namespace NineTapTour.Forms
         {
             var db = new NineTapDb();
             var memScores =  new Game();
+            int squad = 0;
+
+            if (rdoSquadOne.Checked)
+            {
+                squad = 1;
+            }
+            else if (rdoSquadTwo.Checked)
+            {
+                squad = 2;
+            }
+            else if (rdoSquadThree.Checked)
+            {
+                squad = 3;
+            }
+            else
+            {
+                squad = 4;
+            }
+
             try
             {
                 int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
                 
                  memScores = (from t in db.Tournaments
                                  join p in db.Participants on t.Id equals p.Tournament.Id
-                                 where t.Id == p.Tournament.Id && memberID == p.Member.Id && selectedTournamentId == t.Id
+                                 where t.Id == p.Tournament.Id 
+                                 && memberID == p.Member.Id 
+                                 && selectedTournamentId == t.Id
+                                 && p.Squad == squad
                                  select p.Game).Single();
                 
             }
@@ -986,7 +1008,75 @@ namespace NineTapTour.Forms
                 cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             }
         }
+        /// <summary>
+        /// Checks if current member has an existing entry into Squad 4
+        /// and clears the scores if the member does NOT
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rdoSquadFour_CheckedChanged(object sender, EventArgs e)
+        {
+            if (GetScoresById(currentMem.Id) == null)
+            {
+                ScoreAndTotalClear();
+            }
+        }
+        /// <summary>
+        /// Checks if current member has an existing entry into Squad 1
+        /// and clears the scores if the member does NOT
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rdoSquadOne_CheckedChanged(object sender, EventArgs e)
+        {
+            if (GetScoresById(currentMem.Id) == null)
+            {
+                ScoreAndTotalClear();
+            }
+        }
+        /// <summary>
+        /// Checks if current member has an existing entry into Squad 2
+        /// and clears the scores if the member does NOT
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rdoSquadTwo_CheckedChanged(object sender, EventArgs e)
+        {
+            if (GetScoresById(currentMem.Id) == null)
+            {
+                ScoreAndTotalClear();
+            }
+        }
+        /// <summary>
+        /// Clears scratch scores and scratch and handicap totals
+        /// </summary>
+        private void ScoreAndTotalClear()
+        {
+            txtScratchScore1.Clear();
+            txtScratchScore2.Clear();
+            txtScratchScore3.Clear();
+            txtScratchScore4.Clear();
+            txtScratchTotal.Clear();
+            txtHandicapTotal.Clear();
+        }
+        /// <summary>
+        /// Checks if current member has an existing entry into Squad 3
+        /// and clears the scores if the member does NOT
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rdoSquadThree_CheckedChanged(object sender, EventArgs e)
+        {
+            if (GetScoresById(currentMem.Id) == null)
+            {
+                ScoreAndTotalClear();
+            }
+        }
     }
+
+
+
+
     class MemberScores
     {
         public string FirstName { get; set; }
