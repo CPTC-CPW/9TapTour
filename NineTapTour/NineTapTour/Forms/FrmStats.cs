@@ -166,7 +166,9 @@ namespace NineTapTour.Forms
 
         private void printDocument1_PrintPage(object sender, PrintPageEventArgs e)
         {
-            e.Graphics.DrawString(dataGridView1.ToString(),new Font("Arial", 40, FontStyle.Bold),Brushes.Black,150,125);
+            Bitmap bm = new Bitmap(this.dataGridView1.Width, this.dataGridView1.Height);
+            this.dataGridView1.DrawToBitmap(bm, new Rectangle(0, 0, this.dataGridView1.Width, this.dataGridView1.Height));
+            e.Graphics.DrawImage(bm, 0, 0);
         }
     }
 }

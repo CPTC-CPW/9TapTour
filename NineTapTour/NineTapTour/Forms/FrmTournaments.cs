@@ -61,13 +61,19 @@ namespace NineTapTour.Forms
 
         private void dgvAllTournaments_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            btnTournamentInfo.Enabled = true;
-            // checks to see if any of the tournamnets were selected, and assigns the field 'tournamentID' with that value.
-            if (dgvAllTournaments.SelectedCells.Count > 0)
+            try
             {
-                tournamentID = Convert.ToInt32(dgvAllTournaments.SelectedRows[0].Index);
+                btnTournamentInfo.Enabled = true;
+                // checks to see if any of the tournamnets were selected, and assigns the field 'tournamentID' with that value.
+                if (dgvAllTournaments.SelectedCells.Count > 0)
+                {
+                    tournamentID = Convert.ToInt32(dgvAllTournaments.SelectedRows[0].Index);
+                }
             }
-            
+            catch (ArgumentOutOfRangeException)
+            {
+
+            }                        
         }
 
         /// <summary>
