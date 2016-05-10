@@ -562,7 +562,7 @@ namespace NineTapTour.Forms
         {
             int temp;
 
-            if (players.Count() <= 0)
+            if (players.Count() <= 1)
             {
                 temp = 0;
             }
