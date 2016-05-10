@@ -568,7 +568,7 @@ namespace NineTapTour.Forms
             }
             else
             {
-                temp = players.IndexOf(players[currentIndex - 1]);
+                temp = players.IndexOf(players[currentIndex]);
             }
 
             lblRecord.Text = "Record " + (temp + 1) + " / " + players.Count();
