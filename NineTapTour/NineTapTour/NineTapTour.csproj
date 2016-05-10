@@ -146,11 +146,11 @@
     <Compile Include="Forms\MainMenu.Designer.cs">
       <DependentUpon>MainMenu.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\UpdatefrmActiveMem.cs">
+    <Compile Include="Forms\FrmUpdateActiveMem.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\UpdatefrmActiveMem.Designer.cs">
-      <DependentUpon>UpdatefrmActiveMem.cs</DependentUpon>
+    <Compile Include="Forms\FrmUpdateActiveMem.Designer.cs">
+      <DependentUpon>FrmUpdateActiveMem.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201504272037146_Initial Database.cs" />
     <Compile Include="Migrations\201504272037146_Initial Database.Designer.cs">
@@ -283,8 +283,8 @@
     <EmbeddedResource Include="Forms\MainMenu.resx">
       <DependentUpon>MainMenu.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\UpdatefrmActiveMem.resx">
-      <DependentUpon>UpdatefrmActiveMem.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FrmUpdateActiveMem.resx">
+      <DependentUpon>FrmUpdateActiveMem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201504272037146_Initial Database.resx">
       <DependentUpon>201504272037146_Initial Database.cs</DependentUpon>

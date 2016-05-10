@@ -1,6 +1,6 @@
 ﻿namespace NineTapTour.Forms
 {
-    partial class UpdatefrmActiveMem
+    partial class FrmUpdateActiveMem
     {
         /// <summary>
         /// Required designer variable.
@@ -56,9 +56,10 @@
             // checkedListBox1
             // 
             this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Location = new System.Drawing.Point(36, 77);
+            this.checkedListBox1.Location = new System.Drawing.Point(12, 77);
             this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(205, 334);
+            this.checkedListBox1.Size = new System.Drawing.Size(260, 334);
+            this.checkedListBox1.Sorted = true;
             this.checkedListBox1.TabIndex = 2;
             // 
             // label1
@@ -66,9 +67,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(33, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.Size = new System.Drawing.Size(190, 13);
             this.label1.TabIndex = 3;
-            this.label1.Text = "label1";
+            this.label1.Text = "Last bowled more than 180 days ago...";
             // 
             // btnCheckInactive
             // 
@@ -80,7 +81,7 @@
             this.btnCheckInactive.UseVisualStyleBackColor = true;
             this.btnCheckInactive.Click += new System.EventHandler(this.btnCheckInactive_Click);
             // 
-            // UpdatefrmActiveMem
+            // FrmUpdateActiveMem
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -90,15 +91,16 @@
             this.Controls.Add(this.checkedListBox1);
             this.Controls.Add(this.btnUpdateActive);
             this.Controls.Add(this.dateTimePicker1);
-            this.Name = "UpdatefrmActiveMem";
+            this.Name = "FrmUpdateActiveMem";
             this.Text = "Update Inactive Members";
+            this.Load += new System.EventHandler(this.FrmUpdateActiveMem_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
+        
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
         private System.Windows.Forms.Button btnUpdateActive;
         private System.Windows.Forms.CheckedListBox checkedListBox1;

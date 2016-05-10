@@ -162,7 +162,7 @@ namespace NineTapTour.Forms
 
         private void updateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            var UpdatefrmActiveMem = new UpdatefrmActiveMem();
+            var UpdatefrmActiveMem = new FrmUpdateActiveMem();
             Width = UpdatefrmActiveMem.Width;
             Height = UpdatefrmActiveMem.Height + 20;
             UpdatefrmActiveMem.Show();
