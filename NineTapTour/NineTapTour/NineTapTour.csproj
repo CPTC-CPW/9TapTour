@@ -238,6 +238,10 @@
     <Compile Include="Migrations\201604242119516_doubles.Designer.cs">
       <DependentUpon>201604242119516_doubles.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605050259447_MemberPaymentStatus.cs" />
+    <Compile Include="Migrations\201605050259447_MemberPaymentStatus.Designer.cs">
+      <DependentUpon>201605050259447_MemberPaymentStatus.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -345,6 +349,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604242119516_doubles.resx">
       <DependentUpon>201604242119516_doubles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605050259447_MemberPaymentStatus.resx">
+      <DependentUpon>201605050259447_MemberPaymentStatus.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>

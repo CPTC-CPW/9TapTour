@@ -44,6 +44,9 @@ namespace NineTapTour.Forms
             dateLastBowled.Format = DateTimePickerFormat.Custom;
             dateLastBowled.CustomFormat = @" ";
 
+            datePaid.Format = DateTimePickerFormat.Custom;
+            datePaid.CustomFormat = @" ";
+
             UpdateMemberInfo();
         }
         /// <summary>
@@ -142,6 +145,10 @@ namespace NineTapTour.Forms
                     check.Checked = false;
                 }
                 #endregion
+
+                chbLifetime.Checked = false;
+                datePaid.Format = DateTimePickerFormat.Custom;
+                datePaid.CustomFormat = @" ";
             }
             else
             {
@@ -220,6 +227,19 @@ namespace NineTapTour.Forms
                 }
                 #endregion
 
+                chbLifetime.Checked = currentMem.IsLifetimeMember;
+                if (currentMem.LastPayment.HasValue)
+                {
+                    datePaid.Format = DateTimePickerFormat.Short;
+                    datePaid.Value = (DateTime)currentMem.LastPayment;
+                    checkPayment();
+                }
+                else
+                {
+                    datePaid.Format = DateTimePickerFormat.Custom;
+                    datePaid.CustomFormat = @" ";
+                    lblPaymentInfo.Visible = false;
+                }
             }
         }
 
@@ -336,56 +356,59 @@ namespace NineTapTour.Forms
                 //use existing memberId if present or select the member id from the form
                 int memId = (_memberId != -1) ? _memberId : Convert.ToInt32(txtMemberNumber.Text);
 
-                Member temp = new Member
-                {
-                    Id = memId,
-                    Number = Convert.ToInt32(txtMemberNumber.Text),
-                    IsActive = rdoActive.Checked,
-                    JoinDate = DateTime.Now,
+             
+                    Member temp = new Member
+                    {
+                        Id = memId,
+                        Number = Convert.ToInt32(txtMemberNumber.Text),
+                        IsActive = rdoActive.Checked,
+                        JoinDate = DateTime.Now,
 
-                    #region Personal Info
-                    LastName = txtLastName.Text,
-                    FirstName = txtFirstName.Text,
-                    MiddleInitial = txtMiddleInitial.Text,
-                    DateOfBirth = Convert.ToDateTime(mtxtBoxDOB.Text),
-                    SSN = mtxtBoxSSN.Text,
-                    IsSenior = chbSenior.Checked,
-                    Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
-                    #endregion
+                        #region Personal Info
+                        LastName = txtLastName.Text,
+                        FirstName = txtFirstName.Text,
+                        MiddleInitial = txtMiddleInitial.Text,
+                        DateOfBirth = Convert.ToDateTime(mtxtBoxDOB.Text),
+                        SSN = mtxtBoxSSN.Text,
+                        IsSenior = chbSenior.Checked,
+                        Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
+                        #endregion
 
-                    #region Postal Address
-                    Street = txtAddress.Text,
-                    City = txtCity.Text,
-                    State = txtState.Text,
-                    PostalCode = mtxtBoxZip.Text,
-                    #endregion
+                        #region Postal Address
+                        Street = txtAddress.Text,
+                        City = txtCity.Text,
+                        State = txtState.Text,
+                        PostalCode = mtxtBoxZip.Text,
+                        #endregion
 
-                    #region Contact Info
-                    Email = txtEmail.Text,
-                    PrimaryPhone = mtxtBoxPhone.Text,
-                    SecondaryPhone = mtxtBoxPhone2.Text,
-                    #endregion
+                        #region Contact Info
+                        Email = txtEmail.Text,
+                        PrimaryPhone = mtxtBoxPhone.Text,
+                        SecondaryPhone = mtxtBoxPhone2.Text,
+                        #endregion
 
-                    #region Score Info
-                    Average = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text),
-                    Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text),
-                    Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text),
-                    #endregion
+                        #region Score Info
+                        Average = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text),
+                        Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text),
+                        Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text),
+                        #endregion
 
-                    #region Misc. Info
-                    RejoinDate = (dateRejoin.CustomFormat == @" ") ? (DateTime?)null : dateRejoin.Value,
-                    LastBowled = (dateLastBowled.CustomFormat == @" ") ? (DateTime?)null : dateLastBowled.Value,
-                    MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
-                    //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
-                    Notes = txtNotes.Text,
-                    Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text)
-                    #endregion
-                };
+                        #region Misc. Info
+                        RejoinDate = (dateRejoin.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : dateRejoin.Value,
+                        LastBowled = (dateLastBowled.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : dateLastBowled.Value,
+                        MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
+                        //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
+                        Notes = txtNotes.Text,
+                        Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text),
+                        #endregion
+                        LastPayment = (datePaid.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : datePaid.Value,
+                        IsLifetimeMember = chbLifetime.Checked
+                    };
 
-                // Adds Member to Database
+                    // Adds Member to Database
 
-                try
-                {
+                    try
+                    {
                     MemberDb.AddMember(temp);
 
                     MessageBox.Show(@"Bowler Added Successfully.");
@@ -398,6 +421,7 @@ namespace NineTapTour.Forms
                     MessageBox.Show(ex.Message);
                 }
 
+                
             }
         }
 
@@ -456,6 +480,9 @@ namespace NineTapTour.Forms
 
                 dateLastBowled.Format = DateTimePickerFormat.Custom;
                 dateLastBowled.CustomFormat = @" ";
+
+                datePaid.Format = DateTimePickerFormat.Custom;
+                datePaid.CustomFormat = @" ";
                 _memberId = -1;
 
                 //get latest member number, or set to 1 if no members in database
@@ -642,5 +669,35 @@ namespace NineTapTour.Forms
             graphic.DrawString(txtMemberNumber.Text, font, dBrush, startX + 80, startY + 215);
 
         }
+
+        private void chbLifetime_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chbLifetime.Checked)
+            {
+                lblPaymentInfo.Visible = false;
+                datePaid.Enabled = false;
+            } else
+            {
+                datePaid.Enabled = true;
+                checkPayment();
+            }
+        }
+
+        private void datePaid_ValueChanged(object sender, EventArgs e)
+        {
+            datePaid.Format = DateTimePickerFormat.Short;
+            checkPayment();
+        }
+        private void checkPayment()
+        {
+            if (datePaid.Value != null && datePaid.Value <= DateTime.Now.AddYears(-1))
+            {
+                lblPaymentInfo.Visible = true;
+            } else
+            {
+                lblPaymentInfo.Visible = false;
+            }
+        }
     }
 }
+

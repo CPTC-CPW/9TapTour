@@ -104,6 +104,10 @@
             this.grpStatus = new System.Windows.Forms.GroupBox();
             this.chbSenior = new System.Windows.Forms.CheckBox();
             this.dateLastBowled = new System.Windows.Forms.DateTimePicker();
+            this.chbLifetime = new System.Windows.Forms.CheckBox();
+            this.datePaid = new System.Windows.Forms.DateTimePicker();
+            this.lblLastPaid = new System.Windows.Forms.Label();
+            this.lblPaymentInfo = new System.Windows.Forms.Label();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -876,7 +880,7 @@
             this.grpGender.Controls.Add(this.rdoFemale);
             this.grpGender.Controls.Add(this.rdoMale);
             this.grpGender.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpGender.Location = new System.Drawing.Point(236, 164);
+            this.grpGender.Location = new System.Drawing.Point(235, 128);
             this.grpGender.Name = "grpGender";
             this.grpGender.Size = new System.Drawing.Size(101, 71);
             this.grpGender.TabIndex = 31;
@@ -888,7 +892,7 @@
             this.grpStatus.Controls.Add(this.rdoInActive);
             this.grpStatus.Controls.Add(this.rdoActive);
             this.grpStatus.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpStatus.Location = new System.Drawing.Point(38, 156);
+            this.grpStatus.Location = new System.Drawing.Point(38, 128);
             this.grpStatus.Name = "grpStatus";
             this.grpStatus.Size = new System.Drawing.Size(101, 79);
             this.grpStatus.TabIndex = 32;
@@ -899,7 +903,7 @@
             // 
             this.chbSenior.AutoSize = true;
             this.chbSenior.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chbSenior.Location = new System.Drawing.Point(156, 179);
+            this.chbSenior.Location = new System.Drawing.Point(156, 162);
             this.chbSenior.Name = "chbSenior";
             this.chbSenior.Size = new System.Drawing.Size(61, 19);
             this.chbSenior.TabIndex = 5;
@@ -918,6 +922,48 @@
             this.dateLastBowled.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
             this.dateLastBowled.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ClearCalendar);
             // 
+            // chbLifetime
+            // 
+            this.chbLifetime.AutoSize = true;
+            this.chbLifetime.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.chbLifetime.Location = new System.Drawing.Point(38, 216);
+            this.chbLifetime.Name = "chbLifetime";
+            this.chbLifetime.Size = new System.Drawing.Size(116, 19);
+            this.chbLifetime.TabIndex = 96;
+            this.chbLifetime.Text = "Lifetime Member";
+            this.chbLifetime.UseVisualStyleBackColor = true;
+            this.chbLifetime.CheckedChanged += new System.EventHandler(this.chbLifetime_CheckedChanged);
+            // 
+            // datePaid
+            // 
+            this.datePaid.Location = new System.Drawing.Point(146, 241);
+            this.datePaid.Name = "datePaid";
+            this.datePaid.Size = new System.Drawing.Size(190, 21);
+            this.datePaid.TabIndex = 97;
+            this.datePaid.ValueChanged += new System.EventHandler(this.datePaid_ValueChanged);
+            // 
+            // lblLastPaid
+            // 
+            this.lblLastPaid.AutoSize = true;
+            this.lblLastPaid.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblLastPaid.Location = new System.Drawing.Point(35, 245);
+            this.lblLastPaid.Name = "lblLastPaid";
+            this.lblLastPaid.Size = new System.Drawing.Size(79, 15);
+            this.lblLastPaid.TabIndex = 98;
+            this.lblLastPaid.Text = "Last Payment";
+            // 
+            // lblPaymentInfo
+            // 
+            this.lblPaymentInfo.AutoSize = true;
+            this.lblPaymentInfo.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblPaymentInfo.ForeColor = System.Drawing.Color.Red;
+            this.lblPaymentInfo.Location = new System.Drawing.Point(35, 266);
+            this.lblPaymentInfo.Name = "lblPaymentInfo";
+            this.lblPaymentInfo.Size = new System.Drawing.Size(129, 15);
+            this.lblPaymentInfo.TabIndex = 99;
+            this.lblPaymentInfo.Text = "Yearly Payment is due.";
+            this.lblPaymentInfo.Visible = false;
+            // 
             // FrmMemberData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -926,6 +972,10 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(884, 712);
+            this.Controls.Add(this.lblPaymentInfo);
+            this.Controls.Add(this.lblLastPaid);
+            this.Controls.Add(this.chbLifetime);
+            this.Controls.Add(this.datePaid);
             this.Controls.Add(this.dateLastBowled);
             this.Controls.Add(this.chbSenior);
             this.Controls.Add(this.grpStatus);
@@ -1056,6 +1106,9 @@
         private System.Windows.Forms.MaskedTextBox mtxtBoxSSN;
         private System.Windows.Forms.MaskedTextBox mtxtBoxZip;
         private System.Windows.Forms.MaskedTextBox mtxtBoxDOB;
+        private System.Windows.Forms.CheckBox chbLifetime;
+        private System.Windows.Forms.DateTimePicker datePaid;
+        private System.Windows.Forms.Label lblLastPaid;
+        private System.Windows.Forms.Label lblPaymentInfo;
     }
 }
-
