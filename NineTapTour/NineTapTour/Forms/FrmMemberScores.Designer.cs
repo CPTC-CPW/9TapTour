@@ -649,12 +649,13 @@
             // 
             // grpTournamentFile
             // 
+            this.grpTournamentFile.Controls.Add(this.btnTournamentStats);
             this.grpTournamentFile.Controls.Add(this.cbxTourneyDropDown);
             this.grpTournamentFile.Location = new System.Drawing.Point(536, 1163);
             this.grpTournamentFile.Margin = new System.Windows.Forms.Padding(6);
             this.grpTournamentFile.Name = "grpTournamentFile";
             this.grpTournamentFile.Padding = new System.Windows.Forms.Padding(6);
-            this.grpTournamentFile.Size = new System.Drawing.Size(402, 115);
+            this.grpTournamentFile.Size = new System.Drawing.Size(402, 168);
             this.grpTournamentFile.TabIndex = 28;
             this.grpTournamentFile.TabStop = false;
             this.grpTournamentFile.Text = "Tournament File";
@@ -964,11 +965,11 @@
             // 
             // btnTournamentStats
             // 
-            this.btnTournamentStats.Location = new System.Drawing.Point(607, 1287);
+            this.btnTournamentStats.Location = new System.Drawing.Point(90, 89);
             this.btnTournamentStats.Name = "btnTournamentStats";
-            this.btnTournamentStats.Size = new System.Drawing.Size(253, 44);
+            this.btnTournamentStats.Size = new System.Drawing.Size(225, 70);
             this.btnTournamentStats.TabIndex = 33;
-            this.btnTournamentStats.Text = "List of All Tournaments";
+            this.btnTournamentStats.Text = "List of Tournaments by Year";
             this.btnTournamentStats.UseVisualStyleBackColor = true;
             this.btnTournamentStats.Click += new System.EventHandler(this.btnTournamentStats_Click);
             // 
@@ -978,7 +979,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(1768, 1369);
-            this.Controls.Add(this.btnTournamentStats);
             this.Controls.Add(this.btnNewTournament);
             this.Controls.Add(this.lblMemberL);
             this.Controls.Add(this.pnlMemStat);

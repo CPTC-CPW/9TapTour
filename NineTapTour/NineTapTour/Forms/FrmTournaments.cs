@@ -31,19 +31,33 @@ namespace NineTapTour.Forms
         private void FrmTournamentStats_Load(object sender, EventArgs e)
         {
             // TODO: This line of code loads data into the '_NineTapTour_NineTapDbDataSet.Tournaments' table. You can move, or remove it, as needed.
-            this.tournamentsTableAdapter.Fill(this._NineTapTour_NineTapDbDataSet.Tournaments);
-            PopulateTournaments();
-
+            //this.tournamentsTableAdapter.Fill(this._NineTapTour_NineTapDbDataSet.Tournaments);
+            foreach (var d in Years())
+            {
+                cbxYearsForTournamentSearch.Items.Add(d);
+            }
+        }
+        private List<int> Years()
+        {
+            int currentYear = DateTime.Now.Year;
+            List<int> years = new List<int>();
+            for (int i = 10; i > 0; i--)
+            {
+                years.Add(currentYear--);                
+            }
+            return years;
         }
 
         /// <summary>
         /// Populates the Tournaments in the Tournaments form
         /// </summary>
-        public void PopulateTournaments()
+        public void PopulateTournaments(int yearSelected)
         {
-            NineTapDb db = new NineTapDb();
+            NineTapDb db = new NineTapDb();            
+            
             var tournaments = (from t in db.Tournaments
                                orderby t.Date descending
+                               where t.Date.Year == yearSelected 
                                select new
                                {
                                    t.Id,
@@ -53,10 +67,9 @@ namespace NineTapTour.Forms
                                    t.Notes,
                                    t.Sponsors
                            }).ToList();
-            listTournaments = TournamentDb.GetTournamentList();
-            
             dgvAllTournaments.DataSource = tournaments;
 
+            listTournaments = TournamentDb.GetTournamentList();                        
         }
 
         private void dgvAllTournaments_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -92,7 +105,14 @@ namespace NineTapTour.Forms
             selectedTournament = GetSpecificTournament(tournamentID);  
             // Instantiates a new Tournament Stats form          
             FrmTournamentStats tourneyStats = new FrmTournamentStats();
+
             tourneyStats.ShowDialog();
+
+        }
+
+        private void btnYearSelectedForTourneys_Click(object sender, EventArgs e)
+        {
+            PopulateTournaments(Convert.ToInt32(cbxYearsForTournamentSearch.Text));
         }
     }
 }

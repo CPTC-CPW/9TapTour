@@ -31,6 +31,7 @@
             this.lblTournamentName = new System.Windows.Forms.Label();
             this.lblTournamentLocation = new System.Windows.Forms.Label();
             this.lblTournamentDate = new System.Windows.Forms.Label();
+            this.lbxTopEarnings = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // lblTournamentName
@@ -60,11 +61,21 @@
             this.lblTournamentDate.TabIndex = 2;
             this.lblTournamentDate.Text = "label1";
             // 
+            // lbxTopEarnings
+            // 
+            this.lbxTopEarnings.FormattingEnabled = true;
+            this.lbxTopEarnings.ItemHeight = 25;
+            this.lbxTopEarnings.Location = new System.Drawing.Point(24, 83);
+            this.lbxTopEarnings.Name = "lbxTopEarnings";
+            this.lbxTopEarnings.Size = new System.Drawing.Size(410, 429);
+            this.lbxTopEarnings.TabIndex = 3;
+            // 
             // FrmTournamentStats
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1394, 1308);
+            this.Controls.Add(this.lbxTopEarnings);
             this.Controls.Add(this.lblTournamentDate);
             this.Controls.Add(this.lblTournamentLocation);
             this.Controls.Add(this.lblTournamentName);
@@ -81,5 +92,6 @@
         private System.Windows.Forms.Label lblTournamentName;
         private System.Windows.Forms.Label lblTournamentLocation;
         private System.Windows.Forms.Label lblTournamentDate;
+        private System.Windows.Forms.ListBox lbxTopEarnings;
     }
 }
