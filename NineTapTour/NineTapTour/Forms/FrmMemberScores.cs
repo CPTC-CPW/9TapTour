@@ -567,7 +567,12 @@ namespace NineTapTour.Forms
                 MessageBox.Show("Please Fill out the Participants information!");
             }
         }
-
+        /// <summary>
+        /// Checks a string for numeric values
+        /// true if all are numeric
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns>isNum</returns>
         public bool isNumeric(string str)
         {
             int num;

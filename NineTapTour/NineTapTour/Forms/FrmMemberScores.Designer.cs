@@ -418,14 +418,14 @@
             this.grpRecord.Controls.Add(this.btnNew);
             this.grpRecord.Location = new System.Drawing.Point(21, 520);
             this.grpRecord.Name = "grpRecord";
-            this.grpRecord.Size = new System.Drawing.Size(218, 180);
+            this.grpRecord.Size = new System.Drawing.Size(235, 180);
             this.grpRecord.TabIndex = 2;
             this.grpRecord.TabStop = false;
             this.grpRecord.Text = "Record";
             // 
             // btnRightArrow
             // 
-            this.btnRightArrow.Location = new System.Drawing.Point(147, 50);
+            this.btnRightArrow.Location = new System.Drawing.Point(163, 50);
             this.btnRightArrow.Name = "btnRightArrow";
             this.btnRightArrow.Size = new System.Drawing.Size(53, 29);
             this.btnRightArrow.TabIndex = 1;
@@ -437,7 +437,7 @@
             // lblRecord
             // 
             this.lblRecord.AutoSize = true;
-            this.lblRecord.Location = new System.Drawing.Point(79, 58);
+            this.lblRecord.Location = new System.Drawing.Point(77, 58);
             this.lblRecord.Name = "lblRecord";
             this.lblRecord.Size = new System.Drawing.Size(62, 13);
             this.lblRecord.TabIndex = 18;
@@ -458,7 +458,7 @@
             // 
             this.btnDelete.Location = new System.Drawing.Point(19, 147);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(181, 25);
+            this.btnDelete.Size = new System.Drawing.Size(197, 25);
             this.btnDelete.TabIndex = 0;
             this.btnDelete.TabStop = false;
             this.btnDelete.Text = "Delete";
@@ -468,7 +468,7 @@
             // 
             this.btnStats.Location = new System.Drawing.Point(19, 116);
             this.btnStats.Name = "btnStats";
-            this.btnStats.Size = new System.Drawing.Size(181, 25);
+            this.btnStats.Size = new System.Drawing.Size(197, 25);
             this.btnStats.TabIndex = 0;
             this.btnStats.TabStop = false;
             this.btnStats.Text = "Stats";
@@ -478,7 +478,7 @@
             // 
             this.btnLastFile.Location = new System.Drawing.Point(19, 85);
             this.btnLastFile.Name = "btnLastFile";
-            this.btnLastFile.Size = new System.Drawing.Size(181, 25);
+            this.btnLastFile.Size = new System.Drawing.Size(197, 25);
             this.btnLastFile.TabIndex = 0;
             this.btnLastFile.TabStop = false;
             this.btnLastFile.Text = "Last Recap";
@@ -488,7 +488,7 @@
             // 
             this.btnNew.Location = new System.Drawing.Point(19, 19);
             this.btnNew.Name = "btnNew";
-            this.btnNew.Size = new System.Drawing.Size(181, 25);
+            this.btnNew.Size = new System.Drawing.Size(197, 25);
             this.btnNew.TabIndex = 0;
             this.btnNew.Text = "Add New/Update Record";
             this.btnNew.UseVisualStyleBackColor = true;
@@ -608,7 +608,7 @@
             // grpTournamentFile
             // 
             this.grpTournamentFile.Controls.Add(this.cbxTourneyDropDown);
-            this.grpTournamentFile.Location = new System.Drawing.Point(268, 605);
+            this.grpTournamentFile.Location = new System.Drawing.Point(277, 605);
             this.grpTournamentFile.Name = "grpTournamentFile";
             this.grpTournamentFile.Size = new System.Drawing.Size(201, 60);
             this.grpTournamentFile.TabIndex = 28;
@@ -801,7 +801,7 @@
             this.grpReports.Controls.Add(this.btnSeries);
             this.grpReports.Controls.Add(this.btnGame);
             this.grpReports.Controls.Add(this.btnSenior);
-            this.grpReports.Location = new System.Drawing.Point(500, 521);
+            this.grpReports.Location = new System.Drawing.Point(499, 521);
             this.grpReports.Name = "grpReports";
             this.grpReports.Size = new System.Drawing.Size(123, 171);
             this.grpReports.TabIndex = 0;
@@ -879,7 +879,7 @@
             // 
             // btnNewTournament
             // 
-            this.btnNewTournament.Location = new System.Drawing.Point(272, 576);
+            this.btnNewTournament.Location = new System.Drawing.Point(281, 576);
             this.btnNewTournament.Name = "btnNewTournament";
             this.btnNewTournament.Size = new System.Drawing.Size(191, 23);
             this.btnNewTournament.TabIndex = 26;
@@ -890,7 +890,7 @@
             // 
             // btnTourSearch
             // 
-            this.btnTourSearch.Location = new System.Drawing.Point(274, 677);
+            this.btnTourSearch.Location = new System.Drawing.Point(281, 677);
             this.btnTourSearch.Name = "btnTourSearch";
             this.btnTourSearch.Size = new System.Drawing.Size(189, 23);
             this.btnTourSearch.TabIndex = 33;
@@ -903,7 +903,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
-            this.ClientSize = new System.Drawing.Size(884, 602);
+            this.ClientSize = new System.Drawing.Size(884, 737);
             this.Controls.Add(this.btnTourSearch);
             this.Controls.Add(this.btnNewTournament);
             this.Controls.Add(this.lblMemberL);
