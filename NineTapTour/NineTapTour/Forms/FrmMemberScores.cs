@@ -70,7 +70,7 @@ namespace NineTapTour.Forms
             cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             cbxTourneyDropDown.ValueMember = "Id";
-            cbxTourneyDropDown.SelectedIndex = -1;
+            cbxTourneyDropDown.SelectedIndex = 0;
             List<Tournament> temp2 = TournamentDb.GetTournamentList();
             if (temp2.Count() > 0)
             {
@@ -416,6 +416,7 @@ namespace NineTapTour.Forms
             {
                 var currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
                 List<Participant> total = TournamentDb.GetTournamentMemberList(currTourney);
+                //Doubles tournament
                 if (currTourney.Doubles)
                 {
                     player.Game = new Game();
@@ -490,7 +491,7 @@ namespace NineTapTour.Forms
                     clear();
                     txtMemberNum.Focus();
                 }
-                //IF the tournament type is a DOUBLES tournament
+                //IF the tournament type is NOT a DOUBLES tournament
                 else
                 {
                     player.Game = new Game();
@@ -504,12 +505,25 @@ namespace NineTapTour.Forms
                     //selects the ID of the combobox of tournaments and stores the
                     //tournament property within the participants class.
                     player.Tournament = currTourney;
-                    player.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[0].Text));
-                    player.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[1].Text));
-                    player.Game.Game3 = IsEmpty(txtScratchScore3) ? null : (int?)Convert.ToInt32((scratchArray[2].Text));
-                    player.Game.Game4 = IsEmpty(txtScratchScore4) ? null : (int?)Convert.ToInt32((scratchArray[3].Text));
-                    player.Game.Bonus = currentMem.Bonus;
-                    player.Game.Handicap = currentMem.Handicap;
+                    if (string.IsNullOrEmpty(txtScratchScore1.ToString().Trim()) || string.IsNullOrEmpty(txtScratchScore2.ToString().Trim())
+                        || string.IsNullOrEmpty(txtScratchScore3.ToString().Trim()) || string.IsNullOrEmpty(txtScratchScore4.ToString().Trim()))
+                    {
+                        MessageBox.Show("Please enter all scratch scores", "Blank Scores Not Allowed");
+                    }
+                    else if (!isNumeric(txtScratchScore1.ToString().Trim()) || !isNumeric(txtScratchScore2.ToString().Trim())
+                        || !isNumeric(txtScratchScore3.ToString().Trim()) || !isNumeric(txtScratchScore4.ToString().Trim()))
+                    {
+                        MessageBox.Show("Please enter only numbers", "Non-Integer Scores Not Allowed");
+                    }
+                    else
+                    {
+                        player.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[0].Text));
+                        player.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[1].Text));
+                        player.Game.Game3 = IsEmpty(txtScratchScore3) ? null : (int?)Convert.ToInt32((scratchArray[2].Text));
+                        player.Game.Game4 = IsEmpty(txtScratchScore4) ? null : (int?)Convert.ToInt32((scratchArray[3].Text));
+                        player.Game.Bonus = currentMem.Bonus;
+                        player.Game.Handicap = currentMem.Handicap;
+                    }
 
                     #region radio button
                     if (rdoSquadOne.Checked)
@@ -553,6 +567,18 @@ namespace NineTapTour.Forms
                 MessageBox.Show("Please Fill out the Participants information!");
             }
         }
+        /// <summary>
+        /// Checks a string for numeric values
+        /// true if all are numeric
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns>isNum</returns>
+        public bool isNumeric(string str)
+        {
+            int num;
+            bool isNum = int.TryParse(str, out num);
+            return isNum;
+        }
 
         /// <summary>
         /// updates the index and total count of the record label
@@ -561,8 +587,7 @@ namespace NineTapTour.Forms
         public void RecordIndex(List<Participant> players)
         {
             int temp;
-
-            if (players.Count() <= 1)
+            if (players.Count() <= 0)
             {
                 temp = 0;
             }
@@ -570,8 +595,7 @@ namespace NineTapTour.Forms
             {
                 temp = players.IndexOf(players[currentIndex]);
             }
-
-            lblRecord.Text = "Record " + (temp + 1) + " / " + players.Count();
+            lblRecord.Text = "Record " + (temp) + " / " + players.Count();
         }
 
         /// <summary>
