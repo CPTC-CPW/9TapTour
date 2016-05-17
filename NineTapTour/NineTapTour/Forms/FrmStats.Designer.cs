@@ -34,7 +34,9 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.lblName = new System.Windows.Forms.Label();
             this.lblMemberNumber = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnPrint = new System.Windows.Forms.Button();
+            this.printDialog1 = new System.Windows.Forms.PrintDialog();
+            this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             ((System.ComponentModel.ISupportInitialize)(this.nineTapTourNineTapDbDataSetBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._NineTapTour_NineTapDbDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -82,21 +84,30 @@
             this.lblMemberNumber.TabIndex = 5;
             this.lblMemberNumber.Text = "Member#";
             // 
-            // button1
+            // btnPrint
             // 
-            this.button1.Location = new System.Drawing.Point(2624, 1726);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(321, 166);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnPrint.Location = new System.Drawing.Point(2580, 1592);
+            this.btnPrint.Name = "btnPrint";
+            this.btnPrint.Size = new System.Drawing.Size(321, 166);
+            this.btnPrint.TabIndex = 6;
+            this.btnPrint.Text = "Print";
+            this.btnPrint.UseVisualStyleBackColor = true;
+            this.btnPrint.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // printDialog1
+            // 
+            this.printDialog1.UseEXDialog = true;
+            // 
+            // printDocument1
+            // 
+            this.printDocument1.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.printDocument1_PrintPage);
             // 
             // FrmStats
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(3088, 2025);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.lblMemberNumber);
             this.Controls.Add(this.lblName);
             this.Controls.Add(this.dataGridView1);
@@ -119,6 +130,8 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.Label lblMemberNumber;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnPrint;
+        private System.Windows.Forms.PrintDialog printDialog1;
+        private System.Drawing.Printing.PrintDocument printDocument1;
     }
 }
