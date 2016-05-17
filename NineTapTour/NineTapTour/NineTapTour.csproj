@@ -146,6 +146,12 @@
     <Compile Include="Forms\MainMenu.Designer.cs">
       <DependentUpon>MainMenu.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmListTournamentsByYear.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmListTournamentsByYear.Designer.cs">
+      <DependentUpon>frmListTournamentsByYear.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\201504272037146_Initial Database.cs" />
     <Compile Include="Migrations\201504272037146_Initial Database.Designer.cs">
       <DependentUpon>201504272037146_Initial Database.cs</DependentUpon>
@@ -280,6 +286,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainMenu.resx">
       <DependentUpon>MainMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmListTournamentsByYear.resx">
+      <DependentUpon>frmListTournamentsByYear.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201504272037146_Initial Database.resx">
       <DependentUpon>201504272037146_Initial Database.cs</DependentUpon>

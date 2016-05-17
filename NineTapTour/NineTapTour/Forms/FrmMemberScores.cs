@@ -1096,6 +1096,12 @@ namespace NineTapTour.Forms
                 ScoreAndTotalClear();
             }
         }
+
+        private void btnTournamentsByYear_Click(object sender, EventArgs e)
+        {
+            frmListTournamentsByYear listTournaments = new frmListTournamentsByYear();
+            listTournaments.ShowDialog();
+        }
     }
 
 
