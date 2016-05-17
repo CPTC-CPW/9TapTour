@@ -98,7 +98,7 @@
             this.pnlMemStat = new System.Windows.Forms.Panel();
             this.lblMemberL = new System.Windows.Forms.Label();
             this.btnNewTournament = new System.Windows.Forms.Button();
-            this.btnTournamentStats = new System.Windows.Forms.Button();
+            this.btnTourSearch = new System.Windows.Forms.Button();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpRecord.SuspendLayout();
@@ -115,11 +115,9 @@
             // 
             this.grpMemberNum.Controls.Add(this.txtMemberNum2);
             this.grpMemberNum.Controls.Add(this.txtMemberNum);
-            this.grpMemberNum.Location = new System.Drawing.Point(42, 44);
-            this.grpMemberNum.Margin = new System.Windows.Forms.Padding(6);
+            this.grpMemberNum.Location = new System.Drawing.Point(21, 23);
             this.grpMemberNum.Name = "grpMemberNum";
-            this.grpMemberNum.Padding = new System.Windows.Forms.Padding(6);
-            this.grpMemberNum.Size = new System.Drawing.Size(358, 144);
+            this.grpMemberNum.Size = new System.Drawing.Size(179, 75);
             this.grpMemberNum.TabIndex = 0;
             this.grpMemberNum.TabStop = false;
             this.grpMemberNum.Text = "Enter Member Number";
@@ -127,10 +125,9 @@
             // txtMemberNum2
             // 
             this.txtMemberNum2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtMemberNum2.Location = new System.Drawing.Point(12, 87);
-            this.txtMemberNum2.Margin = new System.Windows.Forms.Padding(6);
+            this.txtMemberNum2.Location = new System.Drawing.Point(6, 45);
             this.txtMemberNum2.Name = "txtMemberNum2";
-            this.txtMemberNum2.Size = new System.Drawing.Size(222, 31);
+            this.txtMemberNum2.Size = new System.Drawing.Size(112, 20);
             this.txtMemberNum2.TabIndex = 1;
             this.txtMemberNum2.Visible = false;
             this.txtMemberNum2.TextChanged += new System.EventHandler(this.txtMemberNum2_TextChanged);
@@ -138,10 +135,9 @@
             // txtMemberNum
             // 
             this.txtMemberNum.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtMemberNum.Location = new System.Drawing.Point(12, 37);
-            this.txtMemberNum.Margin = new System.Windows.Forms.Padding(6);
+            this.txtMemberNum.Location = new System.Drawing.Point(6, 19);
             this.txtMemberNum.Name = "txtMemberNum";
-            this.txtMemberNum.Size = new System.Drawing.Size(222, 31);
+            this.txtMemberNum.Size = new System.Drawing.Size(112, 20);
             this.txtMemberNum.TabIndex = 0;
             this.txtMemberNum.TextChanged += new System.EventHandler(this.txtMemberNum_TextChanged);
             this.txtMemberNum.KeyUp += new System.Windows.Forms.KeyEventHandler(this.GetMember);
@@ -152,11 +148,9 @@
             this.groupBox1.Controls.Add(this.rdoSquadThree);
             this.groupBox1.Controls.Add(this.rdoSquadTwo);
             this.groupBox1.Controls.Add(this.rdoSquadOne);
-            this.groupBox1.Location = new System.Drawing.Point(42, 179);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(6);
+            this.groupBox1.Location = new System.Drawing.Point(21, 93);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox1.Size = new System.Drawing.Size(358, 140);
+            this.groupBox1.Size = new System.Drawing.Size(179, 73);
             this.groupBox1.TabIndex = 22;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Squad Number";
@@ -164,60 +158,59 @@
             // rdoSquadFour
             // 
             this.rdoSquadFour.AutoSize = true;
-            this.rdoSquadFour.Location = new System.Drawing.Point(216, 83);
-            this.rdoSquadFour.Margin = new System.Windows.Forms.Padding(6);
+            this.rdoSquadFour.Location = new System.Drawing.Point(108, 43);
             this.rdoSquadFour.Name = "rdoSquadFour";
-            this.rdoSquadFour.Size = new System.Drawing.Size(123, 29);
+            this.rdoSquadFour.Size = new System.Drawing.Size(65, 17);
             this.rdoSquadFour.TabIndex = 23;
             this.rdoSquadFour.Text = "Squad 4";
             this.rdoSquadFour.UseVisualStyleBackColor = true;
+            this.rdoSquadFour.CheckedChanged += new System.EventHandler(this.rdoSquadFour_CheckedChanged);
             // 
             // rdoSquadThree
             // 
             this.rdoSquadThree.AutoSize = true;
-            this.rdoSquadThree.Location = new System.Drawing.Point(12, 83);
-            this.rdoSquadThree.Margin = new System.Windows.Forms.Padding(6);
+            this.rdoSquadThree.Location = new System.Drawing.Point(6, 43);
             this.rdoSquadThree.Name = "rdoSquadThree";
-            this.rdoSquadThree.Size = new System.Drawing.Size(123, 29);
+            this.rdoSquadThree.Size = new System.Drawing.Size(65, 17);
             this.rdoSquadThree.TabIndex = 22;
             this.rdoSquadThree.Text = "Squad 3";
             this.rdoSquadThree.UseVisualStyleBackColor = true;
+            this.rdoSquadThree.CheckedChanged += new System.EventHandler(this.rdoSquadThree_CheckedChanged);
             // 
             // rdoSquadTwo
             // 
             this.rdoSquadTwo.AutoSize = true;
-            this.rdoSquadTwo.Location = new System.Drawing.Point(216, 38);
-            this.rdoSquadTwo.Margin = new System.Windows.Forms.Padding(6);
+            this.rdoSquadTwo.Location = new System.Drawing.Point(108, 20);
             this.rdoSquadTwo.Name = "rdoSquadTwo";
-            this.rdoSquadTwo.Size = new System.Drawing.Size(123, 29);
+            this.rdoSquadTwo.Size = new System.Drawing.Size(65, 17);
             this.rdoSquadTwo.TabIndex = 21;
             this.rdoSquadTwo.Text = "Squad 2";
             this.rdoSquadTwo.UseVisualStyleBackColor = true;
+            this.rdoSquadTwo.CheckedChanged += new System.EventHandler(this.rdoSquadTwo_CheckedChanged);
             // 
             // rdoSquadOne
             // 
             this.rdoSquadOne.AutoSize = true;
             this.rdoSquadOne.Checked = true;
-            this.rdoSquadOne.Location = new System.Drawing.Point(12, 38);
-            this.rdoSquadOne.Margin = new System.Windows.Forms.Padding(6);
+            this.rdoSquadOne.Location = new System.Drawing.Point(6, 20);
             this.rdoSquadOne.Name = "rdoSquadOne";
-            this.rdoSquadOne.Size = new System.Drawing.Size(123, 29);
+            this.rdoSquadOne.Size = new System.Drawing.Size(65, 17);
             this.rdoSquadOne.TabIndex = 20;
             this.rdoSquadOne.TabStop = true;
             this.rdoSquadOne.Text = "Squad 1";
             this.rdoSquadOne.UseVisualStyleBackColor = true;
+            this.rdoSquadOne.CheckedChanged += new System.EventHandler(this.rdoSquadOne_CheckedChanged);
             // 
             // txtLastName
             // 
             this.txtLastName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtLastName.Enabled = false;
             this.txtLastName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLastName.Location = new System.Drawing.Point(466, 58);
-            this.txtLastName.Margin = new System.Windows.Forms.Padding(6);
+            this.txtLastName.Location = new System.Drawing.Point(233, 30);
             this.txtLastName.Multiline = true;
             this.txtLastName.Name = "txtLastName";
             this.txtLastName.ReadOnly = true;
-            this.txtLastName.Size = new System.Drawing.Size(410, 71);
+            this.txtLastName.Size = new System.Drawing.Size(206, 38);
             this.txtLastName.TabIndex = 24;
             this.txtLastName.TabStop = false;
             // 
@@ -226,12 +219,11 @@
             this.txtFirstName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtFirstName.Enabled = false;
             this.txtFirstName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFirstName.Location = new System.Drawing.Point(948, 58);
-            this.txtFirstName.Margin = new System.Windows.Forms.Padding(6);
+            this.txtFirstName.Location = new System.Drawing.Point(474, 30);
             this.txtFirstName.Multiline = true;
             this.txtFirstName.Name = "txtFirstName";
             this.txtFirstName.ReadOnly = true;
-            this.txtFirstName.Size = new System.Drawing.Size(410, 71);
+            this.txtFirstName.Size = new System.Drawing.Size(206, 38);
             this.txtFirstName.TabIndex = 24;
             this.txtFirstName.TabStop = false;
             // 
@@ -240,12 +232,11 @@
             this.txtMiddleInitial.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtMiddleInitial.Enabled = false;
             this.txtMiddleInitial.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMiddleInitial.Location = new System.Drawing.Point(1426, 58);
-            this.txtMiddleInitial.Margin = new System.Windows.Forms.Padding(6);
+            this.txtMiddleInitial.Location = new System.Drawing.Point(713, 30);
             this.txtMiddleInitial.Multiline = true;
             this.txtMiddleInitial.Name = "txtMiddleInitial";
             this.txtMiddleInitial.ReadOnly = true;
-            this.txtMiddleInitial.Size = new System.Drawing.Size(208, 71);
+            this.txtMiddleInitial.Size = new System.Drawing.Size(105, 38);
             this.txtMiddleInitial.TabIndex = 24;
             this.txtMiddleInitial.TabStop = false;
             // 
@@ -253,10 +244,9 @@
             // 
             this.lblLastName.AutoSize = true;
             this.lblLastName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.lblLastName.Location = new System.Drawing.Point(458, 15);
-            this.lblLastName.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblLastName.Location = new System.Drawing.Point(229, 8);
             this.lblLastName.Name = "lblLastName";
-            this.lblLastName.Size = new System.Drawing.Size(157, 39);
+            this.lblLastName.Size = new System.Drawing.Size(80, 19);
             this.lblLastName.TabIndex = 24;
             this.lblLastName.Text = "Last Name";
             // 
@@ -264,10 +254,9 @@
             // 
             this.lblFirstName.AutoSize = true;
             this.lblFirstName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.lblFirstName.Location = new System.Drawing.Point(940, 15);
-            this.lblFirstName.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblFirstName.Location = new System.Drawing.Point(470, 8);
             this.lblFirstName.Name = "lblFirstName";
-            this.lblFirstName.Size = new System.Drawing.Size(161, 39);
+            this.lblFirstName.Size = new System.Drawing.Size(82, 19);
             this.lblFirstName.TabIndex = 24;
             this.lblFirstName.Text = "First Name";
             // 
@@ -275,10 +264,9 @@
             // 
             this.lblMiddleInitial.AutoSize = true;
             this.lblMiddleInitial.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.lblMiddleInitial.Location = new System.Drawing.Point(1418, 15);
-            this.lblMiddleInitial.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblMiddleInitial.Location = new System.Drawing.Point(709, 8);
             this.lblMiddleInitial.Name = "lblMiddleInitial";
-            this.lblMiddleInitial.Size = new System.Drawing.Size(195, 39);
+            this.lblMiddleInitial.Size = new System.Drawing.Size(99, 19);
             this.lblMiddleInitial.TabIndex = 24;
             this.lblMiddleInitial.Text = "Middle Initial";
             // 
@@ -286,21 +274,19 @@
             // 
             this.lblMemberStatus.AutoSize = true;
             this.lblMemberStatus.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMemberStatus.Location = new System.Drawing.Point(22, 29);
-            this.lblMemberStatus.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblMemberStatus.Location = new System.Drawing.Point(11, 15);
             this.lblMemberStatus.Name = "lblMemberStatus";
-            this.lblMemberStatus.Size = new System.Drawing.Size(0, 51);
+            this.lblMemberStatus.Size = new System.Drawing.Size(0, 26);
             this.lblMemberStatus.TabIndex = 0;
             // 
             // txtScratchScore1
             // 
             this.txtScratchScore1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtScratchScore1.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtScratchScore1.Location = new System.Drawing.Point(54, 79);
-            this.txtScratchScore1.Margin = new System.Windows.Forms.Padding(6);
+            this.txtScratchScore1.Location = new System.Drawing.Point(27, 41);
             this.txtScratchScore1.MaxLength = 3;
             this.txtScratchScore1.Name = "txtScratchScore1";
-            this.txtScratchScore1.Size = new System.Drawing.Size(112, 66);
+            this.txtScratchScore1.Size = new System.Drawing.Size(57, 37);
             this.txtScratchScore1.TabIndex = 0;
             this.txtScratchScore1.TextChanged += new System.EventHandler(this.scratchTotal);
             // 
@@ -310,12 +296,11 @@
             this.txtHandicapScore1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtHandicapScore1.Enabled = false;
             this.txtHandicapScore1.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtHandicapScore1.Location = new System.Drawing.Point(260, 81);
-            this.txtHandicapScore1.Margin = new System.Windows.Forms.Padding(6);
+            this.txtHandicapScore1.Location = new System.Drawing.Point(130, 42);
             this.txtHandicapScore1.Multiline = true;
             this.txtHandicapScore1.Name = "txtHandicapScore1";
             this.txtHandicapScore1.ReadOnly = true;
-            this.txtHandicapScore1.Size = new System.Drawing.Size(112, 69);
+            this.txtHandicapScore1.Size = new System.Drawing.Size(57, 37);
             this.txtHandicapScore1.TabIndex = 6;
             this.txtHandicapScore1.TabStop = false;
             // 
@@ -323,11 +308,10 @@
             // 
             this.txtScratchScore2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtScratchScore2.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtScratchScore2.Location = new System.Drawing.Point(54, 187);
-            this.txtScratchScore2.Margin = new System.Windows.Forms.Padding(6);
+            this.txtScratchScore2.Location = new System.Drawing.Point(27, 97);
             this.txtScratchScore2.MaxLength = 3;
             this.txtScratchScore2.Name = "txtScratchScore2";
-            this.txtScratchScore2.Size = new System.Drawing.Size(112, 66);
+            this.txtScratchScore2.Size = new System.Drawing.Size(57, 37);
             this.txtScratchScore2.TabIndex = 1;
             this.txtScratchScore2.TextChanged += new System.EventHandler(this.scratchTotal);
             // 
@@ -337,12 +321,11 @@
             this.txtHandicapScore2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtHandicapScore2.Enabled = false;
             this.txtHandicapScore2.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtHandicapScore2.Location = new System.Drawing.Point(260, 187);
-            this.txtHandicapScore2.Margin = new System.Windows.Forms.Padding(6);
+            this.txtHandicapScore2.Location = new System.Drawing.Point(130, 97);
             this.txtHandicapScore2.Multiline = true;
             this.txtHandicapScore2.Name = "txtHandicapScore2";
             this.txtHandicapScore2.ReadOnly = true;
-            this.txtHandicapScore2.Size = new System.Drawing.Size(112, 69);
+            this.txtHandicapScore2.Size = new System.Drawing.Size(57, 37);
             this.txtHandicapScore2.TabIndex = 6;
             this.txtHandicapScore2.TabStop = false;
             // 
@@ -350,11 +333,10 @@
             // 
             this.txtScratchScore3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtScratchScore3.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtScratchScore3.Location = new System.Drawing.Point(54, 292);
-            this.txtScratchScore3.Margin = new System.Windows.Forms.Padding(6);
+            this.txtScratchScore3.Location = new System.Drawing.Point(27, 152);
             this.txtScratchScore3.MaxLength = 3;
             this.txtScratchScore3.Name = "txtScratchScore3";
-            this.txtScratchScore3.Size = new System.Drawing.Size(112, 66);
+            this.txtScratchScore3.Size = new System.Drawing.Size(57, 37);
             this.txtScratchScore3.TabIndex = 2;
             this.txtScratchScore3.TextChanged += new System.EventHandler(this.scratchTotal);
             // 
@@ -364,12 +346,11 @@
             this.txtHandicapScore3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtHandicapScore3.Enabled = false;
             this.txtHandicapScore3.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtHandicapScore3.Location = new System.Drawing.Point(260, 292);
-            this.txtHandicapScore3.Margin = new System.Windows.Forms.Padding(6);
+            this.txtHandicapScore3.Location = new System.Drawing.Point(130, 152);
             this.txtHandicapScore3.Multiline = true;
             this.txtHandicapScore3.Name = "txtHandicapScore3";
             this.txtHandicapScore3.ReadOnly = true;
-            this.txtHandicapScore3.Size = new System.Drawing.Size(112, 69);
+            this.txtHandicapScore3.Size = new System.Drawing.Size(57, 37);
             this.txtHandicapScore3.TabIndex = 6;
             this.txtHandicapScore3.TabStop = false;
             // 
@@ -377,11 +358,10 @@
             // 
             this.txtScratchScore4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtScratchScore4.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtScratchScore4.Location = new System.Drawing.Point(54, 398);
-            this.txtScratchScore4.Margin = new System.Windows.Forms.Padding(6);
+            this.txtScratchScore4.Location = new System.Drawing.Point(27, 207);
             this.txtScratchScore4.MaxLength = 3;
             this.txtScratchScore4.Name = "txtScratchScore4";
-            this.txtScratchScore4.Size = new System.Drawing.Size(112, 66);
+            this.txtScratchScore4.Size = new System.Drawing.Size(57, 37);
             this.txtScratchScore4.TabIndex = 3;
             this.txtScratchScore4.TextChanged += new System.EventHandler(this.scratchTotal);
             // 
@@ -391,12 +371,11 @@
             this.txtHandicapScore4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtHandicapScore4.Enabled = false;
             this.txtHandicapScore4.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtHandicapScore4.Location = new System.Drawing.Point(260, 398);
-            this.txtHandicapScore4.Margin = new System.Windows.Forms.Padding(6);
+            this.txtHandicapScore4.Location = new System.Drawing.Point(130, 207);
             this.txtHandicapScore4.Multiline = true;
             this.txtHandicapScore4.Name = "txtHandicapScore4";
             this.txtHandicapScore4.ReadOnly = true;
-            this.txtHandicapScore4.Size = new System.Drawing.Size(112, 69);
+            this.txtHandicapScore4.Size = new System.Drawing.Size(57, 37);
             this.txtHandicapScore4.TabIndex = 6;
             this.txtHandicapScore4.TabStop = false;
             // 
@@ -406,12 +385,11 @@
             this.txtScratchTotal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtScratchTotal.Enabled = false;
             this.txtScratchTotal.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtScratchTotal.Location = new System.Drawing.Point(54, 504);
-            this.txtScratchTotal.Margin = new System.Windows.Forms.Padding(6);
+            this.txtScratchTotal.Location = new System.Drawing.Point(27, 262);
             this.txtScratchTotal.Multiline = true;
             this.txtScratchTotal.Name = "txtScratchTotal";
             this.txtScratchTotal.ReadOnly = true;
-            this.txtScratchTotal.Size = new System.Drawing.Size(138, 94);
+            this.txtScratchTotal.Size = new System.Drawing.Size(70, 50);
             this.txtScratchTotal.TabIndex = 7;
             this.txtScratchTotal.TabStop = false;
             // 
@@ -421,12 +399,11 @@
             this.txtHandicapTotal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtHandicapTotal.Enabled = false;
             this.txtHandicapTotal.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtHandicapTotal.Location = new System.Drawing.Point(260, 504);
-            this.txtHandicapTotal.Margin = new System.Windows.Forms.Padding(6);
+            this.txtHandicapTotal.Location = new System.Drawing.Point(130, 262);
             this.txtHandicapTotal.Multiline = true;
             this.txtHandicapTotal.Name = "txtHandicapTotal";
             this.txtHandicapTotal.ReadOnly = true;
-            this.txtHandicapTotal.Size = new System.Drawing.Size(138, 94);
+            this.txtHandicapTotal.Size = new System.Drawing.Size(70, 50);
             this.txtHandicapTotal.TabIndex = 7;
             this.txtHandicapTotal.TabStop = false;
             // 
@@ -439,21 +416,18 @@
             this.grpRecord.Controls.Add(this.btnStats);
             this.grpRecord.Controls.Add(this.btnLastFile);
             this.grpRecord.Controls.Add(this.btnNew);
-            this.grpRecord.Location = new System.Drawing.Point(42, 1000);
-            this.grpRecord.Margin = new System.Windows.Forms.Padding(6);
+            this.grpRecord.Location = new System.Drawing.Point(21, 520);
             this.grpRecord.Name = "grpRecord";
-            this.grpRecord.Padding = new System.Windows.Forms.Padding(6);
-            this.grpRecord.Size = new System.Drawing.Size(436, 346);
+            this.grpRecord.Size = new System.Drawing.Size(235, 180);
             this.grpRecord.TabIndex = 2;
             this.grpRecord.TabStop = false;
             this.grpRecord.Text = "Record";
             // 
             // btnRightArrow
             // 
-            this.btnRightArrow.Location = new System.Drawing.Point(294, 96);
-            this.btnRightArrow.Margin = new System.Windows.Forms.Padding(6);
+            this.btnRightArrow.Location = new System.Drawing.Point(163, 50);
             this.btnRightArrow.Name = "btnRightArrow";
-            this.btnRightArrow.Size = new System.Drawing.Size(106, 56);
+            this.btnRightArrow.Size = new System.Drawing.Size(53, 29);
             this.btnRightArrow.TabIndex = 1;
             this.btnRightArrow.TabStop = false;
             this.btnRightArrow.Text = ">";
@@ -463,19 +437,17 @@
             // lblRecord
             // 
             this.lblRecord.AutoSize = true;
-            this.lblRecord.Location = new System.Drawing.Point(158, 112);
-            this.lblRecord.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblRecord.Location = new System.Drawing.Point(77, 58);
             this.lblRecord.Name = "lblRecord";
-            this.lblRecord.Size = new System.Drawing.Size(117, 25);
+            this.lblRecord.Size = new System.Drawing.Size(62, 13);
             this.lblRecord.TabIndex = 18;
             this.lblRecord.Text = "Record 0/0";
             // 
             // btnLeftArrow
             // 
-            this.btnLeftArrow.Location = new System.Drawing.Point(38, 96);
-            this.btnLeftArrow.Margin = new System.Windows.Forms.Padding(6);
+            this.btnLeftArrow.Location = new System.Drawing.Point(19, 50);
             this.btnLeftArrow.Name = "btnLeftArrow";
-            this.btnLeftArrow.Size = new System.Drawing.Size(104, 56);
+            this.btnLeftArrow.Size = new System.Drawing.Size(52, 29);
             this.btnLeftArrow.TabIndex = 1;
             this.btnLeftArrow.TabStop = false;
             this.btnLeftArrow.Text = "<";
@@ -484,10 +456,9 @@
             // 
             // btnDelete
             // 
-            this.btnDelete.Location = new System.Drawing.Point(38, 283);
-            this.btnDelete.Margin = new System.Windows.Forms.Padding(6);
+            this.btnDelete.Location = new System.Drawing.Point(19, 147);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(362, 48);
+            this.btnDelete.Size = new System.Drawing.Size(197, 25);
             this.btnDelete.TabIndex = 0;
             this.btnDelete.TabStop = false;
             this.btnDelete.Text = "Delete";
@@ -495,10 +466,9 @@
             // 
             // btnStats
             // 
-            this.btnStats.Location = new System.Drawing.Point(38, 223);
-            this.btnStats.Margin = new System.Windows.Forms.Padding(6);
+            this.btnStats.Location = new System.Drawing.Point(19, 116);
             this.btnStats.Name = "btnStats";
-            this.btnStats.Size = new System.Drawing.Size(362, 48);
+            this.btnStats.Size = new System.Drawing.Size(197, 25);
             this.btnStats.TabIndex = 0;
             this.btnStats.TabStop = false;
             this.btnStats.Text = "Stats";
@@ -506,43 +476,39 @@
             // 
             // btnLastFile
             // 
-            this.btnLastFile.Location = new System.Drawing.Point(38, 163);
-            this.btnLastFile.Margin = new System.Windows.Forms.Padding(6);
+            this.btnLastFile.Location = new System.Drawing.Point(19, 85);
             this.btnLastFile.Name = "btnLastFile";
-            this.btnLastFile.Size = new System.Drawing.Size(362, 48);
+            this.btnLastFile.Size = new System.Drawing.Size(197, 25);
             this.btnLastFile.TabIndex = 0;
             this.btnLastFile.TabStop = false;
-            this.btnLastFile.Text = "Last File";
+            this.btnLastFile.Text = "Last Recap";
             this.btnLastFile.UseVisualStyleBackColor = true;
             // 
             // btnNew
             // 
-            this.btnNew.Location = new System.Drawing.Point(38, 37);
-            this.btnNew.Margin = new System.Windows.Forms.Padding(6);
+            this.btnNew.Location = new System.Drawing.Point(19, 19);
             this.btnNew.Name = "btnNew";
-            this.btnNew.Size = new System.Drawing.Size(362, 48);
+            this.btnNew.Size = new System.Drawing.Size(197, 25);
             this.btnNew.TabIndex = 0;
-            this.btnNew.Text = "New";
+            this.btnNew.Text = "Add New/Update Record";
             this.btnNew.UseVisualStyleBackColor = true;
             this.btnNew.Click += new System.EventHandler(this.newRecap);
             // 
             // lblStratchScores
             // 
             this.lblStratchScores.AutoSize = true;
-            this.lblStratchScores.Location = new System.Drawing.Point(36, 31);
-            this.lblStratchScores.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblStratchScores.Location = new System.Drawing.Point(18, 16);
             this.lblStratchScores.Name = "lblStratchScores";
-            this.lblStratchScores.Size = new System.Drawing.Size(158, 25);
+            this.lblStratchScores.Size = new System.Drawing.Size(80, 13);
             this.lblStratchScores.TabIndex = 9;
             this.lblStratchScores.Text = "Scratch Scores";
             // 
             // lblHandiCap
             // 
             this.lblHandiCap.AutoSize = true;
-            this.lblHandiCap.Location = new System.Drawing.Point(232, 31);
-            this.lblHandiCap.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblHandiCap.Location = new System.Drawing.Point(116, 16);
             this.lblHandiCap.Name = "lblHandiCap";
-            this.lblHandiCap.Size = new System.Drawing.Size(180, 25);
+            this.lblHandiCap.Size = new System.Drawing.Size(90, 13);
             this.lblHandiCap.TabIndex = 10;
             this.lblHandiCap.Text = "HandiCap Scores";
             // 
@@ -566,11 +532,9 @@
             this.grpStats.Controls.Add(this.txtHandicapScore4);
             this.grpStats.Controls.Add(this.txtHandicapScore3);
             this.grpStats.Controls.Add(this.txtScratchScore4);
-            this.grpStats.Location = new System.Drawing.Point(42, 331);
-            this.grpStats.Margin = new System.Windows.Forms.Padding(6);
+            this.grpStats.Location = new System.Drawing.Point(21, 172);
             this.grpStats.Name = "grpStats";
-            this.grpStats.Padding = new System.Windows.Forms.Padding(6);
-            this.grpStats.Size = new System.Drawing.Size(720, 631);
+            this.grpStats.Size = new System.Drawing.Size(360, 328);
             this.grpStats.TabIndex = 1;
             this.grpStats.TabStop = false;
             this.grpStats.Text = "Stats";
@@ -578,40 +542,36 @@
             // lblPlayer2
             // 
             this.lblPlayer2.AutoSize = true;
-            this.lblPlayer2.Location = new System.Drawing.Point(386, 363);
-            this.lblPlayer2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblPlayer2.Location = new System.Drawing.Point(193, 189);
             this.lblPlayer2.Name = "lblPlayer2";
-            this.lblPlayer2.Size = new System.Drawing.Size(85, 25);
+            this.lblPlayer2.Size = new System.Drawing.Size(42, 13);
             this.lblPlayer2.TabIndex = 12;
             this.lblPlayer2.Text = "Player2";
             // 
             // lblPlayer1
             // 
             this.lblPlayer1.AutoSize = true;
-            this.lblPlayer1.Location = new System.Drawing.Point(388, 154);
-            this.lblPlayer1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblPlayer1.Location = new System.Drawing.Point(194, 80);
             this.lblPlayer1.Name = "lblPlayer1";
-            this.lblPlayer1.Size = new System.Drawing.Size(85, 25);
+            this.lblPlayer1.Size = new System.Drawing.Size(42, 13);
             this.lblPlayer1.TabIndex = 11;
             this.lblPlayer1.Text = "Player1";
             // 
             // lblBonusPins
             // 
             this.lblBonusPins.AutoSize = true;
-            this.lblBonusPins.Location = new System.Drawing.Point(514, 333);
-            this.lblBonusPins.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblBonusPins.Location = new System.Drawing.Point(257, 173);
             this.lblBonusPins.Name = "lblBonusPins";
-            this.lblBonusPins.Size = new System.Drawing.Size(121, 25);
+            this.lblBonusPins.Size = new System.Drawing.Size(60, 13);
             this.lblBonusPins.TabIndex = 8;
             this.lblBonusPins.Text = "Bonus Pins";
             // 
             // lblCap
             // 
             this.lblCap.AutoSize = true;
-            this.lblCap.Location = new System.Drawing.Point(514, 198);
-            this.lblCap.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblCap.Location = new System.Drawing.Point(257, 103);
             this.lblCap.Name = "lblCap";
-            this.lblCap.Size = new System.Drawing.Size(107, 25);
+            this.lblCap.Size = new System.Drawing.Size(54, 13);
             this.lblCap.TabIndex = 7;
             this.lblCap.Text = "HandiCap";
             // 
@@ -621,12 +581,11 @@
             this.txtBonusPins.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtBonusPins.Enabled = false;
             this.txtBonusPins.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtBonusPins.Location = new System.Drawing.Point(494, 363);
-            this.txtBonusPins.Margin = new System.Windows.Forms.Padding(6);
+            this.txtBonusPins.Location = new System.Drawing.Point(247, 189);
             this.txtBonusPins.Multiline = true;
             this.txtBonusPins.Name = "txtBonusPins";
             this.txtBonusPins.ReadOnly = true;
-            this.txtBonusPins.Size = new System.Drawing.Size(150, 65);
+            this.txtBonusPins.Size = new System.Drawing.Size(76, 35);
             this.txtBonusPins.TabIndex = 6;
             this.txtBonusPins.TabStop = false;
             this.txtBonusPins.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -637,25 +596,21 @@
             this.txtHandicap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtHandicap.Enabled = false;
             this.txtHandicap.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtHandicap.Location = new System.Drawing.Point(494, 231);
-            this.txtHandicap.Margin = new System.Windows.Forms.Padding(6);
+            this.txtHandicap.Location = new System.Drawing.Point(247, 120);
             this.txtHandicap.Multiline = true;
             this.txtHandicap.Name = "txtHandicap";
             this.txtHandicap.ReadOnly = true;
-            this.txtHandicap.Size = new System.Drawing.Size(150, 65);
+            this.txtHandicap.Size = new System.Drawing.Size(76, 35);
             this.txtHandicap.TabIndex = 6;
             this.txtHandicap.TabStop = false;
             this.txtHandicap.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // grpTournamentFile
             // 
-            this.grpTournamentFile.Controls.Add(this.btnTournamentStats);
             this.grpTournamentFile.Controls.Add(this.cbxTourneyDropDown);
-            this.grpTournamentFile.Location = new System.Drawing.Point(536, 1163);
-            this.grpTournamentFile.Margin = new System.Windows.Forms.Padding(6);
+            this.grpTournamentFile.Location = new System.Drawing.Point(277, 605);
             this.grpTournamentFile.Name = "grpTournamentFile";
-            this.grpTournamentFile.Padding = new System.Windows.Forms.Padding(6);
-            this.grpTournamentFile.Size = new System.Drawing.Size(402, 168);
+            this.grpTournamentFile.Size = new System.Drawing.Size(201, 60);
             this.grpTournamentFile.TabIndex = 28;
             this.grpTournamentFile.TabStop = false;
             this.grpTournamentFile.Text = "Tournament File";
@@ -664,10 +619,9 @@
             // 
             this.cbxTourneyDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxTourneyDropDown.FormattingEnabled = true;
-            this.cbxTourneyDropDown.Location = new System.Drawing.Point(12, 37);
-            this.cbxTourneyDropDown.Margin = new System.Windows.Forms.Padding(6);
+            this.cbxTourneyDropDown.Location = new System.Drawing.Point(6, 19);
             this.cbxTourneyDropDown.Name = "cbxTourneyDropDown";
-            this.cbxTourneyDropDown.Size = new System.Drawing.Size(374, 33);
+            this.cbxTourneyDropDown.Size = new System.Drawing.Size(189, 21);
             this.cbxTourneyDropDown.TabIndex = 2;
             this.cbxTourneyDropDown.TabStop = false;
             this.cbxTourneyDropDown.SelectedIndexChanged += new System.EventHandler(this.cbxTourneyDropDown_SelectedIndexChanged);
@@ -687,11 +641,9 @@
             this.grpLeaders.Controls.Add(this.richTextBox1);
             this.grpLeaders.Controls.Add(this.lblSeries);
             this.grpLeaders.Controls.Add(this.lblGameSenior);
-            this.grpLeaders.Location = new System.Drawing.Point(810, 202);
-            this.grpLeaders.Margin = new System.Windows.Forms.Padding(6);
+            this.grpLeaders.Location = new System.Drawing.Point(405, 105);
             this.grpLeaders.Name = "grpLeaders";
-            this.grpLeaders.Padding = new System.Windows.Forms.Padding(6);
-            this.grpLeaders.Size = new System.Drawing.Size(912, 760);
+            this.grpLeaders.Size = new System.Drawing.Size(456, 395);
             this.grpLeaders.TabIndex = 29;
             this.grpLeaders.TabStop = false;
             this.grpLeaders.Text = "Leaders";
@@ -700,11 +652,9 @@
             // 
             this.grpScoreType.Controls.Add(this.rdoScratchScore);
             this.grpScoreType.Controls.Add(this.rdoHandicapScore);
-            this.grpScoreType.Location = new System.Drawing.Point(696, 575);
-            this.grpScoreType.Margin = new System.Windows.Forms.Padding(6);
+            this.grpScoreType.Location = new System.Drawing.Point(348, 299);
             this.grpScoreType.Name = "grpScoreType";
-            this.grpScoreType.Padding = new System.Windows.Forms.Padding(6);
-            this.grpScoreType.Size = new System.Drawing.Size(204, 140);
+            this.grpScoreType.Size = new System.Drawing.Size(102, 73);
             this.grpScoreType.TabIndex = 8;
             this.grpScoreType.TabStop = false;
             this.grpScoreType.Text = "Score Type";
@@ -712,10 +662,9 @@
             // rdoScratchScore
             // 
             this.rdoScratchScore.AutoSize = true;
-            this.rdoScratchScore.Location = new System.Drawing.Point(14, 85);
-            this.rdoScratchScore.Margin = new System.Windows.Forms.Padding(6);
+            this.rdoScratchScore.Location = new System.Drawing.Point(7, 44);
             this.rdoScratchScore.Name = "rdoScratchScore";
-            this.rdoScratchScore.Size = new System.Drawing.Size(116, 29);
+            this.rdoScratchScore.Size = new System.Drawing.Size(62, 17);
             this.rdoScratchScore.TabIndex = 1;
             this.rdoScratchScore.Text = "Scratch";
             this.rdoScratchScore.UseVisualStyleBackColor = true;
@@ -724,10 +673,9 @@
             // 
             this.rdoHandicapScore.AutoSize = true;
             this.rdoHandicapScore.Checked = true;
-            this.rdoHandicapScore.Location = new System.Drawing.Point(14, 38);
-            this.rdoHandicapScore.Margin = new System.Windows.Forms.Padding(6);
+            this.rdoHandicapScore.Location = new System.Drawing.Point(7, 20);
             this.rdoHandicapScore.Name = "rdoHandicapScore";
-            this.rdoHandicapScore.Size = new System.Drawing.Size(134, 29);
+            this.rdoHandicapScore.Size = new System.Drawing.Size(71, 17);
             this.rdoHandicapScore.TabIndex = 0;
             this.rdoHandicapScore.TabStop = true;
             this.rdoHandicapScore.Text = "Handicap";
@@ -736,49 +684,44 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(44, 558);
-            this.label3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label3.Location = new System.Drawing.Point(22, 290);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(304, 25);
+            this.label3.Size = new System.Drawing.Size(149, 13);
             this.label3.TabIndex = 7;
             this.label3.Text = "Series [Member No.] -- (Name)";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(288, 527);
-            this.label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label2.Location = new System.Drawing.Point(144, 274);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(123, 25);
+            this.label2.Size = new System.Drawing.Size(61, 13);
             this.label2.TabIndex = 6;
             this.label2.Text = "High Series";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(44, 321);
-            this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label1.Location = new System.Drawing.Point(22, 167);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(406, 25);
+            this.label1.Size = new System.Drawing.Size(200, 13);
             this.label1.TabIndex = 5;
             this.label1.Text = "Game [Member No.] -- (Name) *=Pre paid";
             // 
             // lblHighGame
             // 
             this.lblHighGame.AutoSize = true;
-            this.lblHighGame.Location = new System.Drawing.Point(302, 285);
-            this.lblHighGame.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblHighGame.Location = new System.Drawing.Point(151, 148);
             this.lblHighGame.Name = "lblHighGame";
-            this.lblHighGame.Size = new System.Drawing.Size(119, 25);
+            this.lblHighGame.Size = new System.Drawing.Size(60, 13);
             this.lblHighGame.TabIndex = 4;
             this.lblHighGame.Text = "High Game";
             // 
             // btnRefresh3
             // 
-            this.btnRefresh3.Location = new System.Drawing.Point(50, 679);
-            this.btnRefresh3.Margin = new System.Windows.Forms.Padding(6);
+            this.btnRefresh3.Location = new System.Drawing.Point(25, 353);
             this.btnRefresh3.Name = "btnRefresh3";
-            this.btnRefresh3.Size = new System.Drawing.Size(634, 44);
+            this.btnRefresh3.Size = new System.Drawing.Size(317, 23);
             this.btnRefresh3.TabIndex = 23;
             this.btnRefresh3.TabStop = false;
             this.btnRefresh3.Text = "Refresh";
@@ -787,10 +730,9 @@
             // 
             // btnRefresh2
             // 
-            this.btnRefresh2.Location = new System.Drawing.Point(50, 448);
-            this.btnRefresh2.Margin = new System.Windows.Forms.Padding(6);
+            this.btnRefresh2.Location = new System.Drawing.Point(25, 233);
             this.btnRefresh2.Name = "btnRefresh2";
-            this.btnRefresh2.Size = new System.Drawing.Size(634, 44);
+            this.btnRefresh2.Size = new System.Drawing.Size(317, 23);
             this.btnRefresh2.TabIndex = 23;
             this.btnRefresh2.TabStop = false;
             this.btnRefresh2.Text = "Refresh";
@@ -799,43 +741,39 @@
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(50, 212);
-            this.btnRefresh.Margin = new System.Windows.Forms.Padding(6);
+            this.btnRefresh.Location = new System.Drawing.Point(25, 110);
             this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(634, 44);
+            this.btnRefresh.Size = new System.Drawing.Size(317, 23);
             this.btnRefresh.TabIndex = 23;
             this.btnRefresh.TabStop = false;
             this.btnRefresh.Text = "Refresh";
             this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // richTextBox3
             // 
             this.richTextBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBox3.Location = new System.Drawing.Point(50, 588);
-            this.richTextBox3.Margin = new System.Windows.Forms.Padding(6);
+            this.richTextBox3.Location = new System.Drawing.Point(25, 306);
             this.richTextBox3.Name = "richTextBox3";
-            this.richTextBox3.Size = new System.Drawing.Size(630, 87);
+            this.richTextBox3.Size = new System.Drawing.Size(317, 47);
             this.richTextBox3.TabIndex = 22;
             this.richTextBox3.TabStop = false;
             this.richTextBox3.Text = "";
             // 
             // richTextBox2
             // 
-            this.richTextBox2.Location = new System.Drawing.Point(50, 352);
-            this.richTextBox2.Margin = new System.Windows.Forms.Padding(6);
+            this.richTextBox2.Location = new System.Drawing.Point(25, 183);
             this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.Size = new System.Drawing.Size(630, 81);
+            this.richTextBox2.Size = new System.Drawing.Size(317, 44);
             this.richTextBox2.TabIndex = 22;
             this.richTextBox2.TabStop = false;
             this.richTextBox2.Text = "";
             // 
             // richTextBox1
             // 
-            this.richTextBox1.Enabled = false;
-            this.richTextBox1.Location = new System.Drawing.Point(50, 115);
-            this.richTextBox1.Margin = new System.Windows.Forms.Padding(6);
+            this.richTextBox1.Location = new System.Drawing.Point(25, 60);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(630, 87);
+            this.richTextBox1.Size = new System.Drawing.Size(317, 47);
             this.richTextBox1.TabIndex = 22;
             this.richTextBox1.TabStop = false;
             this.richTextBox1.Text = "";
@@ -843,20 +781,18 @@
             // lblSeries
             // 
             this.lblSeries.AutoSize = true;
-            this.lblSeries.Location = new System.Drawing.Point(44, 85);
-            this.lblSeries.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblSeries.Location = new System.Drawing.Point(22, 44);
             this.lblSeries.Name = "lblSeries";
-            this.lblSeries.Size = new System.Drawing.Size(304, 25);
+            this.lblSeries.Size = new System.Drawing.Size(149, 13);
             this.lblSeries.TabIndex = 1;
             this.lblSeries.Text = "Series [Member No.] -- (Name)";
             // 
             // lblGameSenior
             // 
             this.lblGameSenior.AutoSize = true;
-            this.lblGameSenior.Location = new System.Drawing.Point(260, 50);
-            this.lblGameSenior.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblGameSenior.Location = new System.Drawing.Point(130, 26);
             this.lblGameSenior.Name = "lblGameSenior";
-            this.lblGameSenior.Size = new System.Drawing.Size(216, 25);
+            this.lblGameSenior.Size = new System.Drawing.Size(109, 13);
             this.lblGameSenior.TabIndex = 0;
             this.lblGameSenior.Text = "High Game Handicap";
             // 
@@ -865,21 +801,18 @@
             this.grpReports.Controls.Add(this.btnSeries);
             this.grpReports.Controls.Add(this.btnGame);
             this.grpReports.Controls.Add(this.btnSenior);
-            this.grpReports.Location = new System.Drawing.Point(1000, 1002);
-            this.grpReports.Margin = new System.Windows.Forms.Padding(6);
+            this.grpReports.Location = new System.Drawing.Point(499, 521);
             this.grpReports.Name = "grpReports";
-            this.grpReports.Padding = new System.Windows.Forms.Padding(6);
-            this.grpReports.Size = new System.Drawing.Size(246, 329);
+            this.grpReports.Size = new System.Drawing.Size(123, 171);
             this.grpReports.TabIndex = 0;
             this.grpReports.TabStop = false;
             this.grpReports.Text = "Reports";
             // 
             // btnSeries
             // 
-            this.btnSeries.Location = new System.Drawing.Point(36, 219);
-            this.btnSeries.Margin = new System.Windows.Forms.Padding(6);
+            this.btnSeries.Location = new System.Drawing.Point(18, 114);
             this.btnSeries.Name = "btnSeries";
-            this.btnSeries.Size = new System.Drawing.Size(164, 71);
+            this.btnSeries.Size = new System.Drawing.Size(82, 37);
             this.btnSeries.TabIndex = 0;
             this.btnSeries.TabStop = false;
             this.btnSeries.Text = "Series";
@@ -887,10 +820,9 @@
             // 
             // btnGame
             // 
-            this.btnGame.Location = new System.Drawing.Point(36, 137);
-            this.btnGame.Margin = new System.Windows.Forms.Padding(6);
+            this.btnGame.Location = new System.Drawing.Point(18, 71);
             this.btnGame.Name = "btnGame";
-            this.btnGame.Size = new System.Drawing.Size(164, 71);
+            this.btnGame.Size = new System.Drawing.Size(82, 37);
             this.btnGame.TabIndex = 0;
             this.btnGame.TabStop = false;
             this.btnGame.Text = "Game";
@@ -898,10 +830,9 @@
             // 
             // btnSenior
             // 
-            this.btnSenior.Location = new System.Drawing.Point(36, 44);
-            this.btnSenior.Margin = new System.Windows.Forms.Padding(6);
+            this.btnSenior.Location = new System.Drawing.Point(18, 23);
             this.btnSenior.Name = "btnSenior";
-            this.btnSenior.Size = new System.Drawing.Size(164, 71);
+            this.btnSenior.Size = new System.Drawing.Size(82, 37);
             this.btnSenior.TabIndex = 0;
             this.btnSenior.TabStop = false;
             this.btnSenior.Text = "Senior";
@@ -910,11 +841,9 @@
             // grpComments
             // 
             this.grpComments.Controls.Add(this.rtxtComments);
-            this.grpComments.Location = new System.Drawing.Point(1320, 1000);
-            this.grpComments.Margin = new System.Windows.Forms.Padding(6);
+            this.grpComments.Location = new System.Drawing.Point(660, 520);
             this.grpComments.Name = "grpComments";
-            this.grpComments.Padding = new System.Windows.Forms.Padding(6);
-            this.grpComments.Size = new System.Drawing.Size(402, 331);
+            this.grpComments.Size = new System.Drawing.Size(201, 172);
             this.grpComments.TabIndex = 31;
             this.grpComments.TabStop = false;
             this.grpComments.Text = "Comments";
@@ -923,11 +852,10 @@
             // 
             this.rtxtComments.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.rtxtComments.Enabled = false;
-            this.rtxtComments.Location = new System.Drawing.Point(38, 54);
-            this.rtxtComments.Margin = new System.Windows.Forms.Padding(6);
+            this.rtxtComments.Location = new System.Drawing.Point(19, 28);
             this.rtxtComments.Name = "rtxtComments";
             this.rtxtComments.ReadOnly = true;
-            this.rtxtComments.Size = new System.Drawing.Size(324, 235);
+            this.rtxtComments.Size = new System.Drawing.Size(164, 124);
             this.rtxtComments.TabIndex = 0;
             this.rtxtComments.Text = "";
             // 
@@ -935,50 +863,48 @@
             // 
             this.pnlMemStat.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pnlMemStat.Controls.Add(this.lblMemberStatus);
-            this.pnlMemStat.Location = new System.Drawing.Point(508, 194);
-            this.pnlMemStat.Margin = new System.Windows.Forms.Padding(6);
+            this.pnlMemStat.Location = new System.Drawing.Point(254, 101);
             this.pnlMemStat.Name = "pnlMemStat";
-            this.pnlMemStat.Size = new System.Drawing.Size(216, 106);
+            this.pnlMemStat.Size = new System.Drawing.Size(110, 57);
             this.pnlMemStat.TabIndex = 32;
             // 
             // lblMemberL
             // 
             this.lblMemberL.AutoSize = true;
-            this.lblMemberL.Location = new System.Drawing.Point(538, 163);
-            this.lblMemberL.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblMemberL.Location = new System.Drawing.Point(269, 85);
             this.lblMemberL.Name = "lblMemberL";
-            this.lblMemberL.Size = new System.Drawing.Size(157, 25);
+            this.lblMemberL.Size = new System.Drawing.Size(78, 13);
             this.lblMemberL.TabIndex = 30;
             this.lblMemberL.Text = "MemberStatus:";
             // 
             // btnNewTournament
             // 
-            this.btnNewTournament.Location = new System.Drawing.Point(544, 1108);
-            this.btnNewTournament.Margin = new System.Windows.Forms.Padding(6);
+            this.btnNewTournament.Location = new System.Drawing.Point(281, 576);
             this.btnNewTournament.Name = "btnNewTournament";
-            this.btnNewTournament.Size = new System.Drawing.Size(382, 44);
+            this.btnNewTournament.Size = new System.Drawing.Size(191, 23);
             this.btnNewTournament.TabIndex = 26;
             this.btnNewTournament.TabStop = false;
             this.btnNewTournament.Text = "New Tournament";
             this.btnNewTournament.UseVisualStyleBackColor = true;
             this.btnNewTournament.Click += new System.EventHandler(this.btnNewTournament_Click);
             // 
-            // btnTournamentStats
+            // btnTourSearch
             // 
-            this.btnTournamentStats.Location = new System.Drawing.Point(90, 89);
-            this.btnTournamentStats.Name = "btnTournamentStats";
-            this.btnTournamentStats.Size = new System.Drawing.Size(225, 70);
-            this.btnTournamentStats.TabIndex = 33;
-            this.btnTournamentStats.Text = "List of Tournaments by Year";
-            this.btnTournamentStats.UseVisualStyleBackColor = true;
-            this.btnTournamentStats.Click += new System.EventHandler(this.btnTournamentStats_Click);
+            this.btnTourSearch.Location = new System.Drawing.Point(281, 677);
+            this.btnTourSearch.Name = "btnTourSearch";
+            this.btnTourSearch.Size = new System.Drawing.Size(189, 23);
+            this.btnTourSearch.TabIndex = 33;
+            this.btnTourSearch.Text = "Search Tournaments...";
+            this.btnTourSearch.UseVisualStyleBackColor = true;
+            this.btnTourSearch.Click += new System.EventHandler(this.btnTourSearch_Click);
             // 
             // frmMemberScores
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
-            this.ClientSize = new System.Drawing.Size(1768, 1369);
+            this.ClientSize = new System.Drawing.Size(884, 737);
+            this.Controls.Add(this.btnTourSearch);
             this.Controls.Add(this.btnNewTournament);
             this.Controls.Add(this.lblMemberL);
             this.Controls.Add(this.pnlMemStat);
@@ -998,8 +924,7 @@
             this.Controls.Add(this.grpMemberNum);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(6);
-            this.MinimumSize = new System.Drawing.Size(1774, 1377);
+            this.MinimumSize = new System.Drawing.Size(679, 597);
             this.Name = "frmMemberScores";
             this.Text = "Member Scores";
             this.Activated += new System.EventHandler(this.FrmMemberScores_Activated);
@@ -1097,6 +1022,6 @@
         private System.Windows.Forms.TextBox txtMemberNum2;
         private System.Windows.Forms.Label lblPlayer2;
         private System.Windows.Forms.Label lblPlayer1;
-        private System.Windows.Forms.Button btnTournamentStats;
+        private System.Windows.Forms.Button btnTourSearch;
     }
 }
