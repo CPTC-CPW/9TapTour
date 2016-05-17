@@ -704,9 +704,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(22, 167);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(200, 13);
+            this.label1.Size = new System.Drawing.Size(151, 13);
             this.label1.TabIndex = 5;
-            this.label1.Text = "Game [Member No.] -- (Name) *=Pre paid";
+            this.label1.Text = "Game [Member No.] --- (Name)";
             // 
             // lblHighGame
             // 
