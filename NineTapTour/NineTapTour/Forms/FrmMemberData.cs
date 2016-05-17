@@ -356,7 +356,8 @@ namespace NineTapTour.Forms
                 //use existing memberId if present or select the member id from the form
                 int memId = (_memberId != -1) ? _memberId : Convert.ToInt32(txtMemberNumber.Text);
 
-             
+                try
+                {
                     Member temp = new Member
                     {
                         Id = memId,
@@ -399,7 +400,7 @@ namespace NineTapTour.Forms
                         MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
                         //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
                         Notes = txtNotes.Text,
-                        Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text),
+                        Referrals = (txtReferrals.Text) == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text),
                         #endregion
                         LastPayment = (datePaid.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : datePaid.Value,
                         IsLifetimeMember = chbLifetime.Checked
@@ -409,19 +410,22 @@ namespace NineTapTour.Forms
 
                     try
                     {
-                    MemberDb.AddMember(temp);
+                        MemberDb.AddMember(temp);
 
-                    MessageBox.Show(@"Bowler Added Successfully.");
-                    //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-                    ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-                    //_membersList = ((FrmMain)MdiParent)._membersList;
+                        MessageBox.Show(@"Bowler Added Successfully.");
+                        //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+                        ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+                        //_membersList = ((FrmMain)MdiParent)._membersList;
+                    }
+                    catch (MemberTableException ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
                 }
-                catch (MemberTableException ex)
+                catch (FormatException fe)
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show("Referrals must be an integer number value.");
                 }
-
-                
             }
         }
 
@@ -595,7 +599,7 @@ namespace NineTapTour.Forms
         private void btnStats_Click(object sender, EventArgs e)
         {
             var newfrmStart = new FrmStats(Convert.ToInt32(txtMemberNumber.Text), (txtFirstName.Text + " " + txtLastName.Text), currentMem);
-            newfrmStart.populateStats();            
+            newfrmStart.populateStats();
             newfrmStart.Show();
         }
 
@@ -611,7 +615,7 @@ namespace NineTapTour.Forms
 
             DialogResult result = printDialog.ShowDialog();
 
-            if(result == DialogResult.OK)
+            if (result == DialogResult.OK)
             {
                 printDocument.Print();
             }
@@ -621,7 +625,7 @@ namespace NineTapTour.Forms
         {
             //get the total handicap to display on the card when printed
             int totalHandicap = 0;
-            if(txtHandicap.Text != "")
+            if (txtHandicap.Text != "")
             {
                 totalHandicap = Convert.ToInt32(txtHandicap.Text) * 4;
             }
@@ -646,15 +650,15 @@ namespace NineTapTour.Forms
 
             //draw the 4 handicaps for the game section of the card and the total handicap
 
-            for(int i = 1; i <=5; i++)
+            for (int i = 1; i <= 5; i++)
             {
                 //this prints the handicap 4 times.
-                if(i <=4)
+                if (i <= 4)
                 {
                     graphic.DrawString(txtHandicap.Text, font, dBrush, startX + 530, startY + 30 + i * 40);
                 }
                 //this prints the total handicap after it prints the handicap 4 seperate times
-                if(i == 5)
+                if (i == 5)
                 {
                     graphic.DrawString(totalHandicap.ToString(), font, dBrush, startX + 530, startY + 50 + i * 40);
                 }
@@ -676,7 +680,8 @@ namespace NineTapTour.Forms
             {
                 lblPaymentInfo.Visible = false;
                 datePaid.Enabled = false;
-            } else
+            }
+            else
             {
                 datePaid.Enabled = true;
                 checkPayment();
@@ -693,7 +698,8 @@ namespace NineTapTour.Forms
             if (datePaid.Value != null && datePaid.Value <= DateTime.Now.AddYears(-1))
             {
                 lblPaymentInfo.Visible = true;
-            } else
+            }
+            else
             {
                 lblPaymentInfo.Visible = false;
             }
