@@ -28,22 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dgvAllTournaments = new System.Windows.Forms.DataGridView();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.cbxYear = new System.Windows.Forms.ComboBox();
             this.btnSearch = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAllTournaments)).BeginInit();
             this.SuspendLayout();
             // 
-            // dataGridView1
+            // dgvAllTournaments
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(68, 197);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowTemplate.Height = 40;
-            this.dataGridView1.Size = new System.Drawing.Size(1503, 1013);
-            this.dataGridView1.TabIndex = 0;
+            this.dgvAllTournaments.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvAllTournaments.Location = new System.Drawing.Point(68, 197);
+            this.dgvAllTournaments.Name = "dgvAllTournaments";
+            this.dgvAllTournaments.RowTemplate.Height = 40;
+            this.dgvAllTournaments.Size = new System.Drawing.Size(1503, 1013);
+            this.dgvAllTournaments.TabIndex = 0;
             // 
             // label1
             // 
@@ -92,11 +92,11 @@
             this.Controls.Add(this.cbxYear);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.dgvAllTournaments);
             this.Name = "frmListTournamentsByYear";
             this.Text = "ListTournamentsByYear";
             this.Load += new System.EventHandler(this.frmListTournamentsByYear_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAllTournaments)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -104,7 +104,7 @@
 
         #endregion
 
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dgvAllTournaments;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox cbxYear;

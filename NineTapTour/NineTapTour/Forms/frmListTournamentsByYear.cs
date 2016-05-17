@@ -13,6 +13,7 @@ namespace NineTapTour
 {
     public partial class frmListTournamentsByYear : Form
     {
+        public static int selectedYear;
         public frmListTournamentsByYear()
         {
             InitializeComponent();
@@ -40,12 +41,27 @@ namespace NineTapTour
 
         private void cbxYear_SelectedIndexChanged(object sender, EventArgs e)
         {
+            selectedYear = 0;
             btnSearch.Enabled = true;
+            selectedYear = (int)cbxYear.SelectedValue;
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
             NineTapDb db = new NineTapDb();
+            var tournaments = (from t in db.Tournaments
+                               orderby t.Date descending
+                               where t.Date.Year == selectedYear
+                               select new
+                               {
+                                   t.Id,
+                                   t.Date,
+                                   t.Location,
+                                   t.Event,
+                                   t.Notes,
+                                   t.Sponsors
+                               }).ToList();
+            dgvAllTournaments.DataSource = tournaments;
         }
     }
 }
