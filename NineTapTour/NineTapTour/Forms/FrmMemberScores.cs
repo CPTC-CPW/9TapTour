@@ -86,7 +86,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void GetMember(object sender, KeyEventArgs e)
         {
-            var currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+            Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
             if(currTourney.Doubles)
             {
                 //if (e.KeyCode != Keys.Enter) // manually press Enter to populate Names
@@ -414,19 +414,19 @@ namespace NineTapTour.Forms
         {
             if (IsValid()) 
             {
-                var currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+                Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
                 List<Participant> total = TournamentDb.GetTournamentMemberList(currTourney);
                 //Doubles tournament
                 if (currTourney.Doubles)
                 {
                     player.Game = new Game();
                     player2.Game = new Game();
-                    var db = new NineTapDb();
-                    var gameId = (from p in db.Participants
+                    NineTapDb db = new NineTapDb();
+                    int gameId = (from p in db.Participants
                                   where p.Member.Id == currentMem.Id
                                   && p.Tournament.Id == currTourney.Id
                                   select p.Game.Id).FirstOrDefault();
-                    var gameId2 = (from p in db.Participants
+                    int gameId2 = (from p in db.Participants
                                   where p.Member.Id == currentMem2.Id
                                   && p.Tournament.Id == currTourney.Id
                                   select p.Game.Id).FirstOrDefault();
@@ -510,19 +510,18 @@ namespace NineTapTour.Forms
                     {
                         MessageBox.Show("Please enter all scratch scores", "Blank Scores Not Allowed");
                     }
-                    else if (!isNumeric(txtScratchScore1.ToString().Trim()) || !isNumeric(txtScratchScore2.ToString().Trim())
-                        || !isNumeric(txtScratchScore3.ToString().Trim()) || !isNumeric(txtScratchScore4.ToString().Trim()))
-                    {
-                        MessageBox.Show("Please enter only numbers", "Non-Integer Scores Not Allowed");
-                    }
-                    else
-                    {
-                        player.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[0].Text));
-                        player.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[1].Text));
-                        player.Game.Game3 = IsEmpty(txtScratchScore3) ? null : (int?)Convert.ToInt32((scratchArray[2].Text));
-                        player.Game.Game4 = IsEmpty(txtScratchScore4) ? null : (int?)Convert.ToInt32((scratchArray[3].Text));
-                        player.Game.Bonus = currentMem.Bonus;
-                        player.Game.Handicap = currentMem.Handicap;
+                    else {
+                        try {
+                            player.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[0].Text));
+                            player.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[1].Text));
+                            player.Game.Game3 = IsEmpty(txtScratchScore3) ? null : (int?)Convert.ToInt32((scratchArray[2].Text));
+                            player.Game.Game4 = IsEmpty(txtScratchScore4) ? null : (int?)Convert.ToInt32((scratchArray[3].Text));
+                            player.Game.Bonus = currentMem.Bonus;
+                            player.Game.Handicap = currentMem.Handicap;
+                        } catch(FormatException ex)
+                        {
+                            MessageBox.Show("Please enter only numbers", "Non-Integer Scores Not Allowed");
+                        }
                     }
 
                     #region radio button
@@ -633,8 +632,8 @@ namespace NineTapTour.Forms
         
         public Game GetScoresById(int memberID)
         {
-            var db = new NineTapDb();
-            var memScores =  new Game();
+            NineTapDb db = new NineTapDb();
+            Game memScores =  new Game();
             int squad = 0;
 
             if (rdoSquadOne.Checked)
@@ -1040,10 +1039,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadFour_CheckedChanged(object sender, EventArgs e)
         {
-            if (GetScoresById(currentMem.Id) == null)
-            {
-                ScoreAndTotalClear();
-            }
+            checkChangeUpdate(rdoSquadFour, 4);
         }
         /// <summary>
         /// Checks if current member has an existing entry into Squad 1
@@ -1053,10 +1049,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadOne_CheckedChanged(object sender, EventArgs e)
         {
-            if (GetScoresById(currentMem.Id) == null)
-            {
-                ScoreAndTotalClear();
-            }
+            checkChangeUpdate(rdoSquadOne, 1);
         }
         /// <summary>
         /// Checks if current member has an existing entry into Squad 2
@@ -1066,10 +1059,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadTwo_CheckedChanged(object sender, EventArgs e)
         {
-            if (GetScoresById(currentMem.Id) == null)
-            {
-                ScoreAndTotalClear();
-            }
+            checkChangeUpdate(rdoSquadTwo, 2);
         }
         /// <summary>
         /// Clears scratch scores and scratch and handicap totals
@@ -1091,10 +1081,71 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadThree_CheckedChanged(object sender, EventArgs e)
         {
-            if (GetScoresById(currentMem.Id) == null)
+            checkChangeUpdate(rdoSquadThree, 3);
+        }
+
+        private void checkChangeUpdate(RadioButton btn,int squadToCheck)
+        {
+            if (currentMem != null)
             {
-                ScoreAndTotalClear();
+                Game data = GetScoresById(currentMem.Id);
+                if (data == null)
+                {
+                    ScoreAndTotalClear();
+                }
+                else
+                {
+                    txtScratchScore1.Text = data.Game1.ToString();
+                    txtScratchScore2.Text = data.Game2.ToString();
+                    txtScratchScore3.Text = data.Game3.ToString();
+                    txtScratchScore4.Text = data.Game4.ToString();
+                }
+                /*
+                    if (btn.Checked)
+                    {
+                        NineTapDb db = new NineTapDb();
+                        Participant part = db.Participants.SingleOrDefault(p => p.Id == currentMem.Id);
+                        if (part != null && part.Squad == squadToCheck)
+                        {
+                            data.Bonus = currentMem.Bonus;
+                            data.Handicap = currentMem.Handicap;
+                            txtScratchScore1.Text = data.Game1.ToString();
+                            txtScratchScore2.Text = data.Game2.ToString();
+                            txtScratchScore3.Text = data.Game3.ToString();
+                            txtScratchScore4.Text = data.Game4.ToString();
+                        }
+                        else
+                        {
+                            ScoreAndTotalClear();
+                        }
+                    }
+                }*/
             }
+        }
+
+        private void txtMemberNum_KeyDown(object sender, KeyEventArgs e)
+        {
+            checkIsNumber(e);
+        }
+
+        private void txtMemberNum2_KeyDown(object sender, KeyEventArgs e)
+        {
+            checkIsNumber(e);
+        }
+
+        private void checkIsNumber(KeyEventArgs e)
+        {
+            if (!(e.KeyValue >= '0' && e.KeyValue <= '9') && e.KeyValue != 8)
+            {
+                e.SuppressKeyPress = true;
+                e.Handled = true;
+            }
+        }
+
+        // This handles ALL the txtScratchScores.
+        private void txtScratchScore1_KeyDown(object sender, KeyEventArgs e)
+        {
+            checkIsNumber(e);
         }
     }
 
