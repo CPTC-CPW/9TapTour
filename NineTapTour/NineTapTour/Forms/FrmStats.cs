@@ -62,5 +62,21 @@ namespace NineTapTour.Forms
             lblName.Text = memName;
             lblMemberNumber.Text = Convert.ToString(memNum);
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            printDialog1.Document = printDocument1;
+            if (printDialog1.ShowDialog() == DialogResult.OK)
+            {
+                printDocument1.Print();
+            }
+        }
+
+        private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            Bitmap bm = new Bitmap(this.dataGridView1.Width, this.dataGridView1.Height);
+            this.dataGridView1.DrawToBitmap(bm, new Rectangle(0, 0, this.dataGridView1.Width, this.dataGridView1.Height));
+            e.Graphics.DrawImage(bm, 0, 0);
+        }
     }
 }
