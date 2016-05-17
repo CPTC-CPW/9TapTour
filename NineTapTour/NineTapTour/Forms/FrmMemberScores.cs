@@ -1098,8 +1098,8 @@ namespace NineTapTour.Forms
         }
 
         private void btnTournamentsByYear_Click(object sender, EventArgs e)
-        {
-            frmListTournamentsByYear listTournaments = new frmListTournamentsByYear();
+        {            
+            FrmListTournamentsByYear listTournaments = new FrmListTournamentsByYear();
             listTournaments.ShowDialog();
         }
     }

@@ -11,10 +11,9 @@ using NineTapTour.Database;
 
 namespace NineTapTour
 {
-    public partial class frmListTournamentsByYear : Form
-    {
-        public static int selectedYear;
-        public frmListTournamentsByYear()
+    public partial class FrmListTournamentsByYear : Form
+    {        
+        public FrmListTournamentsByYear()
         {
             InitializeComponent();
         }
@@ -28,6 +27,11 @@ namespace NineTapTour
                 cbxYear.Items.Add(y);
             }
         }
+
+        /// <summary>
+        /// Gets the last 25 years from the current year down
+        /// </summary>
+        /// <returns>List of Years from current to 25 years ago</returns>
         private List<int> Years()
         {
             int currentYear = DateTime.Now.Year;
@@ -40,13 +44,20 @@ namespace NineTapTour
         }
 
         private void cbxYear_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            selectedYear = 0;
-            btnSearch.Enabled = true;
-            selectedYear = (int)cbxYear.SelectedValue;
+        {            
+            btnSearch.Enabled = true;            
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
+        {
+            PopulateTournamentsByYear(Convert.ToInt32(cbxYear.Text));
+        }
+
+        /// <summary>
+        /// Gets all the tournaments from a specific year
+        /// </summary>
+        /// <param name="selectedYear">Year selected</param>
+        public void PopulateTournamentsByYear(int selectedYear)
         {
             NineTapDb db = new NineTapDb();
             var tournaments = (from t in db.Tournaments

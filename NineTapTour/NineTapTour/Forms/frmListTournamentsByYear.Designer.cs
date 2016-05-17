@@ -1,6 +1,6 @@
 ﻿namespace NineTapTour
 {
-    partial class frmListTournamentsByYear
+    partial class FrmListTournamentsByYear
     {
         /// <summary>
         /// Required designer variable.
@@ -42,7 +42,7 @@
             this.dgvAllTournaments.Location = new System.Drawing.Point(68, 197);
             this.dgvAllTournaments.Name = "dgvAllTournaments";
             this.dgvAllTournaments.RowTemplate.Height = 40;
-            this.dgvAllTournaments.Size = new System.Drawing.Size(1503, 1013);
+            this.dgvAllTournaments.Size = new System.Drawing.Size(1717, 1183);
             this.dgvAllTournaments.TabIndex = 0;
             // 
             // label1
@@ -83,18 +83,18 @@
             this.btnSearch.UseVisualStyleBackColor = true;
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
-            // frmListTournamentsByYear
+            // FrmListTournamentsByYear
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1858, 1339);
+            this.ClientSize = new System.Drawing.Size(1858, 1419);
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.cbxYear);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.dgvAllTournaments);
-            this.Name = "frmListTournamentsByYear";
-            this.Text = "ListTournamentsByYear";
+            this.Name = "FrmListTournamentsByYear";
+            this.Text = "List of Tournaments By Year";
             this.Load += new System.EventHandler(this.frmListTournamentsByYear_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvAllTournaments)).EndInit();
             this.ResumeLayout(false);
