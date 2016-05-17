@@ -40,29 +40,33 @@ namespace NineTapTour.Forms
                 var query = from t in db.Tournaments
                                 //orderby t.Date descending
                             select t;
-
+                
                 // Location?
                 if (!String.IsNullOrWhiteSpace(txtSearch.Text))
                 {
-                    query = query.Where(t => t.Location == txtSearch.Text);
+                    string temp = txtSearch.Text.ToLower().Trim();
+                    query = query.Where(t => t.Location.ToLower().Contains(temp));
                 }
                 // Event?
                 if (!String.IsNullOrWhiteSpace(txtEvent.Text))
                 {
-                    query = query.Where(t => t.Event == txtEvent.Text);
+                    string temp = txtEvent.Text.ToLower().Trim();
+                    query = query.Where(t => t.Event.ToLower().Contains(temp));
                 }
                 // Date?
-                if (!String.IsNullOrWhiteSpace(txtDate.Text))
+                if (chkDate.Checked)
                 {
-                    try {
-                        DateTime date = Convert.ToDateTime(txtDate.Text);
-                        query = query.Where(t => t.Date == date);
-                    } finally
+                    if (dtpFrom.Value == dtpTo.Value)
                     {
-
+                        query = query.Where(t => t.Date == dtpFrom.Value);
+                    } else
+                    {
+                        query = query.Where(t => t.Date >= dtpFrom.Value && t.Date <= dtpTo.Value);
                     }
                 }
                 query = query.OrderBy(t => t.Date);
+
+                Console.WriteLine(query.ToString());
 
                 var results = query.Select(t => new
                 {
@@ -126,7 +130,9 @@ namespace NineTapTour.Forms
             listSearch.DataSource = null;
             txtSearch.Text = null;
             txtEvent.Text = null;
-            txtDate.Text = null;
+            chkDate.Checked = false;
+            dtpTo.Value = DateTime.Now;
+            dtpFrom.Value = dtpTo.Value;
             btnClear.Enabled = false;
         }
 
@@ -137,10 +143,10 @@ namespace NineTapTour.Forms
 
         private void decideCanClear()
         {
-            if (String.IsNullOrWhiteSpace(txtSearch.Text.Trim()) && String.IsNullOrWhiteSpace(txtEvent.Text.Trim()) && String.IsNullOrWhiteSpace(txtDate.Text.Trim()))
+            if (String.IsNullOrWhiteSpace(txtSearch.Text.Trim()) && String.IsNullOrWhiteSpace(txtEvent.Text.Trim()) && !chkDate.Checked)
             {
                 btnSearch.Enabled = false;
-                if (listSearch.SelectedIndex == -1)
+                if (listSearch.SelectedIndex == -1 && dtpTo.Value == dtpFrom.Value)
                 {
                     btnClear.Enabled = false;
                 }
@@ -160,6 +166,36 @@ namespace NineTapTour.Forms
         private void txtDate_TextChanged(object sender, EventArgs e)
         {
             decideCanClear();
+        }
+
+        private void chkDate_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkDate.Checked)
+            {
+                dtpFrom.Enabled = true;
+                dtpTo.Enabled = true;
+            } else
+            {
+                dtpFrom.Enabled = false;
+                dtpTo.Enabled = false;
+            }
+            decideCanClear();
+        }
+
+        private void dtpTo_ValueChanged(object sender, EventArgs e)
+        {
+            if (dtpTo.Value < dtpFrom.Value)
+            {
+                dtpTo.Value = dtpFrom.Value;
+            }
+        }
+
+        private void dtpFrom_ValueChanged(object sender, EventArgs e)
+        {
+            if (dtpFrom.Value > dtpTo.Value)
+            {
+                dtpFrom.Value = dtpTo.Value;
+            }
         }
     }
 }
