@@ -32,6 +32,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.cbxYear = new System.Windows.Forms.ComboBox();
+            this.btnSearch = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -70,12 +71,24 @@
             this.cbxYear.Name = "cbxYear";
             this.cbxYear.Size = new System.Drawing.Size(211, 39);
             this.cbxYear.TabIndex = 3;
+            this.cbxYear.SelectedIndexChanged += new System.EventHandler(this.cbxYear_SelectedIndexChanged);
+            // 
+            // btnSearch
+            // 
+            this.btnSearch.Location = new System.Drawing.Point(878, 122);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(211, 47);
+            this.btnSearch.TabIndex = 4;
+            this.btnSearch.Text = "Search Year";
+            this.btnSearch.UseVisualStyleBackColor = true;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // frmListTournamentsByYear
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1858, 1339);
+            this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.cbxYear);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -95,5 +108,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox cbxYear;
+        private System.Windows.Forms.Button btnSearch;
     }
 }
