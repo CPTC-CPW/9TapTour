@@ -37,6 +37,25 @@
             this.btnPrint = new System.Windows.Forms.Button();
             this.printDialog1 = new System.Windows.Forms.PrintDialog();
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
+            this.txtGame1 = new System.Windows.Forms.TextBox();
+            this.txtGame2 = new System.Windows.Forms.TextBox();
+            this.txtGame3 = new System.Windows.Forms.TextBox();
+            this.txtGame4 = new System.Windows.Forms.TextBox();
+            this.txtGameTotal = new System.Windows.Forms.TextBox();
+            this.txtAveragePerGame = new System.Windows.Forms.TextBox();
+            this.txtAverageOnFile = new System.Windows.Forms.TextBox();
+            this.txtHandicap = new System.Windows.Forms.TextBox();
+            this.txtBonus = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nineTapTourNineTapDbDataSetBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._NineTapTour_NineTapDbDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -102,11 +121,183 @@
             // 
             this.printDocument1.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.printDocument1_PrintPage);
             // 
+            // txtGame1
+            // 
+            this.txtGame1.Location = new System.Drawing.Point(609, 1524);
+            this.txtGame1.Name = "txtGame1";
+            this.txtGame1.Size = new System.Drawing.Size(258, 38);
+            this.txtGame1.TabIndex = 7;
+            // 
+            // txtGame2
+            // 
+            this.txtGame2.Location = new System.Drawing.Point(872, 1524);
+            this.txtGame2.Name = "txtGame2";
+            this.txtGame2.Size = new System.Drawing.Size(258, 38);
+            this.txtGame2.TabIndex = 8;
+            // 
+            // txtGame3
+            // 
+            this.txtGame3.Location = new System.Drawing.Point(1135, 1524);
+            this.txtGame3.Name = "txtGame3";
+            this.txtGame3.Size = new System.Drawing.Size(258, 38);
+            this.txtGame3.TabIndex = 9;
+            // 
+            // txtGame4
+            // 
+            this.txtGame4.Location = new System.Drawing.Point(1398, 1524);
+            this.txtGame4.Name = "txtGame4";
+            this.txtGame4.Size = new System.Drawing.Size(258, 38);
+            this.txtGame4.TabIndex = 10;
+            // 
+            // txtGameTotal
+            // 
+            this.txtGameTotal.Location = new System.Drawing.Point(1661, 1524);
+            this.txtGameTotal.Name = "txtGameTotal";
+            this.txtGameTotal.Size = new System.Drawing.Size(258, 38);
+            this.txtGameTotal.TabIndex = 11;
+            // 
+            // txtAveragePerGame
+            // 
+            this.txtAveragePerGame.Location = new System.Drawing.Point(1924, 1524);
+            this.txtAveragePerGame.Name = "txtAveragePerGame";
+            this.txtAveragePerGame.Size = new System.Drawing.Size(258, 38);
+            this.txtAveragePerGame.TabIndex = 12;
+            // 
+            // txtAverageOnFile
+            // 
+            this.txtAverageOnFile.Location = new System.Drawing.Point(2187, 1524);
+            this.txtAverageOnFile.Name = "txtAverageOnFile";
+            this.txtAverageOnFile.Size = new System.Drawing.Size(258, 38);
+            this.txtAverageOnFile.TabIndex = 13;
+            // 
+            // txtHandicap
+            // 
+            this.txtHandicap.Location = new System.Drawing.Point(2450, 1524);
+            this.txtHandicap.Name = "txtHandicap";
+            this.txtHandicap.Size = new System.Drawing.Size(258, 38);
+            this.txtHandicap.TabIndex = 14;
+            // 
+            // txtBonus
+            // 
+            this.txtBonus.Location = new System.Drawing.Point(2713, 1524);
+            this.txtBonus.Name = "txtBonus";
+            this.txtBonus.Size = new System.Drawing.Size(258, 38);
+            this.txtBonus.TabIndex = 15;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(681, 1471);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(115, 32);
+            this.label1.TabIndex = 16;
+            this.label1.Text = "Game 1";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(944, 1471);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(115, 32);
+            this.label2.TabIndex = 17;
+            this.label2.Text = "Game 2";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(1207, 1471);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(115, 32);
+            this.label3.TabIndex = 18;
+            this.label3.Text = "Game 3";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(1470, 1471);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(115, 32);
+            this.label4.TabIndex = 19;
+            this.label4.Text = "Game 4";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(1709, 1471);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(163, 32);
+            this.label5.TabIndex = 20;
+            this.label5.Text = "Game Total";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(1961, 1471);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(185, 32);
+            this.label6.TabIndex = 21;
+            this.label6.Text = "AvgPerGame";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(2242, 1471);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(149, 32);
+            this.label7.TabIndex = 22;
+            this.label7.Text = "AvgOnFile";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(2511, 1471);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(136, 32);
+            this.label8.TabIndex = 23;
+            this.label8.Text = "Handicap";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(2794, 1471);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(96, 32);
+            this.label9.TabIndex = 24;
+            this.label9.Text = "Bonus";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(429, 1530);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(135, 32);
+            this.label10.TabIndex = 25;
+            this.label10.Text = "Averages";
+            // 
             // FrmStats
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(3088, 2025);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.txtBonus);
+            this.Controls.Add(this.txtHandicap);
+            this.Controls.Add(this.txtAverageOnFile);
+            this.Controls.Add(this.txtAveragePerGame);
+            this.Controls.Add(this.txtGameTotal);
+            this.Controls.Add(this.txtGame4);
+            this.Controls.Add(this.txtGame3);
+            this.Controls.Add(this.txtGame2);
+            this.Controls.Add(this.txtGame1);
             this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.lblMemberNumber);
             this.Controls.Add(this.lblName);
@@ -133,5 +324,24 @@
         private System.Windows.Forms.Button btnPrint;
         private System.Windows.Forms.PrintDialog printDialog1;
         private System.Drawing.Printing.PrintDocument printDocument1;
+        private System.Windows.Forms.TextBox txtGame1;
+        private System.Windows.Forms.TextBox txtGame2;
+        private System.Windows.Forms.TextBox txtGame3;
+        private System.Windows.Forms.TextBox txtGame4;
+        private System.Windows.Forms.TextBox txtGameTotal;
+        private System.Windows.Forms.TextBox txtAveragePerGame;
+        private System.Windows.Forms.TextBox txtAverageOnFile;
+        private System.Windows.Forms.TextBox txtHandicap;
+        private System.Windows.Forms.TextBox txtBonus;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
     }
 }
