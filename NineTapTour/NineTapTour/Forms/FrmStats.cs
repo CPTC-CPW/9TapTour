@@ -34,13 +34,11 @@ namespace NineTapTour.Forms
             var stats = (from p in db.Participants
                          join g in db.Games on p.Game.Id equals g.Id
                          join t in db.Tournaments on p.Tournament.Id equals t.Id
-                         //join s in db.Squads on g.Id equals s.Game.Id
-                         where memNum == p.Member.Number                                                  
+                         where memNum == p.Member.Number
                          select new
                          {
                              t.Date,
-                             p.Squad,
-                             //t.Id,
+                             p.Squad,                         
                              g.Game1,
                              g.Game2,
                              g.Game3,
