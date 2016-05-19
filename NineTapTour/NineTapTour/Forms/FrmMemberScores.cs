@@ -510,8 +510,8 @@ namespace NineTapTour.Forms
                     {
                         MessageBox.Show("Please enter all scratch scores", "Blank Scores Not Allowed");
                     }
-                    else if (!isNumeric(txtScratchScore1.ToString().Trim()) || !isNumeric(txtScratchScore2.ToString().Trim())
-                        || !isNumeric(txtScratchScore3.ToString().Trim()) || !isNumeric(txtScratchScore4.ToString().Trim()))
+                    else if (!isNumeric(txtScratchScore1.Text.Trim()) || !isNumeric(txtScratchScore2.Text.Trim())
+                        || !isNumeric(txtScratchScore3.Text.Trim()) || !isNumeric(txtScratchScore4.Text.Trim()))
                     {
                         MessageBox.Show("Please enter only numbers", "Non-Integer Scores Not Allowed");
                     }
