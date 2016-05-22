@@ -1101,6 +1101,73 @@ namespace NineTapTour.Forms
 #if DEBUG
                 Console.WriteLine("Cannot refresh when initializing.");
 #endif
+            if (tours.Count() > 0) {
+                cbxTourneyDropDown.DataSource = tours;
+                cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
+            }
+        }
+        /// <summary>
+        /// Checks if current member has an existing entry into Squad 4
+        /// and clears the scores if the member does NOT
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rdoSquadFour_CheckedChanged(object sender, EventArgs e)
+        {
+            if (GetScoresById(currentMem.Id) == null)
+            {
+                ScoreAndTotalClear();
+            }
+        }
+        /// <summary>
+        /// Checks if current member has an existing entry into Squad 1
+        /// and clears the scores if the member does NOT
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rdoSquadOne_CheckedChanged(object sender, EventArgs e)
+        {
+            if (GetScoresById(currentMem.Id) == null)
+            {
+                ScoreAndTotalClear();
+            }
+        }
+        /// <summary>
+        /// Checks if current member has an existing entry into Squad 2
+        /// and clears the scores if the member does NOT
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rdoSquadTwo_CheckedChanged(object sender, EventArgs e)
+        {
+            if (GetScoresById(currentMem.Id) == null)
+            {
+                ScoreAndTotalClear();
+            }
+        }
+        /// <summary>
+        /// Clears scratch scores and scratch and handicap totals
+        /// </summary>
+        private void ScoreAndTotalClear()
+        {
+            txtScratchScore1.Clear();
+            txtScratchScore2.Clear();
+            txtScratchScore3.Clear();
+            txtScratchScore4.Clear();
+            txtScratchTotal.Clear();
+            txtHandicapTotal.Clear();
+        }
+        /// <summary>
+        /// Checks if current member has an existing entry into Squad 3
+        /// and clears the scores if the member does NOT
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rdoSquadThree_CheckedChanged(object sender, EventArgs e)
+        {
+            if (GetScoresById(currentMem.Id) == null)
+            {
+                ScoreAndTotalClear();
             }
         }
     }
