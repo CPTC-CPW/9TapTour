@@ -86,7 +86,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void GetMember(object sender, KeyEventArgs e)
         {
-            var currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+            Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
             if(currTourney.Doubles)
             {
                 //if (e.KeyCode != Keys.Enter) // manually press Enter to populate Names
@@ -414,19 +414,19 @@ namespace NineTapTour.Forms
         {
             if (IsValid()) 
             {
-                var currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+                Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
                 List<Participant> total = TournamentDb.GetTournamentMemberList(currTourney);
                 //Doubles tournament
                 if (currTourney.Doubles)
                 {
                     player.Game = new Game();
                     player2.Game = new Game();
-                    var db = new NineTapDb();
-                    var gameId = (from p in db.Participants
+                    NineTapDb db = new NineTapDb();
+                    int gameId = (from p in db.Participants
                                   where p.Member.Id == currentMem.Id
                                   && p.Tournament.Id == currTourney.Id
                                   select p.Game.Id).FirstOrDefault();
-                    var gameId2 = (from p in db.Participants
+                    int gameId2 = (from p in db.Participants
                                   where p.Member.Id == currentMem2.Id
                                   && p.Tournament.Id == currTourney.Id
                                   select p.Game.Id).FirstOrDefault();
@@ -633,8 +633,8 @@ namespace NineTapTour.Forms
         
         public Game GetScoresById(int memberID)
         {
-            var db = new NineTapDb();
-            var memScores =  new Game();
+            NineTapDb db = new NineTapDb();
+            Game memScores =  new Game();
             int squad = 0;
 
             if (rdoSquadOne.Checked)
