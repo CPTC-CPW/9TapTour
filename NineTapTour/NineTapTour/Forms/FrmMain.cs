@@ -154,5 +154,18 @@ namespace NineTapTour.Forms
                 e.Item.Visible = false;
             }
         }
+
+        private void FrmMain_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void updateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            var UpdatefrmActiveMem = new FrmUpdateActiveMem();
+            Width = UpdatefrmActiveMem.Width;
+            Height = UpdatefrmActiveMem.Height + 20;
+            UpdatefrmActiveMem.Show();
+        }
     }
 }
