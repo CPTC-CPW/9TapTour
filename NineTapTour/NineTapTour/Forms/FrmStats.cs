@@ -38,6 +38,9 @@ namespace NineTapTour.Forms
                          select new
                          {
                              t.Date,
+                             p.Member.Id,
+                             p.Member.FirstName,
+                             p.Member.LastName,
                              p.Squad,                         
                              g.Game1,
                              g.Game2,
