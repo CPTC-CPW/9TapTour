@@ -33,11 +33,12 @@
             this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnCheckInactive = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // dateTimePicker1
             // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(36, 39);
+            this.dateTimePicker1.Location = new System.Drawing.Point(36, 35);
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(200, 20);
             this.dateTimePicker1.TabIndex = 0;
@@ -55,6 +56,7 @@
             // 
             // checkedListBox1
             // 
+            this.checkedListBox1.CheckOnClick = true;
             this.checkedListBox1.FormattingEnabled = true;
             this.checkedListBox1.Location = new System.Drawing.Point(12, 77);
             this.checkedListBox1.Name = "checkedListBox1";
@@ -81,11 +83,21 @@
             this.btnCheckInactive.UseVisualStyleBackColor = true;
             this.btnCheckInactive.Click += new System.EventHandler(this.btnCheckInactive_Click);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(28, 61);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(114, 13);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "ID         Date      Name";
+            // 
             // FrmUpdateActiveMem
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 458);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.btnCheckInactive);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.checkedListBox1);
@@ -106,5 +118,6 @@
         private System.Windows.Forms.CheckedListBox checkedListBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnCheckInactive;
+        private System.Windows.Forms.Label label2;
     }
 }
