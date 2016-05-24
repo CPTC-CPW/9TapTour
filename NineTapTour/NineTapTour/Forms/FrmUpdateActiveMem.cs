@@ -78,7 +78,7 @@ namespace NineTapTour.Forms
                         
                         if (checkedListBox1.GetItemCheckState(i) == CheckState.Checked)
                         {
-                            MessageBox.Show(checkedListBox1.GetItemText);
+                            //MessageBox.Show(checkedListBox1.Text.ToList;
                             MessageBox.Show(InActiveList[i].FirstName + "***");
                             //InActiveList[i].IsActive = false;
 
