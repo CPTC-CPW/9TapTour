@@ -22,6 +22,7 @@ namespace NineTapTour.Forms
         Participant player = new Participant();
         Participant player2 = new Participant();
         bool doubles = true;
+        public static Tournament selectedTournament;
 
         public frmMemberScores()
         {
@@ -790,6 +791,7 @@ namespace NineTapTour.Forms
             }
             else
             {
+                selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
                 RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue))));
                 refresh(false);
             }
@@ -1207,4 +1209,11 @@ namespace NineTapTour.Forms
             TournamentsByYear listTournaments = new TournamentsByYear();
             listTournaments.ShowDialog();
         }
-    } }
+
+        private void btnStats_Click(object sender, EventArgs e)
+        {
+            TournamentStats tournamentStats = new TournamentStats();
+            tournamentStats.ShowDialog();            
+        }
+    }
+}
