@@ -38,6 +38,10 @@ namespace NineTapTour.Forms
                          select new
                          {
                              t.Date,
+                             p.Squad,   
+                             p.Member.Id,
+                             p.Member.FirstName,
+                             p.Member.LastName,                      
                              g.Game1,
                              g.Game2,
                              g.Game3,
@@ -45,7 +49,7 @@ namespace NineTapTour.Forms
                              ,
                              Gametotal = ((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0))
                              ,
-                             AvgOfRow = (((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0)) /
+                             AvgPerGame = (((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0)) /
                                       ((g.Game1.HasValue ? 1 : 0) + (g.Game2.HasValue ? 1 : 0) + (g.Game3.HasValue ? 1 : 0) + (g.Game4.HasValue ? 1 : 0)))
                              ,
                              p.Member.Average
@@ -54,6 +58,96 @@ namespace NineTapTour.Forms
                              ,
                              g.Bonus
                          }).ToList();
+            double sum = 0;
+            double count = 0;
+            #region Game 1 Average
+            for (int i = 0; i < stats.Count; i++)
+            {
+                count++;
+                sum += Convert.ToInt32(stats[i].Game1);
+            }
+            txtGame1.Text = (sum / count).ToString();
+            #endregion
+            #region Game 2 Average
+            sum = 0;
+            count = 0;
+            for (int i = 0; i < stats.Count; i++)
+            {
+                count++;
+                sum += Convert.ToInt32(stats[i].Game2);
+            }
+            txtGame2.Text = (sum / count).ToString();
+            #endregion
+            #region Game 3 Average
+            sum = 0;
+            count = 0;
+            for (int i = 0; i < stats.Count; i++)
+            {
+                count++;
+                sum += Convert.ToInt32(stats[i].Game3);
+            }
+            txtGame3.Text = (sum / count).ToString();
+            #endregion
+            #region Game 4 Average
+            sum = 0;
+            count = 0;
+            for (int i = 0; i < stats.Count; i++)
+            {
+                count++;
+                sum += Convert.ToInt32(stats[i].Game4);
+            }
+            txtGame4.Text = (sum / count).ToString();
+            #endregion
+            #region Game Total Average
+            sum = 0;
+            count = 0;
+            for (int i = 0; i < stats.Count; i++)
+            {
+                count++;
+                sum += Convert.ToInt32(stats[i].Gametotal);
+            }
+            txtGameTotal.Text = (sum / count).ToString();
+            #endregion
+            #region Average Game Score
+            sum = 0;
+            count = 0;
+            for (int i = 0; i < stats.Count; i++)
+            {
+                count++;
+                sum += Convert.ToInt32(stats[i].AvgPerGame);
+            }
+            txtAveragePerGame.Text = (sum / count).ToString();
+            #endregion
+            #region Average On Record
+            sum = 0;
+            count = 0;
+            for (int i = 0; i < stats.Count; i++)
+            {
+                count++;
+                sum += Convert.ToInt32(stats[i].Average);
+            }
+            txtAverageOnFile.Text = (sum / count).ToString();
+            #endregion
+            #region Handicap Average
+            sum = 0;
+            count = 0;
+            for (int i = 0; i < stats.Count; i++)
+            {
+                count++;
+                sum += Convert.ToInt32(stats[i].Handicap);
+            }
+            txtHandicap.Text = (sum / count).ToString();
+            #endregion
+            #region Bonus Pins Average
+            sum = 0;
+            count = 0;
+            for (int i = 0; i < stats.Count; i++)
+            {
+                count++;
+                sum += Convert.ToInt32(stats[i].Bonus);
+            }
+            txtBonus.Text = (sum / count).ToString();
+            #endregion
             dataGridView1.DataSource = stats;
         }
 
@@ -61,6 +155,22 @@ namespace NineTapTour.Forms
         {
             lblName.Text = memName;
             lblMemberNumber.Text = Convert.ToString(memNum);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            printDialog1.Document = printDocument1;
+            if (printDialog1.ShowDialog() == DialogResult.OK)
+            {
+                printDocument1.Print();
+            }
+        }
+
+        private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            Bitmap bm = new Bitmap(this.dataGridView1.Width, this.dataGridView1.Height);
+            this.dataGridView1.DrawToBitmap(bm, new Rectangle(0, 0, this.dataGridView1.Width, this.dataGridView1.Height));
+            e.Graphics.DrawImage(bm, 0, 0);
         }
     }
 }

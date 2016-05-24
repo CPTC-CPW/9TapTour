@@ -67,6 +67,7 @@ namespace NineTapTour.Database
                     var check = (from p in db.Participants
                                  where player.Member.Id == p.Member.Id
                                  && player.Tournament.Id == p.Tournament.Id
+                                 && player.Squad == p.Squad
                                  select p).Count();
                     if (check == 0)
                     {
@@ -82,15 +83,21 @@ namespace NineTapTour.Database
                     {
                         try
                         {
-                            var manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
-                            var result = db.Games.SingleOrDefault(g => g.Id == player.Game.Id);
-                            var squadResult = db.Participants.SingleOrDefault(p => p.Id == player.Id);
-                            var memberQuery = db.Participants.Include(m => m.Member)
+                            System.Data.Entity.Core.Objects.ObjectStateManager manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
+                            Game result = db.Games.SingleOrDefault(g => g.Id == player.Game.Id);
+                            Participant squadResult = db.Participants.SingleOrDefault(p => p.Id == player.Id);
+                            Participant memberQuery = db.Participants.Include(m => m.Member)
                                 .Where(m => m.Member.Id == player.Member.Id).FirstOrDefault();
                             result.Game1 = player.Game.Game1;
                             result.Game2 = player.Game.Game2;
                             result.Game3 = player.Game.Game3;
                             result.Game4 = player.Game.Game4;
+
+                            if (squadResult == null)
+                            {
+                                squadResult = new Participant();
+                                Console.WriteLine("No squad");
+                            }
                             squadResult.Squad = player.Squad;
                             squadResult.Member = memberQuery.Member;
                             db.SaveChanges();
