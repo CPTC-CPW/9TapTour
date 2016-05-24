@@ -1102,6 +1102,11 @@ namespace NineTapTour.Forms
             FrmListTournamentsByYear listTournaments = new FrmListTournamentsByYear();
             listTournaments.ShowDialog();
         }
+
+        private void btnTournamentStats_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 
 
