@@ -505,8 +505,8 @@ namespace NineTapTour.Forms
                     //selects the ID of the combobox of tournaments and stores the
                     //tournament property within the participants class.
                     player.Tournament = currTourney;
-                    if (string.IsNullOrEmpty(txtScratchScore1.ToString().Trim()) || string.IsNullOrEmpty(txtScratchScore2.ToString().Trim())
-                        || string.IsNullOrEmpty(txtScratchScore3.ToString().Trim()) || string.IsNullOrEmpty(txtScratchScore4.ToString().Trim()))
+                    if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim())
+                        || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
                     {
                         MessageBox.Show("Please enter all scratch scores", "Blank Scores Not Allowed");
                     }
@@ -605,7 +605,7 @@ namespace NineTapTour.Forms
         /// <returns></returns>
         private bool IsEmpty(TextBox box)
         {
-            if (string.IsNullOrEmpty(box.ToString().Trim()))
+            if (string.IsNullOrEmpty(box.Text.Trim()))
             {
                 return true;
             }
