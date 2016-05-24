@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.label1 = new System.Windows.Forms.Label();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dgvAllTournaments = new System.Windows.Forms.DataGridView();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cbxYear = new System.Windows.Forms.ComboBox();
             this.btnSearch = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAllTournaments)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -46,14 +46,14 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Tournaments";
             // 
-            // dataGridView1
+            // dgvAllTournaments
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(53, 239);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowTemplate.Height = 37;
-            this.dataGridView1.Size = new System.Drawing.Size(1209, 924);
-            this.dataGridView1.TabIndex = 1;
+            this.dgvAllTournaments.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvAllTournaments.Location = new System.Drawing.Point(53, 239);
+            this.dgvAllTournaments.Name = "dgvAllTournaments";
+            this.dgvAllTournaments.RowTemplate.Height = 37;
+            this.dgvAllTournaments.Size = new System.Drawing.Size(1209, 924);
+            this.dgvAllTournaments.TabIndex = 1;
             // 
             // label2
             // 
@@ -64,13 +64,14 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "Search by Year";
             // 
-            // comboBox1
+            // cbxYear
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(837, 70);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(185, 37);
-            this.comboBox1.TabIndex = 3;
+            this.cbxYear.FormattingEnabled = true;
+            this.cbxYear.Location = new System.Drawing.Point(837, 70);
+            this.cbxYear.Name = "cbxYear";
+            this.cbxYear.Size = new System.Drawing.Size(185, 37);
+            this.cbxYear.TabIndex = 3;
+            this.cbxYear.SelectedIndexChanged += new System.EventHandler(this.cbxYear_SelectedIndexChanged);
             // 
             // btnSearch
             // 
@@ -80,6 +81,7 @@
             this.btnSearch.TabIndex = 4;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // TournamentsByYear
             // 
@@ -87,13 +89,14 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1313, 1215);
             this.Controls.Add(this.btnSearch);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.cbxYear);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.dgvAllTournaments);
             this.Controls.Add(this.label1);
             this.Name = "TournamentsByYear";
             this.Text = "TournamentsByYear";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.Load += new System.EventHandler(this.TournamentsByYear_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAllTournaments)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -102,9 +105,9 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dgvAllTournaments;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cbxYear;
         private System.Windows.Forms.Button btnSearch;
     }
 }
