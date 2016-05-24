@@ -1201,4 +1201,10 @@ namespace NineTapTour.Forms
                 return score1.CompareTo(score2);
             }
         }
+
+        private void btnTournamentsByYear_Click(object sender, EventArgs e)
+        {
+            TournamentsByYear listTournaments = new TournamentsByYear();
+            listTournaments.ShowDialog();
+        }
     } }
