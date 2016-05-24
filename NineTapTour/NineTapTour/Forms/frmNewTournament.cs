@@ -14,6 +14,9 @@ namespace NineTapTour.Forms
 {
     public partial class frmNewTournament : Form
     {
+        // If a new tournament was selected to edit, this will be set to something other than null.
+        Tournament tourToEdit = null;
+
         public frmNewTournament()
         {
             InitializeComponent();
@@ -52,22 +55,62 @@ namespace NineTapTour.Forms
             {
                 NewTournament.Doubles = false;
             }
+
             //// validation prototype of the only non-nullable text box on the form
-            if (String.IsNullOrEmpty(txtEvent.Text) == true)
+            if (String.IsNullOrEmpty(txtEvent.Text.Trim()) == true)
                 MessageBox.Show("Event cannot be blank");
+            else {
+                try
+                {
+                    // If tourID isn't null it means they chose a tour to edit
+                    if (tourToEdit == null)
+                    {
+                        TournamentDb.AddTournament(NewTournament);
+                        MessageBox.Show(@"Tournament Created Successfully.");
+                        ((FrmMain)MdiParent)._tournamentList = TournamentDb.GetTournamentList();
+                    } else
+                    {
+                        DialogResult dr = MessageBox.Show("Confirm Edit", "Are you sure you want to modify this tournament?", MessageBoxButtons.YesNo);
 
-            try
-            {
-                TournamentDb.AddTournament(NewTournament);
-                MessageBox.Show(@"Tournament Created Successfully.");
-                ((FrmMain)MdiParent)._tournamentList = TournamentDb.GetTournamentList();
-                this.Close();
+                        if (dr == DialogResult.Yes)
+                        {
+                            TournamentDb.UpdateTournament(NewTournament, tourID);
+                        }
+                    }
+                    this.Close();
+                }
+                catch (TournamentTableException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
 
-            }
-            catch (TournamentTableException ex)
+        private void btnEditTour_Click(object sender, EventArgs e)
+        {
+            new FrmTourSearch(tourToEdit).ShowDialog();
+            if (tourToEdit != null)
             {
-                MessageBox.Show(ex.Message);
+                dtpDate.Value = tourToEdit.Date;
+                txtLocation.Text = tourToEdit.Location;
+                txtEvent.Text = tourToEdit.Event;
+                txtSponsors.Text = tourToEdit.Sponsors;
+                ckbxDoubles.Checked = tourToEdit.Doubles ? true : false;
+                rtxtNotes.Text = tourToEdit.Notes;
+                btnSubmit.Text = "Update Tournament";
             }
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            btnSubmit.Text = "Create Tournament";
+            btnSubmit.Enabled = false;
+            dtpDate.Value = DateTime.Now;
+            txtLocation.Clear();
+            txtEvent.Clear();
+            txtSponsors.Clear();
+            ckbxDoubles.Checked = false;
+            rtxtNotes.Clear();
         }
     }
 }

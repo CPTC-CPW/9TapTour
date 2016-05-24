@@ -15,6 +15,8 @@ namespace NineTapTour.Forms
     public partial class FrmTourSearch : Form
     {
         List<Tournament> tours;
+        Tournament singleTour;
+        bool single;
         /// <summary>
         /// This takes a tour list and modifies it. The tour you pass in will
         /// be different when this form has finished running.
@@ -26,6 +28,15 @@ namespace NineTapTour.Forms
         {
             InitializeComponent();
             this.tours = tours;
+            single = false;
+        }
+
+        public FrmTourSearch(Tournament tour)
+        {
+            InitializeComponent();
+            singleTour = tour;
+            single = true;
+            listSearch.SelectionMode = SelectionMode.One;
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -105,10 +116,18 @@ namespace NineTapTour.Forms
 
         private void btnAccept_Click(object sender, EventArgs e)
         {
-            foreach (Tournament tour in listSearch.SelectedItems)
+            if (!single)
             {
-                tours.Add(tour);
-                this.Close();
+                foreach (Tournament tour in listSearch.SelectedItems)
+                {
+                    tours.Add(tour);
+                    this.Close();
+                }
+            } else
+            {
+                Console.WriteLine(listSearch.SelectedItem);
+                //singleTour = (Tournament)listSearch.SelectedItem;
+                //this.Close();
             }
         }
 
