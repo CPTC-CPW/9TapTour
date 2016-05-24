@@ -25,24 +25,27 @@ namespace NineTapTour.Forms
             dateTimePicker1.Value = DateTime.Today.AddDays(-180);
             targetDate = dateTimePicker1.Value;
         }
-
+        
         private void FrmUpdateActiveMem_Load(object sender, EventArgs e)
         {
      
             try
             {
                 List<Member> AllMembers = MemberDb.GetMemberList();
-              
+                
                 AllMembers.ForEach(delegate(Member mem
                     ) {
-                        if (mem.IsActive && ((mem.LastBowled.ToString() == "") || mem.LastBowled >= targetDate)) {
+                        if (mem.IsActive && mem.LastBowled >= DateTime.Now.AddDays(-180) || mem.LastBowled.ToString() == "") {
                             InActiveList.Add(mem);
                             string lastplayed = (mem.LastBowled).ToString();
                             if (lastplayed == "") {
                                 lastplayed = "never";
                             }
-                           string InActive = mem.LastName + ", " + mem.FirstName + " Last game: " + lastplayed + " ID: "+ mem.Number;
-                           this.checkedListBox1.Items.Add(InActive, false);
+                            string InActive = String.Format("{2,-5} {1,10}{3,0}{0,10}",
+                             mem.LastName + ", " + mem.FirstName, lastplayed, mem.Number, "     ");
+
+                            checkedListBox1.Items.Add(InActive, false);
+                            
                         }
                             
                     });
@@ -58,7 +61,7 @@ namespace NineTapTour.Forms
         
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
-            targetDate = dateTimePicker1.Value;
+
         }
 
         private void btnUpdateActive_Click(object sender, EventArgs e)
@@ -67,11 +70,27 @@ namespace NineTapTour.Forms
             {
                 try
                 {
-                    MessageBox.Show(currentMem.FirstName + " This One");
+                    
+                 
+                    for (int i = 0; i <= checkedListBox1.Items.Count; i++)
+                    {
+                        
+                        
+                        if (checkedListBox1.GetItemCheckState(i) == CheckState.Checked)
+                        {
+                            //MessageBox.Show(checkedListBox1.Text.ToList;
+                            MessageBox.Show(InActiveList[i].FirstName + "***");
+                            //InActiveList[i].IsActive = false;
+
+                        }
+
+
+
+                    }
                 }
                 catch
                 {
-                    MessageBox.Show("No Members Selected");
+                    //MessageBox.Show("No Members Selected");
                 }
               
             }
@@ -79,7 +98,20 @@ namespace NineTapTour.Forms
 
         private void btnCheckInactive_Click(object sender, EventArgs e)
         {
-
+            if (checkedListBox1.CheckedItems.Count < checkedListBox1.Items.Count)
+            { 
+                for (int i = 0; i < checkedListBox1.Items.Count; i++)
+                {
+                    checkedListBox1.SetItemChecked(i, true);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < checkedListBox1.Items.Count; i++)
+                {
+                    checkedListBox1.SetItemChecked(i, false);
+                }
+            }
         }
     }
 }
