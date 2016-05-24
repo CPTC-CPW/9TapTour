@@ -35,7 +35,7 @@ namespace NineTapTour.Forms
               
                 AllMembers.ForEach(delegate(Member mem
                     ) {
-                        if (mem.IsActive) {
+                        if (mem.IsActive && ((mem.LastBowled.ToString() == "") || mem.LastBowled >= targetDate)) {
                             InActiveList.Add(mem);
                             string lastplayed = (mem.LastBowled).ToString();
                             if (lastplayed == "") {
@@ -58,7 +58,7 @@ namespace NineTapTour.Forms
         
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
-
+            targetDate = dateTimePicker1.Value;
         }
 
         private void btnUpdateActive_Click(object sender, EventArgs e)
