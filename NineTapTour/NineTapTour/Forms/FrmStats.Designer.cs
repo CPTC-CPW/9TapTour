@@ -43,7 +43,6 @@
             this.txtGame4 = new System.Windows.Forms.TextBox();
             this.txtGameTotal = new System.Windows.Forms.TextBox();
             this.txtAveragePerGame = new System.Windows.Forms.TextBox();
-            this.txtAverageOnFile = new System.Windows.Forms.TextBox();
             this.txtHandicap = new System.Windows.Forms.TextBox();
             this.txtBonus = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -52,7 +51,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
@@ -76,7 +74,7 @@
             this.dataGridView1.AllowUserToOrderColumns = true;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(193, 190);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(7);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(3382, 1611);
             this.dataGridView1.TabIndex = 3;
@@ -123,57 +121,57 @@
             // 
             // txtGame1
             // 
-            this.txtGame1.Location = new System.Drawing.Point(1482, 1566);
+            this.txtGame1.Location = new System.Drawing.Point(1710, 1566);
             this.txtGame1.Name = "txtGame1";
+            this.txtGame1.ReadOnly = true;
             this.txtGame1.Size = new System.Drawing.Size(226, 35);
             this.txtGame1.TabIndex = 7;
             // 
             // txtGame2
             // 
-            this.txtGame2.Location = new System.Drawing.Point(1712, 1566);
+            this.txtGame2.Location = new System.Drawing.Point(1940, 1566);
             this.txtGame2.Name = "txtGame2";
+            this.txtGame2.ReadOnly = true;
             this.txtGame2.Size = new System.Drawing.Size(226, 35);
             this.txtGame2.TabIndex = 8;
             // 
             // txtGame3
             // 
-            this.txtGame3.Location = new System.Drawing.Point(1942, 1566);
+            this.txtGame3.Location = new System.Drawing.Point(2170, 1566);
             this.txtGame3.Name = "txtGame3";
+            this.txtGame3.ReadOnly = true;
             this.txtGame3.Size = new System.Drawing.Size(226, 35);
             this.txtGame3.TabIndex = 9;
             // 
             // txtGame4
             // 
-            this.txtGame4.Location = new System.Drawing.Point(2172, 1566);
+            this.txtGame4.Location = new System.Drawing.Point(2400, 1566);
             this.txtGame4.Name = "txtGame4";
+            this.txtGame4.ReadOnly = true;
             this.txtGame4.Size = new System.Drawing.Size(226, 35);
             this.txtGame4.TabIndex = 10;
             // 
             // txtGameTotal
             // 
-            this.txtGameTotal.Location = new System.Drawing.Point(2402, 1566);
+            this.txtGameTotal.Location = new System.Drawing.Point(2630, 1566);
             this.txtGameTotal.Name = "txtGameTotal";
+            this.txtGameTotal.ReadOnly = true;
             this.txtGameTotal.Size = new System.Drawing.Size(226, 35);
             this.txtGameTotal.TabIndex = 11;
             // 
             // txtAveragePerGame
             // 
-            this.txtAveragePerGame.Location = new System.Drawing.Point(2633, 1566);
+            this.txtAveragePerGame.Location = new System.Drawing.Point(2861, 1566);
             this.txtAveragePerGame.Name = "txtAveragePerGame";
+            this.txtAveragePerGame.ReadOnly = true;
             this.txtAveragePerGame.Size = new System.Drawing.Size(226, 35);
             this.txtAveragePerGame.TabIndex = 12;
-            // 
-            // txtAverageOnFile
-            // 
-            this.txtAverageOnFile.Location = new System.Drawing.Point(2863, 1566);
-            this.txtAverageOnFile.Name = "txtAverageOnFile";
-            this.txtAverageOnFile.Size = new System.Drawing.Size(226, 35);
-            this.txtAverageOnFile.TabIndex = 13;
             // 
             // txtHandicap
             // 
             this.txtHandicap.Location = new System.Drawing.Point(3093, 1566);
             this.txtHandicap.Name = "txtHandicap";
+            this.txtHandicap.ReadOnly = true;
             this.txtHandicap.Size = new System.Drawing.Size(226, 35);
             this.txtHandicap.TabIndex = 14;
             // 
@@ -181,13 +179,14 @@
             // 
             this.txtBonus.Location = new System.Drawing.Point(3323, 1566);
             this.txtBonus.Name = "txtBonus";
+            this.txtBonus.ReadOnly = true;
             this.txtBonus.Size = new System.Drawing.Size(226, 35);
             this.txtBonus.TabIndex = 15;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(1545, 1516);
+            this.label1.Location = new System.Drawing.Point(1773, 1516);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(97, 29);
             this.label1.TabIndex = 16;
@@ -196,7 +195,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(1775, 1516);
+            this.label2.Location = new System.Drawing.Point(2003, 1516);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(97, 29);
             this.label2.TabIndex = 17;
@@ -205,7 +204,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(2005, 1516);
+            this.label3.Location = new System.Drawing.Point(2233, 1516);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(97, 29);
             this.label3.TabIndex = 18;
@@ -214,7 +213,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(2235, 1516);
+            this.label4.Location = new System.Drawing.Point(2463, 1516);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(97, 29);
             this.label4.TabIndex = 19;
@@ -223,7 +222,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(2444, 1516);
+            this.label5.Location = new System.Drawing.Point(2672, 1516);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(139, 29);
             this.label5.TabIndex = 20;
@@ -232,20 +231,11 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(2665, 1516);
+            this.label6.Location = new System.Drawing.Point(2893, 1516);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(156, 29);
             this.label6.TabIndex = 21;
             this.label6.Text = "AvgPerGame";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(2911, 1516);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(126, 29);
-            this.label7.TabIndex = 22;
-            this.label7.Text = "AvgOnFile";
             // 
             // label8
             // 
@@ -268,7 +258,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(1324, 1571);
+            this.label10.Location = new System.Drawing.Point(1552, 1571);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(114, 29);
             this.label10.TabIndex = 25;
@@ -282,7 +272,6 @@
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -291,7 +280,6 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtBonus);
             this.Controls.Add(this.txtHandicap);
-            this.Controls.Add(this.txtAverageOnFile);
             this.Controls.Add(this.txtAveragePerGame);
             this.Controls.Add(this.txtGameTotal);
             this.Controls.Add(this.txtGame4);
@@ -302,7 +290,7 @@
             this.Controls.Add(this.lblMemberNumber);
             this.Controls.Add(this.lblName);
             this.Controls.Add(this.dataGridView1);
-            this.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
+            this.Margin = new System.Windows.Forms.Padding(7);
             this.Name = "FrmStats";
             this.Text = "FrmStats";
             this.Load += new System.EventHandler(this.FrmStats_Load);
@@ -330,7 +318,6 @@
         private System.Windows.Forms.TextBox txtGame4;
         private System.Windows.Forms.TextBox txtGameTotal;
         private System.Windows.Forms.TextBox txtAveragePerGame;
-        private System.Windows.Forms.TextBox txtAverageOnFile;
         private System.Windows.Forms.TextBox txtHandicap;
         private System.Windows.Forms.TextBox txtBonus;
         private System.Windows.Forms.Label label1;
@@ -339,7 +326,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;

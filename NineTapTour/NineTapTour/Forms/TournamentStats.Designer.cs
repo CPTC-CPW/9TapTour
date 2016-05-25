@@ -29,8 +29,11 @@
         private void InitializeComponent()
         {
             this.lblTournamentName = new System.Windows.Forms.Label();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.dgvTournamentStats = new System.Windows.Forms.DataGridView();
+            this.printDialog1 = new System.Windows.Forms.PrintDialog();
+            this.printDocument1 = new System.Drawing.Printing.PrintDocument();
+            this.btnPrint = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTournamentStats)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTournamentName
@@ -43,26 +46,45 @@
             this.lblTournamentName.TabIndex = 0;
             this.lblTournamentName.Text = "Tournament Name";
             // 
-            // dataGridView1
+            // dgvTournamentStats
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(40, 203);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowTemplate.Height = 37;
-            this.dataGridView1.Size = new System.Drawing.Size(1225, 1012);
-            this.dataGridView1.TabIndex = 1;
+            this.dgvTournamentStats.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvTournamentStats.Location = new System.Drawing.Point(40, 203);
+            this.dgvTournamentStats.Name = "dgvTournamentStats";
+            this.dgvTournamentStats.RowTemplate.Height = 37;
+            this.dgvTournamentStats.Size = new System.Drawing.Size(2491, 1012);
+            this.dgvTournamentStats.TabIndex = 1;
+            // 
+            // printDialog1
+            // 
+            this.printDialog1.UseEXDialog = true;
+            // 
+            // printDocument1
+            // 
+            this.printDocument1.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.printDocument1_PrintPage);
+            // 
+            // btnPrint
+            // 
+            this.btnPrint.Location = new System.Drawing.Point(2300, 1107);
+            this.btnPrint.Name = "btnPrint";
+            this.btnPrint.Size = new System.Drawing.Size(212, 85);
+            this.btnPrint.TabIndex = 2;
+            this.btnPrint.Text = "Print";
+            this.btnPrint.UseVisualStyleBackColor = true;
+            this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
             // 
             // TournamentStats
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 29F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1325, 1267);
-            this.Controls.Add(this.dataGridView1);
+            this.ClientSize = new System.Drawing.Size(2614, 1267);
+            this.Controls.Add(this.btnPrint);
+            this.Controls.Add(this.dgvTournamentStats);
             this.Controls.Add(this.lblTournamentName);
             this.Name = "TournamentStats";
             this.Text = "Tournament Statistics";
             this.Load += new System.EventHandler(this.TournamentStats_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTournamentStats)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -71,6 +93,9 @@
         #endregion
 
         private System.Windows.Forms.Label lblTournamentName;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dgvTournamentStats;
+        private System.Windows.Forms.PrintDialog printDialog1;
+        private System.Drawing.Printing.PrintDocument printDocument1;
+        private System.Windows.Forms.Button btnPrint;
     }
 }

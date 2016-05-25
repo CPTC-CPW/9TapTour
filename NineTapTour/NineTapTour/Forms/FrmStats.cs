@@ -38,6 +38,7 @@ namespace NineTapTour.Forms
                          select new
                          {
                              t.Date,
+                             t.Location,
                              p.Squad,   
                              p.Member.Id,
                              p.Member.FirstName,
@@ -51,9 +52,7 @@ namespace NineTapTour.Forms
                              ,
                              AvgPerGame = (((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0)) /
                                       ((g.Game1.HasValue ? 1 : 0) + (g.Game2.HasValue ? 1 : 0) + (g.Game3.HasValue ? 1 : 0) + (g.Game4.HasValue ? 1 : 0)))
-                             ,
-                             p.Member.Average
-                             ,
+                             ,                             
                              g.Handicap
                              ,
                              g.Bonus
@@ -117,17 +116,7 @@ namespace NineTapTour.Forms
                 sum += Convert.ToInt32(stats[i].AvgPerGame);
             }
             txtAveragePerGame.Text = (sum / count).ToString();
-            #endregion
-            #region Average On Record
-            sum = 0;
-            count = 0;
-            for (int i = 0; i < stats.Count; i++)
-            {
-                count++;
-                sum += Convert.ToInt32(stats[i].Average);
-            }
-            txtAverageOnFile.Text = (sum / count).ToString();
-            #endregion
+            #endregion           
             #region Handicap Average
             sum = 0;
             count = 0;
