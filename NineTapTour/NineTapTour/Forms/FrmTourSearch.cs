@@ -125,9 +125,10 @@ namespace NineTapTour.Forms
                 }
             } else
             {
-                Console.WriteLine(listSearch.SelectedItem);
-                //singleTour = (Tournament)listSearch.SelectedItem;
-                //this.Close();
+                //Console.WriteLine(listSearch.SelectedItem);
+                singleTour = (Tournament)listSearch.SelectedItem;
+                MessageBox.Show(singleTour.ToString());
+                this.Close();
             }
         }
 

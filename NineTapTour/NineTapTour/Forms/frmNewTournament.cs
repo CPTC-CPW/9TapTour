@@ -74,7 +74,8 @@ namespace NineTapTour.Forms
 
                         if (dr == DialogResult.Yes)
                         {
-                            TournamentDb.UpdateTournament(NewTournament, tourID);
+                            //TournamentDb.UpdateTournament(NewTournament, tourID);
+                            MessageBox.Show("This is the part where it tries to upload");
                         }
                     }
                     this.Close();
