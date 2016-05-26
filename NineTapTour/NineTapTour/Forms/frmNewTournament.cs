@@ -64,6 +64,7 @@ namespace NineTapTour.Forms
                     TournamentDb.AddTournament(NewTournament);
                     MessageBox.Show(@"Tournament Created Successfully.");
                     ((FrmMain)MdiParent)._tournamentList = TournamentDb.GetTournamentList();
+                    this.Close();
                 }
                 else
                 {
@@ -107,6 +108,7 @@ namespace NineTapTour.Forms
                 ckbxDoubles.Checked = tourToEdit.Doubles ? true : false;
                 rtxtNotes.Text = tourToEdit.Notes;
                 btnSubmit.Text = "Update Tournament";
+                lblEdit.Text = "Currently Editing " + tourToEdit.TourneyNameDate;
             }
 #if DEBUG
             else
@@ -126,6 +128,8 @@ namespace NineTapTour.Forms
             txtSponsors.Clear();
             ckbxDoubles.Checked = false;
             rtxtNotes.Clear();
+            tourToEdit = null;
+            lblEdit.Text = "";
         }
 
         private void txtLocation_TextChanged(object sender, EventArgs e)
@@ -136,6 +140,45 @@ namespace NineTapTour.Forms
             {
                 btnSubmit.Enabled = false;
             }
+            checkCleared();
+        }
+
+        private void checkCleared()
+        {
+            if (
+                !string.IsNullOrWhiteSpace(txtLocation.Text.Trim()) ||
+                !string.IsNullOrWhiteSpace(txtEvent.Text.Trim()) ||
+                !string.IsNullOrWhiteSpace(txtSponsors.Text.Trim()) ||
+                ckbxDoubles.Checked ||
+                !string.IsNullOrWhiteSpace(rtxtNotes.Text.Trim()) ||
+                tourToEdit != null
+                )
+            {
+                btnClear.Enabled = true;
+            } else
+            {
+                btnClear.Enabled = false;
+            }
+        }
+
+        private void txtEvent_TextChanged(object sender, EventArgs e)
+        {
+            checkCleared();
+        }
+
+        private void txtSponsors_TextChanged(object sender, EventArgs e)
+        {
+            checkCleared();
+        }
+
+        private void ckbxDoubles_CheckedChanged(object sender, EventArgs e)
+        {
+            checkCleared();
+        }
+
+        private void rtxtNotes_TextChanged(object sender, EventArgs e)
+        {
+            checkCleared();
         }
     }
 }

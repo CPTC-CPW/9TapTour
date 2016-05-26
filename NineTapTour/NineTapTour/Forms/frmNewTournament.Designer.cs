@@ -44,12 +44,13 @@
             this.ckbxDoubles = new System.Windows.Forms.CheckBox();
             this.btnEditTour = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
+            this.lblEdit = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lblDate
             // 
             this.lblDate.AutoSize = true;
-            this.lblDate.Location = new System.Drawing.Point(25, 48);
+            this.lblDate.Location = new System.Drawing.Point(33, 71);
             this.lblDate.Name = "lblDate";
             this.lblDate.Size = new System.Drawing.Size(93, 13);
             this.lblDate.TabIndex = 0;
@@ -58,7 +59,7 @@
             // lblLocation
             // 
             this.lblLocation.AutoSize = true;
-            this.lblLocation.Location = new System.Drawing.Point(25, 79);
+            this.lblLocation.Location = new System.Drawing.Point(33, 102);
             this.lblLocation.Name = "lblLocation";
             this.lblLocation.Size = new System.Drawing.Size(51, 13);
             this.lblLocation.TabIndex = 1;
@@ -67,7 +68,7 @@
             // lblEvent
             // 
             this.lblEvent.AutoSize = true;
-            this.lblEvent.Location = new System.Drawing.Point(25, 110);
+            this.lblEvent.Location = new System.Drawing.Point(33, 133);
             this.lblEvent.Name = "lblEvent";
             this.lblEvent.Size = new System.Drawing.Size(38, 13);
             this.lblEvent.TabIndex = 2;
@@ -76,7 +77,7 @@
             // lblSponors
             // 
             this.lblSponors.AutoSize = true;
-            this.lblSponors.Location = new System.Drawing.Point(25, 141);
+            this.lblSponors.Location = new System.Drawing.Point(33, 164);
             this.lblSponors.Name = "lblSponors";
             this.lblSponors.Size = new System.Drawing.Size(54, 13);
             this.lblSponors.TabIndex = 3;
@@ -85,7 +86,7 @@
             // lblNotes
             // 
             this.lblNotes.AutoSize = true;
-            this.lblNotes.Location = new System.Drawing.Point(11, 223);
+            this.lblNotes.Location = new System.Drawing.Point(19, 246);
             this.lblNotes.Name = "lblNotes";
             this.lblNotes.Size = new System.Drawing.Size(98, 13);
             this.lblNotes.TabIndex = 4;
@@ -94,14 +95,14 @@
             // dtpDate
             // 
             this.dtpDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpDate.Location = new System.Drawing.Point(128, 42);
+            this.dtpDate.Location = new System.Drawing.Point(136, 65);
             this.dtpDate.Name = "dtpDate";
             this.dtpDate.Size = new System.Drawing.Size(123, 20);
             this.dtpDate.TabIndex = 5;
             // 
             // txtLocation
             // 
-            this.txtLocation.Location = new System.Drawing.Point(128, 74);
+            this.txtLocation.Location = new System.Drawing.Point(136, 97);
             this.txtLocation.Name = "txtLocation";
             this.txtLocation.Size = new System.Drawing.Size(123, 20);
             this.txtLocation.TabIndex = 6;
@@ -109,30 +110,33 @@
             // 
             // txtEvent
             // 
-            this.txtEvent.Location = new System.Drawing.Point(128, 106);
+            this.txtEvent.Location = new System.Drawing.Point(136, 129);
             this.txtEvent.Name = "txtEvent";
             this.txtEvent.Size = new System.Drawing.Size(123, 20);
             this.txtEvent.TabIndex = 7;
+            this.txtEvent.TextChanged += new System.EventHandler(this.txtEvent_TextChanged);
             // 
             // txtSponsors
             // 
-            this.txtSponsors.Location = new System.Drawing.Point(128, 138);
+            this.txtSponsors.Location = new System.Drawing.Point(136, 161);
             this.txtSponsors.Name = "txtSponsors";
             this.txtSponsors.Size = new System.Drawing.Size(123, 20);
             this.txtSponsors.TabIndex = 8;
+            this.txtSponsors.TextChanged += new System.EventHandler(this.txtSponsors_TextChanged);
             // 
             // rtxtNotes
             // 
-            this.rtxtNotes.Location = new System.Drawing.Point(10, 249);
+            this.rtxtNotes.Location = new System.Drawing.Point(18, 272);
             this.rtxtNotes.Name = "rtxtNotes";
             this.rtxtNotes.Size = new System.Drawing.Size(241, 96);
             this.rtxtNotes.TabIndex = 9;
             this.rtxtNotes.Text = "";
+            this.rtxtNotes.TextChanged += new System.EventHandler(this.rtxtNotes_TextChanged);
             // 
             // btnSubmit
             // 
             this.btnSubmit.Enabled = false;
-            this.btnSubmit.Location = new System.Drawing.Point(7, 361);
+            this.btnSubmit.Location = new System.Drawing.Point(15, 384);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(136, 23);
             this.btnSubmit.TabIndex = 10;
@@ -142,7 +146,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(176, 361);
+            this.btnCancel.Location = new System.Drawing.Point(184, 384);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 11;
@@ -153,7 +157,7 @@
             // lblDoubles
             // 
             this.lblDoubles.AutoSize = true;
-            this.lblDoubles.Location = new System.Drawing.Point(25, 175);
+            this.lblDoubles.Location = new System.Drawing.Point(33, 198);
             this.lblDoubles.Name = "lblDoubles";
             this.lblDoubles.Size = new System.Drawing.Size(49, 13);
             this.lblDoubles.TabIndex = 12;
@@ -162,16 +166,17 @@
             // ckbxDoubles
             // 
             this.ckbxDoubles.AutoSize = true;
-            this.ckbxDoubles.Location = new System.Drawing.Point(128, 175);
+            this.ckbxDoubles.Location = new System.Drawing.Point(136, 198);
             this.ckbxDoubles.Name = "ckbxDoubles";
             this.ckbxDoubles.Size = new System.Drawing.Size(44, 17);
             this.ckbxDoubles.TabIndex = 13;
             this.ckbxDoubles.Text = "Yes";
             this.ckbxDoubles.UseVisualStyleBackColor = true;
+            this.ckbxDoubles.CheckedChanged += new System.EventHandler(this.ckbxDoubles_CheckedChanged);
             // 
             // btnEditTour
             // 
-            this.btnEditTour.Location = new System.Drawing.Point(10, 12);
+            this.btnEditTour.Location = new System.Drawing.Point(18, 35);
             this.btnEditTour.Name = "btnEditTour";
             this.btnEditTour.Size = new System.Drawing.Size(155, 23);
             this.btnEditTour.TabIndex = 14;
@@ -182,7 +187,7 @@
             // btnClear
             // 
             this.btnClear.Enabled = false;
-            this.btnClear.Location = new System.Drawing.Point(176, 12);
+            this.btnClear.Location = new System.Drawing.Point(184, 35);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(75, 23);
             this.btnClear.TabIndex = 15;
@@ -190,12 +195,21 @@
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
+            // lblEdit
+            // 
+            this.lblEdit.AutoSize = true;
+            this.lblEdit.Location = new System.Drawing.Point(19, 9);
+            this.lblEdit.Name = "lblEdit";
+            this.lblEdit.Size = new System.Drawing.Size(0, 13);
+            this.lblEdit.TabIndex = 16;
+            // 
             // frmNewTournament
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
-            this.ClientSize = new System.Drawing.Size(278, 395);
+            this.ClientSize = new System.Drawing.Size(285, 435);
+            this.Controls.Add(this.lblEdit);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.btnEditTour);
             this.Controls.Add(this.ckbxDoubles);
@@ -239,5 +253,6 @@
         private System.Windows.Forms.CheckBox ckbxDoubles;
         private System.Windows.Forms.Button btnEditTour;
         private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Label lblEdit;
     }
 }
