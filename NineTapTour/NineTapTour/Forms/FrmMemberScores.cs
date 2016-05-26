@@ -31,9 +31,8 @@ namespace NineTapTour.Forms
         }
 
         private void FrmMemberScores_Load(object sender, EventArgs e)
-        {
-            txtMemberNum2.Visible = doubles;
-                                   
+        {            
+            txtMemberNum2.Visible = doubles;                                               
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
 
@@ -703,8 +702,6 @@ namespace NineTapTour.Forms
             }
             else
             {
-                //currentIndex = 0;
-
                 var temp = total.IndexOf(total[currentIndex]);
                 currentIndex++;
                 lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
@@ -789,16 +786,23 @@ namespace NineTapTour.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void cbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
-        {
+        {         
             // assigns the selectedTournament variable as the selected Tournament from the comboBox
             selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
-            // determines whether the tournament is a double tourney or not, the enables or disables the double textBox selection option
-            if (selectedTournament == null || !selectedTournament.Doubles)
+            // determines whether the tournament is a double tourney or not, then enables or disables the single and/or double textBox selection option
+            if (selectedTournament == null)
             {
+                txtMemberNum.Enabled = false;
+                txtMemberNum2.Enabled = false;
+            }
+            else if(!selectedTournament.Doubles)
+            {
+                txtMemberNum.Enabled = true;
                 txtMemberNum2.Enabled = false;
             }
             else
             {
+                txtMemberNum.Enabled = true;
                 txtMemberNum2.Enabled = true;
             }
 
