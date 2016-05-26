@@ -32,6 +32,36 @@ namespace NineTapTour.Database
                 throw new TournamentTableException("Error Number : " + ex.Number + " - " + ex.Message);
             }
         }
+
+        /// <summary>
+        /// Updates an existing tournament
+        /// </summary>
+        /// <param name="New"></param> 
+        
+        public static bool UpdateTournament(Tournament newTour)
+        {
+            try
+            {
+                using (var db = new NineTapDb())
+                {
+                    var original = db.Tournaments.Find(newTour.Id);
+                    if (original != null)
+                    {
+                        db.Entry(original).CurrentValues.SetValues(newTour);
+                        db.SaveChanges();
+                    } else
+                    {
+                        throw new TournamentTableException("The original data could not be found.");
+                    }
+                }
+                return true;
+            }
+            catch (SqlException ex)
+            {
+                throw new TournamentTableException("Error Number : " + ex.Number + " - " + ex.Message);
+            }
+        }
+
         /// <summary>
         /// returns the list of tournaments in descending order by date
         /// </summary>
