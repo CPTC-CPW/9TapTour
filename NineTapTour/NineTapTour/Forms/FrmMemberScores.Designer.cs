@@ -469,8 +469,9 @@
             this.btnStats.Size = new System.Drawing.Size(197, 25);
             this.btnStats.TabIndex = 0;
             this.btnStats.TabStop = false;
-            this.btnStats.Text = "Stats";
+            this.btnStats.Text = "Tournament Stats";
             this.btnStats.UseVisualStyleBackColor = true;
+            this.btnStats.Click += new System.EventHandler(this.btnStats_Click);
             // 
             // btnLastFile
             // 
@@ -865,19 +866,20 @@
             // btnTournamentsByYear
             // 
             this.btnTournamentsByYear.Location = new System.Drawing.Point(281, 704);
-            this.btnTournamentsByYear.Margin = new System.Windows.Forms.Padding(1);
+            this.btnTournamentsByYear.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.btnTournamentsByYear.Name = "btnTournamentsByYear";
             this.btnTournamentsByYear.Size = new System.Drawing.Size(189, 23);
             this.btnTournamentsByYear.TabIndex = 34;
             this.btnTournamentsByYear.Text = "List Tournaments By Year";
             this.btnTournamentsByYear.UseVisualStyleBackColor = true;
+            this.btnTournamentsByYear.Click += new System.EventHandler(this.btnTournamentsByYear_Click);
             // 
             // frmMemberScores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
-            this.ClientSize = new System.Drawing.Size(884, 732);
+            this.ClientSize = new System.Drawing.Size(884, 733);
             this.Controls.Add(this.btnTournamentsByYear);
             this.Controls.Add(this.btnTourSearch);
             this.Controls.Add(this.btnNewTournament);
@@ -899,7 +901,7 @@
             this.Controls.Add(this.grpMemberNum);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(609, 382);
+            this.MinimumSize = new System.Drawing.Size(602, 359);
             this.Name = "frmMemberScores";
             this.Text = "Member Scores";
             this.Activated += new System.EventHandler(this.FrmMemberScores_Activated);

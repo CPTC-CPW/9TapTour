@@ -23,6 +23,7 @@ namespace NineTapTour.Forms
         Participant player = new Participant();
         Participant player2 = new Participant();
         bool doubles = true;
+        public static Tournament selectedTournament;
 
         public frmMemberScores()
         {
@@ -702,6 +703,8 @@ namespace NineTapTour.Forms
             }
             else
             {
+                //currentIndex = 0;
+
                 var temp = total.IndexOf(total[currentIndex]);
                 currentIndex++;
                 lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
@@ -790,15 +793,19 @@ namespace NineTapTour.Forms
             if (loaded)
             {
                 if (cbxTourneyDropDown.SelectedIndex < 0)
-                {
-                    lblRecord.Text = "Record 0" + " / " + "0";
-                }
-                else
-                {
-                    RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue))));
-                    refresh(false);
-                }
+            {
+                lblRecord.Text = "Record 0" + " / " + "0";
             }
+            else
+            {
+                currentIndex = 0;
+
+                selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
+                RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
+                //RecordIndex(selectedTournament);
+                refresh(false);
+            }
+        }
         }
         /// <summary>
         /// validation method for form fields
@@ -851,7 +858,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadFour_CheckedChanged(object sender, EventArgs e)
         {
-            if (GetScoresById(currentMem.Id) == null)
+            if (currentMem == null || GetScoresById(currentMem.Id) == null)
             {
                 ScoreAndTotalClear();
             }
@@ -864,7 +871,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadOne_CheckedChanged(object sender, EventArgs e)
         {
-            if (GetScoresById(currentMem.Id) == null)
+            if (currentMem == null || GetScoresById(currentMem.Id) == null)
             {
                 ScoreAndTotalClear();
             }
@@ -877,7 +884,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadTwo_CheckedChanged(object sender, EventArgs e)
         {
-            if (GetScoresById(currentMem.Id) == null)
+            if (currentMem == null || GetScoresById(currentMem.Id) == null)
             {
                 ScoreAndTotalClear();
             }
@@ -902,7 +909,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadThree_CheckedChanged(object sender, EventArgs e)
         {
-            if (GetScoresById(currentMem.Id) == null)
+            if (currentMem == null || GetScoresById(currentMem.Id) == null)
             {
                 ScoreAndTotalClear();
             }
@@ -938,7 +945,7 @@ namespace NineTapTour.Forms
                 // Function scope data
                 int nullValues;
                 NineTapDb db = new NineTapDb();
-                int selectedTourney = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
+                int selectedTourney = selectedTournament.Id;
                 List<MemberScores> scores;
                 IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
                 var top5 = db.Participants.Include(b => b.Member)
@@ -1214,4 +1221,17 @@ namespace NineTapTour.Forms
                 return score1.CompareTo(score2);
             }
         }
-    } }
+
+        private void btnTournamentsByYear_Click(object sender, EventArgs e)
+        {
+            TournamentsByYear listTournaments = new TournamentsByYear();
+            listTournaments.ShowDialog();
+        }
+
+        private void btnStats_Click(object sender, EventArgs e)
+        {
+            TournamentStats tournamentStats = new TournamentStats();
+            tournamentStats.ShowDialog();            
+        }
+    }
+}
