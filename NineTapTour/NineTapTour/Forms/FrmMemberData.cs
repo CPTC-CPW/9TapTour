@@ -37,6 +37,9 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void MemberDataForm_Load(object sender, EventArgs e)
         {
+            dateJoined.Format = DateTimePickerFormat.Custom;
+            dateJoined.CustomFormat = @" ";
+
             //_membersList = ((FrmMain)MdiParent)._membersList;
             dateRejoin.Format = DateTimePickerFormat.Custom;
             dateRejoin.CustomFormat = @" ";
@@ -363,7 +366,7 @@ namespace NineTapTour.Forms
                         Id = memId,
                         Number = Convert.ToInt32(txtMemberNumber.Text),
                         IsActive = rdoActive.Checked,
-                        JoinDate = DateTime.Now,
+                        JoinDate = dateJoined.Value,
 
                         #region Personal Info
                         LastName = txtLastName.Text,
@@ -481,6 +484,9 @@ namespace NineTapTour.Forms
                 InitializeComponent();
                 dateRejoin.Format = DateTimePickerFormat.Custom;
                 dateRejoin.CustomFormat = @" ";
+
+                dateJoined.Format = DateTimePickerFormat.Custom;//new
+                dateJoined.CustomFormat = @" ";//new
 
                 dateLastBowled.Format = DateTimePickerFormat.Custom;
                 dateLastBowled.CustomFormat = @" ";
@@ -703,6 +709,17 @@ namespace NineTapTour.Forms
             {
                 lblPaymentInfo.Visible = false;
             }
+        }
+
+        private void dateJoined_ValueChanged(object sender, EventArgs e)
+        {
+            dateJoined.Format = DateTimePickerFormat.Short;// Refreshes the date
+            
+        }
+
+        private void dateRejoin_ValueChanged(object sender, EventArgs e)
+        {
+            dateRejoin.Format = DateTimePickerFormat.Short;//Refreshes the date
         }
     }
 }
