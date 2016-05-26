@@ -33,6 +33,7 @@ namespace NineTapTour.Forms
         private void FrmMemberScores_Load(object sender, EventArgs e)
         {
             txtMemberNum2.Visible = doubles;
+                                   
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
 
@@ -43,7 +44,7 @@ namespace NineTapTour.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void txtMemberNum_TextChanged(object sender, EventArgs e)
-        {
+        {          
             if (currentMem == null || ((TextBox)sender).Text == "")
             {
                 txtLastName.Clear();
@@ -236,7 +237,6 @@ namespace NineTapTour.Forms
                         txtMemberNum.Clear();
                     }
                 }
-
             }
         }
 
@@ -691,9 +691,9 @@ namespace NineTapTour.Forms
 
         /// <summary>
         /// increments to the next participant in the tournament
-
         /// </summary>
-
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
             List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
@@ -790,19 +790,28 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void cbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (loaded)
+            // assigns the selectedTournament variable as the selected Tournament from the comboBox
+            selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
+            // determines whether the tournament is a double tourney or not, the enables or disables the double textBox selection option
+            if (selectedTournament == null || !selectedTournament.Doubles)
             {
-                if (cbxTourneyDropDown.SelectedIndex < 0)
+                txtMemberNum2.Enabled = false;
+            }
+            else
+            {
+                txtMemberNum2.Enabled = true;
+            }
+
+            if (cbxTourneyDropDown.SelectedIndex < 0)
             {
                 lblRecord.Text = "Record 0" + " / " + "0";
             }
             else
             {
+                // resets the current index to zero when changing the tournament
                 currentIndex = 0;
-
-                selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
-                RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
-                //RecordIndex(selectedTournament);
+                // Gets the record for the selected tournament
+                RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));                
                 refresh(false);
             }
         }
@@ -1198,8 +1207,6 @@ namespace NineTapTour.Forms
             }
             finally { }//TODO ADDED FOR ERRORS REMOVE WHEN FIXED
             }
-
-
 
 
         class MemberScores
