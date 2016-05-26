@@ -34,6 +34,7 @@ namespace NineTapTour.Forms
             txtMemberNum2.Visible = doubles;
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
+           // cbxTourneyDropDown.Items.Clear();
 
         }
         /// <summary>
@@ -700,6 +701,8 @@ namespace NineTapTour.Forms
             }
             else
             {
+                //currentIndex = 0;
+
                 var temp = total.IndexOf(total[currentIndex]);
                 currentIndex++;
                 lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
@@ -785,14 +788,17 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void cbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cbxTourneyDropDown.SelectedIndex <= 0)
+            if (cbxTourneyDropDown.SelectedIndex < 0)
             {
                 lblRecord.Text = "Record 0" + " / " + "0";
             }
             else
             {
+                currentIndex = 0;
+
                 selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
-                RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue))));
+                RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
+                //RecordIndex(selectedTournament);
                 refresh(false);
             }
         }
@@ -927,7 +933,7 @@ namespace NineTapTour.Forms
                 // Function scope data
                 int nullValues;
                 NineTapDb db = new NineTapDb();
-                int selectedTourney = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
+                int selectedTourney = selectedTournament.Id;
                 List<MemberScores> scores;
                 IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
                 var top5 = db.Participants.Include(b => b.Member)
