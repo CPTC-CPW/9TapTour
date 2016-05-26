@@ -13,6 +13,7 @@ namespace NineTapTour.Forms
 {
     public partial class frmMemberScores : Form
     {
+        bool loaded = false; // This is used to make the selectedIndex function not throw exceptions before it is properly initialized.
         //IOrderedEnumerable<Member> _membersList;
         Member currentMem;
         Member currentMem2;
@@ -34,7 +35,6 @@ namespace NineTapTour.Forms
             txtMemberNum2.Visible = doubles;
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
-           // cbxTourneyDropDown.Items.Clear();
 
         }
         /// <summary>
@@ -79,6 +79,8 @@ namespace NineTapTour.Forms
                 var item = temp2.Max(x => x.Id);
                 cbxTourneyDropDown.SelectedValue = item;
             }
+            loaded = true;
+            cbxTourneyDropDown.SelectedIndex = -1;
         }
 
         /// <summary>
@@ -788,7 +790,9 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void cbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cbxTourneyDropDown.SelectedIndex < 0)
+            if (loaded)
+            {
+                if (cbxTourneyDropDown.SelectedIndex < 0)
             {
                 lblRecord.Text = "Record 0" + " / " + "0";
             }
@@ -801,6 +805,7 @@ namespace NineTapTour.Forms
                 //RecordIndex(selectedTournament);
                 refresh(false);
             }
+        }
         }
         /// <summary>
         /// validation method for form fields
@@ -853,7 +858,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadFour_CheckedChanged(object sender, EventArgs e)
         {
-            if (GetScoresById(currentMem.Id) == null)
+            if (currentMem == null || GetScoresById(currentMem.Id) == null)
             {
                 ScoreAndTotalClear();
             }
@@ -866,7 +871,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadOne_CheckedChanged(object sender, EventArgs e)
         {
-            if (GetScoresById(currentMem.Id) == null)
+            if (currentMem == null || GetScoresById(currentMem.Id) == null)
             {
                 ScoreAndTotalClear();
             }
@@ -879,7 +884,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadTwo_CheckedChanged(object sender, EventArgs e)
         {
-            if (GetScoresById(currentMem.Id) == null)
+            if (currentMem == null || GetScoresById(currentMem.Id) == null)
             {
                 ScoreAndTotalClear();
             }
@@ -904,7 +909,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadThree_CheckedChanged(object sender, EventArgs e)
         {
-            if (GetScoresById(currentMem.Id) == null)
+            if (currentMem == null || GetScoresById(currentMem.Id) == null)
             {
                 ScoreAndTotalClear();
             }
@@ -926,8 +931,15 @@ namespace NineTapTour.Forms
             refresh(true);
         }
 
+        /// <summary>
+        /// pass true if you are changing the radio buttons and only want to refresh the bottom box.
+        /// </summary>
+        /// <param name="seriesChange"></param>
         public void refresh(bool seriesChange)
         {
+            // DEV NOTE: The text generated for the boxes in this is strange and has tabs that the 
+            // code doesn't seem to be writing as far as I can tell.
+            // I think a bug fixer should look at this some time and try to see why it's happening
             try
             {
                 // Function scope data
