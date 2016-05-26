@@ -52,7 +52,7 @@
             this.dgvTournamentStats.Location = new System.Drawing.Point(40, 203);
             this.dgvTournamentStats.Name = "dgvTournamentStats";
             this.dgvTournamentStats.RowTemplate.Height = 37;
-            this.dgvTournamentStats.Size = new System.Drawing.Size(2491, 1012);
+            this.dgvTournamentStats.Size = new System.Drawing.Size(2684, 1012);
             this.dgvTournamentStats.TabIndex = 1;
             // 
             // printDialog1
@@ -65,7 +65,7 @@
             // 
             // btnPrint
             // 
-            this.btnPrint.Location = new System.Drawing.Point(2300, 1107);
+            this.btnPrint.Location = new System.Drawing.Point(2499, 1106);
             this.btnPrint.Name = "btnPrint";
             this.btnPrint.Size = new System.Drawing.Size(212, 85);
             this.btnPrint.TabIndex = 2;
@@ -77,7 +77,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 29F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(2614, 1267);
+            this.ClientSize = new System.Drawing.Size(2736, 1267);
             this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.dgvTournamentStats);
             this.Controls.Add(this.lblTournamentName);

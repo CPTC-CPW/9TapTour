@@ -42,9 +42,9 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(74, 92);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(356, 63);
+            this.label1.Size = new System.Drawing.Size(563, 63);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Tournaments";
+            this.label1.Text = "Tournaments by Year";
             // 
             // dgvAllTournaments
             // 
@@ -94,7 +94,7 @@
             this.Controls.Add(this.dgvAllTournaments);
             this.Controls.Add(this.label1);
             this.Name = "TournamentsByYear";
-            this.Text = "TournamentsByYear";
+            this.Text = "List of Tournaments By Year";
             this.Load += new System.EventHandler(this.TournamentsByYear_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvAllTournaments)).EndInit();
             this.ResumeLayout(false);

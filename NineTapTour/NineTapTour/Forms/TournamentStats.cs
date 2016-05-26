@@ -36,6 +36,7 @@ namespace NineTapTour.Forms
                                            p.Member.Id,
                                            p.Member.FirstName,
                                            p.Member.LastName,
+                                           p.Squad,
                                            Gametotal = ((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0)),
                                            g.Game1,
                                            g.Game2,
