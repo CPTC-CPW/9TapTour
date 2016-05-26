@@ -19,6 +19,7 @@ namespace NineTapTour.Forms
         Member currentMem;
         DateTime targetDate;
         List<Member> InActiveList = MemberDb.GetMemberList();
+        List<Member> AllMembers = MemberDb.GetMemberList();
         public FrmUpdateActiveMem()
         {
             InitializeComponent();
@@ -31,22 +32,25 @@ namespace NineTapTour.Forms
      
             try
             {
-                List<Member> AllMembers = MemberDb.GetMemberList();
-                
+
+               
                 AllMembers.ForEach(delegate(Member mem
                     ) {
-                        if (mem.IsActive && mem.LastBowled >= DateTime.Now.AddDays(-180) || mem.LastBowled.ToString() == "") {
-                            InActiveList.Add(mem);
+                        if (mem.IsActive && (mem.LastBowled >= targetDate || mem.LastBowled.ToString() == ""))
+                        {
+                            
                             string lastplayed = (mem.LastBowled).ToString();
-                            if (lastplayed == "") {
+                            if (lastplayed == "")
+                            {
                                 lastplayed = "never";
                             }
-                            string InActive = String.Format("{2,-5} {1,10}{3,0}{0,10}",
+                            string InActive = String.Format("({2,-5}) {1,10}{3,0}{0,10}",
                              mem.LastName + ", " + mem.FirstName, lastplayed, mem.Number, "     ");
-
+                            //TODO change from string to object
                             checkedListBox1.Items.Add(InActive, false);
-                            
+
                         }
+
                             
                     });
                 currentMem = InActiveList.FirstOrDefault();
@@ -61,7 +65,7 @@ namespace NineTapTour.Forms
         
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
-
+            targetDate = dateTimePicker1.Value;
         }
 
         private void btnUpdateActive_Click(object sender, EventArgs e)
@@ -71,26 +75,19 @@ namespace NineTapTour.Forms
                 try
                 {
                     
-                 
-                    for (int i = 0; i <= checkedListBox1.Items.Count; i++)
+
+                    foreach(var item in checkedListBox1.CheckedItems)
                     {
-                        
-                        
-                        if (checkedListBox1.GetItemCheckState(i) == CheckState.Checked)
-                        {
-                            //MessageBox.Show(checkedListBox1.Text.ToList;
-                            MessageBox.Show(InActiveList[i].FirstName + "***");
-                            //InActiveList[i].IsActive = false;
-
-                        }
-
-
-
+                        string value = item.ToString();
+                        string output = value.Split('(', ')')[1];
+                        MessageBox.Show(output);//for testing
+                        int n = Int32.Parse(output);
+                        InActiveList[n].IsActive = false;
                     }
                 }
                 catch
                 {
-                    //MessageBox.Show("No Members Selected");
+                    MessageBox.Show("No Members Selected");
                 }
               
             }
