@@ -375,6 +375,7 @@
             this.dateRejoin.Size = new System.Drawing.Size(103, 23);
             this.dateRejoin.TabIndex = 17;
             this.dateRejoin.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
+            this.dateRejoin.ValueChanged += new System.EventHandler(this.dateRejoin_ValueChanged);
             this.dateRejoin.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ClearCalendar);
             // 
             // dateJoined
@@ -385,6 +386,7 @@
             this.dateJoined.Size = new System.Drawing.Size(103, 23);
             this.dateJoined.TabIndex = 16;
             this.dateJoined.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
+            this.dateJoined.ValueChanged += new System.EventHandler(this.dateJoined_ValueChanged);
             // 
             // lblEmail
             // 
