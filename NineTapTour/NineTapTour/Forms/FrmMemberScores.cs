@@ -1211,7 +1211,6 @@ namespace NineTapTour.Forms
             finally { }//TODO ADDED FOR ERRORS REMOVE WHEN FIXED
             }
 
-
         class MemberScores
         {
             public string FirstName { get; set; }
