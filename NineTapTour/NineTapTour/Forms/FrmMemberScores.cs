@@ -13,6 +13,7 @@ namespace NineTapTour.Forms
 {
     public partial class frmMemberScores : Form
     {
+        bool loaded = false; // This is used to make the selectedIndex function not throw exceptions before it is properly initialized.
         //IOrderedEnumerable<Member> _membersList;
         Member currentMem;
         Member currentMem2;
@@ -77,6 +78,8 @@ namespace NineTapTour.Forms
                 var item = temp2.Max(x => x.Id);
                 cbxTourneyDropDown.SelectedValue = item;
             }
+            loaded = true;
+            cbxTourneyDropDown.SelectedIndex = -1;
         }
 
         /// <summary>
@@ -784,14 +787,17 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void cbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cbxTourneyDropDown.SelectedIndex <= 0)
+            if (loaded)
             {
-                lblRecord.Text = "Record 0" + " / " + "0";
-            }
-            else
-            {
-                RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue))));
-                refresh(false);
+                if (cbxTourneyDropDown.SelectedIndex < 0)
+                {
+                    lblRecord.Text = "Record 0" + " / " + "0";
+                }
+                else
+                {
+                    RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue))));
+                    refresh(false);
+                }
             }
         }
         /// <summary>
@@ -918,8 +924,15 @@ namespace NineTapTour.Forms
             refresh(true);
         }
 
+        /// <summary>
+        /// pass true if you are changing the radio buttons and only want to refresh the bottom box.
+        /// </summary>
+        /// <param name="seriesChange"></param>
         public void refresh(bool seriesChange)
         {
+            // DEV NOTE: The text generated for the boxes in this is strange and has tabs that the 
+            // code doesn't seem to be writing as far as I can tell.
+            // I think a bug fixer should look at this some time and try to see why it's happening
             try
             {
                 // Function scope data

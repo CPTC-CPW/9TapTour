@@ -15,7 +15,7 @@ namespace NineTapTour.Forms
     public partial class frmNewTournament : Form
     {
         // If a new tournament was selected to edit, this will be set to something other than null.
-        Tournament tourToEdit = null;
+        Tournament tourToEdit;
 
         public frmNewTournament()
         {
@@ -31,7 +31,7 @@ namespace NineTapTour.Forms
         {
             this.Close();
         }
-   
+
         /// <summary>
         /// Creates a new tournament.
         /// Saves the date, location, event, sponsors, and extra notes.
@@ -56,40 +56,48 @@ namespace NineTapTour.Forms
                 NewTournament.Doubles = false;
             }
 
-            //// validation prototype of the only non-nullable text box on the form
-            if (String.IsNullOrEmpty(txtEvent.Text.Trim()) == true)
-                MessageBox.Show("Event cannot be blank");
-            else {
-                try
+            try
+            {
+                // If tourID isn't null it means they chose a tour to edit
+                if (tourToEdit == null)
                 {
-                    // If tourID isn't null it means they chose a tour to edit
-                    if (tourToEdit == null)
-                    {
-                        TournamentDb.AddTournament(NewTournament);
-                        MessageBox.Show(@"Tournament Created Successfully.");
-                        ((FrmMain)MdiParent)._tournamentList = TournamentDb.GetTournamentList();
-                    } else
-                    {
-                        DialogResult dr = MessageBox.Show("Confirm Edit", "Are you sure you want to modify this tournament?", MessageBoxButtons.YesNo);
+                    TournamentDb.AddTournament(NewTournament);
+                    MessageBox.Show(@"Tournament Created Successfully.");
+                    ((FrmMain)MdiParent)._tournamentList = TournamentDb.GetTournamentList();
+                }
+                else
+                {
+                    DialogResult dr = MessageBox.Show("Are you sure you want to modify this tournament?", "Confirm Edit", MessageBoxButtons.YesNo);
 
-                        if (dr == DialogResult.Yes)
+                    if (dr == DialogResult.Yes)
+                    {
+                        NewTournament.Id = tourToEdit.Id;
+                        if (TournamentDb.UpdateTournament(NewTournament))
                         {
-                            //TournamentDb.UpdateTournament(NewTournament, tourID);
-                            MessageBox.Show("This is the part where it tries to upload");
+                            MessageBox.Show(@"Tournament modified.");
+                            ((FrmMain)MdiParent)._tournamentList = TournamentDb.GetTournamentList();
+                            this.Close();
+                        } else
+                        {
+                            MessageBox.Show("The database failed to update.");
                         }
                     }
-                    this.Close();
                 }
-                catch (TournamentTableException ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
+                
             }
+            catch (TournamentTableException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        
         }
 
         private void btnEditTour_Click(object sender, EventArgs e)
         {
-            new FrmTourSearch(tourToEdit).ShowDialog();
+            FrmTourSearch getEdit = new FrmTourSearch();
+            getEdit.ShowDialog();
+            tourToEdit = getEdit.getResult();
+
             if (tourToEdit != null)
             {
                 dtpDate.Value = tourToEdit.Date;
@@ -100,6 +108,12 @@ namespace NineTapTour.Forms
                 rtxtNotes.Text = tourToEdit.Notes;
                 btnSubmit.Text = "Update Tournament";
             }
+#if DEBUG
+            else
+            {
+                Console.WriteLine("Search returned a null. probably was closed.");
+            }
+#endif
         }
 
         private void btnClear_Click(object sender, EventArgs e)
@@ -112,6 +126,16 @@ namespace NineTapTour.Forms
             txtSponsors.Clear();
             ckbxDoubles.Checked = false;
             rtxtNotes.Clear();
+        }
+
+        private void txtLocation_TextChanged(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(txtLocation.Text.Trim())) {
+                btnSubmit.Enabled = true;
+            } else
+            {
+                btnSubmit.Enabled = false;
+            }
         }
     }
 }

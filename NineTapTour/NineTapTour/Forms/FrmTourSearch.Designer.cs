@@ -190,6 +190,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "FrmTourSearch";
             this.Text = "Search Tournaments";
+            this.Load += new System.EventHandler(this.FrmTourSearch_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

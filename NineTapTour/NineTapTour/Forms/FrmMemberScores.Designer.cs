@@ -129,10 +129,7 @@
             this.txtMemberNum2.TabIndex = 1;
             this.txtMemberNum2.Visible = false;
             this.txtMemberNum2.TextChanged += new System.EventHandler(this.txtMemberNum2_TextChanged);
-            //TODO ERROR
-            //this.txtMemberNum2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMemberNum2_KeyDown);
-            //
-             
+            // 
             // txtMemberNum
             // 
             this.txtMemberNum.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -141,8 +138,6 @@
             this.txtMemberNum.Size = new System.Drawing.Size(112, 20);
             this.txtMemberNum.TabIndex = 0;
             this.txtMemberNum.TextChanged += new System.EventHandler(this.txtMemberNum_TextChanged);
-            //TODO ERROR 
-            //this.txtMemberNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMemberNum_KeyDown);
             this.txtMemberNum.KeyUp += new System.Windows.Forms.KeyEventHandler(this.GetMember);
             // 
             // groupBox1
@@ -292,8 +287,6 @@
             this.txtScratchScore1.Size = new System.Drawing.Size(57, 37);
             this.txtScratchScore1.TabIndex = 0;
             this.txtScratchScore1.TextChanged += new System.EventHandler(this.scratchTotal);
-            //TODO ERROR
-            //this.txtScratchScore1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtScratchScore1_KeyDown);
             // 
             // txtHandicapScore1
             // 
@@ -319,8 +312,6 @@
             this.txtScratchScore2.Size = new System.Drawing.Size(57, 37);
             this.txtScratchScore2.TabIndex = 1;
             this.txtScratchScore2.TextChanged += new System.EventHandler(this.scratchTotal);
-            //TODO ERROR
-            //this.txtScratchScore2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtScratchScore1_KeyDown);
             // 
             // txtHandicapScore2
             // 
@@ -346,8 +337,6 @@
             this.txtScratchScore3.Size = new System.Drawing.Size(57, 37);
             this.txtScratchScore3.TabIndex = 2;
             this.txtScratchScore3.TextChanged += new System.EventHandler(this.scratchTotal);
-            //TODO ERROR
-            //this.txtScratchScore3.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtScratchScore1_KeyDown);
             // 
             // txtHandicapScore3
             // 
@@ -373,8 +362,6 @@
             this.txtScratchScore4.Size = new System.Drawing.Size(57, 37);
             this.txtScratchScore4.TabIndex = 3;
             this.txtScratchScore4.TextChanged += new System.EventHandler(this.scratchTotal);
-            //TODO ERROR
-            //this.txtScratchScore4.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtScratchScore1_KeyDown);
             // 
             // txtHandicapScore4
             // 
@@ -861,7 +848,7 @@
             this.btnNewTournament.Size = new System.Drawing.Size(191, 23);
             this.btnNewTournament.TabIndex = 26;
             this.btnNewTournament.TabStop = false;
-            this.btnNewTournament.Text = "New Tournament";
+            this.btnNewTournament.Text = "Create / Edit Tournament...";
             this.btnNewTournament.UseVisualStyleBackColor = true;
             this.btnNewTournament.Click += new System.EventHandler(this.btnNewTournament_Click);
             // 
@@ -884,8 +871,6 @@
             this.btnTournamentsByYear.TabIndex = 34;
             this.btnTournamentsByYear.Text = "List Tournaments By Year";
             this.btnTournamentsByYear.UseVisualStyleBackColor = true;
-            //TODO ERROR
-            //this.btnTournamentsByYear.Click += new System.EventHandler(this.btnTournamentsByYear_Click);
             // 
             // frmMemberScores
             // 

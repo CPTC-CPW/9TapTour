@@ -31,10 +31,12 @@ namespace NineTapTour.Forms
             single = false;
         }
 
-        public FrmTourSearch(Tournament tour)
+        /// <summary>
+        /// If you don't pass a list, it assumes you will be trying to get a single item. IF you don't retrieve the found item after closing it, it will be useless.
+        /// </summary>
+        public FrmTourSearch()
         {
             InitializeComponent();
-            singleTour = tour;
             single = true;
             listSearch.SelectionMode = SelectionMode.One;
         }
@@ -125,9 +127,7 @@ namespace NineTapTour.Forms
                 }
             } else
             {
-                //Console.WriteLine(listSearch.SelectedItem);
                 singleTour = (Tournament)listSearch.SelectedItem;
-                MessageBox.Show(singleTour.ToString());
                 this.Close();
             }
         }
@@ -166,7 +166,7 @@ namespace NineTapTour.Forms
             if (String.IsNullOrWhiteSpace(txtSearch.Text.Trim()) && String.IsNullOrWhiteSpace(txtEvent.Text.Trim()) && !chkDate.Checked)
             {
                 btnSearch.Enabled = false;
-                if (listSearch.SelectedIndex == -1 && dtpTo.Value == dtpFrom.Value)
+                if (listSearch.SelectedIndex < 0 && dtpTo.Value == dtpFrom.Value)
                 {
                     btnClear.Enabled = false;
                 }
@@ -216,6 +216,20 @@ namespace NineTapTour.Forms
             {
                 dtpFrom.Value = dtpTo.Value;
             }
+        }
+
+        /// <summary>
+        /// If you didn't pass a list, the result of your search will be set here.
+        /// </summary>
+        /// <returns></returns>
+        public Tournament getResult()
+        {
+            return singleTour;
+        }
+
+        private void FrmTourSearch_Load(object sender, EventArgs e)
+        {
+            dtpFrom.Value = dtpTo.Value;
         }
     }
 }
