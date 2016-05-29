@@ -799,16 +799,20 @@ namespace NineTapTour.Forms
             {
                 txtMemberNum.Enabled = true;
                 txtMemberNum2.Enabled = false;
+                btnStats.Enabled = true;
             }
             else
             {
                 txtMemberNum.Enabled = true;
                 txtMemberNum2.Enabled = true;
+                btnStats.Enabled = true;
+
             }
 
             if (cbxTourneyDropDown.SelectedIndex < 0)
             {
                 lblRecord.Text = "Record 0" + " / " + "0";
+                btnStats.Enabled = false;
             }
             else
             {
