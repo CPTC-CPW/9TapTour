@@ -32,6 +32,36 @@ namespace NineTapTour.Database
                 throw new TournamentTableException("Error Number : " + ex.Number + " - " + ex.Message);
             }
         }
+
+        /// <summary>
+        /// Updates an existing tournament
+        /// </summary>
+        /// <param name="New"></param> 
+        
+        public static bool UpdateTournament(Tournament newTour)
+        {
+            try
+            {
+                using (var db = new NineTapDb())
+                {
+                    var original = db.Tournaments.Find(newTour.Id);
+                    if (original != null)
+                    {
+                        db.Entry(original).CurrentValues.SetValues(newTour);
+                        db.SaveChanges();
+                    } else
+                    {
+                        throw new TournamentTableException("The original data could not be found.");
+                    }
+                }
+                return true;
+            }
+            catch (SqlException ex)
+            {
+                throw new TournamentTableException("Error Number : " + ex.Number + " - " + ex.Message);
+            }
+        }
+
         /// <summary>
         /// returns the list of tournaments in descending order by date
         /// </summary>
@@ -83,15 +113,21 @@ namespace NineTapTour.Database
                     {
                         try
                         {
-                            var manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
-                            var result = db.Games.SingleOrDefault(g => g.Id == player.Game.Id);
-                            var squadResult = db.Participants.SingleOrDefault(p => p.Id == player.Id);
-                            var memberQuery = db.Participants.Include(m => m.Member)
+                            System.Data.Entity.Core.Objects.ObjectStateManager manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
+                            Game result = db.Games.SingleOrDefault(g => g.Id == player.Game.Id);
+                            Participant squadResult = db.Participants.SingleOrDefault(p => p.Id == player.Id);
+                            Participant memberQuery = db.Participants.Include(m => m.Member)
                                 .Where(m => m.Member.Id == player.Member.Id).FirstOrDefault();
                             result.Game1 = player.Game.Game1;
                             result.Game2 = player.Game.Game2;
                             result.Game3 = player.Game.Game3;
                             result.Game4 = player.Game.Game4;
+
+                            if (squadResult == null)
+                            {
+                                squadResult = new Participant();
+                                Console.WriteLine("No squad");
+                            }
                             squadResult.Squad = player.Squad;
                             squadResult.Member = memberQuery.Member;
                             db.SaveChanges();

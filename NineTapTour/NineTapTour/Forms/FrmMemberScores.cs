@@ -13,6 +13,7 @@ namespace NineTapTour.Forms
 {
     public partial class frmMemberScores : Form
     {
+        bool loaded = false; // This is used to make the selectedIndex function not throw exceptions before it is properly initialized.
         //IOrderedEnumerable<Member> _membersList;
         Member currentMem;
         Member currentMem2;
@@ -22,6 +23,7 @@ namespace NineTapTour.Forms
         Participant player = new Participant();
         Participant player2 = new Participant();
         bool doubles = true;
+        public static Tournament selectedTournament;
 
         public frmMemberScores()
         {
@@ -29,8 +31,8 @@ namespace NineTapTour.Forms
         }
 
         private void FrmMemberScores_Load(object sender, EventArgs e)
-        {
-            txtMemberNum2.Visible = doubles;
+        {            
+            txtMemberNum2.Visible = doubles;                                               
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
 
@@ -40,8 +42,8 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void txtMemberNum_TextChanged(object sender, EventArgs e)       
-        {
+        private void txtMemberNum_TextChanged(object sender, EventArgs e)
+        {          
             if (currentMem == null || ((TextBox)sender).Text == "")
             {
                 txtLastName.Clear();
@@ -77,6 +79,8 @@ namespace NineTapTour.Forms
                 var item = temp2.Max(x => x.Id);
                 cbxTourneyDropDown.SelectedValue = item;
             }
+            loaded = true;
+            cbxTourneyDropDown.SelectedIndex = -1;
         }
 
         /// <summary>
@@ -86,8 +90,8 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void GetMember(object sender, KeyEventArgs e)
         {
-            var currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
-            if(currTourney.Doubles)
+            Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+            if (currTourney.Doubles)
             {
                 //if (e.KeyCode != Keys.Enter) // manually press Enter to populate Names
                 //    return;
@@ -206,7 +210,7 @@ namespace NineTapTour.Forms
                         else
                         {
                             MemberStatus("Inactive", Color.Red, Color.Pink, true);
-                        } 
+                        }
                         txtScratchScore1.Focus();
 
                         txtLastName.Text = currentMem.LastName;
@@ -215,7 +219,7 @@ namespace NineTapTour.Forms
                         txtHandicap.Text = currentMem.Handicap.ToString();
                         txtBonusPins.Text = currentMem.Bonus.ToString();
                         Game currentGame = GetScoresById(currentMem.Id);
-                        if(currentGame != null)
+                        if (currentGame != null)
                         {
                             currentGame.Bonus = currentMem.Bonus;
                             currentGame.Handicap = currentMem.Handicap;
@@ -224,7 +228,7 @@ namespace NineTapTour.Forms
                             txtScratchScore3.Text = Convert.ToString(currentGame.Game3);
                             txtScratchScore4.Text = Convert.ToString(currentGame.Game4);
                         }
-                    
+
                     }
                     else
                     {
@@ -232,7 +236,6 @@ namespace NineTapTour.Forms
                         txtMemberNum.Clear();
                     }
                 }
-
             }
         }
 
@@ -244,10 +247,10 @@ namespace NineTapTour.Forms
             List<Participant> listOfParticipants = TournamentDb.GetTournamentMemberList(currTourney);
             var db = new NineTapDb();
             var temp = (from p in db.Participants
-                    join m in db.Members on p.Member.Id equals m.Id
-                    where p.Tournament.Id == currTourney.Id
-                    select p.Member).ToList();
-            
+                        join m in db.Members on p.Member.Id equals m.Id
+                        where p.Tournament.Id == currTourney.Id
+                        select p.Member).ToList();
+
             string searchNumber = currentIndex.ToString();
             for (int i = 0; i < searchNumber.Length; i++)
             {
@@ -265,8 +268,8 @@ namespace NineTapTour.Forms
                 {
                     return;
                 }
-                listOfParticipants[currentIndex-1].Member = temp[currentIndex-1];
-                int memberNumber = listOfParticipants[currentIndex-1].Member.Id;
+                listOfParticipants[currentIndex - 1].Member = temp[currentIndex - 1];
+                int memberNumber = listOfParticipants[currentIndex - 1].Member.Id;
                 currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Id == memberNumber);
                 if (currentMem != null)
                 {
@@ -314,7 +317,7 @@ namespace NineTapTour.Forms
                               select t.Participant).Count();
             return totalCount;
         }
-        
+
         /// <summary>
         /// method to set the member status colors on lblMemberStatus forecolor and pnlMemStat background color
         /// </summary>
@@ -403,7 +406,7 @@ namespace NineTapTour.Forms
             }
             txtHandicapTotal.Text = Convert.ToString(totalScore);
         }
-        
+
         /// <summary>
         /// enter a tournamnet participant into a specific tournament
         /// save scores and info in database
@@ -412,24 +415,24 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void newRecap(object sender, EventArgs e)
         {
-            if (IsValid()) 
+            if (IsValid())
             {
-                var currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+                Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
                 List<Participant> total = TournamentDb.GetTournamentMemberList(currTourney);
                 //Doubles tournament
                 if (currTourney.Doubles)
                 {
                     player.Game = new Game();
                     player2.Game = new Game();
-                    var db = new NineTapDb();
-                    var gameId = (from p in db.Participants
+                    NineTapDb db = new NineTapDb();
+                    int gameId = (from p in db.Participants
                                   where p.Member.Id == currentMem.Id
                                   && p.Tournament.Id == currTourney.Id
                                   select p.Game.Id).FirstOrDefault();
-                    var gameId2 = (from p in db.Participants
-                                  where p.Member.Id == currentMem2.Id
-                                  && p.Tournament.Id == currTourney.Id
-                                  select p.Game.Id).FirstOrDefault();
+                    int gameId2 = (from p in db.Participants
+                                   where p.Member.Id == currentMem2.Id
+                                   && p.Tournament.Id == currTourney.Id
+                                   select p.Game.Id).FirstOrDefault();
                     player.Game.Id = gameId;
                     //selects the ID of the combobox of tournaments and stores the
                     //tournament property within the participants class.
@@ -497,9 +500,9 @@ namespace NineTapTour.Forms
                     player.Game = new Game();
                     var db = new NineTapDb();
                     var gameId = (from p in db.Participants
-                                    where p.Member.Id == currentMem.Id 
-                                    && p.Tournament.Id == currTourney.Id
-                                    select p.Game.Id).FirstOrDefault();
+                                  where p.Member.Id == currentMem.Id
+                                  && p.Tournament.Id == currTourney.Id
+                                  select p.Game.Id).FirstOrDefault();
 
                     player.Game.Id = gameId;
                     //selects the ID of the combobox of tournaments and stores the
@@ -548,7 +551,7 @@ namespace NineTapTour.Forms
                     try
                     {
                         TournamentDb.AddMemberToTournament(player);
-        #if DEBUG
+#if DEBUG
                         MessageBox.Show(@"Bowler Added Successfully to Tournament!");
 #endif
                         RecordIndex(TournamentDb.GetTournamentMemberList(currTourney));
@@ -562,7 +565,7 @@ namespace NineTapTour.Forms
                     txtMemberNum.Focus();
                 }
             }
-            else 
+            else
             {
                 MessageBox.Show("Please Fill out the Participants information!");
             }
@@ -610,7 +613,7 @@ namespace NineTapTour.Forms
                 return true;
             }
             return false;
-        } 
+        }
 
         /// <summary>
         /// get a tournament by selected id
@@ -630,11 +633,11 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="memberID"></param>
         /// <returns></returns>
-        
+
         public Game GetScoresById(int memberID)
         {
-            var db = new NineTapDb();
-            var memScores =  new Game();
+            NineTapDb db = new NineTapDb();
+            Game memScores = new Game();
             int squad = 0;
 
             if (rdoSquadOne.Checked)
@@ -657,22 +660,22 @@ namespace NineTapTour.Forms
             try
             {
                 int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
-                
-                 memScores = (from t in db.Tournaments
-                                 join p in db.Participants on t.Id equals p.Tournament.Id
-                                 where t.Id == p.Tournament.Id 
-                                 && memberID == p.Member.Id 
-                                 && selectedTournamentId == t.Id
-                                 && p.Squad == squad
-                                 select p.Game).Single();
-                
+
+                memScores = (from t in db.Tournaments
+                             join p in db.Participants on t.Id equals p.Tournament.Id
+                             where t.Id == p.Tournament.Id
+                             && memberID == p.Member.Id
+                             && selectedTournamentId == t.Id
+                             && p.Squad == squad
+                             select p.Game).Single();
+
             }
-            catch(InvalidOperationException ex)
+            catch (InvalidOperationException ex)
             {
                 return null;
             }
             return memScores;
-                     
+
         }
         /// <summary>
         /// clears memberNum, txtScratchScores, and High Game textboxes
@@ -684,12 +687,12 @@ namespace NineTapTour.Forms
             richTextBox2.Clear();
             richTextBox3.Clear();
         }
-        
+
         /// <summary>
         /// increments to the next participant in the tournament
-       
         /// </summary>
-        
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
             List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
@@ -777,217 +780,48 @@ namespace NineTapTour.Forms
             rdoSquadOne.Checked = true;
         }
 
-        private void btnRefresh_Click(object sender, EventArgs e)
-        {
-            richTextBox1.Clear();
-            richTextBox1.Font = new Font(FontFamily.GenericMonospace, richTextBox1.Font.Size);
-            richTextBox1.Text = ("#" + "\t" + "Name" + "\t\t" + "Handicap" + "\n");
-            int counter = 1;
-            int index = 0;
-            int nullValues = 0;
-            var db = new NineTapDb();
-            int selectedTourney = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
-
-            var top5 = db.Participants.Include(b => b.Member)
-                .Include(b => b.Game)
-                .Where(b => b.Tournament.Id == selectedTourney);
-            List<MemberScores> scores = new List<MemberScores>();
-            
-            var temp = (from g in top5
-                        orderby (g.Game.Handicap) descending
-                        select g).Take(5).ToList();
-            
-            foreach (var i in temp)
-            {
-                #region conditions for highest handicap scores
-                nullValues = 0;
-                if (i.Game.Game1 == 0)
-                {
-                    nullValues += 1;
-                }
-                if (i.Game.Game2 == 0)
-                {
-                    nullValues += 1;
-                }
-                if (i.Game.Game3 == 0)
-                {
-                    nullValues += 1;
-                }
-                if (i.Game.Game4 == 0)
-                {
-                    nullValues += 1;
-                }
-                #endregion
-                scores.Add(new MemberScores { FirstName = i.Member.FirstName, LastName = i.Member.LastName, Score =  i.Game.Handicap });
-            }
-
-            IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
-            scores.Sort(scoreComparer);
-            scores.Reverse();
-            scores = scores.Take(5).ToList();
-            for (int i = 0; i < scores.Count(); i++)
-            {
-                richTextBox1.AppendText(counter + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
-                                        + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
-                counter++;
-                index++;
-            }
-        }
-
-        private void btnRefresh2_Click(object sender, EventArgs e)
-        {
-            richTextBox2.Clear();
-            richTextBox2.Font = new Font(FontFamily.GenericMonospace, richTextBox2.Font.Size);
-            richTextBox2.Text = ("#" + "\t" + "Name" + "\t\t" + "HighScore" + "\n");
-            int counter = 1;
-            int index = 0;
-            var db = new NineTapDb();
-            int selectedTourney = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
-
-            var top5 = db.Participants.Include(b => b.Member)
-                .Include(b => b.Game)
-                .Where(b => b.Tournament.Id == selectedTourney);
-            List<MemberScores> scores = new List<MemberScores>();
-            var temp = (from g in top5
-                        orderby g.Game.Game1
-                        select new { g.Game.Game1, g.Member.FirstName, g.Member.LastName }).Take(5);
-            var temp2 = (from g in top5
-                        orderby g.Game.Game2
-                        select new { g.Game.Game2, g.Member.FirstName, g.Member.LastName }).Take(5);
-            var temp3 = (from g in top5
-                        orderby g.Game.Game3
-                        select new { g.Game.Game3, g.Member.FirstName, g.Member.LastName }).Take(5);
-            var temp4 = (from g in top5
-                        orderby g.Game.Game4
-                        select new { g.Game.Game4, g.Member.FirstName, g.Member.LastName }).Take(5);
-            foreach (var s in temp)
-            {
-                scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game1 });
-            }
-            foreach (var s in temp2)
-            {
-                scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game2 });
-            }
-            foreach (var s in temp3)
-            {
-                scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game3 });
-            }
-            foreach (var s in temp4)
-            {
-                scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game4 });
-            }
-            IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
-            scores.Sort(scoreComparer);
-            scores.Reverse();
-            scores = scores.Take(5).ToList();
-            for (int i = 0; i < scores.Count(); i++)
-            {
-                richTextBox2.AppendText(counter + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
-                                        + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
-                counter++;
-                index++;
-            }
-            
-        }
-
-        private void btnRefresh3_Click(object sender, EventArgs e)
-        {
-            richTextBox3.Clear();
-            int counter = 1;
-            int index = 0;
-            int nullValues = 0;
-            richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
-            richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
-            var db = new NineTapDb();
-            int selectedTourney = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
-
-            var top5 = db.Participants.Include(b => b.Member)
-                        .Include(b => b.Game)
-                        .Where(b => b.Tournament.Id == selectedTourney);
-            List<MemberScores> scores = new List<MemberScores>();
-            var temp = (from g in top5
-                        orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4) descending
-                        select g).Take(5).ToList();
-
-            //populate total score
-            for (int i = 0; i < temp.Count; i++)
-            {
-                temp[i].Game.Game1 = temp[i].Game.Game1 == null ? 0 : temp[i].Game.Game1;
-                temp[i].Game.Game2 = temp[i].Game.Game2 == null ? 0 : temp[i].Game.Game2;
-                temp[i].Game.Game3 = temp[i].Game.Game3 == null ? 0 : temp[i].Game.Game3;
-                temp[i].Game.Game4 = temp[i].Game.Game4 == null ? 0 : temp[i].Game.Game4;
-            }
-            if (rdoScratchScore.Checked) {
-                foreach (var s in temp)
-                {
-                    scores.Add(new MemberScores { FirstName = s.Member.FirstName, LastName = s.Member.LastName, Score = s.Game.Game1 + s.Game.Game2 + s.Game.Game3 + s.Game.Game4 });
-                }
-                IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
-                scores.Sort(scoreComparer);
-                scores.Reverse();
-                scores = scores.Take(5).ToList();
-                for (int i = 0; i < scores.Count(); i++)
-                {
-                    richTextBox3.AppendText(counter + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
-                                            + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
-                    counter++;
-                    index++;
-                }
-            }
-            else if (rdoHandicapScore.Checked)
-            {
-                foreach (var i in temp)
-                {
-                    #region conditions for highest handicap scores
-                    nullValues = 0;
-                    if (i.Game.Game1 == 0)
-                    {
-                        nullValues += 1;
-                    }
-                    if (i.Game.Game2 == 0)
-                    {
-                        nullValues += 1;
-                    }
-                    if (i.Game.Game3 == 0)
-                    {
-                        nullValues += 1;
-                    }
-                    if (i.Game.Game4 == 0)
-                    {
-                        nullValues += 1;
-                    }
-                    #endregion
-                    scores.Add(new MemberScores { FirstName = i.Member.FirstName, LastName = i.Member.LastName, Score = (i.Game.Game1) + (i.Game.Game2) + (i.Game.Game3) + (i.Game.Game4) + ((4 - nullValues) * (i.Game.Handicap + i.Game.Bonus)) });
-                }
-
-
-                IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
-                scores.Sort(scoreComparer);
-                scores.Reverse();
-                scores = scores.Take(5).ToList();
-                for (int i = 0; i < scores.Count(); i++) {
-                    richTextBox3.AppendText(counter + "\t" + String.Format("{0, -20}", Convert.ToString(scores[i].FirstName + " " + scores[i].LastName)) + "\t" + String.Format("{0, -5}", scores[i].Score) + "\n");
-                    counter++;
-                    index++;
-
-                }
-            }
-        }
         /// <summary>
         /// updates record index when tourney is changed
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void cbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cbxTourneyDropDown.SelectedIndex <= 0)
+        {         
+            // assigns the selectedTournament variable as the selected Tournament from the comboBox
+            selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
+            // determines whether the tournament is a double tourney or not, then enables or disables the single and/or double textBox selection option
+            if (selectedTournament == null)
             {
-                lblRecord.Text = "Record 0" + " / " + "0";
+                txtMemberNum.Enabled = false;
+                txtMemberNum2.Enabled = false;
+            }
+            else if(!selectedTournament.Doubles)
+            {
+                txtMemberNum.Enabled = true;
+                txtMemberNum2.Enabled = false;
+                btnStats.Enabled = true;
             }
             else
             {
-                RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue))));
+                txtMemberNum.Enabled = true;
+                txtMemberNum2.Enabled = true;
+                btnStats.Enabled = true;
+
             }
+
+            if (cbxTourneyDropDown.SelectedIndex < 0)
+            {
+                lblRecord.Text = "Record 0" + " / " + "0";
+                btnStats.Enabled = false;
+            }
+            else
+            {
+                // resets the current index to zero when changing the tournament
+                currentIndex = 0;
+                // Gets the record for the selected tournament
+                RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));                
+                refresh(false);
+            }        
         }
         /// <summary>
         /// validation method for form fields
@@ -1040,7 +874,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadFour_CheckedChanged(object sender, EventArgs e)
         {
-            if (GetScoresById(currentMem.Id) == null)
+            if (currentMem == null || GetScoresById(currentMem.Id) == null)
             {
                 ScoreAndTotalClear();
             }
@@ -1053,7 +887,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadOne_CheckedChanged(object sender, EventArgs e)
         {
-            if (GetScoresById(currentMem.Id) == null)
+            if (currentMem == null || GetScoresById(currentMem.Id) == null)
             {
                 ScoreAndTotalClear();
             }
@@ -1066,7 +900,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadTwo_CheckedChanged(object sender, EventArgs e)
         {
-            if (GetScoresById(currentMem.Id) == null)
+            if (currentMem == null || GetScoresById(currentMem.Id) == null)
             {
                 ScoreAndTotalClear();
             }
@@ -1091,39 +925,326 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadThree_CheckedChanged(object sender, EventArgs e)
         {
-            if (GetScoresById(currentMem.Id) == null)
+            if (currentMem == null || GetScoresById(currentMem.Id) == null)
             {
                 ScoreAndTotalClear();
             }
         }
-
+        /* TODO Error
         private void btnTournamentsByYear_Click(object sender, EventArgs e)
         {            
             FrmListTournamentsByYear listTournaments = new FrmListTournamentsByYear();
             listTournaments.ShowDialog();
         }
-    }
-
-
-
-
-    class MemberScores
-    {
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
-
-        public int? Score { get; set; }
-
-    }
-
-    class MemberScoresComparer : IComparer<MemberScores>
-    {
-        int IComparer<MemberScores>.Compare(MemberScores x, MemberScores y)
+        */
+        private void rdoScratchScore_CheckedChanged(object sender, EventArgs e)
         {
-            int score1 = x.Score.HasValue ? (int)x.Score : 0;
-            int score2 = y.Score.HasValue ? (int)y.Score : 0;
-            return score1.CompareTo(score2);
+            refresh(true);
+        }
+
+        private void rdoHandicapScore_CheckedChanged(object sender, EventArgs e)
+        {
+            refresh(true);
+        }
+
+        /// <summary>
+        /// pass true if you are changing the radio buttons and only want to refresh the bottom box.
+        /// </summary>
+        /// <param name="seriesChange"></param>
+        public void refresh(bool seriesChange)
+        {
+            // DEV NOTE: The text generated for the boxes in this is strange and has tabs that the 
+            // code doesn't seem to be writing as far as I can tell.
+            // I think a bug fixer should look at this some time and try to see why it's happening
+            try
+            {
+                // Function scope data
+                int nullValues;
+                NineTapDb db = new NineTapDb();
+                int selectedTourney = selectedTournament.Id;
+                List<MemberScores> scores;
+                IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
+                var top5 = db.Participants.Include(b => b.Member)
+                        .Include(b => b.Game)
+                        .Where(b => b.Tournament.Id == selectedTourney);
+
+                // This function combines the former refresh events into a single function, and since they all used the same variable names I just put
+                // their old data in a scope block so they could be reused
+                if (!seriesChange)
+                {
+                    richTextBox1.Clear();
+                    richTextBox1.Font = new Font(FontFamily.GenericMonospace, richTextBox1.Font.Size);
+                    richTextBox1.Text = ("#" + "\t" + "Name" + "\t\t" + "Handicap" + "\n");
+
+                    scores = new List<MemberScores>();
+
+                    var temp = (from g in top5
+                                orderby (g.Game.Handicap) descending
+                                select g).Take(5).ToList();
+
+                    foreach (var i in temp)
+                    {
+                        #region conditions for highest handicap scores
+                        nullValues = 0;
+                        if (i.Game.Game1 == 0)
+                        {
+                            nullValues += 1;
+                        }
+                        if (i.Game.Game2 == 0)
+                        {
+                            nullValues += 1;
+                        }
+                        if (i.Game.Game3 == 0)
+                        {
+                            nullValues += 1;
+                        }
+                        if (i.Game.Game4 == 0)
+                        {
+                            nullValues += 1;
+                        }
+                        #endregion
+                        scores.Add(new MemberScores { FirstName = i.Member.FirstName, LastName = i.Member.LastName, Score = i.Game.Handicap });
+                    }
+
+                    scores.Sort(scoreComparer);
+                    scores.Reverse();
+                    scores = scores.Take(5).ToList();
+                    for (int i = 0; i < scores.Count(); i++)
+                    {
+                        richTextBox1.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
+                                                + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
+                    }
+                }
+
+                // Do the 2nd box
+                if (!seriesChange)
+                {
+                    richTextBox2.Clear();
+                    richTextBox2.Font = new Font(FontFamily.GenericMonospace, richTextBox2.Font.Size);
+                    richTextBox2.Text = ("#" + "\t" + "Name" + "\t\t" + "HighScore" + "\n");
+                    scores = new List<MemberScores>();
+
+                    var temp = (from g in top5
+                                orderby g.Game.Game1
+                                select new { g.Game.Game1, g.Member.FirstName, g.Member.LastName }).Take(5);
+                    var temp2 = (from g in top5
+                                 orderby g.Game.Game2
+                                 select new { g.Game.Game2, g.Member.FirstName, g.Member.LastName }).Take(5);
+                    var temp3 = (from g in top5
+                                 orderby g.Game.Game3
+                                 select new { g.Game.Game3, g.Member.FirstName, g.Member.LastName }).Take(5);
+                    var temp4 = (from g in top5
+                                 orderby g.Game.Game4
+                                 select new { g.Game.Game4, g.Member.FirstName, g.Member.LastName }).Take(5);
+                    foreach (var s in temp)
+                    {
+                        scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game1 });
+                    }
+                    foreach (var s in temp2)
+                    {
+                        scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game2 });
+                    }
+                    foreach (var s in temp3)
+                    {
+                        scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game3 });
+                    }
+                    foreach (var s in temp4)
+                    {
+                        scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game4 });
+                    }
+                    scores.Sort(scoreComparer);
+                    scores.Reverse();
+                    scores = scores.Take(5).ToList();
+                    for (int i = 0; i < scores.Count(); i++)
+                    {
+                        richTextBox2.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
+                                                + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
+                    }
+                }
+
+                // Do the third box
+                {
+                    richTextBox3.Clear();
+                    richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
+                    richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
+                    scores = new List<MemberScores>();
+                    var temp = (from g in top5
+                                orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4) descending
+                                select g).Take(5).ToList();
+
+                    //populate total score
+                    for (int i = 0; i < temp.Count; i++)
+                    {
+                        temp[i].Game.Game1 = temp[i].Game.Game1 == null ? 0 : temp[i].Game.Game1;
+                        temp[i].Game.Game2 = temp[i].Game.Game2 == null ? 0 : temp[i].Game.Game2;
+                        temp[i].Game.Game3 = temp[i].Game.Game3 == null ? 0 : temp[i].Game.Game3;
+                        temp[i].Game.Game4 = temp[i].Game.Game4 == null ? 0 : temp[i].Game.Game4;
+                    }
+                    if (rdoScratchScore.Checked)
+                    {
+                        foreach (var s in temp)
+                        {
+                            scores.Add(new MemberScores { FirstName = s.Member.FirstName, LastName = s.Member.LastName, Score = s.Game.Game1 + s.Game.Game2 + s.Game.Game3 + s.Game.Game4 });
+                        }
+                        //IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
+                        scores.Sort(scoreComparer);
+                        scores.Reverse();
+                        scores = scores.Take(5).ToList();
+                        for (int i = 0; i < scores.Count(); i++)
+                        {
+                            richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
+                                                    + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
+                        }
+                    }
+                    else if (rdoHandicapScore.Checked)
+                    {
+                        foreach (var i in temp)
+                        {
+                            #region conditions for highest handicap scores
+                            nullValues = 0;
+                            if (i.Game.Game1 == 0)
+                            {
+                                nullValues += 1;
+                            }
+                            if (i.Game.Game2 == 0)
+                            {
+                                nullValues += 1;
+                            }
+                            if (i.Game.Game3 == 0)
+                            {
+                                nullValues += 1;
+                            }
+                            if (i.Game.Game4 == 0)
+                            {
+                                nullValues += 1;
+                            }
+                            #endregion
+                            scores.Add(new MemberScores { FirstName = i.Member.FirstName, LastName = i.Member.LastName, Score = (i.Game.Game1) + (i.Game.Game2) + (i.Game.Game3) + (i.Game.Game4) + ((4 - nullValues) * (i.Game.Handicap + i.Game.Bonus)) });
+                        }
+
+                        scores.Sort(scoreComparer);
+                        scores.Reverse();
+                        scores = scores.Take(5).ToList();
+                        for (int i = 0; i < scores.Count(); i++)
+                        {
+                            richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", Convert.ToString(scores[i].FirstName + " " + scores[i].LastName)) + "\t" + String.Format("{0, -5}", scores[i].Score) + "\n");
+                        }
+                    }
+                }
+                //}
+                /*TODO error
+                catch (Exception ex)
+                {
+    #if DEBUG
+                    Console.WriteLine("Cannot refresh when initializing.");
+    #endif
+                if (tours.Count() > 0) {
+                    cbxTourneyDropDown.DataSource = tours;
+                    cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
+                }
+            }
+
+                /*start errors*/
+                /*
+            /// <summary>
+            /// Checks if current member has an existing entry into Squad 4
+            /// and clears the scores if the member does NOT
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
+            private void rdoSquadFour_CheckedChanged(object sender, EventArgs e)
+            {
+                if (GetScoresById(currentMem.Id) == null)
+                {
+                    ScoreAndTotalClear();
+                }
+            }
+            /// <summary>
+            /// Checks if current member has an existing entry into Squad 1
+            /// and clears the scores if the member does NOT
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
+            private void rdoSquadOne_CheckedChanged(object sender, EventArgs e)
+            {
+                if (GetScoresById(currentMem.Id) == null)
+                {
+                    ScoreAndTotalClear();
+                }
+            }
+            /// <summary>
+            /// Checks if current member has an existing entry into Squad 2
+            /// and clears the scores if the member does NOT
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
+            private void rdoSquadTwo_CheckedChanged(object sender, EventArgs e)
+            {
+                if (GetScoresById(currentMem.Id) == null)
+                {
+                    ScoreAndTotalClear();
+                }
+            }
+            /// <summary>
+            /// Clears scratch scores and scratch and handicap totals
+            /// </summary>
+            private void ScoreAndTotalClear()
+            {
+                txtScratchScore1.Clear();
+                txtScratchScore2.Clear();
+                txtScratchScore3.Clear();
+                txtScratchScore4.Clear();
+                txtScratchTotal.Clear();
+                txtHandicapTotal.Clear();
+            }
+            /// <summary>
+            /// Checks if current member has an existing entry into Squad 3
+            /// and clears the scores if the member does NOT
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
+            private void rdoSquadThree_CheckedChanged(object sender, EventArgs e)
+            {
+                if (GetScoresById(currentMem.Id) == null)
+                {
+                    ScoreAndTotalClear();
+                }
+            }*/
+                /*end errors*/
+            }
+            finally { }//TODO ADDED FOR ERRORS REMOVE WHEN FIXED
+            }
+
+        class MemberScores
+        {
+            public string FirstName { get; set; }
+
+            public string LastName { get; set; }
+
+            public int? Score { get; set; }
+
+        }
+
+        class MemberScoresComparer : IComparer<MemberScores>
+        {
+            int IComparer<MemberScores>.Compare(MemberScores x, MemberScores y)
+            {
+                int score1 = x.Score.HasValue ? (int)x.Score : 0;
+                int score2 = y.Score.HasValue ? (int)y.Score : 0;
+                return score1.CompareTo(score2);
+            }
+        }
+
+        private void btnTournamentsByYear_Click(object sender, EventArgs e)
+        {
+            TournamentsByYear listTournaments = new TournamentsByYear();
+            listTournaments.ShowDialog();
+        }
+
+        private void btnStats_Click(object sender, EventArgs e)
+        {
+            TournamentStats tournamentStats = new TournamentStats();
+            tournamentStats.ShowDialog();            
         }
     }
 }

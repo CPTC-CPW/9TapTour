@@ -146,11 +146,23 @@
     <Compile Include="Forms\MainMenu.Designer.cs">
       <DependentUpon>MainMenu.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmListTournamentsByYear.cs">
+    <Compile Include="Forms\FrmUpdateActiveMem.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmListTournamentsByYear.Designer.cs">
-      <DependentUpon>frmListTournamentsByYear.cs</DependentUpon>
+    <Compile Include="Forms\FrmUpdateActiveMem.Designer.cs">
+      <DependentUpon>FrmUpdateActiveMem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TournamentsByYear.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TournamentsByYear.Designer.cs">
+      <DependentUpon>TournamentsByYear.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TournamentStats.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TournamentStats.Designer.cs">
+      <DependentUpon>TournamentStats.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201504272037146_Initial Database.cs" />
     <Compile Include="Migrations\201504272037146_Initial Database.Designer.cs">
@@ -244,10 +256,6 @@
     <Compile Include="Migrations\201604242119516_doubles.Designer.cs">
       <DependentUpon>201604242119516_doubles.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201605050259447_MemberPaymentStatus.cs" />
-    <Compile Include="Migrations\201605050259447_MemberPaymentStatus.Designer.cs">
-      <DependentUpon>201605050259447_MemberPaymentStatus.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -287,8 +295,14 @@
     <EmbeddedResource Include="Forms\MainMenu.resx">
       <DependentUpon>MainMenu.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmListTournamentsByYear.resx">
-      <DependentUpon>frmListTournamentsByYear.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FrmUpdateActiveMem.resx">
+      <DependentUpon>FrmUpdateActiveMem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TournamentsByYear.resx">
+      <DependentUpon>TournamentsByYear.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TournamentStats.resx">
+      <DependentUpon>TournamentStats.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201504272037146_Initial Database.resx">
       <DependentUpon>201504272037146_Initial Database.cs</DependentUpon>
@@ -358,9 +372,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604242119516_doubles.resx">
       <DependentUpon>201604242119516_doubles.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201605050259447_MemberPaymentStatus.resx">
-      <DependentUpon>201605050259447_MemberPaymentStatus.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>

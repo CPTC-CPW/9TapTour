@@ -14,6 +14,9 @@ namespace NineTapTour.Forms
 {
     public partial class frmNewTournament : Form
     {
+        // If a new tournament was selected to edit, this will be set to something other than null.
+        Tournament tourToEdit;
+
         public frmNewTournament()
         {
             InitializeComponent();
@@ -28,7 +31,7 @@ namespace NineTapTour.Forms
         {
             this.Close();
         }
-   
+
         /// <summary>
         /// Creates a new tournament.
         /// Saves the date, location, event, sponsors, and extra notes.
@@ -52,22 +55,130 @@ namespace NineTapTour.Forms
             {
                 NewTournament.Doubles = false;
             }
-            //// validation prototype of the only non-nullable text box on the form
-            if (String.IsNullOrEmpty(txtEvent.Text) == true)
-                MessageBox.Show("Event cannot be blank");
 
             try
             {
-                TournamentDb.AddTournament(NewTournament);
-                MessageBox.Show(@"Tournament Created Successfully.");
-                ((FrmMain)MdiParent)._tournamentList = TournamentDb.GetTournamentList();
-                this.Close();
+                // If tourID isn't null it means they chose a tour to edit
+                if (tourToEdit == null)
+                {
+                    TournamentDb.AddTournament(NewTournament);
+                    MessageBox.Show(@"Tournament Created Successfully.");
+                    ((FrmMain)MdiParent)._tournamentList = TournamentDb.GetTournamentList();
+                    this.Close();
+                }
+                else
+                {
+                    DialogResult dr = MessageBox.Show("Are you sure you want to modify this tournament?", "Confirm Edit", MessageBoxButtons.YesNo);
 
+                    if (dr == DialogResult.Yes)
+                    {
+                        NewTournament.Id = tourToEdit.Id;
+                        if (TournamentDb.UpdateTournament(NewTournament))
+                        {
+                            MessageBox.Show(@"Tournament modified.");
+                            ((FrmMain)MdiParent)._tournamentList = TournamentDb.GetTournamentList();
+                            this.Close();
+                        } else
+                        {
+                            MessageBox.Show("The database failed to update.");
+                        }
+                    }
+                }
+                
             }
             catch (TournamentTableException ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        
+        }
+
+        private void btnEditTour_Click(object sender, EventArgs e)
+        {
+            FrmTourSearch getEdit = new FrmTourSearch();
+            getEdit.ShowDialog();
+            tourToEdit = getEdit.getResult();
+
+            if (tourToEdit != null)
+            {
+                dtpDate.Value = tourToEdit.Date;
+                txtLocation.Text = tourToEdit.Location;
+                txtEvent.Text = tourToEdit.Event;
+                txtSponsors.Text = tourToEdit.Sponsors;
+                ckbxDoubles.Checked = tourToEdit.Doubles ? true : false;
+                rtxtNotes.Text = tourToEdit.Notes;
+                btnSubmit.Text = "Update Tournament";
+                lblEdit.Text = "Currently Editing " + tourToEdit.TourneyNameDate;
+            }
+#if DEBUG
+            else
+            {
+                Console.WriteLine("Search returned a null. probably was closed.");
+            }
+#endif
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            btnSubmit.Text = "Create Tournament";
+            btnSubmit.Enabled = false;
+            dtpDate.Value = DateTime.Now;
+            txtLocation.Clear();
+            txtEvent.Clear();
+            txtSponsors.Clear();
+            ckbxDoubles.Checked = false;
+            rtxtNotes.Clear();
+            tourToEdit = null;
+            lblEdit.Text = "";
+        }
+
+        private void txtLocation_TextChanged(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(txtLocation.Text.Trim())) {
+                btnSubmit.Enabled = true;
+            } else
+            {
+                btnSubmit.Enabled = false;
+            }
+            checkCleared();
+        }
+
+        private void checkCleared()
+        {
+            if (
+                !string.IsNullOrWhiteSpace(txtLocation.Text.Trim()) ||
+                !string.IsNullOrWhiteSpace(txtEvent.Text.Trim()) ||
+                !string.IsNullOrWhiteSpace(txtSponsors.Text.Trim()) ||
+                ckbxDoubles.Checked ||
+                !string.IsNullOrWhiteSpace(rtxtNotes.Text.Trim()) ||
+                tourToEdit != null
+                )
+            {
+                btnClear.Enabled = true;
+            } else
+            {
+                btnClear.Enabled = false;
+            }
+        }
+
+        private void txtEvent_TextChanged(object sender, EventArgs e)
+        {
+            checkCleared();
+        }
+
+        private void txtSponsors_TextChanged(object sender, EventArgs e)
+        {
+            checkCleared();
+        }
+
+        private void ckbxDoubles_CheckedChanged(object sender, EventArgs e)
+        {
+            checkCleared();
+        }
+
+        private void rtxtNotes_TextChanged(object sender, EventArgs e)
+        {
+            checkCleared();
         }
     }
 }

@@ -15,6 +15,8 @@ namespace NineTapTour.Forms
     public partial class FrmTourSearch : Form
     {
         List<Tournament> tours;
+        Tournament singleTour;
+        bool single;
         /// <summary>
         /// This takes a tour list and modifies it. The tour you pass in will
         /// be different when this form has finished running.
@@ -26,6 +28,17 @@ namespace NineTapTour.Forms
         {
             InitializeComponent();
             this.tours = tours;
+            single = false;
+        }
+
+        /// <summary>
+        /// If you don't pass a list, it assumes you will be trying to get a single item. IF you don't retrieve the found item after closing it, it will be useless.
+        /// </summary>
+        public FrmTourSearch()
+        {
+            InitializeComponent();
+            single = true;
+            listSearch.SelectionMode = SelectionMode.One;
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -105,9 +118,16 @@ namespace NineTapTour.Forms
 
         private void btnAccept_Click(object sender, EventArgs e)
         {
-            foreach (Tournament tour in listSearch.SelectedItems)
+            if (!single)
             {
-                tours.Add(tour);
+                foreach (Tournament tour in listSearch.SelectedItems)
+                {
+                    tours.Add(tour);
+                    this.Close();
+                }
+            } else
+            {
+                singleTour = (Tournament)listSearch.SelectedItem;
                 this.Close();
             }
         }
@@ -146,7 +166,7 @@ namespace NineTapTour.Forms
             if (String.IsNullOrWhiteSpace(txtSearch.Text.Trim()) && String.IsNullOrWhiteSpace(txtEvent.Text.Trim()) && !chkDate.Checked)
             {
                 btnSearch.Enabled = false;
-                if (listSearch.SelectedIndex == -1 && dtpTo.Value == dtpFrom.Value)
+                if (listSearch.SelectedIndex < 0 && dtpTo.Value == dtpFrom.Value)
                 {
                     btnClear.Enabled = false;
                 }
@@ -196,6 +216,20 @@ namespace NineTapTour.Forms
             {
                 dtpFrom.Value = dtpTo.Value;
             }
+        }
+
+        /// <summary>
+        /// If you didn't pass a list, the result of your search will be set here.
+        /// </summary>
+        /// <returns></returns>
+        public Tournament getResult()
+        {
+            return singleTour;
+        }
+
+        private void FrmTourSearch_Load(object sender, EventArgs e)
+        {
+            dtpFrom.Value = dtpTo.Value;
         }
     }
 }
