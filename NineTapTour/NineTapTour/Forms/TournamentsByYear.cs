@@ -69,6 +69,7 @@ namespace NineTapTour.Forms
                                    t.Date,
                                    t.Location,
                                    t.Event,
+                                   t.Doubles,
                                    t.Notes,
                                    t.Sponsors
                                }).ToList();
