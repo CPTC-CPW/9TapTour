@@ -61,13 +61,8 @@ namespace NineTapTour.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void FrmMemberScores_Activated(object sender, EventArgs e)
-        {
-            txtMemberNum.Clear();
-            txtLastName.Clear();
-            txtFirstName.Clear();
-            txtMiddleInitial.Clear();
-            txtHandicap.Clear();
-            txtBonusPins.Clear();
+        {            
+            ResetFields();
             MemberStatus("", Color.Black, SystemColors.Control, true);
             cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
@@ -81,6 +76,19 @@ namespace NineTapTour.Forms
             }
             loaded = true;
             cbxTourneyDropDown.SelectedIndex = -1;
+        }
+
+        /// <summary>
+        /// Resets the fields to show reset and beginning of records
+        /// </summary>
+        private void ResetFields()
+        {
+            txtMemberNum.Clear();
+            txtLastName.Clear();
+            txtFirstName.Clear();
+            txtMiddleInitial.Clear();
+            txtHandicap.Clear();
+            txtBonusPins.Clear(); 
         }
 
         /// <summary>
@@ -786,7 +794,9 @@ namespace NineTapTour.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void cbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
-        {         
+        {
+            // resets the fields when a different tournament is selected
+            ResetFields();
             // assigns the selectedTournament variable as the selected Tournament from the comboBox
             selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
             // determines whether the tournament is a double tourney or not, then enables or disables the single and/or double textBox selection option
@@ -795,34 +805,54 @@ namespace NineTapTour.Forms
                 txtMemberNum.Enabled = false;
                 txtMemberNum2.Enabled = false;
             }
-            else if(!selectedTournament.Doubles)
+            else if (!selectedTournament.Doubles)
             {
                 txtMemberNum.Enabled = true;
                 txtMemberNum2.Enabled = false;
-                btnStats.Enabled = true;
+                EnableButtonsWhenValidTournamentSelected();
             }
             else
             {
                 txtMemberNum.Enabled = true;
                 txtMemberNum2.Enabled = true;
-                btnStats.Enabled = true;
-
+                EnableButtonsWhenValidTournamentSelected();
             }
 
             if (cbxTourneyDropDown.SelectedIndex < 0)
             {
                 lblRecord.Text = "Record 0" + " / " + "0";
-                btnStats.Enabled = false;
+                DisableButtonsWhenValidTournamentSelected();
             }
             else
             {
                 // resets the current index to zero when changing the tournament
                 currentIndex = 0;
                 // Gets the record for the selected tournament
-                RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));                
+                RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
                 refresh(false);
-            }        
+            }
         }
+
+        /// <summary>
+        /// Enables buttons to select when valid Tournament is selected
+        /// </summary>
+        private void EnableButtonsWhenValidTournamentSelected()
+        {
+            btnStats.Enabled = true;
+            btnLeftArrow.Enabled = true;
+            btnRightArrow.Enabled = true;
+        }
+
+        /// <summary>
+        /// Disables buttons to select when invalid Tournament is selected
+        /// </summary>
+        private void DisableButtonsWhenValidTournamentSelected()
+        {
+            btnStats.Enabled = false;
+            btnLeftArrow.Enabled = false;
+            btnRightArrow.Enabled = false;
+        }
+
         /// <summary>
         /// validation method for form fields
         /// </summary>
@@ -877,7 +907,7 @@ namespace NineTapTour.Forms
             if (currentMem == null || GetScoresById(currentMem.Id) == null)
             {
                 ScoreAndTotalClear();
-            }
+            }            
         }
         /// <summary>
         /// Checks if current member has an existing entry into Squad 1
@@ -890,7 +920,7 @@ namespace NineTapTour.Forms
             if (currentMem == null || GetScoresById(currentMem.Id) == null)
             {
                 ScoreAndTotalClear();
-            }
+            }           
         }
         /// <summary>
         /// Checks if current member has an existing entry into Squad 2
@@ -903,7 +933,7 @@ namespace NineTapTour.Forms
             if (currentMem == null || GetScoresById(currentMem.Id) == null)
             {
                 ScoreAndTotalClear();
-            }
+            }            
         }
         /// <summary>
         /// Clears scratch scores and scratch and handicap totals
@@ -928,7 +958,7 @@ namespace NineTapTour.Forms
             if (currentMem == null || GetScoresById(currentMem.Id) == null)
             {
                 ScoreAndTotalClear();
-            }
+            }            
         }
         /* TODO Error
         private void btnTournamentsByYear_Click(object sender, EventArgs e)
