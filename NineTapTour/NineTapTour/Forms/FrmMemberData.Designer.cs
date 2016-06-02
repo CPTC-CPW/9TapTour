@@ -46,7 +46,7 @@
             this.txtAverage = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.grpMemberInfo = new System.Windows.Forms.GroupBox();
-            this.mtxtBoxDOB = new System.Windows.Forms.MaskedTextBox();
+            this.dateDOB = new System.Windows.Forms.DateTimePicker();
             this.mtxtBoxZip = new System.Windows.Forms.MaskedTextBox();
             this.mtxtBoxSSN = new System.Windows.Forms.MaskedTextBox();
             this.mtxtBoxPhone2 = new System.Windows.Forms.MaskedTextBox();
@@ -289,7 +289,7 @@
             // 
             // grpMemberInfo
             // 
-            this.grpMemberInfo.Controls.Add(this.mtxtBoxDOB);
+            this.grpMemberInfo.Controls.Add(this.dateDOB);
             this.grpMemberInfo.Controls.Add(this.mtxtBoxZip);
             this.grpMemberInfo.Controls.Add(this.mtxtBoxSSN);
             this.grpMemberInfo.Controls.Add(this.mtxtBoxPhone2);
@@ -321,14 +321,14 @@
             this.grpMemberInfo.TabStop = false;
             this.grpMemberInfo.Text = "Member Information";
             // 
-            // mtxtBoxDOB
+            // dateDOB
             // 
-            this.mtxtBoxDOB.Location = new System.Drawing.Point(25, 41);
-            this.mtxtBoxDOB.Mask = "00/00/0000";
-            this.mtxtBoxDOB.Name = "mtxtBoxDOB";
-            this.mtxtBoxDOB.Size = new System.Drawing.Size(100, 23);
-            this.mtxtBoxDOB.TabIndex = 7;
-            this.mtxtBoxDOB.ValidatingType = typeof(System.DateTime);
+            this.dateDOB.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dateDOB.Location = new System.Drawing.Point(25, 41);
+            this.dateDOB.Name = "dateDOB";
+            this.dateDOB.Size = new System.Drawing.Size(104, 23);
+            this.dateDOB.TabIndex = 32;
+            this.dateDOB.ValueChanged += new System.EventHandler(this.dateDOB_ValueChanged);
             // 
             // mtxtBoxZip
             // 
@@ -1107,10 +1107,10 @@
         private System.Windows.Forms.MaskedTextBox mtxtBoxPhone2;
         private System.Windows.Forms.MaskedTextBox mtxtBoxSSN;
         private System.Windows.Forms.MaskedTextBox mtxtBoxZip;
-        private System.Windows.Forms.MaskedTextBox mtxtBoxDOB;
         private System.Windows.Forms.CheckBox chbLifetime;
         private System.Windows.Forms.DateTimePicker datePaid;
         private System.Windows.Forms.Label lblLastPaid;
         private System.Windows.Forms.Label lblPaymentInfo;
+        private System.Windows.Forms.DateTimePicker dateDOB;
     }
 }

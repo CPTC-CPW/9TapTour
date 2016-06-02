@@ -86,7 +86,10 @@ namespace NineTapTour.Forms
                 txtLastName.Text = "";
                 txtFirstName.Text = "";
                 txtMiddleInitial.Text = "";
-                mtxtBoxDOB.Text = "";
+
+                dateDOB.Format = DateTimePickerFormat.Custom;
+                dateDOB.CustomFormat = @" ";
+
                 mtxtBoxSSN.Text = "";
                 #endregion
 
@@ -161,7 +164,7 @@ namespace NineTapTour.Forms
                 txtLastName.Text = currentMem.LastName;
                 txtFirstName.Text = currentMem.FirstName;
                 txtMiddleInitial.Text = currentMem.MiddleInitial;
-                mtxtBoxDOB.Text = currentMem.DateOfBirth.ToString("MM/dd/yyyy");
+                dateDOB.Value = currentMem.DateOfBirth;
                 mtxtBoxSSN.Text = currentMem.SSN;
                 // txtSSN.PasswordChar = '*'; //This hides the SSN within the form of '*'.
                 #endregion
@@ -283,10 +286,9 @@ namespace NineTapTour.Forms
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(mtxtBoxDOB.Text.Trim()))
+            if (dateDOB.Format == DateTimePickerFormat.Custom)
             {
-                MessageBox.Show("DOB field cannot be null.");
-                mtxtBoxDOB.Clear();
+                MessageBox.Show("DOB field cannot be blank.");
                 return false;
             }
 
@@ -383,7 +385,7 @@ namespace NineTapTour.Forms
                         LastName = txtLastName.Text,
                         FirstName = txtFirstName.Text,
                         MiddleInitial = txtMiddleInitial.Text,
-                        DateOfBirth = Convert.ToDateTime(mtxtBoxDOB.Text),
+                        DateOfBirth = dateDOB.Value,
                         SSN = mtxtBoxSSN.Text,
                         IsSenior = chbSenior.Checked,
                         Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
@@ -504,6 +506,9 @@ namespace NineTapTour.Forms
 
                 datePaid.Format = DateTimePickerFormat.Custom;
                 datePaid.CustomFormat = @" ";
+
+                dateDOB.Format = DateTimePickerFormat.Custom;
+                dateDOB.CustomFormat = @" ";
                 _memberId = -1;
 
                 //get latest member number, or set to 1 if no members in database
@@ -731,6 +736,11 @@ namespace NineTapTour.Forms
         private void dateRejoin_ValueChanged(object sender, EventArgs e)
         {
             dateRejoin.Format = DateTimePickerFormat.Short;//Refreshes the date
+        }
+
+        private void dateDOB_ValueChanged(object sender, EventArgs e)
+        {
+            dateDOB.Format = DateTimePickerFormat.Short;
         }
     }
 }
