@@ -86,7 +86,10 @@ namespace NineTapTour.Forms
                 txtLastName.Text = "";
                 txtFirstName.Text = "";
                 txtMiddleInitial.Text = "";
-                mtxtBoxDOB.Text = "";
+
+                dateDOB.Format = DateTimePickerFormat.Custom;
+                dateDOB.CustomFormat = @" ";
+
                 mtxtBoxSSN.Text = "";
                 #endregion
 
@@ -161,7 +164,7 @@ namespace NineTapTour.Forms
                 txtLastName.Text = currentMem.LastName;
                 txtFirstName.Text = currentMem.FirstName;
                 txtMiddleInitial.Text = currentMem.MiddleInitial;
-                mtxtBoxDOB.Text = currentMem.DateOfBirth.ToString("MM/dd/yyyy");
+                dateDOB.Value = currentMem.DateOfBirth;
                 mtxtBoxSSN.Text = currentMem.SSN;
                 // txtSSN.PasswordChar = '*'; //This hides the SSN within the form of '*'.
                 #endregion
@@ -259,85 +262,95 @@ namespace NineTapTour.Forms
             // check if Active radio button is checked
             if (!rdoActive.Checked && !rdoInActive.Checked)
             {
-                MessageBox.Show("member must be checked active or inactive");
+                MessageBox.Show("Member must be checked active or inactive.");
                 return false;
             }
             // check if gender radio button is checked
             if (!rdoMale.Checked && !rdoFemale.Checked)
             {
-                MessageBox.Show("a gender must be chosen");
-                return false;
-            }
-            if (!Regex.IsMatch(txtFirstName.Text, "^[a-zA-Z]+$"))
-            {
-                MessageBox.Show("field cannot be blank");
-                txtFirstName.Clear();
+                MessageBox.Show("A gender must be chosen.");
                 return false;
             }
             //use better regex expression that includes spaces and hyphens
             if (!Regex.IsMatch(txtLastName.Text, "^[-a-zA-Z]+$"))
             {
-                MessageBox.Show("field cannot be blank");
+                MessageBox.Show("Last Name is required.");
                 txtLastName.Clear();
                 return false;
             }
+
+            if (!Regex.IsMatch(txtFirstName.Text, "^[a-zA-Z]+$"))
+            {
+                MessageBox.Show("First Name is required.");
+                txtFirstName.Clear();
+                return false;
+            }
+
+            if (dateDOB.Format == DateTimePickerFormat.Custom)
+            {
+                MessageBox.Show("DOB field cannot be blank.");
+                return false;
+            }
+
+            if (!Regex.IsMatch(mtxtBoxSSN.Text, "^\\d{3}-?\\d{2}-?\\d{4}$"))
+            {
+                MessageBox.Show("Invalid Social Security field.");
+                mtxtBoxSSN.Clear();
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtAddress.Text.Trim()))
+            {
+                MessageBox.Show("Address field cannot be null.");
+                txtAddress.Clear();
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtCity.Text.Trim()))
+            {
+                MessageBox.Show("City field cannot be null");
+                txtCity.Clear();
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtState.Text.Trim()))
+            {
+                MessageBox.Show("State field cannot be blank.");
+                txtState.Clear();
+                return false;
+            }
+
             if (!Regex.IsMatch(mtxtBoxZip.Text, "^\\d{5}(?:[-\\s]\\d{4})?$"))
             {
-                MessageBox.Show("Invalid zip code field");
+                MessageBox.Show("Invalid zip code field.");
                 mtxtBoxZip.Clear();
                 return false;
             }
             if (!Regex.IsMatch(mtxtBoxPhone.Text, "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$"))
             {
-                MessageBox.Show("Invalid Primary Phone field");
+                MessageBox.Show("Invalid Primary Phone field.");
                 mtxtBoxPhone.Clear();
                 return false;
             }
-            if (!Regex.IsMatch(mtxtBoxSSN.Text, "^\\d{3}-?\\d{2}-?\\d{4}$"))
+            
+            // I think the block following this might make this redundant so I'm commenting it out to see what happens -- Cody
+            /*
+            if (string.IsNullOrWhiteSpace(txtEmail.Text.Trim()))
             {
-                MessageBox.Show("Invalid Social Security field");
-                mtxtBoxSSN.Clear();
-                return false;
-            }
-
-            if (mtxtBoxSSN.Text == "")
-            {
-                MessageBox.Show(" DOB field cannot be null");
-                mtxtBoxDOB.Clear();
-                return false;
-            }
-            if (txtAddress.Text == "")
-            {
-                MessageBox.Show("Address field cannot be null");
-                txtAddress.Clear();
-                return false;
-            }
-            if (txtCity.Text == "")
-            {
-                MessageBox.Show(" City field cannot be null");
-                txtCity.Clear();
-                return false;
-            }
-            if (txtEmail.Text == "")
-            {
-                MessageBox.Show("email field cannot be null");
+                MessageBox.Show("Email field cannot be blank.");
                 txtEmail.Clear();
                 return false;
             }
+            */
             // email validation
             // Author: Toby Fortuner
             if (!(new EmailAddressAttribute().IsValid(txtEmail.Text)))
             {
-                MessageBox.Show("email field must be a valid email address");
+                MessageBox.Show("Email field must be a valid email address.");
                 txtEmail.Clear();
                 return false;
             }
-            if (txtState.Text == "")
-            {
-                MessageBox.Show("state field cannot be null");
-                txtState.Clear();
-                return false;
-            }
+            
             return true;
         }
         /// <summary>
@@ -372,7 +385,7 @@ namespace NineTapTour.Forms
                         LastName = txtLastName.Text,
                         FirstName = txtFirstName.Text,
                         MiddleInitial = txtMiddleInitial.Text,
-                        DateOfBirth = Convert.ToDateTime(mtxtBoxDOB.Text),
+                        DateOfBirth = dateDOB.Value,
                         SSN = mtxtBoxSSN.Text,
                         IsSenior = chbSenior.Checked,
                         Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
@@ -493,6 +506,9 @@ namespace NineTapTour.Forms
 
                 datePaid.Format = DateTimePickerFormat.Custom;
                 datePaid.CustomFormat = @" ";
+
+                dateDOB.Format = DateTimePickerFormat.Custom;
+                dateDOB.CustomFormat = @" ";
                 _memberId = -1;
 
                 //get latest member number, or set to 1 if no members in database
@@ -720,6 +736,11 @@ namespace NineTapTour.Forms
         private void dateRejoin_ValueChanged(object sender, EventArgs e)
         {
             dateRejoin.Format = DateTimePickerFormat.Short;//Refreshes the date
+        }
+
+        private void dateDOB_ValueChanged(object sender, EventArgs e)
+        {
+            dateDOB.Format = DateTimePickerFormat.Short;
         }
     }
 }
