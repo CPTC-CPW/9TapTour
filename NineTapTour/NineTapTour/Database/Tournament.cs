@@ -17,6 +17,7 @@ namespace NineTapTour.Database
         public string Sponsors { get; set; }
         public List<Participant> Participant { get; set; }
         public bool Doubles { get; set; }
+        public bool ThreeOutOf4 {get; set;}
 
         public string  TourneyNameDate
         {
