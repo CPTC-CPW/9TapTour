@@ -72,6 +72,7 @@ namespace NineTapTour.Forms
             }
             form.WindowState = FormWindowState.Maximized;
             form.Show();
+            
            
         }
 
