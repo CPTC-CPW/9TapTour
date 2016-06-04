@@ -575,7 +575,8 @@ namespace NineTapTour.Forms
                     clear();
                     txtMemberNum.Focus();
                 }
-            }
+                refresh(false);
+            }            
             else
             {
                 MessageBox.Show("Please Fill out the Participants information!");
