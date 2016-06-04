@@ -1183,7 +1183,7 @@ namespace NineTapTour.Forms
                     scores = new List<MemberScores>();
                     var temp = (from g in top5
                                 orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4) descending
-                                select g).Take(5).ToList();
+                                select g).ToList();
 
                     //populate total score
                     for (int i = 0; i < temp.Count; i++)
@@ -1209,6 +1209,7 @@ namespace NineTapTour.Forms
                                 listOfScores.Add(three);
                                 listOfScores.Add(four);
                                 listOfScores.Sort();
+                                listOfScores.Reverse();
 
                                 ///*************************
                                 scores.Add(new MemberScores { FirstName = s.Member.FirstName, LastName = s.Member.LastName, Score = listOfScores[0] + listOfScores[1] + listOfScores[2] });
@@ -1248,10 +1249,10 @@ namespace NineTapTour.Forms
                             }
                                 #endregion
                                 ///***********************
-                                int one = Convert.ToInt32(i.Game.Game1);
-                                int two = Convert.ToInt32(i.Game.Game2);
-                                int three = Convert.ToInt32(i.Game.Game3);
-                                int four = Convert.ToInt32(i.Game.Game4);
+                                int one = Convert.ToInt32(i.Game.Game1 + i.Game.Handicap + i.Game.Bonus);
+                                int two = Convert.ToInt32(i.Game.Game2 + i.Game.Handicap + i.Game.Bonus);
+                                int three = Convert.ToInt32(i.Game.Game3 + i.Game.Handicap + i.Game.Bonus);
+                                int four = Convert.ToInt32(i.Game.Game4 + i.Game.Handicap + i.Game.Bonus);
                                 listOfScores.Add(one);
                                 listOfScores.Add(two);
                                 listOfScores.Add(three);

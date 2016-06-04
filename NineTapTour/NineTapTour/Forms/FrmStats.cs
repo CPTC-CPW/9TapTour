@@ -32,9 +32,11 @@ namespace NineTapTour.Forms
         {
             var db = new NineTapDb();
             var stats = (from p in db.Participants
+                         join m in db.Members on p.Member.Id equals m.Id
                          join g in db.Games on p.Game.Id equals g.Id
                          join t in db.Tournaments on p.Tournament.Id equals t.Id
                          where memNum == p.Member.Number
+                         orderby t.Date descending
                          select new
                          {
                              t.Date,
@@ -48,8 +50,8 @@ namespace NineTapTour.Forms
                              g.Game3,
                              g.Game4
                              ,
-                             Gametotal = ((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0))
-                             ,
+                             ScratchTotal = ((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0)),
+                             GameTotal = (((g.Game1.HasValue ? g.Game1 : 0 )+ (m.Handicap + m.Bonus)) + ((g.Game2.HasValue ? g.Game2 : 0) + (m.Handicap + m.Bonus)) + ((g.Game3.HasValue ? g.Game3 : 0) + (m.Handicap + m.Bonus)) + ((g.Game4.HasValue ? g.Game4 : 0) + (m.Handicap + m.Bonus))),
                              AvgPerGame = (((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0)) /
                                       ((g.Game1.HasValue ? 1 : 0) + (g.Game2.HasValue ? 1 : 0) + (g.Game3.HasValue ? 1 : 0) + (g.Game4.HasValue ? 1 : 0)))
                              ,                             
@@ -97,13 +99,23 @@ namespace NineTapTour.Forms
             }
             txtGame4.Text = (sum / count).ToString();
             #endregion
+            #region Scratch Total Average
+            sum = 0;
+            count = 0;
+            for (int i = 0; i < stats.Count; i++)
+            {
+                count++;
+                sum += Convert.ToInt32(stats[i].ScratchTotal);
+            }
+            txtScratchTotal.Text = (sum / count).ToString();
+            #endregion
             #region Game Total Average
             sum = 0;
             count = 0;
             for (int i = 0; i < stats.Count; i++)
             {
                 count++;
-                sum += Convert.ToInt32(stats[i].Gametotal);
+                sum += Convert.ToInt32(stats[i].GameTotal);
             }
             txtGameTotal.Text = (sum / count).ToString();
             #endregion
