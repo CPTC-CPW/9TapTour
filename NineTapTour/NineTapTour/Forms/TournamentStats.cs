@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -58,13 +59,12 @@ namespace NineTapTour.Forms
                 selectedTournament = frmMemberScores.selectedTournament;
                 lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
-                NineTapDb db = new NineTapDb();
-                //List<int> listOfScores = new List<int>();
+                NineTapDb db = new NineTapDb();           
 
                 SqlConnection con = new SqlConnection(GetConnection());
                 SqlCommand gameOrder = new SqlCommand();
                 gameOrder.Connection = con;
-                gameOrder.CommandText = @"SELECT Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4
+                gameOrder.CommandText = @"SELECT Members.Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Members.Handicap, Participants.SquadNumber, Members.Bonus
                                         FROM Games JOIN Participants ON Games.Id = Participants.Game_Id
 		                                JOIN Tournaments ON Participants.Tournament_Id = Tournaments.Id
 		                                JOIN Members ON Members.Id = Participants.Member_Id
@@ -79,111 +79,43 @@ namespace NineTapTour.Forms
 
                     // execute command(query)
                     SqlDataReader reader = gameOrder.ExecuteReader();
-
+                    List<TournamentStatsList> listOfTourney = new List<TournamentStatsList>();
                     // view results
                     while (reader.Read())
                     {
+                        TournamentStatsList temp = new TournamentStatsList();
+                        temp.Handicap = Convert.ToInt32(reader["Handicap"]);
+                        temp.Bonus = Convert.ToInt32(reader["Bonus"]);
+
                         if (Convert.ToInt32(reader["Game1"]) <= Convert.ToInt32(reader["Game2"]) && Convert.ToInt32(reader["Game1"]) <= Convert.ToInt32(reader["Game3"]) && Convert.ToInt32(reader["Game1"]) <= Convert.ToInt32(reader["Game4"]))
                         {
-                            var tournamentStatsList = (from p in db.Participants
-                                                       join m in db.Members on p.Member.Id equals m.Id
-                                                       join g in db.Games on p.Game.Id equals g.Id
-                                                       join t in db.Tournaments on p.Tournament.Id equals t.Id
-                                                       where t.Id == selectedTournament.Id
-                                                       orderby (g.Game1 + g.Game2 + g.Game3 + g.Game4) descending
-                                                       select new
-                                                       {
-                                                           p.Member.Id,
-                                                           p.Member.FirstName,
-                                                           p.Member.LastName,
-                                                           p.Squad,
-                                                           ScratchTotal = ((g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0)),
-                                                           Top3Scores = (((g.Game2.HasValue ? g.Game2 : 0) + (m.Handicap + m.Bonus)) + ((g.Game3.HasValue ? g.Game3 : 0) + (m.Handicap + m.Bonus)) + ((g.Game4.HasValue ? g.Game4 : 0) + (m.Handicap + m.Bonus))),
-                                                           g.Game1,
-                                                           g.Game2,
-                                                           g.Game3,
-                                                           g.Game4,
-                                                           p.Member.Handicap,
-                                                           p.Member.Bonus
-                                                       }).ToList();
-                            dgvTournamentStats.DataSource = tournamentStatsList;
+                            temp.ScratchTotal = Convert.ToInt32(reader["Game2"]) + Convert.ToInt32(reader["Game3"]) + Convert.ToInt32(reader["Game4"]);                            
                         }
                         if (Convert.ToInt32(reader["Game2"]) <= Convert.ToInt32(reader["Game1"]) && Convert.ToInt32(reader["Game2"]) <= Convert.ToInt32(reader["Game3"]) && Convert.ToInt32(reader["Game2"]) <= Convert.ToInt32(reader["Game4"]))
                         {
-                            var tournamentStatsList = (from p in db.Participants
-                                                       join m in db.Members on p.Member.Id equals m.Id
-                                                       join g in db.Games on p.Game.Id equals g.Id
-                                                       join t in db.Tournaments on p.Tournament.Id equals t.Id
-                                                       where t.Id == selectedTournament.Id
-                                                       orderby (g.Game1 + g.Game2 + g.Game3 + g.Game4) descending
-                                                       select new
-                                                       {
-                                                           p.Member.Id,
-                                                           p.Member.FirstName,
-                                                           p.Member.LastName,
-                                                           p.Squad,
-                                                           ScratchTotal = ((g.Game1.HasValue ? g.Game1 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0)),
-                                                           Top3Scores = (((g.Game1.HasValue ? g.Game1 : 0) + (m.Handicap + m.Bonus)) + ((g.Game3.HasValue ? g.Game3 : 0) + (m.Handicap + m.Bonus)) + ((g.Game4.HasValue ? g.Game4 : 0) + (m.Handicap + m.Bonus))),
-                                                           g.Game1,
-                                                           g.Game2,
-                                                           g.Game3,
-                                                           g.Game4,
-                                                           p.Member.Handicap,
-                                                           p.Member.Bonus
-                                                       }).ToList();
-                            dgvTournamentStats.DataSource = tournamentStatsList;
+                            temp.ScratchTotal = Convert.ToInt32(reader["Game1"]) + Convert.ToInt32(reader["Game3"]) + Convert.ToInt32(reader["Game4"]);
                         }
                         if (Convert.ToInt32(reader["Game3"]) <= Convert.ToInt32(reader["Game1"]) && Convert.ToInt32(reader["Game3"]) <= Convert.ToInt32(reader["Game2"]) && Convert.ToInt32(reader["Game3"]) <= Convert.ToInt32(reader["Game4"]))
                         {
-                            var tournamentStatsList = (from p in db.Participants
-                                                       join m in db.Members on p.Member.Id equals m.Id
-                                                       join g in db.Games on p.Game.Id equals g.Id
-                                                       join t in db.Tournaments on p.Tournament.Id equals t.Id
-                                                       where t.Id == selectedTournament.Id
-                                                       orderby (g.Game1 + g.Game2 + g.Game3 + g.Game4) descending
-                                                       select new
-                                                       {
-                                                           p.Member.Id,
-                                                           p.Member.FirstName,
-                                                           p.Member.LastName,
-                                                           p.Squad,
-                                                           ScratchTotal = ((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game4.HasValue ? g.Game4 : 0)),
-                                                           Top3Scores = (((g.Game1.HasValue ? g.Game1 : 0) + (m.Handicap + m.Bonus)) + ((g.Game2.HasValue ? g.Game2 : 0) + (m.Handicap + m.Bonus)) + ((g.Game4.HasValue ? g.Game4 : 0) + (m.Handicap + m.Bonus))),
-                                                           g.Game1,
-                                                           g.Game2,
-                                                           g.Game3,
-                                                           g.Game4,
-                                                           p.Member.Handicap,
-                                                           p.Member.Bonus
-                                                       }).ToList();
-                            dgvTournamentStats.DataSource = tournamentStatsList;
+                            temp.ScratchTotal = Convert.ToInt32(reader["Game1"]) + Convert.ToInt32(reader["Game2"]) + Convert.ToInt32(reader["Game4"]);
                         }
                         if (Convert.ToInt32(reader["Game4"]) <= Convert.ToInt32(reader["Game1"]) && Convert.ToInt32(reader["Game4"]) <= Convert.ToInt32(reader["Game2"]) && Convert.ToInt32(reader["Game4"]) <= Convert.ToInt32(reader["Game3"]))
                         {
-                            var tournamentStatsList = (from p in db.Participants
-                                                       join m in db.Members on p.Member.Id equals m.Id
-                                                       join g in db.Games on p.Game.Id equals g.Id
-                                                       join t in db.Tournaments on p.Tournament.Id equals t.Id
-                                                       where t.Id == selectedTournament.Id
-                                                       orderby (g.Game1 + g.Game2 + g.Game3 + g.Game4) descending
-                                                       select new
-                                                       {
-                                                           p.Member.Id,
-                                                           p.Member.FirstName,
-                                                           p.Member.LastName,
-                                                           p.Squad,
-                                                           ScratchTotal = ((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0)),
-                                                           Top3Scores = (((g.Game1.HasValue ? g.Game1 : 0) + (m.Handicap + m.Bonus)) + ((g.Game2.HasValue ? g.Game2 : 0) + (m.Handicap + m.Bonus)) + ((g.Game3.HasValue ? g.Game3 : 0) + (m.Handicap + m.Bonus))),
-                                                           g.Game1,
-                                                           g.Game2,
-                                                           g.Game3,
-                                                           g.Game4,
-                                                           p.Member.Handicap,
-                                                           p.Member.Bonus
-                                                       }).ToList();
-                            dgvTournamentStats.DataSource = tournamentStatsList;
+                            temp.ScratchTotal = Convert.ToInt32(reader["Game1"]) + Convert.ToInt32(reader["Game2"]) + Convert.ToInt32(reader["Game3"]);
                         }
+                        temp.Top3Scores = temp.ScratchTotal + (temp.Handicap * 3) + (temp.Bonus * 3);
+                        temp.Id = Convert.ToInt32(reader["Id"]);
+                        temp.FirstName = reader["FirstName"].ToString();
+                        temp.FirstName = reader["LastName"].ToString();
+                        temp.Squad = Convert.ToInt32(reader["SquadNumber"]);
+                        temp.Game1 = Convert.ToInt32(reader["Game1"]);
+                        temp.Game2 = Convert.ToInt32(reader["Game2"]);
+                        temp.Game3 = Convert.ToInt32(reader["Game3"]);
+                        temp.Game4 = Convert.ToInt32(reader["Game4"]);
+
+                        listOfTourney.Add(temp);
                     }
+                    dgvTournamentStats.DataSource = listOfTourney;
                 }
                 catch (SqlException)
                 {
@@ -198,7 +130,7 @@ namespace NineTapTour.Forms
 
         private string GetConnection()
         {
-            return @"data source=(localdb)\MSSQLLocalDB;initial catalog=NineTapTour.NineTapDb;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework";
+            return ConfigurationManager.ConnectionStrings["NineTapDbConnection"].ConnectionString;
         }
 
         private void btnPrint_Click(object sender, EventArgs e)
