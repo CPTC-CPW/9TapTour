@@ -67,8 +67,9 @@ namespace NineTapTour.Forms
                 gameOrder.CommandText = @"SELECT Members.Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Members.Handicap, Participants.SquadNumber, Members.Bonus
                                         FROM Games JOIN Participants ON Games.Id = Participants.Game_Id
 		                                JOIN Tournaments ON Participants.Tournament_Id = Tournaments.Id
-		                                JOIN Members ON Members.Id = Participants.Member_Id
-                                        WHERE Tournament_Id = @TID";
+		                                JOIN Members ON Members.Id = Participants.Member_Id                                        
+                                        WHERE Tournament_Id = @TID
+                                        ORDER BY Members.LastName";
 
                 gameOrder.Parameters.AddWithValue("@TID", selectedTournament.Id);
 
@@ -85,28 +86,38 @@ namespace NineTapTour.Forms
                     {
                         TournamentStatsList temp = new TournamentStatsList();
                         temp.Handicap = Convert.ToInt32(reader["Handicap"]);
-                        temp.Bonus = Convert.ToInt32(reader["Bonus"]);
+                        temp.Bonus = Convert.ToInt32(reader["Bonus"]);                      
+                        List<int?> scores = new List<int?> { Convert.ToInt32(reader["Game1"]), Convert.ToInt32(reader["Game2"]), Convert.ToInt32(reader["Game3"]), Convert.ToInt32(reader["Game4"]) };
+                        #region Old Way                       
+                        //if (Convert.ToInt32(reader["Game1"]) <= Convert.ToInt32(reader["Game2"]) && Convert.ToInt32(reader["Game1"]) <= Convert.ToInt32(reader["Game3"]) && Convert.ToInt32(reader["Game1"]) <= Convert.ToInt32(reader["Game4"]))
+                        //{
+                        //    temp.ScratchTotal = Convert.ToInt32(reader["Game2"]) + Convert.ToInt32(reader["Game3"]) + Convert.ToInt32(reader["Game4"]);                            
+                        //}
+                        //if (Convert.ToInt32(reader["Game2"]) <= Convert.ToInt32(reader["Game1"]) && Convert.ToInt32(reader["Game2"]) <= Convert.ToInt32(reader["Game3"]) && Convert.ToInt32(reader["Game2"]) <= Convert.ToInt32(reader["Game4"]))
+                        //{
+                        //    temp.ScratchTotal = Convert.ToInt32(reader["Game1"]) + Convert.ToInt32(reader["Game3"]) + Convert.ToInt32(reader["Game4"]);
+                        //}
+                        //if (Convert.ToInt32(reader["Game3"]) <= Convert.ToInt32(reader["Game1"]) && Convert.ToInt32(reader["Game3"]) <= Convert.ToInt32(reader["Game2"]) && Convert.ToInt32(reader["Game3"]) <= Convert.ToInt32(reader["Game4"]))
+                        //{
+                        //    temp.ScratchTotal = Convert.ToInt32(reader["Game1"]) + Convert.ToInt32(reader["Game2"]) + Convert.ToInt32(reader["Game4"]);
+                        //}
+                        //if (Convert.ToInt32(reader["Game4"]) <= Convert.ToInt32(reader["Game1"]) && Convert.ToInt32(reader["Game4"]) <= Convert.ToInt32(reader["Game2"]) && Convert.ToInt32(reader["Game4"]) <= Convert.ToInt32(reader["Game3"]))
+                        //{
+                        //    temp.ScratchTotal = Convert.ToInt32(reader["Game1"]) + Convert.ToInt32(reader["Game2"]) + Convert.ToInt32(reader["Game3"]);
+                        //}
+                        #endregion
+                        List<int> topScores = GetTop3OutOf4(scores);
+                        int scratchTotal = 0;
+                        for (int i = 0; i < 3; i++)
+                        {
+                            scratchTotal += topScores[i];
+                        }
 
-                        if (Convert.ToInt32(reader["Game1"]) <= Convert.ToInt32(reader["Game2"]) && Convert.ToInt32(reader["Game1"]) <= Convert.ToInt32(reader["Game3"]) && Convert.ToInt32(reader["Game1"]) <= Convert.ToInt32(reader["Game4"]))
-                        {
-                            temp.ScratchTotal = Convert.ToInt32(reader["Game2"]) + Convert.ToInt32(reader["Game3"]) + Convert.ToInt32(reader["Game4"]);                            
-                        }
-                        if (Convert.ToInt32(reader["Game2"]) <= Convert.ToInt32(reader["Game1"]) && Convert.ToInt32(reader["Game2"]) <= Convert.ToInt32(reader["Game3"]) && Convert.ToInt32(reader["Game2"]) <= Convert.ToInt32(reader["Game4"]))
-                        {
-                            temp.ScratchTotal = Convert.ToInt32(reader["Game1"]) + Convert.ToInt32(reader["Game3"]) + Convert.ToInt32(reader["Game4"]);
-                        }
-                        if (Convert.ToInt32(reader["Game3"]) <= Convert.ToInt32(reader["Game1"]) && Convert.ToInt32(reader["Game3"]) <= Convert.ToInt32(reader["Game2"]) && Convert.ToInt32(reader["Game3"]) <= Convert.ToInt32(reader["Game4"]))
-                        {
-                            temp.ScratchTotal = Convert.ToInt32(reader["Game1"]) + Convert.ToInt32(reader["Game2"]) + Convert.ToInt32(reader["Game4"]);
-                        }
-                        if (Convert.ToInt32(reader["Game4"]) <= Convert.ToInt32(reader["Game1"]) && Convert.ToInt32(reader["Game4"]) <= Convert.ToInt32(reader["Game2"]) && Convert.ToInt32(reader["Game4"]) <= Convert.ToInt32(reader["Game3"]))
-                        {
-                            temp.ScratchTotal = Convert.ToInt32(reader["Game1"]) + Convert.ToInt32(reader["Game2"]) + Convert.ToInt32(reader["Game3"]);
-                        }
+                        temp.ScratchTotal = scratchTotal;
                         temp.Top3Scores = temp.ScratchTotal + (temp.Handicap * 3) + (temp.Bonus * 3);
                         temp.Id = Convert.ToInt32(reader["Id"]);
                         temp.FirstName = reader["FirstName"].ToString();
-                        temp.FirstName = reader["LastName"].ToString();
+                        temp.LastName = reader["LastName"].ToString();
                         temp.Squad = Convert.ToInt32(reader["SquadNumber"]);
                         temp.Game1 = Convert.ToInt32(reader["Game1"]);
                         temp.Game2 = Convert.ToInt32(reader["Game2"]);
@@ -114,7 +125,7 @@ namespace NineTapTour.Forms
                         temp.Game4 = Convert.ToInt32(reader["Game4"]);
 
                         listOfTourney.Add(temp);
-                    }
+                    }                    
                     dgvTournamentStats.DataSource = listOfTourney;
                 }
                 catch (SqlException)
@@ -126,7 +137,22 @@ namespace NineTapTour.Forms
                     con.Dispose();
                 }
             }
-        }        
+        }
+
+        private List<int> GetTop3OutOf4(List<int?> scores)
+        {            
+            List<int> listOfValidScores = new List<int>();
+            for(int i = 0; i < scores.Count; i++)
+            {
+                if (scores[i].HasValue)
+                {
+                    listOfValidScores.Add(scores[i].Value);
+                }                
+            }
+            listOfValidScores.Sort();
+            listOfValidScores.Reverse();
+            return listOfValidScores;            
+        }
 
         private string GetConnection()
         {
