@@ -35,7 +35,7 @@ namespace NineTapTour.Forms
                          join m in db.Members on p.Member.Id equals m.Id
                          join g in db.Games on p.Game.Id equals g.Id
                          join t in db.Tournaments on p.Tournament.Id equals t.Id
-                         where memNum == p.Member.Number
+                         where memNum == p.Member.Number                         
                          orderby t.Date descending
                          select new
                          {
@@ -58,7 +58,7 @@ namespace NineTapTour.Forms
                              g.Handicap
                              ,
                              g.Bonus
-                         }).ToList();
+                         }).ToList();                     
             double sum = 0;
             double count = 0;
             #region Game 1 Average
