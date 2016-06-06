@@ -67,7 +67,7 @@ namespace NineTapTour.Forms
             cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             cbxTourneyDropDown.ValueMember = "Id";
-            cbxTourneyDropDown.SelectedIndex = 0;
+            //cbxTourneyDropDown.SelectedIndex = 0;
             List<Tournament> temp2 = TournamentDb.GetTournamentList();
             if (temp2.Count() > 0)
             {
