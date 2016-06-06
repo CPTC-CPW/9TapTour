@@ -76,9 +76,7 @@ namespace NineTapTour.Forms
             }
             loaded = true;
             cbxTourneyDropDown.SelectedIndex = -1;
-            richTextBox1.Clear();
-            richTextBox2.Clear();
-            richTextBox3.Clear();
+            clear();
         }
 
         /// <summary>
