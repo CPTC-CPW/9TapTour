@@ -76,6 +76,9 @@ namespace NineTapTour.Forms
             }
             loaded = true;
             cbxTourneyDropDown.SelectedIndex = -1;
+            richTextBox1.Clear();
+            richTextBox2.Clear();
+            richTextBox3.Clear();
         }
 
         /// <summary>
@@ -572,7 +575,8 @@ namespace NineTapTour.Forms
                     clear();
                     txtMemberNum.Focus();
                 }
-            }
+                refresh(false);
+            }            
             else
             {
                 MessageBox.Show("Please Fill out the Participants information!");
@@ -1091,16 +1095,95 @@ namespace NineTapTour.Forms
                                                 + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
                     }
                 }
-
+                #region If not Three out of 4
                 // Do the third box
                 {
+                    /////////////////////////////////
+                    if (!selectedTournament.ThreeOutOf4)
+                    {
+                        /////////////////////////////////
+                        richTextBox3.Clear();
+                        richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
+                        richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
+                        scores = new List<MemberScores>();
+                        var temp = (from g in top5
+                                    orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4) descending
+                                    select g).Take(5).ToList();
+
+                        //populate total score
+                        for (int i = 0; i < temp.Count; i++)
+                        {
+                            temp[i].Game.Game1 = temp[i].Game.Game1 == null ? 0 : temp[i].Game.Game1;
+                            temp[i].Game.Game2 = temp[i].Game.Game2 == null ? 0 : temp[i].Game.Game2;
+                            temp[i].Game.Game3 = temp[i].Game.Game3 == null ? 0 : temp[i].Game.Game3;
+                            temp[i].Game.Game4 = temp[i].Game.Game4 == null ? 0 : temp[i].Game.Game4;
+                        }
+                        if (rdoScratchScore.Checked)
+                        {
+                            foreach (var s in temp)
+                            {
+                                scores.Add(new MemberScores { FirstName = s.Member.FirstName, LastName = s.Member.LastName, Score = s.Game.Game1 + s.Game.Game2 + s.Game.Game3 + s.Game.Game4 });
+                            }
+                            //IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
+                            scores.Sort(scoreComparer);
+                            scores.Reverse();
+                            scores = scores.Take(5).ToList();
+                            for (int i = 0; i < scores.Count(); i++)
+                            {
+                                richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
+                                                        + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
+                            }
+                        }
+                        else if (rdoHandicapScore.Checked)
+                        {
+                            foreach (var i in temp)
+                            {
+                                #region conditions for highest handicap scores
+                                nullValues = 0;
+                                if (i.Game.Game1 == 0)
+                                {
+                                    nullValues += 1;
+                                }
+                                if (i.Game.Game2 == 0)
+                                {
+                                    nullValues += 1;
+                                }
+                                if (i.Game.Game3 == 0)
+                                {
+                                    nullValues += 1;
+                                }
+                                if (i.Game.Game4 == 0)
+                                {
+                                    nullValues += 1;
+                                }
+                                #endregion
+                                scores.Add(new MemberScores { FirstName = i.Member.FirstName, LastName = i.Member.LastName, Score = (i.Game.Game1) + (i.Game.Game2) + (i.Game.Game3) + (i.Game.Game4) + ((4 - nullValues) * (i.Game.Handicap + i.Game.Bonus)) });
+                            }
+
+                            scores.Sort(scoreComparer);
+                            scores.Reverse();
+                            scores = scores.Take(5).ToList();
+                            for (int i = 0; i < scores.Count(); i++)
+                            {
+                                richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", Convert.ToString(scores[i].FirstName + " " + scores[i].LastName)) + "\t" + String.Format("{0, -5}", scores[i].Score) + "\n");
+                            }
+                        }
+                    }
+#endregion           
+                #region Three Out Of 4
+                /////////////////////////////////////////////////////
+                /// Executes if tournament selected is 3 Out of 4 ///
+                /////////////////////////////////////////////////////
+                if (selectedTournament.ThreeOutOf4)
+                {
+                    /////////////////////////////////
                     richTextBox3.Clear();
                     richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
                     richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
                     scores = new List<MemberScores>();
                     var temp = (from g in top5
                                 orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4) descending
-                                select g).Take(5).ToList();
+                                select g).ToList();
 
                     //populate total score
                     for (int i = 0; i < temp.Count; i++)
@@ -1108,13 +1191,29 @@ namespace NineTapTour.Forms
                         temp[i].Game.Game1 = temp[i].Game.Game1 == null ? 0 : temp[i].Game.Game1;
                         temp[i].Game.Game2 = temp[i].Game.Game2 == null ? 0 : temp[i].Game.Game2;
                         temp[i].Game.Game3 = temp[i].Game.Game3 == null ? 0 : temp[i].Game.Game3;
-                        temp[i].Game.Game4 = temp[i].Game.Game4 == null ? 0 : temp[i].Game.Game4;
-                    }
+                        temp[i].Game.Game4 = temp[i].Game.Game4 == null ? 0 : temp[i].Game.Game4;                        
+                    }          
+                    // List to get top 3 scores   
+                    List<int> listOfScores = new List<int>();                  
+
                     if (rdoScratchScore.Checked)
-                    {
+                    {                    
                         foreach (var s in temp)
-                        {
-                            scores.Add(new MemberScores { FirstName = s.Member.FirstName, LastName = s.Member.LastName, Score = s.Game.Game1 + s.Game.Game2 + s.Game.Game3 + s.Game.Game4 });
+                        {                                
+                                int one = Convert.ToInt32(s.Game.Game1);
+                                int two = Convert.ToInt32(s.Game.Game2);
+                                int three = Convert.ToInt32(s.Game.Game3);
+                                int four = Convert.ToInt32(s.Game.Game4);
+                                listOfScores.Add(one);
+                                listOfScores.Add(two);
+                                listOfScores.Add(three);
+                                listOfScores.Add(four);
+                                listOfScores.Sort();
+                                listOfScores.Reverse();
+
+                                ///*************************
+                                scores.Add(new MemberScores { FirstName = s.Member.FirstName, LastName = s.Member.LastName, Score = listOfScores[0] + listOfScores[1] + listOfScores[2] });
+                                listOfScores.Clear();
                         }
                         //IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
                         scores.Sort(scoreComparer);
@@ -1148,10 +1247,23 @@ namespace NineTapTour.Forms
                             {
                                 nullValues += 1;
                             }
-                            #endregion
-                            scores.Add(new MemberScores { FirstName = i.Member.FirstName, LastName = i.Member.LastName, Score = (i.Game.Game1) + (i.Game.Game2) + (i.Game.Game3) + (i.Game.Game4) + ((4 - nullValues) * (i.Game.Handicap + i.Game.Bonus)) });
-                        }
+                                #endregion
+                                ///***********************
+                                int one = Convert.ToInt32(i.Game.Game1 + i.Game.Handicap + i.Game.Bonus);
+                                int two = Convert.ToInt32(i.Game.Game2 + i.Game.Handicap + i.Game.Bonus);
+                                int three = Convert.ToInt32(i.Game.Game3 + i.Game.Handicap + i.Game.Bonus);
+                                int four = Convert.ToInt32(i.Game.Game4 + i.Game.Handicap + i.Game.Bonus);
+                                listOfScores.Add(one);
+                                listOfScores.Add(two);
+                                listOfScores.Add(three);
+                                listOfScores.Add(four);
+                                listOfScores.Sort();
+                                listOfScores.Reverse();
 
+                                ///*************************
+                                scores.Add(new MemberScores { FirstName = i.Member.FirstName, LastName = i.Member.LastName, Score = listOfScores[0] + listOfScores[1] + listOfScores[2] });
+                                listOfScores.Clear();
+                            }                 
                         scores.Sort(scoreComparer);
                         scores.Reverse();
                         scores = scores.Take(5).ToList();
@@ -1159,8 +1271,11 @@ namespace NineTapTour.Forms
                         {
                             richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", Convert.ToString(scores[i].FirstName + " " + scores[i].LastName)) + "\t" + String.Format("{0, -5}", scores[i].Score) + "\n");
                         }
-                    }
+                    }                        
                 }
+                #endregion
+            }
+                //////////////////////////////////////////////
                 //}
                 /*TODO error
                 catch (Exception ex)
@@ -1243,7 +1358,7 @@ namespace NineTapTour.Forms
                 /*end errors*/
             }
             finally { }//TODO ADDED FOR ERRORS REMOVE WHEN FIXED
-            }
+        }
 
         class MemberScores
         {
