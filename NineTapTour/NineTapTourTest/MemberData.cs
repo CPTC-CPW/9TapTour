@@ -26,7 +26,7 @@ namespace NineTapTourTest
                         MiddleInitial = "S",
                         DateOfBirth = DateTime.Parse("04/04/1985"),
                         Gender = MemberGenders.Male,
-                        SSN = "123456789",
+                        //SSN = "123456789",
                         Street = "Matt Dr. SW",
                         City = "Mattville",
                         State = "MD",
