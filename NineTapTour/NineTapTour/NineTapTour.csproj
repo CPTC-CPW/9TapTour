@@ -256,6 +256,10 @@
     <Compile Include="Migrations\201604242119516_doubles.Designer.cs">
       <DependentUpon>201604242119516_doubles.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605050259447_MemberPaymentStatus.cs" />
+    <Compile Include="Migrations\201605050259447_MemberPaymentStatus.Designer.cs">
+      <DependentUpon>201605050259447_MemberPaymentStatus.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\201606071902016_SSN_nullable.cs" />
     <Compile Include="Migrations\201606071902016_SSN_nullable.Designer.cs">
       <DependentUpon>201606071902016_SSN_nullable.cs</DependentUpon>
