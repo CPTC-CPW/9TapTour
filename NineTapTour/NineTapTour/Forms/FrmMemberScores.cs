@@ -67,7 +67,7 @@ namespace NineTapTour.Forms
             cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             cbxTourneyDropDown.ValueMember = "Id";
-            cbxTourneyDropDown.SelectedIndex = 0;
+            //cbxTourneyDropDown.SelectedIndex = 0;
             List<Tournament> temp2 = TournamentDb.GetTournamentList();
             if (temp2.Count() > 0)
             {
@@ -76,9 +76,7 @@ namespace NineTapTour.Forms
             }
             loaded = true;
             cbxTourneyDropDown.SelectedIndex = -1;
-            richTextBox1.Clear();
-            richTextBox2.Clear();
-            richTextBox3.Clear();
+            clear();
         }
 
         /// <summary>

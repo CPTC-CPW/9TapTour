@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -49,7 +51,7 @@ namespace NineTapTour.Forms
                                                p.Member.Bonus
                                            }).ToList();
 
-                dgvTournamentStats.DataSource = tournamentStatsList;
+                dgvTournamentStats.DataSource = tournamentStatsList;                               
             }
             else
             {
@@ -57,69 +59,104 @@ namespace NineTapTour.Forms
                 selectedTournament = frmMemberScores.selectedTournament;
                 lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
-                NineTapDb db = new NineTapDb();
-                List<int> listOfScores = new List<int>();
+                NineTapDb db = new NineTapDb();           
 
+                SqlConnection con = new SqlConnection(GetConnection());
+                SqlCommand gameOrder = new SqlCommand();
+                gameOrder.Connection = con;
+                gameOrder.CommandText = @"SELECT Members.Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Members.Handicap, Participants.SquadNumber, Members.Bonus
+                                        FROM Games JOIN Participants ON Games.Id = Participants.Game_Id
+		                                JOIN Tournaments ON Participants.Tournament_Id = Tournaments.Id
+		                                JOIN Members ON Members.Id = Participants.Member_Id                                        
+                                        WHERE Tournament_Id = @TID
+                                        ORDER BY Members.LastName";
 
-                var temp = (from g in db.Games
-                            join p in db.Participants on g.Id equals p.Game.Id
-                            join t in db.Tournaments on p.Tournament.Id equals t.Id
-                            join m in db.Members on p.Member.Id equals m.Id
-                            orderby (g.Game1 + g.Game2 + g.Game3 + g.Game4) descending
-                            where t.Id == selectedTournament.Id
-                            select new {
-                                m.Id,                                
-                                g.Game1,
-                                g.Game2,
-                                g.Game3,
-                                g.Game4
-                            }).ToList();
+                gameOrder.Parameters.AddWithValue("@TID", selectedTournament.Id);
 
-                HashSet<int> total = new HashSet<int>();
-                //List<int> total = new List<int>();
-
-                foreach (var s in temp)
+                try
                 {
-                    int one = Convert.ToInt32(s.Game1);
-                    int two = Convert.ToInt32(s.Game2);
-                    int three = Convert.ToInt32(s.Game3);
-                    int four = Convert.ToInt32(s.Game4);
-                    listOfScores.Add(one);
-                    listOfScores.Add(two);
-                    listOfScores.Add(three);
-                    listOfScores.Add(four);
-                    listOfScores.Sort();
-                    listOfScores.Reverse();
-                    
-                    total.Add(listOfScores[0] + listOfScores[1] + listOfScores[2]);                                        
+                    // open connection
+                    con.Open();
 
-                    listOfScores.Clear();
+                    // execute command(query)
+                    SqlDataReader reader = gameOrder.ExecuteReader();
+                    List<TournamentStatsList> listOfTourney = new List<TournamentStatsList>();
+                    // view results
+                    while (reader.Read())
+                    {
+                        TournamentStatsList temp = new TournamentStatsList();
+                        temp.Handicap = Convert.ToInt32(reader["Handicap"]);
+                        temp.Bonus = Convert.ToInt32(reader["Bonus"]);                      
+                        List<int?> scores = new List<int?> { Convert.ToInt32(reader["Game1"]), Convert.ToInt32(reader["Game2"]), Convert.ToInt32(reader["Game3"]), Convert.ToInt32(reader["Game4"]) };
+                        #region Old Way                       
+                        //if (Convert.ToInt32(reader["Game1"]) <= Convert.ToInt32(reader["Game2"]) && Convert.ToInt32(reader["Game1"]) <= Convert.ToInt32(reader["Game3"]) && Convert.ToInt32(reader["Game1"]) <= Convert.ToInt32(reader["Game4"]))
+                        //{
+                        //    temp.ScratchTotal = Convert.ToInt32(reader["Game2"]) + Convert.ToInt32(reader["Game3"]) + Convert.ToInt32(reader["Game4"]);                            
+                        //}
+                        //if (Convert.ToInt32(reader["Game2"]) <= Convert.ToInt32(reader["Game1"]) && Convert.ToInt32(reader["Game2"]) <= Convert.ToInt32(reader["Game3"]) && Convert.ToInt32(reader["Game2"]) <= Convert.ToInt32(reader["Game4"]))
+                        //{
+                        //    temp.ScratchTotal = Convert.ToInt32(reader["Game1"]) + Convert.ToInt32(reader["Game3"]) + Convert.ToInt32(reader["Game4"]);
+                        //}
+                        //if (Convert.ToInt32(reader["Game3"]) <= Convert.ToInt32(reader["Game1"]) && Convert.ToInt32(reader["Game3"]) <= Convert.ToInt32(reader["Game2"]) && Convert.ToInt32(reader["Game3"]) <= Convert.ToInt32(reader["Game4"]))
+                        //{
+                        //    temp.ScratchTotal = Convert.ToInt32(reader["Game1"]) + Convert.ToInt32(reader["Game2"]) + Convert.ToInt32(reader["Game4"]);
+                        //}
+                        //if (Convert.ToInt32(reader["Game4"]) <= Convert.ToInt32(reader["Game1"]) && Convert.ToInt32(reader["Game4"]) <= Convert.ToInt32(reader["Game2"]) && Convert.ToInt32(reader["Game4"]) <= Convert.ToInt32(reader["Game3"]))
+                        //{
+                        //    temp.ScratchTotal = Convert.ToInt32(reader["Game1"]) + Convert.ToInt32(reader["Game2"]) + Convert.ToInt32(reader["Game3"]);
+                        //}
+                        #endregion
+                        List<int> topScores = GetTop3OutOf4(scores);
+                        int scratchTotal = 0;
+                        for (int i = 0; i < 3; i++)
+                        {
+                            scratchTotal += topScores[i];
+                        }
+
+                        temp.ScratchTotal = scratchTotal;
+                        temp.Top3Scores = temp.ScratchTotal + (temp.Handicap * 3) + (temp.Bonus * 3);
+                        temp.Id = Convert.ToInt32(reader["Id"]);
+                        temp.FirstName = reader["FirstName"].ToString();
+                        temp.LastName = reader["LastName"].ToString();
+                        temp.Squad = Convert.ToInt32(reader["SquadNumber"]);
+                        temp.Game1 = Convert.ToInt32(reader["Game1"]);
+                        temp.Game2 = Convert.ToInt32(reader["Game2"]);
+                        temp.Game3 = Convert.ToInt32(reader["Game3"]);
+                        temp.Game4 = Convert.ToInt32(reader["Game4"]);
+
+                        listOfTourney.Add(temp);
+                    }                    
+                    dgvTournamentStats.DataSource = listOfTourney;
                 }
+                catch (SqlException)
+                {
 
-                    var tournamentStatsList = (from p in db.Participants
-                                           join m in db.Members on p.Member.Id equals m.Id
-                                           join g in db.Games on p.Game.Id equals g.Id
-                                           join t in db.Tournaments on p.Tournament.Id equals t.Id
-                                           where t.Id == selectedTournament.Id
-                                           orderby (g.Game1 + g.Game2 + g.Game3 + g.Game4) descending
-                                           select new
-                                           {
-                                               p.Member.Id,
-                                               p.Member.FirstName,
-                                               p.Member.LastName,
-                                               p.Squad,
-                                               ScratchTotal = ((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0)),
-                                               GameTotal = (((g.Game1.HasValue ? g.Game1 : 0) + (m.Handicap + m.Bonus)) + ((g.Game2.HasValue ? g.Game2 : 0) + (m.Handicap + m.Bonus)) + ((g.Game3.HasValue ? g.Game3 : 0) + (m.Handicap + m.Bonus)) + ((g.Game4.HasValue ? g.Game4 : 0) + (m.Handicap + m.Bonus))),
-                                               g.Game1,
-                                               g.Game2,
-                                               g.Game3,
-                                               g.Game4,
-                                               p.Member.Handicap,
-                                               p.Member.Bonus
-                                           }).ToList();
-                
-                dgvTournamentStats.DataSource = tournamentStatsList;
-            }            
+                }
+                finally
+                {
+                    con.Dispose();
+                }
+            }
+        }
+
+        private List<int> GetTop3OutOf4(List<int?> scores)
+        {            
+            List<int> listOfValidScores = new List<int>();
+            for(int i = 0; i < scores.Count; i++)
+            {
+                if (scores[i].HasValue)
+                {
+                    listOfValidScores.Add(scores[i].Value);
+                }                
+            }
+            listOfValidScores.Sort();
+            listOfValidScores.Reverse();
+            return listOfValidScores;            
+        }
+
+        private string GetConnection()
+        {
+            return ConfigurationManager.ConnectionStrings["NineTapDbConnection"].ConnectionString;
         }
 
         private void btnPrint_Click(object sender, EventArgs e)
@@ -137,5 +174,22 @@ namespace NineTapTour.Forms
             this.dgvTournamentStats.DrawToBitmap(bm, new Rectangle(0, 0, this.dgvTournamentStats.Width, this.dgvTournamentStats.Height));
             e.Graphics.DrawImage(bm, 0, 0);
         }
+    }
+
+    public partial class TournamentStatsList
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int Squad { get; set; }
+        public int? ScratchTotal { get; set; }
+        public int? Top3Scores { get; set; }
+        public int? Game1 { get; set; }
+        public int? Game2 { get; set; }
+        public int? Game3 { get; set; }
+        public int? Game4 { get; set; }
+        public int? Handicap { get; set; }
+        public int? Bonus { get; set; }
+
     }
 }
