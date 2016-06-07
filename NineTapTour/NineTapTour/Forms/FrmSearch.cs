@@ -265,12 +265,15 @@ namespace NineTapTour.Forms
 
         private void btnSelect_Click(object sender, EventArgs e)
         {
-            searchResult = (int)dtagrdResults.SelectedRows[0].Cells[1].Value;
-            // Member Number
-            Console.WriteLine(dtagrdResults.SelectedRows[0].Cells[1].Value.ToString());
-            // Member Name
-            Console.WriteLine(dtagrdResults.SelectedRows[0].Cells[3].Value.ToString());
-            this.Close();
+            if (dtagrdResults.Rows.Count > 0)
+            {
+                searchResult = (int)dtagrdResults.SelectedRows[0].Cells[1].Value;
+                // Member Number
+                //Console.WriteLine(dtagrdResults.SelectedRows[0].Cells[1].Value.ToString());
+                // Member Name
+                //Console.WriteLine(dtagrdResults.SelectedRows[0].Cells[3].Value.ToString());
+                this.Close();
+            }
         }
 
         /// <summary>
