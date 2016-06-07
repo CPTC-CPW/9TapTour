@@ -91,7 +91,7 @@ namespace NineTapTour.Forms
             txtHandicap.Clear();
             txtBonusPins.Clear(); 
         }
-
+        #region GetMember
         /// <summary>
         /// Gets the members information based on the member number
         /// </summary>
@@ -247,7 +247,7 @@ namespace NineTapTour.Forms
                 }
             }
         }
-
+        #endregion
         private void FillMember()
         {
             //listOfParticipants brings back a list of participants but does not carry over "member/tournament/game"
@@ -415,7 +415,7 @@ namespace NineTapTour.Forms
             }
             txtHandicapTotal.Text = Convert.ToString(totalScore);
         }
-
+        #region New Recap
         /// <summary>
         /// enter a tournamnet participant into a specific tournament
         /// save scores and info in database
@@ -517,25 +517,6 @@ namespace NineTapTour.Forms
                     //selects the ID of the combobox of tournaments and stores the
                     //tournament property within the participants class.
                     player.Tournament = currTourney;
-                    if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim())
-                        || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
-                    {
-                        MessageBox.Show("Please enter all scratch scores", "Blank Scores Not Allowed");
-                    }
-                    else if (!isNumeric(txtScratchScore1.Text.Trim()) || !isNumeric(txtScratchScore2.Text.Trim())
-                        || !isNumeric(txtScratchScore3.Text.Trim()) || !isNumeric(txtScratchScore4.Text.Trim()))
-                    {
-                        MessageBox.Show("Please enter only numbers", "Non-Integer Scores Not Allowed");
-                    }
-                    else
-                    {
-                        player.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[0].Text));
-                        player.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[1].Text));
-                        player.Game.Game3 = IsEmpty(txtScratchScore3) ? null : (int?)Convert.ToInt32((scratchArray[2].Text));
-                        player.Game.Game4 = IsEmpty(txtScratchScore4) ? null : (int?)Convert.ToInt32((scratchArray[3].Text));
-                        player.Game.Bonus = currentMem.Bonus;
-                        player.Game.Handicap = currentMem.Handicap;
-                    }
 
                     #region radio button
                     if (rdoSquadOne.Checked)
@@ -556,22 +537,43 @@ namespace NineTapTour.Forms
                     }
                     #endregion
 
-                    player.Member = currentMem;
-                    try
+                    if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim())
+                        || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
                     {
-                        TournamentDb.AddMemberToTournament(player);
-#if DEBUG
-                        MessageBox.Show(@"Bowler Added Successfully to Tournament!");
-#endif
-                        RecordIndex(TournamentDb.GetTournamentMemberList(currTourney));
+                        MessageBox.Show("Please enter all scratch scores", "Blank Scores Not Allowed");
                     }
-                    catch (MemberAccessException ex)
+                    else if (!isNumeric(txtScratchScore1.Text.Trim()) || !isNumeric(txtScratchScore2.Text.Trim())
+                        || !isNumeric(txtScratchScore3.Text.Trim()) || !isNumeric(txtScratchScore4.Text.Trim()))
                     {
-                        MessageBox.Show(ex.Message);
+                        MessageBox.Show("Please enter only numbers", "Non-Integer Scores Not Allowed");
+                    }
+                    else
+                    {
+                        player.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[0].Text));
+                        player.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[1].Text));
+                        player.Game.Game3 = IsEmpty(txtScratchScore3) ? null : (int?)Convert.ToInt32((scratchArray[2].Text));
+                        player.Game.Game4 = IsEmpty(txtScratchScore4) ? null : (int?)Convert.ToInt32((scratchArray[3].Text));
+                        player.Game.Bonus = currentMem.Bonus;
+                        player.Game.Handicap = currentMem.Handicap;
 
+                        player.Member = currentMem;
+                        try
+                        {
+                            TournamentDb.AddMemberToTournament(player);
+#if DEBUG
+                            MessageBox.Show(@"Bowler Added Successfully to Tournament!");
+#endif
+                            RecordIndex(TournamentDb.GetTournamentMemberList(currTourney));
+                        }
+                        catch (MemberAccessException ex)
+                        {
+                            MessageBox.Show(ex.Message);
+
+                        }
+                        clear();
+                        txtMemberNum.Focus();
                     }
-                    clear();
-                    txtMemberNum.Focus();
+                    
                 }
                 refresh(false);
             }            
@@ -580,6 +582,7 @@ namespace NineTapTour.Forms
                 MessageBox.Show("Please Fill out the Participants information!");
             }
         }
+        #endregion
         /// <summary>
         /// Checks a string for numeric values
         /// true if all are numeric
@@ -600,7 +603,11 @@ namespace NineTapTour.Forms
         public void RecordIndex(List<Participant> players)
         {
             int temp;
-            if (players.Count() <= 0)
+            if (cbxTourneyDropDown.SelectedIndex <= 0)
+            {
+                temp = 0;
+            }
+            else if (players.Count() <= 0)
             {
                 temp = 0;
             }
@@ -610,7 +617,6 @@ namespace NineTapTour.Forms
             }
             lblRecord.Text = "Record " + (temp) + " / " + players.Count();
         }
-
         /// <summary>
         /// check for empty text box
         /// </summary>
