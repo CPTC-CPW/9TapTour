@@ -759,6 +759,21 @@ namespace NineTapTour.Forms
         {
             dateDOB.Format = DateTimePickerFormat.Short;
         }
+
+        private void btnRecapByDate_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnAllRecaps_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnRecapByPin_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 
