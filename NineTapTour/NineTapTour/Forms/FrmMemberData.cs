@@ -609,13 +609,16 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void btnMemberNumber_Click(object sender, EventArgs e)
+        private void btnMemberSearch_Click(object sender, EventArgs e)
         {
-            var newfrmStart = new FrmSearch();
-            Width = newfrmStart.Width;
-            Height = newfrmStart.Height + 20;
-            newfrmStart.Show();
+            FrmSearch SearchForm = new FrmSearch();
+            SearchForm.ShowDialog();
 
+            if (SearchForm.searchResult > 0)
+            {
+                txtMemberNumber.Text = SearchForm.searchResult.ToString();
+                UpdateMemberInfo();
+            }
         }
 
         private void btnStats_Click(object sender, EventArgs e)
