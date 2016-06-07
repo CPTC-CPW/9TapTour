@@ -24,7 +24,7 @@ namespace NineTapTour.Database
         public string MiddleInitial { get; set; }
         [Required]
         public DateTime DateOfBirth { get; set; }
-        [Required]
+
         [Index("IX_MemberSSN", IsUnique = true)]
         [StringLength(11), Column(TypeName = "char")]
         public string SSN { get; set; }

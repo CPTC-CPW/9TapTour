@@ -65,7 +65,7 @@ namespace Member_Import_Test
             txtFirstName.Text = currentMem.FirstName;
             txtMiddleInitial.Text = currentMem.MiddleInitial;
             mtxtBoxDOB.Text = currentMem.DateOfBirth.ToString("MM/dd/yyyy");
-            mtxtBoxSSN.Text = currentMem.SSN;
+            // mtxtBoxSSN.Text = currentMem.SSN;
             // txtSSN.PasswordChar = '*'; //This hides the SSN within the form of '*'.
             #endregion
 
@@ -166,17 +166,19 @@ namespace Member_Import_Test
                 MessageBox.Show("Invalid Primary Phone field");
                 return false;
             }
-            if (!Regex.IsMatch(mtxtBoxSSN.Text, "^\\d{3}-?\\d{2}-?\\d{4}$"))
-            {
-                MessageBox.Show("Invalid Social Security field");
-                return false;
-            }
-         
-            if (mtxtBoxSSN.Text == "")
-            {
-                MessageBox.Show("SSN field cannot be null");
-                return false;
-            }
+            #region
+            //if (!Regex.IsMatch(mtxtBoxSSN.Text, "^\\d{3}-?\\d{2}-?\\d{4}$"))
+            //{
+            //    MessageBox.Show("Invalid Social Security field");
+            //    return false;
+            //}
+
+            //if (mtxtBoxSSN.Text == "")
+            //{
+            //    MessageBox.Show("SSN field cannot be null");
+            //    return false;
+            //}
+            #endregion
             if (txtAddress.Text == "")
             {
                 MessageBox.Show("Address field cannot be null");
@@ -313,7 +315,7 @@ namespace Member_Import_Test
                     FirstName = txtFirstName.Text,
                     MiddleInitial = txtMiddleInitial.Text,
                     DateOfBirth = Convert.ToDateTime(mtxtBoxDOB.Text),
-                    SSN = mtxtBoxSSN.Text,
+                    // SSN = mtxtBoxSSN.Text,
                     IsSenior = chbSenior.Checked,
                     Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
                     #endregion
@@ -457,11 +459,11 @@ namespace Member_Import_Test
             else if(sender is MaskedTextBox)
             {
                 var maskedtextBox = sender as MaskedTextBox;
-                if(maskedtextBox.Name=="mtxtBoxSSN")
-                {
-                    maskedtextBox.BackColor = maskedtextBox.Text == "   -  -" ? Color.LightPink : Color.White;
-                }
-                else if(maskedtextBox.Name=="mtxtBoxPhone")
+                //if(maskedtextBox.Name=="mtxtBoxSSN")
+                //{
+                //    maskedtextBox.BackColor = maskedtextBox.Text == "   -  -" ? Color.LightPink : Color.White;
+                //}
+                if(maskedtextBox.Name=="mtxtBoxPhone")
                 {
                     maskedtextBox.BackColor = maskedtextBox.Text == "(   )    -" ? Color.LightPink : Color.White;
                 }

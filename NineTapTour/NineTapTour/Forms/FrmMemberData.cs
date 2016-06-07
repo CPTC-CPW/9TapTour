@@ -296,14 +296,15 @@ namespace NineTapTour.Forms
                 MessageBox.Show("DOB field cannot be blank.");
                 return false;
             }
-
-            if (!Regex.IsMatch(mtxtBoxSSN.Text, "^\\d{3}-?\\d{2}-?\\d{4}$"))
+            if (!Regex.IsMatch(mtxtBoxSSN.Text, "   -  -"))
             {
-                MessageBox.Show("Invalid Social Security field.");
-                mtxtBoxSSN.Clear();
-                return false;
+                if (!Regex.IsMatch(mtxtBoxSSN.Text, "^\\d{3}-?\\d{2}-?\\d{4}$"))
+                {
+                    MessageBox.Show("Invalid Social Security field.");
+                    mtxtBoxSSN.Clear();
+                    return false;
+                }
             }
-
             if (string.IsNullOrWhiteSpace(txtAddress.Text.Trim()))
             {
                 MessageBox.Show("Address field cannot be null.");
@@ -337,7 +338,7 @@ namespace NineTapTour.Forms
                 mtxtBoxPhone.Clear();
                 return false;
             }
-            
+
             // I think the block following this might make this redundant so I'm commenting it out to see what happens -- Cody
             /*
             if (string.IsNullOrWhiteSpace(txtEmail.Text.Trim()))
@@ -355,7 +356,7 @@ namespace NineTapTour.Forms
                 txtEmail.Clear();
                 return false;
             }
-            
+
             return true;
         }
         /// <summary>
@@ -746,7 +747,7 @@ namespace NineTapTour.Forms
         private void dateJoined_ValueChanged(object sender, EventArgs e)
         {
             dateJoined.Format = DateTimePickerFormat.Short;// Refreshes the date
-            
+
         }
 
         private void dateRejoin_ValueChanged(object sender, EventArgs e)
