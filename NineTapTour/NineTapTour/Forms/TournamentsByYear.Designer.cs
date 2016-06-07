@@ -52,7 +52,7 @@
             this.dgvAllTournaments.Location = new System.Drawing.Point(53, 239);
             this.dgvAllTournaments.Name = "dgvAllTournaments";
             this.dgvAllTournaments.RowTemplate.Height = 37;
-            this.dgvAllTournaments.Size = new System.Drawing.Size(1760, 924);
+            this.dgvAllTournaments.Size = new System.Drawing.Size(2014, 924);
             this.dgvAllTournaments.TabIndex = 1;
             // 
             // label2
@@ -87,7 +87,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 29F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1885, 1215);
+            this.ClientSize = new System.Drawing.Size(2129, 1215);
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.cbxYear);
             this.Controls.Add(this.label2);

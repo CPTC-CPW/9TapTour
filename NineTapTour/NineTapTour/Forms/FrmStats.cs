@@ -32,9 +32,11 @@ namespace NineTapTour.Forms
         {
             var db = new NineTapDb();
             var stats = (from p in db.Participants
+                         join m in db.Members on p.Member.Id equals m.Id
                          join g in db.Games on p.Game.Id equals g.Id
                          join t in db.Tournaments on p.Tournament.Id equals t.Id
-                         where memNum == p.Member.Number
+                         where memNum == p.Member.Number                         
+                         orderby t.Date descending
                          select new
                          {
                              t.Date,
@@ -48,15 +50,15 @@ namespace NineTapTour.Forms
                              g.Game3,
                              g.Game4
                              ,
-                             Gametotal = ((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0))
-                             ,
+                             ScratchTotal = ((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0)),
+                             GameTotal = (((g.Game1.HasValue ? g.Game1 : 0 )+ (m.Handicap + m.Bonus)) + ((g.Game2.HasValue ? g.Game2 : 0) + (m.Handicap + m.Bonus)) + ((g.Game3.HasValue ? g.Game3 : 0) + (m.Handicap + m.Bonus)) + ((g.Game4.HasValue ? g.Game4 : 0) + (m.Handicap + m.Bonus))),
                              AvgPerGame = (((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0)) /
                                       ((g.Game1.HasValue ? 1 : 0) + (g.Game2.HasValue ? 1 : 0) + (g.Game3.HasValue ? 1 : 0) + (g.Game4.HasValue ? 1 : 0)))
                              ,                             
                              g.Handicap
                              ,
                              g.Bonus
-                         }).ToList();
+                         }).ToList();                     
             double sum = 0;
             double count = 0;
             #region Game 1 Average
@@ -65,7 +67,7 @@ namespace NineTapTour.Forms
                 count++;
                 sum += Convert.ToInt32(stats[i].Game1);
             }
-            txtGame1.Text = (sum / count).ToString();
+            txtGame1.Text = String.Format("{0:N2}", (sum / count));
             #endregion
             #region Game 2 Average
             sum = 0;
@@ -75,7 +77,7 @@ namespace NineTapTour.Forms
                 count++;
                 sum += Convert.ToInt32(stats[i].Game2);
             }
-            txtGame2.Text = (sum / count).ToString();
+            txtGame2.Text = String.Format("{0:N2}", (sum / count));
             #endregion
             #region Game 3 Average
             sum = 0;
@@ -85,7 +87,7 @@ namespace NineTapTour.Forms
                 count++;
                 sum += Convert.ToInt32(stats[i].Game3);
             }
-            txtGame3.Text = (sum / count).ToString();
+            txtGame3.Text = String.Format("{0:N2}", (sum / count));
             #endregion
             #region Game 4 Average
             sum = 0;
@@ -95,7 +97,17 @@ namespace NineTapTour.Forms
                 count++;
                 sum += Convert.ToInt32(stats[i].Game4);
             }
-            txtGame4.Text = (sum / count).ToString();
+            txtGame4.Text = String.Format("{0:N2}",(sum / count));
+            #endregion
+            #region Scratch Total Average
+            sum = 0;
+            count = 0;
+            for (int i = 0; i < stats.Count; i++)
+            {
+                count++;
+                sum += Convert.ToInt32(stats[i].ScratchTotal);
+            }
+            txtScratchTotal.Text = String.Format("{0:N2}", (sum / count));
             #endregion
             #region Game Total Average
             sum = 0;
@@ -103,9 +115,9 @@ namespace NineTapTour.Forms
             for (int i = 0; i < stats.Count; i++)
             {
                 count++;
-                sum += Convert.ToInt32(stats[i].Gametotal);
+                sum += Convert.ToInt32(stats[i].GameTotal);
             }
-            txtGameTotal.Text = (sum / count).ToString();
+            txtGameTotal.Text = String.Format("{0:N2}", (sum / count));
             #endregion
             #region Average Game Score
             sum = 0;
@@ -115,7 +127,7 @@ namespace NineTapTour.Forms
                 count++;
                 sum += Convert.ToInt32(stats[i].AvgPerGame);
             }
-            txtAveragePerGame.Text = (sum / count).ToString();
+            txtAveragePerGame.Text = String.Format("{0:N2}", (sum / count));
             #endregion           
             #region Handicap Average
             sum = 0;
@@ -125,7 +137,7 @@ namespace NineTapTour.Forms
                 count++;
                 sum += Convert.ToInt32(stats[i].Handicap);
             }
-            txtHandicap.Text = (sum / count).ToString();
+            txtHandicap.Text = String.Format("{0:N2}", (sum / count));
             #endregion
             #region Bonus Pins Average
             sum = 0;
@@ -135,7 +147,7 @@ namespace NineTapTour.Forms
                 count++;
                 sum += Convert.ToInt32(stats[i].Bonus);
             }
-            txtBonus.Text = (sum / count).ToString();
+            txtBonus.Text = String.Format("{0:N2}", (sum / count));
             #endregion
             dataGridView1.DataSource = stats;
         }

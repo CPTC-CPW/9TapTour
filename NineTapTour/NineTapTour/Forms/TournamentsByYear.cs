@@ -70,6 +70,7 @@ namespace NineTapTour.Forms
                                    t.Location,
                                    t.Event,
                                    t.Doubles,
+                                   t.ThreeOutOf4,
                                    t.Notes,
                                    t.Sponsors
                                }).ToList();

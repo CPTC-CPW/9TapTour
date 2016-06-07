@@ -51,10 +51,14 @@ namespace NineTapTour.Forms
             {
                 NewTournament.Doubles = true;
             }
-            else
+            if (ckbx3outOf4.Checked)
             {
-                NewTournament.Doubles = false;
+                NewTournament.ThreeOutOf4 = true;
             }
+            //else
+            //{
+            //    NewTournament.Doubles = false;
+            //}
 
             try
             {
@@ -127,6 +131,9 @@ namespace NineTapTour.Forms
             txtEvent.Clear();
             txtSponsors.Clear();
             ckbxDoubles.Checked = false;
+            ckbx3outOf4.Checked = false;
+            ckbxDoubles.Enabled = true;
+            ckbx3outOf4.Enabled = true;
             rtxtNotes.Clear();
             tourToEdit = null;
             lblEdit.Text = "";
@@ -150,6 +157,7 @@ namespace NineTapTour.Forms
                 !string.IsNullOrWhiteSpace(txtEvent.Text.Trim()) ||
                 !string.IsNullOrWhiteSpace(txtSponsors.Text.Trim()) ||
                 ckbxDoubles.Checked ||
+                ckbx3outOf4.Checked ||
                 !string.IsNullOrWhiteSpace(rtxtNotes.Text.Trim()) ||
                 tourToEdit != null
                 )
@@ -174,11 +182,33 @@ namespace NineTapTour.Forms
         private void ckbxDoubles_CheckedChanged(object sender, EventArgs e)
         {
             checkCleared();
+            if (ckbx3outOf4.Enabled)
+            {
+                ckbx3outOf4.Enabled = false;
+            }
+            else
+            {
+                ckbx3outOf4.Enabled = true;
+            }
         }
 
         private void rtxtNotes_TextChanged(object sender, EventArgs e)
         {
             checkCleared();
+        }
+
+        private void ckbx3outOf4_CheckedChanged(object sender, EventArgs e)
+        {
+            checkCleared();
+            if (ckbxDoubles.Enabled)
+            {
+                ckbxDoubles.Enabled = false;
+            }
+            else
+            {
+                ckbxDoubles.Enabled = true;
+            }
+            
         }
     }
 }
