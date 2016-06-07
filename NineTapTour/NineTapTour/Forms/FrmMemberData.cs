@@ -688,18 +688,18 @@ namespace NineTapTour.Forms
             graphic.DrawString(txtHandicap.Text, font, dBrush, startX + 590, startY - 5);
 
             //draw the 4 handicaps for the game section of the card and the total handicap
-
+            float offset = 39.55f;
             for (int i = 1; i <= 5; i++)
             {
                 //this prints the handicap 4 times.
                 if (i <= 4)
                 {
-                    graphic.DrawString(txtHandicap.Text, font, dBrush, startX + 530, startY + 30 + i * 40);
+                    graphic.DrawString(txtHandicap.Text, font, dBrush, startX + 530, startY + 31 + i * offset);
                 }
                 //this prints the total handicap after it prints the handicap 4 seperate times
                 if (i == 5)
                 {
-                    graphic.DrawString(totalHandicap.ToString(), font, dBrush, startX + 530, startY + 50 + i * 40);
+                    graphic.DrawString(totalHandicap.ToString(), font, dBrush, startX + 530, startY + 50 + i * offset);
                 }
             }
             //create name string containg lastname, firstname.
@@ -709,7 +709,7 @@ namespace NineTapTour.Forms
             //draw city string
             graphic.DrawString(txtCity.Text, font, dBrush, startX + 5, startY + 122);
             //draw member number string
-            graphic.DrawString(txtMemberNumber.Text, font, dBrush, startX + 80, startY + 215);
+            graphic.DrawString(txtMemberNumber.Text, font, dBrush, startX + 80, startY + 235);
 
         }
 
