@@ -14,6 +14,9 @@ namespace NineTapTour.Forms
 {
     public partial class FrmMemberData : Form
     {
+
+       
+        bool UpdateText;
         //IOrderedEnumerable<Member> _membersList;
         int _memberId;
         Member currentMem;
@@ -72,6 +75,7 @@ namespace NineTapTour.Forms
 
             if (currentMem == null)
             {
+                UpdateText = false;
                 currentMem = new Member
                 {
                     Number = _memberNum
@@ -231,6 +235,7 @@ namespace NineTapTour.Forms
                 #endregion
 
                 chbLifetime.Checked = currentMem.IsLifetimeMember;
+                
                 if (currentMem.LastPayment.HasValue)
                 {
                     datePaid.Format = DateTimePickerFormat.Short;
@@ -415,7 +420,15 @@ namespace NineTapTour.Forms
                     {
                         MemberDb.AddMember(temp);
 
-                        MessageBox.Show(@"Bowler Added Successfully.");
+                        if (UpdateText)
+                        {
+                            MessageBox.Show(@"Bowler Updated Successfully.");
+                        }
+                        else {
+                            MessageBox.Show(@"Bowler Added Successfully.");
+                        }
+
+
                         //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
                         ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
                         //_membersList = ((FrmMain)MdiParent)._membersList;
