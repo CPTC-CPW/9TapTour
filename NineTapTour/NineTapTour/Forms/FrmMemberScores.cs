@@ -1188,23 +1188,24 @@ namespace NineTapTour.Forms
                     richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
                     richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
                     scores = new List<MemberScores>();
-                    var temp = (from g in top5
-                                orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4) descending
-                                select g).Take(5).ToList();
+                    //var temp = (from g in top5
+                    //            orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4) descending
+                    //            select g).Take(5).ToList();
+
+                    //for (int i = 0; i < temp.Count; i++)
+                    //{
+                    //    temp[i].Game.Game1 = temp[i].Game.Game1 == null ? 0 : temp[i].Game.Game1;
+                    //    temp[i].Game.Game2 = temp[i].Game.Game2 == null ? 0 : temp[i].Game.Game2;
+                    //    temp[i].Game.Game3 = temp[i].Game.Game3 == null ? 0 : temp[i].Game.Game3;
+                    //    temp[i].Game.Game4 = temp[i].Game.Game4 == null ? 0 : temp[i].Game.Game4;
+                    //}
 
                     //populate total score
-                    for (int i = 0; i < temp.Count; i++)
-                    {
-                        temp[i].Game.Game1 = temp[i].Game.Game1 == null ? 0 : temp[i].Game.Game1;
-                        temp[i].Game.Game2 = temp[i].Game.Game2 == null ? 0 : temp[i].Game.Game2;
-                        temp[i].Game.Game3 = temp[i].Game.Game3 == null ? 0 : temp[i].Game.Game3;
-                        temp[i].Game.Game4 = temp[i].Game.Game4 == null ? 0 : temp[i].Game.Game4;
-                    }
                     if (rdoScratchScore.Checked)
                     {
-                        foreach (var s in temp)
+                        foreach (var s in listOfTopScore)
                         {
-                            scores.Add(new MemberScores { FirstName = s.Member.FirstName, LastName = s.Member.LastName, Score = s.Game.Game1 + s.Game.Game2 + s.Game.Game3 + s.Game.Game4 });
+                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game1 + s.Game2 + s.Game3 + s.Game4 });
                         }
                         //IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
                         scores.Sort(scoreComparer);
@@ -1218,28 +1219,28 @@ namespace NineTapTour.Forms
                     }
                     else if (rdoHandicapScore.Checked)
                     {
-                        foreach (var i in temp)
+                        foreach (var i in listOfTopScore)
                         {
                             #region conditions for highest handicap scores
                                 nullValues = 0;
-                                if (i.Game.Game1 == 0)
+                                if (i.Game1 == 0)
                                 {
                                     nullValues += 1;
                                 }
-                                if (i.Game.Game2 == 0)
+                                if (i.Game2 == 0)
                                 {
                                     nullValues += 1;
                                 }
-                                if (i.Game.Game3 == 0)
+                                if (i.Game3 == 0)
                                 {
                                     nullValues += 1;
                                 }
-                                if (i.Game.Game4 == 0)
+                                if (i.Game4 == 0)
                                 {
                                     nullValues += 1;
                                 }
                                 #endregion
-                            scores.Add(new MemberScores { FirstName = i.Member.FirstName, LastName = i.Member.LastName, Score = (i.Game.Game1) + (i.Game.Game2) + (i.Game.Game3) + (i.Game.Game4) + ((4 - nullValues) * (i.Game.Handicap + i.Game.Bonus)) });
+                            scores.Add(new MemberScores { FirstName = i.FirstName, LastName = i.LastName, Score = (i.Game1) + (i.Game2) + (i.Game3) + (i.Game4) + ((4 - nullValues) * (i.Handicap + i.Bonus)) });
                         }                   
                         scores.Sort(scoreComparer);
                         scores.Reverse();
@@ -1262,29 +1263,29 @@ namespace NineTapTour.Forms
                     richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
                     richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
                     scores = new List<MemberScores>();
-                    var temp = (from g in top5
-                                orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4) descending
-                                select g).ToList();
+                    //var temp = (from g in top5
+                    //            orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4) descending
+                    //            select g).ToList();
 
                     //populate total score
-                    for (int i = 0; i < temp.Count; i++)
-                    {
-                        temp[i].Game.Game1 = temp[i].Game.Game1 == null ? 0 : temp[i].Game.Game1;
-                        temp[i].Game.Game2 = temp[i].Game.Game2 == null ? 0 : temp[i].Game.Game2;
-                        temp[i].Game.Game3 = temp[i].Game.Game3 == null ? 0 : temp[i].Game.Game3;
-                        temp[i].Game.Game4 = temp[i].Game.Game4 == null ? 0 : temp[i].Game.Game4;                        
-                    }          
+                    //for (int i = 0; i < temp.Count; i++)
+                    //{
+                    //    temp[i].Game.Game1 = temp[i].Game.Game1 == null ? 0 : temp[i].Game.Game1;
+                    //    temp[i].Game.Game2 = temp[i].Game.Game2 == null ? 0 : temp[i].Game.Game2;
+                    //    temp[i].Game.Game3 = temp[i].Game.Game3 == null ? 0 : temp[i].Game.Game3;
+                    //    temp[i].Game.Game4 = temp[i].Game.Game4 == null ? 0 : temp[i].Game.Game4;                        
+                    //}          
                     // List to get top 3 scores   
                     List<int> listOfScores = new List<int>();                  
 
                     if (rdoScratchScore.Checked)
                     {                    
-                        foreach (var s in temp)
+                        foreach (var s in listOfTopScore)
                         {                                
-                                int one = Convert.ToInt32(s.Game.Game1);
-                                int two = Convert.ToInt32(s.Game.Game2);
-                                int three = Convert.ToInt32(s.Game.Game3);
-                                int four = Convert.ToInt32(s.Game.Game4);
+                                int one = Convert.ToInt32(s.Game1);
+                                int two = Convert.ToInt32(s.Game2);
+                                int three = Convert.ToInt32(s.Game3);
+                                int four = Convert.ToInt32(s.Game4);
                                 listOfScores.Add(one);
                                 listOfScores.Add(two);
                                 listOfScores.Add(three);
@@ -1293,7 +1294,7 @@ namespace NineTapTour.Forms
                                 listOfScores.Reverse();
 
                                 ///*************************
-                                scores.Add(new MemberScores { FirstName = s.Member.FirstName, LastName = s.Member.LastName, Score = listOfScores[0] + listOfScores[1] + listOfScores[2] });
+                                scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = listOfScores[0] + listOfScores[1] + listOfScores[2] });
                                 listOfScores.Clear();
                         }
                         //IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
@@ -1308,32 +1309,32 @@ namespace NineTapTour.Forms
                     }
                     else if (rdoHandicapScore.Checked)
                     {
-                        foreach (var i in temp)
+                        foreach (var i in listOfTopScore)
                         {
                             #region conditions for highest handicap scores
                             nullValues = 0;
-                            if (i.Game.Game1 == 0)
+                            if (i.Game1 == 0)
                             {
                                 nullValues += 1;
                             }
-                            if (i.Game.Game2 == 0)
+                            if (i.Game2 == 0)
                             {
                                 nullValues += 1;
                             }
-                            if (i.Game.Game3 == 0)
+                            if (i.Game3 == 0)
                             {
                                 nullValues += 1;
                             }
-                            if (i.Game.Game4 == 0)
+                            if (i.Game4 == 0)
                             {
                                 nullValues += 1;
                             }
                                 #endregion
                                 ///***********************
-                                int one = Convert.ToInt32(i.Game.Game1 + i.Game.Handicap + i.Game.Bonus);
-                                int two = Convert.ToInt32(i.Game.Game2 + i.Game.Handicap + i.Game.Bonus);
-                                int three = Convert.ToInt32(i.Game.Game3 + i.Game.Handicap + i.Game.Bonus);
-                                int four = Convert.ToInt32(i.Game.Game4 + i.Game.Handicap + i.Game.Bonus);
+                                int one = Convert.ToInt32(i.Game1 + i.Handicap + i.Bonus);
+                                int two = Convert.ToInt32(i.Game2 + i.Handicap + i.Bonus);
+                                int three = Convert.ToInt32(i.Game3 + i.Handicap + i.Bonus);
+                                int four = Convert.ToInt32(i.Game4 + i.Handicap + i.Bonus);
                                 listOfScores.Add(one);
                                 listOfScores.Add(two);
                                 listOfScores.Add(three);
@@ -1342,7 +1343,7 @@ namespace NineTapTour.Forms
                                 listOfScores.Reverse();
 
                                 ///*************************
-                                scores.Add(new MemberScores { FirstName = i.Member.FirstName, LastName = i.Member.LastName, Score = listOfScores[0] + listOfScores[1] + listOfScores[2] });
+                                scores.Add(new MemberScores { FirstName = i.FirstName, LastName = i.LastName, Score = listOfScores[0] + listOfScores[1] + listOfScores[2] });
                                 listOfScores.Clear();
                             }                 
                         scores.Sort(scoreComparer);
