@@ -154,7 +154,7 @@ namespace NineTapTour.Forms
             return listOfValidScores;            
         }
 
-        private string GetConnection()
+        public static string GetConnection()
         {
             return ConfigurationManager.ConnectionStrings["NineTapDbConnection"].ConnectionString;
         }

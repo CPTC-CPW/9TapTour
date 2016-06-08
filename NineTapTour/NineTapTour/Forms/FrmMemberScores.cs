@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Data.Entity;
-
+using System.Data.SqlClient;
 
 namespace NineTapTour.Forms
 {
@@ -1002,9 +1002,58 @@ namespace NineTapTour.Forms
                 int selectedTourney = selectedTournament.Id;
                 List<MemberScores> scores;
                 IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
+
+                /// Seperate top scores so that only top score from each participant shows up for each tournament,
+                /// no matter how many squads they rolled in for the tournament.
+                SqlConnection con = new SqlConnection(TournamentStats.GetConnection());
+                SqlCommand getList = new SqlCommand();
+                getList.Connection = con;
+                getList.CommandText = @"SELECT DISTINCT Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Game1, Game2, Game3, Game4, SUM(Game1 + Game2 + Game3 + Game4) AS Total
+                                    FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
+                                    JOIN Games ON Games.Id = Participants.Game_Id
+                                    WHERE Tournaments.Id = @TID
+                                    GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber
+                                    ORDER BY Participants.Member_Id";
+                getList.Parameters.AddWithValue("@TID", selectedTourney);
+
+                try
+                {
+                    // open connection
+                    con.Open();
+
+                    // execute command(query)
+                    SqlDataReader reader = getList.ExecuteReader();
+                    List<int> listOfTopScore = new List<int>();
+
+                    int id = 0;
+                    int count = 0;
+                    // view results
+                    foreach (var i in reader)
+                    {
+                        if (Convert.ToInt32(reader["Member_ID"]) == id)
+                        {
+                            int score = Convert.ToInt32(reader["Total"]);
+                            if (score > listOfTopScore[count - 1])
+                            {
+                                listOfTopScore[count - 1] = score;
+                            }
+                        }
+                        else
+                        {
+                            id = Convert.ToInt32(reader["Member_ID"]);
+                            listOfTopScore.Add(Convert.ToInt32(reader["Total"]));
+                            count++;
+                        }                                                                       
+                    }
+                }
+                catch (SqlException)
+                {
+
+                }
+
                 var top5 = db.Participants.Include(b => b.Member)
-                        .Include(b => b.Game)
-                        .Where(b => b.Tournament.Id == selectedTourney);
+                .Include(b => b.Game)
+                .Where(b => b.Tournament.Id == selectedTourney);
 
                 // This function combines the former refresh events into a single function, and since they all used the same variable names I just put
                 // their old data in a scope block so they could be reused
