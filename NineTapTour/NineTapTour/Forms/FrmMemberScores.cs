@@ -1016,7 +1016,7 @@ namespace NineTapTour.Forms
                                     FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
                                     JOIN Games ON Games.Id = Participants.Game_Id
                                     JOIN Members ON Members.Id = Participants.Member_Id 
-                                    WHERE Tournaments.Id = 1
+                                    WHERE Tournaments.Id = @TID
                                     GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus
                                     ORDER BY Participants.Member_Id";
                 getList.Parameters.AddWithValue("@TID", selectedTourney);
@@ -1047,6 +1047,10 @@ namespace NineTapTour.Forms
                                 listOfTopScore[count - 1].ScratchTotal = score;
                                 listOfTopScore[count - 1].HandicapScore = score + (listOfTopScore[count - 1].Handicap * 4) + (listOfTopScore[count - 1].Bonus * 4);
                                 listOfTopScore[count - 1].Top3Score = top3Games[0] + top3Games[1] + top3Games[2];
+                                listOfTopScore[count - 1].Game1 = Convert.ToInt32(reader["Game1"]);
+                                listOfTopScore[count - 1].Game2 = Convert.ToInt32(reader["Game2"]);
+                                listOfTopScore[count - 1].Game3 = Convert.ToInt32(reader["Game3"]);
+                                listOfTopScore[count - 1].Game4 = Convert.ToInt32(reader["Game4"]);
                             }                            
                         }
                         else
@@ -1099,6 +1103,7 @@ namespace NineTapTour.Forms
                     var temp = (from g in top5
                                 orderby (g.Game.Handicap) descending
                                 select g).Take(5).ToList();
+                    nullValues = 0;
 
                     foreach (var i in temp)
                     {
@@ -1292,7 +1297,7 @@ namespace NineTapTour.Forms
                         }
                     }
                     else if (rdoHandicapScore.Checked)
-                    {
+                    {                       
                         foreach (var i in listOfTopScore)
                         {
                             #region conditions for highest handicap scores
