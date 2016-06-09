@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Data.Entity;
-
+using System.Drawing.Printing;
 
 namespace NineTapTour.Forms
 {
@@ -812,6 +812,7 @@ namespace NineTapTour.Forms
             {
                 txtMemberNum.Enabled = false;
                 txtMemberNum2.Enabled = false;
+                btnRecapByPin.Enabled = false;
             }
             else if (!selectedTournament.Doubles)
             {
@@ -849,6 +850,7 @@ namespace NineTapTour.Forms
             btnStats.Enabled = true;
             btnLeftArrow.Enabled = true;
             btnRightArrow.Enabled = true;
+            btnRecapByPin.Enabled = true;
         }
 
         /// <summary>
@@ -1395,5 +1397,11 @@ namespace NineTapTour.Forms
             TournamentStats tournamentStats = new TournamentStats();
             tournamentStats.ShowDialog();            
         }
+
+        private void btnRecapByPin_Click(object sender, EventArgs e)
+        {
+            NineTapTour.Database.Print.printByTour((Tournament)cbxTourneyDropDown.SelectedItem);
+        }
+        
     }
 }

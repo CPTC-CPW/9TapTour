@@ -89,7 +89,6 @@
             this.grpSearchBy = new System.Windows.Forms.GroupBox();
             this.btnMemberSearch = new System.Windows.Forms.Button();
             this.grpPrinter = new System.Windows.Forms.GroupBox();
-            this.btnRecapByPin = new System.Windows.Forms.Button();
             this.btnLabels = new System.Windows.Forms.Button();
             this.btnRecapByDate = new System.Windows.Forms.Button();
             this.btnThisRecap = new System.Windows.Forms.Button();
@@ -742,7 +741,6 @@
             // 
             // grpPrinter
             // 
-            this.grpPrinter.Controls.Add(this.btnRecapByPin);
             this.grpPrinter.Controls.Add(this.btnLabels);
             this.grpPrinter.Controls.Add(this.btnRecapByDate);
             this.grpPrinter.Controls.Add(this.btnThisRecap);
@@ -750,29 +748,17 @@
             this.grpPrinter.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.grpPrinter.Location = new System.Drawing.Point(643, 585);
             this.grpPrinter.Name = "grpPrinter";
-            this.grpPrinter.Size = new System.Drawing.Size(207, 109);
+            this.grpPrinter.Size = new System.Drawing.Size(229, 85);
             this.grpPrinter.TabIndex = 29;
             this.grpPrinter.TabStop = false;
             this.grpPrinter.Text = "Print";
             // 
-            // btnRecapByPin
-            // 
-            this.btnRecapByPin.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRecapByPin.Location = new System.Drawing.Point(105, 49);
-            this.btnRecapByPin.Name = "btnRecapByPin";
-            this.btnRecapByPin.Size = new System.Drawing.Size(84, 23);
-            this.btnRecapByPin.TabIndex = 31;
-            this.btnRecapByPin.TabStop = false;
-            this.btnRecapByPin.Text = "Recap By Pin";
-            this.btnRecapByPin.UseVisualStyleBackColor = true;
-            this.btnRecapByPin.Click += new System.EventHandler(this.btnRecapByPin_Click);
-            // 
             // btnLabels
             // 
             this.btnLabels.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLabels.Location = new System.Drawing.Point(18, 75);
+            this.btnLabels.Location = new System.Drawing.Point(105, 49);
             this.btnLabels.Name = "btnLabels";
-            this.btnLabels.Size = new System.Drawing.Size(84, 23);
+            this.btnLabels.Size = new System.Drawing.Size(102, 23);
             this.btnLabels.TabIndex = 33;
             this.btnLabels.TabStop = false;
             this.btnLabels.Text = "Labels";
@@ -783,10 +769,10 @@
             this.btnRecapByDate.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRecapByDate.Location = new System.Drawing.Point(105, 23);
             this.btnRecapByDate.Name = "btnRecapByDate";
-            this.btnRecapByDate.Size = new System.Drawing.Size(84, 23);
+            this.btnRecapByDate.Size = new System.Drawing.Size(102, 23);
             this.btnRecapByDate.TabIndex = 30;
             this.btnRecapByDate.TabStop = false;
-            this.btnRecapByDate.Text = "Recap Date";
+            this.btnRecapByDate.Text = "Print By Date";
             this.btnRecapByDate.UseVisualStyleBackColor = true;
             this.btnRecapByDate.Click += new System.EventHandler(this.btnRecapByDate_Click);
             // 
@@ -1064,7 +1050,6 @@
         private System.Windows.Forms.Button btnRecapByDate;
         private System.Windows.Forms.Button btnThisRecap;
         private System.Windows.Forms.Button btnAllRecaps;
-        private System.Windows.Forms.Button btnRecapByPin;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Label lblEmail;
         private System.Windows.Forms.RadioButton rdoFemale;
