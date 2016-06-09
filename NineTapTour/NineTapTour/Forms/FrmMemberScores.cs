@@ -1031,10 +1031,12 @@ namespace NineTapTour.Forms
 
                     int id = 0;
                     int count = 0;
+                    int num = 0;
                    
                     // view results
                     foreach (var i in reader)
                     {
+                        num = listOfTopScore.Count();
                         int score = Convert.ToInt32(reader["Total"]);
                         List<int?> top4Games = new List<int?> { Convert.ToInt32(reader["Game1"]), Convert.ToInt32(reader["Game2"]), Convert.ToInt32(reader["Game3"]), Convert.ToInt32(reader["Game4"]) };
                         List<int> top3Games = TournamentStats.GetTop3OutOf4(top4Games);
@@ -1049,8 +1051,12 @@ namespace NineTapTour.Forms
                         }
                         else
                         {
-                            TopScores temp = new TopScores();
-                            listOfTopScore.Add(temp);
+                            if (count == num)
+                            {
+                                TopScores temp = new TopScores();
+                                listOfTopScore.Add(temp);
+                            }
+                            
 
                             id = Convert.ToInt32(reader["Member_ID"]);  
                             /// Populates info                         
@@ -1188,18 +1194,7 @@ namespace NineTapTour.Forms
                     richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
                     richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
                     scores = new List<MemberScores>();
-                    //var temp = (from g in top5
-                    //            orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4) descending
-                    //            select g).Take(5).ToList();
-
-                    //for (int i = 0; i < temp.Count; i++)
-                    //{
-                    //    temp[i].Game.Game1 = temp[i].Game.Game1 == null ? 0 : temp[i].Game.Game1;
-                    //    temp[i].Game.Game2 = temp[i].Game.Game2 == null ? 0 : temp[i].Game.Game2;
-                    //    temp[i].Game.Game3 = temp[i].Game.Game3 == null ? 0 : temp[i].Game.Game3;
-                    //    temp[i].Game.Game4 = temp[i].Game.Game4 == null ? 0 : temp[i].Game.Game4;
-                    //}
-
+                    
                     //populate total score
                     if (rdoScratchScore.Checked)
                     {
@@ -1263,18 +1258,7 @@ namespace NineTapTour.Forms
                     richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
                     richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
                     scores = new List<MemberScores>();
-                    //var temp = (from g in top5
-                    //            orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4) descending
-                    //            select g).ToList();
-
-                    //populate total score
-                    //for (int i = 0; i < temp.Count; i++)
-                    //{
-                    //    temp[i].Game.Game1 = temp[i].Game.Game1 == null ? 0 : temp[i].Game.Game1;
-                    //    temp[i].Game.Game2 = temp[i].Game.Game2 == null ? 0 : temp[i].Game.Game2;
-                    //    temp[i].Game.Game3 = temp[i].Game.Game3 == null ? 0 : temp[i].Game.Game3;
-                    //    temp[i].Game.Game4 = temp[i].Game.Game4 == null ? 0 : temp[i].Game.Game4;                        
-                    //}          
+                    
                     // List to get top 3 scores   
                     List<int> listOfScores = new List<int>();                  
 
