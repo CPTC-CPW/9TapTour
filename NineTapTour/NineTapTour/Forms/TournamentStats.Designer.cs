@@ -40,19 +40,19 @@
             // 
             this.lblTournamentName.AutoSize = true;
             this.lblTournamentName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTournamentName.Location = new System.Drawing.Point(33, 48);
+            this.lblTournamentName.Location = new System.Drawing.Point(38, 51);
             this.lblTournamentName.Name = "lblTournamentName";
-            this.lblTournamentName.Size = new System.Drawing.Size(332, 40);
+            this.lblTournamentName.Size = new System.Drawing.Size(366, 46);
             this.lblTournamentName.TabIndex = 0;
             this.lblTournamentName.Text = "Tournament Name";
             // 
             // dgvTournamentStats
             // 
             this.dgvTournamentStats.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvTournamentStats.Location = new System.Drawing.Point(40, 203);
+            this.dgvTournamentStats.Location = new System.Drawing.Point(46, 217);
             this.dgvTournamentStats.Name = "dgvTournamentStats";
             this.dgvTournamentStats.RowTemplate.Height = 37;
-            this.dgvTournamentStats.Size = new System.Drawing.Size(2908, 1012);
+            this.dgvTournamentStats.Size = new System.Drawing.Size(3323, 1082);
             this.dgvTournamentStats.TabIndex = 1;
             // 
             // printDialog1
@@ -65,9 +65,9 @@
             // 
             // btnPrint
             // 
-            this.btnPrint.Location = new System.Drawing.Point(2736, 1227);
+            this.btnPrint.Location = new System.Drawing.Point(3127, 1312);
             this.btnPrint.Name = "btnPrint";
-            this.btnPrint.Size = new System.Drawing.Size(212, 85);
+            this.btnPrint.Size = new System.Drawing.Size(242, 91);
             this.btnPrint.TabIndex = 2;
             this.btnPrint.Text = "Print";
             this.btnPrint.UseVisualStyleBackColor = true;
@@ -75,9 +75,9 @@
             // 
             // TournamentStats
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 29F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(2950, 1324);
+            this.ClientSize = new System.Drawing.Size(3371, 1415);
             this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.dgvTournamentStats);
             this.Controls.Add(this.lblTournamentName);
