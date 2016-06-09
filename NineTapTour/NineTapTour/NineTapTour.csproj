@@ -381,6 +381,9 @@
     <EmbeddedResource Include="Migrations\201604242119516_doubles.resx">
       <DependentUpon>201604242119516_doubles.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605050259447_MemberPaymentStatus.resx">
+      <DependentUpon>201605050259447_MemberPaymentStatus.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201606071902016_SSN_nullable.resx">
       <DependentUpon>201606071902016_SSN_nullable.cs</DependentUpon>
     </EmbeddedResource>
