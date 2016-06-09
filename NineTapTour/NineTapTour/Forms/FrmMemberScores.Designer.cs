@@ -97,6 +97,7 @@
             this.btnNewTournament = new System.Windows.Forms.Button();
             this.btnTourSearch = new System.Windows.Forms.Button();
             this.btnTournamentsByYear = new System.Windows.Forms.Button();
+            this.btnPlaceStandings = new System.Windows.Forms.Button();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpRecord.SuspendLayout();
@@ -953,12 +954,24 @@
             this.btnTournamentsByYear.UseVisualStyleBackColor = true;
             this.btnTournamentsByYear.Click += new System.EventHandler(this.btnTournamentsByYear_Click);
             // 
+            // btnPlaceStandings
+            // 
+            this.btnPlaceStandings.Enabled = false;
+            this.btnPlaceStandings.Location = new System.Drawing.Point(749, 1265);
+            this.btnPlaceStandings.Name = "btnPlaceStandings";
+            this.btnPlaceStandings.Size = new System.Drawing.Size(504, 55);
+            this.btnPlaceStandings.TabIndex = 35;
+            this.btnPlaceStandings.Text = "Tournament Place Standings";
+            this.btnPlaceStandings.UseVisualStyleBackColor = true;
+            this.btnPlaceStandings.Click += new System.EventHandler(this.btnPlaceStandings_Click);
+            // 
             // frmMemberScores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
-            this.ClientSize = new System.Drawing.Size(2357, 1568);
+            this.ClientSize = new System.Drawing.Size(2357, 1836);
+            this.Controls.Add(this.btnPlaceStandings);
             this.Controls.Add(this.btnTournamentsByYear);
             this.Controls.Add(this.btnTourSearch);
             this.Controls.Add(this.btnNewTournament);
@@ -1078,5 +1091,6 @@
         private System.Windows.Forms.Label lblPlayer1;
         private System.Windows.Forms.Button btnTourSearch;
         private System.Windows.Forms.Button btnTournamentsByYear;
+        private System.Windows.Forms.Button btnPlaceStandings;
     }
 }

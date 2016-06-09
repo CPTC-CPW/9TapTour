@@ -1,0 +1,110 @@
+﻿namespace NineTapTour.Forms
+{
+    partial class TournamentPlaceStandings
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.dgvTournamentStandings = new System.Windows.Forms.DataGridView();
+            this.lblTournamentPlaceStandings = new System.Windows.Forms.Label();
+            this.lblTournamentName = new System.Windows.Forms.Label();
+            this.btnPrint = new System.Windows.Forms.Button();
+            this.printDialog1 = new System.Windows.Forms.PrintDialog();
+            this.printDocument1 = new System.Drawing.Printing.PrintDocument();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTournamentStandings)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // dgvTournamentStandings
+            // 
+            this.dgvTournamentStandings.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvTournamentStandings.Location = new System.Drawing.Point(148, 200);
+            this.dgvTournamentStandings.Name = "dgvTournamentStandings";
+            this.dgvTournamentStandings.RowTemplate.Height = 40;
+            this.dgvTournamentStandings.Size = new System.Drawing.Size(3320, 1384);
+            this.dgvTournamentStandings.TabIndex = 0;
+            // 
+            // lblTournamentPlaceStandings
+            // 
+            this.lblTournamentPlaceStandings.AutoSize = true;
+            this.lblTournamentPlaceStandings.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTournamentPlaceStandings.Location = new System.Drawing.Point(158, 57);
+            this.lblTournamentPlaceStandings.Name = "lblTournamentPlaceStandings";
+            this.lblTournamentPlaceStandings.Size = new System.Drawing.Size(728, 76);
+            this.lblTournamentPlaceStandings.TabIndex = 1;
+            this.lblTournamentPlaceStandings.Text = "Tournament Standings";
+            // 
+            // lblTournamentName
+            // 
+            this.lblTournamentName.AutoSize = true;
+            this.lblTournamentName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTournamentName.Location = new System.Drawing.Point(1590, 82);
+            this.lblTournamentName.Name = "lblTournamentName";
+            this.lblTournamentName.Size = new System.Drawing.Size(132, 46);
+            this.lblTournamentName.TabIndex = 2;
+            this.lblTournamentName.Text = "label1";
+            // 
+            // btnPrint
+            // 
+            this.btnPrint.Location = new System.Drawing.Point(3166, 1618);
+            this.btnPrint.Name = "btnPrint";
+            this.btnPrint.Size = new System.Drawing.Size(258, 64);
+            this.btnPrint.TabIndex = 3;
+            this.btnPrint.Text = "Print";
+            this.btnPrint.UseVisualStyleBackColor = true;
+            this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
+            // 
+            // printDialog1
+            // 
+            this.printDialog1.UseEXDialog = true;
+            // 
+            // TournamentPlaceStandings
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(3475, 1710);
+            this.Controls.Add(this.btnPrint);
+            this.Controls.Add(this.lblTournamentName);
+            this.Controls.Add(this.lblTournamentPlaceStandings);
+            this.Controls.Add(this.dgvTournamentStandings);
+            this.Name = "TournamentPlaceStandings";
+            this.Text = "Tournament Place Standings";
+            this.Load += new System.EventHandler(this.TournamentPlaceStandings_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTournamentStandings)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.DataGridView dgvTournamentStandings;
+        private System.Windows.Forms.Label lblTournamentPlaceStandings;
+        private System.Windows.Forms.Label lblTournamentName;
+        private System.Windows.Forms.Button btnPrint;
+        private System.Windows.Forms.PrintDialog printDialog1;
+        private System.Drawing.Printing.PrintDocument printDocument1;
+    }
+}

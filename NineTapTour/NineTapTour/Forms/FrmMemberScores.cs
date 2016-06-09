@@ -24,6 +24,7 @@ namespace NineTapTour.Forms
         Participant player2 = new Participant();
         bool doubles = true;
         public static Tournament selectedTournament;
+        public static List<TopScores> overallListOfTopScores;
 
         public frmMemberScores()
         {
@@ -79,6 +80,7 @@ namespace NineTapTour.Forms
             cbxTourneyDropDown.SelectedIndex = -1;
             clear();
             cbxTourneyDropDown.Visible = true;
+            btnPlaceStandings.Enabled  = false;
         }
 
         /// <summary>
@@ -91,7 +93,8 @@ namespace NineTapTour.Forms
             txtFirstName.Clear();
             txtMiddleInitial.Clear();
             txtHandicap.Clear();
-            txtBonusPins.Clear(); 
+            txtBonusPins.Clear();            
+            listOfTopScore.Clear();
         }
         #region GetMember
         /// <summary>
@@ -851,6 +854,7 @@ namespace NineTapTour.Forms
             btnStats.Enabled = true;
             btnLeftArrow.Enabled = true;
             btnRightArrow.Enabled = true;
+            btnPlaceStandings.Enabled = true;
         }
 
         /// <summary>
@@ -1016,7 +1020,7 @@ namespace NineTapTour.Forms
                                     FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
                                     JOIN Games ON Games.Id = Participants.Game_Id
                                     JOIN Members ON Members.Id = Participants.Member_Id 
-                                    WHERE Tournaments.Id = 1
+                                    WHERE Tournaments.Id = @TID
                                     GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus
                                     ORDER BY Participants.Member_Id";
                 getList.Parameters.AddWithValue("@TID", selectedTourney);
@@ -1046,7 +1050,12 @@ namespace NineTapTour.Forms
                             {
                                 listOfTopScore[count - 1].ScratchTotal = score;
                                 listOfTopScore[count - 1].HandicapScore = score + (listOfTopScore[count - 1].Handicap * 4) + (listOfTopScore[count - 1].Bonus * 4);
-                                listOfTopScore[count - 1].Top3Score = top3Games[0] + top3Games[1] + top3Games[2];
+                                listOfTopScore[count - 1].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
+                                listOfTopScore[count - 1].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (4 * Convert.ToInt32(reader["Handicap"])) + (4 * Convert.ToInt32(reader["Bonus"]));
+                                listOfTopScore[count - 1].Game1 = Convert.ToInt32(reader["Game1"]);
+                                listOfTopScore[count - 1].Game2 = Convert.ToInt32(reader["Game2"]);
+                                listOfTopScore[count - 1].Game3 = Convert.ToInt32(reader["Game3"]);
+                                listOfTopScore[count - 1].Game4 = Convert.ToInt32(reader["Game4"]);
                             }                            
                         }
                         else
@@ -1070,7 +1079,8 @@ namespace NineTapTour.Forms
                             listOfTopScore[count].Bonus = Convert.ToInt32(reader["Bonus"]);
                             listOfTopScore[count].ScratchTotal = Convert.ToInt32(reader["Total"]);
                             listOfTopScore[count].HandicapScore = score + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);
-                            listOfTopScore[count].Top3Score = top3Games[0] + top3Games[1] + top3Games[2];
+                            listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
+                            listOfTopScore[count].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (4 * Convert.ToInt32(reader["Handicap"])) + (4 * Convert.ToInt32(reader["Bonus"]));
                             count++;
                         }                                                                       
                     }
@@ -1080,6 +1090,7 @@ namespace NineTapTour.Forms
 
                 }
 
+                overallListOfTopScores = listOfTopScore;
                 /// Top 5 LINQ query
                 var top5 = db.Participants.Include(b => b.Member)
                 .Include(b => b.Game)
@@ -1099,6 +1110,7 @@ namespace NineTapTour.Forms
                     var temp = (from g in top5
                                 orderby (g.Game.Handicap) descending
                                 select g).Take(5).ToList();
+                    nullValues = 0;
 
                     foreach (var i in temp)
                     {
@@ -1292,7 +1304,7 @@ namespace NineTapTour.Forms
                         }
                     }
                     else if (rdoHandicapScore.Checked)
-                    {
+                    {                       
                         foreach (var i in listOfTopScore)
                         {
                             #region conditions for highest handicap scores
@@ -1378,6 +1390,12 @@ namespace NineTapTour.Forms
             TournamentStats tournamentStats = new TournamentStats();
             tournamentStats.ShowDialog();            
         }
+
+        private void btnPlaceStandings_Click(object sender, EventArgs e)
+        {
+            TournamentPlaceStandings form = new TournamentPlaceStandings();
+            form.ShowDialog();
+        }
     }
     /// <summary>
     /// Class used to populate 3rd RichTextBox
@@ -1393,7 +1411,8 @@ namespace NineTapTour.Forms
         public string LastName { get; set; }        
         public int? ScratchTotal { get; set; }
         public int HandicapScore { get; set; }
-        public int? Top3Score { get; set; }
+        public int? Top3ScratchScore { get; set; }
+        public int? Top3HandiScores { get; set; }
         public int? Game1 { get; set; }
         public int? Game2 { get; set; }
         public int? Game3 { get; set; }
