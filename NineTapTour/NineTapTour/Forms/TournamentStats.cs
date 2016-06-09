@@ -139,7 +139,7 @@ namespace NineTapTour.Forms
             }
         }
 
-        private List<int> GetTop3OutOf4(List<int?> scores)
+        public static List<int> GetTop3OutOf4(List<int?> scores)
         {            
             List<int> listOfValidScores = new List<int>();
             for(int i = 0; i < scores.Count; i++)
@@ -154,7 +154,7 @@ namespace NineTapTour.Forms
             return listOfValidScores;            
         }
 
-        private string GetConnection()
+        public static string GetConnection()
         {
             return ConfigurationManager.ConnectionStrings["NineTapDbConnection"].ConnectionString;
         }
