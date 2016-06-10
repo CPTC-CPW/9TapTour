@@ -1051,7 +1051,7 @@ namespace NineTapTour.Forms
                                 listOfTopScore[count - 1].ScratchTotal = score;
                                 listOfTopScore[count - 1].HandicapScore = score + (listOfTopScore[count - 1].Handicap * 4) + (listOfTopScore[count - 1].Bonus * 4);
                                 listOfTopScore[count - 1].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
-                                listOfTopScore[count - 1].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (4 * Convert.ToInt32(reader["Handicap"])) + (4 * Convert.ToInt32(reader["Bonus"]));
+                                listOfTopScore[count - 1].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * Convert.ToInt32(reader["Handicap"])) + (3 * Convert.ToInt32(reader["Bonus"]));
                                 listOfTopScore[count - 1].Game1 = Convert.ToInt32(reader["Game1"]);
                                 listOfTopScore[count - 1].Game2 = Convert.ToInt32(reader["Game2"]);
                                 listOfTopScore[count - 1].Game3 = Convert.ToInt32(reader["Game3"]);
@@ -1080,7 +1080,7 @@ namespace NineTapTour.Forms
                             listOfTopScore[count].ScratchTotal = Convert.ToInt32(reader["Total"]);
                             listOfTopScore[count].HandicapScore = score + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);
                             listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
-                            listOfTopScore[count].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (4 * Convert.ToInt32(reader["Handicap"])) + (4 * Convert.ToInt32(reader["Bonus"]));
+                            listOfTopScore[count].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * Convert.ToInt32(reader["Handicap"])) + (3 * Convert.ToInt32(reader["Bonus"]));
                             count++;
                         }                                                                       
                     }
