@@ -61,7 +61,7 @@ namespace NineTapTour.Database
         static List<Member> mems = new List<Member>();
         static int index = 0;
         // This is for the printbytourney button
-        static public void printByTour(Tournament tour)
+        static public void printByTour(List<Tournament> tours)
         {
             //Set up compenents for printing
             PrintDialog printDialog = new PrintDialog();
@@ -72,26 +72,30 @@ namespace NineTapTour.Database
             //add the event handler that will do the printing
             printDocument.PrintPage += new PrintPageEventHandler(printTourRecaps);
 
-            List<Participant> tempParts = TournamentDb.GetTournamentMemberList(tour);
-
+            List<Participant> tempParts;
             bool add;
-            foreach (Participant p in tempParts)
+            foreach (Tournament tour in tours)
             {
-                add = true;
-                foreach (Member m in mems)
+                tempParts = TournamentDb.GetTournamentMemberList(tour);
+                
+                foreach (Participant p in tempParts)
                 {
-                    if (m.Id == p.Member.Id)
+                    add = true;
+                    foreach (Member m in mems)
                     {
-                        add = false;
-                        break;
+                        if (m.Id == p.Member.Id)
+                        {
+                            add = false;
+                            break;
+                        }
+                    }
+                    if (add)
+                    {
+                        mems.Add(p.Member);
                     }
                 }
-                if (add)
-                {
-                    mems.Add(p.Member);
-                }
-            }
 
+            }
             if (mems.Count > 0)
             {
                 DialogResult result = printDialog.ShowDialog();

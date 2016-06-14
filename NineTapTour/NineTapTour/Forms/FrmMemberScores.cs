@@ -1400,7 +1400,9 @@ namespace NineTapTour.Forms
 
         private void btnRecapByPin_Click(object sender, EventArgs e)
         {
-            NineTapTour.Database.Print.printByTour((Tournament)cbxTourneyDropDown.SelectedItem);
+            List<Tournament> single = new List<Tournament>();
+            single.Add((Tournament)cbxTourneyDropDown.SelectedItem);
+            NineTapTour.Database.Print.printByTour(single);
         }
         
     }
