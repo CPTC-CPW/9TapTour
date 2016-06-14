@@ -759,6 +759,12 @@ namespace NineTapTour.Forms
         {
             dateDOB.Format = DateTimePickerFormat.Short;
         }
+
+        private void btnLabels_Click(object sender, EventArgs e)
+        {
+            FrmLabelPrint labels = new FrmLabelPrint();
+            labels.ShowDialog();
+        }
     }
 }
 
