@@ -547,11 +547,13 @@ namespace NineTapTour.Forms
                         || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
                     {
                         MessageBox.Show("Please enter all scratch scores", "Blank Scores Not Allowed");
+                        return;
                     }
                     else if (!isNumeric(txtScratchScore1.Text.Trim()) || !isNumeric(txtScratchScore2.Text.Trim())
                         || !isNumeric(txtScratchScore3.Text.Trim()) || !isNumeric(txtScratchScore4.Text.Trim()))
                     {
                         MessageBox.Show("Please enter only numbers", "Non-Integer Scores Not Allowed");
+                        return;
                     }
                     else
                     {
