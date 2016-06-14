@@ -430,12 +430,12 @@
             // 
             this.btnRecapByPin.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.btnRecapByPin.Location = new System.Drawing.Point(19, 176);
-            this.btnRecapByPin.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.btnRecapByPin.Margin = new System.Windows.Forms.Padding(1);
             this.btnRecapByPin.Name = "btnRecapByPin";
             this.btnRecapByPin.Size = new System.Drawing.Size(197, 25);
             this.btnRecapByPin.TabIndex = 35;
             this.btnRecapByPin.TabStop = false;
-            this.btnRecapByPin.Text = "Print By Tourney";
+            this.btnRecapByPin.Text = "Print Recaps By Tournament";
             this.btnRecapByPin.UseVisualStyleBackColor = true;
             this.btnRecapByPin.Click += new System.EventHandler(this.btnRecapByPin_Click);
             // 
@@ -885,7 +885,7 @@
             // btnTournamentsByYear
             // 
             this.btnTournamentsByYear.Location = new System.Drawing.Point(281, 704);
-            this.btnTournamentsByYear.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.btnTournamentsByYear.Margin = new System.Windows.Forms.Padding(1);
             this.btnTournamentsByYear.Name = "btnTournamentsByYear";
             this.btnTournamentsByYear.Size = new System.Drawing.Size(189, 23);
             this.btnTournamentsByYear.TabIndex = 34;
@@ -897,7 +897,7 @@
             // 
             this.btnPlaceStandings.Enabled = false;
             this.btnPlaceStandings.Location = new System.Drawing.Point(281, 530);
-            this.btnPlaceStandings.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.btnPlaceStandings.Margin = new System.Windows.Forms.Padding(1);
             this.btnPlaceStandings.Name = "btnPlaceStandings";
             this.btnPlaceStandings.Size = new System.Drawing.Size(189, 23);
             this.btnPlaceStandings.TabIndex = 35;

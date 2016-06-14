@@ -751,7 +751,7 @@
             this.grpPrinter.Size = new System.Drawing.Size(229, 85);
             this.grpPrinter.TabIndex = 29;
             this.grpPrinter.TabStop = false;
-            this.grpPrinter.Text = "Print";
+            this.grpPrinter.Text = "Print Recaps";
             // 
             // btnLabels
             // 

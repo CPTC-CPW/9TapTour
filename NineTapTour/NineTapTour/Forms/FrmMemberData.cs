@@ -726,7 +726,7 @@ namespace NineTapTour.Forms
 
         private void btnAllRecaps_Click(object sender, EventArgs e)
         {
-            // Are we sure we want this?
+            Print.printAllMembers();
         }
     }
 }

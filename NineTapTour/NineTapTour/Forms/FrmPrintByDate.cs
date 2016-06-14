@@ -36,6 +36,7 @@ namespace NineTapTour.Forms
         }
 
         List<Tournament> tours;
+        List<Member> members;
         private void btnCheck_Click(object sender, EventArgs e)
         {
             using (NineTapDb db = new NineTapDb())
@@ -45,6 +46,8 @@ namespace NineTapTour.Forms
                          where t.Date >= dateTimeStart.Value && t.Date <= dateTimeEnd.Value
                          select t).ToList();
             }
+            members = TournamentDb.GetUniqueTourMembersByDate(dateTimeStart.Value, dateTimeEnd.Value);
+
             if (tours.Count > 0)
             {
                 btnPrint.Enabled = true;
@@ -55,11 +58,13 @@ namespace NineTapTour.Forms
                 btnPrint.Enabled = false;
                 listTours.Items.Clear();
             }
+            lblNumMems.Text = members.Count + " members will be printed.";
         }
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
-            Print.printByTourDate(dateTimeStart.Value, dateTimeEnd.Value);
+            //Print.printByTourDate(dateTimeStart.Value, dateTimeEnd.Value);
+            Print.printByMemberList(members);
         }
     }
 }

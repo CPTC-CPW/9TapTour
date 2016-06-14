@@ -84,6 +84,8 @@ namespace NineTapTour.Database
             index = 0;
         }
 
+        // The fetching was moved to the print button, but I'll leave this code here in case it's ever needed.
+        /*
         static public void printByTourDate(DateTime start, DateTime end)
         {
             //Set up compenents for printing
@@ -105,7 +107,59 @@ namespace NineTapTour.Database
                 }
             }
             index = 0;
+        }
+        */
 
+        static public void printAllMembers()
+        {
+            // Set up compenents for printing
+             PrintDialog printDialog = new PrintDialog();
+             PrintDocument printDocument = new PrintDocument();
+            //add the document to the dialog box
+            printDialog.Document = printDocument;
+
+            //add the event handler that will do the printing
+            printDocument.PrintPage += new PrintPageEventHandler(printTourRecaps);
+
+            using (NineTapDb db = new NineTapDb())
+            {
+                mems = (from m in db.Members
+                        orderby m.LastName descending
+                        select m).ToList();
+            }
+
+            if (mems.Count > 0)
+            {
+                DialogResult result = printDialog.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    printDocument.Print();
+                }
+            }
+            index = 0;
+        }
+        static public void printByMemberList(List<Member> members)
+        {
+            //Set up compenents for printing
+            PrintDialog printDialog = new PrintDialog();
+            PrintDocument printDocument = new PrintDocument();
+            //add the document to the dialog box
+            printDialog.Document = printDocument;
+
+            //add the event handler that will do the printing
+            printDocument.PrintPage += new PrintPageEventHandler(printTourRecaps);
+
+            mems = members;
+
+            if (mems.Count > 0)
+            {
+                DialogResult result = printDialog.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    printDocument.Print();
+                }
+            }
+            index = 0;
         }
 
         static private void printTourRecaps(object sender, PrintPageEventArgs e)
