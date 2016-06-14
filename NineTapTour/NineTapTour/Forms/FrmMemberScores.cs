@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Data.Entity;
 using System.Data.SqlClient;
+using System.Configuration;
 
 namespace NineTapTour.Forms
 {
@@ -431,6 +432,8 @@ namespace NineTapTour.Forms
         {
             if (IsValid())
             {
+
+                
                 Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
                 List<Participant> total = TournamentDb.GetTournamentMemberList(currTourney);
                 //Doubles tournament
@@ -575,6 +578,28 @@ namespace NineTapTour.Forms
                             MessageBox.Show(ex.Message);
 
                         }
+                        //UPDATE LASTBOWLED DATE
+                        NineTapDb datab = new NineTapDb();
+                        SqlConnection con = new SqlConnection(GetConnection());
+                        con.Open();
+                        try
+                        {
+
+                            SqlCommand UpdateLastBowledDate = new SqlCommand();
+                            UpdateLastBowledDate.CommandText = "SELECT * FROM Members UPDATE Members SET LastBowled = @DATE WHERE Members.Id " + currentMem.Id.ToString();
+                            UpdateLastBowledDate.Parameters.AddWithValue("@DATE", selectedTournament.Date.ToString("yyyy-MM-dd"));
+
+                            SqlDataReader dateReader = UpdateLastBowledDate.ExecuteReader();
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Could Not Update Last Bowled Date");
+                        }
+                        finally
+                        {
+                            con.Dispose();
+                        }
+                        //END UPDATE LASTBOWLED DATE
                         clear();
                         txtMemberNum.Focus();
                     }
@@ -586,6 +611,11 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show("Please Fill out the Participants information!");
             }
+        }
+
+        private string GetConnection()
+        {
+            return ConfigurationManager.ConnectionStrings["NineTapDbConnection"].ConnectionString;
         }
         #endregion
         /// <summary>
@@ -1421,4 +1451,7 @@ namespace NineTapTour.Forms
         public int Bonus { get; set; }
         #endregion
     }
+
+
+
 }
