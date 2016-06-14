@@ -1158,16 +1158,16 @@ namespace NineTapTour.Forms
 
                     var temp = (from g in top5
                                 orderby g.Game.Game1
-                                select new { g.Game.Game1, g.Member.FirstName, g.Member.LastName }).Take(5);
+                                select new { g.Game.Game1, g.Member.FirstName, g.Member.LastName });
                     var temp2 = (from g in top5
                                  orderby g.Game.Game2
-                                 select new { g.Game.Game2, g.Member.FirstName, g.Member.LastName }).Take(5);
+                                 select new { g.Game.Game2, g.Member.FirstName, g.Member.LastName });
                     var temp3 = (from g in top5
                                  orderby g.Game.Game3
-                                 select new { g.Game.Game3, g.Member.FirstName, g.Member.LastName }).Take(5);
+                                 select new { g.Game.Game3, g.Member.FirstName, g.Member.LastName });
                     var temp4 = (from g in top5
                                  orderby g.Game.Game4
-                                 select new { g.Game.Game4, g.Member.FirstName, g.Member.LastName }).Take(5);
+                                 select new { g.Game.Game4, g.Member.FirstName, g.Member.LastName });
                     foreach (var s in temp)
                     {
                         scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game1 });
