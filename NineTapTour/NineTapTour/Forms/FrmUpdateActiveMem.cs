@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.ComponentModel.DataAnnotations;
 using static NineTapTour._NineTapTour_NineTapDbDataSet;
+using System.Data.SqlClient;
+using System.Configuration;
 
 namespace NineTapTour.Forms
 {
@@ -44,7 +46,7 @@ namespace NineTapTour.Forms
                             {
                                 lastplayed = "never";
                             }
-                            string InActive = String.Format("({2,-5}) {1,10}{3,0}{0,10}",
+                            string InActive = String.Format("-{2,-5}- {1,10}{3,0}{0,10}",
                              mem.LastName + ", " + mem.FirstName, lastplayed, mem.Number, "     ");
                             //TODO change from string to object
                             checkedListBox1.Items.Add(InActive, false);
@@ -74,24 +76,60 @@ namespace NineTapTour.Forms
             {
                 try
                 {
-                    
 
-                    foreach(var item in checkedListBox1.CheckedItems)
+
+                    foreach (var item in checkedListBox1.CheckedItems)
                     {
                         string value = item.ToString();
-                        string output = value.Split('(', ')')[1];
-                        MessageBox.Show(output);//for testing
+                        string output = value.Split('-', '-')[1];
+                        //MessageBox.Show(output);//for testing
                         int n = Int32.Parse(output);
-                        InActiveList[n].IsActive = false;
+                        
+                      
+                        NineTapDb db = new NineTapDb();
+                        SqlConnection con = new SqlConnection(GetConnection());
+                        SqlCommand ActiveList = new SqlCommand();
+                        ActiveList.Connection = con;
+                        ActiveList.CommandText = "SELECT * FROM Members UPDATE Members SET IsActive = 0 WHERE Members.Id = @TID";
+                        ActiveList.Parameters.AddWithValue("@TID", n);
+                        try
+                        {
+                            // open connection
+                            con.Open();
+                            // execute command(query)
+                            SqlDataReader reader = ActiveList.ExecuteReader();
+                       
+                        
+            
+                        }
+                        catch (SqlException)
+                        {
+                            MessageBox.Show("Error On update");
+                        }
+                        finally
+                        {
+                            con.Dispose();
+                        }
                     }
                 }
+                       
+                    
+                    
+                
                 catch
                 {
-                    MessageBox.Show("No Members Selected");
+                    //MessageBox.Show("No Members Selected");
                 }
               
             }
         }
+
+        private string GetConnection()
+        {
+            return ConfigurationManager.ConnectionStrings["NineTapDbConnection"].ConnectionString;
+        }
+
+
 
         private void btnCheckInactive_Click(object sender, EventArgs e)
         {
