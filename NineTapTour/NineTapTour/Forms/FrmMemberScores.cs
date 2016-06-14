@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Data.Entity;
 using System.Data.SqlClient;
+using System.Drawing.Printing;
 
 namespace NineTapTour.Forms
 {
@@ -62,7 +63,7 @@ namespace NineTapTour.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void FrmMemberScores_Activated(object sender, EventArgs e)
-        {
+        {            
             cbxTourneyDropDown.Visible = false;
             ResetFields();
             MemberStatus("", Color.Black, SystemColors.Control, true);
@@ -93,7 +94,7 @@ namespace NineTapTour.Forms
             txtFirstName.Clear();
             txtMiddleInitial.Clear();
             txtHandicap.Clear();
-            txtBonusPins.Clear();            
+            txtBonusPins.Clear(); 
             listOfTopScore.Clear();
         }
         #region GetMember
@@ -546,11 +547,13 @@ namespace NineTapTour.Forms
                         || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
                     {
                         MessageBox.Show("Please enter all scratch scores", "Blank Scores Not Allowed");
+                        return;
                     }
                     else if (!isNumeric(txtScratchScore1.Text.Trim()) || !isNumeric(txtScratchScore2.Text.Trim())
                         || !isNumeric(txtScratchScore3.Text.Trim()) || !isNumeric(txtScratchScore4.Text.Trim()))
                     {
                         MessageBox.Show("Please enter only numbers", "Non-Integer Scores Not Allowed");
+                        return;
                     }
                     else
                     {
@@ -817,6 +820,7 @@ namespace NineTapTour.Forms
             {
                 txtMemberNum.Enabled = false;
                 txtMemberNum2.Enabled = false;
+                btnRecapByPin.Enabled = false;
             }
             else if (!selectedTournament.Doubles)
             {
@@ -855,6 +859,7 @@ namespace NineTapTour.Forms
             btnLeftArrow.Enabled = true;
             btnRightArrow.Enabled = true;
             btnPlaceStandings.Enabled = true;
+            btnRecapByPin.Enabled = true;
         }
 
         /// <summary>
@@ -1093,8 +1098,8 @@ namespace NineTapTour.Forms
                 overallListOfTopScores = listOfTopScore;
                 /// Top 5 LINQ query
                 var top5 = db.Participants.Include(b => b.Member)
-                .Include(b => b.Game)
-                .Where(b => b.Tournament.Id == selectedTourney);
+                        .Include(b => b.Game)
+                        .Where(b => b.Tournament.Id == selectedTourney);
 
                 #region Populates 1st Box
                 // This function combines the former refresh events into a single function, and since they all used the same variable names I just put
@@ -1199,36 +1204,36 @@ namespace NineTapTour.Forms
                 // Do the third box
                 
                     /////////////////////////////////
-                if (!selectedTournament.ThreeOutOf4)
-                {
-                    /////////////////////////////////
-                    richTextBox3.Clear();
-                    richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
-                    richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
-                    scores = new List<MemberScores>();
-                    
-                    //populate total score
-                    if (rdoScratchScore.Checked)
+                    if (!selectedTournament.ThreeOutOf4)
                     {
+                        /////////////////////////////////
+                        richTextBox3.Clear();
+                        richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
+                        richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
+                        scores = new List<MemberScores>();
+
+                        //populate total score
+                        if (rdoScratchScore.Checked)
+                        {
                         foreach (var s in listOfTopScore)
-                        {
+                            {
                             scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game1 + s.Game2 + s.Game3 + s.Game4 });
+                            }
+                            //IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
+                            scores.Sort(scoreComparer);
+                            scores.Reverse();
+                            scores = scores.Take(5).ToList();
+                            for (int i = 0; i < scores.Count(); i++)
+                            {
+                                richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
+                                                        + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
+                            }
                         }
-                        //IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
-                        scores.Sort(scoreComparer);
-                        scores.Reverse();
-                        scores = scores.Take(5).ToList();
-                        for (int i = 0; i < scores.Count(); i++)
+                        else if (rdoHandicapScore.Checked)
                         {
-                            richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
-                                                    + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
-                        }
-                    }
-                    else if (rdoHandicapScore.Checked)
-                    {
                         foreach (var i in listOfTopScore)
-                        {
-                            #region conditions for highest handicap scores
+                            {
+                                #region conditions for highest handicap scores
                                 nullValues = 0;
                                 if (i.Game1 == 0)
                                 {
@@ -1248,16 +1253,16 @@ namespace NineTapTour.Forms
                                 }
                                 #endregion
                             scores.Add(new MemberScores { FirstName = i.FirstName, LastName = i.LastName, Score = (i.Game1) + (i.Game2) + (i.Game3) + (i.Game4) + ((4 - nullValues) * (i.Handicap + i.Bonus)) });
-                        }                   
-                        scores.Sort(scoreComparer);
-                        scores.Reverse();
-                        scores = scores.Take(5).ToList();
-                        for (int i = 0; i < scores.Count(); i++)
-                        {
-                            richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", Convert.ToString(scores[i].FirstName + " " + scores[i].LastName)) + "\t" + String.Format("{0, -5}", scores[i].Score) + "\n");
+                            }
+                            scores.Sort(scoreComparer);
+                            scores.Reverse();
+                            scores = scores.Take(5).ToList();
+                            for (int i = 0; i < scores.Count(); i++)
+                            {
+                                richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", Convert.ToString(scores[i].FirstName + " " + scores[i].LastName)) + "\t" + String.Format("{0, -5}", scores[i].Score) + "\n");
+                            }
                         }
                     }
-                }
 #endregion           
                 #region Three Out Of 4
                 /////////////////////////////////////////////////////
@@ -1270,7 +1275,7 @@ namespace NineTapTour.Forms
                     richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
                     richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
                     scores = new List<MemberScores>();
-                    
+
                     // List to get top 3 scores   
                     List<int> listOfScores = new List<int>();                  
 
@@ -1304,7 +1309,7 @@ namespace NineTapTour.Forms
                         }
                     }
                     else if (rdoHandicapScore.Checked)
-                    {                       
+                    {
                         foreach (var i in listOfTopScore)
                         {
                             #region conditions for highest handicap scores
@@ -1351,10 +1356,10 @@ namespace NineTapTour.Forms
                         }
                     }                        
                 }
-                #endregion            
+                #endregion
             }
             finally
-            {
+                {
 
             }//TODO ADDED FOR ERRORS REMOVE WHEN FIXED
         }
@@ -1390,6 +1395,12 @@ namespace NineTapTour.Forms
             TournamentStats tournamentStats = new TournamentStats();
             tournamentStats.ShowDialog();            
         }
+
+        private void btnRecapByPin_Click(object sender, EventArgs e)
+        {
+            NineTapTour.Database.Print.printByTour((Tournament)cbxTourneyDropDown.SelectedItem);
+        }
+        
 
         private void btnPlaceStandings_Click(object sender, EventArgs e)
         {

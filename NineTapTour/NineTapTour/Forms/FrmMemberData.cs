@@ -662,55 +662,14 @@ namespace NineTapTour.Forms
 
         public void singlePrint(object sender, PrintPageEventArgs e)
         {
-            //get the total handicap to display on the card when printed
-            int totalHandicap = 0;
-            if (txtHandicap.Text != "")
-            {
-                totalHandicap = Convert.ToInt32(txtHandicap.Text) * 4;
-            }
-
-            //This is what prints the data
-            Graphics graphic = e.Graphics;
-
-            //default font to use, should use a mono space font so the spaces line up.
-            Font font = new Font("Arial", 16, FontStyle.Bold, GraphicsUnit.Pixel);
-
-            //Sets defult brush to use when printing
-            SolidBrush dBrush = new SolidBrush(Color.Black);
-
-            int startX = 10;
-            int startY = 50;
-            //removed due to just adding an extra variable to positioning
-            //int offSet = 40;
-
-            //draw handicap and average
-            graphic.DrawString(txtAverage.Text, font, dBrush, startX + 490, startY - 5);
-            graphic.DrawString(txtHandicap.Text, font, dBrush, startX + 590, startY - 5);
-
-            //draw the 4 handicaps for the game section of the card and the total handicap
-
-            for (int i = 1; i <= 5; i++)
-            {
-                //this prints the handicap 4 times.
-                if (i <= 4)
-                {
-                    graphic.DrawString(txtHandicap.Text, font, dBrush, startX + 530, startY + 30 + i * 40);
-                }
-                //this prints the total handicap after it prints the handicap 4 seperate times
-                if (i == 5)
-                {
-                    graphic.DrawString(totalHandicap.ToString(), font, dBrush, startX + 530, startY + 50 + i * 40);
-                }
-            }
-            //create name string containg lastname, firstname.
-            string nameString = txtLastName.Text + ", " + txtFirstName.Text;
-            //draw name string
-            graphic.DrawString(nameString, font, dBrush, startX + 5, startY + 80);
-            //draw city string
-            graphic.DrawString(txtCity.Text, font, dBrush, startX + 5, startY + 122);
-            //draw member number string
-            graphic.DrawString(txtMemberNumber.Text, font, dBrush, startX + 80, startY + 215);
-
+            NineTapTour.Database.Print.SinglePrint(
+                new MemberPrintObj(Convert.ToInt32(txtHandicap.Text), 
+                    Convert.ToInt32(txtMemberNumber.Text), 
+                    txtCity.Text,
+                    txtFirstName.Text, 
+                    txtLastName.Text
+                    , txtAverage.Text), 
+                e);
         }
 
         private void chbLifetime_CheckedChanged(object sender, EventArgs e)
@@ -758,6 +717,16 @@ namespace NineTapTour.Forms
         private void dateDOB_ValueChanged(object sender, EventArgs e)
         {
             dateDOB.Format = DateTimePickerFormat.Short;
+        }
+
+        private void btnRecapByDate_Click(object sender, EventArgs e)
+        {
+            new FrmPrintByDate().ShowDialog();
+        }
+
+        private void btnAllRecaps_Click(object sender, EventArgs e)
+        {
+            Print.printAllMembers();
         }
     }
 }
