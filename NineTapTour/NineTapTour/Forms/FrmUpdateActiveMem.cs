@@ -13,7 +13,9 @@ using System.ComponentModel.DataAnnotations;
 using static NineTapTour._NineTapTour_NineTapDbDataSet;
 using System.Data.SqlClient;
 using System.Configuration;
-
+/// <summary>
+/// Author Julie Edwards
+/// </summary>
 namespace NineTapTour.Forms
 {
     public partial class FrmUpdateActiveMem : Form
