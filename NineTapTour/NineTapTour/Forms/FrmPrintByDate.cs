@@ -34,6 +34,7 @@ namespace NineTapTour.Forms
                 dateTimeEnd.Value = dateTimeStart.Value;
             }
         }
+
         List<Tournament> tours;
         private void btnCheck_Click(object sender, EventArgs e)
         {
@@ -58,7 +59,7 @@ namespace NineTapTour.Forms
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
-            Print.printByTour(tours);
+            Print.printByTourDate(dateTimeStart.Value, dateTimeEnd.Value);
         }
     }
 }

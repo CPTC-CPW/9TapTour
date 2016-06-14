@@ -55,6 +55,7 @@
             this.txtScratchTotal = new System.Windows.Forms.TextBox();
             this.txtHandicapTotal = new System.Windows.Forms.TextBox();
             this.grpRecord = new System.Windows.Forms.GroupBox();
+            this.btnRecapByPin = new System.Windows.Forms.Button();
             this.btnRightArrow = new System.Windows.Forms.Button();
             this.lblRecord = new System.Windows.Forms.Label();
             this.btnLeftArrow = new System.Windows.Forms.Button();
@@ -97,7 +98,7 @@
             this.btnNewTournament = new System.Windows.Forms.Button();
             this.btnTourSearch = new System.Windows.Forms.Button();
             this.btnTournamentsByYear = new System.Windows.Forms.Button();
-            this.btnRecapByPin = new System.Windows.Forms.Button();
+            this.btnPlaceStandings = new System.Windows.Forms.Button();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpRecord.SuspendLayout();
@@ -420,10 +421,23 @@
             this.grpRecord.Controls.Add(this.btnNew);
             this.grpRecord.Location = new System.Drawing.Point(21, 520);
             this.grpRecord.Name = "grpRecord";
-            this.grpRecord.Size = new System.Drawing.Size(235, 207);
+            this.grpRecord.Size = new System.Drawing.Size(235, 216);
             this.grpRecord.TabIndex = 2;
             this.grpRecord.TabStop = false;
             this.grpRecord.Text = "Record";
+            // 
+            // btnRecapByPin
+            // 
+            this.btnRecapByPin.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.btnRecapByPin.Location = new System.Drawing.Point(19, 176);
+            this.btnRecapByPin.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.btnRecapByPin.Name = "btnRecapByPin";
+            this.btnRecapByPin.Size = new System.Drawing.Size(197, 25);
+            this.btnRecapByPin.TabIndex = 35;
+            this.btnRecapByPin.TabStop = false;
+            this.btnRecapByPin.Text = "Print By Tourney";
+            this.btnRecapByPin.UseVisualStyleBackColor = true;
+            this.btnRecapByPin.Click += new System.EventHandler(this.btnRecapByPin_Click);
             // 
             // btnRightArrow
             // 
@@ -871,7 +885,7 @@
             // btnTournamentsByYear
             // 
             this.btnTournamentsByYear.Location = new System.Drawing.Point(281, 704);
-            this.btnTournamentsByYear.Margin = new System.Windows.Forms.Padding(1);
+            this.btnTournamentsByYear.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.btnTournamentsByYear.Name = "btnTournamentsByYear";
             this.btnTournamentsByYear.Size = new System.Drawing.Size(189, 23);
             this.btnTournamentsByYear.TabIndex = 34;
@@ -879,24 +893,25 @@
             this.btnTournamentsByYear.UseVisualStyleBackColor = true;
             this.btnTournamentsByYear.Click += new System.EventHandler(this.btnTournamentsByYear_Click);
             // 
-            // btnRecapByPin
+            // btnPlaceStandings
             // 
-            this.btnRecapByPin.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.btnRecapByPin.Location = new System.Drawing.Point(19, 178);
-            this.btnRecapByPin.Name = "btnRecapByPin";
-            this.btnRecapByPin.Size = new System.Drawing.Size(197, 23);
-            this.btnRecapByPin.TabIndex = 35;
-            this.btnRecapByPin.TabStop = false;
-            this.btnRecapByPin.Text = "Print By Tourney";
-            this.btnRecapByPin.UseVisualStyleBackColor = true;
-            this.btnRecapByPin.Click += new System.EventHandler(this.btnRecapByPin_Click);
+            this.btnPlaceStandings.Enabled = false;
+            this.btnPlaceStandings.Location = new System.Drawing.Point(281, 530);
+            this.btnPlaceStandings.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.btnPlaceStandings.Name = "btnPlaceStandings";
+            this.btnPlaceStandings.Size = new System.Drawing.Size(189, 23);
+            this.btnPlaceStandings.TabIndex = 35;
+            this.btnPlaceStandings.Text = "Tournament Place Standings";
+            this.btnPlaceStandings.UseVisualStyleBackColor = true;
+            this.btnPlaceStandings.Click += new System.EventHandler(this.btnPlaceStandings_Click);
             // 
             // frmMemberScores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
-            this.ClientSize = new System.Drawing.Size(884, 751);
+            this.ClientSize = new System.Drawing.Size(884, 769);
+            this.Controls.Add(this.btnPlaceStandings);
             this.Controls.Add(this.btnTournamentsByYear);
             this.Controls.Add(this.btnTourSearch);
             this.Controls.Add(this.btnNewTournament);
@@ -918,7 +933,7 @@
             this.Controls.Add(this.grpMemberNum);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(595, 337);
+            this.MinimumSize = new System.Drawing.Size(585, 308);
             this.Name = "frmMemberScores";
             this.Text = "Member Scores";
             this.Activated += new System.EventHandler(this.FrmMemberScores_Activated);
@@ -1015,6 +1030,7 @@
         private System.Windows.Forms.Label lblPlayer1;
         private System.Windows.Forms.Button btnTourSearch;
         private System.Windows.Forms.Button btnTournamentsByYear;
+        private System.Windows.Forms.Button btnPlaceStandings;
         private System.Windows.Forms.Button btnRecapByPin;
     }
 }

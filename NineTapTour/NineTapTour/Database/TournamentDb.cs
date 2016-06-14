@@ -88,6 +88,30 @@ namespace NineTapTour.Database
             }
         }
 
+        public static List<Member> GetUniqueTourMembers(Tournament currTourney)
+        {
+
+            using (NineTapDb db = new NineTapDb())
+            {
+                return (from p in db.Participants
+                        join m in db.Members on p.Member.Id equals m.Id
+                        where p.Tournament.Id == currTourney.Id
+                        select m).Distinct().ToList();
+            }
+        }
+
+        public static List<Member> GetUniqueTourMembersByDate(DateTime start, DateTime end)
+        {
+
+            using (NineTapDb db = new NineTapDb())
+            {
+                return (from p in db.Participants
+                        join m in db.Members on p.Member.Id equals m.Id
+                        where p.Tournament.Date >= start && p.Tournament.Date <= end
+                        select m).Distinct().ToList();
+            }
+        }
+
         public static void AddMemberToTournament(Participant player)
         {
             try

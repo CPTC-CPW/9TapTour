@@ -61,7 +61,29 @@ namespace NineTapTour.Database
         static List<Member> mems = new List<Member>();
         static int index = 0;
         // This is for the printbytourney button
-        static public void printByTour(List<Tournament> tours)
+        static public void printByTour(Tournament tour)
+        {
+            //Set up compenents for printing
+            PrintDialog printDialog = new PrintDialog();
+            PrintDocument printDocument = new PrintDocument();
+            //add the document to the dialog box
+            printDialog.Document = printDocument;
+
+            //add the event handler that will do the printing
+            printDocument.PrintPage += new PrintPageEventHandler(printTourRecaps);
+            
+            if (mems.Count > 0)
+            {
+                DialogResult result = printDialog.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    printDocument.Print();
+                }
+            }
+            index = 0;
+        }
+
+        static public void printByTourDate(DateTime start, DateTime end)
         {
             //Set up compenents for printing
             PrintDialog printDialog = new PrintDialog();
@@ -72,30 +94,7 @@ namespace NineTapTour.Database
             //add the event handler that will do the printing
             printDocument.PrintPage += new PrintPageEventHandler(printTourRecaps);
 
-            List<Participant> tempParts;
-            bool add;
-            foreach (Tournament tour in tours)
-            {
-                tempParts = TournamentDb.GetTournamentMemberList(tour);
-                
-                foreach (Participant p in tempParts)
-                {
-                    add = true;
-                    foreach (Member m in mems)
-                    {
-                        if (m.Id == p.Member.Id)
-                        {
-                            add = false;
-                            break;
-                        }
-                    }
-                    if (add)
-                    {
-                        mems.Add(p.Member);
-                    }
-                }
-
-            }
+            mems = TournamentDb.GetUniqueTourMembersByDate(start, end);
             if (mems.Count > 0)
             {
                 DialogResult result = printDialog.ShowDialog();
@@ -105,6 +104,7 @@ namespace NineTapTour.Database
                 }
             }
             index = 0;
+
         }
 
         static private void printTourRecaps(object sender, PrintPageEventArgs e)
