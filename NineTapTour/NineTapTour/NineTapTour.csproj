@@ -100,6 +100,7 @@
     <Compile Include="Database\Game.cs" />
     <Compile Include="Database\Member.cs" />
     <Compile Include="Database\MemberDb.cs" />
+    <Compile Include="Database\Print.cs" />
     <Compile Include="Database\Squad.cs" />
     <Compile Include="Database\TournamentDb.cs" />
     <Compile Include="Exceptions\MemberTableException.cs" />
@@ -124,6 +125,12 @@
     </Compile>
     <Compile Include="Forms\frmNewTournament.Designer.cs">
       <DependentUpon>frmNewTournament.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmPrintByDate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmPrintByDate.Designer.cs">
+      <DependentUpon>FrmPrintByDate.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FrmSearch.cs">
       <SubType>Form</SubType>
@@ -299,6 +306,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmNewTournament.resx">
       <DependentUpon>frmNewTournament.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmPrintByDate.resx">
+      <DependentUpon>FrmPrintByDate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmSearch.resx">
       <DependentUpon>FrmSearch.cs</DependentUpon>

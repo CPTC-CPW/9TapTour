@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Data.Entity;
 using System.Data.SqlClient;
-using System.Configuration;
+using System.Drawing.Printing;
 
 namespace NineTapTour.Forms
 {
@@ -94,7 +94,7 @@ namespace NineTapTour.Forms
             txtFirstName.Clear();
             txtMiddleInitial.Clear();
             txtHandicap.Clear();
-            txtBonusPins.Clear();            
+            txtBonusPins.Clear(); 
             listOfTopScore.Clear();
         }
         #region GetMember
@@ -103,6 +103,11 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+
+        //int index = 0;
+
+        
+
         private void GetMember(object sender, KeyEventArgs e)
         {
             Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
@@ -238,6 +243,16 @@ namespace NineTapTour.Forms
                         {
                             currentGame.Bonus = currentMem.Bonus;
                             currentGame.Handicap = currentMem.Handicap;
+                            //////////////////////////////////////////////////////////////// PAGINATION HAPPENS RIGHT HERE!!!! ////////////////////////////////////////////////////
+                            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
+                            for (int i = 0; i < total.Count(); i++)
+                            {
+                                if (currentMem.Id == total[i].Member.Id)
+                                {
+                                    currentIndex = i + 1;
+                                }
+                            }
+                            lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count();
                             txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
                             txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
                             txtScratchScore3.Text = Convert.ToString(currentGame.Game3);
@@ -432,8 +447,6 @@ namespace NineTapTour.Forms
         {
             if (IsValid())
             {
-
-                
                 Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
                 List<Participant> total = TournamentDb.GetTournamentMemberList(currTourney);
                 //Doubles tournament
@@ -549,11 +562,13 @@ namespace NineTapTour.Forms
                         || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
                     {
                         MessageBox.Show("Please enter all scratch scores", "Blank Scores Not Allowed");
+                        return;
                     }
                     else if (!isNumeric(txtScratchScore1.Text.Trim()) || !isNumeric(txtScratchScore2.Text.Trim())
                         || !isNumeric(txtScratchScore3.Text.Trim()) || !isNumeric(txtScratchScore4.Text.Trim()))
                     {
                         MessageBox.Show("Please enter only numbers", "Non-Integer Scores Not Allowed");
+                        return;
                     }
                     else
                     {
@@ -578,28 +593,6 @@ namespace NineTapTour.Forms
                             MessageBox.Show(ex.Message);
 
                         }
-                        //UPDATE LASTBOWLED DATE
-                        NineTapDb datab = new NineTapDb();
-                        SqlConnection con = new SqlConnection(GetConnection());
-                        con.Open();
-                        try
-                        {
-
-                            SqlCommand UpdateLastBowledDate = new SqlCommand();
-                            UpdateLastBowledDate.CommandText = "SELECT * FROM Members UPDATE Members SET LastBowled = @DATE WHERE Members.Id " + currentMem.Id.ToString();
-                            UpdateLastBowledDate.Parameters.AddWithValue("@DATE", selectedTournament.Date.ToString("yyyy-MM-dd"));
-
-                            SqlDataReader dateReader = UpdateLastBowledDate.ExecuteReader();
-                        }
-                        catch
-                        {
-                            MessageBox.Show("Could Not Update Last Bowled Date");
-                        }
-                        finally
-                        {
-                            con.Dispose();
-                        }
-                        //END UPDATE LASTBOWLED DATE
                         clear();
                         txtMemberNum.Focus();
                     }
@@ -611,11 +604,6 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show("Please Fill out the Participants information!");
             }
-        }
-
-        private string GetConnection()
-        {
-            return ConfigurationManager.ConnectionStrings["NineTapDbConnection"].ConnectionString;
         }
         #endregion
         /// <summary>
@@ -797,7 +785,7 @@ namespace NineTapTour.Forms
                 {
                     currentIndex--;
                     var temp = total.IndexOf(total[currentIndex]);
-                    lblRecord.Text = "Record " + temp + " / " + total.Count();
+                    lblRecord.Text = "Record " + currentIndex + " / " + total.Count();
                     txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
                     if (total[currentIndex - 1].Squad == 1)
                     {
@@ -847,6 +835,7 @@ namespace NineTapTour.Forms
             {
                 txtMemberNum.Enabled = false;
                 txtMemberNum2.Enabled = false;
+                btnRecapByPin.Enabled = false;
             }
             else if (!selectedTournament.Doubles)
             {
@@ -866,7 +855,7 @@ namespace NineTapTour.Forms
                 lblRecord.Text = "Record 0" + " / " + "0";
                 DisableButtonsWhenValidTournamentSelected();
             }
-            if(cbxTourneyDropDown.SelectedIndex >= 0 && cbxTourneyDropDown.Visible)
+            if (cbxTourneyDropDown.SelectedIndex >= 0 && cbxTourneyDropDown.Visible)
             {
                 // resets the current index to zero when changing the tournament
                 currentIndex = 0;
@@ -885,6 +874,7 @@ namespace NineTapTour.Forms
             btnLeftArrow.Enabled = true;
             btnRightArrow.Enabled = true;
             btnPlaceStandings.Enabled = true;
+            btnRecapByPin.Enabled = true;
         }
 
         /// <summary>
@@ -935,7 +925,8 @@ namespace NineTapTour.Forms
                 Console.WriteLine(tour.TourneyNameDate);
             }
 #endif
-            if (tours.Count() > 0) {
+            if (tours.Count() > 0)
+            {
                 cbxTourneyDropDown.DataSource = tours;
                 cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             }
@@ -1334,7 +1325,7 @@ namespace NineTapTour.Forms
                         }
                     }
                     else if (rdoHandicapScore.Checked)
-                    {                       
+                    {
                         foreach (var i in listOfTopScore)
                         {
                             #region conditions for highest handicap scores
@@ -1421,6 +1412,12 @@ namespace NineTapTour.Forms
             tournamentStats.ShowDialog();            
         }
 
+        private void btnRecapByPin_Click(object sender, EventArgs e)
+        {
+            NineTapTour.Database.Print.printByTour((Tournament)cbxTourneyDropDown.SelectedItem);
+        }
+        
+
         private void btnPlaceStandings_Click(object sender, EventArgs e)
         {
             TournamentPlaceStandings form = new TournamentPlaceStandings();
@@ -1451,7 +1448,4 @@ namespace NineTapTour.Forms
         public int Bonus { get; set; }
         #endregion
     }
-
-
-
 }
