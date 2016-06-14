@@ -89,7 +89,6 @@
             this.grpSearchBy = new System.Windows.Forms.GroupBox();
             this.btnMemberSearch = new System.Windows.Forms.Button();
             this.grpPrinter = new System.Windows.Forms.GroupBox();
-            this.btnRecapByPin = new System.Windows.Forms.Button();
             this.btnLabels = new System.Windows.Forms.Button();
             this.btnRecapByDate = new System.Windows.Forms.Button();
             this.btnThisRecap = new System.Windows.Forms.Button();
@@ -155,7 +154,7 @@
             this.lblLastName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblLastName.Location = new System.Drawing.Point(222, 9);
             this.lblLastName.Name = "lblLastName";
-            this.lblLastName.Size = new System.Drawing.Size(197, 49);
+            this.lblLastName.Size = new System.Drawing.Size(80, 19);
             this.lblLastName.TabIndex = 3;
             this.lblLastName.Text = "Last Name";
             // 
@@ -165,7 +164,7 @@
             this.lblFirstName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblFirstName.Location = new System.Drawing.Point(473, 9);
             this.lblFirstName.Name = "lblFirstName";
-            this.lblFirstName.Size = new System.Drawing.Size(202, 49);
+            this.lblFirstName.Size = new System.Drawing.Size(82, 19);
             this.lblFirstName.TabIndex = 2;
             this.lblFirstName.Text = "First Name";
             // 
@@ -175,7 +174,7 @@
             this.lblMiddleIntial.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblMiddleIntial.Location = new System.Drawing.Point(727, 9);
             this.lblMiddleIntial.Name = "lblMiddleIntial";
-            this.lblMiddleIntial.Size = new System.Drawing.Size(252, 49);
+            this.lblMiddleIntial.Size = new System.Drawing.Size(103, 19);
             this.lblMiddleIntial.TabIndex = 5;
             this.lblMiddleIntial.Text = "Middle Initial ";
             // 
@@ -185,7 +184,7 @@
             this.lblMemberNum.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblMemberNum.Location = new System.Drawing.Point(34, 102);
             this.lblMemberNum.Name = "lblMemberNum";
-            this.lblMemberNum.Size = new System.Drawing.Size(309, 49);
+            this.lblMemberNum.Size = new System.Drawing.Size(127, 19);
             this.lblMemberNum.TabIndex = 6;
             this.lblMemberNum.Text = "Member Number";
             // 
@@ -230,7 +229,7 @@
             this.lblAverage.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblAverage.Location = new System.Drawing.Point(389, 420);
             this.lblAverage.Name = "lblAverage";
-            this.lblAverage.Size = new System.Drawing.Size(125, 40);
+            this.lblAverage.Size = new System.Drawing.Size(50, 15);
             this.lblAverage.TabIndex = 17;
             this.lblAverage.Text = "Average";
             // 
@@ -240,7 +239,7 @@
             this.lblHandicap.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblHandicap.Location = new System.Drawing.Point(570, 420);
             this.lblHandicap.Name = "lblHandicap";
-            this.lblHandicap.Size = new System.Drawing.Size(143, 40);
+            this.lblHandicap.Size = new System.Drawing.Size(60, 15);
             this.lblHandicap.TabIndex = 17;
             this.lblHandicap.Text = "Handicap";
             // 
@@ -250,7 +249,7 @@
             this.lblBonus.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblBonus.Location = new System.Drawing.Point(758, 420);
             this.lblBonus.Name = "lblBonus";
-            this.lblBonus.Size = new System.Drawing.Size(99, 40);
+            this.lblBonus.Size = new System.Drawing.Size(41, 15);
             this.lblBonus.TabIndex = 17;
             this.lblBonus.Text = "Bonus";
             // 
@@ -281,7 +280,7 @@
             this.lblNotes.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblNotes.Location = new System.Drawing.Point(36, 297);
             this.lblNotes.Name = "lblNotes";
-            this.lblNotes.Size = new System.Drawing.Size(120, 49);
+            this.lblNotes.Size = new System.Drawing.Size(49, 19);
             this.lblNotes.TabIndex = 22;
             this.lblNotes.Text = "Notes";
             // 
@@ -324,7 +323,7 @@
             this.dateDOB.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dateDOB.Location = new System.Drawing.Point(25, 41);
             this.dateDOB.Name = "dateDOB";
-            this.dateDOB.Size = new System.Drawing.Size(104, 47);
+            this.dateDOB.Size = new System.Drawing.Size(104, 23);
             this.dateDOB.TabIndex = 32;
             this.dateDOB.ValueChanged += new System.EventHandler(this.dateDOB_ValueChanged);
             // 
@@ -335,7 +334,7 @@
             this.mtxtBoxZip.Mask = "00000";
             this.mtxtBoxZip.Name = "mtxtBoxZip";
             this.mtxtBoxZip.ShortcutsEnabled = false;
-            this.mtxtBoxZip.Size = new System.Drawing.Size(100, 47);
+            this.mtxtBoxZip.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxZip.TabIndex = 12;
             // 
             // mtxtBoxSSN
@@ -345,7 +344,7 @@
             this.mtxtBoxSSN.Name = "mtxtBoxSSN";
             this.mtxtBoxSSN.PasswordChar = '*';
             this.mtxtBoxSSN.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.mtxtBoxSSN.Size = new System.Drawing.Size(100, 47);
+            this.mtxtBoxSSN.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxSSN.TabIndex = 8;
             // 
             // mtxtBoxPhone2
@@ -353,7 +352,7 @@
             this.mtxtBoxPhone2.Location = new System.Drawing.Point(155, 185);
             this.mtxtBoxPhone2.Mask = "(999) 000-0000";
             this.mtxtBoxPhone2.Name = "mtxtBoxPhone2";
-            this.mtxtBoxPhone2.Size = new System.Drawing.Size(100, 47);
+            this.mtxtBoxPhone2.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxPhone2.TabIndex = 14;
             // 
             // mtxtBoxPhone
@@ -361,7 +360,7 @@
             this.mtxtBoxPhone.Location = new System.Drawing.Point(25, 185);
             this.mtxtBoxPhone.Mask = "(999) 000-0000";
             this.mtxtBoxPhone.Name = "mtxtBoxPhone";
-            this.mtxtBoxPhone.Size = new System.Drawing.Size(100, 47);
+            this.mtxtBoxPhone.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxPhone.TabIndex = 13;
             // 
             // dateRejoin
@@ -370,7 +369,7 @@
             this.dateRejoin.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dateRejoin.Location = new System.Drawing.Point(344, 185);
             this.dateRejoin.Name = "dateRejoin";
-            this.dateRejoin.Size = new System.Drawing.Size(103, 47);
+            this.dateRejoin.Size = new System.Drawing.Size(103, 23);
             this.dateRejoin.TabIndex = 17;
             this.dateRejoin.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
             this.dateRejoin.ValueChanged += new System.EventHandler(this.dateRejoin_ValueChanged);
@@ -381,7 +380,7 @@
             this.dateJoined.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dateJoined.Location = new System.Drawing.Point(344, 137);
             this.dateJoined.Name = "dateJoined";
-            this.dateJoined.Size = new System.Drawing.Size(103, 47);
+            this.dateJoined.Size = new System.Drawing.Size(103, 23);
             this.dateJoined.TabIndex = 16;
             this.dateJoined.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
             this.dateJoined.ValueChanged += new System.EventHandler(this.dateJoined_ValueChanged);
@@ -391,7 +390,7 @@
             this.lblEmail.AutoSize = true;
             this.lblEmail.Location = new System.Drawing.Point(22, 215);
             this.lblEmail.Name = "lblEmail";
-            this.lblEmail.Size = new System.Drawing.Size(91, 40);
+            this.lblEmail.Size = new System.Drawing.Size(38, 15);
             this.lblEmail.TabIndex = 10;
             this.lblEmail.Text = "Email";
             // 
@@ -400,7 +399,7 @@
             this.lblDOB.AutoSize = true;
             this.lblDOB.Location = new System.Drawing.Point(22, 23);
             this.lblDOB.Name = "lblDOB";
-            this.lblDOB.Size = new System.Drawing.Size(269, 40);
+            this.lblDOB.Size = new System.Drawing.Size(107, 15);
             this.lblDOB.TabIndex = 31;
             this.lblDOB.Text = "D.O.B. (mm/dd/yy)";
             // 
@@ -409,7 +408,7 @@
             this.lblRefferals.AutoSize = true;
             this.lblRefferals.Location = new System.Drawing.Point(341, 215);
             this.lblRefferals.Name = "lblRefferals";
-            this.lblRefferals.Size = new System.Drawing.Size(135, 40);
+            this.lblRefferals.Size = new System.Drawing.Size(57, 15);
             this.lblRefferals.TabIndex = 6;
             this.lblRefferals.Text = "Referrals";
             // 
@@ -418,7 +417,7 @@
             this.lblPhoneNumber2.AutoSize = true;
             this.lblPhoneNumber2.Location = new System.Drawing.Point(152, 167);
             this.lblPhoneNumber2.Name = "lblPhoneNumber2";
-            this.lblPhoneNumber2.Size = new System.Drawing.Size(241, 40);
+            this.lblPhoneNumber2.Size = new System.Drawing.Size(97, 15);
             this.lblPhoneNumber2.TabIndex = 8;
             this.lblPhoneNumber2.Text = "Phone Number 2";
             // 
@@ -427,7 +426,7 @@
             this.lblPhoneNumber.AutoSize = true;
             this.lblPhoneNumber.Location = new System.Drawing.Point(22, 167);
             this.lblPhoneNumber.Name = "lblPhoneNumber";
-            this.lblPhoneNumber.Size = new System.Drawing.Size(217, 40);
+            this.lblPhoneNumber.Size = new System.Drawing.Size(87, 15);
             this.lblPhoneNumber.TabIndex = 7;
             this.lblPhoneNumber.Text = "Phone Number";
             // 
@@ -436,7 +435,7 @@
             this.lblDateJoined.AutoSize = true;
             this.lblDateJoined.Location = new System.Drawing.Point(341, 119);
             this.lblDateJoined.Name = "lblDateJoined";
-            this.lblDateJoined.Size = new System.Drawing.Size(173, 40);
+            this.lblDateJoined.Size = new System.Drawing.Size(70, 15);
             this.lblDateJoined.TabIndex = 5;
             this.lblDateJoined.Text = "Date Joined";
             // 
@@ -445,7 +444,7 @@
             this.lblRejoinDate.AutoSize = true;
             this.lblRejoinDate.Location = new System.Drawing.Point(341, 167);
             this.lblRejoinDate.Name = "lblRejoinDate";
-            this.lblRejoinDate.Size = new System.Drawing.Size(170, 40);
+            this.lblRejoinDate.Size = new System.Drawing.Size(70, 15);
             this.lblRejoinDate.TabIndex = 4;
             this.lblRejoinDate.Text = "Rejoin Date";
             // 
@@ -454,7 +453,7 @@
             this.lblZip.AutoSize = true;
             this.lblZip.Location = new System.Drawing.Point(212, 119);
             this.lblZip.Name = "lblZip";
-            this.lblZip.Size = new System.Drawing.Size(57, 40);
+            this.lblZip.Size = new System.Drawing.Size(24, 15);
             this.lblZip.TabIndex = 2;
             this.lblZip.Text = "Zip";
             // 
@@ -463,7 +462,7 @@
             this.lblState.AutoSize = true;
             this.lblState.Location = new System.Drawing.Point(152, 119);
             this.lblState.Name = "lblState";
-            this.lblState.Size = new System.Drawing.Size(86, 40);
+            this.lblState.Size = new System.Drawing.Size(34, 15);
             this.lblState.TabIndex = 2;
             this.lblState.Text = "State";
             // 
@@ -472,7 +471,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(22, 119);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(69, 40);
+            this.label1.Size = new System.Drawing.Size(28, 15);
             this.label1.TabIndex = 2;
             this.label1.Text = "City";
             // 
@@ -481,7 +480,7 @@
             this.txtReferrals.Location = new System.Drawing.Point(344, 233);
             this.txtReferrals.MaxLength = 50;
             this.txtReferrals.Name = "txtReferrals";
-            this.txtReferrals.Size = new System.Drawing.Size(54, 47);
+            this.txtReferrals.Size = new System.Drawing.Size(54, 23);
             this.txtReferrals.TabIndex = 18;
             // 
             // lblAddress
@@ -489,7 +488,7 @@
             this.lblAddress.AutoSize = true;
             this.lblAddress.Location = new System.Drawing.Point(22, 71);
             this.lblAddress.Name = "lblAddress";
-            this.lblAddress.Size = new System.Drawing.Size(124, 40);
+            this.lblAddress.Size = new System.Drawing.Size(51, 15);
             this.lblAddress.TabIndex = 3;
             this.lblAddress.Text = "Address";
             // 
@@ -498,7 +497,7 @@
             this.lblSSN.AutoSize = true;
             this.lblSSN.Location = new System.Drawing.Point(341, 23);
             this.lblSSN.Name = "lblSSN";
-            this.lblSSN.Size = new System.Drawing.Size(68, 40);
+            this.lblSSN.Size = new System.Drawing.Size(27, 15);
             this.lblSSN.TabIndex = 3;
             this.lblSSN.Text = "SSN";
             // 
@@ -507,7 +506,7 @@
             this.txtState.Location = new System.Drawing.Point(155, 137);
             this.txtState.MaxLength = 20;
             this.txtState.Name = "txtState";
-            this.txtState.Size = new System.Drawing.Size(32, 47);
+            this.txtState.Size = new System.Drawing.Size(32, 23);
             this.txtState.TabIndex = 11;
             this.txtState.TextChanged += new System.EventHandler(this.InputRequired);
             // 
@@ -516,7 +515,7 @@
             this.txtCity.Location = new System.Drawing.Point(25, 137);
             this.txtCity.MaxLength = 20;
             this.txtCity.Name = "txtCity";
-            this.txtCity.Size = new System.Drawing.Size(100, 47);
+            this.txtCity.Size = new System.Drawing.Size(100, 23);
             this.txtCity.TabIndex = 10;
             this.txtCity.TextChanged += new System.EventHandler(this.InputRequired);
             // 
@@ -525,7 +524,7 @@
             this.txtAddress.Location = new System.Drawing.Point(25, 89);
             this.txtAddress.MaxLength = 75;
             this.txtAddress.Name = "txtAddress";
-            this.txtAddress.Size = new System.Drawing.Size(290, 47);
+            this.txtAddress.Size = new System.Drawing.Size(290, 23);
             this.txtAddress.TabIndex = 9;
             this.txtAddress.TextChanged += new System.EventHandler(this.InputRequired);
             // 
@@ -534,7 +533,7 @@
             this.txtEmail.Location = new System.Drawing.Point(25, 233);
             this.txtEmail.MaxLength = 50;
             this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(290, 47);
+            this.txtEmail.Size = new System.Drawing.Size(290, 23);
             this.txtEmail.TabIndex = 15;
             this.txtEmail.TextChanged += new System.EventHandler(this.InputRequired);
             // 
@@ -544,7 +543,7 @@
             this.txtYearEndT.Location = new System.Drawing.Point(392, 517);
             this.txtYearEndT.MaxLength = 20;
             this.txtYearEndT.Name = "txtYearEndT";
-            this.txtYearEndT.Size = new System.Drawing.Size(124, 47);
+            this.txtYearEndT.Size = new System.Drawing.Size(124, 23);
             this.txtYearEndT.TabIndex = 85;
             // 
             // txtMoneyEarned
@@ -552,7 +551,7 @@
             this.txtMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMoneyEarned.Location = new System.Drawing.Point(573, 517);
             this.txtMoneyEarned.Name = "txtMoneyEarned";
-            this.txtMoneyEarned.Size = new System.Drawing.Size(100, 47);
+            this.txtMoneyEarned.Size = new System.Drawing.Size(100, 23);
             this.txtMoneyEarned.TabIndex = 95;
             // 
             // lblYET
@@ -561,7 +560,7 @@
             this.lblYET.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblYET.Location = new System.Drawing.Point(389, 499);
             this.lblYET.Name = "lblYET";
-            this.lblYET.Size = new System.Drawing.Size(314, 40);
+            this.lblYET.Size = new System.Drawing.Size(127, 15);
             this.lblYET.TabIndex = 25;
             this.lblYET.Text = "Year End Tournaments";
             // 
@@ -571,7 +570,7 @@
             this.lblMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblMoneyEarned.Location = new System.Drawing.Point(570, 499);
             this.lblMoneyEarned.Name = "lblMoneyEarned";
-            this.lblMoneyEarned.Size = new System.Drawing.Size(210, 40);
+            this.lblMoneyEarned.Size = new System.Drawing.Size(85, 15);
             this.lblMoneyEarned.TabIndex = 26;
             this.lblMoneyEarned.Text = "Money Earned";
             // 
@@ -581,7 +580,7 @@
             this.lblLastBowled.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblLastBowled.Location = new System.Drawing.Point(744, 499);
             this.lblLastBowled.Name = "lblLastBowled";
-            this.lblLastBowled.Size = new System.Drawing.Size(178, 40);
+            this.lblLastBowled.Size = new System.Drawing.Size(72, 15);
             this.lblLastBowled.TabIndex = 27;
             this.lblLastBowled.Text = "Last Bowled";
             // 
@@ -742,7 +741,6 @@
             // 
             // grpPrinter
             // 
-            this.grpPrinter.Controls.Add(this.btnRecapByPin);
             this.grpPrinter.Controls.Add(this.btnLabels);
             this.grpPrinter.Controls.Add(this.btnRecapByDate);
             this.grpPrinter.Controls.Add(this.btnThisRecap);
@@ -750,28 +748,17 @@
             this.grpPrinter.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.grpPrinter.Location = new System.Drawing.Point(643, 585);
             this.grpPrinter.Name = "grpPrinter";
-            this.grpPrinter.Size = new System.Drawing.Size(207, 109);
+            this.grpPrinter.Size = new System.Drawing.Size(229, 85);
             this.grpPrinter.TabIndex = 29;
             this.grpPrinter.TabStop = false;
-            this.grpPrinter.Text = "Print";
-            // 
-            // btnRecapByPin
-            // 
-            this.btnRecapByPin.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRecapByPin.Location = new System.Drawing.Point(105, 49);
-            this.btnRecapByPin.Name = "btnRecapByPin";
-            this.btnRecapByPin.Size = new System.Drawing.Size(84, 23);
-            this.btnRecapByPin.TabIndex = 31;
-            this.btnRecapByPin.TabStop = false;
-            this.btnRecapByPin.Text = "Recap By Pin";
-            this.btnRecapByPin.UseVisualStyleBackColor = true;
+            this.grpPrinter.Text = "Print Recaps";
             // 
             // btnLabels
             // 
             this.btnLabels.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLabels.Location = new System.Drawing.Point(18, 75);
+            this.btnLabels.Location = new System.Drawing.Point(105, 49);
             this.btnLabels.Name = "btnLabels";
-            this.btnLabels.Size = new System.Drawing.Size(84, 23);
+            this.btnLabels.Size = new System.Drawing.Size(102, 23);
             this.btnLabels.TabIndex = 33;
             this.btnLabels.TabStop = false;
             this.btnLabels.Text = "Labels";
@@ -782,11 +769,12 @@
             this.btnRecapByDate.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRecapByDate.Location = new System.Drawing.Point(105, 23);
             this.btnRecapByDate.Name = "btnRecapByDate";
-            this.btnRecapByDate.Size = new System.Drawing.Size(84, 23);
+            this.btnRecapByDate.Size = new System.Drawing.Size(102, 23);
             this.btnRecapByDate.TabIndex = 30;
             this.btnRecapByDate.TabStop = false;
-            this.btnRecapByDate.Text = "Recap Date";
+            this.btnRecapByDate.Text = "Print By Date";
             this.btnRecapByDate.UseVisualStyleBackColor = true;
+            this.btnRecapByDate.Click += new System.EventHandler(this.btnRecapByDate_Click);
             // 
             // btnThisRecap
             // 
@@ -810,13 +798,14 @@
             this.btnAllRecaps.TabStop = false;
             this.btnAllRecaps.Text = "All Recaps";
             this.btnAllRecaps.UseVisualStyleBackColor = true;
+            this.btnAllRecaps.Click += new System.EventHandler(this.btnAllRecaps_Click);
             // 
             // rdoFemale
             // 
             this.rdoFemale.AutoSize = true;
             this.rdoFemale.Location = new System.Drawing.Point(11, 19);
             this.rdoFemale.Name = "rdoFemale";
-            this.rdoFemale.Size = new System.Drawing.Size(151, 44);
+            this.rdoFemale.Size = new System.Drawing.Size(64, 19);
             this.rdoFemale.TabIndex = 6;
             this.rdoFemale.Text = "Female";
             this.rdoFemale.UseVisualStyleBackColor = true;
@@ -826,7 +815,7 @@
             this.rdoActive.AutoSize = true;
             this.rdoActive.Location = new System.Drawing.Point(11, 23);
             this.rdoActive.Name = "rdoActive";
-            this.rdoActive.Size = new System.Drawing.Size(136, 44);
+            this.rdoActive.Size = new System.Drawing.Size(57, 19);
             this.rdoActive.TabIndex = 4;
             this.rdoActive.Text = "Active";
             this.rdoActive.UseVisualStyleBackColor = true;
@@ -836,7 +825,7 @@
             this.rdoInActive.AutoSize = true;
             this.rdoInActive.Location = new System.Drawing.Point(11, 46);
             this.rdoInActive.Name = "rdoInActive";
-            this.rdoInActive.Size = new System.Drawing.Size(161, 44);
+            this.rdoInActive.Size = new System.Drawing.Size(68, 19);
             this.rdoInActive.TabIndex = 4;
             this.rdoInActive.Text = "InActive";
             this.rdoInActive.UseVisualStyleBackColor = true;
@@ -846,7 +835,7 @@
             this.rdoMale.AutoSize = true;
             this.rdoMale.Location = new System.Drawing.Point(11, 42);
             this.rdoMale.Name = "rdoMale";
-            this.rdoMale.Size = new System.Drawing.Size(122, 44);
+            this.rdoMale.Size = new System.Drawing.Size(53, 19);
             this.rdoMale.TabIndex = 30;
             this.rdoMale.Text = "Male";
             this.rdoMale.UseVisualStyleBackColor = true;
@@ -881,7 +870,7 @@
             this.chbSenior.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chbSenior.Location = new System.Drawing.Point(156, 162);
             this.chbSenior.Name = "chbSenior";
-            this.chbSenior.Size = new System.Drawing.Size(140, 44);
+            this.chbSenior.Size = new System.Drawing.Size(61, 19);
             this.chbSenior.TabIndex = 5;
             this.chbSenior.TabStop = false;
             this.chbSenior.Text = "Senior";
@@ -893,7 +882,7 @@
             this.dateLastBowled.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dateLastBowled.Location = new System.Drawing.Point(747, 517);
             this.dateLastBowled.Name = "dateLastBowled";
-            this.dateLastBowled.Size = new System.Drawing.Size(103, 47);
+            this.dateLastBowled.Size = new System.Drawing.Size(103, 23);
             this.dateLastBowled.TabIndex = 34;
             this.dateLastBowled.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
             this.dateLastBowled.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ClearCalendar);
@@ -904,7 +893,7 @@
             this.chbLifetime.Font = new System.Drawing.Font("Calibri", 9.75F);
             this.chbLifetime.Location = new System.Drawing.Point(38, 216);
             this.chbLifetime.Name = "chbLifetime";
-            this.chbLifetime.Size = new System.Drawing.Size(284, 44);
+            this.chbLifetime.Size = new System.Drawing.Size(116, 19);
             this.chbLifetime.TabIndex = 96;
             this.chbLifetime.Text = "Lifetime Member";
             this.chbLifetime.UseVisualStyleBackColor = true;
@@ -914,7 +903,7 @@
             // 
             this.datePaid.Location = new System.Drawing.Point(146, 241);
             this.datePaid.Name = "datePaid";
-            this.datePaid.Size = new System.Drawing.Size(190, 41);
+            this.datePaid.Size = new System.Drawing.Size(190, 21);
             this.datePaid.TabIndex = 97;
             this.datePaid.ValueChanged += new System.EventHandler(this.datePaid_ValueChanged);
             // 
@@ -924,7 +913,7 @@
             this.lblLastPaid.Font = new System.Drawing.Font("Calibri", 9.75F);
             this.lblLastPaid.Location = new System.Drawing.Point(35, 245);
             this.lblLastPaid.Name = "lblLastPaid";
-            this.lblLastPaid.Size = new System.Drawing.Size(194, 40);
+            this.lblLastPaid.Size = new System.Drawing.Size(79, 15);
             this.lblLastPaid.TabIndex = 98;
             this.lblLastPaid.Text = "Last Payment";
             // 
@@ -935,16 +924,15 @@
             this.lblPaymentInfo.ForeColor = System.Drawing.Color.Red;
             this.lblPaymentInfo.Location = new System.Drawing.Point(35, 266);
             this.lblPaymentInfo.Name = "lblPaymentInfo";
-            this.lblPaymentInfo.Size = new System.Drawing.Size(314, 40);
+            this.lblPaymentInfo.Size = new System.Drawing.Size(129, 15);
             this.lblPaymentInfo.TabIndex = 99;
             this.lblPaymentInfo.Text = "Yearly Payment is due.";
             this.lblPaymentInfo.Visible = false;
             // 
             // FrmMemberData
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 33F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(887, 726);
@@ -1061,7 +1049,6 @@
         private System.Windows.Forms.Button btnRecapByDate;
         private System.Windows.Forms.Button btnThisRecap;
         private System.Windows.Forms.Button btnAllRecaps;
-        private System.Windows.Forms.Button btnRecapByPin;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Label lblEmail;
         private System.Windows.Forms.RadioButton rdoFemale;

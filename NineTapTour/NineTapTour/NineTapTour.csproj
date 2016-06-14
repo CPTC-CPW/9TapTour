@@ -22,8 +22,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>15</ApplicationRevision>
-    <ApplicationVersion>0.1.0.%2a</ApplicationVersion>
+    <ProductName>9Tap Application</ProductName>
+    <PublisherName>CPTC CPW 205</PublisherName>
+    <AutorunEnabled>true</AutorunEnabled>
+    <ApplicationRevision>17</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -97,6 +100,7 @@
     <Compile Include="Database\Game.cs" />
     <Compile Include="Database\Member.cs" />
     <Compile Include="Database\MemberDb.cs" />
+    <Compile Include="Database\Print.cs" />
     <Compile Include="Database\Squad.cs" />
     <Compile Include="Database\TournamentDb.cs" />
     <Compile Include="Exceptions\MemberTableException.cs" />
@@ -121,6 +125,12 @@
     </Compile>
     <Compile Include="Forms\frmNewTournament.Designer.cs">
       <DependentUpon>frmNewTournament.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmPrintByDate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmPrintByDate.Designer.cs">
+      <DependentUpon>FrmPrintByDate.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FrmSearch.cs">
       <SubType>Form</SubType>
@@ -151,6 +161,12 @@
     </Compile>
     <Compile Include="Forms\FrmUpdateActiveMem.Designer.cs">
       <DependentUpon>FrmUpdateActiveMem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TournamentPlaceStandings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TournamentPlaceStandings.Designer.cs">
+      <DependentUpon>TournamentPlaceStandings.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\TournamentsByYear.cs">
       <SubType>Form</SubType>
@@ -291,6 +307,9 @@
     <EmbeddedResource Include="Forms\frmNewTournament.resx">
       <DependentUpon>frmNewTournament.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmPrintByDate.resx">
+      <DependentUpon>FrmPrintByDate.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmSearch.resx">
       <DependentUpon>FrmSearch.cs</DependentUpon>
     </EmbeddedResource>
@@ -305,6 +324,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmUpdateActiveMem.resx">
       <DependentUpon>FrmUpdateActiveMem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TournamentPlaceStandings.resx">
+      <DependentUpon>TournamentPlaceStandings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TournamentsByYear.resx">
       <DependentUpon>TournamentsByYear.cs</DependentUpon>
