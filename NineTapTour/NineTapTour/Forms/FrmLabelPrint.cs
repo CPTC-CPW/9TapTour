@@ -121,7 +121,25 @@ namespace NineTapTour.Forms
             }
         }
         #region Print Labels
+
+        //TODO need to reset current page or refactor and avoid fields
+        int currPage = 0;
+        const int PageSize = 10;
         public void printLabels(object sender, PrintPageEventArgs e)
+        {
+            //grab the next 10 members
+            List<Member> nextMemberLabels = Labels.Skip((currPage) * PageSize).Take(PageSize).ToList();
+
+            //if more than 10 members remaining another page will be printed
+            e.HasMorePages = (currPage * PageSize + PageSize >= Labels.Count) ? false : true;
+
+            //print out 1 sheet of members, e.HasMorePages = true will cause print to be triggered again automatically
+            PrintLabelSheetOf10(nextMemberLabels, e);
+            currPage++;
+
+        }
+
+        private void PrintLabelSheetOf10(List<Member> memberLabel, PrintPageEventArgs e)
         {
             //This is what prints the data
             Graphics graphic = e.Graphics;
@@ -134,107 +152,24 @@ namespace NineTapTour.Forms
 
             int startX = 75;
             int startY = 100;
-            int offsetY = 0;
             int offsetX = 0;
-            int totalCount = Labels.Count();
-
-            foreach (Member m in Labels)
+            int offsetY = 0;
+            for (int i = 0; i < memberLabel.Count; i++)
             {
-                if (totalCount > 10)
-                {
-                    e.HasMorePages = true;
-                }
+                if (i % 2 == 0)
+                    offsetX = 0;
                 else
-                {
-                    e.HasMorePages = false;
-                }
-
-                if (Labels.IndexOf(m) % 10 < 2)
-                {
-                    graphic.DrawString(m.FirstName.ToString() + " " + m.LastName.ToString(), font, dBrush, startX + offsetX, startY + offsetY);
-                    offsetY += 24;
-                    graphic.DrawString(m.Street, font, dBrush, startX + offsetX, startY + offsetY);
-                    offsetY += 24;
-                    graphic.DrawString(m.City + ", " + m.State + " " + m.PostalCode, font, dBrush, startX + offsetX, startY + offsetY);
                     offsetX = 425;
-                    offsetY = 0;
-                    totalCount -= 1;
-                }
-                else if ((Labels.IndexOf(m) % 10 >= 2 && Labels.IndexOf(m) % 10 < 4))
-                {
-                    offsetY = 200;
-                    if (Labels.IndexOf(m) % 10 == 2)
-                    {
-                        offsetX = 0;
-                    }
-                    else
-                    {
-                        offsetX = 425;
-                    }
-                    graphic.DrawString(m.FirstName.ToString() + " " + m.LastName.ToString(), font, dBrush, startX + offsetX, startY + offsetY);
-                    offsetY += 24;
-                    graphic.DrawString(m.Street, font, dBrush, startX + offsetX, startY + offsetY);
-                    offsetY += 24;
-                    graphic.DrawString(m.City + ", " + m.State + " " + m.PostalCode, font, dBrush, startX + offsetX, startY + offsetY);
-                    totalCount -= 1;
-                }
-                else if ((Labels.IndexOf(m) % 10 >= 4 && Labels.IndexOf(m) % 10 < 6))
-                {
-                    offsetY = 400;
-                    if (Labels.IndexOf(m) % 10 == 4)
-                    {
-                        offsetX = 0;
-                    }
-                    else
-                    {
-                        offsetX = 425;
-                    }
-                    graphic.DrawString(m.FirstName.ToString() + " " + m.LastName.ToString(), font, dBrush, startX + offsetX, startY + offsetY);
-                    offsetY += 24;
-                    graphic.DrawString(m.Street, font, dBrush, startX + offsetX, startY + offsetY);
-                    offsetY += 24;
-                    graphic.DrawString(m.City + ", " + m.State + " " + m.PostalCode, font, dBrush, startX + offsetX, startY + offsetY);
-                    totalCount -= 1;
-                }
-                else if ((Labels.IndexOf(m) % 10 >= 6 && Labels.IndexOf(m) % 10 < 8))
-                {
-                    offsetY = 600;
-                    if (Labels.IndexOf(m) % 10 == 6)
-                    {
-                        offsetX = 0;
-                    }
-                    else
-                    {
-                        offsetX = 425;
-                    }
-                    graphic.DrawString(m.FirstName.ToString() + " " + m.LastName.ToString(), font, dBrush, startX + offsetX, startY + offsetY);
-                    offsetY += 24;
-                    graphic.DrawString(m.Street, font, dBrush, startX + offsetX, startY + offsetY);
-                    offsetY += 24;
-                    graphic.DrawString(m.City + ", " + m.State + " " + m.PostalCode, font, dBrush, startX + offsetX, startY + offsetY);
-                    totalCount -= 1;
-                }
-                else if (Labels.IndexOf(m) % 10 >= 8)
-                {
-                    offsetY = 800;
-                    if (Labels.IndexOf(m) % 10 == 8)
-                    {
-                        offsetX = 0;
-                    }
-                    else
-                    {
-                        offsetX = 425;
-                    }
-                    graphic.DrawString(m.FirstName.ToString() + " " + m.LastName.ToString(), font, dBrush, startX + offsetX, startY + offsetY);
-                    offsetY += 24;
-                    graphic.DrawString(m.Street, font, dBrush, startX + offsetX, startY + offsetY);
-                    offsetY += 24;
-                    graphic.DrawString(m.City + ", " + m.State + " " + m.PostalCode, font, dBrush, startX + offsetX, startY + offsetY);
-                    totalCount -= 1;
-                }
+                offsetY = (i / 2) * 200;
+
+                graphic.DrawString(memberLabel[i].FirstName.ToString() + " " + memberLabel[i].LastName.ToString(), font, dBrush, startX + offsetX, startY + offsetY);
+                offsetY += 24;
+                graphic.DrawString(memberLabel[i].Street, font, dBrush, startX + offsetX, startY + offsetY);
+                offsetY += 24;
+                graphic.DrawString(memberLabel[i].City + ", " + memberLabel[i].State + " " + memberLabel[i].PostalCode, font, dBrush, startX + offsetX, startY + offsetY);
             }
         }
-        #endregion  
+        #endregion
 
         private void btnClose_Click(object sender, EventArgs e)
         {
