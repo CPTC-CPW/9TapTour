@@ -150,7 +150,7 @@ namespace NineTapTour.Forms
             //Sets defult brush to use when printing
             SolidBrush dBrush = new SolidBrush(Color.Black);
 
-            int startX = 70;
+            int startX = 55;
             int startY = 55;
             int offsetX = 0;
             int offsetY = 0;
