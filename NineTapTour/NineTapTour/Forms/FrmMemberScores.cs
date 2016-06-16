@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Drawing.Printing;
-
+using System.Configuration;
 namespace NineTapTour.Forms
 {
     public partial class frmMemberScores : Form
@@ -593,6 +593,31 @@ namespace NineTapTour.Forms
                             MessageBox.Show(ex.Message);
 
                         }
+                        //UPDATE LASTBOWLED DATE
+                        if (selectedTournament.Date > currentMem.LastBowled)
+                        {
+                            NineTapDb datab = new NineTapDb();
+                            SqlConnection con = new SqlConnection(GetConnection());
+                            con.Open();
+                            try
+                            {
+
+                                SqlCommand UpdateLastBowledDate = new SqlCommand();
+                                UpdateLastBowledDate.CommandText = "SELECT * FROM Members UPDATE Members SET LastBowled = @DATE WHERE Members.Id " + currentMem.Id;
+                                UpdateLastBowledDate.Parameters.AddWithValue("@DATE", selectedTournament.Date.ToString("yyyy-MM-dd"));
+                                SqlDataReader dateReader = UpdateLastBowledDate.ExecuteReader();
+
+                            }
+                            catch
+                            {
+                                MessageBox.Show("Could Not Update Last Bowled Date");
+                            }
+                            finally
+                            {
+                                con.Dispose();
+                            }
+                        }
+                        //END UPDATE LASTBOWLED DATE
                         clear();
                         txtMemberNum.Focus();
                     }
@@ -604,6 +629,11 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show("Please Fill out the Participants information!");
             }
+        }
+
+        private string GetConnection()
+        {
+            return ConfigurationManager.ConnectionStrings["NineTapDbConnection"].ConnectionString;
         }
         #endregion
         /// <summary>
