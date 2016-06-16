@@ -933,7 +933,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(887, 726);
             this.Controls.Add(this.lblPaymentInfo);
@@ -973,7 +973,7 @@
             this.Controls.Add(this.txtLastName);
             this.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(900, 750);
+            this.MinimumSize = new System.Drawing.Size(585, 308);
             this.Name = "FrmMemberData";
             this.Text = "Member Info";
             this.Load += new System.EventHandler(this.MemberDataForm_Load);

@@ -25,40 +25,116 @@ namespace NineTapTour.Forms
         private int memNum;
         private string memName;
 
+        struct statHolder
+        {
+            public statHolder(DateTime Date,
+                                string Location,
+                                int Squad,
+                                int Id,
+                                string FirstName,
+                                string LastName,
+                                int? Game1,
+                                int? Game2,
+                                int? Game3,
+                                int? Game4,
+                                int? Handicap,
+                                int? Bonus)
+            {
+                this.Date = Date;
+                this.Location = Location;
+                this.Squad = Squad;
+                this.Id = Id;
+                this.FirstName = FirstName;
+                this.LastName = LastName;
+                this.Game1 = Game1;
+                this.Game2 = Game2;
+                this.Game3 = Game3;
+                this.Game4 = Game4;
+
+                ScratchTotal = ((Game1.HasValue ? Game1 : 0) + (Game2.HasValue ? Game2 : 0) + (Game3.HasValue ? Game3 : 0) + (Game4.HasValue ? Game4 : 0));
+
+                GameTotal = (((Game1.HasValue ? Game1 : 0) + (Handicap + Bonus)) + ((Game2.HasValue ? Game2 : 0) + (Handicap + Bonus)) + ((Game3.HasValue ? Game3 : 0) + (Handicap + Bonus)) + ((Game4.HasValue ? Game4 : 0) + (Handicap + Bonus)));
+
+                AvgPerGame = ((Game1.HasValue ? Game1 : 0) + (Game2.HasValue ? Game2 : 0) + (Game3.HasValue ? Game3 : 0) + (Game4.HasValue ? Game4 : 0));
+                    
+                int div = ((Game1.HasValue ? 1 : 0) + (Game2.HasValue ? 1 : 0) + (Game3.HasValue ? 1 : 0) + (Game4.HasValue ? 1 : 0));
+                if (div != 0)
+                {
+                    AvgPerGame /= div;
+                }
+
+                this.Handicap = Handicap;
+                this.Bonus = Bonus;
+            }
+
+            public DateTime Date;
+            public string Location;
+            public int Squad;
+            public int Id;
+            public string FirstName;
+            public string LastName;
+            public int? Game1;
+            public int? Game2;
+            public int? Game3;
+            public int? Game4;
+            public int? ScratchTotal;
+            public int? GameTotal;
+            public int? AvgPerGame;
+            public int? Handicap;
+            public int? Bonus;
+        }
+
         /// <summary>
         /// Populates the stats page for the member selected
         /// </summary>
         public void populateStats()
         {
+
             var db = new NineTapDb();
-            var stats = (from p in db.Participants
+            var temp = (from p in db.Participants
                          join m in db.Members on p.Member.Id equals m.Id
                          join g in db.Games on p.Game.Id equals g.Id
                          join t in db.Tournaments on p.Tournament.Id equals t.Id
-                         where memNum == p.Member.Number                         
+                         where memNum == p.Member.Number
                          orderby t.Date descending
                          select new
                          {
                              t.Date,
                              t.Location,
-                             p.Squad,   
+                             p.Squad,
                              p.Member.Id,
                              p.Member.FirstName,
-                             p.Member.LastName,                      
+                             p.Member.LastName,
                              g.Game1,
                              g.Game2,
                              g.Game3,
-                             g.Game4
-                             ,
-                             ScratchTotal = ((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0)),
-                             GameTotal = (((g.Game1.HasValue ? g.Game1 : 0 )+ (m.Handicap + m.Bonus)) + ((g.Game2.HasValue ? g.Game2 : 0) + (m.Handicap + m.Bonus)) + ((g.Game3.HasValue ? g.Game3 : 0) + (m.Handicap + m.Bonus)) + ((g.Game4.HasValue ? g.Game4 : 0) + (m.Handicap + m.Bonus))),
-                             AvgPerGame = (((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0)) /
-                                      ((g.Game1.HasValue ? 1 : 0) + (g.Game2.HasValue ? 1 : 0) + (g.Game3.HasValue ? 1 : 0) + (g.Game4.HasValue ? 1 : 0)))
-                             ,                             
-                             g.Handicap
-                             ,
+                             g.Game4,
+                             ScratchTotal = 0,
+                             GameTotal = 0,
+                             AvgPerGame = 0,                       
+                             g.Handicap,
                              g.Bonus
-                         }).ToList();                     
+                         }).ToList();
+
+            List<statHolder> stats = new List<statHolder>();
+            for (int i = 0; i < temp.Count; i++)
+            {
+                stats.Add(new statHolder(
+                            temp[i].Date,
+                             temp[i].Location,
+                             temp[i].Squad,
+                             temp[i].Id,
+                             temp[i].FirstName,
+                             temp[i].LastName,
+                             temp[i].Game1,
+                             temp[i].Game2,
+                             temp[i].Game3,
+                             temp[i].Game4,
+                             temp[i].Handicap,
+                             temp[i].Bonus
+                        )
+                    );
+            }
             double sum = 0;
             double count = 0;
             #region Game 1 Average

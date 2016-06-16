@@ -69,5 +69,10 @@ namespace NineTapTour.Forms
             g.DrawString("DEVELOPMENT VERSION NOT FOR PRODUCTION", drawFont, drawBrush, drawPoint);
 #endif
         }
+
+        private void MainMenu_Resize(object sender, EventArgs e)
+        {
+            Console.WriteLine("noot");
+        }
     }
 }
