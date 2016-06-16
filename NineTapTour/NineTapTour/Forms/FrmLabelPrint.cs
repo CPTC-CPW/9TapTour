@@ -124,13 +124,13 @@ namespace NineTapTour.Forms
 
         //TODO need to reset current page or refactor and avoid fields
         int currPage = 0;
-        const int PageSize = 10;
+        const int PageSize = 30;
         public void printLabels(object sender, PrintPageEventArgs e)
         {
-            //grab the next 10 members
+            //grab the next 30 members
             List<Member> nextMemberLabels = Labels.Skip((currPage) * PageSize).Take(PageSize).ToList();
 
-            //if more than 10 members remaining another page will be printed
+            //if more than 30 members remaining another page will be printed
             e.HasMorePages = (currPage * PageSize + PageSize >= Labels.Count) ? false : true;
 
             //print out 1 sheet of members, e.HasMorePages = true will cause print to be triggered again automatically
@@ -145,27 +145,29 @@ namespace NineTapTour.Forms
             Graphics graphic = e.Graphics;
 
             //default font to use, should use a mono space font so the spaces line up.
-            Font font = new Font("Arial", 24, FontStyle.Bold, GraphicsUnit.Pixel);
+            Font font = new Font("Arial", 16, FontStyle.Bold, GraphicsUnit.Pixel);
 
             //Sets defult brush to use when printing
             SolidBrush dBrush = new SolidBrush(Color.Black);
 
-            int startX = 75;
-            int startY = 100;
+            int startX = 70;
+            int startY = 55;
             int offsetX = 0;
             int offsetY = 0;
             for (int i = 0; i < memberLabel.Count; i++)
             {
-                if (i % 2 == 0)
+                if (i % 3 == 0)
                     offsetX = 0;
+                else if (i % 3 == 1)
+                    offsetX = 270;
                 else
-                    offsetX = 425;
-                offsetY = (i / 2) * 200;
+                    offsetX = 540;
+                offsetY = (i / 3) * 100;
 
                 graphic.DrawString(memberLabel[i].FirstName.ToString() + " " + memberLabel[i].LastName.ToString(), font, dBrush, startX + offsetX, startY + offsetY);
-                offsetY += 24;
+                offsetY += 16;
                 graphic.DrawString(memberLabel[i].Street, font, dBrush, startX + offsetX, startY + offsetY);
-                offsetY += 24;
+                offsetY += 16;
                 graphic.DrawString(memberLabel[i].City + ", " + memberLabel[i].State + " " + memberLabel[i].PostalCode, font, dBrush, startX + offsetX, startY + offsetY);
             }
         }
