@@ -728,6 +728,12 @@ namespace NineTapTour.Forms
         {
             Print.printAllMembers();
         }
+
+        private void btnLabels_Click(object sender, EventArgs e)
+        {
+            FrmLabelPrint labels = new FrmLabelPrint();
+            labels.ShowDialog();
+        }
     }
 }
 

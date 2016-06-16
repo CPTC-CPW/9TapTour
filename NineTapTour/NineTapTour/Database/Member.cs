@@ -71,6 +71,11 @@ namespace NineTapTour.Database
         [Required]
         public bool IsSenior { get; set; }
         #endregion
+
+        public override string ToString()
+        {
+            return "Member ID: " + Number + " Name: " + LastName + ", " + FirstName;
+        }
     }
 
     public enum MemberGenders
