@@ -32,14 +32,24 @@ namespace NineTapTour.Forms
         //        writer.WriteLine("Line");
         //    }
         //end extra info
-        public void CreateWordDoc(String content) {
-            string fileName = @"C:\Users\Public\WriteText.txt";
+       static public void CreateWordDoc(String docName) {
+            string fileName = @"C:\Users\Public\NineTapTour.txt";
             File.CreateText(fileName);
             FileStream stream = File.Create(fileName);
-            //string InsertParagraph = "TEST STRING";
-            File.WriteAllText(fileName, content);
             stream.Close();
             
+        
+        }
+        static public void WriteWordDoc(String content) {
+            string fileName = @"C:\Users\Public\NineTapTour.txt";
+            FileStream stream = File.Create(fileName);
+            File.WriteAllText(fileName, content);
+            stream.Close();
+        }
+
+       static public void OpenWordDoc()
+        {
+            string fileName = @"C:\Users\Public\NineTapTour.txt";
             // Open in Word:
             Process.Start("WINWORD.EXE", fileName);
             //End WORD DOCUMENT CREATION

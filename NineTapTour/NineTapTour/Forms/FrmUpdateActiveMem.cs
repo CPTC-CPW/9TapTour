@@ -79,15 +79,15 @@ namespace NineTapTour.Forms
                 try
                 {
 
-
+                    PrintToWord.CreateWordDoc("InActive.txt");//copy to word
                     foreach (var item in checkedListBox1.CheckedItems)
                     {
                         string value = item.ToString();
                         string output = value.Split('-', '-')[1];
                         //MessageBox.Show(output);//for testing
                         int n = Int32.Parse(output);
-                        
-                      
+
+                        PrintToWord.WriteWordDoc(Name+" : "+n);//copy to word
                         NineTapDb db = new NineTapDb();
                         SqlConnection con = new SqlConnection(GetConnection());
                         SqlCommand ActiveList = new SqlCommand();
@@ -113,6 +113,7 @@ namespace NineTapTour.Forms
                             con.Dispose();
                         }
                     }
+                    PrintToWord.OpenWordDoc();//Open word doc
                 }
                        
                     
