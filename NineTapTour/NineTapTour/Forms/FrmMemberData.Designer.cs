@@ -755,14 +755,14 @@
             // 
             // btnRecapByPin
             // 
-            this.btnRecapByPin.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRecapByPin.Location = new System.Drawing.Point(105, 49);
-            this.btnRecapByPin.Name = "btnRecapByPin";
-            this.btnRecapByPin.Size = new System.Drawing.Size(84, 49);
-            this.btnRecapByPin.TabIndex = 31;
-            this.btnRecapByPin.TabStop = false;
-            this.btnRecapByPin.Text = "Recap By Tournament";
-            this.btnRecapByPin.UseVisualStyleBackColor = true;
+            //this.btnRecapByPin.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            //this.btnRecapByPin.Location = new System.Drawing.Point(105, 49);
+            //this.btnRecapByPin.Name = "btnRecapByPin";
+            //this.btnRecapByPin.Size = new System.Drawing.Size(84, 49);
+            //this.btnRecapByPin.TabIndex = 31;
+            //this.btnRecapByPin.TabStop = false;
+            //this.btnRecapByPin.Text = "Recap By Tournament";
+            //this.btnRecapByPin.UseVisualStyleBackColor = true;
             this.grpPrinter.Text = "Print Recaps";
             // 
             // btnLabels
