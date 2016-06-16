@@ -30,8 +30,9 @@ namespace NineTapTour.Database
             int startY = 50;
 
             //draw handicap and average
-            graphic.DrawString(mem.Average, font, dBrush, startX + 490, startY - 5);
-            graphic.DrawString(mem.Handicap.ToString(), font, dBrush, startX + 590, startY - 5);
+            graphic.DrawString(mem.Average, font, dBrush, startX + 490, startY - 8);
+            graphic.DrawString(mem.Handicap.ToString(), font, dBrush, startX + 605, startY - 8);
+            graphic.DrawString(mem.Bonus.ToString(), font, dBrush, startX + 730, startY - 8);
 
             //draw the 4 handicaps for the game section of the card and the total handicap
             float offset = 39.55f;
@@ -40,12 +41,12 @@ namespace NineTapTour.Database
                 //this prints the handicap 4 times.
                 if (i <= 4)
                 {
-                    graphic.DrawString(mem.Handicap.ToString(), font, dBrush, startX + 530, startY + 31 + i * offset);
+                    graphic.DrawString(mem.Handicap.ToString(), font, dBrush, startX + 540, startY + 31 + i * offset);
                 }
                 //this prints the total handicap after it prints the handicap 4 seperate times
                 if (i == 5)
                 {
-                    graphic.DrawString(totalHandicap.ToString(), font, dBrush, startX + 530, startY + 50 + i * offset);
+                    graphic.DrawString(totalHandicap.ToString(), font, dBrush, startX + 540, (startY + 50 + i * offset) - 1);
                 }
             }
             //create name string containg lastname, firstname.
@@ -53,9 +54,9 @@ namespace NineTapTour.Database
             //draw name string
             graphic.DrawString(nameString, font, dBrush, startX + 5, startY + 80);
             //draw city string
-            graphic.DrawString(mem.City, font, dBrush, startX + 5, startY + 122);
+            graphic.DrawString(mem.City, font, dBrush, startX + 5, startY + 121);
             //draw member number string
-            graphic.DrawString(mem.Number.ToString(), font, dBrush, startX + 80, startY + 235);
+            graphic.DrawString(mem.Number.ToString(), font, dBrush, startX + 80, startY + 238);
         }
 
         static List<Member> mems = new List<Member>();
@@ -172,7 +173,7 @@ namespace NineTapTour.Database
 
     class MemberPrintObj
     {
-        public MemberPrintObj(int handicap, int memberNumber, string city, string firstName, string lastName, string average)
+        public MemberPrintObj(int handicap, int memberNumber, string city, string firstName, string lastName, string average, int bonus)
         {
             Handicap = handicap;
             Number = memberNumber.ToString();
@@ -180,6 +181,7 @@ namespace NineTapTour.Database
             FirstName = firstName;
             LastName = lastName;
             Average = average;
+            Bonus = bonus;
         }
 
         public MemberPrintObj(Member mem)
@@ -197,5 +199,6 @@ namespace NineTapTour.Database
         public string LastName;
         public string FirstName;
         public string Average;
+        public int Bonus;
     }
 }

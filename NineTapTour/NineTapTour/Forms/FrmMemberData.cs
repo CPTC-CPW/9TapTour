@@ -668,7 +668,8 @@ namespace NineTapTour.Forms
                     txtCity.Text,
                     txtFirstName.Text, 
                     txtLastName.Text
-                    , txtAverage.Text), 
+                    , txtAverage.Text
+                    , Convert.ToInt32(txtBonus.Text)), 
                 e);
         }
 
