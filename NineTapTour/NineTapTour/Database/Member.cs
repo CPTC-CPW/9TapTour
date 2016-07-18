@@ -44,7 +44,6 @@ namespace NineTapTour.Database
         #endregion
 
         #region Contact Info
-        [Required]
         public string Email { get; set; }
         [Required]
         public string PrimaryPhone { get; set; }

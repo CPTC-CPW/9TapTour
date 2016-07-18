@@ -350,7 +350,7 @@ namespace NineTapTour.Forms
             */
             // email validation
             // Author: Toby Fortuner
-            if (!(new EmailAddressAttribute().IsValid(txtEmail.Text)))
+            if (!(new EmailAddressAttribute().IsValid(txtEmail.Text) || string.IsNullOrWhiteSpace(txtEmail.Text)))
             {
                 MessageBox.Show("Email field must be a valid email address.");
                 txtEmail.Clear();
