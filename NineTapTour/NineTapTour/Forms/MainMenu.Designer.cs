@@ -39,10 +39,9 @@
             // 
             this.btnMemberData.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnMemberData.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnMemberData.Location = new System.Drawing.Point(88, 667);
-            this.btnMemberData.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.btnMemberData.Location = new System.Drawing.Point(117, 347);
             this.btnMemberData.Name = "btnMemberData";
-            this.btnMemberData.Size = new System.Drawing.Size(236, 135);
+            this.btnMemberData.Size = new System.Drawing.Size(118, 70);
             this.btnMemberData.TabIndex = 0;
             this.btnMemberData.Text = "Member Info";
             this.btnMemberData.UseVisualStyleBackColor = true;
@@ -51,10 +50,9 @@
             // btnMemberScores
             // 
             this.btnMemberScores.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnMemberScores.Location = new System.Drawing.Point(88, 938);
-            this.btnMemberScores.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.btnMemberScores.Location = new System.Drawing.Point(117, 488);
             this.btnMemberScores.Name = "btnMemberScores";
-            this.btnMemberScores.Size = new System.Drawing.Size(236, 137);
+            this.btnMemberScores.Size = new System.Drawing.Size(118, 71);
             this.btnMemberScores.TabIndex = 0;
             this.btnMemberScores.Text = "Member Scores";
             this.btnMemberScores.UseVisualStyleBackColor = true;
@@ -63,10 +61,9 @@
             // btnAbout
             // 
             this.btnAbout.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.btnAbout.Location = new System.Drawing.Point(1442, 667);
-            this.btnAbout.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.btnAbout.Location = new System.Drawing.Point(1036, 346);
             this.btnAbout.Name = "btnAbout";
-            this.btnAbout.Size = new System.Drawing.Size(236, 137);
+            this.btnAbout.Size = new System.Drawing.Size(118, 71);
             this.btnAbout.TabIndex = 0;
             this.btnAbout.Text = "About";
             this.btnAbout.UseVisualStyleBackColor = true;
@@ -75,10 +72,9 @@
             // Exit
             // 
             this.Exit.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.Exit.Location = new System.Drawing.Point(1444, 938);
-            this.Exit.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Exit.Location = new System.Drawing.Point(1036, 488);
             this.Exit.Name = "Exit";
-            this.Exit.Size = new System.Drawing.Size(236, 137);
+            this.Exit.Size = new System.Drawing.Size(118, 71);
             this.Exit.TabIndex = 0;
             this.Exit.Text = "Exit";
             this.Exit.UseVisualStyleBackColor = true;
@@ -86,19 +82,19 @@
             // 
             // MainMenu
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.BackgroundImage = global::NineTapTour.Properties.Resources._9tap;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(1768, 1702);
+            this.ClientSize = new System.Drawing.Size(1264, 986);
             this.Controls.Add(this.Exit);
             this.Controls.Add(this.btnAbout);
             this.Controls.Add(this.btnMemberScores);
             this.Controls.Add(this.btnMemberData);
             this.DoubleBuffered = true;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Name = "MainMenu";
             this.Text = "MainMenu";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.MainMenu_Paint);

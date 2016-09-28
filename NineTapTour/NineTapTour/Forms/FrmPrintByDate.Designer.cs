@@ -135,7 +135,7 @@
             this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.dateTimeEnd);
             this.Controls.Add(this.dateTimeStart);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "FrmPrintByDate";
             this.Text = "FrmPrintByDate";
             this.ResumeLayout(false);

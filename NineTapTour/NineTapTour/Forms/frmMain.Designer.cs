@@ -50,7 +50,7 @@
             this.toolsToolStripMenuItem});
             this.menMain.Location = new System.Drawing.Point(0, 0);
             this.menMain.Name = "menMain";
-            this.menMain.Size = new System.Drawing.Size(884, 24);
+            this.menMain.Size = new System.Drawing.Size(1264, 24);
             this.menMain.TabIndex = 1;
             this.menMain.Text = "menuStrip1";
             this.menMain.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.menMain_ItemAdded);
@@ -116,10 +116,11 @@
             this.AutoSize = true;
             this.BackgroundImage = global::NineTapTour.Properties.Resources._9tap;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(884, 818);
+            this.ClientSize = new System.Drawing.Size(1264, 990);
             this.Controls.Add(this.menMain);
             this.DoubleBuffered = true;
             this.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menMain;
