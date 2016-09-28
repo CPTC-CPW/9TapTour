@@ -46,7 +46,7 @@ namespace NineTapTour.Forms
                
                 AllMembers.ForEach(delegate(Member mem
                     ) {
-                        if (mem.IsActive && (mem.LastBowled >= targetDate || mem.LastBowled.ToString() == ""))
+                        if (mem.IsActive && (mem.LastBowled <= targetDate || mem.LastBowled.ToString() == ""))
                         {
                             
                             string lastplayed = (mem.LastBowled).ToString();

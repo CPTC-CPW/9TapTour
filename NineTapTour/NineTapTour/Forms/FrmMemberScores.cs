@@ -453,6 +453,7 @@ namespace NineTapTour.Forms
                 if (currTourney.Doubles)
                 {
                     player.Game = new Game();
+                    
                     player2.Game = new Game();
                     NineTapDb db = new NineTapDb();
                     int gameId = (from p in db.Participants
@@ -594,32 +595,14 @@ namespace NineTapTour.Forms
 
                         }
                         //UPDATE LASTBOWLED DATE
-                        if (selectedTournament.Date > currentMem.LastBowled)
+                        if (DateTime.Now > currentMem.LastBowled || currentMem.LastBowled == null)
                         {
-                            NineTapDb datab = new NineTapDb();
-                            SqlConnection con = new SqlConnection(GetConnection());
-                            con.Open();
-                            try
-                            {
-
-                                SqlCommand UpdateLastBowledDate = new SqlCommand();
-                                UpdateLastBowledDate.CommandText = "SELECT * FROM Members UPDATE Members SET LastBowled = @DATE WHERE Members.Id " + currentMem.Id;
-                                UpdateLastBowledDate.Parameters.AddWithValue("@DATE", selectedTournament.Date.ToString("yyyy-MM-dd"));
-                                SqlDataReader dateReader = UpdateLastBowledDate.ExecuteReader();
-
-                            }
-                            catch
-                            {
-                                MessageBox.Show("Could Not Update Last Bowled Date");
-                            }
-                            finally
-                            {
-                                con.Dispose();
-                            }
+                            currentMem.LastBowled = DateTime.Now;
+                            db.Entry(currentMem).State = EntityState.Modified;
+                            db.SaveChanges();
+                            
                         }
-                        //END UPDATE LASTBOWLED DATE
-                        clear();
-                        txtMemberNum.Focus();
+
                     }
                     
                 }

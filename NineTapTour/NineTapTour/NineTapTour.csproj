@@ -300,6 +300,9 @@
     <Compile Include="Forms\FrmMemberScores.Designer.cs">
       <DependentUpon>FrmMemberScores.cs</DependentUpon>
     </Compile>
+    <Compile Include="_NineTapTour_NineTapDbDataSet.cs">
+      <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
+    </Compile>
     <Compile Include="_NineTapTour_NineTapDbDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

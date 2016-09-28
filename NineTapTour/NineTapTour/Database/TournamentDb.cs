@@ -125,6 +125,8 @@ namespace NineTapTour.Database
                                  select p).Count();
                     if (check == 0)
                     {
+                        
+                        
                         db.Participants.Add(player);
                         //Uses AddObject because you cannot have object graph where part of objects are connected to context and part of not.
                         //Changed so that context knows that department already exists.
