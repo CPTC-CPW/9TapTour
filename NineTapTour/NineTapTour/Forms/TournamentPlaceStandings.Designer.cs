@@ -40,19 +40,21 @@
             // dgvTournamentStandings
             // 
             this.dgvTournamentStandings.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvTournamentStandings.Location = new System.Drawing.Point(148, 200);
+            this.dgvTournamentStandings.Location = new System.Drawing.Point(0, 205);
+            this.dgvTournamentStandings.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.dgvTournamentStandings.Name = "dgvTournamentStandings";
             this.dgvTournamentStandings.RowTemplate.Height = 40;
-            this.dgvTournamentStandings.Size = new System.Drawing.Size(3320, 1384);
+            this.dgvTournamentStandings.Size = new System.Drawing.Size(1263, 397);
             this.dgvTournamentStandings.TabIndex = 0;
             // 
             // lblTournamentPlaceStandings
             // 
             this.lblTournamentPlaceStandings.AutoSize = true;
             this.lblTournamentPlaceStandings.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTournamentPlaceStandings.Location = new System.Drawing.Point(158, 57);
+            this.lblTournamentPlaceStandings.Location = new System.Drawing.Point(59, 24);
+            this.lblTournamentPlaceStandings.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.lblTournamentPlaceStandings.Name = "lblTournamentPlaceStandings";
-            this.lblTournamentPlaceStandings.Size = new System.Drawing.Size(728, 76);
+            this.lblTournamentPlaceStandings.Size = new System.Drawing.Size(308, 31);
             this.lblTournamentPlaceStandings.TabIndex = 1;
             this.lblTournamentPlaceStandings.Text = "Tournament Standings";
             // 
@@ -60,17 +62,19 @@
             // 
             this.lblTournamentName.AutoSize = true;
             this.lblTournamentName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTournamentName.Location = new System.Drawing.Point(1590, 82);
+            this.lblTournamentName.Location = new System.Drawing.Point(596, 34);
+            this.lblTournamentName.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.lblTournamentName.Name = "lblTournamentName";
-            this.lblTournamentName.Size = new System.Drawing.Size(132, 46);
+            this.lblTournamentName.Size = new System.Drawing.Size(57, 20);
             this.lblTournamentName.TabIndex = 2;
             this.lblTournamentName.Text = "label1";
             // 
             // btnPrint
             // 
-            this.btnPrint.Location = new System.Drawing.Point(3166, 1618);
+            this.btnPrint.Location = new System.Drawing.Point(1187, 679);
+            this.btnPrint.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.btnPrint.Name = "btnPrint";
-            this.btnPrint.Size = new System.Drawing.Size(258, 64);
+            this.btnPrint.Size = new System.Drawing.Size(97, 27);
             this.btnPrint.TabIndex = 3;
             this.btnPrint.Text = "Print";
             this.btnPrint.UseVisualStyleBackColor = true;
@@ -82,13 +86,15 @@
             // 
             // TournamentPlaceStandings
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(3475, 1710);
+            this.ClientSize = new System.Drawing.Size(1264, 606);
             this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.lblTournamentName);
             this.Controls.Add(this.lblTournamentPlaceStandings);
             this.Controls.Add(this.dgvTournamentStandings);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.Name = "TournamentPlaceStandings";
             this.Text = "Tournament Place Standings";
             this.Load += new System.EventHandler(this.TournamentPlaceStandings_Load);
