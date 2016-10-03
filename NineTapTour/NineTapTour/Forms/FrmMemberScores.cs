@@ -34,7 +34,7 @@ namespace NineTapTour.Forms
 
         private void FrmMemberScores_Load(object sender, EventArgs e)
         {            
-            txtMemberNum2.Visible = doubles;                                               
+                                                          
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
 
@@ -139,7 +139,7 @@ namespace NineTapTour.Forms
                         }
                         else
                         {
-                            MemberStatus("Inactive", Color.Red, Color.Pink, true);
+                            MemberStatus("Inactive", Color.Red, Color.Pink, false);
                         }
                         txtScratchScore1.Focus();
                         Game currentGame = GetScoresById(currentMem.Id);
@@ -182,7 +182,7 @@ namespace NineTapTour.Forms
                         }
                         else
                         {
-                            MemberStatus("Inactive", Color.Red, Color.Pink, true);
+                            MemberStatus("Inactive", Color.Red, Color.Pink, false);
                         }
                         Game currentGame2 = GetScoresById(currentMem2.Id);
                         if (currentGame2 != null)
@@ -229,7 +229,7 @@ namespace NineTapTour.Forms
                         }
                         else
                         {
-                            MemberStatus("Inactive", Color.Red, Color.Pink, true);
+                            MemberStatus("Inactive", Color.Red, Color.Pink, false);
                         }
                         txtScratchScore1.Focus();
 
@@ -309,7 +309,7 @@ namespace NineTapTour.Forms
                     }
                     else
                     {
-                        MemberStatus("Inactive", Color.Red, Color.Pink, true);
+                        MemberStatus("Inactive", Color.Red, Color.Pink, false);
                     }
                     txtLastName.Text = currentMem.LastName;
                     txtFirstName.Text = currentMem.FirstName;
@@ -855,6 +855,7 @@ namespace NineTapTour.Forms
             {
                 txtMemberNum.Enabled = true;
                 txtMemberNum2.Visible = true;
+                txtMemberNum.Enabled = true;
                 EnableButtonsWhenValidTournamentSelected();
             }
             else
