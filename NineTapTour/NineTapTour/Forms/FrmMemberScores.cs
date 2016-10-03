@@ -855,7 +855,7 @@ namespace NineTapTour.Forms
             {
                 txtMemberNum.Enabled = true;
                 txtMemberNum2.Visible = true;
-                txtMemberNum.Enabled = true;
+                txtMemberNum2.Enabled = true;
                 EnableButtonsWhenValidTournamentSelected();
             }
             else
@@ -946,19 +946,7 @@ namespace NineTapTour.Forms
                 cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             }
         }
-        /// <summary>
-        /// Checks if current member has an existing entry into Squad 4
-        /// and clears the scores if the member does NOT
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void rdoSquadFour_CheckedChanged(object sender, EventArgs e)
-        {
-            if (currentMem == null || GetScoresById(currentMem.Id) == null)
-            {
-                ScoreAndTotalClear();
-            }            
-        }
+
         /// <summary>
         /// Checks if current member has an existing entry into Squad 1
         /// and clears the scores if the member does NOT
@@ -967,10 +955,9 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadOne_CheckedChanged(object sender, EventArgs e)
         {
-            if (currentMem == null || GetScoresById(currentMem.Id) == null)
-            {
                 ScoreAndTotalClear();
-            }           
+                FillMember();           
+          
         }
         /// <summary>
         /// Checks if current member has an existing entry into Squad 2
@@ -980,10 +967,25 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void rdoSquadTwo_CheckedChanged(object sender, EventArgs e)
         {
-            if (currentMem == null || GetScoresById(currentMem.Id) == null)
-            {
-                ScoreAndTotalClear();
-            }            
+            ScoreAndTotalClear();
+            FillMember();
+        }
+
+        private void rdoSquadThree_CheckedChanged(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            FillMember();
+        }
+        /// <summary>
+        /// Checks if current member has an existing entry into Squad 4
+        /// and clears the scores if the member does NOT
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rdoSquadFour_CheckedChanged(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            FillMember();
         }
         /// <summary>
         /// Clears scratch scores and scratch and handicap totals
@@ -1003,13 +1005,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void rdoSquadThree_CheckedChanged(object sender, EventArgs e)
-        {
-            if (currentMem == null || GetScoresById(currentMem.Id) == null)
-            {
-                ScoreAndTotalClear();
-            }            
-        }
+
         /* TODO Error
         private void btnTournamentsByYear_Click(object sender, EventArgs e)
         {            
