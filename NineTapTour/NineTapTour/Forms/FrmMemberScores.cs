@@ -595,6 +595,7 @@ namespace NineTapTour.Forms
 
                         }
                         //UPDATE LASTBOWLED DATE
+                        //Sets last bowled to now and updates DB record
                         if (DateTime.Now > currentMem.LastBowled || currentMem.LastBowled == null)
                         {
                             currentMem.LastBowled = DateTime.Now;
@@ -847,19 +848,19 @@ namespace NineTapTour.Forms
             if (selectedTournament == null)
             {
                 txtMemberNum.Enabled = false;
-                txtMemberNum2.Enabled = false;
+                txtMemberNum2.Visible = false;
                 btnRecapByPin.Enabled = false;
             }
-            else if (!selectedTournament.Doubles)
+            else if (selectedTournament.Doubles)
             {
                 txtMemberNum.Enabled = true;
-                txtMemberNum2.Enabled = false;
+                txtMemberNum2.Visible = true;
                 EnableButtonsWhenValidTournamentSelected();
             }
             else
             {
                 txtMemberNum.Enabled = true;
-                txtMemberNum2.Enabled = true;
+                txtMemberNum2.Visible = false;
                 EnableButtonsWhenValidTournamentSelected();
             }
 
