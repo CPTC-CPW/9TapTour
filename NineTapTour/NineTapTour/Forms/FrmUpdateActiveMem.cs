@@ -13,8 +13,7 @@ using System.ComponentModel.DataAnnotations;
 using static NineTapTour._NineTapTour_NineTapDbDataSet;
 using System.Data.SqlClient;
 using System.Configuration;
-
-
+using System.Data.Entity;
 
 /// <summary>
 /// Author Julie Edwards
@@ -39,40 +38,46 @@ namespace NineTapTour.Forms
         
         private void FrmUpdateActiveMem_Load(object sender, EventArgs e)
         {
-     
+            UpdateList();
+        }
+
+        private void UpdateList()
+        {
             try
             {
 
-               
-                AllMembers.ForEach(delegate(Member mem
-                    ) {
-                        if (mem.IsActive && (mem.LastBowled <= targetDate || mem.LastBowled.ToString() == ""))
-                        {
-                            
-                            string lastplayed = (mem.LastBowled).ToString();
-                            if (lastplayed == "")
-                            {
-                                lastplayed = "never";
-                            }
-                            string InActive = String.Format("-{2,-5}- {1,10}{3,0}{0,10}",
-                             mem.LastName + ", " + mem.FirstName, lastplayed, mem.Number, "     ");
-                            //TODO change from string to object
-                            checkedListBox1.Items.Add(InActive, false);
 
-                        }
+                AllMembers.ForEach(delegate (Member mem)
+                {
+                    if (mem.IsActive && (mem.LastBowled <= targetDate || mem.LastBowled.ToString() == ""))
+                    {
+                        //Commented out, shouldnt be needed
 
-                            
-                    });
+                        //string lastplayed = (mem.LastBowled).ToString();
+                        //if (lastplayed == "")
+                        //{
+                        //    lastplayed = "never";
+                        //}
+                        //string InActive = String.Format("-{2,-5}- {1,10}{3,0}{0,10}",
+                        // mem.LastName + ", " + mem.FirstName, lastplayed, mem.Number, "     ");
+
+
+                        //TODO change from string to object //Done CPR
+                        checkedListBox1.Items.Add(mem);
+
+                    }
+
+
+                });
                 currentMem = InActiveList.FirstOrDefault();
-                
+
             }
             catch
             {
                 MessageBox.Show("null list");
             }
         }
-        
-        
+
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
             targetDate = dateTimePicker1.Value;
@@ -80,51 +85,25 @@ namespace NineTapTour.Forms
 
         private void btnUpdateActive_Click(object sender, EventArgs e)
         {
+            var db = new NineTapDb();
             if (MessageBox.Show("Update the selected Members to inactive?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
                 try
                 {
 
-                    PrintToWord.CreateWordDoc("InActive.txt");//copy to word
-                    foreach (var item in checkedListBox1.CheckedItems)
+                    //PrintToWord.CreateWordDoc("InActive.txt");//copy to word
+                    foreach (Member mem in checkedListBox1.CheckedItems)
                     {
-                        string value = item.ToString();
-                        string output = value.Split('-', '-')[1];
-                        //MessageBox.Show(output);//for testing
-                        int n = Int32.Parse(output);
 
-                        PrintToWord.WriteWordDoc(Name+" : "+n);//copy to word
-                        NineTapDb db = new NineTapDb();
-                        SqlConnection con = new SqlConnection(GetConnection());
-                        SqlCommand ActiveList = new SqlCommand();
-                        ActiveList.Connection = con;
-                        ActiveList.CommandText = "SELECT * FROM Members UPDATE Members SET IsActive = 0 WHERE Members.Id = @TID";
-                        ActiveList.Parameters.AddWithValue("@TID", n);
-                        try
-                        {
-                            // open connection
-                            con.Open();
-                            // execute command(query)
-                            SqlDataReader reader = ActiveList.ExecuteReader();
-                       
-                        
-            
-                        }
-                        catch (SqlException)
-                        {
-                            MessageBox.Show("Error On update");
-                        }
-                        finally
-                        {
-                            con.Dispose();
-                        }
+                        mem.IsActive = false;
+                        //PrintToWord.WriteWordDoc("Name" + mem.FirstName + " " + mem.LastName);
+                        db.Entry(mem).State = EntityState.Modified;
+                        db.SaveChanges();
+                        checkedListBox1.Items.Clear();
+                        UpdateList();
+                        //PrintToWord.OpenWordDoc();//Open word doc
                     }
-                    PrintToWord.OpenWordDoc();//Open word doc
                 }
-                       
-                    
-                    
-                
                 catch
                 {
                     //MessageBox.Show("No Members Selected");
@@ -133,10 +112,6 @@ namespace NineTapTour.Forms
             }
         }
 
-        private string GetConnection()
-        {
-            return ConfigurationManager.ConnectionStrings["NineTapDbConnection"].ConnectionString;
-        }
 
 
 
