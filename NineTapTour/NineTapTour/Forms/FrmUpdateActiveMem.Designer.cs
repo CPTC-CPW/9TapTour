@@ -81,7 +81,7 @@
             this.btnCheckInactive.TabIndex = 4;
             this.btnCheckInactive.Text = "Check All";
             this.btnCheckInactive.UseVisualStyleBackColor = true;
-            this.btnCheckInactive.Click += new System.EventHandler(this.btnCheckInactive_Click);
+            //this.btnCheckInactive.Click += new System.EventHandler(this.btnCheckInactive_Click);
             // 
             // label2
             // 

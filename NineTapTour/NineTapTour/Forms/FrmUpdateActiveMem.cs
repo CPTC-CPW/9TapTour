@@ -51,25 +51,9 @@ namespace NineTapTour.Forms
                 {
                     if (mem.IsActive && (mem.LastBowled <= targetDate || mem.LastBowled.ToString() == ""))
                     {
-                        //Commented out, shouldnt be needed
-
-                        //string lastplayed = (mem.LastBowled).ToString();
-                        //if (lastplayed == "")
-                        //{
-                        //    lastplayed = "never";
-                        //}
-                        //string InActive = String.Format("-{2,-5}- {1,10}{3,0}{0,10}",
-                        // mem.LastName + ", " + mem.FirstName, lastplayed, mem.Number, "     ");
-
-
-                        //TODO change from string to object //Done CPR
                         checkedListBox1.Items.Add(mem);
-
                     }
-
-
                 });
-                currentMem = InActiveList.FirstOrDefault();
 
             }
             catch
@@ -112,25 +96,5 @@ namespace NineTapTour.Forms
             }
         }
 
-
-
-
-        private void btnCheckInactive_Click(object sender, EventArgs e)
-        {
-            if (checkedListBox1.CheckedItems.Count < checkedListBox1.Items.Count)
-            { 
-                for (int i = 0; i < checkedListBox1.Items.Count; i++)
-                {
-                    checkedListBox1.SetItemChecked(i, true);
-                }
-            }
-            else
-            {
-                for (int i = 0; i < checkedListBox1.Items.Count; i++)
-                {
-                    checkedListBox1.SetItemChecked(i, false);
-                }
-            }
-        }
     }
 }
