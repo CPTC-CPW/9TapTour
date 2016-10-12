@@ -47,6 +47,7 @@ namespace NineTapTour.Forms
             NewTournament.Event = txtEvent.Text;
             NewTournament.Sponsors = txtSponsors.Text;
             NewTournament.Notes = rtxtNotes.Text;
+            NewTournament.Squads = Convert.ToInt32(txtSquads.Text);
             if (ckbxDoubles.Checked)
             {
                 NewTournament.Doubles = true;

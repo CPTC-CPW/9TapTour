@@ -99,6 +99,16 @@
             this.btnTourSearch = new System.Windows.Forms.Button();
             this.btnTournamentsByYear = new System.Windows.Forms.Button();
             this.btnPlaceStandings = new System.Windows.Forms.Button();
+            this.lblMiddleInitial2 = new System.Windows.Forms.Label();
+            this.lblFirstName2 = new System.Windows.Forms.Label();
+            this.lbLastName2 = new System.Windows.Forms.Label();
+            this.txtMiddleInitial2 = new System.Windows.Forms.TextBox();
+            this.txtFirstName2 = new System.Windows.Forms.TextBox();
+            this.txtLastName2 = new System.Windows.Forms.TextBox();
+            this.rdoSquad5 = new System.Windows.Forms.RadioButton();
+            this.rdoSquad7 = new System.Windows.Forms.RadioButton();
+            this.rdoSquad6 = new System.Windows.Forms.RadioButton();
+            this.rdoSquad8 = new System.Windows.Forms.RadioButton();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpRecord.SuspendLayout();
@@ -146,13 +156,17 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.rdoSquad8);
+            this.groupBox1.Controls.Add(this.rdoSquad6);
+            this.groupBox1.Controls.Add(this.rdoSquad7);
+            this.groupBox1.Controls.Add(this.rdoSquad5);
             this.groupBox1.Controls.Add(this.rdoSquadFour);
             this.groupBox1.Controls.Add(this.rdoSquadThree);
             this.groupBox1.Controls.Add(this.rdoSquadTwo);
             this.groupBox1.Controls.Add(this.rdoSquadOne);
             this.groupBox1.Location = new System.Drawing.Point(21, 93);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(179, 73);
+            this.groupBox1.Size = new System.Drawing.Size(179, 122);
             this.groupBox1.TabIndex = 22;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Squad Number";
@@ -419,7 +433,7 @@
             this.grpRecord.Controls.Add(this.btnStats);
             this.grpRecord.Controls.Add(this.btnLastFile);
             this.grpRecord.Controls.Add(this.btnNew);
-            this.grpRecord.Location = new System.Drawing.Point(21, 520);
+            this.grpRecord.Location = new System.Drawing.Point(21, 569);
             this.grpRecord.Name = "grpRecord";
             this.grpRecord.Size = new System.Drawing.Size(235, 216);
             this.grpRecord.TabIndex = 2;
@@ -550,7 +564,7 @@
             this.grpStats.Controls.Add(this.txtHandicapScore4);
             this.grpStats.Controls.Add(this.txtHandicapScore3);
             this.grpStats.Controls.Add(this.txtScratchScore4);
-            this.grpStats.Location = new System.Drawing.Point(21, 172);
+            this.grpStats.Location = new System.Drawing.Point(21, 221);
             this.grpStats.Name = "grpStats";
             this.grpStats.Size = new System.Drawing.Size(360, 328);
             this.grpStats.TabIndex = 1;
@@ -626,7 +640,7 @@
             // grpTournamentFile
             // 
             this.grpTournamentFile.Controls.Add(this.cbxTourneyDropDown);
-            this.grpTournamentFile.Location = new System.Drawing.Point(277, 605);
+            this.grpTournamentFile.Location = new System.Drawing.Point(277, 654);
             this.grpTournamentFile.Name = "grpTournamentFile";
             this.grpTournamentFile.Size = new System.Drawing.Size(201, 60);
             this.grpTournamentFile.TabIndex = 28;
@@ -656,7 +670,7 @@
             this.grpLeaders.Controls.Add(this.richTextBox1);
             this.grpLeaders.Controls.Add(this.lblSeries);
             this.grpLeaders.Controls.Add(this.lblGameSenior);
-            this.grpLeaders.Location = new System.Drawing.Point(405, 105);
+            this.grpLeaders.Location = new System.Drawing.Point(405, 154);
             this.grpLeaders.Name = "grpLeaders";
             this.grpLeaders.Size = new System.Drawing.Size(456, 395);
             this.grpLeaders.TabIndex = 29;
@@ -785,7 +799,7 @@
             this.grpReports.Controls.Add(this.btnSeries);
             this.grpReports.Controls.Add(this.btnGame);
             this.grpReports.Controls.Add(this.btnSenior);
-            this.grpReports.Location = new System.Drawing.Point(499, 521);
+            this.grpReports.Location = new System.Drawing.Point(499, 570);
             this.grpReports.Name = "grpReports";
             this.grpReports.Size = new System.Drawing.Size(123, 171);
             this.grpReports.TabIndex = 0;
@@ -825,7 +839,7 @@
             // grpComments
             // 
             this.grpComments.Controls.Add(this.rtxtComments);
-            this.grpComments.Location = new System.Drawing.Point(660, 520);
+            this.grpComments.Location = new System.Drawing.Point(660, 569);
             this.grpComments.Name = "grpComments";
             this.grpComments.Size = new System.Drawing.Size(201, 172);
             this.grpComments.TabIndex = 31;
@@ -847,7 +861,7 @@
             // 
             this.pnlMemStat.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pnlMemStat.Controls.Add(this.lblMemberStatus);
-            this.pnlMemStat.Location = new System.Drawing.Point(254, 101);
+            this.pnlMemStat.Location = new System.Drawing.Point(265, 156);
             this.pnlMemStat.Name = "pnlMemStat";
             this.pnlMemStat.Size = new System.Drawing.Size(110, 57);
             this.pnlMemStat.TabIndex = 32;
@@ -855,7 +869,7 @@
             // lblMemberL
             // 
             this.lblMemberL.AutoSize = true;
-            this.lblMemberL.Location = new System.Drawing.Point(269, 85);
+            this.lblMemberL.Location = new System.Drawing.Point(280, 140);
             this.lblMemberL.Name = "lblMemberL";
             this.lblMemberL.Size = new System.Drawing.Size(78, 13);
             this.lblMemberL.TabIndex = 30;
@@ -863,7 +877,7 @@
             // 
             // btnNewTournament
             // 
-            this.btnNewTournament.Location = new System.Drawing.Point(281, 576);
+            this.btnNewTournament.Location = new System.Drawing.Point(281, 625);
             this.btnNewTournament.Name = "btnNewTournament";
             this.btnNewTournament.Size = new System.Drawing.Size(191, 23);
             this.btnNewTournament.TabIndex = 26;
@@ -874,7 +888,7 @@
             // 
             // btnTourSearch
             // 
-            this.btnTourSearch.Location = new System.Drawing.Point(281, 677);
+            this.btnTourSearch.Location = new System.Drawing.Point(281, 726);
             this.btnTourSearch.Name = "btnTourSearch";
             this.btnTourSearch.Size = new System.Drawing.Size(189, 23);
             this.btnTourSearch.TabIndex = 33;
@@ -884,7 +898,7 @@
             // 
             // btnTournamentsByYear
             // 
-            this.btnTournamentsByYear.Location = new System.Drawing.Point(281, 704);
+            this.btnTournamentsByYear.Location = new System.Drawing.Point(281, 753);
             this.btnTournamentsByYear.Margin = new System.Windows.Forms.Padding(1);
             this.btnTournamentsByYear.Name = "btnTournamentsByYear";
             this.btnTournamentsByYear.Size = new System.Drawing.Size(189, 23);
@@ -896,7 +910,7 @@
             // btnPlaceStandings
             // 
             this.btnPlaceStandings.Enabled = false;
-            this.btnPlaceStandings.Location = new System.Drawing.Point(281, 530);
+            this.btnPlaceStandings.Location = new System.Drawing.Point(281, 579);
             this.btnPlaceStandings.Margin = new System.Windows.Forms.Padding(1);
             this.btnPlaceStandings.Name = "btnPlaceStandings";
             this.btnPlaceStandings.Size = new System.Drawing.Size(189, 23);
@@ -905,12 +919,137 @@
             this.btnPlaceStandings.UseVisualStyleBackColor = true;
             this.btnPlaceStandings.Click += new System.EventHandler(this.btnPlaceStandings_Click);
             // 
+            // lblMiddleInitial2
+            // 
+            this.lblMiddleInitial2.AutoSize = true;
+            this.lblMiddleInitial2.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
+            this.lblMiddleInitial2.Location = new System.Drawing.Point(709, 79);
+            this.lblMiddleInitial2.Name = "lblMiddleInitial2";
+            this.lblMiddleInitial2.Size = new System.Drawing.Size(99, 19);
+            this.lblMiddleInitial2.TabIndex = 36;
+            this.lblMiddleInitial2.Text = "Middle Initial";
+            this.lblMiddleInitial2.Click += new System.EventHandler(this.label4_Click);
+            // 
+            // lblFirstName2
+            // 
+            this.lblFirstName2.AutoSize = true;
+            this.lblFirstName2.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
+            this.lblFirstName2.Location = new System.Drawing.Point(470, 79);
+            this.lblFirstName2.Name = "lblFirstName2";
+            this.lblFirstName2.Size = new System.Drawing.Size(82, 19);
+            this.lblFirstName2.TabIndex = 37;
+            this.lblFirstName2.Text = "First Name";
+            this.lblFirstName2.Click += new System.EventHandler(this.label5_Click);
+            // 
+            // lbLastName2
+            // 
+            this.lbLastName2.AutoSize = true;
+            this.lbLastName2.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
+            this.lbLastName2.Location = new System.Drawing.Point(229, 79);
+            this.lbLastName2.Name = "lbLastName2";
+            this.lbLastName2.Size = new System.Drawing.Size(80, 19);
+            this.lbLastName2.TabIndex = 38;
+            this.lbLastName2.Text = "Last Name";
+            this.lbLastName2.Click += new System.EventHandler(this.label6_Click);
+            // 
+            // txtMiddleInitial2
+            // 
+            this.txtMiddleInitial2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtMiddleInitial2.Enabled = false;
+            this.txtMiddleInitial2.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMiddleInitial2.Location = new System.Drawing.Point(713, 101);
+            this.txtMiddleInitial2.Multiline = true;
+            this.txtMiddleInitial2.Name = "txtMiddleInitial2";
+            this.txtMiddleInitial2.ReadOnly = true;
+            this.txtMiddleInitial2.Size = new System.Drawing.Size(105, 38);
+            this.txtMiddleInitial2.TabIndex = 39;
+            this.txtMiddleInitial2.TabStop = false;
+            this.txtMiddleInitial2.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
+            // txtFirstName2
+            // 
+            this.txtFirstName2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtFirstName2.Enabled = false;
+            this.txtFirstName2.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtFirstName2.Location = new System.Drawing.Point(474, 101);
+            this.txtFirstName2.Multiline = true;
+            this.txtFirstName2.Name = "txtFirstName2";
+            this.txtFirstName2.ReadOnly = true;
+            this.txtFirstName2.Size = new System.Drawing.Size(206, 38);
+            this.txtFirstName2.TabIndex = 40;
+            this.txtFirstName2.TabStop = false;
+            this.txtFirstName2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
+            // 
+            // txtLastName2
+            // 
+            this.txtLastName2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtLastName2.Enabled = false;
+            this.txtLastName2.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtLastName2.Location = new System.Drawing.Point(233, 101);
+            this.txtLastName2.Multiline = true;
+            this.txtLastName2.Name = "txtLastName2";
+            this.txtLastName2.ReadOnly = true;
+            this.txtLastName2.Size = new System.Drawing.Size(206, 38);
+            this.txtLastName2.TabIndex = 41;
+            this.txtLastName2.TabStop = false;
+            this.txtLastName2.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
+            // 
+            // rdoSquad5
+            // 
+            this.rdoSquad5.AutoSize = true;
+            this.rdoSquad5.Location = new System.Drawing.Point(6, 67);
+            this.rdoSquad5.Name = "rdoSquad5";
+            this.rdoSquad5.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquad5.TabIndex = 24;
+            this.rdoSquad5.TabStop = true;
+            this.rdoSquad5.Text = "Squad 5";
+            this.rdoSquad5.UseVisualStyleBackColor = true;
+            // 
+            // rdoSquad7
+            // 
+            this.rdoSquad7.AutoSize = true;
+            this.rdoSquad7.Location = new System.Drawing.Point(7, 96);
+            this.rdoSquad7.Name = "rdoSquad7";
+            this.rdoSquad7.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquad7.TabIndex = 25;
+            this.rdoSquad7.TabStop = true;
+            this.rdoSquad7.Text = "Squad 7";
+            this.rdoSquad7.UseVisualStyleBackColor = true;
+            // 
+            // rdoSquad6
+            // 
+            this.rdoSquad6.AutoSize = true;
+            this.rdoSquad6.Location = new System.Drawing.Point(108, 67);
+            this.rdoSquad6.Name = "rdoSquad6";
+            this.rdoSquad6.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquad6.TabIndex = 26;
+            this.rdoSquad6.TabStop = true;
+            this.rdoSquad6.Text = "Squad 6";
+            this.rdoSquad6.UseVisualStyleBackColor = true;
+            // 
+            // rdoSquad8
+            // 
+            this.rdoSquad8.AutoSize = true;
+            this.rdoSquad8.Location = new System.Drawing.Point(108, 96);
+            this.rdoSquad8.Name = "rdoSquad8";
+            this.rdoSquad8.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquad8.TabIndex = 27;
+            this.rdoSquad8.TabStop = true;
+            this.rdoSquad8.Text = "Squad 8";
+            this.rdoSquad8.UseVisualStyleBackColor = true;
+            // 
             // frmMemberScores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(884, 769);
+            this.Controls.Add(this.lblMiddleInitial2);
+            this.Controls.Add(this.lblFirstName2);
+            this.Controls.Add(this.lbLastName2);
+            this.Controls.Add(this.txtMiddleInitial2);
+            this.Controls.Add(this.txtFirstName2);
+            this.Controls.Add(this.txtLastName2);
             this.Controls.Add(this.btnPlaceStandings);
             this.Controls.Add(this.btnTournamentsByYear);
             this.Controls.Add(this.btnTourSearch);
@@ -1032,5 +1171,15 @@
         private System.Windows.Forms.Button btnTournamentsByYear;
         private System.Windows.Forms.Button btnPlaceStandings;
         private System.Windows.Forms.Button btnRecapByPin;
+        private System.Windows.Forms.Label lblMiddleInitial2;
+        private System.Windows.Forms.Label lblFirstName2;
+        private System.Windows.Forms.Label lbLastName2;
+        private System.Windows.Forms.TextBox txtMiddleInitial2;
+        private System.Windows.Forms.TextBox txtFirstName2;
+        private System.Windows.Forms.TextBox txtLastName2;
+        private System.Windows.Forms.RadioButton rdoSquad8;
+        private System.Windows.Forms.RadioButton rdoSquad6;
+        private System.Windows.Forms.RadioButton rdoSquad7;
+        private System.Windows.Forms.RadioButton rdoSquad5;
     }
 }
