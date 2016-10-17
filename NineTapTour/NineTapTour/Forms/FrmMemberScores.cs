@@ -25,8 +25,7 @@ namespace NineTapTour.Forms
         Participant player2 = new Participant();
         //bool doubles = true;
         public static Tournament selectedTournament;
-        public static List<TopScores> overallListOfTopScores;
-        
+        public static List<TopScores> overallListOfTopScores;   
         
         
 
@@ -278,18 +277,6 @@ namespace NineTapTour.Forms
 
 
 
-        
-        /// <summary>
-        /// May be unused
-        /// </summary>
-        /// <returns></returns>
-        public int GetParticipant()
-        {
-            NineTapDb db = new NineTapDb();
-            int totalCount = (from t in db.Tournaments
-                              select t.Participant).Count();
-            return totalCount;
-        }
 
         /// <summary>
         /// method to set the member status colors on lblMemberStatus forecolor and pnlMemStat background color
