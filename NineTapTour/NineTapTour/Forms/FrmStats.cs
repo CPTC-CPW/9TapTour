@@ -20,6 +20,7 @@ namespace NineTapTour.Forms
             memNum = memberNumber;
             memName = memberName;
             mem = currentMem;
+            dataGridView1.DataSource = tableview();
         }
         private Member mem;
         private int memNum;
@@ -87,6 +88,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Populates the stats page for the member selected
         /// </summary>
+        /// 
         public void populateStats()
         {
 
@@ -225,11 +227,70 @@ namespace NineTapTour.Forms
             }
             txtBonus.Text = String.Format("{0:N2}", (sum / count));
             #endregion
-            dataGridView1.DataSource = stats;
+            
+        }
+        public DataTable tableview()
+        {
+
+            DataTable dtGames = new DataTable();
+            var db = new NineTapDb();
+            var temp = (from p in db.Participants
+                        join m in db.Members on p.Member.Id equals m.Id
+                        join g in db.Games on p.Game.Id equals g.Id
+                        join t in db.Tournaments on p.Tournament.Id equals t.Id
+                        where memNum == p.Member.Number
+                        orderby t.Date descending
+                        select new
+                        {
+                            t.Date,
+                            t.Location,
+                            p.Squad,
+                            g.Game1,
+                            g.Game2,
+                            g.Game3,
+                            g.Game4,
+                            ScratchTotal = g.Game1 + g.Game2 + g.Game3 + g.Game4,                            
+                            TotalScore = (g.Game1 + g.Bonus + g.Handicap) + (g.Game2 + g.Bonus + g.Handicap) + (g.Game3 + g.Bonus + g.Handicap) + (g.Game4 + g.Bonus + g.Handicap),
+                            AvgPerGame = (g.Game1 + g.Game2 + g.Game3 + g.Game4)/4,
+                            g.Handicap,
+                            g.Bonus
+                        });
+            dtGames.Columns.Add("Date");
+            dtGames.Columns.Add("Location");
+            dtGames.Columns.Add("Squad");
+            dtGames.Columns.Add("Game1");
+            dtGames.Columns.Add("Game2");
+            dtGames.Columns.Add("Game3");
+            dtGames.Columns.Add("Game4");
+            dtGames.Columns.Add("Scratch Total");
+            dtGames.Columns.Add("Game Total");
+            dtGames.Columns.Add("Average Per Game");
+            dtGames.Columns.Add("Handicap");
+            dtGames.Columns.Add("Bonus");
+            foreach (var item in temp)
+            {
+                DataRow newRow = dtGames.NewRow();
+                newRow["Date"] = item.Date;
+                newRow["Location"] = item.Location;
+                newRow["Squad"] = item.Squad;
+                newRow["Game1"] = item.Game1;
+                newRow["Game2"] = item.Game2;
+                newRow["Game3"] = item.Game3;
+                newRow["Game4"] = item.Game4;
+                newRow["Scratch Total"] = item.ScratchTotal;
+                newRow["Game Total"] = item.TotalScore;
+                newRow["Average Per Game"] = item.AvgPerGame;
+                newRow["Handicap"] = item.Handicap;
+                newRow["Bonus"] = item.Bonus;
+                dtGames.Rows.Add(newRow);
+            
+                }
+            return dtGames;
         }
 
         private void FrmStats_Load(object sender, EventArgs e)
         {
+            
             lblName.Text = memName;
             lblMemberNumber.Text = Convert.ToString(memNum);
         }

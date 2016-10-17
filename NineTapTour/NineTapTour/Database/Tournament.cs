@@ -16,7 +16,7 @@ namespace NineTapTour.Database
         public string Notes { get; set; }
         public string Sponsors { get; set; }
         public List<Participant> Participant { get; set; }
-        []
+       
         public int Squads { get; set; } 
         public bool Doubles { get; set; }
         public bool ThreeOutOf4 {get; set;}
