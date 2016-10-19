@@ -34,16 +34,43 @@ namespace NineTapTour.Forms
         public frmMemberScores()
         {
             InitializeComponent();
-            DoubleInitialize(false);
-            RadioIntialize();
+            DoubleInitialize(false);            
+            
         }
 
         private void RadioIntialize()
         {
+
             rdoSquad5.Visible = false;
             rdoSquad6.Visible = false;
             rdoSquad7.Visible = false;
             rdoSquad8.Visible = false;
+            if (cbxTourneyDropDown.SelectedIndex >= 0)
+            {
+                if (selectedTournament.Squads == 5)
+                {
+                    rdoSquad5.Visible = true;
+                }
+                if (selectedTournament.Squads == 6)
+                {
+                    rdoSquad5.Visible = true;
+                    rdoSquad6.Visible = true;
+                }
+                if (selectedTournament.Squads == 7)
+                {
+                    rdoSquad5.Visible = true;
+                    rdoSquad6.Visible = true;
+                    rdoSquad7.Visible = true;
+
+                }
+                if (selectedTournament.Squads == 8)
+                {
+                    rdoSquad5.Visible = true;
+                    rdoSquad6.Visible = true;
+                    rdoSquad7.Visible = true;
+                    rdoSquad8.Visible = true;
+                }
+            }
         }
 
         private void FrmMemberScores_Load(object sender, EventArgs e)
@@ -51,6 +78,7 @@ namespace NineTapTour.Forms
                                                           
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
+            
 
         }
         /// <summary>
@@ -786,6 +814,7 @@ namespace NineTapTour.Forms
                 txtMemberNum2.Visible = false;
                 btnRecapByPin.Enabled = false;
                 DoubleInitialize(false);
+                RadioIntialize();
             }
             else if (selectedTournament.Doubles)
             {
@@ -794,6 +823,7 @@ namespace NineTapTour.Forms
                 txtMemberNum2.Enabled = true;
                 DoubleInitialize(true);
                 EnableButtonsWhenValidTournamentSelected();
+                RadioIntialize();
             }
             else
             {
@@ -801,6 +831,7 @@ namespace NineTapTour.Forms
                 txtMemberNum2.Visible = false;
                 DoubleInitialize(false);
                 EnableButtonsWhenValidTournamentSelected();
+                RadioIntialize();
             }
 
             if (cbxTourneyDropDown.SelectedIndex < 0)
@@ -816,23 +847,8 @@ namespace NineTapTour.Forms
                 RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
                 refresh(false);
             }
-            //if (selectedTournament.Squads > 4 && selectedTournament !=null)
-            //{
-            //    int count = 1;
-            //    foreach (Control c in this.Controls)
-            //        if (c is GroupBox)
-            //        {
-            //            foreach (Control tb in c.Controls)
-            //            {
-            //                if (tb is RadioButton && count <= 8)
-            //                {
-            //                    tb.Visible = true;
-            //                    //here is where you access all the textboxs.
-            //                }
 
-            //            }
-            //        }
-            //}
+
         }
 
         /// <summary>

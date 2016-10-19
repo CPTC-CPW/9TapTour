@@ -229,6 +229,17 @@ namespace NineTapTour.Forms
             #endregion
             
         }
+        //private void Average(List<statHolder> stats, string property)
+        //{
+        //    int sum = 0;
+        //    int count = 0;
+        //    var prop = typeof(statHolder).GetProperty(property);
+        //    foreach (var item in stats)
+        //    {
+        //        count++;
+        //        sum += Convert.ToInt32(item.prop)
+        //    }
+        //}
         public DataTable tableview()
         {
 
