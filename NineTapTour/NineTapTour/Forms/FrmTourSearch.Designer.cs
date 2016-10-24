@@ -207,7 +207,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DateTimePicker dtpFrom;
         private System.Windows.Forms.ListBox listSearch;
-        private System.Windows.Forms.DateTimePicker dtpTo;
+        public System.Windows.Forms.DateTimePicker dtpTo;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox chkDate;

@@ -69,6 +69,9 @@ namespace NineTapTour.Forms
                 // Date?
                 if (chkDate.Checked)
                 {
+                    //Sets date time from to 1st second of date, sets date time to to last second of date.  This enables same day searchers.
+                    dtpFrom.Value = dtpFrom.Value.Date;
+                    dtpTo.Value = dtpTo.Value.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
                     if (dtpFrom.Value == dtpTo.Value)
                     {
                         query = query.Where(t => t.Date == dtpFrom.Value);

@@ -20,6 +20,7 @@ namespace NineTapTour.Forms
         public frmNewTournament()
         {
             InitializeComponent();
+            txtSquads.Text = 4.ToString();
         }
 
         /// <summary>
