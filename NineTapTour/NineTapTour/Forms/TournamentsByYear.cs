@@ -32,9 +32,10 @@ namespace NineTapTour.Forms
         /// Gets the last 25 years from the current year down
         /// </summary>
         /// <returns>List of Years from current to 25 years ago</returns>
+        /// added +1 to year so you could search any precreated tournaments that were created after the current year.
         private List<int> Years()
         {
-            int currentYear = DateTime.Now.Year;
+            int currentYear = DateTime.Now.Year + 1;
             List<int> years = new List<int>();
             for (int i = 25; i > 0; i--)
             {
