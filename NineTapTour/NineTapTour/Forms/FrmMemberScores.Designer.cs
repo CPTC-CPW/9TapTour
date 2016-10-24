@@ -33,6 +33,10 @@
             this.txtMemberNum2 = new System.Windows.Forms.TextBox();
             this.txtMemberNum = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.rdoSquad8 = new System.Windows.Forms.RadioButton();
+            this.rdoSquad6 = new System.Windows.Forms.RadioButton();
+            this.rdoSquad7 = new System.Windows.Forms.RadioButton();
+            this.rdoSquad5 = new System.Windows.Forms.RadioButton();
             this.rdoSquadFour = new System.Windows.Forms.RadioButton();
             this.rdoSquadThree = new System.Windows.Forms.RadioButton();
             this.rdoSquadTwo = new System.Windows.Forms.RadioButton();
@@ -105,10 +109,6 @@
             this.txtMiddleInitial2 = new System.Windows.Forms.TextBox();
             this.txtFirstName2 = new System.Windows.Forms.TextBox();
             this.txtLastName2 = new System.Windows.Forms.TextBox();
-            this.rdoSquad5 = new System.Windows.Forms.RadioButton();
-            this.rdoSquad7 = new System.Windows.Forms.RadioButton();
-            this.rdoSquad6 = new System.Windows.Forms.RadioButton();
-            this.rdoSquad8 = new System.Windows.Forms.RadioButton();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpRecord.SuspendLayout();
@@ -141,7 +141,8 @@
             this.txtMemberNum2.Size = new System.Drawing.Size(112, 20);
             this.txtMemberNum2.TabIndex = 1;
             this.txtMemberNum2.Visible = false;
-            this.txtMemberNum2.TextChanged += new System.EventHandler(this.txtMemberNum2_TextChanged);
+            this.txtMemberNum2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMemberNum2_KeyDown);
+            this.txtMemberNum2.Leave += new System.EventHandler(this.txtMemberNum2_Leave);
             // 
             // txtMemberNum
             // 
@@ -151,8 +152,8 @@
             this.txtMemberNum.Name = "txtMemberNum";
             this.txtMemberNum.Size = new System.Drawing.Size(112, 20);
             this.txtMemberNum.TabIndex = 0;
-            this.txtMemberNum.TextChanged += new System.EventHandler(this.txtMemberNum_TextChanged);
-            this.txtMemberNum.KeyUp += new System.Windows.Forms.KeyEventHandler(this.GetMember);
+            this.txtMemberNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMemberNum_KeyDown);
+            this.txtMemberNum.Leave += new System.EventHandler(this.txtMemberNum_Leave);
             // 
             // groupBox1
             // 
@@ -170,6 +171,50 @@
             this.groupBox1.TabIndex = 22;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Squad Number";
+            // 
+            // rdoSquad8
+            // 
+            this.rdoSquad8.AutoSize = true;
+            this.rdoSquad8.Location = new System.Drawing.Point(108, 96);
+            this.rdoSquad8.Name = "rdoSquad8";
+            this.rdoSquad8.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquad8.TabIndex = 27;
+            this.rdoSquad8.TabStop = true;
+            this.rdoSquad8.Text = "Squad 8";
+            this.rdoSquad8.UseVisualStyleBackColor = true;
+            // 
+            // rdoSquad6
+            // 
+            this.rdoSquad6.AutoSize = true;
+            this.rdoSquad6.Location = new System.Drawing.Point(108, 67);
+            this.rdoSquad6.Name = "rdoSquad6";
+            this.rdoSquad6.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquad6.TabIndex = 26;
+            this.rdoSquad6.TabStop = true;
+            this.rdoSquad6.Text = "Squad 6";
+            this.rdoSquad6.UseVisualStyleBackColor = true;
+            // 
+            // rdoSquad7
+            // 
+            this.rdoSquad7.AutoSize = true;
+            this.rdoSquad7.Location = new System.Drawing.Point(7, 96);
+            this.rdoSquad7.Name = "rdoSquad7";
+            this.rdoSquad7.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquad7.TabIndex = 25;
+            this.rdoSquad7.TabStop = true;
+            this.rdoSquad7.Text = "Squad 7";
+            this.rdoSquad7.UseVisualStyleBackColor = true;
+            // 
+            // rdoSquad5
+            // 
+            this.rdoSquad5.AutoSize = true;
+            this.rdoSquad5.Location = new System.Drawing.Point(6, 67);
+            this.rdoSquad5.Name = "rdoSquad5";
+            this.rdoSquad5.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquad5.TabIndex = 24;
+            this.rdoSquad5.TabStop = true;
+            this.rdoSquad5.Text = "Squad 5";
+            this.rdoSquad5.UseVisualStyleBackColor = true;
             // 
             // rdoSquadFour
             // 
@@ -993,50 +1038,6 @@
             this.txtLastName2.TabIndex = 41;
             this.txtLastName2.TabStop = false;
             this.txtLastName2.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
-            // 
-            // rdoSquad5
-            // 
-            this.rdoSquad5.AutoSize = true;
-            this.rdoSquad5.Location = new System.Drawing.Point(6, 67);
-            this.rdoSquad5.Name = "rdoSquad5";
-            this.rdoSquad5.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquad5.TabIndex = 24;
-            this.rdoSquad5.TabStop = true;
-            this.rdoSquad5.Text = "Squad 5";
-            this.rdoSquad5.UseVisualStyleBackColor = true;
-            // 
-            // rdoSquad7
-            // 
-            this.rdoSquad7.AutoSize = true;
-            this.rdoSquad7.Location = new System.Drawing.Point(7, 96);
-            this.rdoSquad7.Name = "rdoSquad7";
-            this.rdoSquad7.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquad7.TabIndex = 25;
-            this.rdoSquad7.TabStop = true;
-            this.rdoSquad7.Text = "Squad 7";
-            this.rdoSquad7.UseVisualStyleBackColor = true;
-            // 
-            // rdoSquad6
-            // 
-            this.rdoSquad6.AutoSize = true;
-            this.rdoSquad6.Location = new System.Drawing.Point(108, 67);
-            this.rdoSquad6.Name = "rdoSquad6";
-            this.rdoSquad6.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquad6.TabIndex = 26;
-            this.rdoSquad6.TabStop = true;
-            this.rdoSquad6.Text = "Squad 6";
-            this.rdoSquad6.UseVisualStyleBackColor = true;
-            // 
-            // rdoSquad8
-            // 
-            this.rdoSquad8.AutoSize = true;
-            this.rdoSquad8.Location = new System.Drawing.Point(108, 96);
-            this.rdoSquad8.Name = "rdoSquad8";
-            this.rdoSquad8.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquad8.TabIndex = 27;
-            this.rdoSquad8.TabStop = true;
-            this.rdoSquad8.Text = "Squad 8";
-            this.rdoSquad8.UseVisualStyleBackColor = true;
             // 
             // frmMemberScores
             // 

@@ -151,17 +151,7 @@ namespace NineTapTour.Forms
 
         }
         #region GetMember
-        /// <summary>
-        /// Gets the members information based on the member number
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
 
-        //int index = 0;
-        private void GetMember(object sender, KeyEventArgs e)
-        {
-            FillMember();
-        }
 
         //Get players scores
         private void GetScores(Game currentGame)
@@ -890,10 +880,7 @@ namespace NineTapTour.Forms
             return true;
         }
 
-        private void txtMemberNum2_TextChanged(object sender, EventArgs e)
-        {
-            txtMemberNum.Focus();
-        }
+
 
         /// <summary>
         /// Search for tours by location.
@@ -1434,6 +1421,28 @@ namespace NineTapTour.Forms
         private void label5_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void txtMemberNum_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyData == Keys.Enter)
+                FillMember();
+        }
+
+        private void txtMemberNum2_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyData == Keys.Enter)
+                FillMember();
+        }
+
+        private void txtMemberNum_Leave(object sender, EventArgs e)
+        {
+            FillMember();
+        }
+
+        private void txtMemberNum2_Leave(object sender, EventArgs e)
+        {
+            FillMember();
         }
     }
     /// <summary>
