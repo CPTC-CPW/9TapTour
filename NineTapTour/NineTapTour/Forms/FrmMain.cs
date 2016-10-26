@@ -16,12 +16,13 @@ namespace NineTapTour.Forms
         public IOrderedEnumerable<Member> _membersList { get; set; }
         public List<Tournament> _tournamentList { get; set; }
         public ToolStripItem activeItem;
+        public FrmMemberData currFrmMemberData { get; set; }
 
         /// <summary>
         /// Opens Main form 
         /// Retrieves information from the database in order.
         /// </summary>
-      
+
         public FrmMain()
         {
             InitializeComponent();
@@ -51,29 +52,51 @@ namespace NineTapTour.Forms
         /// <param name="form">forms that haven't been opened yet(?)</param>
         public void OpenOrDisplayForm<T>(ref T form) where T : Form, new()
         {
-            if (form != null)
+            bool isSavedData = true;
+
+            // determines whether FrmMemberData is saved before leaving and if calls 
+            // FrmMemberIsSavedData to determine you want to leave without saving changes
+            // else return you to FrmMemberData.
+            if (currFrmMemberData != null)
             {
-                //Width and Height not needed here?
-                //Width = form.Right + Math.Abs(form.Left) + 4;
-                //Height = form.Height + 28;
-                form.BringToFront();
-                form.Activate();
-            }
-            else
-            {
-                form = new T
+                if (!FrmMemberIsSavedData())
                 {
-                    MdiParent = this,
-                    Dock = DockStyle.Fill
-                };
-                //Width and Height not needed here?
-                //Width = form.Width;
-                //Height = form.Height + 20;
+                    isSavedData = false;
+                    currFrmMemberData.BringToFront();
+                    currFrmMemberData.Activate();
+                    menuHighlight("Member Info");
+                }
+                else
+                {
+                    currFrmMemberData.UpdateMemberInfo();
+                }
             }
-            form.WindowState = FormWindowState.Maximized;
-            form.Show();
+
+            if (isSavedData) //checks to see if you are leaving page without saved data.
+            {
+                if (form != null)
+                {
+                    //Width and Height not needed here?
+                    //Width = form.Right + Math.Abs(form.Left) + 4;
+                    //Height = form.Height + 28;
+                    form.BringToFront();
+                    form.Activate();
+                }
+                else
+                {
+                    form = new T
+                    {
+                        MdiParent = this,
+                        Dock = DockStyle.Fill
+                    };
+                    //Width and Height not needed here?
+                    //Width = form.Width;
+                    //Height = form.Height + 20;
+                }
+                form.WindowState = FormWindowState.Maximized;
+                form.Show();
+            }
             
-           
         }
 
         //method to highlight menu item to show user which page they have open
@@ -124,6 +147,8 @@ namespace NineTapTour.Forms
         {   
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
             OpenOrDisplayForm(ref newfrmMemberData);
+
+            //currFrmMemberData = newfrmMemberData;
         }
 
         /// <summary>
@@ -156,10 +181,6 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void FrmMain_Load(object sender, EventArgs e)
-        {
-
-        }
 
         private void updateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
         {
@@ -167,6 +188,35 @@ namespace NineTapTour.Forms
             Width = UpdatefrmActiveMem.Width;
             Height = UpdatefrmActiveMem.Height + 20;
             UpdatefrmActiveMem.Show();
+        }
+
+        /// <summary>
+        /// This Method call a FrmMemberData method to determine if data is saved.
+        /// if data not saved prompts user whether they still want to leave without saving data.
+        /// </summary>
+        /// <returns>return true if data is saved or if data is saved and user wants to delete any
+        /// saved changes. Returns false if data is not saved and user does want to make changes.</returns>
+        private bool FrmMemberIsSavedData() {
+            if (currFrmMemberData.IsSavedData())
+            {
+                return true;
+            }
+
+            else
+            {
+                var confirm = MessageBox.Show(@"Are you sure you want to leave without saving changes?", @"Member Data Not Saved", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (confirm == DialogResult.No)
+                {
+
+                    return false;
+
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            
         }
     }
 }

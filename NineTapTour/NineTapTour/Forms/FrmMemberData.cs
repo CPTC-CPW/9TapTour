@@ -15,7 +15,6 @@ namespace NineTapTour.Forms
     public partial class FrmMemberData : Form
     {
 
-       
         bool UpdateText;
         //IOrderedEnumerable<Member> _membersList;
         int _memberId;
@@ -25,13 +24,14 @@ namespace NineTapTour.Forms
         {
             set { _memberNum = value; }
         }
-
+        
         /// <summary>
         /// Opens the "Member Data" Form.
         /// </summary>
         public FrmMemberData()
         {
             InitializeComponent();
+
         }
         /// <summary>
         /// Updates information in the "Member Data" form.
@@ -40,6 +40,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void MemberDataForm_Load(object sender, EventArgs e)
         {
+            
             dateJoined.Format = DateTimePickerFormat.Custom;
             dateJoined.CustomFormat = @" ";
 
@@ -251,6 +252,7 @@ namespace NineTapTour.Forms
                     datePaid.CustomFormat = @" ";
                     lblPaymentInfo.Visible = false;
                 }
+                
             }
         }
 
@@ -356,7 +358,7 @@ namespace NineTapTour.Forms
                 txtEmail.Clear();
                 return false;
             }
-
+            //((FrmMain)MdiParent).currFrmMemberData = this;
             return true;
         }
         /// <summary>
@@ -442,10 +444,10 @@ namespace NineTapTour.Forms
                             MessageBox.Show(@"Bowler Added Successfully.");
                         }
 
-
                         //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
                         ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
                         //_membersList = ((FrmMain)MdiParent)._membersList;
+                        UpdateMemberInfo();
                     }
                     catch (MemberTableException ex)
                     {
@@ -734,6 +736,66 @@ namespace NineTapTour.Forms
         {
             FrmLabelPrint labels = new FrmLabelPrint();
             labels.ShowDialog();
+        }
+        /// <summary>
+        /// This action event assigns current form as currFrmMemberData in FrmMains' global 
+        /// Variable property when leaving form. This allows the program to later check whether FrmMemberData has 
+        /// been changed without saving.
+        /// /// </summary>
+        /// /// <param name="sender"></param>
+        /// /// <param name="e"></param>
+        private void FrmMemberData_Leave(object sender, EventArgs e)
+        {
+
+            ((FrmMain)MdiParent).currFrmMemberData = this;
+        }
+
+        /// <summary>
+        /// checks whether form data has been changed and not saved
+        /// </summary>
+        /// <returns>true if frmData is saved and false if form data has been changed and not saved. </returns>
+        public Boolean IsSavedData()
+        {
+            bool isMember = false;
+            FrmMemberData newFrmMemberData = ((FrmMain)MdiParent).currFrmMemberData;
+
+            foreach (Member mem in ((FrmMain)MdiParent)._membersList)
+            {
+                if (mem.Id == (currentMem.Id))
+                {
+                    isMember = true;
+                }
+            }
+            
+            if (!isMember ||
+                txtLastName.Text != currentMem.LastName.ToString() ||
+                txtFirstName.Text != currentMem.FirstName.ToString() ||
+                txtMiddleInitial.Text != currentMem.MiddleInitial.ToString() ||
+                txtNotes.Text != currentMem.Notes.ToString() ||
+                txtState.Text != currentMem.State.ToString() ||
+                txtCity.Text != currentMem.City.ToString() ||
+                txtEmail.Text != currentMem.Email.ToString() ||
+                txtAddress.Text != currentMem.Street.ToString() ||
+                txtReferrals.Text != currentMem.Referrals.ToString() ||
+                mtxtBoxPhone.Text != currentMem.PrimaryPhone.ToString() ||
+                mtxtBoxPhone2.Text != currentMem.SecondaryPhone.ToString() ||
+                mtxtBoxSSN.Text != currentMem.SSN.ToString() ||
+                mtxtBoxZip.Text != currentMem.PostalCode.ToString() ||
+                txtMoneyEarned.Text != currentMem.MoneyEarned.ToString() ||
+                txtAverage.Text != currentMem.Average.ToString() ||
+                txtHandicap.Text != currentMem.Handicap.ToString() ||
+                txtBonus.Text != currentMem.Bonus.ToString()
+                //to do- check radio buttons active Member and Gender
+                )
+
+            {
+                return false;
+            }
+
+            else
+            {
+                return true;
+            }
         }
     }
 }

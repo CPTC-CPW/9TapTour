@@ -33,11 +33,12 @@ namespace NineTapTour.Forms
         }
 
         private void FrmMemberScores_Load(object sender, EventArgs e)
-        {            
-            txtMemberNum2.Visible = doubles;                                               
-            scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
-            handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
-
+        {
+            
+                txtMemberNum2.Visible = doubles;
+                scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
+                handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
+            
         }
         /// <summary>
         /// entering a member number clears members data
