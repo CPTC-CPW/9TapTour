@@ -746,7 +746,6 @@ namespace NineTapTour.Forms
         /// /// <param name="e"></param>
         private void FrmMemberData_Leave(object sender, EventArgs e)
         {
-
             ((FrmMain)MdiParent).currFrmMemberData = this;
         }
 
@@ -757,7 +756,6 @@ namespace NineTapTour.Forms
         public Boolean IsSavedData()
         {
             bool isMember = false;
-            FrmMemberData newFrmMemberData = ((FrmMain)MdiParent).currFrmMemberData;
 
             foreach (Member mem in ((FrmMain)MdiParent)._membersList)
             {
@@ -781,11 +779,13 @@ namespace NineTapTour.Forms
                 mtxtBoxPhone2.Text != currentMem.SecondaryPhone.ToString() ||
                 mtxtBoxSSN.Text != currentMem.SSN.ToString() ||
                 mtxtBoxZip.Text != currentMem.PostalCode.ToString() ||
-                txtMoneyEarned.Text != currentMem.MoneyEarned.ToString() ||
+                decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency) != currentMem.MoneyEarned ||
                 txtAverage.Text != currentMem.Average.ToString() ||
                 txtHandicap.Text != currentMem.Handicap.ToString() ||
-                txtBonus.Text != currentMem.Bonus.ToString()
-                //to do- check radio buttons active Member and Gender
+                txtBonus.Text != currentMem.Bonus.ToString() ||
+                // checks radio buttons active Member
+                (currentMem.IsActive == true && rdoInActive.Checked == true) ||
+                (currentMem.IsActive == false && rdoActive.Checked == true)
                 )
 
             {

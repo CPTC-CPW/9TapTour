@@ -148,7 +148,7 @@ namespace NineTapTour.Forms
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
             OpenOrDisplayForm(ref newfrmMemberData);
 
-            //currFrmMemberData = newfrmMemberData;
+            currFrmMemberData = newfrmMemberData;
         }
 
         /// <summary>
@@ -191,11 +191,11 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// This Method call a FrmMemberData method to determine if data is saved.
+        /// This method calls a FrmMemberData method to determine if data is saved.
         /// if data not saved prompts user whether they still want to leave without saving data.
         /// </summary>
-        /// <returns>return true if data is saved or if data is saved and user wants to delete any
-        /// saved changes. Returns false if data is not saved and user does want to make changes.</returns>
+        /// <returns>returns true if data is saved or if data is not saved and user wants to continue without
+        /// saving changes. Returns false if data is not saved and user does want to save changes.</returns>
         private bool FrmMemberIsSavedData() {
             if (currFrmMemberData.IsSavedData())
             {
