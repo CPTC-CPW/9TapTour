@@ -1454,6 +1454,24 @@ namespace NineTapTour.Forms
             TournamentPlaceStandings form = new TournamentPlaceStandings();
             form.ShowDialog();
         }
+
+        /// <summary>
+        /// Populates Tournament dropdown list to most recently modified tournament;
+        /// </summary>
+        public void populateSelectedTournament(Tournament currtourney)
+        {
+            List<Tournament> temp2 = TournamentDb.GetTournamentList();
+
+            for (int i = 0; i < temp2.Count; i++)
+            {
+                if (temp2[i].Id == currtourney.Id)
+                {
+                    cbxTourneyDropDown.SelectedIndex = i;
+                }
+            }
+        }
+
+
     }
     /// <summary>
     /// Class used to populate 3rd RichTextBox
