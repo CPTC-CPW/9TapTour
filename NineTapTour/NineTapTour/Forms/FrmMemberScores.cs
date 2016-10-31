@@ -186,7 +186,9 @@ namespace NineTapTour.Forms
                 txtScratchScore3.Text = Convert.ToString(currentGame.Game3);
                 txtScratchScore4.Text = Convert.ToString(currentGame.Game4);
                 txtScratchScore1.Focus();
-                
+                txtMoney.Text = currentGame.MoneyWon.ToString();
+
+
             }
         }
         #endregion
@@ -228,7 +230,7 @@ namespace NineTapTour.Forms
                         txtHandicap.Text = currentMem.Handicap.ToString();
                         txtBonusPins.Text = currentMem.Bonus.ToString();
                         Game currentGame = GetScoresById(currentMem.Id);
-                        txtMoney.Text = currentGame.MoneyWon.ToString();
+                        
                         GetScores(currentGame);
 
                     }
