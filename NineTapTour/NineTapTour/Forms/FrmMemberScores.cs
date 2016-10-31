@@ -34,7 +34,8 @@ namespace NineTapTour.Forms
         public frmMemberScores()
         {
             InitializeComponent();
-            DoubleInitialize(false);            
+            DoubleInitialize(false);
+                     
             
         }
 
@@ -131,12 +132,22 @@ namespace NineTapTour.Forms
         private void ResetFields()
         {
             txtMemberNum.Clear();
+            txtMemberNum2.Clear();
             txtLastName.Clear();
+            txtLastName2.Clear();
             txtFirstName.Clear();
+            txtFirstName2.Clear();
             txtMiddleInitial.Clear();
+            txtMiddleInitial2.Clear();
             txtHandicap.Clear();
-            txtBonusPins.Clear(); 
+            txtBonusPins.Clear();
+            txtScratchScore1.Clear();
+            txtScratchScore2.Clear();
+            txtScratchScore3.Clear();
+            txtScratchScore4.Clear();
+            txtScratchTotal.Clear();
             listOfTopScore.Clear();
+            txtMoney.Clear();
         }
 
         //Hides/Shows the 2nd player information for doubles tourneys
@@ -174,6 +185,8 @@ namespace NineTapTour.Forms
                 txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
                 txtScratchScore3.Text = Convert.ToString(currentGame.Game3);
                 txtScratchScore4.Text = Convert.ToString(currentGame.Game4);
+                txtScratchScore1.Focus();
+                
             }
         }
         #endregion
@@ -215,6 +228,7 @@ namespace NineTapTour.Forms
                         txtHandicap.Text = currentMem.Handicap.ToString();
                         txtBonusPins.Text = currentMem.Bonus.ToString();
                         Game currentGame = GetScoresById(currentMem.Id);
+                        txtMoney.Text = currentGame.MoneyWon.ToString();
                         GetScores(currentGame);
 
                     }
@@ -465,8 +479,12 @@ namespace NineTapTour.Forms
                         TournamentDb.AddMemberToTournament(player2);
 #if DEBUG
                         MessageBox.Show(@"Bowlers Added Successfully to Tournament!");
+
 #endif
+                        ResetFields();
+                        txtMemberNum.Focus();
                         RecordIndex(TournamentDb.GetTournamentMemberList(currTourney));
+                        clear();
 
                     }
                     catch (MemberAccessException ex)
@@ -510,6 +528,11 @@ namespace NineTapTour.Forms
                         player.Squad = 4;
                     }
                     #endregion
+                    //defaults money earned to 0, or enters text box amount
+                    if (txtMoney.Text == "" || txtMoney.Text == null)
+                        player.Game.MoneyWon = 0;
+                    else
+                        player.Game.MoneyWon = Convert.ToDecimal(txtMoney.Text);
 
                     if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim())
                         || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
@@ -539,6 +562,8 @@ namespace NineTapTour.Forms
 #if DEBUG
                             MessageBox.Show(@"Bowler Added Successfully to Tournament!");
 #endif
+                            ResetFields();
+                            txtMemberNum.Focus();
                             RecordIndex(TournamentDb.GetTournamentMemberList(currTourney));
                         }
                         catch (MemberAccessException ex)
@@ -1393,53 +1418,25 @@ namespace NineTapTour.Forms
             form.ShowDialog();
         }
 
-        private void label6_Click(object sender, EventArgs e)
-        {
 
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox3_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-
-        }
-
+        //runs fill member when enter key is pressed on text box
         private void txtMemberNum_KeyDown(object sender, KeyEventArgs e)
         {
             if(e.KeyData == Keys.Enter)
                 FillMember();
         }
-
+        //runs fill member when enter key is pressed on text box
         private void txtMemberNum2_KeyDown(object sender, KeyEventArgs e)
         {
             if(e.KeyData == Keys.Enter)
                 FillMember();
         }
-
+        //runs fill member when you tab out of text box
         private void txtMemberNum_Leave(object sender, EventArgs e)
         {
             FillMember();
         }
-
+        //runs fill member when you tab out of text box
         private void txtMemberNum2_Leave(object sender, EventArgs e)
         {
             FillMember();

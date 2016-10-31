@@ -63,8 +63,6 @@ namespace NineTapTour.Database
         public DateTime? LastBowled { get; set; }
         public DateTime? LastPayment { get; set; }
         public bool IsLifetimeMember { get; set; }
-        [Column(TypeName = "Money")]
-        public decimal MoneyEarned { get; set; }
         public string Notes { get; set; }
         public int? Referrals { get; set; }
         [Required]

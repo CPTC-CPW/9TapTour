@@ -148,6 +148,7 @@ namespace NineTapTour.Database
                             result.Game2 = player.Game.Game2;
                             result.Game3 = player.Game.Game3;
                             result.Game4 = player.Game.Game4;
+                            result.MoneyWon = player.Game.MoneyWon;
 
                             if (squadResult == null)
                             {

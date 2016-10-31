@@ -550,6 +550,7 @@
             this.txtMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMoneyEarned.Location = new System.Drawing.Point(573, 517);
             this.txtMoneyEarned.Name = "txtMoneyEarned";
+            this.txtMoneyEarned.ReadOnly = true;
             this.txtMoneyEarned.Size = new System.Drawing.Size(100, 23);
             this.txtMoneyEarned.TabIndex = 95;
             // 

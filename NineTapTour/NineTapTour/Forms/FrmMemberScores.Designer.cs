@@ -79,6 +79,8 @@
             this.grpTournamentFile = new System.Windows.Forms.GroupBox();
             this.cbxTourneyDropDown = new System.Windows.Forms.ComboBox();
             this.grpLeaders = new System.Windows.Forms.GroupBox();
+            this.lblMoney = new System.Windows.Forms.Label();
+            this.txtMoney = new System.Windows.Forms.TextBox();
             this.grpScoreType = new System.Windows.Forms.GroupBox();
             this.rdoScratchScore = new System.Windows.Forms.RadioButton();
             this.rdoHandicapScore = new System.Windows.Forms.RadioButton();
@@ -591,6 +593,8 @@
             // 
             // grpStats
             // 
+            this.grpStats.Controls.Add(this.lblMoney);
+            this.grpStats.Controls.Add(this.txtMoney);
             this.grpStats.Controls.Add(this.lblPlayer2);
             this.grpStats.Controls.Add(this.lblPlayer1);
             this.grpStats.Controls.Add(this.lblBonusPins);
@@ -721,6 +725,23 @@
             this.grpLeaders.TabIndex = 29;
             this.grpLeaders.TabStop = false;
             this.grpLeaders.Text = "Leaders";
+            // 
+            // lblMoney
+            // 
+            this.lblMoney.AutoSize = true;
+            this.lblMoney.Location = new System.Drawing.Point(244, 262);
+            this.lblMoney.Name = "lblMoney";
+            this.lblMoney.Size = new System.Drawing.Size(65, 13);
+            this.lblMoney.TabIndex = 24;
+            this.lblMoney.Text = "Money Won";
+            // 
+            // txtMoney
+            // 
+            this.txtMoney.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtMoney.Location = new System.Drawing.Point(244, 278);
+            this.txtMoney.Name = "txtMoney";
+            this.txtMoney.Size = new System.Drawing.Size(83, 20);
+            this.txtMoney.TabIndex = 23;
             // 
             // grpScoreType
             // 
@@ -906,7 +927,7 @@
             // 
             this.pnlMemStat.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pnlMemStat.Controls.Add(this.lblMemberStatus);
-            this.pnlMemStat.Location = new System.Drawing.Point(265, 156);
+            this.pnlMemStat.Location = new System.Drawing.Point(271, 158);
             this.pnlMemStat.Name = "pnlMemStat";
             this.pnlMemStat.Size = new System.Drawing.Size(110, 57);
             this.pnlMemStat.TabIndex = 32;
@@ -914,7 +935,7 @@
             // lblMemberL
             // 
             this.lblMemberL.AutoSize = true;
-            this.lblMemberL.Location = new System.Drawing.Point(280, 140);
+            this.lblMemberL.Location = new System.Drawing.Point(286, 142);
             this.lblMemberL.Name = "lblMemberL";
             this.lblMemberL.Size = new System.Drawing.Size(78, 13);
             this.lblMemberL.TabIndex = 30;
@@ -973,7 +994,6 @@
             this.lblMiddleInitial2.Size = new System.Drawing.Size(99, 19);
             this.lblMiddleInitial2.TabIndex = 36;
             this.lblMiddleInitial2.Text = "Middle Initial";
-            this.lblMiddleInitial2.Click += new System.EventHandler(this.label4_Click);
             // 
             // lblFirstName2
             // 
@@ -984,7 +1004,6 @@
             this.lblFirstName2.Size = new System.Drawing.Size(82, 19);
             this.lblFirstName2.TabIndex = 37;
             this.lblFirstName2.Text = "First Name";
-            this.lblFirstName2.Click += new System.EventHandler(this.label5_Click);
             // 
             // lbLastName2
             // 
@@ -995,7 +1014,6 @@
             this.lbLastName2.Size = new System.Drawing.Size(80, 19);
             this.lbLastName2.TabIndex = 38;
             this.lbLastName2.Text = "Last Name";
-            this.lbLastName2.Click += new System.EventHandler(this.label6_Click);
             // 
             // txtMiddleInitial2
             // 
@@ -1009,7 +1027,6 @@
             this.txtMiddleInitial2.Size = new System.Drawing.Size(105, 38);
             this.txtMiddleInitial2.TabIndex = 39;
             this.txtMiddleInitial2.TabStop = false;
-            this.txtMiddleInitial2.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // txtFirstName2
             // 
@@ -1023,7 +1040,6 @@
             this.txtFirstName2.Size = new System.Drawing.Size(206, 38);
             this.txtFirstName2.TabIndex = 40;
             this.txtFirstName2.TabStop = false;
-            this.txtFirstName2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // txtLastName2
             // 
@@ -1037,7 +1053,6 @@
             this.txtLastName2.Size = new System.Drawing.Size(206, 38);
             this.txtLastName2.TabIndex = 41;
             this.txtLastName2.TabStop = false;
-            this.txtLastName2.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             // 
             // frmMemberScores
             // 
@@ -1182,5 +1197,7 @@
         private System.Windows.Forms.RadioButton rdoSquad6;
         private System.Windows.Forms.RadioButton rdoSquad7;
         private System.Windows.Forms.RadioButton rdoSquad5;
+        private System.Windows.Forms.Label lblMoney;
+        private System.Windows.Forms.TextBox txtMoney;
     }
 }

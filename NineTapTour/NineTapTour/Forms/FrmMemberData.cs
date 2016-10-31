@@ -190,6 +190,7 @@ namespace NineTapTour.Forms
                 txtAverage.Text = currentMem.Average.ToString();
                 txtHandicap.Text = currentMem.Handicap.ToString();
                 txtBonus.Text = currentMem.Bonus.ToString();
+                
                 #endregion
 
                 #region Misc. Info
@@ -214,7 +215,13 @@ namespace NineTapTour.Forms
                     dateLastBowled.Format = DateTimePickerFormat.Custom;
                     dateLastBowled.CustomFormat = @" ";
                 }
-                txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
+                //txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
+                var db = new NineTapDb();
+                var result = (from p in db.Participants
+                              join g in db.Games on p.Game.Id equals g.Id
+                              where p.Member.Id == currentMem.Id
+                              select g.MoneyWon).ToArray();
+                txtMoneyEarned.Text = result.Sum().ToString();
                 txtNotes.Text = currentMem.Notes;
                 txtReferrals.Text = currentMem.Referrals.ToString();
                 chbSenior.Checked = currentMem.IsSenior;
@@ -251,6 +258,7 @@ namespace NineTapTour.Forms
                     datePaid.CustomFormat = @" ";
                     lblPaymentInfo.Visible = false;
                 }
+                
             }
         }
 
@@ -419,8 +427,9 @@ namespace NineTapTour.Forms
                         #region Misc. Info
                         RejoinDate = (dateRejoin.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : dateRejoin.Value,
                         LastBowled = (dateLastBowled.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : dateLastBowled.Value,
-                        MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
+                        ///*MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency)*/
                         //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
+                        
                         Notes = txtNotes.Text,
                         Referrals = (txtReferrals.Text) == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text),
                         #endregion
