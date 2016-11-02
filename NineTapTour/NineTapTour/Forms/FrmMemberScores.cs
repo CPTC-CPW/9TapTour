@@ -25,8 +25,8 @@ namespace NineTapTour.Forms
         Participant player2 = new Participant();
         //bool doubles = true;
         public static Tournament selectedTournament;
-        public static List<TopScores> overallListOfTopScores;   
-        
+        public static List<TopScores> overallListOfTopScores;
+
         
 
 
@@ -79,7 +79,7 @@ namespace NineTapTour.Forms
                                                           
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
-            
+
 
         }
         /// <summary>
@@ -140,7 +140,7 @@ namespace NineTapTour.Forms
             txtMiddleInitial.Clear();
             txtMiddleInitial2.Clear();
             txtHandicap.Clear();
-            txtBonusPins.Clear();
+            txtBonusPins.Clear(); 
             txtScratchScore1.Clear();
             txtScratchScore2.Clear();
             txtScratchScore3.Clear();
@@ -162,7 +162,7 @@ namespace NineTapTour.Forms
 
         }
         #region GetMember
-
+        
 
         //Get players scores
         private void GetScores(Game currentGame)
@@ -195,7 +195,7 @@ namespace NineTapTour.Forms
         private void FillMember()
         {
             Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
-            string searchNumber = txtMemberNum.Text;
+                string searchNumber = txtMemberNum.Text;
             string searchNumber2 = txtMemberNum2.Text;
             if (!currTourney.Doubles)
             {
@@ -233,7 +233,7 @@ namespace NineTapTour.Forms
                         
                         GetScores(currentGame);
 
-                    }
+                        }
                     else
                     {
                         MessageBox.Show(string.Format("A member with the number {0} does not exist", txtMemberNum.Text), "Your Attention Please.");
@@ -242,32 +242,32 @@ namespace NineTapTour.Forms
                 }
             }
             else {
-                    for (int i = 0; i < searchNumber2.Length; i++)
+                for (int i = 0; i < searchNumber2.Length; i++)
+                {
+                    if (!char.IsNumber(searchNumber2[i]))
                     {
-                        if (!char.IsNumber(searchNumber2[i]))
-                        {
-                            MessageBox.Show("Please input numbers only.", "Your Attention Please.");
-                            txtMemberNum2.Clear();
-                            return;
-                        }
+                        MessageBox.Show("Please input numbers only.", "Your Attention Please.");
+                        txtMemberNum2.Clear();
+                        return;
                     }
-                    for (int i = 0; i < searchNumber.Length; i++)
+                }
+                for (int i = 0; i < searchNumber.Length; i++)
+                {
+                    if (!char.IsNumber(searchNumber[i]))
                     {
-                        if (!char.IsNumber(searchNumber[i]))
-                        {
-                            MessageBox.Show("Please input numbers only.", "Your Attention Please.");
-                            txtMemberNum.Clear();
-                            return;
-                        }
+                        MessageBox.Show("Please input numbers only.", "Your Attention Please.");
+                        txtMemberNum.Clear();
+                        return;
                     }
+                }
                     if (searchNumber2.Trim() != "" && searchNumber.Trim() != "")
-                    {
+                {
                         int memberNumber2 = Convert.ToInt16(txtMemberNum2.Text);
-                        int memberNumber = Convert.ToInt16(txtMemberNum.Text);
-                        currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber);
+                    int memberNumber = Convert.ToInt16(txtMemberNum.Text);
+                    currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber);
                         currentMem2 = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber2);
                         if (currentMem2 != null && currentMem != null)
-                        {
+                    {
                         if (currentMem.IsActive && currentMem2.IsActive)
                         {
                             MemberStatus("Active", Color.Green, Color.Lime, false);
@@ -278,36 +278,36 @@ namespace NineTapTour.Forms
                         }
 
                             txtScratchScore1.Focus();
-                            txtLastName.Text = currentMem.LastName;
-                            txtFirstName.Text = currentMem.FirstName;
-                            txtMiddleInitial.Text = currentMem.MiddleInitial;
+                        txtLastName.Text = currentMem.LastName;
+                        txtFirstName.Text = currentMem.FirstName;
+                        txtMiddleInitial.Text = currentMem.MiddleInitial;
                             txtLastName2.Text = currentMem2.LastName;
                             txtFirstName2.Text = currentMem2.FirstName;
                             txtMiddleInitial2.Text = currentMem2.MiddleInitial;
-                            Game currentGame = GetScoresById(currentMem.Id);
+                        Game currentGame = GetScoresById(currentMem.Id);
                             Game currentGame2 = GetScoresById(currentMem2.Id);
                             if (currentGame != null || currentGame2 != null)
-                            {
+                        {
                                 List<Member> total = TournamentDb.GetUniqueTourMembers(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
                                 foreach (Member mem in total)
-                                {
+                            {
                                     if (currentMem.Id == mem.Id)
-                                    {
-                                        txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
-                                        txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
-                                    }
+                                {
+                            txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
+                            txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
+                        }
                                     if (currentMem2.Id == mem.Id)
-                                    {
+                    {
                                         txtScratchScore3.Text = Convert.ToString(currentGame2.Game1);
                                         txtScratchScore4.Text = Convert.ToString(currentGame2.Game2);
-                                    }
-                                }
-                            }
-
-                        }
-                    }
                 }
+            }
         }
+
+            }
+                }
+                    }
+                    }
 
 
 
@@ -417,7 +417,7 @@ namespace NineTapTour.Forms
                 if (currTourney.Doubles)
                 {
                     
-                    player.Game = new Game();                    
+                    player.Game = new Game();
                     player2.Game = new Game();
                     NineTapDb db = new NineTapDb();
                     int gameId = (from p in db.Participants
@@ -439,7 +439,7 @@ namespace NineTapTour.Forms
                     player.Game.Bonus = currentMem.Bonus;
                     player.Game.Handicap = currentMem.Handicap;
                     player2.Game.Id = gameId2;
-                        
+
                     player2.Tournament = currTourney;
                     player2.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[2].Text));
                     player2.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[3].Text));
@@ -576,12 +576,12 @@ namespace NineTapTour.Forms
                         //UPDATE LASTBOWLED DATE
                         //Sets last bowled to now and updates DB record
                         if (DateTime.Now > currentMem.LastBowled || currentMem.LastBowled == null)
-                        {
+                            {
                             currentMem.LastBowled = DateTime.Now;
                             db.Entry(currentMem).State = EntityState.Modified;
                             db.SaveChanges();
-                            
-                        }
+
+                            }
 
                     }
                     
@@ -939,7 +939,7 @@ namespace NineTapTour.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void rdoSquadOne_CheckedChanged(object sender, EventArgs e)
-        {
+            {
                 ScoreAndTotalClear();
                 FillMember();           
           
@@ -951,10 +951,10 @@ namespace NineTapTour.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void rdoSquadTwo_CheckedChanged(object sender, EventArgs e)
-        {
-            ScoreAndTotalClear();
+            {
+                ScoreAndTotalClear();
             FillMember();
-        }
+            }           
 
         private void rdoSquadThree_CheckedChanged(object sender, EventArgs e)
         {
@@ -968,8 +968,8 @@ namespace NineTapTour.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void rdoSquadFour_CheckedChanged(object sender, EventArgs e)
-        {
-            ScoreAndTotalClear();
+            {
+                ScoreAndTotalClear();
             FillMember();
         }
         /// <summary>
@@ -1443,6 +1443,24 @@ namespace NineTapTour.Forms
         {
             FillMember();
         }
+
+        /// <summary>
+        /// Populates Tournament dropdown list to most recently modified tournament;
+        /// </summary>
+        public void populateSelectedTournament(Tournament currtourney)
+        {
+            List<Tournament> temp2 = TournamentDb.GetTournamentList();
+
+            for (int i = 0; i < temp2.Count; i++)
+            {
+                if (temp2[i].Id == currtourney.Id)
+                {
+                    cbxTourneyDropDown.SelectedIndex = i;
+                }
+            }
+        }
+
+
     }
     /// <summary>
     /// Class used to populate 3rd RichTextBox

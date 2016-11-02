@@ -70,7 +70,6 @@ namespace NineTapTour.Forms
                     TournamentDb.AddTournament(NewTournament);
                     MessageBox.Show(@"Tournament Created Successfully.");
                     ((FrmMain)MdiParent)._tournamentList = TournamentDb.GetTournamentList();
-                    this.Close();
                 }
                 else
                 {
@@ -83,7 +82,6 @@ namespace NineTapTour.Forms
                         {
                             MessageBox.Show(@"Tournament modified.");
                             ((FrmMain)MdiParent)._tournamentList = TournamentDb.GetTournamentList();
-                            this.Close();
                         } else
                         {
                             MessageBox.Show("The database failed to update.");
@@ -96,7 +94,18 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show(ex.Message);
             }
-        
+            finally
+            {
+                Tournament currTourney = NewTournament;
+                clearTournamentForm();
+
+                var newFrmMemberScores = Application.OpenForms["FrmMemberScores"] as frmMemberScores;
+                ((FrmMain)MdiParent).OpenOrDisplayForm(ref newFrmMemberScores);
+
+                //populates selected tournament with recently edited or created tournament back in MemberScores.
+                newFrmMemberScores.populateSelectedTournament(currTourney);
+            }
+
         }
 
         private void btnEditTour_Click(object sender, EventArgs e)
@@ -125,6 +134,14 @@ namespace NineTapTour.Forms
         }
 
         private void btnClear_Click(object sender, EventArgs e)
+        {
+            clearTournamentForm();
+        }
+
+        /// <summary>
+        /// Clears the NewTournament Form
+        /// </summary>
+        private void clearTournamentForm()
         {
             btnSubmit.Text = "Create Tournament";
             btnSubmit.Enabled = false;
