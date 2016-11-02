@@ -32,7 +32,10 @@ namespace NineTapTour.Forms
         {
             InitializeComponent();
 
+
         }
+
+  
         /// <summary>
         /// Updates information in the "Member Data" form.
         /// </summary>
@@ -188,6 +191,7 @@ namespace NineTapTour.Forms
                 #endregion
 
                 #region Score Info
+
                 txtAverage.Text = currentMem.Average.ToString();
                 txtHandicap.Text = currentMem.Handicap.ToString();
                 txtBonus.Text = currentMem.Bonus.ToString();

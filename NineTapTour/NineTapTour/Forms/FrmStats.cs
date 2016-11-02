@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Linq;
 using NineTapTour.Database;
+using System.Data.Entity;
 
 namespace NineTapTour.Forms
 {
@@ -199,13 +200,22 @@ namespace NineTapTour.Forms
             #endregion
             #region Average Game Score
             sum = 0;
-            count = 0;
-            for (int i = 0; i < stats.Count; i++)
+            foreach(var item in stats)
             {
-                count++;
-                sum += Convert.ToInt32(stats[i].AvgPerGame);
+                sum += Convert.ToDouble(item.AvgPerGame);
             }
-            txtAveragePerGame.Text = String.Format("{0:N2}", (sum / count));
+            txtAveragePerGame.Text = (sum / stats.Count()).ToString();
+            mem.Average = Convert.ToInt32(sum / stats.Count());
+            db.Entry(mem).State = EntityState.Modified;
+            db.SaveChanges();
+            //sum = 0;
+            //count = 0;
+            //for (int i = 0; i < stats.Count; i++)
+            //{
+            //    count++;
+            //    sum += Convert.ToInt32(stats[i].AvgPerGame);
+            //}
+            //txtAveragePerGame.Text = String.Format("{0:N2}", (sum / count));
             #endregion           
             #region Handicap Average
             sum = 0;
@@ -255,7 +265,8 @@ namespace NineTapTour.Forms
                             AvgPerGame = (g.Game1 + g.Game2 + g.Game3 + g.Game4)/4,
                             g.Handicap,
                             g.Bonus,
-                            g.MoneyWon
+                            g.MoneyWon,
+                            g.PlaceStanding
                         });
             dtGames.Columns.Add("Date");
             dtGames.Columns.Add("Location");
@@ -270,6 +281,8 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Handicap");
             dtGames.Columns.Add("Bonus");
             dtGames.Columns.Add("Money Won");
+            dtGames.Columns.Add("Place");
+
             foreach (var item in temp)
             {
                 DataRow newRow = dtGames.NewRow();
@@ -286,6 +299,8 @@ namespace NineTapTour.Forms
                 newRow["Handicap"] = item.Handicap;
                 newRow["Bonus"] = item.Bonus;
                 newRow["Money Won"] = item.MoneyWon;
+                newRow["Place"] = item.PlaceStanding;
+
                 dtGames.Rows.Add(newRow);
             
                 }
