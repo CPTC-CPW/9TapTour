@@ -254,7 +254,8 @@ namespace NineTapTour.Forms
                             TotalScore = (g.Game1 + g.Bonus + g.Handicap) + (g.Game2 + g.Bonus + g.Handicap) + (g.Game3 + g.Bonus + g.Handicap) + (g.Game4 + g.Bonus + g.Handicap),
                             AvgPerGame = (g.Game1 + g.Game2 + g.Game3 + g.Game4)/4,
                             g.Handicap,
-                            g.Bonus
+                            g.Bonus,
+                            g.MoneyWon
                         });
             dtGames.Columns.Add("Date");
             dtGames.Columns.Add("Location");
@@ -268,6 +269,7 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Average Per Game");
             dtGames.Columns.Add("Handicap");
             dtGames.Columns.Add("Bonus");
+            dtGames.Columns.Add("Money Won");
             foreach (var item in temp)
             {
                 DataRow newRow = dtGames.NewRow();
@@ -283,6 +285,7 @@ namespace NineTapTour.Forms
                 newRow["Average Per Game"] = item.AvgPerGame;
                 newRow["Handicap"] = item.Handicap;
                 newRow["Bonus"] = item.Bonus;
+                newRow["Money Won"] = item.MoneyWon;
                 dtGames.Rows.Add(newRow);
             
                 }

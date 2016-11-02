@@ -785,7 +785,7 @@ namespace NineTapTour.Forms
                 txtReferrals.Text != currentMem.Referrals.ToString() ||
                 mtxtBoxPhone.Text != currentMem.PrimaryPhone.ToString() ||
                 mtxtBoxPhone2.Text != currentMem.SecondaryPhone.ToString() ||
-                mtxtBoxSSN.Text != currentMem.SSN.ToString() ||
+                mtxtBoxSSN.Text.Trim() != currentMem.SSN.ToString().Trim() ||
                 mtxtBoxZip.Text != currentMem.PostalCode.ToString() ||
                 //decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency) != currentMem.MoneyEarned ||
                 txtAverage.Text != currentMem.Average.ToString() ||
