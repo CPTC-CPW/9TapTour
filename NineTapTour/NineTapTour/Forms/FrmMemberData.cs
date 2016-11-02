@@ -226,7 +226,7 @@ namespace NineTapTour.Forms
                               join g in db.Games on p.Game.Id equals g.Id
                               where p.Member.Id == currentMem.Id
                               select g.MoneyWon).ToArray();
-                txtMoneyEarned.Text = result.Sum().ToString();
+                txtMoneyEarned.Text = String.Format("{0:C}", result.Sum());
                 txtNotes.Text = currentMem.Notes;
                 txtReferrals.Text = currentMem.Referrals.ToString();
                 chbSenior.Checked = currentMem.IsSenior;

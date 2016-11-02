@@ -205,9 +205,13 @@ namespace NineTapTour.Forms
                 sum += Convert.ToDouble(item.AvgPerGame);
             }
             txtAveragePerGame.Text = (sum / stats.Count()).ToString();
-            mem.Average = Convert.ToInt32(sum / stats.Count());
-            db.Entry(mem).State = EntityState.Modified;
-            db.SaveChanges();
+            if(count > 0)
+            {
+                mem.Average = Convert.ToInt32(sum / stats.Count());
+                db.Entry(mem).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+
             //sum = 0;
             //count = 0;
             //for (int i = 0; i < stats.Count; i++)

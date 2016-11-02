@@ -270,6 +270,7 @@
             this.txtAverage.MaxLength = 20;
             this.txtAverage.Multiline = true;
             this.txtAverage.Name = "txtAverage";
+            this.txtAverage.ReadOnly = true;
             this.txtAverage.Size = new System.Drawing.Size(99, 54);
             this.txtAverage.TabIndex = 44;
             this.txtAverage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
