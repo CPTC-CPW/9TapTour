@@ -22,6 +22,10 @@ namespace NineTapTour.Forms
             memName = memberName;
             mem = currentMem;
             dataGridView1.DataSource = tableview();
+            //var column = dataGridView1.Columns[4];
+            //column.Width = 30;
+            
+            
         }
         private Member mem;
         private int memNum;
@@ -276,6 +280,7 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Location");
             dtGames.Columns.Add("Squad");
             dtGames.Columns.Add("Game1");
+            //dtGames.Columns.Add(new DataColumn("Selected", typeof(bool)));
             dtGames.Columns.Add("Game2");
             dtGames.Columns.Add("Game3");
             dtGames.Columns.Add("Game4");
@@ -294,6 +299,8 @@ namespace NineTapTour.Forms
                 newRow["Location"] = item.Location;
                 newRow["Squad"] = item.Squad;
                 newRow["Game1"] = item.Game1;
+                //newRow["Selected"] = true;
+                //
                 newRow["Game2"] = item.Game2;
                 newRow["Game3"] = item.Game3;
                 newRow["Game4"] = item.Game4;
@@ -307,7 +314,8 @@ namespace NineTapTour.Forms
 
                 dtGames.Rows.Add(newRow);
             
-                }
+            }
+            
             return dtGames;
         }
 

@@ -52,6 +52,7 @@ namespace NineTapTour.Database
 
         #region Score Info
         public int? Average { get; set; }
+        public int? StartAvg { get; set; }
         public int? Handicap { get; set; }
         public int? Bonus { get; set; }
         #endregion

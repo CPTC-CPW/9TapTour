@@ -229,9 +229,9 @@
             this.lblAverage.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblAverage.Location = new System.Drawing.Point(389, 420);
             this.lblAverage.Name = "lblAverage";
-            this.lblAverage.Size = new System.Drawing.Size(50, 15);
+            this.lblAverage.Size = new System.Drawing.Size(90, 15);
             this.lblAverage.TabIndex = 17;
-            this.lblAverage.Text = "Average";
+            this.lblAverage.Text = "League Average";
             // 
             // lblHandicap
             // 
@@ -270,7 +270,6 @@
             this.txtAverage.MaxLength = 20;
             this.txtAverage.Multiline = true;
             this.txtAverage.Name = "txtAverage";
-            this.txtAverage.ReadOnly = true;
             this.txtAverage.Size = new System.Drawing.Size(99, 54);
             this.txtAverage.TabIndex = 44;
             this.txtAverage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;

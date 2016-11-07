@@ -192,7 +192,7 @@ namespace NineTapTour.Forms
 
                 #region Score Info
 
-                txtAverage.Text = currentMem.Average.ToString();
+                txtAverage.Text = currentMem.StartAvg.ToString();
                 txtHandicap.Text = currentMem.Handicap.ToString();
                 txtBonus.Text = currentMem.Bonus.ToString();
                 
@@ -424,7 +424,8 @@ namespace NineTapTour.Forms
                         #endregion
 
                         #region Score Info
-                        Average = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text),
+                        Average = 0,
+                        StartAvg = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text),
                         Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text),
                         Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text),
                         #endregion
@@ -792,7 +793,7 @@ namespace NineTapTour.Forms
                 mtxtBoxSSN.Text.Trim() != currentMem.SSN.ToString().Trim() ||
                 mtxtBoxZip.Text != currentMem.PostalCode.ToString() ||
                 //decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency) != currentMem.MoneyEarned ||
-                txtAverage.Text != currentMem.Average.ToString() ||
+                txtAverage.Text != currentMem.StartAvg.ToString() ||
                 txtHandicap.Text != currentMem.Handicap.ToString() ||
                 txtBonus.Text != currentMem.Bonus.ToString() ||
                 // checks radio buttons active Member
