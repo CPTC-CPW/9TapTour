@@ -37,15 +37,16 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(13, 13);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(919, 362);
+            this.dataGridView1.Size = new System.Drawing.Size(1239, 371);
             this.dataGridView1.TabIndex = 0;
             // 
             // FrmFinalizeTournament
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(944, 461);
+            this.ClientSize = new System.Drawing.Size(1264, 986);
             this.Controls.Add(this.dataGridView1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Name = "FrmFinalizeTournament";
             this.Text = "FrmFinalizeTournament";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
