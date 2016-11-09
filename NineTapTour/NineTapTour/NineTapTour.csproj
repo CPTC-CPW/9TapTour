@@ -107,6 +107,12 @@
     <Compile Include="Database\Participant.cs" />
     <Compile Include="Database\Tournament.cs" />
     <Compile Include="Exceptions\TournamentTableException.cs" />
+    <Compile Include="Forms\FrmFinalizeTournament.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmFinalizeTournament.Designer.cs">
+      <DependentUpon>FrmFinalizeTournament.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmLabelPrint.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -305,6 +311,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Forms\FrmFinalizeTournament.resx">
+      <DependentUpon>FrmFinalizeTournament.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmLabelPrint.resx">
       <DependentUpon>FrmLabelPrint.cs</DependentUpon>
     </EmbeddedResource>
