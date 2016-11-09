@@ -26,13 +26,13 @@ namespace NineTapTour.Forms
             dt.Columns.Add("Name");
             
             dt.Columns.Add("Game 1");
-            dt.Columns.Add(new DataColumn("Valid Score?", typeof(bool)));
+            dt.Columns.Add(new DataColumn("Valid Score1?", typeof(bool)));
             dt.Columns.Add("Game 2");
-            dt.Columns.Add(new DataColumn("Valid Score?", typeof(bool)));
+            dt.Columns.Add(new DataColumn("Valid Score2?", typeof(bool)));
             dt.Columns.Add("Game 3");
-            dt.Columns.Add(new DataColumn("Valid Score?", typeof(bool)));
+            dt.Columns.Add(new DataColumn("Valid Score3?", typeof(bool)));
             dt.Columns.Add("Game 4");
-            dt.Columns.Add(new DataColumn("Valid Score?", typeof(bool)));
+            dt.Columns.Add(new DataColumn("Valid Score4?", typeof(bool)));
             dt.Columns.Add("True Avg");
             dt.Columns.Add("Adjusted Avg");
             dt.Columns.Add(new DataColumn("Keep True Avg?", typeof(bool)));

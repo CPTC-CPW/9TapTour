@@ -1462,9 +1462,10 @@ namespace NineTapTour.Forms
 
         private void btnFinalizeTounament_Click(object sender, EventArgs e)
         {
-            var newFrmFinalizeTournament = Application.OpenForms["FrmFinalizeTournament"] as FrmFinalizeTournament;
-            ((FrmMain)MdiParent).OpenOrDisplayForm(ref newFrmFinalizeTournament);
-            newFrmFinalizeTournament.Dock = DockStyle.None;
+            var newFrmFinalizeTournament = new FrmFinalizeTournament(selectedTournament);
+            newFrmFinalizeTournament.Dock = DockStyle.Fill;
+            newFrmFinalizeTournament.WindowState = FormWindowState.Maximized;
+            newFrmFinalizeTournament.Show();
         }
     }
     /// <summary>
