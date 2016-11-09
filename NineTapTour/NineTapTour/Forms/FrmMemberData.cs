@@ -469,6 +469,8 @@ namespace NineTapTour.Forms
                 }
                 catch (FormatException fe)
                 {
+                    //TODO - this field is a catch all for errors in fields that require numbers 
+                    //League Score, Handicap, and referrals
                     MessageBox.Show("Referrals must be an integer number value.");
                 }
             }

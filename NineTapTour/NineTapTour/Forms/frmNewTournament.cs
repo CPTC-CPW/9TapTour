@@ -16,6 +16,7 @@ namespace NineTapTour.Forms
     {
         // If a new tournament was selected to edit, this will be set to something other than null.
         Tournament tourToEdit;
+        
 
         public frmNewTournament()
         {
@@ -48,7 +49,28 @@ namespace NineTapTour.Forms
             NewTournament.Event = txtEvent.Text;
             NewTournament.Sponsors = txtSponsors.Text;
             NewTournament.Notes = rtxtNotes.Text;
-            NewTournament.Squads = Convert.ToInt32(txtSquads.Text);
+            bool errors = false;
+            int numSquads;
+            bool validateSquads = int.TryParse(txtSquads.Text, out numSquads);
+            if (validateSquads)
+            {
+                if (numSquads < 0 || numSquads > 8)
+                {
+                    MessageBox.Show("Squads must be between 1 - 8");
+                    errors = true;
+                }
+                else
+                {
+                    NewTournament.Squads = Convert.ToInt32(txtSquads.Text);
+                    errors = false;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Squads must be a number between 1 - 8");
+                errors = true;
+            }
+
             if (ckbxDoubles.Checked)
             {
                 NewTournament.Doubles = true;
@@ -67,9 +89,12 @@ namespace NineTapTour.Forms
                 // If tourID isn't null it means they chose a tour to edit
                 if (tourToEdit == null)
                 {
-                    TournamentDb.AddTournament(NewTournament);
-                    MessageBox.Show(@"Tournament Created Successfully.");
-                    ((FrmMain)MdiParent)._tournamentList = TournamentDb.GetTournamentList();
+                    if (!errors)
+                    {
+                        TournamentDb.AddTournament(NewTournament);
+                        MessageBox.Show(@"Tournament Created Successfully.");
+                        ((FrmMain)MdiParent)._tournamentList = TournamentDb.GetTournamentList();
+                    }
                 }
                 else
                 {
@@ -82,13 +107,14 @@ namespace NineTapTour.Forms
                         {
                             MessageBox.Show(@"Tournament modified.");
                             ((FrmMain)MdiParent)._tournamentList = TournamentDb.GetTournamentList();
-                        } else
+                        }
+                        else
                         {
                             MessageBox.Show("The database failed to update.");
                         }
                     }
                 }
-                
+
             }
             catch (TournamentTableException ex)
             {
@@ -96,14 +122,18 @@ namespace NineTapTour.Forms
             }
             finally
             {
-                Tournament currTourney = NewTournament;
-                clearTournamentForm();
+                if (!errors)
+                {
+                    Tournament currTourney = NewTournament;
+                    clearTournamentForm();
 
-                var newFrmMemberScores = Application.OpenForms["FrmMemberScores"] as frmMemberScores;
-                ((FrmMain)MdiParent).OpenOrDisplayForm(ref newFrmMemberScores);
+                    var newFrmMemberScores = Application.OpenForms["FrmMemberScores"] as frmMemberScores;
+                    ((FrmMain)MdiParent).OpenOrDisplayForm(ref newFrmMemberScores);
 
-                //populates selected tournament with recently edited or created tournament back in MemberScores.
-                newFrmMemberScores.populateSelectedTournament(currTourney);
+                    //populates selected tournament with recently edited or created tournament back in MemberScores.
+                    newFrmMemberScores.populateSelectedTournament(currTourney);
+
+                }
             }
 
         }
@@ -160,9 +190,11 @@ namespace NineTapTour.Forms
 
         private void txtLocation_TextChanged(object sender, EventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(txtLocation.Text.Trim())) {
+            if (!string.IsNullOrWhiteSpace(txtLocation.Text.Trim()))
+            {
                 btnSubmit.Enabled = true;
-            } else
+            }
+            else
             {
                 btnSubmit.Enabled = false;
             }
@@ -182,7 +214,8 @@ namespace NineTapTour.Forms
                 )
             {
                 btnClear.Enabled = true;
-            } else
+            }
+            else
             {
                 btnClear.Enabled = false;
             }
@@ -227,7 +260,7 @@ namespace NineTapTour.Forms
             {
                 ckbxDoubles.Enabled = true;
             }
-            
+
         }
     }
 }
