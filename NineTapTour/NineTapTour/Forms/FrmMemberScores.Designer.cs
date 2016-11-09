@@ -70,6 +70,8 @@
             this.lblStratchScores = new System.Windows.Forms.Label();
             this.lblHandiCap = new System.Windows.Forms.Label();
             this.grpStats = new System.Windows.Forms.GroupBox();
+            this.lblMoney = new System.Windows.Forms.Label();
+            this.txtMoney = new System.Windows.Forms.TextBox();
             this.lblPlayer2 = new System.Windows.Forms.Label();
             this.lblPlayer1 = new System.Windows.Forms.Label();
             this.lblBonusPins = new System.Windows.Forms.Label();
@@ -79,8 +81,6 @@
             this.grpTournamentFile = new System.Windows.Forms.GroupBox();
             this.cbxTourneyDropDown = new System.Windows.Forms.ComboBox();
             this.grpLeaders = new System.Windows.Forms.GroupBox();
-            this.lblMoney = new System.Windows.Forms.Label();
-            this.txtMoney = new System.Windows.Forms.TextBox();
             this.grpScoreType = new System.Windows.Forms.GroupBox();
             this.rdoScratchScore = new System.Windows.Forms.RadioButton();
             this.rdoHandicapScore = new System.Windows.Forms.RadioButton();
@@ -111,6 +111,7 @@
             this.txtMiddleInitial2 = new System.Windows.Forms.TextBox();
             this.txtFirstName2 = new System.Windows.Forms.TextBox();
             this.txtLastName2 = new System.Windows.Forms.TextBox();
+            this.btnFinalizeTounament = new System.Windows.Forms.Button();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpRecord.SuspendLayout();
@@ -620,6 +621,23 @@
             this.grpStats.TabStop = false;
             this.grpStats.Text = "Stats";
             // 
+            // lblMoney
+            // 
+            this.lblMoney.AutoSize = true;
+            this.lblMoney.Location = new System.Drawing.Point(244, 262);
+            this.lblMoney.Name = "lblMoney";
+            this.lblMoney.Size = new System.Drawing.Size(65, 13);
+            this.lblMoney.TabIndex = 24;
+            this.lblMoney.Text = "Money Won";
+            // 
+            // txtMoney
+            // 
+            this.txtMoney.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtMoney.Location = new System.Drawing.Point(244, 278);
+            this.txtMoney.Name = "txtMoney";
+            this.txtMoney.Size = new System.Drawing.Size(83, 20);
+            this.txtMoney.TabIndex = 23;
+            // 
             // lblPlayer2
             // 
             this.lblPlayer2.AutoSize = true;
@@ -725,23 +743,6 @@
             this.grpLeaders.TabIndex = 29;
             this.grpLeaders.TabStop = false;
             this.grpLeaders.Text = "Leaders";
-            // 
-            // lblMoney
-            // 
-            this.lblMoney.AutoSize = true;
-            this.lblMoney.Location = new System.Drawing.Point(244, 262);
-            this.lblMoney.Name = "lblMoney";
-            this.lblMoney.Size = new System.Drawing.Size(65, 13);
-            this.lblMoney.TabIndex = 24;
-            this.lblMoney.Text = "Money Won";
-            // 
-            // txtMoney
-            // 
-            this.txtMoney.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtMoney.Location = new System.Drawing.Point(244, 278);
-            this.txtMoney.Name = "txtMoney";
-            this.txtMoney.Size = new System.Drawing.Size(83, 20);
-            this.txtMoney.TabIndex = 23;
             // 
             // grpScoreType
             // 
@@ -1054,12 +1055,23 @@
             this.txtLastName2.TabIndex = 41;
             this.txtLastName2.TabStop = false;
             // 
+            // btnFinalizeTounament
+            // 
+            this.btnFinalizeTounament.Location = new System.Drawing.Point(499, 753);
+            this.btnFinalizeTounament.Name = "btnFinalizeTounament";
+            this.btnFinalizeTounament.Size = new System.Drawing.Size(269, 23);
+            this.btnFinalizeTounament.TabIndex = 42;
+            this.btnFinalizeTounament.Text = "Finalize Tournament";
+            this.btnFinalizeTounament.UseVisualStyleBackColor = true;
+            this.btnFinalizeTounament.Click += new System.EventHandler(this.btnFinalizeTounament_Click);
+            // 
             // frmMemberScores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(884, 769);
+            this.Controls.Add(this.btnFinalizeTounament);
             this.Controls.Add(this.lblMiddleInitial2);
             this.Controls.Add(this.lblFirstName2);
             this.Controls.Add(this.lbLastName2);
@@ -1199,5 +1211,6 @@
         private System.Windows.Forms.RadioButton rdoSquad5;
         private System.Windows.Forms.Label lblMoney;
         private System.Windows.Forms.TextBox txtMoney;
+        private System.Windows.Forms.Button btnFinalizeTounament;
     }
 }
