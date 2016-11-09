@@ -1460,7 +1460,12 @@ namespace NineTapTour.Forms
             }
         }
 
-
+        private void btnFinalizeTounament_Click(object sender, EventArgs e)
+        {
+            var newFrmFinalizeTournament = Application.OpenForms["FrmFinalizeTournament"] as FrmFinalizeTournament;
+            ((FrmMain)MdiParent).OpenOrDisplayForm(ref newFrmFinalizeTournament);
+            newFrmFinalizeTournament.Dock = DockStyle.None;
+        }
     }
     /// <summary>
     /// Class used to populate 3rd RichTextBox
