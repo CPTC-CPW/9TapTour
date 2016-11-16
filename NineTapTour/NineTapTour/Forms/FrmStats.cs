@@ -208,23 +208,10 @@ namespace NineTapTour.Forms
             {
                 sum += Convert.ToDouble(item.AvgPerGame);
             }
-            txtAveragePerGame.Text = (sum / stats.Count()).ToString();
-            if(count > 0)
-            {
-                mem.Average = Convert.ToInt32(sum / stats.Count());
-                db.Entry(mem).State = EntityState.Modified;
-                db.SaveChanges();
-            }
 
-            //sum = 0;
-            //count = 0;
-            //for (int i = 0; i < stats.Count; i++)
-            //{
-            //    count++;
-            //    sum += Convert.ToInt32(stats[i].AvgPerGame);
-            //}
-            //txtAveragePerGame.Text = String.Format("{0:N2}", (sum / count));
+            txtAveragePerGame.Text = (sum / stats.Count()).ToString();            
             #endregion           
+
             #region Handicap Average
             sum = 0;
             count = 0;

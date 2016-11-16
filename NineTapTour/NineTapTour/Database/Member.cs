@@ -51,7 +51,9 @@ namespace NineTapTour.Database
         #endregion
 
         #region Score Info
+        //average for tournament games, used for calculated averages
         public int? Average { get; set; }
+        //average for league games, not used for calculated averages, just a stored value
         public int? StartAvg { get; set; }
         public int? Handicap { get; set; }
         public int? Bonus { get; set; }
