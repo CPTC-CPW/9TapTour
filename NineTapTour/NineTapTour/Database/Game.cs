@@ -10,6 +10,7 @@ namespace NineTapTour.Database
     {
         [Key]
         public int Id { get; set; }
+        public int? InputtedAvg { get; set; }
         public int? Game1 { get; set; }
         public int? Game2 { get; set; }
         public int? Game3 { get; set; }

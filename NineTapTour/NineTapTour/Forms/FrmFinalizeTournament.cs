@@ -18,9 +18,14 @@ namespace NineTapTour.Forms
         {
             Tournament temptourn = tourn;
             InitializeComponent();
-            dataGridView1.DataSource = DataView(temptourn, GetAllParticipantGameList(tourn)); //By default populates all datagrid with all participant for tournament.
-            
-            //sets sizes of check box columns "Valid Score1, ValidScore2, ValidScore3, Valid Score 4, and Keep True Avg?"
+            dataGridView1.DataSource = DataView(temptourn, GetAllParticipantGameList(tourn)); //By default populates all datagrid with all participant for tournament.            
+            dataGridViewTableFormat(dataGridView1);
+        }
+
+
+        //formatting for the datagrid view on form.  Sets column widths for check boxes and sets read only on columns not to be editted.
+        private void dataGridViewTableFormat(DataGridView dataGridView1)
+        {
             var column = dataGridView1.Columns[2];
             column.Width = 50;
             var column1 = dataGridView1.Columns[4];
@@ -31,7 +36,17 @@ namespace NineTapTour.Forms
             column3.Width = 50;
             var column4 = dataGridView1.Columns[11];
             column4.Width = 40;
-
+            dataGridView1.Columns["Game 1"].ReadOnly = true;
+            dataGridView1.Columns["Game 2"].ReadOnly = true;
+            dataGridView1.Columns["Game 3"].ReadOnly = true;
+            dataGridView1.Columns["Game 4"].ReadOnly = true;
+            dataGridView1.Columns["True Avg"].ReadOnly = true;
+            dataGridView1.Columns["Scratch Total"].ReadOnly = true;
+            dataGridView1.Columns["Squad"].ReadOnly = true;
+            dataGridView1.Columns["Game Avg"].ReadOnly = true;
+            dataGridView1.Columns["Handicap"].ReadOnly = true;
+            dataGridView1.Columns["Bonus"].ReadOnly = true;
+            dataGridView1.Columns["Pro Pot"].ReadOnly = true;
         }
 
 

@@ -40,7 +40,7 @@
             this.txtBonus = new System.Windows.Forms.TextBox();
             this.txtHandicap = new System.Windows.Forms.TextBox();
             this.lblAverage = new System.Windows.Forms.Label();
-            this.lblHandicap = new System.Windows.Forms.Label();
+            this.lblTournAvg = new System.Windows.Forms.Label();
             this.lblBonus = new System.Windows.Forms.Label();
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.txtAverage = new System.Windows.Forms.TextBox();
@@ -105,6 +105,8 @@
             this.datePaid = new System.Windows.Forms.DateTimePicker();
             this.lblLastPaid = new System.Windows.Forms.Label();
             this.lblPaymentInfo = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtTournAvg = new System.Windows.Forms.TextBox();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -203,22 +205,26 @@
             // 
             // txtBonus
             // 
+            this.txtBonus.Enabled = false;
             this.txtBonus.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtBonus.Location = new System.Drawing.Point(761, 438);
             this.txtBonus.MaxLength = 20;
             this.txtBonus.Multiline = true;
             this.txtBonus.Name = "txtBonus";
+            this.txtBonus.ReadOnly = true;
             this.txtBonus.Size = new System.Drawing.Size(89, 54);
             this.txtBonus.TabIndex = 77;
             this.txtBonus.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtHandicap
             // 
+            this.txtHandicap.Enabled = false;
             this.txtHandicap.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtHandicap.Location = new System.Drawing.Point(573, 438);
+            this.txtHandicap.Location = new System.Drawing.Point(638, 438);
             this.txtHandicap.MaxLength = 20;
             this.txtHandicap.Multiline = true;
             this.txtHandicap.Name = "txtHandicap";
+            this.txtHandicap.ReadOnly = true;
             this.txtHandicap.Size = new System.Drawing.Size(89, 54);
             this.txtHandicap.TabIndex = 66;
             this.txtHandicap.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -227,27 +233,27 @@
             // 
             this.lblAverage.AutoSize = true;
             this.lblAverage.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAverage.Location = new System.Drawing.Point(389, 420);
+            this.lblAverage.Location = new System.Drawing.Point(386, 420);
             this.lblAverage.Name = "lblAverage";
             this.lblAverage.Size = new System.Drawing.Size(90, 15);
             this.lblAverage.TabIndex = 17;
             this.lblAverage.Text = "League Average";
             // 
-            // lblHandicap
+            // lblTournAvg
             // 
-            this.lblHandicap.AutoSize = true;
-            this.lblHandicap.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblHandicap.Location = new System.Drawing.Point(570, 420);
-            this.lblHandicap.Name = "lblHandicap";
-            this.lblHandicap.Size = new System.Drawing.Size(60, 15);
-            this.lblHandicap.TabIndex = 17;
-            this.lblHandicap.Text = "Handicap";
+            this.lblTournAvg.AutoSize = true;
+            this.lblTournAvg.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTournAvg.Location = new System.Drawing.Point(649, 420);
+            this.lblTournAvg.Name = "lblTournAvg";
+            this.lblTournAvg.Size = new System.Drawing.Size(60, 15);
+            this.lblTournAvg.TabIndex = 17;
+            this.lblTournAvg.Text = "Handicap";
             // 
             // lblBonus
             // 
             this.lblBonus.AutoSize = true;
             this.lblBonus.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBonus.Location = new System.Drawing.Point(758, 420);
+            this.lblBonus.Location = new System.Drawing.Point(785, 420);
             this.lblBonus.Name = "lblBonus";
             this.lblBonus.Size = new System.Drawing.Size(41, 15);
             this.lblBonus.TabIndex = 17;
@@ -266,7 +272,7 @@
             // txtAverage
             // 
             this.txtAverage.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAverage.Location = new System.Drawing.Point(392, 438);
+            this.txtAverage.Location = new System.Drawing.Point(382, 438);
             this.txtAverage.MaxLength = 20;
             this.txtAverage.Multiline = true;
             this.txtAverage.Name = "txtAverage";
@@ -930,6 +936,29 @@
             this.lblPaymentInfo.Text = "Yearly Payment is due.";
             this.lblPaymentInfo.Visible = false;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(500, 420);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(118, 15);
+            this.label2.TabIndex = 100;
+            this.label2.Text = "Tournament Average";
+            // 
+            // txtTournAvg
+            // 
+            this.txtTournAvg.Enabled = false;
+            this.txtTournAvg.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTournAvg.Location = new System.Drawing.Point(515, 438);
+            this.txtTournAvg.MaxLength = 20;
+            this.txtTournAvg.Multiline = true;
+            this.txtTournAvg.Name = "txtTournAvg";
+            this.txtTournAvg.ReadOnly = true;
+            this.txtTournAvg.Size = new System.Drawing.Size(89, 54);
+            this.txtTournAvg.TabIndex = 101;
+            this.txtTournAvg.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // FrmMemberData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -937,8 +966,10 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(887, 726);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.lblPaymentInfo);
             this.Controls.Add(this.lblLastPaid);
+            this.Controls.Add(this.txtTournAvg);
             this.Controls.Add(this.chbLifetime);
             this.Controls.Add(this.datePaid);
             this.Controls.Add(this.dateLastBowled);
@@ -959,7 +990,7 @@
             this.Controls.Add(this.lblNotes);
             this.Controls.Add(this.txtNotes);
             this.Controls.Add(this.lblBonus);
-            this.Controls.Add(this.lblHandicap);
+            this.Controls.Add(this.lblTournAvg);
             this.Controls.Add(this.lblAverage);
             this.Controls.Add(this.txtHandicap);
             this.Controls.Add(this.txtBonus);
@@ -1008,7 +1039,7 @@
         private System.Windows.Forms.TextBox txtBonus;
         private System.Windows.Forms.TextBox txtHandicap;
         private System.Windows.Forms.Label lblAverage;
-        private System.Windows.Forms.Label lblHandicap;
+        private System.Windows.Forms.Label lblTournAvg;
         private System.Windows.Forms.Label lblBonus;
         private System.Windows.Forms.TextBox txtNotes;
         private System.Windows.Forms.TextBox txtAverage;
@@ -1073,5 +1104,7 @@
         private System.Windows.Forms.Label lblLastPaid;
         private System.Windows.Forms.Label lblPaymentInfo;
         private System.Windows.Forms.DateTimePicker dateDOB;
+        private System.Windows.Forms.TextBox txtTournAvg;
+        private System.Windows.Forms.Label label2;
     }
 }
