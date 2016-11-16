@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Data.Linq.Mapping;
 using System.Data.Entity;
-
+using System.ComponentModel;
 
 namespace NineTapTour.Database
 {
@@ -18,12 +18,16 @@ namespace NineTapTour.Database
         //Default as true, This would be used to calculate bonus pins, score, 
         //placestandings and especially repopulate Finalize tournament form.
         // do we use bit or bool?
-        //public bool? UseGame1 { get; set; }
-        //public bool? UseGame2 { get; set; }
-        //public bool? UseGame3 { get; set; }
-        //public bool? UseGame4 { get; set; }
-        //We currently dont have a notes field, do we want one here?
-        //public string Notes { get; set; }
+        [DefaultValue(true)]
+        public bool? UseGame1 { get; set; }
+        [DefaultValue(true)]
+        public bool? UseGame2 { get; set; }
+        [DefaultValue(true)]
+        public bool? UseGame3 { get; set; }
+        [DefaultValue(true)]
+        public bool? UseGame4 { get; set; }
+       // We currently dont have a notes field, do we want one here?
+        public string Notes { get; set; } 
 
         public int? Handicap { get; set; }
         public int? Bonus { get; set; }

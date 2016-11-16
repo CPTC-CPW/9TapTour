@@ -209,6 +209,11 @@ namespace NineTapTour.Forms
             public int Game2 { get; set; }
             public int Game3 { get; set; }
             public int Game4 { get; set; }
+            public bool UseGame1 { get; set; }
+            public bool UseGame2 { get; set; }
+            public bool UseGame3 { get; set; }
+            public bool UseGame4 { get; set; }
+            public string Notes { get; set; }
             public int ScratchTotal { get; set; }
             public int GameAvg { get; set; }
             public int Handicap { get; set; }
