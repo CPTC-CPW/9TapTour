@@ -795,11 +795,7 @@ namespace NineTapTour.Forms
                 mtxtBoxPhone2.Text != currentMem.SecondaryPhone.ToString() ||
                 mtxtBoxSSN.Text.Trim() != currentMem.SSN.ToString().Trim() ||
                 mtxtBoxZip.Text != currentMem.PostalCode.ToString() ||
-                //decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency) != currentMem.MoneyEarned ||
                 txtAverage.Text != currentMem.StartAvg.ToString() ||
-                //txtLeagueAvg.Text != currentMem.Handicap.ToString() ||
-                txtHandicap.Text != currentMem.Handicap.ToString() ||
-                txtBonus.Text != currentMem.Bonus.ToString() ||
                 // checks radio buttons active Member
                 (currentMem.IsActive == true && rdoActive.Checked == false) ||
                 (currentMem.IsActive == false && rdoActive.Checked == true)
