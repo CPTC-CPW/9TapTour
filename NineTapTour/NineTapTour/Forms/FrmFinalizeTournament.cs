@@ -14,11 +14,15 @@ namespace NineTapTour.Forms
     public partial class FrmFinalizeTournament : Form
     {
 
+        List<GameParticipant> ListGameParticipants = new List<GameParticipant>();
+
+
         public FrmFinalizeTournament(Tournament tourn)
         {
             Tournament temptourn = tourn;
             InitializeComponent();
-            dataGridView1.DataSource = DataView(temptourn, GetAllParticipantGameList(tourn)); //By default populates all datagrid with all participant for tournament.
+            ListGameParticipants = GetAllParticipantGameList(tourn);
+            dataGridView1.DataSource = DataView(temptourn, ListGameParticipants); //By default populates all datagrid with all participant for tournament.
             
             //sets sizes of check box columns "Valid Score1, ValidScore2, ValidScore3, Valid Score 4, and Keep True Avg?"
             var column = dataGridView1.Columns[2];
@@ -70,13 +74,13 @@ namespace NineTapTour.Forms
                 DataRow newRow = dt.NewRow();
                 newRow["Name"] = item.FirstName + " " + item.LastName;
                 newRow["Game 1"] = item.Game1;
-                newRow["Valid Score1?"] = true; 
+                newRow["Valid Score1?"] = item.UseGame1; 
                 newRow["Game 2"] = item.Game2;
-                newRow["Valid Score2?"] = true;
+                newRow["Valid Score2?"] = item.UseGame2;
                 newRow["Game 3"] = item.Game3;
-                newRow["Valid Score3?"] = true;
+                newRow["Valid Score3?"] = item.UseGame3;
                 newRow["Game 4"] = item.Game4;
-                newRow["Valid Score4?"] = true;
+                newRow["Valid Score4?"] = item.UseGame4;
                 //TODO: Base this off historical records for member off their last 30 games.
                 newRow["True Avg"] = (item.Game1 + item.Game2 + item.Game3 + item.Game4)/4;
                 //TODO: Add field in member to hold adjusted average that's inputted by user based of calculated "True avg";
@@ -87,6 +91,7 @@ namespace NineTapTour.Forms
                 newRow["Game Avg"] = (item.Game1 + item.Game2 + item.Game3 + item.Game4) / 4;
                 newRow["Handicap"] = item.Handicap;
                 newRow["Bonus"] = item.Bonus;
+                newRow["Notes"] = item.Notes;
                 dt.Rows.Add(newRow);
 
             }
@@ -132,13 +137,20 @@ namespace NineTapTour.Forms
                         orderby m.FirstName descending
                         select new
                         {
+                            g.Id,
                             m.FirstName,
                             m.LastName,
+                            MemberId = m.Id,
                             p.Squad,
                             g.Game1,
                             g.Game2,
                             g.Game3,
                             g.Game4,
+                            g.UseGame1,
+                            g.UseGame2,
+                            g.UseGame3,
+                            g.UseGame4,
+                            g.Notes,
                             g.Handicap,
                             g.Bonus,
 
@@ -147,12 +159,19 @@ namespace NineTapTour.Forms
             foreach (var item in temp)
             {
                 GameParticipant NewParticipant = new GameParticipant();
+                NewParticipant.GameId = item.Id;
+                NewParticipant.MemberId = item.MemberId;
                 NewParticipant.FirstName = item.FirstName;
                 NewParticipant.LastName = item.LastName;
                 NewParticipant.Game1 = (int)item.Game1;
                 NewParticipant.Game2 = (int) item.Game2;
                 NewParticipant.Game3 = (int) item.Game3;
                 NewParticipant.Game4 = (int) item.Game4;
+                NewParticipant.UseGame1 = (bool)item.UseGame1;
+                NewParticipant.UseGame2 = (bool)item.UseGame2;
+                NewParticipant.UseGame3 = (bool)item.UseGame3;
+                NewParticipant.UseGame4 = (bool)item.UseGame4;
+                NewParticipant.Notes = item.Notes;
                 //TODO: Base this off historical records for member off their last 30 games.
                 NewParticipant.ScratchTotal = (int) (item.Game1 + item.Game2 + item.Game3 + item.Game4);
                 NewParticipant.Squad = item.Squad;
@@ -161,6 +180,7 @@ namespace NineTapTour.Forms
                 NewParticipant.Bonus =(int)item.Bonus;
                 ParticipantList.Add(NewParticipant);
             }
+
             return ParticipantList;
         }
         
@@ -198,10 +218,34 @@ namespace NineTapTour.Forms
 
 
         /// <summary>
+        /// This Method will save member and Game data to database.
+        /// </summary>
+        /// <returns>True if works, false if not.</returns>
+         public bool SaveTournamentData()
+        {
+            var db = new NineTapDb();
+            foreach (GameParticipant UpdatedParticipant in ListGameParticipants)
+            {
+                var GameOriginal = db.Games.Find(UpdatedParticipant.GameId);
+                var MemberOriginal = db.Members.Find(UpdatedParticipant.MemberId);
+
+                if (GameOriginal != null)
+                {
+                    db.Entry(GameOriginal).CurrentValues.SetValues(UpdatedParticipant.GameId);
+                    db.Entry(MemberOriginal).CurrentValues.SetValues(UpdatedParticipant.MemberId);
+                    db.SaveChanges();
+                }
+
+            }
+        }
+
+        /// <summary>
         /// This Class represents an object of Participant Info for a specific game.
         /// </summary>
         public class GameParticipant {
 
+            public int GameId { get; set; }
+            public int MemberId { get; set; }
             public String FirstName { get; set; }
             public String LastName { get; set; }
             public int Squad { get; set; }
@@ -220,6 +264,7 @@ namespace NineTapTour.Forms
             public int Bonus { get; set; }
 
         }
+
 
 
     }
