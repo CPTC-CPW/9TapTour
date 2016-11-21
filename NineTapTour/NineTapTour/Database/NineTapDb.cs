@@ -25,6 +25,7 @@ namespace NineTapTour.Database
         public virtual DbSet<Tournament> Tournaments { get; set; }
         public virtual DbSet<Participant> Participants { get; set; }
         public virtual DbSet<Squad> Squads { get; set; }
+        public virtual DbSet<FinalizeTemp> FinalizeTemp { get; set; }
 
     }
 

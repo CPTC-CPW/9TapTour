@@ -97,6 +97,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\FinalizeTemp.cs" />
     <Compile Include="Database\Game.cs" />
     <Compile Include="Database\Member.cs" />
     <Compile Include="Database\MemberDb.cs" />
@@ -293,6 +294,10 @@
     <Compile Include="Migrations\201606071902016_SSN_nullable.Designer.cs">
       <DependentUpon>201606071902016_SSN_nullable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611211836579_FinalizeTempTable.cs" />
+    <Compile Include="Migrations\201611211836579_FinalizeTempTable.Designer.cs">
+      <DependentUpon>201611211836579_FinalizeTempTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -427,6 +432,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201606071902016_SSN_nullable.resx">
       <DependentUpon>201606071902016_SSN_nullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611211836579_FinalizeTempTable.resx">
+      <DependentUpon>201611211836579_FinalizeTempTable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
