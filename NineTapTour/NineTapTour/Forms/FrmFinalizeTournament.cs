@@ -21,8 +21,13 @@ namespace NineTapTour.Forms
         {
             Tournament temptourn = tourn;
             InitializeComponent();
+
             ListGameParticipants = GetAllParticipantGameList(tourn);
-            dataGridView1.DataSource = DataView(temptourn, ListGameParticipants); //By default populates all datagrid with all participant for tournament.
+
+            //dataGridView1.DataSource = DataView(temptourn, ListGameParticipants); //By default populates all datagrid with all participant for tournament.
+
+            //Sort DataGridView by TrueAverage
+            //this.dataGridView1.Sort(this.dataGridView1.Columns["True Avg"], ListSortDirection.Descending);
 
             //sets sizes of check box columns "Valid Score1, ValidScore2, ValidScore3, Valid Score 4, and Keep True Avg?"
             var column = dataGridView1.Columns[3];
@@ -248,7 +253,7 @@ namespace NineTapTour.Forms
             return TopParticipantsList;
         }
 
-
+ 
         /// <summary>
         /// This method doesnt have to return bool-GET GROUP CONSCIENCE
         /// This Method will save member and Game data to database.
@@ -360,6 +365,10 @@ namespace NineTapTour.Forms
                     }
 
                     //To do Change Adjusted Avg
+                    if(dataGridView1.CurrentCell.ColumnIndex == 12)
+                    {
+                        p.imputtedAvg = Convert.ToInt32(dataGridView1.CurrentCell.Value);
+                    }
                 }
             }
         }
@@ -385,7 +394,7 @@ namespace NineTapTour.Forms
             public bool UseGame4 { get; set; }
             public string Notes { get; set; }
             public int ScratchTotal { get; set; }
-            //to do: Add keep true average Property???
+            public int imputtedAvg { get; set; } //Avg manually changed by user
             public int GameAvg { get; set; }
             public int Handicap { get; set; }
             public int Bonus { get; set; }
