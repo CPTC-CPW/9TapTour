@@ -35,22 +35,18 @@
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(26, 25);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.dataGridView1.Location = new System.Drawing.Point(13, 13);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(2478, 713);
+            this.dataGridView1.Size = new System.Drawing.Size(1239, 371);
             this.dataGridView1.TabIndex = 0;
-            this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
-            this.dataGridView1.CurrentCellDirtyStateChanged += new System.EventHandler(this.dataGridView1_CurrentCellDirtyStateChanged);
             // 
             // FrmFinalizeTournament
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(2528, 1896);
+            this.ClientSize = new System.Drawing.Size(1264, 986);
             this.Controls.Add(this.dataGridView1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Name = "FrmFinalizeTournament";
             this.Text = "FrmFinalizeTournament";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
