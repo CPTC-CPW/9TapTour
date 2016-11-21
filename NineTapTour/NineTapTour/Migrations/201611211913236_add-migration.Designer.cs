@@ -7,18 +7,18 @@ namespace NineTapTour.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class FinalizeTempTable : IMigrationMetadata
+    public sealed partial class addmigration : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(FinalizeTempTable));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(addmigration));
         
         string IMigrationMetadata.Id
         {
-            get { return "201611211836579_FinalizeTempTable"; }
+            get { return "201611211913236_add-migration"; }
         }
         
         string IMigrationMetadata.Source
         {
-            get { return Resources.GetString("Source"); }
+            get { return null; }
         }
         
         string IMigrationMetadata.Target

@@ -11,6 +11,8 @@ namespace NineTapTour.Database
     public class FinalizeTemp
     {
         [Key]
+        public int FinalizeID { get; set; }
+        public int TournamentID { get; set; }
         public int GameId { get; set; }
         public int MemberId { get; set; }
         public String FirstName { get; set; }
