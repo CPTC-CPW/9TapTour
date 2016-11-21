@@ -33,7 +33,7 @@ namespace NineTapTour.Forms
             column2.Width = 50;
             var column3 = dataGridView1.Columns[9];
             column3.Width = 50;
-            var column4 = dataGridView1.Columns[13];
+            var column4 = dataGridView1.Columns[12];
             column4.Width = 40;
 
         }
@@ -44,24 +44,24 @@ namespace NineTapTour.Forms
         {
             var db = new NineTapDb();
             DataTable dt = new DataTable();
-            dt.Columns.Add("GameId");
-            dt.Columns.Add("Name");
-            dt.Columns.Add("Game 1");
+            dt.Columns.Add("GameId").ReadOnly = true;
+            dt.Columns.Add("Name").ReadOnly = true;
+            dt.Columns.Add("Game 1").ReadOnly = true;
             dt.Columns.Add(new DataColumn("Valid Score1?", typeof(bool)));
-            dt.Columns.Add("Game 2");
+            dt.Columns.Add("Game 2").ReadOnly = true;
             dt.Columns.Add(new DataColumn("Valid Score2?", typeof(bool)));
-            dt.Columns.Add("Game 3");
+            dt.Columns.Add("Game 3").ReadOnly = true;
             dt.Columns.Add(new DataColumn("Valid Score3?", typeof(bool)));
-            dt.Columns.Add("Game 4");
+            dt.Columns.Add("Game 4").ReadOnly = true;
             dt.Columns.Add(new DataColumn("Valid Score4?", typeof(bool)));
-            dt.Columns.Add("True Avg");
+            dt.Columns.Add("True Avg").ReadOnly = true;
             dt.Columns.Add("Adj Avg");
             dt.Columns.Add(new DataColumn("Keep True Avg?", typeof(bool)));
-            dt.Columns.Add("Scratch Total");
-            dt.Columns.Add("Squad");
-            dt.Columns.Add("Game Avg");
-            dt.Columns.Add("Handicap");
-            dt.Columns.Add("Bonus");
+            dt.Columns.Add("Scratch Total").ReadOnly = true;
+            dt.Columns.Add("Squad").ReadOnly = true;
+            dt.Columns.Add("Game Avg").ReadOnly = true;
+            dt.Columns.Add("Handicap").ReadOnly = true;
+            dt.Columns.Add("Bonus").ReadOnly = true;
             dt.Columns.Add("Pro Pot");
             dt.Columns.Add("Notes");
 
@@ -110,25 +110,30 @@ namespace NineTapTour.Forms
         public int GetAdjustedAverage(GameParticipant p)
         {
             int AdjustedAverage = 0;
+            int count = 0;
 
             if(p.UseGame1 == true)
             {
                 AdjustedAverage += p.Game1;
+                count++;
             }
             if (p.UseGame2 == true)
             {
                 AdjustedAverage += p.Game2;
+                count++;
             }
             if (p.UseGame3 == true)
             {
                 AdjustedAverage += p.Game3;
+                count++;
             }
             if (p.UseGame4 == true)
             {
                 AdjustedAverage += p.Game4;
+                count++;
             }
 
-            return AdjustedAverage / 4;
+            return AdjustedAverage / count;
 
         }
 
@@ -286,7 +291,7 @@ namespace NineTapTour.Forms
             //goes through every participant to see if row matches memberid
             foreach (GameParticipant p in ListGameParticipants)
             {
-                if ((int)dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value == p.GameId)
+                if (Convert.ToInt32(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value) == p.GameId)
                 {
                     //changes value of game 1
                     if (dataGridView1.CurrentCell.ColumnIndex == 3)
@@ -339,30 +344,7 @@ namespace NineTapTour.Forms
 
         }
 
-        /// <summary>
-        /// Method will update GameParticpants in Global variable, ListGameparticipants
-        /// if a value has been changed in the GridView.- !This does NOT include checkboxes!
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            //goes through every participant to see if row matches memberid
-            foreach (GameParticipant p in ListGameParticipants)
-            {
-                if ((int)dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value == p.GameId)
-                {
-                    //Update Notes
-                    if (dataGridView1.CurrentCell.ColumnIndex == 20)
-                    {
-                        p.Notes = dataGridView1.CurrentCell.Value.ToString();
-                    }
 
-                    //To do Change Adjusted Avg
-                }
-            }
-        }
 
         /// <summary>
         /// This Class represents an object of Participant Info for a specific game.
