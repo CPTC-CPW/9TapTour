@@ -22,12 +22,12 @@ namespace NineTapTour.Forms
             Tournament temptourn = tourn;
             InitializeComponent();
 
-            ListGameParticipants = GetAllParticipantGameList(tourn);
+            ListGameParticipants = GetAllInitialParticipantGameList(tourn);
 
-            //dataGridView1.DataSource = DataView(temptourn, ListGameParticipants); //By default populates all datagrid with all participant for tournament.
+            dataGridView1.DataSource = DataView(temptourn, ListGameParticipants); //By default populates all datagrid with all participant for tournament.
 
             //Sort DataGridView by TrueAverage
-            //this.dataGridView1.Sort(this.dataGridView1.Columns["True Avg"], ListSortDirection.Descending);
+            this.dataGridView1.Sort(this.dataGridView1.Columns["True Avg"], ListSortDirection.Descending);
 
             //sets sizes of check box columns "Valid Score1, ValidScore2, ValidScore3, Valid Score 4, and Keep True Avg?"
             var column = dataGridView1.Columns[3];
@@ -167,7 +167,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="tourn"> represent the tournament you want list of particpants from</param>
         /// <returns>List of Participants for specific tournament</returns>
-        public List<GameParticipant> GetAllParticipantGameList(Tournament tourn)
+        public List<GameParticipant> GetAllInitialParticipantGameList(Tournament tourn)
         {
             var db = new NineTapDb();
             List<GameParticipant> ParticipantList = new List<GameParticipant>();
@@ -225,6 +225,67 @@ namespace NineTapTour.Forms
 
             return ParticipantList;
         }
+        /// <summary>
+        /// THis method Gets a list of all saved participant objects From "FinalizeTemp" Table.
+        /// </summary>
+        /// <param name="tourn"> represent the tournament you want list of particpants from</param>
+        /// <returns>List of Participants for specific tournament</returns>
+        public List<GameParticipant> GetAllSavedParticipantGameList(Tournament tourn)
+        {
+            var db = new NineTapDb();
+            List<GameParticipant> ParticipantList = new List<GameParticipant>();
+            var temp = (from p in db.FinalizeTemp
+
+                        select new
+                        {
+                            p.GameId,
+                            p.MemberId,
+                            p.FirstName,
+                            p.LastName,
+                            p.Squad,
+                            p.Game1,
+                            p.Game2,
+                            p.Game3,
+                            p.Game4,
+                            p.UseGame1,
+                            p.UseGame2,
+                            p.UseGame3,
+                            p.UseGame4,
+                            p.Notes,
+                            p.Handicap,
+                            p.Bonus,
+                            p.ScratchTotal,
+                            p.KeepAdjustedAvg,
+                            p.GameAvg }).ToList();
+            foreach (var item in temp)
+            {
+                GameParticipant NewParticipant = new GameParticipant();
+                NewParticipant.GameId = item.GameId;
+                NewParticipant.MemberId = item.MemberId;
+                NewParticipant.FirstName = item.FirstName;
+                NewParticipant.LastName = item.LastName;
+                NewParticipant.Game1 = (int)item.Game1;
+                NewParticipant.Game2 = (int)item.Game2;
+                NewParticipant.Game3 = (int)item.Game3;
+                NewParticipant.Game4 = (int)item.Game4;
+                NewParticipant.UseGame1 = (bool)item.UseGame1;
+                NewParticipant.UseGame2 = (bool)item.UseGame2;
+                NewParticipant.UseGame3 = (bool)item.UseGame3;
+                NewParticipant.UseGame4 = (bool)item.UseGame4;
+                NewParticipant.Notes = item.Notes;
+                //TODO: Base this off historical records for member off their last 30 games.
+                NewParticipant.ScratchTotal = (int)(item.Game1 + item.Game2 + item.Game3 + item.Game4);
+                NewParticipant.Squad = item.Squad;
+                NewParticipant.Handicap = (int)item.Handicap;
+                NewParticipant.Bonus = (int)item.Bonus;
+                NewParticipant.ScratchTotal = (int)item.ScratchTotal;
+                NewParticipant.GameAvg = (int)(item.Game1 + item.Game2 + item.Game3 + item.Game4) / 4;
+                ParticipantList.Add(NewParticipant);
+
+            }
+
+            return ParticipantList;
+        }
 
         /// <summary>
         /// This method will get a list of all tournament participants and return a sort the list by scores.
@@ -233,7 +294,7 @@ namespace NineTapTour.Forms
         /// <returns>sorted list of gameParticipants for specified tournament</returns>
         public List<GameParticipant> ParticipantSortByScore(Tournament tourn)
         {
-            List<GameParticipant> sortParticipant = GetAllParticipantGameList(tourn);
+            List<GameParticipant> sortParticipant = GetAllInitialParticipantGameList(tourn);
             sortParticipant.Sort(delegate (GameParticipant c1, GameParticipant c2) { return c1.GameAvg.CompareTo(c2.GameAvg); });
             return sortParticipant;
         }
