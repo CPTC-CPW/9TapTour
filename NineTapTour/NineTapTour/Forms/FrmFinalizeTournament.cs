@@ -344,20 +344,42 @@ namespace NineTapTour.Forms
                     //}
                     //else KeepTrueAvg = true;
                     //}
+
                 }
             }
-
         }
-
-
-                    //To do Change Adjusted Avg
-                    if(dataGridView1.CurrentCell.ColumnIndex == 12)
+ 
+        /// Method will update GameParticpants in Global variable, ListGameparticipants
+        /// if a value has been changed in the GridView.- !This does NOT include checkboxes!
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+           //goes through every participant to see if row matches memberid
+          foreach (GameParticipant p in ListGameParticipants)
+          {
+              if ((int)dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value == p.GameId)
+             {
+                    //Update Notes
+                 if (dataGridView1.CurrentCell.ColumnIndex == 20)
                     {
-                        p.imputtedAvg = Convert.ToInt32(dataGridView1.CurrentCell.Value);
+                        p.Notes = dataGridView1.CurrentCell.Value.ToString();
                     }
+  
+                      //To do Change Adjusted Avg
+                      if(dataGridView1.CurrentCell.ColumnIndex == 12)
+                     {
+                         p.imputtedAvg = Convert.ToInt32(dataGridView1.CurrentCell.Value);
+                     }
                 }
-            }
-        }
+             }
+         }
+
+    }
+           
+        
 
         /// <summary>
         /// This Class represents an object of Participant Info for a specific game.
@@ -389,4 +411,4 @@ namespace NineTapTour.Forms
 
      
     }
-}
+
