@@ -148,11 +148,10 @@ namespace NineTapTour.Forms
         /// <param name="tourn">active tournament</param>
         /// <param name="Squad">squad you want a list of </param>
         /// <returns>returns list of Participants from specified squad</returns>
-        public List<GameParticipant> GameParticipantsBySquadList(Tournament tourn, int Squad)
+        public List<GameParticipant> GameParticipantsBySquadList(int Squad)
         {
-            List<GameParticipant> allParticipants = ParticipantSortByScore(tourn);
             List<GameParticipant> SquadParticipants = new List<GameParticipant>();
-            foreach (GameParticipant p in allParticipants)
+            foreach (GameParticipant p in ListGameParticipants)
             {
                 if (p.Squad == Squad)
                 {
@@ -225,6 +224,7 @@ namespace NineTapTour.Forms
 
             return ParticipantList;
         }
+
         /// <summary>
         /// THis method Gets a list of all saved participant objects From "FinalizeTemp" Table.
         /// </summary>
@@ -238,6 +238,7 @@ namespace NineTapTour.Forms
 
                         select new
                         {
+                            p.TournamentID,
                             p.GameId,
                             p.MemberId,
                             p.FirstName,
@@ -259,28 +260,32 @@ namespace NineTapTour.Forms
                             p.GameAvg }).ToList();
             foreach (var item in temp)
             {
-                GameParticipant NewParticipant = new GameParticipant();
-                NewParticipant.GameId = item.GameId;
-                NewParticipant.MemberId = item.MemberId;
-                NewParticipant.FirstName = item.FirstName;
-                NewParticipant.LastName = item.LastName;
-                NewParticipant.Game1 = (int)item.Game1;
-                NewParticipant.Game2 = (int)item.Game2;
-                NewParticipant.Game3 = (int)item.Game3;
-                NewParticipant.Game4 = (int)item.Game4;
-                NewParticipant.UseGame1 = (bool)item.UseGame1;
-                NewParticipant.UseGame2 = (bool)item.UseGame2;
-                NewParticipant.UseGame3 = (bool)item.UseGame3;
-                NewParticipant.UseGame4 = (bool)item.UseGame4;
-                NewParticipant.Notes = item.Notes;
-                //TODO: Base this off historical records for member off their last 30 games.
-                NewParticipant.ScratchTotal = (int)(item.Game1 + item.Game2 + item.Game3 + item.Game4);
-                NewParticipant.Squad = item.Squad;
-                NewParticipant.Handicap = (int)item.Handicap;
-                NewParticipant.Bonus = (int)item.Bonus;
-                NewParticipant.ScratchTotal = (int)item.ScratchTotal;
-                NewParticipant.GameAvg = (int)(item.Game1 + item.Game2 + item.Game3 + item.Game4) / 4;
-                ParticipantList.Add(NewParticipant);
+                if (item.TournamentID == tourn.Id)
+                {
+                    GameParticipant NewParticipant = new GameParticipant();
+                    NewParticipant.GameId = item.GameId;
+                    NewParticipant.MemberId = item.MemberId;
+                    NewParticipant.FirstName = item.FirstName;
+                    NewParticipant.LastName = item.LastName;
+                    NewParticipant.Game1 = item.Game1;
+                    NewParticipant.Game2 = item.Game2;
+                    NewParticipant.Game3 = item.Game3;
+                    NewParticipant.Game4 = item.Game4;
+                    NewParticipant.UseGame1 = item.UseGame1;
+                    NewParticipant.UseGame2 = item.UseGame2;
+                    NewParticipant.UseGame3 = item.UseGame3;
+                    NewParticipant.UseGame4 = item.UseGame4;
+                    NewParticipant.Notes = item.Notes;
+                    //TODO: Base this off historical records for member off their last 30 games.
+                    NewParticipant.ScratchTotal = item.ScratchTotal;
+                    NewParticipant.Squad = item.Squad;
+                    NewParticipant.Handicap = item.Handicap;
+                    NewParticipant.Bonus = item.Bonus;
+                    NewParticipant.ScratchTotal = item.ScratchTotal;
+                    //NewParticipant.ImputedAvg = item.ImputedAvg;
+                    NewParticipant.GameAvg = item.GameAvg;
+                    ParticipantList.Add(NewParticipant);
+                }
 
             }
 
@@ -321,27 +326,52 @@ namespace NineTapTour.Forms
 
  
         /// <summary>
-        /// This method doesnt have to return bool-GET GROUP CONSCIENCE
-        /// This Method will save member and Game data to database.
+        /// This Method will save All GameParticipant data From Forms global variable,
+        /// ListgameParticipants, to FinalizeTemp Table.
         /// </summary>
         /// <returns>True if works, false if not.</returns>
-        public bool SaveTournamentData()
+        public void SaveAllTournamentData()
         {
-            var db = new NineTapDb();
             foreach (GameParticipant UpdatedParticipant in ListGameParticipants)
             {
-                //Need to test this method to see whether entity framework will pull correct fields from
-                // GameParticipant which contains data from two different tables.
-                // If not I will manually have to grab selected fields and updata individually.
-                var GameOriginal = db.Games.Find(UpdatedParticipant.GameId);
-                var MemberOriginal = db.Members.Find(UpdatedParticipant.MemberId);
-
-                if (GameOriginal != null)
+                if (!SaveIndividualGame(UpdatedParticipant))
                 {
-                    db.Entry(GameOriginal).CurrentValues.SetValues(UpdatedParticipant.GameId);
-                    db.Entry(MemberOriginal).CurrentValues.SetValues(UpdatedParticipant.MemberId);
-                    db.SaveChanges();// how can you test in entity if values saved properly.
+                    Console.WriteLine($"Game with GameID of {UpdatedParticipant.GameId} could not save properly");
                 }
+            }
+        }
+
+        /// <summary>
+        /// This method recieves an individual GameParticipant object and saves its values to
+        /// FinalizeTempTable
+        /// </summary>
+        /// <param name="UpdatedGame"></param>
+        /// <returns>Return true if Game saved to database, false if not.</returns>
+        public bool SaveIndividualGame(GameParticipant UpdatedGame)
+        {
+            var db = new NineTapDb();
+
+            var GameOriginal = db.FinalizeTemp.Find(UpdatedGame.GameId);
+
+            if (GameOriginal != null)
+            {
+                try
+                {
+                    //update finalize temp table with new values.
+                    db.Entry(GameOriginal).CurrentValues.SetValues(UpdatedGame.GameId);
+                    db.SaveChanges();
+
+                }
+                catch
+                {
+                    //return false if issue saving changes to database.
+                    return false;
+                }
+            }
+            else
+            {
+                //return false if cant find game.
+                return false;
 
             }
             return true;
@@ -362,38 +392,22 @@ namespace NineTapTour.Forms
                     //changes value of game 1
                     if (dataGridView1.CurrentCell.ColumnIndex == 3)
                     {
-                        if (p.UseGame1 == true)
-                        {
-                            p.UseGame1 = false;
-                        }
-                        else p.UseGame1 = true;
+                        p.UseGame1 = !p.UseGame1;
                     }
                     //changes value of game 2
                     if (dataGridView1.CurrentCell.ColumnIndex == 5)
                     {
-                        if (p.UseGame2 == true)
-                        {
-                            p.UseGame2 = false;
-                        }
-                        else p.UseGame2 = true;
+                        p.UseGame2 = !p.UseGame2;
                     }
                     //changes value of game 3
                     if (dataGridView1.CurrentCell.ColumnIndex == 7)
                     {
-                        if (p.UseGame3 == true)
-                        {
-                            p.UseGame3 = false;
-                        }
-                        else p.UseGame3 = true;
+                        p.UseGame3 = !p.UseGame3;
                     }
                     //changes value of game 4
                     if (dataGridView1.CurrentCell.ColumnIndex == 9)
                     {
-                        if (p.UseGame4 == true)
-                        {
-                            p.UseGame4 = false;
-                        }
-                        else p.UseGame4 = true;
+                        p.UseGame4 = !p.UseGame4;
                     }
 
                     //Changes value of keeptrueAVG
@@ -405,7 +419,7 @@ namespace NineTapTour.Forms
                     //}
                     //else KeepTrueAvg = true;
                     //}
-
+                    SaveIndividualGame(p);//save updated game to finalize temp table.
                 }
             }
         }
@@ -435,7 +449,9 @@ namespace NineTapTour.Forms
                          p.imputtedAvg = Convert.ToInt32(dataGridView1.CurrentCell.Value);
                      }
                 }
-             }
+                SaveIndividualGame(p);//save updated game to finalize temp table.
+            }
+
          }
 
     }
@@ -463,7 +479,7 @@ namespace NineTapTour.Forms
             public bool UseGame4 { get; set; }
             public string Notes { get; set; }
             public int ScratchTotal { get; set; }
-            public int imputtedAvg { get; set; } //Avg manually changed by user
+            public int ImputedAvg { get; set; } //Avg manually changed by user
             public int GameAvg { get; set; }
             public int Handicap { get; set; }
             public int Bonus { get; set; }
