@@ -35,8 +35,8 @@ namespace NineTapTour.Database
         [Column(Expression = "Game1 + Game2 + Game3 + Game4")]
         [System.ComponentModel.DataAnnotations.Schema.NotMapped]
         public int? TotalScore { get; set; }
-        public decimal MoneyWon { get; set; }
-        public byte PlaceStanding { get; set;}
+        public decimal? MoneyWon { get; set; }
+        public byte? PlaceStanding { get; set;}
 
     }
 }
