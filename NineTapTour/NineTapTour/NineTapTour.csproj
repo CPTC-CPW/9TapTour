@@ -97,6 +97,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Calculations\Calculations.cs" />
     <Compile Include="Database\FinalizeTemp.cs" />
     <Compile Include="Database\Game.cs" />
     <Compile Include="Database\Member.cs" />
