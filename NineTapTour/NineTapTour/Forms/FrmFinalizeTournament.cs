@@ -266,7 +266,7 @@ namespace NineTapTour.Forms
             return ParticipantList;
         }
         //Updates the finalizetemp table when check box for Use Game Score is clicked on.
-        private void dataGridView1_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
+        private void dataGridView1_OnCellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), 3.ToString()) == 0)
             {
@@ -355,6 +355,27 @@ namespace NineTapTour.Forms
             }
         }
 
+        private void dataGridView1_OnCellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            // End of edition on each click on column of checkbox
+            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), 3.ToString()) == 0)
+            {
+                dataGridView1.EndEdit();
+            }
+            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), 5.ToString()) == 0)
+            {
+                dataGridView1.EndEdit();
+            }
+            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), 7.ToString()) == 0)
+            {
+                dataGridView1.EndEdit();
+            }
+            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), 9.ToString()) == 0)
+            {
+                dataGridView1.EndEdit();
+            }
+        }
+
         /// <summary>
         /// Checks the bool state of the check box and updates row based off gameID in FinalizeTempDB
         /// </summary>
@@ -385,10 +406,12 @@ namespace NineTapTour.Forms
             else
                 style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
             dataGridView1.Rows[row].Cells[cell].Style = style;
+            this.dataGridView1.CellValueChanged += this.dataGridView1_OnCellValueChanged;
         }
         //updates computed average in column 10 when check box is changed.
         private void UpdateAvg(int row)
         {
+            this.dataGridView1.CellValueChanged -= this.dataGridView1_OnCellValueChanged;
             int sum = 0;
             int count = 0;
             if (Convert.ToBoolean(dataGridView1.Rows[row].Cells[3].Value) == true)
@@ -472,6 +495,8 @@ namespace NineTapTour.Forms
                 // WE can change the Color of Rows if Same Member Places Twice Here
             }
         }
+
+
 
         //public void UpdateMemberMoneyWon(GameParticipant p)
         //{
