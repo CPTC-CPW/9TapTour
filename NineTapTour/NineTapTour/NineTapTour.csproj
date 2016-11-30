@@ -99,6 +99,7 @@
   <ItemGroup>
     <Compile Include="Calculations\Calculations.cs" />
     <Compile Include="Database\FinalizeTemp.cs" />
+    <Compile Include="Database\FinalizeTempDB.cs" />
     <Compile Include="Database\Game.cs" />
     <Compile Include="Database\Member.cs" />
     <Compile Include="Database\MemberDb.cs" />

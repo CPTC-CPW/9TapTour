@@ -30,6 +30,8 @@ namespace NineTapTour.Database
         public bool UseGame3 { get; set; }
         [DefaultValue(true)]
         public bool UseGame4 { get; set; }
+        public int LeagueAverage { get; set; }
+        public int AdjustedAvg { get; set; }
         public string Notes { get; set; }
         public int ScratchTotal { get; set; }
         [DefaultValue(false)]
