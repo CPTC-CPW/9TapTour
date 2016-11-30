@@ -28,6 +28,9 @@ namespace NineTapTour.Forms
 
             //Sort DataGridView by TrueAverage
             this.dataGridView1.Sort(this.dataGridView1.Columns["True Avg"], ListSortDirection.Descending);
+            
+            //Update Place standings.
+            //RankGridView();
 
             //sets sizes of check box columns "Valid Score1, ValidScore2, ValidScore3, Valid Score 4, and Keep True Avg?"
             var column = dataGridView1.Columns[3];
@@ -49,6 +52,7 @@ namespace NineTapTour.Forms
         {
             var db = new NineTapDb();
             DataTable dt = new DataTable();
+            //dt.Columns.Add("Rank").ReadOnly = true;
             dt.Columns.Add("GameId").ReadOnly = true;
             dt.Columns.Add("Name").ReadOnly = true;
             dt.Columns.Add("Game 1").ReadOnly = true;
@@ -73,10 +77,12 @@ namespace NineTapTour.Forms
             //whatever list of participants you pass into method will be populated into grid
             List<GameParticipant> temp = participantsList;
 
+            //int Rank = 0;
             //loops thru each person's info in tournament and populates the dataview with data from DB.
             foreach (var item in temp)
             {
                 DataRow newRow = dt.NewRow();
+                //newRow["Rank"] = Rank++;
                 newRow["GameId"] = item.GameId;
                 newRow["Name"] = item.FirstName + " " + item.LastName;
                 newRow["Game 1"] = item.Game1;
@@ -297,11 +303,10 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="tourn">Tournament needing information from</param>
         /// <returns>sorted list of gameParticipants for specified tournament</returns>
-        public List<GameParticipant> ParticipantSortByScore(Tournament tourn)
+        public void SortByScore()
         {
-            List<GameParticipant> sortParticipant = GetAllInitialParticipantGameList(tourn);
-            sortParticipant.Sort(delegate (GameParticipant c1, GameParticipant c2) { return c1.GameAvg.CompareTo(c2.GameAvg); });
-            return sortParticipant;
+            this.dataGridView1.Sort(this.dataGridView1.Columns["True Avg"], ListSortDirection.Descending);
+            RankGridView();
         }
 
         /// <summary>
@@ -435,7 +440,7 @@ namespace NineTapTour.Forms
            //goes through every participant to see if row matches memberid
           foreach (GameParticipant p in ListGameParticipants)
           {
-              if ((int)dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value == p.GameId)
+              if (Convert.ToInt32(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value) == p.GameId)
              {
                     //Update Notes
                  if (dataGridView1.CurrentCell.ColumnIndex == 20)
@@ -446,13 +451,54 @@ namespace NineTapTour.Forms
                       //To do Change Adjusted Avg
                       if(dataGridView1.CurrentCell.ColumnIndex == 12)
                      {
-                         p.imputtedAvg = Convert.ToInt32(dataGridView1.CurrentCell.Value);
+                         p.ImputedAvg = Convert.ToInt32(dataGridView1.CurrentCell.Value);
                      }
                 }
                 SaveIndividualGame(p);//save updated game to finalize temp table.
             }
 
          }
+
+        /// <summary>
+        /// Updates the Game.MoneyWon and Member.MoneyWon Properties with Updated values.
+        /// </summary>
+        /// <param name="p">GameParticipant with most up-to-date game values</param>
+        public void UpdateMemberMoneyWon(GameParticipant p)
+        {
+            var db = new NineTapDb();
+            //Find member
+            var member = db.Members.Find(p.MemberId);
+            //Find Game
+            var game = db.Games.Find(p.GameId);
+            if (p.MoneyWon != game.MoneyWon)
+            {
+                //member.MoneyEarned -= game.MoneyWon;//Member doesnt contain a money earned property yet but member page has a text box for one.
+                //member.MoneyEarned += p.MoneyWon;
+                //db.Entry(member).CurrentValues.SetValues(member.Id);
+                //db.SaveChanges();
+
+                game.MoneyWon = p.MoneyWon;
+                db.Entry(game).CurrentValues.SetValues(game.Id);
+                    db.SaveChanges();
+
+            }
+        }
+
+        public void RankGridView()
+        {
+            int Rank = 1;
+
+            for (int Row = 0; Row < dataGridView1.Rows.Count; Row++)
+            {
+                dataGridView1.Rows[Row].Cells[0].Value = Rank;
+                //Here we are updatng placestandings by adjustedAvg. Should we Rank by trueavg?
+                if(Convert.ToInt32(dataGridView1.Rows[Row].Cells[12].Value) != Convert.ToInt32(dataGridView1.Rows[Row + 1].Cells[12].Value))
+                {
+                    Rank++;
+                }
+                // WE can change the Color of Rows if Same Member Places Twice Here
+            }
+        }
 
     }
            
@@ -483,6 +529,7 @@ namespace NineTapTour.Forms
             public int GameAvg { get; set; }
             public int Handicap { get; set; }
             public int Bonus { get; set; }
+            public decimal? MoneyWon { get; set; }
 
         }
 
