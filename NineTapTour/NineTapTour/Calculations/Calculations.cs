@@ -7,13 +7,36 @@ using System.Threading.Tasks;
 
 namespace NineTapTour.Calculations
 {
-    class Calculations
+    static class Calculations
     {
+        /// <summary>
+        /// Constants are based on 9-Tap Rules for adding and deducting pins based on type
+        /// of tournament and member placement, handicap calculations, and calculating the
+        /// number of participants that can place in a tournament.  
+        /// </summary>
+
+        const int MAX_BONUS_PINS_ALLOWED = 5;
+        const int NO_PINS_TO_DEDUCT = 0;
+        const double DEDUCT_HALF = .5;
+        const int DEDUCT_1 = 1;
+        const int DEDUCT_2 = 2;
+        const int DEDUCT_3 = 3;
+        const int FIRST_PLACE_DEDUCTION = 1;
+        const int MIN_PLACEMENT_DEDUCT_2_PINS = 6;
+        const int MAX_PLACEMENT_DEDUCT_2_PINS = 10;
+        const int MIN_PLACEMENT_DEDUCT_3_PINS = 2;
+        const int MAX_PLACEMENT_DEDUCT_3_PINS = 5;
+        const int MAX_HANDICAP_PINS = 70;
+        const int BASE_AVERAGE_HANDICAP_CALCULATOR = 220;
+        const double PERCENTAGE_TO_CALCULATE_HANDICAP = .9;
+
+        /// <summary>
+        /// method uses integer division based on client's calculation 
+        /// </summary>
+        /// <param name="currentAverage"></param>
+        /// <returns></returns>
         public static int CalculateHandicapPins(int currentAverage)
-        {
-            int MAX_HANDICAP_PINS = 70;
-            int BASE_AVERAGE_HANDICAP_CALCULATOR = 220;
-            double PERCENTAGE_TO_CALCULATE_HANDICAP = .9;
+        { 
             double calculateHandicap = Convert.ToDouble(BASE_AVERAGE_HANDICAP_CALCULATOR - currentAverage) * PERCENTAGE_TO_CALCULATE_HANDICAP;
             if(calculateHandicap > MAX_HANDICAP_PINS)
             {
@@ -23,7 +46,6 @@ namespace NineTapTour.Calculations
             {
                 return Convert.ToInt32(calculateHandicap);
             }
-            
         }
         
         public static int CalculateBonusPins(bool didMemberCash, int memberPlaced, int currentBonusPins, bool isDoublesTournament)
@@ -41,40 +63,25 @@ namespace NineTapTour.Calculations
 
         public static int AddBonusPins(int currentBonusPins, bool isDoublesTournament)
         {
-            int MAX_BONUS_PINS_ALLOWED = 5;
             if(currentBonusPins == MAX_BONUS_PINS_ALLOWED)
             {
                 return MAX_BONUS_PINS_ALLOWED;
             }
             else
             {
-               return ++currentBonusPins;
+               return currentBonusPins++;
             }
-
-            throw new NotImplementedException();
         }
 
         public static int DeductBonusPins(int memberPlaced, int currentBonusPins, bool isDoublesTournament)
         {
-            int bonusPinsAfterDeduction = 0;
+            int bonusPinsAfterDeduction;
 
-            int NO_PINS_TO_DEDUCT = 0;
-            int DEDUCT_HALF = 2;
-            int DEDUCT_1 = 1;
-            int DEDUCT_2 = 2;
-            int DEDUCT_3 = 3;
-            
-            int PLACEMENT_DEDUCT_ALL_PINS = 1;
-            int MIN_PLACEMENT_DEDUCT_2_PINS = 6;
-            int MAX_PLACEMENT_DEDUCT_2_PINS = 10;
-            int MIN_PLACEMENT_DEDUCT_3_PINS = 2;
-            int MAX_PLACEMENT_DEDUCT_3_PINS = 5;
-
-            if(memberPlaced == PLACEMENT_DEDUCT_ALL_PINS)
+            if(memberPlaced == FIRST_PLACE_DEDUCTION)
             {
                 if (isDoublesTournament)
                 {
-                    bonusPinsAfterDeduction = currentBonusPins - (currentBonusPins / DEDUCT_HALF);
+                    bonusPinsAfterDeduction = currentBonusPins - DoublesTournamentRoundPinValue(DEDUCT_HALF);
                 }
                 else
                 {
@@ -85,18 +92,18 @@ namespace NineTapTour.Calculations
             {
                 if (isDoublesTournament)
                 {
-                    bonusPinsAfterDeduction = currentBonusPins - (DEDUCT_3 / DEDUCT_HALF);
+                    bonusPinsAfterDeduction = currentBonusPins - DoublesTournamentRoundPinValue(DEDUCT_HALF);
                 }
                 else
                 {
-                    bonusPinsAfterDeduction = currentBonusPins - currentBonusPins;
+                    bonusPinsAfterDeduction = currentBonusPins - DEDUCT_3;
                 }
             }
             else if(memberPlaced >= MIN_PLACEMENT_DEDUCT_2_PINS && memberPlaced <= MAX_PLACEMENT_DEDUCT_2_PINS)
             {
                 if (isDoublesTournament)
                 {
-                    bonusPinsAfterDeduction = currentBonusPins - (DEDUCT_2 / DEDUCT_HALF);
+                    bonusPinsAfterDeduction = currentBonusPins - DoublesTournamentRoundPinValue(DEDUCT_HALF);
                 }
                 else
                 {
@@ -119,10 +126,28 @@ namespace NineTapTour.Calculations
             }
         }
 
-        public static int CalculateNumberOfMembersThatCanPlaceInATournament(Participant p)
+        /// <summary>
+        /// method rounds half pin deduction to the nearest whole number based
+        /// on client's calculation
+        /// </summary>
+        /// <param name="halfPinDeduction"></param>
+        /// <returns></returns>
+        public static int DoublesTournamentRoundPinValue(double halfPinDeduction)
         {
-          
-            throw new NotImplementedException();
+            int doublesPinDeduction = (int)Math.Round(halfPinDeduction, MidpointRounding.AwayFromZero);
+            return doublesPinDeduction;
+        }
+
+        /// <summary>
+        /// method uses integer division based on client's calculation 1 in 5 participants
+        /// place in a tournament
+        /// </summary>
+        /// <param name="numberOfParticipantsInTournament"></param>
+        /// <returns></returns>
+        public static int CalculateNumberOfMembersThatCanPlaceInATournament(int numberOfParticipantsInTournament)
+        {
+            int numberOfPlacementsBasedOnParticipants = numberOfParticipantsInTournament / 5;
+            return numberOfPlacementsBasedOnParticipants;
         }
     }
 }
