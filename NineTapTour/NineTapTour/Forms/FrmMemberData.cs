@@ -372,9 +372,9 @@ namespace NineTapTour.Forms
             }
             if(dateJoined.Value != null)
             {
-                if(dateRejoin.Value != null && dateRejoin.Value >= dateJoined.Value)
+                if(dateRejoin.Value != null && dateRejoin.Value <= dateJoined.Value)
                 {
-                    MessageBox.Show("Rejoin Date After Join Date");
+                    MessageBox.Show("Rejoin Date before Join Date");
                     dateRejoin.Focus();
                     return false;
                 }
