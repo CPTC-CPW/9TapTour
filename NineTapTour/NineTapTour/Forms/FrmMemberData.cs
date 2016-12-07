@@ -319,6 +319,18 @@ namespace NineTapTour.Forms
                     return false;
                 }
             }
+            var db = new NineTapDb();
+            var ssnList = (from p in db.Members
+                           select p.SSN
+                           ).ToList();
+            if (ssnList.Contains(mtxtBoxSSN.Text) && mtxtBoxSSN.Text != null)
+            {
+                MessageBox.Show("Member with same SSN already exists");
+                mtxtBoxSSN.Clear();
+                mtxtBoxSSN.Focus();
+                return false;
+                
+            }
             if (string.IsNullOrWhiteSpace(txtAddress.Text.Trim()))
             {
                 MessageBox.Show("Address field cannot be null.");
@@ -486,6 +498,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnArrowLeft_Click(object sender, EventArgs e)
         {
+            
             if (((FrmMain)MdiParent)._membersList.Count() == 0 || currentMem.Number <= ((FrmMain)MdiParent)._membersList.First().Number)
             {
                 MessageBox.Show(@"Beginning of file.", @"Notice");
