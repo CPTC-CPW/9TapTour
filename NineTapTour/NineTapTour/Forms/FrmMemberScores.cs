@@ -1459,13 +1459,21 @@ namespace NineTapTour.Forms
                 }
             }
         }
-
+        //opens the FinalizeTourn form, checks to make sure a tourn is selected.
         private void btnFinalizeTounament_Click(object sender, EventArgs e)
         {
-            var newFrmFinalizeTournament = new FrmFinalizeTournament(selectedTournament);
-            newFrmFinalizeTournament.Dock = DockStyle.Fill;
-            newFrmFinalizeTournament.WindowState = FormWindowState.Maximized;
-            newFrmFinalizeTournament.Show();
+            if(cbxTourneyDropDown.SelectedIndex < 0)
+            {
+                MessageBox.Show("Please Select a Tournament");
+            }
+            else
+            {
+                var newFrmFinalizeTournament = new FrmFinalizeTournament(selectedTournament);
+                newFrmFinalizeTournament.Dock = DockStyle.Fill;
+                newFrmFinalizeTournament.WindowState = FormWindowState.Maximized;
+                newFrmFinalizeTournament.Show();
+            }
+
         }
     }
     /// <summary>
