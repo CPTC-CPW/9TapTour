@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using NineTapTour.Exceptions;
 using System.Data.SqlClient;
 using System.Data.Entity.Validation;
+using System.Windows.Forms;
 
 namespace NineTapTour.Database
 {
@@ -21,6 +22,14 @@ namespace NineTapTour.Database
                     db.Entry(temp).State = db.Members.Any(m => m.Id == temp.Id) ?
                                             EntityState.Modified :
                                             EntityState.Added;
+                    if(db.Entry(temp).State == EntityState.Modified)
+                    {
+                        MessageBox.Show("Player Updated");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Player Saved Successfully");
+                    }
                     db.SaveChanges();
                 }
             }

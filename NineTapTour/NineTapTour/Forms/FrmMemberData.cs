@@ -15,7 +15,6 @@ namespace NineTapTour.Forms
     public partial class FrmMemberData : Form
     {
 
-        bool UpdateText;
         //IOrderedEnumerable<Member> _membersList;
         int _memberId;
         Member currentMem;
@@ -79,7 +78,7 @@ namespace NineTapTour.Forms
 
             if (currentMem == null)
             {
-                UpdateText = false;
+                
                 currentMem = new Member
                 {
                     Number = _memberNum
@@ -450,13 +449,6 @@ namespace NineTapTour.Forms
                     {
                         MemberDb.AddMember(temp);
 
-                        if (UpdateText)
-                        {
-                            MessageBox.Show(@"Bowler Updated Successfully.");
-                        }
-                        else {
-                            MessageBox.Show(@"Bowler Added Successfully.");
-                        }
 
                         //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
                         ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
