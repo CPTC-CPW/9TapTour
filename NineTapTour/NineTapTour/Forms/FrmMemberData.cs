@@ -30,6 +30,7 @@ namespace NineTapTour.Forms
         public FrmMemberData()
         {
             InitializeComponent();
+            txtMiddleInitial.MaxLength = 1;
 
 
         }
@@ -369,7 +370,16 @@ namespace NineTapTour.Forms
                 txtEmail.Clear();
                 return false;
             }
-            //((FrmMain)MdiParent).currFrmMemberData = this;
+            if(dateJoined.Value != null)
+            {
+                if(dateRejoin.Value != null && dateRejoin.Value >= dateJoined.Value)
+                {
+                    MessageBox.Show("Rejoin Date After Join Date");
+                    dateRejoin.Focus();
+                    return false;
+                }
+            }
+
             return true;
         }
         /// <summary>
