@@ -39,15 +39,26 @@ namespace NineTapTour.Forms
             
         }
 
+        /// <summary>
+        /// Radio buttons display based on the number of Squads for 
+        /// a tournment, set by user on frmNewTournament.  Minimum number
+        /// is 3, most tournaments have 4 squads, and max is 5.
+        /// The squads are set to 4 in frmNewTournement to save the user a 
+        /// step since 4 squads are needed 90% of the time
+        /// </summary>
         private void RadioIntialize()
         {
-
+            rdoSquadFour.Visible = true;
             rdoSquad5.Visible = false;
             rdoSquad6.Visible = false;
             rdoSquad7.Visible = false;
             rdoSquad8.Visible = false;
             if (cbxTourneyDropDown.SelectedIndex >= 0)
             {
+                if(selectedTournament.Squads == 3)
+                {
+                    rdoSquadFour.Visible = false;
+                }
                 if (selectedTournament.Squads == 5)
                 {
                     rdoSquad5.Visible = true;
@@ -721,7 +732,9 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// increments to the next participant in the tournament
+        /// increments to the next participant in the tournament, keeps the 
+        /// selected radio button for squad so when member increments, the 
+        /// button
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -750,9 +763,25 @@ namespace NineTapTour.Forms
                 {
                     rdoSquadThree.Checked = true;
                 }
-                else
+                else if (total[currentIndex - 1].Squad == 4)
                 {
                     rdoSquadFour.Checked = true;
+                }
+                else if (total[currentIndex - 1].Squad == 5)
+                {
+                    rdoSquad5.Checked = true;
+                }
+                else if (total[currentIndex - 1].Squad == 6)
+                {
+                    rdoSquad6.Checked = true;
+                }
+                else if (total[currentIndex - 1].Squad == 7)
+                {
+                    rdoSquad7.Checked = true;
+                }
+                else
+                {
+                    rdoSquad8.Checked = true;
                 }
                 FillMember();
             }
@@ -792,9 +821,25 @@ namespace NineTapTour.Forms
                     {
                         rdoSquadThree.Checked = true;
                     }
-                    else
+                    else if (total[currentIndex - 1].Squad == 4)
                     {
                         rdoSquadFour.Checked = true;
+                    }
+                    else if (total[currentIndex - 1].Squad == 5)
+                    {
+                        rdoSquad5.Checked = true;
+                    }
+                    else if (total[currentIndex - 1].Squad == 6)
+                    {
+                        rdoSquad6.Checked = true;
+                    }
+                    else if (total[currentIndex - 1].Squad == 7)
+                    {
+                        rdoSquad7.Checked = true;
+                    }
+                    else
+                    {
+                        rdoSquad8.Checked = true;
                     }
                     FillMember();
                 }

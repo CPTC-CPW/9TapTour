@@ -47,7 +47,7 @@ namespace NineTapTour.Database
                 foreach (var t in Tournament)
                 {
                     var game = db.Games.SingleOrDefault(g => g.Id == t.GameId);
-                    if(game != null)
+                    if (game != null)
                     {
                         game.UseGame1 = t.UseGame1;
                         game.UseGame2 = t.UseGame2;
@@ -62,9 +62,9 @@ namespace NineTapTour.Database
                     }
 
                 }
-                
+
             }
-            
+
         }
 
         /// <summary>
@@ -102,4 +102,5 @@ namespace NineTapTour.Database
             }
 
         }
+    }
 }
