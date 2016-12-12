@@ -27,7 +27,7 @@ namespace NineTapTour.Calculations
         const int MIN_PLACEMENT_DEDUCT_3_PINS = 2;
         const int MAX_PLACEMENT_DEDUCT_3_PINS = 5;
         const int MAX_HANDICAP_PINS = 70;
-        const int BASE_AVERAGE_HANDICAP_CALCULATOR = 220;
+        const int BASE_AVERAGE_HANDICAP_CALCULATOR = 220; //This is a "magic number" used to calculate Bonus.
         const double PERCENTAGE_TO_CALCULATE_HANDICAP = .9;
 
         /// <summary>

@@ -266,7 +266,7 @@ namespace NineTapTour.Forms
             return ParticipantList;
         }
         //Updates the finalizetemp table when check box for Use Game Score is clicked on.
-        private void dataGridView1_OnCellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void dataGridView1_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
         {
             if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), 3.ToString()) == 0)
             {
@@ -355,27 +355,6 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void dataGridView1_OnCellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            // End of edition on each click on column of checkbox
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), 3.ToString()) == 0)
-            {
-                dataGridView1.EndEdit();
-            }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), 5.ToString()) == 0)
-            {
-                dataGridView1.EndEdit();
-            }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), 7.ToString()) == 0)
-            {
-                dataGridView1.EndEdit();
-            }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), 9.ToString()) == 0)
-            {
-                dataGridView1.EndEdit();
-            }
-        }
-
         /// <summary>
         /// Checks the bool state of the check box and updates row based off gameID in FinalizeTempDB
         /// </summary>
@@ -406,12 +385,10 @@ namespace NineTapTour.Forms
             else
                 style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
             dataGridView1.Rows[row].Cells[cell].Style = style;
-            this.dataGridView1.CellValueChanged += this.dataGridView1_OnCellValueChanged;
         }
         //updates computed average in column 10 when check box is changed.
         private void UpdateAvg(int row)
         {
-            this.dataGridView1.CellValueChanged -= this.dataGridView1_OnCellValueChanged;
             int sum = 0;
             int count = 0;
             if (Convert.ToBoolean(dataGridView1.Rows[row].Cells[3].Value) == true)
@@ -487,7 +464,7 @@ namespace NineTapTour.Forms
             for (int Row = 0; Row < dataGridView1.Rows.Count; Row++)
             {
                 dataGridView1.Rows[Row].Cells[0].Value = Rank;
-                //Here we are updatng placestandings by adjustedAvg. Should we Rank by trueavg?
+                //Here we are updating placestandings by adjusted avg. Would it be best to rank by true average?
                 if (Convert.ToInt32(dataGridView1.Rows[Row].Cells[12].Value) != Convert.ToInt32(dataGridView1.Rows[Row + 1].Cells[12].Value))
                 {
                     Rank++;
@@ -496,64 +473,6 @@ namespace NineTapTour.Forms
             }
         }
 
-
-
-        //public void UpdateMemberMoneyWon(GameParticipant p)
-        //{
-        //    var db = new NineTapDb();
-        //    //Find member
-        //    var member = db.Members.Find(p.MemberId);
-        //    //Find Game
-        //    var game = db.Games.Find(p.GameId);
-        //    if (p.MoneyWon != game.MoneyWon)
-        //    {
-        //        //member.MoneyEarned -= game.MoneyWon;//Member doesnt contain a money earned property yet but member page has a text box for one.
-        //        //member.MoneyEarned += p.MoneyWon;
-        //        //db.Entry(member).CurrentValues.SetValues(member.Id);
-        //        //db.SaveChanges();
-
-        //        game.MoneyWon = p.MoneyWon;
-        //        db.Entry(game).CurrentValues.SetValues(game.Id);
-        //        db.SaveChanges();
-
-        //    }
-        //}
-
-        /// <summary>
-        /// This method recieves an individual GameParticipant object and saves its values to
-        /// FinalizeTempTable
-        /// </summary>
-        /// <param name="UpdatedGame"></param>
-        /// <returns>Return true if Game saved to database, false if not.</returns>
-        //public bool SaveIndividualGame(GameParticipant UpdatedGame)
-        //{
-        //    var db = new NineTapDb();
-
-        //    var GameOriginal = db.FinalizeTemp.Find(UpdatedGame.GameId);
-
-        //    if (GameOriginal != null)
-        //    {
-        //        try
-        //        {
-        //            //update finalize temp table with new values.
-        //            db.Entry(GameOriginal).CurrentValues.SetValues(UpdatedGame.GameId);
-        //            db.SaveChanges();
-
-        //        }
-        //        catch
-        //        {
-        //            //return false if issue saving changes to database.
-        //            return false;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        //return false if cant find game.
-        //        return false;
-
-        //    }
-        //    return true;
-        //}
 
         /// <summary>
         /// This method will get a list of all tournament participants and return a sort the list by scores.
@@ -566,25 +485,6 @@ namespace NineTapTour.Forms
             RankGridView();
         }
 
-        /// <summary>
-        /// gets list of Winning Participants
-        /// </summary>
-        /// <param name="tourn">active tournament</param>
-        /// <returns>returns list of Top Scoring Participants</returns>
-        //public List<GameParticipant> TopScoreParticipants(Tournament tourn)
-        //{
-        //    //This Method needs some work... to get the right list but more or less is the basic design.
-        //    List<GameParticipant> SortedParticipantsByScore = ParticipantSortByScore(tourn);
-        //    List<GameParticipant> TopParticipantsList = new List<GameParticipant>();
-
-        //    //reverse instantiation if my sort method is backwards and 
-        //    // add business rules applied to determine correct list of winners.
-        //    for (int i = 0; i == 4; i++)
-        //    {
-        //        TopParticipantsList.Add(SortedParticipantsByScore[i]);
-        //    }
-        //    return TopParticipantsList;
-        //}
     }
 }
 
