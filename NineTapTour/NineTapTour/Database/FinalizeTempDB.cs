@@ -100,7 +100,6 @@ namespace NineTapTour.Database
                 }
 
             }
-
         }
     }
 }

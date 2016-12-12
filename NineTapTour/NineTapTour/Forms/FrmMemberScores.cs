@@ -1045,11 +1045,19 @@ namespace NineTapTour.Forms
         */
         private void rdoScratchScore_CheckedChanged(object sender, EventArgs e)
         {
-            refresh(true);
+            if (selectedTournament == null)
+            {
+                return;
+            }
+            else { refresh(true); }
         }
 
         private void rdoHandicapScore_CheckedChanged(object sender, EventArgs e)
         {
+            if (selectedTournament == null)
+            {
+                return;
+            }
             refresh(true);
         }
 
@@ -1069,6 +1077,7 @@ namespace NineTapTour.Forms
                 // Function scope data
                 int nullValues;
                 NineTapDb db = new NineTapDb();
+
                 int selectedTourney = selectedTournament.Id;
                 List<MemberScores> scores;
                 IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
@@ -1171,7 +1180,7 @@ namespace NineTapTour.Forms
 
                     var temp = (from g in top5
                                 orderby (g.Game.Handicap) descending
-                                select g).Take(5).ToList();
+                                select g).ToList();
                     nullValues = 0;
 
                     foreach (var i in temp)
@@ -1200,7 +1209,7 @@ namespace NineTapTour.Forms
 
                     scores.Sort(scoreComparer);
                     scores.Reverse();
-                    scores = scores.Take(5).ToList();
+                    scores = scores.ToList();
                     for (int i = 0; i < scores.Count(); i++)
                     {
                         richTextBox1.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
