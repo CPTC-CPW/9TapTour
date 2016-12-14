@@ -54,7 +54,7 @@ namespace NineTapTour.Forms
             bool validateSquads = int.TryParse(txtSquads.Text, out numSquads);
             if (validateSquads)
             {
-                if (numSquads < 0 || numSquads > 8)
+                if (numSquads < 1 || numSquads > 8)
                 {
                     MessageBox.Show("Squads must be between 1 - 8");
                     errors = true;
