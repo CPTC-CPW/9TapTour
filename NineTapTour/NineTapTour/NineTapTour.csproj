@@ -110,6 +110,7 @@
     <Compile Include="Database\Participant.cs" />
     <Compile Include="Database\Tournament.cs" />
     <Compile Include="Exceptions\TournamentTableException.cs" />
+    <Compile Include="Forms\DoubleBuffer.cs" />
     <Compile Include="Forms\FrmFinalizeTournament.cs">
       <SubType>Form</SubType>
     </Compile>

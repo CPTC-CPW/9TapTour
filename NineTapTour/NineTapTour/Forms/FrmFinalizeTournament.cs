@@ -13,6 +13,7 @@ using System.Windows.Forms;
 
 namespace NineTapTour.Forms
 {
+
     public partial class FrmFinalizeTournament : Form
     {
 
@@ -20,9 +21,13 @@ namespace NineTapTour.Forms
 
         public FrmFinalizeTournament(Tournament tourn)
         {
-            Tournament temptourn = tourn;
             InitializeComponent();
-            //creates a list for temp table and adds them to FinalizeTemp if they do not exist already.  Used to seed finalizetemp table with any new games
+            createDataGridView(tourn);
+            this.dataGridView1.DoubleBuffered(true);
+        }
+
+        private void createDataGridView(Tournament tourn)
+        {
             List<FinalizeTemp> FinalizeTableList = GetAllInitialParticipantGameList(tourn);
             foreach (var item in FinalizeTableList)
             {
@@ -52,22 +57,24 @@ namespace NineTapTour.Forms
             }
             //pulls a list from the finalizetemp table and seeds the dataview with the table info.
             List<FinalizeTemp> DataViewList = GetListFromTable();
-            dataGridView1.DataSource = DataView(temptourn, DataViewList); //By default populates all datagrid with all participant for tournament.
+            dataGridView1.DataSource = DataView(tourn, DataViewList); //By default populates all datagrid with all participant for tournament.
+
 
             ////Sort DataGridView by TrueAverage
             //this.dataGridView1.Sort(this.dataGridView1.Columns["True Avg"], ListSortDirection.Descending);
 
             //sets sizes of check box columns "Valid Score1, ValidScore2, ValidScore3, Valid Score 4, and Keep True Avg?"
-            var column = dataGridView1.Columns[3];
-            column.Width = 50;
-            var column1 = dataGridView1.Columns[5];
-            column1.Width = 50;
-            var column2 = dataGridView1.Columns[7];
-            column2.Width = 50;
-            var column3 = dataGridView1.Columns[9];
-            column3.Width = 50;
-            var column4 = dataGridView1.Columns[12];
-            column4.Width = 40;
+            dataGridView1.SuspendLayout();
+            var column = dataGridView1.Columns[1];
+            for(int i = 2; i <=12; i++)
+            {
+                column = dataGridView1.Columns[i];
+                column.Width = 50;
+            }
+            dataGridView1.ResumeLayout();
+
+
+            dataGridView1.AllowUserToAddRows = false;
         }
 
 
@@ -595,17 +602,21 @@ namespace NineTapTour.Forms
         //changes background color of score to orange if 50 below 30 game avg.
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
+            dataGridView1.SuspendLayout();
             if(this.dataGridView1.Columns[e.ColumnIndex].Name == "Valid Score1?" && e.Value != null)
             {
+                
                 if (Convert.ToBoolean(e.Value) == true)
                 {
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.White;
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
                 else
                 {
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.Red;
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
             }
             if (this.dataGridView1.Columns[e.ColumnIndex].Name == "Valid Score2?" && e.Value != null)
@@ -614,11 +625,13 @@ namespace NineTapTour.Forms
                 {
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.White;
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
                 else
                 {
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.Red;
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
             }
             if (this.dataGridView1.Columns[e.ColumnIndex].Name == "Valid Score3?" && e.Value != null)
@@ -627,11 +640,13 @@ namespace NineTapTour.Forms
                 {
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.White;
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
                 else
                 {
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.Red;
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
             }
             if (this.dataGridView1.Columns[e.ColumnIndex].Name == "Valid Score4?" && e.Value != null)
@@ -640,11 +655,13 @@ namespace NineTapTour.Forms
                 {
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.White;
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
                 else
                 {
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.Red;
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
             }
             if (this.dataGridView1.Columns[e.ColumnIndex].Name == "30 Game Avg" && e.Value != null)
@@ -666,6 +683,7 @@ namespace NineTapTour.Forms
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 8].Style.BackColor = Color.Orange;
                 }
             }
+            dataGridView1.ResumeLayout();
         }
 
     }
