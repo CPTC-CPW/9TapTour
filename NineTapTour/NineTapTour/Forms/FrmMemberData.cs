@@ -320,8 +320,10 @@ namespace NineTapTour.Forms
                 }
             }
             var db = new NineTapDb();
+            var id = Convert.ToInt32(txtMemberNumber.Text);
             var ssnList = (from p in db.Members
-                           select p.SSN
+                           where p.Number != id
+                           select p.SSN                        
                            ).ToList();
             if (ssnList.Contains(mtxtBoxSSN.Text) && mtxtBoxSSN.Text != null)
             {
