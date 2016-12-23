@@ -14,44 +14,36 @@ namespace NineTapTour.Forms
 {
     public partial class frmMemberScores : Form
     {
-
-        //IOrderedEnumerable<Member> _membersList;
         Member currentMem;
         Member currentMem2;
         TextBox[] scratchArray = new TextBox[4];
         TextBox[] handicappArray = new TextBox[4];
-        int currentIndex = 0;         //Count for record counting
+        int currentIndex = 0;  //Count for record counting
         Participant player = new Participant();
         Participant player2 = new Participant();
-        //bool doubles = true;
         public static Tournament selectedTournament;
         public static List<TopScores> overallListOfTopScores;
-
-
-
-
-
+        
         public frmMemberScores()
         {
             InitializeComponent();
             DoubleInitialize(false);
-
-
         }
 
+        #region Initialize & Populate Radio Buttons based on Tournament Squad # entered
         /// <summary>
         /// Radio buttons display based on the number of Squads for 
         /// a tournment, set by user on frmNewTournament.  Minimum number
-        /// is 3, most tournaments have 4 squads, and max is 5.
+        /// is 1, most tournaments have 4 squads, and max is 8.
         /// The squads are set to 4 in frmNewTournement to save the user a 
         /// step since 4 squads are needed 90% of the time
         /// </summary>
         private void RadioIntialize()
         {
-            rdoSquadOne.Visible = true;
-            rdoSquadTwo.Visible = true;
-            rdoSquadThree.Visible = true;
-            rdoSquadFour.Visible = true;
+            rdoSquad1.Visible = true;
+            rdoSquad2.Visible = true;
+            rdoSquad3.Visible = true;
+            rdoSquad4.Visible = true;
             rdoSquad5.Visible = false;
             rdoSquad6.Visible = false;
             rdoSquad7.Visible = false;
@@ -60,18 +52,18 @@ namespace NineTapTour.Forms
             {
                 if (selectedTournament.Squads == 1)
                 {
-                    rdoSquadTwo.Visible = false;
-                    rdoSquadThree.Visible = false;
-                    rdoSquadFour.Visible = false;
+                    rdoSquad2.Visible = false;
+                    rdoSquad3.Visible = false;
+                    rdoSquad4.Visible = false;
                 }
                 if (selectedTournament.Squads == 2)
                 {
-                    rdoSquadThree.Visible = false;
-                    rdoSquadFour.Visible = false;
+                    rdoSquad3.Visible = false;
+                    rdoSquad4.Visible = false;
                 }
                 if (selectedTournament.Squads == 3)
                 {
-                    rdoSquadFour.Visible = false;
+                    rdoSquad4.Visible = false;
                 }
                 if (selectedTournament.Squads == 5)
                 {
@@ -87,7 +79,6 @@ namespace NineTapTour.Forms
                     rdoSquad5.Visible = true;
                     rdoSquad6.Visible = true;
                     rdoSquad7.Visible = true;
-
                 }
                 if (selectedTournament.Squads == 8)
                 {
@@ -98,15 +89,14 @@ namespace NineTapTour.Forms
                 }
             }
         }
+        #endregion
 
         private void FrmMemberScores_Load(object sender, EventArgs e)
         {
-
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
-
-
         }
+
         /// <summary>
         /// entering a member number clears members data
         /// </summary>
@@ -184,11 +174,8 @@ namespace NineTapTour.Forms
             lbLastName2.Visible = set;
             lblFirstName2.Visible = set;
             lblMiddleInitial2.Visible = set;
-
         }
         #region GetMember
-
-
         //Get players scores
         private void GetScores(Game currentGame)
         {
@@ -212,8 +199,6 @@ namespace NineTapTour.Forms
                 txtScratchScore4.Text = Convert.ToString(currentGame.Game4);
                 txtScratchScore1.Focus();
                 txtMoney.Text = currentGame.MoneyWon.ToString();
-
-
             }
         }
         #endregion
@@ -255,9 +240,7 @@ namespace NineTapTour.Forms
                         txtHandicap.Text = currentMem.Handicap.ToString();
                         txtBonusPins.Text = currentMem.Bonus.ToString();
                         Game currentGame = GetScoresById(currentMem.Id);
-
                         GetScores(currentGame);
-
                     }
                     else
                     {
@@ -329,14 +312,10 @@ namespace NineTapTour.Forms
                                 }
                             }
                         }
-
                     }
                 }
             }
         }
-
-
-
 
         /// <summary>
         /// method to set the member status colors on lblMemberStatus forecolor and pnlMemStat background color
@@ -391,8 +370,9 @@ namespace NineTapTour.Forms
                 txtScratchTotal.Text = scratchTotal.ToString();
             }
             TextBox tx = (TextBox)sender;
+            //TODO TEST- what happens when a user enters in a 4 digit number into Member ID field, 
             //auto tab to the next textbox when textbox1's length is 3.
-            if (tx.Text.Length == 3)
+            if (tx.Text.Length == 3  && (tx.Name != txtMemberNum.Name || tx.Name != txtMemberNum2.Name ))
             {
                 SendKeys.Send("{TAB}");
             }
@@ -475,25 +455,45 @@ namespace NineTapTour.Forms
                     player2.Game.Handicap = currentMem2.Handicap;
 
                     #region radio button
-                    if (rdoSquadOne.Checked)
+                    if (rdoSquad1.Checked)
                     {
                         player.Squad = 1;
                         player2.Squad = 1;
                     }
-                    else if (rdoSquadTwo.Checked)
+                    else if (rdoSquad2.Checked)
                     {
                         player.Squad = 2;
                         player2.Squad = 2;
                     }
-                    else if (rdoSquadThree.Checked)
+                    else if (rdoSquad3.Checked)
                     {
                         player.Squad = 3;
                         player2.Squad = 3;
                     }
-                    else
+                    else if(rdoSquad4.Checked)
                     {
                         player.Squad = 4;
                         player2.Squad = 4;
+                    }
+                    else if (rdoSquad5.Checked)
+                    {
+                        player.Squad = 5;
+                        player2.Squad = 5;
+                    }
+                    else if (rdoSquad6.Checked)
+                    {
+                        player.Squad = 6;
+                        player2.Squad = 6;
+                    }
+                    else if (rdoSquad7.Checked)
+                    {
+                        player.Squad = 7;
+                        player2.Squad = 7;
+                    }
+                    else
+                    {
+                        player.Squad = 8;
+                        player2.Squad = 8;
                     }
                     #endregion
 
@@ -513,7 +513,6 @@ namespace NineTapTour.Forms
                         txtMemberNum.Focus();
                         RecordIndex(TournamentDb.GetTournamentMemberList(currTourney));
                         clear();
-
                     }
                     catch (MemberAccessException ex)
                     {
@@ -539,21 +538,37 @@ namespace NineTapTour.Forms
                     player.Tournament = currTourney;
 
                     #region radio button
-                    if (rdoSquadOne.Checked)
+                    if (rdoSquad1.Checked)
                     {
                         player.Squad = 1;
                     }
-                    else if (rdoSquadTwo.Checked)
+                    else if (rdoSquad2.Checked)
                     {
                         player.Squad = 2;
                     }
-                    else if (rdoSquadThree.Checked)
+                    else if (rdoSquad3.Checked)
                     {
                         player.Squad = 3;
                     }
-                    else
+                    else if(rdoSquad4.Checked)
                     {
                         player.Squad = 4;
+                    }
+                    else if (rdoSquad5.Checked)
+                    {
+                        player.Squad = 5;
+                    }
+                    else if (rdoSquad6.Checked)
+                    {
+                        player.Squad = 6;
+                    }
+                    else if (rdoSquad7.Checked)
+                    {
+                        player.Squad = 7;
+                    }
+                    else
+                    {
+                        player.Squad = 8;
                     }
                     #endregion
                     //defaults money earned to 0, or enters text box amount
@@ -697,21 +712,37 @@ namespace NineTapTour.Forms
             Game memScores = new Game();
             int squad = 0;
 
-            if (rdoSquadOne.Checked)
+            if (rdoSquad1.Checked)
             {
                 squad = 1;
             }
-            else if (rdoSquadTwo.Checked)
+            else if (rdoSquad2.Checked)
             {
                 squad = 2;
             }
-            else if (rdoSquadThree.Checked)
+            else if (rdoSquad3.Checked)
             {
                 squad = 3;
             }
-            else
+            else if(rdoSquad4.Checked)
             {
                 squad = 4;
+            }
+            else if(rdoSquad5.Checked)
+            {
+                squad = 5;
+            }
+            else if (rdoSquad6.Checked)
+            {
+                squad = 6;
+            }
+            else if (rdoSquad7.Checked)
+            {
+                squad = 7;
+            }
+            else
+            {
+                squad = 8;
             }
 
             try
@@ -725,14 +756,12 @@ namespace NineTapTour.Forms
                              && selectedTournamentId == t.Id
                              && p.Squad == squad
                              select p.Game).Single();
-
             }
             catch (InvalidOperationException ex)
             {
                 return null;
             }
             return memScores;
-
         }
         /// <summary>
         /// clears memberNum, txtScratchScores, and High Game textboxes
@@ -767,19 +796,19 @@ namespace NineTapTour.Forms
                 txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
                 if (total[currentIndex - 1].Squad == 1)
                 {
-                    rdoSquadOne.Checked = true;
+                    rdoSquad1.Checked = true;
                 }
                 else if (total[currentIndex - 1].Squad == 2)
                 {
-                    rdoSquadTwo.Checked = true;
+                    rdoSquad2.Checked = true;
                 }
                 else if (total[currentIndex - 1].Squad == 3)
                 {
-                    rdoSquadThree.Checked = true;
+                    rdoSquad3.Checked = true;
                 }
                 else if (total[currentIndex - 1].Squad == 4)
                 {
-                    rdoSquadFour.Checked = true;
+                    rdoSquad4.Checked = true;
                 }
                 else if (total[currentIndex - 1].Squad == 5)
                 {
@@ -825,19 +854,19 @@ namespace NineTapTour.Forms
                     txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
                     if (total[currentIndex - 1].Squad == 1)
                     {
-                        rdoSquadOne.Checked = true;
+                        rdoSquad1.Checked = true;
                     }
                     else if (total[currentIndex - 1].Squad == 2)
                     {
-                        rdoSquadTwo.Checked = true;
+                        rdoSquad2.Checked = true;
                     }
                     else if (total[currentIndex - 1].Squad == 3)
                     {
-                        rdoSquadThree.Checked = true;
+                        rdoSquad3.Checked = true;
                     }
                     else if (total[currentIndex - 1].Squad == 4)
                     {
-                        rdoSquadFour.Checked = true;
+                        rdoSquad4.Checked = true;
                     }
                     else if (total[currentIndex - 1].Squad == 5)
                     {
@@ -868,7 +897,7 @@ namespace NineTapTour.Forms
             var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
             ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
             newfrmNewTournament.Dock = DockStyle.None;
-            rdoSquadOne.Checked = true;
+            rdoSquad1.Checked = true;
         }
 
         /// <summary>
@@ -923,8 +952,6 @@ namespace NineTapTour.Forms
                 RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
                 refresh(false);
             }
-
-
         }
 
         /// <summary>
@@ -990,9 +1017,9 @@ namespace NineTapTour.Forms
                 cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             }
         }
-
+        #region Squad Radio Buttons Check Changed
         /// <summary>
-        /// Checks if current member has an existing entry into Squad 1
+        /// Checks if current member has an existing entry into Squad 2
         /// and clears the scores if the member does NOT
         /// </summary>
         /// <param name="sender"></param>
@@ -1003,34 +1030,44 @@ namespace NineTapTour.Forms
             FillMember();
 
         }
-        /// <summary>
-        /// Checks if current member has an existing entry into Squad 2
-        /// and clears the scores if the member does NOT
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void rdoSquadTwo_CheckedChanged(object sender, EventArgs e)
         {
             ScoreAndTotalClear();
             FillMember();
         }
-
         private void rdoSquadThree_CheckedChanged(object sender, EventArgs e)
         {
             ScoreAndTotalClear();
             FillMember();
         }
-        /// <summary>
-        /// Checks if current member has an existing entry into Squad 4
-        /// and clears the scores if the member does NOT
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void rdoSquadFour_CheckedChanged(object sender, EventArgs e)
         {
             ScoreAndTotalClear();
             FillMember();
         }
+        private void rdoSquad5_CheckedChanged(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            FillMember();
+        }
+        private void rdoSquad6_CheckedChanged(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            FillMember();
+        }
+        private void rdoSquad7_CheckedChanged(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            FillMember();
+        }
+        private void rdoSquad8_CheckedChanged(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            FillMember();
+        }
+        #endregion
+
+
         /// <summary>
         /// Clears scratch scores and scratch and handicap totals
         /// </summary>
@@ -1550,6 +1587,8 @@ namespace NineTapTour.Forms
             newFrmFinalizeTournament.WindowState = FormWindowState.Maximized;
             newFrmFinalizeTournament.Show();
         }
+
+       
     }
     /// <summary>
     /// Class used to populate 3rd RichTextBox

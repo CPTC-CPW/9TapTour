@@ -17,13 +17,11 @@ namespace NineTapTour.Forms
         // If a new tournament was selected to edit, this will be set to something other than null.
         Tournament tourToEdit;
         
-
         public frmNewTournament()
         {
             InitializeComponent();
             txtSquads.Text = 4.ToString();
         }
-
         /// <summary>
         /// Closes the tournament form.
         /// </summary>
@@ -54,7 +52,7 @@ namespace NineTapTour.Forms
             bool validateSquads = int.TryParse(txtSquads.Text, out numSquads);
             if (validateSquads)
             {
-                if (numSquads < 1 || numSquads > 8)
+                if (numSquads < 1 || numSquads > 9)
                 {
                     MessageBox.Show("Squads must be between 1 - 8");
                     errors = true;
@@ -79,10 +77,6 @@ namespace NineTapTour.Forms
             {
                 NewTournament.ThreeOutOf4 = true;
             }
-            //else
-            //{
-            //    NewTournament.Doubles = false;
-            //}
 
             try
             {
@@ -132,10 +126,8 @@ namespace NineTapTour.Forms
 
                     //populates selected tournament with recently edited or created tournament back in MemberScores.
                     newFrmMemberScores.populateSelectedTournament(currTourney);
-
                 }
             }
-
         }
 
         private void btnEditTour_Click(object sender, EventArgs e)
@@ -151,6 +143,7 @@ namespace NineTapTour.Forms
                 txtEvent.Text = tourToEdit.Event;
                 txtSponsors.Text = tourToEdit.Sponsors;
                 ckbxDoubles.Checked = tourToEdit.Doubles ? true : false;
+                ckbx3outOf4.Checked = tourToEdit.ThreeOutOf4 ? true : false;
                 rtxtNotes.Text = tourToEdit.Notes;
                 btnSubmit.Text = "Update Tournament";
                 lblEdit.Text = "Currently Editing " + tourToEdit.TourneyNameDate;
