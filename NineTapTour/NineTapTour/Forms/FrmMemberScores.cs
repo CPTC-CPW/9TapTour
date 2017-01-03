@@ -1236,8 +1236,9 @@ namespace NineTapTour.Forms
                 }
 
                 overallListOfTopScores = listOfTopScore;
-                /// Top 5 LINQ query
-                var top5 = db.Participants.Include(b => b.Member)
+                /// Place Standings LINQ query
+                /// Original program only listed the Top 5, user would like all participants listed
+                var placeStandings = db.Participants.Include(b => b.Member)
                 .Include(b => b.Game)
                 .Where(b => b.Tournament.Id == selectedTourney);
 
@@ -1251,7 +1252,7 @@ namespace NineTapTour.Forms
 
                     scores = new List<MemberScores>();
 
-                    var temp = (from g in top5
+                    var temp = (from g in placeStandings
                                 orderby (g.Game.Handicap) descending
                                 select g).ToList();
                     nullValues = 0;
@@ -1283,10 +1284,40 @@ namespace NineTapTour.Forms
                     scores.Sort(scoreComparer);
                     scores.Reverse();
                     scores = scores.ToList();
+                    ///Tie Scores
+                    ///Variable place will list the players place standing
+                    ///It will not increment if there is a tie and when there is no longer a tie
+                    ///it will increment the number of places it should based on the number of ties
+
+                    int place = 1;  //always starts placement at 1
+                    int tieCount = 1;  //counts the number of people that are tied and is added to place to determine the place standing
+                    
                     for (int i = 0; i < scores.Count(); i++)
                     {
-                        richTextBox1.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
-                                                + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
+                        if (i == 0)
+                        {
+                            richTextBox1.AppendText((place).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
+                                                    + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
+                            
+                        }
+                        else
+                        {
+                            if (scores[i].Score == scores[i - 1].Score)
+                            {
+                                richTextBox1.AppendText((place).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
+                                                                                    + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
+                                tieCount++;
+                            }
+                            else
+                            {
+                                place += tieCount;
+                                richTextBox1.AppendText((place).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
+                                                    + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
+                                tieCount = 1;//reset increment to 1 since there is not a tie after this condition;
+                            }
+
+                        }
+
                     }
                 }
                 #endregion
@@ -1431,7 +1462,8 @@ namespace NineTapTour.Forms
                         //IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
                         scores.Sort(scoreComparer);
                         scores.Reverse();
-                        scores = scores.Take(5).ToList();
+                        //scores = scores.Take(5).ToList();
+                        scores = scores.ToList();
                         for (int i = 0; i < scores.Count(); i++)
                         {
                             richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
