@@ -1511,7 +1511,8 @@ namespace NineTapTour.Forms
                         }
                         scores.Sort(scoreComparer);
                         scores.Reverse();
-                        scores = scores.Take(5).ToList();
+                        //scores = scores.Take(5).ToList();
+                        scores = scores.ToList();
                         for (int i = 0; i < scores.Count(); i++)
                         {
                             richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", Convert.ToString(scores[i].FirstName + " " + scores[i].LastName)) + "\t" + String.Format("{0, -5}", scores[i].Score) + "\n");
