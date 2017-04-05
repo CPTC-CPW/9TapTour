@@ -1150,7 +1150,6 @@ namespace NineTapTour.Forms
                 {
                     // open connection
                     con.Open();
-
                     // execute command(query)
                     SqlDataReader reader = getList.ExecuteReader();
 
@@ -1185,10 +1184,8 @@ namespace NineTapTour.Forms
                             if (count == num)
                             {
                                 TopScores temp = new TopScores();
-                                listOfTopScore.Add(temp);
-                                
+                                listOfTopScore.Add(temp); 
                             }
-
 
                             id = Convert.ToInt32(reader["Member_ID"]);
                             /// Populates info         
@@ -1212,20 +1209,17 @@ namespace NineTapTour.Forms
                             {
                                 if(s.MemberID == id && listOfTopScore[count].HandicapScore > s.HandicapScore)
                                 {
-                                    BestHandicapScores.Remove(s);
-                                    
+                                    BestHandicapScores.Remove(s);  
                                 }
                                 if(s.MemberID == id && listOfTopScore[count].HandicapScore < s.HandicapScore)
                                 {
                                     AddToBestHandicapScores = false;
-                                }
-                                
+                                } 
                             }
                             if (AddToBestHandicapScores)
                             {
                                 BestHandicapScores.Add(listOfTopScore[count]);
                             }
-
                             count++;
                         }
                     }
