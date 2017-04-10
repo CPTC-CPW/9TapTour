@@ -16,9 +16,6 @@ namespace NineTapTour.Forms
 
     public partial class FrmFinalizeTournament : Form
     {
-
-
-
         public FrmFinalizeTournament(Tournament tourn)
         {
             InitializeComponent();
