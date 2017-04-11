@@ -1475,6 +1475,8 @@ namespace NineTapTour.Forms
             }
 
         }
+
+  
     }
     /// <summary>
     /// Class used to populate 3rd RichTextBox
