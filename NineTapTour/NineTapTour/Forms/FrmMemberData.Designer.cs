@@ -965,7 +965,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.LightBlue;
-            this.ClientSize = new System.Drawing.Size(887, 726);
+            this.ClientSize = new System.Drawing.Size(894, 737);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.lblPaymentInfo);
             this.Controls.Add(this.lblLastPaid);

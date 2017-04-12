@@ -50,7 +50,7 @@
             this.toolsToolStripMenuItem});
             this.menMain.Location = new System.Drawing.Point(0, 0);
             this.menMain.Name = "menMain";
-            this.menMain.Size = new System.Drawing.Size(1264, 24);
+            this.menMain.Size = new System.Drawing.Size(347, 24);
             this.menMain.TabIndex = 1;
             this.menMain.Text = "menuStrip1";
             this.menMain.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.menMain_ItemAdded);
@@ -114,9 +114,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.BackgroundImage = global::NineTapTour.Properties.Resources._9tap;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(1264, 990);
+            this.ClientSize = new System.Drawing.Size(347, 196);
             this.Controls.Add(this.menMain);
             this.DoubleBuffered = true;
             this.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -124,7 +123,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menMain;
-            this.MinimumSize = new System.Drawing.Size(807, 464);
             this.Name = "FrmMain";
             this.Text = "9 Tap Tour";
             this.menMain.ResumeLayout(false);

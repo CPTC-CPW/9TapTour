@@ -18,6 +18,9 @@ namespace NineTapTour.Forms
         public ToolStripItem activeItem;
         public FrmMemberData currFrmMemberData { get; set; }
 
+        public int Width;
+        public int Height;
+
         /// <summary>
         /// Opens Main form 
         /// Retrieves information from the database in order.
@@ -34,15 +37,18 @@ namespace NineTapTour.Forms
             _membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
             _tournamentList = TournamentDb.GetTournamentList();
             var newfrmStart = new MainMenu {MdiParent = this};
-            //newStart.Dock = DockStyle.Fill;
-            //Width and Height not needed here?
-            //Width = newfrmStart.Width;
-            //Height = newfrmStart.Height + 20;
+
+            setWidthHeight(1200, 800);
+
             //sets the first item of the menu bar to the active item and highlights it.
             activeItem = menMain.Items[0];
             activeItem.BackColor = SystemColors.ActiveCaption;
             newfrmStart.Show();
             newfrmStart.WindowState = FormWindowState.Maximized;
+        }
+
+        public void setWidthHeight(int width, int height) {
+             this.Size = new Size(width, height);
         }
 
         /// <summary>
@@ -76,9 +82,6 @@ namespace NineTapTour.Forms
             {
                 if (form != null)
                 {
-                    //Width and Height not needed here?
-                    //Width = form.Right + Math.Abs(form.Left) + 4;
-                    //Height = form.Height + 28;
                     form.BringToFront();
                     form.Activate();
                 }
@@ -89,9 +92,6 @@ namespace NineTapTour.Forms
                         MdiParent = this,
                         Dock = DockStyle.Fill
                     };
-                    //Width and Height not needed here?
-                    //Width = form.Width;
-                    //Height = form.Height + 20;
                 }
                 form.WindowState = FormWindowState.Maximized;
                 form.Show();
@@ -107,7 +107,6 @@ namespace NineTapTour.Forms
                 activeItem.BackColor = SystemColors.Control;
             }
             activeItem = e.ClickedItem;
-
             activeItem.BackColor = SystemColors.ActiveCaption;
         }
         //this method is for the buttons on the main form
@@ -148,7 +147,6 @@ namespace NineTapTour.Forms
         {   
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
             OpenOrDisplayForm(ref newfrmMemberData);
-
             currFrmMemberData = newfrmMemberData;
         }
 
@@ -186,7 +184,6 @@ namespace NineTapTour.Forms
         private void updateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             var UpdatefrmActiveMem = new FrmUpdateActiveMem();
-
             UpdatefrmActiveMem.Show();
         }
 
@@ -196,7 +193,8 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <returns>returns true if data is saved or if data is not saved and user wants to continue without
         /// saving changes. Returns false if data is not saved and user does want to save changes.</returns>
-        private bool FrmMemberIsSavedData() {
+        private bool FrmMemberIsSavedData()
+        {
             if (currFrmMemberData.IsSavedData())
             {
                 return true;
@@ -207,16 +205,14 @@ namespace NineTapTour.Forms
                 var confirm = MessageBox.Show(@"Are you sure you want to leave without saving changes?", @"Member Data Not Saved", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (confirm == DialogResult.No)
                 {
-
                     return false;
-
                 }
                 else
                 {
                     return true;
                 }
             }
-            
         }
+
     }
 }
