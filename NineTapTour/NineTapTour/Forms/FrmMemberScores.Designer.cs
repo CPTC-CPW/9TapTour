@@ -569,7 +569,7 @@
             this.btnNew.Location = new System.Drawing.Point(19, 19);
             this.btnNew.Name = "btnNew";
             this.btnNew.Size = new System.Drawing.Size(197, 25);
-            this.btnNew.TabIndex = 0;
+            this.btnNew.TabIndex = 4;
             this.btnNew.Text = "Add New/Update Record";
             this.btnNew.UseVisualStyleBackColor = true;
             this.btnNew.Click += new System.EventHandler(this.newRecap);
@@ -636,7 +636,8 @@
             this.txtMoney.Location = new System.Drawing.Point(244, 278);
             this.txtMoney.Name = "txtMoney";
             this.txtMoney.Size = new System.Drawing.Size(83, 20);
-            this.txtMoney.TabIndex = 23;
+            this.txtMoney.TabIndex = 0;
+            this.txtMoney.TextChanged += new System.EventHandler(this.txtMoney_TextChanged);
             // 
             // lblPlayer2
             // 

@@ -89,6 +89,7 @@ namespace NineTapTour.Forms
                         MdiParent = this,
                         Dock = DockStyle.Fill
                     };
+
                     //Width and Height not needed here?
                     //Width = form.Width;
                     //Height = form.Height + 20;

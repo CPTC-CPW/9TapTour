@@ -31,6 +31,8 @@ namespace NineTapTour.Forms
         {
             InitializeComponent();
             txtMiddleInitial.MaxLength = 1;
+
+
         }
 
   
@@ -540,7 +542,6 @@ namespace NineTapTour.Forms
         {
             if (isValid())
             {
-             
                 Controls.Clear();
                 InitializeComponent();
                 dateRejoin.Format = DateTimePickerFormat.Custom;
@@ -566,8 +567,6 @@ namespace NineTapTour.Forms
                 {
                     Number = nextMemberNumber
                 };
-
-                txtLastName.Focus();
             }
         }
 
@@ -861,7 +860,6 @@ namespace NineTapTour.Forms
             }
             return 0 ;
         }
-
     }
 }
 

@@ -35,7 +35,7 @@ namespace NineTapTour.Forms
         {
             InitializeComponent();
             DoubleInitialize(false);
-                     
+            
             
         }
 
@@ -107,23 +107,34 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void FrmMemberScores_Activated(object sender, EventArgs e)
         {
+            //addedd in this line inorder to prevent the reset of the drop down list on memberscores form when switching between forms
+            int tempcbx = cbxTourneyDropDown.SelectedIndex;
+
             cbxTourneyDropDown.Visible = false;
             ResetFields();
+            
             MemberStatus("", Color.Black, SystemColors.Control, true);
             cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             cbxTourneyDropDown.ValueMember = "Id";
-            //cbxTourneyDropDown.SelectedIndex = 0;
+            //cbxTourneyDropDown.SelectedIndex = -1;
+
+            
             List<Tournament> temp2 = TournamentDb.GetTournamentList();
+            
             if (temp2.Count() > 0)
             {
                 var item = temp2.Max(x => x.Id);
-                cbxTourneyDropDown.SelectedValue = item;
+               cbxTourneyDropDown.SelectedValue = item;
             }
-            cbxTourneyDropDown.SelectedIndex = -1;
+            if (tempcbx == -1)
+            {
+                cbxTourneyDropDown.SelectedIndex = -1;
+            }
             clear();
             cbxTourneyDropDown.Visible = true;
             btnPlaceStandings.Enabled  = false;
+
         }
 
         /// <summary>
@@ -194,120 +205,126 @@ namespace NineTapTour.Forms
         #endregion
         private void FillMember()
         {
-            Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
-                string searchNumber = txtMemberNum.Text;
-            string searchNumber2 = txtMemberNum2.Text;
-            if (!currTourney.Doubles)
+            Tournament currTourney = null;
+            if (cbxTourneyDropDown.SelectedValue != null)
             {
-                for (int i = 0; i < searchNumber.Length; i++)
+                currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+
+                string searchNumber = txtMemberNum.Text;
+                string searchNumber2 = txtMemberNum2.Text;
+                if (!currTourney.Doubles)
                 {
-                    if (!char.IsNumber(searchNumber[i]))
+                    for (int i = 0; i < searchNumber.Length; i++)
                     {
-                        MessageBox.Show("Please input numbers only.", "Your Attention Please.");
-                        txtMemberNum.Clear();
-                        return;
-                    }
-                }
-                if (searchNumber.Trim() != "")
-                {
-                    int memberNumber = Convert.ToInt16(txtMemberNum.Text);
-                    currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber);
-                    if (currentMem != null)
-                    {
-                        if (currentMem.IsActive)
+                        if (!char.IsNumber(searchNumber[i]))
                         {
-                            MemberStatus("Active", Color.Green, Color.Lime, false);
+                            MessageBox.Show("Please input numbers only.", "Your Attention Please.");
+                            txtMemberNum.Clear();
+                            return;
+                        }
+                    }
+                    if (searchNumber.Trim() != "")
+                    {
+                        int memberNumber = Convert.ToInt16(txtMemberNum.Text);
+                        currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber);
+                        if (currentMem != null)
+                        {
+                            if (currentMem.IsActive)
+                            {
+                                MemberStatus("Active", Color.Green, Color.Lime, false);
+                            }
+                            else
+                            {
+                                MemberStatus("Inactive", Color.Red, Color.Pink, true);
+                            }
+                            txtScratchScore1.Focus();
+
+                            txtLastName.Text = currentMem.LastName;
+                            txtFirstName.Text = currentMem.FirstName;
+                            txtMiddleInitial.Text = currentMem.MiddleInitial;
+                            txtHandicap.Text = currentMem.Handicap.ToString();
+                            txtBonusPins.Text = currentMem.Bonus.ToString();
+                            Game currentGame = GetScoresById(currentMem.Id);
+
+                            GetScores(currentGame);
+
                         }
                         else
                         {
-                            MemberStatus("Inactive", Color.Red, Color.Pink, true);
+                            MessageBox.Show(string.Format("A member with the number {0} does not exist", txtMemberNum.Text), "Your Attention Please.");
+                            txtMemberNum.Clear();
                         }
-                        txtScratchScore1.Focus();
-
-                        txtLastName.Text = currentMem.LastName;
-                        txtFirstName.Text = currentMem.FirstName;
-                        txtMiddleInitial.Text = currentMem.MiddleInitial;
-                        txtHandicap.Text = currentMem.Handicap.ToString();
-                        txtBonusPins.Text = currentMem.Bonus.ToString();
-                        Game currentGame = GetScoresById(currentMem.Id);
-                        
-                        GetScores(currentGame);
-
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < searchNumber2.Length; i++)
+                    {
+                        if (!char.IsNumber(searchNumber2[i]))
+                        {
+                            MessageBox.Show("Please input numbers only.", "Your Attention Please.");
+                            txtMemberNum2.Clear();
+                            return;
                         }
-                    else
-                    {
-                        MessageBox.Show(string.Format("A member with the number {0} does not exist", txtMemberNum.Text), "Your Attention Please.");
-                        txtMemberNum.Clear();
                     }
-                }
-            }
-            else {
-                for (int i = 0; i < searchNumber2.Length; i++)
-                {
-                    if (!char.IsNumber(searchNumber2[i]))
+                    for (int i = 0; i < searchNumber.Length; i++)
                     {
-                        MessageBox.Show("Please input numbers only.", "Your Attention Please.");
-                        txtMemberNum2.Clear();
-                        return;
+                        if (!char.IsNumber(searchNumber[i]))
+                        {
+                            MessageBox.Show("Please input numbers only.", "Your Attention Please.");
+                            txtMemberNum.Clear();
+                            return;
+                        }
                     }
-                }
-                for (int i = 0; i < searchNumber.Length; i++)
-                {
-                    if (!char.IsNumber(searchNumber[i]))
-                    {
-                        MessageBox.Show("Please input numbers only.", "Your Attention Please.");
-                        txtMemberNum.Clear();
-                        return;
-                    }
-                }
                     if (searchNumber2.Trim() != "" && searchNumber.Trim() != "")
-                {
+                    {
                         int memberNumber2 = Convert.ToInt16(txtMemberNum2.Text);
-                    int memberNumber = Convert.ToInt16(txtMemberNum.Text);
-                    currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber);
+                        int memberNumber = Convert.ToInt16(txtMemberNum.Text);
+                        currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber);
                         currentMem2 = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber2);
                         if (currentMem2 != null && currentMem != null)
-                    {
-                        if (currentMem.IsActive && currentMem2.IsActive)
                         {
-                            MemberStatus("Active", Color.Green, Color.Lime, false);
-                        }
-                        else
-                        {
-                            MemberStatus("Inactive", Color.Red, Color.Pink, true);
-                        }
+                            if (currentMem.IsActive && currentMem2.IsActive)
+                            {
+                                MemberStatus("Active", Color.Green, Color.Lime, false);
+                            }
+                            else
+                            {
+                                MemberStatus("Inactive", Color.Red, Color.Pink, true);
+                            }
 
                             txtScratchScore1.Focus();
-                        txtLastName.Text = currentMem.LastName;
-                        txtFirstName.Text = currentMem.FirstName;
-                        txtMiddleInitial.Text = currentMem.MiddleInitial;
+                            txtLastName.Text = currentMem.LastName;
+                            txtFirstName.Text = currentMem.FirstName;
+                            txtMiddleInitial.Text = currentMem.MiddleInitial;
                             txtLastName2.Text = currentMem2.LastName;
                             txtFirstName2.Text = currentMem2.FirstName;
                             txtMiddleInitial2.Text = currentMem2.MiddleInitial;
-                        Game currentGame = GetScoresById(currentMem.Id);
+                            Game currentGame = GetScoresById(currentMem.Id);
                             Game currentGame2 = GetScoresById(currentMem2.Id);
                             if (currentGame != null || currentGame2 != null)
-                        {
+                            {
                                 List<Member> total = TournamentDb.GetUniqueTourMembers(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
                                 foreach (Member mem in total)
-                            {
-                                    if (currentMem.Id == mem.Id)
                                 {
-                            txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
-                            txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
-                        }
+                                    if (currentMem.Id == mem.Id)
+                                    {
+                                        txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
+                                        txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
+                                    }
                                     if (currentMem2.Id == mem.Id)
-                    {
+                                    {
                                         txtScratchScore3.Text = Convert.ToString(currentGame2.Game1);
                                         txtScratchScore4.Text = Convert.ToString(currentGame2.Game2);
+                                    }
+                                }
+                            }
+
+                        }
+                    }
                 }
             }
         }
-
-            }
-                }
-                    }
-                    }
 
 
 
@@ -819,6 +836,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void cbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
+           
             // resets the fields when a different tournament is selected
             ResetFields();
             // assigns the selectedTournament variable as the selected Tournament from the comboBox
@@ -863,6 +881,7 @@ namespace NineTapTour.Forms
                 // Gets the record for the selected tournament
                 RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
                 refresh(false);
+                txtMemberNum.Focus();
             }
 
 
@@ -1476,7 +1495,10 @@ namespace NineTapTour.Forms
 
         }
 
-  
+        private void txtMoney_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
     /// <summary>
     /// Class used to populate 3rd RichTextBox
