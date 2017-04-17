@@ -448,7 +448,11 @@ namespace NineTapTour.Forms
                         #endregion
 
                         #region Score Info
-                        Average = 0,
+                        /*************************************************************************************
+                        used to say Average = 0; which is always making the average in the database 0
+                        **************************************************************************************/
+                        Average = (txtTournAvg.Text == string.Empty) ? 0 : Convert.ToInt16(txtTournAvg.Text),
+                        /*************************************************************************************/
                         StartAvg = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text),
                         Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text),
                         Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text),

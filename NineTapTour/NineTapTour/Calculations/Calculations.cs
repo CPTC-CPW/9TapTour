@@ -1,4 +1,4 @@
-﻿using NineTapTour.Database;
+﻿﻿using NineTapTour.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,18 +36,26 @@ namespace NineTapTour.Calculations
         /// <param name="currentAverage"></param>
         /// <returns></returns>
         public static int CalculateHandicapPins(int currentAverage)
-        { 
+        {
             double calculateHandicap = Convert.ToDouble(BASE_AVERAGE_HANDICAP_CALCULATOR - currentAverage) * PERCENTAGE_TO_CALCULATE_HANDICAP;
-            if(calculateHandicap > MAX_HANDICAP_PINS)
+            if (calculateHandicap > MAX_HANDICAP_PINS)
             {
                 return MAX_HANDICAP_PINS;
             }
-            else
+            /*************************************************
+            edited so that there won't be a negative handicap
+            **************************************************/
+            else if (calculateHandicap >= 0)
             {
                 return Convert.ToInt32(calculateHandicap);
             }
+            else
+            {
+                return 0;
+            }
+            /*************************************************/
         }
-        
+
         public static int CalculateBonusPins(bool didMemberCash, int memberPlaced, int currentBonusPins, bool isDoublesTournament)
         {
             if (didMemberCash)
@@ -63,13 +71,13 @@ namespace NineTapTour.Calculations
 
         public static int AddBonusPins(int currentBonusPins, bool isDoublesTournament)
         {
-            if(currentBonusPins == MAX_BONUS_PINS_ALLOWED)
+            if (currentBonusPins == MAX_BONUS_PINS_ALLOWED)
             {
                 return MAX_BONUS_PINS_ALLOWED;
             }
             else
             {
-               return currentBonusPins++;
+                return currentBonusPins++;
             }
         }
 
@@ -77,7 +85,7 @@ namespace NineTapTour.Calculations
         {
             int bonusPinsAfterDeduction;
 
-            if(memberPlaced == FIRST_PLACE_DEDUCTION)
+            if (memberPlaced == FIRST_PLACE_DEDUCTION)
             {
                 if (isDoublesTournament)
                 {
@@ -99,7 +107,7 @@ namespace NineTapTour.Calculations
                     bonusPinsAfterDeduction = currentBonusPins - DEDUCT_3;
                 }
             }
-            else if(memberPlaced >= MIN_PLACEMENT_DEDUCT_2_PINS && memberPlaced <= MAX_PLACEMENT_DEDUCT_2_PINS)
+            else if (memberPlaced >= MIN_PLACEMENT_DEDUCT_2_PINS && memberPlaced <= MAX_PLACEMENT_DEDUCT_2_PINS)
             {
                 if (isDoublesTournament)
                 {
@@ -116,7 +124,7 @@ namespace NineTapTour.Calculations
             }
 
             //ensure that new bonus pins are 0 or greater
-            if(bonusPinsAfterDeduction <= 0)
+            if (bonusPinsAfterDeduction <= 0)
             {
                 return NO_PINS_TO_DEDUCT;
             }
