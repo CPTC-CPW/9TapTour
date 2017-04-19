@@ -39,7 +39,7 @@
             // 
             this.btnMemberData.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnMemberData.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnMemberData.Location = new System.Drawing.Point(136, 345);
+            this.btnMemberData.Location = new System.Drawing.Point(136, 438);
             this.btnMemberData.Name = "btnMemberData";
             this.btnMemberData.Size = new System.Drawing.Size(118, 70);
             this.btnMemberData.TabIndex = 0;
@@ -50,7 +50,7 @@
             // btnMemberScores
             // 
             this.btnMemberScores.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnMemberScores.Location = new System.Drawing.Point(136, 462);
+            this.btnMemberScores.Location = new System.Drawing.Point(136, 555);
             this.btnMemberScores.Name = "btnMemberScores";
             this.btnMemberScores.Size = new System.Drawing.Size(118, 71);
             this.btnMemberScores.TabIndex = 0;
@@ -61,7 +61,7 @@
             // btnAbout
             // 
             this.btnAbout.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.btnAbout.Location = new System.Drawing.Point(930, 345);
+            this.btnAbout.Location = new System.Drawing.Point(730, 438);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.Size = new System.Drawing.Size(118, 71);
             this.btnAbout.TabIndex = 0;
@@ -72,7 +72,7 @@
             // Exit
             // 
             this.Exit.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.Exit.Location = new System.Drawing.Point(930, 462);
+            this.Exit.Location = new System.Drawing.Point(730, 555);
             this.Exit.Name = "Exit";
             this.Exit.Size = new System.Drawing.Size(118, 71);
             this.Exit.TabIndex = 0;
@@ -87,7 +87,7 @@
             this.BackColor = System.Drawing.Color.LightBlue;
             this.BackgroundImage = global::NineTapTour.Properties.Resources._9tap;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(1184, 762);
+            this.ClientSize = new System.Drawing.Size(984, 861);
             this.Controls.Add(this.Exit);
             this.Controls.Add(this.btnAbout);
             this.Controls.Add(this.btnMemberScores);

@@ -31,8 +31,6 @@ namespace NineTapTour.Forms
         {
             InitializeComponent();
             txtMiddleInitial.MaxLength = 1;
-
-
         }
 
   

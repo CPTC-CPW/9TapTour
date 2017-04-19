@@ -18,8 +18,8 @@ namespace NineTapTour.Forms
         public ToolStripItem activeItem;
         public FrmMemberData currFrmMemberData { get; set; }
 
-        public int Width;
-        public int Height;
+        private int width = 1000;
+        private int height = 900;
 
         /// <summary>
         /// Opens Main form 
@@ -37,8 +37,9 @@ namespace NineTapTour.Forms
             _membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
             _tournamentList = TournamentDb.GetTournamentList();
             var newfrmStart = new MainMenu {MdiParent = this};
-
-            setWidthHeight(1200, 800);
+            //sets the height and width of the parent form... this can not be resized later... all child forms must 
+            //fit in its bounds... the only exception is using a scrollbar on the side or bottom...
+            setHeightAndWidth(new Size(width, height));
 
             //sets the first item of the menu bar to the active item and highlights it.
             activeItem = menMain.Items[0];
@@ -47,8 +48,9 @@ namespace NineTapTour.Forms
             newfrmStart.WindowState = FormWindowState.Maximized;
         }
 
-        public void setWidthHeight(int width, int height) {
-             this.Size = new Size(width, height);
+        private void setHeightAndWidth(Size size)
+        {
+            this.Size = size;
         }
 
         /// <summary>
