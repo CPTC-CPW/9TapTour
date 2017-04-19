@@ -578,6 +578,9 @@ namespace NineTapTour.Forms
                     Number = nextMemberNumber
                 };
             }
+            //on new player button select this focuses on the last name texbox that way user does not have
+            //to use the mouse to reclick when adding a new player
+            txtLastName.Focus();
         }
 
         /// <summary>
