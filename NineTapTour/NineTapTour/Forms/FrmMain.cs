@@ -17,7 +17,7 @@ namespace NineTapTour.Forms
         public List<Tournament> _tournamentList { get; set; }
         public ToolStripItem activeItem;
         public FrmMemberData currFrmMemberData { get; set; }
-        //initializes a bool var for handling if the memberdata form is active so it has global scope
+        //initializes a bool var for handling if the memberdata form is active so it has proper scope for handling the save data popup showing up on the wrong forms
         bool memberDataIsActive = false;
         /// <summary>
         /// Opens Main form 
