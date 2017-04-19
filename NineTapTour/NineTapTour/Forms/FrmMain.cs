@@ -17,7 +17,8 @@ namespace NineTapTour.Forms
         public List<Tournament> _tournamentList { get; set; }
         public ToolStripItem activeItem;
         public FrmMemberData currFrmMemberData { get; set; }
-
+        //initializes a bool var for handling if the memberdata form is active so it has global scope
+        bool memberDataIsActive = false;
         /// <summary>
         /// Opens Main form 
         /// Retrieves information from the database in order.
@@ -43,6 +44,7 @@ namespace NineTapTour.Forms
             activeItem.BackColor = SystemColors.ActiveCaption;
             newfrmStart.Show();
             newfrmStart.WindowState = FormWindowState.Maximized;
+            
         }
 
         /// <summary>
@@ -151,6 +153,8 @@ namespace NineTapTour.Forms
             OpenOrDisplayForm(ref newfrmMemberData);
 
             currFrmMemberData = newfrmMemberData;
+            // sets bool var to true so the save data message will show up
+            memberDataIsActive = true;
         }
 
         /// <summary>
@@ -205,15 +209,24 @@ namespace NineTapTour.Forms
 
             else
             {
-                var confirm = MessageBox.Show(@"Are you sure you want to leave without saving changes?", @"Member Data Not Saved", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (confirm == DialogResult.No)
+                if (memberDataIsActive == true)
                 {
+                    var confirm = MessageBox.Show(@"Are you sure you want to leave without saving changes?", @"Member Data Not Saved", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (confirm == DialogResult.No)
+                    {
 
-                    return false;
+                        return false;
 
+                    }
+                    else
+                    {
+                        //prevents the message box from showing up when member data form is not active
+                        memberDataIsActive = false;
+                        return true;
+                        
+                    }
                 }
-                else
-                {
+                else {
                     return true;
                 }
             }

@@ -77,7 +77,7 @@
             this.lblLastBowled = new System.Windows.Forms.Label();
             this.groupRecord = new System.Windows.Forms.GroupBox();
             this.btnSave = new System.Windows.Forms.Button();
-            this.btnDelete = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
             this.grpRecordNumber = new System.Windows.Forms.GroupBox();
             this.btnLastRecord = new System.Windows.Forms.Button();
@@ -593,7 +593,7 @@
             // groupRecord
             // 
             this.groupRecord.Controls.Add(this.btnSave);
-            this.groupRecord.Controls.Add(this.btnDelete);
+            this.groupRecord.Controls.Add(this.btnClear);
             this.groupRecord.Controls.Add(this.btnNew);
             this.groupRecord.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupRecord.Location = new System.Drawing.Point(23, 583);
@@ -614,17 +614,17 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // btnDelete
+            // btnClear
             // 
-            this.btnDelete.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDelete.Location = new System.Drawing.Point(17, 71);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(75, 23);
-            this.btnDelete.TabIndex = 2;
-            this.btnDelete.TabStop = false;
-            this.btnDelete.Text = "Delete";
-            this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            this.btnClear.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnClear.Location = new System.Drawing.Point(17, 71);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(75, 23);
+            this.btnClear.TabIndex = 2;
+            this.btnClear.TabStop = false;
+            this.btnClear.Text = "Clear";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // btnNew
             // 
@@ -1070,7 +1070,7 @@
         private System.Windows.Forms.GroupBox grpStats;
         private System.Windows.Forms.GroupBox grpSearchBy;
         private System.Windows.Forms.GroupBox grpPrinter;
-        private System.Windows.Forms.Button btnDelete;
+        private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnLastRecord;
         private System.Windows.Forms.Button btnFirstRecord;

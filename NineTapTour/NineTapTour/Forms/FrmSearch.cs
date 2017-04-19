@@ -194,7 +194,7 @@ namespace NineTapTour.Forms
             dtagrdResults.Columns["LastBowled"].Visible = !dtagrdResults.Columns["LastBowled"].Visible;
             dtagrdResults.Columns["LastPayment"].Visible = !dtagrdResults.Columns["LastPayment"].Visible;
             dtagrdResults.Columns["IsLifetimeMember"].Visible = !dtagrdResults.Columns["IsLifetimeMember"].Visible;
-            dtagrdResults.Columns["MoneyEarned"].Visible = !dtagrdResults.Columns["MoneyEarned"].Visible;
+            //dtagrdResults.Columns["MoneyEarned"].Visible = !dtagrdResults.Columns["MoneyEarned"].Visible;
             dtagrdResults.Columns["Notes"].Visible = !dtagrdResults.Columns["Notes"].Visible;
             dtagrdResults.Columns["Referrals"].Visible = !dtagrdResults.Columns["Referrals"].Visible;
             dtagrdResults.Columns["IsSenior"].Visible = !dtagrdResults.Columns["IsSenior"].Visible;
@@ -244,7 +244,7 @@ namespace NineTapTour.Forms
                 dtagrdResults.Columns["LastBowled"].Visible = false;
                 dtagrdResults.Columns["LastPayment"].Visible = false;
                 dtagrdResults.Columns["IsLifetimeMember"].Visible = false;
-                dtagrdResults.Columns["MoneyEarned"].Visible = false;
+                //dtagrdResults.Columns["MoneyEarned"].Visible = false;
                 dtagrdResults.Columns["Notes"].Visible = false;
                 dtagrdResults.Columns["Referrals"].Visible = false;
                 dtagrdResults.Columns["IsSenior"].Visible = false;

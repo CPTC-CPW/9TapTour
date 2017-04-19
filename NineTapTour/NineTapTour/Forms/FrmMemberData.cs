@@ -386,9 +386,15 @@ namespace NineTapTour.Forms
             }
             if(dateJoined.Value != null)
             {
-                if(dateRejoin.Value != null && dateRejoin.Value <= dateJoined.Value)
+                if(dateRejoin.Value != null && dateRejoin.Value < dateJoined.Value)
                 {
                     MessageBox.Show("Rejoin Date before Join Date");
+                    dateRejoin.Focus();
+                    return false;
+                }
+                else if (dateRejoin.Value != null && dateRejoin.Value == dateJoined.Value)
+                {
+                    MessageBox.Show("Rejoin Date same as Join Date");
                     dateRejoin.Focus();
                     return false;
                 }
@@ -629,33 +635,49 @@ namespace NineTapTour.Forms
             datePicker.CustomFormat = @" ";
         }
         /// <summary>
-        /// Removes a bowler's information from the database.
+        /// clears all elements on member data form.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnDelete_Click(object sender, EventArgs e)
+        private void btnClear_Click(object sender, EventArgs e)
         {
-            if (isValid())
+            //removed code for a delete function it is in the region below
+            #region
+            //if (isValid())
+            //{
+            //    var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            //    if (confirm == DialogResult.No) return;
+            //    try
+            //    {
+            //        MemberDb.DeleteMember(currentMem);
+
+            //        MessageBox.Show(@"Bowler Removed Successfully.");
+            //        ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+            //        if (((FrmMain)MdiParent)._membersList.Count() > 0)
+            //        {
+            //            UpdateMemberInfo();
+            //        }
+            //    }
+            //    catch (MemberTableException ex)
+            //    {
+            //        MessageBox.Show(ex.Message);
+            //    }
+            //}
+            #endregion\
+            //clears all elements on member data form
+            var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Clear", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            
+             if (confirm == DialogResult.No) return;
+             /// stores member number to be restored later
+            string tempMemNum = txtMemberNumber.Text;
+            while (Controls.Count > 0)
             {
-                var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (confirm == DialogResult.No) return;
-                try
-                {
-                    MemberDb.DeleteMember(currentMem);
-
-                    MessageBox.Show(@"Bowler Removed Successfully.");
-                    ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-                    if (((FrmMain)MdiParent)._membersList.Count() > 0)
-                    {
-                        UpdateMemberInfo();
-                    }
-                }
-                catch (MemberTableException ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
+                Controls[0].Dispose();
             }
+            InitializeComponent();
+            //restores member number
+            txtMemberNumber.Text = tempMemNum;
         }
 
         private void btnMemberSearch_Click(object sender, EventArgs e)

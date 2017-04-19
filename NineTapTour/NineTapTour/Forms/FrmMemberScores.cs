@@ -881,6 +881,7 @@ namespace NineTapTour.Forms
                 // Gets the record for the selected tournament
                 RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
                 refresh(false);
+                // sets focus to member num becuse that is what a user will need next
                 txtMemberNum.Focus();
             }
 
