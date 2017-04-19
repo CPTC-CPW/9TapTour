@@ -17,9 +17,7 @@ namespace NineTapTour.Forms
         public List<Tournament> _tournamentList { get; set; }
         public ToolStripItem activeItem;
         public FrmMemberData currFrmMemberData { get; set; }
-
-        private int width = 1000;
-        private int height = 900;
+        public Size MaxWorkAreaScreenSize { get; set; }
 
         /// <summary>
         /// Opens Main form 
@@ -29,7 +27,7 @@ namespace NineTapTour.Forms
         public FrmMain()
         {
             InitializeComponent();
-
+            MaxWorkAreaScreenSize = new Size( Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height );
             //run any pending database migrations on start
             NineTapDb db = new NineTapDb();
             System.Data.Entity.Database.SetInitializer<NineTapDb>(new MigrateDatabaseToLatestVersion<NineTapDb, Configuration>());
@@ -39,7 +37,7 @@ namespace NineTapTour.Forms
             var newfrmStart = new MainMenu {MdiParent = this};
             //sets the height and width of the parent form... this can not be resized later... all child forms must 
             //fit in its bounds... the only exception is using a scrollbar on the side or bottom...
-            setHeightAndWidth(new Size(width, height));
+            setHeightAndWidth(MaxWorkAreaScreenSize);
 
             //sets the first item of the menu bar to the active item and highlights it.
             activeItem = menMain.Items[0];
@@ -48,9 +46,9 @@ namespace NineTapTour.Forms
             newfrmStart.WindowState = FormWindowState.Maximized;
         }
 
-        private void setHeightAndWidth(Size size)
+        private void setHeightAndWidth(Size workingArea)
         {
-            this.Size = size;
+            this.Size = workingArea;
         }
 
         /// <summary>

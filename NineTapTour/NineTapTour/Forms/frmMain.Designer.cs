@@ -124,6 +124,7 @@
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menMain;
             this.Name = "FrmMain";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "9 Tap Tour";
             this.menMain.ResumeLayout(false);
             this.menMain.PerformLayout();
