@@ -127,10 +127,6 @@ namespace NineTapTour.Forms
                 var item = temp2.Max(x => x.Id);
                cbxTourneyDropDown.SelectedValue = item;
             }
-            if (tempcbx == -1)
-            {
-                cbxTourneyDropDown.SelectedIndex = -1;
-            }
             clear();
             cbxTourneyDropDown.Visible = true;
             btnPlaceStandings.Enabled  = false;
