@@ -399,6 +399,16 @@ namespace NineTapTour.Forms
                     return false;
                 }
             }
+            /********************************************************************************************************
+            League average should only be between 125 - 210
+            *********************************************************************************************************/
+            if (txtAverage.Text == "" || Convert.ToInt32(txtAverage.Text) < 125 || Convert.ToInt32(txtAverage.Text) > 210)
+            {
+                MessageBox.Show("For your League Average, you should only input between 125 to 210.");
+                txtAverage.Focus();
+                return false;
+            }
+            /*******************************************************************************************************/
 
             return true;
         }

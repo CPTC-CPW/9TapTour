@@ -20,7 +20,7 @@ namespace NineTapTour.Database
                     the code that should change the handicap of the members
                     it is not updating because I believe there is a problem in the database where finalize is not connected to members
                     ************************************************************************************/
-                    //temp.Handicap = Calculations.Calculations.CalculateHandicapPins(temp.AdjustedAvg);
+                    temp.Handicap = Calculations.Calculations.CalculateHandicapPins(temp.AdjustedAvg);
                     /***********************************************************************************/
                     //checks if tournament is new or already existing in db
                     if (!db.FinalizeTemp.Any(f => f.GameId == temp.GameId))

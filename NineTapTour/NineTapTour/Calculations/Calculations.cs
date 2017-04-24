@@ -42,18 +42,10 @@ namespace NineTapTour.Calculations
             {
                 return MAX_HANDICAP_PINS;
             }
-            /*************************************************
-            edited so that there won't be a negative handicap
-            **************************************************/
-            else if (calculateHandicap >= 0)
+            else
             {
                 return Convert.ToInt32(calculateHandicap);
             }
-            else
-            {
-                return 0;
-            }
-            /*************************************************/
         }
 
         public static int CalculateBonusPins(bool didMemberCash, int memberPlaced, int currentBonusPins, bool isDoublesTournament)
