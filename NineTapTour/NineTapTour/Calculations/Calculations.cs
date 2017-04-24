@@ -44,7 +44,7 @@ namespace NineTapTour.Calculations
             }
             else
             {
-                return Convert.ToInt32(calculateHandicap);
+                return (int)(calculateHandicap);
             }
         }
 
