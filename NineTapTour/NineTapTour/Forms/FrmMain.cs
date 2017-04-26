@@ -18,7 +18,8 @@ namespace NineTapTour.Forms
         public ToolStripItem activeItem;
         public FrmMemberData currFrmMemberData { get; set; }
         public Size MaxWorkAreaScreenSize { get; set; }
-
+        //initializes a bool var for handling if the memberdata form is active so it has proper scope for handling the save data popup showing up on the wrong forms
+        bool memberDataIsActive = false;
         /// <summary>
         /// Opens Main form 
         /// Retrieves information from the database in order.
@@ -44,6 +45,7 @@ namespace NineTapTour.Forms
             activeItem.BackColor = SystemColors.ActiveCaption;
             newfrmStart.Show();
             newfrmStart.WindowState = FormWindowState.Maximized;
+            
         }
 
         private void setHeightAndWidth(Size workingArea)
@@ -148,6 +150,8 @@ namespace NineTapTour.Forms
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
             OpenOrDisplayForm(ref newfrmMemberData);
             currFrmMemberData = newfrmMemberData;
+            // sets bool var to true so the save data message will show up
+            memberDataIsActive = true;
         }
 
         /// <summary>
@@ -202,13 +206,24 @@ namespace NineTapTour.Forms
 
             else
             {
-                var confirm = MessageBox.Show(@"Are you sure you want to leave without saving changes?", @"Member Data Not Saved", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (confirm == DialogResult.No)
+                if (memberDataIsActive == true)
                 {
-                    return false;
+                    var confirm = MessageBox.Show(@"Are you sure you want to leave without saving changes?", @"Member Data Not Saved", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (confirm == DialogResult.No)
+                    {
+
+                        return false;
+
+                    }
+                    else
+                    {
+                        //prevents the message box from showing up when member data form is not active
+                        memberDataIsActive = false;
+                        return true;
+                        
+                    }
                 }
-                else
-                {
+                else {
                     return true;
                 }
             }
