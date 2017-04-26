@@ -1070,8 +1070,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.LightBlue;
-            this.ClientSize = new System.Drawing.Size(884, 769);
+            this.ClientSize = new System.Drawing.Size(934, 812);
             this.Controls.Add(this.btnFinalizeTounament);
             this.Controls.Add(this.lblMiddleInitial2);
             this.Controls.Add(this.lblFirstName2);
@@ -1101,7 +1102,6 @@
             this.Controls.Add(this.grpMemberNum);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(585, 308);
             this.Name = "frmMemberScores";
             this.Text = "Member Scores";
             this.Activated += new System.EventHandler(this.FrmMemberScores_Activated);

@@ -17,6 +17,7 @@ namespace NineTapTour.Forms
         public List<Tournament> _tournamentList { get; set; }
         public ToolStripItem activeItem;
         public FrmMemberData currFrmMemberData { get; set; }
+        public Size MaxWorkAreaScreenSize { get; set; }
         //initializes a bool var for handling if the memberdata form is active so it has proper scope for handling the save data popup showing up on the wrong forms
         bool memberDataIsActive = false;
         /// <summary>
@@ -27,7 +28,7 @@ namespace NineTapTour.Forms
         public FrmMain()
         {
             InitializeComponent();
-
+            MaxWorkAreaScreenSize = new Size( Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height );
             //run any pending database migrations on start
             NineTapDb db = new NineTapDb();
             System.Data.Entity.Database.SetInitializer<NineTapDb>(new MigrateDatabaseToLatestVersion<NineTapDb, Configuration>());
@@ -35,16 +36,21 @@ namespace NineTapTour.Forms
             _membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
             _tournamentList = TournamentDb.GetTournamentList();
             var newfrmStart = new MainMenu {MdiParent = this};
-            //newStart.Dock = DockStyle.Fill;
-            //Width and Height not needed here?
-            //Width = newfrmStart.Width;
-            //Height = newfrmStart.Height + 20;
+            //sets the height and width of the parent form... this can not be resized later... all child forms must 
+            //fit in its bounds... the only exception is using a scrollbar on the side or bottom...
+            setHeightAndWidth(MaxWorkAreaScreenSize);
+
             //sets the first item of the menu bar to the active item and highlights it.
             activeItem = menMain.Items[0];
             activeItem.BackColor = SystemColors.ActiveCaption;
             newfrmStart.Show();
             newfrmStart.WindowState = FormWindowState.Maximized;
             
+        }
+
+        private void setHeightAndWidth(Size workingArea)
+        {
+            this.Size = workingArea;
         }
 
         /// <summary>
@@ -78,9 +84,6 @@ namespace NineTapTour.Forms
             {
                 if (form != null)
                 {
-                    //Width and Height not needed here?
-                    //Width = form.Right + Math.Abs(form.Left) + 4;
-                    //Height = form.Height + 28;
                     form.BringToFront();
                     form.Activate();
                 }
@@ -91,10 +94,6 @@ namespace NineTapTour.Forms
                         MdiParent = this,
                         Dock = DockStyle.Fill
                     };
-
-                    //Width and Height not needed here?
-                    //Width = form.Width;
-                    //Height = form.Height + 20;
                 }
                 form.WindowState = FormWindowState.Maximized;
                 form.Show();
@@ -110,7 +109,6 @@ namespace NineTapTour.Forms
                 activeItem.BackColor = SystemColors.Control;
             }
             activeItem = e.ClickedItem;
-
             activeItem.BackColor = SystemColors.ActiveCaption;
         }
         //this method is for the buttons on the main form
@@ -151,7 +149,6 @@ namespace NineTapTour.Forms
         {   
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
             OpenOrDisplayForm(ref newfrmMemberData);
-
             currFrmMemberData = newfrmMemberData;
             // sets bool var to true so the save data message will show up
             memberDataIsActive = true;
@@ -191,7 +188,6 @@ namespace NineTapTour.Forms
         private void updateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             var UpdatefrmActiveMem = new FrmUpdateActiveMem();
-
             UpdatefrmActiveMem.Show();
         }
 
@@ -201,7 +197,8 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <returns>returns true if data is saved or if data is not saved and user wants to continue without
         /// saving changes. Returns false if data is not saved and user does want to save changes.</returns>
-        private bool FrmMemberIsSavedData() {
+        private bool FrmMemberIsSavedData()
+        {
             if (currFrmMemberData.IsSavedData())
             {
                 return true;
@@ -230,7 +227,7 @@ namespace NineTapTour.Forms
                     return true;
                 }
             }
-            
         }
+
     }
 }

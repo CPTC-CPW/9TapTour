@@ -50,8 +50,8 @@
             // dgvTournamentStats
             // 
             this.dgvTournamentStats.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvTournamentStats.Location = new System.Drawing.Point(-2, 91);
-            this.dgvTournamentStats.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.dgvTournamentStats.Location = new System.Drawing.Point(10, 101);
+            this.dgvTournamentStats.Margin = new System.Windows.Forms.Padding(1);
             this.dgvTournamentStats.Name = "dgvTournamentStats";
             this.dgvTournamentStats.RowTemplate.Height = 37;
             this.dgvTournamentStats.Size = new System.Drawing.Size(1265, 501);
@@ -67,8 +67,8 @@
             // 
             // btnPrint
             // 
-            this.btnPrint.Location = new System.Drawing.Point(1173, 550);
-            this.btnPrint.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.btnPrint.Location = new System.Drawing.Point(1162, 613);
+            this.btnPrint.Margin = new System.Windows.Forms.Padding(1);
             this.btnPrint.Name = "btnPrint";
             this.btnPrint.Size = new System.Drawing.Size(91, 38);
             this.btnPrint.TabIndex = 2;
@@ -80,12 +80,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1264, 602);
+            this.ClientSize = new System.Drawing.Size(1285, 661);
             this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.dgvTournamentStats);
             this.Controls.Add(this.lblTournamentName);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.Margin = new System.Windows.Forms.Padding(1);
             this.Name = "TournamentStats";
             this.Text = "Tournament Statistics";
             this.Load += new System.EventHandler(this.TournamentStats_Load);
