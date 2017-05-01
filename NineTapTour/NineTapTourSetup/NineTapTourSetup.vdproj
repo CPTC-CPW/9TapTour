@@ -15,14 +15,8 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_0D1B3D80BF5D30E54299E6FEC151FD07"
+        "MsmKey" = "8:_0572DE2496AD51EC83332FEFD1ED0D2C"
         "OwnerKey" = "8:_231857CF6B254E9889F324356601C8D6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_0D1B3D80BF5D30E54299E6FEC151FD07"
-        "OwnerKey" = "8:_2E8F3E859EEACC84A702AB3AAE5E351D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -33,20 +27,14 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_232B08BA40DFE7B5F1C9EBEF6A98CD44"
+        "MsmKey" = "8:_6EBE620ABA97A2012A5E5CEC38855BFB"
         "OwnerKey" = "8:_231857CF6B254E9889F324356601C8D6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_232B08BA40DFE7B5F1C9EBEF6A98CD44"
-        "OwnerKey" = "8:_E9B770DA61687825760D15943D9EE9A1"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2E8F3E859EEACC84A702AB3AAE5E351D"
-        "OwnerKey" = "8:_231857CF6B254E9889F324356601C8D6"
+        "MsmKey" = "8:_6EBE620ABA97A2012A5E5CEC38855BFB"
+        "OwnerKey" = "8:_0572DE2496AD51EC83332FEFD1ED0D2C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -57,38 +45,62 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_E9B770DA61687825760D15943D9EE9A1"
+        "MsmKey" = "8:_BF5823CA6DBF4400490FD2BBF85D817B"
+        "OwnerKey" = "8:_231857CF6B254E9889F324356601C8D6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D2F4A4F49FFFBB952507C9BD87E5F826"
+        "OwnerKey" = "8:_231857CF6B254E9889F324356601C8D6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D2F4A4F49FFFBB952507C9BD87E5F826"
+        "OwnerKey" = "8:_BF5823CA6DBF4400490FD2BBF85D817B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_DC4488F71B2B4F7FA0A0390009A0810D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_231857CF6B254E9889F324356601C8D6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_231857CF6B254E9889F324356601C8D6"
+        "OwnerKey" = "8:_DC4488F71B2B4F7FA0A0390009A0810D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2E8F3E859EEACC84A702AB3AAE5E351D"
+        "OwnerKey" = "8:_BF5823CA6DBF4400490FD2BBF85D817B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_0D1B3D80BF5D30E54299E6FEC151FD07"
+        "OwnerKey" = "8:_D2F4A4F49FFFBB952507C9BD87E5F826"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_E9B770DA61687825760D15943D9EE9A1"
+        "OwnerKey" = "8:_0572DE2496AD51EC83332FEFD1ED0D2C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_232B08BA40DFE7B5F1C9EBEF6A98CD44"
+        "OwnerKey" = "8:_6EBE620ABA97A2012A5E5CEC38855BFB"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -116,6 +128,19 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.SqlServer.SqlLocalDB.11.1"
+                    {
+                    "Name" = "8:SQL Server 2012 Express LocalDB"
+                    "ProductCode" = "8:Microsoft.SqlServer.SqlLocalDB.11.1"
+                    }
+                }
             }
         }
         "Release"
@@ -140,6 +165,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
             }
         }
     }
@@ -170,20 +203,20 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_0D1B3D80BF5D30E54299E6FEC151FD07"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_0572DE2496AD51EC83332FEFD1ED0D2C"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FluentValidationNA, Version=1.2.16.24816, Culture=neutral, PublicKeyToken=0950390b87309e14, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_0D1B3D80BF5D30E54299E6FEC151FD07"
+                    "_0572DE2496AD51EC83332FEFD1ED0D2C"
                     {
-                    "Name" = "8:FluentValidationNA.dll"
+                    "Name" = "8:EntityFramework.SqlServer.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:FluentValidationNA.dll"
+            "SourcePath" = "8:EntityFramework.SqlServer.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B028D90E881146268D81913A9F18C737"
@@ -201,51 +234,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_232B08BA40DFE7B5F1C9EBEF6A98CD44"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6EBE620ABA97A2012A5E5CEC38855BFB"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_232B08BA40DFE7B5F1C9EBEF6A98CD44"
+                    "_6EBE620ABA97A2012A5E5CEC38855BFB"
                     {
                     "Name" = "8:EntityFramework.dll"
                     "Attributes" = "3:512"
                     }
                 }
             "SourcePath" = "8:EntityFramework.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_B028D90E881146268D81913A9F18C737"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2E8F3E859EEACC84A702AB3AAE5E351D"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.Linq.Dynamic, Version=1.1.14.15853, Culture=neutral, PublicKeyToken=b72be0322d1b32a8, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_2E8F3E859EEACC84A702AB3AAE5E351D"
-                    {
-                    "Name" = "8:System.Linq.Dynamic.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:System.Linq.Dynamic.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B028D90E881146268D81913A9F18C737"
@@ -283,20 +285,20 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E9B770DA61687825760D15943D9EE9A1"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BF5823CA6DBF4400490FD2BBF85D817B"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:System.Linq.Dynamic, Version=1.1.14.15853, Culture=neutral, PublicKeyToken=b72be0322d1b32a8, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_E9B770DA61687825760D15943D9EE9A1"
+                    "_BF5823CA6DBF4400490FD2BBF85D817B"
                     {
-                    "Name" = "8:EntityFramework.SqlServer.dll"
+                    "Name" = "8:System.Linq.Dynamic.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:EntityFramework.SqlServer.dll"
+            "SourcePath" = "8:System.Linq.Dynamic.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B028D90E881146268D81913A9F18C737"
@@ -312,6 +314,68 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D2F4A4F49FFFBB952507C9BD87E5F826"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:FluentValidationNA, Version=1.2.16.24816, Culture=neutral, PublicKeyToken=0950390b87309e14, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_D2F4A4F49FFFBB952507C9BD87E5F826"
+                    {
+                    "Name" = "8:FluentValidationNA.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:FluentValidationNA.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_B028D90E881146268D81913A9F18C737"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DC4488F71B2B4F7FA0A0390009A0810D"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:SQLServer2016-SSEI-Expr, Version=1.1704.0.0, Culture=neutral, PublicKeyToken=57d8c1d10de9dc02, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_DC4488F71B2B4F7FA0A0390009A0810D"
+                    {
+                    "Name" = "8:SQLServer2016-SSEI-Expr.exe"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\..\\..\\..\\..\\Downloads\\SQLServer2016-SSEI-Expr.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_B028D90E881146268D81913A9F18C737"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
         }
@@ -382,7 +446,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:NineTapTourSetup"
         "ProductCode" = "8:{53338CE3-03E6-4BD5-A2CE-5737B060DD65}"
-        "PackageCode" = "8:{CA446191-7D83-4022-8EB5-7815F2EBF6CB}"
+        "PackageCode" = "8:{95221EF9-F61C-46EB-A1AB-CED830448F14}"
         "UpgradeCode" = "8:{669E078A-2D8E-45EA-9FA8-860EC989AB38}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
