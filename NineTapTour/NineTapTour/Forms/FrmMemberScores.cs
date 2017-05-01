@@ -21,6 +21,7 @@ namespace NineTapTour.Forms
         TextBox[] scratchArray = new TextBox[4];
         TextBox[] handicappArray = new TextBox[4];
         int currentIndex = 0;         //Count for record counting
+        bool buttonCheck; // boolean value used to determine which 
         Participant player = new Participant();
         Participant player2 = new Participant();
         //bool doubles = true;
@@ -183,12 +184,26 @@ namespace NineTapTour.Forms
                 currentGame.Bonus = currentMem.Bonus;
                 currentGame.Handicap = currentMem.Handicap;
                 //////////////////////////////////////////////////////////////// PAGINATION HAPPENS RIGHT HERE!!!! ////////////////////////////////////////////////////
-                List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-                for (int i = 0; i < total.Count(); i++)
+                List<Participant> total = TournamentDb.GetTournamentMemberListInOrder(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue))); //gets list in order so forloops itterate better
+
+                if (buttonCheck == true) // if the right button was clicked
                 {
-                    if (currentMem.Id == total[i].Member.Id)
+                    for (int i = currentIndex; i < total.Count(); i++)
                     {
-                        currentIndex = i + 1;
+                        if (currentMem.Id == total[i].Member.Id)
+                        {
+                            currentIndex++;
+                        }
+                    }
+                }
+                else // if left button was clicked
+                {
+                    for (int i = 0; i < currentIndex; i++)
+                    {
+                        if (currentMem.Id == total[i].Member.Id)
+                        {
+                            currentIndex--;
+                        }
                     }
                 }
                 lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count();
@@ -751,9 +766,8 @@ namespace NineTapTour.Forms
             }
             else
             {
-                var temp = total.IndexOf(total[currentIndex]);
+                buttonCheck = true; // right button clicked
                 currentIndex++;
-                lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
                 txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
                 if (total[currentIndex - 1].Squad == 1)
                 {
@@ -793,9 +807,8 @@ namespace NineTapTour.Forms
                 }
                 else
                 {
+                    buttonCheck = false;  //Left button clicked
                     currentIndex--;
-                    var temp = total.IndexOf(total[currentIndex]);
-                    lblRecord.Text = "Record " + currentIndex + " / " + total.Count();
                     txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
                     if (total[currentIndex - 1].Squad == 1)
                     {

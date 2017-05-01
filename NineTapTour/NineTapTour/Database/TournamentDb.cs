@@ -83,10 +83,25 @@ namespace NineTapTour.Database
             {
                 return (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
+                        orderby p.Member.Id
                         where p.Tournament.Id == currTourney.Id
                         select p).Include(m =>m.Member).ToList();
             }
         }
+
+        public static List<Participant> GetTournamentMemberListInOrder(Tournament currTourney)
+        {
+
+            using (NineTapDb db = new NineTapDb())
+            {
+                return (from p in db.Participants
+                        join m in db.Members on p.Member.Id equals m.Id
+                        orderby p.Member.Id
+                        where p.Tournament.Id == currTourney.Id
+                        select p).Include(m => m.Member).ToList();
+            }
+        }
+
 
         public static List<Member> GetUniqueTourMembers(Tournament currTourney)
         {
