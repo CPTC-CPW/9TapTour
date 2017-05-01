@@ -39,7 +39,7 @@ namespace NineTapTour.Forms
 
         private void RadioIntialize()
         {
-
+            
             rdoSquad5.Visible = false;
             rdoSquad6.Visible = false;
             rdoSquad7.Visible = false;
@@ -856,6 +856,7 @@ namespace NineTapTour.Forms
             // determines whether the tournament is a double tourney or not, then enables or disables the single and/or double textBox selection option
             if (selectedTournament == null)
             {
+                rdoScratchScore.Visible = false;
                 txtMemberNum.Enabled = false;
                 txtMemberNum2.Visible = false;
                 btnRecapByPin.Enabled = false;
@@ -873,6 +874,7 @@ namespace NineTapTour.Forms
             }
             else
             {
+                rdoScratchScore.Visible = true;
                 txtMemberNum.Enabled = true;
                 txtMemberNum2.Visible = false;
                 DoubleInitialize(false);
