@@ -21,15 +21,12 @@ namespace NineTapTour.Forms
         TextBox[] scratchArray = new TextBox[4];
         TextBox[] handicappArray = new TextBox[4];
         int currentIndex = 0;         //Count for record counting
-        bool buttonCheck; // boolean value used to determine which 
+        bool buttonCheck; // boolean value used to determine which record index button was clicked
         Participant player = new Participant();
         Participant player2 = new Participant();
         //bool doubles = true;
         public static Tournament selectedTournament;
         public static List<TopScores> overallListOfTopScores;
-
-        
-
 
 
         public frmMemberScores()
@@ -801,7 +798,8 @@ namespace NineTapTour.Forms
             }
             else
             {
-                if (currentIndex <= 1)
+                //if (currentIndex <= 1)
+                if(currentIndex <= 0) // should be 0, must be able to read the member at currentIndex = 0;
                 {
                     MessageBox.Show("You can't go back!");
                 }
@@ -809,16 +807,16 @@ namespace NineTapTour.Forms
                 {
                     buttonCheck = false;  //Left button clicked
                     currentIndex--;
-                    txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
-                    if (total[currentIndex - 1].Squad == 1)
+                    txtMemberNum.Text = Convert.ToString(total[currentIndex].Member.Number);
+                    if (total[currentIndex].Squad == 1)
                     {
                         rdoSquadOne.Checked = true;
                     }
-                    else if (total[currentIndex - 1].Squad == 2)
+                    else if (total[currentIndex].Squad == 2)
                     {
                         rdoSquadTwo.Checked = true;
                     }
-                    else if (total[currentIndex - 1].Squad == 3)
+                    else if (total[currentIndex].Squad == 3)
                     {
                         rdoSquadThree.Checked = true;
                     }
