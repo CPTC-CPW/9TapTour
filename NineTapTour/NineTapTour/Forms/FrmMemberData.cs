@@ -164,6 +164,7 @@ namespace NineTapTour.Forms
             }
             else
             {
+                var db = new NineTapDb();
                 #region Personal Info
                 _memberId = currentMem.Id;
                 txtMemberNumber.Text = currentMem.Number.ToString();
@@ -192,7 +193,11 @@ namespace NineTapTour.Forms
 
                 txtAverage.Text = currentMem.StartAvg.ToString();
                 txtTournAvg.Text = LeagueAverage(currentMem).ToString();
-                txtHandicap.Text = currentMem.Handicap.ToString();
+                /********
+                updates the forms handicap even when the finalize tournament button is clicked
+                ******/
+                txtHandicap.Text = db.Members.First(x => x.Id == currentMem.Id).Handicap.ToString();
+                /*****/
                 txtBonus.Text = currentMem.Bonus.ToString();
                 
                 #endregion
@@ -220,7 +225,7 @@ namespace NineTapTour.Forms
                     dateLastBowled.CustomFormat = @" ";
                 }
                 //txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
-                var db = new NineTapDb();
+                
                 var result = (from p in db.Participants
                               join g in db.Games on p.Game.Id equals g.Id
                               where p.Member.Id == currentMem.Id
