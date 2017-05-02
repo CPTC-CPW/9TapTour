@@ -117,9 +117,9 @@ namespace NineTapTour.Forms
             cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             cbxTourneyDropDown.ValueMember = "Id";
-            //cbxTourneyDropDown.SelectedIndex = -1;
+            cbxTourneyDropDown.SelectedIndex = -1;
+            cbxTourneyDropDown.SelectedIndex = 0;
 
-            
             List<Tournament> temp2 = TournamentDb.GetTournamentList();
             
             if (temp2.Count() > 0)
@@ -130,6 +130,16 @@ namespace NineTapTour.Forms
             clear();
             cbxTourneyDropDown.Visible = true;
             btnPlaceStandings.Enabled  = false;
+            if (cbxTourneyDropDown.SelectedIndex >= 0 && cbxTourneyDropDown.Visible && cbxTourneyDropDown.SelectedIndex.ToString() != null)
+            {
+                // resets the current index to zero when changing the tournament
+                currentIndex = 0;
+                // Gets the record for the selected tournament
+                RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
+                refresh(false);
+                // sets focus to member num becuse that is what a user will need next
+                txtMemberNum.Focus();
+            }
 
         }
 
@@ -845,7 +855,10 @@ namespace NineTapTour.Forms
                 txtMemberNum2.Visible = false;
                 btnRecapByPin.Enabled = false;
                 DoubleInitialize(false);
+
                 RadioIntialize();
+                rdoHandicapScore.Visible = false;
+                rdoScratchScore.Visible = false;
             }
             else if (selectedTournament.Doubles)
             {
@@ -854,6 +867,8 @@ namespace NineTapTour.Forms
                 txtMemberNum2.Enabled = true;
                 DoubleInitialize(true);
                 EnableButtonsWhenValidTournamentSelected();
+                rdoHandicapScore.Visible = true;
+                rdoScratchScore.Visible = true;
                 RadioIntialize();
             }
             else
@@ -863,6 +878,8 @@ namespace NineTapTour.Forms
                 DoubleInitialize(false);
                 EnableButtonsWhenValidTournamentSelected();
                 RadioIntialize();
+                rdoHandicapScore.Visible = true;
+                rdoScratchScore.Visible = true;
             }
 
             if (cbxTourneyDropDown.SelectedIndex < 0)
@@ -1142,7 +1159,7 @@ namespace NineTapTour.Forms
 
                     var temp = (from g in top5
                                 orderby (g.Game.Handicap) descending
-                                select g).Take(5).ToList();
+                                select g).ToList();
                     nullValues = 0;
 
                     foreach (var i in temp)
@@ -1171,7 +1188,7 @@ namespace NineTapTour.Forms
 
                     scores.Sort(scoreComparer);
                     scores.Reverse();
-                    scores = scores.Take(5).ToList();
+                    scores = scores.ToList();
                     for (int i = 0; i < scores.Count(); i++)
                     {
                         richTextBox1.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
@@ -1219,7 +1236,7 @@ namespace NineTapTour.Forms
                     }
                     scores.Sort(scoreComparer);
                     scores.Reverse();
-                    scores = scores.Take(5).ToList();
+                    scores = scores.ToList();
                     for (int i = 0; i < scores.Count(); i++)
                     {
                         richTextBox2.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
@@ -1250,7 +1267,7 @@ namespace NineTapTour.Forms
                         //IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
                         scores.Sort(scoreComparer);
                         scores.Reverse();
-                        scores = scores.Take(5).ToList();
+                        scores = scores.ToList();
                         for (int i = 0; i < scores.Count(); i++)
                         {
                             richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
@@ -1284,7 +1301,7 @@ namespace NineTapTour.Forms
                         }                   
                         scores.Sort(scoreComparer);
                         scores.Reverse();
-                        scores = scores.Take(5).ToList();
+                        scores = scores.ToList();
                         for (int i = 0; i < scores.Count(); i++)
                         {
                             richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", Convert.ToString(scores[i].FirstName + " " + scores[i].LastName)) + "\t" + String.Format("{0, -5}", scores[i].Score) + "\n");
@@ -1329,7 +1346,7 @@ namespace NineTapTour.Forms
                         //IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
                         scores.Sort(scoreComparer);
                         scores.Reverse();
-                        scores = scores.Take(5).ToList();
+                        scores = scores.ToList();
                         for (int i = 0; i < scores.Count(); i++)
                         {
                             richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
@@ -1377,7 +1394,7 @@ namespace NineTapTour.Forms
                             }                 
                         scores.Sort(scoreComparer);
                         scores.Reverse();
-                        scores = scores.Take(5).ToList();
+                        scores = scores.ToList();
                         for (int i = 0; i < scores.Count(); i++)
                         {
                             richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", Convert.ToString(scores[i].FirstName + " " + scores[i].LastName)) + "\t" + String.Format("{0, -5}", scores[i].Score) + "\n");
