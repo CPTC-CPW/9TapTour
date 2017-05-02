@@ -40,44 +40,49 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(74, 92);
+            this.label1.Location = new System.Drawing.Point(32, 41);
+            this.label1.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(563, 63);
+            this.label1.Size = new System.Drawing.Size(262, 29);
             this.label1.TabIndex = 0;
             this.label1.Text = "Tournaments by Year";
             // 
             // dgvAllTournaments
             // 
             this.dgvAllTournaments.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvAllTournaments.Location = new System.Drawing.Point(53, 239);
+            this.dgvAllTournaments.Location = new System.Drawing.Point(10, 118);
+            this.dgvAllTournaments.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.dgvAllTournaments.Name = "dgvAllTournaments";
             this.dgvAllTournaments.RowTemplate.Height = 37;
-            this.dgvAllTournaments.Size = new System.Drawing.Size(2014, 924);
+            this.dgvAllTournaments.Size = new System.Drawing.Size(863, 414);
             this.dgvAllTournaments.TabIndex = 1;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(841, 21);
+            this.label2.Location = new System.Drawing.Point(360, 9);
+            this.label2.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(177, 29);
+            this.label2.Size = new System.Drawing.Size(80, 13);
             this.label2.TabIndex = 2;
             this.label2.Text = "Search by Year";
             // 
             // cbxYear
             // 
             this.cbxYear.FormattingEnabled = true;
-            this.cbxYear.Location = new System.Drawing.Point(837, 70);
+            this.cbxYear.Location = new System.Drawing.Point(359, 31);
+            this.cbxYear.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.cbxYear.Name = "cbxYear";
-            this.cbxYear.Size = new System.Drawing.Size(185, 37);
+            this.cbxYear.Size = new System.Drawing.Size(82, 21);
             this.cbxYear.TabIndex = 3;
             this.cbxYear.SelectedIndexChanged += new System.EventHandler(this.cbxYear_SelectedIndexChanged);
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(843, 123);
+            this.btnSearch.Location = new System.Drawing.Point(361, 55);
+            this.btnSearch.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(172, 49);
+            this.btnSearch.Size = new System.Drawing.Size(74, 22);
             this.btnSearch.TabIndex = 4;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
@@ -85,14 +90,15 @@
             // 
             // TournamentsByYear
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 29F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(2129, 1215);
+            this.ClientSize = new System.Drawing.Size(884, 540);
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.cbxYear);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.dgvAllTournaments);
             this.Controls.Add(this.label1);
+            this.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.Name = "TournamentsByYear";
             this.Text = "List of Tournaments By Year";
             this.Load += new System.EventHandler(this.TournamentsByYear_Load);

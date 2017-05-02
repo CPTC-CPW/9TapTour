@@ -31,8 +31,6 @@ namespace NineTapTour.Forms
         {
             InitializeComponent();
             txtMiddleInitial.MaxLength = 1;
-
-
         }
 
   
@@ -166,6 +164,7 @@ namespace NineTapTour.Forms
             }
             else
             {
+                var db = new NineTapDb();
                 #region Personal Info
                 _memberId = currentMem.Id;
                 txtMemberNumber.Text = currentMem.Number.ToString();
@@ -194,7 +193,11 @@ namespace NineTapTour.Forms
 
                 txtAverage.Text = currentMem.StartAvg.ToString();
                 txtTournAvg.Text = LeagueAverage(currentMem).ToString();
-                txtHandicap.Text = currentMem.Handicap.ToString();
+                /********
+                updates the forms handicap even when the finalize tournament button is clicked
+                ******/
+                txtHandicap.Text = db.Members.First(x => x.Id == currentMem.Id).Handicap.ToString();
+                /*****/
                 txtBonus.Text = currentMem.Bonus.ToString();
                 
                 #endregion
@@ -222,7 +225,7 @@ namespace NineTapTour.Forms
                     dateLastBowled.CustomFormat = @" ";
                 }
                 //txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
-                var db = new NineTapDb();
+                
                 var result = (from p in db.Participants
                               join g in db.Games on p.Game.Id equals g.Id
                               where p.Member.Id == currentMem.Id
@@ -399,6 +402,16 @@ namespace NineTapTour.Forms
                     return false;
                 }
             }
+            /********************************************************************************************************
+            League average should only be between 125 - 210
+            *********************************************************************************************************/
+            if (txtAverage.Text == "" || Convert.ToInt32(txtAverage.Text) < 125 || Convert.ToInt32(txtAverage.Text) > 210)
+            {
+                MessageBox.Show("For your League Average, you should only input between 125 to 210.");
+                txtAverage.Focus();
+                return false;
+            }
+            /*******************************************************************************************************/
 
             return true;
         }
@@ -578,6 +591,9 @@ namespace NineTapTour.Forms
                     Number = nextMemberNumber
                 };
             }
+            //on new player button select this focuses on the last name texbox that way user does not have
+            //to use the mouse to reclick when adding a new player
+            txtLastName.Focus();
         }
 
         /// <summary>

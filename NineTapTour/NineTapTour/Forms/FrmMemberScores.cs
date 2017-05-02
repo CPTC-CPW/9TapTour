@@ -21,14 +21,12 @@ namespace NineTapTour.Forms
         TextBox[] scratchArray = new TextBox[4];
         TextBox[] handicappArray = new TextBox[4];
         int currentIndex = 0;         //Count for record counting
+        bool buttonCheck; // boolean value used to determine which record index button was clicked
         Participant player = new Participant();
         Participant player2 = new Participant();
         //bool doubles = true;
         public static Tournament selectedTournament;
         public static List<TopScores> overallListOfTopScores;
-
-        
-
 
 
         public frmMemberScores()
@@ -41,7 +39,7 @@ namespace NineTapTour.Forms
 
         private void RadioIntialize()
         {
-
+            
             rdoSquad5.Visible = false;
             rdoSquad6.Visible = false;
             rdoSquad7.Visible = false;
@@ -189,12 +187,26 @@ namespace NineTapTour.Forms
                 currentGame.Bonus = currentMem.Bonus;
                 currentGame.Handicap = currentMem.Handicap;
                 //////////////////////////////////////////////////////////////// PAGINATION HAPPENS RIGHT HERE!!!! ////////////////////////////////////////////////////
-                List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-                for (int i = 0; i < total.Count(); i++)
+                List<Participant> total = TournamentDb.GetTournamentMemberListInOrder(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue))); //gets list in order so forloops itterate better
+
+                if (buttonCheck == true) // if the right button was clicked
                 {
-                    if (currentMem.Id == total[i].Member.Id)
+                    for (int i = currentIndex; i < total.Count(); i++)
                     {
-                        currentIndex = i + 1;
+                        if (currentMem.Id == total[i].Member.Id)
+                        {
+                            currentIndex++;
+                        }
+                    }
+                }
+                else // if left button was clicked
+                {
+                    for (int i = 0; i < currentIndex; i++)
+                    {
+                        if (currentMem.Id == total[i].Member.Id)
+                        {
+                            currentIndex--;
+                        }
                     }
                 }
                 lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count();
@@ -757,9 +769,8 @@ namespace NineTapTour.Forms
             }
             else
             {
-                var temp = total.IndexOf(total[currentIndex]);
+                buttonCheck = true; // right button clicked
                 currentIndex++;
-                lblRecord.Text = "Record " + (temp + 1) + " / " + total.Count();
                 txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
                 if (total[currentIndex - 1].Squad == 1)
                 {
@@ -793,25 +804,25 @@ namespace NineTapTour.Forms
             }
             else
             {
-                if (currentIndex <= 1)
+                //if (currentIndex <= 1)
+                if(currentIndex <= 0) // should be 0, must be able to read the member at currentIndex = 0;
                 {
                     MessageBox.Show("You can't go back!");
                 }
                 else
                 {
+                    buttonCheck = false;  //Left button clicked
                     currentIndex--;
-                    var temp = total.IndexOf(total[currentIndex]);
-                    lblRecord.Text = "Record " + currentIndex + " / " + total.Count();
-                    txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
-                    if (total[currentIndex - 1].Squad == 1)
+                    txtMemberNum.Text = Convert.ToString(total[currentIndex].Member.Number);
+                    if (total[currentIndex].Squad == 1)
                     {
                         rdoSquadOne.Checked = true;
                     }
-                    else if (total[currentIndex - 1].Squad == 2)
+                    else if (total[currentIndex].Squad == 2)
                     {
                         rdoSquadTwo.Checked = true;
                     }
-                    else if (total[currentIndex - 1].Squad == 3)
+                    else if (total[currentIndex].Squad == 3)
                     {
                         rdoSquadThree.Checked = true;
                     }
@@ -851,6 +862,7 @@ namespace NineTapTour.Forms
             // determines whether the tournament is a double tourney or not, then enables or disables the single and/or double textBox selection option
             if (selectedTournament == null)
             {
+                rdoScratchScore.Visible = false;
                 txtMemberNum.Enabled = false;
                 txtMemberNum2.Visible = false;
                 btnRecapByPin.Enabled = false;
@@ -873,6 +885,7 @@ namespace NineTapTour.Forms
             }
             else
             {
+                rdoScratchScore.Visible = true;
                 txtMemberNum.Enabled = true;
                 txtMemberNum2.Visible = false;
                 DoubleInitialize(false);
