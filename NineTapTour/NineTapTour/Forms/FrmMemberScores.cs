@@ -107,7 +107,8 @@ namespace NineTapTour.Forms
         {
             //addedd in this line inorder to prevent the reset of the drop down list on memberscores form when switching between forms
             int tempcbx = cbxTourneyDropDown.SelectedIndex;
-
+            rdoHandicapScore.Visible = false;
+            rdoScratchScore.Visible = false;
             cbxTourneyDropDown.Visible = false;
             ResetFields();
             
@@ -115,8 +116,7 @@ namespace NineTapTour.Forms
             cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             cbxTourneyDropDown.ValueMember = "Id";
-            cbxTourneyDropDown.SelectedIndex = -1;
-            cbxTourneyDropDown.SelectedIndex = 0;
+            
 
             List<Tournament> temp2 = TournamentDb.GetTournamentList();
             
@@ -136,6 +136,8 @@ namespace NineTapTour.Forms
                 RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
                 refresh(false);
                 // sets focus to member num becuse that is what a user will need next
+                rdoHandicapScore.Visible = true;
+                rdoScratchScore.Visible = true;
                 txtMemberNum.Focus();
             }
 
@@ -898,6 +900,8 @@ namespace NineTapTour.Forms
             if (cbxTourneyDropDown.SelectedIndex < 0)
             {
                 lblRecord.Text = "Record 0" + " / " + "0";
+                rdoHandicapScore.Visible = false;
+                rdoScratchScore.Visible = false;
                 DisableButtonsWhenValidTournamentSelected();
             }
             if (cbxTourneyDropDown.SelectedIndex >= 0 && cbxTourneyDropDown.Visible)
@@ -907,6 +911,8 @@ namespace NineTapTour.Forms
                 // Gets the record for the selected tournament
                 RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
                 refresh(false);
+                rdoHandicapScore.Visible = true;
+                rdoScratchScore.Visible = true;
                 // sets focus to member num becuse that is what a user will need next
                 txtMemberNum.Focus();
             }
@@ -1205,7 +1211,7 @@ namespace NineTapTour.Forms
                     for (int i = 0; i < scores.Count(); i++)
                     {
                         richTextBox1.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
-                                                + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
+                                                + "\t" + String.Format("{0, -5}", scores[i].Score +"   "+ "\n"));
                     }
                 }
 #endregion
@@ -1253,7 +1259,7 @@ namespace NineTapTour.Forms
                     for (int i = 0; i < scores.Count(); i++)
                     {
                         richTextBox2.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
-                                                + "\t" + String.Format("{0, -5}", scores[i].Score + "\n"));
+                                                + "\t" + String.Format("{0, -5}", scores[i].Score +" "+"\n"));
                     }
                 }
                 #endregion
