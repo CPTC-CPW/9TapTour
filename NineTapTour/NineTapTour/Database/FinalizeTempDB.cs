@@ -20,14 +20,15 @@ namespace NineTapTour.Database
                     if (!db.FinalizeTemp.Any(f => f.GameId == temp.GameId))
                     {
                         db.Entry(temp).State = EntityState.Added;
-                        /*******************************************************************
-                        updates the handicap of a member that participated in the tournament
-                        ***There is a problem in the database's member's average, so it was 
-                            not used, but I believe it should be(The problem might be when a 
-                            record is added it should update the member's average in the database.
-                        ********************************************************************/
+                        /*************************************************************************
+                        updates the handicap of a member that participated in the tournament in the database 
+                        ***There is a problem in the database's member's average, so it was not 
+                           used, but I believe it should be
+                           -The problem might be when a tournament record is added, it is not 
+                           updating the member's average in the database.
+                        *************************************************************************/
                         db.Members.First(x => x.Id == temp.MemberId).Handicap = Calculations.Calculations.CalculateHandicapPins(Convert.ToInt16(LeagueAverage(db.Members.First(x => x.Id == temp.MemberId))));
-                        /*******************************************************************/
+                        /************************************************************************/
                         db.SaveChanges();
                     }
 
@@ -40,7 +41,7 @@ namespace NineTapTour.Database
         }
         /***************************************************************
         calculates the average
-        *****note I saw this method twice now and this is the third one
+        ***note I saw this method twice now and this is the third one
         ****************************************************************/
         public static double LeagueAverage(Member mem)
         {

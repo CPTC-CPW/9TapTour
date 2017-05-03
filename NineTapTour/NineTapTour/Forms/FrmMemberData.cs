@@ -193,11 +193,13 @@ namespace NineTapTour.Forms
 
                 txtAverage.Text = currentMem.StartAvg.ToString();
                 txtTournAvg.Text = LeagueAverage(currentMem).ToString();
-                /********
-                updates the forms handicap even when the finalize tournament button is clicked
-                ******/
-                txtHandicap.Text = db.Members.First(x => x.Id == currentMem.Id).Handicap.ToString();
-                /*****/
+                /********************************************************************************
+                updates the form's handicap even when the finalize tournament button is clicked
+                -also updates the currentMem's handicap, so when the tournamnent gets it, it is the right handicap
+                *********************************************************************************/
+                currentMem.Handicap = db.Members.First(x => x.Id == currentMem.Id).Handicap;
+                txtHandicap.Text = currentMem.Handicap.ToString(); 
+                /********************************************************************************/
                 txtBonus.Text = currentMem.Bonus.ToString();
                 
                 #endregion
