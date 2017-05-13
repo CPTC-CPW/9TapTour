@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -431,6 +432,27 @@ namespace Member_Import_Test
                 var md = new FrmMemberData(invalidMembers, this);
                 md.Show();
                 Hide();
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath)) {
+                    string[] files = Directory.GetFiles(fbd.SelectedPath);
+                    for (int i = 0; i < files.Length; i++ )
+                    {
+                        if (Path.GetExtension(files[i]) != ".xls")
+                        {
+                            continue;
+                        }
+                        //Diagonstic line below... comment it out later...
+                        MessageBox.Show(files[i]);
+
+                    }
+                }
             }
         }
     }
