@@ -3,12 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.OleDb;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Member_Import_Test
 {
@@ -448,12 +451,59 @@ namespace Member_Import_Test
                         {
                             continue;
                         }
-                        //Diagonstic line below... comment it out later...
-                        MessageBox.Show(files[i]);
-
+                        ProcessExcelFile(files[i]);
                     }
                 }
             }
+        }
+
+        private static void ProcessExcelFile(string PathAndFileName)
+        {
+            MessageBox.Show(PathAndFileName);
+
+
+            Excel.Application xlApp;
+            Excel.Workbook xlWorkBook;
+            Excel.Worksheet xlWorkSheet;
+            Excel.Range range;
+
+            string str;
+            int rCnt;
+            int cCnt;
+            int rw = 0;
+            int cl = 0;
+
+            xlApp = new Excel.Application();
+            xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "", true, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
+            xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+
+            range = xlWorkSheet.UsedRange;
+            rw = range.Rows.Count;
+            cl = range.Columns.Count;
+
+
+            for (rCnt = 1; rCnt <= rw; rCnt++)
+            {
+                for (cCnt = 1; cCnt <= cl; cCnt++)
+                {
+                    str = Convert.ToString( (range.Cells[rCnt, cCnt] as Excel.Range).Value2 );
+                    MessageBox.Show("Row/col: " + rCnt + "/" + cCnt + "\n" +  str);
+                }
+            }
+
+            xlWorkBook.Close(true, null, null);
+            xlApp.Quit();
+
+            Marshal.ReleaseComObject(xlWorkSheet);
+            Marshal.ReleaseComObject(xlWorkBook);
+            Marshal.ReleaseComObject(xlApp);
+
+
+
+
+
+
+
         }
     }
 }
