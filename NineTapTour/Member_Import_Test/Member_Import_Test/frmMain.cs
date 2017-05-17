@@ -459,51 +459,40 @@ namespace Member_Import_Test
 
         private static void ProcessExcelFile(string PathAndFileName)
         {
+            //coment out later Diagnostic line!
             MessageBox.Show(PathAndFileName);
+            
+            Excel.Application xlApp = new Excel.Application();
+            Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
+            Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+            Excel.Range range = xlWorkSheet.UsedRange;
 
 
-            Excel.Application xlApp;
-            Excel.Workbook xlWorkBook;
-            Excel.Worksheet xlWorkSheet;
-            Excel.Range range;
-
-            string str;
-            int rCnt;
-            int cCnt;
-            int rw = 0;
-            int cl = 0;
-
-            xlApp = new Excel.Application();
-            xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "", true, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
-            xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-
-            range = xlWorkSheet.UsedRange;
-            rw = range.Rows.Count;
-            cl = range.Columns.Count;
-
-
-            for (rCnt = 1; rCnt <= rw; rCnt++)
+            //***********************************************************************************************
+            //      This will message box each row and column in the excel doc...
+            //      In plane english it will show you what is in each cell of an excel doc... Because we
+            //          will be working with a univercial excel files we can just grab the data we want 
+            //          from the cells that we want... :)
+            //***********************************************************************************************
+            string DataFromCell = "";
+            for (int row = 1; row <= range.Rows.Count; row++)
             {
-                for (cCnt = 1; cCnt <= cl; cCnt++)
+                for (int col = 1; col <= range.Columns.Count; col++)
                 {
-                    str = Convert.ToString( (range.Cells[rCnt, cCnt] as Excel.Range).Value2 );
-                    MessageBox.Show("Row/col: " + rCnt + "/" + cCnt + "\n" +  str);
+                    DataFromCell += "\nRow/col: " + row + "/" + col + "\n" + Convert.ToString( (range.Cells[row, col] as Excel.Range).Value2 );
                 }
             }
+            MessageBox.Show(DataFromCell);
+            //***********************************************************************************************
+            //***********************************************************************************************
 
-            xlWorkBook.Close(true, null, null);
+
+            xlWorkBook.Close(false);
             xlApp.Quit();
 
             Marshal.ReleaseComObject(xlWorkSheet);
             Marshal.ReleaseComObject(xlWorkBook);
             Marshal.ReleaseComObject(xlApp);
-
-
-
-
-
-
-
         }
     }
 }
