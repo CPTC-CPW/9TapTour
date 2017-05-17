@@ -479,8 +479,9 @@ namespace Member_Import_Test
             {
                 for (int col = 1; col <= range.Columns.Count; col++)
                 {
-                    DataFromCell += "\nRow/col: " + row + "/" + col + "\n" + Convert.ToString( (range.Cells[row, col] as Excel.Range).Value2 );
+                    DataFromCell += row + "/" + col + " : " + Convert.ToString( (range.Cells[row, col] as Excel.Range).Value2 ) + ", ";
                 }
+                DataFromCell += "\n";
             }
             MessageBox.Show(DataFromCell);
             //***********************************************************************************************
