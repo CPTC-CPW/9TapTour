@@ -3,12 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.OleDb;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Member_Import_Test
 {
@@ -448,12 +451,48 @@ namespace Member_Import_Test
                         {
                             continue;
                         }
-                        //Diagonstic line below... comment it out later...
-                        MessageBox.Show(files[i]);
-
+                        ProcessExcelFile(files[i]);
                     }
                 }
             }
+        }
+
+        private static void ProcessExcelFile(string PathAndFileName)
+        {
+            //coment out later Diagnostic line!
+            MessageBox.Show(PathAndFileName);
+            
+            Excel.Application xlApp = new Excel.Application();
+            Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
+            Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+            Excel.Range range = xlWorkSheet.UsedRange;
+
+
+            //***********************************************************************************************
+            //      This will message box each row and column in the excel doc...
+            //      In plane english it will show you what is in each cell of an excel doc... Because we
+            //          will be working with a univercial excel files we can just grab the data we want 
+            //          from the cells that we want... :)
+            //***********************************************************************************************
+            string DataFromCell = "";
+            for (int row = 1; row <= range.Rows.Count; row++)
+            {
+                for (int col = 1; col <= range.Columns.Count; col++)
+                {
+                    DataFromCell += "\nRow/col: " + row + "/" + col + "\n" + Convert.ToString( (range.Cells[row, col] as Excel.Range).Value2 );
+                }
+            }
+            MessageBox.Show(DataFromCell);
+            //***********************************************************************************************
+            //***********************************************************************************************
+
+
+            xlWorkBook.Close(false);
+            xlApp.Quit();
+
+            Marshal.ReleaseComObject(xlWorkSheet);
+            Marshal.ReleaseComObject(xlWorkBook);
+            Marshal.ReleaseComObject(xlApp);
         }
     }
 }
