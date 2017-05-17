@@ -494,5 +494,27 @@ namespace Member_Import_Test
             Marshal.ReleaseComObject(xlWorkBook);
             Marshal.ReleaseComObject(xlApp);
         }
+
+        private void btnPinFileSelect_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    string[] files = Directory.GetFiles(fbd.SelectedPath);
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        if (Path.GetExtension(files[i]) != ".pin")
+                        {
+                            continue;
+                        }
+                        ProcessExcelFile(files[i]);
+                    }
+                }
+            }
+        }
+
     }
 }
+
