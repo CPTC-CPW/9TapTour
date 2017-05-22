@@ -449,7 +449,7 @@ namespace Member_Import_Test
                 DialogResult result = fbd.ShowDialog();
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath)) {
                     string[] files = Directory.GetFiles(fbd.SelectedPath);
-                    
+                    GetAllExcelData(files);
                 }
             }
         }
@@ -480,17 +480,17 @@ namespace Member_Import_Test
             Excel.Range range = xlWorkSheet.UsedRange;
 
             string playerName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
-            int playerOrgAVG = Convert.ToString((range.Cells[1, 10] as Excel.Range).Value2);
-            int playerNumber = Convert.ToString((range.Cells[1, 14] as Excel.Range).Value2);
+            int playerOrgAVG = Convert.ToInt32((range.Cells[1, 10] as Excel.Range).Value2);
+            int playerNumber = Convert.ToInt32((range.Cells[1, 14] as Excel.Range).Value2);
 
             List<ExcelRow> returnMe = new List<ExcelRow>();
 
             for (int row = 3; row <= range.Rows.Count; row++)
             {
-                if (    Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == null
-                     && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == null
-                     && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == null
-                     && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == null)
+                if (    Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0
+                     && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0
+                     && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0
+                     && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
                 {
                     continue;
                 }
@@ -499,7 +499,7 @@ namespace Member_Import_Test
                 temp.PlayerOrginalAVG = playerOrgAVG;
                 temp.PlayerNumber = playerNumber;
                 temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
-                temp.Date = Convert.ToDateTime((range.Cells[row, 2] as Excel.Range).Value2);
+                temp.Date = DateTime.FromOADate(Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2));
                 temp.Game1 = Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2);
                 temp.Game2 = Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2);
                 temp.Game3 = Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2);
