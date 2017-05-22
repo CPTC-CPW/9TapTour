@@ -55,6 +55,8 @@ namespace Member_Import_Test
                                    StreetSpace, EmailSpace, CitySpace, StateSpace, ZipSpace, NotesSpace, AVGSpace, HCSpace, BSpace,
                                    LastBSpace, YearEndTSpace, MoneyESpace, RejoinDSpace, ReferalSpace, SSSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, DOBSpace};
 
+        private static List<ExcelRow> ALLEXCELDATA = new List<ExcelRow>();
+
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
             //Filter to limit the types of files that can be opened with the file open dialog
@@ -445,55 +447,82 @@ namespace Member_Import_Test
                 DialogResult result = fbd.ShowDialog();
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath)) {
                     string[] files = Directory.GetFiles(fbd.SelectedPath);
-                    for (int i = 0; i < files.Length; i++ )
-                    {
-                        if (Path.GetExtension(files[i]) != ".xls")
-                        {
-                            continue;
-                        }
-                        ProcessExcelFile(files[i]);
-                    }
+                    
                 }
             }
         }
 
-        private static void ProcessExcelFile(string PathAndFileName)
+        private static List<ExcelRow> GetAllExcelData(string[] files)
         {
-            //coment out later Diagnostic line!
-            MessageBox.Show(PathAndFileName);
-            
+            for (int i = 0; i < files.Length; i++)
+            {
+                if (Path.GetExtension(files[i]) != ".xls")
+                {
+                    continue;
+                }
+
+                List<ExcelRow> rows = ProcessExcelFile(files[i]);
+                foreach (ExcelRow r in rows)
+                {
+                    ALLEXCELDATA.Add(r);
+                }
+            }
+            return ALLEXCELDATA;
+        }
+
+        private static List<ExcelRow> ProcessExcelFile(string PathAndFileName)
+        {
             Excel.Application xlApp = new Excel.Application();
             Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
             Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
             Excel.Range range = xlWorkSheet.UsedRange;
 
+            string playerName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
+            int playerOrgAVG = Convert.ToString((range.Cells[1, 10] as Excel.Range).Value2);
+            int playerNumber = Convert.ToString((range.Cells[1, 14] as Excel.Range).Value2);
 
-            //***********************************************************************************************
-            //      This will message box each row and column in the excel doc...
-            //      In plane english it will show you what is in each cell of an excel doc... Because we
-            //          will be working with a univercial excel files we can just grab the data we want 
-            //          from the cells that we want... :)
-            //***********************************************************************************************
-            string DataFromCell = "";
-            for (int row = 1; row <= range.Rows.Count; row++)
+            List<ExcelRow> returnMe = new List<ExcelRow>();
+
+            for (int row = 3; row <= range.Rows.Count; row++)
             {
-                for (int col = 1; col <= range.Columns.Count; col++)
+                if (    Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == null
+                     && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == null
+                     && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == null
+                     && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == null)
                 {
-                    DataFromCell += row + "/" + col + " : " + Convert.ToString( (range.Cells[row, col] as Excel.Range).Value2 ) + ", ";
+                    continue;
                 }
-                DataFromCell += "\n";
+                ExcelRow temp = new ExcelRow();
+                temp.PlayerName = playerName;
+                temp.PlayerOrginalAVG = playerOrgAVG;
+                temp.PlayerNumber = playerNumber;
+                temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
+                temp.Date = Convert.ToDateTime((range.Cells[row, 2] as Excel.Range).Value2);
+                temp.Game1 = Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2);
+                temp.Game2 = Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2);
+                temp.Game3 = Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2);
+                temp.Game4 = Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2);
+                temp.Total = Convert.ToInt32((range.Cells[row, 7] as Excel.Range).Value2);
+                temp.AverageOfRow = Convert.ToDouble((range.Cells[row, 8] as Excel.Range).Value2);
+                temp.TrueAverage = Convert.ToDouble((range.Cells[row, 9] as Excel.Range).Value2);
+                temp.AVG = Convert.ToInt32((range.Cells[row, 10] as Excel.Range).Value2);
+                temp.Bonus = Convert.ToInt32((range.Cells[row, 11] as Excel.Range).Value2);
+                temp.HandyCap = Convert.ToString((range.Cells[row, 12] as Excel.Range).Value2);
+                temp.PotPro = Convert.ToString((range.Cells[row, 13] as Excel.Range).Value2);
+                temp.FinPPHG = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
+                temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
+                temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
+
+                returnMe.Add(temp);
             }
-            MessageBox.Show(DataFromCell);
-            //***********************************************************************************************
-            //***********************************************************************************************
-
-
+            
             xlWorkBook.Close(false);
             xlApp.Quit();
 
             Marshal.ReleaseComObject(xlWorkSheet);
             Marshal.ReleaseComObject(xlWorkBook);
             Marshal.ReleaseComObject(xlApp);
+            return returnMe;
         }
 
         private void btnPinFileSelect_Click(object sender, EventArgs e)

@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\DBQueries.cs" />
+    <Compile Include="Classes\ExcelRow.cs" />
     <Compile Include="FrmMemberData.cs">
       <SubType>Form</SubType>
     </Compile>
