@@ -1,6 +1,7 @@
 namespace Member_Import_Test
 {
     using Classes;
+    using NineTapTour.Database;
     using System;
     using System.Data.Entity;
     using System.Linq;

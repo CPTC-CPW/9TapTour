@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Member_Import_Test.Classes;
+using NineTapTour.Database;
 
 namespace Member_Import_Test
 {
@@ -330,7 +331,7 @@ namespace Member_Import_Test
                     MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
                     //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
                     Notes = txtNotes.Text,
-                    Referrals = txtReferrals.Text
+                    Referrals = Convert.ToInt16(txtReferrals.Text)
                     #endregion
                 };
                 //}

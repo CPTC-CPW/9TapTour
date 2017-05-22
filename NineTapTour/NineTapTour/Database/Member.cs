@@ -70,6 +70,7 @@ namespace NineTapTour.Database
         public int? Referrals { get; set; }
         [Required]
         public bool IsSenior { get; set; }
+        public decimal MoneyEarned { get; set; }
         #endregion
 
         public override string ToString()

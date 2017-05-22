@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
+using NineTapTour.Database;
 
 namespace Member_Import_Test
 {
@@ -75,6 +76,7 @@ namespace Member_Import_Test
                 int validCount = 0; //count of valid members added
                 int invalidCount = 0; //count of invalid members added
                 int MemberCount = 1; //number of current member
+
                 do  // A do while to substring from the main string
                 {
                     bool validMember = true; // to determin if goes on seperate list
@@ -284,18 +286,18 @@ namespace Member_Import_Test
                                     bool isNum = int.TryParse(str, out num);
                                     if(isNum)
                                     {
-                                        newMem.Referrals = (File.Substring(currentIndex, Spaces[i]).Trim());
+                                        newMem.Referrals = Convert.ToInt16(File.Substring(currentIndex, Spaces[i]).Trim());
                                     }
                                     else
                                     {
-                                        newMem.Referrals = (File.Substring(currentIndex, Spaces[i]).Trim());
+                                        newMem.Referrals = Convert.ToInt16(File.Substring(currentIndex, Spaces[i]).Trim());
                                         validMember = false;
                                     }
                                     
                                 }
                                 else
                                 {
-                                    newMem.Referrals = "";
+                                    newMem.Referrals = null;
                                 }
                                 break;
                             case 22://Social Security Number
@@ -542,6 +544,13 @@ namespace Member_Import_Test
                         ProcessExcelFile(files[i]);
                     }
                 }
+            }
+        }
+        private void populateTournements(Tournament[] tournements)
+        {
+            foreach (Tournament t in tournements)
+            {
+                TournamentDb.AddTournament(t);
             }
         }
 
