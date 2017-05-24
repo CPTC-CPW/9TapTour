@@ -24,7 +24,7 @@ namespace Member_Import_Test.Classes
         public double TrueAverage { get; set; }
         public int AVG { get; set; }
         public int Bonus { get; set; }
-        public string HandyCap { get; set; }
+        public int HandyCap { get; set; }
         public string PotPro { get; set; }
         public string FinPPHG { get; set; }
         public double Cash { get; set; }

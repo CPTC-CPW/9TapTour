@@ -601,7 +601,13 @@ namespace Member_Import_Test
                     catch {
                         temp.Bonus = -1000;
                     }
-                    temp.HandyCap = Convert.ToString((range.Cells[row, 12] as Excel.Range).Value2);
+                    try
+                    {
+                        temp.HandyCap = Convert.ToInt32((range.Cells[row, 12] as Excel.Range).Value2);
+                    }
+                    catch {
+                        temp.HandyCap = -1;
+                    }
                     temp.PotPro = Convert.ToString((range.Cells[row, 13] as Excel.Range).Value2);
                     temp.FinPPHG = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
                     try
