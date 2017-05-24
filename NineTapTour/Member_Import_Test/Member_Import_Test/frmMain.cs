@@ -56,7 +56,7 @@ namespace Member_Import_Test
                                    StreetSpace, EmailSpace, CitySpace, StateSpace, ZipSpace, NotesSpace, AVGSpace, HCSpace, BSpace,
                                    LastBSpace, YearEndTSpace, MoneyESpace, RejoinDSpace, ReferalSpace, SSSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, DOBSpace};
 
-        private static List<ExcelRow> ALLEXCELDATA = new List<ExcelRow>();
+        private static List<ExcelRow> ALLEXCELDATAFROMALLPLAYERS = new List<ExcelRow>();
 
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
@@ -466,10 +466,10 @@ namespace Member_Import_Test
                 List<ExcelRow> rows = ProcessExcelFile(files[i]);
                 foreach (ExcelRow r in rows)
                 {
-                    ALLEXCELDATA.Add(r);
+                    ALLEXCELDATAFROMALLPLAYERS.Add(r);
                 }
             }
-            return ALLEXCELDATA;
+            return ALLEXCELDATAFROMALLPLAYERS;
         }
 
         private static List<ExcelRow> ProcessExcelFile(string PathAndFileName)
@@ -478,8 +478,14 @@ namespace Member_Import_Test
             Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
             Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
             Excel.Range range = xlWorkSheet.UsedRange;
-
-            string playerName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
+            string[] PlayerFinalFirstAndMiddle = { "", "" };
+            string playerFullName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
+            string playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
+            string firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
+            string[] first0middle1 = firstAndMiddle.Split(' ');
+            for (int i = 0; i < first0middle1.Length; i++) {
+                PlayerFinalFirstAndMiddle[i] = first0middle1[0];
+            }
             int playerOrgAVG = Convert.ToInt32((range.Cells[1, 10] as Excel.Range).Value2);
             int playerNumber = Convert.ToInt32((range.Cells[1, 14] as Excel.Range).Value2);
 
@@ -495,7 +501,9 @@ namespace Member_Import_Test
                     continue;
                 }
                 ExcelRow temp = new ExcelRow();
-                temp.PlayerName = playerName;
+                temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
+                temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
+                temp.PlayerLastName = playerLastName;
                 temp.PlayerOrginalAVG = playerOrgAVG;
                 temp.PlayerNumber = playerNumber;
                 temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);

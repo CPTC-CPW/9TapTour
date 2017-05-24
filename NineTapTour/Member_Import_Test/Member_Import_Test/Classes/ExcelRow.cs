@@ -8,7 +8,9 @@ namespace Member_Import_Test.Classes
 {
     class ExcelRow
     {
-        public string PlayerName { get; set; }
+        public string PlayerFirstName { get; set; }
+        public string PlayerMiddleName { get; set; }
+        public string PlayerLastName { get; set; }
         public int PlayerNumber { get; set; }
         public int PlayerOrginalAVG { get; set; }
         public int GameTotal { get; set; }
