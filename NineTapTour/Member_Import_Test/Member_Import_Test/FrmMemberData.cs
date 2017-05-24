@@ -328,7 +328,7 @@ namespace Member_Import_Test
                     #region Misc. Info
                     RejoinDate = Convert.ToDateTime(txtdateJoined.Text),
                     LastBowled = Convert.ToDateTime(txtlastBowled.Text),
-                    MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
+                   // MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
                     //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
                     Notes = txtNotes.Text,
                     Referrals = Convert.ToInt16(txtReferrals.Text)
