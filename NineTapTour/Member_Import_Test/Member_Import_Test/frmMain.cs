@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 using NineTapTour.Database;
+using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace Member_Import_Test
 {
@@ -57,6 +59,7 @@ namespace Member_Import_Test
                                    LastBSpace, YearEndTSpace, MoneyESpace, RejoinDSpace, ReferalSpace, SSSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, DOBSpace};
 
         private static List<ExcelRow> ALLEXCELDATAFROMALLPLAYERS = new List<ExcelRow>();
+        List<Tournament> TournamentList = new List<Tournament>();
 
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
@@ -67,7 +70,7 @@ namespace Member_Import_Test
             {
                 System.IO.StreamReader sr = new System.IO.StreamReader(ofdOpen.FileName);
                 //MessageBox.Show(sr.ReadToEnd()); //for debug purpose
-                String File = sr.ReadToEnd().Trim(); //it's easier to read into a string and work with the file rather than a streamreader, which has no direct position "index" access.
+                String File = sr.ReadToEnd(); //it's easier to read into a string and work with the file rather than a streamreader, which has no direct position "index" access.
                 sr.Close();
                 Member newMem = new Member(); // might not need this here, may move it.
                 int currentIndex = 0; //starting index
@@ -77,353 +80,361 @@ namespace Member_Import_Test
                 int invalidCount = 0; //count of invalid members added
                 int MemberCount = 1; //number of current member
 
-                do  // A do while to substring from the main string
+
+                while (currentIndex >= 0)
                 {
-                    bool validMember = true; // to determin if goes on seperate list
-                    bool genderSelected = false; //check if gender has been selected 
-                    bool status = false; // check if status has been selected
-                    currentIndex = File.IndexOf(Convert.ToString(MemberCount), currentIndex);
-                    for (i = 0; i < Spaces.Length; i++)
-                    {  
-                        switch (i)
+                    do  // A do while to substring from the main string
+                    {
+                        bool validMember = true; // to determin if goes on seperate list
+                        bool genderSelected = false; //check if gender has been selected 
+                        bool status = false; // check if status has been selected
+                        currentIndex = File.IndexOf(Convert.ToString(MemberCount), currentIndex);
+                        if(currentIndex == -1)
                         {
-                            case 0://Member Number
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.Number = Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim());
-                                }                                
-                                break;
-                            case 1://Date Joined
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.JoinDate = Convert.ToDateTime(File.Substring(currentIndex, Spaces[i]).Trim());
-                                }  
-                                break;
-                            case 2://Last Name
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.LastName = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                }
-                                else
-                                {
-                                    validMember = false;
-                                }
-                                    
-                                break;
-                            case 3://First Name
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-
-                                    //newMem.FirstName = (File.Substring(currentIndex, Spaces[i]).Trim());
-
-                                    //Idea #1: Using String.Replace\\
-                                    //Simple method, but would have to account for all possible cases of extra data
-
-                                    string fName = File.Substring(currentIndex, Spaces[i]).Trim();
-                                    fName = fName.Replace("life", " ").Trim();
-                                    fName = fName.Replace("gst", " ").Trim();
-                                    fName = fName.Replace("(Haw.)", " ").Trim();
-                                    newMem.FirstName = fName;
-
-                                    //Idea #2 Using String.Split\\
-                                    //Issue if name contains space, would have to check for additional parts of name
-
-                                    //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
-                                    //string[] split = fName.Split(' ');
-                                    //newMem.FirstName = split[0];
-
-                                    //Idea #3 Using String.Substring\\
-                                    //Issue arises if spaces between names.
-
-                                    //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
-                                    //if(fName.Contains(' '))
-                                    //{
-                                    //   fName = fName.Substring(0, fName.LastIndexOf(' ')).Trim();                  
-                                    //}
-                                    //newMem.FirstName = fName;
-
-                                    //Idea #4: Using String.Contains\\
-                                    //Could improve this with an array to check for each indivual possibilty of extra data, to be able
-                                    //then to use the the indexOf whatever data it found.
-
-                                    //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
-                                    //if (fName.ToLower().Contains("life") || fName.ToLower().Contains("gst") || fName.ToLower().Contains("(haw.)"))
-                                    //{
-                                    //    fName = fName.Substring(0, fName.LastIndexOf(' ')).Trim();
-                                    //}
-                                    //newMem.FirstName = fName;
-
-                                    //Idea #5 Using String.EndsWith
-
-                                    //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
-                                    //if(fName.ToLower().EndsWith("life") || fName.ToLower().EndsWith("gst") || fName.ToLower().EndsWith(")"))
-                                    //{
-                                    //    fName = fName.Substring(0, fName.LastIndexOf(' ')).Trim();
-                                    //}
-                                    //newMem.FirstName = fName;
-                                }
-                                else
-                                {
-                                    validMember = false;
-                                }
-                                break;
-                            case 4://Middle Initial
-                                newMem.MiddleInitial = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                break;
-                            case 5://Primary Phone
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.PrimaryPhone = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                }
-                                else
-                                {
-                                    validMember = false;
-                                }
-                                break;
-                            //case 6://Secondary Phone
-                            //    newMem.SecondaryPhone = (File.Substring(currentIndex, Spaces[i]).Trim());
-                            //    break;
-                            case 7://Cell Phone
-                                newMem.SecondaryPhone = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                break;
-                            case 8://Street Address
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.Street = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                }
-                                else
-                                {
-                                    validMember = false;
-                                }
-                                break;
-                            case 9://Email Address
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.Email = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                }
-                                else
-                                {
-                                    validMember = false;
-                                }             
-                                break;
-                            case 10://City
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.City = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                }
-                                else
-                                {
-                                    validMember = false;
-                                }
-                                break;
-                            case 11://State
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.State = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                }
-                                else
-                                {
-                                    validMember = false;
-                                }
-                                break;
-                            case 12://Zip
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.PostalCode = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                }
-                                else
-                                {
-                                    validMember = false;
-                                }
-                                break;
-                            case 13://Notes
-                                newMem.Notes = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                break;
-                            case 14://Average
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.Average = Convert.ToInt32((File.Substring(currentIndex, Spaces[i]).Trim()));
-                                }
-                                break;
-                            case 15://Handicap
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.Handicap = Convert.ToInt32((File.Substring(currentIndex, Spaces[i]).Trim()));
-                                }
-                                break;
-                            case 16://Bonus
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.Bonus = Convert.ToInt32((File.Substring(currentIndex, Spaces[i]).Trim()));
-                                }  
-                                break;
-                            case 17://Date Last Bowled
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.LastBowled = Convert.ToDateTime((File.Substring(currentIndex, Spaces[i]).Trim()));
-                                }
-                                break;
-                            /*case 18:
-                                This is the year end tournaments which currently are not stored/not being used*/
-                            case 19://Money Earned
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.MoneyEarned = Convert.ToDecimal((File.Substring(currentIndex, Spaces[i]).Trim()));
-                                }
-                                break;
-                            case 20://Rejoin Date
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.RejoinDate = Convert.ToDateTime((File.Substring(currentIndex, Spaces[i]).Trim()));
-                                }  
-                                break;
-                            case 21://Referrals
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    Console.WriteLine(File.Substring(currentIndex, Spaces[i]).Trim());
-                                    string str = File.Substring(currentIndex, Spaces[i]).Trim();
-                                    int num;
-                                    bool isNum = int.TryParse(str, out num);
-                                    if(isNum)
+                            break;
+                        }
+                        for (i = 0; i < Spaces.Length; i++)
+                        {
+                            switch (i)
+                            {
+                                case 0://Member Number
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
-                                        newMem.Referrals = Convert.ToInt16(File.Substring(currentIndex, Spaces[i]).Trim());
+                                        newMem.Number = Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim());
+                                    }
+                                    break;
+                                case 1://Date Joined
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        newMem.JoinDate = Convert.ToDateTime(File.Substring(currentIndex, Spaces[i]).Trim());
+                                    }
+                                    break;
+                                case 2://Last Name
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        newMem.LastName = (File.Substring(currentIndex, Spaces[i]).Trim());
                                     }
                                     else
                                     {
-                                        newMem.Referrals = Convert.ToInt16(File.Substring(currentIndex, Spaces[i]).Trim());
                                         validMember = false;
                                     }
-                                    
-                                }
-                                else
-                                {
-                                    newMem.Referrals = null;
-                                }
-                                break;
-                            case 22://Social Security Number
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.SSN = File.Substring(currentIndex, Spaces[i]).Trim();
-                                }
-                                else
-                                {
-                                    validMember = false;
-                                }
-                                break;
-                            /*case 23:
-                                Unused member for life checkbox*/
-                            case 24://Active Member
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
+
+                                    break;
+                                case 3://First Name
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
-                                        newMem.IsActive = true;
-                                        status = true;
-                                    }
-                                }
-                                break;
-                            /*case 25:
-                                Unused pre paid checkbox from original form*/
-                            case 26://Inactive Member
-                                if(!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    if(status && Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
-                                    {
-                                        validMember = false;
-                                        break;
-                                    }
-                                    if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
-                                    {
-                                        newMem.IsActive = false;
-                                    }
-                                }
-                                
-                                break;
-                            case 27://Senior
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
-                                    {
-                                        newMem.IsSenior = true;
-                                    }
-                                }
-                                break;
-                            case 28://Gender Female
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
-                                    {
-                                        newMem.Gender = MemberGenders.Female;
-                                        genderSelected = true;
-                                    }
-                                }
-                                break;
-                            case 29://Gender Male
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    if(genderSelected && Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
-                                    {
-                                        validMember = false;
-                                        break;
-                                    }
-                                    if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
-                                    {
-                                        newMem.Gender = MemberGenders.Male;
-                                    }
-                                }
-                                break;
-                            case 30://Birth Date
-                                if (File.Length - currentIndex < 8 || !String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    if(File.Length - currentIndex < 8)
-                                    {
-                                        Console.WriteLine(File.Substring(currentIndex));
-                                        newMem.DateOfBirth = Convert.ToDateTime(File.Substring(currentIndex));
+
+                                        //newMem.FirstName = (File.Substring(currentIndex, Spaces[i]).Trim());
+
+                                        //Idea #1: Using String.Replace\\
+                                        //Simple method, but would have to account for all possible cases of extra data
+
+                                        string fName = File.Substring(currentIndex, Spaces[i]).Trim();
+                                        fName = fName.Replace("life", " ").Trim();
+                                        fName = fName.Replace("gst", " ").Trim();
+                                        fName = fName.Replace("(Haw.)", " ").Trim();
+                                        newMem.FirstName = fName;
+
+                                        //Idea #2 Using String.Split\\
+                                        //Issue if name contains space, would have to check for additional parts of name
+
+                                        //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
+                                        //string[] split = fName.Split(' ');
+                                        //newMem.FirstName = split[0];
+
+                                        //Idea #3 Using String.Substring\\
+                                        //Issue arises if spaces between names.
+
+                                        //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
+                                        //if(fName.Contains(' '))
+                                        //{
+                                        //   fName = fName.Substring(0, fName.LastIndexOf(' ')).Trim();                  
+                                        //}
+                                        //newMem.FirstName = fName;
+
+                                        //Idea #4: Using String.Contains\\
+                                        //Could improve this with an array to check for each indivual possibilty of extra data, to be able
+                                        //then to use the the indexOf whatever data it found.
+
+                                        //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
+                                        //if (fName.ToLower().Contains("life") || fName.ToLower().Contains("gst") || fName.ToLower().Contains("(haw.)"))
+                                        //{
+                                        //    fName = fName.Substring(0, fName.LastIndexOf(' ')).Trim();
+                                        //}
+                                        //newMem.FirstName = fName;
+
+                                        //Idea #5 Using String.EndsWith
+
+                                        //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
+                                        //if(fName.ToLower().EndsWith("life") || fName.ToLower().EndsWith("gst") || fName.ToLower().EndsWith(")"))
+                                        //{
+                                        //    fName = fName.Substring(0, fName.LastIndexOf(' ')).Trim();
+                                        //}
+                                        //newMem.FirstName = fName;
                                     }
                                     else
+                                    {
+                                        validMember = false;
+                                    }
+                                    break;
+                                case 4://Middle Initial
+                                    newMem.MiddleInitial = (File.Substring(currentIndex, Spaces[i]).Trim());
+                                    break;
+                                case 5://Primary Phone
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        newMem.PrimaryPhone = (File.Substring(currentIndex, Spaces[i]).Trim());
+                                    }
+                                    else
+                                    {
+                                        validMember = false;
+                                    }
+                                    break;
+                                //case 6://Secondary Phone
+                                //    newMem.SecondaryPhone = (File.Substring(currentIndex, Spaces[i]).Trim());
+                                //    break;
+                                case 7://Cell Phone
+                                    newMem.SecondaryPhone = (File.Substring(currentIndex, Spaces[i]).Trim());
+                                    break;
+                                case 8://Street Address
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        newMem.Street = (File.Substring(currentIndex, Spaces[i]).Trim());
+                                    }
+                                    else
+                                    {
+                                        validMember = false;
+                                    }
+                                    break;
+                                case 9://Email Address
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        newMem.Email = (File.Substring(currentIndex, Spaces[i]).Trim());
+                                    }
+                                    else
+                                    {
+                                        validMember = false;
+                                    }
+                                    break;
+                                case 10://City
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        newMem.City = (File.Substring(currentIndex, Spaces[i]).Trim());
+                                    }
+                                    else
+                                    {
+                                        validMember = false;
+                                    }
+                                    break;
+                                case 11://State
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        newMem.State = (File.Substring(currentIndex, Spaces[i]).Trim());
+                                    }
+                                    else
+                                    {
+                                        validMember = false;
+                                    }
+                                    break;
+                                case 12://Zip
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        newMem.PostalCode = (File.Substring(currentIndex, Spaces[i]).Trim());
+                                    }
+                                    else
+                                    {
+                                        validMember = false;
+                                    }
+                                    break;
+                                case 13://Notes
+                                    newMem.Notes = (File.Substring(currentIndex, Spaces[i]).Trim());
+                                    break;
+                                case 14://Average
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        newMem.Average = Convert.ToInt32((File.Substring(currentIndex, Spaces[i]).Trim()));
+                                    }
+                                    break;
+                                case 15://Handicap
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        newMem.Handicap = Convert.ToInt32((File.Substring(currentIndex, Spaces[i]).Trim()));
+                                    }
+                                    break;
+                                case 16://Bonus
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        newMem.Bonus = Convert.ToInt32((File.Substring(currentIndex, Spaces[i]).Trim()));
+                                    }
+                                    break;
+                                case 17://Date Last Bowled
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        newMem.LastBowled = Convert.ToDateTime((File.Substring(currentIndex, Spaces[i]).Trim()));
+                                    }
+                                    break;
+                                /*case 18:
+                                    This is the year end tournaments which currently are not stored/not being used*/
+                                case 19://Money Earned
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        newMem.MoneyEarned = Convert.ToDecimal((File.Substring(currentIndex, Spaces[i]).Trim()));
+                                    }
+                                    break;
+                                case 20://Rejoin Date
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        newMem.RejoinDate = Convert.ToDateTime((File.Substring(currentIndex, Spaces[i]).Trim()));
+                                    }
+                                    break;
+                                case 21://Referrals
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         Console.WriteLine(File.Substring(currentIndex, Spaces[i]).Trim());
-                                        newMem.DateOfBirth = Convert.ToDateTime(File.Substring(currentIndex, Spaces[i]).Trim());
-                                    }
-                                    
-                                }
-                                else
-                                {
-                                    validMember = false;
-                                }   
-                                break;
-                        }
-                        currentIndex += Spaces[i];
-                    }
-                    if(validMember)
-                    {
-                        //valid count to show user at end
-                        validCount++;
-                        //add good members to valid list to add to database once done reading file
-                        validMembers.Add(newMem);
-                    }
-                    else
-                    {
-                        //invalid count to show the user at the end
-                        invalidCount++;
-                        //add invalid members to invalid list to be edited by user before adding to the database.
-                        invalidMembers.Add(newMem);
-                    }
-                    MemberCount++;
-                    newMem = new Member();
-                } while (currentIndex <= File.Length);
+                                        string str = File.Substring(currentIndex, Spaces[i]).Trim();
+                                        int num;
+                                        bool isNum = int.TryParse(str, out num);
+                                        if (isNum)
+                                        {
+                                            newMem.Referrals = Convert.ToInt16(File.Substring(currentIndex, Spaces[i]).Trim());
+                                        }
+                                        else
+                                        {
+                                            newMem.Referrals = Convert.ToInt16(File.Substring(currentIndex, Spaces[i]).Trim());
+                                            validMember = false;
+                                        }
 
-                // go through the members on the valid list and add them to the database
-                for (int j = 0; j < validMembers.Count; j++)
-                {
-                    //only add the member after checking if the memeber isn't already in the database.
-                    if (!DBQueries.MemberExists(validMembers[j]))
+                                    }
+                                    else
+                                    {
+                                        newMem.Referrals = null;
+                                    }
+                                    break;
+                                case 22://Social Security Number
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        newMem.SSN = File.Substring(currentIndex, Spaces[i]).Trim();
+                                    }
+                                    else
+                                    {
+                                        validMember = false;
+                                    }
+                                    break;
+                                /*case 23:
+                                    Unused member for life checkbox*/
+                                case 24://Active Member
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
+                                        {
+                                            newMem.IsActive = true;
+                                            status = true;
+                                        }
+                                    }
+                                    break;
+                                /*case 25:
+                                    Unused pre paid checkbox from original form*/
+                                case 26://Inactive Member
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        if (status && Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
+                                        {
+                                            validMember = false;
+                                            break;
+                                        }
+                                        if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
+                                        {
+                                            newMem.IsActive = false;
+                                        }
+                                    }
+
+                                    break;
+                                case 27://Senior
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
+                                        {
+                                            newMem.IsSenior = true;
+                                        }
+                                    }
+                                    break;
+                                case 28://Gender Female
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
+                                        {
+                                            newMem.Gender = MemberGenders.Female;
+                                            genderSelected = true;
+                                        }
+                                    }
+                                    break;
+                                case 29://Gender Male
+                                    if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        if (genderSelected && Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
+                                        {
+                                            validMember = false;
+                                            break;
+                                        }
+                                        if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
+                                        {
+                                            newMem.Gender = MemberGenders.Male;
+                                        }
+                                    }
+                                    break;
+                                case 30://Birth Date
+                                    if (File.Length - currentIndex < 8 || !String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
+                                    {
+                                        if (File.Length - currentIndex < 8)
+                                        {
+                                            Console.WriteLine(File.Substring(currentIndex));
+                                            newMem.DateOfBirth = Convert.ToDateTime(File.Substring(currentIndex));
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine(File.Substring(currentIndex, Spaces[i]).Trim());
+                                            newMem.DateOfBirth = Convert.ToDateTime(File.Substring(currentIndex, Spaces[i]).Trim());
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        validMember = false;
+                                    }
+                                    break;
+                            }
+                            currentIndex += Spaces[i];
+                        }
+                        if (validMember)
+                        {
+                            //valid count to show user at end
+                            validCount++;
+                            //add good members to valid list to add to database once done reading file
+                            validMembers.Add(newMem);
+                        }
+                        else
+                        {
+                            //invalid count to show the user at the end
+                            invalidCount++;
+                            //add invalid members to invalid list to be edited by user before adding to the database.
+                            invalidMembers.Add(newMem);
+                        }
+                        MemberCount++;
+                        newMem = new Member();
+                    } while (currentIndex <= File.Length);
+
+                    // go through the members on the valid list and add them to the database
+                    for (int j = 0; j < validMembers.Count; j++)
                     {
-                        DBQueries.AddMember(validMembers[j]);
+                        //only add the member after checking if the memeber isn't already in the database.
+                        if (!DBQueries.MemberExists(validMembers[j]))
+                        {
+                            DBQueries.AddMember(validMembers[j]);
+                        }
                     }
+                    //show the results to the user
+                    MessageBox.Show(validCount + " valid members processed, " + invalidCount + " invalid members processed.", "Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                //show the results to the user
-                MessageBox.Show(validCount + " valid members processed, " + invalidCount + " invalid members processed.", "Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -627,11 +638,109 @@ namespace Member_Import_Test
                         {
                             continue;
                         }
-                        ProcessExcelFile(files[i]);
+                        ProcessPinFile(files[i]);
                     }
                 }
             }
         }
+
+        private void ProcessPinFile(string PinFileName)
+        {
+            Tournament currentTournament = new Tournament();
+            //GETS DATE OUT OF FILE NAME
+            string tournament = "";
+            bool threeofFour = false;
+            string TournamentName = "";
+            string threeOf4 = " 3of4 ";
+            DateTime dt = DateTime.Today; //date extracted from the file name is put here
+            //Getting Tournament date from file name
+            string[] regexArray = new string[]    { @"\d{4}-\d{2}-\d{2}", // regex's used for valid dates in the fileName
+                                                    @"\d{4}-\d{2}-\d{1}",
+                                                    @"\d{4}-\d{1}-\d{2}",
+                                                    @"\d{4}-\d{1}-\d{1}",
+                                                    @"\d{2}-\d{2}-\d{4}",
+                                                    @"\d{1}-\d{2}-\d{4}",
+                                                    @"\d{2}-\d{1}-\d{4}",
+                                                    @"\d{1}-\d{1}-\d{4}",
+                                                    @"\d{2}-\d{2}-\d{2}",
+                                                    @"\d{1}-\d{2}-\d{2}",
+                                                    @"\d{1}-\d{1}-\d{2}",
+
+                                                   };
+            string[] CorrectFormat = new string[]
+                                                 {
+                                                     "yyyy-MM-dd",         // valid formats for Date Times (corresponds to the regexArray) ex. regexArray[0] = CorrectFormat[0]
+                                                     "yyyy-MM-d" ,
+                                                     "yyyy-M-dd" ,
+                                                     "yyyy-M-d"  ,
+                                                     "MM-dd-yyyy",
+                                                     "M-dd-yyyy" ,
+                                                     "MM-d-yyyy" ,
+                                                     "M-d-yyyy"  ,
+                                                     "MM-dd-yy"  ,
+                                                     "M-dd-yy"   ,
+                                                     "M-d-yy"    ,
+                                                 };
+
+            //for loop to check what date format is being used in the file name.
+            for (int n = 0; n < regexArray.Length; n++)
+            {
+                var regex = new Regex(regexArray[n]);  // sets the regex to a regex in the regexArray list to check if a valid date is in the file name.
+                tournament = Path.GetFileNameWithoutExtension(PinFileName.Trim());
+                {
+                    Match m = regex.Match(tournament);
+                    if (m.Success) //PROCESS INFO THAT HAS A VALID DATE
+                    {
+
+                        dt = DateTime.ParseExact(m.Value, CorrectFormat[n], CultureInfo.InvariantCulture);
+
+
+
+                        if (tournament.Contains(threeOf4))
+                        {
+                            threeofFour = true;
+                            TournamentName = tournament.Substring(0, tournament.Length - ((CorrectFormat[n].Length - 1) + threeOf4.Length));
+                        }
+                        else
+                        {
+                            threeofFour = false;
+                            TournamentName = tournament.Substring(0, tournament.Length - CorrectFormat[n].Length - 1);
+                        }
+
+
+                        break;
+                    }
+                    else if (n >= regexArray.Length - 1) //PROCESS INFO THAT DOESNT HAVE A VALID DATE TIME IN THE TITLE
+                    {
+                        dt = DateTime.Today; //sets defualt dt to the current date
+
+
+                        //GETS NAME OF THE TOURNAMENT OUT OF FILE NAME
+                        if (tournament.Contains(threeOf4))
+                        {
+                            threeofFour = true;
+                            TournamentName = tournament.Substring(0, tournament.Length - threeOf4.Length);
+                        }
+                        else
+                        {
+                            threeofFour = false;
+                            TournamentName = tournament;
+                        }
+
+                        break;
+
+                    }
+
+                }
+               
+            }
+            currentTournament.Date = dt;
+            currentTournament.Location = TournamentName;
+            currentTournament.ThreeOutOf4 = threeofFour;
+            TournamentList.Add(currentTournament);
+            currentTournament.Id = TournamentList.Count;
+        }
+
         private void populateTournements(Tournament[] tournements)
         {
             foreach (Tournament t in tournements)
@@ -640,6 +749,24 @@ namespace Member_Import_Test
             }
         }
 
+        private void btn_FinalizeData_Click(object sender, EventArgs e)
+        {
+            for(int members = 0; members < invalidMembers.Count; members++)//CHANGE TO VALID MEMBERS LIST ON LAUNCH. INVALID USED FOR TESTING
+            {
+                for(int ExcelFileSlot = 0; ExcelFileSlot < ALLEXCELDATAFROMALLPLAYERS.Count; ExcelFileSlot++)
+                {
+                    for(int pinFileSlot = 0; pinFileSlot < TournamentList.Count; pinFileSlot++)
+                    {
+                        //if Current selected member has an excel file and their excel file has a date == tournament date
+                        if(invalidMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber //CHANGE TO VALID MEMBERS LIST ON LAUNCH. INVALID USED FOR TESTING
+                        && ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Date == TournamentList[pinFileSlot].Date)
+                        {
+                            MessageBox.Show(invalidMembers[members].FirstName + " played in a tournament at " + TournamentList[pinFileSlot].Location + " on " + ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Date);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

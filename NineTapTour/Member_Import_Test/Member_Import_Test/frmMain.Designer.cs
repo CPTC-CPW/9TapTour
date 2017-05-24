@@ -36,6 +36,7 @@
             this.btnSelectExcelFolder = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.btnPinFileSelect = new System.Windows.Forms.Button();
+            this.btn_FinalizeData = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnOpenFile
@@ -105,11 +106,22 @@
             this.btnPinFileSelect.UseVisualStyleBackColor = true;
             this.btnPinFileSelect.Click += new System.EventHandler(this.btnPinFileSelect_Click);
             // 
+            // btn_FinalizeData
+            // 
+            this.btn_FinalizeData.Location = new System.Drawing.Point(499, 135);
+            this.btn_FinalizeData.Name = "btn_FinalizeData";
+            this.btn_FinalizeData.Size = new System.Drawing.Size(75, 23);
+            this.btn_FinalizeData.TabIndex = 8;
+            this.btn_FinalizeData.Text = "Finalize";
+            this.btn_FinalizeData.UseVisualStyleBackColor = true;
+            this.btn_FinalizeData.Click += new System.EventHandler(this.btn_FinalizeData_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(707, 235);
+            this.Controls.Add(this.btn_FinalizeData);
             this.Controls.Add(this.btnPinFileSelect);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.btnSelectExcelFolder);
@@ -134,6 +146,7 @@
         private System.Windows.Forms.Button btnSelectExcelFolder;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnPinFileSelect;
+        private System.Windows.Forms.Button btn_FinalizeData;
     }
 }
 
