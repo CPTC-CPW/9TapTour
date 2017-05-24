@@ -479,6 +479,7 @@ namespace Member_Import_Test
                 {
                     ALLEXCELDATAFROMALLPLAYERS.Add(r);
                 }
+                MessageBox.Show("All of the Member Excel Files have been Imported.");
             }
             return ALLEXCELDATAFROMALLPLAYERS;
         }
