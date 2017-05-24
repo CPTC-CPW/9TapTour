@@ -64,7 +64,7 @@ namespace Member_Import_Test
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
             //Filter to limit the types of files that can be opened with the file open dialog
-            ofdOpen.Filter = "Text Files (*.txt)|*.txt|Data Files (*.dat)|*.dat";
+            ofdOpen.Filter = "Data Files (*.dat)|*.dat|Text Files (*.txt)|*.txt";
             ofdOpen.Title = "Please Select a member file to open";
             if (ofdOpen.ShowDialog() == DialogResult.OK)
             {
@@ -748,53 +748,60 @@ namespace Member_Import_Test
             currentTournament.Id = TournamentList.Count;
         }
 
-        private void populateTournements(Tournament[] tournements)
-        {
-            foreach (Tournament t in tournements)
-            {
-                //TournamentDb.AddTournament(t);
-            }
-        }
 
         private void btn_FinalizeData_Click(object sender, EventArgs e)
         {
-            for(int members = 0; members < invalidMembers.Count; members++)//CHANGE TO VALID MEMBERS LIST ON LAUNCH. INVALID USED FOR TESTING
+            for(int pinFileSlot = 0; pinFileSlot < TournamentList.Count; pinFileSlot++)//CHANGE TO VALID MEMBERS LIST ON LAUNCH. INVALID USED FOR TESTING
             {
-                int squadnumber = 0;
+                
                 List<Participant> ParticipantsForTournament = new List<Participant>();
-                for (int ExcelFileSlot = 0; ExcelFileSlot < ALLEXCELDATAFROMALLPLAYERS.Count; ExcelFileSlot++)
+               
+              
+                for (int members = 0; members < invalidMembers.Count; members++)
                 {
-                    
-
-                    for (int pinFileSlot = 0; pinFileSlot < TournamentList.Count; pinFileSlot++)
+                    int squadnumber = 0;
+                    for (int ExcelFileSlot = 0; ExcelFileSlot < ALLEXCELDATAFROMALLPLAYERS.Count; ExcelFileSlot++)
                     {
                       
                         //if Current selected member has an excel file and their excel file has a date == tournament date
                         if(invalidMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber //CHANGE TO VALID MEMBERS LIST ON LAUNCH. INVALID USED FOR TESTING
                         && ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Date == TournamentList[pinFileSlot].Date)
                         {
+                           
                             squadnumber++;
                             MessageBox.Show(invalidMembers[members].FirstName + " played in a tournament at " + TournamentList[pinFileSlot].Location + " on " + ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Date);
                             Participant currentParticipant = new Participant();
                             currentParticipant.Tournament = TournamentList[pinFileSlot];
                             currentParticipant.Member = invalidMembers[members];
                             currentParticipant.Squad = squadnumber;
+                            
 
                             Game currentGame = new Game();
+                            currentGame.Id = squadnumber;
                             currentGame.Game1 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game1;
                             currentGame.Game2 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game2;
                             currentGame.Game3 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game3;
                             currentGame.Game4 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game4;
-                            //currentGame.Handicap = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].HandyCap;
-                            //currentGame.Bonus = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Bonus;
+                            currentGame.Handicap = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].HandyCap;
+                            currentGame.Bonus = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Bonus;
                             currentGame.InputtedAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].AVG; //comback
 
                             currentParticipant.Game = currentGame;
-
                             ParticipantsForTournament.Add(currentParticipant);
+                            currentParticipant.Id = ParticipantsForTournament.Count;
                         }
                     }
                 }
+              
+                TournamentList[pinFileSlot].Participant = ParticipantsForTournament;
+            }
+            populateTournements(TournamentList);
+        }
+        private void populateTournements(List<Tournament> tournements)
+        {
+            foreach (Tournament t in tournements)
+            {
+                //TournamentDb.AddTournament(t);
             }
         }
     }
