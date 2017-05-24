@@ -136,6 +136,12 @@
       <DependentUpon>FrmMemberData.cs</DependentUpon>
     </Compile>
     <Compile Include="Database\NineTapDb.cs" />
+    <Compile Include="Forms\FrmMemberScoresReports.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmMemberScoresReports.Designer.cs">
+      <DependentUpon>FrmMemberScoresReports.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmNewTournament.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -330,6 +336,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmMemberData.resx">
       <DependentUpon>FrmMemberData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmMemberScoresReports.resx">
+      <DependentUpon>FrmMemberScoresReports.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmNewTournament.resx">
       <DependentUpon>frmNewTournament.cs</DependentUpon>

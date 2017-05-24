@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
+using System.Data.Entity;
 
 namespace NineTapTour.Database
 {
@@ -14,8 +15,8 @@ namespace NineTapTour.Database
         public static void SinglePrint(MemberPrintObj mem, PrintPageEventArgs e)
         {
             //get the total handicap to display on the card when printed
-            int totalHandicap = mem.Handicap* 4;
-            
+            int totalHandicap = mem.Handicap * 4;
+
 
             //This is what prints the data
             Graphics graphic = e.Graphics;
@@ -59,8 +60,128 @@ namespace NineTapTour.Database
             graphic.DrawString(mem.Number.ToString(), font, dBrush, startX + 80, startY + 238);
         }
 
+        /************************************************************************
+        For Printing the Report Sections
+        ************************************************************************/
+        public static void ReportPrint(List<Forms.frmMemberScores.MemberScores> temp, Database.Tournament selectedTournament, int reportTypeNum, PrintPageEventArgs e)
+        {
+            int numToPrint = 40;
+            //This is what prints the data
+            Graphics graphic = e.Graphics;
+
+            //default font to use, should use a mono space font so the spaces line up.
+            Font font = new Font("Arial", 16, FontStyle.Bold, GraphicsUnit.Pixel);
+            Font starFont = new Font("Arial", 16.5f, FontStyle.Bold, GraphicsUnit.Pixel);
+            Font bigFont = new Font("Arial", 25, FontStyle.Bold, GraphicsUnit.Pixel);
+
+            //Sets defult brush to use when printing
+            SolidBrush dBrush = new SolidBrush(Color.Black);
+
+            int startX = 15;
+            int startY = 50;
+
+            // if doubles is working and is needed, change the code below
+
+            string threeOfFour = "";
+
+            if (selectedTournament.ThreeOutOf4)
+            {
+                threeOfFour = "3of4 ";
+            }
+
+            // drawing the location and date
+            graphic.DrawString(selectedTournament.Location + " " + threeOfFour + string.Format("{0:d-M-yyyy}", selectedTournament.Date), font, dBrush, startX + 3, startY - 10);
+
+            string header = "9 Tap Tour High - ";
+
+            string reportType = "";
+
+            // for drawing the report type using the reportTypeNum
+            if (reportTypeNum == 0)
+            {
+                reportType = "Game Senior";
+            }
+            else if (reportTypeNum == 1)
+            {
+                reportType = "Game";
+            }
+            else
+            {
+                reportType = "Series";
+            }
+
+            // drawing the report title
+            graphic.DrawString(header + reportType + " Finals", bigFont, dBrush, startX + 10, startY + 27);
+
+            if (reportTypeNum == 0)
+            {
+                reportType = "Game";
+            }
+
+            // drawing the header of the data
+            graphic.DrawString("       " + reportType + "     Mem No       Name", font, dBrush, startX + 7, startY + 133);
+            graphic.DrawString(" ***********************************************************", starFont, dBrush, startX + 6, startY + 151);
+
+            for (int i = 0; i < temp.Count - (index * 40) && i < numToPrint; i++)
+            {
+                //draw number for what place they are
+                graphic.DrawString((i + 1 + (index * 40)).ToString(), font, dBrush, startX + 6, startY + 172 + (i * 19));
+
+                //draw Score
+                graphic.DrawString(temp[i + (index * 40)].Score.ToString(), font, dBrush, startX + 48, startY + 172 + (i * 19));
+
+                //draw the member number
+                graphic.DrawString(temp[i + (index * 40)].MemberNo.ToString(), font, dBrush, startX + 120, startY + 172 + (i * 19));
+
+                //create name string containg lastname, firstname.
+                string nameString = temp[i + (index * 40)].LastName + ", " + temp[i + (index * 40)].FirstName;
+
+                //draw name string
+                graphic.DrawString(nameString, font, dBrush, startX + 200, startY + 172 + (i * 19));
+            }
+        }
+
+        static public void printMemberReport(List<Forms.frmMemberScores.MemberScores> temp, Database.Tournament selectedTournament, int reportTypeNum)
+        {
+            Print.temp = temp;
+            Print.selectedTournament = selectedTournament;
+            Print.reportTypeNum = reportTypeNum;
+
+            // Set up compenents for printing
+            PrintDialog printDialog = new PrintDialog();
+            PrintDocument printDocument = new PrintDocument();
+            //add the document to the dialog box
+            printDialog.Document = printDocument;
+
+            //add the event handler that will do the printing
+            printDocument.PrintPage += new PrintPageEventHandler(printReport);
+
+            if (temp.Count > 0)
+            {
+                DialogResult result = printDialog.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    printDocument.Print();
+                }
+            }
+            index = 0;
+        }
+
+        static private void printReport(object sender, PrintPageEventArgs e)
+        {
+            ReportPrint(temp, selectedTournament, reportTypeNum, e);
+            index++;
+            e.HasMorePages = ((index * 40) < temp.Count);
+        }
+
+        static List<Forms.frmMemberScores.MemberScores> temp = new List<Forms.frmMemberScores.MemberScores>();//for High score
+        static Tournament selectedTournament;
+        static int reportTypeNum;
+        /************************************************************************/
+
         static List<Member> mems = new List<Member>();
         static int index = 0;
+
         // This is for the printbytourney button
         static public void printByTour(Tournament tour)
         {
@@ -73,7 +194,7 @@ namespace NineTapTour.Database
             //add the event handler that will do the printing
             printDocument.PrintPage += new PrintPageEventHandler(printTourRecaps);
             mems = TournamentDb.GetUniqueTourMembers(tour);
-            
+
             if (mems.Count > 0)
             {
                 DialogResult result = printDialog.ShowDialog();
@@ -114,8 +235,8 @@ namespace NineTapTour.Database
         static public void printAllMembers()
         {
             // Set up compenents for printing
-             PrintDialog printDialog = new PrintDialog();
-             PrintDocument printDocument = new PrintDocument();
+            PrintDialog printDialog = new PrintDialog();
+            PrintDocument printDocument = new PrintDocument();
             //add the document to the dialog box
             printDialog.Document = printDocument;
 
@@ -139,6 +260,7 @@ namespace NineTapTour.Database
             }
             index = 0;
         }
+
         static public void printByMemberList(List<Member> members)
         {
             //Set up compenents for printing
@@ -169,6 +291,8 @@ namespace NineTapTour.Database
             index++;
             e.HasMorePages = (index < mems.Count);
         }
+
+
     }
 
     class MemberPrintObj

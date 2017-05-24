@@ -883,6 +883,7 @@
             this.btnSeries.TabStop = false;
             this.btnSeries.Text = "Series";
             this.btnSeries.UseVisualStyleBackColor = true;
+            this.btnSeries.Click += new System.EventHandler(this.btnSeries_Click);
             // 
             // btnGame
             // 
@@ -893,6 +894,7 @@
             this.btnGame.TabStop = false;
             this.btnGame.Text = "Game";
             this.btnGame.UseVisualStyleBackColor = true;
+            this.btnGame.Click += new System.EventHandler(this.btnGame_Click);
             // 
             // btnSenior
             // 
@@ -903,6 +905,7 @@
             this.btnSenior.TabStop = false;
             this.btnSenior.Text = "Senior";
             this.btnSenior.UseVisualStyleBackColor = true;
+            this.btnSenior.Click += new System.EventHandler(this.btnSenior_Click);
             // 
             // grpComments
             // 
