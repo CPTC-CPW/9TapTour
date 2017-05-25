@@ -90,7 +90,7 @@ namespace NineTapTour.Database
             }
 
             // drawing the location and date
-            graphic.DrawString(selectedTournament.Location + " " + threeOfFour + string.Format("{0:d-M-yyyy}", selectedTournament.Date), font, dBrush, startX + 3, startY - 10);
+            graphic.DrawString(selectedTournament.Location + " " + threeOfFour + string.Format("{0:d-M-yyyy}", selectedTournament.Date), font, dBrush, startX + 10, startY - 19);
 
             string header = "9 Tap Tour High - ";
 
@@ -119,8 +119,8 @@ namespace NineTapTour.Database
             }
 
             // drawing the header of the data
-            graphic.DrawString("       " + reportType + "     Mem No       Name", font, dBrush, startX + 7, startY + 133);
-            graphic.DrawString(" ***********************************************************", starFont, dBrush, startX + 6, startY + 151);
+            graphic.DrawString("       " + reportType + "     Mem No       Name", font, dBrush, startX + 8, startY + 133);
+            graphic.DrawString(" ***********************************************************", starFont, dBrush, startX + 1, startY + 152);
 
             for (int i = 0; i < temp.Count - (index * 40) && i < numToPrint; i++)
             {
@@ -258,6 +258,7 @@ namespace NineTapTour.Database
                     printDocument.Print();
                 }
             }
+
             index = 0;
         }
 
@@ -291,8 +292,6 @@ namespace NineTapTour.Database
             index++;
             e.HasMorePages = (index < mems.Count);
         }
-
-
     }
 
     class MemberPrintObj
@@ -310,13 +309,23 @@ namespace NineTapTour.Database
 
         public MemberPrintObj(Member mem)
         {
-            Handicap = (mem.Handicap != null) ? (int)mem.Handicap : 0;
+            Handicap = (mem.Handicap != null) ? (int) mem.Handicap : 0;
             Number = mem.Number.ToString();
             City = mem.City;
             FirstName = mem.FirstName;
             LastName = mem.LastName;
-            Average = (mem.Average != null) ? mem.Handicap.ToString() : "";
+            /**************************************************************
+            edited this part because it used to say Average = (mem.Average != null) ? mem.Handicap.ToString() : "";
+
+            and added the bonus because there was no code for it(still not sure if I should add it)
+            ***************************************************************/
+            Average = (mem.Average != null) ? mem.Average.ToString() : "";
+            Bonus = mem.Bonus.Value;
+            /*************************************************************/
+            //Bonus pins default to 0 on the recap for all recaps printed.
+
         }
+
         public int Handicap;
         public string Number;
         public string City;
