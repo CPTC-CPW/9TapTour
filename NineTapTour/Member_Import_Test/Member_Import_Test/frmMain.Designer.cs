@@ -54,7 +54,7 @@
             this.btnInvalid.Location = new System.Drawing.Point(75, 54);
             this.btnInvalid.Name = "btnInvalid";
             this.btnInvalid.Size = new System.Drawing.Size(97, 23);
-            this.btnInvalid.TabIndex = 2;
+            this.btnInvalid.TabIndex = 1;
             this.btnInvalid.Text = "View Invalid List";
             this.btnInvalid.UseVisualStyleBackColor = true;
             this.btnInvalid.Click += new System.EventHandler(this.btnInvalid_Click);
@@ -79,10 +79,11 @@
             // 
             // btnSelectExcelFolder
             // 
+            this.btnSelectExcelFolder.Enabled = false;
             this.btnSelectExcelFolder.Location = new System.Drawing.Point(62, 148);
             this.btnSelectExcelFolder.Name = "btnSelectExcelFolder";
             this.btnSelectExcelFolder.Size = new System.Drawing.Size(118, 23);
-            this.btnSelectExcelFolder.TabIndex = 5;
+            this.btnSelectExcelFolder.TabIndex = 3;
             this.btnSelectExcelFolder.Text = "Select .xls Folder";
             this.btnSelectExcelFolder.UseVisualStyleBackColor = true;
             this.btnSelectExcelFolder.Click += new System.EventHandler(this.button1_Click);
@@ -98,20 +99,22 @@
             // 
             // btnPinFileSelect
             // 
+            this.btnPinFileSelect.Enabled = false;
             this.btnPinFileSelect.Location = new System.Drawing.Point(68, 96);
             this.btnPinFileSelect.Name = "btnPinFileSelect";
             this.btnPinFileSelect.Size = new System.Drawing.Size(112, 23);
-            this.btnPinFileSelect.TabIndex = 7;
+            this.btnPinFileSelect.TabIndex = 2;
             this.btnPinFileSelect.Text = "Select .pin Folder";
             this.btnPinFileSelect.UseVisualStyleBackColor = true;
             this.btnPinFileSelect.Click += new System.EventHandler(this.btnPinFileSelect_Click);
             // 
             // btn_FinalizeData
             // 
+            this.btn_FinalizeData.Enabled = false;
             this.btn_FinalizeData.Location = new System.Drawing.Point(87, 200);
             this.btn_FinalizeData.Name = "btn_FinalizeData";
             this.btn_FinalizeData.Size = new System.Drawing.Size(75, 23);
-            this.btn_FinalizeData.TabIndex = 8;
+            this.btn_FinalizeData.TabIndex = 4;
             this.btn_FinalizeData.Text = "Finalize";
             this.btn_FinalizeData.UseVisualStyleBackColor = true;
             this.btn_FinalizeData.Click += new System.EventHandler(this.btn_FinalizeData_Click);

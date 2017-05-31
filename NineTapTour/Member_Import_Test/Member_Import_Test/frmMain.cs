@@ -436,7 +436,21 @@ namespace Member_Import_Test
                     }
                     //show the results to the user
                     MessageBox.Show(validCount + " valid members processed, " + invalidCount + " invalid members processed.", "Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    checkSpaces();
                 }
+            }
+        }
+
+        private void checkSpaces()
+        {
+            if(invalidMembers.Count > 0 || validMembers.Count > 0)
+            {
+                btnSelectExcelFolder.Enabled = true;
+                btnPinFileSelect.Enabled = true;
+            }
+            if(ALLEXCELDATAFROMALLPLAYERS.Count > 0 && TournamentList.Count > 0)
+            {
+                btn_FinalizeData.Enabled = true;
             }
         }
 
@@ -465,6 +479,7 @@ namespace Member_Import_Test
                     GetAllExcelData(files);
                 }
             }
+            checkSpaces();
         }
 
         private static List<ExcelRow> GetAllExcelData(string[] files)
@@ -651,6 +666,7 @@ namespace Member_Import_Test
                     }
                 }
             }
+            checkSpaces();
         }
 
         private void ProcessPinFile(string PinFileName)
@@ -786,7 +802,7 @@ namespace Member_Import_Test
                             currentGame.Game4 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game4;
                             currentGame.Handicap = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].HandyCap;
                             currentGame.Bonus = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Bonus;
-                            currentGame.InputtedAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].AVG; //comback
+                            currentGame.InputtedAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].AVG; //comeback
                             currentGame.MoneyWon = Convert.ToDecimal(ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Cash);
                             currentGame.Notes = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Notes;
 
