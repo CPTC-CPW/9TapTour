@@ -614,7 +614,7 @@ namespace Member_Import_Test
                     temp.FinPPHG = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
                     try
                     {
-                        temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
+                        temp.Cash = Convert.ToDecimal((range.Cells[row, 15] as Excel.Range).Value2);
                     }
                     catch {
                         temp.Cash = 0;
@@ -787,6 +787,8 @@ namespace Member_Import_Test
                             currentGame.Handicap = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].HandyCap;
                             currentGame.Bonus = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Bonus;
                             currentGame.InputtedAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].AVG; //comback
+                            currentGame.MoneyWon = Convert.ToDecimal(ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Cash);
+                            currentGame.Notes = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Notes;
 
                             currentParticipant.Game = currentGame;
                             ParticipantsForTournament.Add(currentParticipant);
@@ -797,6 +799,10 @@ namespace Member_Import_Test
               
                 TournamentList[pinFileSlot].Participant = ParticipantsForTournament;
             }
+            
+
+
+
             populateTournements(TournamentList);
         }
         private void populateTournements(List<Tournament> tournements)

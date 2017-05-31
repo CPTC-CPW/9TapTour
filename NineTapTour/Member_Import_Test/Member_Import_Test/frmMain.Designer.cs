@@ -41,7 +41,7 @@
             // 
             // btnOpenFile
             // 
-            this.btnOpenFile.Location = new System.Drawing.Point(75, 75);
+            this.btnOpenFile.Location = new System.Drawing.Point(75, 25);
             this.btnOpenFile.Name = "btnOpenFile";
             this.btnOpenFile.Size = new System.Drawing.Size(97, 23);
             this.btnOpenFile.TabIndex = 0;
@@ -51,7 +51,7 @@
             // 
             // btnInvalid
             // 
-            this.btnInvalid.Location = new System.Drawing.Point(75, 135);
+            this.btnInvalid.Location = new System.Drawing.Point(75, 54);
             this.btnInvalid.Name = "btnInvalid";
             this.btnInvalid.Size = new System.Drawing.Size(97, 23);
             this.btnInvalid.TabIndex = 2;
@@ -62,7 +62,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(72, 40);
+            this.label1.Location = new System.Drawing.Point(65, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(114, 13);
             this.label1.TabIndex = 3;
@@ -71,7 +71,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(251, 40);
+            this.label2.Location = new System.Drawing.Point(65, 132);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(121, 13);
             this.label2.TabIndex = 4;
@@ -79,7 +79,7 @@
             // 
             // btnSelectExcelFolder
             // 
-            this.btnSelectExcelFolder.Location = new System.Drawing.Point(254, 75);
+            this.btnSelectExcelFolder.Location = new System.Drawing.Point(62, 148);
             this.btnSelectExcelFolder.Name = "btnSelectExcelFolder";
             this.btnSelectExcelFolder.Size = new System.Drawing.Size(118, 23);
             this.btnSelectExcelFolder.TabIndex = 5;
@@ -90,7 +90,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(473, 40);
+            this.label3.Location = new System.Drawing.Point(53, 80);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(140, 13);
             this.label3.TabIndex = 6;
@@ -98,7 +98,7 @@
             // 
             // btnPinFileSelect
             // 
-            this.btnPinFileSelect.Location = new System.Drawing.Point(486, 75);
+            this.btnPinFileSelect.Location = new System.Drawing.Point(68, 96);
             this.btnPinFileSelect.Name = "btnPinFileSelect";
             this.btnPinFileSelect.Size = new System.Drawing.Size(112, 23);
             this.btnPinFileSelect.TabIndex = 7;
@@ -108,7 +108,7 @@
             // 
             // btn_FinalizeData
             // 
-            this.btn_FinalizeData.Location = new System.Drawing.Point(499, 135);
+            this.btn_FinalizeData.Location = new System.Drawing.Point(87, 200);
             this.btn_FinalizeData.Name = "btn_FinalizeData";
             this.btn_FinalizeData.Size = new System.Drawing.Size(75, 23);
             this.btn_FinalizeData.TabIndex = 8;
@@ -120,7 +120,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(707, 235);
+            this.ClientSize = new System.Drawing.Size(257, 235);
             this.Controls.Add(this.btn_FinalizeData);
             this.Controls.Add(this.btnPinFileSelect);
             this.Controls.Add(this.label3);
