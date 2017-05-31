@@ -20,9 +20,11 @@ namespace Member_Import_Test
 {
     public partial class frmMain : Form
     {
+        
         public frmMain()
         {
             InitializeComponent();
+            new NineTapDb();
         }
         static int MemNumSpace = 6; //Member Number
         static int DJoinedSpace = 8; //Date Joined
@@ -799,9 +801,10 @@ namespace Member_Import_Test
         }
         private void populateTournements(List<Tournament> tournements)
         {
+            
             foreach (Tournament t in tournements)
             {
-                //TournamentDb.AddTournament(t);
+                TournamentDb.AddTournament(t);
             }
         }
     }
