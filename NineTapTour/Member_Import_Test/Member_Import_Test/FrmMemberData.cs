@@ -288,6 +288,10 @@ namespace Member_Import_Test
                 //}
                 //else
                 //{
+                if (txtReferrals.Text == "")
+                {
+                    txtReferrals.Text = "0";
+                }
                 temp = new Member()
                 {
 
@@ -328,7 +332,7 @@ namespace Member_Import_Test
                     #region Misc. Info
                     RejoinDate = Convert.ToDateTime(txtdateJoined.Text),
                     LastBowled = Convert.ToDateTime(txtlastBowled.Text),
-                   // MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
+                    // MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
                     //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
                     Notes = txtNotes.Text,
                     Referrals = Convert.ToInt16(txtReferrals.Text)
@@ -339,7 +343,8 @@ namespace Member_Import_Test
                 // Adds Member to Database
                 try
                 {
-                    DBQueries.AddMember(temp);
+
+                    NineTapTour.Database.MemberDb.AddMember(temp);
                     MessageBox.Show(@"Bowler Added Successfully.");
                     invalidMembers.RemoveAt(listPosition);
                     if(invalidMembers.Count() != 0)
@@ -472,6 +477,11 @@ namespace Member_Import_Test
         private void FrmMemberData_FormClosed(object sender, FormClosedEventArgs e)
         {
             home.Show();
+        }
+
+        private void txtNotes_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

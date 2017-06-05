@@ -246,6 +246,7 @@
             this.txtNotes.Size = new System.Drawing.Size(298, 218);
             this.txtNotes.TabIndex = 22;
             this.txtNotes.TabStop = false;
+            this.txtNotes.TextChanged += new System.EventHandler(this.txtNotes_TextChanged);
             // 
             // txtAverage
             // 

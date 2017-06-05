@@ -7,18 +7,18 @@ namespace Member_Import_Test.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class ReferralsChange : IMigrationMetadata
+    public sealed partial class allownullableforallmemberdatatypes : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(ReferralsChange));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(allownullableforallmemberdatatypes));
         
         string IMigrationMetadata.Id
         {
-            get { return "201602082225132_ReferralsChange"; }
+            get { return "201706051636204_allownullableforallmemberdatatypes"; }
         }
         
         string IMigrationMetadata.Source
         {
-            get { return null; }
+            get { return Resources.GetString("Source"); }
         }
         
         string IMigrationMetadata.Target

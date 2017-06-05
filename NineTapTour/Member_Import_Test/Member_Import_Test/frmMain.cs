@@ -118,7 +118,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        //validMember = false;
                                     }
 
                                     break;
@@ -176,7 +176,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        ////validMember = false;
                                     }
                                     break;
                                 case 4://Middle Initial
@@ -189,7 +189,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        ////validMember = false;
                                     }
                                     break;
                                 //case 6://Secondary Phone
@@ -205,7 +205,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        //validMember = false;
                                     }
                                     break;
                                 case 9://Email Address
@@ -215,7 +215,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        //validMember = false;
                                     }
                                     break;
                                 case 10://City
@@ -225,7 +225,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        //validMember = false;
                                     }
                                     break;
                                 case 11://State
@@ -235,7 +235,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        //validMember = false;
                                     }
                                     break;
                                 case 12://Zip
@@ -245,7 +245,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        //validMember = false;
                                     }
                                     break;
                                 case 13://Notes
@@ -303,7 +303,7 @@ namespace Member_Import_Test
                                         else
                                         {
                                             newMem.Referrals = Convert.ToInt16(File.Substring(currentIndex, Spaces[i]).Trim());
-                                            validMember = false;
+                                            //validMember = false;
                                         }
 
                                     }
@@ -319,7 +319,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        //validMember = false;
                                     }
                                     break;
                                 /*case 23:
@@ -341,7 +341,7 @@ namespace Member_Import_Test
                                     {
                                         if (status && Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
                                         {
-                                            validMember = false;
+                                            //validMember = false;
                                             break;
                                         }
                                         if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
@@ -375,7 +375,7 @@ namespace Member_Import_Test
                                     {
                                         if (genderSelected && Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
                                         {
-                                            validMember = false;
+                                            //validMember = false;
                                             break;
                                         }
                                         if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
@@ -401,7 +401,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        //validMember = false;
                                     }
                                     break;
                             }
@@ -429,9 +429,27 @@ namespace Member_Import_Test
                     for (int j = 0; j < validMembers.Count; j++)
                     {
                         //only add the member after checking if the memeber isn't already in the database.
-                        if (!DBQueries.MemberExists(validMembers[j]))
+                        if (!NineTapTour.Database.MemberDb.MemberExists(validMembers[j]))
                         {
-                            DBQueries.AddMember(validMembers[j]);
+                            
+                            if (validMembers[j].DateOfBirth < Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM")) {
+                                validMembers[j].DateOfBirth = Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM");
+
+
+                            }
+                            if (validMembers[j].JoinDate < Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM"))
+                            {
+                                validMembers[j].JoinDate = Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM");
+
+
+                            }
+                            if (validMembers[j].RejoinDate < Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM"))
+                            {
+                                validMembers[j].RejoinDate = Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM");
+
+
+                            }
+                            NineTapTour.Database.MemberDb.AddMember(validMembers[j]);
                         }
                     }
                     //show the results to the user
@@ -679,6 +697,7 @@ namespace Member_Import_Test
                         ProcessPinFile(files[i]);
                     }
                 }
+                MessageBox.Show(TournamentList.Count + " tournaments were imported.");
             }
             checkSpaces();
         }
@@ -687,10 +706,11 @@ namespace Member_Import_Test
         {
             Tournament currentTournament = new Tournament();
             //GETS DATE OUT OF FILE NAME
-            string tournament = "";
-            bool threeofFour = false;
+            string tournament = Path.GetFileNameWithoutExtension(PinFileName.Trim());
+            string[] tournamentAfterSplit = tournament.Split(' ');
             string TournamentName = "";
-            string threeOf4 = " 3of4 ";
+            bool threeofFour = false;
+            bool doubles = false;
             DateTime dt = DateTime.Today; //date extracted from the file name is put here
             //Getting Tournament date from file name
             string[] regexArray = new string[]    { @"\d{4}-\d{2}-\d{2}", // regex's used for valid dates in the fileName
@@ -725,57 +745,43 @@ namespace Member_Import_Test
             for (int n = 0; n < regexArray.Length; n++)
             {
                 var regex = new Regex(regexArray[n]);  // sets the regex to a regex in the regexArray list to check if a valid date is in the file name.
-                tournament = Path.GetFileNameWithoutExtension(PinFileName.Trim());
                 {
                     Match m = regex.Match(tournament);
                     if (m.Success) //PROCESS INFO THAT HAS A VALID DATE
                     {
-
                         dt = DateTime.ParseExact(m.Value, CorrectFormat[n], CultureInfo.InvariantCulture);
-
-
-
-                        if (tournament.Contains(threeOf4))
-                        {
-                            threeofFour = true;
-                            TournamentName = tournament.Substring(0, tournament.Length - ((CorrectFormat[n].Length - 1) + threeOf4.Length));
-                        }
-                        else
-                        {
-                            threeofFour = false;
-                            TournamentName = tournament.Substring(0, tournament.Length - CorrectFormat[n].Length - 1);
-                        }
-
-
                         break;
                     }
                     else if (n >= regexArray.Length - 1) //PROCESS INFO THAT DOESNT HAVE A VALID DATE TIME IN THE TITLE
                     {
                         dt = DateTime.Today; //sets defualt dt to the current date
-
-
-                        //GETS NAME OF THE TOURNAMENT OUT OF FILE NAME
-                        if (tournament.Contains(threeOf4))
-                        {
-                            threeofFour = true;
-                            TournamentName = tournament.Substring(0, tournament.Length - threeOf4.Length);
-                        }
-                        else
-                        {
-                            threeofFour = false;
-                            TournamentName = tournament;
-                        }
-
                         break;
-
                     }
 
                 }
                
             }
+            //Adds everything before the date as part of the tournament name 
+            for(int i = 0; i < tournamentAfterSplit.Length; i++)
+            {
+                DateTime dt2;
+                if (DateTime.TryParse(tournamentAfterSplit[i], out dt2) == false)
+                {
+                    TournamentName += tournamentAfterSplit[i] + " "; 
+                }
+            }
+            if(tournament.Contains("3of4"))
+            {
+                threeofFour = true;
+            }
+            if (tournament.Contains("doubles"))
+            {
+                doubles = true;
+            }
             currentTournament.Date = dt;
-            currentTournament.Location = TournamentName;
+            currentTournament.Location = TournamentName.TrimEnd();
             currentTournament.ThreeOutOf4 = threeofFour;
+            currentTournament.Doubles = doubles;
             TournamentList.Add(currentTournament);
             currentTournament.Id = TournamentList.Count;
         }
@@ -801,7 +807,7 @@ namespace Member_Import_Test
                         {
                            
                             squadnumber++;
-                            MessageBox.Show(invalidMembers[members].FirstName + " played in a tournament at " + TournamentList[pinFileSlot].Location + " on " + ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Date);
+                            //MessageBox.Show(invalidMembers[members].FirstName + " played in a tournament at " + TournamentList[pinFileSlot].Location + " on " + ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Date); TEST MESSAGE BOX
                             Participant currentParticipant = new Participant();
                             currentParticipant.Tournament = TournamentList[pinFileSlot];
                             currentParticipant.Member = invalidMembers[members];
@@ -814,6 +820,7 @@ namespace Member_Import_Test
                             currentGame.Game2 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game2;
                             currentGame.Game3 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game3;
                             currentGame.Game4 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game4;
+                            
                             currentGame.Handicap = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].HandyCap;
                             currentGame.Bonus = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Bonus;
                             currentGame.InputtedAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].AVG; //comeback
@@ -834,6 +841,14 @@ namespace Member_Import_Test
 
 
             populateTournements(TournamentList);
+        }
+        private void populatemembers(List<Member> members)
+        {
+
+            foreach (Member m in members)
+            {
+                NineTapTour.Database.MemberDb.AddMember(m);
+            }
         }
         private void populateTournements(List<Tournament> tournements)
         {
