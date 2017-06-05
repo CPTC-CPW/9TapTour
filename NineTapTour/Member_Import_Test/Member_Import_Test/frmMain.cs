@@ -665,6 +665,7 @@ namespace Member_Import_Test
                         ProcessPinFile(files[i]);
                     }
                 }
+                MessageBox.Show(TournamentList.Count + " tournaments were imported.");
             }
             checkSpaces();
         }
@@ -677,7 +678,7 @@ namespace Member_Import_Test
             string[] tournamentAfterSplit = tournament.Split(' ');
             string TournamentName = "";
             bool threeofFour = false;
-            string threeOf4 = "3of4";
+            bool doubles = false;
             DateTime dt = DateTime.Today; //date extracted from the file name is put here
             //Getting Tournament date from file name
             string[] regexArray = new string[]    { @"\d{4}-\d{2}-\d{2}", // regex's used for valid dates in the fileName
@@ -737,13 +738,18 @@ namespace Member_Import_Test
                     TournamentName += tournamentAfterSplit[i] + " "; 
                 }
             }
-            if(tournament.Contains(threeOf4))
+            if(tournament.Contains("3of4"))
             {
-                th
+                threeofFour = true;
+            }
+            if (tournament.Contains("doubles"))
+            {
+                doubles = true;
             }
             currentTournament.Date = dt;
             currentTournament.Location = TournamentName.TrimEnd();
             currentTournament.ThreeOutOf4 = threeofFour;
+            currentTournament.Doubles = doubles;
             TournamentList.Add(currentTournament);
             currentTournament.Id = TournamentList.Count;
         }
