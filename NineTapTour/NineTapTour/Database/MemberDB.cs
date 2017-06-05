@@ -48,7 +48,25 @@ namespace NineTapTour.Database
            
        
         }
+        public static bool MemberExists(Member Temp)
+        {
+            
+            
+                using (var db = new NineTapDb())
+                {
 
+                    if (db.Members.Any(m => m.Number == Temp.Number))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                }
+
+            }
         public static List<Member> GetMemberList()
         {
             using (var db = new NineTapDb())
@@ -67,5 +85,6 @@ namespace NineTapTour.Database
                 db.SaveChanges();
             }
         }
+
     }
 }

@@ -118,7 +118,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        //validMember = false;
                                     }
 
                                     break;
@@ -176,7 +176,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        ////validMember = false;
                                     }
                                     break;
                                 case 4://Middle Initial
@@ -189,7 +189,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        ////validMember = false;
                                     }
                                     break;
                                 //case 6://Secondary Phone
@@ -205,7 +205,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        //validMember = false;
                                     }
                                     break;
                                 case 9://Email Address
@@ -215,7 +215,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        //validMember = false;
                                     }
                                     break;
                                 case 10://City
@@ -225,7 +225,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        //validMember = false;
                                     }
                                     break;
                                 case 11://State
@@ -235,7 +235,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        //validMember = false;
                                     }
                                     break;
                                 case 12://Zip
@@ -245,7 +245,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        //validMember = false;
                                     }
                                     break;
                                 case 13://Notes
@@ -303,7 +303,7 @@ namespace Member_Import_Test
                                         else
                                         {
                                             newMem.Referrals = Convert.ToInt16(File.Substring(currentIndex, Spaces[i]).Trim());
-                                            validMember = false;
+                                            //validMember = false;
                                         }
 
                                     }
@@ -319,7 +319,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        //validMember = false;
                                     }
                                     break;
                                 /*case 23:
@@ -341,7 +341,7 @@ namespace Member_Import_Test
                                     {
                                         if (status && Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
                                         {
-                                            validMember = false;
+                                            //validMember = false;
                                             break;
                                         }
                                         if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
@@ -375,7 +375,7 @@ namespace Member_Import_Test
                                     {
                                         if (genderSelected && Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
                                         {
-                                            validMember = false;
+                                            //validMember = false;
                                             break;
                                         }
                                         if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
@@ -401,7 +401,7 @@ namespace Member_Import_Test
                                     }
                                     else
                                     {
-                                        validMember = false;
+                                        //validMember = false;
                                     }
                                     break;
                             }
@@ -429,9 +429,27 @@ namespace Member_Import_Test
                     for (int j = 0; j < validMembers.Count; j++)
                     {
                         //only add the member after checking if the memeber isn't already in the database.
-                        if (!DBQueries.MemberExists(validMembers[j]))
+                        if (!NineTapTour.Database.MemberDb.MemberExists(validMembers[j]))
                         {
-                            DBQueries.AddMember(validMembers[j]);
+                            
+                            if (validMembers[j].DateOfBirth < Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM")) {
+                                validMembers[j].DateOfBirth = Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM");
+
+
+                            }
+                            if (validMembers[j].JoinDate < Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM"))
+                            {
+                                validMembers[j].JoinDate = Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM");
+
+
+                            }
+                            if (validMembers[j].RejoinDate < Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM"))
+                            {
+                                validMembers[j].RejoinDate = Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM");
+
+
+                            }
+                            NineTapTour.Database.MemberDb.AddMember(validMembers[j]);
                         }
                     }
                     //show the results to the user
@@ -809,6 +827,14 @@ namespace Member_Import_Test
 
 
             populateTournements(TournamentList);
+        }
+        private void populatemembers(List<Member> members)
+        {
+
+            foreach (Member m in members)
+            {
+                NineTapTour.Database.MemberDb.AddMember(m);
+            }
         }
         private void populateTournements(List<Tournament> tournements)
         {
