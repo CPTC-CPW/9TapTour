@@ -9,43 +9,43 @@ namespace NineTapTour.Database
         [Key]
         public int Id { get; set; }
 
-        [Required]
+        //[Required]
         [Index("IX_MemberNumber", IsUnique = true)]
         public int Number { get; set; }
-        [Required]
+        //[Required]
         public bool IsActive { get; set; }
 
         #region Personal Info
-        [Required]
+        //[Required]
         public string FirstName { get; set; }
-        [Required]
+        //[Required]
         public string LastName { get; set; }
 
         public string MiddleInitial { get; set; }
-        [Required]
+        //[Required]
         public DateTime DateOfBirth { get; set; }
 
         [Index("IX_MemberSSN")]
         [StringLength(11), Column(TypeName = "char")]
         public string SSN { get; set; }
-        [Required]
+        //[Required]
         public MemberGenders Gender { get; set; }
         #endregion
 
         #region Postal Address
-        [Required]
+        //[Required]
         public string Street { get; set; }
-        [Required]
+        //[Required]
         public string City { get; set; }
-        [Required]
+        //[Required]
         public string State { get; set; }
-        [Required]
+        //[Required]
         public string PostalCode { get; set; }
         #endregion
 
         #region Contact Info
         public string Email { get; set; }
-        [Required]
+        //[Required]
         public string PrimaryPhone { get; set; }
         public string SecondaryPhone { get; set; }
         #endregion
@@ -60,7 +60,7 @@ namespace NineTapTour.Database
         #endregion
 
         #region Misc. Info
-        [Required]
+        //[Required]
         public DateTime JoinDate { get; set; }
         public DateTime? RejoinDate { get; set; }
         public DateTime? LastBowled { get; set; }
@@ -68,7 +68,7 @@ namespace NineTapTour.Database
         public bool IsLifetimeMember { get; set; }
         public string Notes { get; set; }
         public int? Referrals { get; set; }
-        [Required]
+        //[Required]
         public bool IsSenior { get; set; }
         public decimal MoneyEarned { get; set; }
         #endregion
