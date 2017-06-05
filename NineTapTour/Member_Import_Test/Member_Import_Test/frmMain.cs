@@ -489,10 +489,20 @@ namespace Member_Import_Test
 
         private void button1_Click(object sender, EventArgs e)
         {
+            GetAndProcessFolderWithExcelFiles();
+            while (MessageBox.Show("Do You have more Excel Files to import?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                GetAndProcessFolderWithExcelFiles();
+            }
+        }
+
+        private void GetAndProcessFolderWithExcelFiles()
+        {
             using (var fbd = new FolderBrowserDialog())
             {
                 DialogResult result = fbd.ShowDialog();
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath)) {
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
                     string[] files = Directory.GetFiles(fbd.SelectedPath);
                     GetAllExcelData(files);
                 }
@@ -500,8 +510,12 @@ namespace Member_Import_Test
             checkSpaces();
         }
 
-        private static List<ExcelRow> GetAllExcelData(string[] files)
+        private List<ExcelRow> GetAllExcelData(string[] files)
         {
+            progressBar1.Minimum = 0;
+            progressBar1.Maximum = files.Length;
+            progressBar1.Value = 0;
+
             for (int i = 0; i < files.Length; i++)
             {
                 if (Path.GetExtension(files[i]) != ".xls")
@@ -514,8 +528,8 @@ namespace Member_Import_Test
                 {
                     ALLEXCELDATAFROMALLPLAYERS.Add(r);
                 }
+                progressBar1.Increment(i);
             }
-            MessageBox.Show("All of the Member Excel Files have been Imported.");
             return ALLEXCELDATAFROMALLPLAYERS;
         }
 
@@ -860,6 +874,11 @@ namespace Member_Import_Test
                 TournamentDb.AddTournament(t);
             }
         }
+
+        //private void progressBar1_Click(object sender, EventArgs e)
+        //{
+
+        //}
     }
 }
 

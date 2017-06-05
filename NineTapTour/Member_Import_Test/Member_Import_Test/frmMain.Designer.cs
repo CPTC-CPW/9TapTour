@@ -37,6 +37,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.btnPinFileSelect = new System.Windows.Forms.Button();
             this.btn_FinalizeData = new System.Windows.Forms.Button();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // btnOpenFile
@@ -119,11 +120,19 @@
             this.btn_FinalizeData.UseVisualStyleBackColor = true;
             this.btn_FinalizeData.Click += new System.EventHandler(this.btn_FinalizeData_Click);
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(196, 148);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(198, 23);
+            this.progressBar1.TabIndex = 7;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(257, 235);
+            this.ClientSize = new System.Drawing.Size(428, 235);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.btn_FinalizeData);
             this.Controls.Add(this.btnPinFileSelect);
             this.Controls.Add(this.label3);
@@ -150,6 +159,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnPinFileSelect;
         private System.Windows.Forms.Button btn_FinalizeData;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 
