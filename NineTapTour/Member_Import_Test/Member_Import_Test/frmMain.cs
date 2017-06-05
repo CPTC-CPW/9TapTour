@@ -806,7 +806,24 @@ namespace Member_Import_Test
                             currentGame.Game2 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game2;
                             currentGame.Game3 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game3;
                             currentGame.Game4 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game4;
-                            
+
+                            if(ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game1 == -1)
+                            {
+                                currentGame.UseGame1 = false;
+                            }
+                            if(ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game2 == -1)
+                            {
+                                currentGame.UseGame2 = false;
+                            }
+                            if (ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game3 == -1)
+                            {
+                                currentGame.UseGame3 = false;
+                            }
+                            if (ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game4 == -1)
+                            {
+                                currentGame.UseGame4 = false;
+                            }
+                         
                             currentGame.Handicap = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].HandyCap;
                             currentGame.Bonus = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Bonus;
                             currentGame.InputtedAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].AVG; //comeback
@@ -830,7 +847,6 @@ namespace Member_Import_Test
         }
         private void populatemembers(List<Member> members)
         {
-
             foreach (Member m in members)
             {
                 NineTapTour.Database.MemberDb.AddMember(m);
