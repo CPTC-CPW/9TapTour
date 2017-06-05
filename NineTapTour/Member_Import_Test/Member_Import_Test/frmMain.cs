@@ -454,7 +454,21 @@ namespace Member_Import_Test
                     }
                     //show the results to the user
                     MessageBox.Show(validCount + " valid members processed, " + invalidCount + " invalid members processed.", "Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    checkSpaces();
                 }
+            }
+        }
+
+        private void checkSpaces()
+        {
+            if(invalidMembers.Count > 0 || validMembers.Count > 0)
+            {
+                btnSelectExcelFolder.Enabled = true;
+                btnPinFileSelect.Enabled = true;
+            }
+            if(ALLEXCELDATAFROMALLPLAYERS.Count > 0 && TournamentList.Count > 0)
+            {
+                btn_FinalizeData.Enabled = true;
             }
         }
 
@@ -483,6 +497,7 @@ namespace Member_Import_Test
                     GetAllExcelData(files);
                 }
             }
+            checkSpaces();
         }
 
         private static List<ExcelRow> GetAllExcelData(string[] files)
@@ -669,16 +684,18 @@ namespace Member_Import_Test
                     }
                 }
             }
+            checkSpaces();
         }
 
         private void ProcessPinFile(string PinFileName)
         {
             Tournament currentTournament = new Tournament();
             //GETS DATE OUT OF FILE NAME
-            string tournament = "";
-            bool threeofFour = false;
+            string tournament = Path.GetFileNameWithoutExtension(PinFileName.Trim());
+            string[] tournamentAfterSplit = tournament.Split(' ');
             string TournamentName = "";
-            string threeOf4 = " 3of4 ";
+            bool threeofFour = false;
+            string threeOf4 = "3of4";
             DateTime dt = DateTime.Today; //date extracted from the file name is put here
             //Getting Tournament date from file name
             string[] regexArray = new string[]    { @"\d{4}-\d{2}-\d{2}", // regex's used for valid dates in the fileName
@@ -713,56 +730,37 @@ namespace Member_Import_Test
             for (int n = 0; n < regexArray.Length; n++)
             {
                 var regex = new Regex(regexArray[n]);  // sets the regex to a regex in the regexArray list to check if a valid date is in the file name.
-                tournament = Path.GetFileNameWithoutExtension(PinFileName.Trim());
                 {
                     Match m = regex.Match(tournament);
                     if (m.Success) //PROCESS INFO THAT HAS A VALID DATE
                     {
-
                         dt = DateTime.ParseExact(m.Value, CorrectFormat[n], CultureInfo.InvariantCulture);
-
-
-
-                        if (tournament.Contains(threeOf4))
-                        {
-                            threeofFour = true;
-                            TournamentName = tournament.Substring(0, tournament.Length - ((CorrectFormat[n].Length - 1) + threeOf4.Length));
-                        }
-                        else
-                        {
-                            threeofFour = false;
-                            TournamentName = tournament.Substring(0, tournament.Length - CorrectFormat[n].Length - 1);
-                        }
-
-
                         break;
                     }
                     else if (n >= regexArray.Length - 1) //PROCESS INFO THAT DOESNT HAVE A VALID DATE TIME IN THE TITLE
                     {
                         dt = DateTime.Today; //sets defualt dt to the current date
-
-
-                        //GETS NAME OF THE TOURNAMENT OUT OF FILE NAME
-                        if (tournament.Contains(threeOf4))
-                        {
-                            threeofFour = true;
-                            TournamentName = tournament.Substring(0, tournament.Length - threeOf4.Length);
-                        }
-                        else
-                        {
-                            threeofFour = false;
-                            TournamentName = tournament;
-                        }
-
                         break;
-
                     }
 
                 }
                
             }
+            //Adds everything before the date as part of the tournament name 
+            for(int i = 0; i < tournamentAfterSplit.Length; i++)
+            {
+                DateTime dt2;
+                if (DateTime.TryParse(tournamentAfterSplit[i], out dt2) == false)
+                {
+                    TournamentName += tournamentAfterSplit[i] + " "; 
+                }
+            }
+            if(tournament.Contains(threeOf4))
+            {
+                th
+            }
             currentTournament.Date = dt;
-            currentTournament.Location = TournamentName;
+            currentTournament.Location = TournamentName.TrimEnd();
             currentTournament.ThreeOutOf4 = threeofFour;
             TournamentList.Add(currentTournament);
             currentTournament.Id = TournamentList.Count;
@@ -789,7 +787,7 @@ namespace Member_Import_Test
                         {
                            
                             squadnumber++;
-                            MessageBox.Show(invalidMembers[members].FirstName + " played in a tournament at " + TournamentList[pinFileSlot].Location + " on " + ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Date);
+                            //MessageBox.Show(invalidMembers[members].FirstName + " played in a tournament at " + TournamentList[pinFileSlot].Location + " on " + ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Date); TEST MESSAGE BOX
                             Participant currentParticipant = new Participant();
                             currentParticipant.Tournament = TournamentList[pinFileSlot];
                             currentParticipant.Member = invalidMembers[members];
@@ -802,9 +800,10 @@ namespace Member_Import_Test
                             currentGame.Game2 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game2;
                             currentGame.Game3 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game3;
                             currentGame.Game4 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game4;
+                            
                             currentGame.Handicap = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].HandyCap;
                             currentGame.Bonus = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Bonus;
-                            currentGame.InputtedAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].AVG; //comback
+                            currentGame.InputtedAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].AVG; //comeback
                             currentGame.MoneyWon = Convert.ToDecimal(ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Cash);
                             currentGame.Notes = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Notes;
 
