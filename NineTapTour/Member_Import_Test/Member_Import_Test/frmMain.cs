@@ -62,6 +62,7 @@ namespace Member_Import_Test
 
         private static List<ExcelRow> ALLEXCELDATAFROMALLPLAYERS = new List<ExcelRow>();
         private static List<Tournament> TournamentList = new List<Tournament>();
+        private int progressBarCounter = 0;
 
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
@@ -488,10 +489,11 @@ namespace Member_Import_Test
         }
 
         private void button1_Click(object sender, EventArgs e)
-        {
+        {   
             GetAndProcessFolderWithExcelFiles();
             while (MessageBox.Show("Do You have more Excel Files to import?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
+                progressBarCounter = 0;
                 GetAndProcessFolderWithExcelFiles();
             }
         }
@@ -504,18 +506,17 @@ namespace Member_Import_Test
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
                     string[] files = Directory.GetFiles(fbd.SelectedPath);
+                    progressBar1.Minimum = 0;
+                    progressBar1.Maximum = files.Length * 40000;
+                    progressBar1.Value = 0;
                     GetAllExcelData(files);
                 }
             }
-            checkSpaces();
+            //checkSpaces();
         }
 
         private List<ExcelRow> GetAllExcelData(string[] files)
         {
-            progressBar1.Minimum = 0;
-            progressBar1.Maximum = files.Length;
-            progressBar1.Value = 0;
-
             for (int i = 0; i < files.Length; i++)
             {
                 if (Path.GetExtension(files[i]) != ".xls")
@@ -528,13 +529,13 @@ namespace Member_Import_Test
                 {
                     ALLEXCELDATAFROMALLPLAYERS.Add(r);
                 }
-                progressBar1.Increment(i);
             }
             return ALLEXCELDATAFROMALLPLAYERS;
         }
 
-        private static List<ExcelRow> ProcessExcelFile(string PathAndFileName)
-        {
+        private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
+        {   
+
             Excel.Application xlApp = new Excel.Application();
             Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
             Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
@@ -669,6 +670,8 @@ namespace Member_Import_Test
                     temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
 
                     returnMe.Add(temp);
+                    progressBarCounter++;
+                    progressBar1.Increment(progressBarCounter);
                 }
             }
             xlWorkBook.Close(false);

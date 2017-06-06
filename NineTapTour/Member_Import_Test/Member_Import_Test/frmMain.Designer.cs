@@ -80,7 +80,6 @@
             // 
             // btnSelectExcelFolder
             // 
-            this.btnSelectExcelFolder.Enabled = false;
             this.btnSelectExcelFolder.Location = new System.Drawing.Point(62, 148);
             this.btnSelectExcelFolder.Name = "btnSelectExcelFolder";
             this.btnSelectExcelFolder.Size = new System.Drawing.Size(118, 23);
