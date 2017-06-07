@@ -62,6 +62,7 @@ namespace NineTapTour.Database
             }
             catch (SystemException ex)
             {
+                Console.WriteLine("Error Number : " + ex.Message);
                 // throw new MemberTableException("Error Number : " + ex.Number + " - " + ex.Message);
             }
            

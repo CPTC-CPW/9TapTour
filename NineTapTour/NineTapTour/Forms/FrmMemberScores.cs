@@ -741,6 +741,7 @@ namespace NineTapTour.Forms
             }
             catch (InvalidOperationException ex)
             {
+                Console.WriteLine("Error Number : " + ex.Message);
                 return null;
             }
             return memScores;

@@ -51,6 +51,7 @@ namespace NineTapTour.Forms
             }
             catch (NullReferenceException nex)
             {
+                Console.WriteLine("Error Number : " + nex.Message);
                 if (!cbxShowInactive.Checked)
                 {
                     MessageBox.Show("There are no active members to show; check inactive to load all members.");
@@ -63,6 +64,7 @@ namespace NineTapTour.Forms
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Error Number : " + ex.Message);
                 MessageBox.Show("An error occured. Please reload the form.");
             }
         }
