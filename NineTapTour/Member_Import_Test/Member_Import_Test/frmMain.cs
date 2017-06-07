@@ -62,7 +62,6 @@ namespace Member_Import_Test
 
         private static List<ExcelRow> ALLEXCELDATAFROMALLPLAYERS = new List<ExcelRow>();
         private static List<Tournament> TournamentList = new List<Tournament>();
-        private int progressBarCounter = 0;
 
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
@@ -493,7 +492,6 @@ namespace Member_Import_Test
             GetAndProcessFolderWithExcelFiles();
             while (MessageBox.Show("Do You have more Excel Files to import?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                progressBarCounter = 0;
                 GetAndProcessFolderWithExcelFiles();
             }
         }
@@ -507,16 +505,17 @@ namespace Member_Import_Test
                 {
                     string[] files = Directory.GetFiles(fbd.SelectedPath);
                     progressBar1.Minimum = 0;
-                    progressBar1.Maximum = files.Length * 40000;
+                    progressBar1.Maximum = files.Length;
                     progressBar1.Value = 0;
                     GetAllExcelData(files);
                 }
             }
-            //checkSpaces();
+            checkSpaces();
         }
 
         private List<ExcelRow> GetAllExcelData(string[] files)
         {
+            OverAllProcessingExcel.Text = "Over All Process:";
             for (int i = 0; i < files.Length; i++)
             {
                 if (Path.GetExtension(files[i]) != ".xls")
@@ -529,13 +528,18 @@ namespace Member_Import_Test
                 {
                     ALLEXCELDATAFROMALLPLAYERS.Add(r);
                 }
+                progressBar1.Increment(1);
             }
+            OverAllProcessingExcel.Text = "Complete";
             return ALLEXCELDATAFROMALLPLAYERS;
         }
 
         private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
-        {   
-
+        {
+            progressBar2.Minimum = 0;
+            progressBar2.Maximum = 347;
+            progressBar2.Value = 0;
+            LabelCurrentFileWorkingOn.Text = "Current File Being Processed:   " + Path.GetFileName(PathAndFileName);
             Excel.Application xlApp = new Excel.Application();
             Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
             Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
@@ -559,8 +563,6 @@ namespace Member_Import_Test
                 range = xlWorkSheet.UsedRange;
                 for (int row = 3; row <= range.Rows.Count; row++)
                 {
-                    
-
                     if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0
                          && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0
                          && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0
@@ -670,8 +672,7 @@ namespace Member_Import_Test
                     temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
 
                     returnMe.Add(temp);
-                    progressBarCounter++;
-                    progressBar1.Increment(progressBarCounter);
+                    progressBar2.Increment(1);
                 }
             }
             xlWorkBook.Close(false);
