@@ -22,7 +22,7 @@ namespace NineTapTour
             Application.SetCompatibleTextRenderingDefault(false);
 
 #if !DEBUG //if app is set to release mode
-            SetConnectionString(@"localhost\SQLExpress");
+            SetConnectionString(@".\SQLExpress");
 #elif DEBUG //set connection to dev database
             SetConnectionString(@"(localdb)\MSSQLLocalDB");
 #endif
