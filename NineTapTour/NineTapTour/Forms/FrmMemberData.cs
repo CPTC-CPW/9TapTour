@@ -772,9 +772,15 @@ namespace NineTapTour.Forms
             datePaid.Format = DateTimePickerFormat.Short;
             checkPayment();
         }
+
         private void checkPayment()
         {
-            if (datePaid.Value != null && datePaid.Value <= DateTime.Now.AddYears(-1))
+            /*******************************************************************************************************
+            added '&& chbLifetime.Checked == false' so when the member is a lifetime member, the lblPaymentInfo will 
+            not be visible even if their last payment was due before
+            ********************************************************************************************************/
+            if (datePaid.Value != null && datePaid.Value <= DateTime.Now.AddYears(-1) && chbLifetime.Checked == false)
+            /*******************************************************************************************************/
             {
                 lblPaymentInfo.Visible = true;
             }

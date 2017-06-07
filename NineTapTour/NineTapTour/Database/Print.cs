@@ -80,17 +80,23 @@ namespace NineTapTour.Database
             int startX = 15;
             int startY = 50;
 
-            // if doubles is working and is needed, change the code below
-
-            string threeOfFour = "";
+            string tournamentType = "";
 
             if (selectedTournament.ThreeOutOf4)
             {
-                threeOfFour = "3of4 ";
+                tournamentType = "3of4 ";
             }
+            /***********************************************************
+             if doubles is working and is needed, uncomment the code below
+            ***********************************************************/
+            //else if(selectedTournament.Doubles)
+            //{
+            //    tournamentType = "doubles ";
+            //}
+            /************************************************************/
 
             // drawing the location and date
-            graphic.DrawString(selectedTournament.Location + " " + threeOfFour + string.Format("{0:d-M-yyyy}", selectedTournament.Date), font, dBrush, startX + 10, startY - 19);
+            graphic.DrawString(selectedTournament.Location + " " + tournamentType + string.Format("{0:d-M-yyyy}", selectedTournament.Date), font, dBrush, startX + 10, startY - 19);
 
             string header = "9 Tap Tour High - ";
 
@@ -125,19 +131,25 @@ namespace NineTapTour.Database
             for (int i = 0; i < temp.Count - (index * 40) && i < numToPrint; i++)
             {
                 //draw number for what place they are
-                graphic.DrawString((i + 1 + (index * 40)).ToString(), font, dBrush, startX + 6, startY + 172 + (i * 19));
+                graphic.DrawString((i + 1 + (index * 40)).ToString(), font, dBrush, startX + 6, startY + 173 + (i * 19));
 
                 //draw Score
-                graphic.DrawString(temp[i + (index * 40)].Score.ToString(), font, dBrush, startX + 48, startY + 172 + (i * 19));
+                graphic.DrawString(temp[i + (index * 40)].Score.ToString(), font, dBrush, startX + 48, startY + 173 + (i * 19));
 
                 //draw the member number
-                graphic.DrawString(temp[i + (index * 40)].MemberNo.ToString(), font, dBrush, startX + 120, startY + 172 + (i * 19));
+                graphic.DrawString(temp[i + (index * 40)].MemberNo.ToString(), font, dBrush, startX + 120, startY + 173 + (i * 19));
 
-                //create name string containg lastname, firstname.
-                string nameString = temp[i + (index * 40)].LastName + ", " + temp[i + (index * 40)].FirstName;
+                string unpaid = "";
+                if(!temp[i + (index * 40)].Paid)
+                {
+                    unpaid = "X";
+                }
+
+                //create name string containg lastname, firstname, and last payment
+                string nameString = temp[i + (index * 40)].LastName + ", " + temp[i + (index * 40)].FirstName + "     " + temp[i + (index * 40)].LastPaymentYear + " " + unpaid;
 
                 //draw name string
-                graphic.DrawString(nameString, font, dBrush, startX + 200, startY + 172 + (i * 19));
+                graphic.DrawString(nameString, font, dBrush, startX + 200, startY + 173 + (i * 19));
             }
         }
 
@@ -247,7 +259,7 @@ namespace NineTapTour.Database
             {
                 mems = (from m in db.Members
                         orderby m.LastName descending
-                        select m).ToList();
+                        select m).Take(1).ToList();
             }
 
             if (mems.Count > 0)
@@ -318,9 +330,10 @@ namespace NineTapTour.Database
             edited this part because it used to say Average = (mem.Average != null) ? mem.Handicap.ToString() : "";
 
             and added the bonus because there was no code for it(still not sure if I should add it)
+            Check if it is a good code
             ***************************************************************/
             Average = (mem.Average != null) ? mem.Average.ToString() : "";
-            Bonus = mem.Bonus.Value;
+            Bonus = (mem.Bonus != null) ? mem.Bonus.Value : 0;//mem.Bonus;
             /*************************************************************/
             //Bonus pins default to 0 on the recap for all recaps printed.
 
