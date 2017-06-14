@@ -822,7 +822,7 @@ namespace Member_Import_Test
             }
             if(tournament.Contains("3of4"))
             {
-                th
+                
             }
             if (tournament.Contains("doubles"))
             {

@@ -792,6 +792,38 @@ namespace NineTapTour.Forms
             {
                 currentMem.Email = "";
             }
+            if (currentMem.Street == null)
+            {
+                currentMem.Street= "";
+            }
+            if (currentMem.Referrals == null)
+            {
+                txtReferrals.Text = null;
+            }
+            if (currentMem.PrimaryPhone == null)
+            {
+                currentMem.PrimaryPhone = "";
+            }
+            if (currentMem.PrimaryPhone == null)
+            {
+                currentMem.PrimaryPhone = "";
+            }
+            if (currentMem.SecondaryPhone == null)
+            {
+                currentMem.SecondaryPhone = "";
+            }
+            if (currentMem.SSN == null)
+            {
+                currentMem.SSN = " - -";
+            }
+            if (currentMem.PostalCode == null)
+            {
+                currentMem.PostalCode = "";
+            }
+            if (currentMem.Average == null)
+            {
+                txtAverage.Text = null ;
+            }
             if (!isMember ||
                 txtLastName.Text != currentMem.LastName.ToString() ||
                 txtFirstName.Text != currentMem.FirstName.ToString() ||
