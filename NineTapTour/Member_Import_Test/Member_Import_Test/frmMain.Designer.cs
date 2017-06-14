@@ -37,6 +37,10 @@
             this.label3 = new System.Windows.Forms.Label();
             this.btnPinFileSelect = new System.Windows.Forms.Button();
             this.btn_FinalizeData = new System.Windows.Forms.Button();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.progressBar2 = new System.Windows.Forms.ProgressBar();
+            this.LabelCurrentFileWorkingOn = new System.Windows.Forms.Label();
+            this.OverAllProcessingExcel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnOpenFile
@@ -111,7 +115,7 @@
             // btn_FinalizeData
             // 
             this.btn_FinalizeData.Enabled = false;
-            this.btn_FinalizeData.Location = new System.Drawing.Point(87, 200);
+            this.btn_FinalizeData.Location = new System.Drawing.Point(56, 300);
             this.btn_FinalizeData.Name = "btn_FinalizeData";
             this.btn_FinalizeData.Size = new System.Drawing.Size(75, 23);
             this.btn_FinalizeData.TabIndex = 4;
@@ -119,11 +123,45 @@
             this.btn_FinalizeData.UseVisualStyleBackColor = true;
             this.btn_FinalizeData.Click += new System.EventHandler(this.btn_FinalizeData_Click);
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(56, 189);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(293, 23);
+            this.progressBar1.TabIndex = 7;
+            // 
+            // progressBar2
+            // 
+            this.progressBar2.Location = new System.Drawing.Point(56, 235);
+            this.progressBar2.Name = "progressBar2";
+            this.progressBar2.Size = new System.Drawing.Size(293, 23);
+            this.progressBar2.TabIndex = 8;
+            // 
+            // LabelCurrentFileWorkingOn
+            // 
+            this.LabelCurrentFileWorkingOn.AutoSize = true;
+            this.LabelCurrentFileWorkingOn.Location = new System.Drawing.Point(53, 220);
+            this.LabelCurrentFileWorkingOn.Name = "LabelCurrentFileWorkingOn";
+            this.LabelCurrentFileWorkingOn.Size = new System.Drawing.Size(0, 13);
+            this.LabelCurrentFileWorkingOn.TabIndex = 9;
+            // 
+            // OverAllProcessingExcel
+            // 
+            this.OverAllProcessingExcel.AutoSize = true;
+            this.OverAllProcessingExcel.Location = new System.Drawing.Point(53, 173);
+            this.OverAllProcessingExcel.Name = "OverAllProcessingExcel";
+            this.OverAllProcessingExcel.Size = new System.Drawing.Size(0, 13);
+            this.OverAllProcessingExcel.TabIndex = 10;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(257, 235);
+            this.ClientSize = new System.Drawing.Size(405, 335);
+            this.Controls.Add(this.OverAllProcessingExcel);
+            this.Controls.Add(this.LabelCurrentFileWorkingOn);
+            this.Controls.Add(this.progressBar2);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.btn_FinalizeData);
             this.Controls.Add(this.btnPinFileSelect);
             this.Controls.Add(this.label3);
@@ -150,6 +188,10 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnPinFileSelect;
         private System.Windows.Forms.Button btn_FinalizeData;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ProgressBar progressBar2;
+        private System.Windows.Forms.Label LabelCurrentFileWorkingOn;
+        private System.Windows.Forms.Label OverAllProcessingExcel;
     }
 }
 
