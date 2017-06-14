@@ -757,7 +757,7 @@ namespace Member_Import_Test
             }
             if(tournament.Contains(threeOf4))
             {
-                th
+                
             }
             currentTournament.Date = dt;
             currentTournament.Location = TournamentName.TrimEnd();
