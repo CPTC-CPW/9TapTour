@@ -926,7 +926,7 @@ namespace Member_Import_Test
                                     break;
                                 case 14: //skips over notes (already stored in Member.Notes)
                                     break;
-                                case 15: //start or morsecode
+                                case 15: //start of morsecode
                                     break;
                                 case 16:
                                     break;
@@ -1026,14 +1026,14 @@ namespace Member_Import_Test
                 List<Participant> ParticipantsForTournament = new List<Participant>();
                
               
-                for (int members = 0; members < invalidMembers.Count; members++)
+                for (int members = 0; members < validMembers.Count; members++)
                 {
                  
                     for (int ExcelFileSlot = 0; ExcelFileSlot < ALLEXCELDATAFROMALLPLAYERS.Count; ExcelFileSlot++)
                     {
                       
                         //if Current selected member has an excel file and their excel file has a date == tournament date
-                        if(invalidMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber //CHANGE TO VALID MEMBERS LIST ON LAUNCH. INVALID USED FOR TESTING
+                        if(validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber //CHANGE TO VALID MEMBERS LIST ON LAUNCH. INVALID USED FOR TESTING
                         && ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Date == TournamentList[pinFileSlot].Date)
                         {
                            
