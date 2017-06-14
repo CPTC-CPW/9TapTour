@@ -160,6 +160,11 @@
                     "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
                     "ProductCode" = "8:.NETFramework,Version=v4.5"
                     }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.SqlServer.Express.11.0"
+                    {
+                    "Name" = "8:SQL Server 2012 Express"
+                    "ProductCode" = "8:Microsoft.SqlServer.Express.11.0"
+                    }
                 }
             }
         }
@@ -403,7 +408,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:NineTapTourSetup"
         "ProductCode" = "8:{53338CE3-03E6-4BD5-A2CE-5737B060DD65}"
-        "PackageCode" = "8:{95221EF9-F61C-46EB-A1AB-CED830448F14}"
+        "PackageCode" = "8:{54179A79-5518-4584-9FEA-0ECEDE0CEBE2}"
         "UpgradeCode" = "8:{669E078A-2D8E-45EA-9FA8-860EC989AB38}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -966,7 +971,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_231857CF6B254E9889F324356601C8D6"
             {
-            "SourcePath" = "8:..\\NineTapTour\\obj\\Debug\\NineTapTour.exe"
+            "SourcePath" = "8:..\\NineTapTour\\obj\\Release\\NineTapTour.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B028D90E881146268D81913A9F18C737"
