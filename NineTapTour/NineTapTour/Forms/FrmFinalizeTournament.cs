@@ -686,6 +686,21 @@ namespace NineTapTour.Forms
             dataGridView1.ResumeLayout();
         }
 
+        /***
+        ***/
+        private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            //MessageBox.Show( dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[dataGridView1.CurrentCell.ColumnIndex].Value.ToString());
+            ////press alt to make it work, do not know why
+
+            using (var db = new NineTapDb())
+            {
+                //db.Members.First(x => x.Id == )
+            }
+
+        }
+        /***/
+
     }
 }
 

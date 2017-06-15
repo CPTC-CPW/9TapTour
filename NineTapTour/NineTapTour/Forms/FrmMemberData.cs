@@ -724,19 +724,22 @@ namespace NineTapTour.Forms
 
         private void btnThisRecap_Click(object sender, EventArgs e)
         {
-            //Set up compenents for printing
-            PrintDialog printDialog = new PrintDialog();
-            PrintDocument printDocument = new PrintDocument();
-            //add the document to the dialog box
-            printDialog.Document = printDocument;
-            //add the event handler that will do the printing
-            printDocument.PrintPage += new PrintPageEventHandler(singlePrint);
-
-            DialogResult result = printDialog.ShowDialog();
-
-            if (result == DialogResult.OK)
+            if (isValid())
             {
-                printDocument.Print();
+                //Set up compenents for printing
+                PrintDialog printDialog = new PrintDialog();
+                PrintDocument printDocument = new PrintDocument();
+                //add the document to the dialog box
+                printDialog.Document = printDocument;
+                //add the event handler that will do the printing
+                printDocument.PrintPage += new PrintPageEventHandler(singlePrint);
+
+                DialogResult result = printDialog.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    printDocument.Print();
+                }
             }
         }
 
