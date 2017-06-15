@@ -426,11 +426,19 @@ namespace Member_Import_Test
                                             Console.WriteLine(File.Substring(currentIndex));
                                             newMem.DateOfBirth = Convert.ToDateTime(File.Substring(currentIndex));
                                         }
-                                        else
+                                        else if (File.Length - currentIndex > 8)
                                         {
                                             Console.WriteLine(File.Substring(currentIndex, Spaces[i]).Trim());
-                                            newMem.DateOfBirth = Convert.ToDateTime(File.Substring(currentIndex, Spaces[i]).Trim());
+                                            try {
+                                                newMem.DateOfBirth = Convert.ToDateTime(File.Substring(currentIndex, Spaces[i]).Trim());
+                                            }
+                                            catch(Exception ex)
+                                            {
+                                                newMem.DateOfBirth = DateTime.Today;
+                                            }
                                         }
+                                     
+                                      
 
                                     }
                                     else
@@ -584,12 +592,33 @@ namespace Member_Import_Test
             string playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
             string firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
             string[] first0middle1 = firstAndMiddle.Split(' ');
+            int playerOrgAVG;
             for (int i = 0; i < first0middle1.Length; i++)
             {
                 PlayerFinalFirstAndMiddle[i] = first0middle1[0];
             }
-            int playerOrgAVG = Convert.ToInt32((range.Cells[1, 10] as Excel.Range).Value2);
-            int playerNumber = Convert.ToInt32((range.Cells[1, 14] as Excel.Range).Value2);
+            try {
+                playerOrgAVG = Convert.ToInt32((range.Cells[1, 10] as Excel.Range).Value2);
+            }
+            catch(Exception NotAValidNumber)
+                {
+                playerOrgAVG = -1;
+            }
+            
+            String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
+            String[] playerNumberAfterSplit;
+            int playerNumberAsInt = 0;
+            int.TryParse(playerNumber, out playerNumberAsInt);
+            if (playerNumberAsInt != 0)
+            {
+                playerNumberAsInt = Convert.ToInt32((range.Cells[1, 14] as Excel.Range).Value2);
+            }
+            else if(playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
+            {
+               playerNumberAfterSplit = playerNumber.Split('/');
+               playerNumberAsInt = Convert.ToInt32(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1]);
+            }
+          
 
             for (int sheetNum = 1; sheetNum < xlWorkBook.Worksheets.Count; sheetNum++)
             {
@@ -597,10 +626,17 @@ namespace Member_Import_Test
                 range = xlWorkSheet.UsedRange;
                 for (int row = 3; row <= range.Rows.Count; row++)
                 {
-                    if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0
-                         && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0
-                         && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0
-                         && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
+                    try
+                    {
+                        if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0 
+                       && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2)== 0
+                       && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0
+                       && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
+                        {
+                            continue;
+                        }
+                    } 
+                    catch(Exception ex)
                     {
                         continue;
                     }
@@ -609,7 +645,7 @@ namespace Member_Import_Test
                     temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
                     temp.PlayerLastName = playerLastName;
                     temp.PlayerOrginalAVG = playerOrgAVG;
-                    temp.PlayerNumber = playerNumber;
+                    temp.PlayerNumber = playerNumberAsInt;
                     try
                     {
                         temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
@@ -744,7 +780,7 @@ namespace Member_Import_Test
                         }
                       
                     }
-    //               populateTournements(TournamentList);
+                   populateTournements(TournamentList);
                 }
                 MessageBox.Show(TournamentList.Count + " tournaments were imported.");
             }
@@ -838,7 +874,7 @@ namespace Member_Import_Test
             currentTournament.Location = TournamentName.TrimEnd();
             currentTournament.ThreeOutOf4 = threeofFour;
             currentTournament.Doubles = doubles;
-            currentTournament.Id = TournamentList.Count;
+            currentTournament.Id = TournamentList.Count + 1;
             listOfParticipants =  ReadPinFile(PinFileName, currentTournament);
             currentTournament.Participant = listOfParticipants;
 
@@ -1001,7 +1037,6 @@ namespace Member_Import_Test
 
                     pinFileParticipant.Game = newGame;
                     partList.Add(pinFileParticipant);
-                    pinFileParticipant.Id = partList.Count;
                     pinFileParticipant.Tournament = currentTournament;
                     pinFileParticipant = new Participant();
                     newGame = new Game();
@@ -1042,9 +1077,9 @@ namespace Member_Import_Test
                             Participant currentParticipant = new Participant();
                             currentParticipant.Tournament = TournamentList[pinFileSlot];
                             currentParticipant.Member = invalidMembers[members];
-                        
-                            
 
+
+                          
                             Game currentGame = new Game();
                          
                             currentGame.Game1 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game1;
