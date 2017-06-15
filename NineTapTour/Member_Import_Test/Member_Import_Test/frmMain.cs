@@ -858,7 +858,7 @@ namespace Member_Import_Test
             }
             if(tournament.Contains("3of4"))
             {
-                threeofFour = true;
+                
             }
             if (tournament.Contains("doubles"))
             {
