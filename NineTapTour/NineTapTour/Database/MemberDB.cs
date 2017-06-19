@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using NineTapTour.Exceptions;
 using System.Data.SqlClient;
 using System.Data.Entity.Validation;
+using System.Windows.Forms;
 
 namespace NineTapTour.Database
 {
@@ -21,6 +22,24 @@ namespace NineTapTour.Database
                     db.Entry(temp).State = db.Members.Any(m => m.Id == temp.Id) ?
                                             EntityState.Modified :
                                             EntityState.Added;
+                    /********************************************************************************************
+                    the if statement is so that you can update the handicap by changing the league average,
+                        but it won't update if a member participated in a tournament
+                    .value solves the problem where startAvg is nullable but the method is just int not int?
+                    *********************************************************************************************/
+                    if (temp.Average == 0)
+                    {
+                        temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.StartAvg.Value));
+                    }
+                    /********************************************************************************************/
+                    if (db.Entry(temp).State == EntityState.Modified)
+                    {
+                        MessageBox.Show("Player Updated");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Player Saved Successfully");
+                    }
                     db.SaveChanges();
                 }
             }
@@ -43,6 +62,7 @@ namespace NineTapTour.Database
             }
             catch (SystemException ex)
             {
+                Console.WriteLine("Error Number : " + ex.Message);
                 // throw new MemberTableException("Error Number : " + ex.Number + " - " + ex.Message);
             }
            

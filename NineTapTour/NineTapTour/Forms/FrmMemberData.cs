@@ -15,7 +15,6 @@ namespace NineTapTour.Forms
     public partial class FrmMemberData : Form
     {
 
-        bool UpdateText;
         //IOrderedEnumerable<Member> _membersList;
         int _memberId;
         Member currentMem;
@@ -31,8 +30,7 @@ namespace NineTapTour.Forms
         public FrmMemberData()
         {
             InitializeComponent();
-
-
+            txtMiddleInitial.MaxLength = 1;
         }
 
   
@@ -79,7 +77,7 @@ namespace NineTapTour.Forms
 
             if (currentMem == null)
             {
-                UpdateText = false;
+                
                 currentMem = new Member
                 {
                     Number = _memberNum
@@ -166,6 +164,7 @@ namespace NineTapTour.Forms
             }
             else
             {
+                var db = new NineTapDb();
                 #region Personal Info
                 _memberId = currentMem.Id;
                 txtMemberNumber.Text = currentMem.Number.ToString();
@@ -194,7 +193,13 @@ namespace NineTapTour.Forms
 
                 txtAverage.Text = currentMem.StartAvg.ToString();
                 txtTournAvg.Text = LeagueAverage(currentMem).ToString();
-                txtHandicap.Text = currentMem.Handicap.ToString();
+                /********************************************************************************
+                updates the form's handicap even when the finalize tournament button is clicked
+                -also updates the currentMem's handicap, so when the tournamnent gets it, it is the right handicap
+                *********************************************************************************/
+                currentMem.Handicap = db.Members.First(x => x.Id == currentMem.Id).Handicap;
+                txtHandicap.Text = currentMem.Handicap.ToString(); 
+                /********************************************************************************/
                 txtBonus.Text = currentMem.Bonus.ToString();
                 
                 #endregion
@@ -222,7 +227,7 @@ namespace NineTapTour.Forms
                     dateLastBowled.CustomFormat = @" ";
                 }
                 //txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
-                var db = new NineTapDb();
+                
                 var result = (from p in db.Participants
                               join g in db.Games on p.Game.Id equals g.Id
                               where p.Member.Id == currentMem.Id
@@ -319,6 +324,20 @@ namespace NineTapTour.Forms
                     return false;
                 }
             }
+            var db = new NineTapDb();
+            var id = Convert.ToInt32(txtMemberNumber.Text);
+            var ssnList = (from p in db.Members
+                           where p.Number != id
+                           select p.SSN                        
+                           ).ToList();
+            if (ssnList.Contains(mtxtBoxSSN.Text) && mtxtBoxSSN.Text != null)
+            {
+                MessageBox.Show("Member with same SSN already exists");
+                mtxtBoxSSN.Clear();
+                mtxtBoxSSN.Focus();
+                return false;
+                
+            }
             if (string.IsNullOrWhiteSpace(txtAddress.Text.Trim()))
             {
                 MessageBox.Show("Address field cannot be null.");
@@ -370,7 +389,32 @@ namespace NineTapTour.Forms
                 txtEmail.Clear();
                 return false;
             }
-            //((FrmMain)MdiParent).currFrmMemberData = this;
+            if(dateJoined.Value != null)
+            {
+                if(dateRejoin.Value != null && dateRejoin.Value < dateJoined.Value)
+                {
+                    MessageBox.Show("Rejoin Date before Join Date");
+                    dateRejoin.Focus();
+                    return false;
+                }
+                else if (dateRejoin.Value != null && dateRejoin.Value == dateJoined.Value)
+                {
+                    MessageBox.Show("Rejoin Date same as Join Date");
+                    dateRejoin.Focus();
+                    return false;
+                }
+            }
+            /********************************************************************************************************
+            League average should only be between 125 - 210
+            *********************************************************************************************************/
+            if (txtAverage.Text == "" || Convert.ToInt32(txtAverage.Text) < 125 || Convert.ToInt32(txtAverage.Text) > 210)
+            {
+                MessageBox.Show("For your League Average, you should only input between 125 to 210.");
+                txtAverage.Focus();
+                return false;
+            }
+            /*******************************************************************************************************/
+
             return true;
         }
         /// <summary>
@@ -425,7 +469,11 @@ namespace NineTapTour.Forms
                         #endregion
 
                         #region Score Info
-                        Average = 0,
+                        /*************************************************************************************
+                        used to say Average = 0; which is always making the average in the database 0
+                        **************************************************************************************/
+                        Average = (txtTournAvg.Text == string.Empty) ? 0 : Convert.ToInt16(txtTournAvg.Text),
+                        /*************************************************************************************/
                         StartAvg = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text),
                         Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text),
                         Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text),
@@ -450,13 +498,6 @@ namespace NineTapTour.Forms
                     {
                         MemberDb.AddMember(temp);
 
-                        if (UpdateText)
-                        {
-                            MessageBox.Show(@"Bowler Updated Successfully.");
-                        }
-                        else {
-                            MessageBox.Show(@"Bowler Added Successfully.");
-                        }
 
                         //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
                         ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
@@ -470,6 +511,7 @@ namespace NineTapTour.Forms
                 }
                 catch (FormatException fe)
                 {
+                    Console.WriteLine("Error Number : " + fe.Message);
                     //TODO - this field is a catch all for errors in fields that require numbers 
                     //League Score, Handicap, and referrals
                     MessageBox.Show("Referrals must be an integer number value.");
@@ -484,6 +526,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnArrowLeft_Click(object sender, EventArgs e)
         {
+            
             if (((FrmMain)MdiParent)._membersList.Count() == 0 || currentMem.Number <= ((FrmMain)MdiParent)._membersList.First().Number)
             {
                 MessageBox.Show(@"Beginning of file.", @"Notice");
@@ -551,6 +594,9 @@ namespace NineTapTour.Forms
                     Number = nextMemberNumber
                 };
             }
+            //on new player button select this focuses on the last name texbox that way user does not have
+            //to use the mouse to reclick when adding a new player
+            txtLastName.Focus();
         }
 
         /// <summary>
@@ -612,33 +658,49 @@ namespace NineTapTour.Forms
             datePicker.CustomFormat = @" ";
         }
         /// <summary>
-        /// Removes a bowler's information from the database.
+        /// clears all elements on member data form.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnDelete_Click(object sender, EventArgs e)
+        private void btnClear_Click(object sender, EventArgs e)
         {
-            if (isValid())
+            //removed code for a delete function it is in the region below
+            #region
+            //if (isValid())
+            //{
+            //    var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            //    if (confirm == DialogResult.No) return;
+            //    try
+            //    {
+            //        MemberDb.DeleteMember(currentMem);
+
+            //        MessageBox.Show(@"Bowler Removed Successfully.");
+            //        ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+            //        if (((FrmMain)MdiParent)._membersList.Count() > 0)
+            //        {
+            //            UpdateMemberInfo();
+            //        }
+            //    }
+            //    catch (MemberTableException ex)
+            //    {
+            //        MessageBox.Show(ex.Message);
+            //    }
+            //}
+            #endregion\
+            //clears all elements on member data form
+            var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Clear", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            
+             if (confirm == DialogResult.No) return;
+             /// stores member number to be restored later
+            string tempMemNum = txtMemberNumber.Text;
+            while (Controls.Count > 0)
             {
-                var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (confirm == DialogResult.No) return;
-                try
-                {
-                    MemberDb.DeleteMember(currentMem);
-
-                    MessageBox.Show(@"Bowler Removed Successfully.");
-                    ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-                    if (((FrmMain)MdiParent)._membersList.Count() > 0)
-                    {
-                        UpdateMemberInfo();
-                    }
-                }
-                catch (MemberTableException ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
+                Controls[0].Dispose();
             }
+            InitializeComponent();
+            //restores member number
+            txtMemberNumber.Text = tempMemNum;
         }
 
         private void btnMemberSearch_Click(object sender, EventArgs e)
@@ -662,19 +724,22 @@ namespace NineTapTour.Forms
 
         private void btnThisRecap_Click(object sender, EventArgs e)
         {
-            //Set up compenents for printing
-            PrintDialog printDialog = new PrintDialog();
-            PrintDocument printDocument = new PrintDocument();
-            //add the document to the dialog box
-            printDialog.Document = printDocument;
-            //add the event handler that will do the printing
-            printDocument.PrintPage += new PrintPageEventHandler(singlePrint);
-
-            DialogResult result = printDialog.ShowDialog();
-
-            if (result == DialogResult.OK)
+            if (isValid())
             {
-                printDocument.Print();
+                //Set up compenents for printing
+                PrintDialog printDialog = new PrintDialog();
+                PrintDocument printDocument = new PrintDocument();
+                //add the document to the dialog box
+                printDialog.Document = printDocument;
+                //add the event handler that will do the printing
+                printDocument.PrintPage += new PrintPageEventHandler(singlePrint);
+
+                DialogResult result = printDialog.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    printDocument.Print();
+                }
             }
         }
 
@@ -710,9 +775,15 @@ namespace NineTapTour.Forms
             datePaid.Format = DateTimePickerFormat.Short;
             checkPayment();
         }
+
         private void checkPayment()
         {
-            if (datePaid.Value != null && datePaid.Value <= DateTime.Now.AddYears(-1))
+            /*******************************************************************************************************
+            added '&& chbLifetime.Checked == false' so when the member is a lifetime member, the lblPaymentInfo will 
+            not be visible even if their last payment was due before
+            ********************************************************************************************************/
+            if (datePaid.Value != null && datePaid.Value <= DateTime.Now.AddYears(-1) && chbLifetime.Checked == false)
+            /*******************************************************************************************************/
             {
                 lblPaymentInfo.Visible = true;
             }

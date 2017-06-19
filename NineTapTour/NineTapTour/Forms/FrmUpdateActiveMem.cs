@@ -25,7 +25,7 @@ namespace NineTapTour.Forms
 {
     public partial class FrmUpdateActiveMem : Form
     {
-        Member currentMem;
+        //Member currentMem;
         DateTime targetDate;
         List<Member> InActiveList = MemberDb.GetMemberList();
         List<Member> AllMembers = MemberDb.GetMemberList();

@@ -51,10 +51,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>ABA401A3EED2D45D02A8EA4ABE20AF86FC2B5432</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>88E5AF63DE6CF195FD50D36ECEE6E7AD0268860F</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>NineTapTour_1_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>NineTapTour_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -110,6 +110,7 @@
     <Compile Include="Database\Participant.cs" />
     <Compile Include="Database\Tournament.cs" />
     <Compile Include="Exceptions\TournamentTableException.cs" />
+    <Compile Include="Forms\DoubleBuffer.cs" />
     <Compile Include="Forms\FrmFinalizeTournament.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -135,6 +136,12 @@
       <DependentUpon>FrmMemberData.cs</DependentUpon>
     </Compile>
     <Compile Include="Database\NineTapDb.cs" />
+    <Compile Include="Forms\FrmMemberScoresReports.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmMemberScoresReports.Designer.cs">
+      <DependentUpon>FrmMemberScoresReports.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmNewTournament.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -300,10 +307,6 @@
     <Compile Include="Migrations\201611211913236_add-migration.Designer.cs">
       <DependentUpon>201611211913236_add-migration.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201706051636204_allownullableforallmemberdatatypes.cs" />
-    <Compile Include="Migrations\201706051636204_allownullableforallmemberdatatypes.Designer.cs">
-      <DependentUpon>201706051636204_allownullableforallmemberdatatypes.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -333,6 +336,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmMemberData.resx">
       <DependentUpon>FrmMemberData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmMemberScoresReports.resx">
+      <DependentUpon>FrmMemberScoresReports.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmNewTournament.resx">
       <DependentUpon>frmNewTournament.cs</DependentUpon>
@@ -442,9 +448,6 @@
     <EmbeddedResource Include="Migrations\201611211913236_add-migration.resx">
       <DependentUpon>201611211913236_add-migration.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201706051636204_allownullableforallmemberdatatypes.resx">
-      <DependentUpon>201706051636204_allownullableforallmemberdatatypes.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
     </EmbeddedResource>
@@ -467,8 +470,6 @@
     <None Include="App.Release.config">
       <DependentUpon>App.config</DependentUpon>
     </None>
-    <None Include="NineTapTour_1_TemporaryKey.pfx" />
-    <None Include="NineTapTour_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -522,7 +523,35 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>5</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Excel">
+      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>7</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Icon\9tap.ico" />
   </ItemGroup>

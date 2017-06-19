@@ -20,6 +20,15 @@ namespace NineTapTour.Database
                     if (!db.FinalizeTemp.Any(f => f.GameId == temp.GameId))
                     {
                         db.Entry(temp).State = EntityState.Added;
+                        /*************************************************************************
+                        updates the handicap of a member that participated in the tournament in the database 
+                        ***There is a problem in the database's member's average, so it was not 
+                           used, but I believe it should be
+                           -The problem might be when a tournament record is added, it is not 
+                           updating the member's average in the database.
+                        *************************************************************************/
+                        db.Members.First(x => x.Id == temp.MemberId).Handicap = Calculations.Calculations.CalculateHandicapPins(Convert.ToInt16(LeagueAverage(db.Members.First(x => x.Id == temp.MemberId))));
+                        /************************************************************************/
                         db.SaveChanges();
                     }
 
@@ -30,76 +39,43 @@ namespace NineTapTour.Database
                 throw new Exception("Error Number : " + ex.Number + " - " + ex.Message);
             }
         }
-
-        /// <summary>
-        /// This method take all Current data from FinalizeTemp table and uses these values 
-        /// to update the Game Table.
-        /// </summary>
-        /// <param name="TournamentId">Active tournament to finalize</param>
-        public static void finalizeGame(int TournamentId)
+        /***************************************************************
+        calculates the average
+        ***note I saw this method twice now and this is the third one
+        ****************************************************************/
+        public static double LeagueAverage(Member mem)
         {
-            using (var db = new NineTapDb())
+            double sum = 0;
+            double average = 0;
+            var db = new NineTapDb();
+            var temp = (
+
+                        from p in db.Participants
+                        join m in db.Members on p.Member.Id equals m.Id
+                        join g in db.Games on p.Game.Id equals g.Id
+                        join t in db.Tournaments on p.Tournament.Id equals t.Id
+                        where mem.Id == m.Id
+                        orderby t.Date descending
+                        select new
+                        {
+                            t.Date,
+                            g.Game1,
+                            g.Game2,
+                            g.Game3,
+                            g.Game4,
+                            Average = (g.Game1 + g.Game2 + g.Game3 + g.Game4) / 4
+
+                        }).Take(30).ToList();
+            if (temp.Count > 0)
             {
-                var Tournament = (from t in db.FinalizeTemp
-                                  where t.TournamentID == TournamentId
-                                  select t).ToList();
-
-                foreach (var t in Tournament)
+                foreach (var item in temp)
                 {
-                    var game = db.Games.SingleOrDefault(g => g.Id == t.GameId);
-                    if (game != null)
-                    {
-                        game.UseGame1 = t.UseGame1;
-                        game.UseGame2 = t.UseGame2;
-                        game.UseGame3 = t.UseGame3;
-                        game.UseGame4 = t.UseGame4;
-                        game.Notes = t.Notes;
-                        game.Handicap = t.Handicap;
-                        game.Bonus = t.Bonus;
-                        //game.MoneyWon = t.MoneyWon; //Add MoneyWon field in Finalize
-                        //game.PlaceStanding = t.PlaceStanding; //Possibly update PlaceStanding
-                        db.SaveChanges();
-                    }
-
+                    sum += Convert.ToDouble(item.Average);
                 }
-
+                return (average = sum / temp.Count());
             }
-
+            return 0;
         }
-
-        /// <summary>
-        /// This method take all Current data from FinalizeTemp table and uses these values 
-        /// to update the Game Table.
-        /// </summary>
-        /// <param name="TournamentId">Active tournament to finalize</param>
-        public static void FinalizeGame(int TournamentId)
-        {
-            using (var db = new NineTapDb())
-            {
-                var Tournament = (from t in db.FinalizeTemp
-                                  where t.TournamentID == TournamentId
-                                  select t).ToList();
-
-                foreach (var t in Tournament)
-                {
-                    var game = db.Games.SingleOrDefault(g => g.Id == t.GameId);
-                    if (game != null)
-                    {
-                        game.UseGame1 = t.UseGame1;
-                        game.UseGame2 = t.UseGame2;
-                        game.UseGame3 = t.UseGame3;
-                        game.UseGame4 = t.UseGame4;
-                        game.Notes = t.Notes;
-                        game.Handicap = t.Handicap;
-                        game.Bonus = t.Bonus;
-                        //game.MoneyWon = t.MoneyWon; //Add MoneyWon field in Finalize
-                        //game.PlaceStanding = t.PlaceStanding; //Possibly update PlaceStanding
-                        db.SaveChanges();
-                    }
-
-                }
-
-            }
-        }
+        /*****************/
     }
 }

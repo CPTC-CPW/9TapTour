@@ -37,10 +37,10 @@
             this.rdoSquad6 = new System.Windows.Forms.RadioButton();
             this.rdoSquad7 = new System.Windows.Forms.RadioButton();
             this.rdoSquad5 = new System.Windows.Forms.RadioButton();
-            this.rdoSquad4 = new System.Windows.Forms.RadioButton();
-            this.rdoSquad3 = new System.Windows.Forms.RadioButton();
-            this.rdoSquad2 = new System.Windows.Forms.RadioButton();
-            this.rdoSquad1 = new System.Windows.Forms.RadioButton();
+            this.rdoSquadFour = new System.Windows.Forms.RadioButton();
+            this.rdoSquadThree = new System.Windows.Forms.RadioButton();
+            this.rdoSquadTwo = new System.Windows.Forms.RadioButton();
+            this.rdoSquadOne = new System.Windows.Forms.RadioButton();
             this.txtLastName = new System.Windows.Forms.TextBox();
             this.txtFirstName = new System.Windows.Forms.TextBox();
             this.txtMiddleInitial = new System.Windows.Forms.TextBox();
@@ -164,10 +164,10 @@
             this.groupBox1.Controls.Add(this.rdoSquad6);
             this.groupBox1.Controls.Add(this.rdoSquad7);
             this.groupBox1.Controls.Add(this.rdoSquad5);
-            this.groupBox1.Controls.Add(this.rdoSquad4);
-            this.groupBox1.Controls.Add(this.rdoSquad3);
-            this.groupBox1.Controls.Add(this.rdoSquad2);
-            this.groupBox1.Controls.Add(this.rdoSquad1);
+            this.groupBox1.Controls.Add(this.rdoSquadFour);
+            this.groupBox1.Controls.Add(this.rdoSquadThree);
+            this.groupBox1.Controls.Add(this.rdoSquadTwo);
+            this.groupBox1.Controls.Add(this.rdoSquadOne);
             this.groupBox1.Location = new System.Drawing.Point(21, 93);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(179, 122);
@@ -185,7 +185,6 @@
             this.rdoSquad8.TabStop = true;
             this.rdoSquad8.Text = "Squad 8";
             this.rdoSquad8.UseVisualStyleBackColor = true;
-            this.rdoSquad8.CheckedChanged += new System.EventHandler(this.rdoSquad8_CheckedChanged);
             // 
             // rdoSquad6
             // 
@@ -197,7 +196,6 @@
             this.rdoSquad6.TabStop = true;
             this.rdoSquad6.Text = "Squad 6";
             this.rdoSquad6.UseVisualStyleBackColor = true;
-            this.rdoSquad6.CheckedChanged += new System.EventHandler(this.rdoSquad6_CheckedChanged);
             // 
             // rdoSquad7
             // 
@@ -209,7 +207,6 @@
             this.rdoSquad7.TabStop = true;
             this.rdoSquad7.Text = "Squad 7";
             this.rdoSquad7.UseVisualStyleBackColor = true;
-            this.rdoSquad7.CheckedChanged += new System.EventHandler(this.rdoSquad7_CheckedChanged);
             // 
             // rdoSquad5
             // 
@@ -221,53 +218,52 @@
             this.rdoSquad5.TabStop = true;
             this.rdoSquad5.Text = "Squad 5";
             this.rdoSquad5.UseVisualStyleBackColor = true;
-            this.rdoSquad5.CheckedChanged += new System.EventHandler(this.rdoSquad5_CheckedChanged);
             // 
             // rdoSquadFour
             // 
-            this.rdoSquad4.AutoSize = true;
-            this.rdoSquad4.Location = new System.Drawing.Point(108, 43);
-            this.rdoSquad4.Name = "rdoSquadFour";
-            this.rdoSquad4.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquad4.TabIndex = 23;
-            this.rdoSquad4.Text = "Squad 4";
-            this.rdoSquad4.UseVisualStyleBackColor = true;
-            this.rdoSquad4.CheckedChanged += new System.EventHandler(this.rdoSquadFour_CheckedChanged);
+            this.rdoSquadFour.AutoSize = true;
+            this.rdoSquadFour.Location = new System.Drawing.Point(108, 43);
+            this.rdoSquadFour.Name = "rdoSquadFour";
+            this.rdoSquadFour.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquadFour.TabIndex = 23;
+            this.rdoSquadFour.Text = "Squad 4";
+            this.rdoSquadFour.UseVisualStyleBackColor = true;
+            this.rdoSquadFour.CheckedChanged += new System.EventHandler(this.rdoSquadFour_CheckedChanged);
             // 
             // rdoSquadThree
             // 
-            this.rdoSquad3.AutoSize = true;
-            this.rdoSquad3.Location = new System.Drawing.Point(6, 43);
-            this.rdoSquad3.Name = "rdoSquadThree";
-            this.rdoSquad3.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquad3.TabIndex = 22;
-            this.rdoSquad3.Text = "Squad 3";
-            this.rdoSquad3.UseVisualStyleBackColor = true;
-            this.rdoSquad3.CheckedChanged += new System.EventHandler(this.rdoSquadThree_CheckedChanged);
+            this.rdoSquadThree.AutoSize = true;
+            this.rdoSquadThree.Location = new System.Drawing.Point(6, 43);
+            this.rdoSquadThree.Name = "rdoSquadThree";
+            this.rdoSquadThree.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquadThree.TabIndex = 22;
+            this.rdoSquadThree.Text = "Squad 3";
+            this.rdoSquadThree.UseVisualStyleBackColor = true;
+            this.rdoSquadThree.CheckedChanged += new System.EventHandler(this.rdoSquadThree_CheckedChanged);
             // 
             // rdoSquadTwo
             // 
-            this.rdoSquad2.AutoSize = true;
-            this.rdoSquad2.Location = new System.Drawing.Point(108, 20);
-            this.rdoSquad2.Name = "rdoSquadTwo";
-            this.rdoSquad2.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquad2.TabIndex = 21;
-            this.rdoSquad2.Text = "Squad 2";
-            this.rdoSquad2.UseVisualStyleBackColor = true;
-            this.rdoSquad2.CheckedChanged += new System.EventHandler(this.rdoSquadTwo_CheckedChanged);
+            this.rdoSquadTwo.AutoSize = true;
+            this.rdoSquadTwo.Location = new System.Drawing.Point(108, 20);
+            this.rdoSquadTwo.Name = "rdoSquadTwo";
+            this.rdoSquadTwo.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquadTwo.TabIndex = 21;
+            this.rdoSquadTwo.Text = "Squad 2";
+            this.rdoSquadTwo.UseVisualStyleBackColor = true;
+            this.rdoSquadTwo.CheckedChanged += new System.EventHandler(this.rdoSquadTwo_CheckedChanged);
             // 
             // rdoSquadOne
             // 
-            this.rdoSquad1.AutoSize = true;
-            this.rdoSquad1.Checked = true;
-            this.rdoSquad1.Location = new System.Drawing.Point(6, 20);
-            this.rdoSquad1.Name = "rdoSquadOne";
-            this.rdoSquad1.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquad1.TabIndex = 20;
-            this.rdoSquad1.TabStop = true;
-            this.rdoSquad1.Text = "Squad 1";
-            this.rdoSquad1.UseVisualStyleBackColor = true;
-            this.rdoSquad1.CheckedChanged += new System.EventHandler(this.rdoSquadOne_CheckedChanged);
+            this.rdoSquadOne.AutoSize = true;
+            this.rdoSquadOne.Checked = true;
+            this.rdoSquadOne.Location = new System.Drawing.Point(6, 20);
+            this.rdoSquadOne.Name = "rdoSquadOne";
+            this.rdoSquadOne.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquadOne.TabIndex = 20;
+            this.rdoSquadOne.TabStop = true;
+            this.rdoSquadOne.Text = "Squad 1";
+            this.rdoSquadOne.UseVisualStyleBackColor = true;
+            this.rdoSquadOne.CheckedChanged += new System.EventHandler(this.rdoSquadOne_CheckedChanged);
             // 
             // txtLastName
             // 
@@ -573,7 +569,7 @@
             this.btnNew.Location = new System.Drawing.Point(19, 19);
             this.btnNew.Name = "btnNew";
             this.btnNew.Size = new System.Drawing.Size(197, 25);
-            this.btnNew.TabIndex = 0;
+            this.btnNew.TabIndex = 4;
             this.btnNew.Text = "Add New/Update Record";
             this.btnNew.UseVisualStyleBackColor = true;
             this.btnNew.Click += new System.EventHandler(this.newRecap);
@@ -640,7 +636,8 @@
             this.txtMoney.Location = new System.Drawing.Point(244, 278);
             this.txtMoney.Name = "txtMoney";
             this.txtMoney.Size = new System.Drawing.Size(83, 20);
-            this.txtMoney.TabIndex = 23;
+            this.txtMoney.TabIndex = 0;
+            this.txtMoney.TextChanged += new System.EventHandler(this.txtMoney_TextChanged);
             // 
             // lblPlayer2
             // 
@@ -886,6 +883,7 @@
             this.btnSeries.TabStop = false;
             this.btnSeries.Text = "Series";
             this.btnSeries.UseVisualStyleBackColor = true;
+            this.btnSeries.Click += new System.EventHandler(this.btnSeries_Click);
             // 
             // btnGame
             // 
@@ -896,6 +894,7 @@
             this.btnGame.TabStop = false;
             this.btnGame.Text = "Game";
             this.btnGame.UseVisualStyleBackColor = true;
+            this.btnGame.Click += new System.EventHandler(this.btnGame_Click);
             // 
             // btnSenior
             // 
@@ -906,6 +905,7 @@
             this.btnSenior.TabStop = false;
             this.btnSenior.Text = "Senior";
             this.btnSenior.UseVisualStyleBackColor = true;
+            this.btnSenior.Click += new System.EventHandler(this.btnSenior_Click);
             // 
             // grpComments
             // 
@@ -1073,8 +1073,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.LightBlue;
-            this.ClientSize = new System.Drawing.Size(884, 733);
+            this.ClientSize = new System.Drawing.Size(934, 812);
             this.Controls.Add(this.btnFinalizeTounament);
             this.Controls.Add(this.lblMiddleInitial2);
             this.Controls.Add(this.lblFirstName2);
@@ -1104,7 +1105,6 @@
             this.Controls.Add(this.grpMemberNum);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(585, 308);
             this.Name = "frmMemberScores";
             this.Text = "Member Scores";
             this.Activated += new System.EventHandler(this.FrmMemberScores_Activated);
@@ -1136,10 +1136,10 @@
         private System.Windows.Forms.GroupBox grpMemberNum;
         private System.Windows.Forms.TextBox txtMemberNum;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RadioButton rdoSquad1;
-        private System.Windows.Forms.RadioButton rdoSquad4;
-        private System.Windows.Forms.RadioButton rdoSquad3;
-        private System.Windows.Forms.RadioButton rdoSquad2;
+        private System.Windows.Forms.RadioButton rdoSquadOne;
+        private System.Windows.Forms.RadioButton rdoSquadFour;
+        private System.Windows.Forms.RadioButton rdoSquadThree;
+        private System.Windows.Forms.RadioButton rdoSquadTwo;
         private System.Windows.Forms.TextBox txtLastName;
         private System.Windows.Forms.TextBox txtFirstName;
         private System.Windows.Forms.TextBox txtMiddleInitial;
