@@ -28,6 +28,7 @@ namespace NineTapTour.Forms
         public FrmMain()
         {
             InitializeComponent();
+            //this size is the height and width of the primary screen minus the start bar (if the user has a start bar)
             MaxWorkAreaScreenSize = new Size( Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height );
             //run any pending database migrations on start
             NineTapDb db = new NineTapDb();
@@ -48,6 +49,11 @@ namespace NineTapTour.Forms
             
         }
 
+        /// <summary>
+        ///     this methoud takes in a Size (width and height) and will set the application to that size
+        ///     this size should be set to the working area of the primary monitior...
+        /// </summary>
+        /// <param name="workingArea">The working array of the primary monitor</param>
         private void setHeightAndWidth(Size workingArea)
         {
             this.Size = workingArea;
