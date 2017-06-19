@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NineTapTour", "NineTapTour\NineTapTour.csproj", "{A8E1E43E-173C-46BC-8C7A-2E95D37086DB}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "NineTapTourSetup", "NineTapTourSetup\NineTapTourSetup.vdproj", "{C2F7CF77-A1C5-4F4B-B881-420968D3A128}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Member_Import_Data", "Member_Import_Test\Member_Import_Test\Member_Import_Data.csproj", "{8B480B0C-419E-49E4-ADB8-CB9509DDE39D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +21,10 @@ Global
 		{A8E1E43E-173C-46BC-8C7A-2E95D37086DB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C2F7CF77-A1C5-4F4B-B881-420968D3A128}.Debug|Any CPU.ActiveCfg = Debug
 		{C2F7CF77-A1C5-4F4B-B881-420968D3A128}.Release|Any CPU.ActiveCfg = Release
+		{8B480B0C-419E-49E4-ADB8-CB9509DDE39D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B480B0C-419E-49E4-ADB8-CB9509DDE39D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B480B0C-419E-49E4-ADB8-CB9509DDE39D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B480B0C-419E-49E4-ADB8-CB9509DDE39D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
