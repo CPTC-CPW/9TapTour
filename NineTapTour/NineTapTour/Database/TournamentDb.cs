@@ -12,7 +12,8 @@ using System.Data.Entity.Validation;
 
 namespace NineTapTour.Database
 {
-    class TournamentDb
+    //remove public as soon as import project is merged with 9tap project
+    public class TournamentDb
     {
         public static void AddTournament(Tournament New)
         {

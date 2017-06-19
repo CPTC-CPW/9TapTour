@@ -246,6 +246,7 @@
             this.txtNotes.Size = new System.Drawing.Size(298, 218);
             this.txtNotes.TabIndex = 22;
             this.txtNotes.TabStop = false;
+            this.txtNotes.TextChanged += new System.EventHandler(this.txtNotes_TextChanged);
             // 
             // txtAverage
             // 
@@ -343,7 +344,7 @@
             // 
             // mtxtBoxSSN
             // 
-            this.mtxtBoxSSN.BackColor = System.Drawing.Color.LightPink;
+            this.mtxtBoxSSN.BackColor = System.Drawing.Color.White;
             this.mtxtBoxSSN.Location = new System.Drawing.Point(344, 41);
             this.mtxtBoxSSN.Mask = "000-00-0000";
             this.mtxtBoxSSN.Name = "mtxtBoxSSN";
@@ -737,6 +738,7 @@
             // 
             // txtlastBowled
             // 
+            this.txtlastBowled.BackColor = System.Drawing.Color.LightPink;
             this.txtlastBowled.Location = new System.Drawing.Point(747, 519);
             this.txtlastBowled.Name = "txtlastBowled";
             this.txtlastBowled.Size = new System.Drawing.Size(100, 21);

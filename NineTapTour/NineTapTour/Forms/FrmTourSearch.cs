@@ -91,6 +91,8 @@ namespace NineTapTour.Forms
                     Date = t.Date,
                     Id = t.Id,
                     Sponsors = t.Sponsors,
+                    IsDoubles = t.Doubles,
+                    Is3OutOf4 = t.ThreeOutOf4,
                     Participant = t.Participant,
                     Notes = t.Notes
                 }).ToList();
@@ -102,6 +104,8 @@ namespace NineTapTour.Forms
                     Date = x.Date,
                     Id = x.Id,
                     Sponsors = x.Sponsors,
+                    Doubles = x.IsDoubles,
+                    ThreeOutOf4 = x.Is3OutOf4,
                     Participant = x.Participant,
                     Notes = x.Notes
                 }).ToList();

@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Member_Import_Test.Classes;
+using NineTapTour.Database;
 
 namespace Member_Import_Test
 {
@@ -65,8 +66,6 @@ namespace Member_Import_Test
             txtFirstName.Text = currentMem.FirstName;
             txtMiddleInitial.Text = currentMem.MiddleInitial;
             mtxtBoxDOB.Text = currentMem.DateOfBirth.ToString("MM/dd/yyyy");
-            // mtxtBoxSSN.Text = currentMem.SSN;
-            // txtSSN.PasswordChar = '*'; //This hides the SSN within the form of '*'.
             #endregion
 
             #region Postal Address
@@ -166,19 +165,6 @@ namespace Member_Import_Test
                 MessageBox.Show("Invalid Primary Phone field");
                 return false;
             }
-            #region
-            //if (!Regex.IsMatch(mtxtBoxSSN.Text, "^\\d{3}-?\\d{2}-?\\d{4}$"))
-            //{
-            //    MessageBox.Show("Invalid Social Security field");
-            //    return false;
-            //}
-
-            //if (mtxtBoxSSN.Text == "")
-            //{
-            //    MessageBox.Show("SSN field cannot be null");
-            //    return false;
-            //}
-            #endregion
             if (txtAddress.Text == "")
             {
                 MessageBox.Show("Address field cannot be null");
@@ -302,6 +288,10 @@ namespace Member_Import_Test
                 //}
                 //else
                 //{
+                if (txtReferrals.Text == "")
+                {
+                    txtReferrals.Text = "0";
+                }
                 temp = new Member()
                 {
 
@@ -342,10 +332,10 @@ namespace Member_Import_Test
                     #region Misc. Info
                     RejoinDate = Convert.ToDateTime(txtdateJoined.Text),
                     LastBowled = Convert.ToDateTime(txtlastBowled.Text),
-                    MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
+                    // MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
                     //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
                     Notes = txtNotes.Text,
-                    Referrals = txtReferrals.Text
+                    Referrals = Convert.ToInt16(txtReferrals.Text)
                     #endregion
                 };
                 //}
@@ -353,7 +343,8 @@ namespace Member_Import_Test
                 // Adds Member to Database
                 try
                 {
-                    DBQueries.AddMember(temp);
+
+                    NineTapTour.Database.MemberDb.AddMember(temp);
                     MessageBox.Show(@"Bowler Added Successfully.");
                     invalidMembers.RemoveAt(listPosition);
                     if(invalidMembers.Count() != 0)
@@ -445,24 +436,27 @@ namespace Member_Import_Test
                 {
                     textBox.BackColor = textBox.Text == "1/1/0001 12:00:00 AM" ? Color.LightPink : Color.White;
                 }
-                else if(textBox.Name == "txtReferrals")    
+                else if (textBox.Name == "txtReferrals")
                 {
                     int num;
                     bool isNum = int.TryParse(textBox.Text, out num);
-                    textBox.BackColor = isNum || textBox.Text.Trim()=="" ? Color.White : Color.LightPink;
+                    textBox.BackColor = isNum || textBox.Text.Trim() == "" ? Color.White : Color.LightPink;
                 }
                 else if(textBox != null && textBox.Name != "txtReferrals")
                 {
                     textBox.BackColor = textBox.Text == string.Empty ? Color.LightPink : Color.White;
                 }
+
+                if (textBox.Name == "txtlastBowled")
+                {
+                    DateTime date;
+                    bool isDate = DateTime.TryParse(textBox.Text, out date);
+                    textBox.BackColor = !isDate || textBox.Text.Trim() == "" ? Color.LightPink : Color.White;
+                }
             }
             else if(sender is MaskedTextBox)
             {
                 var maskedtextBox = sender as MaskedTextBox;
-                //if(maskedtextBox.Name=="mtxtBoxSSN")
-                //{
-                //    maskedtextBox.BackColor = maskedtextBox.Text == "   -  -" ? Color.LightPink : Color.White;
-                //}
                 if(maskedtextBox.Name=="mtxtBoxPhone")
                 {
                     maskedtextBox.BackColor = maskedtextBox.Text == "(   )    -" ? Color.LightPink : Color.White;
@@ -483,6 +477,11 @@ namespace Member_Import_Test
         private void FrmMemberData_FormClosed(object sender, FormClosedEventArgs e)
         {
             home.Show();
+        }
+
+        private void txtNotes_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

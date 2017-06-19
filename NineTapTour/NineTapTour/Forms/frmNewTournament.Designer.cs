@@ -211,7 +211,7 @@
             // 
             this.ckbx3outOf4.AutoSize = true;
             this.ckbx3outOf4.Location = new System.Drawing.Point(136, 222);
-            this.ckbx3outOf4.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.ckbx3outOf4.Margin = new System.Windows.Forms.Padding(1);
             this.ckbx3outOf4.Name = "ckbx3outOf4";
             this.ckbx3outOf4.Size = new System.Drawing.Size(44, 17);
             this.ckbx3outOf4.TabIndex = 17;

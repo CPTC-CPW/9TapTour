@@ -427,8 +427,8 @@ namespace NineTapTour.Forms
             //checks to see if firstname,lastname, and zip is valid.
             //Then runs the rest of the btnSave_Click and adds a member into the database.
 
-            if (isValid())
-            {
+            //if (isValid())
+            //{
                 var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (confirm == DialogResult.No)
                     return;
@@ -516,7 +516,7 @@ namespace NineTapTour.Forms
                     //League Score, Handicap, and referrals
                     MessageBox.Show("Referrals must be an integer number value.");
                 }
-            }
+            //}
         }
 
         /// <summary>
@@ -851,7 +851,50 @@ namespace NineTapTour.Forms
                     isMember = true;
                 }
             }
-            
+            if(currentMem.State == null)
+            {
+                currentMem.State = "";
+            }
+            if (currentMem.City == null)
+            {
+                currentMem.City = "";
+            }
+            if (currentMem.Email == null)
+            {
+                currentMem.Email = "";
+            }
+            if (currentMem.Street == null)
+            {
+                currentMem.Street= "";
+            }
+            if (currentMem.Referrals == null)
+            {
+                txtReferrals.Text = null;
+            }
+            if (currentMem.PrimaryPhone == null)
+            {
+                currentMem.PrimaryPhone = "";
+            }
+            if (currentMem.PrimaryPhone == null)
+            {
+                currentMem.PrimaryPhone = "";
+            }
+            if (currentMem.SecondaryPhone == null)
+            {
+                currentMem.SecondaryPhone = "";
+            }
+            if (currentMem.SSN == null)
+            {
+                currentMem.SSN = " - -";
+            }
+            if (currentMem.PostalCode == null)
+            {
+                currentMem.PostalCode = "";
+            }
+            if (currentMem.Average == null)
+            {
+                txtAverage.Text = null ;
+            }
             if (!isMember ||
                 txtLastName.Text != currentMem.LastName.ToString() ||
                 txtFirstName.Text != currentMem.FirstName.ToString() ||
