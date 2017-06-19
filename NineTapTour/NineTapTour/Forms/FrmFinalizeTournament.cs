@@ -687,17 +687,52 @@ namespace NineTapTour.Forms
         }
 
         /***
-        ***/
+        when you double clicke a cell, the selected cell(may not the clicked cell) will display the member's information 
+         ***/
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             //MessageBox.Show( dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[dataGridView1.CurrentCell.ColumnIndex].Value.ToString());
             ////press alt to make it work, do not know why
+            int gameId = Convert.ToInt32(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value);
 
             using (var db = new NineTapDb())
             {
-                //db.Members.First(x => x.Id == )
-            }
+                int memId = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Id;
+                var temp = (from p in db.Participants
+                            join m in db.Members on p.Member.Id equals m.Id
+                            join g in db.Games on p.Game.Id equals g.Id//dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value//g.Id
+                            join t in db.Tournaments on p.Tournament.Id equals t.Id
+                            where p.Member.Id == memId
 
+                            select new
+                            {
+                                g.Id,
+                                m.FirstName,
+                                m.LastName,
+                                MemberId = m.Id,
+                                TournId = t.Id,
+                                p.Squad,
+                                g.Game1,
+                                g.Game2,
+                                g.Game3,
+                                g.Game4,
+                                g.UseGame1,
+                                g.UseGame2,
+                                g.UseGame3,
+                                g.UseGame4,
+                                g.Notes,
+                                g.Handicap,
+                                g.Bonus,
+                                //I believe it needs more information
+
+                            }).ToList();
+
+                foreach (var v in temp)
+                {
+                    MessageBox.Show(v.Id + " " + v.FirstName + " " + v.LastName + " " + v.MemberId + " " + v.TournId + " " + v.Squad + " " + v.Game1 + " " + v.Game2 + " " + v.Game3 + " " + v.Game4 + " " + v.Notes + " " + v.Handicap + " " + v.Bonus);
+                }
+                //don't forget to press alt
+            }
         }
         /***/
 
