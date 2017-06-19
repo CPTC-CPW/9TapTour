@@ -808,8 +808,11 @@ namespace Member_Import_Test
                                                     @"\d{2}-\d{1}-\d{4}",
                                                     @"\d{1}-\d{1}-\d{4}",
                                                     @"\d{2}-\d{2}-\d{2}",
+                                                    @"\d{2}-\d{1}-\d{2}",
                                                     @"\d{1}-\d{2}-\d{2}",
                                                     @"\d{1}-\d{1}-\d{2}",
+                                                   
+
 
                                                    };
             string[] CorrectFormat = new string[]
@@ -823,6 +826,7 @@ namespace Member_Import_Test
                                                      "MM-d-yyyy" ,
                                                      "M-d-yyyy"  ,
                                                      "MM-dd-yy"  ,
+                                                     "MM-d-yy"   ,   
                                                      "M-dd-yy"   ,
                                                      "M-d-yy"    ,
                                                  };
@@ -835,8 +839,15 @@ namespace Member_Import_Test
                     Match m = regex.Match(tournament);
                     if (m.Success) //PROCESS INFO THAT HAS A VALID DATE
                     {
-                        dt = DateTime.ParseExact(m.Value, CorrectFormat[n], CultureInfo.InvariantCulture);
-                        break;
+                        try
+                        {
+                            dt = DateTime.ParseExact(m.Value, CorrectFormat[n], CultureInfo.InvariantCulture);
+                            break; 
+                        }
+                        catch
+                        {
+                            break;
+                        }
                     }
                     else if (n >= regexArray.Length - 1) //PROCESS INFO THAT DOESNT HAVE A VALID DATE TIME IN THE TITLE
                     {
@@ -875,8 +886,8 @@ namespace Member_Import_Test
             currentTournament.ThreeOutOf4 = threeofFour;
             currentTournament.Doubles = doubles;
             currentTournament.Id = TournamentList.Count + 1;
-            listOfParticipants =  ReadPinFile(PinFileName, currentTournament);
-            currentTournament.Participant = listOfParticipants;
+           // listOfParticipants =  ReadPinFile(PinFileName, currentTournament);
+           // currentTournament.Participant = listOfParticipants;
 
             TournamentList.Add(currentTournament);
 
@@ -1076,7 +1087,7 @@ namespace Member_Import_Test
                             //MessageBox.Show(invalidMembers[members].FirstName + " played in a tournament at " + TournamentList[pinFileSlot].Location + " on " + ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Date); TEST MESSAGE BOX
                             Participant currentParticipant = new Participant();
                             currentParticipant.Tournament = TournamentList[pinFileSlot];
-                            currentParticipant.Member = invalidMembers[members];
+                            currentParticipant.Member = validMembers[members];
 
 
                           

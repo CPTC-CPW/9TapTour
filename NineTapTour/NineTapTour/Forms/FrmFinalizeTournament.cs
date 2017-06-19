@@ -17,8 +17,6 @@ namespace NineTapTour.Forms
     public partial class FrmFinalizeTournament : Form
     {
 
-
-
         public FrmFinalizeTournament(Tournament tourn)
         {
             InitializeComponent();
@@ -226,7 +224,14 @@ namespace NineTapTour.Forms
                 NewParticipant.Squad = item.Squad;
                 NewParticipant.GameAvg = (int)(item.Game1 + item.Game2 + item.Game3 + item.Game4) / 4;
                 NewParticipant.Handicap = (int)item.Handicap;
-                NewParticipant.Bonus = (int)item.Bonus;
+                try
+                {
+                    NewParticipant.Bonus = (int)item.Bonus;
+                }
+                catch
+                {
+                    NewParticipant.Bonus = 0;
+                }
                 ParticipantList.Add(NewParticipant);
             }
 
@@ -733,6 +738,11 @@ namespace NineTapTour.Forms
                 }
                 //don't forget to press alt
             }
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
         /***/
 

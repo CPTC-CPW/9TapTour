@@ -38,7 +38,7 @@ namespace NineTapTour.Database
                     }
                     else
                     {
-                        MessageBox.Show("Player Saved Successfully");
+                       // MessageBox.Show("Player Saved Successfully");
                     }
                     db.SaveChanges();
                 }
