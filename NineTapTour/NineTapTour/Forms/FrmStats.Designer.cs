@@ -103,7 +103,7 @@
             // btnPrint
             // 
             this.btnPrint.Location = new System.Drawing.Point(932, 543);
-            this.btnPrint.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.btnPrint.Margin = new System.Windows.Forms.Padding(1);
             this.btnPrint.Name = "btnPrint";
             this.btnPrint.Size = new System.Drawing.Size(120, 59);
             this.btnPrint.TabIndex = 6;
@@ -122,7 +122,7 @@
             // txtGame1
             // 
             this.txtGame1.Location = new System.Drawing.Point(159, 506);
-            this.txtGame1.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.txtGame1.Margin = new System.Windows.Forms.Padding(1);
             this.txtGame1.Name = "txtGame1";
             this.txtGame1.ReadOnly = true;
             this.txtGame1.Size = new System.Drawing.Size(99, 20);
@@ -131,7 +131,7 @@
             // txtGame2
             // 
             this.txtGame2.Location = new System.Drawing.Point(258, 506);
-            this.txtGame2.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.txtGame2.Margin = new System.Windows.Forms.Padding(1);
             this.txtGame2.Name = "txtGame2";
             this.txtGame2.ReadOnly = true;
             this.txtGame2.Size = new System.Drawing.Size(99, 20);
@@ -140,7 +140,7 @@
             // txtGame3
             // 
             this.txtGame3.Location = new System.Drawing.Point(356, 506);
-            this.txtGame3.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.txtGame3.Margin = new System.Windows.Forms.Padding(1);
             this.txtGame3.Name = "txtGame3";
             this.txtGame3.ReadOnly = true;
             this.txtGame3.Size = new System.Drawing.Size(99, 20);
@@ -149,7 +149,7 @@
             // txtGame4
             // 
             this.txtGame4.Location = new System.Drawing.Point(455, 506);
-            this.txtGame4.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.txtGame4.Margin = new System.Windows.Forms.Padding(1);
             this.txtGame4.Name = "txtGame4";
             this.txtGame4.ReadOnly = true;
             this.txtGame4.Size = new System.Drawing.Size(99, 20);
@@ -158,7 +158,7 @@
             // txtScratchTotal
             // 
             this.txtScratchTotal.Location = new System.Drawing.Point(553, 506);
-            this.txtScratchTotal.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.txtScratchTotal.Margin = new System.Windows.Forms.Padding(1);
             this.txtScratchTotal.Name = "txtScratchTotal";
             this.txtScratchTotal.ReadOnly = true;
             this.txtScratchTotal.Size = new System.Drawing.Size(99, 20);
@@ -167,7 +167,7 @@
             // txtAveragePerGame
             // 
             this.txtAveragePerGame.Location = new System.Drawing.Point(752, 506);
-            this.txtAveragePerGame.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.txtAveragePerGame.Margin = new System.Windows.Forms.Padding(1);
             this.txtAveragePerGame.Name = "txtAveragePerGame";
             this.txtAveragePerGame.ReadOnly = true;
             this.txtAveragePerGame.Size = new System.Drawing.Size(99, 20);
@@ -176,7 +176,7 @@
             // txtHandicap
             // 
             this.txtHandicap.Location = new System.Drawing.Point(852, 506);
-            this.txtHandicap.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.txtHandicap.Margin = new System.Windows.Forms.Padding(1);
             this.txtHandicap.Name = "txtHandicap";
             this.txtHandicap.ReadOnly = true;
             this.txtHandicap.Size = new System.Drawing.Size(99, 20);
@@ -185,7 +185,7 @@
             // txtBonus
             // 
             this.txtBonus.Location = new System.Drawing.Point(953, 506);
-            this.txtBonus.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.txtBonus.Margin = new System.Windows.Forms.Padding(1);
             this.txtBonus.Name = "txtBonus";
             this.txtBonus.ReadOnly = true;
             this.txtBonus.Size = new System.Drawing.Size(99, 20);
@@ -294,7 +294,7 @@
             // txtGameTotal
             // 
             this.txtGameTotal.Location = new System.Drawing.Point(653, 506);
-            this.txtGameTotal.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.txtGameTotal.Margin = new System.Windows.Forms.Padding(1);
             this.txtGameTotal.Name = "txtGameTotal";
             this.txtGameTotal.Size = new System.Drawing.Size(99, 20);
             this.txtGameTotal.TabIndex = 27;

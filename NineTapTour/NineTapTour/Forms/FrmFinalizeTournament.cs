@@ -64,7 +64,7 @@ namespace NineTapTour.Forms
             //sets sizes of check box columns "Valid Score1, ValidScore2, ValidScore3, Valid Score 4, and Keep True Avg?"
             dataGridView1.SuspendLayout();
             var column = dataGridView1.Columns[1];
-            for(int i = 2; i <=12; i++)
+            for (int i = 2; i <= 12; i++)
             {
                 column = dataGridView1.Columns[i];
                 column.Width = 50;
@@ -130,11 +130,11 @@ namespace NineTapTour.Forms
                 newRow["Notes"] = item.Notes;//18
                 dt.Rows.Add(newRow);
 
-           
+
 
             }
 
-            
+
             return dt;
         }
 
@@ -186,7 +186,7 @@ namespace NineTapTour.Forms
                 NewParticipant.Game2 = (int)item.Game2;
                 NewParticipant.Game3 = (int)item.Game3;
                 NewParticipant.Game4 = (int)item.Game4;
-                if(item.UseGame1 == null)
+                if (item.UseGame1 == null)
                 {
                     NewParticipant.UseGame1 = true;
                 }
@@ -608,9 +608,9 @@ namespace NineTapTour.Forms
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             dataGridView1.SuspendLayout();
-            if(this.dataGridView1.Columns[e.ColumnIndex].Name == "Valid Score1?" && e.Value != null)
+            if (this.dataGridView1.Columns[e.ColumnIndex].Name == "Valid Score1?" && e.Value != null)
             {
-                
+
                 if (Convert.ToBoolean(e.Value) == true)
                 {
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
@@ -671,7 +671,7 @@ namespace NineTapTour.Forms
             }
             if (this.dataGridView1.Columns[e.ColumnIndex].Name == "30 Game Avg" && e.Value != null)
             {
-                if(Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 2].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 2].Style.BackColor != Color.Red)
+                if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 2].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 2].Style.BackColor != Color.Red)
                 {
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 2].Style.BackColor = Color.Orange;
                 }
@@ -700,47 +700,60 @@ namespace NineTapTour.Forms
             ////press alt to make it work, do not know why
             int gameId = Convert.ToInt32(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value);
 
-            //using (var db = new NineTapDb())
-            //{
-            //    int memId = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Id;
-            //    var temp = (from p in db.Participants
-            //                join m in db.Members on p.Member.Id equals m.Id
-            //                join g in db.Games on p.Game.Id equals g.Id//dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value//g.Id
-            //                join t in db.Tournaments on p.Tournament.Id equals t.Id
-            //                where p.Member.Id == memId
 
-            //                select new
-            //                {
-            //                    g.Id,
-            //                    m.FirstName,
-            //                    m.LastName,
-            //                    MemberId = m.Id,
-            //                    TournId = t.Id,
-            //                    p.Squad,
-            //                    g.Game1,
-            //                    g.Game2,
-            //                    g.Game3,
-            //                    g.Game4,
-            //                    g.UseGame1,
-            //                    g.UseGame2,
-            //                    g.UseGame3,
-            //                    g.UseGame4,
-            //                    g.Notes,
-            //                    g.Handicap,
-            //                    g.Bonus,
-            //                    //I believe it needs more information
 
-            //                }).ToList();
+            using (var db = new NineTapDb())
+            {
+                int memId = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Id;
+                var temp = (from p in db.Participants
+                            join m in db.Members on p.Member.Id equals m.Id
+                            join g in db.Games on p.Game.Id equals g.Id//dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value//g.Id
+                            join t in db.Tournaments on p.Tournament.Id equals t.Id
+                            where p.Member.Id == memId
 
-              
-                
-          
-                
+                            select new
+                            {
+                                g.Id,
+                                m.FirstName,
+                                m.LastName,
+                                MemberId = m.Id,
+                                TournId = t.Id,
+                                p.Squad,
+                                g.Game1,
+                                g.Game2,
+                                g.Game3,
+                                g.Game4,
+                                g.UseGame1,
+                                g.UseGame2,
+                                g.UseGame3,
+                                g.UseGame4,
+                                g.Notes,
+                                g.Handicap,
+                                g.Bonus,
+                                //I believe it needs more information
+
+                            }).ToList();
+
+
+
+
+
+
+
+                PlayerHistory playerhistory = new PlayerHistory(memId);
+                playerhistory.ShowDialog();
+
+
+
                 //don't forget to press alt
             }
+
+
         }
+
         /***/
 
     }
+}
 
 
