@@ -184,6 +184,12 @@
     <Compile Include="Forms\FrmUpdateActiveMem.Designer.cs">
       <DependentUpon>FrmUpdateActiveMem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\PLayerHistoryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PLayerHistoryForm.Designer.cs">
+      <DependentUpon>PLayerHistoryForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\PrintToWord.cs" />
     <Compile Include="Forms\TournamentPlaceStandings.cs">
       <SubType>Form</SubType>
@@ -360,6 +366,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmUpdateActiveMem.resx">
       <DependentUpon>FrmUpdateActiveMem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\PLayerHistoryForm.resx">
+      <DependentUpon>PLayerHistoryForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TournamentPlaceStandings.resx">
       <DependentUpon>TournamentPlaceStandings.cs</DependentUpon>
