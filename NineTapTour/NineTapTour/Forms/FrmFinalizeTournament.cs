@@ -54,7 +54,7 @@ namespace NineTapTour.Forms
                 FinalizeTempDB.AddFinalizeTemp(temp);
             }
             //pulls a list from the finalizetemp table and seeds the dataview with the table info.
-            List<FinalizeTemp> DataViewList = GetListFromTable();
+            List<FinalizeTemp> DataViewList = GetListFromTable(tourn);
             dataGridView1.DataSource = DataView(tourn, DataViewList); //By default populates all datagrid with all participant for tournament.
 
 
@@ -242,12 +242,14 @@ namespace NineTapTour.Forms
 
 
         //makes a list from the finalizetemp table to be used in dataview source
-        public List<FinalizeTemp> GetListFromTable()
+        public List<FinalizeTemp> GetListFromTable(Tournament tourn)
         {
             var db = new NineTapDb();
             List<FinalizeTemp> ParticipantList = new List<FinalizeTemp>();
             var temp = (from p in db.FinalizeTemp
                         orderby p.GameId descending
+                        join t in db.Tournaments on p.TournamentID equals t.Id
+                        where tourn.Id == t.Id
                         select new
                         {
                             p.FinalizeID,
@@ -740,7 +742,7 @@ namespace NineTapTour.Forms
 
 
 
-                PlayerHistory playerhistory = new PlayerHistory(memId);
+                PlayerHistoryForm playerhistory = new PlayerHistoryForm(memId);
                 playerhistory.ShowDialog();
 
 

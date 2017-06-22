@@ -14,32 +14,24 @@ using System.Data.Entity.Core.Objects;
 
 namespace NineTapTour.Database
 {
-    public partial class PlayerHistory : Form
+    public partial class PlayerHistoryForm : Form
     {
         private int id;
 
-
-        public PlayerHistory()
+        public PlayerHistoryForm(int id)
         {
             InitializeComponent();
-        }
-
-        public PlayerHistory(int id)
-        {
             this.id = id;
-
             Member currentMember = MemberDb.GetMember(id);
+
+            lblFullName.Text = ($"Name : {currentMember.FirstName} {currentMember.LastName}");
+            lblMemberNumber.Text = ($"MemberNumber: {currentMember.Number}");
+            lblMemberSrartAvg.Text = ($"Start avg : {currentMember.StartAvg}");
+
+
            
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
 
         }
 
-        private void lblFullName_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

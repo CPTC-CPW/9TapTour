@@ -279,6 +279,7 @@
             this.txtAverage.Size = new System.Drawing.Size(99, 54);
             this.txtAverage.TabIndex = 34;
             this.txtAverage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+
             // 
             // lblNotes
             // 

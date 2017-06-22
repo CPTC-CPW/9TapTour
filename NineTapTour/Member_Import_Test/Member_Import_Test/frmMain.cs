@@ -20,7 +20,7 @@ namespace Member_Import_Test
 {
     public partial class frmMain : Form
     {
-        
+
         public frmMain()
         {
             InitializeComponent();
@@ -83,7 +83,10 @@ namespace Member_Import_Test
 
         public List<Member> validMembers = new List<Member>(); //list of valid members
         public List<Member> invalidMembers = new List<Member>();//list of invalid members
-        public List<string> QBSTournamentList = new List<string>();
+        public List<string> QBSTournamentList = new List<string>(); //list of qualified by squad tournaments
+      
+ 
+
 
         //Create array of spaces
         int[] Spaces = new int[] { MemNumSpace, DJoinedSpace, LNameSpace, FNameSpace, MISpace, EPhoneSpace, DPhoneSpace, CPhoneSpace,
@@ -125,7 +128,7 @@ namespace Member_Import_Test
                         bool genderSelected = false; //check if gender has been selected 
                         bool status = false; // check if status has been selected
                         currentIndex = File.IndexOf(Convert.ToString(MemberCount), currentIndex);
-                        if(currentIndex == -1)
+                        if (currentIndex == -1)
                         {
                             break;
                         }
@@ -429,16 +432,17 @@ namespace Member_Import_Test
                                         else if (File.Length - currentIndex > 8)
                                         {
                                             Console.WriteLine(File.Substring(currentIndex, Spaces[i]).Trim());
-                                            try {
+                                            try
+                                            {
                                                 newMem.DateOfBirth = Convert.ToDateTime(File.Substring(currentIndex, Spaces[i]).Trim());
                                             }
-                                            catch(Exception ex)
+                                            catch (Exception ex)
                                             {
                                                 newMem.DateOfBirth = DateTime.Today;
                                             }
                                         }
-                                     
-                                      
+
+
 
                                     }
                                     else
@@ -473,8 +477,9 @@ namespace Member_Import_Test
                         //only add the member after checking if the memeber isn't already in the database.
                         if (!NineTapTour.Database.MemberDb.MemberExists(validMembers[j]))
                         {
-                            
-                            if (validMembers[j].DateOfBirth < Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM")) {
+
+                            if (validMembers[j].DateOfBirth < Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM"))
+                            {
                                 validMembers[j].DateOfBirth = Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM");
 
 
@@ -503,12 +508,12 @@ namespace Member_Import_Test
 
         private void checkSpaces()
         {
-            if(invalidMembers.Count > 0 || validMembers.Count > 0)
+            if (invalidMembers.Count > 0 || validMembers.Count > 0)
             {
                 btnSelectExcelFolder.Enabled = true;
                 btnPinFileSelect.Enabled = true;
             }
-            if(ALLEXCELDATAFROMALLPLAYERS.Count > 0 && TournamentList.Count > 0)
+            if (ALLEXCELDATAFROMALLPLAYERS.Count > 0) //&& TournamentList.Count > 0)
             {
                 btn_FinalizeData.Enabled = true;
             }
@@ -516,7 +521,7 @@ namespace Member_Import_Test
 
         private void btnInvalid_Click(object sender, EventArgs e)
         {
-            if(invalidMembers.Count <=0)
+            if (invalidMembers.Count <= 0)
             {
                 MessageBox.Show("No invalid members processed.");
             }
@@ -530,7 +535,7 @@ namespace Member_Import_Test
         }
 
         private void button1_Click(object sender, EventArgs e)
-        {   
+        {
             GetAndProcessFolderWithExcelFiles();
             while (MessageBox.Show("Do You have more Excel Files to import?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
@@ -573,6 +578,8 @@ namespace Member_Import_Test
                 progressBar1.Increment(1);
             }
             OverAllProcessingExcel.Text = "Complete";
+            progressBar1.Increment(100);
+            progressBar2.Increment(100);
             return ALLEXCELDATAFROMALLPLAYERS;
         }
 
@@ -587,24 +594,50 @@ namespace Member_Import_Test
             Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
             Excel.Range range = xlWorkSheet.UsedRange;
             List<ExcelRow> returnMe = new List<ExcelRow>();
+
+
+
             string[] PlayerFinalFirstAndMiddle = { "", "" };
+            string[] PlayersFinalLastAndMiddle = { "", "" };
+          
+
             string playerFullName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
             string playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
+
+
             string firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
             string[] first0middle1 = firstAndMiddle.Split(' ');
+
+            if (playerFullName.Contains("Sr")) //catches the "sr " and sets their last name to only there last name
+            {
+                try
+                {
+                    playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(" "));
+                }
+                catch
+                {
+                    PlayerFinalFirstAndMiddle[0] = first0middle1[0];
+                }
+            }
+            else
+            {
+                 playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
+            }
+
             int playerOrgAVG;
             for (int i = 0; i < first0middle1.Length; i++)
             {
                 PlayerFinalFirstAndMiddle[i] = first0middle1[0];
             }
-            try {
+            try
+            {
                 playerOrgAVG = Convert.ToInt32((range.Cells[1, 10] as Excel.Range).Value2);
             }
-            catch(Exception NotAValidNumber)
-                {
+            catch (Exception NotAValidNumber)
+            {
                 playerOrgAVG = -1;
             }
-            
+
             String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
             String[] playerNumberAfterSplit;
             int playerNumberAsInt = 0;
@@ -613,14 +646,14 @@ namespace Member_Import_Test
             {
                 playerNumberAsInt = Convert.ToInt32((range.Cells[1, 14] as Excel.Range).Value2);
             }
-            else if(playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
+            else if (playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
             {
-               playerNumberAfterSplit = playerNumber.Split('/');
-               playerNumberAsInt = Convert.ToInt32(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1]);
+                playerNumberAfterSplit = playerNumber.Split('/');
+                playerNumberAsInt = Convert.ToInt32(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1]);
             }
-          
 
-            for (int sheetNum = 1; sheetNum < xlWorkBook.Worksheets.Count; sheetNum++)
+
+            for (int sheetNum = 1; sheetNum <= xlWorkBook.Worksheets.Count; sheetNum++)
             {
                 xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
                 range = xlWorkSheet.UsedRange;
@@ -628,15 +661,15 @@ namespace Member_Import_Test
                 {
                     try
                     {
-                        if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0 
-                       && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2)== 0
+                        if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0
+                       && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0
                        && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0
                        && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
                         {
                             continue;
                         }
-                    } 
-                    catch(Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         continue;
                     }
@@ -650,84 +683,96 @@ namespace Member_Import_Test
                     {
                         temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
                     }
-                    catch {
+                    catch
+                    {
                         temp.GameTotal = -1;
                     }
                     try
                     {
                         temp.Date = DateTime.FromOADate(Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2));
                     }
-                    catch {
+                    catch
+                    {
                         temp.Date = new DateTime();
                     }
                     try
                     {
                         temp.Game1 = Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2);
                     }
-                    catch {
+                    catch
+                    {
                         temp.Game1 = -1;
                     }
                     try
                     {
                         temp.Game2 = Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2);
                     }
-                    catch {
+                    catch
+                    {
                         temp.Game2 = -1;
                     }
                     try
                     {
                         temp.Game3 = Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2);
                     }
-                    catch {
+                    catch
+                    {
                         temp.Game3 = -1;
                     }
                     try
                     {
                         temp.Game4 = Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2);
                     }
-                    catch {
+                    catch
+                    {
                         temp.Game4 = -1;
                     }
                     try
                     {
                         temp.Total = Convert.ToInt32((range.Cells[row, 7] as Excel.Range).Value2);
                     }
-                    catch {
+                    catch
+                    {
                         temp.Total = -1;
                     }
                     try
                     {
                         temp.AverageOfRow = Convert.ToDouble((range.Cells[row, 8] as Excel.Range).Value2);
                     }
-                    catch {
+                    catch
+                    {
                         temp.AverageOfRow = -1;
                     }
                     try
                     {
                         temp.TrueAverage = Convert.ToDouble((range.Cells[row, 9] as Excel.Range).Value2);
                     }
-                    catch {
+                    catch
+                    {
                         temp.TrueAverage = -1;
                     }
                     try
                     {
                         temp.AVG = Convert.ToInt32((range.Cells[row, 10] as Excel.Range).Value2);
                     }
-                    catch {
+                    catch
+                    {
                         temp.AVG = -1;
                     }
                     try
                     {
                         temp.Bonus = Convert.ToInt32((range.Cells[row, 11] as Excel.Range).Value2);
                     }
-                    catch {
+                    catch
+                    {
                         temp.Bonus = -1000;
                     }
                     try
                     {
                         temp.HandyCap = Convert.ToInt32((range.Cells[row, 12] as Excel.Range).Value2);
                     }
-                    catch {
+                    catch
+                    {
                         temp.HandyCap = -1;
                     }
                     temp.PotPro = Convert.ToString((range.Cells[row, 13] as Excel.Range).Value2);
@@ -736,7 +781,8 @@ namespace Member_Import_Test
                     {
                         temp.Cash = Convert.ToDecimal((range.Cells[row, 15] as Excel.Range).Value2);
                     }
-                    catch {
+                    catch
+                    {
                         temp.Cash = 0;
                     }
                     temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
@@ -756,7 +802,7 @@ namespace Member_Import_Test
 
         private void btnPinFileSelect_Click(object sender, EventArgs e)
         {
-            
+
             using (var fbd = new FolderBrowserDialog())
             {
                 DialogResult result = fbd.ShowDialog();
@@ -776,11 +822,10 @@ namespace Member_Import_Test
                         else
                         {
                             ProcessPinFile(files[i]);
-                           
+
                         }
-                      
+
                     }
-                   populateTournements(TournamentList);
                 }
                 MessageBox.Show(TournamentList.Count + " tournaments were imported.");
             }
@@ -811,7 +856,7 @@ namespace Member_Import_Test
                                                     @"\d{2}-\d{1}-\d{2}",
                                                     @"\d{1}-\d{2}-\d{2}",
                                                     @"\d{1}-\d{1}-\d{2}",
-                                                   
+
 
 
                                                    };
@@ -826,7 +871,7 @@ namespace Member_Import_Test
                                                      "MM-d-yyyy" ,
                                                      "M-d-yyyy"  ,
                                                      "MM-dd-yy"  ,
-                                                     "MM-d-yy"   ,   
+                                                     "MM-d-yy"   ,
                                                      "M-dd-yy"   ,
                                                      "M-d-yy"    ,
                                                  };
@@ -842,7 +887,7 @@ namespace Member_Import_Test
                         try
                         {
                             dt = DateTime.ParseExact(m.Value, CorrectFormat[n], CultureInfo.InvariantCulture);
-                            break; 
+                            break;
                         }
                         catch
                         {
@@ -856,20 +901,20 @@ namespace Member_Import_Test
                     }
 
                 }
-               
+
             }
             //Adds everything before the date as part of the tournament name 
-            for(int i = 0; i < tournamentAfterSplit.Length; i++)
+            for (int i = 0; i < tournamentAfterSplit.Length; i++)
             {
                 DateTime dt2;
                 if (DateTime.TryParse(tournamentAfterSplit[i], out dt2) == false)
                 {
-                    TournamentName += tournamentAfterSplit[i] + " "; 
+                    TournamentName += tournamentAfterSplit[i] + " ";
                 }
             }
-            if(tournament.Contains("3of4"))
+            if (tournament.Contains("3of4"))
             {
-                
+
             }
             if (tournament.Contains("doubles"))
             {
@@ -880,14 +925,14 @@ namespace Member_Import_Test
             {
                 currentTournament.Squads = 4;
             }
-             
+
             currentTournament.Date = dt;
             currentTournament.Location = TournamentName.TrimEnd();
             currentTournament.ThreeOutOf4 = threeofFour;
             currentTournament.Doubles = doubles;
             currentTournament.Id = TournamentList.Count + 1;
-           // listOfParticipants =  ReadPinFile(PinFileName, currentTournament);
-           // currentTournament.Participant = listOfParticipants;
+            // listOfParticipants =  ReadPinFile(PinFileName, currentTournament);
+            // currentTournament.Participant = listOfParticipants;
 
             TournamentList.Add(currentTournament);
 
@@ -895,9 +940,9 @@ namespace Member_Import_Test
         }
 
 
-        private List<Participant> ReadPinFile(string pinFileName,Tournament currentTournament)
+        private List<Participant> ReadPinFile(string pinFileName, Tournament currentTournament)
         {
-            List<Participant> partList = new List<Participant>(); 
+            List<Participant> partList = new List<Participant>();
             Participant pinFileParticipant = new Participant();
             Game newGame = new Game();
             System.IO.StreamReader sr = new System.IO.StreamReader(pinFileName);
@@ -905,99 +950,99 @@ namespace Member_Import_Test
             sr.Close();
             int CurrentIndex = 0;
             int i;
-      
+
 
             while (CurrentIndex >= 0) // for loop with switch that grabs information not stored in the member class (Original Tournament scores and their bowling score)
             {
-          
-                    if (CurrentIndex == -1 || CurrentIndex >= File.Length)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        for (i = 0; i < PinSpaces.Length; i++)
-                        {
-                            int ZeroOrOne;
-                            switch (i)
-                            {
-                                case 0:
-                                    if (!String.IsNullOrWhiteSpace(File.Substring(CurrentIndex, PinSpaces[i])))
-                                    {
-                                        int memberNumber = Convert.ToInt32(File.Substring(CurrentIndex, PinSpaces[i]));
-                                        pinFileParticipant.Member = validMembers[memberNumber - 1]; //valid member array starts at 0
-                                    }
-                                    break;
 
-                                case 1: //would grab last name but already stored in member class (see case 0);
-                                    break;
-                                case 2: //would grab first name but already grabbed by member class (see case 0);
-                                    break;
-                                case 3: //would grab middle initial but allready grabbed by member class(see case 0);
-                                    break;
-                                case 4:
-                                    if (!String.IsNullOrWhiteSpace(File.Substring(CurrentIndex, PinSpaces[i]))) //game1
-                                    {
-                                        newGame.Game1 = Convert.ToInt32(File.Substring(CurrentIndex, PinSpaces[i]));
-                                    }
-                                    break;
-                                case 5:
-                                    if (!String.IsNullOrWhiteSpace(File.Substring(CurrentIndex, PinSpaces[i])))
-                                    {
-                                        newGame.Game2 = Convert.ToInt32(File.Substring(CurrentIndex, PinSpaces[i]));
-                                    }
-                                    break;
-                                case 6:
-                                    if (!String.IsNullOrWhiteSpace(File.Substring(CurrentIndex, PinSpaces[i])))
-                                    {
-                                        newGame.Game3 = Convert.ToInt32(File.Substring(CurrentIndex, PinSpaces[i]));
-                                    }
-                                    break;
-                                case 7:
-                                    if (!String.IsNullOrWhiteSpace(File.Substring(CurrentIndex, PinSpaces[i])))
-                                    {
-                                        newGame.Game4 = Convert.ToInt32(File.Substring(CurrentIndex, PinSpaces[i]));
-                                    }
-                                    break;
-                                case 8: // would grab scratch score total but is calculated using the 4 scratch scores (see case 4 - 7)
-                                    break;
-                                case 9: // would grab handicap score 1 but is calculated using the 4 scratch scores (see case 4 - 7)
-                                    break;
-                                case 10: // would grab handicap score 2 but is calculated using the 4 scratch scores (see case 4 - 7)
-                                    break;
-                                case 11: // would grab handicap score 3 but is calculated using the 4 scratch scores (see case 4 - 7)
-                                    break;
-                                case 12: // would grab handicap score 4 but is calculated using the 4 scratch scores (see case 4 - 7)
-                                    break;
-                                case 13: // would grab handicap score total but is calculated using the 4 scratch scores (see case 4 - 7)
-                                    break;
-                                case 14: //skips over notes (already stored in Member.Notes)
-                                    break;
-                                case 15: //start of morsecode
-                                    break;
-                                case 16:
-                                    break;
-                                case 17:
-                                    break;
-                                case 18:
-                                    break;
-                                case 19:
-                                    break;
-                                case 20:
-                                    break;
-                                case 21:
-                                    break;
-                                case 22:
+                if (CurrentIndex == -1 || CurrentIndex >= File.Length)
+                {
+                    break;
+                }
+                else
+                {
+                    for (i = 0; i < PinSpaces.Length; i++)
+                    {
+                        int ZeroOrOne;
+                        switch (i)
+                        {
+                            case 0:
                                 if (!String.IsNullOrWhiteSpace(File.Substring(CurrentIndex, PinSpaces[i])))
                                 {
-                                   ZeroOrOne = Convert.ToInt32(File.Substring(CurrentIndex, PinSpaces[i]));
-                                    if(ZeroOrOne == 1)
+                                    int memberNumber = Convert.ToInt32(File.Substring(CurrentIndex, PinSpaces[i]));
+                                    pinFileParticipant.Member = validMembers[memberNumber - 1]; //valid member array starts at 0
+                                }
+                                break;
+
+                            case 1: //would grab last name but already stored in member class (see case 0);
+                                break;
+                            case 2: //would grab first name but already grabbed by member class (see case 0);
+                                break;
+                            case 3: //would grab middle initial but allready grabbed by member class(see case 0);
+                                break;
+                            case 4:
+                                if (!String.IsNullOrWhiteSpace(File.Substring(CurrentIndex, PinSpaces[i]))) //game1
+                                {
+                                    newGame.Game1 = Convert.ToInt32(File.Substring(CurrentIndex, PinSpaces[i]));
+                                }
+                                break;
+                            case 5:
+                                if (!String.IsNullOrWhiteSpace(File.Substring(CurrentIndex, PinSpaces[i])))
+                                {
+                                    newGame.Game2 = Convert.ToInt32(File.Substring(CurrentIndex, PinSpaces[i]));
+                                }
+                                break;
+                            case 6:
+                                if (!String.IsNullOrWhiteSpace(File.Substring(CurrentIndex, PinSpaces[i])))
+                                {
+                                    newGame.Game3 = Convert.ToInt32(File.Substring(CurrentIndex, PinSpaces[i]));
+                                }
+                                break;
+                            case 7:
+                                if (!String.IsNullOrWhiteSpace(File.Substring(CurrentIndex, PinSpaces[i])))
+                                {
+                                    newGame.Game4 = Convert.ToInt32(File.Substring(CurrentIndex, PinSpaces[i]));
+                                }
+                                break;
+                            case 8: // would grab scratch score total but is calculated using the 4 scratch scores (see case 4 - 7)
+                                break;
+                            case 9: // would grab handicap score 1 but is calculated using the 4 scratch scores (see case 4 - 7)
+                                break;
+                            case 10: // would grab handicap score 2 but is calculated using the 4 scratch scores (see case 4 - 7)
+                                break;
+                            case 11: // would grab handicap score 3 but is calculated using the 4 scratch scores (see case 4 - 7)
+                                break;
+                            case 12: // would grab handicap score 4 but is calculated using the 4 scratch scores (see case 4 - 7)
+                                break;
+                            case 13: // would grab handicap score total but is calculated using the 4 scratch scores (see case 4 - 7)
+                                break;
+                            case 14: //skips over notes (already stored in Member.Notes)
+                                break;
+                            case 15: //start of morsecode
+                                break;
+                            case 16:
+                                break;
+                            case 17:
+                                break;
+                            case 18:
+                                break;
+                            case 19:
+                                break;
+                            case 20:
+                                break;
+                            case 21:
+                                break;
+                            case 22:
+                                if (!String.IsNullOrWhiteSpace(File.Substring(CurrentIndex, PinSpaces[i])))
+                                {
+                                    ZeroOrOne = Convert.ToInt32(File.Substring(CurrentIndex, PinSpaces[i]));
+                                    if (ZeroOrOne == 1)
                                     {
                                         pinFileParticipant.Squad = 1;
                                     }
                                 }
                                 break;
-                                case 23:
+                            case 23:
                                 if (!String.IsNullOrWhiteSpace(File.Substring(CurrentIndex, PinSpaces[i])))
                                 {
                                     ZeroOrOne = Convert.ToInt32(File.Substring(CurrentIndex, PinSpaces[i]));
@@ -1007,7 +1052,7 @@ namespace Member_Import_Test
                                     }
                                 }
                                 break;
-                                case 24:
+                            case 24:
                                 if (!String.IsNullOrWhiteSpace(File.Substring(CurrentIndex, PinSpaces[i])))
                                 {
                                     ZeroOrOne = Convert.ToInt32(File.Substring(CurrentIndex, PinSpaces[i]));
@@ -1017,7 +1062,7 @@ namespace Member_Import_Test
                                     }
                                 }
                                 break;
-                                case 25:
+                            case 25:
                                 if (!String.IsNullOrWhiteSpace(File.Substring(CurrentIndex, PinSpaces[i])))
                                 {
                                     ZeroOrOne = Convert.ToInt32(File.Substring(CurrentIndex, PinSpaces[i]));
@@ -1028,7 +1073,7 @@ namespace Member_Import_Test
                                 }
                                 break;
                             case 26:
-                                    break;
+                                break;
                             case 27:
                                 break;
                             case 28:
@@ -1044,115 +1089,72 @@ namespace Member_Import_Test
 
                         }
                         CurrentIndex += PinSpaces[i];
-                        }
+                    }
 
                     pinFileParticipant.Game = newGame;
                     partList.Add(pinFileParticipant);
                     pinFileParticipant.Tournament = currentTournament;
                     pinFileParticipant = new Participant();
                     newGame = new Game();
-                   
-                    }
-               
+
+                }
+
             }
 
             return partList;
         }
-               
+
 
 
 
 
         private void btn_FinalizeData_Click(object sender, EventArgs e)
         {
-
-            for(int pinFileSlot = 0; pinFileSlot < TournamentList.Count; pinFileSlot++)//CHANGE TO VALID MEMBERS LIST ON LAUNCH. INVALID USED FOR TESTING
+            for (int members = 0; members < validMembers.Count; members++)
             {
-                
-                List<Participant> ParticipantsForTournament = new List<Participant>();
-               
-              
-                for (int members = 0; members < validMembers.Count; members++)
+                for (int ExcelFileSlot = 0; ExcelFileSlot < ALLEXCELDATAFROMALLPLAYERS.Count; ExcelFileSlot++)
+
                 {
-                 
-                    for (int ExcelFileSlot = 0; ExcelFileSlot < ALLEXCELDATAFROMALLPLAYERS.Count; ExcelFileSlot++)
+                    //if for some reason the member number on the DAT file and the member number on the excel file do not match, set the new permanent member number to that of the DAT file
+                    if (validMembers[members].FirstName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerFirstName && validMembers[members].LastName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerLastName
+                       && validMembers[members].Number != ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber)
                     {
+                        ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber = validMembers[members].Number;
+                    }
+                    
+
+                    //if Current selected member has an excel file 
+                    if (validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber)
+                    {
+                        validMembers[members].StartAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerOrginalAVG;
                       
-                        //if Current selected member has an excel file and their excel file has a date == tournament date
-                        if(validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber //CHANGE TO VALID MEMBERS LIST ON LAUNCH. INVALID USED FOR TESTING
-                        && ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Date == TournamentList[pinFileSlot].Date)
-                        {
-                           
-                        
-                            //MessageBox.Show(invalidMembers[members].FirstName + " played in a tournament at " + TournamentList[pinFileSlot].Location + " on " + ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Date); TEST MESSAGE BOX
-                            Participant currentParticipant = new Participant();
-                            currentParticipant.Tournament = TournamentList[pinFileSlot];
-                            currentParticipant.Member = validMembers[members];
-
-
-                          
-                            Game currentGame = new Game();
-                         
-                            currentGame.Game1 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game1;
-                            currentGame.Game2 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game2;
-                            currentGame.Game3 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game3;
-                            currentGame.Game4 = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game4;
-
-                            if(ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game1 == -1)
-                            {
-                                currentGame.UseGame1 = false;
-                            }
-                            if(ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game2 == -1)
-                            {
-                                currentGame.UseGame2 = false;
-                            }
-                            if (ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game3 == -1)
-                            {
-                                currentGame.UseGame3 = false;
-                            }
-                            if (ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Game4 == -1)
-                            {
-                                currentGame.UseGame4 = false;
-                            }
-                         
-                            currentGame.Handicap = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].HandyCap;
-                            currentGame.Bonus = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Bonus;
-                            currentGame.InputtedAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].AVG; //comeback
-                            currentGame.MoneyWon = Convert.ToDecimal(ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Cash);
-                            currentGame.Notes = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].Notes;
-
-                            currentParticipant.Game = currentGame;
-                            ParticipantsForTournament.Add(currentParticipant);
-                            currentParticipant.Id = ParticipantsForTournament.Count;
-                        }
                     }
                 }
-              
-                TournamentList[pinFileSlot].Participant = ParticipantsForTournament;
             }
+            updateMembers(validMembers);
+
+            MessageBox.Show($"{validMembers.Count} members have been imported and all their bowling history has been added to the database");
+
             
-            populateTournements(TournamentList);
+
         }
-        private void populatemembers(List<Member> members)
+
+        private void updateMembers(List<Member> members)
         {
-            foreach (Member m in members)
+            foreach(var m in members)
             {
-                NineTapTour.Database.MemberDb.AddMember(m);
-            }
-        }
-        private void populateTournements(List<Tournament> tournements)
-        {
-            
-            foreach (Tournament t in tournements)
-            {
-                TournamentDb.AddTournament(t);
+                MemberDb.AddMember(m);
             }
         }
 
-        //private void progressBar1_Click(object sender, EventArgs e)
-        //{
 
-        //}
     }
+
+
 }
+    
+
+
+
+
 

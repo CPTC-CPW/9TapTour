@@ -34,7 +34,7 @@ namespace NineTapTour.Database
                     /********************************************************************************************/
                     if (db.Entry(temp).State == EntityState.Modified)
                     {
-                        MessageBox.Show("Player Updated");
+                        //MessageBox.Show("Player Updated");
                     }
                     else
                     {

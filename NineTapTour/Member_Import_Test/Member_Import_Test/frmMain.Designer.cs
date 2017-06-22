@@ -45,7 +45,7 @@
             // 
             // btnOpenFile
             // 
-            this.btnOpenFile.Location = new System.Drawing.Point(75, 25);
+            this.btnOpenFile.Location = new System.Drawing.Point(150, 25);
             this.btnOpenFile.Name = "btnOpenFile";
             this.btnOpenFile.Size = new System.Drawing.Size(97, 23);
             this.btnOpenFile.TabIndex = 0;
@@ -55,7 +55,7 @@
             // 
             // btnInvalid
             // 
-            this.btnInvalid.Location = new System.Drawing.Point(75, 54);
+            this.btnInvalid.Location = new System.Drawing.Point(150, 54);
             this.btnInvalid.Name = "btnInvalid";
             this.btnInvalid.Size = new System.Drawing.Size(97, 23);
             this.btnInvalid.TabIndex = 1;
@@ -66,7 +66,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(65, 9);
+            this.label1.Location = new System.Drawing.Point(142, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(114, 13);
             this.label1.TabIndex = 3;
@@ -75,7 +75,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(65, 132);
+            this.label2.Location = new System.Drawing.Point(135, 132);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(121, 13);
             this.label2.TabIndex = 4;
@@ -84,9 +84,9 @@
             // btnSelectExcelFolder
             // 
             this.btnSelectExcelFolder.Enabled = false;
-            this.btnSelectExcelFolder.Location = new System.Drawing.Point(62, 148);
+            this.btnSelectExcelFolder.Location = new System.Drawing.Point(150, 148);
             this.btnSelectExcelFolder.Name = "btnSelectExcelFolder";
-            this.btnSelectExcelFolder.Size = new System.Drawing.Size(118, 23);
+            this.btnSelectExcelFolder.Size = new System.Drawing.Size(97, 23);
             this.btnSelectExcelFolder.TabIndex = 3;
             this.btnSelectExcelFolder.Text = "Select .xls Folder";
             this.btnSelectExcelFolder.UseVisualStyleBackColor = true;
@@ -95,29 +95,31 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(53, 80);
+            this.label3.Location = new System.Drawing.Point(126, 80);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(140, 13);
             this.label3.TabIndex = 6;
             this.label3.Text = "Import Tournament .pin Files";
+            this.label3.Visible = false;
             // 
             // btnPinFileSelect
             // 
             this.btnPinFileSelect.Enabled = false;
-            this.btnPinFileSelect.Location = new System.Drawing.Point(68, 96);
+            this.btnPinFileSelect.Location = new System.Drawing.Point(150, 96);
             this.btnPinFileSelect.Name = "btnPinFileSelect";
-            this.btnPinFileSelect.Size = new System.Drawing.Size(112, 23);
+            this.btnPinFileSelect.Size = new System.Drawing.Size(97, 23);
             this.btnPinFileSelect.TabIndex = 2;
             this.btnPinFileSelect.Text = "Select .pin Folder";
             this.btnPinFileSelect.UseVisualStyleBackColor = true;
+            this.btnPinFileSelect.Visible = false;
             this.btnPinFileSelect.Click += new System.EventHandler(this.btnPinFileSelect_Click);
             // 
             // btn_FinalizeData
             // 
             this.btn_FinalizeData.Enabled = false;
-            this.btn_FinalizeData.Location = new System.Drawing.Point(56, 300);
+            this.btn_FinalizeData.Location = new System.Drawing.Point(150, 300);
             this.btn_FinalizeData.Name = "btn_FinalizeData";
-            this.btn_FinalizeData.Size = new System.Drawing.Size(75, 23);
+            this.btn_FinalizeData.Size = new System.Drawing.Size(97, 23);
             this.btn_FinalizeData.TabIndex = 4;
             this.btn_FinalizeData.Text = "Finalize";
             this.btn_FinalizeData.UseVisualStyleBackColor = true;
@@ -125,14 +127,14 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(56, 189);
+            this.progressBar1.Location = new System.Drawing.Point(56, 177);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(293, 23);
             this.progressBar1.TabIndex = 7;
             // 
             // progressBar2
             // 
-            this.progressBar2.Location = new System.Drawing.Point(56, 235);
+            this.progressBar2.Location = new System.Drawing.Point(56, 220);
             this.progressBar2.Name = "progressBar2";
             this.progressBar2.Size = new System.Drawing.Size(293, 23);
             this.progressBar2.TabIndex = 8;

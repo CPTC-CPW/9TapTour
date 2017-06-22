@@ -103,12 +103,15 @@
     <Compile Include="Database\Game.cs" />
     <Compile Include="Database\Member.cs" />
     <Compile Include="Database\MemberDb.cs" />
+    <Compile Include="Database\PlayerHistory.cs" />
+    <Compile Include="Database\PlayerHistoryDB.cs" />
     <Compile Include="Database\Print.cs" />
     <Compile Include="Database\Squad.cs" />
     <Compile Include="Database\TournamentDb.cs" />
     <Compile Include="Exceptions\MemberTableException.cs" />
     <Compile Include="Database\Participant.cs" />
     <Compile Include="Database\Tournament.cs" />
+    <Compile Include="Exceptions\PlayerHistoryTableException.cs" />
     <Compile Include="Exceptions\TournamentTableException.cs" />
     <Compile Include="Forms\DoubleBuffer.cs" />
     <Compile Include="Forms\FrmFinalizeTournament.cs">
@@ -184,11 +187,11 @@
     <Compile Include="Forms\FrmUpdateActiveMem.Designer.cs">
       <DependentUpon>FrmUpdateActiveMem.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\PlayerHistory.cs">
+    <Compile Include="Forms\PlayerHistoryForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\PlayerHistory.Designer.cs">
-      <DependentUpon>PlayerHistory.cs</DependentUpon>
+    <Compile Include="Forms\PlayerHistoryForm.Designer.cs">
+      <DependentUpon>PlayerHistoryForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\PrintToWord.cs" />
     <Compile Include="Forms\TournamentPlaceStandings.cs">
@@ -367,8 +370,8 @@
     <EmbeddedResource Include="Forms\FrmUpdateActiveMem.resx">
       <DependentUpon>FrmUpdateActiveMem.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\PlayerHistory.resx">
-      <DependentUpon>PlayerHistory.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\PlayerHistoryForm.resx">
+      <DependentUpon>PlayerHistoryForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TournamentPlaceStandings.resx">
       <DependentUpon>TournamentPlaceStandings.cs</DependentUpon>

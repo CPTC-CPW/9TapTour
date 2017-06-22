@@ -1,6 +1,6 @@
 ﻿namespace NineTapTour.Database
 {
-    partial class PlayerHistory
+    partial class PlayerHistoryForm
     {
         /// <summary>
         /// Required designer variable.
@@ -42,7 +42,7 @@
             this.lblFullName.Size = new System.Drawing.Size(141, 49);
             this.lblFullName.TabIndex = 3;
             this.lblFullName.Text = "#Name";
-            this.lblFullName.Click += new System.EventHandler(this.lblFullName_Click);
+     
             // 
             // lblMemberNumber
             // 
@@ -75,7 +75,6 @@
             this.Name = "PlayerHistory";
             this.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Text = "Player History";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
