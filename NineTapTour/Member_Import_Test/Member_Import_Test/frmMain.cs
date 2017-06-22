@@ -84,8 +84,9 @@ namespace Member_Import_Test
         public List<Member> validMembers = new List<Member>(); //list of valid members
         public List<Member> invalidMembers = new List<Member>();//list of invalid members
         public List<string> QBSTournamentList = new List<string>(); //list of qualified by squad tournaments
-      
- 
+        public List<PlayerHistory> PlayerHistoryList = new List<PlayerHistory>();
+
+
 
 
         //Create array of spaces
@@ -597,9 +598,10 @@ namespace Member_Import_Test
 
 
 
+
             string[] PlayerFinalFirstAndMiddle = { "", "" };
             string[] PlayersFinalLastAndMiddle = { "", "" };
-          
+
 
             string playerFullName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
             string playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
@@ -621,7 +623,7 @@ namespace Member_Import_Test
             }
             else
             {
-                 playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
+                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
             }
 
             int playerOrgAVG;
@@ -674,6 +676,8 @@ namespace Member_Import_Test
                         continue;
                     }
                     ExcelRow temp = new ExcelRow();
+                    PlayerHistory playerH = new PlayerHistory();
+                    Game GameHistory = new Game();
                     temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
                     temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
                     temp.PlayerLastName = playerLastName;
@@ -682,6 +686,7 @@ namespace Member_Import_Test
                     try
                     {
                         temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
+                        playerH.GamesPlayed = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
                     }
                     catch
                     {
@@ -690,6 +695,7 @@ namespace Member_Import_Test
                     try
                     {
                         temp.Date = DateTime.FromOADate(Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2));
+                        playerH.TournamentDate = DateTime.FromOADate(Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2));
                     }
                     catch
                     {
@@ -698,6 +704,7 @@ namespace Member_Import_Test
                     try
                     {
                         temp.Game1 = Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2);
+                        GameHistory.Game1 = Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2);
                     }
                     catch
                     {
@@ -706,6 +713,7 @@ namespace Member_Import_Test
                     try
                     {
                         temp.Game2 = Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2);
+                        GameHistory.Game2 = Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2);
                     }
                     catch
                     {
@@ -714,6 +722,7 @@ namespace Member_Import_Test
                     try
                     {
                         temp.Game3 = Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2);
+                        GameHistory.Game3 = Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2);
                     }
                     catch
                     {
@@ -722,6 +731,7 @@ namespace Member_Import_Test
                     try
                     {
                         temp.Game4 = Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2);
+                        GameHistory.Game4 = Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2);
                     }
                     catch
                     {
@@ -730,6 +740,7 @@ namespace Member_Import_Test
                     try
                     {
                         temp.Total = Convert.ToInt32((range.Cells[row, 7] as Excel.Range).Value2);
+                        GameHistory.TotalScore = Convert.ToInt32((range.Cells[row, 7] as Excel.Range).Value2);
                     }
                     catch
                     {
@@ -738,6 +749,7 @@ namespace Member_Import_Test
                     try
                     {
                         temp.AverageOfRow = Convert.ToDouble((range.Cells[row, 8] as Excel.Range).Value2);
+                        playerH.AverageForGame = Convert.ToDouble((range.Cells[row, 8] as Excel.Range).Value2);
                     }
                     catch
                     {
@@ -746,6 +758,7 @@ namespace Member_Import_Test
                     try
                     {
                         temp.TrueAverage = Convert.ToDouble((range.Cells[row, 9] as Excel.Range).Value2);
+                        playerH.trueAVG = Convert.ToDouble((range.Cells[row, 9] as Excel.Range).Value2);
                     }
                     catch
                     {
@@ -754,6 +767,8 @@ namespace Member_Import_Test
                     try
                     {
                         temp.AVG = Convert.ToInt32((range.Cells[row, 10] as Excel.Range).Value2);
+                        playerH.AVG = Convert.ToInt32((range.Cells[row, 10] as Excel.Range).Value2);
+
                     }
                     catch
                     {
@@ -762,6 +777,7 @@ namespace Member_Import_Test
                     try
                     {
                         temp.Bonus = Convert.ToInt32((range.Cells[row, 11] as Excel.Range).Value2);
+                        GameHistory.Bonus = Convert.ToInt32((range.Cells[row, 11] as Excel.Range).Value2);
                     }
                     catch
                     {
@@ -770,23 +786,30 @@ namespace Member_Import_Test
                     try
                     {
                         temp.HandyCap = Convert.ToInt32((range.Cells[row, 12] as Excel.Range).Value2);
+                        GameHistory.Handicap = Convert.ToInt32((range.Cells[row, 12] as Excel.Range).Value2);
                     }
                     catch
                     {
                         temp.HandyCap = -1;
                     }
                     temp.PotPro = Convert.ToString((range.Cells[row, 13] as Excel.Range).Value2);
+                    playerH.ProPot = Convert.ToString((range.Cells[row, 13] as Excel.Range).Value2);
                     temp.FinPPHG = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
+                    playerH.PPHG = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
                     try
                     {
                         temp.Cash = Convert.ToDecimal((range.Cells[row, 15] as Excel.Range).Value2);
+                        GameHistory.MoneyWon = Convert.ToDecimal((range.Cells[row, 15] as Excel.Range).Value2);
                     }
                     catch
                     {
                         temp.Cash = 0;
                     }
                     temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
+                    GameHistory.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
 
+                    playerH.Game = GameHistory;
+                    PlayerHistoryList.Add(playerH);
                     returnMe.Add(temp);
                     progressBar2.Increment(1);
                 }
@@ -1120,23 +1143,37 @@ namespace Member_Import_Test
                        && validMembers[members].Number != ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber)
                     {
                         ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber = validMembers[members].Number;
+                        PlayerHistoryList[ExcelFileSlot].MemberNumber = validMembers[members].Number;
                     }
-                    
+                    else if ((validMembers[members].FirstName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerFirstName && validMembers[members].LastName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerLastName
+                       && validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber))
+                    {
+                        PlayerHistoryList[ExcelFileSlot].MemberNumber = validMembers[members].Number;
+                    }
+
 
                     //if Current selected member has an excel file 
                     if (validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber)
                     {
                         validMembers[members].StartAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerOrginalAVG;
-                      
+
                     }
                 }
             }
+
             updateMembers(validMembers);
+            updatePlayerHistory(PlayerHistoryList);
 
             MessageBox.Show($"{validMembers.Count} members have been imported and all their bowling history has been added to the database");
+           
+        }
 
-            
-
+        private void updatePlayerHistory(List<PlayerHistory> playerHistory)
+        {
+            foreach (var ph in playerHistory)
+            {
+               
+            }
         }
 
         private void updateMembers(List<Member> members)

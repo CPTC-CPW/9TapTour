@@ -19,7 +19,13 @@ namespace NineTapTour.Database
 
         public Game Game {get ; set; }
 
-        public int ProPot { get; set; }
+        public double AverageForGame { get; set;}
+
+        public double trueAVG { get; set; }
+
+        public int AVG { get; set; }
+
+        public string ProPot { get; set; }
 
         public string PPHG { get; set; }
 
