@@ -36,7 +36,7 @@ namespace NineTapTour.Forms
         private void btnAbout_Click(object sender, EventArgs e)
         {
             // TODO finish 
-            MessageBox.Show("9-tap tour inc. is a unique, fun, and professionally run tournament. Members enjoy our Beat the board format, with four games per squad. Yet the fun, big payouts, special pots and the 9 tap version of bowling itself, brings new excitement to tournaments. \n Approximately one bowler in every 5 entries will cash. Other optional ways to cash are: 9 tap Jackpot, Progressive Pot, high game pots, brackets, scratch game and series pot, and more depending on where and when you bowl these Side Pots may vary from time to time. 9 Tap Tour also has BIG added tournaments. Each quarterly Tournament may have eligibility requirements for members who bowl during that Quarter. \n" );
+            MessageBox.Show("9-tap tour inc. is a unique, fun, and professionally run tournament. Members enjoy our Beat the board format, with four games per squad. Yet the fun, big payouts, special pots and the 9 tap version of bowling itself, brings new excitement to tournaments. \n Approximately one bowler in every 5 entries will cash. Other optional ways to cash are: 9 tap Jackpot, Progressive Pot, high game pots, brackets, scratch game and series pot, and more depending on where and when you bowl these Side Pots may vary from time to time. 9 Tap Tour also has BIG added tournaments. Each quarterly Tournament may have eligibility requirements for members who bowl during that Quarter. \n");
         }
         /// <summary>
         /// Brings up the "Member Data" form when the "Member Data" button is clicked.
@@ -68,6 +68,20 @@ namespace NineTapTour.Forms
             PointF drawPoint = new PointF(10, 2);
             g.DrawString("DEVELOPMENT VERSION NOT FOR PRODUCTION", drawFont, drawBrush, drawPoint);
 #endif
+        }
+
+        private void btnDropDataBase_Click(object sender, EventArgs e)
+        {
+            if(MessageBox.Show("This button will delete all data stored in the database, are you sure you want to clear  data?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                System.Data.Entity.Database.Delete("name=NineTapDbConnection");
+                MessageBox.Show("Data Cleared!,restart to continue.");
+                this.Close();
+                FrmMain m = new FrmMain();
+                m.Close();
+                m.Show();
+
+            }
         }
     }
 }
