@@ -134,7 +134,7 @@ namespace NineTapTour.Forms
 
             }
 
-
+     
             return dt;
         }
 
@@ -735,11 +735,6 @@ namespace NineTapTour.Forms
                                 //I believe it needs more information
 
                             }).ToList();
-
-
-
-
-
 
 
                 PlayerHistoryForm playerhistory = new PlayerHistoryForm(memId);

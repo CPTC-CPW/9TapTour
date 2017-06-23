@@ -717,9 +717,8 @@ namespace NineTapTour.Forms
 
         private void btnStats_Click(object sender, EventArgs e)
         {
-            var newfrmStart = new FrmStats(Convert.ToInt32(txtMemberNumber.Text), (txtFirstName.Text + " " + txtLastName.Text), currentMem);
-            newfrmStart.populateStats();
-            newfrmStart.Show();
+            PlayerHistoryForm p = new PlayerHistoryForm(_memberNum);
+            p.ShowDialog();
         }
 
         private void btnThisRecap_Click(object sender, EventArgs e)
