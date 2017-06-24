@@ -94,8 +94,8 @@ namespace NineTapTour.Database
                 newRow["Average of Row"] = item.AverageForGame;
                 newRow["True Average"] = item.trueAVG;
                 newRow["AVG"] = item.AVG;
-                newRow["HandiCap"] = item.Game.Handicap;
-                newRow["Bonus"] = item.Game.Bonus;
+                newRow["HandiCap"] = item.Game.Bonus;
+                newRow["Bonus"] = item.Game.Handicap;
                 newRow["ProPot"] = item.ProPot;
                 newRow["PPHG"] = item.PPHG;
                 newRow["Cash"] = item.Game.MoneyWon;
@@ -107,5 +107,6 @@ namespace NineTapTour.Database
 
             return dt;
         }
+
     }
 }

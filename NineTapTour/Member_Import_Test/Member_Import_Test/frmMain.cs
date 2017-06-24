@@ -777,21 +777,21 @@ namespace Member_Import_Test
                     }
                     try
                     {
-                        temp.Bonus = Convert.ToInt32((range.Cells[row, 11] as Excel.Range).Value2);
-                        GameHistory.Bonus = temp.Bonus;
+                        temp.HandyCap = Convert.ToInt32((range.Cells[row, 11] as Excel.Range).Value2);
+                        GameHistory.Bonus = temp.HandyCap;
                     }
                     catch
                     {
-                        temp.Bonus = -1000;
+                        temp.Bonus = -1;
                     }
                     try
                     {
-                        temp.HandyCap = Convert.ToInt32((range.Cells[row, 12] as Excel.Range).Value2);
-                        GameHistory.Handicap = temp.HandyCap;
+                        temp.Bonus = Convert.ToInt32((range.Cells[row, 12] as Excel.Range).Value2);
+                        GameHistory.Handicap = temp.Bonus;
                     }
                     catch
                     {
-                        temp.HandyCap = -1;
+                        temp.HandyCap = -1000;
                     }
                     temp.PotPro = Convert.ToString((range.Cells[row, 13] as Excel.Range).Value2);
                     playerH.ProPot = temp.PotPro;

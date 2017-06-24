@@ -84,6 +84,7 @@
             this.dtvPlayerHistory.ReadOnly = true;
             this.dtvPlayerHistory.Size = new System.Drawing.Size(643, 243);
             this.dtvPlayerHistory.TabIndex = 6;
+
             // 
             // _NineTapTour_NineTapDbDataSet
             // 

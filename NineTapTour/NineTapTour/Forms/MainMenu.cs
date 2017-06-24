@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NineTapTour.Database;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -78,8 +79,7 @@ namespace NineTapTour.Forms
                 MessageBox.Show("Data Cleared!,restart to continue.");
                 this.Close();
                 FrmMain m = new FrmMain();
-                m.Close();
-                m.Show();
+                m.Close();     
 
             }
         }
