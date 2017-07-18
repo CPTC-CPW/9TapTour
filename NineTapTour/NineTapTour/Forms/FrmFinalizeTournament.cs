@@ -16,20 +16,29 @@ namespace NineTapTour.Forms
 
     public partial class FrmFinalizeTournament : Form
     {
-
+        List<FinalizeTemp> FinalizeTableList = new List<FinalizeTemp>();
+        private Tournament currentT;
+   
         public FrmFinalizeTournament(Tournament tourn)
         {
             InitializeComponent();
-            createDataGridView(tourn);
             this.dataGridView1.DoubleBuffered(true);
+            this.currentT = tourn;
+            FinalizeTableList = GetAllInitialParticipantGameList(tourn);
+            createDataGridView(tourn);
+
+
         }
+
+
 
         private void createDataGridView(Tournament tourn)
         {
-            List<FinalizeTemp> FinalizeTableList = GetAllInitialParticipantGameList(tourn);
+
             foreach (var item in FinalizeTableList)
             {
                 FinalizeTemp temp = new FinalizeTemp();
+                temp.FinalizeID = FinalizeTableList.Count;
                 temp.TournamentID = tourn.Id;
                 temp.GameId = item.GameId;
                 temp.MemberId = item.MemberId;
@@ -47,7 +56,7 @@ namespace NineTapTour.Forms
                 temp.UseGame4 = item.UseGame4;
                 temp.ScratchTotal = temp.Game1 + temp.Game2 + temp.Game3 + temp.Game4;
                 temp.GameAvg = (temp.Game1 + temp.Game2 + temp.Game3 + temp.Game4) / 4;
-                temp.LeagueAverage = Convert.ToInt32(LeagueAverage(item.MemberId));
+                temp.LeagueAverage = Convert.ToInt32(LeagueAvgFromPlayerHistory(item.MemberId));
                 temp.AdjustedAvg = 0;
                 temp.Handicap = item.Handicap;
                 temp.Bonus = item.Bonus;
@@ -134,7 +143,7 @@ namespace NineTapTour.Forms
 
             }
 
-     
+
             return dt;
         }
 
@@ -518,6 +527,33 @@ namespace NineTapTour.Forms
             }
             return 0;
         }
+        public double LeagueAvgFromPlayerHistory(int mem)
+        {
+            double sum = 0;
+            double avg = 0;
+            var db = new NineTapDb();
+            var temp = (from p in db.PlayerHistory
+                        where p.MemberNumber == mem
+                        orderby p.TournamentDate descending
+                        select new
+                        {
+                            p.TournamentDate,
+                            p.Game1,
+                            p.Game2,
+                            p.Game3,
+                            p.Game4,
+                            p.trueAVG,
+                        }).Take(30).ToList();
+            if (temp.Count > 0)
+            {
+                foreach (var item in temp)
+                {
+                    sum += Convert.ToDouble(item.trueAVG);
+                }
+                return (avg = sum / temp.Count());
+            }
+            return 0;
+        }
 
         public void RankGridView()
         {
@@ -609,6 +645,7 @@ namespace NineTapTour.Forms
         //changes background color of score to orange if 50 below 30 game avg.
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
+        
             dataGridView1.SuspendLayout();
             if (this.dataGridView1.Columns[e.ColumnIndex].Name == "Valid Score1?" && e.Value != null)
             {
@@ -621,6 +658,7 @@ namespace NineTapTour.Forms
                 }
                 else
                 {
+                   
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.Red;
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -630,12 +668,14 @@ namespace NineTapTour.Forms
             {
                 if (Convert.ToBoolean(e.Value) == true)
                 {
+                    
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.White;
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
                 else
                 {
+                   
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.Red;
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -651,6 +691,7 @@ namespace NineTapTour.Forms
                 }
                 else
                 {
+                 
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.Red;
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -660,12 +701,110 @@ namespace NineTapTour.Forms
             {
                 if (Convert.ToBoolean(e.Value) == true)
                 {
+                   
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.White;
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
                 else
                 {
+                 
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.Red;
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+            }
+            if (this.dataGridView1.Columns[e.ColumnIndex].Name == "30 Game Avg" && e.Value != null)
+            {
+                if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 2].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 2].Style.BackColor != Color.Red)
+                {
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 2].Style.BackColor = Color.Orange;
+                }
+                if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 4].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 4].Style.BackColor != Color.Red)
+                {
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 4].Style.BackColor = Color.Orange;
+                }
+                if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 6].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 6].Style.BackColor != Color.Red)
+                {
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 6].Style.BackColor = Color.Orange;
+                }
+                if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 8].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 8].Style.BackColor != Color.Red)
+                {
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 8].Style.BackColor = Color.Orange;
+                }
+            }
+            dataGridView1.ResumeLayout();
+        }
+
+
+        private void check_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+
+            dataGridView1.SuspendLayout();
+            if (this.dataGridView1.Columns[e.ColumnIndex].Name == "Valid Score1?" && e.Value != null)
+            {
+
+                if (Convert.ToBoolean(e.Value) == true)
+                {
+              
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.White;
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+                else
+                {
+              
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.Red;
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+            }
+            if (this.dataGridView1.Columns[e.ColumnIndex].Name == "Valid Score2?" && e.Value != null)
+            {
+                if (Convert.ToBoolean(e.Value) == true)
+                {
+                  
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.White;
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+                else
+                {
+                    
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.Red;
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+            }
+            if (this.dataGridView1.Columns[e.ColumnIndex].Name == "Valid Score3?" && e.Value != null)
+            {
+                if (Convert.ToBoolean(e.Value) == true)
+                {
+               
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.White;
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+                else
+                {
+            
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.Red;
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+            }
+            if (this.dataGridView1.Columns[e.ColumnIndex].Name == "Valid Score4?" && e.Value != null)
+            {
+                if (Convert.ToBoolean(e.Value) == true)
+                {
+               
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.White;
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+                else
+                {
+                    
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.Red;
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -739,11 +878,87 @@ namespace NineTapTour.Forms
 
                 PlayerHistoryForm playerhistory = new PlayerHistoryForm(memId);
                 playerhistory.ShowDialog();
-
-
-
-                //don't forget to press alt
             }
+
+
+        }
+
+        private void btnFinalize_Click(object sender, EventArgs e)
+        {
+           
+            PlayerHistory ph = new PlayerHistory();
+            List<FinalizeTemp> FinalizeTableList = GetAllInitialParticipantGameList(currentT);
+            int gamesPlayed;
+            int currentindex = 0;
+
+            foreach (var item in FinalizeTableList)
+            {
+                gamesPlayed = 0;
+                ph.GameID = item.GameId;
+                Game g = FinalizeTempDB.getGame(item.GameId);
+                ph.TournamentDate = currentT.Date;
+                ph.MemberNumber = item.MemberId;
+
+                if (dataGridView1[3, currentindex].Value.ToString() == "True")
+                { 
+                    gamesPlayed++;
+                    g.UseGame1 = true;
+                }
+                else
+                    g.UseGame1 = false;
+                if (dataGridView1[5, currentindex].Value.ToString() == "True")
+                {
+                    gamesPlayed++;
+                    g.UseGame2 = true;
+                }
+                else
+                    g.UseGame2 = false;
+                if (dataGridView1[7, currentindex].Value.ToString() == "True")
+                {
+                    gamesPlayed++;
+                    g.UseGame3 = true;
+                }
+                else
+                    g.UseGame3 = false;
+                if (dataGridView1[9, currentindex].Value.ToString() == "True")
+                {
+                    gamesPlayed++;
+                    g.UseGame4 = true;
+                }
+                else
+                    g.UseGame4 = false;
+
+
+                ph.GamesPlayed = gamesPlayed;
+                ph.AverageForGame = item.GameAvg;
+               // ph.trueAVG = (item.Game1 + item.Game2 + item.Game3 + item.Game4) / gamesPlayed;
+               // ph.AVG = (item.Game1 + item.Game2 + item.Game3 + item.Game4) / gamesPlayed;
+                ph.ProPot = dataGridView1[18, currentindex].Value.ToString();
+               
+               
+                g.Bonus = item.Bonus;
+                ph.Bonus = item.Bonus;
+                g.Game1 = item.Game1;
+                ph.Game1 = item.Game1;
+                g.Game2 = item.Game2;
+                ph.Game2 = item.Game2;
+                g.Game3 = item.Game3;
+                ph.Game3 = item.Game3;
+                g.Game4 = item.Game4;
+                ph.Game4 = item.Game4;
+
+          
+
+                g.Handicap = item.Handicap;
+                ph.HandiCap = item.Handicap;
+                g.InputtedAvg = Convert.ToInt32(dataGridView1[12, currentindex].Value);
+                g.Notes = dataGridView1[19, currentindex].Value.ToString();
+                ph.Notes = g.Notes;
+                currentindex++;
+                PlayerHistoryDB.AddPlayerHistory2(ph);     
+
+            }
+
 
 
         }

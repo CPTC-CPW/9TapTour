@@ -12,6 +12,8 @@ namespace NineTapTour.Database
 {
     public class PlayerHistoryDB
     {
+
+
         public static void AddPlayerHistory(PlayerHistory temp)
         {
             try
@@ -24,9 +26,38 @@ namespace NineTapTour.Database
                     db.SaveChanges();
                 }
             }
-            catch(SqlException ex)
+            catch (SqlException ex)
             {
-                throw new PlayerHistoryTableException ("Error Number : " + ex.Number + " - " + ex.Message);
+                throw new PlayerHistoryTableException("Error Number : " + ex.Number + " - " + ex.Message);
+            }
+        }
+        public static void AddPlayerHistory2(PlayerHistory temp)
+        {
+            try
+            {
+                using (var db = new NineTapDb())
+                {
+                   
+                        if (GameExists(temp) == false && FinalizeTempDB.GameExists(temp) == true)
+                        {
+                            db.Entry(temp).State = EntityState.Added;
+                            db.SaveChanges();
+                        }
+                        else if (GameExists(temp) == true && FinalizeTempDB.GameExists(temp) == true)
+                        {
+                            int ID = getHisID(temp);
+                            temp.hisID = ID;
+                            db.Entry(temp).State = EntityState.Modified;
+                            db.SaveChanges();
+
+                        }
+                    
+
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new PlayerHistoryTableException("Error Number : " + ex.Number + " - " + ex.Message);
             }
         }
 
@@ -42,47 +73,109 @@ namespace NineTapTour.Database
                             {
                                 h.GamesPlayed,
                                 h.TournamentDate,
-                                h.Game.Game1,
-                                h.Game.Game2,
-                                h.Game.Game3,
-                                h.Game.Game4,
+                                h.Game1,
+                                h.Game2,
+                                h.Game3,
+                                h.Game4,
                                 h.AverageForGame,
                                 h.trueAVG,
                                 h.AVG,
-                                h.Game.Handicap,
-                                h.Game.Bonus,
+                                h.HandiCap,
+                                h.Bonus,
                                 h.ProPot,
-                                h.Game.MoneyWon,
-                                h.Game.Notes,
+                                h.MoneyWon,
+                                h.Notes,
                             }).Take(30).ToList();
-                foreach(var item in temp)
+                foreach (var item in temp)
                 {
                     PlayerHistory newHistory = new PlayerHistory();
-                    Game gameHistory = new Game();
+                   
 
                     newHistory.GamesPlayed = item.GamesPlayed;
                     newHistory.TournamentDate = item.TournamentDate;
-                    gameHistory.Game1 = item.Game1;
-                    gameHistory.Game2 = item.Game2;
-                    gameHistory.Game3 = item.Game3;
-                    gameHistory.Game4 = item.Game4;
-                    gameHistory.TotalScore = (item.Game1 + item.Game2 + item.Game3 + item.Game4);
+                    newHistory.Game1 = item.Game1;
+                    newHistory.Game2 = item.Game2;
+                    newHistory.Game3 = item.Game3;
+                    newHistory.Game4 = item.Game4;
+                    newHistory.TotalScore = (item.Game1 + item.Game2 + item.Game3 + item.Game4);
                     newHistory.AverageForGame = item.AverageForGame;
                     newHistory.trueAVG = item.trueAVG;
                     newHistory.AVG = item.AVG;
-                    gameHistory.Handicap = item.Handicap;
-                    gameHistory.Bonus = item.Bonus;
+                    newHistory.HandiCap = item.HandiCap;
+                    newHistory.Bonus = item.Bonus;
                     newHistory.ProPot = item.ProPot;
-                    gameHistory.MoneyWon = item.MoneyWon;
-                    gameHistory.Notes = item.Notes;
-                    newHistory.Game = gameHistory;
+                    newHistory.MoneyWon = item.MoneyWon;
+                    newHistory.Notes = item.Notes;       
                     Return.Add(newHistory);
                 }
-            
-                            
+
+
             }
 
             return Return;
         }
+        public static bool GameExists(PlayerHistory Temp)
+        {
+
+            using (var db = new NineTapDb())
+            {
+
+                if (db.PlayerHistory.Any(m => m.GameID == Temp.GameID))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+
+        }
+
+        public static int getHisID(PlayerHistory t)
+        {
+            int hisID = 0;
+            int v = t.GameID;
+            using (var db = new NineTapDb())
+            {
+                var temp = (from h in db.PlayerHistory join g in db.Games on h.GameID equals g.Id
+                            where h.hisID == v
+                            select new
+                            {
+                                h.hisID
+                            });
+
+                foreach (var i in temp)
+                {
+                    hisID = i.hisID;
+                }
+
+                return hisID;
+
+
+            }
+
+
+        }
+        public static void AddGame(Game temp)
+        {
+            try
+            {
+                using (var db = new NineTapDb())
+                {
+                    db.Entry(temp).State = db.Games.Any(his => his.Id == temp.Id) ?
+                         EntityState.Modified :
+                         EntityState.Added;
+                    db.SaveChanges();
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new PlayerHistoryTableException("Error Number : " + ex.Number + " - " + ex.Message);
+            }
+        }
+
+
     }
 }

@@ -17,7 +17,25 @@ namespace NineTapTour.Database
 
         public DateTime TournamentDate { get; set; }
 
-        public Game Game {get ; set; }
+        public int GameID {get ; set; }
+
+
+        public int Game1 { get; set; }
+        public int Game2 { get; set; }
+        public int Game3 { get; set; }
+        public int Game4 { get; set; }
+
+
+        public int TotalScore { get; set; }
+        public int HandiCap { get; set; }
+
+        public int Bonus { get; set; }
+
+        public decimal MoneyWon { get; set; }
+
+        public string Notes { get; set; }
+
+
 
         public double AverageForGame { get; set;}
 

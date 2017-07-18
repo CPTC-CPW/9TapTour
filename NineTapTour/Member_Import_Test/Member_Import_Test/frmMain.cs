@@ -83,8 +83,11 @@ namespace Member_Import_Test
 
         public List<Member> validMembers = new List<Member>(); //list of valid members
         public List<Member> invalidMembers = new List<Member>();//list of invalid members
-        public List<string> QBSTournamentList = new List<string>(); //list of qualified by squad tournaments
+       //public List<string> QBSTournamentList = new List<string>(); //list of qualified by squad tournaments
         public List<PlayerHistory> PlayerHistoryList = new List<PlayerHistory>();
+        int GameIdint = 1;
+
+
 
 
 
@@ -595,6 +598,7 @@ namespace Member_Import_Test
             Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
             Excel.Range range = xlWorkSheet.UsedRange;
             List<ExcelRow> returnMe = new List<ExcelRow>();
+            
 
 
 
@@ -657,6 +661,7 @@ namespace Member_Import_Test
 
             for (int sheetNum = 1; sheetNum <= xlWorkBook.Worksheets.Count; sheetNum++)
             {
+                
                 xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
                 range = xlWorkSheet.UsedRange;
                 for (int row = 3; row <= range.Rows.Count; row++)
@@ -688,6 +693,10 @@ namespace Member_Import_Test
                     {
                         temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
                         playerH.GamesPlayed = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
+                        if(temp.GameTotal > 4)
+                        {
+                            break;
+                        }
                     }
                     catch
                     {
@@ -706,6 +715,7 @@ namespace Member_Import_Test
                     {
                         temp.Game1 = Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2);
                         GameHistory.Game1 = temp.Game1;
+                        playerH.Game1 = temp.Game1;
                     }
                     catch
                     {
@@ -715,6 +725,7 @@ namespace Member_Import_Test
                     {
                         temp.Game2 = Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2);
                         GameHistory.Game2 = temp.Game2;
+                        playerH.Game2 = temp.Game2;
                     }
                     catch
                     {
@@ -724,6 +735,7 @@ namespace Member_Import_Test
                     {
                         temp.Game3 = Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2);
                         GameHistory.Game3 = temp.Game3;
+                        playerH.Game3 = temp.Game3;
                     }
                     catch
                     {
@@ -733,6 +745,7 @@ namespace Member_Import_Test
                     {
                         temp.Game4 = Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2);
                         GameHistory.Game4 = temp.Game4;
+                        playerH.Game4 = temp.Game4;
                     }
                     catch
                     {
@@ -742,6 +755,7 @@ namespace Member_Import_Test
                     {
                         temp.Total = Convert.ToInt32((range.Cells[row, 7] as Excel.Range).Value2);
                         GameHistory.TotalScore = temp.Total;
+                        playerH.TotalScore = temp.Total;
                     }
                     catch
                     {
@@ -779,6 +793,7 @@ namespace Member_Import_Test
                     {
                         temp.HandyCap = Convert.ToInt32((range.Cells[row, 11] as Excel.Range).Value2);
                         GameHistory.Bonus = temp.HandyCap;
+                        playerH.Bonus = temp.HandyCap;
                     }
                     catch
                     {
@@ -788,6 +803,7 @@ namespace Member_Import_Test
                     {
                         temp.Bonus = Convert.ToInt32((range.Cells[row, 12] as Excel.Range).Value2);
                         GameHistory.Handicap = temp.Bonus;
+                        playerH.HandiCap = temp.Bonus;
                     }
                     catch
                     {
@@ -801,6 +817,7 @@ namespace Member_Import_Test
                     {
                         temp.Cash = Convert.ToDecimal((range.Cells[row, 15] as Excel.Range).Value2);
                         GameHistory.MoneyWon = Convert.ToDecimal(temp.Cash);
+                        playerH.MoneyWon = Convert.ToDecimal(temp.Cash);
                     }
                     catch
                     {
@@ -808,9 +825,11 @@ namespace Member_Import_Test
                     }
                     temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
                     GameHistory.Notes = temp.Notes;
-
-                    playerH.Game = GameHistory;
+                    playerH.Notes = temp.Notes;
+                    playerH.GameID = GameIdint;
+                    GameIdint++;
                     PlayerHistoryList.Add(playerH);
+                    PlayerHistoryDB.AddGame(GameHistory);
                     returnMe.Add(temp);
                     progressBar2.Increment(1);
                 }
@@ -841,7 +860,7 @@ namespace Member_Import_Test
                         }
                         if (files[i].Contains("#"))
                         {
-                            QBSTournamentList.Add(files[i]);
+                            //QBSTournamentList.Add(files[i]);
                         }
                         else
                         {
@@ -955,7 +974,7 @@ namespace Member_Import_Test
             currentTournament.ThreeOutOf4 = threeofFour;
             currentTournament.Doubles = doubles;
             currentTournament.Id = TournamentList.Count + 1;
-            // listOfParticipants =  ReadPinFile(PinFileName, currentTournament);
+            // listOfParticipants =  ReadPinFile(PinFileName, currentTournament); 
             // currentTournament.Participant = listOfParticipants;
 
             TournamentList.Add(currentTournament);
@@ -963,7 +982,7 @@ namespace Member_Import_Test
 
         }
 
-
+        //USED TO PROCESS PIN FILES INCASE HE WANTS TO ADD OLD TOURNAMENTS
         private List<Participant> ReadPinFile(string pinFileName, Tournament currentTournament)
         {
             List<Participant> partList = new List<Participant>();
@@ -1163,6 +1182,7 @@ namespace Member_Import_Test
 
             updateMembers(validMembers);
             updatePlayerHistory(PlayerHistoryList);
+       
 
             MessageBox.Show($"{validMembers.Count} members have been imported and all their bowling history has been added to the database");
            
@@ -1183,6 +1203,12 @@ namespace Member_Import_Test
                 MemberDb.AddMember(m);
             }
         }
+
+   
+        
+
+
+
 
 
     }

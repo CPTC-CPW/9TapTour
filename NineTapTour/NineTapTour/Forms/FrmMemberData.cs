@@ -64,6 +64,7 @@ namespace NineTapTour.Forms
         /// <param name="searchMem"></param>
         public void UpdateMemberInfo(Member searchMem = null)
         {
+
             _memberNum = Convert.ToInt32(txtMemberNumber.Text);
             if (searchMem == null)
             {
@@ -192,7 +193,9 @@ namespace NineTapTour.Forms
                 #region Score Info
 
                 txtAverage.Text = currentMem.StartAvg.ToString();
-                txtTournAvg.Text = LeagueAverage(currentMem).ToString();
+                //txtTournAvg.Text = LeagueAverage(currentMem).ToString();
+                txtTournAvg.Text = LeagueAvgFromPlayerHistory(currentMem).ToString();
+
                 /********************************************************************************
                 updates the form's handicap even when the finalize tournament button is clicked
                 -also updates the currentMem's handicap, so when the tournamnent gets it, it is the right handicap
@@ -957,7 +960,37 @@ namespace NineTapTour.Forms
             return 0 ;
         }
 
-  
+        public double LeagueAvgFromPlayerHistory(Member mem)
+        {
+            double sum = 0;
+            double avg = 0;
+            var db = new NineTapDb();
+            var temp = (from p in db.PlayerHistory
+                        where p.MemberNumber == mem.Number
+                        orderby p.TournamentDate descending
+                        select new
+                        {
+                            p.TournamentDate,
+                            p.Game1,
+                            p.Game2,
+                            p.Game3,
+                            p.Game4,
+                            p.AverageForGame,
+                        }).Take(30).ToList();
+            if (temp.Count > 0)
+            {
+                foreach (var item in temp)
+                {
+                    sum += Convert.ToDouble(item.AverageForGame);
+                }
+                return (avg = sum / temp.Count());
+            }
+            return 0;
+        }
+
+
     }
-}
+    }
+
+
 

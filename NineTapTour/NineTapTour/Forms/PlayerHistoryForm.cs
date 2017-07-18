@@ -86,20 +86,20 @@ namespace NineTapTour.Database
                 DataRow newRow = dt.NewRow();
                 newRow["Games Played"] = item.GamesPlayed;
                 newRow["Date"] = item.TournamentDate.ToShortDateString();
-                newRow["Game 1"] = item.Game.Game1;
-                newRow["Game 2"] = item.Game.Game2;
-                newRow["Game 3"] = item.Game.Game3;
-                newRow["Game 4"] = item.Game.Game4;
-                newRow["Total"] = item.Game.TotalScore;
+                newRow["Game 1"] = item.Game1;
+                newRow["Game 2"] = item.Game2;
+                newRow["Game 3"] = item.Game3;
+                newRow["Game 4"] = item.Game4;
+                newRow["Total"] = item.TotalScore;
                 newRow["Average of Row"] = item.AverageForGame;
                 newRow["True Average"] = item.trueAVG;
                 newRow["AVG"] = item.AVG;
-                newRow["HandiCap"] = item.Game.Bonus;
-                newRow["Bonus"] = item.Game.Handicap;
+                newRow["HandiCap"] = item.HandiCap;
+                newRow["Bonus"] = item.Bonus;
                 newRow["ProPot"] = item.ProPot;
                 newRow["PPHG"] = item.PPHG;
-                newRow["Cash"] = item.Game.MoneyWon;
-                newRow["Notes"] = item.Game.Notes;
+                newRow["Cash"] = item.MoneyWon;
+                newRow["Notes"] = item.Notes;
 
                 dt.Rows.Add(newRow);
 

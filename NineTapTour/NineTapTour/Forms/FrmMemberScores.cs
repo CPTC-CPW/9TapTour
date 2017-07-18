@@ -29,13 +29,13 @@ namespace NineTapTour.Forms
         //bool doubles = true;
         public static Tournament selectedTournament;
         public static List<TopScores> overallListOfTopScores;
+       
 
 
         public frmMemberScores()
         {
             InitializeComponent();
             DoubleInitialize(false);
-
 
         }
 
@@ -79,8 +79,18 @@ namespace NineTapTour.Forms
 
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
+            if(cbxTourneyDropDown.SelectedIndex == -1)
+            {
+                btnLeftArrow.Enabled = false;
+                btnRightArrow.Enabled = false;
+            }
+            else
+            {
+                btnLeftArrow.Enabled = true;
+                btnRightArrow.Enabled = true;
+            }
 
-
+        
         }
         /// <summary>
         /// entering a member number clears members data
@@ -178,7 +188,6 @@ namespace NineTapTour.Forms
             lbLastName2.Visible = set;
             lblFirstName2.Visible = set;
             lblMiddleInitial2.Visible = set;
-
         }
         #region GetMember
 
@@ -774,6 +783,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
+
             List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
             if (currentIndex >= total.Count())
             {

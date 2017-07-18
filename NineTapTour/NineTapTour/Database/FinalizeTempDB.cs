@@ -76,6 +76,98 @@ namespace NineTapTour.Database
             }
             return 0;
         }
-        /*****************/
+
+        public static bool GameExists(PlayerHistory Temp)
+        {
+
+            using (var db = new NineTapDb())
+            {
+
+                if (db.FinalizeTemp.Any(m => m.GameId == Temp.GameID))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+
+        }
+
+        public static Game getGame(int gameID)
+        {
+            Game currentGame = new Game();
+
+            var db = new NineTapDb();
+            var temp = (
+
+                from g in db.Games
+                where g.Id == gameID
+                select new
+                {
+                    g.Bonus,
+                    g.Game1,
+                    g.Game2,
+                    g.Game3,
+                    g.Game4,
+                    g.Handicap,
+                    g.InputtedAvg,
+                    g.Id,
+                    g.MoneyWon,
+                    g.Notes,
+                    g.PlaceStanding,
+                    g.UseGame1,
+                    g.UseGame2,
+                    g.UseGame3,
+                    g.UseGame4
+
+                });
+            foreach (var g in temp)
+            {
+                currentGame.Bonus = g.Bonus;
+                currentGame.Game1 = g.Game1;
+                currentGame.Game2 = g.Game2;
+                currentGame.Game3 = g.Game3;
+                currentGame.Game4 = g.Game4;
+                currentGame.Handicap = g.Handicap;
+                currentGame.InputtedAvg = g.InputtedAvg;
+                currentGame.Id = g.Id;
+                currentGame.MoneyWon = g.MoneyWon;
+                currentGame.Notes = g.Notes;
+                currentGame.PlaceStanding = g.PlaceStanding;
+                currentGame.UseGame1 = g.UseGame1;
+                currentGame.UseGame2 = g.UseGame2;
+                currentGame.UseGame3 = g.UseGame3;
+                currentGame.UseGame4 = g.UseGame4;
+
+            }
+            return currentGame;
+
+        }
+
+
+        public static int getHistoryID(int gameID)
+        {
+            int returnme = 0;
+
+            var db = new NineTapDb();
+            var temp = (
+
+                from g in db.PlayerHistory
+                where g.GameID == gameID
+                select new
+                {
+                    g.hisID
+                });
+            foreach (var v in temp)
+            {
+                returnme = v.hisID;
+            }
+            return returnme;
+
+            /*****************/
+        }
     }
 }
