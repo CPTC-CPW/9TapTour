@@ -895,7 +895,7 @@ namespace NineTapTour.Forms
                 partlist[i].Game = FinalizeTempDB.getGame(FinalizeTableList[i].GameId);
             }
             
-            int gamesPlayed;
+            int gamesPlayed = 0;
             int currentindex = 0;
 
             foreach (var item in FinalizeTableList)
@@ -969,11 +969,9 @@ namespace NineTapTour.Forms
                 g.Notes = dataGridView1[19, currentindex].Value.ToString();
                 ph.Notes = g.Notes;
                 currentindex++;
-                PlayerHistoryDB.AddPlayerHistory2(ph);     
+                PlayerHistoryDB.AddPlayerHistory2(ph);
 
             }
-
-
 
         }
 
