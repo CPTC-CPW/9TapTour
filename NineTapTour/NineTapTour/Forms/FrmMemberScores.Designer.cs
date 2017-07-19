@@ -81,6 +81,16 @@
             this.grpTournamentFile = new System.Windows.Forms.GroupBox();
             this.cbxTourneyDropDown = new System.Windows.Forms.ComboBox();
             this.grpLeaders = new System.Windows.Forms.GroupBox();
+            this.QBSBOX = new System.Windows.Forms.GroupBox();
+            this.rdoSquad8Resualts = new System.Windows.Forms.RadioButton();
+            this.rdoSquad7Results = new System.Windows.Forms.RadioButton();
+            this.rdoSquad6Results = new System.Windows.Forms.RadioButton();
+            this.rdoSquad5Results = new System.Windows.Forms.RadioButton();
+            this.rdoSquad4Results = new System.Windows.Forms.RadioButton();
+            this.rdoSquad3Results = new System.Windows.Forms.RadioButton();
+            this.rdoSquad2Results = new System.Windows.Forms.RadioButton();
+            this.rdoSquad1Results = new System.Windows.Forms.RadioButton();
+            this.rdoAllResults = new System.Windows.Forms.RadioButton();
             this.grpScoreType = new System.Windows.Forms.GroupBox();
             this.rdoScratchScore = new System.Windows.Forms.RadioButton();
             this.rdoHandicapScore = new System.Windows.Forms.RadioButton();
@@ -118,6 +128,7 @@
             this.grpStats.SuspendLayout();
             this.grpTournamentFile.SuspendLayout();
             this.grpLeaders.SuspendLayout();
+            this.QBSBOX.SuspendLayout();
             this.grpScoreType.SuspendLayout();
             this.grpReports.SuspendLayout();
             this.grpComments.SuspendLayout();
@@ -637,7 +648,7 @@
             this.txtMoney.Name = "txtMoney";
             this.txtMoney.Size = new System.Drawing.Size(83, 20);
             this.txtMoney.TabIndex = 0;
-            this.txtMoney.TextChanged += new System.EventHandler(this.txtMoney_TextChanged);
+    
             // 
             // lblPlayer2
             // 
@@ -728,6 +739,7 @@
             // 
             // grpLeaders
             // 
+            this.grpLeaders.Controls.Add(this.QBSBOX);
             this.grpLeaders.Controls.Add(this.grpScoreType);
             this.grpLeaders.Controls.Add(this.label3);
             this.grpLeaders.Controls.Add(this.label2);
@@ -744,6 +756,125 @@
             this.grpLeaders.TabIndex = 29;
             this.grpLeaders.TabStop = false;
             this.grpLeaders.Text = "Leaders";
+            // 
+            // QBSBOX
+            // 
+            this.QBSBOX.Controls.Add(this.rdoSquad8Resualts);
+            this.QBSBOX.Controls.Add(this.rdoSquad7Results);
+            this.QBSBOX.Controls.Add(this.rdoSquad6Results);
+            this.QBSBOX.Controls.Add(this.rdoSquad5Results);
+            this.QBSBOX.Controls.Add(this.rdoSquad4Results);
+            this.QBSBOX.Controls.Add(this.rdoSquad3Results);
+            this.QBSBOX.Controls.Add(this.rdoSquad2Results);
+            this.QBSBOX.Controls.Add(this.rdoSquad1Results);
+            this.QBSBOX.Controls.Add(this.rdoAllResults);
+            this.QBSBOX.Location = new System.Drawing.Point(349, 23);
+            this.QBSBOX.Name = "QBSBOX";
+            this.QBSBOX.Size = new System.Drawing.Size(101, 270);
+            this.QBSBOX.TabIndex = 23;
+            this.QBSBOX.TabStop = false;
+            this.QBSBOX.Text = "Qualify By Squad";
+            // 
+            // rdoSquad8Resualts
+            // 
+            this.rdoSquad8Resualts.AutoSize = true;
+            this.rdoSquad8Resualts.Location = new System.Drawing.Point(4, 230);
+            this.rdoSquad8Resualts.Name = "rdoSquad8Resualts";
+            this.rdoSquad8Resualts.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquad8Resualts.TabIndex = 8;
+            this.rdoSquad8Resualts.Text = "Squad 8";
+            this.rdoSquad8Resualts.UseVisualStyleBackColor = true;
+            this.rdoSquad8Resualts.CheckedChanged += new System.EventHandler(this.rdoSquad8Resualts_CheckedChanged);
+            // 
+            // rdoSquad7Results
+            // 
+            this.rdoSquad7Results.AutoSize = true;
+            this.rdoSquad7Results.Location = new System.Drawing.Point(4, 207);
+            this.rdoSquad7Results.Name = "rdoSquad7Results";
+            this.rdoSquad7Results.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquad7Results.TabIndex = 7;
+            this.rdoSquad7Results.Text = "Squad 7";
+            this.rdoSquad7Results.UseVisualStyleBackColor = true;
+            this.rdoSquad7Results.CheckedChanged += new System.EventHandler(this.rdoSquad7Results_CheckedChanged);
+            // 
+            // rdoSquad6Results
+            // 
+            this.rdoSquad6Results.AutoSize = true;
+            this.rdoSquad6Results.Location = new System.Drawing.Point(4, 184);
+            this.rdoSquad6Results.Name = "rdoSquad6Results";
+            this.rdoSquad6Results.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquad6Results.TabIndex = 6;
+            this.rdoSquad6Results.Text = "Squad 6";
+            this.rdoSquad6Results.UseVisualStyleBackColor = true;
+            this.rdoSquad6Results.CheckedChanged += new System.EventHandler(this.rdoSquad6Results_CheckedChanged);
+            // 
+            // rdoSquad5Results
+            // 
+            this.rdoSquad5Results.AutoSize = true;
+            this.rdoSquad5Results.Location = new System.Drawing.Point(4, 161);
+            this.rdoSquad5Results.Name = "rdoSquad5Results";
+            this.rdoSquad5Results.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquad5Results.TabIndex = 5;
+            this.rdoSquad5Results.Text = "Squad 5";
+            this.rdoSquad5Results.UseVisualStyleBackColor = true;
+            this.rdoSquad5Results.CheckedChanged += new System.EventHandler(this.rdoSquad5Results_CheckedChanged);
+            // 
+            // rdoSquad4Results
+            // 
+            this.rdoSquad4Results.AutoSize = true;
+            this.rdoSquad4Results.Location = new System.Drawing.Point(4, 138);
+            this.rdoSquad4Results.Name = "rdoSquad4Results";
+            this.rdoSquad4Results.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquad4Results.TabIndex = 4;
+            this.rdoSquad4Results.Text = "Squad 4";
+            this.rdoSquad4Results.UseVisualStyleBackColor = true;
+            this.rdoSquad4Results.CheckedChanged += new System.EventHandler(this.rdoSquad4Results_CheckedChanged);
+            // 
+            // rdoSquad3Results
+            // 
+            this.rdoSquad3Results.AutoSize = true;
+            this.rdoSquad3Results.Location = new System.Drawing.Point(4, 115);
+            this.rdoSquad3Results.Name = "rdoSquad3Results";
+            this.rdoSquad3Results.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquad3Results.TabIndex = 3;
+            this.rdoSquad3Results.Text = "Squad 3";
+            this.rdoSquad3Results.UseVisualStyleBackColor = true;
+            this.rdoSquad3Results.CheckedChanged += new System.EventHandler(this.rdoSquad3Results_CheckedChanged);
+            // 
+            // rdoSquad2Results
+            // 
+            this.rdoSquad2Results.AutoSize = true;
+            this.rdoSquad2Results.Location = new System.Drawing.Point(4, 92);
+            this.rdoSquad2Results.Name = "rdoSquad2Results";
+            this.rdoSquad2Results.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquad2Results.TabIndex = 2;
+            this.rdoSquad2Results.Text = "Squad 2";
+            this.rdoSquad2Results.UseVisualStyleBackColor = true;
+            this.rdoSquad2Results.CheckedChanged += new System.EventHandler(this.rdoSquad2Results_CheckedChanged);
+            // 
+            // rdoSquad1Results
+            // 
+            this.rdoSquad1Results.AutoSize = true;
+            this.rdoSquad1Results.Location = new System.Drawing.Point(4, 69);
+            this.rdoSquad1Results.Name = "rdoSquad1Results";
+            this.rdoSquad1Results.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquad1Results.TabIndex = 1;
+            this.rdoSquad1Results.Text = "Squad 1";
+            this.rdoSquad1Results.UseVisualStyleBackColor = true;
+            this.rdoSquad1Results.CheckedChanged += new System.EventHandler(this.rdoSquad1Results_CheckedChanged);
+            // 
+            // rdoAllResults
+            // 
+            this.rdoAllResults.AutoSize = true;
+            this.rdoAllResults.Checked = true;
+            this.rdoAllResults.Location = new System.Drawing.Point(4, 46);
+            this.rdoAllResults.Name = "rdoAllResults";
+            this.rdoAllResults.Size = new System.Drawing.Size(75, 17);
+            this.rdoAllResults.TabIndex = 0;
+            this.rdoAllResults.TabStop = true;
+            this.rdoAllResults.Text = "All Squads";
+            this.rdoAllResults.UseVisualStyleBackColor = true;
+            this.rdoAllResults.CheckedChanged += new System.EventHandler(this.rdoAllResults_CheckedChanged);
             // 
             // grpScoreType
             // 
@@ -1120,6 +1251,8 @@
             this.grpTournamentFile.ResumeLayout(false);
             this.grpLeaders.ResumeLayout(false);
             this.grpLeaders.PerformLayout();
+            this.QBSBOX.ResumeLayout(false);
+            this.QBSBOX.PerformLayout();
             this.grpScoreType.ResumeLayout(false);
             this.grpScoreType.PerformLayout();
             this.grpReports.ResumeLayout(false);
@@ -1216,5 +1349,15 @@
         private System.Windows.Forms.Label lblMoney;
         private System.Windows.Forms.TextBox txtMoney;
         private System.Windows.Forms.Button btnFinalizeTounament;
+        private System.Windows.Forms.GroupBox QBSBOX;
+        private System.Windows.Forms.RadioButton rdoSquad8Resualts;
+        private System.Windows.Forms.RadioButton rdoSquad7Results;
+        private System.Windows.Forms.RadioButton rdoSquad6Results;
+        private System.Windows.Forms.RadioButton rdoSquad5Results;
+        private System.Windows.Forms.RadioButton rdoSquad4Results;
+        private System.Windows.Forms.RadioButton rdoSquad3Results;
+        private System.Windows.Forms.RadioButton rdoSquad2Results;
+        private System.Windows.Forms.RadioButton rdoSquad1Results;
+        private System.Windows.Forms.RadioButton rdoAllResults;
     }
 }

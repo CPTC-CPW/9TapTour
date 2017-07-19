@@ -169,5 +169,26 @@ namespace NineTapTour.Database
 
             /*****************/
         }
+
+        public static List<Participant> getGameParticipantList(int id)
+        {
+            List<Participant> p = new List<Participant>();
+            var db = new NineTapDb();
+            var temp = (
+
+                from par in db.Participants
+                where par.Tournament.Id == id
+                select new
+                {
+                    par.Id,
+                    par.Game,
+                    par.Member,
+                    par.Squad,
+                    par.Tournament
+                }).ToList();
+
+
+            return p;
+        }
     }
 }

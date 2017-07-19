@@ -792,8 +792,8 @@ namespace Member_Import_Test
                     try
                     {
                         temp.HandyCap = Convert.ToInt32((range.Cells[row, 11] as Excel.Range).Value2);
-                        GameHistory.Bonus = temp.HandyCap;
-                        playerH.Bonus = temp.HandyCap;
+                        GameHistory.Handicap = temp.HandyCap;
+                        playerH.HandiCap = temp.HandyCap;
                     }
                     catch
                     {
@@ -802,8 +802,8 @@ namespace Member_Import_Test
                     try
                     {
                         temp.Bonus = Convert.ToInt32((range.Cells[row, 12] as Excel.Range).Value2);
-                        GameHistory.Handicap = temp.Bonus;
-                        playerH.HandiCap = temp.Bonus;
+                        GameHistory.Bonus = temp.Bonus;
+                        playerH.Bonus = temp.Bonus;
                     }
                     catch
                     {
@@ -815,7 +815,7 @@ namespace Member_Import_Test
                     playerH.PPHG = temp.FinPPHG;
                     try
                     {
-                        temp.Cash = Convert.ToDecimal((range.Cells[row, 15] as Excel.Range).Value2);
+                        temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
                         GameHistory.MoneyWon = Convert.ToDecimal(temp.Cash);
                         playerH.MoneyWon = Convert.ToDecimal(temp.Cash);
                     }

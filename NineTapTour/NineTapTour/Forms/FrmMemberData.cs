@@ -41,7 +41,10 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void MemberDataForm_Load(object sender, EventArgs e)
         {
-            
+            List<Member> ListOfMembers = MemberDb.GetMemberList();
+
+            updateOnload(ListOfMembers);
+
             dateJoined.Format = DateTimePickerFormat.Custom;
             dateJoined.CustomFormat = @" ";
 
@@ -194,7 +197,8 @@ namespace NineTapTour.Forms
 
                 txtAverage.Text = currentMem.StartAvg.ToString();
                 //txtTournAvg.Text = LeagueAverage(currentMem).ToString();
-                txtTournAvg.Text = LeagueAvgFromPlayerHistory(currentMem).ToString();
+                double leagueavg = LeagueAvgFromPlayerHistory(currentMem);
+                txtTournAvg.Text = Convert.ToInt32(leagueavg).ToString();
 
                 /********************************************************************************
                 updates the form's handicap even when the finalize tournament button is clicked
@@ -229,13 +233,21 @@ namespace NineTapTour.Forms
                     dateLastBowled.Format = DateTimePickerFormat.Custom;
                     dateLastBowled.CustomFormat = @" ";
                 }
-                //txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
-                
-                var result = (from p in db.Participants
-                              join g in db.Games on p.Game.Id equals g.Id
-                              where p.Member.Id == currentMem.Id
-                              select g.MoneyWon).ToArray();
-                txtMoneyEarned.Text = String.Format("{0:C}", result.Sum());
+                txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
+                decimal moneySum = 0;
+                var result = (from p in db.PlayerHistory
+                              where p.MemberNumber == currentMem.Id
+                              orderby p.TournamentDate descending
+                              select new
+                              {
+                                  p.MoneyWon
+                              }).ToArray();
+                foreach(var v in result)
+                {
+                    moneySum += v.MoneyWon;
+                }
+
+                txtMoneyEarned.Text = String.Format("{0:C}", moneySum);
                 txtNotes.Text = currentMem.Notes;
                 txtReferrals.Text = currentMem.Referrals.ToString();
                 chbSenior.Checked = currentMem.IsSenior;
@@ -439,61 +451,61 @@ namespace NineTapTour.Forms
                 //use existing memberId if present or select the member id from the form
                 int memId = (_memberId != -1) ? _memberId : Convert.ToInt32(txtMemberNumber.Text);
 
-                try
-                {
-                    Member temp = new Member
-                    {
-                        Id = memId,
-                        Number = Convert.ToInt32(txtMemberNumber.Text),
-                        IsActive = rdoActive.Checked,
-                        JoinDate = dateJoined.Value,
 
-                        #region Personal Info
-                        LastName = txtLastName.Text,
-                        FirstName = txtFirstName.Text,
-                        MiddleInitial = txtMiddleInitial.Text,
-                        DateOfBirth = dateDOB.Value,
-                        SSN = mtxtBoxSSN.Text,
-                        IsSenior = chbSenior.Checked,
-                        Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
-                        #endregion
+                 Member temp = new Member();
 
-                        #region Postal Address
-                        Street = txtAddress.Text,
-                        City = txtCity.Text,
-                        State = txtState.Text,
-                        PostalCode = mtxtBoxZip.Text,
-                        #endregion
+            temp.Id = memId;
+            temp.Number = Convert.ToInt32(txtMemberNumber.Text);
+            temp.IsActive = rdoActive.Checked;
+            temp.JoinDate = dateJoined.Value;
 
-                        #region Contact Info
-                        Email = txtEmail.Text,
-                        PrimaryPhone = mtxtBoxPhone.Text,
-                        SecondaryPhone = mtxtBoxPhone2.Text,
-                        #endregion
+            #region Personal Info
+            temp.LastName = txtLastName.Text;
+            temp.FirstName = txtFirstName.Text;
+            temp.MiddleInitial = txtMiddleInitial.Text;
+            temp.DateOfBirth = dateDOB.Value;
+            temp.SSN = mtxtBoxSSN.Text;
+            temp.IsSenior = chbSenior.Checked;
+            temp.Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male;
+            #endregion
 
-                        #region Score Info
-                        /*************************************************************************************
-                        used to say Average = 0; which is always making the average in the database 0
-                        **************************************************************************************/
-                        Average = (txtTournAvg.Text == string.Empty) ? 0 : Convert.ToInt16(txtTournAvg.Text),
-                        /*************************************************************************************/
-                        StartAvg = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text),
-                        Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text),
-                        Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text),
-                        #endregion
+            #region Postal Address
+            temp.Street = txtAddress.Text;
+            temp.City = txtCity.Text;
+            temp.State = txtState.Text;
+            temp.PostalCode = mtxtBoxZip.Text;
+            #endregion
 
-                        #region Misc. Info
-                        RejoinDate = (dateRejoin.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : dateRejoin.Value,
-                        LastBowled = (dateLastBowled.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : dateLastBowled.Value,
-                        ///*MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency)*/
-                        //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
-                        
-                        Notes = txtNotes.Text,
-                        Referrals = (txtReferrals.Text) == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text),
-                        #endregion
-                        LastPayment = (datePaid.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : datePaid.Value,
-                        IsLifetimeMember = chbLifetime.Checked
-                    };
+            #region Contact Info
+            temp.Email = txtEmail.Text;
+            temp.PrimaryPhone = mtxtBoxPhone.Text;
+            temp.SecondaryPhone = mtxtBoxPhone2.Text;
+            #endregion
+
+            #region Score Info
+            /*************************************************************************************
+            used to say Average = 0; which is always making the average in the database 0
+            **************************************************************************************/
+            double avg = Convert.ToDouble(txtTournAvg.Text);
+            temp.Average = (txtTournAvg.Text == string.Empty) ? 0 : Convert.ToInt16(avg);
+            /*************************************************************************************/
+            temp.StartAvg = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text);
+            temp.Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text);
+            temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
+            #endregion
+
+            #region Misc. Info
+            temp.RejoinDate = (dateRejoin.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : dateRejoin.Value;
+            temp.LastBowled = (dateLastBowled.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : dateLastBowled.Value;
+            ///*MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency)*/
+            //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
+
+            temp.Notes = txtNotes.Text;
+            temp.Referrals = (txtReferrals.Text) == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text);
+            #endregion
+            temp.LastPayment = (datePaid.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : datePaid.Value;
+            temp.IsLifetimeMember = chbLifetime.Checked;
+                   
 
                     // Adds Member to Database
 
@@ -512,15 +524,15 @@ namespace NineTapTour.Forms
                         MessageBox.Show(ex.Message);
                     }
                 }
-                catch (FormatException fe)
-                {
-                    Console.WriteLine("Error Number : " + fe.Message);
-                    //TODO - this field is a catch all for errors in fields that require numbers 
-                    //League Score, Handicap, and referrals
-                    MessageBox.Show("Referrals must be an integer number value.");
-                }
+                //catch (FormatException fe)
+                //{
+                //    Console.WriteLine("Error Number : " + fe.Message);
+                //    //TODO - this field is a catch all for errors in fields that require numbers 
+                //    //League Score, Handicap, and referrals
+                //   // MessageBox.Show("Referrals must be an integer number value.");
+                //}
             //}
-        }
+        
 
         /// <summary>
         /// Displays the previous "Member Number"'s information when the left arrow button is clicked.
@@ -838,6 +850,18 @@ namespace NineTapTour.Forms
             ((FrmMain)MdiParent).currFrmMemberData = this;
         }
 
+
+
+        private void updateOnload(List<Member> temp)
+        {
+            foreach(var m in temp)
+            {
+                MemberDb.AddMember(m);
+            }
+        }
+
+
+
         /// <summary>
         /// checks whether form data has been changed and not saved
         /// </summary>
@@ -967,7 +991,7 @@ namespace NineTapTour.Forms
             var db = new NineTapDb();
             var temp = (from p in db.PlayerHistory
                         where p.MemberNumber == mem.Number
-                        orderby p.TournamentDate descending
+                        orderby p.hisID, p.TournamentDate descending
                         select new
                         {
                             p.TournamentDate,

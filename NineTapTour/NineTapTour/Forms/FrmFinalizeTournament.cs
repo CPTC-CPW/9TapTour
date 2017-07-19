@@ -885,9 +885,16 @@ namespace NineTapTour.Forms
 
         private void btnFinalize_Click(object sender, EventArgs e)
         {
-           
+         
             PlayerHistory ph = new PlayerHistory();
             List<FinalizeTemp> FinalizeTableList = GetAllInitialParticipantGameList(currentT);
+            List<Participant> partlist = TournamentDb.GetTournamentMemberList(currentT);
+            for (int i = 0; i < partlist.Count; i++)
+            {
+                partlist[i].Tournament = currentT;
+                partlist[i].Game = FinalizeTempDB.getGame(FinalizeTableList[i].GameId);
+            }
+            
             int gamesPlayed;
             int currentindex = 0;
 
@@ -931,11 +938,18 @@ namespace NineTapTour.Forms
 
                 ph.GamesPlayed = gamesPlayed;
                 ph.AverageForGame = item.GameAvg;
-               // ph.trueAVG = (item.Game1 + item.Game2 + item.Game3 + item.Game4) / gamesPlayed;
-               // ph.AVG = (item.Game1 + item.Game2 + item.Game3 + item.Game4) / gamesPlayed;
+                ph.trueAVG = LeagueAvgFromPlayerHistory(ph.MemberNumber);
+                ph.AVG = Convert.ToInt32(dataGridView1[12, currentindex].Value);
                 ph.ProPot = dataGridView1[18, currentindex].Value.ToString();
-               
-               
+                for (int i = 0; i < partlist.Count; i++)
+                {
+                    if (ph.MemberNumber == partlist[i].Member.Number)
+                    {
+       
+                        ph.MoneyWon = Convert.ToDecimal(partlist[i].Game.MoneyWon);
+                    }
+                }
+            
                 g.Bonus = item.Bonus;
                 ph.Bonus = item.Bonus;
                 g.Game1 = item.Game1;
@@ -951,7 +965,7 @@ namespace NineTapTour.Forms
 
                 g.Handicap = item.Handicap;
                 ph.HandiCap = item.Handicap;
-                g.InputtedAvg = Convert.ToInt32(dataGridView1[12, currentindex].Value);
+                g.InputtedAvg = ph.AVG;
                 g.Notes = dataGridView1[19, currentindex].Value.ToString();
                 ph.Notes = g.Notes;
                 currentindex++;
