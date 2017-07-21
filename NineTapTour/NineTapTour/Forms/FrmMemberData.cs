@@ -9,6 +9,16 @@ using NineTapTour.Exceptions;
 using System.Text.RegularExpressions;
 using System.Drawing.Printing;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
+using System.Data;
+using System.Data.OleDb;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+using Excel = Microsoft.Office.Interop.Excel;
+
+
 
 namespace NineTapTour.Forms
 {
@@ -19,6 +29,8 @@ namespace NineTapTour.Forms
         int _memberId;
         Member currentMem;
         private int _memberNum;
+
+        
         public int MemberNum
         {
             set { _memberNum = value; }
@@ -1012,7 +1024,18 @@ namespace NineTapTour.Forms
             return 0;
         }
 
+        private void btnImportData_Click(object sender, EventArgs e)
+        {
 
+            OpenFileDialog ofdOpen = new OpenFileDialog();
+            ofdOpen.Filter = "Excel Files (*.xls)|*.xls";
+            if(ofdOpen.ShowDialog() == DialogResult.OK)
+            {
+                string fileName = ofdOpen.FileName;
+
+
+            }
+        }
     }
     }
 

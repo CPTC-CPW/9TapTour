@@ -107,6 +107,7 @@
             this.lblPaymentInfo = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.txtTournAvg = new System.Windows.Forms.TextBox();
+            this.btnImportData = new System.Windows.Forms.Button();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -593,13 +594,14 @@
             // 
             // groupRecord
             // 
+            this.groupRecord.Controls.Add(this.btnImportData);
             this.groupRecord.Controls.Add(this.btnSave);
             this.groupRecord.Controls.Add(this.btnClear);
             this.groupRecord.Controls.Add(this.btnNew);
             this.groupRecord.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupRecord.Location = new System.Drawing.Point(23, 583);
             this.groupRecord.Name = "groupRecord";
-            this.groupRecord.Size = new System.Drawing.Size(108, 100);
+            this.groupRecord.Size = new System.Drawing.Size(108, 126);
             this.groupRecord.TabIndex = 60;
             this.groupRecord.TabStop = false;
             this.groupRecord.Text = "Record";
@@ -961,6 +963,18 @@
             this.txtTournAvg.TabIndex = 36;
             this.txtTournAvg.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // btnImportData
+            // 
+            this.btnImportData.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnImportData.Location = new System.Drawing.Point(17, 97);
+            this.btnImportData.Name = "btnImportData";
+            this.btnImportData.Size = new System.Drawing.Size(75, 23);
+            this.btnImportData.TabIndex = 64;
+            this.btnImportData.TabStop = false;
+            this.btnImportData.Text = "Import";
+            this.btnImportData.UseVisualStyleBackColor = true;
+            this.btnImportData.Click += new System.EventHandler(this.btnImportData_Click);
+            // 
             // FrmMemberData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1111,5 +1125,7 @@
         private System.Windows.Forms.DateTimePicker dateDOB;
         private System.Windows.Forms.TextBox txtTournAvg;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnImportData;
+        private System.Windows.Forms.OpenFileDialog ofdOpen;
     }
 }
