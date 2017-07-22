@@ -120,7 +120,7 @@ namespace NineTapTour.Forms
                     LastBowled = m.LastBowled,
                     LastPayment = m.LastPayment,
                     IsLifetimeMember = m.IsLifetimeMember,
-                    //MoneyEarned = m.MoneyEarned,
+                    MoneyEarned = m.MoneyEarned,
                     Notes = m.Notes,
                     Referrals = m.Referrals,
                     IsSenior = m.IsSenior
@@ -150,7 +150,7 @@ namespace NineTapTour.Forms
                     LastBowled = m.LastBowled,
                     LastPayment = m.LastPayment,
                     IsLifetimeMember = m.IsLifetimeMember,
-                    //MoneyEarned = m.MoneyEarned,
+                    MoneyEarned = m.MoneyEarned,
                     Notes = m.Notes,
                     Referrals = m.Referrals,
                     IsSenior = m.IsSenior

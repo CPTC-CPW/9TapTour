@@ -17,8 +17,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
-
-
+using Member_Import_Test.Classes;
 
 namespace NineTapTour.Forms
 {
@@ -29,8 +28,9 @@ namespace NineTapTour.Forms
         int _memberId;
         Member currentMem;
         private int _memberNum;
-
         
+
+
         public int MemberNum
         {
             set { _memberNum = value; }
@@ -208,7 +208,6 @@ namespace NineTapTour.Forms
                 #region Score Info
 
                 txtAverage.Text = currentMem.StartAvg.ToString();
-                //txtTournAvg.Text = LeagueAverage(currentMem).ToString();
                 double leagueavg = LeagueAvgFromPlayerHistory(currentMem);
                 txtTournAvg.Text = Convert.ToInt32(leagueavg).ToString();
 
@@ -258,8 +257,10 @@ namespace NineTapTour.Forms
                 {
                     moneySum += v.MoneyWon;
                 }
+               
 
                 txtMoneyEarned.Text = String.Format("{0:C}", moneySum);
+                currentMem.MoneyEarned = moneySum;
                 txtNotes.Text = currentMem.Notes;
                 txtReferrals.Text = currentMem.Referrals.ToString();
                 chbSenior.Checked = currentMem.IsSenior;
@@ -296,6 +297,7 @@ namespace NineTapTour.Forms
                     datePaid.CustomFormat = @" ";
                     lblPaymentInfo.Visible = false;
                 }
+                MemberDb.AddMember(currentMem);
                 
             }
         }
@@ -504,12 +506,13 @@ namespace NineTapTour.Forms
             temp.StartAvg = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text);
             temp.Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text);
             temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
+           
             #endregion
 
             #region Misc. Info
             temp.RejoinDate = (dateRejoin.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : dateRejoin.Value;
             temp.LastBowled = (dateLastBowled.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : dateLastBowled.Value;
-            ///*MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency)*/
+            temp.MoneyEarned = currentMem.MoneyEarned;
             //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
 
             temp.Notes = txtNotes.Text;
@@ -1024,17 +1027,335 @@ namespace NineTapTour.Forms
             return 0;
         }
 
+      
         private void btnImportData_Click(object sender, EventArgs e)
         {
-
+           
+            List<ExcelRow> CurrentExcelData = new List<ExcelRow>();
             OpenFileDialog ofdOpen = new OpenFileDialog();
             ofdOpen.Filter = "Excel Files (*.xls)|*.xls";
             if(ofdOpen.ShowDialog() == DialogResult.OK)
             {
-                string fileName = ofdOpen.FileName;
 
+                List<ExcelRow> rows = new List<ExcelRow>();
+               
+                List<PlayerHistory> AlreadyImportedPH = PlayerHistoryDB.getMemberPlayerHistory(currentMem.Number);
+                bool wait = true;
+                string fileName = ofdOpen.FileName;
+                while (wait)
+                {
+                    
+                    if (AlreadyImportedPH.Count > 0)
+                    {
+                        for(int delete = 0; delete < AlreadyImportedPH.Count; delete++)
+                        {
+                            Game game = FinalizeTempDB.getGame(AlreadyImportedPH[delete].GameID);
+                            PlayerHistoryDB.DeleteGame(game);
+                            PlayerHistoryDB.DeletePlayerHistory(AlreadyImportedPH[delete]);
+
+                        }
+                    }
+            
+                    rows = ProcessExcelFile(fileName);
+                    
+                    wait = false;
+                }
+                foreach(var r in rows)
+                {
+                    CurrentExcelData.Add(r);
+                }
+
+                currentMem.Average = Convert.ToInt32(LeagueAvgFromPlayerHistory(currentMem));
+                currentMem.StartAvg = CurrentExcelData[0].PlayerOrginalAVG;
+                txtAverage.Text = currentMem.StartAvg.ToString();
+
+                decimal moneySum = 0;
+                var db = new NineTapDb();
+                var result = (from p in db.PlayerHistory
+                              where p.MemberNumber == currentMem.Id
+                              orderby p.TournamentDate descending
+                              select new
+                              {
+                                  p.MoneyWon
+                              }).ToArray();
+                foreach (var v in result)
+                {
+                    moneySum += v.MoneyWon;
+                }
+                currentMem.MoneyEarned = moneySum;
+
+      
+          
+         
+                
 
             }
+        }
+
+
+        private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
+        {
+         
+            List<ExcelRow> returnMe = new List<ExcelRow>();
+            List<PlayerHistory> playerhistory = PlayerHistoryDB.getAllPlayerHistory();
+        
+
+            Excel.Application xlApp = new Excel.Application();
+            Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
+            Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+            Excel.Range range = xlWorkSheet.UsedRange;
+
+            string[] PlayerFinalFirstAndMiddle = { "", "" };
+            string[] PlayersFinalLastAndMiddle = { "", "" };
+
+
+            string playerFullName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
+            string playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
+
+
+            string firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
+            string[] first0middle1 = firstAndMiddle.Split(' ');
+
+            if (playerFullName.Contains("Sr")) //catches the "sr " and sets their last name to only there last name
+            {
+                try
+                {
+                    playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(" "));
+                }
+                catch
+                {
+                    PlayerFinalFirstAndMiddle[0] = first0middle1[0];
+                }
+            }
+            else
+            {
+                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
+            }
+
+            int playerOrgAVG;
+            for (int i = 0; i < first0middle1.Length; i++)
+            {
+                PlayerFinalFirstAndMiddle[i] = first0middle1[0];
+            }
+            try
+            {
+                playerOrgAVG = Convert.ToInt32((range.Cells[1, 10] as Excel.Range).Value2);
+            }
+            catch (Exception NotAValidNumber)
+            {
+                playerOrgAVG = -1;
+            }
+
+            String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
+            String[] playerNumberAfterSplit;
+            int playerNumberAsInt = 0;
+            int.TryParse(playerNumber, out playerNumberAsInt);
+            if (playerNumberAsInt != 0)
+            {
+                playerNumberAsInt = Convert.ToInt32((range.Cells[1, 14] as Excel.Range).Value2);
+            }
+            else if (playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
+            {
+                playerNumberAfterSplit = playerNumber.Split('/');
+                playerNumberAsInt = Convert.ToInt32(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1]);
+            }
+
+
+            for (int sheetNum = 1; sheetNum <= xlWorkBook.Worksheets.Count; sheetNum++)
+            {
+
+                xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
+                range = xlWorkSheet.UsedRange;
+                for (int row = 3; row <= range.Rows.Count; row++)
+                {
+                    try
+                    {
+                        if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0
+                       && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0
+                       && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0
+                       && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
+                        {
+                            continue;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        continue;
+                    }
+                    ExcelRow temp = new ExcelRow();
+                    PlayerHistory playerH = new PlayerHistory();
+                    Game GameHistory = new Game();
+                    temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
+                    temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
+                    temp.PlayerLastName = playerLastName;
+                    temp.PlayerOrginalAVG = playerOrgAVG;
+                    temp.PlayerNumber = currentMem.Number;
+                    playerH.MemberNumber = currentMem.Number;
+
+                  
+                            try
+                            {
+                                temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
+                                playerH.GamesPlayed = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
+                                if (temp.GameTotal > 4)
+                                {
+
+                                    break;
+                                }
+                            }
+                            catch
+                            {
+                                temp.GameTotal = -1;
+                            }
+                            try
+                            {
+                                temp.Date = DateTime.FromOADate(Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2));
+                                playerH.TournamentDate = DateTime.FromOADate(Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2));
+                            }
+                            catch
+                            {
+                                temp.Date = new DateTime();
+                            }
+                            try
+                            {
+                                temp.Game1 = Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2);
+                                GameHistory.Game1 = temp.Game1;
+                                playerH.Game1 = temp.Game1;
+                            }
+                            catch
+                            {
+                                temp.Game1 = -1;
+                            }
+                            try
+                            {
+                                temp.Game2 = Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2);
+                                GameHistory.Game2 = temp.Game2;
+                                playerH.Game2 = temp.Game2;
+                            }
+                            catch
+                            {
+                                temp.Game2 = -1;
+                            }
+                            try
+                            {
+                                temp.Game3 = Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2);
+                                GameHistory.Game3 = temp.Game3;
+                                playerH.Game3 = temp.Game3;
+                            }
+                            catch
+                            {
+                                temp.Game3 = -1;
+                            }
+                            try
+                            {
+                                temp.Game4 = Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2);
+                                GameHistory.Game4 = temp.Game4;
+                                playerH.Game4 = temp.Game4;
+                            }
+                            catch
+                            {
+                                temp.Game4 = -1;
+                            }
+                            try
+                            {
+                                temp.Total = Convert.ToInt32((range.Cells[row, 7] as Excel.Range).Value2);
+                                GameHistory.TotalScore = temp.Total;
+                                playerH.TotalScore = temp.Total;
+                            }
+                            catch
+                            {
+                                temp.Total = -1;
+                            }
+                            try
+                            {
+                                temp.AverageOfRow = Convert.ToDouble((range.Cells[row, 8] as Excel.Range).Value2);
+                                playerH.AverageForGame = temp.AverageOfRow;
+                            }
+                            catch
+                            {
+                                temp.AverageOfRow = -1;
+                            }
+                            try
+                            {
+                                temp.TrueAverage = Convert.ToDouble((range.Cells[row, 9] as Excel.Range).Value2);
+                                playerH.trueAVG = temp.TrueAverage;
+                            }
+                            catch
+                            {
+                                temp.TrueAverage = -1;
+                            }
+                            try
+                            {
+                                temp.AVG = Convert.ToInt32((range.Cells[row, 10] as Excel.Range).Value2);
+                                playerH.AVG = temp.AVG;
+
+                            }
+                            catch
+                            {
+                                temp.AVG = -1;
+                            }
+                            try
+                            {
+                                temp.HandyCap = Convert.ToInt32((range.Cells[row, 11] as Excel.Range).Value2);
+                                GameHistory.Handicap = temp.HandyCap;
+                                playerH.HandiCap = temp.HandyCap;
+                            }
+                            catch
+                            {
+                                temp.Bonus = -1;
+                            }
+                            try
+                            {
+                                temp.Bonus = Convert.ToInt32((range.Cells[row, 12] as Excel.Range).Value2);
+                                GameHistory.Bonus = temp.Bonus;
+                                playerH.Bonus = temp.Bonus;
+                            }
+                            catch
+                            {
+                                temp.HandyCap = -1000;
+                            }
+                            temp.PotPro = Convert.ToString((range.Cells[row, 13] as Excel.Range).Value2);
+                            playerH.ProPot = temp.PotPro;
+                            temp.FinPPHG = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
+                            playerH.PPHG = temp.FinPPHG;
+                            try
+                            {
+                                temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
+                                GameHistory.MoneyWon = Convert.ToDecimal(temp.Cash);
+                                playerH.MoneyWon = Convert.ToDecimal(temp.Cash);
+                            }
+                            catch
+                            {
+                                temp.Cash = 0;
+                            }
+                            temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
+                            GameHistory.Notes = temp.Notes;
+                            playerH.Notes = temp.Notes;
+                            PlayerHistoryDB.AddGame(GameHistory);
+
+                            playerH.GameID = GameHistory.Id;
+                            PlayerHistoryDB.AddPlayerHistory(playerH);
+                            returnMe.Add(temp);
+                   
+
+                     
+                        }
+
+                    }
+
+          
+            xlWorkBook.Close(false);
+            xlApp.Quit();
+
+
+            Marshal.ReleaseComObject(xlWorkSheet);
+            Marshal.ReleaseComObject(xlWorkBook);
+            Marshal.ReleaseComObject(xlApp);
+
+
+
+
+            return returnMe;
         }
     }
     }

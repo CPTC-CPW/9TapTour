@@ -843,10 +843,9 @@ namespace Member_Import_Test
                             temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
                             GameHistory.Notes = temp.Notes;
                             playerH.Notes = temp.Notes;
-                            playerH.GameID = GameIdint;
-                            GameIdint++;
-                            PlayerHistoryList.Add(playerH);
                             PlayerHistoryDB.AddGame(GameHistory);
+                            playerH.GameID = GameHistory.Id;
+                            PlayerHistoryList.Add(playerH);
                             returnMe.Add(temp);
                             progressBar2.Increment(1);
                         }
