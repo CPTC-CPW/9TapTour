@@ -84,7 +84,6 @@
             this.dtvPlayerHistory.ReadOnly = true;
             this.dtvPlayerHistory.Size = new System.Drawing.Size(643, 243);
             this.dtvPlayerHistory.TabIndex = 6;
-
             // 
             // _NineTapTour_NineTapDbDataSet
             // 
@@ -119,6 +118,7 @@
             this.Controls.Add(this.lblMemberSrartAvg);
             this.Controls.Add(this.lblMemberNumber);
             this.Controls.Add(this.lblFullName);
+            this.MaximizeBox = false;
             this.Name = "PlayerHistoryForm";
             this.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Text = "Player History";

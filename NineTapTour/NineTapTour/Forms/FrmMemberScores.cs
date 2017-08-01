@@ -1109,6 +1109,7 @@ namespace NineTapTour.Forms
             // I think a bug fixer should look at this some time and try to see why it's happening
             try
             {
+                List<TopScores> listOfTopScore = new List<TopScores>();
                 // Function scope data
                 int nullValues;
                 NineTapDb db = new NineTapDb();
@@ -1121,14 +1122,30 @@ namespace NineTapTour.Forms
                 SqlConnection con = new SqlConnection(TournamentStats.GetConnection());
                 SqlCommand getList = new SqlCommand();
                 getList.Connection = con;
-                getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
+                if (QBSNumber == 0)
+                {
+                    getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
                                     FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
                                     JOIN Games ON Games.Id = Participants.Game_Id
                                     JOIN Members ON Members.Id = Participants.Member_Id 
                                     WHERE Tournaments.Id = @TID
                                     GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus
                                     ORDER BY Participants.Member_Id";
-                getList.Parameters.AddWithValue("@TID", selectedTourney);
+                    getList.Parameters.AddWithValue("@TID", selectedTourney);
+                }
+                else
+                {
+                    getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
+                                    FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
+                                    JOIN Games ON Games.Id = Participants.Game_Id
+                                    JOIN Members ON Members.Id = Participants.Member_Id 
+                                    WHERE Tournaments.Id = @TID AND Participants.SquadNumber = @SN
+                                    GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus
+                                    ORDER BY Participants.Member_Id";
+                    getList.Parameters.AddWithValue("@TID", selectedTourney);
+                    getList.Parameters.AddWithValue("@SN", QBSNumber);
+
+                }
 
                 try
                 {
@@ -1787,7 +1804,7 @@ namespace NineTapTour.Forms
                                 orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3) - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min())) descending
                                 select new MemberScores { MemberNo = g.Member.Id, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3) - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
                     }
-                    else
+                    else if(QBSNumber == 0)
                     {
                         temp = (from g in (db.Participants.Include(b => b.Member)
                                                 .Include(b => b.Game)
@@ -1795,6 +1812,15 @@ namespace NineTapTour.Forms
                                 orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4)) descending
                                 select new MemberScores { MemberNo = g.Member.Id, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
                     }
+                    else
+                    {
+                        temp = (from g in (db.Participants.Include(b => b.Member)
+                                                .Include(b => b.Game)
+                                                .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b=> b.Squad == QBSNumber))
+                                orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4)) descending
+                                select new MemberScores { MemberNo = g.Member.Id, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
+                    }
+
                     temp.Sort(scoreComparer);
                     temp.Reverse();
 
@@ -1822,54 +1848,78 @@ namespace NineTapTour.Forms
 
         private void rdoSquad1Results_CheckedChanged(object sender, EventArgs e)
         {
-            QBSNumber = 1;
-            refresh(false, QBSNumber);
+            if (cbxTourneyDropDown.Size != null)
+            {
+                QBSNumber = 1;
+                refresh(false, QBSNumber);
+            }
         }
 
         private void rdoSquad2Results_CheckedChanged(object sender, EventArgs e)
         {
-            QBSNumber = 2;
-            refresh(false, QBSNumber);
+            if (cbxTourneyDropDown.Size != null)
+            {
+                QBSNumber = 2;
+                refresh(false, QBSNumber);
+            }
         }
 
         private void rdoSquad3Results_CheckedChanged(object sender, EventArgs e)
         {
-            QBSNumber = 3;
-            refresh(false, QBSNumber);
+            if (cbxTourneyDropDown.Size != null)
+            {
+                QBSNumber = 3;
+                refresh(false, QBSNumber);
+            }
         }
 
         private void rdoSquad4Results_CheckedChanged(object sender, EventArgs e)
         {
-            QBSNumber = 4;
-            refresh(false, QBSNumber);
+            if (cbxTourneyDropDown.Size != null)
+            {
+                QBSNumber = 4;
+                refresh(false, QBSNumber);
+            }
 
         }
 
         private void rdoSquad5Results_CheckedChanged(object sender, EventArgs e)
         {
-            QBSNumber = 5;
-            refresh(false, QBSNumber);
+            if (cbxTourneyDropDown.Size != null)
+            {
+                QBSNumber = 5;
+                refresh(false, QBSNumber);
+            }
 
         }
 
         private void rdoSquad6Results_CheckedChanged(object sender, EventArgs e)
         {
 
-            QBSNumber = 6;
-            refresh(false, QBSNumber);
+            if (cbxTourneyDropDown.Size != null)
+            {
+                QBSNumber = 6;
+                refresh(false, QBSNumber);
+            }
 
         }
 
         private void rdoSquad7Results_CheckedChanged(object sender, EventArgs e)
         {
-            QBSNumber = 7;
-            refresh(false, QBSNumber);
+            if (cbxTourneyDropDown.Size != null)
+            {
+                QBSNumber = 7;
+                refresh(false, QBSNumber);
+            };
         }
 
         private void rdoSquad8Resualts_CheckedChanged(object sender, EventArgs e)
         {
-            QBSNumber = 8;
-            refresh(false, QBSNumber);
+            if (cbxTourneyDropDown.Size != null)
+            {
+                QBSNumber = 8;
+                refresh(false, QBSNumber);
+            }
 
         }
         /************************************************************************/

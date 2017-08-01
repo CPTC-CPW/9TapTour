@@ -331,5 +331,29 @@ namespace NineTapTour.Database
 
 
         }
+
+        public static int getNumberOfAllGames()
+        {
+            
+            List<Game> gamesList = new List<Game>();
+            Game current = new Game();
+            using (var db = new NineTapDb())
+            {
+                var temp = (from g in db.Games
+                            select new
+                            {
+                                g.Id
+                            });
+                foreach (var v in temp)
+                {
+                    current.Id = v.Id;
+                    gamesList.Add(current);
+                    
+                }
+                return gamesList.Count;
+            }
+        }
+
+
     }
 }

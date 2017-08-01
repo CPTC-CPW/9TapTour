@@ -115,6 +115,12 @@
     <Compile Include="Exceptions\PlayerHistoryTableException.cs" />
     <Compile Include="Exceptions\TournamentTableException.cs" />
     <Compile Include="Forms\DoubleBuffer.cs" />
+    <Compile Include="Forms\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmFinalizeTournament.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -335,6 +341,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Forms\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmFinalizeTournament.resx">
       <DependentUpon>FrmFinalizeTournament.cs</DependentUpon>
     </EmbeddedResource>
