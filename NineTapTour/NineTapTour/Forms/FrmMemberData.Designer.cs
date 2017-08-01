@@ -46,6 +46,7 @@
             this.txtAverage = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.grpMemberInfo = new System.Windows.Forms.GroupBox();
+            this.chbSocial = new System.Windows.Forms.CheckBox();
             this.dateDOB = new System.Windows.Forms.DateTimePicker();
             this.mtxtBoxZip = new System.Windows.Forms.MaskedTextBox();
             this.mtxtBoxSSN = new System.Windows.Forms.MaskedTextBox();
@@ -108,7 +109,6 @@
             this.lblPaymentInfo = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.txtTournAvg = new System.Windows.Forms.TextBox();
-            this.chbSocial = new System.Windows.Forms.CheckBox();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -195,11 +195,11 @@
             // txtMemberNumber
             // 
             this.txtMemberNumber.Font = new System.Drawing.Font("Calibri", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMemberNumber.Location = new System.Drawing.Point(38, 26);
+            this.txtMemberNumber.Location = new System.Drawing.Point(12, 26);
             this.txtMemberNumber.Multiline = true;
             this.txtMemberNumber.Name = "txtMemberNumber";
             this.txtMemberNumber.ReadOnly = true;
-            this.txtMemberNumber.Size = new System.Drawing.Size(119, 73);
+            this.txtMemberNumber.Size = new System.Drawing.Size(186, 73);
             this.txtMemberNumber.TabIndex = 0;
             this.txtMemberNumber.TabStop = false;
             this.txtMemberNumber.Text = "1";
@@ -326,6 +326,16 @@
             this.grpMemberInfo.TabIndex = 8;
             this.grpMemberInfo.TabStop = false;
             this.grpMemberInfo.Text = "Member Information";
+            // 
+            // chbSocial
+            // 
+            this.chbSocial.AutoSize = true;
+            this.chbSocial.Location = new System.Drawing.Point(323, 45);
+            this.chbSocial.Name = "chbSocial";
+            this.chbSocial.Size = new System.Drawing.Size(15, 14);
+            this.chbSocial.TabIndex = 33;
+            this.chbSocial.UseVisualStyleBackColor = true;
+            this.chbSocial.CheckedChanged += new System.EventHandler(this.chbSocial_CheckedChanged);
             // 
             // dateDOB
             // 
@@ -977,16 +987,6 @@
             this.txtTournAvg.TabIndex = 36;
             this.txtTournAvg.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // chbSocial
-            // 
-            this.chbSocial.AutoSize = true;
-            this.chbSocial.Location = new System.Drawing.Point(323, 45);
-            this.chbSocial.Name = "chbSocial";
-            this.chbSocial.Size = new System.Drawing.Size(15, 14);
-            this.chbSocial.TabIndex = 33;
-            this.chbSocial.UseVisualStyleBackColor = true;
-            this.chbSocial.CheckedChanged += new System.EventHandler(this.chbSocial_CheckedChanged);
-            // 
             // FrmMemberData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -995,7 +995,7 @@
             this.AutoScrollMinSize = new System.Drawing.Size(100, 100);
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.LightBlue;
-            this.ClientSize = new System.Drawing.Size(959, 762);
+            this.ClientSize = new System.Drawing.Size(959, 741);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.lblPaymentInfo);
             this.Controls.Add(this.lblLastPaid);

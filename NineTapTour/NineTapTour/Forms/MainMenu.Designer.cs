@@ -34,6 +34,7 @@
             this.btnAbout = new System.Windows.Forms.Button();
             this.Exit = new System.Windows.Forms.Button();
             this.btnDropDataBase = new System.Windows.Forms.Button();
+            this.btnDropDataBase1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnMemberData
@@ -62,7 +63,7 @@
             // btnAbout
             // 
             this.btnAbout.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.btnAbout.Location = new System.Drawing.Point(12, 286);
+            this.btnAbout.Location = new System.Drawing.Point(12, 246);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.Size = new System.Drawing.Size(118, 65);
             this.btnAbout.TabIndex = 0;
@@ -73,7 +74,7 @@
             // Exit
             // 
             this.Exit.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.Exit.Location = new System.Drawing.Point(12, 391);
+            this.Exit.Location = new System.Drawing.Point(12, 317);
             this.Exit.Name = "Exit";
             this.Exit.Size = new System.Drawing.Size(118, 65);
             this.Exit.TabIndex = 0;
@@ -90,7 +91,17 @@
             this.btnDropDataBase.TabIndex = 1;
             this.btnDropDataBase.Text = "Clear Database";
             this.btnDropDataBase.UseVisualStyleBackColor = true;
-            this.btnDropDataBase.Click += new System.EventHandler(this.btnDropDataBase_Click);
+            // 
+            // btnDropDataBase1
+            // 
+            this.btnDropDataBase1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
+            this.btnDropDataBase1.Location = new System.Drawing.Point(12, 399);
+            this.btnDropDataBase1.Name = "btnDropDataBase1";
+            this.btnDropDataBase1.Size = new System.Drawing.Size(118, 65);
+            this.btnDropDataBase1.TabIndex = 2;
+            this.btnDropDataBase1.Text = "Delete Data Base";
+            this.btnDropDataBase1.UseVisualStyleBackColor = true;
+            this.btnDropDataBase1.Click += new System.EventHandler(this.btnDropDataBase1_Click_1);
             // 
             // MainMenu
             // 
@@ -99,7 +110,8 @@
             this.BackColor = System.Drawing.Color.LightBlue;
             this.BackgroundImage = global::NineTapTour.Properties.Resources._9tap;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(984, 861);
+            this.ClientSize = new System.Drawing.Size(984, 741);
+            this.Controls.Add(this.btnDropDataBase1);
             this.Controls.Add(this.btnDropDataBase);
             this.Controls.Add(this.Exit);
             this.Controls.Add(this.btnAbout);
@@ -122,5 +134,6 @@
         private System.Windows.Forms.Button btnAbout;
         private System.Windows.Forms.Button Exit;
         private System.Windows.Forms.Button btnDropDataBase;
+        private System.Windows.Forms.Button btnDropDataBase1;
     }
 }

@@ -71,15 +71,16 @@ namespace NineTapTour.Forms
 #endif
         }
 
-        private void btnDropDataBase_Click(object sender, EventArgs e)
+
+        private void btnDropDataBase1_Click_1(object sender, EventArgs e)
         {
-            if(MessageBox.Show("This button will delete all data stored in the database, are you sure you want to clear  data?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (MessageBox.Show("This button will delete all data stored in the database, are you sure you want to clear  data?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 System.Data.Entity.Database.Delete("name=NineTapDbConnection");
                 MessageBox.Show("Data Cleared!,restart to continue.");
                 this.Close();
                 FrmMain m = new FrmMain();
-                m.Close();     
+                m.Close();
 
             }
         }

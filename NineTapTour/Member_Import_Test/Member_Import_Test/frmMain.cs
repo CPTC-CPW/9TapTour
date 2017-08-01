@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Office.Core;
 using Excel = Microsoft.Office.Interop.Excel;
 using NineTapTour.Database;
 using System.Text.RegularExpressions;
@@ -149,7 +150,14 @@ namespace Member_Import_Test
                                 case 1://Date Joined
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
-                                        newMem.JoinDate = Convert.ToDateTime(File.Substring(currentIndex, Spaces[i]).Trim());
+                                        try
+                                        {
+                                            newMem.JoinDate = Convert.ToDateTime(File.Substring(currentIndex, Spaces[i]).Trim());
+                                        }
+                                        catch
+                                        {
+                                            newMem.JoinDate = DateTime.Today;
+                                        }
                                     }
                                     break;
                                 case 2://Last Name
@@ -339,7 +347,14 @@ namespace Member_Import_Test
                                 case 20://Rejoin Date
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
-                                        newMem.RejoinDate = Convert.ToDateTime((File.Substring(currentIndex, Spaces[i]).Trim()));
+                                        try
+                                        {
+                                            newMem.RejoinDate = Convert.ToDateTime((File.Substring(currentIndex, Spaces[i]).Trim()));
+                                        }
+                                        catch
+                                        {
+                                            newMem.RejoinDate = null;
+                                        }
                                     }
                                     break;
                                 case 21://Referrals
@@ -355,7 +370,8 @@ namespace Member_Import_Test
                                         }
                                         else
                                         {
-                                            newMem.Referrals = Convert.ToInt16(File.Substring(currentIndex, Spaces[i]).Trim());
+
+                                            //newMem.Referrals = Convert.ToInt16(File.Substring(currentIndex, Spaces[i]).Trim());
                                             //validMember = false;
                                         }
 
