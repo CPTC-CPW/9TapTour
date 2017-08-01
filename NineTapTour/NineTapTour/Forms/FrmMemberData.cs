@@ -1357,6 +1357,11 @@ namespace NineTapTour.Forms
 
             return returnMe;
         }
+
+        private void chbSocial_CheckedChanged(object sender, EventArgs e)
+        {
+          mtxtBoxSSN.PasswordChar = chbSocial.Checked ? '\0' : '*';
+        }
     }
     }
 

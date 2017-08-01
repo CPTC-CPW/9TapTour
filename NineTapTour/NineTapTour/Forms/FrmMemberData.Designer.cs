@@ -76,6 +76,7 @@
             this.lblMoneyEarned = new System.Windows.Forms.Label();
             this.lblLastBowled = new System.Windows.Forms.Label();
             this.groupRecord = new System.Windows.Forms.GroupBox();
+            this.btnImportData = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
@@ -107,7 +108,7 @@
             this.lblPaymentInfo = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.txtTournAvg = new System.Windows.Forms.TextBox();
-            this.btnImportData = new System.Windows.Forms.Button();
+            this.chbSocial = new System.Windows.Forms.CheckBox();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -293,6 +294,7 @@
             // 
             // grpMemberInfo
             // 
+            this.grpMemberInfo.Controls.Add(this.chbSocial);
             this.grpMemberInfo.Controls.Add(this.dateDOB);
             this.grpMemberInfo.Controls.Add(this.mtxtBoxZip);
             this.grpMemberInfo.Controls.Add(this.mtxtBoxSSN);
@@ -605,6 +607,18 @@
             this.groupRecord.TabIndex = 60;
             this.groupRecord.TabStop = false;
             this.groupRecord.Text = "Record";
+            // 
+            // btnImportData
+            // 
+            this.btnImportData.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnImportData.Location = new System.Drawing.Point(17, 97);
+            this.btnImportData.Name = "btnImportData";
+            this.btnImportData.Size = new System.Drawing.Size(75, 23);
+            this.btnImportData.TabIndex = 64;
+            this.btnImportData.TabStop = false;
+            this.btnImportData.Text = "Import";
+            this.btnImportData.UseVisualStyleBackColor = true;
+            this.btnImportData.Click += new System.EventHandler(this.btnImportData_Click);
             // 
             // btnSave
             // 
@@ -963,17 +977,15 @@
             this.txtTournAvg.TabIndex = 36;
             this.txtTournAvg.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // btnImportData
+            // chbSocial
             // 
-            this.btnImportData.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnImportData.Location = new System.Drawing.Point(17, 97);
-            this.btnImportData.Name = "btnImportData";
-            this.btnImportData.Size = new System.Drawing.Size(75, 23);
-            this.btnImportData.TabIndex = 64;
-            this.btnImportData.TabStop = false;
-            this.btnImportData.Text = "Import";
-            this.btnImportData.UseVisualStyleBackColor = true;
-            this.btnImportData.Click += new System.EventHandler(this.btnImportData_Click);
+            this.chbSocial.AutoSize = true;
+            this.chbSocial.Location = new System.Drawing.Point(323, 45);
+            this.chbSocial.Name = "chbSocial";
+            this.chbSocial.Size = new System.Drawing.Size(15, 14);
+            this.chbSocial.TabIndex = 33;
+            this.chbSocial.UseVisualStyleBackColor = true;
+            this.chbSocial.CheckedChanged += new System.EventHandler(this.chbSocial_CheckedChanged);
             // 
             // FrmMemberData
             // 
@@ -1127,5 +1139,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnImportData;
         private System.Windows.Forms.OpenFileDialog ofdOpen;
+        private System.Windows.Forms.CheckBox chbSocial;
     }
 }
