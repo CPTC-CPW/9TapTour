@@ -1060,7 +1060,8 @@ namespace NineTapTour.Forms
                 string fileName = ofdOpen.FileName;
                 while (wait)
                 {
-                    
+                    frmPleaseWait please = new frmPleaseWait();
+                    please.Show();
                     if (AlreadyImportedPH.Count > 0)
                     {
                         for(int delete = 0; delete < AlreadyImportedPH.Count; delete++)
@@ -1075,6 +1076,7 @@ namespace NineTapTour.Forms
                     rows = ProcessExcelFile(fileName);
                     
                     wait = false;
+                    please.Close();
                 }
                 foreach(var r in rows)
                 {

@@ -15,7 +15,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 using NineTapTour.Database;
 using System.Text.RegularExpressions;
 using System.Globalization;
-
+using NineTapTour.Forms;
 namespace Member_Import_Test
 {
     public partial class frmMain : Form
@@ -1207,12 +1207,16 @@ namespace Member_Import_Test
                 }
             }
 
+            frmPleaseWait please = new frmPleaseWait();
+            please.Show();
             updateMembers(validMembers);
             updatePlayerHistory(PlayerHistoryList);
+            please.Close();
        
 
             MessageBox.Show($"{validMembers.Count} members have been imported and all their bowling history has been added to the database");
-           
+
+            this.Close();
         }
 
         private void updatePlayerHistory(List<PlayerHistory> playerHistory)
