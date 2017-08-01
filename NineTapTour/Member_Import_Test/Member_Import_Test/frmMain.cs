@@ -306,7 +306,8 @@ namespace Member_Import_Test
                                 case 14://Average
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
-                                        newMem.Average = Convert.ToInt32((File.Substring(currentIndex, Spaces[i]).Trim()));
+                                        newMem.StartAvg = Convert.ToInt32((File.Substring(currentIndex, Spaces[i]).Trim()));
+                                        newMem.Average = newMem.StartAvg;
                                     }
                                     break;
                                 case 15://Handicap

@@ -215,7 +215,14 @@ namespace NineTapTour.Forms
                 updates the form's handicap even when the finalize tournament button is clicked
                 -also updates the currentMem's handicap, so when the tournamnent gets it, it is the right handicap
                 *********************************************************************************/
-                currentMem.Handicap = db.Members.First(x => x.Id == currentMem.Id).Handicap;
+                try
+                {
+                    currentMem.Handicap = Calculations.Calculations.CalculateHandicapPins((currentMem.StartAvg.Value));
+                }
+                catch
+                {
+                    currentMem.Handicap = Calculations.Calculations.CalculateHandicapPins((0));
+                }
                 txtHandicap.Text = currentMem.Handicap.ToString(); 
                 /********************************************************************************/
                 txtBonus.Text = currentMem.Bonus.ToString();
@@ -297,7 +304,16 @@ namespace NineTapTour.Forms
                     datePaid.CustomFormat = @" ";
                     lblPaymentInfo.Visible = false;
                 }
+                
+
+              
+
                 MemberDb.AddMember(currentMem);
+
+                txtTournAvg.Text = currentMem.Average.ToString();
+                txtHandicap.Text = currentMem.Handicap.ToString();
+
+
                 
             }
         }
@@ -1068,6 +1084,9 @@ namespace NineTapTour.Forms
                 currentMem.Average = Convert.ToInt32(LeagueAvgFromPlayerHistory(currentMem));
                 currentMem.StartAvg = CurrentExcelData[0].PlayerOrginalAVG;
                 txtAverage.Text = currentMem.StartAvg.ToString();
+                txtTournAvg.Text = currentMem.Average.ToString();
+                txtHandicap.Text = Calculations.Calculations.CalculateHandicapPins((currentMem.StartAvg.Value)).ToString() ;
+
 
                 decimal moneySum = 0;
                 var db = new NineTapDb();
@@ -1084,10 +1103,14 @@ namespace NineTapTour.Forms
                 }
                 currentMem.MoneyEarned = moneySum;
 
-      
-          
-         
-                
+                txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
+
+                MemberDb.AddMember(currentMem);
+
+
+
+
+
 
             }
         }
