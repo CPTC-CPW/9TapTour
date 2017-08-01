@@ -520,7 +520,7 @@ namespace NineTapTour.Forms
             temp.Average = (txtTournAvg.Text == string.Empty) ? 0 : Convert.ToInt16(avg);
             /*************************************************************************************/
             temp.StartAvg = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text);
-            temp.Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text);
+            temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.Average.Value));
             temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
            
             #endregion
@@ -1085,7 +1085,7 @@ namespace NineTapTour.Forms
                 currentMem.StartAvg = CurrentExcelData[0].PlayerOrginalAVG;
                 txtAverage.Text = currentMem.StartAvg.ToString();
                 txtTournAvg.Text = currentMem.Average.ToString();
-                txtHandicap.Text = Calculations.Calculations.CalculateHandicapPins((currentMem.StartAvg.Value)).ToString() ;
+                txtHandicap.Text = Calculations.Calculations.CalculateHandicapPins((currentMem.Average.Value)).ToString() ;
 
 
                 decimal moneySum = 0;

@@ -29,11 +29,12 @@ namespace NineTapTour.Database
                     *********************************************************************************************/
                     if (temp.Average == 0)
                     {
-                        temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.StartAvg.Value));
+                        temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.Average.Value));
                     }
                     /********************************************************************************************/
                     if (db.Entry(temp).State == EntityState.Modified)
                     {
+                        temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.Average.Value));
                         //MessageBox.Show("Player Updated");
                     }
                     else
