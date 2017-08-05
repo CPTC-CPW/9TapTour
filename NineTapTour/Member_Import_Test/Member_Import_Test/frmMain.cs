@@ -720,8 +720,8 @@ namespace Member_Import_Test
 
                     for (int validmember = 0; validmember < validMembers.Count; validmember++)
                     {
-                        if (validMembers[validmember].FirstName == temp.PlayerFirstName && validMembers[validmember].LastName == temp.PlayerLastName)
-                        {//only process file if they have been added as a member first
+                        if (validMembers[validmember].Number == temp.PlayerNumber && validMembers[validmember].IsActive == true)
+                        {//only process file if they have been added as a member first and are active
                             try
                             {
                                 temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
