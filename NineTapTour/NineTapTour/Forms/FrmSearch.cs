@@ -29,6 +29,148 @@ namespace NineTapTour.Forms
         private void FrmSearch_Load(object sender, EventArgs e)
         {
             FillGrid();
+            dtagrdResults.DataSource = null;
+
+            List<Member> memList = new List<Member>();
+
+            using (NineTapDb db = new NineTapDb())
+            {
+                var query = from m in db.Members
+                                //orderby m.Id descending
+                            select m;
+
+                // Member Number?
+                if (!String.IsNullOrWhiteSpace(txtMemNumber.Text))
+                {
+                    int temp = 0;
+                    Int32.TryParse(txtMemNumber.Text, out temp);
+                    query = query.Where(m => m.Number.Equals(temp));
+                }
+                // First Name?
+                if (!String.IsNullOrWhiteSpace(txtFirstName.Text))
+                {
+                    string temp = txtFirstName.Text.ToLower().Trim();
+                    query = query.Where(m => m.FirstName.ToLower().Contains(temp));
+                }
+                // Last Name?
+                if (!String.IsNullOrWhiteSpace(txtLastName.Text))
+                {
+                    string temp = txtLastName.Text.ToLower().Trim();
+                    query = query.Where(m => m.LastName.ToLower().Contains(temp));
+                }
+                // Is Active?
+                if (rdoActiveYes.Checked)
+                {
+                    query = query.Where(m => m.IsActive.Equals(true));
+                }
+                else if (rdoActiveNo.Checked)
+                {
+                    query = query.Where(m => m.IsActive.Equals(false));
+                }
+                // Average?
+                if (!String.IsNullOrWhiteSpace(txtAverage.Text))
+                {
+                    int temp = 0;
+                    Int32.TryParse(txtAverage.Text, out temp);
+                    query = query.Where(m => m.Average == temp);
+                }
+                // Handicap?
+                if (!String.IsNullOrWhiteSpace(txtHandicap.Text))
+                {
+                    int temp = 0;
+                    Int32.TryParse(txtHandicap.Text, out temp);
+                    query = query.Where(m => m.Handicap == temp);
+                }
+                // Bonus?
+                if (!String.IsNullOrWhiteSpace(txtBonus.Text))
+                {
+                    int temp = 0;
+                    Int32.TryParse(txtBonus.Text, out temp);
+                    query = query.Where(m => m.Bonus == temp);
+                }
+                query = query.OrderBy(m => m.Number);
+
+                Console.WriteLine(query.ToString());
+
+                var results = query.Select(m => new
+                {
+                    Number = m.Number,
+                    FirstName = m.FirstName,
+                    LastName = m.LastName,
+                    IsActive = m.IsActive,
+                    MiddleInitial = m.MiddleInitial,
+                    DateOfBirth = m.DateOfBirth,
+                    Gender = m.Gender,
+                    Street = m.Street,
+                    City = m.City,
+                    State = m.State,
+                    PostalCode = m.PostalCode,
+                    Email = m.Email,
+                    PrimaryPhone = m.PrimaryPhone,
+                    SecondaryPhone = m.SecondaryPhone,
+                    Average = m.Average,
+                    startAVG = m.StartAvg,
+                    Handicap = m.Handicap,
+                    Bonus = m.Bonus,
+                    JoinDate = m.JoinDate,
+                    RejoinDate = m.RejoinDate,
+                    LastBowled = m.LastBowled,
+                    LastPayment = m.LastPayment,
+                    IsLifetimeMember = m.IsLifetimeMember,
+                    MoneyEarned = m.MoneyEarned,
+                    Notes = m.Notes,
+                    Referrals = m.Referrals,
+                    IsSenior = m.IsSenior
+                }).ToList();
+
+                memList = results.Select(m => new Member
+                {
+                    Number = m.Number,
+                    FirstName = m.FirstName,
+                    LastName = m.LastName,
+                    IsActive = m.IsActive,
+                    MiddleInitial = m.MiddleInitial,
+                    DateOfBirth = m.DateOfBirth,
+                    Gender = m.Gender,
+                    Street = m.Street,
+                    City = m.City,
+                    State = m.State,
+                    PostalCode = m.PostalCode,
+                    Email = m.Email,
+                    PrimaryPhone = m.PrimaryPhone,
+                    SecondaryPhone = m.SecondaryPhone,
+                    Average = m.Average,
+                    StartAvg = m.startAVG,
+                    Handicap = m.Handicap,
+                    Bonus = m.Bonus,
+                    JoinDate = m.JoinDate,
+                    RejoinDate = m.RejoinDate,
+                    LastBowled = m.LastBowled,
+                    LastPayment = m.LastPayment,
+                    IsLifetimeMember = m.IsLifetimeMember,
+                    MoneyEarned = m.MoneyEarned,
+                    Notes = m.Notes,
+                    Referrals = m.Referrals,
+                    IsSenior = m.IsSenior
+                }).ToList();
+
+                foreach (Member m in memList)
+                {
+                    Console.WriteLine(m.Id);
+                }
+            }
+
+            if (memList.Count > 0)
+            {
+                dtagrdResults.DataSource = memList;
+
+                AdvancedViewCheck();
+            }
+            else
+            {
+                EmptyGrid();
+            }
+
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -112,6 +254,7 @@ namespace NineTapTour.Forms
                     Email = m.Email,
                     PrimaryPhone = m.PrimaryPhone,
                     SecondaryPhone = m.SecondaryPhone,
+                    StartAVG = m.StartAvg,       
                     Average = m.Average,
                     Handicap = m.Handicap,
                     Bonus = m.Bonus,
@@ -143,6 +286,7 @@ namespace NineTapTour.Forms
                     PrimaryPhone = m.PrimaryPhone,
                     SecondaryPhone = m.SecondaryPhone,
                     Average = m.Average,
+                    StartAvg = m.StartAVG,
                     Handicap = m.Handicap,
                     Bonus = m.Bonus,
                     JoinDate = m.JoinDate,
@@ -285,5 +429,7 @@ namespace NineTapTour.Forms
         {
             this.Close();
         }
+
+
     }
 }

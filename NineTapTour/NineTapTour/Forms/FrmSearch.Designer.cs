@@ -57,29 +57,26 @@
             // lblMemNumber
             // 
             this.lblMemNumber.AutoSize = true;
-            this.lblMemNumber.Location = new System.Drawing.Point(16, 38);
-            this.lblMemNumber.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblMemNumber.Location = new System.Drawing.Point(12, 31);
             this.lblMemNumber.Name = "lblMemNumber";
-            this.lblMemNumber.Size = new System.Drawing.Size(66, 17);
+            this.lblMemNumber.Size = new System.Drawing.Size(50, 13);
             this.lblMemNumber.TabIndex = 0;
             this.lblMemNumber.Text = "Number: ";
             // 
             // txtMemNumber
             // 
-            this.txtMemNumber.Location = new System.Drawing.Point(90, 35);
-            this.txtMemNumber.Margin = new System.Windows.Forms.Padding(4);
+            this.txtMemNumber.Location = new System.Drawing.Point(68, 28);
             this.txtMemNumber.MaxLength = 5;
             this.txtMemNumber.Name = "txtMemNumber";
-            this.txtMemNumber.Size = new System.Drawing.Size(68, 22);
+            this.txtMemNumber.Size = new System.Drawing.Size(52, 20);
             this.txtMemNumber.TabIndex = 1;
             // 
             // btnSearch
             // 
             this.btnSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSearch.Location = new System.Drawing.Point(869, 162);
-            this.btnSearch.Margin = new System.Windows.Forms.Padding(4);
+            this.btnSearch.Location = new System.Drawing.Point(652, 132);
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(100, 28);
+            this.btnSearch.Size = new System.Drawing.Size(75, 23);
             this.btnSearch.TabIndex = 8;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
@@ -89,10 +86,9 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(835, 513);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4);
+            this.btnCancel.Location = new System.Drawing.Point(626, 417);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(100, 28);
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 12;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -108,13 +104,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dtagrdResults.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dtagrdResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dtagrdResults.Location = new System.Drawing.Point(12, 197);
+            this.dtagrdResults.Location = new System.Drawing.Point(9, 160);
+            this.dtagrdResults.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dtagrdResults.MultiSelect = false;
             this.dtagrdResults.Name = "dtagrdResults";
             this.dtagrdResults.ReadOnly = true;
             this.dtagrdResults.RowTemplate.Height = 24;
             this.dtagrdResults.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dtagrdResults.Size = new System.Drawing.Size(958, 293);
+            this.dtagrdResults.Size = new System.Drawing.Size(718, 238);
             this.dtagrdResults.TabIndex = 5;
             this.dtagrdResults.TabStop = false;
             this.dtagrdResults.DoubleClick += new System.EventHandler(this.btnSelect_Click);
@@ -122,45 +119,42 @@
             // lblFirstName
             // 
             this.lblFirstName.AutoSize = true;
-            this.lblFirstName.Location = new System.Drawing.Point(203, 38);
-            this.lblFirstName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblFirstName.Location = new System.Drawing.Point(152, 31);
             this.lblFirstName.Name = "lblFirstName";
-            this.lblFirstName.Size = new System.Drawing.Size(80, 17);
+            this.lblFirstName.Size = new System.Drawing.Size(60, 13);
             this.lblFirstName.TabIndex = 6;
             this.lblFirstName.Text = "First Name:";
             // 
             // lblLastName
             // 
             this.lblLastName.AutoSize = true;
-            this.lblLastName.Location = new System.Drawing.Point(544, 38);
-            this.lblLastName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblLastName.Location = new System.Drawing.Point(408, 31);
             this.lblLastName.Name = "lblLastName";
-            this.lblLastName.Size = new System.Drawing.Size(80, 17);
+            this.lblLastName.Size = new System.Drawing.Size(61, 13);
             this.lblLastName.TabIndex = 7;
             this.lblLastName.Text = "Last Name:";
             // 
             // txtFirstName
             // 
-            this.txtFirstName.Location = new System.Drawing.Point(291, 35);
-            this.txtFirstName.Margin = new System.Windows.Forms.Padding(4);
+            this.txtFirstName.Location = new System.Drawing.Point(218, 28);
             this.txtFirstName.Name = "txtFirstName";
-            this.txtFirstName.Size = new System.Drawing.Size(213, 22);
+            this.txtFirstName.Size = new System.Drawing.Size(161, 20);
             this.txtFirstName.TabIndex = 2;
             // 
             // txtLastName
             // 
-            this.txtLastName.Location = new System.Drawing.Point(632, 35);
-            this.txtLastName.Margin = new System.Windows.Forms.Padding(4);
+            this.txtLastName.Location = new System.Drawing.Point(474, 28);
             this.txtLastName.Name = "txtLastName";
-            this.txtLastName.Size = new System.Drawing.Size(213, 22);
+            this.txtLastName.Size = new System.Drawing.Size(161, 20);
             this.txtLastName.TabIndex = 3;
             // 
             // btnSelect
             // 
             this.btnSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSelect.Location = new System.Drawing.Point(708, 513);
+            this.btnSelect.Location = new System.Drawing.Point(531, 417);
+            this.btnSelect.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnSelect.Name = "btnSelect";
-            this.btnSelect.Size = new System.Drawing.Size(100, 28);
+            this.btnSelect.Size = new System.Drawing.Size(75, 23);
             this.btnSelect.TabIndex = 11;
             this.btnSelect.Text = "Select";
             this.btnSelect.UseVisualStyleBackColor = true;
@@ -170,9 +164,10 @@
             // 
             this.chkAdvancedView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkAdvancedView.AutoSize = true;
-            this.chkAdvancedView.Location = new System.Drawing.Point(32, 517);
+            this.chkAdvancedView.Location = new System.Drawing.Point(24, 420);
+            this.chkAdvancedView.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.chkAdvancedView.Name = "chkAdvancedView";
-            this.chkAdvancedView.Size = new System.Drawing.Size(126, 21);
+            this.chkAdvancedView.Size = new System.Drawing.Size(101, 17);
             this.chkAdvancedView.TabIndex = 9;
             this.chkAdvancedView.Text = "Advanced View";
             this.chkAdvancedView.UseVisualStyleBackColor = true;
@@ -181,63 +176,68 @@
             // lblAverage
             // 
             this.lblAverage.AutoSize = true;
-            this.lblAverage.Location = new System.Drawing.Point(16, 145);
+            this.lblAverage.Location = new System.Drawing.Point(12, 118);
+            this.lblAverage.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblAverage.Name = "lblAverage";
-            this.lblAverage.Size = new System.Drawing.Size(65, 17);
+            this.lblAverage.Size = new System.Drawing.Size(50, 13);
             this.lblAverage.TabIndex = 12;
             this.lblAverage.Text = "Average:";
             // 
             // txtAverage
             // 
-            this.txtAverage.Location = new System.Drawing.Point(97, 142);
+            this.txtAverage.Location = new System.Drawing.Point(73, 115);
+            this.txtAverage.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.txtAverage.MaxLength = 10;
             this.txtAverage.Name = "txtAverage";
-            this.txtAverage.Size = new System.Drawing.Size(80, 22);
+            this.txtAverage.Size = new System.Drawing.Size(61, 20);
             this.txtAverage.TabIndex = 5;
             // 
             // lblHandicap
             // 
             this.lblHandicap.AutoSize = true;
-            this.lblHandicap.Location = new System.Drawing.Point(288, 145);
+            this.lblHandicap.Location = new System.Drawing.Point(216, 118);
+            this.lblHandicap.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblHandicap.Name = "lblHandicap";
-            this.lblHandicap.Size = new System.Drawing.Size(72, 17);
+            this.lblHandicap.Size = new System.Drawing.Size(56, 13);
             this.lblHandicap.TabIndex = 15;
             this.lblHandicap.Text = "Handicap:";
             // 
             // lblBonus
             // 
             this.lblBonus.AutoSize = true;
-            this.lblBonus.Location = new System.Drawing.Point(562, 145);
+            this.lblBonus.Location = new System.Drawing.Point(422, 118);
+            this.lblBonus.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblBonus.Name = "lblBonus";
-            this.lblBonus.Size = new System.Drawing.Size(52, 17);
+            this.lblBonus.Size = new System.Drawing.Size(40, 13);
             this.lblBonus.TabIndex = 16;
             this.lblBonus.Text = "Bonus:";
             // 
             // txtHandicap
             // 
-            this.txtHandicap.Location = new System.Drawing.Point(366, 142);
+            this.txtHandicap.Location = new System.Drawing.Point(274, 115);
+            this.txtHandicap.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.txtHandicap.MaxLength = 10;
             this.txtHandicap.Name = "txtHandicap";
-            this.txtHandicap.Size = new System.Drawing.Size(80, 22);
+            this.txtHandicap.Size = new System.Drawing.Size(61, 20);
             this.txtHandicap.TabIndex = 6;
             // 
             // txtBonus
             // 
-            this.txtBonus.Location = new System.Drawing.Point(620, 142);
+            this.txtBonus.Location = new System.Drawing.Point(465, 115);
+            this.txtBonus.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.txtBonus.MaxLength = 10;
             this.txtBonus.Name = "txtBonus";
-            this.txtBonus.Size = new System.Drawing.Size(80, 22);
+            this.txtBonus.Size = new System.Drawing.Size(61, 20);
             this.txtBonus.TabIndex = 7;
             // 
             // rdoActiveEither
             // 
             this.rdoActiveEither.AutoSize = true;
-            this.rdoActiveEither.Checked = true;
-            this.rdoActiveEither.Location = new System.Drawing.Point(6, 22);
+            this.rdoActiveEither.Location = new System.Drawing.Point(4, 18);
+            this.rdoActiveEither.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.rdoActiveEither.Name = "rdoActiveEither";
-            this.rdoActiveEither.Size = new System.Drawing.Size(66, 21);
+            this.rdoActiveEither.Size = new System.Drawing.Size(52, 17);
             this.rdoActiveEither.TabIndex = 19;
-            this.rdoActiveEither.TabStop = true;
             this.rdoActiveEither.Text = "Either";
             this.rdoActiveEither.UseVisualStyleBackColor = true;
             // 
@@ -246,9 +246,11 @@
             this.grpIsActive.Controls.Add(this.rdoActiveNo);
             this.grpIsActive.Controls.Add(this.rdoActiveEither);
             this.grpIsActive.Controls.Add(this.rdoActiveYes);
-            this.grpIsActive.Location = new System.Drawing.Point(19, 75);
+            this.grpIsActive.Location = new System.Drawing.Point(14, 61);
+            this.grpIsActive.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.grpIsActive.Name = "grpIsActive";
-            this.grpIsActive.Size = new System.Drawing.Size(196, 50);
+            this.grpIsActive.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.grpIsActive.Size = new System.Drawing.Size(147, 41);
             this.grpIsActive.TabIndex = 4;
             this.grpIsActive.TabStop = false;
             this.grpIsActive.Text = "Is Active?";
@@ -256,20 +258,22 @@
             // rdoActiveNo
             // 
             this.rdoActiveNo.AutoSize = true;
-            this.rdoActiveNo.Location = new System.Drawing.Point(137, 22);
+            this.rdoActiveNo.Location = new System.Drawing.Point(103, 18);
+            this.rdoActiveNo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.rdoActiveNo.Name = "rdoActiveNo";
-            this.rdoActiveNo.Size = new System.Drawing.Size(47, 21);
+            this.rdoActiveNo.Size = new System.Drawing.Size(39, 17);
             this.rdoActiveNo.TabIndex = 22;
-            this.rdoActiveNo.TabStop = true;
             this.rdoActiveNo.Text = "No";
             this.rdoActiveNo.UseVisualStyleBackColor = true;
             // 
             // rdoActiveYes
             // 
             this.rdoActiveYes.AutoSize = true;
-            this.rdoActiveYes.Location = new System.Drawing.Point(78, 22);
+            this.rdoActiveYes.Checked = true;
+            this.rdoActiveYes.Location = new System.Drawing.Point(58, 18);
+            this.rdoActiveYes.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.rdoActiveYes.Name = "rdoActiveYes";
-            this.rdoActiveYes.Size = new System.Drawing.Size(53, 21);
+            this.rdoActiveYes.Size = new System.Drawing.Size(43, 17);
             this.rdoActiveYes.TabIndex = 21;
             this.rdoActiveYes.TabStop = true;
             this.rdoActiveYes.Text = "Yes";
@@ -278,9 +282,10 @@
             // btnClear
             // 
             this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClear.Location = new System.Drawing.Point(583, 513);
+            this.btnClear.Location = new System.Drawing.Point(437, 417);
+            this.btnClear.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(100, 28);
+            this.btnClear.Size = new System.Drawing.Size(75, 23);
             this.btnClear.TabIndex = 10;
             this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = true;
@@ -289,10 +294,10 @@
             // FrmSearch
             // 
             this.AcceptButton = this.btnSearch;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(982, 553);
+            this.ClientSize = new System.Drawing.Size(736, 449);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.grpIsActive);
             this.Controls.Add(this.txtBonus);
@@ -312,8 +317,7 @@
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.txtMemNumber);
             this.Controls.Add(this.lblMemNumber);
-            this.Margin = new System.Windows.Forms.Padding(4);
-            this.MinimumSize = new System.Drawing.Size(900, 400);
+            this.MinimumSize = new System.Drawing.Size(679, 332);
             this.Name = "FrmSearch";
             this.Text = "Search Members";
             this.Load += new System.EventHandler(this.FrmSearch_Load);

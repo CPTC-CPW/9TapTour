@@ -210,6 +210,7 @@ namespace NineTapTour.Forms
 
                 txtAverage.Text = currentMem.StartAvg.ToString();
                 double leagueavg = LeagueAvgFromPlayerHistory(currentMem);
+                currentMem.Average =Convert.ToInt32(leagueavg);
                 txtTournAvg.Text = Convert.ToInt32(leagueavg).ToString();
 
                 /********************************************************************************
@@ -311,6 +312,7 @@ namespace NineTapTour.Forms
 
                 MemberDb.AddMember(currentMem);
 
+                txtAverage.Text = currentMem.StartAvg.ToString();
                 txtTournAvg.Text = currentMem.Average.ToString();
                 txtHandicap.Text = currentMem.Handicap.ToString();
 
@@ -764,7 +766,7 @@ namespace NineTapTour.Forms
 
         private void btnStats_Click(object sender, EventArgs e)
         {
-            PlayerHistoryForm p = new PlayerHistoryForm(_memberNum);
+            FrmStats p = new FrmStats(currentMem.Number, currentMem.FirstName + currentMem.LastName + currentMem.MiddleInitial, currentMem);
             p.ShowDialog();
         }
 
@@ -1023,7 +1025,7 @@ namespace NineTapTour.Forms
             var db = new NineTapDb();
             var temp = (from p in db.PlayerHistory
                         where p.MemberNumber == mem.Number
-                        orderby p.hisID, p.TournamentDate descending
+                        orderby p.TournamentDate descending, p.hisID descending
                         select new
                         {
                             p.TournamentDate,

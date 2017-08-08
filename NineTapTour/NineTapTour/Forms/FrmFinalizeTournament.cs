@@ -876,7 +876,7 @@ namespace NineTapTour.Forms
                             }).ToList();
 
 
-                PlayerHistoryForm playerhistory = new PlayerHistoryForm(memId);
+                FrmStats playerhistory = new FrmStats(memId,"",MemberDb.GetMember(memId));
                 playerhistory.ShowDialog();
             }
 
@@ -970,11 +970,12 @@ namespace NineTapTour.Forms
                 ph.Notes = g.Notes;
                 currentindex++;
                 PlayerHistoryDB.AddPlayerHistory2(ph);
+               
 
             }
-
+            this.Close();
         }
-
+      
         /***/
 
     }

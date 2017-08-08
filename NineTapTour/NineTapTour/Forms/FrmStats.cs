@@ -237,67 +237,77 @@ namespace NineTapTour.Forms
 
         public DataTable tableview()
         {
-
+           
             DataTable dtGames = new DataTable();
             var db = new NineTapDb();
-            var temp = (from p in db.Participants
-                        join m in db.Members on p.Member.Id equals m.Id
-                        join g in db.Games on p.Game.Id equals g.Id
-                        join t in db.Tournaments on p.Tournament.Id equals t.Id
-                        where memNum == p.Member.Number
-                        orderby t.Date descending
+            var temp = (from p in db.PlayerHistory
+                        where memNum == p.MemberNumber
+                        orderby p.TournamentDate descending, p.hisID descending
                         select new
                         {
-                            t.Date,
-                            t.Location,
-                            p.Squad,
-                            g.Game1,
-                            g.Game2,
-                            g.Game3,
-                            g.Game4,
-                            ScratchTotal = g.Game1 + g.Game2 + g.Game3 + g.Game4,                            
-                            TotalScore = (g.Game1 + g.Bonus + g.Handicap) + (g.Game2 + g.Bonus + g.Handicap) + (g.Game3 + g.Bonus + g.Handicap) + (g.Game4 + g.Bonus + g.Handicap),
-                            AvgPerGame = (g.Game1 + g.Game2 + g.Game3 + g.Game4)/4,
-                            g.Handicap,
-                            g.Bonus,
-                            g.MoneyWon,
-                            g.PlaceStanding
+                            p.GamesPlayed,
+                            p.TournamentDate,
+                            p.Game1,
+                            p.Game2,
+                            p.Game3,
+                            p.Game4,
+                            ScratchTotal = p.Game1 + p.Game2 + p.Game3 + p.Game4,
+                            TotalScore = (p.Game1 + p.Bonus + p.HandiCap) + (p.Game2 + p.Bonus + p.HandiCap) + (p.Game3 + p.Bonus + p.HandiCap) + (p.Game4 + p.Bonus + p.HandiCap),
+                            p.HandiCap,
+                            p.Bonus,
+                            p.ProPot,
+                            p.MoneyWon,
+                            p.PPHG,
+                            p.Notes
                         });
+            dtGames.Columns.Add("Games Played");
             dtGames.Columns.Add("Date");
-            dtGames.Columns.Add("Location");
-            dtGames.Columns.Add("Squad");
             dtGames.Columns.Add("Game1");
             //dtGames.Columns.Add(new DataColumn("Selected", typeof(bool)));
             dtGames.Columns.Add("Game2");
             dtGames.Columns.Add("Game3");
             dtGames.Columns.Add("Game4");
             dtGames.Columns.Add("Scratch Total");
-            dtGames.Columns.Add("Game Total");
             dtGames.Columns.Add("Average Per Game");
+            dtGames.Columns.Add("Game Total");
             dtGames.Columns.Add("Handicap");
             dtGames.Columns.Add("Bonus");
-            dtGames.Columns.Add("Money Won");
+            dtGames.Columns.Add("Pro Pot");
             dtGames.Columns.Add("Place");
+            dtGames.Columns.Add("Money Won");
+            dtGames.Columns.Add("Notes");
 
             foreach (var item in temp)
             {
+                
                 DataRow newRow = dtGames.NewRow();
-                newRow["Date"] = item.Date;
-                newRow["Location"] = item.Location;
-                newRow["Squad"] = item.Squad;
-                newRow["Game1"] = item.Game1;
-                //newRow["Selected"] = true;
-                //
-                newRow["Game2"] = item.Game2;
-                newRow["Game3"] = item.Game3;
-                newRow["Game4"] = item.Game4;
+                newRow["Games Played"] = item.GamesPlayed;
+                newRow["Date"] = item.TournamentDate.ToShortDateString();
+                if (item.Game1 == 0)
+                    newRow["Game1"] = null;
+                else
+                    newRow["Game1"] = item.Game1;
+                if (item.Game2 == 0)
+                    newRow["Game2"] = null;
+                else
+                    newRow["Game2"] = item.Game2;
+                if (item.Game3 == 0)
+                    newRow["Game3"] = null;
+                else 
+                    newRow["Game3"] = item.Game3;
+                if (item.Game4 == 0)
+                    newRow["Game4"] = null;
+                else
+                    newRow["Game4"] = item.Game4;
                 newRow["Scratch Total"] = item.ScratchTotal;
                 newRow["Game Total"] = item.TotalScore;
-                newRow["Average Per Game"] = item.AvgPerGame;
-                newRow["Handicap"] = item.Handicap;
+                newRow["Average Per Game"] = Convert.ToDouble((item.Game1 + item.Game2 + item.Game3 + item.Game4) / item.GamesPlayed);
+                newRow["Handicap"] = item.HandiCap;
                 newRow["Bonus"] = item.Bonus;
+                newRow["Pro Pot"] = item.ProPot;
                 newRow["Money Won"] = item.MoneyWon;
-                newRow["Place"] = item.PlaceStanding;
+                newRow["Place"] = item.PPHG;
+                newRow["Notes"] = item.Notes;
 
                 dtGames.Rows.Add(newRow);
             
@@ -308,9 +318,10 @@ namespace NineTapTour.Forms
 
         private void FrmStats_Load(object sender, EventArgs e)
         {
-            
-            lblName.Text = memName;
+            string[] firstname = mem.FirstName.Split(' ');
+            lblName.Text = firstname[0] + "    " + mem.LastName;
             lblMemberNumber.Text = Convert.ToString(memNum);
+            lblStartAvg.Text = mem.StartAvg.ToString();
         }
 
         private void button1_Click(object sender, EventArgs e)

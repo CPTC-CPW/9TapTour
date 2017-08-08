@@ -56,6 +56,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.txtGameTotal = new System.Windows.Forms.TextBox();
+            this.lblStartAvg = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nineTapTourNineTapDbDataSetBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._NineTapTour_NineTapDbDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -299,12 +300,23 @@
             this.txtGameTotal.Size = new System.Drawing.Size(99, 20);
             this.txtGameTotal.TabIndex = 27;
             // 
+            // lblStartAvg
+            // 
+            this.lblStartAvg.AutoSize = true;
+            this.lblStartAvg.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStartAvg.Location = new System.Drawing.Point(800, 30);
+            this.lblStartAvg.Name = "lblStartAvg";
+            this.lblStartAvg.Size = new System.Drawing.Size(30, 36);
+            this.lblStartAvg.TabIndex = 28;
+            this.lblStartAvg.Text = "0";
+            // 
             // FrmStats
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(1118, 613);
+            this.Controls.Add(this.lblStartAvg);
             this.Controls.Add(this.txtGameTotal);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label10);
@@ -368,5 +380,6 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txtGameTotal;
+        private System.Windows.Forms.Label lblStartAvg;
     }
 }

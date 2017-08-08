@@ -84,7 +84,7 @@ namespace Member_Import_Test
 
         public List<Member> validMembers = new List<Member>(); //list of valid members
         public List<Member> invalidMembers = new List<Member>();//list of invalid members
-       //public List<string> QBSTournamentList = new List<string>(); //list of qualified by squad tournaments
+                                                                //public List<string> QBSTournamentList = new List<string>(); //list of qualified by squad tournaments
         public List<PlayerHistory> PlayerHistoryList = new List<PlayerHistory>();
         int GameIdint = 1;
 
@@ -104,6 +104,7 @@ namespace Member_Import_Test
 
         private static List<ExcelRow> ALLEXCELDATAFROMALLPLAYERS = new List<ExcelRow>();
         private static List<Tournament> TournamentList = new List<Tournament>();
+        private static List<Game> GameImport = new List<Game>();
 
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
@@ -180,14 +181,14 @@ namespace Member_Import_Test
                                         //Idea #1: Using String.Replace\\
                                         //Simple method, but would have to account for all possible cases of extra data
 
-                                        string [] notapartofname = {"life", "gst", "(Haw.)","pa","yk","hj","lg","mv" };
+                                        string[] notapartofname = { "life", "gst", "(Haw.)", "pa", "yk", "hj", "lg", "mv" };
 
 
                                         string fName = File.Substring(currentIndex, Spaces[i]).Trim();
 
                                         newMem.FirstName = fName;
 
-                                        for(int d = 0; d < notapartofname.Length; d++)
+                                        for (int d = 0; d < notapartofname.Length; d++)
                                         {
                                             if (fName.Contains(notapartofname[d]))
                                             {
@@ -195,7 +196,7 @@ namespace Member_Import_Test
                                             }
                                         }
 
-                                      
+
 
                                         //Idea #2 Using String.Split\\
                                         //Issue if name contains space, would have to check for additional parts of name
@@ -615,6 +616,7 @@ namespace Member_Import_Test
             return ALLEXCELDATAFROMALLPLAYERS;
         }
 
+
         private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
         {
             progressBar2.Minimum = 0;
@@ -629,7 +631,7 @@ namespace Member_Import_Test
 
 
 
-
+            char[] splitters = { '/', '-' };
 
             string[] PlayerFinalFirstAndMiddle = { "", "" };
             string[] PlayersFinalLastAndMiddle = { "", "" };
@@ -667,11 +669,44 @@ namespace Member_Import_Test
             {
                 playerOrgAVG = Convert.ToInt32((range.Cells[1, 10] as Excel.Range).Value2);
             }
+
             catch (Exception NotAValidNumber)
             {
-                playerOrgAVG = -1;
-            }
+                string[] aftersplit;
+                string orgstring;
 
+                try
+                {
+                    orgstring = ((range.Cells[1, 10] as Excel.Range).Value2);
+                    aftersplit = orgstring.Split('-');
+                    playerOrgAVG = Convert.ToInt32(aftersplit[0]);
+                }
+                catch
+                {
+                    try
+                    {
+                        orgstring = ((range.Cells[1, 10] as Excel.Range).Value2);
+                        aftersplit = orgstring.Split('*');
+                        playerOrgAVG = Convert.ToInt32(aftersplit[0]);
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            orgstring = ((range.Cells[1, 10] as Excel.Range).Value2);
+                            aftersplit = orgstring.Split('L');
+                            playerOrgAVG = Convert.ToInt32(aftersplit[0]);
+                        }
+                        catch
+                        {
+                            playerOrgAVG = -1;
+                        }
+                    }
+                }
+            
+               
+            }
+          
             String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
             String[] playerNumberAfterSplit;
             int playerNumberAsInt = 0;
@@ -682,16 +717,26 @@ namespace Member_Import_Test
             }
             else if (playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
             {
-                playerNumberAfterSplit = playerNumber.Split('/');
-                playerNumberAsInt = Convert.ToInt32(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1]);
+                for (int i = 0; i < splitters.Length; i++)
+                {
+                    try
+                    {
+                        playerNumberAfterSplit = playerNumber.Split(splitters[i]);
+                        playerNumberAsInt = Convert.ToInt32(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1]);
+                    }
+                    catch 
+                    {
+
+                    }
+                }
             }
 
-          
-                for (int sheetNum = 1; sheetNum <= xlWorkBook.Worksheets.Count; sheetNum++)
-                {
 
-                    xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
-                    range = xlWorkSheet.UsedRange;
+            for (int sheetNum = 1; sheetNum <= xlWorkBook.Worksheets.Count; sheetNum++)
+            {
+
+                xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
+                range = xlWorkSheet.UsedRange;
                 for (int row = 3; row <= range.Rows.Count; row++)
                 {
                     try
@@ -860,8 +905,11 @@ namespace Member_Import_Test
                             temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
                             GameHistory.Notes = temp.Notes;
                             playerH.Notes = temp.Notes;
-                            PlayerHistoryDB.AddGame(GameHistory);
+                            playerH.PPHG = temp.FinPPHG;
+                            GameHistory.Id = GameIdint;
                             playerH.GameID = GameHistory.Id;
+                            GameIdint++;
+                            GameImport.Add(GameHistory);
                             PlayerHistoryList.Add(playerH);
                             returnMe.Add(temp);
                             progressBar2.Increment(1);
@@ -872,16 +920,33 @@ namespace Member_Import_Test
                 }
             }
 
-            xlWorkBook.Close(false);
+
+            xlWorkBook.Close(0);
             xlApp.Quit();
 
 
+
+
+            Marshal.ReleaseComObject(range);
             Marshal.ReleaseComObject(xlWorkSheet);
             Marshal.ReleaseComObject(xlWorkBook);
             Marshal.ReleaseComObject(xlApp);
 
+            System.Diagnostics.Process[] process = System.Diagnostics.Process.GetProcessesByName("Excel");
+            foreach (System.Diagnostics.Process p in process)
+            {
 
-         
+                try
+                {
+                    p.Kill();
+                }
+                catch { }
+            }
+        
+    
+
+
+
             return returnMe;
         }
 
@@ -1227,6 +1292,7 @@ namespace Member_Import_Test
             please.Show();
             updateMembers(validMembers);
             updatePlayerHistory(PlayerHistoryList);
+            updateGameHistory(GameImport);
             please.Close();
        
 
@@ -1251,8 +1317,16 @@ namespace Member_Import_Test
             }
         }
 
-   
-        
+        private void updateGameHistory (List<Game> Game)
+        {
+            foreach (var m in Game)
+            {
+               PlayerHistoryDB.AddGame(m);
+            }
+        }
+
+
+
 
 
 

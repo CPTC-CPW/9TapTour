@@ -91,6 +91,7 @@ namespace NineTapTour.Database
                                 h.Bonus,
                                 h.ProPot,
                                 h.MoneyWon,
+                                h.PPHG,
                                 h.Notes,
                             }).Take(30).ToList();
                 foreach (var item in temp)
@@ -111,6 +112,7 @@ namespace NineTapTour.Database
                     newHistory.HandiCap = item.HandiCap;
                     newHistory.Bonus = item.Bonus;
                     newHistory.ProPot = item.ProPot;
+                    newHistory.PPHG = item.PPHG;
                     newHistory.MoneyWon = item.MoneyWon;
                     newHistory.Notes = item.Notes;
                     Return.Add(newHistory);
