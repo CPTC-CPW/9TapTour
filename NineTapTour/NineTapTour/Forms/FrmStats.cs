@@ -260,7 +260,7 @@ namespace NineTapTour.Forms
                             p.PPHG,
                             p.Notes
                         });
-            dtGames.Columns.Add("Games Played");
+            dtGames.Columns.Add("Games");
             dtGames.Columns.Add("Date");
             dtGames.Columns.Add("Game1");
             //dtGames.Columns.Add(new DataColumn("Selected", typeof(bool)));
@@ -268,7 +268,7 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Game3");
             dtGames.Columns.Add("Game4");
             dtGames.Columns.Add("Scratch Total");
-            dtGames.Columns.Add("Average Per Game");
+            dtGames.Columns.Add("Average \n Per \n Game");
             dtGames.Columns.Add("Game Total");
             dtGames.Columns.Add("Handicap");
             dtGames.Columns.Add("Bonus");
@@ -281,7 +281,7 @@ namespace NineTapTour.Forms
             {
                 
                 DataRow newRow = dtGames.NewRow();
-                newRow["Games Played"] = item.GamesPlayed;
+                newRow["Games"] = item.GamesPlayed;
                 newRow["Date"] = item.TournamentDate.ToShortDateString();
                 if (item.Game1 == 0)
                     newRow["Game1"] = null;
@@ -301,7 +301,7 @@ namespace NineTapTour.Forms
                     newRow["Game4"] = item.Game4;
                 newRow["Scratch Total"] = item.ScratchTotal;
                 newRow["Game Total"] = item.TotalScore;
-                newRow["Average Per Game"] = Convert.ToDouble((item.Game1 + item.Game2 + item.Game3 + item.Game4) / item.GamesPlayed);
+                newRow["Average \n Per \n Game"] = Convert.ToDouble((item.Game1 + item.Game2 + item.Game3 + item.Game4) / item.GamesPlayed);
                 newRow["Handicap"] = item.HandiCap;
                 newRow["Bonus"] = item.Bonus;
                 newRow["Pro Pot"] = item.ProPot;

@@ -331,136 +331,136 @@ namespace NineTapTour.Forms
         // TODO: add more textfields to validate for the whole form to submit
         public bool isValid()
         {
-            // check if Active radio button is checked
-            if (!rdoActive.Checked && !rdoInActive.Checked)
-            {
-                MessageBox.Show("Member must be checked active or inactive.");
-                return false;
-            }
-            // check if gender radio button is checked
-            if (!rdoMale.Checked && !rdoFemale.Checked)
-            {
-                MessageBox.Show("A gender must be chosen.");
-                return false;
-            }
-            //use better regex expression that includes spaces and hyphens
-            if (!Regex.IsMatch(txtLastName.Text, "^[-a-zA-Z]+$"))
-            {
-                MessageBox.Show("Last Name is required.");
-                txtLastName.Clear();
-                return false;
-            }
+            //// check if Active radio button is checked
+            //if (!rdoActive.Checked && !rdoInActive.Checked)
+            //{
+            //    MessageBox.Show("Member must be checked active or inactive.");
+            //    return false;
+            //}
+            //// check if gender radio button is checked
+            //if (!rdoMale.Checked && !rdoFemale.Checked)
+            //{
+            //    MessageBox.Show("A gender must be chosen.");
+            //    return false;
+            //}
+            ////use better regex expression that includes spaces and hyphens
+            //if (!Regex.IsMatch(txtLastName.Text, "^[-a-zA-Z]+$"))
+            //{
+            //    MessageBox.Show("Last Name is required.");
+            //    txtLastName.Clear();
+            //    return false;
+            //}
 
-            if (!Regex.IsMatch(txtFirstName.Text, "^[a-zA-Z]+$"))
-            {
-                MessageBox.Show("First Name is required.");
-                txtFirstName.Clear();
-                return false;
-            }
+            //if (!Regex.IsMatch(txtFirstName.Text, "^[a-zA-Z]+$"))
+            //{
+            //    MessageBox.Show("First Name is required.");
+            //    txtFirstName.Clear();
+            //    return false;
+            //}
 
-            if (dateDOB.Format == DateTimePickerFormat.Custom)
-            {
-                MessageBox.Show("DOB field cannot be blank.");
-                return false;
-            }
-            if (!Regex.IsMatch(mtxtBoxSSN.Text, "   -  -"))
-            {
-                if (!Regex.IsMatch(mtxtBoxSSN.Text, "^\\d{3}-?\\d{2}-?\\d{4}$"))
-                {
-                    MessageBox.Show("Invalid Social Security field.");
-                    mtxtBoxSSN.Clear();
-                    return false;
-                }
-            }
-            var db = new NineTapDb();
-            var id = Convert.ToInt32(txtMemberNumber.Text);
-            var ssnList = (from p in db.Members
-                           where p.Number != id
-                           select p.SSN                        
-                           ).ToList();
-            if (ssnList.Contains(mtxtBoxSSN.Text) && mtxtBoxSSN.Text != null)
-            {
-                MessageBox.Show("Member with same SSN already exists");
-                mtxtBoxSSN.Clear();
-                mtxtBoxSSN.Focus();
-                return false;
+            //if (dateDOB.Format == DateTimePickerFormat.Custom)
+            //{
+            //    MessageBox.Show("DOB field cannot be blank.");
+            //    return false;
+            //}
+            //if (!Regex.IsMatch(mtxtBoxSSN.Text, "   -  -"))
+            //{
+            //    if (!Regex.IsMatch(mtxtBoxSSN.Text, "^\\d{3}-?\\d{2}-?\\d{4}$"))
+            //    {
+            //        MessageBox.Show("Invalid Social Security field.");
+            //        mtxtBoxSSN.Clear();
+            //        return false;
+            //    }
+            //}
+            //var db = new NineTapDb();
+            //var id = Convert.ToInt32(txtMemberNumber.Text);
+            //var ssnList = (from p in db.Members
+            //               where p.Number != id
+            //               select p.SSN                        
+            //               ).ToList();
+            //if (ssnList.Contains(mtxtBoxSSN.Text) && mtxtBoxSSN.Text != null)
+            //{
+            //    MessageBox.Show("Member with same SSN already exists");
+            //    mtxtBoxSSN.Clear();
+            //    mtxtBoxSSN.Focus();
+            //    return false;
                 
-            }
-            if (string.IsNullOrWhiteSpace(txtAddress.Text.Trim()))
-            {
-                MessageBox.Show("Address field cannot be null.");
-                txtAddress.Clear();
-                return false;
-            }
+            //}
+            //if (string.IsNullOrWhiteSpace(txtAddress.Text.Trim()))
+            //{
+            //    MessageBox.Show("Address field cannot be null.");
+            //    txtAddress.Clear();
+            //    return false;
+            //}
 
-            if (string.IsNullOrWhiteSpace(txtCity.Text.Trim()))
-            {
-                MessageBox.Show("City field cannot be null");
-                txtCity.Clear();
-                return false;
-            }
+            //if (string.IsNullOrWhiteSpace(txtCity.Text.Trim()))
+            //{
+            //    MessageBox.Show("City field cannot be null");
+            //    txtCity.Clear();
+            //    return false;
+            //}
 
-            if (string.IsNullOrWhiteSpace(txtState.Text.Trim()))
-            {
-                MessageBox.Show("State field cannot be blank.");
-                txtState.Clear();
-                return false;
-            }
+            //if (string.IsNullOrWhiteSpace(txtState.Text.Trim()))
+            //{
+            //    MessageBox.Show("State field cannot be blank.");
+            //    txtState.Clear();
+            //    return false;
+            //}
 
-            if (!Regex.IsMatch(mtxtBoxZip.Text, "^\\d{5}(?:[-\\s]\\d{4})?$"))
-            {
-                MessageBox.Show("Invalid zip code field.");
-                mtxtBoxZip.Clear();
-                return false;
-            }
-            if (!Regex.IsMatch(mtxtBoxPhone.Text, "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$"))
-            {
-                MessageBox.Show("Invalid Primary Phone field.");
-                mtxtBoxPhone.Clear();
-                return false;
-            }
+            //if (!Regex.IsMatch(mtxtBoxZip.Text, "^\\d{5}(?:[-\\s]\\d{4})?$"))
+            //{
+            //    MessageBox.Show("Invalid zip code field.");
+            //    mtxtBoxZip.Clear();
+            //    return false;
+            //}
+            //if (!Regex.IsMatch(mtxtBoxPhone.Text, "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$"))
+            //{
+            //    MessageBox.Show("Invalid Primary Phone field.");
+            //    mtxtBoxPhone.Clear();
+            //    return false;
+            //}
 
-            // I think the block following this might make this redundant so I'm commenting it out to see what happens -- Cody
-            /*
-            if (string.IsNullOrWhiteSpace(txtEmail.Text.Trim()))
-            {
-                MessageBox.Show("Email field cannot be blank.");
-                txtEmail.Clear();
-                return false;
-            }
-            */
-            // email validation
-            // Author: Toby Fortuner
-            if (!(new EmailAddressAttribute().IsValid(txtEmail.Text) || string.IsNullOrWhiteSpace(txtEmail.Text)))
-            {
-                MessageBox.Show("Email field must be a valid email address.");
-                txtEmail.Clear();
-                return false;
-            }
-            if(dateJoined.Value != null)
-            {
-                if(dateRejoin.Value != null && dateRejoin.Value < dateJoined.Value)
-                {
-                    MessageBox.Show("Rejoin Date before Join Date");
-                    dateRejoin.Focus();
-                    return false;
-                }
-                else if (dateRejoin.Value != null && dateRejoin.Value == dateJoined.Value)
-                {
-                    MessageBox.Show("Rejoin Date same as Join Date");
-                    dateRejoin.Focus();
-                    return false;
-                }
-            }
-            /********************************************************************************************************
-            League average should only be between 125 - 210
-            *********************************************************************************************************/
-            if (txtAverage.Text == "" || Convert.ToInt32(txtAverage.Text) < 125 || Convert.ToInt32(txtAverage.Text) > 210)
-            {
-                MessageBox.Show("For your League Average, you should only input between 125 to 210.");
-                txtAverage.Focus();
-                return false;
-            }
+            //// I think the block following this might make this redundant so I'm commenting it out to see what happens -- Cody
+            ///*
+            //if (string.IsNullOrWhiteSpace(txtEmail.Text.Trim()))
+            //{
+            //    MessageBox.Show("Email field cannot be blank.");
+            //    txtEmail.Clear();
+            //    return false;
+            //}
+            //*/
+            //// email validation
+            //// Author: Toby Fortuner
+            //if (!(new EmailAddressAttribute().IsValid(txtEmail.Text) || string.IsNullOrWhiteSpace(txtEmail.Text)))
+            //{
+            //    MessageBox.Show("Email field must be a valid email address.");
+            //    txtEmail.Clear();
+            //    return false;
+            //}
+            //if(dateJoined.Value != null)
+            //{
+            //    if(dateRejoin.Value != null && dateRejoin.Value < dateJoined.Value)
+            //    {
+            //        MessageBox.Show("Rejoin Date before Join Date");
+            //        dateRejoin.Focus();
+            //        return false;
+            //    }
+            //    else if (dateRejoin.Value != null && dateRejoin.Value == dateJoined.Value)
+            //    {
+            //        MessageBox.Show("Rejoin Date same as Join Date");
+            //        dateRejoin.Focus();
+            //        return false;
+            //    }
+            //}
+            ///********************************************************************************************************
+            //League average should only be between 125 - 210
+            //*********************************************************************************************************/
+            //if (txtAverage.Text == "" || Convert.ToInt32(txtAverage.Text) < 125 || Convert.ToInt32(txtAverage.Text) > 210)
+            //{
+            //    MessageBox.Show("For your League Average, you should only input between 125 to 210.");
+            //    txtAverage.Focus();
+            //    return false;
+            //}
             /*******************************************************************************************************/
 
             return true;
@@ -519,7 +519,15 @@ namespace NineTapTour.Forms
             /*************************************************************************************
             used to say Average = 0; which is always making the average in the database 0
             **************************************************************************************/
-            double avg = Convert.ToDouble(txtTournAvg.Text);
+            double avg = 0;
+            try
+            {
+               avg = Convert.ToDouble(txtTournAvg.Text);
+            }
+            catch
+            {
+               
+            }
             temp.Average = (txtTournAvg.Text == string.Empty) ? 0 : Convert.ToInt16(avg);
             /*************************************************************************************/
             temp.StartAvg = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text);
@@ -1086,6 +1094,7 @@ namespace NineTapTour.Forms
                     CurrentExcelData.Add(r);
                 }
 
+                
                 currentMem.Average = Convert.ToInt32(LeagueAvgFromPlayerHistory(currentMem));
                 currentMem.StartAvg = CurrentExcelData[0].PlayerOrginalAVG;
                 txtAverage.Text = currentMem.StartAvg.ToString();

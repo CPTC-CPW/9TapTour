@@ -103,7 +103,7 @@ namespace NineTapTour.Forms
             dt.Columns.Add("30 Game Avg").ReadOnly = true;
             dt.Columns.Add("Game Avg");
             dt.Columns.Add("Adj Avg");
-            dt.Columns.Add(new DataColumn("Keep True Avg?", typeof(bool)));
+            dt.Columns.Add(new DataColumn("Director Check", typeof(bool)));
             dt.Columns.Add("Scratch Total");
             dt.Columns.Add("Squad").ReadOnly = true;
             dt.Columns.Add("Handicap").ReadOnly = true;
@@ -119,7 +119,16 @@ namespace NineTapTour.Forms
             {
                 DataRow newRow = dt.NewRow();
                 newRow["GameId"] = item.GameId;//0
-                newRow["Name"] = item.FirstName + " " + item.LastName;//1
+                if (item.FirstName.Length > 1)
+                {
+                    string[] aftersplit = item.FirstName.Split(' ');
+                    newRow["Name"] = aftersplit[0] + " " + item.LastName;//1
+                }
+               else
+                {
+                    newRow["Name"] = item.FirstName + " " + item.LastName;//1
+                }
+                
                 newRow["Game 1"] = item.Game1;//2
                 newRow["Valid Score1?"] = item.UseGame1;//3
                 newRow["Game 2"] = item.Game2;//4
@@ -131,7 +140,7 @@ namespace NineTapTour.Forms
                 newRow["30 Game Avg"] = item.LeagueAverage; //10
                 newRow["Game Avg"] = item.GameAvg;//11
                 newRow["Adj Avg"] = item.AdjustedAvg;//12
-                newRow["Keep True Avg?"] = false;//13
+                newRow["Director Check"] = false;//13
                 newRow["Scratch Total"] = item.ScratchTotal;//14
                 newRow["Squad"] = item.Squad;//15
                 newRow["Handicap"] = item.Handicap;//16
@@ -256,7 +265,7 @@ namespace NineTapTour.Forms
             var db = new NineTapDb();
             List<FinalizeTemp> ParticipantList = new List<FinalizeTemp>();
             var temp = (from p in db.FinalizeTemp
-                        orderby p.GameId descending
+                        orderby p.GameId descending, p.ScratchTotal ascending
                         join t in db.Tournaments on p.TournamentID equals t.Id
                         where tourn.Id == t.Id
                         select new
@@ -318,6 +327,9 @@ namespace NineTapTour.Forms
 
             return ParticipantList;
         }
+
+
+
         //Updates the finalizetemp table when check box for Use Game Score is clicked on.
         private void dataGridView1_OnCellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
@@ -407,6 +419,43 @@ namespace NineTapTour.Forms
 
                 }
             }
+            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), 13.ToString()) == 0)
+            {
+                int gameId = Convert.ToInt32(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value);
+                int memId;
+                using (var db = new NineTapDb())
+                {
+                 memId = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Id;
+                }
+                bool checkBoxStatus = Convert.ToBoolean(dataGridView1.CurrentCell.EditedFormattedValue);
+                //checkBoxStatus gives you whether checkbox cell value of selected row for the
+                //"CheckBoxColumn" column value is checked or not. 
+
+                if (checkBoxStatus)
+                {
+                    for(int i = 0; i < FinalizeTableList.Count; i++)
+                    {
+                        if(FinalizeTableList[i].MemberId == memId)
+                        {
+                            dataGridView1.Rows[i].Cells[13].Value = true;
+                        }
+                    }
+                    
+                }
+                else
+                {
+                    for (int i = 0; i < FinalizeTableList.Count; i++)
+                    {
+                        if (FinalizeTableList[i].MemberId == memId)
+                        {
+                            dataGridView1.Rows[i].Cells[13].Value = false;
+                        }
+                    }
+
+
+                }
+            }
+
         }
 
         private void dataGridView1_OnCellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
@@ -428,6 +477,12 @@ namespace NineTapTour.Forms
             {
                 dataGridView1.EndEdit();
             }
+            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), 13.ToString()) == 0)
+            {
+                dataGridView1.EndEdit();
+            }
+
+
         }
 
         /// <summary>
@@ -797,7 +852,7 @@ namespace NineTapTour.Forms
             {
                 if (Convert.ToBoolean(e.Value) == true)
                 {
-               
+
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.White;
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
