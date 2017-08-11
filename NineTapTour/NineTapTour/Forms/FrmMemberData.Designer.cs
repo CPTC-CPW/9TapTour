@@ -124,9 +124,8 @@
             this.txtLastName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtLastName.Location = new System.Drawing.Point(226, 31);
             this.txtLastName.MaxLength = 50;
-            this.txtLastName.Multiline = true;
             this.txtLastName.Name = "txtLastName";
-            this.txtLastName.Size = new System.Drawing.Size(226, 38);
+            this.txtLastName.Size = new System.Drawing.Size(226, 37);
             this.txtLastName.TabIndex = 3;
             this.txtLastName.TextChanged += new System.EventHandler(this.InputRequired);
             // 
@@ -135,9 +134,8 @@
             this.txtFirstName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtFirstName.Location = new System.Drawing.Point(477, 31);
             this.txtFirstName.MaxLength = 50;
-            this.txtFirstName.Multiline = true;
             this.txtFirstName.Name = "txtFirstName";
-            this.txtFirstName.Size = new System.Drawing.Size(232, 38);
+            this.txtFirstName.Size = new System.Drawing.Size(232, 37);
             this.txtFirstName.TabIndex = 5;
             this.txtFirstName.TextChanged += new System.EventHandler(this.InputRequired);
             // 
@@ -146,9 +144,8 @@
             this.txtMiddleInitial.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMiddleInitial.Location = new System.Drawing.Point(731, 31);
             this.txtMiddleInitial.MaxLength = 10;
-            this.txtMiddleInitial.Multiline = true;
             this.txtMiddleInitial.Name = "txtMiddleInitial";
-            this.txtMiddleInitial.Size = new System.Drawing.Size(119, 38);
+            this.txtMiddleInitial.Size = new System.Drawing.Size(119, 37);
             this.txtMiddleInitial.TabIndex = 7;
             this.txtMiddleInitial.TextChanged += new System.EventHandler(this.InputRequired);
             // 
@@ -211,10 +208,9 @@
             this.txtBonus.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtBonus.Location = new System.Drawing.Point(761, 438);
             this.txtBonus.MaxLength = 20;
-            this.txtBonus.Multiline = true;
             this.txtBonus.Name = "txtBonus";
             this.txtBonus.ReadOnly = true;
-            this.txtBonus.Size = new System.Drawing.Size(89, 54);
+            this.txtBonus.Size = new System.Drawing.Size(89, 47);
             this.txtBonus.TabIndex = 40;
             this.txtBonus.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -224,10 +220,9 @@
             this.txtHandicap.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtHandicap.Location = new System.Drawing.Point(638, 438);
             this.txtHandicap.MaxLength = 20;
-            this.txtHandicap.Multiline = true;
             this.txtHandicap.Name = "txtHandicap";
             this.txtHandicap.ReadOnly = true;
-            this.txtHandicap.Size = new System.Drawing.Size(89, 54);
+            this.txtHandicap.Size = new System.Drawing.Size(89, 47);
             this.txtHandicap.TabIndex = 38;
             this.txtHandicap.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -276,9 +271,8 @@
             this.txtAverage.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtAverage.Location = new System.Drawing.Point(382, 438);
             this.txtAverage.MaxLength = 20;
-            this.txtAverage.Multiline = true;
             this.txtAverage.Name = "txtAverage";
-            this.txtAverage.Size = new System.Drawing.Size(99, 54);
+            this.txtAverage.Size = new System.Drawing.Size(99, 47);
             this.txtAverage.TabIndex = 34;
             this.txtAverage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -980,10 +974,9 @@
             this.txtTournAvg.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtTournAvg.Location = new System.Drawing.Point(515, 438);
             this.txtTournAvg.MaxLength = 20;
-            this.txtTournAvg.Multiline = true;
             this.txtTournAvg.Name = "txtTournAvg";
             this.txtTournAvg.ReadOnly = true;
-            this.txtTournAvg.Size = new System.Drawing.Size(89, 54);
+            this.txtTournAvg.Size = new System.Drawing.Size(89, 47);
             this.txtTournAvg.TabIndex = 36;
             this.txtTournAvg.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 

@@ -55,6 +55,9 @@ namespace NineTapTour.Forms
         private void MemberDataForm_Load(object sender, EventArgs e)
         {
             List<Member> ListOfMembers = MemberDb.GetMemberList();
+
+
+     
     
 
             updateOnload(ListOfMembers);
@@ -1043,6 +1046,7 @@ namespace NineTapTour.Forms
                             p.Game3,
                             p.Game4,
                             p.AverageForGame,
+                            p.trueAVG,
                         }).Take(30).ToList();
             if (temp.Count > 0)
             {

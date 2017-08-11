@@ -193,6 +193,7 @@ namespace NineTapTour.Database
             {
                 var temp = (from h in db.PlayerHistory
                             where h.MemberNumber == id
+                            orderby h.TournamentDate descending
                             select new
                             {
                                 h.hisID,
