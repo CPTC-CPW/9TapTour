@@ -771,9 +771,8 @@ namespace Member_Import_Test
                             {
                                 temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
                                 playerH.GamesPlayed = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
-                                if (temp.GameTotal > 4)
+                                if (temp.GameTotal > 4 && (Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2) == null))
                                 {
-
                                     break;
                                 }
                             }
