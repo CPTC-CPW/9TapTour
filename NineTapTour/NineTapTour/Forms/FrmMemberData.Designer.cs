@@ -235,11 +235,11 @@
             // 
             this.lblAverage.AutoSize = true;
             this.lblAverage.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAverage.Location = new System.Drawing.Point(386, 420);
+            this.lblAverage.Location = new System.Drawing.Point(405, 420);
             this.lblAverage.Name = "lblAverage";
-            this.lblAverage.Size = new System.Drawing.Size(90, 15);
+            this.lblAverage.Size = new System.Drawing.Size(50, 15);
             this.lblAverage.TabIndex = 33;
-            this.lblAverage.Text = "League Average";
+            this.lblAverage.Text = "Average\r\n";
             // 
             // lblTournAvg
             // 
@@ -968,11 +968,11 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(500, 420);
+            this.label2.Location = new System.Drawing.Point(510, 420);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(118, 15);
+            this.label2.Size = new System.Drawing.Size(101, 15);
             this.label2.TabIndex = 35;
-            this.label2.Text = "Tournament Average";
+            this.label2.Text = "30 Game Average";
             // 
             // txtTournAvg
             // 

@@ -55,6 +55,7 @@ namespace NineTapTour.Forms
         private void MemberDataForm_Load(object sender, EventArgs e)
         {
             List<Member> ListOfMembers = MemberDb.GetMemberList();
+    
 
             updateOnload(ListOfMembers);
 
@@ -84,7 +85,7 @@ namespace NineTapTour.Forms
             _memberNum = Convert.ToInt32(txtMemberNumber.Text);
             if (searchMem == null)
             {
-                currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == _memberNum);
+                currentMem = MemberDb.GetMember(_memberNum);
             }
             else
             {
@@ -92,7 +93,7 @@ namespace NineTapTour.Forms
                 _memberNum = currentMem.Number;
             }
 
-            if (currentMem == null)
+            if (currentMem.Id == 0)
             {
                 
                 currentMem = new Member

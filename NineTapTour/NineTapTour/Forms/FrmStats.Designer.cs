@@ -42,21 +42,18 @@
             this.txtGame3 = new System.Windows.Forms.TextBox();
             this.txtGame4 = new System.Windows.Forms.TextBox();
             this.txtScratchTotal = new System.Windows.Forms.TextBox();
-            this.txtAveragePerGame = new System.Windows.Forms.TextBox();
-            this.txtHandicap = new System.Windows.Forms.TextBox();
-            this.txtBonus = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.txtGameTotal = new System.Windows.Forms.TextBox();
             this.lblStartAvg = new System.Windows.Forms.Label();
+            this.txtBonus = new System.Windows.Forms.TextBox();
+            this.txtHandicap = new System.Windows.Forms.TextBox();
+            this.txtAveragePerGame = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.nineTapTourNineTapDbDataSetBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._NineTapTour_NineTapDbDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -165,33 +162,6 @@
             this.txtScratchTotal.Size = new System.Drawing.Size(99, 20);
             this.txtScratchTotal.TabIndex = 11;
             // 
-            // txtAveragePerGame
-            // 
-            this.txtAveragePerGame.Location = new System.Drawing.Point(752, 506);
-            this.txtAveragePerGame.Margin = new System.Windows.Forms.Padding(1);
-            this.txtAveragePerGame.Name = "txtAveragePerGame";
-            this.txtAveragePerGame.ReadOnly = true;
-            this.txtAveragePerGame.Size = new System.Drawing.Size(99, 20);
-            this.txtAveragePerGame.TabIndex = 12;
-            // 
-            // txtHandicap
-            // 
-            this.txtHandicap.Location = new System.Drawing.Point(852, 506);
-            this.txtHandicap.Margin = new System.Windows.Forms.Padding(1);
-            this.txtHandicap.Name = "txtHandicap";
-            this.txtHandicap.ReadOnly = true;
-            this.txtHandicap.Size = new System.Drawing.Size(99, 20);
-            this.txtHandicap.TabIndex = 14;
-            // 
-            // txtBonus
-            // 
-            this.txtBonus.Location = new System.Drawing.Point(953, 506);
-            this.txtBonus.Margin = new System.Windows.Forms.Padding(1);
-            this.txtBonus.Name = "txtBonus";
-            this.txtBonus.ReadOnly = true;
-            this.txtBonus.Size = new System.Drawing.Size(99, 20);
-            this.txtBonus.TabIndex = 15;
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -242,36 +212,6 @@
             this.label5.TabIndex = 20;
             this.label5.Text = "Scratch Total";
             // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(766, 484);
-            this.label6.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(70, 13);
-            this.label6.TabIndex = 21;
-            this.label6.Text = "AvgPerGame";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(874, 484);
-            this.label8.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(53, 13);
-            this.label8.TabIndex = 23;
-            this.label8.Text = "Handicap";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(981, 484);
-            this.label9.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(37, 13);
-            this.label9.TabIndex = 24;
-            this.label9.Text = "Bonus";
-            // 
             // label10
             // 
             this.label10.AutoSize = true;
@@ -285,12 +225,12 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(672, 484);
+            this.label7.Location = new System.Drawing.Point(650, 484);
             this.label7.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(62, 13);
+            this.label7.Size = new System.Drawing.Size(114, 13);
             this.label7.TabIndex = 26;
-            this.label7.Text = "Game Total";
+            this.label7.Text = "Game Total  W/HDCP";
             // 
             // txtGameTotal
             // 
@@ -310,6 +250,33 @@
             this.lblStartAvg.TabIndex = 28;
             this.lblStartAvg.Text = "0";
             // 
+            // txtBonus
+            // 
+            this.txtBonus.Location = new System.Drawing.Point(953, 506);
+            this.txtBonus.Margin = new System.Windows.Forms.Padding(1);
+            this.txtBonus.Name = "txtBonus";
+            this.txtBonus.ReadOnly = true;
+            this.txtBonus.Size = new System.Drawing.Size(99, 20);
+            this.txtBonus.TabIndex = 15;
+            // 
+            // txtHandicap
+            // 
+            this.txtHandicap.Location = new System.Drawing.Point(852, 506);
+            this.txtHandicap.Margin = new System.Windows.Forms.Padding(1);
+            this.txtHandicap.Name = "txtHandicap";
+            this.txtHandicap.ReadOnly = true;
+            this.txtHandicap.Size = new System.Drawing.Size(99, 20);
+            this.txtHandicap.TabIndex = 14;
+            // 
+            // txtAveragePerGame
+            // 
+            this.txtAveragePerGame.Location = new System.Drawing.Point(752, 506);
+            this.txtAveragePerGame.Margin = new System.Windows.Forms.Padding(1);
+            this.txtAveragePerGame.Name = "txtAveragePerGame";
+            this.txtAveragePerGame.ReadOnly = true;
+            this.txtAveragePerGame.Size = new System.Drawing.Size(99, 20);
+            this.txtAveragePerGame.TabIndex = 12;
+            // 
             // FrmStats
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -320,9 +287,6 @@
             this.Controls.Add(this.txtGameTotal);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label10);
-            this.Controls.Add(this.label9);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -366,20 +330,17 @@
         private System.Windows.Forms.TextBox txtGame3;
         private System.Windows.Forms.TextBox txtGame4;
         private System.Windows.Forms.TextBox txtScratchTotal;
-        private System.Windows.Forms.TextBox txtAveragePerGame;
-        private System.Windows.Forms.TextBox txtHandicap;
-        private System.Windows.Forms.TextBox txtBonus;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txtGameTotal;
         private System.Windows.Forms.Label lblStartAvg;
+        private System.Windows.Forms.TextBox txtBonus;
+        private System.Windows.Forms.TextBox txtHandicap;
+        private System.Windows.Forms.TextBox txtAveragePerGame;
     }
 }
