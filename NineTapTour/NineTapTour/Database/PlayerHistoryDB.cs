@@ -297,6 +297,64 @@ namespace NineTapTour.Database
             return Return;
         }
 
+        public static List<PlayerHistory> getLastFiveFromPlayerhistory(int id)
+        {
+            List<PlayerHistory> Return = new List<PlayerHistory>();
+            using (var db = new NineTapDb())
+            {
+                //will only grab the last inputted average history, that way the bonus pins cant be affected by bowling in more then one squad
+                var temp = (from h in db.PlayerHistory
+                            where h.MemberNumber == id && h.AVG > 0
+                            orderby h.TournamentDate descending
+                            select new
+                            {
+                                h.GamesPlayed,
+                                h.TournamentDate,
+                                h.Game1,
+                                h.Game2,
+                                h.Game3,
+                                h.Game4,
+                                h.AverageForGame,
+                                h.trueAVG,
+                                h.AVG,
+                                h.HandiCap,
+                                h.Bonus,
+                                h.ProPot,
+                                h.MoneyWon,
+                                h.PPHG,
+                                h.Notes,
+                            }).Take(30).ToList();
+                foreach (var item in temp)
+                {
+                    PlayerHistory newHistory = new PlayerHistory();
+
+
+                    newHistory.GamesPlayed = item.GamesPlayed;
+                    newHistory.TournamentDate = item.TournamentDate;
+                    newHistory.Game1 = item.Game1;
+                    newHistory.Game2 = item.Game2;
+                    newHistory.Game3 = item.Game3;
+                    newHistory.Game4 = item.Game4;
+                    newHistory.TotalScore = (item.Game1 + item.Game2 + item.Game3 + item.Game4);
+                    newHistory.AverageForGame = item.AverageForGame;
+                    newHistory.trueAVG = item.trueAVG;
+                    newHistory.AVG = item.AVG;
+                    newHistory.HandiCap = item.HandiCap;
+                    newHistory.Bonus = item.Bonus;
+                    newHistory.ProPot = item.ProPot;
+                    newHistory.PPHG = item.PPHG;
+                    newHistory.MoneyWon = item.MoneyWon;
+                    newHistory.Notes = item.Notes;
+                    Return.Add(newHistory);
+                }
+
+
+            }
+
+            return Return;
+        }
+
+
         public static void DeleteGame(Game game)
         {
             try

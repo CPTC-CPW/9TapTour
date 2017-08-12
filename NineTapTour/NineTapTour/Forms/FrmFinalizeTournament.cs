@@ -971,7 +971,7 @@ namespace NineTapTour.Forms
 
             }
 
-            for (int i = 0; i < FinalizeTableList.Count - 1; i++)
+            for (int i = 0; i <= FinalizeTableList.Count - 1; i++)
             {
                 if (dataGridView1.Rows[i].Cells[13].Style.BackColor == Color.Red)
                 {
@@ -1094,12 +1094,62 @@ namespace NineTapTour.Forms
 
                 }
 
-                this.Close();
+                //THIS WILL ADD A BONUS PIN DEPENDING ON HOW MANY THEY CURRENTLY HAVE AND IF THERE LAST 3 TOURNAMENTS RESULT IN NOT CASHING OR PLACING
+                //List<int> alreadychecked = new List<int>();
 
+                //for (int bonus = 0; bonus <= FinalizeTableList.Count - 1; bonus++)
+                //{
+                //    //skip over the current person if they bonus pin was already adjusted this tournament
+                //    if (alreadychecked.Contains(FinalizeTableList[bonus].MemberId))
+                //    {
+                //        break;
+                //    }
+                //    else
+                //    {
+                //        //max of five bonus pins allowed, if at 5 keep at five until needs to be adjusted from cashing out or winning tournament
+                //        if (FinalizeTableList[bonus].Bonus != 5)
+                //        {
+                //            Member current = MemberDb.GetMember(FinalizeTableList[bonus].MemberId);
+                //            current.Bonus = 0;
+                //            List<PlayerHistory> playerhistory = PlayerHistoryDB.getLastFiveFromPlayerhistory(FinalizeTableList[i].MemberId);
+                //            if (playerhistory.Count <= 3)
+                //            {
+                //                alreadychecked.Add(current.Number);
+                              
+                //            }
+                //            else
+                //            {
+                //                //if the last 3 tournaments  were not on the same day, meaning there last three recorded history were not at the same tournament and the last 3 recorded bonus pins are equal to the current members bonus pins
+                //                if (
+                //                   playerhistory[1].TournamentDate != playerhistory[2].TournamentDate &&
+                //                   playerhistory[2].TournamentDate != playerhistory[3].TournamentDate &&
+                //                   playerhistory[3].TournamentDate != playerhistory[1].TournamentDate &&
+                //                   playerhistory[1].Bonus == playerhistory[2].Bonus &&
+                //                   playerhistory[2].Bonus == playerhistory[3].Bonus &&
+                //                   playerhistory[3].Bonus == playerhistory[1].Bonus)
+                //                {
+                //                    current = MemberDb.GetMember(FinalizeTableList[bonus].MemberId);
+                //                    current.Bonus += 1;
+                //                    MemberDb.AddMember(current);
+                //                    alreadychecked.Add(current.Number);
+                //                }
+
+                                    
+              
+                //              }
+                //            }
+                //          }
+                //        }
+
+                Close();
 
             }
+        
 
         }
+       
+
+    }
 
 
 
@@ -1108,6 +1158,6 @@ namespace NineTapTour.Forms
         /***/
 
     }
-}
+
 
 

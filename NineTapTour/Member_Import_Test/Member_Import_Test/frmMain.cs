@@ -771,7 +771,8 @@ namespace Member_Import_Test
                             {
                                 temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
                                 playerH.GamesPlayed = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
-                                if (temp.GameTotal > 4 && (Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2) == null))
+                                DateTime compare = DateTime.FromOADate(Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2));
+                                if (temp.GameTotal > 4 && compare == Convert.ToDateTime("12/30/1899 12:00:00 AM"))
                                 {
                                     break;
                                 }
@@ -783,7 +784,7 @@ namespace Member_Import_Test
                             try
                             {
                                 temp.Date = DateTime.FromOADate(Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2));
-                                playerH.TournamentDate = DateTime.FromOADate(Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2));
+                                playerH.TournamentDate = temp.Date;
                             }
                             catch
                             {
@@ -905,9 +906,8 @@ namespace Member_Import_Test
                             GameHistory.Notes = temp.Notes;
                             playerH.Notes = temp.Notes;
                             playerH.PPHG = temp.FinPPHG;
-                            GameHistory.Id = GameIdint;
+                            GameHistory.Id = PlayerHistoryDB.getNumberOfAllGames() + 1;
                             playerH.GameID = GameHistory.Id;
-                            GameIdint++;
                             GameImport.Add(GameHistory);
                             PlayerHistoryList.Add(playerH);
                             returnMe.Add(temp);
