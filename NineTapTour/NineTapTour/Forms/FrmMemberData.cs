@@ -89,6 +89,19 @@ namespace NineTapTour.Forms
             if (searchMem == null)
             {
                 currentMem = MemberDb.GetMember(_memberNum);
+                List<PlayerHistory> last5 = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Number);
+                if (last5.Count >= 1)
+                {
+                    txtAverage.Text = last5[0].AVG.ToString();
+                    currentMem.StartAvg = Convert.ToInt16(txtAverage.Text);
+                    txtBonus.Text = last5[0].Bonus.ToString();
+                    currentMem.Bonus = Convert.ToInt16(txtBonus.Text);
+                }
+                else
+                {
+                    txtBonus.Text = 0.ToString();
+                    currentMem.Bonus = Convert.ToInt16(txtBonus.Text);
+                }
             }
             else
             {
@@ -534,9 +547,30 @@ namespace NineTapTour.Forms
             }
             temp.Average = (txtTournAvg.Text == string.Empty) ? 0 : Convert.ToInt16(avg);
             /*************************************************************************************/
-            temp.StartAvg = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text);
+           
             temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.Average.Value));
-            temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
+            List<PlayerHistory> last5 = PlayerHistoryDB.getLastFiveFromPlayerhistory(memId);
+            if (last5.Count >= 1)
+            {
+                txtAverage.Text = last5[0].AVG.ToString();
+                temp.StartAvg = last5[0].AVG;
+
+                txtTournAvg.Text = last5[0].trueAVG.ToString();
+                temp.Average = Convert.ToInt16(last5[0].trueAVG);
+
+
+                txtBonus.Text = last5[0].Bonus.ToString();
+                temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
+            }
+            else
+            {
+                txtAverage.Text = 0.ToString();
+                txtTournAvg.Text = 0.ToString();
+                temp.Average = 0;
+                temp.StartAvg = 0;
+                temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
+            }
+
            
             #endregion
 
@@ -1364,6 +1398,8 @@ namespace NineTapTour.Forms
                         playerH.ProPot = temp.PotPro;
                         temp.FinPPHG = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
                         playerH.PPHG = temp.FinPPHG;
+                       
+
                         try
                         {
                             temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);

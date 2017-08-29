@@ -150,7 +150,7 @@ namespace NineTapTour.Database
             {
                 var temp = (from h in db.PlayerHistory
                             join g in db.Games on h.GameID equals g.Id
-                            where h.hisID == v
+                            where h.GameID == v
                             select new
                             {
                                 h.hisID
@@ -304,8 +304,8 @@ namespace NineTapTour.Database
             {
                 //will only grab the last inputted average history, that way the bonus pins cant be affected by bowling in more then one squad
                 var temp = (from h in db.PlayerHistory
-                            where h.MemberNumber == id && h.AVG > 0
-                            orderby h.TournamentDate descending
+                            where h.MemberNumber == id && h.AVG > 0 //only grabs tournaments where avgerage was determined. that way it doest grab history from a diffrent sqaud
+                            orderby h.TournamentDate descending, h.hisID descending
                             select new
                             {
                                 h.GamesPlayed,
@@ -323,7 +323,7 @@ namespace NineTapTour.Database
                                 h.MoneyWon,
                                 h.PPHG,
                                 h.Notes,
-                            }).Take(30).ToList();
+                            }).Take(5).ToList();
                 foreach (var item in temp)
                 {
                     PlayerHistory newHistory = new PlayerHistory();

@@ -648,7 +648,6 @@
             this.txtMoney.Name = "txtMoney";
             this.txtMoney.Size = new System.Drawing.Size(83, 20);
             this.txtMoney.TabIndex = 0;
-    
             // 
             // lblPlayer2
             // 
@@ -1111,7 +1110,6 @@
             // 
             // btnPlaceStandings
             // 
-            this.btnPlaceStandings.Enabled = false;
             this.btnPlaceStandings.Location = new System.Drawing.Point(281, 579);
             this.btnPlaceStandings.Margin = new System.Windows.Forms.Padding(1);
             this.btnPlaceStandings.Name = "btnPlaceStandings";

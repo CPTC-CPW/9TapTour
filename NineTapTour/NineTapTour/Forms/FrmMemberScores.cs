@@ -29,6 +29,7 @@ namespace NineTapTour.Forms
         //bool doubles = true;
         public static Tournament selectedTournament;
         public static List<TopScores> overallListOfTopScores;
+        public static List<Participant> overallListOfParticipants;
         int QBSNumber = 0;
        
 
@@ -154,13 +155,14 @@ namespace NineTapTour.Forms
             }
             clear();
             cbxTourneyDropDown.Visible = true;
-            btnPlaceStandings.Enabled = false;
             if (cbxTourneyDropDown.SelectedIndex >= 0 && cbxTourneyDropDown.Visible && cbxTourneyDropDown.SelectedIndex.ToString() != null)
             {
                 // resets the current index to zero when changing the tournament
                 currentIndex = 0;
                 // Gets the record for the selected tournament
                 RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
+                overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
+
                 refresh(false,QBSNumber);
                 // sets focus to member num becuse that is what a user will need next
                 rdoHandicapScore.Visible = true;
@@ -237,7 +239,7 @@ namespace NineTapTour.Forms
                         }
                     }
                 }
-                lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count();
+                lblRecord.Text = "Record " + (currentIndex + 1)  + " / " + total.Count();
                 txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
                 txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
                 txtScratchScore3.Text = Convert.ToString(currentGame.Game3);
@@ -492,6 +494,7 @@ namespace NineTapTour.Forms
                                    && p.Tournament.Id == currTourney.Id
                                    select p.Game.Id).FirstOrDefault();
                     player.Game.Id = gameId;
+
                     //selects the ID of the combobox of tournaments and stores the
                     //tournament property within the participants class.
                     player.Tournament = currTourney;
@@ -1198,6 +1201,7 @@ namespace NineTapTour.Forms
                             listOfTopScore[count].Game3 = Convert.ToInt32(reader["Game3"]);
                             listOfTopScore[count].Game4 = Convert.ToInt32(reader["Game4"]);
                             listOfTopScore[count].Handicap = Convert.ToInt32(reader["Handicap"]);
+                            listOfTopScore[count].memberNumber = id;
                             try
                             {
                                 listOfTopScore[count].Bonus = Convert.ToInt32(reader["Bonus"]);
@@ -1206,7 +1210,7 @@ namespace NineTapTour.Forms
                             {
                                 listOfTopScore[count].Bonus = 0;
                             }
-
+                            listOfTopScore[count].memberNumber = id;
                             listOfTopScore[count].ScratchTotal = Convert.ToInt32(reader["Total"]);
                             listOfTopScore[count].HandicapScore = score + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);
                             listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
@@ -1309,6 +1313,8 @@ namespace NineTapTour.Forms
                     {
                         richTextBox1.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
                                                 + "\t" + String.Format("{0, -5}", scores[i].Score + "   " + "\n"));
+                        
+
                     }
                 }
                 #endregion
@@ -1461,7 +1467,7 @@ namespace NineTapTour.Forms
                                 nullValues += 1;
                             }
                             #endregion
-                            scores.Add(new MemberScores { FirstName = i.FirstName, LastName = i.LastName, Score = (i.Game1) + (i.Game2) + (i.Game3) + (i.Game4) + ((4 - nullValues) * (i.Handicap + i.Bonus)) });
+                            scores.Add(new MemberScores { FirstName = i.FirstName, LastName = i.LastName, Score = ((i.Game1 + i.Bonus + i.Handicap) + (i.Game2 + i.Bonus + i.Handicap) + (i.Game3 + i.Bonus + i.Handicap) + (i.Game4 + i.Handicap + i.Bonus)) });
                         }
                         scores.Sort(scoreComparer);
                         scores.Reverse();
@@ -1670,12 +1676,14 @@ namespace NineTapTour.Forms
             }
             else
             {
-                var newFrmFinalizeTournament = new FrmFinalizeTournament(selectedTournament);
+                
+                var newFrmFinalizeTournament = new FrmFinalizeTournament(selectedTournament, overallListOfTopScores);
                 newFrmFinalizeTournament.Dock = DockStyle.Fill;
                 newFrmFinalizeTournament.WindowState = FormWindowState.Maximized;
                 newFrmFinalizeTournament.Show();
             }
-
+            
+           
         }
 
        
@@ -1934,7 +1942,9 @@ namespace NineTapTour.Forms
         {
 
         }
-        #region Properties 
+        #region Properties
+
+        public int memberNumber{get; set; } 
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int? ScratchTotal { get; set; }
@@ -1947,6 +1957,7 @@ namespace NineTapTour.Forms
         public int? Game4 { get; set; }
         public int Handicap { get; set; }
         public int Bonus { get; set; }
+        public int GameID { get; set; }
         #endregion
     }
 }

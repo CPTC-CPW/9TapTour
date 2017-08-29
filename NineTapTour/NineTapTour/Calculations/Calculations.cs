@@ -37,6 +37,7 @@ namespace NineTapTour.Calculations
         /// <returns></returns>
         public static int CalculateHandicapPins(int currentAverage)
         {
+
             double calculateHandicap = Convert.ToDouble(BASE_AVERAGE_HANDICAP_CALCULATOR - currentAverage) * PERCENTAGE_TO_CALCULATE_HANDICAP;
             if (calculateHandicap > MAX_HANDICAP_PINS)
             {
@@ -48,28 +49,48 @@ namespace NineTapTour.Calculations
             }
         }
 
-        public static int CalculateBonusPins(bool didMemberCash, int memberPlaced, int currentBonusPins, bool isDoublesTournament)
+        public static int CalculateBonusPins(bool didMemberCash, int memberPlaced, int currentBonusPins, bool isDoublesTournament, int memid)
         {
+            int RETURN = 0;
             if (didMemberCash)
             {
-                DeductBonusPins(memberPlaced, currentBonusPins, isDoublesTournament);
+              RETURN =  DeductBonusPins(memberPlaced, currentBonusPins, isDoublesTournament);
             }
             else
             {
-                AddBonusPins(currentBonusPins, isDoublesTournament);
+               RETURN = AddBonusPins(currentBonusPins, isDoublesTournament, memid);
             }
-            throw new NotImplementedException();
+            return RETURN;
+          
         }
 
-        public static int AddBonusPins(int currentBonusPins, bool isDoublesTournament)
+        public static int AddBonusPins(int currentBonusPins, bool isDoublesTournament, int memid)
         {
             if (currentBonusPins == MAX_BONUS_PINS_ALLOWED)
             {
                 return MAX_BONUS_PINS_ALLOWED;
             }
+            else if(PlayerHistoryDB.getLastFiveFromPlayerhistory(memid).Count >= 3)
+            {
+                List<PlayerHistory> latest = PlayerHistoryDB.getLastFiveFromPlayerhistory(memid);
+                if(latest[0].TournamentDate != latest[1].TournamentDate &&
+                   latest[1].TournamentDate != latest[2].TournamentDate &&
+                   latest[2].TournamentDate != latest[0].TournamentDate)
+                {
+                    if(latest[0].Bonus == latest[1].Bonus &&
+                       latest[1].Bonus == latest[2].Bonus &&
+                       latest[2].Bonus == latest[0].Bonus)
+                    {
+                        return currentBonusPins++;
+                    }
+                }
+                return currentBonusPins;
+
+            }
             else
             {
-                return currentBonusPins++;
+              
+                return currentBonusPins;
             }
         }
 

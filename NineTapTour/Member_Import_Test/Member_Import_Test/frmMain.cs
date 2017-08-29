@@ -892,6 +892,7 @@ namespace Member_Import_Test
                             playerH.ProPot = temp.PotPro;
                             temp.FinPPHG = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
                             playerH.PPHG = temp.FinPPHG;
+
                             try
                             {
                                 temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);

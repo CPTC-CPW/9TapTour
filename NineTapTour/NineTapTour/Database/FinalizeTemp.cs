@@ -39,5 +39,7 @@ namespace NineTapTour.Database
         public int GameAvg { get; set; }
         public int Handicap { get; set; }
         public int Bonus { get; set; }
+
+        public int HandicapTotal { get; set; }
     }
 }
