@@ -757,9 +757,25 @@ namespace NineTapTour.Forms
             {
                 squad = 3;
             }
-            else
+            else if (rdoSquadFour.Checked)
             {
                 squad = 4;
+            }
+            else if (rdoSquad5.Checked)
+            {
+                squad = 5;
+            }
+            else if (rdoSquad6.Checked)
+            {
+                squad = 6;
+            }
+            else if (rdoSquad7.Checked)
+            {
+                squad = 7;
+            }
+            else if (rdoSquad8.Checked)
+            {
+                squad = 8;
             }
 
             try
@@ -824,10 +840,27 @@ namespace NineTapTour.Forms
                 {
                     rdoSquadThree.Checked = true;
                 }
-                else
+                else if (total[currentIndex - 1].Squad == 4)
                 {
                     rdoSquadFour.Checked = true;
                 }
+                else if (total[currentIndex - 1].Squad == 5)
+                {
+                    rdoSquad5.Checked = true;
+                }
+                else if (total[currentIndex - 1].Squad == 6)
+                {
+                    rdoSquad6.Checked = true;
+                }
+                else if (total[currentIndex - 1].Squad == 7)
+                {
+                    rdoSquad7.Checked = true;
+                }
+                else if (total[currentIndex - 1].Squad == 8)
+                {
+                    rdoSquad8.Checked = true;
+                }
+
                 FillMember();
             }
         }
@@ -866,10 +899,27 @@ namespace NineTapTour.Forms
                     {
                         rdoSquadThree.Checked = true;
                     }
-                    else
+                    else if (total[currentIndex].Squad == 4)
                     {
                         rdoSquadFour.Checked = true;
                     }
+                    else if (total[currentIndex].Squad == 5)
+                    {
+                        rdoSquad5.Checked = true;
+                    }
+                    else if (total[currentIndex].Squad == 6)
+                    {
+                        rdoSquad6.Checked = true;
+                    }
+                    else if (total[currentIndex].Squad == 7)
+                    {
+                        rdoSquad7.Checked = true;
+                    }
+                    else if (total[currentIndex].Squad == 8)
+                    {
+                        rdoSquad8.Checked = true;
+                    }
+
                     FillMember();
                 }
             }
@@ -1062,6 +1112,56 @@ namespace NineTapTour.Forms
             ScoreAndTotalClear();
             FillMember();
         }
+
+
+        private void rdoSquad5_CheckedChanged_1(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            FillMember();
+        }
+
+
+        private void rdoSquad6_CheckedChanged_1(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            FillMember();
+        }
+
+        private void rdoSquad7_CheckedChanged(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            FillMember();
+        }
+
+        private void rdoSquad8_CheckedChanged(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            FillMember();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         /// <summary>
         /// Clears scratch scores and scratch and handicap totals
         /// </summary>
@@ -1809,7 +1909,7 @@ namespace NineTapTour.Forms
                         temp = (from g in (db.Participants.Include(b => b.Member)
                                                 .Include(b => b.Game)
                                                 .Where(b => b.Tournament.Id == selectedTournament.Id))
-                                orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3) - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min())) descending
+                                orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3 + g.Game.Bonus * 3) - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min())) descending
                                 select new MemberScores { MemberNo = g.Member.Id, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3) - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
                     }
                     else if(QBSNumber == 0)
@@ -1817,7 +1917,7 @@ namespace NineTapTour.Forms
                         temp = (from g in (db.Participants.Include(b => b.Member)
                                                 .Include(b => b.Game)
                                                 .Where(b => b.Tournament.Id == selectedTournament.Id))
-                                orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4)) descending
+                                orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4 + g.Game.Bonus * 4)) descending
                                 select new MemberScores { MemberNo = g.Member.Id, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
                     }
                     else
@@ -1825,7 +1925,7 @@ namespace NineTapTour.Forms
                         temp = (from g in (db.Participants.Include(b => b.Member)
                                                 .Include(b => b.Game)
                                                 .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b=> b.Squad == QBSNumber))
-                                orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4)) descending
+                                orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4 + g.Game.Bonus * 4)) descending
                                 select new MemberScores { MemberNo = g.Member.Id, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
                     }
 
@@ -1930,6 +2030,13 @@ namespace NineTapTour.Forms
             }
 
         }
+
+ 
+
+
+
+
+
         /************************************************************************/
 
     }

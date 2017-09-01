@@ -414,6 +414,64 @@ namespace NineTapTour.Database
                 return gamesList.Count;
             }
         }
+        public static List<PlayerHistory> getMemberPlayerHistoryByTotal(int id)
+        {
+            List<PlayerHistory> Return = new List<PlayerHistory>();
+            using (var db = new NineTapDb())
+            {
+                var temp = (from h in db.PlayerHistory
+                            where h.MemberNumber == id
+                            orderby h.TotalScore descending
+                            select new
+                            {
+                                h.hisID,
+                                h.GameID,
+                                h.GamesPlayed,
+                                h.TournamentDate,
+                                h.MemberNumber,
+                                h.Game1,
+                                h.Game2,
+                                h.Game3,
+                                h.Game4,
+                                h.AverageForGame,
+                                h.trueAVG,
+                                h.AVG,
+                                h.HandiCap,
+                                h.Bonus,
+                                h.ProPot,
+                                h.MoneyWon,
+                                h.Notes,
+                                h.TotalScore,
+                            }).ToList().OrderByDescending(a => (a.TotalScore));
+                foreach (var item in temp)
+                {
+                    PlayerHistory newHistory = new PlayerHistory();
+                    newHistory.MemberNumber = item.MemberNumber;
+                    newHistory.hisID = item.hisID;
+                    newHistory.GameID = item.GameID;
+                    newHistory.GamesPlayed = item.GamesPlayed;
+                    newHistory.TournamentDate = item.TournamentDate;
+                    newHistory.Game1 = item.Game1;
+                    newHistory.Game2 = item.Game2;
+                    newHistory.Game3 = item.Game3;
+                    newHistory.Game4 = item.Game4;
+                    newHistory.TotalScore = (item.Game1 + item.Game2 + item.Game3 + item.Game4);
+                    newHistory.AverageForGame = item.AverageForGame;
+                    newHistory.trueAVG = item.trueAVG;
+                    newHistory.AVG = item.AVG;
+                    newHistory.HandiCap = item.HandiCap;
+                    newHistory.Bonus = item.Bonus;
+                    newHistory.ProPot = item.ProPot;
+                    newHistory.MoneyWon = item.MoneyWon;
+                    newHistory.Notes = item.Notes;
+                    Return.Add(newHistory);
+                }
+
+
+            }
+
+            return Return;
+        }
 
 
     }

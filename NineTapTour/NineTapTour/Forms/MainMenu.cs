@@ -84,5 +84,23 @@ namespace NineTapTour.Forms
 
             }
         }
+        // on load grabs an updated version of the all the player informantion so you dont have to go their page to update their player information to the right information
+        private void MainMenu_Load(object sender, EventArgs e)
+        {
+            List<Member> memberList = MemberDb.GetMemberList();
+            
+            for(int i = 0; i < memberList.Count; i++)
+            {
+
+                List<PlayerHistory> ph = PlayerHistoryDB.getLastFiveFromPlayerhistory(memberList[i].Number);
+                if (ph.Count > 0)
+                {
+                    memberList[i].StartAvg = ph[0].AVG;
+                    memberList[i].Average = Convert.ToInt32(ph[0].trueAVG);
+                    MemberDb.AddMember(memberList[i]);
+                }
+            }
+
+        }
     }
 }
