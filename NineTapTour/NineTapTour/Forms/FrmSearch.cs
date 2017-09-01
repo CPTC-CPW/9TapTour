@@ -175,6 +175,7 @@ namespace NineTapTour.Forms
             {
                 EmptyGrid();
             }
+            btnSelect.Focus();
         }
 
         private void chkAdvancedView_CheckStateChanged(object sender, EventArgs e)
