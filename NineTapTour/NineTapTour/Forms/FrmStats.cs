@@ -441,42 +441,42 @@ namespace NineTapTour.Forms
 
        
             //sets any game over 250 to bold black
-            for (int k = 0; k < dataGridView1.Rows.Count; k++)
-            {
-                int game1;
-                bool Game1 = int.TryParse(dataGridView1.Rows[k].Cells[2].Value.ToString(), out game1);
+            //for (int k = 0; k < dataGridView1.Rows.Count; k++)
+            //{
+            //    int game1;
+            //    bool Game1 = int.TryParse(dataGridView1.Rows[k].Cells[2].Value.ToString(), out game1);
 
-                int game2;
-                bool Game2 = int.TryParse(dataGridView1.Rows[k].Cells[3].Value.ToString(), out game2);
+            //    int game2;
+            //    bool Game2 = int.TryParse(dataGridView1.Rows[k].Cells[3].Value.ToString(), out game2);
 
-                int game3;
-                bool Game3 = int.TryParse(dataGridView1.Rows[k].Cells[4].Value.ToString(), out game3);
+            //    int game3;
+            //    bool Game3 = int.TryParse(dataGridView1.Rows[k].Cells[4].Value.ToString(), out game3);
 
-                int game4;
-                bool Game4 = int.TryParse(dataGridView1.Rows[k].Cells[5].Value.ToString(), out game4);
+            //    int game4;
+            //    bool Game4 = int.TryParse(dataGridView1.Rows[k].Cells[5].Value.ToString(), out game4);
 
 
-                if (game1 > TURN_BOLD_IF_BOWLED_OVER_NUMBER && Game1 == true)
-                {
-                    dataGridView1.Rows[k].Cells[2].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
-                    dataGridView1[2, k].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
-                }
-                if (game2 > TURN_BOLD_IF_BOWLED_OVER_NUMBER && Game2 == true)
-                {
-                    dataGridView1.Rows[k].Cells[3].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
-                }
-                if (game3 > TURN_BOLD_IF_BOWLED_OVER_NUMBER && Game3 == true)
-                {
-                    dataGridView1.Rows[k].Cells[4].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
-                }
-                if (game4 > TURN_BOLD_IF_BOWLED_OVER_NUMBER && Game4 == true)
-                {
-                    dataGridView1.Rows[k].Cells[5].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
-                }
+            //    if (game1 > TURN_BOLD_IF_BOWLED_OVER_NUMBER && Game1 == true)
+            //    {
+            //        dataGridView1.Rows[k].Cells[2].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
+            //        dataGridView1[2, k].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
+            //    }
+            //    if (game2 > TURN_BOLD_IF_BOWLED_OVER_NUMBER && Game2 == true)
+            //    {
+            //        dataGridView1.Rows[k].Cells[3].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
+            //    }
+            //    if (game3 > TURN_BOLD_IF_BOWLED_OVER_NUMBER && Game3 == true)
+            //    {
+            //        dataGridView1.Rows[k].Cells[4].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
+            //    }
+            //    if (game4 > TURN_BOLD_IF_BOWLED_OVER_NUMBER && Game4 == true)
+            //    {
+            //        dataGridView1.Rows[k].Cells[5].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
+            //    }
 
-            }
+            //}
 
-            //sets there career top 5 scratch series to red font
+            //sets there career top 5 scratch series scores to red font
             for (int j = 0; j < dataGridView1.Rows.Count; j++)
             {
                 if(top5 <= 5)

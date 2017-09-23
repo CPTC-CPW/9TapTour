@@ -551,16 +551,27 @@ namespace NineTapTour.Forms
             temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.Average.Value));
             List<PlayerHistory> last5 = PlayerHistoryDB.getLastFiveFromPlayerhistory(memId);
             if (last5.Count >= 1)
-            {
-                txtAverage.Text = last5[0].AVG.ToString();
-                temp.StartAvg = last5[0].AVG;
+            { // sets the average to that of their last adjusted average
+                if (Convert.ToInt32(txtAverage.Text) == last5[0].AVG)
+                {
+                    txtAverage.Text = last5[0].AVG.ToString();
+                    temp.StartAvg = last5[0].AVG;
 
-                txtTournAvg.Text = last5[0].trueAVG.ToString();
-                temp.Average = Convert.ToInt16(last5[0].trueAVG);
+                    txtTournAvg.Text = last5[0].trueAVG.ToString();
+                    temp.Average = Convert.ToInt16(last5[0].trueAVG);
 
 
-                txtBonus.Text = last5[0].Bonus.ToString();
-                temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
+                    txtBonus.Text = last5[0].Bonus.ToString();
+                    temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
+                }
+                else //catches if director wants to change there average manually regardless of there player history
+                {
+                    temp.StartAvg = Convert.ToInt32(txtAverage.Text);
+                    txtTournAvg.Text = last5[0].trueAVG.ToString();
+                    temp.Average = Convert.ToInt16(last5[0].trueAVG);
+                    txtBonus.Text = last5[0].Bonus.ToString();
+                    temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
+                }
             }
             else if(txtAverage.Text == null)
             {
