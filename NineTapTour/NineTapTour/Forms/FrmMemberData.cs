@@ -562,12 +562,20 @@ namespace NineTapTour.Forms
                 txtBonus.Text = last5[0].Bonus.ToString();
                 temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
             }
-            else
+            else if(txtAverage.Text == null)
             {
                 txtAverage.Text = 0.ToString();
                 txtTournAvg.Text = 0.ToString();
                 temp.Average = 0;
                 temp.StartAvg = 0;
+                temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
+            }
+            else
+            {
+                temp.StartAvg = Convert.ToInt16(txtAverage.Text);
+                temp.Average = 0;
+                txtAverage.Text = temp.StartAvg.ToString();
+                txtTournAvg.Text = 0.ToString();
                 temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
             }
 

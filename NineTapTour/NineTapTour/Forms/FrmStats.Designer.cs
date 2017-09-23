@@ -70,6 +70,8 @@
             this.dataGridView1.StandardTab = true;
             this.dataGridView1.TabIndex = 3;
             this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
+          
+
             // 
             // lblName
             // 

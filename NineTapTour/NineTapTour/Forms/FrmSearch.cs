@@ -249,6 +249,7 @@ namespace NineTapTour.Forms
                 dtagrdResults.Columns["LastPayment"].Visible = false;
                 dtagrdResults.Columns["IsLifetimeMember"].Visible = false;
                 //dtagrdResults.Columns["MoneyEarned"].Visible = false;
+                dtagrdResults.Columns["MoneyEarned"].ValueType = typeof(decimal);
                 dtagrdResults.Columns["Notes"].Visible = false;
                 dtagrdResults.Columns["Referrals"].Visible = false;
                 dtagrdResults.Columns["IsSenior"].Visible = false;

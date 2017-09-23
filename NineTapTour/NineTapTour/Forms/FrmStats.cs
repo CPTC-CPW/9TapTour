@@ -44,7 +44,9 @@ namespace NineTapTour.Forms
                 column.Width = 55;
             }
             ph = PlayerHistoryDB.getMemberPlayerHistoryByTotal(memNum);
-            
+
+
+                        
         }
     
 
@@ -283,23 +285,25 @@ namespace NineTapTour.Forms
                             p.Notes
                         });
             dtGames.Columns.Add("Games").ReadOnly = true;
-            dtGames.Columns.Add("Date");
+            dtGames.Columns.Add("Date", typeof(DateTime));
             dtGames.Columns.Add("Game1");
             //dtGames.Columns.Add(new DataColumn("Selected", typeof(bool)));
             dtGames.Columns.Add("Game2");
             dtGames.Columns.Add("Game3");
-            dtGames.Columns.Add("Game4"); ;
-            dtGames.Columns.Add("Scratch Total");
-            dtGames.Columns.Add("Game Total w/HDCP").ReadOnly = true;
-            dtGames.Columns.Add("Entry AVG").ReadOnly = true;
-            dtGames.Columns.Add("30 Entry AVG").ReadOnly = true;
+            dtGames.Columns.Add("Game4"); 
+            dtGames.Columns.Add("Scratch Total", typeof(Int32));
+            dtGames.Columns.Add("Game Total w/HDCP", typeof(Int32));
+            dtGames.Columns.Add("Entry AVG", typeof(Int32));
+            dtGames.Columns.Add("30 Entry AVG", typeof(Int32));
             dtGames.Columns.Add("Adjusted AVG").ReadOnly = true;
             dtGames.Columns.Add("Handicap").ReadOnly = true;
             dtGames.Columns.Add("Bonus").ReadOnly = true;
             dtGames.Columns.Add("Pro Pot").ReadOnly = true;
             dtGames.Columns.Add("Place").ReadOnly = true;
-            dtGames.Columns.Add("Money Won").ReadOnly = true;
+            dtGames.Columns.Add("Money Won", typeof(Decimal));
             dtGames.Columns.Add("Notes").ReadOnly = true;
+
+
 
             foreach (var item in temp)
             {
@@ -433,7 +437,9 @@ namespace NineTapTour.Forms
         { 
             dataGridView1.SuspendLayout();
             int top5 = 0;
-            
+
+
+       
             //sets any game over 250 to bold black
             for (int k = 0; k < dataGridView1.Rows.Count; k++)
             {
@@ -504,11 +510,15 @@ namespace NineTapTour.Forms
             }
 
 
+
+
             dataGridView1.ResumeLayout();
 
 
 
 
         }
+
+
     }
 }
