@@ -477,37 +477,37 @@ namespace NineTapTour.Forms
             //}
 
             //sets there career top 5 scratch series scores to red font
-            for (int j = 0; j < dataGridView1.Rows.Count; j++)
-            {
-                if(top5 <= 5)
-                {
-                    if(Convert.ToInt32(dataGridView1.Rows[j].Cells[6].Value) == ph[0].TotalScore)
-                    {
-                        dataGridView1.Rows[j].Cells[6].Style.ForeColor = Color.Red;
-                        top5++;
-                    }
-                    if (Convert.ToInt32(dataGridView1.Rows[j].Cells[6].Value) == ph[1].TotalScore)
-                    {
-                        dataGridView1.Rows[j].Cells[6].Style.ForeColor = Color.Red;
-                        top5++;
-                    }
-                    if (Convert.ToInt32(dataGridView1.Rows[j].Cells[6].Value) == ph[2].TotalScore)
-                    {
-                        dataGridView1.Rows[j].Cells[6].Style.ForeColor = Color.Red;
-                        top5++;
-                    }
-                    if (Convert.ToInt32(dataGridView1.Rows[j].Cells[6].Value) == ph[3].TotalScore)
-                    {
-                        dataGridView1.Rows[j].Cells[6].Style.ForeColor = Color.Red;
-                        top5++;
-                    }
-                    if (Convert.ToInt32(dataGridView1.Rows[j].Cells[6].Value) == ph[4].TotalScore)
-                    {
-                        dataGridView1.Rows[j].Cells[6].Style.ForeColor = Color.Red;
-                        top5++;
-                    }
-                }
-            }
+            //for (int j = 0; j < dataGridView1.Rows.Count; j++)
+            //{
+            //    if(top5 <= 5)
+            //    {
+            //        if(Convert.ToInt32(dataGridView1.Rows[j].Cells[6].Value) == ph[0].TotalScore)
+            //        {
+            //            dataGridView1.Rows[j].Cells[6].Style.ForeColor = Color.Red;
+            //            top5++;
+            //        }
+            //        if (Convert.ToInt32(dataGridView1.Rows[j].Cells[6].Value) == ph[1].TotalScore)
+            //        {
+            //            dataGridView1.Rows[j].Cells[6].Style.ForeColor = Color.Red;
+            //            top5++;
+            //        }
+            //        if (Convert.ToInt32(dataGridView1.Rows[j].Cells[6].Value) == ph[2].TotalScore)
+            //        {
+            //            dataGridView1.Rows[j].Cells[6].Style.ForeColor = Color.Red;
+            //            top5++;
+            //        }
+            //        if (Convert.ToInt32(dataGridView1.Rows[j].Cells[6].Value) == ph[3].TotalScore)
+            //        {
+            //            dataGridView1.Rows[j].Cells[6].Style.ForeColor = Color.Red;
+            //            top5++;
+            //        }
+            //        if (Convert.ToInt32(dataGridView1.Rows[j].Cells[6].Value) == ph[4].TotalScore)
+            //        {
+            //            dataGridView1.Rows[j].Cells[6].Style.ForeColor = Color.Red;
+            //            top5++;
+            //        }
+            //    }
+            //}
 
 
 
