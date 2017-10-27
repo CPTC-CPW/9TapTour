@@ -1227,23 +1227,23 @@ namespace NineTapTour.Forms
                 getList.Connection = con;
                 if (QBSNumber == 0)
                 {
-                    getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
+                    getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id,  Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
                                     FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
                                     JOIN Games ON Games.Id = Participants.Game_Id
                                     JOIN Members ON Members.Id = Participants.Member_Id 
                                     WHERE Tournaments.Id = @TID
-                                    GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus
+                                    GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
                                     ORDER BY Participants.Member_Id";
                     getList.Parameters.AddWithValue("@TID", selectedTourney);
                 }
                 else
                 {
-                    getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
+                    getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
                                     FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
                                     JOIN Games ON Games.Id = Participants.Game_Id
                                     JOIN Members ON Members.Id = Participants.Member_Id 
                                     WHERE Tournaments.Id = @TID AND Participants.SquadNumber = @SN
-                                    GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus
+                                    GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
                                     ORDER BY Participants.Member_Id";
                     getList.Parameters.AddWithValue("@TID", selectedTourney);
                     getList.Parameters.AddWithValue("@SN", QBSNumber);
@@ -1281,6 +1281,7 @@ namespace NineTapTour.Forms
                                 listOfTopScore[count - 1].Game2 = Convert.ToInt32(reader["Game2"]);
                                 listOfTopScore[count - 1].Game3 = Convert.ToInt32(reader["Game3"]);
                                 listOfTopScore[count - 1].Game4 = Convert.ToInt32(reader["Game4"]);
+                                listOfTopScore[count - 1].GameID = Convert.ToInt32(reader["Id"]);
                             }
                         }
                         else
@@ -1300,6 +1301,7 @@ namespace NineTapTour.Forms
                             listOfTopScore[count].Game2 = Convert.ToInt32(reader["Game2"]);
                             listOfTopScore[count].Game3 = Convert.ToInt32(reader["Game3"]);
                             listOfTopScore[count].Game4 = Convert.ToInt32(reader["Game4"]);
+                            listOfTopScore[count].GameID = Convert.ToInt32(reader["Id"]);
                             listOfTopScore[count].Handicap = Convert.ToInt32(reader["Handicap"]);
                             listOfTopScore[count].memberNumber = id;
                             try

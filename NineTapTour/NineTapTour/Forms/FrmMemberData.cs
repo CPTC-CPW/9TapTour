@@ -94,11 +94,16 @@ namespace NineTapTour.Forms
                 {
                     txtAverage.Text = last5[0].AVG.ToString();
                     currentMem.StartAvg = Convert.ToInt16(txtAverage.Text);
+                    txtTournAvg.Text = Convert.ToInt16(last5[0].trueAVG).ToString();
+                    currentMem.Average = Convert.ToInt32(last5[0].trueAVG);
+
                     txtBonus.Text = last5[0].Bonus.ToString();
                     currentMem.Bonus = Convert.ToInt16(txtBonus.Text);
                 }
                 else
                 {
+                    txtAverage.Text = currentMem.StartAvg.ToString();
+                    txtTournAvg.Text = 0.ToString();
                     txtBonus.Text = 0.ToString();
                     currentMem.Bonus = Convert.ToInt16(txtBonus.Text);
                 }
@@ -225,10 +230,9 @@ namespace NineTapTour.Forms
 
                 #region Score Info
 
-                txtAverage.Text = currentMem.StartAvg.ToString();
-                double leagueavg = LeagueAvgFromPlayerHistory(currentMem);
-                currentMem.Average =Convert.ToInt32(leagueavg);
-                txtTournAvg.Text = Convert.ToInt32(leagueavg).ToString();
+      
+              
+          
 
                 /********************************************************************************
                 updates the form's handicap even when the finalize tournament button is clicked
@@ -329,11 +333,7 @@ namespace NineTapTour.Forms
 
                 MemberDb.AddMember(currentMem);
 
-                txtAverage.Text = currentMem.StartAvg.ToString();
-                txtTournAvg.Text = currentMem.Average.ToString();
-                txtHandicap.Text = currentMem.Handicap.ToString();
-
-
+     
                 
             }
         }
@@ -573,7 +573,7 @@ namespace NineTapTour.Forms
                     temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
                 }
             }
-            else if(txtAverage.Text == null)
+            else if(txtAverage.Text == "")
             {
                 txtAverage.Text = 0.ToString();
                 txtTournAvg.Text = 0.ToString();
@@ -831,7 +831,8 @@ namespace NineTapTour.Forms
 
         private void btnStats_Click(object sender, EventArgs e)
         {
-            FrmStats p = new FrmStats(currentMem.Number, currentMem.FirstName + currentMem.LastName + currentMem.MiddleInitial, currentMem);
+            List<PlayerHistory> nothing = new List<PlayerHistory>();
+            FrmStats p = new FrmStats(currentMem.Number, currentMem.FirstName + currentMem.LastName + currentMem.MiddleInitial, currentMem, nothing);
             p.ShowDialog();
         }
 

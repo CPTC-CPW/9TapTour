@@ -19,16 +19,18 @@ namespace NineTapTour.Forms
         private int memNum;
         private string memName;
         static int TURN_BOLD_IF_BOWLED_OVER_NUMBER = 250;
+        List<PlayerHistory> ToBeAdd;
         List<PlayerHistory> ph;
 
 
-        public FrmStats(int memberNumber, string memberName, Member currentMem)
+        public FrmStats(int memberNumber, string memberName, Member currentMem, List<PlayerHistory> ToBeAdded)
         {
             InitializeComponent();
             this.memNum = memberNumber;
             this.memName = memberName;
             this.mem = currentMem;
             this.dataGridView1.DoubleBuffered(false);
+            this.ToBeAdd = ToBeAdded;
             dataGridView1.DataSource = tableview();
             dataGridView1.DefaultCellStyle.Alignment = DataGridViewContentAlignment.BottomCenter;
 
@@ -266,6 +268,8 @@ namespace NineTapTour.Forms
                         orderby p.TournamentDate descending, p.hisID descending
                         select new
                         {
+                            p.hisID,
+                            p.GameID,
                             p.GamesPlayed,
                             p.TournamentDate,
                             p.Game1,
@@ -302,6 +306,50 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Place").ReadOnly = true;
             dtGames.Columns.Add("Money Won", typeof(Decimal));
             dtGames.Columns.Add("Notes").ReadOnly = true;
+            dtGames.Columns.Add("GameID").ReadOnly = true;
+
+
+            foreach (var item in ToBeAdd)
+            {
+                DataRow newRow = dtGames.NewRow();
+                newRow["Games"] = item.GamesPlayed;
+                newRow["Date"] = item.TournamentDate.ToShortDateString();
+                if (item.Game1 == 0)
+                    newRow["Game1"] = null;
+                else
+                    newRow["Game1"] = item.Game1;
+
+                if (item.Game2 == 0)
+                    newRow["Game2"] = null;
+                else
+                    newRow["Game2"] = item.Game2;
+                if (item.Game3 == 0)
+                    newRow["Game3"] = null;
+                else
+                    newRow["Game3"] = item.Game3;
+                if (item.Game4 == 0)
+                    newRow["Game4"] = null;
+                else
+                    newRow["Game4"] = item.Game4;
+                newRow["Scratch Total"] = item.Game1 + item.Game2 + item.Game3 + item.Game4;
+                newRow["Game Total w/HDCP"] = item.TotalScore;
+                newRow["Entry AVG"] = Convert.ToDouble((item.Game1 + item.Game2 + item.Game3 + item.Game4) / item.GamesPlayed);
+                newRow["30 Entry AVG"] = item.trueAVG;
+                if (item.AVG == 0)
+                    newRow["Adjusted AVG"] = null;
+                else
+                    newRow["Adjusted AVG"] = item.AVG;
+                newRow["Handicap"] = item.HandiCap;
+                newRow["Bonus"] = item.Bonus;
+                newRow["Pro Pot"] = item.ProPot;
+                newRow["Money Won"] = item.MoneyWon;
+                newRow["Place"] = item.PPHG;
+                newRow["Notes"] = item.Notes;
+                newRow["GameID"] = item.GameID;
+
+                dtGames.Rows.Add(newRow);
+
+            }
 
 
 
@@ -342,6 +390,7 @@ namespace NineTapTour.Forms
                 newRow["Money Won"] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
+                newRow["GameID"] = item.GameID;
 
                 dtGames.Rows.Add(newRow);
 
@@ -387,6 +436,7 @@ namespace NineTapTour.Forms
             {
                 for (int i = 0; i < Last30.Count; i++)
                 {
+
                     game1AVG += Last30[i].Game1;
                     game2AVG += Last30[i].Game2;
                     game3AVG += Last30[i].Game3;
@@ -407,13 +457,6 @@ namespace NineTapTour.Forms
                 txtScratchTotal.Text = scratchTotal.ToString();
                 txtGameTotal.Text = gameTotal.ToString();
             }
-
-
-
-
-
-
-
 
         }
 
@@ -437,9 +480,34 @@ namespace NineTapTour.Forms
         { 
             dataGridView1.SuspendLayout();
             int top5 = 0;
+     
+
+            for(int i = 0; i < dataGridView1.RowCount; i++)
+            {
+                for (int t = 0; t < ToBeAdd.Count; t++)
+                {
+                    if (ToBeAdd[t].GameID == Convert.ToInt32(dataGridView1.Rows[i].Cells[17].Value))
+                    {
+                        for (int r = 0; r < dataGridView1.ColumnCount; r++)
+                        {
+                            dataGridView1.Rows[i].Cells[r].Style.BackColor = Color.LightBlue;                   
+                        }
+
+                    }
+                }
+            }
+            for (int i = 0; i < dataGridView1.RowCount; i++)
+            {
+               
+                dataGridView1.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
+            }
 
 
-       
+
+
+
+
+
             //sets any game over 250 to bold black
             //for (int k = 0; k < dataGridView1.Rows.Count; k++)
             //{
@@ -479,9 +547,9 @@ namespace NineTapTour.Forms
             //sets there career top 5 scratch series scores to red font
             //for (int j = 0; j < dataGridView1.Rows.Count; j++)
             //{
-            //    if(top5 <= 5)
+            //    if (top5 <= 5)
             //    {
-            //        if(Convert.ToInt32(dataGridView1.Rows[j].Cells[6].Value) == ph[0].TotalScore)
+            //        if (Convert.ToInt32(dataGridView1.Rows[j].Cells[6].Value) == ph[0].TotalScore)
             //        {
             //            dataGridView1.Rows[j].Cells[6].Style.ForeColor = Color.Red;
             //            top5++;

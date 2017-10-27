@@ -907,7 +907,7 @@ namespace Member_Import_Test
                             GameHistory.Notes = temp.Notes;
                             playerH.Notes = temp.Notes;
                             playerH.PPHG = temp.FinPPHG;
-                            GameHistory.Id = PlayerHistoryDB.getNumberOfAllGames() + 1;
+                            GameHistory.Id = GameImport.Count + 1;
                             playerH.GameID = GameHistory.Id;
                             GameImport.Add(GameHistory);
                             PlayerHistoryList.Add(playerH);
