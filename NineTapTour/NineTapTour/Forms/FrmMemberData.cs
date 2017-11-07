@@ -92,7 +92,7 @@ namespace NineTapTour.Forms
                 List<PlayerHistory> last5 = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Number);
                 if (last5.Count >= 1)
                 {
-                    txtAverage.Text = last5[0].AVG.ToString();
+                    txtAverage.Text = currentMem.StartAvg.ToString(); //whatever the bowler director decides his average to be is right. dont pull from the player hstory page
                     currentMem.StartAvg = Convert.ToInt16(txtAverage.Text);
                     txtTournAvg.Text = Convert.ToInt16(last5[0].trueAVG).ToString();
                     currentMem.Average = Convert.ToInt32(last5[0].trueAVG);

@@ -333,7 +333,7 @@ namespace NineTapTour.Forms
                     newRow["Game4"] = item.Game4;
                 newRow["Scratch Total"] = item.Game1 + item.Game2 + item.Game3 + item.Game4;
                 newRow["Game Total w/HDCP"] = item.TotalScore;
-                newRow["Entry AVG"] = Convert.ToDouble((item.Game1 + item.Game2 + item.Game3 + item.Game4) / item.GamesPlayed);
+                newRow["Entry AVG"] = item.AverageForGame;
                 newRow["30 Entry AVG"] = item.trueAVG;
                 if (item.AVG == 0)
                     newRow["Adjusted AVG"] = null;

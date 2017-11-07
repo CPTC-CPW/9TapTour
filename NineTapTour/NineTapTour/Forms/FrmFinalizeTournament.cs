@@ -702,12 +702,14 @@ namespace NineTapTour.Forms
                 dataGridView1.Rows[row].Cells[ENTRY_AVERAGE_COLUMN].Value = 0;
                 dataGridView1.Rows[row].Cells[SCRATCH_TOTAL_COLUMN].Value = 0;
                 dataGridView1.Rows[row].Cells[HANDICAP_TOTAL_COLUMN].Value = 0;
+                
             }
             else
             {
                 dataGridView1.Rows[row].Cells[ENTRY_AVERAGE_COLUMN].Value = sum / count;
                 dataGridView1.Rows[row].Cells[SCRATCH_TOTAL_COLUMN].Value = sum;
                 dataGridView1.Rows[row].Cells[HANDICAP_TOTAL_COLUMN].Value = sumWHandicap;
+
             }
         }
         //calculates league average for member based off last 30 games or total games played if less than 30.
@@ -1155,7 +1157,7 @@ namespace NineTapTour.Forms
                         p.Bonus = FinalizeTableList[i].Bonus;//come back and adjust this to see the potential changes that have to be met.
                         //p.moneyWon 
                         p.Notes = dataGridView1[NOTES_COLUMN_, i].Value.ToString();
-                        p.AverageForGame = FinalizeTableList[i].GameAvg;
+                        p.AverageForGame =Convert.ToDouble(dataGridView1[ENTRY_AVERAGE_COLUMN, i].Value );
                         p.trueAVG = FinalizeTableList[i].LeagueAverage;
                         p.AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, i].Value);
 

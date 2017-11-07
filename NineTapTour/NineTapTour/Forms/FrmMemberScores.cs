@@ -219,27 +219,27 @@ namespace NineTapTour.Forms
                 //////////////////////////////////////////////////////////////// PAGINATION HAPPENS RIGHT HERE!!!! ////////////////////////////////////////////////////
                 List<Participant> total = TournamentDb.GetTournamentMemberListInOrder(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue))); //gets list in order so forloops itterate better
 
-                if (buttonCheck == true) // if the right button was clicked
-                {
-                    for (int i = currentIndex; i < total.Count(); i++)
-                    {
-                        if (currentMem.Id == total[i].Member.Id)
-                        {
-                            currentIndex++;
-                        }
-                    }
-                }
-                else // if left button was clicked
-                {
-                    for (int i = 0; i < currentIndex; i++)
-                    {
-                        if (currentMem.Id == total[i].Member.Id)
-                        {
-                            currentIndex--;
-                        }
-                    }
-                }
-                lblRecord.Text = "Record " + (currentIndex + 1)  + " / " + total.Count();
+                //if (buttonCheck == true) // if the right button was clicked
+                //{
+                //    for (int i = currentIndex; i < total.Count(); i++)
+                //    {
+                //        if (currentMem.Id == total[i].Member.Id)
+                //        {
+                //            currentIndex++;
+                //        }
+                //    }
+                //}
+                //else // if left button was clicked
+                //{
+                //    for (int i = 0; i < currentIndex; i++)
+                //    {
+                //        if (currentMem.Id == total[i].Member.Id)
+                //        {
+                //            currentIndex--;
+                //        }
+                //    }
+                //}
+                lblRecord.Text = "Record " + (currentIndex)  + " / " + total.Count();
                 txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
                 txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
                 txtScratchScore3.Text = Convert.ToString(currentGame.Game3);
