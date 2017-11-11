@@ -100,6 +100,7 @@ namespace NineTapTour.Forms
             {
                 btnLeftArrow.Enabled = false;
                 btnRightArrow.Enabled = false;
+                btnDelete.Enabled = false;
             }
             else
             {
@@ -163,6 +164,7 @@ namespace NineTapTour.Forms
                 // Gets the record for the selected tournament
                 RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
                 overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
+                btnDelete.Enabled = true;
 
                 refresh(false,QBSNumber);
                 // sets focus to member num becuse that is what a user will need next
@@ -2079,14 +2081,15 @@ namespace NineTapTour.Forms
                     ResetFields();
                     refresh(false, QBSNumber);
                     RecordIndex(overallListOfParticipants);
-                    cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
+                    cbxTourneyDropDown.DataSource = TournamentDb.GetTournamentList() ;
+                    overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
                     cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
                     cbxTourneyDropDown.ValueMember = "Id";
                     //corrects any changes to the members stats after finalizing to the last accurate 
                     List<PlayerHistory> temp = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Id);
                     currentMem.Handicap = temp[0].HandiCap;
                     currentMem.Bonus = temp[0].Bonus;
-                    currentMem.StartAvg = temp[0].AVG;
+                    currentMem.StartAvg = temp[0].AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
                     currentMem.Average = Convert.ToInt32(temp[0].trueAVG);
 
 
