@@ -95,7 +95,8 @@ namespace NineTapTour.Forms
 
             scratchArray = new TextBox[4] { txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4 };
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
-            if(cbxTourneyDropDown.SelectedIndex == -1)
+           
+            if (cbxTourneyDropDown.SelectedIndex == -1)
             {
                 btnLeftArrow.Enabled = false;
                 btnRightArrow.Enabled = false;
@@ -2033,7 +2034,79 @@ namespace NineTapTour.Forms
 
         }
 
- 
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            //needs to delete current member information from datbase in all important places
+            if(selectedTournament.Doubles == false)
+            {
+                if(overallListOfParticipants.Count == 0)
+                {
+                    var confirm = MessageBox.Show(@"No players currently in tournament, would you like to delete the Tournament?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (confirm == DialogResult.No)
+                        return;
+                    else
+                    {
+                        //delete tournament if there are no participants.
+                        Tournament t = TournamentDb.getTourneyByID(selectedTournament.Id);
+                        TournamentDb.deleteTournament(t);
+                        ResetFields();
+                        refresh(false, QBSNumber);
+                        RecordIndex(overallListOfParticipants);
+                        cbxTourneyDropDown.DataSource = TournamentDb.GetTournamentList();
+                        cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
+                        cbxTourneyDropDown.ValueMember = "Id";
+                        return;
+                    }
+                }
+
+                try
+                {
+
+                    Game g = GetScoresById(currentMem.Id);
+                    //Delete from player history
+                    PlayerHistory p = PlayerHistoryDB.getPlayerHistoryByGameID(g.Id);
+                    PlayerHistoryDB.DeletePlayerHistory(p);
+                    //Delete from FinalizeTemp
+                    FinalizeTemp ft = FinalizeTempDB.getFinalizeID(FinalizeTempDB.getGame(g.Id));
+                    FinalizeTempDB.DeleteFinilizeTemp(ft);
+                    //Delete from Participants list
+                    Participant par = FinalizeTempDB.getParticipantbyGameID(g.Id);
+                    FinalizeTempDB.deleteParticipant(par);
+                    //Delete the game itself
+                    PlayerHistoryDB.DeleteGame(g);
+
+                    //resets all the feilds back to what it wouldve looked like withought such record existing
+                    ResetFields();
+                    refresh(false, QBSNumber);
+                    RecordIndex(overallListOfParticipants);
+                    cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
+                    cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
+                    cbxTourneyDropDown.ValueMember = "Id";
+                    //corrects any changes to the members stats after finalizing to the last accurate 
+                    List<PlayerHistory> temp = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Id);
+                    currentMem.Handicap = temp[0].HandiCap;
+                    currentMem.Bonus = temp[0].Bonus;
+                    currentMem.StartAvg = temp[0].AVG;
+                    currentMem.Average = Convert.ToInt32(temp[0].trueAVG);
+
+
+                }
+                catch
+                {
+                    MessageBox.Show("Current Stats Not added to Tournament yet.");
+                }
+                
+
+            }
+            
+
+
+
+
+
+        }
+
+
 
 
 

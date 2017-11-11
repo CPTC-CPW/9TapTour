@@ -301,9 +301,77 @@ namespace NineTapTour.Database
             return ft;
         }
 
-       
+        public static void DeleteFinilizeTemp (FinalizeTemp ft)
+        {
+            try
+            {
+                using (var db = new NineTapDb())
+                {
+                    db.Entry(ft).State = EntityState.Deleted;
+                    db.SaveChanges();
+                }
+            }
+            catch
+            {
+
+            }
+
+
+
+        }
+
+        public static Participant getParticipantbyGameID (int gameID)
+        {
+            Participant p = new Participant();
+            var db = new NineTapDb();
+            var temp = (
+
+                from g in db.Participants
+                where g.Game.Id == gameID
+                select new
+                {
+                    g.Game,
+                    g.Id,
+                    g.Member,
+                    g.Squad,
+                    g.Tournament,
+
+                });
+            foreach (var g in temp)
+            {
+                p.Game = g.Game;
+                p.Id = g.Id;
+                p.Member = g.Member;
+                p.Squad = g.Squad;
+                p.Tournament = g.Tournament;
+
+            }
+            return p;
+
+        }
+        public static void deleteParticipant (Participant p)
+        {
+            try
+            {
+                using (var db = new NineTapDb())
+                {
+                    db.Entry(p).State = EntityState.Deleted;
+                    db.SaveChanges();
+                }
+            }
+            catch
+            {
+
+            }
+
+        }
+
+
+    }
+
+
 
 
 
     }
-}
+

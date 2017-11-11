@@ -202,5 +202,63 @@ namespace NineTapTour.Database
                 throw new MemberTableException("Error number : " + ex.Number + " - " + ex.Message);
             }
         }
+
+        public static Tournament getTourneyByID(int TourID)
+        {
+            Tournament t = new Tournament();
+            var db = new NineTapDb();
+            var temp = (
+
+                from g in db.Tournaments
+                where g.Id == TourID
+                select new
+                {
+                    g.Date,
+                    g.Doubles,
+                    g.Event,
+                    g.Id,
+                    g.Location,
+                    g.Notes,
+                    g.Participant,
+                    g.Sponsors,
+                    g.Squads,
+                    g.ThreeOutOf4,             
+                });
+            foreach (var g in temp)
+            {
+                t.Date = g.Date;
+                t.Doubles = g.Doubles;
+                t.Event =g.Event;
+                t.Id = g.Id;
+                t.Location = g.Location;
+                t.Notes = g.Notes;
+                t.Participant = g.Participant;
+                t.Sponsors = g.Sponsors;
+                t.Squads = g.Squads;
+                t.ThreeOutOf4 = g.ThreeOutOf4;
+            }
+
+
+            return t;
+        }
+
+        public static void deleteTournament(Tournament t)
+        {
+            try
+            {
+                using (var db = new NineTapDb())
+                {
+                    db.Entry(t).State = EntityState.Deleted;
+                    db.SaveChanges();
+                }
+            }
+            catch
+            {
+
+            }
+
+        }
+
     }
-}
+    }
+
