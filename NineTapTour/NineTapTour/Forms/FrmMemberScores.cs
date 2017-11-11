@@ -2053,10 +2053,18 @@ namespace NineTapTour.Forms
                         TournamentDb.deleteTournament(t);
                         ResetFields();
                         refresh(false, QBSNumber);
+                        currentIndex = 0;
                         RecordIndex(overallListOfParticipants);
                         cbxTourneyDropDown.DataSource = TournamentDb.GetTournamentList();
                         cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
                         cbxTourneyDropDown.ValueMember = "Id";
+                        if(TournamentDb.GetTournamentList().Count <= 0)
+                        {
+                            btnDelete.Enabled = false;
+                            btnLeftArrow.Enabled = false;
+                            btnRightArrow.Enabled = false;
+                        }
+
                         return;
                     }
                 }
@@ -2080,6 +2088,7 @@ namespace NineTapTour.Forms
                     //resets all the feilds back to what it wouldve looked like withought such record existing
                     ResetFields();
                     refresh(false, QBSNumber);
+                    currentIndex = 0;
                     RecordIndex(overallListOfParticipants);
                     cbxTourneyDropDown.DataSource = TournamentDb.GetTournamentList() ;
                     overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
