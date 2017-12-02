@@ -53,7 +53,9 @@ namespace NineTapTour.Forms
         static int BONUS_COLUMN = 19;
         static int PRO_POT_COLUMN = 20;
         static int NOTES_COLUMN_ = 21;
-        static int MEMBER_CASHED_IF_THEY_PLACED_UNDER_THIS_NUMBER = 20;
+
+
+        
 
 
         //USE THIS IF YOU WANT TO CHANGE THE NAME OF EACH COLUMN 
@@ -1111,47 +1113,56 @@ namespace NineTapTour.Forms
                         if (dataGridView1[GAME_1_VALID_COLUMN, i].Value.ToString() == "True")
                         {
                             tempgameplayed++;
-                            FinalizeTableList[i].UseGame1 = true;       
+                            FinalizeTableList[i].UseGame1 = true;
+                            p.Game1 = FinalizeTableList[i].Game1;
                         }
                         else
                         {
                             FinalizeTableList[i].UseGame1 = false;
+                            p.Game1 = 0;
+
                         }
                         if (dataGridView1[GAME_2_VALID_COLUMN, i].Value.ToString() == "True")
                         {
                             tempgameplayed++;
                             FinalizeTableList[i].UseGame2 = true;
+                            p.Game2 = FinalizeTableList[i].Game2;
+
                         }
                         else
                         {
                             FinalizeTableList[i].UseGame2 = false;
+                            p.Game2 = 0;
                         }
                         if (dataGridView1[GAME_3_VALID_COLUMN, i].Value.ToString() == "True")
                         {
                             tempgameplayed++;
                             FinalizeTableList[i].UseGame3 = true;
+                            p.Game3 = FinalizeTableList[i].Game3;
                         }
                         else
                         {
                             FinalizeTableList[i].UseGame3 = false;
+                            p.Game3 = 0;
 
                         }
                         if (dataGridView1[GAME_4_VALID_COLUMN, i].Value.ToString() == "True")
                         {
                             tempgameplayed++;
                             FinalizeTableList[i].UseGame4 = true;
+                            p.Game4 = FinalizeTableList[i].Game4;
                         }
                         else
                         {
                             FinalizeTableList[i].UseGame4 = false;
+                            p.Game4 = 0;
                         }
                         p.GamesPlayed = tempgameplayed;
                         p.TournamentDate = currentT.Date;
                         p.GameID = FinalizeTableList[i].GameId;
-                        p.Game1 = FinalizeTableList[i].Game1;
-                        p.Game2 = FinalizeTableList[i].Game2;
-                        p.Game3 = FinalizeTableList[i].Game3;
-                        p.Game4 = FinalizeTableList[i].Game4;
+                       
+                       
+                        
                         p.TotalScore = FinalizeTableList[i].ScratchTotal;
                         p.HandiCap = FinalizeTableList[i].Handicap;
                         p.Bonus = FinalizeTableList[i].Bonus;//come back and adjust this to see the potential changes that have to be met.
@@ -1177,11 +1188,15 @@ namespace NineTapTour.Forms
 
         private void btnFinalize_Click(object sender, EventArgs e)
         {
+
            
+
             int check = 0;
             PlayerHistory ph = new PlayerHistory();
             List<FinalizeTemp> FinalizeTableList = GetListFromTable(currentT);
             List<Participant> partlist = TournamentDb.GetTournamentMemberList(currentT);
+            List<Member> uniquemems = TournamentDb.GetUniqueTourMembers(currentT);
+            int MEMBER_CASHED_IF_THEY_PLACED_UNDER_THIS_NUMBER = Calculations.Calculations.CalculateNumberOfMembersThatCanPlaceInATournament(uniquemems.Count);
             int gamesPlayed = 0;
             List<int> addedalreeady = new List<int>();
             int placing = 1;

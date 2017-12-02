@@ -49,7 +49,6 @@ namespace NineTapTour.Database
                         temp.hisID = ID;
                         db.Entry(temp).State = EntityState.Modified;
                         db.SaveChanges();
-
                     }
                     else
                     {

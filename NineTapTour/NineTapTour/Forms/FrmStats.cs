@@ -33,6 +33,14 @@ namespace NineTapTour.Forms
             this.ToBeAdd = ToBeAdded;
             dataGridView1.DataSource = tableview();
             dataGridView1.DefaultCellStyle.Alignment = DataGridViewContentAlignment.BottomCenter;
+            if(ToBeAdded.Count == 0)
+            {
+                btnSaveChanges.Enabled = true;
+            }
+            else
+            {
+                btnSaveChanges.Enabled = false;
+            }
 
             dataGridView1.SuspendLayout();
             var column = dataGridView1.Columns[0];
@@ -295,17 +303,17 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Game2");
             dtGames.Columns.Add("Game3");
             dtGames.Columns.Add("Game4"); 
-            dtGames.Columns.Add("Scratch Total", typeof(Int32));
-            dtGames.Columns.Add("Game Total w/HDCP", typeof(Int32));
-            dtGames.Columns.Add("Entry AVG", typeof(Int32));
-            dtGames.Columns.Add("30 Entry AVG", typeof(Int32));
-            dtGames.Columns.Add("Adjusted AVG").ReadOnly = true;
+            dtGames.Columns.Add("Scratch Total", typeof(Int32)).ReadOnly = true;
+            dtGames.Columns.Add("Game Total w/HDCP", typeof(Int32)).ReadOnly = true;
+            dtGames.Columns.Add("Entry AVG", typeof(Int32)).ReadOnly = true;
+            dtGames.Columns.Add("30 Entry AVG", typeof(Int32)).ReadOnly = true;
+            dtGames.Columns.Add("Adjusted AVG");
             dtGames.Columns.Add("Handicap").ReadOnly = true;
             dtGames.Columns.Add("Bonus").ReadOnly = true;
             dtGames.Columns.Add("Pro Pot").ReadOnly = true;
             dtGames.Columns.Add("Place").ReadOnly = true;
             dtGames.Columns.Add("Money Won", typeof(Decimal));
-            dtGames.Columns.Add("Notes").ReadOnly = true;
+            dtGames.Columns.Add("Notes");
             dtGames.Columns.Add("GameID").ReadOnly = true;
 
 
@@ -377,7 +385,7 @@ namespace NineTapTour.Forms
                 else
                     newRow["Game4"] = item.Game4;
                 newRow["Scratch Total"] = item.ScratchTotal;
-                newRow["Game Total w/HDCP"] = item.TotalScore;
+                newRow["Game Total w/HDCP"] = item.TotalScore + (item.HandiCap * item.GamesPlayed);
                 newRow["Entry AVG"] = Convert.ToDouble((item.Game1 + item.Game2 + item.Game3 + item.Game4) / item.GamesPlayed);
                 newRow["30 Entry AVG"] = item.trueAVG;
                 if (item.AVG == 0)
@@ -587,6 +595,74 @@ namespace NineTapTour.Forms
 
         }
 
+        private void btnSaveChanges_Click(object sender, EventArgs e)
+        {
+            //grab untouched playerhistory
+            List<PlayerHistory> pHist = PlayerHistoryDB.getMemberPlayerHistory(mem.Id);
 
+            //RESTORE THE DATAGRID BACK TO THE DATE DESCINDING 
+            
+            //if valid, store new info from slots in playerhistory
+            for(int saveX = 0; saveX < dataGridView1.RowCount; saveX++)
+            {
+                for(int saveY = 1; saveY < dataGridView1.ColumnCount;) //start loop at 1 to avoid editing "games played" slot
+                {
+                    pHist[saveX].TournamentDate = Convert.ToDateTime(dataGridView1[saveY, saveX].Value);
+                    saveY++;
+                    //Skips null values becuase the cant convert to ints
+                    if(dataGridView1[saveY, saveX].Value.ToString() !=  "")
+                    {
+                        pHist[saveX].Game1 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);        
+                    }
+                    saveY++;
+                    if (dataGridView1[saveY, saveX].Value.ToString() != "")
+                    {
+                        pHist[saveX].Game2 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
+                    }
+                    saveY++;
+                    if (dataGridView1[saveY, saveX].Value.ToString() != "")
+                    {
+                        pHist[saveX].Game3 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
+                    }
+                    saveY++;
+                    if (dataGridView1[saveY, saveX].Value.ToString() != "")
+                    {
+                        pHist[saveX].Game4 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
+                    }
+                    saveY++;
+                    pHist[saveX].TotalScore = (pHist[saveX].Game1 + pHist[saveX].Game2 + pHist[saveX].Game3 + pHist[saveX].Game4);
+                    saveY++;
+                    //skip total score with handicap. not apart of Playerhistory class
+                    saveY++;
+                    pHist[saveX].AverageForGame = Convert.ToDouble(pHist[saveX].TotalScore / pHist[saveX].GamesPlayed);
+                    saveY++;
+                    //skip 30 game avg. doesnt need to be adjusted here. more complicated, adjust seperately.
+                    saveY++;
+                    if (dataGridView1[saveY, saveX].Value.ToString() != "")
+                    {
+                        pHist[saveX].AVG = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
+                    }                    
+                    saveY++; 
+                    pHist[saveX].HandiCap = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
+                    saveY++;
+                    pHist[saveX].Bonus = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
+                    saveY++;
+                    pHist[saveX].ProPot = Convert.ToString(dataGridView1[saveY, saveX].Value);
+                    saveY++;
+                    pHist[saveX].PPHG = Convert.ToString(dataGridView1[saveY, saveX].Value);
+                    saveY++;
+                    pHist[saveX].MoneyWon = Convert.ToDecimal(dataGridView1[saveY, saveX].Value);
+                    saveY++;
+                    pHist[saveX].Notes = Convert.ToString(dataGridView1[saveY, saveX].Value);
+                    saveY++;
+                    //skip gameID, should never be editted
+                    saveY++;
+                }
+            }
+            foreach(var item in pHist)
+            {
+                PlayerHistoryDB.AddPlayerHistory2(item);
+            }
+        }
     }
 }

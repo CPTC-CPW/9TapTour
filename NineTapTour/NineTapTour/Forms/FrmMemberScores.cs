@@ -2100,6 +2100,7 @@ namespace NineTapTour.Forms
                     currentMem.Bonus = temp[0].Bonus;
                     currentMem.StartAvg = temp[0].AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
                     currentMem.Average = Convert.ToInt32(temp[0].trueAVG);
+                    MemberDb.AddMember(currentMem);
 
 
                 }

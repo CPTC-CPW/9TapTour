@@ -54,6 +54,7 @@
             this.txtAveragePerGame = new System.Windows.Forms.TextBox();
             this.nineTapTourNineTapDbDataSetBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this._NineTapTour_NineTapDbDataSet = new NineTapTour._NineTapTour_NineTapDbDataSet();
+            this.btnSaveChanges = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nineTapTourNineTapDbDataSetBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._NineTapTour_NineTapDbDataSet)).BeginInit();
@@ -70,8 +71,6 @@
             this.dataGridView1.StandardTab = true;
             this.dataGridView1.TabIndex = 3;
             this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
-          
-
             // 
             // lblName
             // 
@@ -95,10 +94,10 @@
             // 
             // btnPrint
             // 
-            this.btnPrint.Location = new System.Drawing.Point(932, 543);
+            this.btnPrint.Location = new System.Drawing.Point(985, 561);
             this.btnPrint.Margin = new System.Windows.Forms.Padding(1);
             this.btnPrint.Name = "btnPrint";
-            this.btnPrint.Size = new System.Drawing.Size(120, 59);
+            this.btnPrint.Size = new System.Drawing.Size(86, 22);
             this.btnPrint.TabIndex = 6;
             this.btnPrint.Text = "Print";
             this.btnPrint.UseVisualStyleBackColor = true;
@@ -282,12 +281,23 @@
             this._NineTapTour_NineTapDbDataSet.DataSetName = "_NineTapTour_NineTapDbDataSet";
             this._NineTapTour_NineTapDbDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
+            // btnSaveChanges
+            // 
+            this.btnSaveChanges.Location = new System.Drawing.Point(83, 561);
+            this.btnSaveChanges.Name = "btnSaveChanges";
+            this.btnSaveChanges.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveChanges.TabIndex = 29;
+            this.btnSaveChanges.Text = "Save";
+            this.btnSaveChanges.UseVisualStyleBackColor = true;
+            this.btnSaveChanges.Click += new System.EventHandler(this.btnSaveChanges_Click);
+            // 
             // FrmStats
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(1118, 613);
+            this.Controls.Add(this.btnSaveChanges);
             this.Controls.Add(this.lblStartAvg);
             this.Controls.Add(this.txtGameTotal);
             this.Controls.Add(this.label7);
@@ -347,5 +357,6 @@
         private System.Windows.Forms.TextBox txtBonus;
         private System.Windows.Forms.TextBox txtHandicap;
         private System.Windows.Forms.TextBox txtAveragePerGame;
+        private System.Windows.Forms.Button btnSaveChanges;
     }
 }
