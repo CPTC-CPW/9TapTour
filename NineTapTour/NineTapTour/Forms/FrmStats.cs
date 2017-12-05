@@ -385,7 +385,7 @@ namespace NineTapTour.Forms
                 else
                     newRow["Game4"] = item.Game4;
                 newRow["Scratch Total"] = item.ScratchTotal;
-                newRow["Game Total w/HDCP"] = item.TotalScore + (item.HandiCap * item.GamesPlayed);
+                newRow["Game Total w/HDCP"] = item.TotalScore;
                 newRow["Entry AVG"] = Convert.ToDouble((item.Game1 + item.Game2 + item.Game3 + item.Game4) / item.GamesPlayed);
                 newRow["30 Entry AVG"] = item.trueAVG;
                 if (item.AVG == 0)
@@ -483,7 +483,7 @@ namespace NineTapTour.Forms
             this.dataGridView1.DrawToBitmap(bm, new Rectangle(0, 0, this.dataGridView1.Width, this.dataGridView1.Height));
             e.Graphics.DrawImage(bm, 0, 0);
         }
-
+        //makes the 30 game avg column green and potential games to be added to light blue
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         { 
             dataGridView1.SuspendLayout();
@@ -586,12 +586,7 @@ namespace NineTapTour.Forms
             //}
 
 
-
-
             dataGridView1.ResumeLayout();
-
-
-
 
         }
 
@@ -600,7 +595,9 @@ namespace NineTapTour.Forms
             //grab untouched playerhistory
             List<PlayerHistory> pHist = PlayerHistoryDB.getMemberPlayerHistory(mem.Id);
 
+
             //RESTORE THE DATAGRID BACK TO THE DATE DESCINDING 
+            dataGridView1.Sort(dataGridView1.Columns["Date"], System.ComponentModel.ListSortDirection.Descending);
             
             //if valid, store new info from slots in playerhistory
             for(int saveX = 0; saveX < dataGridView1.RowCount; saveX++)
@@ -609,7 +606,7 @@ namespace NineTapTour.Forms
                 {
                     pHist[saveX].TournamentDate = Convert.ToDateTime(dataGridView1[saveY, saveX].Value);
                     saveY++;
-                    //Skips null values becuase the cant convert to ints
+                    //Skips null values becuase they cant convert to ints
                     if(dataGridView1[saveY, saveX].Value.ToString() !=  "")
                     {
                         pHist[saveX].Game1 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);        
@@ -659,10 +656,14 @@ namespace NineTapTour.Forms
                     saveY++;
                 }
             }
+            //update info
             foreach(var item in pHist)
             {
                 PlayerHistoryDB.AddPlayerHistory2(item);
             }
+            //refresh page
+            dataGridView1.DataSource = tableview();
+
         }
     }
 }
