@@ -293,8 +293,31 @@ namespace NineTapTour.Forms
                             txtLastName.Text = currentMem.LastName;
                             txtFirstName.Text = currentMem.FirstName;
                             txtMiddleInitial.Text = currentMem.MiddleInitial;
-                            txtHandicap.Text = currentMem.Handicap.ToString();
-                            txtBonusPins.Text = currentMem.Bonus.ToString();
+
+                            //check to make sure the right numbers are being brought over from the members information page
+                            List<PlayerHistory> last5 = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Id);
+                            if (last5.Count > 0)
+                            {
+                                if (last5[0].HandiCap != currentMem.Handicap && last5[0].Bonus != currentMem.Bonus)
+                                {
+                                    currentMem.Bonus = last5[0].Bonus;
+                                    currentMem.Handicap = last5[0].HandiCap;
+                                    txtHandicap.Text = last5[0].HandiCap.ToString();
+                                    txtBonusPins.Text = last5[0].Bonus.ToString();
+                                }
+                                else
+                                {
+
+                                    txtHandicap.Text = currentMem.Handicap.ToString();
+                                    txtBonusPins.Text = currentMem.Bonus.ToString();
+                                }
+                            }
+                            
+
+                                txtHandicap.Text = currentMem.Handicap.ToString();
+                                txtBonusPins.Text = currentMem.Bonus.ToString();
+                            
+
                             Game currentGame = GetScoresById(currentMem.Id);
 
                             GetScores(currentGame);
@@ -438,6 +461,53 @@ namespace NineTapTour.Forms
             {
                 SendKeys.Send("{TAB}");
             }
+
+            //this code will adjust the scratch and handicap total (textboxes) only if its a 3of4 tournament ( taking out the lowest game)
+            if (txtScratchScore1.Text != "" && txtScratchScore2.Text != "" && txtScratchScore3.Text != "" && txtScratchScore4.Text != "")
+            {
+               int handicapTotal = 0;
+                
+                if (selectedTournament.ThreeOutOf4 == true)
+                {
+                    int[] scratchasInt = new int[4];
+                    int[] handicapasInt = new int[4];
+                    
+                    //put all 4 numbers in an array to find the lowest
+                    for (int g = 0; g < scratchArray.Length; g++)
+                    {
+                        if (scratchArray[g].Text != "")
+                        {
+                            try
+                            {
+                                scratchasInt[g] = Convert.ToInt32(scratchArray[g].Text);
+                            }
+                            catch
+                            {
+                                scratchasInt[g] = 0;
+                            }
+                            try
+                            {
+                                handicapasInt[g] = Convert.ToInt32(handicappArray[g].Text);
+                            }
+                            catch
+                            {
+                                handicapasInt[g] = 0;
+                            }   
+                        }
+                        handicapTotal += handicapasInt[g];
+                    }
+                                        
+                    scratchTotal -= scratchasInt.Min();
+                    handicapTotal -= handicapasInt.Min();
+
+
+                    txtScratchTotal.Text = scratchTotal.ToString();
+                    txtHandicapTotal.Text = handicapTotal.ToString();            
+                    
+                }
+            }
+
+           
         }
 
         /// <summary>

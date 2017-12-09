@@ -1128,7 +1128,7 @@ namespace NineTapTour.Forms
                 List<PlayerHistory> AlreadyImportedPH = PlayerHistoryDB.getMemberPlayerHistory(currentMem.Number);
                 bool wait = true;
                 string fileName = ofdOpen.FileName;
-                while (wait)
+                while (wait == true)
                 {
                     frmPleaseWait please = new frmPleaseWait();
                     please.Show();
@@ -1144,6 +1144,10 @@ namespace NineTapTour.Forms
                     }
             
                     rows = ProcessExcelFile(fileName);
+
+                 
+
+  
                     
                     wait = false;
                     please.Close();
@@ -1153,15 +1157,19 @@ namespace NineTapTour.Forms
                     CurrentExcelData.Add(r);
                 }
 
-                
-                currentMem.Average = Convert.ToInt32(LeagueAvgFromPlayerHistory(currentMem));
-                if(currentMem.StartAvg == null)
-                    currentMem.StartAvg = 0;
-                else
-                    currentMem.StartAvg = CurrentExcelData[0].PlayerOrginalAVG;
+                List<PlayerHistory> reset = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Id);
+                currentMem.StartAvg = reset[0].AVG;
+                currentMem.Average = Convert.ToInt32(reset[0].trueAVG);
+                currentMem.Handicap = Calculations.Calculations.CalculateHandicapPins(Convert.ToInt32(currentMem.StartAvg));
+                currentMem.Bonus = reset[0].Bonus;
+               
                 txtAverage.Text = currentMem.StartAvg.ToString();
                 txtTournAvg.Text = currentMem.Average.ToString();
-                txtHandicap.Text = Calculations.Calculations.CalculateHandicapPins((currentMem.Average.Value)).ToString() ;
+                txtHandicap.Text = currentMem.Handicap.ToString();
+                txtBonus.Text = currentMem.Bonus.ToString();
+
+
+              
 
 
                 decimal moneySum = 0;
@@ -1292,7 +1300,7 @@ namespace NineTapTour.Forms
                     playerH.MemberNumber = currentMem.Number;
 
                     if (currentMem.Number == temp.PlayerNumber)
-                    {//only process file if they have been added as a member first and are active
+                    {//only process file if they have been added as a member first 
                         try
                         {
                             temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
