@@ -10,7 +10,7 @@ namespace NineTapTour.Database
         public int Id { get; set; }
 
         //[Required]
-        [Index("IX_MemberNumber", IsUnique = true)]
+        //[Index("IX_MemberNumber", IsUnique = )]
         public int Number { get; set; }
         //[Required]
         public bool IsActive { get; set; }
@@ -71,6 +71,7 @@ namespace NineTapTour.Database
         //[Required]
         public bool IsSenior { get; set; }
         public decimal MoneyEarned { get; set; }
+        public int NineTapRegionID { get; set; }
         #endregion
 
         public override string ToString()

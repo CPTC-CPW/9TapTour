@@ -27,6 +27,7 @@ namespace NineTapTour.Database
         public virtual DbSet<Squad> Squads { get; set; }
         public virtual DbSet<FinalizeTemp> FinalizeTemp { get; set; }
         public virtual DbSet<PlayerHistory> PlayerHistory { get; set; }
+        public virtual DbSet<NineTapRegion> NineTapRegion { get; set; }
 
     }
 

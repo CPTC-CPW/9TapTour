@@ -29,6 +29,7 @@ namespace NineTapTour.Forms
         int _memberId;
         Member currentMem;
         private int _memberNum;
+        int RegionID;
         
 
 
@@ -54,11 +55,10 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void MemberDataForm_Load(object sender, EventArgs e)
         {
-            List<Member> ListOfMembers = MemberDb.GetMemberList();
 
+            RegionID = ((FrmMain)MdiParent).RegionID;
 
-     
-    
+            List<Member> ListOfMembers = MemberDb.GetMemberList(RegionID);
 
             updateOnload(ListOfMembers);
 
@@ -84,12 +84,30 @@ namespace NineTapTour.Forms
         /// <param name="searchMem"></param>
         public void UpdateMemberInfo(Member searchMem = null)
         {
+            RegionID = ((FrmMain)MdiParent).RegionID;
+            List<Member> ListOfMembers = MemberDb.GetMemberList(RegionID);
+
+            
+           
+
+
+            //set txtMemberNumber.Text back to one if there is no one in the the current selected region added yet
+            if (MemberDb.GetMemberList(RegionID).Count == 0)
+            {
+                txtMemberNumber.Text = "1";
+            }
+            // if last region selected had more members then current selected region, set txtmemberNumber.Text to
+            // its highest member count for the selcted region
+            else if(Convert.ToInt16(txtMemberNumber.Text) > MemberDb.GetMemberList(RegionID).Count)
+            {
+                txtMemberNumber.Text = MemberDb.GetMemberList(RegionID).Count.ToString();
+            }
 
             _memberNum = Convert.ToInt32(txtMemberNumber.Text);
             if (searchMem == null)
             {
-                currentMem = MemberDb.GetMember(_memberNum);
-                List<PlayerHistory> last5 = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Number);
+                currentMem = MemberDb.GetMember(_memberNum,RegionID);
+                List<PlayerHistory> last5 = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Number, RegionID);
                 if (last5.Count >= 1)
                 {
                     txtAverage.Text = currentMem.StartAvg.ToString(); //whatever the bowler director decides his average to be is right. dont pull from the player hstory page
@@ -498,13 +516,14 @@ namespace NineTapTour.Forms
                 if (confirm == DialogResult.No)
                     return;
 
-                //use existing memberId if present or select the member id from the form
-                int memId = (_memberId != -1) ? _memberId : Convert.ToInt32(txtMemberNumber.Text);
+            ////use existing memberId if present or select the member id from the form
+            //int memId = (_memberId != -1) ? _memberId : Convert.ToInt32(txtMemberNumber.Text);
 
+            //checks to see if MemberID exists 
+            int memId;
+               Member temp = new Member();
 
-                 Member temp = new Member();
-
-            temp.Id = memId;
+          
             temp.Number = Convert.ToInt32(txtMemberNumber.Text);
             temp.IsActive = rdoActive.Checked;
             temp.JoinDate = dateJoined.Value;
@@ -549,7 +568,36 @@ namespace NineTapTour.Forms
             /*************************************************************************************/
            
             temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.Average.Value));
-            List<PlayerHistory> last5 = PlayerHistoryDB.getLastFiveFromPlayerhistory(memId);
+
+
+           
+            #endregion
+
+            #region Misc. Info
+            temp.RejoinDate = (dateRejoin.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : dateRejoin.Value;
+            temp.LastBowled = (dateLastBowled.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : dateLastBowled.Value;
+            temp.MoneyEarned = currentMem.MoneyEarned;
+            //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
+
+            temp.Notes = txtNotes.Text;
+            temp.Referrals = (txtReferrals.Text) == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text);
+            #endregion
+            temp.LastPayment = (datePaid.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : datePaid.Value;
+            temp.IsLifetimeMember = chbLifetime.Checked;
+            temp.NineTapRegionID = RegionID;
+
+            //check to see if memberId exists before putting it in current selected regions database
+            if(MemberDb.GetMember(temp.Number,RegionID).Id > 0)
+            {
+                memId = MemberDb.GetMember(temp.Number, RegionID).Id;
+            }
+            else
+            {
+                memId = MemberDb.GetALLMembersList().Count + 1;
+            }
+            temp.Id = memId;
+
+            List<PlayerHistory> last5 = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Number, RegionID);
             if (last5.Count >= 1)
             { // sets the average to that of their last adjusted average
                 if (Convert.ToInt32(txtAverage.Text) == last5[0].AVG)
@@ -573,7 +621,7 @@ namespace NineTapTour.Forms
                     temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
                 }
             }
-            else if(txtAverage.Text == "")
+            else if (txtAverage.Text == "")
             {
                 txtAverage.Text = 0.ToString();
                 txtTournAvg.Text = 0.ToString();
@@ -590,31 +638,16 @@ namespace NineTapTour.Forms
                 temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
             }
 
-           
-            #endregion
 
-            #region Misc. Info
-            temp.RejoinDate = (dateRejoin.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : dateRejoin.Value;
-            temp.LastBowled = (dateLastBowled.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : dateLastBowled.Value;
-            temp.MoneyEarned = currentMem.MoneyEarned;
-            //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
+            // Adds Member to Database
 
-            temp.Notes = txtNotes.Text;
-            temp.Referrals = (txtReferrals.Text) == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text);
-            #endregion
-            temp.LastPayment = (datePaid.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : datePaid.Value;
-            temp.IsLifetimeMember = chbLifetime.Checked;
-                   
-
-                    // Adds Member to Database
-
-                    try
+            try
                     {
                         MemberDb.AddMember(temp);
 
 
                         //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-                        ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+                        ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList(RegionID).OrderBy(m => m.Number);
                         //_membersList = ((FrmMain)MdiParent)._membersList;
                         UpdateMemberInfo();
                     }
@@ -640,8 +673,8 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnArrowLeft_Click(object sender, EventArgs e)
         {
-            
-            if (((FrmMain)MdiParent)._membersList.Count() == 0 || currentMem.Number <= ((FrmMain)MdiParent)._membersList.First().Number)
+            List<Member> m = MemberDb.GetMemberList(RegionID);
+            if (MemberDb.GetMemberList(RegionID).Count == 0 || currentMem.Number <= m[0].Number)
             {
                 MessageBox.Show(@"Beginning of file.", @"Notice");
             }
@@ -660,7 +693,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
-            if (((FrmMain)MdiParent)._membersList.Count() == 0 || currentMem.Number >= ((FrmMain)MdiParent)._membersList.Last().Number)
+            if (MemberDb.GetMemberList(RegionID).Count == 0 || currentMem.Number >= MemberDb.GetMemberList(RegionID).Count)
             {
                 MessageBox.Show(@"End of file.", @"Notice");
             }
@@ -701,7 +734,8 @@ namespace NineTapTour.Forms
                 _memberId = -1;
 
                 //get latest member number, or set to 1 if no members in database
-                int nextMemberNumber = ((FrmMain)MdiParent)._membersList.Any() ? (((FrmMain)MdiParent)._membersList.Last().Number + 1) : 1;
+                // int nextMemberNumber = ((FrmMain)MdiParent)._membersList.Any() ? (((FrmMain)MdiParent)._membersList.Last().Number + 1) : 1;
+                int nextMemberNumber = MemberDb.GetMemberList(RegionID).Count + 1;
                 txtMemberNumber.Text = nextMemberNumber.ToString();
                 currentMem = new Member
                 {
@@ -819,7 +853,7 @@ namespace NineTapTour.Forms
 
         private void btnMemberSearch_Click(object sender, EventArgs e)
         {
-            FrmSearch SearchForm = new FrmSearch();
+            FrmSearch SearchForm = new FrmSearch(RegionID);
             SearchForm.ShowDialog();
 
             if (SearchForm.searchResult > 0)
@@ -832,7 +866,7 @@ namespace NineTapTour.Forms
         private void btnStats_Click(object sender, EventArgs e)
         {
             List<PlayerHistory> nothing = new List<PlayerHistory>();
-            FrmStats p = new FrmStats(currentMem.Number, currentMem.FirstName + currentMem.LastName + currentMem.MiddleInitial, currentMem, nothing);
+            FrmStats p = new FrmStats(currentMem.Number, currentMem.FirstName + currentMem.LastName + currentMem.MiddleInitial, currentMem, nothing, RegionID);
             p.ShowDialog();
         }
 
@@ -935,7 +969,7 @@ namespace NineTapTour.Forms
 
         private void btnLabels_Click(object sender, EventArgs e)
         {
-            FrmLabelPrint labels = new FrmLabelPrint();
+            FrmLabelPrint labels = new FrmLabelPrint(RegionID);
             labels.ShowDialog();
         }
         /// <summary>
@@ -970,7 +1004,7 @@ namespace NineTapTour.Forms
         {
             bool isMember = false;
 
-            foreach (Member mem in ((FrmMain)MdiParent)._membersList)
+            foreach (Member mem in MemberDb.GetALLMembersList())
             {
                 if (mem.Id == (currentMem.Id))
                 {
@@ -1125,7 +1159,7 @@ namespace NineTapTour.Forms
 
                 List<ExcelRow> rows = new List<ExcelRow>();
                
-                List<PlayerHistory> AlreadyImportedPH = PlayerHistoryDB.getMemberPlayerHistory(currentMem.Number);
+                List<PlayerHistory> AlreadyImportedPH = PlayerHistoryDB.getMemberPlayerHistory(currentMem.Number, RegionID);
                 bool wait = true;
                 string fileName = ofdOpen.FileName;
                 while (wait == true)
@@ -1157,7 +1191,7 @@ namespace NineTapTour.Forms
                     CurrentExcelData.Add(r);
                 }
 
-                List<PlayerHistory> reset = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Id);
+                List<PlayerHistory> reset = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Number, RegionID);
                 currentMem.StartAvg = reset[0].AVG;
                 currentMem.Average = Convert.ToInt32(reset[0].trueAVG);
                 currentMem.Handicap = Calculations.Calculations.CalculateHandicapPins(Convert.ToInt32(currentMem.StartAvg));
@@ -1298,7 +1332,7 @@ namespace NineTapTour.Forms
                     temp.PlayerOrginalAVG = playerOrgAVG;
                     temp.PlayerNumber = currentMem.Number;
                     playerH.MemberNumber = currentMem.Number;
-
+                    playerH.regionID = RegionID;
                     if (currentMem.Number == temp.PlayerNumber)
                     {//only process file if they have been added as a member first 
                         try

@@ -47,6 +47,8 @@ namespace NineTapTour.Database
 
         public string PPHG { get; set; }
 
+        public int regionID { get; set; }
+
 
     }
 }

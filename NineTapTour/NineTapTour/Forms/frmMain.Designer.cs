@@ -37,6 +37,7 @@
             this.updateInactiveMembersToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.updateInactiveMembersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addNewRegionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -83,7 +84,8 @@
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.updateInactiveMembersToolStripMenuItem1});
+            this.updateInactiveMembersToolStripMenuItem1,
+            this.addNewRegionToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -108,6 +110,13 @@
             this.updateInactiveMembersToolStripMenuItem.Name = "updateInactiveMembersToolStripMenuItem";
             this.updateInactiveMembersToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.updateInactiveMembersToolStripMenuItem.Text = "Update Inactive Members";
+            // 
+            // addNewRegionToolStripMenuItem
+            // 
+            this.addNewRegionToolStripMenuItem.Name = "addNewRegionToolStripMenuItem";
+            this.addNewRegionToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.addNewRegionToolStripMenuItem.Text = "Add New Region";
+            
             // 
             // FrmMain
             // 
@@ -143,5 +152,6 @@
         private System.Windows.Forms.ToolStripMenuItem updateInactiveMembersToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem updateInactiveMembersToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addNewRegionToolStripMenuItem;
     }
 }

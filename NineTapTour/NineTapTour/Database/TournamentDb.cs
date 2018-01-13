@@ -67,12 +67,13 @@ namespace NineTapTour.Database
         /// returns the list of tournaments in descending order by date
         /// </summary>
         /// <returns></returns>
-        public static List<Tournament> GetTournamentList()
+        public static List<Tournament> GetTournamentList(int regionID)
         {
             using (NineTapDb db = new NineTapDb())
             {
                 return (from t in db.Tournaments
                         orderby t.Date descending
+                        where t.TourneyRegion == regionID
                         select t).ToList();
             }
         }

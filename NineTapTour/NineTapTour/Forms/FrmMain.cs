@@ -13,10 +13,16 @@ namespace NineTapTour.Forms
     public partial class FrmMain : Form
     {
 
+       
         public IOrderedEnumerable<Member> _membersList { get; set; }
         public List<Tournament> _tournamentList { get; set; }
         public ToolStripItem activeItem;
         public FrmMemberData currFrmMemberData { get; set; }
+
+        public frmMemberScores currfrmScoresdata { get; set; }
+
+        public MainMenu mainmenu { get; set; }
+        public int RegionID { get; set; }
         public Size MaxWorkAreaScreenSize { get; set; }
         //initializes a bool var for handling if the memberdata form is active so it has proper scope for handling the save data popup showing up on the wrong forms
         bool memberDataIsActive = false;
@@ -34,12 +40,22 @@ namespace NineTapTour.Forms
             NineTapDb db = new NineTapDb();
             System.Data.Entity.Database.SetInitializer<NineTapDb>(new MigrateDatabaseToLatestVersion<NineTapDb, Configuration>());
 
-            _membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-            _tournamentList = TournamentDb.GetTournamentList();
+            _membersList = MemberDb.GetMemberList(RegionID).OrderBy(m => m.Number);
+            _tournamentList = TournamentDb.GetTournamentList(RegionID);
+
             var newfrmStart = new MainMenu {MdiParent = this};
             //sets the height and width of the parent form... this can not be resized later... all child forms must 
             //fit in its bounds... the only exception is using a scrollbar on the side or bottom...
             setHeightAndWidth(MaxWorkAreaScreenSize);
+            
+            
+            //on start up make sure regionID is set 
+            var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
+            OpenOrDisplayForm(ref mainMenu);
+            RegionID = mainMenu.getRegionID();
+            mainmenu = mainMenu;
+
+
 
             //sets the first item of the menu bar to the active item and highlights it.
             activeItem = menMain.Items[0];
@@ -66,6 +82,7 @@ namespace NineTapTour.Forms
         /// <param name="form">forms that haven't been opened yet(?)</param>
         public void OpenOrDisplayForm<T>(ref T form) where T : Form, new()
         {
+           
             bool isSavedData = true;
 
             // determines whether FrmMemberData is saved before leaving and if calls 
@@ -86,17 +103,20 @@ namespace NineTapTour.Forms
                 }
             }
 
+
             if (isSavedData) //checks to see if you are leaving page without saved data.
             {
                 if (form != null)
                 {
+                    
                     form.BringToFront();
                     form.Activate();
+                    
                 }
                 else
                 {
                     form = new T
-                    {
+                    {                      
                         MdiParent = this,
                         Dock = DockStyle.Fill
                     };
@@ -143,6 +163,7 @@ namespace NineTapTour.Forms
         {
             var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
             OpenOrDisplayForm(ref mainMenu);
+         
             
         }
 
@@ -152,7 +173,8 @@ namespace NineTapTour.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public void memberToolStripMenuItem_Click(object sender, EventArgs e)
-        {   
+        {
+            
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
             OpenOrDisplayForm(ref newfrmMemberData);
             currFrmMemberData = newfrmMemberData;
@@ -169,6 +191,8 @@ namespace NineTapTour.Forms
         {
             var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
             OpenOrDisplayForm(ref newfrmMemberScores);
+            currfrmScoresdata = newfrmMemberScores;
+            currfrmScoresdata.UpdateTourneyComboBox();
         }
 
         /// <summary>
@@ -235,6 +259,6 @@ namespace NineTapTour.Forms
             }
         }
 
-     
+
     }
 }

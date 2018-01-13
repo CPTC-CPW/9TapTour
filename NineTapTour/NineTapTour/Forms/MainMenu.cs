@@ -13,12 +13,28 @@ namespace NineTapTour.Forms
 {
     public partial class MainMenu : Form
     {
+        public int regionID { get; set; }
         /// <summary>
         /// Opens the "Main Menu" form.
         /// </summary>
         public MainMenu()
         {
             InitializeComponent();
+            //check to see if any regions exist, if not create a local region(for first time start up)
+            if(NineTapRegionDB.getNumberOfRegions() == 0)
+            {
+                NineTapRegion nTemp = new NineTapRegion();
+                nTemp.NineTapRegionID = NineTapRegionDB.getNumberOfRegions() + 1;
+                nTemp.NineTapRegionName = "Local";
+                NineTapRegionDB.AddRegion(nTemp);
+            }
+            //set the global int region so it can be used to filter each region throughout the program
+            List <NineTapRegion>  nList = NineTapRegionDB.GetRegionList();
+            cbxRegionSelect.DataSource = nList;
+            cbxRegionSelect.DisplayMember = "NineTapRegionName";
+            this.regionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
+           
+
         }
         /// <summary>
         /// Closes the "Main Menu" form when the "Exit" button is clicked.
@@ -46,6 +62,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnMemberData_Click(object sender, EventArgs e)
         {
+            ((FrmMain)MdiParent).RegionID = regionID;
             ((FrmMain)MdiParent).menuHighlight(btnMemberData.Text);
             ((FrmMain)MdiParent).memberToolStripMenuItem_Click(sender, e);
         }
@@ -56,6 +73,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnMemberScores_Click(object sender, EventArgs e)
         {
+            ((FrmMain)MdiParent).RegionID = regionID;
             ((FrmMain)MdiParent).menuHighlight(btnMemberScores.Text);
             ((FrmMain)MdiParent).tournamentToolStripMenuItem_Click(sender, e);
         }
@@ -87,12 +105,12 @@ namespace NineTapTour.Forms
         // on load grabs an updated version of the all the player informantion so you dont have to go their page to update their player information to the right information
         private void MainMenu_Load(object sender, EventArgs e)
         {
-            List<Member> memberList = MemberDb.GetMemberList();
+            List<Member> memberList = MemberDb.GetMemberList(regionID);
             
             for(int i = 0; i < memberList.Count; i++)
             {
 
-                List<PlayerHistory> ph = PlayerHistoryDB.getLastFiveFromPlayerhistory(memberList[i].Number);
+                List<PlayerHistory> ph = PlayerHistoryDB.getLastFiveFromPlayerhistory(memberList[i].Number,regionID);
                 if (ph.Count > 0)
                 {
                     memberList[i].StartAvg = ph[0].AVG;
@@ -101,6 +119,35 @@ namespace NineTapTour.Forms
                 }
             }
 
+        }
+
+        private void cbxRegionSelect_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
+            this.regionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
+            ((FrmMain)MdiParent).RegionID = regionID;
+            ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList(regionID).OrderBy(m => m.Number);
+
+        }
+
+        public int getRegionID()
+        {
+            List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
+            return nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
+        }
+
+        public void refreshRegionlist()
+        {
+            List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
+            cbxRegionSelect.DataSource = nList;
+            cbxRegionSelect.DisplayMember = "NineTapRegionName";
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            var region = new FrmAddRegion(regionID);
+            region.ShowDialog();
+            refreshRegionlist();
         }
     }
 }

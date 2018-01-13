@@ -39,7 +39,7 @@ namespace NineTapTour.Database
                     }
                     else
                     {
-                       // MessageBox.Show("Player Saved Successfully");
+                        // MessageBox.Show("Player Saved Successfully");
                     }
                     db.SaveChanges();
                 }
@@ -66,55 +66,66 @@ namespace NineTapTour.Database
                 Console.WriteLine("Error Number : " + ex.Message);
                 // throw new MemberTableException("Error Number : " + ex.Number + " - " + ex.Message);
             }
-           
-       
+
+
         }
         public static bool MemberExists(Member Temp)
         {
-            
-            
-                using (var db = new NineTapDb())
+
+
+            using (var db = new NineTapDb())
+            {
+
+                if (db.Members.Any(m => m.Number == Temp.Number))
                 {
-
-                    if (db.Members.Any(m => m.Number == Temp.Number))
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-
+                    return true;
+                }
+                else
+                {
+                    return false;
                 }
 
             }
-        public static List<Member> GetMemberList()
+
+        }
+        public static List<Member> GetMemberList(int RegionID)
         {
             using (var db = new NineTapDb())
             {
                 return (from m in db.Members
-                        orderby m.Number 
+                        orderby m.Number
+                        where m.NineTapRegionID == RegionID
+                        select m).ToList();
+            }
+        }
+
+
+        public static List<Member> GetALLMembersList()
+        {
+            using (var db = new NineTapDb())
+            {
+                return (from m in db.Members
+                        orderby m.Number
                         select m).ToList();
             }
         }
 
         public static void DeleteMember(Member remove)
         {
-            using(var db = new NineTapDb())
+            using (var db = new NineTapDb())
             {
                 db.Entry(remove).State = EntityState.Deleted;
                 db.SaveChanges();
             }
         }
 
-        public static Member GetMember(int memID)
+        public static Member GetMember(int memNumber, int RegionID)
         {
             Member currentMember = new Member();
             using (var db = new NineTapDb())
             {
-               var temp = (from m in db.Members
-                            where m.Id == memID
-
+                var temp = (from m in db.Members
+                            where m.Number == memNumber && m.NineTapRegionID == RegionID
                             select new
                             {
                                 m.Average,
@@ -145,9 +156,10 @@ namespace NineTapTour.Database
                                 m.SSN,
                                 m.StartAvg,
                                 m.State,
-                                m.Street
+                                m.Street,
+                                m.NineTapRegionID
                             });
-                foreach(var c in temp)
+                foreach (var c in temp)
                 {
                     currentMember.Average = c.Average;
                     currentMember.Bonus = c.Bonus;
@@ -178,15 +190,45 @@ namespace NineTapTour.Database
                     currentMember.StartAvg = c.StartAvg;
                     currentMember.State = c.State;
                     currentMember.Street = c.Street;
+                    currentMember.NineTapRegionID = c.NineTapRegionID;
 
                 }
-             
+
 
                 return currentMember;
+            }
+        }
+            
 
-                
+
+
+        public static int GetMemberNumberbyID(int MemberID)
+        {
+            Member currentMember = new Member();
+            using (var db = new NineTapDb())
+            {
+                var temp = (from m in db.Members
+                            where m.Id == MemberID
+                            select new
+                            {
+                                m.Number,
+                            });
+                foreach (var c in temp)
+                {
+
+                    currentMember.Number = c.Number;
+                    ;
+
+                }
+
+
+                return currentMember.Number;
+
+
             }
         }
 
     }
+
 }
+

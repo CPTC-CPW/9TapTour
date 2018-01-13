@@ -97,6 +97,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calculations\Calculations.cs" />
+    <Compile Include="Database\NineTapRegionDB.cs" />
+    <Compile Include="Database\NineTapRegion.cs" />
     <Compile Include="Database\ExcelRow.cs" />
     <Compile Include="Database\FinalizeTemp.cs" />
     <Compile Include="Database\FinalizeTempDB.cs" />
@@ -114,11 +116,17 @@
     <Compile Include="Exceptions\PlayerHistoryTableException.cs" />
     <Compile Include="Exceptions\TournamentTableException.cs" />
     <Compile Include="Forms\DoubleBuffer.cs" />
-    <Compile Include="Forms\Form1.cs">
+    <Compile Include="Forms\FrmAddRegion.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Forms\FrmAddRegion.Designer.cs">
+      <DependentUpon>FrmAddRegion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmWait.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmWait.Designer.cs">
+      <DependentUpon>frmWait.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FrmFinalizeTournament.cs">
       <SubType>Form</SubType>
@@ -340,8 +348,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Forms\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FrmAddRegion.resx">
+      <DependentUpon>FrmAddRegion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmWait.resx">
+      <DependentUpon>frmWait.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmFinalizeTournament.resx">
       <DependentUpon>FrmFinalizeTournament.cs</DependentUpon>

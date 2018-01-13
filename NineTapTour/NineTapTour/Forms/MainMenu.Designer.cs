@@ -35,6 +35,8 @@
             this.Exit = new System.Windows.Forms.Button();
             this.btnDropDataBase = new System.Windows.Forms.Button();
             this.btnDropDataBase1 = new System.Windows.Forms.Button();
+            this.cbxRegionSelect = new System.Windows.Forms.ComboBox();
+            this.btnAdd = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnMemberData
@@ -103,6 +105,25 @@
             this.btnDropDataBase1.UseVisualStyleBackColor = true;
             this.btnDropDataBase1.Click += new System.EventHandler(this.btnDropDataBase1_Click_1);
             // 
+            // cbxRegionSelect
+            // 
+            this.cbxRegionSelect.FormattingEnabled = true;
+            this.cbxRegionSelect.Location = new System.Drawing.Point(136, 424);
+            this.cbxRegionSelect.Name = "cbxRegionSelect";
+            this.cbxRegionSelect.Size = new System.Drawing.Size(121, 21);
+            this.cbxRegionSelect.TabIndex = 3;
+            this.cbxRegionSelect.SelectedIndexChanged += new System.EventHandler(this.cbxRegionSelect_SelectedIndexChanged);
+            // 
+            // btnAdd
+            // 
+            this.btnAdd.Location = new System.Drawing.Point(155, 451);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(80, 23);
+            this.btnAdd.TabIndex = 4;
+            this.btnAdd.Text = "Add Region";
+            this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            // 
             // MainMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -111,6 +132,8 @@
             this.BackgroundImage = global::NineTapTour.Properties.Resources._9tap;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(984, 741);
+            this.Controls.Add(this.btnAdd);
+            this.Controls.Add(this.cbxRegionSelect);
             this.Controls.Add(this.btnDropDataBase1);
             this.Controls.Add(this.btnDropDataBase);
             this.Controls.Add(this.Exit);
@@ -136,5 +159,7 @@
         private System.Windows.Forms.Button Exit;
         private System.Windows.Forms.Button btnDropDataBase;
         private System.Windows.Forms.Button btnDropDataBase1;
+        private System.Windows.Forms.ComboBox cbxRegionSelect;
+        private System.Windows.Forms.Button btnAdd;
     }
 }

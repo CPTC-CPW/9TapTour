@@ -17,13 +17,15 @@ namespace NineTapTour.Database
     public partial class PlayerHistoryForm : Form
     {
         private int id;
+        int regionID;
        
 
         public PlayerHistoryForm(int id)
         {
             InitializeComponent();
             this.id = id;
-            Member currentMember = MemberDb.GetMember(id);
+            
+           Member currentMember = MemberDb.GetMember(id,0 );
 
             createDataGridView(id);
 

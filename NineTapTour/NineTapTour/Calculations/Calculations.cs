@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace NineTapTour.Calculations
 {
-    static class Calculations
+    public class Calculations
     {
         /// <summary>
         /// Constants are based on 9-Tap Rules for adding and deducting pins based on type
         /// of tournament and member placement, handicap calculations, and calculating the
         /// number of participants that can place in a tournament.  
         /// </summary>
-
+       
         const int MAX_BONUS_PINS_ALLOWED = 5;
         const int NO_PINS_TO_DEDUCT = 0;
         const double DEDUCT_HALF = .5;
@@ -49,8 +49,9 @@ namespace NineTapTour.Calculations
             }
         }
 
-        public static int CalculateBonusPins(bool didMemberCash, int memberPlaced, int currentBonusPins, bool isDoublesTournament, int memid)
+        public static int CalculateBonusPins(bool didMemberCash, int memberPlaced, int currentBonusPins, bool isDoublesTournament, int memNum,int RegionID)
         {
+            
             int RETURN = 0;
             if (didMemberCash)
             {
@@ -58,21 +59,21 @@ namespace NineTapTour.Calculations
             }
             else
             {
-               RETURN = AddBonusPins(currentBonusPins, isDoublesTournament, memid);
+               RETURN = AddBonusPins(currentBonusPins, isDoublesTournament, memNum, RegionID);
             }
             return RETURN;
           
         }
 
-        public static int AddBonusPins(int currentBonusPins, bool isDoublesTournament, int memid)
+        public static int AddBonusPins(int currentBonusPins, bool isDoublesTournament, int MemNum, int RegionID)
         {
             if (currentBonusPins == MAX_BONUS_PINS_ALLOWED)
             {
                 return MAX_BONUS_PINS_ALLOWED;
             }
-            else if(PlayerHistoryDB.getLastFiveFromPlayerhistory(memid).Count >= 3)
+            else if(PlayerHistoryDB.getLastFiveFromPlayerhistory(MemNum,RegionID).Count >= 3)
             {
-                List<PlayerHistory> latest = PlayerHistoryDB.getLastFiveFromPlayerhistory(memid);
+                List<PlayerHistory> latest = PlayerHistoryDB.getLastFiveFromPlayerhistory(MemNum,RegionID);
                 if(latest[0].TournamentDate != latest[1].TournamentDate &&
                    latest[1].TournamentDate != latest[2].TournamentDate &&
                    latest[2].TournamentDate != latest[0].TournamentDate)

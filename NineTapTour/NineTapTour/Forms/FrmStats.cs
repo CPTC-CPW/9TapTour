@@ -16,17 +16,21 @@ namespace NineTapTour.Forms
     public partial class FrmStats : Form
     {
         private Member mem;
+        private int memId;
         private int memNum;
         private string memName;
         static int TURN_BOLD_IF_BOWLED_OVER_NUMBER = 250;
         List<PlayerHistory> ToBeAdd;
         List<PlayerHistory> ph;
+        int RegionID;
 
 
-        public FrmStats(int memberNumber, string memberName, Member currentMem, List<PlayerHistory> ToBeAdded)
+        public FrmStats(int memberId, string memberName, Member currentMem, List<PlayerHistory> ToBeAdded, int RegionID)
         {
             InitializeComponent();
-            this.memNum = memberNumber;
+            this.memId = memberId;
+            this.memNum = currentMem.Number;
+            this.RegionID = RegionID;
             this.memName = memberName;
             this.mem = currentMem;
             this.dataGridView1.DoubleBuffered(false);
@@ -53,7 +57,7 @@ namespace NineTapTour.Forms
                 column = dataGridView1.Columns[h];
                 column.Width = 55;
             }
-            ph = PlayerHistoryDB.getMemberPlayerHistoryByTotal(memNum);
+            ph = PlayerHistoryDB.getMemberPlayerHistoryByTotal(memNum, RegionID);
 
 
                         
@@ -272,7 +276,7 @@ namespace NineTapTour.Forms
             DataTable dtGames = new DataTable();
             var db = new NineTapDb();
             var temp = (from p in db.PlayerHistory
-                        where memNum == p.MemberNumber
+                        where p.MemberNumber == memNum && p.regionID == RegionID
                         orderby p.TournamentDate descending, p.hisID descending
                         select new
                         {
@@ -593,7 +597,7 @@ namespace NineTapTour.Forms
         private void btnSaveChanges_Click(object sender, EventArgs e)
         {
             //grab untouched playerhistory
-            List<PlayerHistory> pHist = PlayerHistoryDB.getMemberPlayerHistory(mem.Id);
+            List<PlayerHistory> pHist = PlayerHistoryDB.getMemberPlayerHistory(mem.Number, RegionID);
 
 
             //RESTORE THE DATAGRID BACK TO THE DATE DESCINDING 

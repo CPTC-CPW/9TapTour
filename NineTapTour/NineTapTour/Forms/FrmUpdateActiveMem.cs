@@ -25,10 +25,11 @@ namespace NineTapTour.Forms
 {
     public partial class FrmUpdateActiveMem : Form
     {
+        int RegionID;
         //Member currentMem;
         DateTime targetDate;
-        List<Member> InActiveList = MemberDb.GetMemberList();
-        List<Member> AllMembers = MemberDb.GetMemberList();
+        List<Member> InActiveList; //= MemberDb.GetMemberList();
+        List<Member> AllMembers;// = MemberDb.GetMemberList();
         public FrmUpdateActiveMem()
         {
             InitializeComponent();
@@ -38,6 +39,9 @@ namespace NineTapTour.Forms
         
         private void FrmUpdateActiveMem_Load(object sender, EventArgs e)
         {
+            RegionID = ((FrmMain)MdiParent).RegionID;
+            InActiveList = MemberDb.GetMemberList(RegionID);
+            AllMembers = MemberDb.GetMemberList(RegionID);
             UpdateList();
         }
 

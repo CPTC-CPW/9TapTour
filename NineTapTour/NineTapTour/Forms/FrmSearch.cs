@@ -17,19 +17,20 @@ namespace NineTapTour.Forms
 {
     public partial class FrmSearch : Form
     {
+        int RegionID;
         public int searchResult { get; set; }
         /// <summary>
         /// Opens the "Search" form.
         /// </summary>
-        public FrmSearch()
+        public FrmSearch(int RegionID)
         {
             InitializeComponent();
+            this.RegionID = RegionID;
         }
 
         private void FrmSearch_Load(object sender, EventArgs e)
         {
-       
-
+            
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -42,6 +43,8 @@ namespace NineTapTour.Forms
             {
                 var query = from m in db.Members
                                 //orderby m.Id descending
+                            where m.NineTapRegionID == RegionID
+
                             select m;
 
                 // Member Number?
@@ -125,7 +128,9 @@ namespace NineTapTour.Forms
                     MoneyEarned = m.MoneyEarned,
                     Notes = m.Notes,
                     Referrals = m.Referrals,
-                    IsSenior = m.IsSenior
+                    IsSenior = m.IsSenior,
+                    
+                    
                 }).ToList();
 
                 memList = results.Select(m => new Member
@@ -207,7 +212,7 @@ namespace NineTapTour.Forms
         private void FillGrid()
         {
             dtagrdResults.DataSource = null;
-            List<Member> memList = MemberDb.GetMemberList();
+            List<Member> memList = MemberDb.GetMemberList(RegionID);
             dtagrdResults.DataSource = memList;
             AdvancedViewCheck();
         }

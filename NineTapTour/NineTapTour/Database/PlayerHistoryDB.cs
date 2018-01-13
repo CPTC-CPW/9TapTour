@@ -185,13 +185,13 @@ namespace NineTapTour.Database
             }
         }
 
-        public static List<PlayerHistory> getMemberPlayerHistory(int id)
+        public static List<PlayerHistory> getMemberPlayerHistory(int memnum, int RegionId)
         {
             List<PlayerHistory> Return = new List<PlayerHistory>();
             using (var db = new NineTapDb())
             {
                 var temp = (from h in db.PlayerHistory
-                            where h.MemberNumber == id
+                            where h.MemberNumber == memnum && h.regionID == RegionId
                             orderby h.TournamentDate descending
                             select new
                             {
@@ -296,14 +296,14 @@ namespace NineTapTour.Database
             return Return;
         }
 
-        public static List<PlayerHistory> getLastFiveFromPlayerhistory(int id)
+        public static List<PlayerHistory> getLastFiveFromPlayerhistory(int memNum, int RegionId)
         {
             List<PlayerHistory> Return = new List<PlayerHistory>();
             using (var db = new NineTapDb())
             {
-                //will only grab the last inputted average history, that way the bonus pins cant be affected by bowling in more then one squad
+                //will only grab the last 5 where the AVG was adjusted, that way the bonus pins cant be affected by bowling in more then one squad
                 var temp = (from h in db.PlayerHistory
-                            where h.MemberNumber == id && h.AVG > 0 //only grabs tournaments where avgerage was determined. that way it doest grab history from a diffrent sqaud
+                            where h.MemberNumber == memNum && h.regionID == RegionId && h.AVG > 0 //only grabs tournaments where avgerage was determined. that way it doest grab history from a diffrent sqaud
                             orderby h.TournamentDate descending, h.hisID descending
                             select new
                             {
@@ -413,13 +413,13 @@ namespace NineTapTour.Database
                 return gamesList.Count;
             }
         }
-        public static List<PlayerHistory> getMemberPlayerHistoryByTotal(int id)
+        public static List<PlayerHistory> getMemberPlayerHistoryByTotal(int memnum, int rID)
         {
             List<PlayerHistory> Return = new List<PlayerHistory>();
             using (var db = new NineTapDb())
             {
                 var temp = (from h in db.PlayerHistory
-                            where h.MemberNumber == id
+                            where h.MemberNumber == memnum && h.regionID == rID
                             orderby h.TotalScore descending
                             select new
                             {

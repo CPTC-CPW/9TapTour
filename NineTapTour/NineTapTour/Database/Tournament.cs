@@ -25,6 +25,8 @@ namespace NineTapTour.Database
         {
             get { return Location + " " +  Date.ToShortDateString(); }
         }
+
+        public int TourneyRegion { get; set; }
         
     }
     public class TournamentDTO
