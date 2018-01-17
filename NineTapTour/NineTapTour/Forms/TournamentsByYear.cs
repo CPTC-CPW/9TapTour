@@ -13,9 +13,11 @@ namespace NineTapTour.Forms
 {
     public partial class TournamentsByYear : Form
     {
-        public TournamentsByYear()
+       public int RID;
+        public TournamentsByYear(int RegionID)
         {
             InitializeComponent();
+            this.RID = RegionID;
         }
 
         private void TournamentsByYear_Load(object sender, EventArgs e)
@@ -51,19 +53,19 @@ namespace NineTapTour.Forms
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            PopulateTournamentsByYear(Convert.ToInt32(cbxYear.Text));
+            PopulateTournamentsByYear(Convert.ToInt32(cbxYear.Text), RID);
         }
 
         /// <summary>
         /// Gets all the tournaments from a specific year
         /// </summary>
         /// <param name="selectedYear">Year selected</param>
-        public void PopulateTournamentsByYear(int selectedYear)
+        public void PopulateTournamentsByYear(int selectedYear, int regionID)
         {
             NineTapDb db = new NineTapDb();
             var tournaments = (from t in db.Tournaments
                                orderby t.Date descending
-                               where t.Date.Year == selectedYear
+                               where t.Date.Year == selectedYear  && t.TourneyRegion == regionID
                                select new
                                {
                                    t.Id,

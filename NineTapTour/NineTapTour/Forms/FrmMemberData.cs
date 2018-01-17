@@ -30,6 +30,8 @@ namespace NineTapTour.Forms
         Member currentMem;
         private int _memberNum;
         int RegionID;
+        int AllGames;
+        
         
 
 
@@ -345,9 +347,29 @@ namespace NineTapTour.Forms
                     datePaid.CustomFormat = @" ";
                     lblPaymentInfo.Visible = false;
                 }
-                
 
-              
+                moneySum = 0;
+                db = new NineTapDb();
+                result = (from p in db.PlayerHistory
+                              where p.MemberNumber == currentMem.Number && p.regionID == RegionID
+                              orderby p.TournamentDate descending
+                              select new
+                              {
+                                  p.MoneyWon
+                              }).ToArray();
+                foreach (var v in result)
+                {
+                    moneySum += v.MoneyWon;
+                }
+                currentMem.MoneyEarned = moneySum;
+
+                txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
+
+                MemberDb.AddMember(currentMem);
+
+
+
+
 
                 MemberDb.AddMember(currentMem);
 
@@ -1166,6 +1188,7 @@ namespace NineTapTour.Forms
                 {
                     frmPleaseWait please = new frmPleaseWait();
                     please.Show();
+                    AllGames = PlayerHistoryDB.getNumberOfAllGames();
                     if (AlreadyImportedPH.Count > 0)
                     {
                         for(int delete = 0; delete < AlreadyImportedPH.Count; delete++)
@@ -1209,7 +1232,7 @@ namespace NineTapTour.Forms
                 decimal moneySum = 0;
                 var db = new NineTapDb();
                 var result = (from p in db.PlayerHistory
-                              where p.MemberNumber == currentMem.Id
+                              where p.MemberNumber == currentMem.Number && p.regionID == RegionID
                               orderby p.TournamentDate descending
                               select new
                               {
@@ -1326,6 +1349,7 @@ namespace NineTapTour.Forms
                     ExcelRow temp = new ExcelRow();
                     PlayerHistory playerH = new PlayerHistory();
                     Game GameHistory = new Game();
+                    GameHistory.gameRegionID = RegionID;
                     temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
                     temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
                     temp.PlayerLastName = playerLastName;
@@ -1476,7 +1500,8 @@ namespace NineTapTour.Forms
                         GameHistory.Notes = temp.Notes;
                         playerH.Notes = temp.Notes;
                         playerH.PPHG = temp.FinPPHG;
-                        GameHistory.Id = PlayerHistoryDB.getNumberOfAllGames() + 1;
+                        GameHistory.Id = AllGames + 1;
+                        AllGames++;
                         playerH.GameID = GameHistory.Id;
                         PlayerHistoryDB.AddGame(GameHistory);
                         PlayerHistoryDB.AddPlayerHistory(playerH);

@@ -16,6 +16,7 @@ namespace NineTapTour.Forms
     {
         // If a new tournament was selected to edit, this will be set to something other than null.
         Tournament tourToEdit;
+     
         
         public frmNewTournament()
         {
@@ -133,7 +134,7 @@ namespace NineTapTour.Forms
 
         private void btnEditTour_Click(object sender, EventArgs e)
         {
-            FrmTourSearch getEdit = new FrmTourSearch();
+            FrmTourSearch getEdit = new FrmTourSearch(((FrmMain)MdiParent).RegionID);
             getEdit.ShowDialog();
             tourToEdit = getEdit.getResult();
 

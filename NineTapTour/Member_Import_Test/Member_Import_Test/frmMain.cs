@@ -26,6 +26,11 @@ namespace Member_Import_Test
         {
             InitializeComponent();
             new NineTapDb();
+            List<NineTapRegion> r = NineTapRegionDB.GetRegionList();
+            cbxRegionSelect.DataSource = r;
+            cbxRegionSelect.DisplayMember = "NineTapRegionName";
+            RegionID = r[cbxRegionSelect.SelectedIndex].NineTapRegionID;
+            
         }
 
         //MEMBER INFO STATIC INTS
@@ -79,7 +84,8 @@ namespace Member_Import_Test
 
 
 
-
+        public int RegionID;
+        public int allGames;
 
 
         public List<Member> validMembers = new List<Member>(); //list of valid members
@@ -133,6 +139,7 @@ namespace Member_Import_Test
                         bool validMember = true; // to determin if goes on seperate list
                         bool genderSelected = false; //check if gender has been selected 
                         bool status = false; // check if status has been selected
+                        newMem.NineTapRegionID = RegionID; //sets the region id to the current selected region
                         currentIndex = File.IndexOf(Convert.ToString(MemberCount), currentIndex);
                         if (currentIndex == -1)
                         {
@@ -181,6 +188,8 @@ namespace Member_Import_Test
                                         //Idea #1: Using String.Replace\\
                                         //Simple method, but would have to account for all possible cases of extra data
 
+                                        //these were just some of the notes that were left in the name (some signify life members, others are just short for the city they are from)
+                                        // dooesnt need to be by the name, taken out on a case by case basis.
                                         string[] notapartofname = { "life", "gst", "(Haw.)", "pa", "yk", "hj", "lg", "mv" };
 
 
@@ -529,6 +538,7 @@ namespace Member_Import_Test
 
 
                             }
+
                             NineTapTour.Database.MemberDb.AddMember(validMembers[j]);
                         }
                     }
@@ -544,7 +554,7 @@ namespace Member_Import_Test
             if (invalidMembers.Count > 0 || validMembers.Count > 0)
             {
                 btnSelectExcelFolder.Enabled = true;
-                btnPinFileSelect.Enabled = true;
+                
             }
             if (ALLEXCELDATAFROMALLPLAYERS.Count > 0) //&& TournamentList.Count > 0)
             {
@@ -580,6 +590,7 @@ namespace Member_Import_Test
         {
             using (var fbd = new FolderBrowserDialog())
             {
+                allGames = PlayerHistoryDB.getNumberOfAllGames();
                 DialogResult result = fbd.ShowDialog();
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
@@ -602,7 +613,7 @@ namespace Member_Import_Test
                 {
                     continue;
                 }
-
+                
                 List<ExcelRow> rows = ProcessExcelFile(files[i]);
                 foreach (ExcelRow r in rows)
                 {
@@ -756,17 +767,17 @@ namespace Member_Import_Test
                     ExcelRow temp = new ExcelRow();
                     PlayerHistory playerH = new PlayerHistory();
                     Game GameHistory = new Game();
+                    GameHistory.gameRegionID = RegionID;
                     temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
                     temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
                     temp.PlayerLastName = playerLastName;
                     temp.PlayerOrginalAVG = playerOrgAVG;
                     temp.PlayerNumber = playerNumberAsInt;
                     playerH.MemberNumber = temp.PlayerNumber;
-
-                    for (int validmember = 0; validmember < validMembers.Count; validmember++)
+                    playerH.regionID = RegionID;
+                    //only process file if they have been added as a member first and are active ?
+                        if (MemberDb.GetMember(temp.PlayerNumber, RegionID).IsActive == true)
                     {
-                        if (validMembers[validmember].Number == temp.PlayerNumber && validMembers[validmember].IsActive == true)
-                        {//only process file if they have been added as a member first and are active
                             try
                             {
                                 temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
@@ -907,17 +918,17 @@ namespace Member_Import_Test
                             GameHistory.Notes = temp.Notes;
                             playerH.Notes = temp.Notes;
                             playerH.PPHG = temp.FinPPHG;
-                            GameHistory.Id = GameImport.Count + 1;
+                            GameHistory.Id = allGames + 1;
+                            allGames++;
                             playerH.GameID = GameHistory.Id;
                             GameImport.Add(GameHistory);
                             PlayerHistoryList.Add(playerH);
                             returnMe.Add(temp);
                             progressBar2.Increment(1);
+                        
                         }
-
                     }
-
-                }
+                  
             }
 
 
@@ -1270,8 +1281,7 @@ namespace Member_Import_Test
                        && validMembers[members].Number != ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber)
                     {
                         ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber = validMembers[members].Number;
-                        PlayerHistoryList[ExcelFileSlot].MemberNumber = validMembers[members].Number;
-                        validMembers[members].Id = validMembers[members].Number;
+                        PlayerHistoryList[ExcelFileSlot].MemberNumber = validMembers[members].Number;             
                     }
                     else if ((validMembers[members].FirstName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerFirstName && validMembers[members].LastName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerLastName
                        && validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber))
@@ -1311,10 +1321,14 @@ namespace Member_Import_Test
 
         private void updateMembers(List<Member> members)
         {
-            foreach(var m in members)
+            for(int i = 0; i < members.Count; i++)
             {
-                MemberDb.AddMember(m);
+                if (MemberDb.MemberExists(members[i]) == false)
+                {
+                    MemberDb.AddMember(members[i]);
+                }
             }
+            
         }
 
         private void updateGameHistory (List<Game> Game)
@@ -1325,7 +1339,11 @@ namespace Member_Import_Test
             }
         }
 
-      
+        private void cbxRegionSelect_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            List<NineTapRegion> r = NineTapRegionDB.GetRegionList();
+            RegionID = r[cbxRegionSelect.SelectedIndex].NineTapRegionID;
+        }
     }
 
 

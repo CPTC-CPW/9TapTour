@@ -18,7 +18,7 @@ namespace NineTapTour.Forms
     {
 
         //IOrderedEnumerable<Member> _membersList;
-        int RegionID;
+        public int RegionID;
         Member currentMem;
         Member currentMem2;
         TextBox[] scratchArray = new TextBox[4];
@@ -32,6 +32,8 @@ namespace NineTapTour.Forms
         public static List<TopScores> overallListOfTopScores;
         public static List<Participant> overallListOfParticipants;
         int QBSNumber = 0;
+        frmNewTournament currentTourneyPage;
+
        
 
 
@@ -279,7 +281,7 @@ namespace NineTapTour.Forms
                     if (searchNumber.Trim() != "")
                     {
                         int memberNumber = Convert.ToInt16(txtMemberNum.Text);
-                        currentMem = ((FrmMain)MdiParent)._membersList.FirstOrDefault(m => m.Number == memberNumber);
+                        currentMem = MemberDb.GetMember(memberNumber,RegionID);
                         if (currentMem != null)
                         {
                             if (currentMem.IsActive)
@@ -549,6 +551,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void newRecap(object sender, EventArgs e)
         {
+
             if (IsValid())
             {
                 Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
@@ -697,7 +700,7 @@ namespace NineTapTour.Forms
                         player.Game.Game4 = IsEmpty(txtScratchScore4) ? null : (int?)Convert.ToInt32((scratchArray[3].Text));
                         player.Game.Bonus = currentMem.Bonus;
                         player.Game.Handicap = currentMem.Handicap;
-
+                        player.Game.gameRegionID = RegionID;
                         player.Member = currentMem;
                         try
                         {
@@ -1006,7 +1009,7 @@ namespace NineTapTour.Forms
         private void btnNewTournament_Click(object sender, EventArgs e)
         {
             var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
-            ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
+            ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament); 
             newfrmNewTournament.Dock = DockStyle.None;
             rdoSquadOne.Checked = true;
         }
@@ -1132,7 +1135,7 @@ namespace NineTapTour.Forms
         private void btnTourSearch_Click(object sender, EventArgs e)
         {
             List<Tournament> tours = new List<Tournament>();
-            FrmTourSearch tourSearch = new FrmTourSearch(tours);
+            FrmTourSearch tourSearch = new FrmTourSearch(tours,RegionID);
             tourSearch.ShowDialog();
 #if DEBUG
             foreach (Tournament tour in tours)
@@ -1783,7 +1786,7 @@ namespace NineTapTour.Forms
 
         private void btnTournamentsByYear_Click(object sender, EventArgs e)
         {
-            TournamentsByYear listTournaments = new TournamentsByYear();
+            TournamentsByYear listTournaments = new TournamentsByYear(RegionID);
             listTournaments.ShowDialog();
         }
 
@@ -2166,7 +2169,7 @@ namespace NineTapTour.Forms
                     overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
                     cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
                     cbxTourneyDropDown.ValueMember = "Id";
-                    //corrects any changes to the members stats after finalizing to the last accurate 
+                    //corrects any changes to the members stats after finalizing to the last accurate data
                     List<PlayerHistory> temp = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Number, RegionID);
                     currentMem.Handicap = temp[0].HandiCap;
                     currentMem.Bonus = temp[0].Bonus;

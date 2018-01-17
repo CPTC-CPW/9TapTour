@@ -93,7 +93,7 @@ namespace NineTapTour.Forms
             foreach (var item in FinalizeTableList)
             {
                 FinalizeTemp temp;
-                int HowManyTimesDidTheyBowlThisTournament;
+                
 
 
                 Game g = FinalizeTempDB.getGame(item.GameId);
@@ -102,12 +102,11 @@ namespace NineTapTour.Forms
                     temp = FinalizeTempDB.getFinalizeID(g);
                     temp.TournamentID = tourn.Id;
                     temp.ScratchTotal = temp.Game1 + temp.Game2 + temp.Game3 + temp.Game4;
-                    temp.HandicapTotal = ((temp.Game1 + temp.Bonus + temp.Handicap) + (temp.Game2 + temp.Bonus + temp.Handicap) + (temp.Game3 + temp.Bonus + temp.Handicap) + (temp.Game4 + temp.Bonus + temp.Handicap));
-                    HowManyTimesDidTheyBowlThisTournament = 0;
+                    temp.HandicapTotal = ((temp.Game1 + temp.Bonus + temp.Handicap) + (temp.Game2 + temp.Bonus + temp.Handicap) + (temp.Game3 + temp.Bonus + temp.Handicap) + (temp.Game4 + temp.Bonus + temp.Handicap));              
                 }
                 else
                 {
-                    HowManyTimesDidTheyBowlThisTournament = 0;
+                    
                     int gplayed = 0;
                     temp = new FinalizeTemp();
                     temp.FinalizeID = FinalizeTableList.Count;
@@ -152,13 +151,7 @@ namespace NineTapTour.Forms
                                 
 
                 }
-                for (int f = 0; f < FinalizeTableList.Count; f++)
-                {
-                    if (temp.MemberId == FinalizeTableList[f].MemberId)
-                    {
-                        HowManyTimesDidTheyBowlThisTournament++;
-                    }
-                }
+           
                 //grabs running league average
                 getLeagueSum(temp);
                 FinalizeTempDB.AddFinalizeTempOnstart(temp);
@@ -754,14 +747,14 @@ namespace NineTapTour.Forms
             }
             return 0;
         }
-        public double LeagueAvgFromPlayerHistory(int mem, int howmany)
+        public double LeagueAvgFromPlayerHistory(int mem, int howmany, int regionid)
         {
       
             double sum = 0;
             double avg = 0;
             var db = new NineTapDb();
             var temp = (from p in db.PlayerHistory
-                        where p.MemberNumber == mem
+                        where p.MemberNumber == mem && p.regionID == regionid
                         orderby p.TournamentDate descending
                         select new
                         {
@@ -1369,6 +1362,7 @@ namespace NineTapTour.Forms
             //RUNNING LEAGUE AVG 
             int SumFromGamesNotAddedYet = 0;
             //checks to see if they bowled an any squads before the current selected squad, if your on this line then they bowled at leats once
+            temp.memberNumber = MemberDb.GetMemberNumberbyID(temp.MemberId);
             int howmanyTimesdidheybowlbeforethissquad = 1;
             for (int f = 0; f < FinalizeTableList.Count; f++)
             {
@@ -1381,7 +1375,7 @@ namespace NineTapTour.Forms
           
             if (temp.Squad == 1)//if the current member bowled in squad one, then get the league avg sum of this game and the last 29 from player history
             {
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.MemberId,  30 - howmanyTimesdidheybowlbeforethissquad) + temp.GameAvg));
+                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber,  30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + temp.GameAvg));
             }
             else if (temp.Squad == 2) //if current member bowled in any squad but squad 1, then get the league avg sum of this game, sum of any previous squads, and the last 26-29  from player history (depending on how many squads they bowled previously)
             {
@@ -1393,7 +1387,7 @@ namespace NineTapTour.Forms
                     }
                 }
 
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.MemberId, 30 - howmanyTimesdidheybowlbeforethissquad) + SumFromGamesNotAddedYet + temp.GameAvg));
+                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad,RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
             }
             else if (temp.Squad == 3)
             {
@@ -1405,7 +1399,7 @@ namespace NineTapTour.Forms
                     }
                 }
 
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.MemberId, 30 - howmanyTimesdidheybowlbeforethissquad) + SumFromGamesNotAddedYet + temp.GameAvg));
+                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad,RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
             }
             else if (temp.Squad == 4)
             {
@@ -1417,7 +1411,7 @@ namespace NineTapTour.Forms
                     }
                 }
 
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.MemberId, 30 - howmanyTimesdidheybowlbeforethissquad) + SumFromGamesNotAddedYet + temp.GameAvg));
+                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
             }
 
             temp.memberNumber = MemberDb.GetMemberNumberbyID(temp.MemberId);
@@ -1426,11 +1420,11 @@ namespace NineTapTour.Forms
             {
                 temp.LeagueAverage = temp.LeagueAverage / 30;
             }
-            else if (p.Count > 0)
+            else if (p.Count > 0) // divides by as much player history as possible + how ever many times were bowled in current tournament
             {
                 temp.LeagueAverage = temp.LeagueAverage / p.Count + howmanyTimesdidheybowlbeforethissquad; 
             }
-            else
+            else // if they have no bowling history then divide the sum by the number currently bowled in the tournament
             {
                 temp.LeagueAverage = temp.LeagueAverage / howmanyTimesdidheybowlbeforethissquad;
             }

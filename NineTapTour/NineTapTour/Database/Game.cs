@@ -38,5 +38,7 @@ namespace NineTapTour.Database
         public decimal? MoneyWon { get; set; }
         public byte? PlaceStanding { get; set;}
 
+        public int gameRegionID { get; set; }
+
     }
 }

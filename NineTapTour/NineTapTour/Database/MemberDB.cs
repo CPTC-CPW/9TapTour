@@ -76,7 +76,7 @@ namespace NineTapTour.Database
             using (var db = new NineTapDb())
             {
 
-                if (db.Members.Any(m => m.Number == Temp.Number))
+                if (db.Members.Any(m => m.Number == Temp.Number && m.NineTapRegionID == Temp.NineTapRegionID))
                 {
                     return true;
                 }

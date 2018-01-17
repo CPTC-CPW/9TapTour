@@ -116,9 +116,10 @@ namespace NineTapTour.Forms
                 else
                 {
                     form = new T
-                    {                      
+                    {
                         MdiParent = this,
-                        Dock = DockStyle.Fill
+                        Dock = DockStyle.Fill                      
+               
                     };
                 }
                 form.WindowState = FormWindowState.Maximized;

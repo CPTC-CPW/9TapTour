@@ -17,6 +17,7 @@ namespace NineTapTour.Forms
         List<Tournament> tours;
         Tournament singleTour;
         bool single;
+        int RegionID;
         /// <summary>
         /// This takes a tour list and modifies it. The tour you pass in will
         /// be different when this form has finished running.
@@ -24,21 +25,25 @@ namespace NineTapTour.Forms
         /// so the X can be pressed safely at any time.
         /// </summary>
         /// <param name="tours"></param>
-        public FrmTourSearch(List<Tournament> tours)
+        public FrmTourSearch(List<Tournament> tours, int RegionID)
         {
             InitializeComponent();
             this.tours = tours;
             single = false;
+            this.RegionID = RegionID;
+          
         }
 
         /// <summary>
         /// If you don't pass a list, it assumes you will be trying to get a single item. IF you don't retrieve the found item after closing it, it will be useless.
         /// </summary>
-        public FrmTourSearch()
+        public FrmTourSearch(int regionID)
         {
             InitializeComponent();
             single = true;
             listSearch.SelectionMode = SelectionMode.One;
+            this.RegionID = regionID;
+       
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -51,6 +56,7 @@ namespace NineTapTour.Forms
             using (NineTapDb db = new NineTapDb())
             {
                 var query = from t in db.Tournaments
+                            where t.TourneyRegion == RegionID
                                 //orderby t.Date descending
                             select t;
                 

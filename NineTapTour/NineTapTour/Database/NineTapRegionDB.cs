@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace NineTapTour.Database
 {
-    class NineTapRegionDB
+   public class NineTapRegionDB
     {
         public static List<NineTapRegion> GetRegionList()
         {
