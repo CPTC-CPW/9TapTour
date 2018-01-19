@@ -61,6 +61,46 @@ namespace NineTapTour.Database
             }
         }
 
+        public static void deleteRegion(NineTapRegion t)
+        {
+            try
+            {
+                using (var db = new NineTapDb())
+                {
+                    db.Entry(t).State = EntityState.Deleted;
+                    db.SaveChanges();
+                }
+            }
+            catch
+            {
+
+            }
+
+        }
+
+        public static NineTapRegion getRegionByID ( int regionID)
+        {
+            NineTapRegion NTR = new NineTapRegion();
+            using (var db = new NineTapDb())
+            {
+                var temp = (from g in db.NineTapRegion
+                            select new
+                            {
+                                g.NineTapRegionID,
+                                g.NineTapRegionName
+                            });
+                foreach (var v in temp)
+                {
+                    NTR.NineTapRegionName = v.NineTapRegionName;
+                    NTR.NineTapRegionID = v.NineTapRegionID;
+  
+                }
+
+            }
+            return NTR;
+            
+        }
+
 
 
 

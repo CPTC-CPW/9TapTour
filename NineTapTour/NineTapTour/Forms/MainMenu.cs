@@ -92,13 +92,69 @@ namespace NineTapTour.Forms
 
         private void btnDropDataBase1_Click_1(object sender, EventArgs e)
         {
-            if (MessageBox.Show("This button will delete all data stored in the database, are you sure you want to clear  data?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+           
+            List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
+            string name = NineTapRegionDB.getRegionByID(regionID).NineTapRegionName;
+            if (MessageBox.Show($"This button will delete all data stored in the {NineTapRegionDB.getRegionByID(regionID).NineTapRegionName} database, are you sure you want to clear  data?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                System.Data.Entity.Database.Delete("name=NineTapDbConnection");
-                MessageBox.Show("Data Cleared!,restart to continue.");
-                this.Close();
-                FrmMain m = new FrmMain();
-                m.Close();
+                frmPleaseWait pl = new frmPleaseWait();
+                pl.Show();
+                //Delete Player History where HisID = selected regionID
+                List<PlayerHistory> phis =  PlayerHistoryDB.getAllPlayerHistory(regionID);
+                foreach (var p in phis)
+                {
+                    PlayerHistoryDB.DeletePlayerHistory(p);
+                }
+                // Delete FinilizeTemp where FinalizeID = selected regionID
+                List<FinalizeTemp> fin = FinalizeTempDB.GetFinalizeList(regionID);
+                foreach(var f in fin)
+                {
+                    FinalizeTempDB.DeleteFinilizeTemp(f);
+                }
+                // Delete Participants where Participant RegionID = regionID
+                List<Participant> par = FinalizeTempDB.GetparticpantList(regionID);
+                foreach(var p in par)
+                {
+                    FinalizeTempDB.deleteParticipant(p);
+                }
+                // Delete Games where GameRegionID = regionID
+                List <Game> gam = FinalizeTempDB.GetGameList(regionID);
+                foreach(var g in gam)
+                {
+                    PlayerHistoryDB.DeleteGame(g);
+                }
+                //delete Tournaments where Tournament RegionID = Region ID
+                List < Tournament > tourn = TournamentDb.GetTournamentList(regionID);
+                foreach(var t in tourn)
+                {
+                    TournamentDb.deleteTournament(t);
+                }
+
+                //Delete from Member Table where Memmber RegionID is = selected region ID
+               List<Member> mem = MemberDb.GetMemberList(regionID);
+                foreach(var m in mem)
+                {
+                    MemberDb.DeleteMember(m);
+                }
+
+                //delete  the region itself
+                NineTapRegion ntr = NineTapRegionDB.getRegionByID(regionID);
+                NineTapRegionDB.deleteRegion(ntr);
+
+                if(NineTapRegionDB.getNumberOfRegions() == 0) // recreate the local region select again if it nothing exists here anymore
+                {
+                    NineTapRegion n = new NineTapRegion();
+                    n.NineTapRegionID = 1;
+                    n.NineTapRegionName = "Local";
+                    NineTapRegionDB.AddRegion(n);
+
+                }
+
+                refreshRegionlist();
+
+                pl.Close();
+                MessageBox.Show(name + " Database was successfully cleared!");
+         
 
             }
         }

@@ -42,5 +42,7 @@ namespace NineTapTour.Database
         public int Bonus { get; set; }
 
         public int HandicapTotal { get; set; }
+
+        public int FinalizeRegionID { get; set; }
     }
 }

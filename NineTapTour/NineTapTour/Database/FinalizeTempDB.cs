@@ -366,6 +366,37 @@ namespace NineTapTour.Database
 
         }
 
+        public static List<FinalizeTemp> GetFinalizeList(int RegionID)
+        {
+            using (var db = new NineTapDb())
+            {
+                return (from f in db.FinalizeTemp
+                        where f.FinalizeRegionID == RegionID
+                        select f).ToList();
+            }
+        }
+
+        public static List<Participant> GetparticpantList(int RegionID)
+        {
+            using (var db = new NineTapDb())
+            {
+                return (from p in db.Participants
+                        where p.ParticipantRegionID == RegionID
+                        select p).ToList();
+            }
+        }
+
+        public static List<Game> GetGameList(int RegionID)
+        {
+            using (var db = new NineTapDb())
+            {
+                return (from g in db.Games
+                        where g.gameRegionID == RegionID
+                        select g).ToList();
+            }
+        }
+
+
 
     }
 
@@ -373,5 +404,5 @@ namespace NineTapTour.Database
 
 
 
-    }
+}
 

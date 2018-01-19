@@ -243,13 +243,13 @@ namespace NineTapTour.Database
             return Return;
         }
 
-        public static List<PlayerHistory> getAllPlayerHistory()
+        public static List<PlayerHistory> getAllPlayerHistory(int RegionID)
         {
             List<PlayerHistory> Return = new List<PlayerHistory>();
             using (var db = new NineTapDb())
             {
                 var temp = (from h in db.PlayerHistory
-                            orderby h.TournamentDate descending
+                            where h.regionID == RegionID
                             select new
                             {
                                 h.GamesPlayed,

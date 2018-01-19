@@ -562,6 +562,9 @@ namespace NineTapTour.Forms
 
                     player.Game = new Game();
                     player2.Game = new Game();
+                    player.ParticipantRegionID = RegionID;
+                    player2.ParticipantRegionID = RegionID;
+
                     NineTapDb db = new NineTapDb();
                     int gameId = (from p in db.Participants
                                   where p.Member.Id == currentMem.Id
@@ -645,6 +648,7 @@ namespace NineTapTour.Forms
                 else
                 {
                     player.Game = new Game();
+                    player.ParticipantRegionID = RegionID;
                     var db = new NineTapDb();
                     var gameId = (from p in db.Participants
                                   where p.Member.Id == currentMem.Id

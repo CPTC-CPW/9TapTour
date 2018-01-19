@@ -776,7 +776,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnFirstRecord_Click(object sender, EventArgs e)
         {
-            txtMemberNumber.Text = ((FrmMain)MdiParent)._membersList.First().Number.ToString();
+            txtMemberNumber.Text = MemberDb.GetMemberList(RegionID)[0].Number.ToString();
             UpdateMemberInfo();
         }
 
@@ -787,7 +787,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
-            txtMemberNumber.Text = ((FrmMain)MdiParent)._membersList.Last().Number.ToString();
+            txtMemberNumber.Text = MemberDb.GetMemberList(RegionID).Count.ToString();
             UpdateMemberInfo();
         }
 
@@ -1261,7 +1261,7 @@ namespace NineTapTour.Forms
         {
          
             List<ExcelRow> returnMe = new List<ExcelRow>();
-            List<PlayerHistory> playerhistory = PlayerHistoryDB.getAllPlayerHistory();
+           
         
 
             Excel.Application xlApp = new Excel.Application();

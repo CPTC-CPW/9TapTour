@@ -75,11 +75,11 @@ namespace NineTapTour.Calculations
             {
                 List<PlayerHistory> latest = PlayerHistoryDB.getLastFiveFromPlayerhistory(MemNum,RegionID);
                 if(latest[0].TournamentDate != latest[1].TournamentDate &&
-                   latest[1].TournamentDate != latest[2].TournamentDate &&
+                   latest[1].TournamentDate != latest[2].TournamentDate && //filtering history where they had bowled in a diffrent sqaud on the same day
                    latest[2].TournamentDate != latest[0].TournamentDate)
                 {
                     if(latest[0].Bonus == latest[1].Bonus &&
-                       latest[1].Bonus == latest[2].Bonus &&
+                       latest[1].Bonus == latest[2].Bonus &&  //checks to see if there last 3 history were the same, after 3 times not placing, they gain a bonus point
                        latest[2].Bonus == latest[0].Bonus)
                     {
                         return currentBonusPins++;

@@ -492,6 +492,7 @@ namespace NineTapTour.Forms
         { 
             dataGridView1.SuspendLayout();
             int top5 = 0;
+            
      
 
             for(int i = 0; i < dataGridView1.RowCount; i++)

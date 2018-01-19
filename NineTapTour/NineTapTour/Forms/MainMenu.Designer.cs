@@ -33,7 +33,6 @@
             this.btnMemberScores = new System.Windows.Forms.Button();
             this.btnAbout = new System.Windows.Forms.Button();
             this.Exit = new System.Windows.Forms.Button();
-            this.btnDropDataBase = new System.Windows.Forms.Button();
             this.btnDropDataBase1 = new System.Windows.Forms.Button();
             this.cbxRegionSelect = new System.Windows.Forms.ComboBox();
             this.btnAdd = new System.Windows.Forms.Button();
@@ -56,7 +55,7 @@
             this.btnMemberScores.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnMemberScores.Location = new System.Drawing.Point(12, 175);
             this.btnMemberScores.Name = "btnMemberScores";
-            this.btnMemberScores.Size = new System.Drawing.Size(118, 65);
+            this.btnMemberScores.Size = new System.Drawing.Size(121, 65);
             this.btnMemberScores.TabIndex = 0;
             this.btnMemberScores.Text = "Member Scores";
             this.btnMemberScores.UseVisualStyleBackColor = true;
@@ -67,7 +66,7 @@
             this.btnAbout.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
             this.btnAbout.Location = new System.Drawing.Point(12, 246);
             this.btnAbout.Name = "btnAbout";
-            this.btnAbout.Size = new System.Drawing.Size(118, 65);
+            this.btnAbout.Size = new System.Drawing.Size(121, 65);
             this.btnAbout.TabIndex = 0;
             this.btnAbout.Text = "About";
             this.btnAbout.UseVisualStyleBackColor = true;
@@ -78,37 +77,27 @@
             this.Exit.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
             this.Exit.Location = new System.Drawing.Point(12, 317);
             this.Exit.Name = "Exit";
-            this.Exit.Size = new System.Drawing.Size(118, 65);
+            this.Exit.Size = new System.Drawing.Size(121, 65);
             this.Exit.TabIndex = 0;
             this.Exit.Text = "Exit";
             this.Exit.UseVisualStyleBackColor = true;
             this.Exit.Click += new System.EventHandler(this.Exit_Click);
             // 
-            // btnDropDataBase
-            // 
-            this.btnDropDataBase.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.btnDropDataBase.Location = new System.Drawing.Point(12, 743);
-            this.btnDropDataBase.Name = "btnDropDataBase";
-            this.btnDropDataBase.Size = new System.Drawing.Size(147, 37);
-            this.btnDropDataBase.TabIndex = 1;
-            this.btnDropDataBase.Text = "Clear Database";
-            this.btnDropDataBase.UseVisualStyleBackColor = true;
-            // 
             // btnDropDataBase1
             // 
-            this.btnDropDataBase1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.btnDropDataBase1.Location = new System.Drawing.Point(12, 399);
+            this.btnDropDataBase1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDropDataBase1.Location = new System.Drawing.Point(12, 455);
             this.btnDropDataBase1.Name = "btnDropDataBase1";
-            this.btnDropDataBase1.Size = new System.Drawing.Size(118, 65);
+            this.btnDropDataBase1.Size = new System.Drawing.Size(121, 23);
             this.btnDropDataBase1.TabIndex = 2;
-            this.btnDropDataBase1.Text = "Delete Data Base";
+            this.btnDropDataBase1.Text = "Delete Region";
             this.btnDropDataBase1.UseVisualStyleBackColor = true;
             this.btnDropDataBase1.Click += new System.EventHandler(this.btnDropDataBase1_Click_1);
             // 
             // cbxRegionSelect
             // 
             this.cbxRegionSelect.FormattingEnabled = true;
-            this.cbxRegionSelect.Location = new System.Drawing.Point(136, 424);
+            this.cbxRegionSelect.Location = new System.Drawing.Point(12, 399);
             this.cbxRegionSelect.Name = "cbxRegionSelect";
             this.cbxRegionSelect.Size = new System.Drawing.Size(121, 21);
             this.cbxRegionSelect.TabIndex = 3;
@@ -116,9 +105,9 @@
             // 
             // btnAdd
             // 
-            this.btnAdd.Location = new System.Drawing.Point(155, 451);
+            this.btnAdd.Location = new System.Drawing.Point(12, 426);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(80, 23);
+            this.btnAdd.Size = new System.Drawing.Size(121, 23);
             this.btnAdd.TabIndex = 4;
             this.btnAdd.Text = "Add Region";
             this.btnAdd.UseVisualStyleBackColor = true;
@@ -135,7 +124,6 @@
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.cbxRegionSelect);
             this.Controls.Add(this.btnDropDataBase1);
-            this.Controls.Add(this.btnDropDataBase);
             this.Controls.Add(this.Exit);
             this.Controls.Add(this.btnAbout);
             this.Controls.Add(this.btnMemberScores);
@@ -157,7 +145,6 @@
         private System.Windows.Forms.Button btnMemberScores;
         private System.Windows.Forms.Button btnAbout;
         private System.Windows.Forms.Button Exit;
-        private System.Windows.Forms.Button btnDropDataBase;
         private System.Windows.Forms.Button btnDropDataBase1;
         private System.Windows.Forms.ComboBox cbxRegionSelect;
         private System.Windows.Forms.Button btnAdd;
