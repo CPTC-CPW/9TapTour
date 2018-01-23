@@ -306,7 +306,7 @@ namespace NineTapTour.Forms
                                 {
                                     currentMem.Bonus = last5[0].Bonus;
                                     currentMem.Handicap = last5[0].HandiCap;
-                                    txtHandicap.Text = last5[0].HandiCap.ToString();
+                                    txtHandicap.Text = last5[0].HandiCap.ToString();                                 
                                     txtBonusPins.Text = last5[0].Bonus.ToString();
                                 }
                                 else
@@ -320,7 +320,14 @@ namespace NineTapTour.Forms
 
                                 txtHandicap.Text = currentMem.Handicap.ToString();
                                 txtBonusPins.Text = currentMem.Bonus.ToString();
-                            
+
+                            if (currentMem.Bonus == null)// if bonus pin still null when adding into the tournament, set the bonus pin to their last updated bowler history bonus
+                            {
+                                currentMem.Bonus = last5[0].Bonus;
+                                txtBonusPins.Text = currentMem.Bonus.ToString();
+                                MemberDb.AddMember(currentMem);
+                            }
+
 
                             Game currentGame = GetScoresById(currentMem.Id);
 
