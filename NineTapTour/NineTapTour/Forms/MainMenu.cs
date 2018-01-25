@@ -181,8 +181,8 @@ namespace NineTapTour.Forms
         {
             List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
             this.regionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
-            ((FrmMain)MdiParent).RegionID = regionID;
-            ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList(regionID).OrderBy(m => m.Number);
+            //((FrmMain)MdiParent).RegionID = regionID;
+            //((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList(regionID).OrderBy(m => m.Number);
 
         }
 

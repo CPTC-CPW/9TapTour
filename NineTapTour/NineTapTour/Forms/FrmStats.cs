@@ -491,6 +491,12 @@ namespace NineTapTour.Forms
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         { 
             dataGridView1.SuspendLayout();
+
+            dataGridView1.SuspendLayout();
+            var column = dataGridView1.Columns["Notes"];
+            column.Width = 95;
+
+
             int top5 = 0;
             
      
@@ -513,6 +519,7 @@ namespace NineTapTour.Forms
             {
                
                 dataGridView1.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
+
             }
 
 
