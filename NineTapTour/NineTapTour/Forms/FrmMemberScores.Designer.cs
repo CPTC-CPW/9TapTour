@@ -148,6 +148,7 @@
             // 
             // txtMemberNum2
             // 
+            this.txtMemberNum2.BackColor = System.Drawing.SystemColors.Control;
             this.txtMemberNum2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtMemberNum2.Enabled = false;
             this.txtMemberNum2.Location = new System.Drawing.Point(6, 45);
@@ -160,6 +161,7 @@
             // 
             // txtMemberNum
             // 
+            this.txtMemberNum.BackColor = System.Drawing.SystemColors.Control;
             this.txtMemberNum.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtMemberNum.Enabled = false;
             this.txtMemberNum.Location = new System.Drawing.Point(6, 19);
@@ -360,6 +362,7 @@
             // 
             // txtScratchScore1
             // 
+            this.txtScratchScore1.BackColor = System.Drawing.SystemColors.Control;
             this.txtScratchScore1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtScratchScore1.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtScratchScore1.Location = new System.Drawing.Point(27, 41);
@@ -385,6 +388,7 @@
             // 
             // txtScratchScore2
             // 
+            this.txtScratchScore2.BackColor = System.Drawing.SystemColors.Control;
             this.txtScratchScore2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtScratchScore2.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtScratchScore2.Location = new System.Drawing.Point(27, 97);
@@ -410,6 +414,7 @@
             // 
             // txtScratchScore3
             // 
+            this.txtScratchScore3.BackColor = System.Drawing.SystemColors.Control;
             this.txtScratchScore3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtScratchScore3.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtScratchScore3.Location = new System.Drawing.Point(27, 152);
@@ -435,6 +440,7 @@
             // 
             // txtScratchScore4
             // 
+            this.txtScratchScore4.BackColor = System.Drawing.SystemColors.Control;
             this.txtScratchScore4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtScratchScore4.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtScratchScore4.Location = new System.Drawing.Point(27, 207);
@@ -648,6 +654,7 @@
             // 
             // txtMoney
             // 
+            this.txtMoney.BackColor = System.Drawing.SystemColors.Control;
             this.txtMoney.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtMoney.Location = new System.Drawing.Point(244, 278);
             this.txtMoney.Name = "txtMoney";
@@ -1208,7 +1215,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.BackColor = System.Drawing.Color.LightBlue;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(934, 812);
             this.Controls.Add(this.btnFinalizeTounament);
             this.Controls.Add(this.lblMiddleInitial2);

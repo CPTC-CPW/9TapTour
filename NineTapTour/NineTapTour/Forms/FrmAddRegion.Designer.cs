@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmAddRegion));
             this.btnSubmit = new System.Windows.Forms.Button();
             this.tbEntry = new System.Windows.Forms.TextBox();
             this.lblRegiontext = new System.Windows.Forms.Label();
@@ -45,6 +46,7 @@
             // 
             // tbEntry
             // 
+            this.tbEntry.BackColor = System.Drawing.SystemColors.ControlLight;
             this.tbEntry.Location = new System.Drawing.Point(68, 44);
             this.tbEntry.Name = "tbEntry";
             this.tbEntry.Size = new System.Drawing.Size(138, 20);
@@ -63,10 +65,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(284, 95);
             this.Controls.Add(this.lblRegiontext);
             this.Controls.Add(this.tbEntry);
             this.Controls.Add(this.btnSubmit);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmAddRegion";
             this.Text = "Add Region";
             this.ResumeLayout(false);

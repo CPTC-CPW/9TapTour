@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmSearch));
             this.lblMemNumber = new System.Windows.Forms.Label();
             this.txtMemNumber = new System.Windows.Forms.TextBox();
             this.btnSearch = new System.Windows.Forms.Button();
@@ -65,6 +66,7 @@
             // 
             // txtMemNumber
             // 
+            this.txtMemNumber.BackColor = System.Drawing.SystemColors.Control;
             this.txtMemNumber.Location = new System.Drawing.Point(68, 28);
             this.txtMemNumber.MaxLength = 5;
             this.txtMemNumber.Name = "txtMemNumber";
@@ -136,6 +138,7 @@
             // 
             // txtFirstName
             // 
+            this.txtFirstName.BackColor = System.Drawing.SystemColors.Control;
             this.txtFirstName.Location = new System.Drawing.Point(218, 28);
             this.txtFirstName.Name = "txtFirstName";
             this.txtFirstName.Size = new System.Drawing.Size(161, 20);
@@ -143,6 +146,7 @@
             // 
             // txtLastName
             // 
+            this.txtLastName.BackColor = System.Drawing.SystemColors.Control;
             this.txtLastName.Location = new System.Drawing.Point(474, 28);
             this.txtLastName.Name = "txtLastName";
             this.txtLastName.Size = new System.Drawing.Size(161, 20);
@@ -185,6 +189,7 @@
             // 
             // txtAverage
             // 
+            this.txtAverage.BackColor = System.Drawing.SystemColors.Control;
             this.txtAverage.Location = new System.Drawing.Point(73, 115);
             this.txtAverage.Margin = new System.Windows.Forms.Padding(2);
             this.txtAverage.MaxLength = 10;
@@ -214,6 +219,7 @@
             // 
             // txtHandicap
             // 
+            this.txtHandicap.BackColor = System.Drawing.SystemColors.Control;
             this.txtHandicap.Location = new System.Drawing.Point(274, 115);
             this.txtHandicap.Margin = new System.Windows.Forms.Padding(2);
             this.txtHandicap.MaxLength = 10;
@@ -223,6 +229,7 @@
             // 
             // txtBonus
             // 
+            this.txtBonus.BackColor = System.Drawing.SystemColors.Control;
             this.txtBonus.Location = new System.Drawing.Point(465, 115);
             this.txtBonus.Margin = new System.Windows.Forms.Padding(2);
             this.txtBonus.MaxLength = 10;
@@ -296,6 +303,7 @@
             this.AcceptButton = this.btnSearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(736, 449);
             this.Controls.Add(this.btnClear);
@@ -317,6 +325,7 @@
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.txtMemNumber);
             this.Controls.Add(this.lblMemNumber);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(679, 332);
             this.Name = "FrmSearch";
             this.Text = "Search Members";
