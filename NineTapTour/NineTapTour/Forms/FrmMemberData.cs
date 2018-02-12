@@ -24,16 +24,12 @@ namespace NineTapTour.Forms
 {
     public partial class FrmMemberData : Form
     {
-
         //IOrderedEnumerable<Member> _membersList;
         int _memberId;
         Member currentMem;
         private int _memberNum;
         int RegionID;
         int AllGames;
-        
-        
-
 
         public int MemberNum
         {
@@ -47,9 +43,7 @@ namespace NineTapTour.Forms
         {
             InitializeComponent();
             txtMiddleInitial.MaxLength = 1;
-        }
-
-  
+        }  
         /// <summary>
         /// Updates information in the "Member Data" form.
         /// </summary>
@@ -88,10 +82,6 @@ namespace NineTapTour.Forms
         {
             RegionID = ((FrmMain)MdiParent).RegionID;
             List<Member> ListOfMembers = MemberDb.GetMemberList(RegionID);
-
-            
-           
-
 
             //set txtMemberNumber.Text back to one if there is no one in the the current selected region added yet
             if (MemberDb.GetMemberList(RegionID).Count == 0)
@@ -248,11 +238,7 @@ namespace NineTapTour.Forms
                 mtxtBoxPhone2.Text = currentMem.SecondaryPhone;
                 #endregion
 
-                #region Score Info
-
-      
-              
-          
+                #region Score Info          
 
                 /********************************************************************************
                 updates the form's handicap even when the finalize tournament button is clicked
@@ -306,8 +292,7 @@ namespace NineTapTour.Forms
                 foreach(var v in result)
                 {
                     moneySum += v.MoneyWon;
-                }
-               
+                }               
 
                 txtMoneyEarned.Text = String.Format("{0:C}", moneySum);
                 currentMem.MoneyEarned = moneySum;
@@ -367,13 +352,7 @@ namespace NineTapTour.Forms
 
                 MemberDb.AddMember(currentMem);
 
-
-
-
-
-                MemberDb.AddMember(currentMem);
-
-     
+                MemberDb.AddMember(currentMem);     
                 
             }
         }
@@ -388,6 +367,7 @@ namespace NineTapTour.Forms
         // TODO: add more textfields to validate for the whole form to submit
         public bool isValid()
         {
+
             // check if Active radio button is checked
             if (!rdoActive.Checked && !rdoInActive.Checked)
             {
@@ -463,6 +443,98 @@ namespace NineTapTour.Forms
                 txtState.Clear();
                 return false;
             }
+
+
+            //use better regex expression that includes spaces and hyphens
+            //if (!Regex.IsMatch(txtLastName.Text, "^[A-Z]w+$"))
+            //{
+            //    MessageBox.Show("Last Name is required.");
+            //    txtLastName.Clear();
+            //    return false;
+            //}
+
+            //if (!Regex.IsMatch(txtFirstName.Text, "^[A-Z]w+$"))
+            //{
+            //    MessageBox.Show("First Name is required.");
+            //    txtFirstName.Clear();
+            //    return false;
+            //}
+            // check if Active radio button is checked
+            if (!rdoActive.Checked && !rdoInActive.Checked)
+            {
+                MessageBox.Show("Member must be checked active or inactive.");
+                return false;
+            }
+            // check if gender radio button is checked
+            if (!rdoMale.Checked && !rdoFemale.Checked)
+            {
+                MessageBox.Show("A gender must be chosen.");
+                return false;
+            }
+            //use better regex expression that includes spaces and hyphens
+            if (!Regex.IsMatch(txtLastName.Text, "^[A-Z]w+$"))
+            {
+                MessageBox.Show("Last Name is required.");
+                txtLastName.Clear();
+                return false;
+            }
+
+            if (!Regex.IsMatch(txtFirstName.Text, "^[A-Z]w+$"))
+            {
+                MessageBox.Show("First Name is required.");
+                txtFirstName.Clear();
+                return false;
+            }
+
+            if (dateDOB.Format == DateTimePickerFormat.Custom)
+            {
+                MessageBox.Show("DOB field cannot be blank.");
+                return false;
+            }
+            if (!Regex.IsMatch(mtxtBoxSSN.Text, "   -  -"))
+            {
+                if (!Regex.IsMatch(mtxtBoxSSN.Text, "^\\d{3}-?\\d{2}-?\\d{4}$"))
+                {
+                    MessageBox.Show("Invalid Social Security field.");
+                    mtxtBoxSSN.Clear();
+                    return false;
+                }
+            }
+            var db = new NineTapDb();
+            var id = Convert.ToInt32(txtMemberNumber.Text);
+            var ssnList = (from p in db.Members
+                           where p.Number != id
+                           select p.SSN
+                           ).ToList();
+            if (ssnList.Contains(mtxtBoxSSN.Text) && mtxtBoxSSN.Text != null)
+            {
+                MessageBox.Show("Member with same SSN already exists");
+                mtxtBoxSSN.Clear();
+                mtxtBoxSSN.Focus();
+                return false;
+
+            }
+            if (string.IsNullOrWhiteSpace(txtAddress.Text.Trim()))
+            {
+                MessageBox.Show("Address field cannot be null.");
+                txtAddress.Clear();
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtCity.Text.Trim()))
+            {
+                MessageBox.Show("City field cannot be null");
+                txtCity.Clear();
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtState.Text.Trim()))
+            {
+                MessageBox.Show("State field cannot be blank.");
+                txtState.Clear();
+                return false;
+            }
+
 
             if (!Regex.IsMatch(mtxtBoxZip.Text, "^\\d{5}(?:[-\\s]\\d{4})?$"))
             {
@@ -888,7 +960,8 @@ namespace NineTapTour.Forms
         private void btnStats_Click(object sender, EventArgs e)
         {
             List<PlayerHistory> nothing = new List<PlayerHistory>();
-            FrmStats p = new FrmStats(currentMem.Number, currentMem.FirstName + currentMem.LastName + currentMem.MiddleInitial, currentMem, nothing, RegionID);
+            FrmStats p = new FrmStats(currentMem.Number, currentMem.FirstName 
+                + currentMem.LastName + currentMem.MiddleInitial, currentMem, nothing, RegionID);
             p.ShowDialog();
         }
 
