@@ -1202,7 +1202,7 @@
             // 
             // btnFinalizeTounament
             // 
-            this.btnFinalizeTounament.Location = new System.Drawing.Point(499, 753);
+            this.btnFinalizeTounament.Location = new System.Drawing.Point(592, 753);
             this.btnFinalizeTounament.Name = "btnFinalizeTounament";
             this.btnFinalizeTounament.Size = new System.Drawing.Size(269, 23);
             this.btnFinalizeTounament.TabIndex = 42;
