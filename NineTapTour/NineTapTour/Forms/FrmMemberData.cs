@@ -56,10 +56,6 @@ namespace NineTapTour.Forms
         {
             List<Member> ListOfMembers = MemberDb.GetMemberList();
 
-
-     
-    
-
             updateOnload(ListOfMembers);
 
             dateJoined.Format = DateTimePickerFormat.Custom;
@@ -346,6 +342,8 @@ namespace NineTapTour.Forms
 
         // method checks for valid characters. 
         // TODO: add more textfields to validate for the whole form to submit
+        // TODO: Make sure all errors are in a single message box at the end - Dorothy and Georg, 1/10/2018 also make it work
+        // ISSUE: Validation fires on create and interferes with new member entry
         public bool isValid()
         {
             //// check if Active radio button is checked
@@ -393,7 +391,7 @@ namespace NineTapTour.Forms
             //var id = Convert.ToInt32(txtMemberNumber.Text);
             //var ssnList = (from p in db.Members
             //               where p.Number != id
-            //               select p.SSN                        
+            //               select p.SSN
             //               ).ToList();
             //if (ssnList.Contains(mtxtBoxSSN.Text) && mtxtBoxSSN.Text != null)
             //{
@@ -401,7 +399,7 @@ namespace NineTapTour.Forms
             //    mtxtBoxSSN.Clear();
             //    mtxtBoxSSN.Focus();
             //    return false;
-                
+
             //}
             //if (string.IsNullOrWhiteSpace(txtAddress.Text.Trim()))
             //{
@@ -454,9 +452,9 @@ namespace NineTapTour.Forms
             //    txtEmail.Clear();
             //    return false;
             //}
-            //if(dateJoined.Value != null)
+            //if (dateJoined.Value != null)
             //{
-            //    if(dateRejoin.Value != null && dateRejoin.Value < dateJoined.Value)
+            //    if (dateRejoin.Value != null && dateRejoin.Value < dateJoined.Value)
             //    {
             //        MessageBox.Show("Rejoin Date before Join Date");
             //        dateRejoin.Focus();
@@ -478,7 +476,7 @@ namespace NineTapTour.Forms
             //    txtAverage.Focus();
             //    return false;
             //}
-            /*******************************************************************************************************/
+            ///*******************************************************************************************************/
 
             return true;
         }
@@ -734,7 +732,12 @@ namespace NineTapTour.Forms
             txtMemberNumber.Text = ((FrmMain)MdiParent)._membersList.Last().Number.ToString();
             UpdateMemberInfo();
         }
-
+        
+        /// <summary>
+        /// Turns textbox pink when text is erased
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void InputRequired(object sender, EventArgs e)
         {
             var textBox = sender as TextBox;
@@ -743,6 +746,7 @@ namespace NineTapTour.Forms
                 textBox.BackColor = textBox.Text == string.Empty ? Color.LightPink : Color.White;
             }
         }
+        
         /// <summary>
         /// Brings up the datePicker.
         /// </summary>
@@ -757,8 +761,9 @@ namespace NineTapTour.Forms
                 datePicker.Format = DateTimePickerFormat.Short;
             }
         }
+        
         /// <summary>
-        /// Puts the calendar back to the default selection.
+        /// Puts the calendar back to the default selection, which is current date.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -776,46 +781,46 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnClear_Click(object sender, EventArgs e)
-        {
-            //removed code for a delete function it is in the region below
-            #region
-            //if (isValid())
-            //{
-            //    var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        //private void btnClear_Click(object sender, EventArgs e)
+        //{
+        //    //removed code for a delete function it is in the region below
+        //    #region
+        //    //if (isValid())
+        //    //{
+        //    //    var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            //    if (confirm == DialogResult.No) return;
-            //    try
-            //    {
-            //        MemberDb.DeleteMember(currentMem);
+        //    //    if (confirm == DialogResult.No) return;
+        //    //    try
+        //    //    {
+        //    //        MemberDb.DeleteMember(currentMem);
 
-            //        MessageBox.Show(@"Bowler Removed Successfully.");
-            //        ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-            //        if (((FrmMain)MdiParent)._membersList.Count() > 0)
-            //        {
-            //            UpdateMemberInfo();
-            //        }
-            //    }
-            //    catch (MemberTableException ex)
-            //    {
-            //        MessageBox.Show(ex.Message);
-            //    }
-            //}
-            #endregion\
-            //clears all elements on member data form
-            var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Clear", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            
-             if (confirm == DialogResult.No) return;
-             /// stores member number to be restored later
-            string tempMemNum = txtMemberNumber.Text;
-            while (Controls.Count > 0)
-            {
-                Controls[0].Dispose();
-            }
-            InitializeComponent();
-            //restores member number
-            txtMemberNumber.Text = tempMemNum;
-        }
+        //    //        MessageBox.Show(@"Bowler Removed Successfully.");
+        //    //        ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+        //    //        if (((FrmMain)MdiParent)._membersList.Count() > 0)
+        //    //        {
+        //    //            UpdateMemberInfo();
+        //    //        }
+        //    //    }
+        //    //    catch (MemberTableException ex)
+        //    //    {
+        //    //        MessageBox.Show(ex.Message);
+        //    //    }
+        //    //}
+        //    #endregion\
+        //    //clears all elements on member data form
+        //    var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Clear", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+        //    if (confirm == DialogResult.No) return;
+        //    /// stores member number to be restored later
+        //    string tempMemNum = txtMemberNumber.Text;
+        //    while (Controls.Count > 0)
+        //    {
+        //        Controls[0].Dispose();
+        //    }
+        //    InitializeComponent();
+        //    //restores member number
+        //    txtMemberNumber.Text = tempMemNum;
+        //}
 
         private void btnMemberSearch_Click(object sender, EventArgs e)
         {
@@ -857,7 +862,8 @@ namespace NineTapTour.Forms
             }
         }
 
-        public void singlePrint(object sender, PrintPageEventArgs e)
+        //TODO: clean up variable names, e.g. singlePrint to btnPrintSingle Dorothy and Georg, 1/10/2018
+        public void singlePrint(object sender, PrintPageEventArgs e) 
         {
             NineTapTour.Database.Print.SinglePrint(
                 new MemberPrintObj(Convert.ToInt32(txtHandicap.Text), 
@@ -933,11 +939,11 @@ namespace NineTapTour.Forms
             Print.printAllMembers();
         }
 
-        private void btnLabels_Click(object sender, EventArgs e)
-        {
-            FrmLabelPrint labels = new FrmLabelPrint();
-            labels.ShowDialog();
-        }
+        //private void btnLabels_Click(object sender, EventArgs e)
+        //{
+        //    FrmLabelPrint labels = new FrmLabelPrint();
+        //    labels.ShowDialog();
+        //}
         /// <summary>
         /// This action event assigns current form as currFrmMemberData in FrmMains' global 
         /// Variable property when leaving form. This allows the program to later check whether FrmMemberData has 
@@ -1050,6 +1056,7 @@ namespace NineTapTour.Forms
                 return true;
             }
         }
+
         public double LeagueAverage (Member mem)
         {
             double sum = 0;
@@ -1113,7 +1120,7 @@ namespace NineTapTour.Forms
             return 0;
         }
 
-      
+        //TODO: Ask about if this method is obsolete. Dorothy and Georg, 1/10/2018
         private void btnImportData_Click(object sender, EventArgs e)
         {
            
@@ -1199,7 +1206,7 @@ namespace NineTapTour.Forms
             }
         }
 
-
+        //TODO: Ask about if this method is obsolete. Dorothy and Georg, 1/10/2018
         private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
         {
          
@@ -1485,7 +1492,7 @@ namespace NineTapTour.Forms
 
         private void chbSocial_CheckedChanged(object sender, EventArgs e)
         {
-          mtxtBoxSSN.PasswordChar = chbSocial.Checked ? '\0' : '*';
+            mtxtBoxSSN.PasswordChar = chbSocial.Checked ? '\0' : '*';
         }
     }
 }

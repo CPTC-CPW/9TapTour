@@ -1212,29 +1212,6 @@ namespace NineTapTour.Forms
             FillMember();
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         /// <summary>
         /// Clears scratch scores and scratch and handicap totals
         /// </summary>
