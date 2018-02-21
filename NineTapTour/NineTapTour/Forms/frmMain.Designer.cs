@@ -35,9 +35,9 @@
             this.tournamentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateInactiveMembersToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.addNewRegionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.updateInactiveMembersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addNewRegionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -51,7 +51,8 @@
             this.toolsToolStripMenuItem});
             this.menMain.Location = new System.Drawing.Point(0, 0);
             this.menMain.Name = "menMain";
-            this.menMain.Size = new System.Drawing.Size(347, 24);
+            this.menMain.Padding = new System.Windows.Forms.Padding(22, 6, 0, 6);
+            this.menMain.Size = new System.Drawing.Size(1272, 73);
             this.menMain.TabIndex = 1;
             this.menMain.Text = "menuStrip1";
             this.menMain.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.menMain_ItemAdded);
@@ -61,7 +62,7 @@
             // 
             this.mainMenuToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
             this.mainMenuToolStripMenuItem.Name = "mainMenuToolStripMenuItem";
-            this.mainMenuToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.mainMenuToolStripMenuItem.Size = new System.Drawing.Size(150, 61);
             this.mainMenuToolStripMenuItem.Text = "Home";
             this.mainMenuToolStripMenuItem.Click += new System.EventHandler(this.mainMenuToolStripMenuItem_Click);
             // 
@@ -69,7 +70,7 @@
             // 
             this.memberToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
             this.memberToolStripMenuItem.Name = "memberToolStripMenuItem";
-            this.memberToolStripMenuItem.Size = new System.Drawing.Size(88, 20);
+            this.memberToolStripMenuItem.Size = new System.Drawing.Size(280, 61);
             this.memberToolStripMenuItem.Text = "Member Info";
             this.memberToolStripMenuItem.Click += new System.EventHandler(this.memberToolStripMenuItem_Click);
             // 
@@ -77,7 +78,7 @@
             // 
             this.tournamentToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
             this.tournamentToolStripMenuItem.Name = "tournamentToolStripMenuItem";
-            this.tournamentToolStripMenuItem.Size = new System.Drawing.Size(101, 20);
+            this.tournamentToolStripMenuItem.Size = new System.Drawing.Size(328, 61);
             this.tournamentToolStripMenuItem.Text = "Member Scores";
             this.tournamentToolStripMenuItem.Click += new System.EventHandler(this.tournamentToolStripMenuItem_Click);
             // 
@@ -87,15 +88,21 @@
             this.updateInactiveMembersToolStripMenuItem1,
             this.addNewRegionToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(133, 61);
             this.toolsToolStripMenuItem.Text = "Tools";
             // 
             // updateInactiveMembersToolStripMenuItem1
             // 
             this.updateInactiveMembersToolStripMenuItem1.Name = "updateInactiveMembersToolStripMenuItem1";
-            this.updateInactiveMembersToolStripMenuItem1.Size = new System.Drawing.Size(209, 22);
+            this.updateInactiveMembersToolStripMenuItem1.Size = new System.Drawing.Size(647, 62);
             this.updateInactiveMembersToolStripMenuItem1.Text = "Update Inactive Members";
             this.updateInactiveMembersToolStripMenuItem1.Click += new System.EventHandler(this.updateInactiveMembersToolStripMenuItem1_Click);
+            // 
+            // addNewRegionToolStripMenuItem
+            // 
+            this.addNewRegionToolStripMenuItem.Name = "addNewRegionToolStripMenuItem";
+            this.addNewRegionToolStripMenuItem.Size = new System.Drawing.Size(647, 62);
+            this.addNewRegionToolStripMenuItem.Text = "Add New Region";
             // 
             // toolStripMenuItem1
             // 
@@ -108,30 +115,23 @@
             // updateInactiveMembersToolStripMenuItem
             // 
             this.updateInactiveMembersToolStripMenuItem.Name = "updateInactiveMembersToolStripMenuItem";
-            this.updateInactiveMembersToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.updateInactiveMembersToolStripMenuItem.Size = new System.Drawing.Size(647, 62);
             this.updateInactiveMembersToolStripMenuItem.Text = "Update Inactive Members";
-            // 
-            // addNewRegionToolStripMenuItem
-            // 
-            this.addNewRegionToolStripMenuItem.Name = "addNewRegionToolStripMenuItem";
-            this.addNewRegionToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.addNewRegionToolStripMenuItem.Text = "Add New Region";
-            
             // 
             // FrmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(22F, 42F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(347, 196);
+            this.ClientSize = new System.Drawing.Size(1272, 633);
             this.Controls.Add(this.menMain);
             this.DoubleBuffered = true;
             this.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menMain;
+            this.Margin = new System.Windows.Forms.Padding(11, 10, 11, 10);
             this.Name = "FrmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "9 Tap Tour";
