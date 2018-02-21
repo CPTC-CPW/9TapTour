@@ -1145,6 +1145,7 @@ namespace NineTapTour.Forms
             }
         }
 
+        #region radio buttons
         /// <summary>
         /// Checks if current member has an existing entry into Squad 1
         /// and clears the scores if the member does NOT
@@ -1155,8 +1156,8 @@ namespace NineTapTour.Forms
         {
             ScoreAndTotalClear();
             FillMember();
-
         }
+
         /// <summary>
         /// Checks if current member has an existing entry into Squad 2
         /// and clears the scores if the member does NOT
@@ -1164,7 +1165,7 @@ namespace NineTapTour.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void rdoSquadTwo_CheckedChanged(object sender, EventArgs e)
-        {
+        { 
             ScoreAndTotalClear();
             FillMember();
         }
@@ -1211,6 +1212,9 @@ namespace NineTapTour.Forms
             ScoreAndTotalClear();
             FillMember();
         }
+        #endregion
+
+
 
         /// <summary>
         /// Clears scratch scores and scratch and handicap totals
@@ -2165,6 +2169,8 @@ namespace NineTapTour.Forms
 
 
         }
+
+
 
 
 

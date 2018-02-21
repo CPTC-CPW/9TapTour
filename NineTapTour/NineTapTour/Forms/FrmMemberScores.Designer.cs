@@ -196,7 +196,6 @@
             this.rdoSquad8.TabStop = true;
             this.rdoSquad8.Text = "Squad 8";
             this.rdoSquad8.UseVisualStyleBackColor = true;
-            //this.rdoSquad8.CheckedChanged += new System.EventHandler(this.rdoSquad8_CheckedChanged);
             // 
             // rdoSquad6
             // 
@@ -208,7 +207,6 @@
             this.rdoSquad6.TabStop = true;
             this.rdoSquad6.Text = "Squad 6";
             this.rdoSquad6.UseVisualStyleBackColor = true;
-           // this.rdoSquad6.CheckedChanged += new System.EventHandler(this.rdoSquad6_CheckedChanged_1);
             // 
             // rdoSquad7
             // 
@@ -220,7 +218,6 @@
             this.rdoSquad7.TabStop = true;
             this.rdoSquad7.Text = "Squad 7";
             this.rdoSquad7.UseVisualStyleBackColor = true;
-            //this.rdoSquad7.CheckedChanged += new System.EventHandler(this.rdoSquad7_CheckedChanged);
             // 
             // rdoSquad5
             // 
@@ -232,7 +229,6 @@
             this.rdoSquad5.TabStop = true;
             this.rdoSquad5.Text = "Squad 5";
             this.rdoSquad5.UseVisualStyleBackColor = true;
-            //this.rdoSquad5.CheckedChanged += new System.EventHandler(this.rdoSquad5_CheckedChanged_1);
             // 
             // rdoSquadFour
             // 
@@ -243,7 +239,6 @@
             this.rdoSquadFour.TabIndex = 23;
             this.rdoSquadFour.Text = "Squad 4";
             this.rdoSquadFour.UseVisualStyleBackColor = true;
-            //this.rdoSquadFour.CheckedChanged += new System.EventHandler(this.rdoSquadFour_CheckedChanged);
             // 
             // rdoSquadThree
             // 
@@ -254,7 +249,6 @@
             this.rdoSquadThree.TabIndex = 22;
             this.rdoSquadThree.Text = "Squad 3";
             this.rdoSquadThree.UseVisualStyleBackColor = true;
-            //this.rdoSquadThree.CheckedChanged += new System.EventHandler(this.rdoSquadThree_CheckedChanged);
             // 
             // rdoSquadTwo
             // 
@@ -265,7 +259,6 @@
             this.rdoSquadTwo.TabIndex = 21;
             this.rdoSquadTwo.Text = "Squad 2";
             this.rdoSquadTwo.UseVisualStyleBackColor = true;
-            //this.rdoSquadTwo.CheckedChanged += new System.EventHandler(this.rdoSquadTwo_CheckedChanged);
             // 
             // rdoSquadOne
             // 
@@ -278,7 +271,6 @@
             this.rdoSquadOne.TabStop = true;
             this.rdoSquadOne.Text = "Squad 1";
             this.rdoSquadOne.UseVisualStyleBackColor = true;
-            //this.rdoSquadOne.CheckedChanged += new System.EventHandler(this.rdoSquadOne_CheckedChanged);
             // 
             // txtLastName
             // 
