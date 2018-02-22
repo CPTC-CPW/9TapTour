@@ -182,9 +182,17 @@ namespace NineTapTour.Forms
         private void cbxRegionSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
             List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
-            this.regionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;       
-            ((FrmMain)MdiParent).RegionID = regionID;
-            ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList(regionID).OrderBy(m => m.Number);
+            this.regionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
+            try// added a try catch block in order to catch the error that occurs at the very first launch of the program.
+               //(the MDi parent is not set yet, so it has to skip over this step on its very first launch or the program wont start)
+            {
+                ((FrmMain)MdiParent).RegionID = regionID;
+                ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList(regionID).OrderBy(m => m.Number);
+            }
+            catch
+            {
+
+            }
 
         }
 
