@@ -166,9 +166,10 @@ namespace NineTapTour.Calculations
         /// </summary>
         /// <param name="numberOfParticipantsInTournament"></param>
         /// <returns></returns>
-        public static int CalculateNumberOfMembersThatCanPlaceInATournament(int numberOfParticipantsInTournament)
+        public static decimal CalculateNumberOfMembersThatCanPlaceInATournament(int numberOfParticipantsInTournament)
         {
-            int numberOfPlacementsBasedOnParticipants = numberOfParticipantsInTournament / 5;
+            //grabs the ceiling of the double when divided by 5
+            decimal numberOfPlacementsBasedOnParticipants =(Math.Round(Convert.ToDecimal(numberOfParticipantsInTournament / 5)));
             return numberOfPlacementsBasedOnParticipants;
         }
     }

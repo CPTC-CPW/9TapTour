@@ -266,6 +266,8 @@ namespace NineTapTour.Database
                                 h.ProPot,
                                 h.MoneyWon,
                                 h.Notes,
+                                h.hisID,
+                                h.regionID
                             }).ToList();
                 foreach (var item in temp)
                 {
@@ -287,6 +289,8 @@ namespace NineTapTour.Database
                     newHistory.ProPot = item.ProPot;
                     newHistory.MoneyWon = item.MoneyWon;
                     newHistory.Notes = item.Notes;
+                    newHistory.regionID = item.regionID;
+                    newHistory.hisID = item.hisID;
                     Return.Add(newHistory);
                 }
 

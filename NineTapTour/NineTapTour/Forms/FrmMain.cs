@@ -163,9 +163,7 @@ namespace NineTapTour.Forms
         public void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
-            OpenOrDisplayForm(ref mainMenu);
-         
-            
+            OpenOrDisplayForm(ref mainMenu);          
         }
 
         /// <summary>
@@ -175,7 +173,6 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void memberToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
             OpenOrDisplayForm(ref newfrmMemberData);
             currFrmMemberData = newfrmMemberData;
@@ -190,6 +187,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
         {
+        
             var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
             OpenOrDisplayForm(ref newfrmMemberScores);
             currfrmScoresdata = newfrmMemberScores;
@@ -218,7 +216,9 @@ namespace NineTapTour.Forms
 
         private void updateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            var UpdatefrmActiveMem = new FrmUpdateActiveMem();
+            //update the regionID
+            RegionID = mainmenu.getRegionID();
+            var UpdatefrmActiveMem = new FrmUpdateActiveMem(RegionID);          
             UpdatefrmActiveMem.Show();
         }
 

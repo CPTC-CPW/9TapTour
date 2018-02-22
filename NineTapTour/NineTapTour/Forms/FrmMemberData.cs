@@ -887,7 +887,7 @@ namespace NineTapTour.Forms
 
         private void btnStats_Click(object sender, EventArgs e)
         {
-            List<PlayerHistory> nothing = new List<PlayerHistory>();
+            List<PlayerHistory> nothing = new List<PlayerHistory>(); // takes a list of no player history, this list would stack on top of thew orginal data on the form finalize page
             FrmStats p = new FrmStats(currentMem.Number, currentMem.FirstName + currentMem.LastName + currentMem.MiddleInitial, currentMem, nothing, RegionID);
             p.ShowDialog();
         }
@@ -1484,13 +1484,23 @@ namespace NineTapTour.Forms
                         playerH.ProPot = temp.PotPro;
                         temp.FinPPHG = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
                         playerH.PPHG = temp.FinPPHG;
-                       
+
 
                         try
                         {
-                            temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
-                            GameHistory.MoneyWon = Convert.ToDecimal(temp.Cash);
-                            playerH.MoneyWon = Convert.ToDecimal(temp.Cash);
+                            //THIS WILL CATCH SUBTOTALS THAT MAY HAVE BEEN ADDED ON LINE 46 OF THE EXCEL FILES
+                            if (temp.FinPPHG.ToString() != "") //only grab the money earned from tournament if they placed in tournament
+                            {
+                                temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
+                                GameHistory.MoneyWon = Convert.ToDecimal(temp.Cash);
+                                playerH.MoneyWon = Convert.ToDecimal(temp.Cash);
+                            }
+                            else
+                            {
+                                temp.Cash = 0;
+                                GameHistory.MoneyWon = 0;
+                                playerH.MoneyWon = 0;
+                            }
                         }
                         catch
                         {

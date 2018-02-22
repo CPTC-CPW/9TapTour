@@ -1688,6 +1688,8 @@ namespace NineTapTour.Forms
                     richTextBox3.Clear();
                     richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
                     richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
+                    int TotalToCompare = 0;
+                    int currentPlace = 1;
                     scores = new List<MemberScores>();
 
                     //populate total score
@@ -1722,10 +1724,32 @@ namespace NineTapTour.Forms
                             {
                                 LastNameLength = 6;
                             }
+                            if(i >= 1) // checks to see if the top score is equal to the last score looked at, to figure out of they had tied or not 
+                            {
+                                if(Convert.ToInt32(scores[i].Score) == TotalToCompare)
+                                {
+                                    scores[i].placing = currentPlace;
+                                    TotalToCompare = Convert.ToInt32(scores[i].Score);
+                                    
+                                }
+                                else
+                                {
+                                    currentPlace = i+1;
+                                    scores[i].placing = currentPlace; //only increment placing up if the score is less than the current total
+                                    TotalToCompare = Convert.ToInt32(scores[i].Score);
+                                }
+                            }
+
+                            else //set first place 
+                            {
+                                scores[i].placing = currentPlace;
+                                TotalToCompare = Convert.ToInt32(scores[i].Score);
+                            }
+                            
                             //richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0,0}", scores[i].FirstName.Substring(0, FirstNameLength) + " " + scores[i].LastName.Substring(0, LastNameLength)
                             //                        + "\t" + String.Format("{0, -5}", scores[i].Score + "\n")));
 
-                            richTextBox3.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, FirstNameLength)}\t{scores[i].LastName.Substring(0, LastNameLength)}\t\t\t{scores[i].Score}\n");
+                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, FirstNameLength)}\t{scores[i].LastName.Substring(0, LastNameLength)}\t\t\t{scores[i].Score}\n");
                         }
                     }
                     else if (rdoHandicapScore.Checked)
@@ -1780,7 +1804,28 @@ namespace NineTapTour.Forms
                             //richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0,0}", scores[i].FirstName.Substring(0, FirstNameLength) + " " + scores[i].LastName.Substring(0, LastNameLength)
                             //                        + "\t" + String.Format("{0, -5}", scores[i].Score + "\n")));
 
-                            richTextBox3.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, FirstNameLength)}\t{scores[i].LastName.Substring(0, LastNameLength)}\t\t\t{scores[i].Score}\n");
+                            if (i >= 1) // checks to see if the top score is equal to the last score looked at, to figure out of they had tied or not 
+                            {
+                                if (Convert.ToInt32(scores[i].Score) == TotalToCompare)
+                                {
+                                    scores[i].placing = currentPlace;
+                                    TotalToCompare = Convert.ToInt32(scores[i].Score);                               
+                                }
+                                else
+                                {
+                                    currentPlace = i + 1;
+                                    scores[i].placing = currentPlace;
+                                    TotalToCompare = Convert.ToInt32(scores[i].Score);
+                                }
+                            }
+
+                            else //set first place 
+                            {
+                                scores[i].placing = currentPlace;
+                                TotalToCompare = Convert.ToInt32(scores[i].Score);
+                            }
+
+                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, FirstNameLength)}\t{scores[i].LastName.Substring(0, LastNameLength)}\t\t\t{scores[i].Score}\n");
                         }
                     }
                 }
@@ -1796,6 +1841,8 @@ namespace NineTapTour.Forms
                     richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
                     richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t\t" + "High Series" + "\n");
                     scores = new List<MemberScores>();
+                    int TotalToCompare = 0;
+                    int currentPlace = 1;
 
                     // List to get top 3 scores   
                     List<int> listOfScores = new List<int>();
@@ -1844,10 +1891,31 @@ namespace NineTapTour.Forms
                             {
                                 LastNameLength = 6;
                             }
+
+                            if (i >= 1) // checks to see if the top score is equal to the last score looked at, to figure out of they had tied or not 
+                            {
+                                if (Convert.ToInt32(scores[i].Score) == TotalToCompare)
+                                {
+                                    scores[i].placing = currentPlace;
+                                    TotalToCompare = Convert.ToInt32(scores[i].Score);
+                                }
+                                else
+                                {
+                                    currentPlace = i + 1;
+                                    scores[i].placing = currentPlace;
+                                    TotalToCompare = Convert.ToInt32(scores[i].Score);
+                                }
+                            }
+
+                            else //set first place 
+                            {
+                                scores[i].placing = currentPlace;
+                                TotalToCompare = Convert.ToInt32(scores[i].Score);
+                            }
                             //richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0,0}", scores[i].FirstName.Substring(0, FirstNameLength) + " " + scores[i].LastName.Substring(0, LastNameLength)
                             //                        + "\t" + String.Format("{0, -5}", scores[i].Score + "\n")));
 
-                            richTextBox3.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0,FirstNameLength)}\t{scores[i].LastName.Substring(0,LastNameLength)}\t\t\t{scores[i].Score}\n"); 
+                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0,FirstNameLength)}\t{scores[i].LastName.Substring(0,LastNameLength)}\t\t\t{scores[i].Score}\n"); 
                         }
                     }
                     else if (rdoHandicapScore.Checked)
@@ -1915,7 +1983,28 @@ namespace NineTapTour.Forms
                             }
                             //richTextBox3.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName.Substring(0, FirstNameLength) + " " + scores[i].LastName.Substring(0, LastNameLength)
                             //                        + "\t" + String.Format("{0, -5}", scores[i].Score + "\n")));
-                            richTextBox3.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, FirstNameLength)}\t{scores[i].LastName.Substring(0, LastNameLength)}\t\t\t{scores[i].Score}\n");
+
+                            if (i >= 1) // checks to see if the top score is equal to the last score looked at, to figure out of they had tied or not 
+                            {
+                                if (Convert.ToInt32(scores[i].Score) == TotalToCompare)
+                                {
+                                    scores[i].placing = currentPlace;
+                                    TotalToCompare = Convert.ToInt32(scores[i].Score);
+                                }
+                                else
+                                {
+                                    currentPlace = i + 1;
+                                    scores[i].placing = currentPlace;
+                                    TotalToCompare = Convert.ToInt32(scores[i].Score);
+                                }
+                            }
+
+                            else //set first place 
+                            {
+                                scores[i].placing = currentPlace;
+                                TotalToCompare = Convert.ToInt32(scores[i].Score);
+                            }
+                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, FirstNameLength)}\t{scores[i].LastName.Substring(0, LastNameLength)}\t\t\t{scores[i].Score}\n");
                         }
                     }
                 }
@@ -1932,6 +2021,8 @@ namespace NineTapTour.Forms
             public string FirstName { get; set; }
 
             public string LastName { get; set; }
+
+            public int placing { get; set; }
 
             public int? Score { get; set; }
 
@@ -2452,7 +2543,8 @@ namespace NineTapTour.Forms
 
         public int memberID{get; set; } 
         public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string LastName { get; set; }       
+        public int Placing { get; set; }
         public int? ScratchTotal { get; set; }
         public int HandicapScore { get; set; }
         public int? Top3ScratchScore { get; set; }

@@ -98,51 +98,10 @@ namespace NineTapTour.Forms
                 int gplayed = 0;
 
                 Game g = FinalizeTempDB.getGame(item.GameId);
-                if (FinalizeTempDB.getFinalizeID(g).FinalizeID > 0)//if this column was already created
-                {
-
+                if (FinalizeTempDB.getFinalizeID(g).FinalizeID > 0)//if this column was already created and exists in the database , set the information to be what was already added to the database
+               {
                     temp = FinalizeTempDB.getFinalizeID(g);
-                    temp.FinalizeRegionID = RegionID;
-                    temp.TournamentID = tourn.Id;
-                    temp.ScratchTotal = temp.Game1 + temp.Game2 + temp.Game3 + temp.Game4;
                     temp.HandicapTotal = ((temp.Game1 + temp.Bonus + temp.Handicap) + (temp.Game2 + temp.Bonus + temp.Handicap) + (temp.Game3 + temp.Bonus + temp.Handicap) + (temp.Game4 + temp.Bonus + temp.Handicap));
-                    temp.GameId = item.GameId;
-                    temp.MemberId = item.MemberId;
-                    temp.memberNumber = item.memberNumber;
-                    temp.FirstName = item.FirstName;
-                    temp.LastName = item.LastName;
-                    temp.Squad = item.Squad;
-                    temp.Game1 = item.Game1;
-                    temp.Game2 = item.Game2;
-                    temp.Game3 = item.Game3;
-                    temp.Game4 = item.Game4;
-                    temp.Notes = item.Notes;
-                    temp.UseGame1 = item.UseGame1;
-                    temp.UseGame2 = item.UseGame2;
-                    temp.UseGame3 = item.UseGame3;
-                    temp.UseGame4 = item.UseGame4;
-                    temp.AdjustedAvg = 0;
-                    temp.ScratchTotal = temp.Game1 + temp.Game2 + temp.Game3 + temp.Game4;
-                    if (item.Game1 > 0)
-                    {
-                        gplayed++;
-                    }
-                    if (item.Game2 > 0)
-                    {
-                        gplayed++;
-                    }
-                    if (item.Game3 > 0)
-                    {
-                        gplayed++;
-                    }
-                    if (item.Game4 > 0)
-                    {
-                        gplayed++;
-                    }
-                    temp.GameAvg = (temp.Game1 + temp.Game2 + temp.Game3 + temp.Game4) / gplayed;
-                    temp.Handicap = item.Handicap;
-                    temp.Bonus = item.Bonus;
-
                 }
                 else
                 {
@@ -460,6 +419,11 @@ namespace NineTapTour.Forms
                 {
                     NewParticipant.Bonus = 0;
                 }
+                NewParticipant.HandicapTotal = (int)((item.Game1 + item.Handicap + item.Bonus)+
+                                                     (item.Game2 + item.Handicap + item.Bonus)+ 
+                                                     (item.Game3 + item.Handicap + item.Bonus)+
+                                                     (item.Game4 + item.Handicap + item.Bonus));
+
                 ParticipantList.Add(NewParticipant);
             }
 
@@ -1168,7 +1132,7 @@ namespace NineTapTour.Forms
                                 //I believe it needs more information
 
                             }).ToList();
-
+                //creates temporary player history in order to stack it on top of real player history
                 List<PlayerHistory> temporary = new List<PlayerHistory>();
                 for (int i = 0; i < FinalizeTableList.Count; i++)
                 {
@@ -1260,17 +1224,18 @@ namespace NineTapTour.Forms
 
 
 
-            int check = 0;
+            int check = 0; //int used to make sure all the director check boxes have been filled out
             PlayerHistory ph = new PlayerHistory();
             List<FinalizeTemp> FinalizeTableList = GetListFromTable(currentT);
-            List<Participant> partlist = TournamentDb.GetTournamentMemberList(currentT);
-            List<Member> uniquemems = TournamentDb.GetUniqueTourMembers(currentT);
-            int MEMBER_CASHED_IF_THEY_PLACED_UNDER_THIS_NUMBER = Calculations.Calculations.CalculateNumberOfMembersThatCanPlaceInATournament(uniquemems.Count);
+            List<Participant> partlist = TournamentDb.GetTournamentMemberList(currentT); 
+            List<Member> uniquemems = TournamentDb.GetUniqueTourMembers(currentT); //used to figure out how many players actually placed in the tournament
+            decimal MEMBER_CASHED_IF_THEY_PLACED_UNDER_THIS_NUMBER = Calculations.Calculations.CalculateNumberOfMembersThatCanPlaceInATournament(uniquemems.Count);
             int gamesPlayed = 0;
-            List<int> addedalreeady = new List<int>();
-            int placing = 1;
+            List<int> addedalreeady = new List<int>(); // a list used to catch the players memberid soo that way their bonus pin isnt adjusted more than once per tournament 
+            int placing = 1; //sets the first placing  to one for the winner of the tournament.
 
 
+            //checks to make sure all the director had adjusted avgs and checked the box to make sure they did so.
             for (int i = 0; i < FinalizeTableList.Count; i++)
             {
                 if (dataGridView1[DIRECTOR_CHECK_COLUMN, i].Value.ToString() == "False")
@@ -1284,13 +1249,16 @@ namespace NineTapTour.Forms
                 }
 
             }
+            //sets the current participants tournament and game = to whats selected at the moment.
             for (int p = 0; p < partlist.Count; p++)
             {
                 partlist[p].Tournament = currentT;
                 partlist[p].Game = FinalizeTempDB.getGame(FinalizeTableList[p].GameId);
+                partlist[p].ParticipantRegionID = RegionID;
             }
-
-            if (check == FinalizeTableList.Count)
+            
+            //START FINALIZATION
+            if (check == FinalizeTableList.Count)//if all the director check boxes are selected
             {
                 for (int currentindex = 0; currentindex < FinalizeTableList.Count; currentindex++)
                 {
@@ -1311,7 +1279,7 @@ namespace NineTapTour.Forms
 
 
                     ph.TournamentDate = currentT.Date;
-                    ph.MemberNumber = FinalizeTableList[currentindex].MemberId;
+                    ph.MemberNumber = currentMember.Number;
 
                     if (dataGridView1[GAME_1_VALID_COLUMN, currentindex].Value.ToString() == "True")
                     {
@@ -1395,19 +1363,21 @@ namespace NineTapTour.Forms
                                     {
                                         ph.PPHG = Convert.ToString(g.PlaceStanding);
                                         currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(true, placing, Convert.ToInt32(currentMember.Bonus), currentT.Doubles, currentMember.Number, RegionID);
+                                        placing++;
                                     }
+
+
                                     else
                                     {
                                         currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(false, placing, Convert.ToInt32(currentMember.Bonus), currentT.Doubles, currentMember.Number, RegionID);
                                     }
-                                    placing++;
+                                  
                                     addedalreeady.Add(FinalizeTableList[currentindex].MemberId);
                                 }
 
                             }
-                        }
+                        }               
                     }
-                    ph.PPHG = Convert.ToString(g.PlaceStanding);
                     g.Handicap = FinalizeTableList[currentindex].Handicap;
                     ph.HandiCap = FinalizeTableList[currentindex].Handicap;
                     g.InputtedAvg = ph.AVG;
@@ -1417,10 +1387,12 @@ namespace NineTapTour.Forms
                     ph.hisID = PlayerHistoryDB.getHisID(ph);
                     ph.regionID = RegionID;
                     g.gameRegionID = RegionID;
-                    PlayerHistoryDB.AddPlayerHistory2(ph);              
+                    PlayerHistoryDB.AddPlayerHistory2(ph);
+                    PlayerHistoryDB.AddGame(g);           
                     MemberDb.AddMember(currentMember);
                     FinalizeTableList[currentindex].FinalizeID = FinalizeTempDB.getFinalizeID(g).FinalizeID;
                     FinalizeTableList[currentindex].AdjustedAvg = ph.AVG;
+                    FinalizeTableList[currentindex].HandicapTotal = Convert.ToInt32(dataGridView1[HANDICAP_TOTAL_COLUMN, currentindex].Value);
                     FinalizeTempDB.AddFinalizeTempOnFinalize(FinalizeTableList[currentindex]);
 
                 }
@@ -1435,7 +1407,6 @@ namespace NineTapTour.Forms
             //checks to see if they bowled an any squads before the current selected squad, if your on this line then they bowled at leats once
             temp.memberNumber = MemberDb.GetMemberNumberbyID(temp.MemberId);
             List<PlayerHistory> p = PlayerHistoryDB.getMemberPlayerHistory(temp.memberNumber, RegionID);
-            temp.memberNumber = MemberDb.GetMemberNumberbyID(temp.MemberId);
             int howmanyTimesdidheybowlbeforethissquad = 1;
             for (int f = 0; f < FinalizeTableList.Count; f++)
             {

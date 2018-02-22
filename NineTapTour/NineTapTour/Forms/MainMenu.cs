@@ -13,6 +13,7 @@ namespace NineTapTour.Forms
 {
     public partial class MainMenu : Form
     {
+        public FrmMain currMainFrm { get; set; }
         public int regionID { get; set; }
         /// <summary>
         /// Opens the "Main Menu" form.
@@ -33,6 +34,7 @@ namespace NineTapTour.Forms
             cbxRegionSelect.DataSource = nList;
             cbxRegionSelect.DisplayMember = "NineTapRegionName";
             this.regionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
+           
            
 
         }
@@ -180,9 +182,9 @@ namespace NineTapTour.Forms
         private void cbxRegionSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
             List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
-            this.regionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
-            //((FrmMain)MdiParent).RegionID = regionID;
-            //((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList(regionID).OrderBy(m => m.Number);
+            this.regionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;       
+            ((FrmMain)MdiParent).RegionID = regionID;
+            ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList(regionID).OrderBy(m => m.Number);
 
         }
 

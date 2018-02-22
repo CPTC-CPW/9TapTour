@@ -30,19 +30,21 @@ namespace NineTapTour.Forms
         DateTime targetDate;
         List<Member> InActiveList; //= MemberDb.GetMemberList();
         List<Member> AllMembers;// = MemberDb.GetMemberList();
-        public FrmUpdateActiveMem()
+        public FrmUpdateActiveMem(int RID)
         {
             InitializeComponent();
+            RegionID = RID;
             dateTimePicker1.Value = DateTime.Today.AddDays(-180);
             targetDate = dateTimePicker1.Value;
+            InActiveList = MemberDb.GetMemberList(RegionID);
+            AllMembers = MemberDb.GetMemberList(RegionID);
+            UpdateList();
         }
         
         private void FrmUpdateActiveMem_Load(object sender, EventArgs e)
         {
-            RegionID = ((FrmMain)MdiParent).RegionID;
-            InActiveList = MemberDb.GetMemberList(RegionID);
-            AllMembers = MemberDb.GetMemberList(RegionID);
-            UpdateList();
+        
+       
         }
 
         private void UpdateList()

@@ -901,14 +901,29 @@ namespace Member_Import_Test
                             }
                             temp.PotPro = Convert.ToString((range.Cells[row, 13] as Excel.Range).Value2);
                             playerH.ProPot = temp.PotPro;
+
+                           
                             temp.FinPPHG = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
                             playerH.PPHG = temp.FinPPHG;
 
+
                             try
+                            {
+                            //THIS WILL CATCH SUBTOTALS THAT MAY HAVE BEEN ADDED ON LINE 46 OF THE EXCEL FILES
+                            if (temp.FinPPHG.ToString() != "") //only grab the money earned from tournament if they placed in tournament
                             {
                                 temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
                                 GameHistory.MoneyWon = Convert.ToDecimal(temp.Cash);
                                 playerH.MoneyWon = Convert.ToDecimal(temp.Cash);
+                            }
+                            else
+                            {
+                                temp.Cash = 0;
+                                GameHistory.MoneyWon = 0;
+                                playerH.MoneyWon = 0;
+                            }
+
+                            
                             }
                             catch
                             {
