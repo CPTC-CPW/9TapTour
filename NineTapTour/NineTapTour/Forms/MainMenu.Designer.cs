@@ -49,7 +49,7 @@
 			this.btnMemberData.Margin = new System.Windows.Forms.Padding(6);
 			this.btnMemberData.Name = "btnMemberData";
 			this.btnMemberData.Padding = new System.Windows.Forms.Padding(50, 0, 0, 0);
-			this.btnMemberData.Size = new System.Drawing.Size(385, 177);
+			this.btnMemberData.Size = new System.Drawing.Size(484, 177);
 			this.btnMemberData.TabIndex = 0;
 			this.btnMemberData.Text = "Member Info";
 			this.btnMemberData.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -67,7 +67,7 @@
 			this.btnMemberScores.Margin = new System.Windows.Forms.Padding(6);
 			this.btnMemberScores.Name = "btnMemberScores";
 			this.btnMemberScores.Padding = new System.Windows.Forms.Padding(50, 0, 0, 0);
-			this.btnMemberScores.Size = new System.Drawing.Size(385, 187);
+			this.btnMemberScores.Size = new System.Drawing.Size(484, 187);
 			this.btnMemberScores.TabIndex = 0;
 			this.btnMemberScores.Text = "Member Scores";
 			this.btnMemberScores.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -84,11 +84,10 @@
 			this.btnAbout.Location = new System.Drawing.Point(24, 445);
 			this.btnAbout.Margin = new System.Windows.Forms.Padding(6);
 			this.btnAbout.Name = "btnAbout";
-			this.btnAbout.Padding = new System.Windows.Forms.Padding(50, 0, 0, 0);
-			this.btnAbout.Size = new System.Drawing.Size(385, 177);
+			this.btnAbout.Padding = new System.Windows.Forms.Padding(0, 0, 75, 0);
+			this.btnAbout.Size = new System.Drawing.Size(484, 177);
 			this.btnAbout.TabIndex = 0;
 			this.btnAbout.Text = "About";
-			this.btnAbout.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.btnAbout.UseVisualStyleBackColor = true;
 			this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
 			// 
@@ -102,11 +101,10 @@
 			this.Exit.Location = new System.Drawing.Point(24, 610);
 			this.Exit.Margin = new System.Windows.Forms.Padding(6);
 			this.Exit.Name = "Exit";
-			this.Exit.Padding = new System.Windows.Forms.Padding(50, 0, 0, 0);
-			this.Exit.Size = new System.Drawing.Size(385, 190);
+			this.Exit.Padding = new System.Windows.Forms.Padding(0, 0, 75, 0);
+			this.Exit.Size = new System.Drawing.Size(484, 190);
 			this.Exit.TabIndex = 0;
 			this.Exit.Text = "Exit";
-			this.Exit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.Exit.UseVisualStyleBackColor = true;
 			this.Exit.Click += new System.EventHandler(this.Exit_Click);
 			// 
