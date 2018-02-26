@@ -586,6 +586,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon\9tap.ico" />
+    <None Include="Resources\BowlingPin1.png" />
+    <None Include="Resources\9taplogo1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
