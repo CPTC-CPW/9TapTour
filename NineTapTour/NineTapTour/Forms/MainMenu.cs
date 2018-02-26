@@ -89,10 +89,11 @@ namespace NineTapTour.Forms
 #endif
         }
 
-
-        private void btnDropDataBase1_Click_1(object sender, EventArgs e)
+        // This is the code behind for the delete database button. Per Rob, we don't need this 
+        // at this time. Keeping the code incase it's needed in the future.
+        /*private void btnDropDataBase1_Click_1(object sender, EventArgs e)
         {
-           
+
             List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
             string name = NineTapRegionDB.getRegionByID(regionID).NineTapRegionName;
             if (MessageBox.Show($"This button will delete all data stored in the {NineTapRegionDB.getRegionByID(regionID).NineTapRegionName} database, are you sure you want to clear  data?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -100,39 +101,39 @@ namespace NineTapTour.Forms
                 frmPleaseWait pl = new frmPleaseWait();
                 pl.Show();
                 //Delete Player History where HisID = selected regionID
-                List<PlayerHistory> phis =  PlayerHistoryDB.getAllPlayerHistory(regionID);
+                List<PlayerHistory> phis = PlayerHistoryDB.getAllPlayerHistory(regionID);
                 foreach (var p in phis)
                 {
                     PlayerHistoryDB.DeletePlayerHistory(p);
                 }
                 // Delete FinilizeTemp where FinalizeID = selected regionID
                 List<FinalizeTemp> fin = FinalizeTempDB.GetFinalizeList(regionID);
-                foreach(var f in fin)
+                foreach (var f in fin)
                 {
                     FinalizeTempDB.DeleteFinilizeTemp(f);
                 }
                 // Delete Participants where Participant RegionID = regionID
                 List<Participant> par = FinalizeTempDB.GetparticpantList(regionID);
-                foreach(var p in par)
+                foreach (var p in par)
                 {
                     FinalizeTempDB.deleteParticipant(p);
                 }
                 // Delete Games where GameRegionID = regionID
-                List <Game> gam = FinalizeTempDB.GetGameList(regionID);
-                foreach(var g in gam)
+                List<Game> gam = FinalizeTempDB.GetGameList(regionID);
+                foreach (var g in gam)
                 {
                     PlayerHistoryDB.DeleteGame(g);
                 }
                 //delete Tournaments where Tournament RegionID = Region ID
-                List < Tournament > tourn = TournamentDb.GetTournamentList(regionID);
-                foreach(var t in tourn)
+                List<Tournament> tourn = TournamentDb.GetTournamentList(regionID);
+                foreach (var t in tourn)
                 {
                     TournamentDb.deleteTournament(t);
                 }
 
                 //Delete from Member Table where Memmber RegionID is = selected region ID
-               List<Member> mem = MemberDb.GetMemberList(regionID);
-                foreach(var m in mem)
+                List<Member> mem = MemberDb.GetMemberList(regionID);
+                foreach (var m in mem)
                 {
                     MemberDb.DeleteMember(m);
                 }
@@ -141,7 +142,7 @@ namespace NineTapTour.Forms
                 NineTapRegion ntr = NineTapRegionDB.getRegionByID(regionID);
                 NineTapRegionDB.deleteRegion(ntr);
 
-                if(NineTapRegionDB.getNumberOfRegions() == 0) // recreate the local region select again if it nothing exists here anymore
+                if (NineTapRegionDB.getNumberOfRegions() == 0) // recreate the local region select again if it nothing exists here anymore
                 {
                     NineTapRegion n = new NineTapRegion();
                     n.NineTapRegionID = 1;
@@ -154,10 +155,11 @@ namespace NineTapTour.Forms
 
                 pl.Close();
                 MessageBox.Show(name + " Database was successfully cleared!");
-         
+
 
             }
-        }
+        }*/
+
         // on load grabs an updated version of the all the player informantion so you dont have to go their page to update their player information to the right information
         private void MainMenu_Load(object sender, EventArgs e)
         {

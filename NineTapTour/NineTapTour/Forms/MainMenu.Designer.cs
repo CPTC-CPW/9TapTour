@@ -33,7 +33,6 @@
             this.btnMemberScores = new System.Windows.Forms.Button();
             this.btnAbout = new System.Windows.Forms.Button();
             this.Exit = new System.Windows.Forms.Button();
-            this.btnDropDataBase1 = new System.Windows.Forms.Button();
             this.cbxRegionSelect = new System.Windows.Forms.ComboBox();
             this.btnAdd = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -83,17 +82,6 @@
             this.Exit.UseVisualStyleBackColor = true;
             this.Exit.Click += new System.EventHandler(this.Exit_Click);
             // 
-            // btnDropDataBase1
-            // 
-            this.btnDropDataBase1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDropDataBase1.Location = new System.Drawing.Point(12, 455);
-            this.btnDropDataBase1.Name = "btnDropDataBase1";
-            this.btnDropDataBase1.Size = new System.Drawing.Size(121, 23);
-            this.btnDropDataBase1.TabIndex = 2;
-            this.btnDropDataBase1.Text = "Delete Region";
-            this.btnDropDataBase1.UseVisualStyleBackColor = true;
-            this.btnDropDataBase1.Click += new System.EventHandler(this.btnDropDataBase1_Click_1);
-            // 
             // cbxRegionSelect
             // 
             this.cbxRegionSelect.FormattingEnabled = true;
@@ -123,7 +111,6 @@
             this.ClientSize = new System.Drawing.Size(984, 741);
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.cbxRegionSelect);
-            this.Controls.Add(this.btnDropDataBase1);
             this.Controls.Add(this.Exit);
             this.Controls.Add(this.btnAbout);
             this.Controls.Add(this.btnMemberScores);
@@ -144,7 +131,6 @@
         private System.Windows.Forms.Button btnMemberScores;
         private System.Windows.Forms.Button btnAbout;
         private System.Windows.Forms.Button Exit;
-        private System.Windows.Forms.Button btnDropDataBase1;
         private System.Windows.Forms.ComboBox cbxRegionSelect;
         private System.Windows.Forms.Button btnAdd;
     }
