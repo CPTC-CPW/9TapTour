@@ -35,7 +35,6 @@
             this.tournamentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateInactiveMembersToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.addNewRegionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.updateInactiveMembersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menMain.SuspendLayout();
@@ -85,8 +84,7 @@
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.updateInactiveMembersToolStripMenuItem1,
-            this.addNewRegionToolStripMenuItem});
+            this.updateInactiveMembersToolStripMenuItem1});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -97,12 +95,6 @@
             this.updateInactiveMembersToolStripMenuItem1.Size = new System.Drawing.Size(209, 22);
             this.updateInactiveMembersToolStripMenuItem1.Text = "Update Inactive Members";
             this.updateInactiveMembersToolStripMenuItem1.Click += new System.EventHandler(this.updateInactiveMembersToolStripMenuItem1_Click);
-            // 
-            // addNewRegionToolStripMenuItem
-            // 
-            this.addNewRegionToolStripMenuItem.Name = "addNewRegionToolStripMenuItem";
-            this.addNewRegionToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.addNewRegionToolStripMenuItem.Text = "Add New Region";
             // 
             // toolStripMenuItem1
             // 
@@ -151,6 +143,5 @@
         private System.Windows.Forms.ToolStripMenuItem updateInactiveMembersToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem updateInactiveMembersToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addNewRegionToolStripMenuItem;
     }
 }
