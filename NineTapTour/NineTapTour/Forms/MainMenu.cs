@@ -205,5 +205,6 @@ namespace NineTapTour.Forms
             region.ShowDialog();
             refreshRegionlist();
         }
-    }
+
+	}
 }

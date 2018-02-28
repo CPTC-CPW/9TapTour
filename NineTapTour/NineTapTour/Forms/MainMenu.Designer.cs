@@ -35,6 +35,7 @@
 			this.Exit = new System.Windows.Forms.Button();
 			this.cbxRegionSelect = new System.Windows.Forms.ComboBox();
 			this.btnAdd = new System.Windows.Forms.Button();
+			this.label1 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// btnMemberData
@@ -129,6 +130,20 @@
 			this.btnAdd.UseVisualStyleBackColor = true;
 			this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
 			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.BackColor = System.Drawing.Color.White;
+			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label1.Location = new System.Drawing.Point(515, 1327);
+			this.label1.Name = "label1";
+			this.label1.Padding = new System.Windows.Forms.Padding(10);
+			this.label1.Size = new System.Drawing.Size(1023, 51);
+			this.label1.TabIndex = 5;
+			this.label1.Text = "To report issues with this software, please email Rob Victor at rob1@9taptour.com" +
+    "";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
 			// MainMenu
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -137,6 +152,7 @@
 			this.BackgroundImage = global::NineTapTour.Properties.Resources._9taplogo1;
 			this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.ClientSize = new System.Drawing.Size(1968, 1425);
+			this.Controls.Add(this.label1);
 			this.Controls.Add(this.btnAdd);
 			this.Controls.Add(this.cbxRegionSelect);
 			this.Controls.Add(this.Exit);
@@ -151,6 +167,7 @@
 			this.Load += new System.EventHandler(this.MainMenu_Load);
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.MainMenu_Paint);
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
         }
 
@@ -162,5 +179,6 @@
         private System.Windows.Forms.Button Exit;
         private System.Windows.Forms.ComboBox cbxRegionSelect;
         private System.Windows.Forms.Button btnAdd;
-    }
+		private System.Windows.Forms.Label label1;
+	}
 }
