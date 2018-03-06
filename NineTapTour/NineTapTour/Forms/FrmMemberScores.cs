@@ -42,7 +42,7 @@ namespace NineTapTour.Forms
             InitializeComponent();
             DoubleInitialize(false);
 
-        }
+        } 
 
         private void RadioIntialize()
         {
@@ -1240,29 +1240,6 @@ namespace NineTapTour.Forms
             FillMember();
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         /// <summary>
         /// Clears scratch scores and scratch and handicap totals
         /// </summary>
@@ -2412,7 +2389,7 @@ namespace NineTapTour.Forms
             }
         }
 
-            public void UpdateTourneyComboBox()
+        public void UpdateTourneyComboBox()
         {
             RegionID = ((FrmMain)MdiParent).RegionID;
             List<Tournament> t = TournamentDb.GetTournamentList(RegionID);
@@ -2420,25 +2397,12 @@ namespace NineTapTour.Forms
             cbxTourneyDropDown.DataSource = t;
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
         }
-     
-
-
-
-
-
-
-
-        }
-
-
-
-
-
-
-
+    }
         /************************************************************************/
 
-    }
+}
+
+
     /// <summary>
     /// Class used to populate 3rd RichTextBox
     /// </summary>

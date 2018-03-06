@@ -31,9 +31,6 @@ namespace NineTapTour.Forms
         private int _memberNum;
         int RegionID;
         int AllGames;
-        
-        
-
 
         public int MemberNum
         {
@@ -57,28 +54,76 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void MemberDataForm_Load(object sender, EventArgs e)
         {
+            //finds all Controls and change BackColor of each control color when 
+            //the control is on focus
+            foreach (Control ctrl in this.Controls)
+            {
+                ChangeBackColorOnFocus(ctrl);                
+            }            
 
             RegionID = ((FrmMain)MdiParent).RegionID;
 
             List<Member> ListOfMembers = MemberDb.GetMemberList(RegionID);
 
             updateOnload(ListOfMembers);
+            
+            mtxtBoxDateJoined.Text = "01/01/1900";
+            mtxtBoxDateJoined.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxDateJoined_MaskInputRejected);
+            mtxtBoxDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDOB_KeyDown);
+            toolTip1.IsBalloon = true;
 
-            dateJoined.Format = DateTimePickerFormat.Custom;
-            dateJoined.CustomFormat = @" ";
-
+            mtxtBoxRejoinDate.Text = "01/01/1900";
+            mtxtBoxRejoinDate.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxRejoinDate_MaskInputRejected);
+            mtxtBoxRejoinDate.KeyDown += new KeyEventHandler(mtxtBoxRejoinDate_KeyDown);
+            toolTip1.IsBalloon = true;
             //_membersList = ((FrmMain)MdiParent)._membersList;
-            dateRejoin.Format = DateTimePickerFormat.Custom;
-            dateRejoin.CustomFormat = @" ";
 
-            dateLastBowled.Format = DateTimePickerFormat.Custom;
-            dateLastBowled.CustomFormat = @" ";
+            mtxtBoxLastBowled.Text = "01/01/1900";
+            mtxtBoxLastBowled.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxLastBowled_MaskInputRejected);
+            mtxtBoxLastBowled.KeyDown += new KeyEventHandler(mtxtBoxLastBowled_KeyDown);
+            toolTip1.IsBalloon = true;
 
-            datePaid.Format = DateTimePickerFormat.Custom;
-            datePaid.CustomFormat = @" ";
-
+            mtxtBoxLastPayment.Text = "01/01/1900";
+            mtxtBoxLastPayment.MaskInputRejected += new MaskInputRejectedEventHandler(MtxtBoxLastPayment_MaskInputRejected);
+            mtxtBoxLastPayment.KeyDown += new KeyEventHandler(MtxtBoxLastPayment_KeyDown);
+            toolTip1.IsBalloon = true;
+            
             UpdateMemberInfo();
         }
+        
+        /// <summary>
+        /// finds all Controls and change BackColor of each control color when the control is on 
+        /// focus and checks if that control has a child and changes the child contol color onFocus
+        /// </summary>
+        /// <param name="ctrl"></param>
+        private void ChangeBackColorOnFocus(Control ctrl)
+        {
+            ctrl.GotFocus += Ctrl_GotFocus;
+            ctrl.LostFocus += Ctrl_LostFocus;
+            
+            if (ctrl.HasChildren)
+            {
+                foreach (Control childCtrl in ctrl.Controls)
+                {
+                    ChangeBackColorOnFocus(childCtrl);
+                }
+            }
+        }
+
+        private void Ctrl_LostFocus(object sender, EventArgs e)
+        {
+            var ctrl = sender as Control;
+            if (ctrl.Tag is Color)
+                ctrl.BackColor = (Color)ctrl.Tag;
+        }
+
+        private void Ctrl_GotFocus(object sender, EventArgs e)
+        {
+            var ctrl = sender as Control;
+            ctrl.Tag = ctrl.BackColor;
+            ctrl.BackColor = Color.Yellow;
+        }
+
         /// <summary>
         /// Finds "Member Number" in the database and populates the "Member Data" form.
         /// If that "Member Number" is not assigned then display error box.
@@ -88,10 +133,6 @@ namespace NineTapTour.Forms
         {
             RegionID = ((FrmMain)MdiParent).RegionID;
             List<Member> ListOfMembers = MemberDb.GetMemberList(RegionID);
-
-            
-           
-
 
             //set txtMemberNumber.Text back to one if there is no one in the the current selected region added yet
             if (MemberDb.GetMemberList(RegionID).Count == 0)
@@ -151,9 +192,11 @@ namespace NineTapTour.Forms
                 txtLastName.Text = "";
                 txtFirstName.Text = "";
                 txtMiddleInitial.Text = "";
-
-                dateDOB.Format = DateTimePickerFormat.Custom;
-                dateDOB.CustomFormat = @" ";
+                mtxtBoxDOB.Text = "";
+                mtxtBoxDOB.Text = "01/01/1900";
+                mtxtBoxDOB.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxDOB_MaskInputRejected);
+                mtxtBoxDOB.KeyDown += new KeyEventHandler(mtxtBoxDOB_KeyDown);
+                toolTip1.IsBalloon = true;
 
                 mtxtBoxSSN.Text = "";
                 #endregion
@@ -179,8 +222,10 @@ namespace NineTapTour.Forms
 
                 #region Misc. Info
 
-                dateJoined.Format = DateTimePickerFormat.Custom;
-                dateJoined.CustomFormat = @" ";
+                mtxtBoxDateJoined.Text = "01/01/1900";
+                mtxtBoxDateJoined.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxDateJoined_MaskInputRejected);
+                mtxtBoxDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDateJoined_KeyDown);
+                toolTip1.IsBalloon = true;
 
                 //dateJoined.Value = currentMem.JoinDate;
                 //if (currentMem.RejoinDate.HasValue)
@@ -218,8 +263,7 @@ namespace NineTapTour.Forms
                 #endregion
 
                 chbLifetime.Checked = false;
-                datePaid.Format = DateTimePickerFormat.Custom;
-                datePaid.CustomFormat = @" ";
+                mtxtBoxLastPayment.Text = "01/01/1900";
             }
             else
             {
@@ -230,7 +274,7 @@ namespace NineTapTour.Forms
                 txtLastName.Text = currentMem.LastName;
                 txtFirstName.Text = currentMem.FirstName;
                 txtMiddleInitial.Text = currentMem.MiddleInitial;
-                dateDOB.Value = currentMem.DateOfBirth;
+                mtxtBoxDOB.Text = currentMem.DateOfBirth.ToString("MM/dd/yyyy");
                 mtxtBoxSSN.Text = currentMem.SSN;
                 // txtSSN.PasswordChar = '*'; //This hides the SSN within the form of '*'.
                 #endregion
@@ -248,11 +292,7 @@ namespace NineTapTour.Forms
                 mtxtBoxPhone2.Text = currentMem.SecondaryPhone;
                 #endregion
 
-                #region Score Info
-
-      
-              
-          
+                #region Score Info         
 
                 /********************************************************************************
                 updates the form's handicap even when the finalize tournament button is clicked
@@ -275,24 +315,22 @@ namespace NineTapTour.Forms
                 #region Misc. Info
                 //TODO: Pull datetime from database correctly
 
-                dateJoined.Value = currentMem.JoinDate;
+                mtxtBoxDateJoined.Text = currentMem.JoinDate.ToString("MM/dd/yyyy");
                 if (currentMem.RejoinDate.HasValue)
                 {
-                    dateRejoin.Value = (DateTime)currentMem.RejoinDate;
+                    mtxtBoxRejoinDate.Text = currentMem.RejoinDate.Value.ToString("MM/dd/yyyy");
                 }
                 else
                 {
-                    dateRejoin.Format = DateTimePickerFormat.Custom;
-                    dateRejoin.CustomFormat = @" ";
+                    mtxtBoxRejoinDate.Text = "00/00/0000";
                 }
                 if (currentMem.LastBowled.HasValue)
                 {
-                    dateLastBowled.Value = (DateTime)currentMem.LastBowled;
+                    mtxtBoxLastBowled.Text = currentMem.LastBowled.Value.ToString("MM/dd/yyyy");
                 }
                 else
                 {
-                    dateLastBowled.Format = DateTimePickerFormat.Custom;
-                    dateLastBowled.CustomFormat = @" ";
+                    mtxtBoxLastBowled.Text = "00/00/0000";
                 }
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
                 decimal moneySum = 0;
@@ -306,8 +344,7 @@ namespace NineTapTour.Forms
                 foreach(var v in result)
                 {
                     moneySum += v.MoneyWon;
-                }
-               
+                }               
 
                 txtMoneyEarned.Text = String.Format("{0:C}", moneySum);
                 currentMem.MoneyEarned = moneySum;
@@ -337,14 +374,13 @@ namespace NineTapTour.Forms
                 
                 if (currentMem.LastPayment.HasValue)
                 {
-                    datePaid.Format = DateTimePickerFormat.Short;
-                    datePaid.Value = (DateTime)currentMem.LastPayment;
+                    mtxtBoxLastPayment.Text = "01/01/1900";
+                    mtxtBoxLastPayment.Text = currentMem.LastPayment.Value.ToString("MM/dd/yyyy");
                     checkPayment();
                 }
                 else
                 {
-                    datePaid.Format = DateTimePickerFormat.Custom;
-                    datePaid.CustomFormat = @" ";
+                    mtxtBoxLastPayment.Text = "01/01/1900";
                     lblPaymentInfo.Visible = false;
                 }
 
@@ -365,45 +401,21 @@ namespace NineTapTour.Forms
 
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
 
-                MemberDb.AddMember(currentMem);
-
-
-
-
-
-                MemberDb.AddMember(currentMem);
-
-     
+                MemberDb.AddMember(currentMem); 
                 
             }
         }
-
         //public Member searchList(int memberNumber)
         //{
         //    currentMem = _membersList.FirstOrDefault(m => m.Number == memberNumber);
         //    return currentMem;
         //}
+           
 
         // method checks for valid characters. 
-        // TODO: add more textfields to validate for the whole form to submit
         public bool isValid()
         {
-            //// check if Active radio button is checked
-            //if (!rdoActive.Checked && !rdoInActive.Checked)
-            //{
-            //    MessageBox.Show("Member must be checked active or inactive.");
-            //    return false;
-            //}
-            //// check if gender radio button is checked
-            //if (!rdoMale.Checked && !rdoFemale.Checked)
-            //{
-            //    MessageBox.Show("A gender must be chosen.");
-            //    return false;
-            //}
-            ////use better regex expression that includes spaces and hyphens
-
             //validating last name and first name
-
             if (String.IsNullOrWhiteSpace(txtLastName.Text) && String.IsNullOrWhiteSpace(txtFirstName.Text))
             {
                 MessageBox.Show("Both Last Name and First Name are required");
@@ -424,7 +436,11 @@ namespace NineTapTour.Forms
                 txtFirstName.Clear();
                 return false;
             }
-            
+
+            if (String.IsNullOrWhiteSpace(mtxtBoxDateJoined.Text))
+            {
+                mtxtBoxDateJoined.Text = "01/01/1900";
+            }
 
             ///********************************************************************************************************
             //League average should only be between 125 - 210
@@ -448,7 +464,6 @@ namespace NineTapTour.Forms
         {
             //checks to see if firstname,lastname, and zip is valid.
             //Then runs the rest of the btnSave_Click and adds a member into the database.
-
             if (isValid())
             {
                 var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -461,17 +476,16 @@ namespace NineTapTour.Forms
                 //checks to see if MemberID exists 
                 int memId;
                    Member temp = new Member();
-
           
                 temp.Number = Convert.ToInt32(txtMemberNumber.Text);
                 temp.IsActive = rdoActive.Checked;
-                temp.JoinDate = dateJoined.Value;
+                temp.JoinDate = Convert.ToDateTime(mtxtBoxDateJoined.Text);
 
                 #region Personal Info
                 temp.LastName = txtLastName.Text;
                 temp.FirstName = txtFirstName.Text;
                 temp.MiddleInitial = txtMiddleInitial.Text;
-                temp.DateOfBirth = dateDOB.Value;
+                temp.DateOfBirth = Convert.ToDateTime(mtxtBoxDOB.Text);
                 temp.SSN = mtxtBoxSSN.Text;
                 temp.IsSenior = chbSenior.Checked;
                 temp.Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male;
@@ -508,20 +522,22 @@ namespace NineTapTour.Forms
            
                 temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.Average.Value));
 
-
-           
                 #endregion
 
                 #region Misc. Info
-                temp.RejoinDate = (dateRejoin.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : dateRejoin.Value;
-                temp.LastBowled = (dateLastBowled.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : dateLastBowled.Value;
+                
+                temp.RejoinDate = (this.mtxtBoxRejoinDate.ToString() == "01/01/1900") 
+                    ? (DateTime?)null : Convert.ToDateTime(mtxtBoxRejoinDate.Text);
+                temp.LastBowled = (this.mtxtBoxLastBowled.ToString() == "01/01/1900") 
+                    ? (DateTime?)null : Convert.ToDateTime(mtxtBoxLastBowled.Text);
                 temp.MoneyEarned = currentMem.MoneyEarned;
                 //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
 
                 temp.Notes = txtNotes.Text;
                 temp.Referrals = (txtReferrals.Text) == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text);
                 #endregion
-                temp.LastPayment = (datePaid.Format == DateTimePickerFormat.Custom) ? (DateTime?)null : datePaid.Value;
+                temp.LastPayment = (this.mtxtBoxLastPayment.ToString() == "01/01/1900") 
+                    ? (DateTime?)null : Convert.ToDateTime(mtxtBoxLastPayment.Text);
                 temp.IsLifetimeMember = chbLifetime.Checked;
                 temp.NineTapRegionID = RegionID;
 
@@ -546,7 +562,6 @@ namespace NineTapTour.Forms
 
                         txtTournAvg.Text = last5[0].trueAVG.ToString();
                         temp.Average = Convert.ToInt16(last5[0].trueAVG);
-
 
                         txtBonus.Text = last5[0].Bonus.ToString();
                         temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
@@ -581,7 +596,6 @@ namespace NineTapTour.Forms
                 try
                 {
                     MemberDb.AddMember(temp);
-
 
                     //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
                     ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList(RegionID).OrderBy(m => m.Number);
@@ -650,35 +664,34 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnNew_Click(object sender, EventArgs e)
         {
-            //if (isValid())
-            //{
-                Controls.Clear();
-                InitializeComponent();
-                dateRejoin.Format = DateTimePickerFormat.Custom;
-                dateRejoin.CustomFormat = @" ";
+            
+            Controls.Clear();
+            InitializeComponent();
 
-                dateJoined.Format = DateTimePickerFormat.Custom;//new
-                dateJoined.CustomFormat = @" ";//new
+            //finds all Controls and change BackColor of each control color when 
+            //the control is on focus
+            foreach (Control ctrl in this.Controls)
+            {
+                ChangeBackColorOnFocus(ctrl);
+            }
 
-                dateLastBowled.Format = DateTimePickerFormat.Custom;
-                dateLastBowled.CustomFormat = @" ";
+            mtxtBoxRejoinDate.Text = "";
+            mtxtBoxDateJoined.Text = "";
+            mtxtBoxLastBowled.Text = "";
+            mtxtBoxLastPayment.Text = "";
+            mtxtBoxDOB.Text = "";
 
-                datePaid.Format = DateTimePickerFormat.Custom;
-                datePaid.CustomFormat = @" ";
+            _memberId = -1;
 
-                dateDOB.Format = DateTimePickerFormat.Custom;
-                dateDOB.CustomFormat = @" ";
-                _memberId = -1;
-
-                //get latest member number, or set to 1 if no members in database
-                // int nextMemberNumber = ((FrmMain)MdiParent)._membersList.Any() ? (((FrmMain)MdiParent)._membersList.Last().Number + 1) : 1;
-                int nextMemberNumber = MemberDb.GetMemberList(RegionID).Count + 1;
-                txtMemberNumber.Text = nextMemberNumber.ToString();
-                currentMem = new Member
-                {
-                    Number = nextMemberNumber
-                };
-            //}
+            //get latest member number, or set to 1 if no members in database
+            // int nextMemberNumber = ((FrmMain)MdiParent)._membersList.Any() ? (((FrmMain)MdiParent)._membersList.Last().Number + 1) : 1;
+            int nextMemberNumber = MemberDb.GetMemberList(RegionID).Count + 1;
+            txtMemberNumber.Text = nextMemberNumber.ToString();
+            currentMem = new Member
+            {
+                Number = nextMemberNumber
+            };
+            
             //on new player button select this focuses on the last name texbox that way user does not have
             //to use the mouse to reclick when adding a new player
             txtLastName.Focus();
@@ -846,18 +859,19 @@ namespace NineTapTour.Forms
             if (chbLifetime.Checked)
             {
                 lblPaymentInfo.Visible = false;
-                datePaid.Enabled = false;
+                mtxtBoxLastPayment.Enabled = false;
             }
             else
             {
-                datePaid.Enabled = true;
+                mtxtBoxLastPayment.Enabled = true;
                 checkPayment();
             }
         }
 
         private void datePaid_ValueChanged(object sender, EventArgs e)
         {
-            datePaid.Format = DateTimePickerFormat.Short;
+            //datePaid.Format = DateTimePickerFormat.Short;
+            mtxtBoxLastPayment.Text = "01/01/1900";
             checkPayment();
         }
 
@@ -867,7 +881,9 @@ namespace NineTapTour.Forms
             added '&& chbLifetime.Checked == false' so when the member is a lifetime member, the lblPaymentInfo will 
             not be visible even if their last payment was due before
             ********************************************************************************************************/
-            if (datePaid.Value != null && datePaid.Value <= DateTime.Now.AddYears(-1) && chbLifetime.Checked == false)
+            if (mtxtBoxLastPayment.Text != null 
+                && Convert.ToDateTime(mtxtBoxLastPayment.Text) 
+                <= DateTime.Now.AddYears(-1) && chbLifetime.Checked == false)
             /*******************************************************************************************************/
             {
                 lblPaymentInfo.Visible = true;
@@ -880,18 +896,18 @@ namespace NineTapTour.Forms
 
         private void dateJoined_ValueChanged(object sender, EventArgs e)
         {
-            dateJoined.Format = DateTimePickerFormat.Short;// Refreshes the date
+            //dateJoined.Format = DateTimePickerFormat.Short;// Refreshes the date
 
         }
 
         private void dateRejoin_ValueChanged(object sender, EventArgs e)
         {
-            dateRejoin.Format = DateTimePickerFormat.Short;//Refreshes the date
+            //dateRejoin.Format = DateTimePickerFormat.Short;//Refreshes the date
         }
 
         private void dateDOB_ValueChanged(object sender, EventArgs e)
         {
-            dateDOB.Format = DateTimePickerFormat.Short;
+            //dateDOB.Format = DateTimePickerFormat.Short;
         }
 
         private void btnRecapByDate_Click(object sender, EventArgs e)
@@ -921,8 +937,6 @@ namespace NineTapTour.Forms
             ((FrmMain)MdiParent).currFrmMemberData = this;
         }
 
-
-
         private void updateOnload(List<Member> temp)
         {
             foreach(var m in temp)
@@ -930,8 +944,6 @@ namespace NineTapTour.Forms
                 MemberDb.AddMember(m);
             }
         }
-
-
 
         /// <summary>
         /// checks whether form data has been changed and not saved
@@ -1115,11 +1127,7 @@ namespace NineTapTour.Forms
                         }
                     }
             
-                    rows = ProcessExcelFile(fileName);
-
-                 
-
-  
+                    rows = ProcessExcelFile(fileName); 
                     
                     wait = false;
                     please.Close();
@@ -1140,10 +1148,6 @@ namespace NineTapTour.Forms
                 txtHandicap.Text = currentMem.Handicap.ToString();
                 txtBonus.Text = currentMem.Bonus.ToString();
 
-
-              
-
-
                 decimal moneySum = 0;
                 var db = new NineTapDb();
                 var result = (from p in db.PlayerHistory
@@ -1162,22 +1166,13 @@ namespace NineTapTour.Forms
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
 
                 MemberDb.AddMember(currentMem);
-
-
-
-
-
-
             }
         }
-
 
         private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
         {
          
-            List<ExcelRow> returnMe = new List<ExcelRow>();
-           
-        
+            List<ExcelRow> returnMe = new List<ExcelRow>();        
 
             Excel.Application xlApp = new Excel.Application();
             Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
@@ -1258,7 +1253,7 @@ namespace NineTapTour.Forms
                         }
                     }
                     catch (Exception ex)
-                    {
+                    {                    
                         continue;
                     }
                     ExcelRow temp = new ExcelRow();
@@ -1398,8 +1393,7 @@ namespace NineTapTour.Forms
                         temp.PotPro = Convert.ToString((range.Cells[row, 13] as Excel.Range).Value2);
                         playerH.ProPot = temp.PotPro;
                         temp.FinPPHG = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
-                        playerH.PPHG = temp.FinPPHG;
-                       
+                        playerH.PPHG = temp.FinPPHG;                       
 
                         try
                         {
@@ -1427,14 +1421,9 @@ namespace NineTapTour.Forms
                 }
 
             }
-        
-
 
         xlWorkBook.Close(0);
             xlApp.Quit();
-
-
-
 
             Marshal.ReleaseComObject(range);
             Marshal.ReleaseComObject(xlWorkSheet);
@@ -1453,13 +1442,152 @@ namespace NineTapTour.Forms
             }
 
             return returnMe;
-        }
-        
-    
+        }    
 
         private void chbSocial_CheckedChanged(object sender, EventArgs e)
         {
           mtxtBoxSSN.PasswordChar = chbSocial.Checked ? '\0' : '*';
+        }
+
+        private void txtMemberNumber_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void mtxtBoxDOB_KeyDown(object sender, KeyEventArgs e)
+        {
+            toolTip1.Hide(mtxtBoxDOB);
+        }
+
+        private void mtxtBoxDOB_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
+        {
+            if (mtxtBoxDOB.MaskFull)
+            {
+                toolTip1.ToolTipTitle = "Input Rejected - Too Much Data";
+                toolTip1.Show("You cannot enter any more data into the date field. " +
+                    "Delete some characters in order to insert more data.", mtxtBoxDOB, 0, -20, 5000);
+            }
+            else if (e.Position == mtxtBoxDOB.Mask.Length)
+            {
+                toolTip1.ToolTipTitle = "Input Rejected - End of Field";
+                toolTip1.Show("You cannot add extra characters to the end " +
+                    "of this date field.", mtxtBoxDOB, 0, -20, 5000);
+            }
+            else
+            {
+                toolTip1.ToolTipTitle = "Input Rejected";
+                toolTip1.Show("You can only add numeric characters (0-9) " +
+                    "into this date field.", mtxtBoxDOB, 0, -20, 5000);
+            }
+        }
+
+        private void mtxtBoxDateJoined_KeyDown(object sender, KeyEventArgs e)
+        {
+            toolTip1.Hide(mtxtBoxDateJoined);
+        }
+
+        private void mtxtBoxDateJoined_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
+        {
+            if (mtxtBoxDateJoined.MaskFull)
+            {
+                toolTip1.ToolTipTitle = "Input Rejected - Too Much Data";
+                toolTip1.Show("You cannot enter any more data into the date field. " +
+                    "Delete some characters in order to insert more data.", mtxtBoxDateJoined, 0, -20, 5000);
+            }
+            else if (e.Position == mtxtBoxDateJoined.Mask.Length)
+            {
+                toolTip1.ToolTipTitle = "Input Rejected - End of Field";
+                toolTip1.Show("You cannot add extra characters to the end " +
+                    "of this date field.", mtxtBoxDateJoined, 0, -20, 5000);
+            }
+            else
+            {
+                toolTip1.ToolTipTitle = "Input Rejected";
+                toolTip1.Show("You can only add numeric characters (0-9) " +
+                    "into this date field.", mtxtBoxDateJoined, 0, -20, 5000);
+            }
+        }
+
+        private void mtxtBoxRejoinDate_KeyDown(object sender, KeyEventArgs e)
+        {
+            toolTip1.Hide(mtxtBoxDateJoined);
+        }
+
+        private void mtxtBoxRejoinDate_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
+        {
+
+            if (mtxtBoxRejoinDate.MaskFull)
+            {
+                toolTip1.ToolTipTitle = "Input Rejected - Too Much Data";
+                toolTip1.Show("You cannot enter any more data into the date field. " +
+                    "Delete some characters in order to insert more data.", mtxtBoxRejoinDate, 0, -20, 5000);
+            }
+            else if (e.Position == mtxtBoxRejoinDate.Mask.Length)
+            {
+                toolTip1.ToolTipTitle = "Input Rejected - End of Field";
+                toolTip1.Show("You cannot add extra characters to the end " +
+                    "of this date field.", mtxtBoxRejoinDate, 0, -20, 5000);
+            }
+            else
+            {
+                toolTip1.ToolTipTitle = "Input Rejected";
+                toolTip1.Show("You can only add numeric characters (0-9) " +
+                    "into this date field.", mtxtBoxRejoinDate, 0, -20, 5000);
+            }
+        }
+
+        private void mtxtBoxLastBowled_KeyDown(object sender, KeyEventArgs e)
+        {
+            toolTip1.Hide(mtxtBoxLastBowled);
+        }
+
+        private void mtxtBoxLastBowled_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
+        {
+            if (mtxtBoxLastBowled.MaskFull)
+            {
+                toolTip1.ToolTipTitle = "Input Rejected - Too Much Data";
+                toolTip1.Show("You cannot enter any more data into the date field. " +
+                    "Delete some characters in order to insert more data.", mtxtBoxLastBowled, 0, -20, 5000);
+            }
+            else if (e.Position == mtxtBoxLastBowled.Mask.Length)
+            {
+                toolTip1.ToolTipTitle = "Input Rejected - End of Field";
+                toolTip1.Show("You cannot add extra characters to the end " +
+                    "of this date field.", mtxtBoxLastBowled, 0, -20, 5000);
+            }
+            else
+            {
+                toolTip1.ToolTipTitle = "Input Rejected";
+                toolTip1.Show("You can only add numeric characters (0-9) " +
+                    "into this date field.", mtxtBoxLastBowled, 0, -20, 5000);
+            }
+        }
+
+        private void MtxtBoxLastPayment_KeyDown(object sender, KeyEventArgs e)
+        {
+            toolTip1.Hide(mtxtBoxLastPayment);
+        }
+
+        private void MtxtBoxLastPayment_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
+        {
+            if (mtxtBoxLastPayment.MaskFull)
+            {
+                toolTip1.ToolTipTitle = "Input Rejected - Too Much Data";
+                toolTip1.Show("You cannot enter any more data into the date field. " +
+                    "Delete some characters in order to insert more data.", mtxtBoxLastPayment, 0, -20, 5000);
+            }
+            else if (e.Position == mtxtBoxLastPayment.Mask.Length)
+            {
+                toolTip1.ToolTipTitle = "Input Rejected - End of Field";
+                toolTip1.Show("You cannot add extra characters to the end " +
+                    "of this date field.", mtxtBoxLastBowled, 0, -20, 5000);
+            }
+            else
+            {
+                toolTip1.ToolTipTitle = "Input Rejected";
+                toolTip1.Show("You can only add numeric characters (0-9) " +
+                    "into this date field.", mtxtBoxLastBowled, 0, -20, 5000);
+            }
         }
     }
 }
