@@ -1290,6 +1290,7 @@ namespace NineTapTour.Forms
                 partlist[p].Game = FinalizeTempDB.getGame(FinalizeTableList[p].GameId);
             }
 
+
             if (check == FinalizeTableList.Count)
             {
                 for (int currentindex = 0; currentindex < FinalizeTableList.Count; currentindex++)

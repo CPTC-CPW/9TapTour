@@ -1,17 +1,9 @@
 ﻿using Member_Import_Test.Classes;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.OleDb;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.Office.Core;
 using Excel = Microsoft.Office.Interop.Excel;
 using NineTapTour.Database;
 using System.Text.RegularExpressions;

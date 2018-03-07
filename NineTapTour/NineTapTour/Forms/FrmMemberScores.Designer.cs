@@ -70,6 +70,7 @@
             this.lblStratchScores = new System.Windows.Forms.Label();
             this.lblHandiCap = new System.Windows.Forms.Label();
             this.grpStats = new System.Windows.Forms.GroupBox();
+            this.chbCompEntry = new System.Windows.Forms.CheckBox();
             this.lblMoney = new System.Windows.Forms.Label();
             this.txtMoney = new System.Windows.Forms.TextBox();
             this.lblPlayer2 = new System.Windows.Forms.Label();
@@ -122,6 +123,7 @@
             this.txtFirstName2 = new System.Windows.Forms.TextBox();
             this.txtLastName2 = new System.Windows.Forms.TextBox();
             this.btnFinalizeTounament = new System.Windows.Forms.Button();
+            this.btnTournamentResults = new System.Windows.Forms.Button();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpRecord.SuspendLayout();
@@ -610,6 +612,7 @@
             // 
             // grpStats
             // 
+            this.grpStats.Controls.Add(this.chbCompEntry);
             this.grpStats.Controls.Add(this.lblMoney);
             this.grpStats.Controls.Add(this.txtMoney);
             this.grpStats.Controls.Add(this.lblPlayer2);
@@ -636,6 +639,17 @@
             this.grpStats.TabIndex = 1;
             this.grpStats.TabStop = false;
             this.grpStats.Text = "Stats";
+            // 
+            // chbCompEntry
+            // 
+            this.chbCompEntry.AutoSize = true;
+            this.chbCompEntry.Location = new System.Drawing.Point(247, 42);
+            this.chbCompEntry.Name = "chbCompEntry";
+            this.chbCompEntry.Size = new System.Drawing.Size(80, 17);
+            this.chbCompEntry.TabIndex = 25;
+            this.chbCompEntry.TabStop = false;
+            this.chbCompEntry.Text = "Comp Entry";
+            this.chbCompEntry.UseVisualStyleBackColor = true;
             // 
             // lblMoney
             // 
@@ -1195,13 +1209,24 @@
             // 
             // btnFinalizeTounament
             // 
-            this.btnFinalizeTounament.Location = new System.Drawing.Point(499, 753);
+            this.btnFinalizeTounament.Location = new System.Drawing.Point(660, 753);
             this.btnFinalizeTounament.Name = "btnFinalizeTounament";
-            this.btnFinalizeTounament.Size = new System.Drawing.Size(269, 23);
+            this.btnFinalizeTounament.Size = new System.Drawing.Size(201, 23);
             this.btnFinalizeTounament.TabIndex = 42;
             this.btnFinalizeTounament.Text = "Finalize Tournament";
             this.btnFinalizeTounament.UseVisualStyleBackColor = true;
             this.btnFinalizeTounament.Click += new System.EventHandler(this.btnFinalizeTounament_Click);
+            // 
+            // btnTournamentResults
+            // 
+            this.btnTournamentResults.Location = new System.Drawing.Point(499, 753);
+            this.btnTournamentResults.Margin = new System.Windows.Forms.Padding(1);
+            this.btnTournamentResults.Name = "btnTournamentResults";
+            this.btnTournamentResults.Size = new System.Drawing.Size(123, 23);
+            this.btnTournamentResults.TabIndex = 43;
+            this.btnTournamentResults.Text = "Tournament Results";
+            this.btnTournamentResults.UseVisualStyleBackColor = true;
+            this.btnTournamentResults.Click += new System.EventHandler(this.btnTournamentResults_Click);
             // 
             // frmMemberScores
             // 
@@ -1210,6 +1235,7 @@
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.ClientSize = new System.Drawing.Size(934, 812);
+            this.Controls.Add(this.btnTournamentResults);
             this.Controls.Add(this.btnFinalizeTounament);
             this.Controls.Add(this.lblMiddleInitial2);
             this.Controls.Add(this.lblFirstName2);
@@ -1362,5 +1388,7 @@
         private System.Windows.Forms.RadioButton rdoSquad2Results;
         private System.Windows.Forms.RadioButton rdoSquad1Results;
         private System.Windows.Forms.RadioButton rdoAllResults;
+        private System.Windows.Forms.Button btnTournamentResults;
+        private System.Windows.Forms.CheckBox chbCompEntry;
     }
 }

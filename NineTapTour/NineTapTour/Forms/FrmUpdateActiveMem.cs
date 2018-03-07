@@ -39,7 +39,7 @@ namespace NineTapTour.Forms
         
         private void FrmUpdateActiveMem_Load(object sender, EventArgs e)
         {
-            RegionID = ((FrmMain)MdiParent).RegionID;
+            //RegionID = ((FrmMain)MdiParent).RegionID;
             InActiveList = MemberDb.GetMemberList(RegionID);
             AllMembers = MemberDb.GetMemberList(RegionID);
             UpdateList();
