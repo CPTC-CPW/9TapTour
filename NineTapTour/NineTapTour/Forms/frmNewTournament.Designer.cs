@@ -278,7 +278,6 @@
             this.Controls.Add(this.lblEvent);
             this.Controls.Add(this.lblLocation);
             this.Controls.Add(this.lblDate);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmNewTournament";
             this.Text = "New Tournament";
