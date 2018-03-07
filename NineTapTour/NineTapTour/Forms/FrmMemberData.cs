@@ -774,34 +774,7 @@ namespace NineTapTour.Forms
                 textBox.BackColor = textBox.Text == string.Empty ? Color.LightPink : Color.White;
             }
         }
-        /// <summary>
-        /// Brings up the datePicker.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ApplyCalendarForm(object sender, EventArgs e)
-        {
-            var datePicker = sender as DateTimePicker;
-
-            if (datePicker != null)
-            {
-                datePicker.Format = DateTimePickerFormat.Short;
-            }
-        }
-        /// <summary>
-        /// Puts the calendar back to the default selection.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ClearCalendar(object sender, KeyEventArgs e)
-        {
-            var datePicker = sender as DateTimePicker;
-
-            if (datePicker == null || (e.KeyCode != Keys.Delete && e.KeyCode != Keys.Back)) return;
-
-            datePicker.Format = DateTimePickerFormat.Custom;
-            datePicker.CustomFormat = @" ";
-        }
+       
         /// <summary>
         /// clears all elements on member data form.
         /// </summary>
