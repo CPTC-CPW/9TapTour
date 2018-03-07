@@ -59,8 +59,7 @@ namespace NineTapTour.Forms
             foreach (Control ctrl in this.Controls)
             {
                 ChangeBackColorOnFocus(ctrl);                
-            }            
-
+            }
             RegionID = ((FrmMain)MdiParent).RegionID;
 
             List<Member> ListOfMembers = MemberDb.GetMemberList(RegionID);
@@ -227,26 +226,7 @@ namespace NineTapTour.Forms
                 mtxtBoxDateJoined.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxDateJoined_MaskInputRejected);
                 mtxtBoxDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDateJoined_KeyDown);
                 toolTip1.IsBalloon = true;
-
-                //dateJoined.Value = currentMem.JoinDate;
-                //if (currentMem.RejoinDate.HasValue)
-                //{
-                //    dateRejoin.Value = (DateTime)currentMem.RejoinDate;
-                //}
-                //else
-                //{
-                //    dateRejoin.Format = DateTimePickerFormat.Custom;
-                //    dateRejoin.CustomFormat = @" ";
-                //}
-                //if (currentMem.LastBowled.HasValue)
-                //{
-                //    dateLastBowled.Value = (DateTime)currentMem.LastBowled;
-                //}
-                //else
-                //{
-                //    dateLastBowled.Format = DateTimePickerFormat.Custom;
-                //    dateLastBowled.CustomFormat = @" ";
-                //}
+                
                 txtMoneyEarned.Text = "";
                 txtNotes.Text = "";
                 txtReferrals.Text = "";
@@ -275,7 +255,11 @@ namespace NineTapTour.Forms
                 txtLastName.Text = currentMem.LastName;
                 txtFirstName.Text = currentMem.FirstName;
                 txtMiddleInitial.Text = currentMem.MiddleInitial;
-                mtxtBoxDOB.Text = currentMem.DateOfBirth.Value.ToString("MM/dd/yyyy");
+                if(currentMem.DateOfBirth != null)
+                {
+                    mtxtBoxDOB.Text = currentMem.DateOfBirth.Value.ToString("MM/dd/yyyy");
+                }
+                
                 mtxtBoxSSN.Text = currentMem.SSN;
                 // txtSSN.PasswordChar = '*'; //This hides the SSN within the form of '*'.
                 #endregion
@@ -310,19 +294,20 @@ namespace NineTapTour.Forms
                 txtHandicap.Text = currentMem.Handicap.ToString(); 
                 /********************************************************************************/
                 txtBonus.Text = currentMem.Bonus.ToString();
-                
+
                 #endregion
 
                 #region Misc. Info
-                //TODO: Pull datetime from database correctly                
-                mtxtBoxDateJoined.Text = currentMem.JoinDate.Value.ToString("MM/dd/yyyy");
+                //TODO: Pull datetime from database correctly 
+                if (currentMem.DateOfBirth != null)
+                    mtxtBoxDateJoined.Text = currentMem.JoinDate.Value.ToString("MM/dd/yyyy");
                 if (currentMem.RejoinDate.HasValue)
                 {
                     mtxtBoxRejoinDate.Text = currentMem.RejoinDate.Value.ToString("MM/dd/yyyy");
                 }
                 else
                 {
-                    mtxtBoxRejoinDate.Text = "00/00/0000";
+                    mtxtBoxRejoinDate.Text = "";
                 }
                 if (currentMem.LastBowled.HasValue)
                 {
@@ -330,7 +315,7 @@ namespace NineTapTour.Forms
                 }
                 else
                 {
-                    mtxtBoxLastBowled.Text = "00/00/0000";
+                    mtxtBoxLastBowled.Text = "";
                 }
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
                 decimal moneySum = 0;
@@ -374,13 +359,12 @@ namespace NineTapTour.Forms
                 
                 if (currentMem.LastPayment.HasValue)
                 {
-                    mtxtBoxLastPayment.Text = "01/01/1900";
                     mtxtBoxLastPayment.Text = currentMem.LastPayment.Value.ToString("MM/dd/yyyy");
                     checkPayment();
                 }
                 else
                 {
-                    mtxtBoxLastPayment.Text = "01/01/1900";
+                    mtxtBoxLastPayment.Text = "";
                     lblPaymentInfo.Visible = false;
                 }
 
@@ -461,6 +445,7 @@ namespace NineTapTour.Forms
             //Then runs the rest of the btnSave_Click and adds a member into the database.
             if (isValid())
             {
+                rdoActive.Checked = true;
                 var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (confirm == DialogResult.No)
                     return;
@@ -475,19 +460,36 @@ namespace NineTapTour.Forms
                 temp.Number = Convert.ToInt32(txtMemberNumber.Text);
                 temp.IsActive = rdoActive.Checked;
 
-                if (String.IsNullOrWhiteSpace(mtxtBoxDateJoined.Text))
+                if (!String.IsNullOrWhiteSpace(mtxtBoxDateJoined.Text))
                 {
-                    mtxtBoxDateJoined.Text = "01/01/1900";
+                    DateTime date;
+                    if(DateTime.TryParse(mtxtBoxDateJoined.Text, out date))
+                    {
+                        temp.JoinDate = date;
+                    }
                 }
-                temp.JoinDate = (this.mtxtBoxDateJoined.ToString() == "01/01/1900")
-                    ? (DateTime?)null : Convert.ToDateTime(mtxtBoxDateJoined.Text);
+                else
+                {
+                    temp.JoinDate = null;
+                }
 
                 #region Personal Info
                 temp.LastName = txtLastName.Text;
                 temp.FirstName = txtFirstName.Text;
                 temp.MiddleInitial = txtMiddleInitial.Text;
-                temp.DateOfBirth = (this.mtxtBoxDOB.ToString() == "01/01/1900")
-                    ? (DateTime?)null : Convert.ToDateTime(mtxtBoxDOB.Text);
+                if (!String.IsNullOrWhiteSpace(mtxtBoxDOB.Text))
+                {
+                    DateTime date;
+                    if (DateTime.TryParse(mtxtBoxDOB.Text, out date))
+                    {
+                        temp.DateOfBirth = date;
+                    }
+                }
+                else
+                {
+                    temp.DateOfBirth = null;
+                }
+                
                 temp.SSN = mtxtBoxSSN.Text;
                 temp.IsSenior = chbSenior.Checked;
                 temp.Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male;
@@ -527,19 +529,53 @@ namespace NineTapTour.Forms
                 #endregion
 
                 #region Misc. Info
-                
-                temp.RejoinDate = (this.mtxtBoxRejoinDate.ToString() == "01/01/1900") 
-                    ? (DateTime?)null : Convert.ToDateTime(mtxtBoxRejoinDate.Text);
-                temp.LastBowled = (this.mtxtBoxLastBowled.ToString() == "01/01/1900") 
-                    ? (DateTime?)null : Convert.ToDateTime(mtxtBoxLastBowled.Text);
+
+                if (!String.IsNullOrWhiteSpace(mtxtBoxRejoinDate.Text))
+                {
+                    DateTime date;
+                    if (DateTime.TryParse(mtxtBoxRejoinDate.Text, out date))
+                    {
+                        temp.RejoinDate = date;
+                    }
+                }
+                else
+                {
+                    temp.RejoinDate = null;
+                }
+
+                if (!String.IsNullOrWhiteSpace(mtxtBoxLastBowled.Text))
+                {
+                    DateTime date;
+                    if (DateTime.TryParse(mtxtBoxLastBowled.Text, out date))
+                    {
+                        temp.LastBowled = date;
+                    }
+                }
+                else
+                {
+                    temp.LastBowled = null;
+                }
+
                 temp.MoneyEarned = currentMem.MoneyEarned;
                 //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
 
                 temp.Notes = txtNotes.Text;
                 temp.Referrals = (txtReferrals.Text) == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text);
                 #endregion
-                temp.LastPayment = (this.mtxtBoxLastPayment.ToString() == "01/01/1900") 
-                    ? (DateTime?)null : Convert.ToDateTime(mtxtBoxLastPayment.Text);
+
+                if (!String.IsNullOrWhiteSpace(mtxtBoxLastPayment.Text))
+                {
+                    DateTime date;
+                    if (DateTime.TryParse(mtxtBoxLastPayment.Text, out date))
+                    {
+                        temp.LastPayment = date;
+                    }
+                }
+                else
+                {
+                    temp.LastPayment = null;
+                }
+
                 temp.IsLifetimeMember = chbLifetime.Checked;
                 temp.NineTapRegionID = RegionID;
 
