@@ -165,6 +165,7 @@ namespace NineTapTour.Database
                             result.Game3 = player.Game.Game3;
                             result.Game4 = player.Game.Game4;
                             result.MoneyWon = player.Game.MoneyWon;
+                            result.IsComp = player.Game.IsComp;
 
                             if (squadResult == null)
                             {

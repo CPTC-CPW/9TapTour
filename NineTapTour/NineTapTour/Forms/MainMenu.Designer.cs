@@ -124,6 +124,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(22F, 42F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.BackgroundImage = global::NineTapTour.Properties.Resources._9tap;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;

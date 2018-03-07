@@ -4,19 +4,10 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using NineTapTour.Database;
-using System.Globalization;
 using NineTapTour.Exceptions;
-using System.Text.RegularExpressions;
 using System.Drawing.Printing;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
 using System.Data;
-using System.Data.OleDb;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Office.Core;
 using Excel = Microsoft.Office.Interop.Excel;
 using Member_Import_Test.Classes;
 
@@ -440,6 +431,11 @@ namespace NineTapTour.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btnSave_Click(object sender, EventArgs e)
+        {
+            SaveMemberData();
+        }
+
+        private void SaveMemberData()
         {
             //checks to see if firstname,lastname, and zip is valid.
             //Then runs the rest of the btnSave_Click and adds a member into the database.
@@ -1011,6 +1007,10 @@ namespace NineTapTour.Forms
             if (currentMem.SecondaryPhone == null)
             {
                 currentMem.SecondaryPhone = "";
+            }
+            if (currentMem.Notes == null)
+            {
+                currentMem.Notes = "";
             }
             if (currentMem.SSN == null)
             {
