@@ -1115,7 +1115,6 @@ namespace NineTapTour.Forms
             }
             return 0;
         }
-
       
         private void btnImportData_Click(object sender, EventArgs e)
         {
