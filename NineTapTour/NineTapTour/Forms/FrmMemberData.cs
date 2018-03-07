@@ -66,7 +66,8 @@ namespace NineTapTour.Forms
             List<Member> ListOfMembers = MemberDb.GetMemberList(RegionID);
 
             updateOnload(ListOfMembers);
-            
+
+            mtxtBoxDateJoined.Text = "";
             mtxtBoxDateJoined.Text = "01/01/1900";
             mtxtBoxDateJoined.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxDateJoined_MaskInputRejected);
             mtxtBoxDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDOB_KeyDown);
@@ -221,7 +222,7 @@ namespace NineTapTour.Forms
                 #endregion
 
                 #region Misc. Info
-
+                mtxtBoxDateJoined.Text = "";
                 mtxtBoxDateJoined.Text = "01/01/1900";
                 mtxtBoxDateJoined.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxDateJoined_MaskInputRejected);
                 mtxtBoxDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDateJoined_KeyDown);
@@ -274,7 +275,7 @@ namespace NineTapTour.Forms
                 txtLastName.Text = currentMem.LastName;
                 txtFirstName.Text = currentMem.FirstName;
                 txtMiddleInitial.Text = currentMem.MiddleInitial;
-                mtxtBoxDOB.Text = currentMem.DateOfBirth.ToString("MM/dd/yyyy");
+                mtxtBoxDOB.Text = currentMem.DateOfBirth.Value.ToString("MM/dd/yyyy");
                 mtxtBoxSSN.Text = currentMem.SSN;
                 // txtSSN.PasswordChar = '*'; //This hides the SSN within the form of '*'.
                 #endregion
@@ -313,9 +314,8 @@ namespace NineTapTour.Forms
                 #endregion
 
                 #region Misc. Info
-                //TODO: Pull datetime from database correctly
-
-                mtxtBoxDateJoined.Text = currentMem.JoinDate.ToString("MM/dd/yyyy");
+                //TODO: Pull datetime from database correctly                
+                mtxtBoxDateJoined.Text = currentMem.JoinDate.Value.ToString("MM/dd/yyyy");
                 if (currentMem.RejoinDate.HasValue)
                 {
                     mtxtBoxRejoinDate.Text = currentMem.RejoinDate.Value.ToString("MM/dd/yyyy");
@@ -437,11 +437,6 @@ namespace NineTapTour.Forms
                 return false;
             }
 
-            if (String.IsNullOrWhiteSpace(mtxtBoxDateJoined.Text))
-            {
-                mtxtBoxDateJoined.Text = "01/01/1900";
-            }
-
             ///********************************************************************************************************
             //League average should only be between 125 - 210
             //*********************************************************************************************************/
@@ -479,13 +474,20 @@ namespace NineTapTour.Forms
           
                 temp.Number = Convert.ToInt32(txtMemberNumber.Text);
                 temp.IsActive = rdoActive.Checked;
-                temp.JoinDate = Convert.ToDateTime(mtxtBoxDateJoined.Text);
+
+                if (String.IsNullOrWhiteSpace(mtxtBoxDateJoined.Text))
+                {
+                    mtxtBoxDateJoined.Text = "01/01/1900";
+                }
+                temp.JoinDate = (this.mtxtBoxDateJoined.ToString() == "01/01/1900")
+                    ? (DateTime?)null : Convert.ToDateTime(mtxtBoxDateJoined.Text);
 
                 #region Personal Info
                 temp.LastName = txtLastName.Text;
                 temp.FirstName = txtFirstName.Text;
                 temp.MiddleInitial = txtMiddleInitial.Text;
-                temp.DateOfBirth = Convert.ToDateTime(mtxtBoxDOB.Text);
+                temp.DateOfBirth = (this.mtxtBoxDOB.ToString() == "01/01/1900")
+                    ? (DateTime?)null : Convert.ToDateTime(mtxtBoxDOB.Text);
                 temp.SSN = mtxtBoxSSN.Text;
                 temp.IsSenior = chbSenior.Checked;
                 temp.Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male;
@@ -676,10 +678,19 @@ namespace NineTapTour.Forms
             }
 
             mtxtBoxRejoinDate.Text = "";
+            mtxtBoxRejoinDate.Mask = "00/00/0000";
+
             mtxtBoxDateJoined.Text = "";
+            mtxtBoxDateJoined.Mask = "00/00/0000";
+
             mtxtBoxLastBowled.Text = "";
+            mtxtBoxLastBowled.Mask = "00/00/0000";
+
             mtxtBoxLastPayment.Text = "";
+            mtxtBoxLastPayment.Mask = "00/00/0000";
+
             mtxtBoxDOB.Text = "";
+            mtxtBoxDOB.Mask = "00/00/0000";
 
             _memberId = -1;
 
