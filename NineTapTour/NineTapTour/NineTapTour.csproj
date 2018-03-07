@@ -330,6 +330,10 @@
     <Compile Include="Migrations\201611211913236_add-migration.Designer.cs">
       <DependentUpon>201611211913236_add-migration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803072114590_Changed Date to Nullable DateTime.cs" />
+    <Compile Include="Migrations\201803072114590_Changed Date to Nullable DateTime.Designer.cs">
+      <DependentUpon>201803072114590_Changed Date to Nullable DateTime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -479,6 +483,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611211913236_add-migration.resx">
       <DependentUpon>201611211913236_add-migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803072114590_Changed Date to Nullable DateTime.resx">
+      <DependentUpon>201803072114590_Changed Date to Nullable DateTime.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>

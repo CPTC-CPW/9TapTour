@@ -42,9 +42,10 @@
             // 
             this.btnMemberData.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnMemberData.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnMemberData.Location = new System.Drawing.Point(12, 64);
+            this.btnMemberData.Location = new System.Drawing.Point(44, 207);
+            this.btnMemberData.Margin = new System.Windows.Forms.Padding(11, 10, 11, 10);
             this.btnMemberData.Name = "btnMemberData";
-            this.btnMemberData.Size = new System.Drawing.Size(118, 65);
+            this.btnMemberData.Size = new System.Drawing.Size(433, 210);
             this.btnMemberData.TabIndex = 0;
             this.btnMemberData.Text = "Member Info";
             this.btnMemberData.UseVisualStyleBackColor = true;
@@ -53,9 +54,10 @@
             // btnMemberScores
             // 
             this.btnMemberScores.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnMemberScores.Location = new System.Drawing.Point(12, 175);
+            this.btnMemberScores.Location = new System.Drawing.Point(44, 565);
+            this.btnMemberScores.Margin = new System.Windows.Forms.Padding(11, 10, 11, 10);
             this.btnMemberScores.Name = "btnMemberScores";
-            this.btnMemberScores.Size = new System.Drawing.Size(121, 65);
+            this.btnMemberScores.Size = new System.Drawing.Size(444, 210);
             this.btnMemberScores.TabIndex = 0;
             this.btnMemberScores.Text = "Member Scores";
             this.btnMemberScores.UseVisualStyleBackColor = true;
@@ -64,9 +66,10 @@
             // btnAbout
             // 
             this.btnAbout.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.btnAbout.Location = new System.Drawing.Point(12, 246);
+            this.btnAbout.Location = new System.Drawing.Point(44, 795);
+            this.btnAbout.Margin = new System.Windows.Forms.Padding(11, 10, 11, 10);
             this.btnAbout.Name = "btnAbout";
-            this.btnAbout.Size = new System.Drawing.Size(121, 65);
+            this.btnAbout.Size = new System.Drawing.Size(444, 210);
             this.btnAbout.TabIndex = 0;
             this.btnAbout.Text = "About";
             this.btnAbout.UseVisualStyleBackColor = true;
@@ -75,9 +78,10 @@
             // Exit
             // 
             this.Exit.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.Exit.Location = new System.Drawing.Point(12, 317);
+            this.Exit.Location = new System.Drawing.Point(44, 1024);
+            this.Exit.Margin = new System.Windows.Forms.Padding(11, 10, 11, 10);
             this.Exit.Name = "Exit";
-            this.Exit.Size = new System.Drawing.Size(121, 65);
+            this.Exit.Size = new System.Drawing.Size(444, 210);
             this.Exit.TabIndex = 0;
             this.Exit.Text = "Exit";
             this.Exit.UseVisualStyleBackColor = true;
@@ -86,9 +90,10 @@
             // btnDropDataBase1
             // 
             this.btnDropDataBase1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDropDataBase1.Location = new System.Drawing.Point(12, 455);
+            this.btnDropDataBase1.Location = new System.Drawing.Point(44, 1470);
+            this.btnDropDataBase1.Margin = new System.Windows.Forms.Padding(11, 10, 11, 10);
             this.btnDropDataBase1.Name = "btnDropDataBase1";
-            this.btnDropDataBase1.Size = new System.Drawing.Size(121, 23);
+            this.btnDropDataBase1.Size = new System.Drawing.Size(444, 74);
             this.btnDropDataBase1.TabIndex = 2;
             this.btnDropDataBase1.Text = "Delete Region";
             this.btnDropDataBase1.UseVisualStyleBackColor = true;
@@ -97,17 +102,19 @@
             // cbxRegionSelect
             // 
             this.cbxRegionSelect.FormattingEnabled = true;
-            this.cbxRegionSelect.Location = new System.Drawing.Point(12, 399);
+            this.cbxRegionSelect.Location = new System.Drawing.Point(44, 1289);
+            this.cbxRegionSelect.Margin = new System.Windows.Forms.Padding(11, 10, 11, 10);
             this.cbxRegionSelect.Name = "cbxRegionSelect";
-            this.cbxRegionSelect.Size = new System.Drawing.Size(121, 21);
+            this.cbxRegionSelect.Size = new System.Drawing.Size(433, 50);
             this.cbxRegionSelect.TabIndex = 3;
             this.cbxRegionSelect.SelectedIndexChanged += new System.EventHandler(this.cbxRegionSelect_SelectedIndexChanged);
             // 
             // btnAdd
             // 
-            this.btnAdd.Location = new System.Drawing.Point(12, 426);
+            this.btnAdd.Location = new System.Drawing.Point(44, 1376);
+            this.btnAdd.Margin = new System.Windows.Forms.Padding(11, 10, 11, 10);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(121, 23);
+            this.btnAdd.Size = new System.Drawing.Size(444, 74);
             this.btnAdd.TabIndex = 4;
             this.btnAdd.Text = "Add Region";
             this.btnAdd.UseVisualStyleBackColor = true;
@@ -115,12 +122,12 @@
             // 
             // MainMenu
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(22F, 42F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.BackgroundImage = global::NineTapTour.Properties.Resources._9tap;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(984, 741);
+            this.ClientSize = new System.Drawing.Size(3608, 2086);
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.cbxRegionSelect);
             this.Controls.Add(this.btnDropDataBase1);
@@ -129,8 +136,8 @@
             this.Controls.Add(this.btnMemberScores);
             this.Controls.Add(this.btnMemberData);
             this.DoubleBuffered = true;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(11, 10, 11, 10);
             this.Name = "MainMenu";
             this.Text = "MainMenu";
             this.Load += new System.EventHandler(this.MainMenu_Load);

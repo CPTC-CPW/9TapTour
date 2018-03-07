@@ -48,15 +48,7 @@ namespace Member_Import_Test
         public void UpdateMemberInfo(Member searchMem = null)
         {
             
-            //if (searchMem == null)
-            //{
-            //    currentMem = invalidMembers.FirstOrDefault(m => m.Number == _memberNum);
-            //}
-            //else
-            //{
-            //    currentMem = searchMem;
-            //    _memberNum = currentMem.Number;
-            //}
+            
             currentMem = invalidMembers[listPosition];
 
             #region Personal Info
@@ -65,7 +57,7 @@ namespace Member_Import_Test
             txtLastName.Text = currentMem.LastName;
             txtFirstName.Text = currentMem.FirstName;
             txtMiddleInitial.Text = currentMem.MiddleInitial;
-            mtxtBoxDOB.Text = currentMem.DateOfBirth.ToString("MM/dd/yyyy");
+            mtxtBoxDOB.Text = currentMem.DateOfBirth.ToString();
             #endregion
 
             #region Postal Address
