@@ -610,12 +610,42 @@ namespace NineTapTour.Forms
                         // if we are on last row and i is less than 28
                         if (i == dt.Rows.Count - 1 && i < 27 && j == 5)
                         {
-                            // grab the extra rows in the excel spreadsheet
-                            Excel.Range range = xlWorkSheet.get_Range("A" + (i + 8), "O" + 34);
-                            // delete the extra rows
-                            range.Delete();
-                            // calculate the total amount of money that was paid out
-                            xlWorkSheet.Cells[i + 8, j + 4] = "=SUM(I" + 4 + ":I" + (i + 7) + ")";
+                            if (i == 0)
+                            {
+                                // grab the extra rows in the excel spreadsheet starting at row 10
+                                Excel.Range range1 = xlWorkSheet.get_Range("A10", "O" + 34);
+                                // delete the extra rows
+                                range1.Delete();
+                                // calculate the total amount of money that was paid out
+                                xlWorkSheet.Cells[i + 10, j + 4] = "=SUM(I" + 4 + ":I" + (i + 2) + ")";
+                            }
+                            else if (i == 1)
+                            {
+                                // grab the extra rows in the excel spreadsheet starting at row 10
+                                Excel.Range range2 = xlWorkSheet.get_Range("A10", "O" + 34);
+                                // delete the extra rows
+                                range2.Delete();
+                                // calculate the total amount of money that was paid out
+                                xlWorkSheet.Cells[i + 9, j + 4] = "=SUM(I" + 4 + ":I" + (i + 6) + ")";
+                            }
+                            else if (i == 2)
+                            {
+                                // grab the extra rows in the excel spreadsheet starting at row 10
+                                Excel.Range range2 = xlWorkSheet.get_Range("A10", "O" + 34);
+                                // delete the extra rows
+                                range2.Delete();
+                                // calculate the total amount of money that was paid out
+                                xlWorkSheet.Cells[i + 8, j + 4] = "=SUM(I" + 4 + ":I" + (i + 7) + ")";
+                            }
+                            else
+                            {
+                                // grab the extra rows in the excel spreadsheet
+                                Excel.Range range = xlWorkSheet.get_Range("A" + (i + 8), "O" + 34);
+                                // delete the extra rows
+                                range.Delete();
+                                // calculate the total amount of money that was paid out
+                                xlWorkSheet.Cells[i + 8, j + 4] = "=SUM(I" + 4 + ":I" + (i + 7) + ")";
+                            }
                         }
                         // if we are on the last row and i is greater than or equal to 29
                         if (i == dt.Rows.Count - 1 && i >= 27 && j == 5)

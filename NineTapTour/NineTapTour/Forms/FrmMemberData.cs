@@ -698,7 +698,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnNew_Click(object sender, EventArgs e)
         {
-            
+            SaveMemberData();
             Controls.Clear();
             InitializeComponent();
 
