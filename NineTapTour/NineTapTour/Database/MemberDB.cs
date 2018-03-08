@@ -172,7 +172,7 @@ namespace NineTapTour.Database
                     currentMember.Handicap = c.Handicap;
                     currentMember.Id = c.Id;
                     currentMember.IsActive = c.IsActive;
-                    currentMember.IsLifetimeMember = c.IsActive;
+                    currentMember.IsLifetimeMember = c.IsLifetimeMember;
                     currentMember.IsSenior = c.IsSenior;
                     currentMember.JoinDate = c.JoinDate;
                     currentMember.LastBowled = c.LastBowled;

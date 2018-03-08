@@ -421,7 +421,7 @@ namespace NineTapTour.Forms
             //    txtAverage.Focus();
             //    return false;
             //}
-            /*******************************************************************************************************/
+            ///*******************************************************************************************************/
 
             return true;
         }
@@ -761,7 +761,12 @@ namespace NineTapTour.Forms
             txtMemberNumber.Text = MemberDb.GetMemberList(RegionID).Count.ToString();
             UpdateMemberInfo();
         }
-
+        
+        /// <summary>
+        /// Turns textbox pink when text is erased
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void InputRequired(object sender, EventArgs e)
         {
             var textBox = sender as TextBox;
@@ -776,46 +781,46 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnClear_Click(object sender, EventArgs e)
-        {
-            //removed code for a delete function it is in the region below
-            #region
-            //if (isValid())
-            //{
-            //    var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        //private void btnClear_Click(object sender, EventArgs e)
+        //{
+        //    //removed code for a delete function it is in the region below
+        //    #region
+        //    //if (isValid())
+        //    //{
+        //    //    var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            //    if (confirm == DialogResult.No) return;
-            //    try
-            //    {
-            //        MemberDb.DeleteMember(currentMem);
+        //    //    if (confirm == DialogResult.No) return;
+        //    //    try
+        //    //    {
+        //    //        MemberDb.DeleteMember(currentMem);
 
-            //        MessageBox.Show(@"Bowler Removed Successfully.");
-            //        ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-            //        if (((FrmMain)MdiParent)._membersList.Count() > 0)
-            //        {
-            //            UpdateMemberInfo();
-            //        }
-            //    }
-            //    catch (MemberTableException ex)
-            //    {
-            //        MessageBox.Show(ex.Message);
-            //    }
-            //}
-            #endregion\
-            //clears all elements on member data form
-            var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Clear", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            
-             if (confirm == DialogResult.No) return;
-             /// stores member number to be restored later
-            string tempMemNum = txtMemberNumber.Text;
-            while (Controls.Count > 0)
-            {
-                Controls[0].Dispose();
-            }
-            InitializeComponent();
-            //restores member number
-            txtMemberNumber.Text = tempMemNum;
-        }
+        //    //        MessageBox.Show(@"Bowler Removed Successfully.");
+        //    //        ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+        //    //        if (((FrmMain)MdiParent)._membersList.Count() > 0)
+        //    //        {
+        //    //            UpdateMemberInfo();
+        //    //        }
+        //    //    }
+        //    //    catch (MemberTableException ex)
+        //    //    {
+        //    //        MessageBox.Show(ex.Message);
+        //    //    }
+        //    //}
+        //    #endregion\
+        //    //clears all elements on member data form
+        //    var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Clear", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+        //    if (confirm == DialogResult.No) return;
+        //    /// stores member number to be restored later
+        //    string tempMemNum = txtMemberNumber.Text;
+        //    while (Controls.Count > 0)
+        //    {
+        //        Controls[0].Dispose();
+        //    }
+        //    InitializeComponent();
+        //    //restores member number
+        //    txtMemberNumber.Text = tempMemNum;
+        //}
 
         private void btnMemberSearch_Click(object sender, EventArgs e)
         {
@@ -857,7 +862,8 @@ namespace NineTapTour.Forms
             }
         }
 
-        public void singlePrint(object sender, PrintPageEventArgs e)
+        //TODO: clean up variable names, e.g. singlePrint to btnPrintSingle Dorothy and Georg, 1/10/2018
+        public void singlePrint(object sender, PrintPageEventArgs e) 
         {
             NineTapTour.Database.Print.SinglePrint(
                 new MemberPrintObj(Convert.ToInt32(txtHandicap.Text), 
@@ -1053,6 +1059,7 @@ namespace NineTapTour.Forms
                 return true;
             }
         }
+
         public double LeagueAverage (Member mem)
         {
             double sum = 0;

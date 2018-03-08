@@ -80,7 +80,6 @@
             this.groupRecord = new System.Windows.Forms.GroupBox();
             this.btnImportData = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
-            this.btnClear = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
             this.grpRecordNumber = new System.Windows.Forms.GroupBox();
             this.btnLastRecord = new System.Windows.Forms.Button();
@@ -92,7 +91,6 @@
             this.grpSearchBy = new System.Windows.Forms.GroupBox();
             this.btnMemberSearch = new System.Windows.Forms.Button();
             this.grpPrinter = new System.Windows.Forms.GroupBox();
-            this.btnLabels = new System.Windows.Forms.Button();
             this.btnRecapByDate = new System.Windows.Forms.Button();
             this.btnThisRecap = new System.Windows.Forms.Button();
             this.btnAllRecaps = new System.Windows.Forms.Button();
@@ -602,12 +600,11 @@
             // 
             this.groupRecord.Controls.Add(this.btnImportData);
             this.groupRecord.Controls.Add(this.btnSave);
-            this.groupRecord.Controls.Add(this.btnClear);
             this.groupRecord.Controls.Add(this.btnNew);
             this.groupRecord.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupRecord.Location = new System.Drawing.Point(23, 583);
             this.groupRecord.Name = "groupRecord";
-            this.groupRecord.Size = new System.Drawing.Size(108, 126);
+            this.groupRecord.Size = new System.Drawing.Size(108, 113);
             this.groupRecord.TabIndex = 60;
             this.groupRecord.TabStop = false;
             this.groupRecord.Text = "Record";
@@ -615,7 +612,7 @@
             // btnImportData
             // 
             this.btnImportData.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnImportData.Location = new System.Drawing.Point(17, 97);
+            this.btnImportData.Location = new System.Drawing.Point(19, 74);
             this.btnImportData.Name = "btnImportData";
             this.btnImportData.Size = new System.Drawing.Size(75, 23);
             this.btnImportData.TabIndex = 64;
@@ -634,18 +631,6 @@
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // btnClear
-            // 
-            this.btnClear.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClear.Location = new System.Drawing.Point(17, 71);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(75, 23);
-            this.btnClear.TabIndex = 63;
-            this.btnClear.TabStop = false;
-            this.btnClear.Text = "Clear";
-            this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // btnNew
             // 
@@ -768,7 +753,6 @@
             // 
             // grpPrinter
             // 
-            this.grpPrinter.Controls.Add(this.btnLabels);
             this.grpPrinter.Controls.Add(this.btnRecapByDate);
             this.grpPrinter.Controls.Add(this.btnThisRecap);
             this.grpPrinter.Controls.Add(this.btnAllRecaps);
@@ -779,18 +763,6 @@
             this.grpPrinter.TabIndex = 73;
             this.grpPrinter.TabStop = false;
             this.grpPrinter.Text = "Print Recaps";
-            // 
-            // btnLabels
-            // 
-            this.btnLabels.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLabels.Location = new System.Drawing.Point(105, 49);
-            this.btnLabels.Name = "btnLabels";
-            this.btnLabels.Size = new System.Drawing.Size(102, 23);
-            this.btnLabels.TabIndex = 76;
-            this.btnLabels.TabStop = false;
-            this.btnLabels.Text = "Labels";
-            this.btnLabels.UseVisualStyleBackColor = true;
-            this.btnLabels.Click += new System.EventHandler(this.btnLabels_Click);
             // 
             // btnRecapByDate
             // 
@@ -812,7 +784,7 @@
             this.btnThisRecap.Size = new System.Drawing.Size(84, 23);
             this.btnThisRecap.TabIndex = 74;
             this.btnThisRecap.TabStop = false;
-            this.btnThisRecap.Text = "Print single";
+            this.btnThisRecap.Text = "Print Single";
             this.btnThisRecap.UseVisualStyleBackColor = true;
             this.btnThisRecap.Click += new System.EventHandler(this.btnThisRecap_Click);
             // 
@@ -821,10 +793,10 @@
             this.btnAllRecaps.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAllRecaps.Location = new System.Drawing.Point(18, 49);
             this.btnAllRecaps.Name = "btnAllRecaps";
-            this.btnAllRecaps.Size = new System.Drawing.Size(84, 23);
+            this.btnAllRecaps.Size = new System.Drawing.Size(189, 23);
             this.btnAllRecaps.TabIndex = 75;
             this.btnAllRecaps.TabStop = false;
-            this.btnAllRecaps.Text = "All Recaps";
+            this.btnAllRecaps.Text = "Print By Tournament";
             this.btnAllRecaps.UseVisualStyleBackColor = true;
             this.btnAllRecaps.Click += new System.EventHandler(this.btnAllRecaps_Click);
             // 
@@ -841,10 +813,12 @@
             // rdoActive
             // 
             this.rdoActive.AutoSize = true;
+            this.rdoActive.Checked = true;
             this.rdoActive.Location = new System.Drawing.Point(11, 23);
             this.rdoActive.Name = "rdoActive";
             this.rdoActive.Size = new System.Drawing.Size(57, 19);
             this.rdoActive.TabIndex = 48;
+            this.rdoActive.TabStop = true;
             this.rdoActive.Text = "Active";
             this.rdoActive.UseVisualStyleBackColor = true;
             // 
@@ -1092,7 +1066,6 @@
         private System.Windows.Forms.GroupBox grpStats;
         private System.Windows.Forms.GroupBox grpSearchBy;
         private System.Windows.Forms.GroupBox grpPrinter;
-        private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnLastRecord;
         private System.Windows.Forms.Button btnFirstRecord;
@@ -1100,7 +1073,6 @@
         private System.Windows.Forms.Button btnArrowLeft;
         private System.Windows.Forms.Button btnStats;
         private System.Windows.Forms.Button btnMemberSearch;
-        private System.Windows.Forms.Button btnLabels;
         private System.Windows.Forms.Button btnRecapByDate;
         private System.Windows.Forms.Button btnThisRecap;
         private System.Windows.Forms.Button btnAllRecaps;
