@@ -35,7 +35,6 @@
             this.tournamentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateInactiveMembersToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.addNewRegionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.updateInactiveMembersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menMain.SuspendLayout();
@@ -97,13 +96,7 @@
             this.updateInactiveMembersToolStripMenuItem1.Size = new System.Drawing.Size(647, 62);
             this.updateInactiveMembersToolStripMenuItem1.Text = "Update Inactive Members";
             this.updateInactiveMembersToolStripMenuItem1.Click += new System.EventHandler(this.updateInactiveMembersToolStripMenuItem1_Click);
-            // 
-            // addNewRegionToolStripMenuItem
-            // 
-            this.addNewRegionToolStripMenuItem.Name = "addNewRegionToolStripMenuItem";
-            this.addNewRegionToolStripMenuItem.Size = new System.Drawing.Size(647, 62);
-            this.addNewRegionToolStripMenuItem.Text = "Add New Region";
-            // 
+          
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
