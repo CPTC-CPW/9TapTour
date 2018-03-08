@@ -6,7 +6,7 @@
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>687bb8fe-f8c1-4489-b42c-47ce3b7f7639</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>NineTapInstaller</OutputName>
+    <OutputName>9-TapTour</OutputName>
     <OutputType>Package</OutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">

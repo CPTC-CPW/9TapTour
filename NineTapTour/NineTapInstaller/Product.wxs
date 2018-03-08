@@ -15,7 +15,7 @@
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			<Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLFOLDER" Name="NineTapInstaller" />
+				<Directory Id="INSTALLFOLDER" Name="9-Tap Tour" />
 			</Directory>
 		</Directory>
 	</Fragment>

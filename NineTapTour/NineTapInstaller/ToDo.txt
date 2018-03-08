@@ -1,6 +1,4 @@
-﻿- Get Icon File to deploy in install folder
-- Change install folder name
-- Program Files Shortcut
+﻿- Program Files Shortcut
 - Desktop Icon Shortcut
 - Install SQL Server Express if not currently installed
 - Copy excel template to output folder
