@@ -354,9 +354,9 @@ namespace NineTapTour.Forms
 
         private void exportToExcel()
         {
-            // have program open template file automatically (hardcode file name and location?) and auto save
-            // with a specific naming conventions such as "Pacific 3Of4 1-12-18" without using open/save
-            // file dialogues
+            // have program open template file automatically and auto save
+            // with a specific naming conventions such as "Pacific 3Of4 1-12-18" 
+            // without using open/save file dialogues
             // get the full path to where the tournament results template is located
             string getFilePath = Path.GetFullPath("Resources/TournamentResultsTemplate.xls");
             // get the date of the tourney and convert it to a string
