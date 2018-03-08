@@ -163,7 +163,7 @@ namespace NineTapTour.Forms
 
             // Calculate number of participants who cash (i.e. 1 out of 5)
             // numCashedWinners is the number of winners who cash
-            int numCashedWinners = Calculations.Calculations.CalculateNumberOfMembersThatCanPlaceInATournament(adjustedTournamentEntries);
+            int numCashedWinners = (int)Calculations.Calculations.CalculateNumberOfMembersThatCanPlaceInATournament(adjustedTournamentEntries);
 
             // Create list for winners who cashed
             List<ExcelMember> cashedWinners = new List<ExcelMember>();
