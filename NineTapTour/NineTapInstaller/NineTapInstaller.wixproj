@@ -22,7 +22,6 @@
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="NineTapInstaller.wax" />
     <Content Include="ToDo.txt" />
   </ItemGroup>
   <ItemGroup>

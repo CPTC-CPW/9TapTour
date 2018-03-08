@@ -44,13 +44,13 @@
 			<Component Id="System.Linq.Dynamic.dll" Guid="c76f6d3a-a931-4631-afe9-5202aa420004">
 			  <File Id="System.Linq.Dynamic.dll" Name="System.Linq.Dynamic.dll" Source="$(var.NineTapTour_TargetDir)System.Linq.Dynamic.dll" />
 			</Component>
+      <Component Id="Icon_9tap.ico" Guid="2bc93db2-51f3-4366-98af-e128f7b12c34">
+        <File Id="Icon_9tap.ico" Name="9tap.ico" Source="$(var.NineTapTour_TargetDir)Icon\9tap.ico" />
+      </Component>
 		</ComponentGroup>
 	</Fragment>
 	<Fragment>
 	  <ComponentGroup Id="ProgramFilesFolder_files" Directory="ProgramFilesFolder">
-	    <Component Id="Icon_9tap.ico" Guid="2bc93db2-51f3-4366-98af-e128f7b12c34">
-	      <File Id="Icon_9tap.ico" Name="9tap.ico" Source="$(var.NineTapTour_TargetDir)Icon\9tap.ico" />
-	    </Component>
 	  </ComponentGroup>
 	</Fragment>
 </Wix>
