@@ -30,6 +30,50 @@
       <ComponentGroupRef Id="ProductComponents" />
       <ComponentRef Id="ProgramMenuDir"/>
     </Feature>
+  
+  
+      
+  <UI>
+    <Binary Id="DialogBanner" SourceFile="Files\HorizontalBanner.bmp" />
+    <!-- Set up fonts for dialogs -->
+    <TextStyle Id="DlgFontSize10" FaceName="Tahoma" Size="10"/>
+    <TextStyle Id="DlgTitleFont" FaceName="Tahoma" Size="12" Bold="yes"/>
+   
+    <!-- Properties to reference in Dialogs-->
+    <Property Id="DefaultUIFont">DlgFontSize10</Property>
+    <Property Id="BannerBitmap">DialogBanner</Property>
+    <Property Id="WizardPrompt">9-Tap Tour Installation Wizard</Property>
+      
+    <Dialog Id="InstallDialog" Width="370" Height="270" Title="[ProductName] Setup" NoMinimize="yes">
+      <!-- Reference banner -->
+      <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+      <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes">
+          <Text>The [WizardPrompt] is ready to begin</Text>
+        </Control>
+      <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+      <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes">
+        <Text>{\DlgTitleFont}Ready to Install</Text>
+      </Control>
+      <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+      <Control Id="Install" Type="PushButton" X="300" Y="243" Width="54" Height="17" Default="yes" Text="Install">
+        <Publish Event="EndDialog" Value="Return" />
+      </Control>
+    </Dialog>
+  
+    <!-- Need install validate dialog: Verifies disk space and notifies user if any files that will be overwritten are in use
+         1) ValidateProductID
+         2) CostInitialize
+         3) FileCost
+         4) CostFinalize
+         5) ExecuteAction: All info is collected and install is ready to begin-->
+      
+    <InstallUISequence>
+      <Show Dialog="InstallDialog" After="CostFinalize" />
+      <!--<Show Dialog="FatalErrorDialog" OnExit="error" />
+      <Show Dialog="ExitDialogSuccess" OnExit="success" />
+      <Show Dialog="ExitDialogCancel" OnExit="cancel" />-->
+    </InstallUISequence>
+  </UI>
   </Product>
 
   <Fragment>
