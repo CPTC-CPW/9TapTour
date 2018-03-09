@@ -22,7 +22,6 @@
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="9tap.ico" />
     <Content Include="ToDo.txt" />
   </ItemGroup>
   <ItemGroup>

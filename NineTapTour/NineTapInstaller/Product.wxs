@@ -11,6 +11,7 @@
         <Directory Id="INSTALLFOLDER" Name="9-Tap Tour" />
       </Directory>
       <Directory Id="ProgramMenuFolder" Name="Programs">
+        <!-- Add shortcuts and remove on uninstall -->
         <Directory Id="ApplicationProgramsFolder" Name="9-Tap Tour">
           <Component Id="ProgramMenuDir" Guid="127FBAF6-D916-4F99-9C12-7C959A48623D">
             <RemoveFolder Id="ProgramMenuDir" On="uninstall"/>
@@ -29,48 +30,26 @@
       <ComponentGroupRef Id="ProductComponents" />
       <ComponentRef Id="ProgramMenuDir"/>
     </Feature>
-
-
   </Product>
-
-  <!-- Shortcut file -->
-  <!-- Help https://stackoverflow.com/questions/14583509/wix-installer-start-menu-shortcut-not-appearing -->
-  <!-- Start menu shortcut docs http://wixtoolset.org/documentation/manual/v3/howtos/files_and_registry/create_start_menu_shortcut.html -->
-  <Fragment>
-    <ComponentGroup Id="ProductShortcuts" Directory="ApplicationProgramsFolder">
-
-      <!--
-      <Component Id="ApplicationShortcut" Guid="AC4BCFDA-4581-422B-BCBB-DE001A6C347A">
-        <Shortcut Id="ApplicationStartMenuShortcut"
-                  Name="9-Tap Tour"
-                  Description="9-Tap Tour Tournament Manager"
-                  Target="NineTapTour.exe"
-                  WorkingDirectory="INSTALLFOLDER"/>
-        <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
-        <RegistryValue Root="HKCU" Key="Software\CPTC-CPW\9-TapTour" Name="installed" Type="integer" Value="1" KeyPath="yes" />
-      </Component>-->
-    </ComponentGroup>
-  </Fragment>
 
   <Fragment>
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       <Component Id="ProductTextFile">
-        <File Id="ProgramIcon" Source="9Tap.ico" KeyPath="yes">
-    
+
+        <!--Help https://stackoverflow.com/questions/14583509/wix-installer-start-menu-shortcut-not-appearing
+        Start menu shortcut docs http://wixtoolset.org/documentation/manual/v3/howtos/files_and_registry/create_start_menu_shortcut.html -->
+        <File Id="NineTapProg" Source ="$(var.NineTapTour_TargetDir)NineTapTour.exe">
           <Shortcut Id="desktopShortcut" Advertise="yes" Directory="DesktopFolder"
                     Name="9TapTour" WorkingDirectory="INSTALLFOLDER"
-                    IconIndex="0">
-            
+                    IconIndex="0" Icon="Icon1.ico">
+            <Icon Id="Icon1.ico" SourceFile="$(var.NineTapTour_TargetDir)Icon\9tap.ico"/>
           </Shortcut>
           <Shortcut Id="startMenuShortcut" Directory="ApplicationProgramsFolder"
                     Name="9TapTour" WorkingDirectory="INSTALLFOLDER"
-                    IconIndex="0" Advertise="yes">
-
+                    IconIndex="0" Advertise="yes" Icon="Icon2.ico">
+            <Icon Id="Icon2.ico" SourceFile="$(var.NineTapTour_TargetDir)Icon\9tap.ico"/>
           </Shortcut>
-        </File>
-      </Component>
-      <Component Id="NineTapTour.exe" Guid="cf8abf8c-8f28-433e-959e-cd0d2dd15486">
-        <File Id="NineTapTour.exe" Name="NineTapTour.exe" Source="$(var.NineTapTour_TargetDir)NineTapTour.exe" />
+        </File>      
       </Component>
       <Component Id="NineTapTour.exe.config" Guid="3f38b4ad-74de-4847-9555-f109bb4a821e">
         <File Id="NineTapTour.exe.config" Name="NineTapTour.exe.config" Source="$(var.NineTapTour_TargetDir)NineTapTour.exe.config" />
