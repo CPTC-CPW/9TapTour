@@ -1697,7 +1697,7 @@ namespace NineTapTour.Forms
                     {
                         foreach (var s in listOfTopScore)
                         {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game1 + s.Game2 + s.Game3 + s.Game4 });
+                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game1 + s.Game2 + s.Game3 + s.Game4});
                         }
                         //IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
                         scores.Sort(scoreComparer);
@@ -1730,12 +1730,14 @@ namespace NineTapTour.Forms
                                 {
                                     scores[i].placing = currentPlace;
                                     TotalToCompare = Convert.ToInt32(scores[i].Score);
+                                    listOfTopScore[i].Placing = currentPlace;
                                     
                                 }
                                 else
                                 {
                                     currentPlace = i+1;
                                     scores[i].placing = currentPlace; //only increment placing up if the score is less than the current total
+                                    listOfTopScore[i].Placing = currentPlace;
                                     TotalToCompare = Convert.ToInt32(scores[i].Score);
                                 }
                             }
@@ -1775,7 +1777,7 @@ namespace NineTapTour.Forms
                                 nullValues += 1;
                             }
                             #endregion
-                            scores.Add(new MemberScores { FirstName = i.FirstName, LastName = i.LastName, Score = ((i.Game1 + i.Bonus + i.Handicap) + (i.Game2 + i.Bonus + i.Handicap) + (i.Game3 + i.Bonus + i.Handicap) + (i.Game4 + i.Handicap + i.Bonus)) });
+                            scores.Add(new MemberScores {MemberNo = i.memberID, FirstName = i.FirstName, LastName = i.LastName, Score = ((i.Game1 + i.Bonus + i.Handicap) + (i.Game2 + i.Bonus + i.Handicap) + (i.Game3 + i.Bonus + i.Handicap) + (i.Game4 + i.Handicap + i.Bonus)) });
                         }
                         scores.Sort(scoreComparer);
                         scores.Reverse();
@@ -1822,6 +1824,7 @@ namespace NineTapTour.Forms
                             else //set first place 
                             {
                                 scores[i].placing = currentPlace;
+                                listOfTopScore[i].Placing = currentPlace;
                                 TotalToCompare = Convert.ToInt32(scores[i].Score);
                             }
 
@@ -2290,7 +2293,7 @@ namespace NineTapTour.Forms
                                                     .Include(b => b.Game)
                                                     .Where(b => b.Tournament.Id == selectedTournament.Id))
                                     orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min())) descending
-                                    select new MemberScores { MemberNo = g.Member.Id, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
+                                    select new MemberScores { MemberNo = g.Member.Id, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4  - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
                         }
                         else if (selectedTournament.ThreeOutOf4 && QBSNumber > 0) //best standings based on sqaud for  3of4 tournament
                         {
