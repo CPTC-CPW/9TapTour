@@ -58,23 +58,22 @@ namespace NineTapTour.Forms
             updateOnload(ListOfMembers);
 
             mtxtBoxDateJoined.Text = "";
-            mtxtBoxDateJoined.Text = "01/01/1900";
             mtxtBoxDateJoined.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxDateJoined_MaskInputRejected);
             mtxtBoxDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDOB_KeyDown);
             toolTip1.IsBalloon = true;
 
-            mtxtBoxRejoinDate.Text = "01/01/1900";
+            mtxtBoxRejoinDate.Text = "";
             mtxtBoxRejoinDate.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxRejoinDate_MaskInputRejected);
             mtxtBoxRejoinDate.KeyDown += new KeyEventHandler(mtxtBoxRejoinDate_KeyDown);
             toolTip1.IsBalloon = true;
             //_membersList = ((FrmMain)MdiParent)._membersList;
 
-            mtxtBoxLastBowled.Text = "01/01/1900";
+            mtxtBoxLastBowled.Text = "";
             mtxtBoxLastBowled.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxLastBowled_MaskInputRejected);
             mtxtBoxLastBowled.KeyDown += new KeyEventHandler(mtxtBoxLastBowled_KeyDown);
             toolTip1.IsBalloon = true;
 
-            mtxtBoxLastPayment.Text = "01/01/1900";
+            mtxtBoxLastPayment.Text = "";
             mtxtBoxLastPayment.MaskInputRejected += new MaskInputRejectedEventHandler(MtxtBoxLastPayment_MaskInputRejected);
             mtxtBoxLastPayment.KeyDown += new KeyEventHandler(MtxtBoxLastPayment_KeyDown);
             toolTip1.IsBalloon = true;
@@ -184,7 +183,6 @@ namespace NineTapTour.Forms
                 txtFirstName.Text = "";
                 txtMiddleInitial.Text = "";
                 mtxtBoxDOB.Text = "";
-                mtxtBoxDOB.Text = "01/01/1900";
                 mtxtBoxDOB.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxDOB_MaskInputRejected);
                 mtxtBoxDOB.KeyDown += new KeyEventHandler(mtxtBoxDOB_KeyDown);
                 toolTip1.IsBalloon = true;
@@ -213,7 +211,7 @@ namespace NineTapTour.Forms
 
                 #region Misc. Info
                 mtxtBoxDateJoined.Text = "";
-                mtxtBoxDateJoined.Text = "01/01/1900";
+                mtxtBoxDateJoined.Text = "";
                 mtxtBoxDateJoined.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxDateJoined_MaskInputRejected);
                 mtxtBoxDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDateJoined_KeyDown);
                 toolTip1.IsBalloon = true;
@@ -235,7 +233,7 @@ namespace NineTapTour.Forms
                 #endregion
 
                 chbLifetime.Checked = false;
-                mtxtBoxLastPayment.Text = "01/01/1900";
+                mtxtBoxLastPayment.Text = "";
             }
             else
             {
@@ -903,7 +901,8 @@ namespace NineTapTour.Forms
             added '&& chbLifetime.Checked == false' so when the member is a lifetime member, the lblPaymentInfo will 
             not be visible even if their last payment was due before
             ********************************************************************************************************/
-            if (mtxtBoxLastPayment.Text != null 
+            
+            if (mtxtBoxLastPayment.Text != " / /" 
                 && Convert.ToDateTime(mtxtBoxLastPayment.Text) 
                 <= DateTime.Now.AddYears(-1) && chbLifetime.Checked == false)
             /*******************************************************************************************************/
