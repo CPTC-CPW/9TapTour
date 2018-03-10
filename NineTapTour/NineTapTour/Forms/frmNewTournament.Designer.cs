@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmNewTournament));
             this.lblDate = new System.Windows.Forms.Label();
             this.lblLocation = new System.Windows.Forms.Label();
             this.lblEvent = new System.Windows.Forms.Label();
@@ -106,6 +107,7 @@
             // 
             // txtLocation
             // 
+            this.txtLocation.BackColor = System.Drawing.SystemColors.Control;
             this.txtLocation.Location = new System.Drawing.Point(136, 97);
             this.txtLocation.Name = "txtLocation";
             this.txtLocation.Size = new System.Drawing.Size(123, 20);
@@ -114,6 +116,7 @@
             // 
             // txtEvent
             // 
+            this.txtEvent.BackColor = System.Drawing.SystemColors.Control;
             this.txtEvent.Location = new System.Drawing.Point(136, 129);
             this.txtEvent.Name = "txtEvent";
             this.txtEvent.Size = new System.Drawing.Size(123, 20);
@@ -122,6 +125,7 @@
             // 
             // txtSponsors
             // 
+            this.txtSponsors.BackColor = System.Drawing.SystemColors.Control;
             this.txtSponsors.Location = new System.Drawing.Point(136, 161);
             this.txtSponsors.Name = "txtSponsors";
             this.txtSponsors.Size = new System.Drawing.Size(123, 20);
@@ -130,6 +134,7 @@
             // 
             // rtxtNotes
             // 
+            this.rtxtNotes.BackColor = System.Drawing.SystemColors.Control;
             this.rtxtNotes.Location = new System.Drawing.Point(18, 298);
             this.rtxtNotes.Name = "rtxtNotes";
             this.rtxtNotes.Size = new System.Drawing.Size(241, 96);
@@ -240,6 +245,7 @@
             // 
             // txtSquads
             // 
+            this.txtSquads.BackColor = System.Drawing.SystemColors.Control;
             this.txtSquads.Location = new System.Drawing.Point(136, 246);
             this.txtSquads.Name = "txtSquads";
             this.txtSquads.Size = new System.Drawing.Size(100, 20);
@@ -249,7 +255,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.LightBlue;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(285, 435);
             this.Controls.Add(this.txtSquads);
             this.Controls.Add(this.lblsquads);
@@ -272,7 +278,7 @@
             this.Controls.Add(this.lblEvent);
             this.Controls.Add(this.lblLocation);
             this.Controls.Add(this.lblDate);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmNewTournament";
             this.Text = "New Tournament";
             this.TopMost = true;

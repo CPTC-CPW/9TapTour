@@ -163,7 +163,7 @@ namespace NineTapTour.Forms
 
             // Calculate number of participants who cash (i.e. 1 out of 5)
             // numCashedWinners is the number of winners who cash
-            int numCashedWinners = Calculations.Calculations.CalculateNumberOfMembersThatCanPlaceInATournament(adjustedTournamentEntries);
+            int numCashedWinners = (int)Calculations.Calculations.CalculateNumberOfMembersThatCanPlaceInATournament(adjustedTournamentEntries);
 
             // Create list for winners who cashed
             List<ExcelMember> cashedWinners = new List<ExcelMember>();
@@ -354,9 +354,9 @@ namespace NineTapTour.Forms
 
         private void exportToExcel()
         {
-            // have program open template file automatically (hardcode file name and location?) and auto save
-            // with a specific naming conventions such as "Pacific 3Of4 1-12-18" without using open/save
-            // file dialogues
+            // have program open template file automatically and auto save
+            // with a specific naming conventions such as "Pacific 3Of4 1-12-18" 
+            // without using open/save file dialogues
             // get the full path to where the tournament results template is located
             string getFilePath = Path.GetFullPath("Resources/TournamentResultsTemplate.xls");
             // get the date of the tourney and convert it to a string
@@ -610,12 +610,42 @@ namespace NineTapTour.Forms
                         // if we are on last row and i is less than 28
                         if (i == dt.Rows.Count - 1 && i < 27 && j == 5)
                         {
-                            // grab the extra rows in the excel spreadsheet
-                            Excel.Range range = xlWorkSheet.get_Range("A" + (i + 8), "O" + 34);
-                            // delete the extra rows
-                            range.Delete();
-                            // calculate the total amount of money that was paid out
-                            xlWorkSheet.Cells[i + 8, j + 4] = "=SUM(I" + 4 + ":I" + (i + 7) + ")";
+                            if (i == 0)
+                            {
+                                // grab the extra rows in the excel spreadsheet starting at row 10
+                                Excel.Range range1 = xlWorkSheet.get_Range("A10", "O" + 34);
+                                // delete the extra rows
+                                range1.Delete();
+                                // calculate the total amount of money that was paid out
+                                xlWorkSheet.Cells[i + 10, j + 4] = "=SUM(I" + 4 + ":I" + (i + 2) + ")";
+                            }
+                            else if (i == 1)
+                            {
+                                // grab the extra rows in the excel spreadsheet starting at row 10
+                                Excel.Range range2 = xlWorkSheet.get_Range("A10", "O" + 34);
+                                // delete the extra rows
+                                range2.Delete();
+                                // calculate the total amount of money that was paid out
+                                xlWorkSheet.Cells[i + 9, j + 4] = "=SUM(I" + 4 + ":I" + (i + 6) + ")";
+                            }
+                            else if (i == 2)
+                            {
+                                // grab the extra rows in the excel spreadsheet starting at row 10
+                                Excel.Range range2 = xlWorkSheet.get_Range("A10", "O" + 34);
+                                // delete the extra rows
+                                range2.Delete();
+                                // calculate the total amount of money that was paid out
+                                xlWorkSheet.Cells[i + 8, j + 4] = "=SUM(I" + 4 + ":I" + (i + 7) + ")";
+                            }
+                            else
+                            {
+                                // grab the extra rows in the excel spreadsheet
+                                Excel.Range range = xlWorkSheet.get_Range("A" + (i + 8), "O" + 34);
+                                // delete the extra rows
+                                range.Delete();
+                                // calculate the total amount of money that was paid out
+                                xlWorkSheet.Cells[i + 8, j + 4] = "=SUM(I" + 4 + ":I" + (i + 7) + ")";
+                            }
                         }
                         // if we are on the last row and i is greater than or equal to 29
                         if (i == dt.Rows.Count - 1 && i >= 27 && j == 5)
@@ -637,7 +667,7 @@ namespace NineTapTour.Forms
                     if (fileName != "TournamentResultsTemplate.xls" || !string.IsNullOrEmpty(fileName))
                     {
                         xlWorkBook.SaveAs(fileName, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
-                        MessageBox.Show("Excel file created , you can find the file at: " + fileName);
+                        MessageBox.Show("Excel file created , you can find the file at: Documents/" + fileName);
                     }
                 }
                 catch

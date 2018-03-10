@@ -341,6 +341,10 @@
     <Compile Include="Migrations\201803042246326_Added IsComp to Game table.Designer.cs">
       <DependentUpon>201803042246326_Added IsComp to Game table.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803072114590_Changed Date to Nullable DateTime.cs" />
+    <Compile Include="Migrations\201803072114590_Changed Date to Nullable DateTime.Designer.cs">
+      <DependentUpon>201803072114590_Changed Date to Nullable DateTime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -497,6 +501,9 @@
     <EmbeddedResource Include="Migrations\201803042246326_Added IsComp to Game table.resx">
       <DependentUpon>201803042246326_Added IsComp to Game table.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803072114590_Changed Date to Nullable DateTime.resx">
+      <DependentUpon>201803072114590_Changed Date to Nullable DateTime.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
     </EmbeddedResource>
@@ -601,6 +608,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon\9tap.ico" />
+    <None Include="Resources\BowlingPin1.png" />
+    <None Include="Resources\9taplogo1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlayerHistoryForm));
             this.lblFullName = new System.Windows.Forms.Label();
             this.lblMemberNumber = new System.Windows.Forms.Label();
             this.lblMemberSrartAvg = new System.Windows.Forms.Label();
@@ -113,11 +114,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(709, 419);
             this.Controls.Add(this.dtvPlayerHistory);
             this.Controls.Add(this.lblMemberSrartAvg);
             this.Controls.Add(this.lblMemberNumber);
             this.Controls.Add(this.lblFullName);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "PlayerHistoryForm";
             this.RightToLeft = System.Windows.Forms.RightToLeft.No;

@@ -40,8 +40,9 @@ namespace NineTapTour.Database
                     else
                     {
                         // MessageBox.Show("Player Saved Successfully");
+                        db.SaveChanges();
                     }
-                    db.SaveChanges();
+                    
                 }
             }
             catch (DbEntityValidationException ex)
@@ -171,7 +172,7 @@ namespace NineTapTour.Database
                     currentMember.Handicap = c.Handicap;
                     currentMember.Id = c.Id;
                     currentMember.IsActive = c.IsActive;
-                    currentMember.IsLifetimeMember = c.IsActive;
+                    currentMember.IsLifetimeMember = c.IsLifetimeMember;
                     currentMember.IsSenior = c.IsSenior;
                     currentMember.JoinDate = c.JoinDate;
                     currentMember.LastBowled = c.LastBowled;

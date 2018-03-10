@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.ofdOpen = new System.Windows.Forms.OpenFileDialog();
             this.btnOpenFile = new System.Windows.Forms.Button();
             this.btnInvalid = new System.Windows.Forms.Button();
@@ -155,6 +156,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(405, 335);
             this.Controls.Add(this.cbxRegionSelect);
             this.Controls.Add(this.OverAllProcessingExcel);
@@ -168,6 +170,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnInvalid);
             this.Controls.Add(this.btnOpenFile);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmMain";
             this.Text = "Import Test";
             this.ResumeLayout(false);

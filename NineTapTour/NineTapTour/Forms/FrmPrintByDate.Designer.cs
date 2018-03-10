@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmPrintByDate));
             this.dateTimeStart = new System.Windows.Forms.DateTimePicker();
             this.dateTimeEnd = new System.Windows.Forms.DateTimePicker();
             this.btnPrint = new System.Windows.Forms.Button();
@@ -125,6 +126,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(274, 326);
             this.Controls.Add(this.lblNumMems);
             this.Controls.Add(this.label3);
@@ -135,7 +137,7 @@
             this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.dateTimeEnd);
             this.Controls.Add(this.dateTimeStart);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmPrintByDate";
             this.Text = "FrmPrintByDate";
             this.ResumeLayout(false);

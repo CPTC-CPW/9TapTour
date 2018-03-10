@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmUpdateActiveMem));
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.btnUpdateActive = new System.Windows.Forms.Button();
             this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
@@ -81,7 +82,6 @@
             this.btnCheckInactive.TabIndex = 4;
             this.btnCheckInactive.Text = "Check All";
             this.btnCheckInactive.UseVisualStyleBackColor = true;
-            //this.btnCheckInactive.Click += new System.EventHandler(this.btnCheckInactive_Click);
             // 
             // label2
             // 
@@ -96,6 +96,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(284, 458);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btnCheckInactive);
@@ -103,6 +104,7 @@
             this.Controls.Add(this.checkedListBox1);
             this.Controls.Add(this.btnUpdateActive);
             this.Controls.Add(this.dateTimePicker1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmUpdateActiveMem";
             this.Text = "Update Inactive Members";
             this.Load += new System.EventHandler(this.FrmUpdateActiveMem_Load);

@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmStats));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.lblName = new System.Windows.Forms.Label();
             this.lblMemberNumber = new System.Windows.Forms.Label();
@@ -296,6 +297,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1118, 613);
             this.Controls.Add(this.btnSaveChanges);
             this.Controls.Add(this.lblStartAvg);
@@ -319,6 +321,7 @@
             this.Controls.Add(this.lblMemberNumber);
             this.Controls.Add(this.lblName);
             this.Controls.Add(this.dataGridView1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmStats";
             this.Text = "FrmStats";
             this.Load += new System.EventHandler(this.FrmStats_Load);

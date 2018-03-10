@@ -23,7 +23,8 @@ namespace NineTapTour.Database
 
         public string MiddleInitial { get; set; }
         //[Required]
-        public DateTime DateOfBirth { get; set; }
+        [DataType(DataType.Date)]       
+        public DateTime? DateOfBirth { get; set; }
 
         [Index("IX_MemberSSN")]
         [StringLength(11), Column(TypeName = "char")]
@@ -60,11 +61,19 @@ namespace NineTapTour.Database
         #endregion
 
         #region Misc. Info
-        //[Required]
-        public DateTime JoinDate { get; set; }
+        
+        [DataType(DataType.Date)]
+        public DateTime? JoinDate { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime? RejoinDate { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime? LastBowled { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime? LastPayment { get; set; }
+
         public bool IsLifetimeMember { get; set; }
         public string Notes { get; set; }
         public int? Referrals { get; set; }
