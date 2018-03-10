@@ -36,6 +36,8 @@ namespace NineTapTour.Forms
 
        
 
+       
+
 
         public frmMemberScores()
         {
@@ -129,6 +131,7 @@ namespace NineTapTour.Forms
                 txtHandicap.Clear();
                 txtBonusPins.Clear();
                 MemberStatus("", Color.Black, SystemColors.Control, true);
+                
             }
         }
 
@@ -192,6 +195,7 @@ namespace NineTapTour.Forms
             txtFirstName2.Clear();
             txtMiddleInitial.Clear();
             txtMiddleInitial2.Clear();
+            chbCompEntry.Checked = false;
             txtHandicap.Clear();
             txtBonusPins.Clear();
             txtScratchScore1.Clear();
@@ -221,8 +225,10 @@ namespace NineTapTour.Forms
         {
             if (currentGame != null)
             {
+                // The game bonus & handicap shouldn't be changed to current member bonus/handicap
                 currentGame.Bonus = currentMem.Bonus;
                 currentGame.Handicap = currentMem.Handicap;
+
                 //////////////////////////////////////////////////////////////// PAGINATION HAPPENS RIGHT HERE!!!! ////////////////////////////////////////////////////
                 List<Participant> total = TournamentDb.GetTournamentMemberListInOrder(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue))); //gets list in order so forloops itterate better
 
@@ -247,12 +253,25 @@ namespace NineTapTour.Forms
                 //    }
                 //}
                 lblRecord.Text = "Record " + (currentIndex)  + " / " + total.Count();
+
+                // if IsComp true then check CompEntry checkbox
+                chbCompEntry.Checked = false;
+                if (currentGame.IsComp)
+                {
+                    chbCompEntry.Checked = true;
+                }
+
+
+
                 txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
-                txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
+                    txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
                 txtScratchScore3.Text = Convert.ToString(currentGame.Game3);
                 txtScratchScore4.Text = Convert.ToString(currentGame.Game4);
                 txtScratchScore1.Focus();
                 txtMoney.Text = currentGame.MoneyWon.ToString();
+                // put game.handicap in Handicap field for that tournament game
+                //txtHandicap.Text = currentGame.Handicap.ToString();
+
 
 
             }
@@ -298,6 +317,13 @@ namespace NineTapTour.Forms
                             txtFirstName.Text = currentMem.FirstName;
                             txtMiddleInitial.Text = currentMem.MiddleInitial;
 
+
+                            #region Incorrect code
+                            // This code was setting the member.handicap and txtHandicap to the last ph.handicap
+                            // which was the original member.handicap, however, this handicap then was saved as the 
+                            // game.handicap, finalizeTemp.handicap and ph.handicap, so it never changed
+                            // It never reflected the correct current member.handicap
+
                             //check to make sure the right numbers are being brought over from the members information page
                             List<PlayerHistory> last5 = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Number, RegionID);
                             if (last5.Count > 0)
@@ -306,7 +332,7 @@ namespace NineTapTour.Forms
                                 {
                                     currentMem.Bonus = last5[0].Bonus;
                                     currentMem.Handicap = last5[0].HandiCap;
-                                    txtHandicap.Text = last5[0].HandiCap.ToString();                                 
+                                    txtHandicap.Text = last5[0].HandiCap.ToString();
                                     txtBonusPins.Text = last5[0].Bonus.ToString();
                                 }
                                 else
@@ -315,7 +341,7 @@ namespace NineTapTour.Forms
                                     txtHandicap.Text = currentMem.Handicap.ToString();
                                     txtBonusPins.Text = currentMem.Bonus.ToString();
                                 }
-                               
+
 
                             }
                             else
@@ -324,11 +350,11 @@ namespace NineTapTour.Forms
                                 txtHandicap.Text = currentMem.Bonus.ToString();
                                 txtBonusPins.Text = currentMem.Bonus.ToString();
                             }
-           
-                            
-                            
 
-                                txtHandicap.Text = currentMem.Handicap.ToString();
+                            #endregion
+
+
+                            txtHandicap.Text = currentMem.Handicap.ToString();
                                 txtBonusPins.Text = currentMem.Bonus.ToString();
 
               
@@ -718,6 +744,14 @@ namespace NineTapTour.Forms
                         player.Game.Handicap = currentMem.Handicap;
                         player.Game.gameRegionID = RegionID;
                         player.Member = currentMem;
+
+                        // if compEntry checkbox is checked, set IsComp to true in game table
+                        if(chbCompEntry.Checked)
+                        {
+                            player.Game.IsComp = true;
+                            db.SaveChanges();
+                        }
+
                         try
                         {
                             TournamentDb.AddMemberToTournament(player);
@@ -733,6 +767,10 @@ namespace NineTapTour.Forms
                             MessageBox.Show(ex.Message);
 
                         }
+
+                        
+
+
                         //UPDATE LASTBOWLED DATE
                         //Sets last bowled to now and updates DB record
                         if (DateTime.Now > currentMem.LastBowled || currentMem.LastBowled == null)
@@ -1438,105 +1476,135 @@ namespace NineTapTour.Forms
                 // their old data in a scope block so they could be reused
                 if (!seriesChange)
                 {
+
                     richTextBox1.Clear();
                     richTextBox1.Font = new Font(FontFamily.GenericMonospace, richTextBox1.Font.Size);
-                    richTextBox1.Text = ("#" + "\t" + "Name" + "\t\t\t" + "Handicap" + "\n");
-
+                    richTextBox1.Text = ("#" + "\t" + "Name" + "\t\t\t" + "HighScore" + "\n");
                     scores = new List<MemberScores>();
+
                     if (QBSNumber == 0)
                     {
+
                         var temp = (from g in top5
-                                    orderby (g.Game.Handicap) descending
-                                    select g).ToList();
-                        nullValues = 0;
-
-
-                        foreach (var i in temp)
+                                    orderby g.Game.Game1
+                                    select new { g.Game.Game1, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+                        var temp2 = (from g in top5
+                                     orderby g.Game.Game2
+                                     select new { g.Game.Game2, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+                        var temp3 = (from g in top5
+                                     orderby g.Game.Game3
+                                     select new { g.Game.Game3, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+                        var temp4 = (from g in top5
+                                     orderby g.Game.Game4
+                                     select new { g.Game.Game4, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+                        foreach (var s in temp)
                         {
-                            #region conditions for highest handicap scores
-                            nullValues = 0;
-                            if (i.Game.Game1 == 0)
+                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game1, s.Handicap) });
+                        }
+                        foreach (var s in temp2)
+                        {
+                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game2, s.Handicap) });
+                        }
+                        foreach (var s in temp3)
+                        {
+                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game3, s.Handicap) });
+                        }
+                        foreach (var s in temp4)
+                        {
+                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game4, s.Handicap) });
+                        }
+                        scores.Sort(scoreComparer);
+                        scores.Reverse();
+                        scores = scores.ToList();
+                        for (int i = 0; i < scores.Count(); i++)
+                        {
+                            int FirstNameLength = 0;
+                            int LastNameLength = 0;
+                            if (scores[i].FirstName.Length < 6)
                             {
-                                nullValues += 1;
+                                FirstNameLength = scores[i].FirstName.Length;
+
                             }
-                            if (i.Game.Game2 == 0)
+                            else
                             {
-                                nullValues += 1;
+                                FirstNameLength = 6;
                             }
-                            if (i.Game.Game3 == 0)
+                            if (scores[i].LastName.Length < 6)
                             {
-                                nullValues += 1;
+                                LastNameLength = scores[i].LastName.Length;
                             }
-                            if (i.Game.Game4 == 0)
+                            else
                             {
-                                nullValues += 1;
+                                LastNameLength = 6;
                             }
-                            #endregion
-                            scores.Add(new MemberScores { FirstName = i.Member.FirstName, LastName = i.Member.LastName, Score = i.Game.Handicap });
+                            //richTextBox1.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
+                            //                        + "\t" + String.Format("{0, -5}", scores[i].Score + " " + "\n"));
+                            richTextBox1.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, FirstNameLength)}\t{scores[i].LastName.Substring(0, LastNameLength)}\t\t\t{scores[i].Score}\n");
                         }
                     }
                     else
                     {
                         var temp = (from g in top5
-                                    orderby (g.Game.Handicap) descending
+                                    orderby g.Game.Game1
                                     where g.Squad == QBSNumber
-                                    select g).ToList();
-                        nullValues = 0;
-                        foreach (var i in temp)
+                                    select new { g.Game.Game1, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+                        var temp2 = (from g in top5
+                                     orderby g.Game.Game2
+                                     where g.Squad == QBSNumber
+                                     select new { g.Game.Game2, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+                        var temp3 = (from g in top5
+                                     orderby g.Game.Game3
+                                     where g.Squad == QBSNumber
+                                     select new { g.Game.Game3, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+                        var temp4 = (from g in top5
+                                     orderby g.Game.Game4
+                                     where g.Squad == QBSNumber
+                                     select new { g.Game.Game4, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+                        foreach (var s in temp)
                         {
-                            #region conditions for highest handicap scores
-                            nullValues = 0;
-                            if (i.Game.Game1 == 0)
-                            {
-                                nullValues += 1;
-                            }
-                            if (i.Game.Game2 == 0)
-                            {
-                                nullValues += 1;
-                            }
-                            if (i.Game.Game3 == 0)
-                            {
-                                nullValues += 1;
-                            }
-                            if (i.Game.Game4 == 0)
-                            {
-                                nullValues += 1;
-                            }
-                            #endregion
-                            scores.Add(new MemberScores { FirstName = i.Member.FirstName, LastName = i.Member.LastName, Score = i.Game.Handicap });
+                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game1, s.Handicap) });
                         }
-                                    
-                                    
-                    }
+                        foreach (var s in temp2)
+                        {
+                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game2, s.Handicap) });
+                        }
+                        foreach (var s in temp3)
+                        {
+                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game3, s.Handicap) });
+                        }
+                        foreach (var s in temp4)
+                        {
+                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game4, s.Handicap) });
+                        }
+                        scores.Sort(scoreComparer);
+                        scores.Reverse();
+                        scores = scores.ToList();
+                        for (int i = 0; i < scores.Count(); i++)
+                        {
+                            int FirstNameLength = 0;
+                            int LastNameLength = 0;
+                            if (scores[i].FirstName.Length < 6)
+                            {
+                                FirstNameLength = scores[i].FirstName.Length;
 
-                    scores.Sort(scoreComparer);
-                    scores.Reverse();
-                    scores = scores.ToList();
-                    for (int i = 0; i < scores.Count(); i++)
-                    {
-                        int FirstNameLength = 0;
-                        int LastNameLength = 0;
-                        if (scores[i].FirstName.Length < 6)
-                        {
-                            FirstNameLength = scores[i].FirstName.Length;
+                            }
+                            else
+                            {
+                                FirstNameLength = 6;
+                            }
+                            if (scores[i].LastName.Length < 6)
+                            {
+                                LastNameLength = scores[i].LastName.Length;
+                            }
+                            else
+                            {
+                                LastNameLength = 6;
+                            }
+                            //richTextBox1.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
+                            //                        + "\t" + String.Format("{0, -5}", scores[i].Score + " " + "\n"));
+                            richTextBox1.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, FirstNameLength)}\t{scores[i].LastName.Substring(0, LastNameLength)}\t\t\t{scores[i].Score}\n");
 
                         }
-                        else
-                        {
-                            FirstNameLength = 6;
-                        }
-                        if (scores[i].LastName.Length < 6)
-                        {
-                            LastNameLength = scores[i].LastName.Length;
-                        }
-                        else
-                        {
-                            LastNameLength = 6;
-                        }
-                        //richTextBox1.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
-                        //                        + "\t" + String.Format("{0, -5}", scores[i].Score + "   " + "\n"));
-
-                        richTextBox1.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, FirstNameLength)}\t{scores[i].LastName.Substring(0, LastNameLength)}\t\t\t{scores[i].Score}\n");
                     }
                 }
                 #endregion
@@ -2017,6 +2085,11 @@ namespace NineTapTour.Forms
             {
 
             }//TODO ADDED FOR ERRORS REMOVE WHEN FIXED
+        }
+
+        private int? getScratchScore(int? gameScore, int? gameHandicap)
+        {
+            return gameScore + gameHandicap;
         }
 
         public class MemberScores
@@ -2514,15 +2587,14 @@ namespace NineTapTour.Forms
             cbxTourneyDropDown.DataSource = t;
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
         }
-     
 
-
-
-
-
-
-
+        private void btnTournamentResults_Click(object sender, EventArgs e)
+        {
+            FrmTournamentResults form = new FrmTournamentResults();
+            form.ShowDialog();
         }
+
+    }
 
 
 

@@ -4,19 +4,10 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using NineTapTour.Database;
-using System.Globalization;
 using NineTapTour.Exceptions;
-using System.Text.RegularExpressions;
 using System.Drawing.Printing;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
 using System.Data;
-using System.Data.OleDb;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Office.Core;
 using Excel = Microsoft.Office.Interop.Excel;
 using Member_Import_Test.Classes;
 
@@ -529,23 +520,28 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnSave_Click(object sender, EventArgs e)
         {
+            SaveMemberData();
+        }
+
+        private void SaveMemberData()
+        {
             //checks to see if firstname,lastname, and zip is valid.
             //Then runs the rest of the btnSave_Click and adds a member into the database.
 
             //if (isValid())
             //{
-                var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (confirm == DialogResult.No)
-                    return;
+            var confirm = MessageBox.Show(@"Are You Sure you want to save?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirm == DialogResult.No)
+                return;
 
             ////use existing memberId if present or select the member id from the form
             //int memId = (_memberId != -1) ? _memberId : Convert.ToInt32(txtMemberNumber.Text);
 
             //checks to see if MemberID exists 
             int memId;
-               Member temp = new Member();
+            Member temp = new Member();
 
-          
+
             temp.Number = Convert.ToInt32(txtMemberNumber.Text);
             temp.IsActive = rdoActive.Checked;
             temp.JoinDate = dateJoined.Value;
@@ -580,19 +576,19 @@ namespace NineTapTour.Forms
             double avg = 0;
             try
             {
-               avg = Convert.ToDouble(txtTournAvg.Text);
+                avg = Convert.ToDouble(txtTournAvg.Text);
             }
             catch
             {
-               
+
             }
             temp.Average = (txtTournAvg.Text == string.Empty) ? 0 : Convert.ToInt16(avg);
             /*************************************************************************************/
-           
+
             temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.Average.Value));
 
 
-           
+
             #endregion
 
             #region Misc. Info
@@ -609,7 +605,7 @@ namespace NineTapTour.Forms
             temp.NineTapRegionID = RegionID;
 
             //check to see if memberId exists before putting it in current selected regions database
-            if(MemberDb.GetMember(temp.Number,RegionID).Id > 0)
+            if (MemberDb.GetMember(temp.Number, RegionID).Id > 0)
             {
                 memId = MemberDb.GetMember(temp.Number, RegionID).Id;
             }
@@ -664,29 +660,29 @@ namespace NineTapTour.Forms
             // Adds Member to Database
 
             try
-                    {
-                        MemberDb.AddMember(temp);
+            {
+                MemberDb.AddMember(temp);
 
 
-                        //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-                        ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList(RegionID).OrderBy(m => m.Number);
-                        //_membersList = ((FrmMain)MdiParent)._membersList;
-                        UpdateMemberInfo();
-                    }
-                    catch (MemberTableException ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                    }
-                }
-                //catch (FormatException fe)
-                //{
-                //    Console.WriteLine("Error Number : " + fe.Message);
-                //    //TODO - this field is a catch all for errors in fields that require numbers 
-                //    //League Score, Handicap, and referrals
-                //   // MessageBox.Show("Referrals must be an integer number value.");
-                //}
-            //}
-        
+                //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+                ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList(RegionID).OrderBy(m => m.Number);
+                //_membersList = ((FrmMain)MdiParent)._membersList;
+                UpdateMemberInfo();
+            }
+            catch (MemberTableException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        //catch (FormatException fe)
+        //{
+        //    Console.WriteLine("Error Number : " + fe.Message);
+        //    //TODO - this field is a catch all for errors in fields that require numbers 
+        //    //League Score, Handicap, and referrals
+        //   // MessageBox.Show("Referrals must be an integer number value.");
+        //}
+        //}
+
 
         /// <summary>
         /// Displays the previous "Member Number"'s information when the left arrow button is clicked.
@@ -737,6 +733,7 @@ namespace NineTapTour.Forms
         {
             if (isValid())
             {
+                SaveMemberData();
                 Controls.Clear();
                 InitializeComponent();
                 dateRejoin.Format = DateTimePickerFormat.Custom;
@@ -1064,6 +1061,10 @@ namespace NineTapTour.Forms
             if (currentMem.SecondaryPhone == null)
             {
                 currentMem.SecondaryPhone = "";
+            }
+            if (currentMem.Notes == null)
+            {
+                currentMem.Notes = "";
             }
             if (currentMem.SSN == null)
             {

@@ -97,6 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calculations\Calculations.cs" />
+    <Compile Include="Database\ExcelMember.cs" />
     <Compile Include="Database\NineTapRegionDB.cs" />
     <Compile Include="Database\NineTapRegion.cs" />
     <Compile Include="Database\ExcelRow.cs" />
@@ -121,6 +122,12 @@
     </Compile>
     <Compile Include="Forms\FrmAddRegion.Designer.cs">
       <DependentUpon>FrmAddRegion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmTournamentResults.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmTournamentResults.Designer.cs">
+      <DependentUpon>FrmTournamentResults.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmWait.cs">
       <SubType>Form</SubType>
@@ -330,6 +337,10 @@
     <Compile Include="Migrations\201611211913236_add-migration.Designer.cs">
       <DependentUpon>201611211913236_add-migration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803042246326_Added IsComp to Game table.cs" />
+    <Compile Include="Migrations\201803042246326_Added IsComp to Game table.Designer.cs">
+      <DependentUpon>201803042246326_Added IsComp to Game table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -350,6 +361,9 @@
     </Compile>
     <EmbeddedResource Include="Forms\FrmAddRegion.resx">
       <DependentUpon>FrmAddRegion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmTournamentResults.resx">
+      <DependentUpon>FrmTournamentResults.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmWait.resx">
       <DependentUpon>frmWait.cs</DependentUpon>
@@ -480,6 +494,9 @@
     <EmbeddedResource Include="Migrations\201611211913236_add-migration.resx">
       <DependentUpon>201611211913236_add-migration.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803042246326_Added IsComp to Game table.resx">
+      <DependentUpon>201803042246326_Added IsComp to Game table.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
     </EmbeddedResource>
@@ -503,6 +520,8 @@
       <DependentUpon>App.config</DependentUpon>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\NineTapTour.Database.Game.datasource" />
+    <None Include="Properties\DataSources\TopScores.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -512,6 +531,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Resources\TournamentResultsTemplate.xls">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="_NineTapTour_NineTapDbDataSet.xsc">
       <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
     </None>
@@ -525,7 +547,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -556,15 +580,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="Microsoft.Office.Core">
-      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>7</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <COMReference Include="Microsoft.Office.Interop.Excel">
       <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>1</VersionMajor>

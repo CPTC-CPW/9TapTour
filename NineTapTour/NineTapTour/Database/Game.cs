@@ -40,5 +40,8 @@ namespace NineTapTour.Database
 
         public int gameRegionID { get; set; }
 
+        [DefaultValue(false)]
+        public bool IsComp { get; set; } // comp is someone who bowls for free because they are helping with tournament 
+
     }
 }
