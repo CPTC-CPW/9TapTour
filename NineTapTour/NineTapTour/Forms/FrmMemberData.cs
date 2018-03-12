@@ -745,8 +745,16 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnFirstRecord_Click(object sender, EventArgs e)
         {
-            txtMemberNumber.Text = MemberDb.GetMemberList(RegionID)[0].Number.ToString();
-            UpdateMemberInfo();
+            try
+            {
+                txtMemberNumber.Text = MemberDb.GetMemberList(RegionID)[0].Number.ToString();
+                UpdateMemberInfo();
+            }
+            catch
+            {
+                MessageBox.Show("There is no Members yet");
+            }
+            
         }
 
         /// <summary>
@@ -773,52 +781,7 @@ namespace NineTapTour.Forms
                 textBox.BackColor = textBox.Text == string.Empty ? Color.LightPink : Color.White;
             }
         }
-       
-        /// <summary>
-        /// clears all elements on member data form.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        //private void btnClear_Click(object sender, EventArgs e)
-        //{
-        //    //removed code for a delete function it is in the region below
-        //    #region
-        //    //if (isValid())
-        //    //{
-        //    //    var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-        //    //    if (confirm == DialogResult.No) return;
-        //    //    try
-        //    //    {
-        //    //        MemberDb.DeleteMember(currentMem);
-
-        //    //        MessageBox.Show(@"Bowler Removed Successfully.");
-        //    //        ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-        //    //        if (((FrmMain)MdiParent)._membersList.Count() > 0)
-        //    //        {
-        //    //            UpdateMemberInfo();
-        //    //        }
-        //    //    }
-        //    //    catch (MemberTableException ex)
-        //    //    {
-        //    //        MessageBox.Show(ex.Message);
-        //    //    }
-        //    //}
-        //    #endregion\
-        //    //clears all elements on member data form
-        //    var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Clear", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-        //    if (confirm == DialogResult.No) return;
-        //    /// stores member number to be restored later
-        //    string tempMemNum = txtMemberNumber.Text;
-        //    while (Controls.Count > 0)
-        //    {
-        //        Controls[0].Dispose();
-        //    }
-        //    InitializeComponent();
-        //    //restores member number
-        //    txtMemberNumber.Text = tempMemNum;
-        //}
+            
 
         private void btnMemberSearch_Click(object sender, EventArgs e)
         {
