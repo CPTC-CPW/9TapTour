@@ -84,6 +84,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// finds all Controls and change BackColor of each control color when the control is on 
         /// focus and checks if that control has a child and changes the child contol color onFocus
+        /// and changes back to origin back color when LostFocus
         /// </summary>
         /// <param name="ctrl"></param>
         private void ChangeBackColorOnFocus(Control ctrl)
@@ -100,6 +101,12 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// The controller back color is set back to origin color set in the properties
+        /// when LostFocus method is called
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Ctrl_LostFocus(object sender, EventArgs e)
         {
             var ctrl = sender as Control;
@@ -107,6 +114,11 @@ namespace NineTapTour.Forms
                 ctrl.BackColor = (Color)ctrl.Tag;
         }
 
+        /// <summary>
+        /// Method to change controller BackColor when GotFocus method is called
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Ctrl_GotFocus(object sender, EventArgs e)
         {
             var ctrl = sender as Control;
@@ -218,8 +230,7 @@ namespace NineTapTour.Forms
                 
                 txtMoneyEarned.Text = "";
                 txtNotes.Text = "";
-                txtReferrals.Text = "";
-                chbSenior.Checked = false;
+                txtReferrals.Text = "";               
 
                 foreach (var check in grpStatus.Controls.OfType<RadioButton>())
                 {
@@ -288,8 +299,9 @@ namespace NineTapTour.Forms
 
                 #region Misc. Info
                 //TODO: Pull datetime from database correctly 
-                if (currentMem.DateOfBirth != null)
+                if (currentMem.JoinDate.HasValue)
                     mtxtBoxDateJoined.Text = currentMem.JoinDate.Value.ToString("MM/dd/yyyy");
+                
                 if (currentMem.RejoinDate.HasValue)
                 {
                     mtxtBoxRejoinDate.Text = currentMem.RejoinDate.Value.ToString("MM/dd/yyyy");
@@ -453,7 +465,7 @@ namespace NineTapTour.Forms
           
                 temp.Number = Convert.ToInt32(txtMemberNumber.Text);
                 temp.IsActive = rdoActive.Checked;
-
+                
                 if (!String.IsNullOrWhiteSpace(mtxtBoxDateJoined.Text))
                 {
                     DateTime date;
@@ -482,6 +494,18 @@ namespace NineTapTour.Forms
                 else
                 {
                     temp.DateOfBirth = null;
+                }
+
+                DateTime senior = DateTime.Now.AddYears(-55);
+                if (senior >= temp.DateOfBirth)
+                {
+                    temp.IsSenior = true;
+                    chbSenior.Checked = true;
+                }
+                else
+                {
+                    temp.IsSenior = false;
+                    chbSenior.Checked = false;
                 }
                 
                 temp.SSN = mtxtBoxSSN.Text;
@@ -853,8 +877,7 @@ namespace NineTapTour.Forms
 
         private void datePaid_ValueChanged(object sender, EventArgs e)
         {
-            //datePaid.Format = DateTimePickerFormat.Short;
-            mtxtBoxLastPayment.Text = "01/01/1900";
+            mtxtBoxLastPayment.Text = "";
             checkPayment();
         }
 
@@ -877,23 +900,7 @@ namespace NineTapTour.Forms
                 lblPaymentInfo.Visible = false;
             }
         }
-
-        private void dateJoined_ValueChanged(object sender, EventArgs e)
-        {
-            //dateJoined.Format = DateTimePickerFormat.Short;// Refreshes the date
-
-        }
-
-        private void dateRejoin_ValueChanged(object sender, EventArgs e)
-        {
-            //dateRejoin.Format = DateTimePickerFormat.Short;//Refreshes the date
-        }
-
-        private void dateDOB_ValueChanged(object sender, EventArgs e)
-        {
-            //dateDOB.Format = DateTimePickerFormat.Short;
-        }
-
+        
         private void btnRecapByDate_Click(object sender, EventArgs e)
         {
             new FrmPrintByDate().ShowDialog();
