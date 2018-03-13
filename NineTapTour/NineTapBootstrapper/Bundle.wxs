@@ -16,16 +16,20 @@
 		<Chain>
 			<!-- TODO: Define the list of chained packages. -->
       <!-- TODO: .NET Framework-->
-      <ExePackage Id="Net45" Name="Microsoft .NET Framework 4.5.1 Setup" Cache="no" Compressed="yes" PerMachine="yes" Permanent="yes" Vital="yes" InstallCommand="/q"
-        SourceFile="NDP451-KB2859818-Web.exe"
-        DownloadUrl="someURL"
-        DetectCondition="(Net4FullVersion = &quot;4.5.50938&quot;) AND (NOT VersionNT64 OR (Net4x64FullVersion = &quot;4.5.50938&quot;))"
-        InstallCondition="(VersionNT >= v6.0 OR VersionNT64 >= v6.0) AND (NOT (Net4FullVersion = &quot;4.5.50938&quot; OR Net4x64FullVersion = &quot;4.5.50938&quot;))"/>
-      <ExePackage Id="Net4Full" Name="Microsoft .NET Framework 4.0 Setup" Cache="no" Compressed="yes" PerMachine="yes" Permanent="yes" Vital="yes" InstallCommand="/q"
-        SourceFile="dotNetFx40_Full_setup.exe"
+      <ExePackage Id="Net45" Name="Microsoft .NET Framework 4.5.2 Setup" Cache="no" Compressed="no" PerMachine="yes" Permanent="yes" Vital="yes" InstallCommand="/q"
+        DownloadUrl="https://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe"
+        DetectCondition="(Net4FullVersion = &quot;4.5.51209&quot;) AND (NOT VersionNT64 OR (Net4x64FullVersion = &quot;4.5.51209&quot;))"
+        InstallCondition="(VersionNT >= v6.0 OR VersionNT64 >= v6.0) AND (NOT (Net4FullVersion = &quot;4.5.51209&quot; OR Net4x64FullVersion = &quot;4.5.51209&quot;))">
+        <!-- Remote Payload: http://wixtoolset.org/documentation/manual/v3/xsd/wix/remotepayload.html -->
+        <!-- StackOverflow Help: https://stackoverflow.com/questions/26850462/how-to-create-a-wix-exepackage-that-only-has-a-download-link -->
+        <RemotePayload Description="Net45" Hash="89F86F9522DC7A8A965FACCE839ABB790A285A63" ProductName="Microsoft .NET Framework 4.5.2" Size="69999448" Version="4.5.51209.34209"/>
+      </ExePackage>
+      <!--
+      <ExePackage Id="Net4Full" Name="Microsoft .NET Framework 4.0 Setup" Cache="no" Compressed="no" PerMachine="yes" Permanent="yes" Vital="yes" InstallCommand="/q"
         DownloadUrl="someURL"
         DetectCondition="Net4FullVersion AND (NOT VersionNT64 OR Net4x64FullVersion)"
         InstallCondition="(VersionNT &lt; v6.0 OR VersionNT64 &lt; v6.0) AND (NOT (Net4FullVersion OR Net4x64FullVersion))"/>
+        -->
       <!-- TODO: SQL Server Express 2016?-->
 
       <RollbackBoundary Id="PreReqsMet" />
