@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:bal="http://schemas.microsoft.com/wix/BalExtension"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+	<Bundle Name="NineTapBootstrapper" Version="1.0.0.0" Manufacturer="Clover Park Technical College - Computer Programming" UpgradeCode="84f76d84-5c1c-457c-bf76-d6e1caae5bd9">
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
+      <bal:WixStandardBootstrapperApplication LicenseFile="License.rtf" LogoFile="Icon\9Tap.ico" />
+    </BootstrapperApplicationRef>
+
+    <!-- Bootstrapper help https://www.firegiant.com/wix/tutorial/net-and-net/bootstrapping/ -->
+    
+    <!-- Condition Variables: Check if .NET is installed-->
+    <util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Net Framework Setup\NDP\v4\Full" Value="Version" Variable="Net4FullVersion" />
+    <util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Net Framework Setup\NDP\v4\Full" Value="Version" Variable="Net4x64FullVersion" Win64="yes" />
+    
+		<Chain>
+			<!-- TODO: Define the list of chained packages. -->
+      <!-- TODO: .NET Framework-->
+      <ExePackage Id="Net45" Name="Microsoft .NET Framework 4.5.1 Setup" Cache="no" Compressed="yes" PerMachine="yes" Permanent="yes" Vital="yes" InstallCommand="/q"
+        SourceFile="NDP451-KB2859818-Web.exe"
+        DownloadUrl="someURL"
+        DetectCondition="(Net4FullVersion = &quot;4.5.50938&quot;) AND (NOT VersionNT64 OR (Net4x64FullVersion = &quot;4.5.50938&quot;))"
+        InstallCondition="(VersionNT >= v6.0 OR VersionNT64 >= v6.0) AND (NOT (Net4FullVersion = &quot;4.5.50938&quot; OR Net4x64FullVersion = &quot;4.5.50938&quot;))"/>
+      <ExePackage Id="Net4Full" Name="Microsoft .NET Framework 4.0 Setup" Cache="no" Compressed="yes" PerMachine="yes" Permanent="yes" Vital="yes" InstallCommand="/q"
+        SourceFile="dotNetFx40_Full_setup.exe"
+        DownloadUrl="someURL"
+        DetectCondition="Net4FullVersion AND (NOT VersionNT64 OR Net4x64FullVersion)"
+        InstallCondition="(VersionNT &lt; v6.0 OR VersionNT64 &lt; v6.0) AND (NOT (Net4FullVersion OR Net4x64FullVersion))"/>
+      <!-- TODO: SQL Server Express 2016?-->
+
+      <RollbackBoundary Id="PreReqsMet" />
+      
+      <!-- Had to manually copy the MSI from the NineTapInstaller folder into the NineTapBootstrapper\Files folder-->
+			<MsiPackage SourceFile="Files\9-TapTour.msi" /> 
+		</Chain>
+	</Bundle>
+</Wix>
