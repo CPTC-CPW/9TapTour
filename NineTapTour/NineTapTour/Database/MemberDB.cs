@@ -40,9 +40,8 @@ namespace NineTapTour.Database
                     else
                     {
                         // MessageBox.Show("Player Saved Successfully");
-                        db.SaveChanges();
                     }
-                    
+                    db.SaveChanges();
                 }
             }
             catch (DbEntityValidationException ex)

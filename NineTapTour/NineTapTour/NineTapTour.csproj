@@ -337,6 +337,10 @@
     <Compile Include="Migrations\201803140520245_Changed Date to Nullable DateTime.Designer.cs">
       <DependentUpon>201803140520245_Changed Date to Nullable DateTime.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803140606463_Member Bonus not nullable.cs" />
+    <Compile Include="Migrations\201803140606463_Member Bonus not nullable.Designer.cs">
+      <DependentUpon>201803140606463_Member Bonus not nullable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -489,6 +493,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803140520245_Changed Date to Nullable DateTime.resx">
       <DependentUpon>201803140520245_Changed Date to Nullable DateTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803140606463_Member Bonus not nullable.resx">
+      <DependentUpon>201803140606463_Member Bonus not nullable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>

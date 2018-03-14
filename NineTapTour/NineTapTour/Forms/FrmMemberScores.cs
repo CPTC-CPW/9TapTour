@@ -225,10 +225,6 @@ namespace NineTapTour.Forms
 		{
 			if (currentGame != null)
 			{
-				// The game bonus & handicap shouldn't be changed to current member bonus/handicap
-				currentGame.Bonus = currentMem.Bonus;
-				currentGame.Handicap = currentMem.Handicap;
-
 				//////////////////////////////////////////////////////////////// PAGINATION HAPPENS RIGHT HERE!!!! ////////////////////////////////////////////////////
 				List<Participant> total = TournamentDb.GetTournamentMemberListInOrder(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue))); //gets list in order so forloops itterate better
 
@@ -261,20 +257,16 @@ namespace NineTapTour.Forms
 					chbCompEntry.Checked = true;
 				}
 
-
-
 				txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
 				txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
 				txtScratchScore3.Text = Convert.ToString(currentGame.Game3);
 				txtScratchScore4.Text = Convert.ToString(currentGame.Game4);
 				txtScratchScore1.Focus();
 				txtMoney.Text = currentGame.MoneyWon.ToString();
-				// put game.handicap in Handicap field for that tournament game
-				//txtHandicap.Text = currentGame.Handicap.ToString();
-
-
-
-			}
+				
+				txtHandicap.Text = currentGame.Handicap.ToString(); // put game.handicap in Handicap field for that tournament game
+                txtBonusPins.Text = currentGame.Bonus.ToString(); // put game.bonus in Bonus field for that tournament game
+            }
 		}
 		#endregion
 		private void FillMember()
@@ -325,40 +317,36 @@ namespace NineTapTour.Forms
 							// It never reflected the correct current member.handicap
 
 							//check to make sure the right numbers are being brought over from the members information page
-							List<PlayerHistory> last5 = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Number, RegionID);
-							if (last5.Count > 0)
-							{
-								if (last5[0].HandiCap != currentMem.Handicap || last5[0].Bonus != currentMem.Bonus)
-								{
-									currentMem.Bonus = last5[0].Bonus;
-									currentMem.Handicap = last5[0].HandiCap;
-									txtHandicap.Text = last5[0].HandiCap.ToString();
-									txtBonusPins.Text = last5[0].Bonus.ToString();
-								}
-								else
-								{
+							//List<PlayerHistory> last5 = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Number, RegionID);
+							//if (last5.Count > 0)
+							//{
+							//	if (last5[0].HandiCap != currentMem.Handicap || last5[0].Bonus != currentMem.Bonus)
+							//	{
+							//		currentMem.Bonus = last5[0].Bonus;
+							//		currentMem.Handicap = last5[0].HandiCap;
+							//		txtHandicap.Text = last5[0].HandiCap.ToString();
+							//		txtBonusPins.Text = last5[0].Bonus.ToString();
+							//	}
+							//	else
+							//	{
 
-									txtHandicap.Text = currentMem.Handicap.ToString();
-									txtBonusPins.Text = currentMem.Bonus.ToString();
-								}
+							//		txtHandicap.Text = currentMem.Handicap.ToString();
+							//		txtBonusPins.Text = currentMem.Bonus.ToString();
+							//	}
 
 
-							}
-							else
-							{
-								currentMem.Bonus = 0;
-								txtHandicap.Text = currentMem.Bonus.ToString();
-								txtBonusPins.Text = currentMem.Bonus.ToString();
-							}
+							//}
+							//else
+							//{
+							//	currentMem.Bonus = 0;
+							//	txtHandicap.Text = currentMem.Bonus.ToString();
+							//	txtBonusPins.Text = currentMem.Bonus.ToString();
+							//}
 
 							#endregion
 
-
 							txtHandicap.Text = currentMem.Handicap.ToString();
 							txtBonusPins.Text = currentMem.Bonus.ToString();
-
-
-
 
 							Game currentGame = GetScoresById(currentMem.Id);
 
