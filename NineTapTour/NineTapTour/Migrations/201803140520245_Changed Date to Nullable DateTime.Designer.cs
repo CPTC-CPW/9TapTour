@@ -7,13 +7,13 @@ namespace NineTapTour.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class AddedIsComptoGametable : IMigrationMetadata
+    public sealed partial class ChangedDatetoNullableDateTime : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddedIsComptoGametable));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(ChangedDatetoNullableDateTime));
         
         string IMigrationMetadata.Id
         {
-            get { return "201803042246326_Added IsComp to Game table"; }
+            get { return "201803140520245_Changed Date to Nullable DateTime"; }
         }
         
         string IMigrationMetadata.Source
