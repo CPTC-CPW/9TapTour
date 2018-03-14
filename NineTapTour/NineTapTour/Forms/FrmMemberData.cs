@@ -496,7 +496,7 @@ namespace NineTapTour.Forms
                     temp.DateOfBirth = null;
                 }
 
-                DateTime senior = DateTime.Now.AddYears(-55);
+                DateTime senior = DateTime.Now.AddYears(-50);
                 if (senior >= temp.DateOfBirth)
                 {
                     temp.IsSenior = true;
