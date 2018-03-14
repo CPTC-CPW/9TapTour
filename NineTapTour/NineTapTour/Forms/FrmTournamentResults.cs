@@ -65,7 +65,7 @@ namespace NineTapTour.Forms
 
             /* Sort winners by memberId before iterating over winners
                list and only keeping member's highest scoring game */
-            winners.Sort((x, y) => x.MemberId.CompareTo(value: y.MemberId));
+            winners.Sort((x, y) => x.MemberNumber.CompareTo(value: y.MemberNumber));
 
             // Keep each member's highest scoring game
             KeepHighestScoringGame(winners);
@@ -113,7 +113,7 @@ namespace NineTapTour.Forms
                 newRow[HANDICAP_COLUMN_NAME] = item.Handicap;
                 newRow[TOTAL_SCORE_COLUMN_NAME] = item.TotalScore;
                 newRow[EARNINGS_COLUMN_NAME] = item.MoneyWon;
-                newRow[MEMBER_ID_COLUMN_NAME] = item.MemberId;
+                newRow[MEMBER_ID_COLUMN_NAME] = item.MemberNumber;
                 newRow[GAME_ID_COLUMN_NAME] = item.GameId;
 
                 dt.Rows.Add(newRow);
@@ -179,15 +179,6 @@ namespace NineTapTour.Forms
                     cashedWinners.Add(winners[i]);
                 }
             }
-
-            //TODO: Remove labels once testing is done and calculations are correct
-            // Labels for testing calculations; can be removed once calculations are correct
-            txtTotalEntries.Text = "Total Entries: " + totalTournamentEntries;
-            txtCompEntries.Text = "Comp Entries: " + compEntries;
-            txtAdjustedEntries.Text = "Adjusted Entries: " + adjustedTournamentEntries;
-            txtCalculatedCashedWinners.Text = "Calculated Cashed Winners: " + numCashedWinners;
-            txtActualCashedWinners.Text = "Actual Cashed Winners: " + cashedWinners.Count;
-
             return cashedWinners;
         }
 
@@ -222,7 +213,7 @@ namespace NineTapTour.Forms
             for (int i = 0; i < winners.Count() - 1; i++)
             {
                 // if member bowled more than one game
-                while (winners[i].MemberId == winners[i + 1].MemberId)
+                while (winners[i].MemberNumber == winners[i + 1].MemberNumber)
                 {
                     // remove lower scoring games
                     if (winners[i].TotalScore >= winners[i + 1].TotalScore)
@@ -250,13 +241,13 @@ namespace NineTapTour.Forms
                            join m in db.Members on p.Member.Id equals m.Id
                            join g in db.Games on p.Game.Id equals g.Id
                            join t in db.Tournaments on p.Tournament.Id equals t.Id
-                           let memberId = m.Id
+                           let memberNumber = m.Number
                            let name = m.FirstName + " " + m.LastName
                            where tourny.Id == p.Tournament.Id
                            select new
                            {
                                g.PlaceStanding,
-                               memberId,
+                               memberNumber,
                                name,
                                g.Handicap,
                                g.Bonus,
@@ -280,7 +271,7 @@ namespace NineTapTour.Forms
                 }
 
                 ExcelMember m = new ExcelMember();
-                m.MemberId = b.memberId;
+                m.MemberNumber = b.memberNumber;
                 m.Name = b.name;
                 m.Handicap = Convert.ToInt32(b.Handicap);
                 m.Bonus = Convert.ToInt32(b.Bonus);
