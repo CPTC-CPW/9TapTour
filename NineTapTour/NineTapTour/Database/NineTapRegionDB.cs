@@ -49,9 +49,7 @@ namespace NineTapTour.Database
             {
                 using (var db = new NineTapDb())
                 {
-                    db.Entry(temp).State = db.NineTapRegion.Any(his => his.NineTapRegionID == temp.NineTapRegionID) ?
-                         EntityState.Modified :
-                         EntityState.Added;
+					db.NineTapRegion.Add(temp);
                     db.SaveChanges();
                 }
             }

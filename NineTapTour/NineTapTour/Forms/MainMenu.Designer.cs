@@ -36,6 +36,7 @@
 			this.cbxRegionSelect = new System.Windows.Forms.ComboBox();
 			this.btnAdd = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
+			this.btnDropDataBase1 = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// btnMemberData
@@ -144,6 +145,16 @@
     "";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
+			// btnDropDataBase1
+			// 
+			this.btnDropDataBase1.Location = new System.Drawing.Point(99, 967);
+			this.btnDropDataBase1.Name = "btnDropDataBase1";
+			this.btnDropDataBase1.Size = new System.Drawing.Size(242, 44);
+			this.btnDropDataBase1.TabIndex = 6;
+			this.btnDropDataBase1.Text = "Delete Region Data";
+			this.btnDropDataBase1.UseVisualStyleBackColor = true;
+			this.btnDropDataBase1.Click += new System.EventHandler(this.btnDropDataBase1_Click_1);
+			// 
 			// MainMenu
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -152,6 +163,7 @@
 			this.BackgroundImage = global::NineTapTour.Properties.Resources._9taplogo1;
 			this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.ClientSize = new System.Drawing.Size(1968, 1425);
+			this.Controls.Add(this.btnDropDataBase1);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.btnAdd);
 			this.Controls.Add(this.cbxRegionSelect);
@@ -180,5 +192,6 @@
         private System.Windows.Forms.ComboBox cbxRegionSelect;
         private System.Windows.Forms.Button btnAdd;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Button btnDropDataBase1;
 	}
 }
