@@ -37,18 +37,18 @@ namespace NineTapTour.Forms
                                            orderby (g.Game1 + g.Game2 + g.Game3 + g.Game4) descending
                                            select new
                                            {
-                                               p.Member.Id,
+                                               p.Member.Number,
                                                p.Member.FirstName,
                                                p.Member.LastName,
                                                p.Squad,
                                                ScratchTotal = ((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0)),
-                                               GameTotal = (((g.Game1.HasValue ? g.Game1 : 0) + (m.Handicap + m.Bonus)) + ((g.Game2.HasValue ? g.Game2 : 0) + (m.Handicap + m.Bonus)) + ((g.Game3.HasValue ? g.Game3 : 0) + (m.Handicap + m.Bonus)) + ((g.Game4.HasValue ? g.Game4 : 0) + (m.Handicap + m.Bonus))),
+                                               GameTotal = (((g.Game1.HasValue ? g.Game1 : 0) + (g.Handicap + g.Bonus)) + ((g.Game2.HasValue ? g.Game2 : 0) + (g.Handicap + g.Bonus)) + ((g.Game3.HasValue ? g.Game3 : 0) + (g.Handicap + g.Bonus)) + ((g.Game4.HasValue ? g.Game4 : 0) + (g.Handicap + g.Bonus))),
                                                g.Game1,
                                                g.Game2,
                                                g.Game3,
                                                g.Game4,
-                                               p.Member.Handicap,
-                                               p.Member.Bonus
+                                               p.Game.Handicap,
+                                               p.Game.Bonus
                                            }).ToList();
 
                 dgvTournamentStats.DataSource = tournamentStatsList;                               
@@ -64,7 +64,7 @@ namespace NineTapTour.Forms
                 SqlConnection con = new SqlConnection(GetConnection());
                 SqlCommand gameOrder = new SqlCommand();
                 gameOrder.Connection = con;
-                gameOrder.CommandText = @"SELECT Members.Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Members.Handicap, Participants.SquadNumber, Members.Bonus
+                gameOrder.CommandText = @"SELECT Members.Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Handicap, Participants.SquadNumber, Games.Bonus
                                         FROM Games JOIN Participants ON Games.Id = Participants.Game_Id
 		                                JOIN Tournaments ON Participants.Tournament_Id = Tournaments.Id
 		                                JOIN Members ON Members.Id = Participants.Member_Id                                        
