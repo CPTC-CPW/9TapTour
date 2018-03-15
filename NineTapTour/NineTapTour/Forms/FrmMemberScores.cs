@@ -350,7 +350,17 @@ namespace NineTapTour.Forms
 
 							Game currentGame = GetScoresById(currentMem.Id);
 
-							GetScores(currentGame);
+                            // Populate Handicap scores correctly
+                            if (currentGame != null)
+                            {
+                                txtHandicapScore1.Text = currentGame.Game1.Value + currentGame.Handicap.Value + currentGame.Bonus.Value.ToString();
+                                txtHandicapScore2.Text = currentGame.Game2.Value + currentGame.Handicap.Value + currentGame.Bonus.Value.ToString();
+                                txtHandicapScore3.Text = currentGame.Game3.Value + currentGame.Handicap.Value + currentGame.Bonus.Value.ToString();
+                                txtHandicapScore4.Text = currentGame.Game4.Value + currentGame.Handicap.Value + currentGame.Bonus.Value.ToString();
+                                txtHandicapTotal.Text = (currentGame.Game1.Value + currentGame.Game2.Value + currentGame.Game3.Value + currentGame.Game4.Value + (4 * (currentGame.Handicap.Value + currentGame.Bonus.Value))).ToString();
+                            }
+
+                            GetScores(currentGame);
 
 						}
 						else
@@ -1331,23 +1341,23 @@ namespace NineTapTour.Forms
 				getList.Connection = con;
 				if (QBSNumber == 0)
 				{
-					getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id,  Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
+					getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id,  Games.Handicap, Games.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
                                     FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
                                     JOIN Games ON Games.Id = Participants.Game_Id
                                     JOIN Members ON Members.Id = Participants.Member_Id 
                                     WHERE Tournaments.Id = @TID
-                                    GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
+                                    GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Games.Handicap, Games.Bonus,  Games.Id
                                     ORDER BY Participants.Member_Id";
 					getList.Parameters.AddWithValue("@TID", selectedTourney);
 				}
 				else
 				{
-					getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
+					getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Games.Handicap, Games.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
                                     FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
                                     JOIN Games ON Games.Id = Participants.Game_Id
                                     JOIN Members ON Members.Id = Participants.Member_Id 
                                     WHERE Tournaments.Id = @TID AND Participants.SquadNumber = @SN
-                                    GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
+                                    GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Games.Handicap, Games.Bonus,  Games.Id
                                     ORDER BY Participants.Member_Id";
 					getList.Parameters.AddWithValue("@TID", selectedTourney);
 					getList.Parameters.AddWithValue("@SN", QBSNumber);
