@@ -42,7 +42,6 @@ namespace NineTapTour.Database
                         // MessageBox.Show("Player Saved Successfully");
                     }
                     db.SaveChanges();
-
                 }
             }
             catch (DbEntityValidationException ex)

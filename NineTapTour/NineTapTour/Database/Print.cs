@@ -333,7 +333,8 @@ namespace NineTapTour.Database
             Check if it is a good code
             ***************************************************************/
             Average = (mem.Average != null) ? mem.Average.ToString() : "";
-            Bonus = (mem.Bonus != null) ? mem.Bonus.Value : 0;//mem.Bonus;
+            //Bonus = (mem.Bonus != null) ? mem.Bonus.Value : 0;//mem.Bonus;
+            Bonus = mem.Bonus;//mem.Bonus;
             /*************************************************************/
             //Bonus pins default to 0 on the recap for all recaps printed.
 

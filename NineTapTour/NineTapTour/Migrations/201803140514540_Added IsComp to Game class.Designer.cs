@@ -7,18 +7,18 @@ namespace NineTapTour.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class ReversetoOriginal : IMigrationMetadata
+    public sealed partial class AddedIsComptoGameclass : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(ReversetoOriginal));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddedIsComptoGameclass));
         
         string IMigrationMetadata.Id
         {
-            get { return "201602082010332_Reverse to Original"; }
+            get { return "201803140514540_Added IsComp to Game class"; }
         }
         
         string IMigrationMetadata.Source
         {
-            get { return Resources.GetString("Source"); }
+            get { return null; }
         }
         
         string IMigrationMetadata.Target
