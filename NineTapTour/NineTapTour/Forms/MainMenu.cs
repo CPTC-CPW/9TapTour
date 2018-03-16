@@ -25,7 +25,6 @@ namespace NineTapTour.Forms
             if(NineTapRegionDB.getNumberOfRegions() == 0)
             {
                 NineTapRegion nTemp = new NineTapRegion();
-                nTemp.NineTapRegionID = NineTapRegionDB.getNumberOfRegions() + 1;
                 nTemp.NineTapRegionName = "Local";
                 NineTapRegionDB.AddRegion(nTemp);
             }
@@ -93,13 +92,12 @@ namespace NineTapTour.Forms
 
         // This is the code behind for the delete database button. Per Rob, we don't need this 
         // at this time. Keeping the code incase it's needed in the future.
-
-         //needed at the moment, will delete button after production is complete - Xavier
-        private void btnDropDataBase1_Click(object sender, EventArgs e)
+        private void btnDropDataBase1_Click_1(object sender, EventArgs e)
         {
+
             List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
             string name = NineTapRegionDB.getRegionByID(regionID).NineTapRegionName;
-            if (MessageBox.Show($"This button will delete all data stored in the {name} database, are you sure you want to clear  data?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (MessageBox.Show($"This button will delete all data stored in the {NineTapRegionDB.getRegionByID(regionID).NineTapRegionName} database, are you sure you want to clear  data?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 frmPleaseWait pl = new frmPleaseWait();
                 pl.Show();
@@ -158,6 +156,8 @@ namespace NineTapTour.Forms
 
                 pl.Close();
                 MessageBox.Show(name + " Database was successfully cleared!");
+
+
             }
         }
 
@@ -217,6 +217,5 @@ namespace NineTapTour.Forms
             refreshRegionlist();
         }
 
-
-    }
+	}
 }

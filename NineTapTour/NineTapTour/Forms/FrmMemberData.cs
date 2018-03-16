@@ -58,23 +58,22 @@ namespace NineTapTour.Forms
             updateOnload(ListOfMembers);
 
             mtxtBoxDateJoined.Text = "";
-            mtxtBoxDateJoined.Text = "01/01/1900";
             mtxtBoxDateJoined.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxDateJoined_MaskInputRejected);
             mtxtBoxDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDOB_KeyDown);
             toolTip1.IsBalloon = true;
 
-            mtxtBoxRejoinDate.Text = "01/01/1900";
+            mtxtBoxRejoinDate.Text = "";
             mtxtBoxRejoinDate.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxRejoinDate_MaskInputRejected);
             mtxtBoxRejoinDate.KeyDown += new KeyEventHandler(mtxtBoxRejoinDate_KeyDown);
             toolTip1.IsBalloon = true;
             //_membersList = ((FrmMain)MdiParent)._membersList;
 
-            mtxtBoxLastBowled.Text = "01/01/1900";
+            mtxtBoxLastBowled.Text = "";
             mtxtBoxLastBowled.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxLastBowled_MaskInputRejected);
             mtxtBoxLastBowled.KeyDown += new KeyEventHandler(mtxtBoxLastBowled_KeyDown);
             toolTip1.IsBalloon = true;
 
-            mtxtBoxLastPayment.Text = "01/01/1900";
+            mtxtBoxLastPayment.Text = "";
             mtxtBoxLastPayment.MaskInputRejected += new MaskInputRejectedEventHandler(MtxtBoxLastPayment_MaskInputRejected);
             mtxtBoxLastPayment.KeyDown += new KeyEventHandler(MtxtBoxLastPayment_KeyDown);
             toolTip1.IsBalloon = true;
@@ -85,6 +84,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// finds all Controls and change BackColor of each control color when the control is on 
         /// focus and checks if that control has a child and changes the child contol color onFocus
+        /// and changes back to origin back color when LostFocus
         /// </summary>
         /// <param name="ctrl"></param>
         private void ChangeBackColorOnFocus(Control ctrl)
@@ -101,6 +101,12 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// The controller back color is set back to origin color set in the properties
+        /// when LostFocus method is called
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Ctrl_LostFocus(object sender, EventArgs e)
         {
             var ctrl = sender as Control;
@@ -108,6 +114,11 @@ namespace NineTapTour.Forms
                 ctrl.BackColor = (Color)ctrl.Tag;
         }
 
+        /// <summary>
+        /// Method to change controller BackColor when GotFocus method is called
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Ctrl_GotFocus(object sender, EventArgs e)
         {
             var ctrl = sender as Control;
@@ -184,7 +195,6 @@ namespace NineTapTour.Forms
                 txtFirstName.Text = "";
                 txtMiddleInitial.Text = "";
                 mtxtBoxDOB.Text = "";
-                mtxtBoxDOB.Text = "01/01/1900";
                 mtxtBoxDOB.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxDOB_MaskInputRejected);
                 mtxtBoxDOB.KeyDown += new KeyEventHandler(mtxtBoxDOB_KeyDown);
                 toolTip1.IsBalloon = true;
@@ -213,15 +223,14 @@ namespace NineTapTour.Forms
 
                 #region Misc. Info
                 mtxtBoxDateJoined.Text = "";
-                mtxtBoxDateJoined.Text = "01/01/1900";
+                mtxtBoxDateJoined.Text = "";
                 mtxtBoxDateJoined.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxDateJoined_MaskInputRejected);
                 mtxtBoxDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDateJoined_KeyDown);
                 toolTip1.IsBalloon = true;
                 
                 txtMoneyEarned.Text = "";
                 txtNotes.Text = "";
-                txtReferrals.Text = "";
-                chbSenior.Checked = false;
+                txtReferrals.Text = "";               
 
                 foreach (var check in grpStatus.Controls.OfType<RadioButton>())
                 {
@@ -235,7 +244,7 @@ namespace NineTapTour.Forms
                 #endregion
 
                 chbLifetime.Checked = false;
-                mtxtBoxLastPayment.Text = "01/01/1900";
+                mtxtBoxLastPayment.Text = "";
             }
             else
             {
@@ -290,8 +299,9 @@ namespace NineTapTour.Forms
 
                 #region Misc. Info
                 //TODO: Pull datetime from database correctly 
-                if (currentMem.DateOfBirth != null)
+                if (currentMem.JoinDate.HasValue)
                     mtxtBoxDateJoined.Text = currentMem.JoinDate.Value.ToString("MM/dd/yyyy");
+                
                 if (currentMem.RejoinDate.HasValue)
                 {
                     mtxtBoxRejoinDate.Text = currentMem.RejoinDate.Value.ToString("MM/dd/yyyy");
@@ -455,7 +465,7 @@ namespace NineTapTour.Forms
           
                 temp.Number = Convert.ToInt32(txtMemberNumber.Text);
                 temp.IsActive = rdoActive.Checked;
-
+                
                 if (!String.IsNullOrWhiteSpace(mtxtBoxDateJoined.Text))
                 {
                     DateTime date;
@@ -484,6 +494,18 @@ namespace NineTapTour.Forms
                 else
                 {
                     temp.DateOfBirth = null;
+                }
+
+                DateTime senior = DateTime.Now.AddYears(-50);
+                if (senior >= temp.DateOfBirth)
+                {
+                    temp.IsSenior = true;
+                    chbSenior.Checked = true;
+                }
+                else
+                {
+                    temp.IsSenior = false;
+                    chbSenior.Checked = false;
                 }
                 
                 temp.SSN = mtxtBoxSSN.Text;
@@ -747,8 +769,16 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnFirstRecord_Click(object sender, EventArgs e)
         {
-            txtMemberNumber.Text = MemberDb.GetMemberList(RegionID)[0].Number.ToString();
-            UpdateMemberInfo();
+            try
+            {
+                txtMemberNumber.Text = MemberDb.GetMemberList(RegionID)[0].Number.ToString();
+                UpdateMemberInfo();
+            }
+            catch
+            {
+                MessageBox.Show("There is no Members yet");
+            }
+            
         }
 
         /// <summary>
@@ -775,52 +805,7 @@ namespace NineTapTour.Forms
                 textBox.BackColor = textBox.Text == string.Empty ? Color.LightPink : Color.White;
             }
         }
-       
-        /// <summary>
-        /// clears all elements on member data form.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        //private void btnClear_Click(object sender, EventArgs e)
-        //{
-        //    //removed code for a delete function it is in the region below
-        //    #region
-        //    //if (isValid())
-        //    //{
-        //    //    var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-        //    //    if (confirm == DialogResult.No) return;
-        //    //    try
-        //    //    {
-        //    //        MemberDb.DeleteMember(currentMem);
-
-        //    //        MessageBox.Show(@"Bowler Removed Successfully.");
-        //    //        ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
-        //    //        if (((FrmMain)MdiParent)._membersList.Count() > 0)
-        //    //        {
-        //    //            UpdateMemberInfo();
-        //    //        }
-        //    //    }
-        //    //    catch (MemberTableException ex)
-        //    //    {
-        //    //        MessageBox.Show(ex.Message);
-        //    //    }
-        //    //}
-        //    #endregion\
-        //    //clears all elements on member data form
-        //    var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Clear", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-        //    if (confirm == DialogResult.No) return;
-        //    /// stores member number to be restored later
-        //    string tempMemNum = txtMemberNumber.Text;
-        //    while (Controls.Count > 0)
-        //    {
-        //        Controls[0].Dispose();
-        //    }
-        //    InitializeComponent();
-        //    //restores member number
-        //    txtMemberNumber.Text = tempMemNum;
-        //}
+            
 
         private void btnMemberSearch_Click(object sender, EventArgs e)
         {
@@ -892,8 +877,7 @@ namespace NineTapTour.Forms
 
         private void datePaid_ValueChanged(object sender, EventArgs e)
         {
-            //datePaid.Format = DateTimePickerFormat.Short;
-            mtxtBoxLastPayment.Text = "01/01/1900";
+            mtxtBoxLastPayment.Text = "";
             checkPayment();
         }
 
@@ -903,7 +887,8 @@ namespace NineTapTour.Forms
             added '&& chbLifetime.Checked == false' so when the member is a lifetime member, the lblPaymentInfo will 
             not be visible even if their last payment was due before
             ********************************************************************************************************/
-            if (mtxtBoxLastPayment.Text != "  /  /"
+            
+            if (mtxtBoxLastPayment.Text != " / /" 
                 && Convert.ToDateTime(mtxtBoxLastPayment.Text) 
                 <= DateTime.Now.AddYears(-1) && chbLifetime.Checked == false)
             /*******************************************************************************************************/
@@ -915,23 +900,7 @@ namespace NineTapTour.Forms
                 lblPaymentInfo.Visible = false;
             }
         }
-
-        private void dateJoined_ValueChanged(object sender, EventArgs e)
-        {
-            //dateJoined.Format = DateTimePickerFormat.Short;// Refreshes the date
-
-        }
-
-        private void dateRejoin_ValueChanged(object sender, EventArgs e)
-        {
-            //dateRejoin.Format = DateTimePickerFormat.Short;//Refreshes the date
-        }
-
-        private void dateDOB_ValueChanged(object sender, EventArgs e)
-        {
-            //dateDOB.Format = DateTimePickerFormat.Short;
-        }
-
+        
         private void btnRecapByDate_Click(object sender, EventArgs e)
         {
             new FrmPrintByDate().ShowDialog();
