@@ -585,6 +585,8 @@ namespace NineTapTour.Forms
 
 
 
+
+
             if (IsValid())
             {
                 Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
@@ -680,20 +682,72 @@ namespace NineTapTour.Forms
                 //IF the tournament type is NOT a DOUBLES tournament
                 else
                 {
+                    
+                    currentMem = MemberDb.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
+                    #region radio button filter
+                    int squad = 0;
+                    if (rdoSquadOne.Checked)
+                    {
+                        squad = 1;
+                    }
+                    else if (rdoSquadTwo.Checked)
+                    {
+                        squad = 2;
+                    }
+                    else if (rdoSquadThree.Checked)
+                    {
+                        squad = 3;
+                    }
+                    else if (rdoSquadFour.Checked)
+                    {
+                        squad = 4;
+                    }
+                    else if (rdoSquad5.Checked)
+                    {
+                        squad = 5;
+                    }
+                    else if (rdoSquad6.Checked)
+                    {
+                        squad = 6;
+                    }
+                    else if (rdoSquad7.Checked)
+                    {
+                        squad = 7;
+                    }
+                    else if (rdoSquad8.Checked)
+                    {
+                        squad = 8;
+                    }
+#endregion 
+
+
                     player.Game = new Game();
                     player.ParticipantRegionID = RegionID;
                     var db = new NineTapDb();
                     var gameId = (from p in db.Participants
                                   where p.Member.Id == currentMem.Id
                                   && p.Tournament.Id == currTourney.Id
+                                  && p.Squad == squad
                                   select p.Game.Id).FirstOrDefault();
                     var parID = (from p in db.Participants
                                  where p.Member.Id == currentMem.Id
                                  && p.Tournament.Id == currTourney.Id
+                                 && p.Squad == squad
                                  select p.Id).FirstOrDefault();
-
-                    player.Id = parID;
-
+                    var parList = (from p in db.Participants
+                                   where p.ParticipantRegionID == RegionID
+                                   select new
+                                   {
+                                       p.Id
+                                   }).ToList();
+                    if (parID == 0)
+                    {
+                        player.Id = parList.Count + 1;
+                    }
+                    else
+                    {
+                        player.Id = parID;
+                    }
                     player.Game.Id = gameId;
                     //selects the ID of the combobox of tournaments and stores the
                     //tournament property within the participants class.
@@ -712,10 +766,27 @@ namespace NineTapTour.Forms
                     {
                         player.Squad = 3;
                     }
-                    else
+                    else if (rdoSquadFour.Checked)
                     {
                         player.Squad = 4;
                     }
+                    else if (rdoSquad5.Checked)
+                    {
+                        player.Squad = 5;
+                    }
+                    else if (rdoSquad6.Checked)
+                    {
+                        player.Squad = 6;
+                    }
+                    else if (rdoSquad7.Checked)
+                    {
+                        player.Squad = 7;
+                    }
+                    else
+                    {
+                        player.Squad = 8;
+                    }
+                
                     #endregion
                     //defaults money earned to 0, or enters text box amount
                     if (txtMoney.Text == "" || txtMoney.Text == null)
@@ -754,7 +825,7 @@ namespace NineTapTour.Forms
                             player.Game.Handicap = currentGame.Handicap;
                         }
                         player.Game.gameRegionID = RegionID;
-                        player.Member = MemberDb.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID); ;
+                        player.Member = MemberDb.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID); 
 
                         // if compEntry checkbox is checked, set IsComp to true in game table
                         if (chbCompEntry.Checked)
@@ -798,8 +869,7 @@ namespace NineTapTour.Forms
                         if (DateTime.Now > currentMem.LastBowled || currentMem.LastBowled == null)
                         {
                             currentMem.LastBowled = DateTime.Now;
-                            db.SaveChanges();
-
+                            MemberDb.AddMember(currentMem);
                         }
 
                     }

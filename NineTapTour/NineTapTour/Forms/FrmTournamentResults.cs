@@ -65,10 +65,10 @@ namespace NineTapTour.Forms
 
             /* Sort winners by memberId before iterating over winners
                list and only keeping member's highest scoring game */
-            winners.Sort((x, y) => x.MemberId.CompareTo(value: y.MemberId));
+            winners.Sort((x, y) => x.MemberId.CompareTo(value: y.MemberId)); 
 
-            // Keep each member's highest scoring game
-            KeepHighestScoringGame(winners);
+            // Keep each member's highest scoring game 
+             KeepHighestScoringGame(winners);
 
             // Sort winners by score (highest to lowest) before running place standing algorithm
             winners.Sort((x, y) => y.TotalScore.CompareTo(value: x.TotalScore));
@@ -217,9 +217,12 @@ namespace NineTapTour.Forms
         /// Iterates over winners and keeps only a bowlers highest scoring game
         /// </summary>
         /// <param name="winners"></param>
+        /// 
+        //OUT OF RANGE EXCEPTION , TAKE A LOOK AT THIS LATER
         private static void KeepHighestScoringGame(List<ExcelMember> winners)
         {
-            for (int i = 0; i < winners.Count() - 1; i++)
+
+            for (int i = 0; i <= (winners.Count - 1); i++)
             {
                 // if member bowled more than one game
                 while (winners[i].MemberId == winners[i + 1].MemberId)
@@ -235,6 +238,9 @@ namespace NineTapTour.Forms
                     }
                 }
             }
+
+
+
         }
 
         /// <summary>
