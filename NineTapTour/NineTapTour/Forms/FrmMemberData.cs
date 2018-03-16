@@ -903,7 +903,7 @@ namespace NineTapTour.Forms
             added '&& chbLifetime.Checked == false' so when the member is a lifetime member, the lblPaymentInfo will 
             not be visible even if their last payment was due before
             ********************************************************************************************************/
-            if (mtxtBoxLastPayment.Text != null 
+            if (mtxtBoxLastPayment.Text != "  /  /"
                 && Convert.ToDateTime(mtxtBoxLastPayment.Text) 
                 <= DateTime.Now.AddYears(-1) && chbLifetime.Checked == false)
             /*******************************************************************************************************/

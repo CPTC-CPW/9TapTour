@@ -83,7 +83,7 @@ namespace NineTapTour.Database
             NineTapRegion NTR = new NineTapRegion();
             using (var db = new NineTapDb())
             {
-                var temp = (from g in db.NineTapRegion
+                var temp = (from g in db.NineTapRegion where g.NineTapRegionID == regionID
                             select new
                             {
                                 g.NineTapRegionID,
