@@ -8,6 +8,7 @@ namespace NineTapTour.Migrations
         public override void Up()
         {
             DropIndex("dbo.Members", "IX_MemberSSN");
+            AddColumn("dbo.Tournaments", "Doubles", c => c.Boolean(nullable: false));
             AddColumn("dbo.Tournaments", "ThreeOutOf4", c => c.Boolean(nullable: false));
             AlterColumn("dbo.Members", "SSN", c => c.String(maxLength: 11, fixedLength: true, unicode: false));
             CreateIndex("dbo.Members", "SSN", unique: true, name: "IX_MemberSSN");
@@ -17,6 +18,7 @@ namespace NineTapTour.Migrations
         {
             DropIndex("dbo.Members", "IX_MemberSSN");
             AlterColumn("dbo.Members", "SSN", c => c.String(nullable: false, maxLength: 11, fixedLength: true, unicode: false));
+            DropColumn("dbo.Tournaments", "Doubles");
             DropColumn("dbo.Tournaments", "ThreeOutOf4");
             CreateIndex("dbo.Members", "SSN", unique: true, name: "IX_MemberSSN");
         }

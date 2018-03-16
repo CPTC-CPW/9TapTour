@@ -11,7 +11,7 @@ namespace NineTapTour.Database
     class ExcelMember
     {
         public int PlaceStanding { get; set; }
-        public int MemberId { get; set; }
+        public int MemberNumber { get; set; }
         public string Name { get; set; }
         public int Handicap { get; set; }
         public int Bonus { get; set; }

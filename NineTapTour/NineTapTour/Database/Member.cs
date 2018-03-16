@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -57,7 +58,8 @@ namespace NineTapTour.Database
         //average for league games, not used for calculated averages, just a stored value
         public int? StartAvg { get; set; }
         public int? Handicap { get; set; }
-        public int? Bonus { get; set; }
+        [DefaultValue(0)]
+        public int Bonus { get; set; }
         #endregion
 
         #region Misc. Info

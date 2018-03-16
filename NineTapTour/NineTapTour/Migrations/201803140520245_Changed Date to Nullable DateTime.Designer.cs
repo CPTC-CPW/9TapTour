@@ -13,12 +13,12 @@ namespace NineTapTour.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201803072114590_Changed Date to Nullable DateTime"; }
+            get { return "201803140520245_Changed Date to Nullable DateTime"; }
         }
         
         string IMigrationMetadata.Source
         {
-            get { return Resources.GetString("Source"); }
+            get { return null; }
         }
         
         string IMigrationMetadata.Target
