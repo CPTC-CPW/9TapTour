@@ -666,7 +666,6 @@ namespace NineTapTour.Forms
                     saveY++;
                     //skip gameID, should never be editted
                     saveY++;
-                    pHist[saveX].regionID = RegionID; //make sure the regionID is resaved or will defualt to zero
                 }
             }
             //update info
