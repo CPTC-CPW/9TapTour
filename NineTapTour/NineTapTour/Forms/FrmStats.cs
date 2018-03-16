@@ -672,6 +672,10 @@ namespace NineTapTour.Forms
             //update info
             foreach(var item in pHist)
             {
+                /* Prevents stats from disappearing from frmStats after Save button is clicked. 
+                   RegionID in PlayerHistory class was being reset to default value of zero. */
+                item.regionID = RegionID;
+
                 PlayerHistoryDB.AddPlayerHistory2(item);
             }
             //refresh page
