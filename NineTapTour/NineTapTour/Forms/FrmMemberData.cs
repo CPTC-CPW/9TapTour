@@ -1626,6 +1626,52 @@ namespace NineTapTour.Forms
                     "into this date field.", mtxtBoxLastBowled, 0, -20, 5000);
             }
         }
+
+        private void FrmMemberData_Resize(object sender, EventArgs e)
+        {
+            SetFlowDirection(flpMemberScores);
+        }
+
+        private void SetFlowDirection(FlowLayoutPanel flp)
+        {
+            if (Convert.ToInt32(Form.ActiveForm.Size.Width) > 1080 || Convert.ToInt32(Form.ActiveForm.Size.Height) < 730)
+            {
+                flpMemberScores.FlowDirection = FlowDirection.TopDown;
+            }
+            else
+            {
+                flpMemberScores.FlowDirection = FlowDirection.LeftToRight;
+            }
+        }
+
+        private void SetFlowControlScrollBar(FlowLayoutPanel flp)
+        {
+            if (Convert.ToInt32(Form.ActiveForm.Size.Width) < 1080)
+            {
+                flpMemberScores.HorizontalScroll.Visible = true;
+                flpMemberScores.HorizontalScroll.Enabled = true;
+            }
+            if (Convert.ToInt32(Form.ActiveForm.Size.Height) < 600)
+            {
+                flpMemberScores.VerticalScroll.Visible = true;
+                flpMemberScores.VerticalScroll.Enabled = true;
+            }
+            if(Convert.ToInt32(Form.ActiveForm.Size.Width) > 1080)
+            {
+                flpMemberScores.HorizontalScroll.Visible = false;
+                flpMemberScores.HorizontalScroll.Enabled = false;
+            }
+            if(Convert.ToInt32(Form.ActiveForm.Size.Height) > 600)
+            {
+                flpMemberScores.VerticalScroll.Visible = false;
+                flpMemberScores.VerticalScroll.Enabled = false;
+            }
+        }
+
+        private void flpMemberScores_SizeChanged(object sender, EventArgs e)
+        {
+            SetFlowControlScrollBar(flpMemberScores);
+        }
     }
 }
 

@@ -48,7 +48,9 @@ namespace NineTapTour.Forms
 
         private void RadioIntialize()
         {
-
+            rdoSquadOne.TabStop = false;
+            rdoHandicapScore.TabStop = false;
+            rdoAllResults.TabStop = false;
             rdoSquad5.Visible = false;
             rdoSquad6.Visible = false;
             rdoSquad7.Visible = false;
@@ -2567,19 +2569,15 @@ namespace NineTapTour.Forms
                     currentMem.StartAvg = temp[0].AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
                     currentMem.Average = Convert.ToInt32(temp[0].trueAVG);
                     MemberDb.AddMember(currentMem);
-
-
                 }
                 catch
                 {
                     MessageBox.Show("Current Stats Not added to Tournament yet.");
                 }
-
-
             }
         }
 
-            public void UpdateTourneyComboBox()
+        public void UpdateTourneyComboBox()
         {
             RegionID = ((FrmMain)MdiParent).RegionID;
             List<Tournament> t = TournamentDb.GetTournamentList(RegionID);
@@ -2594,15 +2592,54 @@ namespace NineTapTour.Forms
             form.ShowDialog();
         }
 
+        private void frmMemberScores_Resize(object sender, EventArgs e)
+        {
+            SetFlowDirection();
+        }
+
+        private void SetFlowDirection()
+        {
+            if (Convert.ToInt32(Form.ActiveForm.Size.Width) > 1100 && Convert.ToInt32(Form.ActiveForm.Size.Height) < 766)
+            {
+                flpMemberScores.FlowDirection = FlowDirection.TopDown;
+            }
+            else
+            {
+                flpMemberScores.FlowDirection = FlowDirection.LeftToRight;
+            }
+        }
+
+        private void flpMemberScores_SizeChanged(object sender, EventArgs e)
+        {
+            SetFlowControlScrollBars();
+        }
+
+        private void SetFlowControlScrollBars()
+        {
+            if (Convert.ToInt32(Form.ActiveForm.Size.Width) < 1300)
+            {
+                flpMemberScores.HorizontalScroll.Visible = true;
+                flpMemberScores.HorizontalScroll.Enabled = true;
+            }
+            if (Convert.ToInt32(Form.ActiveForm.Size.Height) < 750)
+            {
+                flpMemberScores.VerticalScroll.Visible = true;
+                flpMemberScores.VerticalScroll.Enabled = true;
+            }
+            if (Convert.ToInt32(Form.ActiveForm.Size.Width) > 1300)
+            {
+                flpMemberScores.HorizontalScroll.Visible = false;
+                flpMemberScores.HorizontalScroll.Enabled = false;
+            }
+            if (Convert.ToInt32(Form.ActiveForm.Size.Height) > 750)
+            {
+                flpMemberScores.VerticalScroll.Visible = false;
+                flpMemberScores.VerticalScroll.Enabled = false;
+            }
+        }
     }
 
-
-
-
-
-
-
-        /************************************************************************/
+    /************************************************************************/
 
     }
     /// <summary>
