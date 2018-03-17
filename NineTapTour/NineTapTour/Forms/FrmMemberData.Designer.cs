@@ -93,7 +93,7 @@
             this.lblPaymentInfo = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.mtxtBoxLastPayment = new System.Windows.Forms.MaskedTextBox();
-            this.flpMemberScores = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpMemberData = new System.Windows.Forms.FlowLayoutPanel();
             this.panel7 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
             this.mtxtBoxLastBowled = new System.Windows.Forms.MaskedTextBox();
@@ -123,7 +123,7 @@
             this.grpPrinter.SuspendLayout();
             this.grpGender.SuspendLayout();
             this.grpStatus.SuspendLayout();
-            this.flpMemberScores.SuspendLayout();
+            this.flpMemberData.SuspendLayout();
             this.panel7.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -818,20 +818,20 @@
             // 
             // flpMemberScores
             // 
-            this.flpMemberScores.AutoSize = true;
-            this.flpMemberScores.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpMemberScores.Controls.Add(this.panel7);
-            this.flpMemberScores.Controls.Add(this.groupRecord);
-            this.flpMemberScores.Controls.Add(this.grpRecordNumber);
-            this.flpMemberScores.Controls.Add(this.grpStats);
-            this.flpMemberScores.Controls.Add(this.grpSearchBy);
-            this.flpMemberScores.Controls.Add(this.grpPrinter);
-            this.flpMemberScores.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpMemberScores.Location = new System.Drawing.Point(0, 0);
-            this.flpMemberScores.Name = "flpMemberScores";
-            this.flpMemberScores.Size = new System.Drawing.Size(996, 749);
-            this.flpMemberScores.TabIndex = 34;
-            this.flpMemberScores.SizeChanged += new System.EventHandler(this.flpMemberScores_SizeChanged);
+            this.flpMemberData.AutoSize = true;
+            this.flpMemberData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpMemberData.Controls.Add(this.panel7);
+            this.flpMemberData.Controls.Add(this.groupRecord);
+            this.flpMemberData.Controls.Add(this.grpRecordNumber);
+            this.flpMemberData.Controls.Add(this.grpStats);
+            this.flpMemberData.Controls.Add(this.grpSearchBy);
+            this.flpMemberData.Controls.Add(this.grpPrinter);
+            this.flpMemberData.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpMemberData.Location = new System.Drawing.Point(0, 0);
+            this.flpMemberData.Name = "flpMemberScores";
+            this.flpMemberData.Size = new System.Drawing.Size(996, 749);
+            this.flpMemberData.TabIndex = 34;
+            this.flpMemberData.SizeChanged += new System.EventHandler(this.flpMemberScores_SizeChanged);
             // 
             // panel7
             // 
@@ -1085,7 +1085,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(996, 749);
-            this.Controls.Add(this.flpMemberScores);
+            this.Controls.Add(this.flpMemberData);
             this.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1106,7 +1106,7 @@
             this.grpGender.PerformLayout();
             this.grpStatus.ResumeLayout(false);
             this.grpStatus.PerformLayout();
-            this.flpMemberScores.ResumeLayout(false);
+            this.flpMemberData.ResumeLayout(false);
             this.panel7.ResumeLayout(false);
             this.panel7.PerformLayout();
             this.panel5.ResumeLayout(false);
@@ -1188,7 +1188,7 @@
         private System.Windows.Forms.MaskedTextBox mtxtBoxDateJoined;
         private System.Windows.Forms.MaskedTextBox mtxtBoxRejoinDate;
         private System.Windows.Forms.MaskedTextBox mtxtBoxLastPayment;
-        private System.Windows.Forms.FlowLayoutPanel flpMemberScores;
+        private System.Windows.Forms.FlowLayoutPanel flpMemberData;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel7;
         private System.Windows.Forms.Panel panel4;

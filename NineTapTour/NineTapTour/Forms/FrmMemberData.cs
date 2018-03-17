@@ -1627,50 +1627,73 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// The resize event for the form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FrmMemberData_Resize(object sender, EventArgs e)
         {
-            SetFlowDirection(flpMemberScores);
+            SetFlowDirection(flpMemberData);
         }
 
+        /// <summary>
+        /// Sets the flow direction for the flowlayoutpanel depending
+        /// on the pixel width or height of the screen.
+        /// </summary>
+        /// <param name="flp">The flowlayoutpanel that is being passed in to have changes made to it.</param>
         private void SetFlowDirection(FlowLayoutPanel flp)
         {
             if (Convert.ToInt32(Form.ActiveForm.Size.Width) > 1080 || Convert.ToInt32(Form.ActiveForm.Size.Height) < 730)
             {
-                flpMemberScores.FlowDirection = FlowDirection.TopDown;
+                flp.FlowDirection = FlowDirection.TopDown;
             }
             else
             {
-                flpMemberScores.FlowDirection = FlowDirection.LeftToRight;
+                flp.FlowDirection = FlowDirection.LeftToRight;
             }
         }
 
-        private void SetFlowControlScrollBar(FlowLayoutPanel flp)
+        /// <summary>
+        /// Sets whether the scroll bars are enabled or disabled
+        /// and whether you can see them or not depending on the
+        /// pixel width or height of the screen.
+        /// </summary>
+        /// <param name="flp">The flowlayoutpanel that is being passed in to have changes made to it.</param>
+        private void SetFlowControlScrollBars(FlowLayoutPanel flp)
         {
             if (Convert.ToInt32(Form.ActiveForm.Size.Width) < 1080)
             {
-                flpMemberScores.HorizontalScroll.Visible = true;
-                flpMemberScores.HorizontalScroll.Enabled = true;
+                flp.HorizontalScroll.Visible = true;
+                flp.HorizontalScroll.Enabled = true;
             }
             if (Convert.ToInt32(Form.ActiveForm.Size.Height) < 600)
             {
-                flpMemberScores.VerticalScroll.Visible = true;
-                flpMemberScores.VerticalScroll.Enabled = true;
+                flp.VerticalScroll.Visible = true;
+                flp.VerticalScroll.Enabled = true;
             }
             if(Convert.ToInt32(Form.ActiveForm.Size.Width) > 1080)
             {
-                flpMemberScores.HorizontalScroll.Visible = false;
-                flpMemberScores.HorizontalScroll.Enabled = false;
+                flp.HorizontalScroll.Visible = false;
+                flp.HorizontalScroll.Enabled = false;
             }
             if(Convert.ToInt32(Form.ActiveForm.Size.Height) > 600)
             {
-                flpMemberScores.VerticalScroll.Visible = false;
-                flpMemberScores.VerticalScroll.Enabled = false;
+                flp.VerticalScroll.Visible = false;
+                flp.VerticalScroll.Enabled = false;
             }
         }
 
+        /// <summary>
+        /// After the size of the form has been changed, it checks the pixel
+        /// width and height to determine whether there needs to be scroll bars
+        /// or not.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void flpMemberScores_SizeChanged(object sender, EventArgs e)
         {
-            SetFlowControlScrollBar(flpMemberScores);
+            SetFlowControlScrollBars(flpMemberData);
         }
     }
 }

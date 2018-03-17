@@ -2592,29 +2592,52 @@ namespace NineTapTour.Forms
             form.ShowDialog();
         }
 
+        /// <summary>
+        /// The resize event for the form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void frmMemberScores_Resize(object sender, EventArgs e)
         {
-            SetFlowDirection();
+            SetFlowDirection(flpMemberScores);
         }
 
-        private void SetFlowDirection()
+        /// <summary>
+        /// Sets the flow direction for the flowlayoutpanel depending
+        /// on the pixel width or height of the screen.
+        /// </summary>
+        /// <param name="flp">The flowlayoutpanel that is being passed in to have changes made to it.</param>
+        private void SetFlowDirection(FlowLayoutPanel flp)
         {
             if (Convert.ToInt32(Form.ActiveForm.Size.Width) > 1100 && Convert.ToInt32(Form.ActiveForm.Size.Height) < 766)
             {
-                flpMemberScores.FlowDirection = FlowDirection.TopDown;
+                flp.FlowDirection = FlowDirection.TopDown;
             }
             else
             {
-                flpMemberScores.FlowDirection = FlowDirection.LeftToRight;
+                flp.FlowDirection = FlowDirection.LeftToRight;
             }
         }
 
+        /// <summary>
+        /// After the size of the form has been changed, it checks the pixel
+        /// width and height to determine whether there needs to be scroll bars
+        /// or not.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void flpMemberScores_SizeChanged(object sender, EventArgs e)
         {
-            SetFlowControlScrollBars();
+            SetFlowControlScrollBars(flpMemberScores);
         }
 
-        private void SetFlowControlScrollBars()
+        /// <summary>
+        /// Sets whether the scroll bars are enabled or disabled
+        /// and whether you can see them or not depending on the
+        /// pixel width or height of the screen.
+        /// </summary>
+        /// <param name="flp">The flowlayoutpanel that is being passed in to have changes made to it.</param>
+        private void SetFlowControlScrollBars(FlowLayoutPanel flp)
         {
             if (Convert.ToInt32(Form.ActiveForm.Size.Width) < 1300)
             {
