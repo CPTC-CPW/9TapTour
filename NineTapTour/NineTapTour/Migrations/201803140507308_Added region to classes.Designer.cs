@@ -7,18 +7,18 @@ namespace NineTapTour.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class AddedBoolforDoubles : IMigrationMetadata
+    public sealed partial class Addedregiontoclasses : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddedBoolforDoubles));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Addedregiontoclasses));
         
         string IMigrationMetadata.Id
         {
-            get { return "201602082019380_AddedBoolforDoubles"; }
+            get { return "201803140507308_Added region to classes"; }
         }
         
         string IMigrationMetadata.Source
         {
-            get { return Resources.GetString("Source"); }
+            get { return null; }
         }
         
         string IMigrationMetadata.Target
