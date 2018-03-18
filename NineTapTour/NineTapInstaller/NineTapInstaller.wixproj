@@ -25,7 +25,6 @@
     <Content Include="CommandLineHelp.txt" />
     <Content Include="Files\HorizontalBanner.bmp" />
     <Content Include="Files\Information.ico" />
-    <Content Include="ToDo.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Member_Import_Test\Member_Import_Test\Member_Import_Data.csproj">

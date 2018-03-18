@@ -1,3 +1,0 @@
-﻿- Install SQL Server Express 2017 if not currently installed
-- Copy excel template to output folder
-- Wizard Experience with Progress Bar and "Installation Complete" screen
