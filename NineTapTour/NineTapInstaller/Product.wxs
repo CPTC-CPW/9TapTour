@@ -32,7 +32,7 @@
     </Feature>
   
   
-      
+   <!-- Bootstrapper UI is now the default. These dialogs are ignored. -->   
   <UI>
     <!-- Resources -->
     <Binary Id="DialogBanner" SourceFile="Files\HorizontalBanner.bmp" />
