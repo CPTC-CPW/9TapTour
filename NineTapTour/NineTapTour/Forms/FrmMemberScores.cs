@@ -44,7 +44,9 @@ namespace NineTapTour.Forms
 
         private void RadioIntialize()
         {
-
+            rdoSquadOne.TabStop = false;
+            rdoHandicapScore.TabStop = false;
+            rdoAllResults.TabStop = false;
             rdoSquad5.Visible = false;
             rdoSquad6.Visible = false;
             rdoSquad7.Visible = false;
@@ -226,7 +228,30 @@ namespace NineTapTour.Forms
                 //currentGame.Bonus = currentMem.Bonus;
                 //currentGame.Handicap = currentMem.Handicap;
 
+                //////////////////////////////////////////////////////////////// PAGINATION HAPPENS RIGHT HERE!!!! ////////////////////////////////////////////////////
+                List<Participant> total = TournamentDb.GetTournamentMemberListInOrder(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue))); //gets list in order so forloops itterate better
 
+                //if (buttonCheck == true) // if the right button was clicked
+                //{
+                //    for (int i = currentIndex; i < total.Count(); i++)
+                //    {
+                //        if (currentMem.Id == total[i].Member.Id)
+                //        {
+                //            currentIndex++;
+                //        }
+                //    }
+                //}
+                //else // if left button was clicked
+                //{
+                //    for (int i = 0; i < currentIndex; i++)
+                //    {
+                //        if (currentMem.Id == total[i].Member.Id)
+                //        {
+                //            currentIndex--;
+                //        }
+                //    }
+                //}
+                lblRecord.Text = "Record " + (currentIndex)  + " / " + total.Count();
 
 
 
@@ -2764,15 +2789,11 @@ namespace NineTapTour.Forms
                     currentMem.StartAvg = temp[0].AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
                     currentMem.Average = Convert.ToInt32(temp[0].trueAVG);
                     MemberDb.AddMember(currentMem);
-
-
                 }
                 catch
                 {
                     MessageBox.Show("Current Stats Not added to Tournament yet.");
                 }
-
-
             }
         }
 
@@ -2865,9 +2886,7 @@ namespace NineTapTour.Forms
 
 
 
-    /************************************************************************/
-
-
+    }
     /// <summary>
     /// Class used to populate 3rd RichTextBox
     /// </summary>

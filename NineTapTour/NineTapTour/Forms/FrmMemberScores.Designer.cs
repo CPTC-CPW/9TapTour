@@ -59,13 +59,13 @@
             this.txtScratchTotal = new System.Windows.Forms.TextBox();
             this.txtHandicapTotal = new System.Windows.Forms.TextBox();
             this.grpRecord = new System.Windows.Forms.GroupBox();
-            this.btnRecapByPin = new System.Windows.Forms.Button();
             this.btnRightArrow = new System.Windows.Forms.Button();
             this.lblRecord = new System.Windows.Forms.Label();
-            this.btnLeftArrow = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
-            this.btnStats = new System.Windows.Forms.Button();
+            this.btnLeftArrow = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
+            this.btnRecapByPin = new System.Windows.Forms.Button();
+            this.btnStats = new System.Windows.Forms.Button();
             this.lblStratchScores = new System.Windows.Forms.Label();
             this.lblHandiCap = new System.Windows.Forms.Label();
             this.grpStats = new System.Windows.Forms.GroupBox();
@@ -123,6 +123,12 @@
             this.txtLastName2 = new System.Windows.Forms.TextBox();
             this.btnFinalizeTounament = new System.Windows.Forms.Button();
             this.btnTournamentResults = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.flpMemberScores = new System.Windows.Forms.FlowLayoutPanel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel4 = new System.Windows.Forms.Panel();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpRecord.SuspendLayout();
@@ -134,13 +140,19 @@
             this.grpReports.SuspendLayout();
             this.grpComments.SuspendLayout();
             this.pnlMemStat.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.flpMemberScores.SuspendLayout();
+            this.panel3.SuspendLayout();
+            this.panel5.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // grpMemberNum
             // 
             this.grpMemberNum.Controls.Add(this.txtMemberNum2);
             this.grpMemberNum.Controls.Add(this.txtMemberNum);
-            this.grpMemberNum.Location = new System.Drawing.Point(21, 23);
+            this.grpMemberNum.Location = new System.Drawing.Point(4, 3);
             this.grpMemberNum.Name = "grpMemberNum";
             this.grpMemberNum.Size = new System.Drawing.Size(179, 75);
             this.grpMemberNum.TabIndex = 0;
@@ -157,6 +169,7 @@
             this.txtMemberNum2.TabIndex = 1;
             this.txtMemberNum2.Visible = false;
             this.txtMemberNum2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMemberNum2_KeyDown);
+            this.txtMemberNum2.Leave += new System.EventHandler(this.txtMemberNum2_Leave);
             // 
             // txtMemberNum
             // 
@@ -167,6 +180,7 @@
             this.txtMemberNum.Size = new System.Drawing.Size(112, 20);
             this.txtMemberNum.TabIndex = 0;
             this.txtMemberNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMemberNum_KeyDown);
+            this.txtMemberNum.Leave += new System.EventHandler(this.txtMemberNum_Leave);
             // 
             // groupBox1
             // 
@@ -178,7 +192,7 @@
             this.groupBox1.Controls.Add(this.rdoSquadThree);
             this.groupBox1.Controls.Add(this.rdoSquadTwo);
             this.groupBox1.Controls.Add(this.rdoSquadOne);
-            this.groupBox1.Location = new System.Drawing.Point(21, 93);
+            this.groupBox1.Location = new System.Drawing.Point(4, 84);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(179, 122);
             this.groupBox1.TabIndex = 22;
@@ -195,7 +209,6 @@
             this.rdoSquad8.TabStop = true;
             this.rdoSquad8.Text = "Squad 8";
             this.rdoSquad8.UseVisualStyleBackColor = true;
-            this.rdoSquad8.CheckedChanged += new System.EventHandler(this.rdoSquad8_CheckedChanged);
             // 
             // rdoSquad6
             // 
@@ -207,7 +220,6 @@
             this.rdoSquad6.TabStop = true;
             this.rdoSquad6.Text = "Squad 6";
             this.rdoSquad6.UseVisualStyleBackColor = true;
-            this.rdoSquad6.CheckedChanged += new System.EventHandler(this.rdoSquad6_CheckedChanged);
             // 
             // rdoSquad7
             // 
@@ -219,7 +231,6 @@
             this.rdoSquad7.TabStop = true;
             this.rdoSquad7.Text = "Squad 7";
             this.rdoSquad7.UseVisualStyleBackColor = true;
-            this.rdoSquad7.CheckedChanged += new System.EventHandler(this.rdoSquad7_CheckedChanged);
             // 
             // rdoSquad5
             // 
@@ -231,7 +242,6 @@
             this.rdoSquad5.TabStop = true;
             this.rdoSquad5.Text = "Squad 5";
             this.rdoSquad5.UseVisualStyleBackColor = true;
-            this.rdoSquad5.CheckedChanged += new System.EventHandler(this.rdoSquad5_CheckedChanged);
             // 
             // rdoSquadFour
             // 
@@ -242,7 +252,6 @@
             this.rdoSquadFour.TabIndex = 23;
             this.rdoSquadFour.Text = "Squad 4";
             this.rdoSquadFour.UseVisualStyleBackColor = true;
-            this.rdoSquadFour.CheckedChanged += new System.EventHandler(this.rdoSquadFour_CheckedChanged);
             // 
             // rdoSquadThree
             // 
@@ -253,7 +262,6 @@
             this.rdoSquadThree.TabIndex = 22;
             this.rdoSquadThree.Text = "Squad 3";
             this.rdoSquadThree.UseVisualStyleBackColor = true;
-            this.rdoSquadThree.CheckedChanged += new System.EventHandler(this.rdoSquadThree_CheckedChanged);
             // 
             // rdoSquadTwo
             // 
@@ -264,7 +272,6 @@
             this.rdoSquadTwo.TabIndex = 21;
             this.rdoSquadTwo.Text = "Squad 2";
             this.rdoSquadTwo.UseVisualStyleBackColor = true;
-            this.rdoSquadTwo.CheckedChanged += new System.EventHandler(this.rdoSquadTwo_CheckedChanged);
             // 
             // rdoSquadOne
             // 
@@ -277,14 +284,13 @@
             this.rdoSquadOne.TabStop = true;
             this.rdoSquadOne.Text = "Squad 1";
             this.rdoSquadOne.UseVisualStyleBackColor = true;
-            this.rdoSquadOne.CheckedChanged += new System.EventHandler(this.rdoSquadOne_CheckedChanged);
             // 
             // txtLastName
             // 
             this.txtLastName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtLastName.Enabled = false;
             this.txtLastName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLastName.Location = new System.Drawing.Point(233, 30);
+            this.txtLastName.Location = new System.Drawing.Point(205, 22);
             this.txtLastName.Multiline = true;
             this.txtLastName.Name = "txtLastName";
             this.txtLastName.ReadOnly = true;
@@ -297,7 +303,7 @@
             this.txtFirstName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtFirstName.Enabled = false;
             this.txtFirstName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFirstName.Location = new System.Drawing.Point(474, 30);
+            this.txtFirstName.Location = new System.Drawing.Point(428, 22);
             this.txtFirstName.Multiline = true;
             this.txtFirstName.Name = "txtFirstName";
             this.txtFirstName.ReadOnly = true;
@@ -310,7 +316,7 @@
             this.txtMiddleInitial.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtMiddleInitial.Enabled = false;
             this.txtMiddleInitial.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMiddleInitial.Location = new System.Drawing.Point(713, 30);
+            this.txtMiddleInitial.Location = new System.Drawing.Point(667, 22);
             this.txtMiddleInitial.Multiline = true;
             this.txtMiddleInitial.Name = "txtMiddleInitial";
             this.txtMiddleInitial.ReadOnly = true;
@@ -322,7 +328,7 @@
             // 
             this.lblLastName.AutoSize = true;
             this.lblLastName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.lblLastName.Location = new System.Drawing.Point(229, 8);
+            this.lblLastName.Location = new System.Drawing.Point(201, 0);
             this.lblLastName.Name = "lblLastName";
             this.lblLastName.Size = new System.Drawing.Size(80, 19);
             this.lblLastName.TabIndex = 24;
@@ -332,7 +338,7 @@
             // 
             this.lblFirstName.AutoSize = true;
             this.lblFirstName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.lblFirstName.Location = new System.Drawing.Point(470, 8);
+            this.lblFirstName.Location = new System.Drawing.Point(424, 0);
             this.lblFirstName.Name = "lblFirstName";
             this.lblFirstName.Size = new System.Drawing.Size(82, 19);
             this.lblFirstName.TabIndex = 24;
@@ -342,7 +348,7 @@
             // 
             this.lblMiddleInitial.AutoSize = true;
             this.lblMiddleInitial.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.lblMiddleInitial.Location = new System.Drawing.Point(709, 8);
+            this.lblMiddleInitial.Location = new System.Drawing.Point(663, 0);
             this.lblMiddleInitial.Name = "lblMiddleInitial";
             this.lblMiddleInitial.Size = new System.Drawing.Size(99, 19);
             this.lblMiddleInitial.TabIndex = 24;
@@ -487,32 +493,17 @@
             // 
             // grpRecord
             // 
-            this.grpRecord.Controls.Add(this.btnRecapByPin);
             this.grpRecord.Controls.Add(this.btnRightArrow);
             this.grpRecord.Controls.Add(this.lblRecord);
-            this.grpRecord.Controls.Add(this.btnLeftArrow);
             this.grpRecord.Controls.Add(this.btnDelete);
-            this.grpRecord.Controls.Add(this.btnStats);
+            this.grpRecord.Controls.Add(this.btnLeftArrow);
             this.grpRecord.Controls.Add(this.btnNew);
-            this.grpRecord.Location = new System.Drawing.Point(21, 569);
+            this.grpRecord.Location = new System.Drawing.Point(3, 550);
             this.grpRecord.Name = "grpRecord";
-            this.grpRecord.Size = new System.Drawing.Size(235, 216);
+            this.grpRecord.Size = new System.Drawing.Size(235, 116);
             this.grpRecord.TabIndex = 2;
             this.grpRecord.TabStop = false;
             this.grpRecord.Text = "Record";
-            // 
-            // btnRecapByPin
-            // 
-            this.btnRecapByPin.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.btnRecapByPin.Location = new System.Drawing.Point(19, 162);
-            this.btnRecapByPin.Margin = new System.Windows.Forms.Padding(1);
-            this.btnRecapByPin.Name = "btnRecapByPin";
-            this.btnRecapByPin.Size = new System.Drawing.Size(197, 25);
-            this.btnRecapByPin.TabIndex = 35;
-            this.btnRecapByPin.TabStop = false;
-            this.btnRecapByPin.Text = "Print Recaps By Tournament";
-            this.btnRecapByPin.UseVisualStyleBackColor = true;
-            this.btnRecapByPin.Click += new System.EventHandler(this.btnRecapByPin_Click);
             // 
             // btnRightArrow
             // 
@@ -534,6 +525,17 @@
             this.lblRecord.TabIndex = 18;
             this.lblRecord.Text = "Record 0/0";
             // 
+            // btnDelete
+            // 
+            this.btnDelete.Location = new System.Drawing.Point(19, 85);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(197, 25);
+            this.btnDelete.TabIndex = 0;
+            this.btnDelete.TabStop = false;
+            this.btnDelete.Text = "Delete Member From Tournament";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            // 
             // btnLeftArrow
             // 
             this.btnLeftArrow.Location = new System.Drawing.Point(19, 50);
@@ -545,29 +547,6 @@
             this.btnLeftArrow.UseVisualStyleBackColor = true;
             this.btnLeftArrow.Click += new System.EventHandler(this.btnLeftArrow_Click);
             // 
-            // btnDelete
-            // 
-            this.btnDelete.Location = new System.Drawing.Point(19, 125);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(197, 25);
-            this.btnDelete.TabIndex = 0;
-            this.btnDelete.TabStop = false;
-            this.btnDelete.Text = "Delete Member From Tournament";
-            this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
-            // btnStats
-            // 
-            this.btnStats.Enabled = false;
-            this.btnStats.Location = new System.Drawing.Point(19, 92);
-            this.btnStats.Name = "btnStats";
-            this.btnStats.Size = new System.Drawing.Size(197, 25);
-            this.btnStats.TabIndex = 0;
-            this.btnStats.TabStop = false;
-            this.btnStats.Text = "Tournament Stats";
-            this.btnStats.UseVisualStyleBackColor = true;
-            this.btnStats.Click += new System.EventHandler(this.btnStats_Click);
-            // 
             // btnNew
             // 
             this.btnNew.Location = new System.Drawing.Point(19, 19);
@@ -577,6 +556,31 @@
             this.btnNew.Text = "Add New/Update Record";
             this.btnNew.UseVisualStyleBackColor = true;
             this.btnNew.Click += new System.EventHandler(this.newRecap);
+            // 
+            // btnRecapByPin
+            // 
+            this.btnRecapByPin.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.btnRecapByPin.Location = new System.Drawing.Point(3, 37);
+            this.btnRecapByPin.Margin = new System.Windows.Forms.Padding(1);
+            this.btnRecapByPin.Name = "btnRecapByPin";
+            this.btnRecapByPin.Size = new System.Drawing.Size(197, 25);
+            this.btnRecapByPin.TabIndex = 35;
+            this.btnRecapByPin.TabStop = false;
+            this.btnRecapByPin.Text = "Print Recaps By Tournament";
+            this.btnRecapByPin.UseVisualStyleBackColor = true;
+            this.btnRecapByPin.Click += new System.EventHandler(this.btnRecapByPin_Click);
+            // 
+            // btnStats
+            // 
+            this.btnStats.Enabled = false;
+            this.btnStats.Location = new System.Drawing.Point(3, 3);
+            this.btnStats.Name = "btnStats";
+            this.btnStats.Size = new System.Drawing.Size(197, 25);
+            this.btnStats.TabIndex = 0;
+            this.btnStats.TabStop = false;
+            this.btnStats.Text = "Tournament Stats";
+            this.btnStats.UseVisualStyleBackColor = true;
+            this.btnStats.Click += new System.EventHandler(this.btnStats_Click);
             // 
             // lblStratchScores
             // 
@@ -619,7 +623,7 @@
             this.grpStats.Controls.Add(this.txtHandicapScore4);
             this.grpStats.Controls.Add(this.txtHandicapScore3);
             this.grpStats.Controls.Add(this.txtScratchScore4);
-            this.grpStats.Location = new System.Drawing.Point(21, 221);
+            this.grpStats.Location = new System.Drawing.Point(6, 207);
             this.grpStats.Name = "grpStats";
             this.grpStats.Size = new System.Drawing.Size(360, 328);
             this.grpStats.TabIndex = 1;
@@ -652,7 +656,8 @@
             this.txtMoney.Location = new System.Drawing.Point(244, 278);
             this.txtMoney.Name = "txtMoney";
             this.txtMoney.Size = new System.Drawing.Size(83, 20);
-            this.txtMoney.TabIndex = 0;
+            this.txtMoney.TabIndex = 8;
+            this.txtMoney.TabStop = false;
             // 
             // lblPlayer2
             // 
@@ -723,7 +728,7 @@
             // grpTournamentFile
             // 
             this.grpTournamentFile.Controls.Add(this.cbxTourneyDropDown);
-            this.grpTournamentFile.Location = new System.Drawing.Point(277, 654);
+            this.grpTournamentFile.Location = new System.Drawing.Point(3, 61);
             this.grpTournamentFile.Name = "grpTournamentFile";
             this.grpTournamentFile.Size = new System.Drawing.Size(201, 60);
             this.grpTournamentFile.TabIndex = 28;
@@ -754,7 +759,7 @@
             this.grpLeaders.Controls.Add(this.richTextBox1);
             this.grpLeaders.Controls.Add(this.lblSeries);
             this.grpLeaders.Controls.Add(this.lblGameSenior);
-            this.grpLeaders.Location = new System.Drawing.Point(405, 154);
+            this.grpLeaders.Location = new System.Drawing.Point(396, 138);
             this.grpLeaders.Name = "grpLeaders";
             this.grpLeaders.Size = new System.Drawing.Size(456, 395);
             this.grpLeaders.TabIndex = 29;
@@ -1002,7 +1007,7 @@
             this.grpReports.Controls.Add(this.btnSeries);
             this.grpReports.Controls.Add(this.btnGame);
             this.grpReports.Controls.Add(this.btnSenior);
-            this.grpReports.Location = new System.Drawing.Point(499, 570);
+            this.grpReports.Location = new System.Drawing.Point(6, 8);
             this.grpReports.Name = "grpReports";
             this.grpReports.Size = new System.Drawing.Size(123, 171);
             this.grpReports.TabIndex = 0;
@@ -1045,7 +1050,7 @@
             // grpComments
             // 
             this.grpComments.Controls.Add(this.rtxtComments);
-            this.grpComments.Location = new System.Drawing.Point(660, 569);
+            this.grpComments.Location = new System.Drawing.Point(4, 4);
             this.grpComments.Name = "grpComments";
             this.grpComments.Size = new System.Drawing.Size(201, 172);
             this.grpComments.TabIndex = 31;
@@ -1067,7 +1072,7 @@
             // 
             this.pnlMemStat.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pnlMemStat.Controls.Add(this.lblMemberStatus);
-            this.pnlMemStat.Location = new System.Drawing.Point(271, 158);
+            this.pnlMemStat.Location = new System.Drawing.Point(257, 147);
             this.pnlMemStat.Name = "pnlMemStat";
             this.pnlMemStat.Size = new System.Drawing.Size(110, 57);
             this.pnlMemStat.TabIndex = 32;
@@ -1075,7 +1080,7 @@
             // lblMemberL
             // 
             this.lblMemberL.AutoSize = true;
-            this.lblMemberL.Location = new System.Drawing.Point(286, 142);
+            this.lblMemberL.Location = new System.Drawing.Point(272, 131);
             this.lblMemberL.Name = "lblMemberL";
             this.lblMemberL.Size = new System.Drawing.Size(78, 13);
             this.lblMemberL.TabIndex = 30;
@@ -1083,7 +1088,7 @@
             // 
             // btnNewTournament
             // 
-            this.btnNewTournament.Location = new System.Drawing.Point(281, 625);
+            this.btnNewTournament.Location = new System.Drawing.Point(6, 32);
             this.btnNewTournament.Name = "btnNewTournament";
             this.btnNewTournament.Size = new System.Drawing.Size(191, 23);
             this.btnNewTournament.TabIndex = 26;
@@ -1094,7 +1099,7 @@
             // 
             // btnTourSearch
             // 
-            this.btnTourSearch.Location = new System.Drawing.Point(281, 726);
+            this.btnTourSearch.Location = new System.Drawing.Point(6, 127);
             this.btnTourSearch.Name = "btnTourSearch";
             this.btnTourSearch.Size = new System.Drawing.Size(189, 23);
             this.btnTourSearch.TabIndex = 33;
@@ -1104,7 +1109,7 @@
             // 
             // btnTournamentsByYear
             // 
-            this.btnTournamentsByYear.Location = new System.Drawing.Point(281, 753);
+            this.btnTournamentsByYear.Location = new System.Drawing.Point(6, 156);
             this.btnTournamentsByYear.Margin = new System.Windows.Forms.Padding(1);
             this.btnTournamentsByYear.Name = "btnTournamentsByYear";
             this.btnTournamentsByYear.Size = new System.Drawing.Size(189, 23);
@@ -1115,7 +1120,7 @@
             // 
             // btnPlaceStandings
             // 
-            this.btnPlaceStandings.Location = new System.Drawing.Point(281, 579);
+            this.btnPlaceStandings.Location = new System.Drawing.Point(6, 1);
             this.btnPlaceStandings.Margin = new System.Windows.Forms.Padding(1);
             this.btnPlaceStandings.Name = "btnPlaceStandings";
             this.btnPlaceStandings.Size = new System.Drawing.Size(189, 23);
@@ -1128,7 +1133,7 @@
             // 
             this.lblMiddleInitial2.AutoSize = true;
             this.lblMiddleInitial2.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.lblMiddleInitial2.Location = new System.Drawing.Point(709, 79);
+            this.lblMiddleInitial2.Location = new System.Drawing.Point(663, 66);
             this.lblMiddleInitial2.Name = "lblMiddleInitial2";
             this.lblMiddleInitial2.Size = new System.Drawing.Size(99, 19);
             this.lblMiddleInitial2.TabIndex = 36;
@@ -1138,7 +1143,7 @@
             // 
             this.lblFirstName2.AutoSize = true;
             this.lblFirstName2.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.lblFirstName2.Location = new System.Drawing.Point(470, 79);
+            this.lblFirstName2.Location = new System.Drawing.Point(424, 66);
             this.lblFirstName2.Name = "lblFirstName2";
             this.lblFirstName2.Size = new System.Drawing.Size(82, 19);
             this.lblFirstName2.TabIndex = 37;
@@ -1148,7 +1153,7 @@
             // 
             this.lbLastName2.AutoSize = true;
             this.lbLastName2.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.lbLastName2.Location = new System.Drawing.Point(229, 79);
+            this.lbLastName2.Location = new System.Drawing.Point(201, 66);
             this.lbLastName2.Name = "lbLastName2";
             this.lbLastName2.Size = new System.Drawing.Size(80, 19);
             this.lbLastName2.TabIndex = 38;
@@ -1159,7 +1164,7 @@
             this.txtMiddleInitial2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtMiddleInitial2.Enabled = false;
             this.txtMiddleInitial2.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMiddleInitial2.Location = new System.Drawing.Point(713, 101);
+            this.txtMiddleInitial2.Location = new System.Drawing.Point(667, 88);
             this.txtMiddleInitial2.Multiline = true;
             this.txtMiddleInitial2.Name = "txtMiddleInitial2";
             this.txtMiddleInitial2.ReadOnly = true;
@@ -1172,7 +1177,7 @@
             this.txtFirstName2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtFirstName2.Enabled = false;
             this.txtFirstName2.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFirstName2.Location = new System.Drawing.Point(474, 101);
+            this.txtFirstName2.Location = new System.Drawing.Point(428, 88);
             this.txtFirstName2.Multiline = true;
             this.txtFirstName2.Name = "txtFirstName2";
             this.txtFirstName2.ReadOnly = true;
@@ -1185,7 +1190,7 @@
             this.txtLastName2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtLastName2.Enabled = false;
             this.txtLastName2.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLastName2.Location = new System.Drawing.Point(233, 101);
+            this.txtLastName2.Location = new System.Drawing.Point(205, 88);
             this.txtLastName2.Multiline = true;
             this.txtLastName2.Name = "txtLastName2";
             this.txtLastName2.ReadOnly = true;
@@ -1195,7 +1200,7 @@
             // 
             // btnFinalizeTounament
             // 
-            this.btnFinalizeTounament.Location = new System.Drawing.Point(660, 753);
+            this.btnFinalizeTounament.Location = new System.Drawing.Point(4, 178);
             this.btnFinalizeTounament.Name = "btnFinalizeTounament";
             this.btnFinalizeTounament.Size = new System.Drawing.Size(201, 23);
             this.btnFinalizeTounament.TabIndex = 42;
@@ -1205,7 +1210,7 @@
             // 
             // btnTournamentResults
             // 
-            this.btnTournamentResults.Location = new System.Drawing.Point(499, 753);
+            this.btnTournamentResults.Location = new System.Drawing.Point(6, 180);
             this.btnTournamentResults.Margin = new System.Windows.Forms.Padding(1);
             this.btnTournamentResults.Name = "btnTournamentResults";
             this.btnTournamentResults.Size = new System.Drawing.Size(123, 23);
@@ -1214,47 +1219,100 @@
             this.btnTournamentResults.UseVisualStyleBackColor = true;
             this.btnTournamentResults.Click += new System.EventHandler(this.btnTournamentResults_Click);
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.lblLastName);
+            this.panel1.Controls.Add(this.txtLastName);
+            this.panel1.Controls.Add(this.lbLastName2);
+            this.panel1.Controls.Add(this.lblMiddleInitial2);
+            this.panel1.Controls.Add(this.txtLastName2);
+            this.panel1.Controls.Add(this.lblFirstName2);
+            this.panel1.Controls.Add(this.lblFirstName);
+            this.panel1.Controls.Add(this.lblMemberL);
+            this.panel1.Controls.Add(this.grpStats);
+            this.panel1.Controls.Add(this.pnlMemStat);
+            this.panel1.Controls.Add(this.txtMiddleInitial2);
+            this.panel1.Controls.Add(this.grpLeaders);
+            this.panel1.Controls.Add(this.txtFirstName);
+            this.panel1.Controls.Add(this.groupBox1);
+            this.panel1.Controls.Add(this.txtFirstName2);
+            this.panel1.Controls.Add(this.grpMemberNum);
+            this.panel1.Controls.Add(this.txtMiddleInitial);
+            this.panel1.Controls.Add(this.lblMiddleInitial);
+            this.panel1.Location = new System.Drawing.Point(3, 3);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(860, 541);
+            this.panel1.TabIndex = 0;
+            // 
+            // flpMemberScores
+            // 
+            this.flpMemberScores.Controls.Add(this.panel1);
+            this.flpMemberScores.Controls.Add(this.grpRecord);
+            this.flpMemberScores.Controls.Add(this.panel5);
+            this.flpMemberScores.Controls.Add(this.panel2);
+            this.flpMemberScores.Controls.Add(this.panel3);
+            this.flpMemberScores.Controls.Add(this.panel4);
+            this.flpMemberScores.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpMemberScores.Location = new System.Drawing.Point(0, 0);
+            this.flpMemberScores.Name = "flpMemberScores";
+            this.flpMemberScores.Size = new System.Drawing.Size(1042, 749);
+            this.flpMemberScores.TabIndex = 1;
+            this.flpMemberScores.SizeChanged += new System.EventHandler(this.flpMemberScores_SizeChanged);
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.grpReports);
+            this.panel3.Controls.Add(this.btnTournamentResults);
+            this.panel3.Location = new System.Drawing.Point(664, 550);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(139, 207);
+            this.panel3.TabIndex = 46;
+            // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.btnRecapByPin);
+            this.panel5.Controls.Add(this.btnStats);
+            this.panel5.Location = new System.Drawing.Point(244, 550);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(202, 68);
+            this.panel5.TabIndex = 24;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.btnPlaceStandings);
+            this.panel2.Controls.Add(this.grpTournamentFile);
+            this.panel2.Controls.Add(this.btnNewTournament);
+            this.panel2.Controls.Add(this.btnTourSearch);
+            this.panel2.Controls.Add(this.btnTournamentsByYear);
+            this.panel2.Location = new System.Drawing.Point(452, 550);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(206, 184);
+            this.panel2.TabIndex = 46;
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.grpComments);
+            this.panel4.Controls.Add(this.btnFinalizeTounament);
+            this.panel4.Location = new System.Drawing.Point(809, 550);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(212, 213);
+            this.panel4.TabIndex = 46;
+            // 
             // frmMemberScores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(968, 548);
-            this.Controls.Add(this.btnTournamentResults);
-            this.Controls.Add(this.btnFinalizeTounament);
-            this.Controls.Add(this.lblMiddleInitial2);
-            this.Controls.Add(this.lblFirstName2);
-            this.Controls.Add(this.lbLastName2);
-            this.Controls.Add(this.txtMiddleInitial2);
-            this.Controls.Add(this.txtFirstName2);
-            this.Controls.Add(this.txtLastName2);
-            this.Controls.Add(this.btnPlaceStandings);
-            this.Controls.Add(this.btnTournamentsByYear);
-            this.Controls.Add(this.btnTourSearch);
-            this.Controls.Add(this.btnNewTournament);
-            this.Controls.Add(this.lblMemberL);
-            this.Controls.Add(this.pnlMemStat);
-            this.Controls.Add(this.grpComments);
-            this.Controls.Add(this.grpStats);
-            this.Controls.Add(this.grpReports);
-            this.Controls.Add(this.grpLeaders);
-            this.Controls.Add(this.grpTournamentFile);
-            this.Controls.Add(this.grpRecord);
-            this.Controls.Add(this.lblMiddleInitial);
-            this.Controls.Add(this.lblFirstName);
-            this.Controls.Add(this.lblLastName);
-            this.Controls.Add(this.txtMiddleInitial);
-            this.Controls.Add(this.txtFirstName);
-            this.Controls.Add(this.txtLastName);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.grpMemberNum);
+            this.ClientSize = new System.Drawing.Size(1042, 749);
+            this.Controls.Add(this.flpMemberScores);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmMemberScores";
             this.Text = "Member Scores";
             this.Activated += new System.EventHandler(this.FrmMemberScores_Activated);
             this.Load += new System.EventHandler(this.FrmMemberScores_Load);
+            this.Resize += new System.EventHandler(this.frmMemberScores_Resize);
             this.grpMemberNum.ResumeLayout(false);
             this.grpMemberNum.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -1274,8 +1332,14 @@
             this.grpComments.ResumeLayout(false);
             this.pnlMemStat.ResumeLayout(false);
             this.pnlMemStat.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.flpMemberScores.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
+            this.panel5.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
+            this.panel4.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -1375,5 +1439,11 @@
         private System.Windows.Forms.RadioButton rdoAllResults;
         private System.Windows.Forms.Button btnTournamentResults;
         private System.Windows.Forms.CheckBox chbCompEntry;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.FlowLayoutPanel flpMemberScores;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Panel panel5;
     }
 }
