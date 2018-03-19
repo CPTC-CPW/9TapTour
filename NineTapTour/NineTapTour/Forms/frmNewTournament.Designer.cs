@@ -171,6 +171,7 @@
             this.lblDoubles.Size = new System.Drawing.Size(49, 13);
             this.lblDoubles.TabIndex = 12;
             this.lblDoubles.Text = "Doubles:";
+            this.lblDoubles.Visible = false;
             // 
             // ckbxDoubles
             // 
@@ -181,6 +182,7 @@
             this.ckbxDoubles.TabIndex = 13;
             this.ckbxDoubles.Text = "Yes";
             this.ckbxDoubles.UseVisualStyleBackColor = true;
+            this.ckbxDoubles.Visible = false;
             this.ckbxDoubles.CheckedChanged += new System.EventHandler(this.ckbxDoubles_CheckedChanged);
             // 
             // btnEditTour
