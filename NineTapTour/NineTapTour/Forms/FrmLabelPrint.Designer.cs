@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmLabelPrint));
             this.lbxPrintList = new System.Windows.Forms.ListBox();
             this.lbxMemberList = new System.Windows.Forms.ListBox();
             this.btnAdd = new System.Windows.Forms.Button();
@@ -40,6 +41,7 @@
             // 
             // lbxPrintList
             // 
+            this.lbxPrintList.BackColor = System.Drawing.SystemColors.ControlLight;
             this.lbxPrintList.FormattingEnabled = true;
             this.lbxPrintList.Location = new System.Drawing.Point(60, 33);
             this.lbxPrintList.Name = "lbxPrintList";
@@ -49,6 +51,7 @@
             // 
             // lbxMemberList
             // 
+            this.lbxMemberList.BackColor = System.Drawing.SystemColors.ControlLight;
             this.lbxMemberList.FormattingEnabled = true;
             this.lbxMemberList.Location = new System.Drawing.Point(360, 33);
             this.lbxMemberList.Name = "lbxMemberList";
@@ -121,6 +124,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(599, 411);
             this.Controls.Add(this.cbxShowInactive);
             this.Controls.Add(this.btnClose);
@@ -130,6 +134,7 @@
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.lbxMemberList);
             this.Controls.Add(this.lbxPrintList);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmLabelPrint";
             this.Text = "Print Address Labels";
             this.Load += new System.EventHandler(this.FrmLabelPrint_Load);

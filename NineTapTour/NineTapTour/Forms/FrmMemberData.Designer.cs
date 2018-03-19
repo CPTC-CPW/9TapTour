@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMemberData));
             this.txtLastName = new System.Windows.Forms.TextBox();
             this.txtFirstName = new System.Windows.Forms.TextBox();
@@ -46,14 +47,14 @@
             this.txtAverage = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.grpMemberInfo = new System.Windows.Forms.GroupBox();
+            this.mtxtBoxRejoinDate = new System.Windows.Forms.MaskedTextBox();
+            this.mtxtBoxDateJoined = new System.Windows.Forms.MaskedTextBox();
+            this.mtxtBoxDOB = new System.Windows.Forms.MaskedTextBox();
             this.chbSocial = new System.Windows.Forms.CheckBox();
-            this.dateDOB = new System.Windows.Forms.DateTimePicker();
             this.mtxtBoxZip = new System.Windows.Forms.MaskedTextBox();
             this.mtxtBoxSSN = new System.Windows.Forms.MaskedTextBox();
             this.mtxtBoxPhone2 = new System.Windows.Forms.MaskedTextBox();
             this.mtxtBoxPhone = new System.Windows.Forms.MaskedTextBox();
-            this.dateRejoin = new System.Windows.Forms.DateTimePicker();
-            this.dateJoined = new System.Windows.Forms.DateTimePicker();
             this.lblEmail = new System.Windows.Forms.Label();
             this.lblDOB = new System.Windows.Forms.Label();
             this.lblRefferals = new System.Windows.Forms.Label();
@@ -79,7 +80,6 @@
             this.groupRecord = new System.Windows.Forms.GroupBox();
             this.btnImportData = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
-            this.btnClear = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
             this.grpRecordNumber = new System.Windows.Forms.GroupBox();
             this.btnLastRecord = new System.Windows.Forms.Button();
@@ -91,7 +91,6 @@
             this.grpSearchBy = new System.Windows.Forms.GroupBox();
             this.btnMemberSearch = new System.Windows.Forms.Button();
             this.grpPrinter = new System.Windows.Forms.GroupBox();
-            this.btnLabels = new System.Windows.Forms.Button();
             this.btnRecapByDate = new System.Windows.Forms.Button();
             this.btnThisRecap = new System.Windows.Forms.Button();
             this.btnAllRecaps = new System.Windows.Forms.Button();
@@ -102,13 +101,14 @@
             this.grpGender = new System.Windows.Forms.GroupBox();
             this.grpStatus = new System.Windows.Forms.GroupBox();
             this.chbSenior = new System.Windows.Forms.CheckBox();
-            this.dateLastBowled = new System.Windows.Forms.DateTimePicker();
             this.chbLifetime = new System.Windows.Forms.CheckBox();
-            this.datePaid = new System.Windows.Forms.DateTimePicker();
             this.lblLastPaid = new System.Windows.Forms.Label();
             this.lblPaymentInfo = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.txtTournAvg = new System.Windows.Forms.TextBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.mtxtBoxLastBowled = new System.Windows.Forms.MaskedTextBox();
+            this.mtxtBoxLastPayment = new System.Windows.Forms.MaskedTextBox();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -121,6 +121,7 @@
             // 
             // txtLastName
             // 
+            this.txtLastName.BackColor = System.Drawing.SystemColors.ControlLight;
             this.txtLastName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtLastName.Location = new System.Drawing.Point(226, 31);
             this.txtLastName.MaxLength = 50;
@@ -131,6 +132,7 @@
             // 
             // txtFirstName
             // 
+            this.txtFirstName.BackColor = System.Drawing.SystemColors.ControlLight;
             this.txtFirstName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtFirstName.Location = new System.Drawing.Point(477, 31);
             this.txtFirstName.MaxLength = 50;
@@ -141,6 +143,7 @@
             // 
             // txtMiddleInitial
             // 
+            this.txtMiddleInitial.BackColor = System.Drawing.SystemColors.ControlLight;
             this.txtMiddleInitial.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMiddleInitial.Location = new System.Drawing.Point(731, 31);
             this.txtMiddleInitial.MaxLength = 10;
@@ -201,9 +204,11 @@
             this.txtMemberNumber.TabStop = false;
             this.txtMemberNumber.Text = "1";
             this.txtMemberNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtMemberNumber.TextChanged += new System.EventHandler(this.txtMemberNumber_TextChanged);
             // 
             // txtBonus
             // 
+            this.txtBonus.BackColor = System.Drawing.SystemColors.ControlLight;
             this.txtBonus.Enabled = false;
             this.txtBonus.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtBonus.Location = new System.Drawing.Point(761, 438);
@@ -216,6 +221,7 @@
             // 
             // txtHandicap
             // 
+            this.txtHandicap.BackColor = System.Drawing.SystemColors.ControlLight;
             this.txtHandicap.Enabled = false;
             this.txtHandicap.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtHandicap.Location = new System.Drawing.Point(638, 438);
@@ -258,6 +264,7 @@
             // 
             // txtNotes
             // 
+            this.txtNotes.BackColor = System.Drawing.SystemColors.Control;
             this.txtNotes.Location = new System.Drawing.Point(38, 319);
             this.txtNotes.MaxLength = 750;
             this.txtNotes.Multiline = true;
@@ -268,6 +275,7 @@
             // 
             // txtAverage
             // 
+            this.txtAverage.BackColor = System.Drawing.SystemColors.Control;
             this.txtAverage.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtAverage.Location = new System.Drawing.Point(382, 438);
             this.txtAverage.MaxLength = 20;
@@ -288,14 +296,14 @@
             // 
             // grpMemberInfo
             // 
+            this.grpMemberInfo.Controls.Add(this.mtxtBoxRejoinDate);
+            this.grpMemberInfo.Controls.Add(this.mtxtBoxDateJoined);
+            this.grpMemberInfo.Controls.Add(this.mtxtBoxDOB);
             this.grpMemberInfo.Controls.Add(this.chbSocial);
-            this.grpMemberInfo.Controls.Add(this.dateDOB);
             this.grpMemberInfo.Controls.Add(this.mtxtBoxZip);
             this.grpMemberInfo.Controls.Add(this.mtxtBoxSSN);
             this.grpMemberInfo.Controls.Add(this.mtxtBoxPhone2);
             this.grpMemberInfo.Controls.Add(this.mtxtBoxPhone);
-            this.grpMemberInfo.Controls.Add(this.dateRejoin);
-            this.grpMemberInfo.Controls.Add(this.dateJoined);
             this.grpMemberInfo.Controls.Add(this.lblEmail);
             this.grpMemberInfo.Controls.Add(this.lblDOB);
             this.grpMemberInfo.Controls.Add(this.lblRefferals);
@@ -321,6 +329,34 @@
             this.grpMemberInfo.TabStop = false;
             this.grpMemberInfo.Text = "Member Information";
             // 
+            // mtxtBoxRejoinDate
+            // 
+            this.mtxtBoxRejoinDate.Location = new System.Drawing.Point(343, 191);
+            this.mtxtBoxRejoinDate.Mask = "00/00/0000";
+            this.mtxtBoxRejoinDate.Name = "mtxtBoxRejoinDate";
+            this.mtxtBoxRejoinDate.Size = new System.Drawing.Size(100, 63);
+            this.mtxtBoxRejoinDate.TabIndex = 30;
+            this.mtxtBoxRejoinDate.ValidatingType = typeof(System.DateTime);
+            // 
+            // mtxtBoxDateJoined
+            // 
+            this.mtxtBoxDateJoined.Location = new System.Drawing.Point(344, 138);
+            this.mtxtBoxDateJoined.Mask = "00/00/0000";
+            this.mtxtBoxDateJoined.Name = "mtxtBoxDateJoined";
+            this.mtxtBoxDateJoined.Size = new System.Drawing.Size(100, 63);
+            this.mtxtBoxDateJoined.TabIndex = 28;
+            this.mtxtBoxDateJoined.ValidatingType = typeof(System.DateTime);
+            // 
+            // mtxtBoxDOB
+            // 
+            this.mtxtBoxDOB.Location = new System.Drawing.Point(34, 41);
+            this.mtxtBoxDOB.Mask = "00/00/0000";
+            this.mtxtBoxDOB.Name = "mtxtBoxDOB";
+            this.mtxtBoxDOB.Size = new System.Drawing.Size(100, 63);
+            this.mtxtBoxDOB.TabIndex = 10;
+            this.mtxtBoxDOB.ValidatingType = typeof(System.DateTime);
+            this.mtxtBoxDOB.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.mtxtBoxDOB_MaskInputRejected);
+            // 
             // chbSocial
             // 
             this.chbSocial.AutoSize = true;
@@ -331,17 +367,9 @@
             this.chbSocial.UseVisualStyleBackColor = true;
             this.chbSocial.CheckedChanged += new System.EventHandler(this.chbSocial_CheckedChanged);
             // 
-            // dateDOB
-            // 
-            this.dateDOB.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateDOB.Location = new System.Drawing.Point(25, 41);
-            this.dateDOB.Name = "dateDOB";
-            this.dateDOB.Size = new System.Drawing.Size(104, 23);
-            this.dateDOB.TabIndex = 10;
-            this.dateDOB.ValueChanged += new System.EventHandler(this.dateDOB_ValueChanged);
-            // 
             // mtxtBoxZip
             // 
+            this.mtxtBoxZip.BackColor = System.Drawing.SystemColors.Control;
             this.mtxtBoxZip.HideSelection = false;
             this.mtxtBoxZip.Location = new System.Drawing.Point(215, 137);
             this.mtxtBoxZip.Mask = "00000";
@@ -352,6 +380,7 @@
             // 
             // mtxtBoxSSN
             // 
+            this.mtxtBoxSSN.BackColor = System.Drawing.SystemColors.Control;
             this.mtxtBoxSSN.Location = new System.Drawing.Point(344, 41);
             this.mtxtBoxSSN.Mask = "000-00-0000";
             this.mtxtBoxSSN.Name = "mtxtBoxSSN";
@@ -362,6 +391,7 @@
             // 
             // mtxtBoxPhone2
             // 
+            this.mtxtBoxPhone2.BackColor = System.Drawing.SystemColors.Control;
             this.mtxtBoxPhone2.Location = new System.Drawing.Point(155, 185);
             this.mtxtBoxPhone2.Mask = "(999) 000-0000";
             this.mtxtBoxPhone2.Name = "mtxtBoxPhone2";
@@ -370,33 +400,12 @@
             // 
             // mtxtBoxPhone
             // 
+            this.mtxtBoxPhone.BackColor = System.Drawing.SystemColors.Control;
             this.mtxtBoxPhone.Location = new System.Drawing.Point(25, 185);
             this.mtxtBoxPhone.Mask = "(999) 000-0000";
             this.mtxtBoxPhone.Name = "mtxtBoxPhone";
             this.mtxtBoxPhone.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxPhone.TabIndex = 22;
-            // 
-            // dateRejoin
-            // 
-            this.dateRejoin.Checked = false;
-            this.dateRejoin.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateRejoin.Location = new System.Drawing.Point(344, 185);
-            this.dateRejoin.Name = "dateRejoin";
-            this.dateRejoin.Size = new System.Drawing.Size(103, 23);
-            this.dateRejoin.TabIndex = 30;
-            this.dateRejoin.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
-            this.dateRejoin.ValueChanged += new System.EventHandler(this.dateRejoin_ValueChanged);
-            this.dateRejoin.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ClearCalendar);
-            // 
-            // dateJoined
-            // 
-            this.dateJoined.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateJoined.Location = new System.Drawing.Point(344, 137);
-            this.dateJoined.Name = "dateJoined";
-            this.dateJoined.Size = new System.Drawing.Size(103, 23);
-            this.dateJoined.TabIndex = 28;
-            this.dateJoined.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
-            this.dateJoined.ValueChanged += new System.EventHandler(this.dateJoined_ValueChanged);
             // 
             // lblEmail
             // 
@@ -414,7 +423,7 @@
             this.lblDOB.Name = "lblDOB";
             this.lblDOB.Size = new System.Drawing.Size(107, 15);
             this.lblDOB.TabIndex = 9;
-            this.lblDOB.Text = "D.O.B. (mm/dd/yy)";
+            this.lblDOB.Text = "D.O.B. (mm/dd/yyyy)";
             // 
             // lblRefferals
             // 
@@ -490,6 +499,7 @@
             // 
             // txtReferrals
             // 
+            this.txtReferrals.BackColor = System.Drawing.SystemColors.Control;
             this.txtReferrals.Location = new System.Drawing.Point(344, 233);
             this.txtReferrals.MaxLength = 50;
             this.txtReferrals.Name = "txtReferrals";
@@ -516,6 +526,7 @@
             // 
             // txtState
             // 
+            this.txtState.BackColor = System.Drawing.SystemColors.Control;
             this.txtState.Location = new System.Drawing.Point(155, 137);
             this.txtState.MaxLength = 2;
             this.txtState.Name = "txtState";
@@ -525,6 +536,7 @@
             // 
             // txtCity
             // 
+            this.txtCity.BackColor = System.Drawing.SystemColors.Control;
             this.txtCity.Location = new System.Drawing.Point(25, 137);
             this.txtCity.MaxLength = 20;
             this.txtCity.Name = "txtCity";
@@ -534,6 +546,7 @@
             // 
             // txtAddress
             // 
+            this.txtAddress.BackColor = System.Drawing.SystemColors.Control;
             this.txtAddress.Location = new System.Drawing.Point(25, 89);
             this.txtAddress.MaxLength = 75;
             this.txtAddress.Name = "txtAddress";
@@ -543,6 +556,7 @@
             // 
             // txtEmail
             // 
+            this.txtEmail.BackColor = System.Drawing.SystemColors.Control;
             this.txtEmail.Location = new System.Drawing.Point(25, 233);
             this.txtEmail.MaxLength = 50;
             this.txtEmail.Name = "txtEmail";
@@ -551,6 +565,7 @@
             // 
             // txtYearEndT
             // 
+            this.txtYearEndT.BackColor = System.Drawing.SystemColors.Control;
             this.txtYearEndT.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtYearEndT.Location = new System.Drawing.Point(392, 517);
             this.txtYearEndT.MaxLength = 20;
@@ -560,6 +575,7 @@
             // 
             // txtMoneyEarned
             // 
+            this.txtMoneyEarned.BackColor = System.Drawing.SystemColors.Control;
             this.txtMoneyEarned.Enabled = false;
             this.txtMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMoneyEarned.Location = new System.Drawing.Point(573, 517);
@@ -602,12 +618,11 @@
             // 
             this.groupRecord.Controls.Add(this.btnImportData);
             this.groupRecord.Controls.Add(this.btnSave);
-            this.groupRecord.Controls.Add(this.btnClear);
             this.groupRecord.Controls.Add(this.btnNew);
             this.groupRecord.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupRecord.Location = new System.Drawing.Point(23, 583);
             this.groupRecord.Name = "groupRecord";
-            this.groupRecord.Size = new System.Drawing.Size(108, 126);
+            this.groupRecord.Size = new System.Drawing.Size(108, 113);
             this.groupRecord.TabIndex = 60;
             this.groupRecord.TabStop = false;
             this.groupRecord.Text = "Record";
@@ -615,7 +630,7 @@
             // btnImportData
             // 
             this.btnImportData.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnImportData.Location = new System.Drawing.Point(17, 97);
+            this.btnImportData.Location = new System.Drawing.Point(19, 74);
             this.btnImportData.Name = "btnImportData";
             this.btnImportData.Size = new System.Drawing.Size(75, 23);
             this.btnImportData.TabIndex = 64;
@@ -634,18 +649,6 @@
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // btnClear
-            // 
-            this.btnClear.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClear.Location = new System.Drawing.Point(17, 71);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(75, 23);
-            this.btnClear.TabIndex = 63;
-            this.btnClear.TabStop = false;
-            this.btnClear.Text = "Clear";
-            this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // btnNew
             // 
@@ -768,7 +771,6 @@
             // 
             // grpPrinter
             // 
-            this.grpPrinter.Controls.Add(this.btnLabels);
             this.grpPrinter.Controls.Add(this.btnRecapByDate);
             this.grpPrinter.Controls.Add(this.btnThisRecap);
             this.grpPrinter.Controls.Add(this.btnAllRecaps);
@@ -779,18 +781,6 @@
             this.grpPrinter.TabIndex = 73;
             this.grpPrinter.TabStop = false;
             this.grpPrinter.Text = "Print Recaps";
-            // 
-            // btnLabels
-            // 
-            this.btnLabels.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLabels.Location = new System.Drawing.Point(105, 49);
-            this.btnLabels.Name = "btnLabels";
-            this.btnLabels.Size = new System.Drawing.Size(102, 23);
-            this.btnLabels.TabIndex = 76;
-            this.btnLabels.TabStop = false;
-            this.btnLabels.Text = "Labels";
-            this.btnLabels.UseVisualStyleBackColor = true;
-            this.btnLabels.Click += new System.EventHandler(this.btnLabels_Click);
             // 
             // btnRecapByDate
             // 
@@ -812,7 +802,7 @@
             this.btnThisRecap.Size = new System.Drawing.Size(84, 23);
             this.btnThisRecap.TabIndex = 74;
             this.btnThisRecap.TabStop = false;
-            this.btnThisRecap.Text = "Print single";
+            this.btnThisRecap.Text = "Print Single";
             this.btnThisRecap.UseVisualStyleBackColor = true;
             this.btnThisRecap.Click += new System.EventHandler(this.btnThisRecap_Click);
             // 
@@ -821,10 +811,10 @@
             this.btnAllRecaps.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAllRecaps.Location = new System.Drawing.Point(18, 49);
             this.btnAllRecaps.Name = "btnAllRecaps";
-            this.btnAllRecaps.Size = new System.Drawing.Size(84, 23);
+            this.btnAllRecaps.Size = new System.Drawing.Size(189, 23);
             this.btnAllRecaps.TabIndex = 75;
             this.btnAllRecaps.TabStop = false;
-            this.btnAllRecaps.Text = "All Recaps";
+            this.btnAllRecaps.Text = "Print By Tournament";
             this.btnAllRecaps.UseVisualStyleBackColor = true;
             this.btnAllRecaps.Click += new System.EventHandler(this.btnAllRecaps_Click);
             // 
@@ -841,10 +831,12 @@
             // rdoActive
             // 
             this.rdoActive.AutoSize = true;
+            this.rdoActive.Checked = true;
             this.rdoActive.Location = new System.Drawing.Point(11, 23);
             this.rdoActive.Name = "rdoActive";
             this.rdoActive.Size = new System.Drawing.Size(57, 19);
             this.rdoActive.TabIndex = 48;
+            this.rdoActive.TabStop = true;
             this.rdoActive.Text = "Active";
             this.rdoActive.UseVisualStyleBackColor = true;
             // 
@@ -904,18 +896,6 @@
             this.chbSenior.Text = "Senior";
             this.chbSenior.UseVisualStyleBackColor = true;
             // 
-            // dateLastBowled
-            // 
-            this.dateLastBowled.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dateLastBowled.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateLastBowled.Location = new System.Drawing.Point(747, 517);
-            this.dateLastBowled.Name = "dateLastBowled";
-            this.dateLastBowled.Size = new System.Drawing.Size(103, 23);
-            this.dateLastBowled.TabIndex = 46;
-            this.dateLastBowled.TabStop = false;
-            this.dateLastBowled.CloseUp += new System.EventHandler(this.ApplyCalendarForm);
-            this.dateLastBowled.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ClearCalendar);
-            // 
             // chbLifetime
             // 
             this.chbLifetime.AutoSize = true;
@@ -927,14 +907,6 @@
             this.chbLifetime.Text = "Lifetime Member";
             this.chbLifetime.UseVisualStyleBackColor = true;
             this.chbLifetime.CheckedChanged += new System.EventHandler(this.chbLifetime_CheckedChanged);
-            // 
-            // datePaid
-            // 
-            this.datePaid.Location = new System.Drawing.Point(146, 241);
-            this.datePaid.Name = "datePaid";
-            this.datePaid.Size = new System.Drawing.Size(190, 21);
-            this.datePaid.TabIndex = 56;
-            this.datePaid.ValueChanged += new System.EventHandler(this.datePaid_ValueChanged);
             // 
             // lblLastPaid
             // 
@@ -970,6 +942,7 @@
             // 
             // txtTournAvg
             // 
+            this.txtTournAvg.BackColor = System.Drawing.SystemColors.ControlLight;
             this.txtTournAvg.Enabled = false;
             this.txtTournAvg.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtTournAvg.Location = new System.Drawing.Point(515, 438);
@@ -980,6 +953,24 @@
             this.txtTournAvg.TabIndex = 36;
             this.txtTournAvg.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // mtxtBoxLastBowled
+            // 
+            this.mtxtBoxLastBowled.Location = new System.Drawing.Point(747, 517);
+            this.mtxtBoxLastBowled.Mask = "00/00/0000";
+            this.mtxtBoxLastBowled.Name = "mtxtBoxLastBowled";
+            this.mtxtBoxLastBowled.Size = new System.Drawing.Size(103, 54);
+            this.mtxtBoxLastBowled.TabIndex = 46;
+            this.mtxtBoxLastBowled.ValidatingType = typeof(System.DateTime);
+            // 
+            // mtxtBoxLastPayment
+            // 
+            this.mtxtBoxLastPayment.Location = new System.Drawing.Point(146, 241);
+            this.mtxtBoxLastPayment.Mask = "00/00/0000";
+            this.mtxtBoxLastPayment.Name = "mtxtBoxLastPayment";
+            this.mtxtBoxLastPayment.Size = new System.Drawing.Size(190, 54);
+            this.mtxtBoxLastPayment.TabIndex = 56;
+            this.mtxtBoxLastPayment.ValidatingType = typeof(System.DateTime);
+            // 
             // FrmMemberData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -987,15 +978,15 @@
             this.AutoScroll = true;
             this.AutoScrollMinSize = new System.Drawing.Size(100, 100);
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.BackColor = System.Drawing.Color.LightBlue;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(959, 741);
+            this.Controls.Add(this.mtxtBoxLastPayment);
+            this.Controls.Add(this.mtxtBoxLastBowled);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.lblPaymentInfo);
             this.Controls.Add(this.lblLastPaid);
             this.Controls.Add(this.txtTournAvg);
             this.Controls.Add(this.chbLifetime);
-            this.Controls.Add(this.datePaid);
-            this.Controls.Add(this.dateLastBowled);
             this.Controls.Add(this.chbSenior);
             this.Controls.Add(this.grpStatus);
             this.Controls.Add(this.grpGender);
@@ -1094,7 +1085,6 @@
         private System.Windows.Forms.GroupBox grpStats;
         private System.Windows.Forms.GroupBox grpSearchBy;
         private System.Windows.Forms.GroupBox grpPrinter;
-        private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnLastRecord;
         private System.Windows.Forms.Button btnFirstRecord;
@@ -1102,7 +1092,6 @@
         private System.Windows.Forms.Button btnArrowLeft;
         private System.Windows.Forms.Button btnStats;
         private System.Windows.Forms.Button btnMemberSearch;
-        private System.Windows.Forms.Button btnLabels;
         private System.Windows.Forms.Button btnRecapByDate;
         private System.Windows.Forms.Button btnThisRecap;
         private System.Windows.Forms.Button btnAllRecaps;
@@ -1116,22 +1105,23 @@
         private System.Windows.Forms.GroupBox grpGender;
         private System.Windows.Forms.GroupBox grpStatus;
         private System.Windows.Forms.CheckBox chbSenior;
-        private System.Windows.Forms.DateTimePicker dateRejoin;
-        private System.Windows.Forms.DateTimePicker dateJoined;
-        private System.Windows.Forms.DateTimePicker dateLastBowled;
         private System.Windows.Forms.MaskedTextBox mtxtBoxPhone;
         private System.Windows.Forms.MaskedTextBox mtxtBoxPhone2;
         private System.Windows.Forms.MaskedTextBox mtxtBoxSSN;
         private System.Windows.Forms.MaskedTextBox mtxtBoxZip;
         private System.Windows.Forms.CheckBox chbLifetime;
-        private System.Windows.Forms.DateTimePicker datePaid;
         private System.Windows.Forms.Label lblLastPaid;
         private System.Windows.Forms.Label lblPaymentInfo;
-        private System.Windows.Forms.DateTimePicker dateDOB;
         private System.Windows.Forms.TextBox txtTournAvg;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnImportData;
         private System.Windows.Forms.OpenFileDialog ofdOpen;
         private System.Windows.Forms.CheckBox chbSocial;
+        private System.Windows.Forms.MaskedTextBox mtxtBoxDOB;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.MaskedTextBox mtxtBoxDateJoined;
+        private System.Windows.Forms.MaskedTextBox mtxtBoxRejoinDate;
+        private System.Windows.Forms.MaskedTextBox mtxtBoxLastBowled;
+        private System.Windows.Forms.MaskedTextBox mtxtBoxLastPayment;
     }
 }

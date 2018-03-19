@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmTourSearch));
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.btnSearch = new System.Windows.Forms.Button();
             this.btnAccept = new System.Windows.Forms.Button();
@@ -45,6 +46,7 @@
             // 
             // txtSearch
             // 
+            this.txtSearch.BackColor = System.Drawing.SystemColors.Control;
             this.txtSearch.Location = new System.Drawing.Point(14, 29);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(260, 20);
@@ -86,6 +88,7 @@
             // 
             // txtEvent
             // 
+            this.txtEvent.BackColor = System.Drawing.SystemColors.Control;
             this.txtEvent.Location = new System.Drawing.Point(14, 75);
             this.txtEvent.Name = "txtEvent";
             this.txtEvent.Size = new System.Drawing.Size(259, 20);
@@ -173,6 +176,7 @@
             this.AcceptButton = this.btnSearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(284, 416);
             this.Controls.Add(this.chkDate);
             this.Controls.Add(this.label5);
@@ -187,7 +191,7 @@
             this.Controls.Add(this.listSearch);
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.txtSearch);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmTourSearch";
             this.Text = "Search Tournaments";
             this.Load += new System.EventHandler(this.FrmTourSearch_Load);

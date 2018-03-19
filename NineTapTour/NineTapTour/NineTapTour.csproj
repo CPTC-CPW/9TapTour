@@ -97,6 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calculations\Calculations.cs" />
+    <Compile Include="Database\ExcelMember.cs" />
     <Compile Include="Database\NineTapRegionDB.cs" />
     <Compile Include="Database\NineTapRegion.cs" />
     <Compile Include="Database\ExcelRow.cs" />
@@ -121,6 +122,12 @@
     </Compile>
     <Compile Include="Forms\FrmAddRegion.Designer.cs">
       <DependentUpon>FrmAddRegion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmTournamentResults.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmTournamentResults.Designer.cs">
+      <DependentUpon>FrmTournamentResults.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmWait.cs">
       <SubType>Form</SubType>
@@ -306,18 +313,6 @@
     <Compile Include="Migrations\201601260003161_Added Squads Table.Designer.cs">
       <DependentUpon>201601260003161_Added Squads Table.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201602082010332_Reverse to Original.cs" />
-    <Compile Include="Migrations\201602082010332_Reverse to Original.Designer.cs">
-      <DependentUpon>201602082010332_Reverse to Original.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602082019380_AddedBoolforDoubles.cs" />
-    <Compile Include="Migrations\201602082019380_AddedBoolforDoubles.Designer.cs">
-      <DependentUpon>201602082019380_AddedBoolforDoubles.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201604242119516_doubles.cs" />
-    <Compile Include="Migrations\201604242119516_doubles.Designer.cs">
-      <DependentUpon>201604242119516_doubles.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\201605050259447_MemberPaymentStatus.cs" />
     <Compile Include="Migrations\201605050259447_MemberPaymentStatus.Designer.cs">
       <DependentUpon>201605050259447_MemberPaymentStatus.cs</DependentUpon>
@@ -329,6 +324,22 @@
     <Compile Include="Migrations\201611211913236_add-migration.cs" />
     <Compile Include="Migrations\201611211913236_add-migration.Designer.cs">
       <DependentUpon>201611211913236_add-migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803140507308_Added region to classes.cs" />
+    <Compile Include="Migrations\201803140507308_Added region to classes.Designer.cs">
+      <DependentUpon>201803140507308_Added region to classes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803140514540_Added IsComp to Game class.cs" />
+    <Compile Include="Migrations\201803140514540_Added IsComp to Game class.Designer.cs">
+      <DependentUpon>201803140514540_Added IsComp to Game class.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803140520245_Changed Date to Nullable DateTime.cs" />
+    <Compile Include="Migrations\201803140520245_Changed Date to Nullable DateTime.Designer.cs">
+      <DependentUpon>201803140520245_Changed Date to Nullable DateTime.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803140606463_Member Bonus not nullable.cs" />
+    <Compile Include="Migrations\201803140606463_Member Bonus not nullable.Designer.cs">
+      <DependentUpon>201803140606463_Member Bonus not nullable.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\_201504272037146_InitialDatabase.cs" />
     <Compile Include="Migrations\_201504272037146_InitialDatabase.Designer.cs">
@@ -350,6 +361,9 @@
     </Compile>
     <EmbeddedResource Include="Forms\FrmAddRegion.resx">
       <DependentUpon>FrmAddRegion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmTournamentResults.resx">
+      <DependentUpon>FrmTournamentResults.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmWait.resx">
       <DependentUpon>frmWait.cs</DependentUpon>
@@ -462,15 +476,6 @@
     <EmbeddedResource Include="Migrations\201601260003161_Added Squads Table.resx">
       <DependentUpon>201601260003161_Added Squads Table.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602082010332_Reverse to Original.resx">
-      <DependentUpon>201602082010332_Reverse to Original.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602082019380_AddedBoolforDoubles.resx">
-      <DependentUpon>201602082019380_AddedBoolforDoubles.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201604242119516_doubles.resx">
-      <DependentUpon>201604242119516_doubles.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605050259447_MemberPaymentStatus.resx">
       <DependentUpon>201605050259447_MemberPaymentStatus.cs</DependentUpon>
     </EmbeddedResource>
@@ -479,6 +484,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611211913236_add-migration.resx">
       <DependentUpon>201611211913236_add-migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803140507308_Added region to classes.resx">
+      <DependentUpon>201803140507308_Added region to classes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803140514540_Added IsComp to Game class.resx">
+      <DependentUpon>201803140514540_Added IsComp to Game class.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803140520245_Changed Date to Nullable DateTime.resx">
+      <DependentUpon>201803140520245_Changed Date to Nullable DateTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803140606463_Member Bonus not nullable.resx">
+      <DependentUpon>201803140606463_Member Bonus not nullable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\_201504272037146_InitialDatabase.resx">
       <DependentUpon>_201504272037146_InitialDatabase.cs</DependentUpon>
@@ -503,6 +520,8 @@
       <DependentUpon>App.config</DependentUpon>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\NineTapTour.Database.Game.datasource" />
+    <None Include="Properties\DataSources\TopScores.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -512,6 +531,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Resources\TournamentResultsTemplate.xls">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="_NineTapTour_NineTapDbDataSet.xsc">
       <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
     </None>
@@ -525,7 +547,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -556,15 +580,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="Microsoft.Office.Core">
-      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>7</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <COMReference Include="Microsoft.Office.Interop.Excel">
       <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>1</VersionMajor>
@@ -585,9 +600,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Icon\9tap.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Icon\9tap.ico" />
+    <None Include="Resources\BowlingPin1.png" />
+    <None Include="Resources\9taplogo1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

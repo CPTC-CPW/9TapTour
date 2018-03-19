@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TournamentsByYear));
             this.label1 = new System.Windows.Forms.Label();
             this.dgvAllTournaments = new System.Windows.Forms.DataGridView();
             this.label2 = new System.Windows.Forms.Label();
@@ -51,7 +52,7 @@
             // 
             this.dgvAllTournaments.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvAllTournaments.Location = new System.Drawing.Point(10, 118);
-            this.dgvAllTournaments.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.dgvAllTournaments.Margin = new System.Windows.Forms.Padding(1);
             this.dgvAllTournaments.Name = "dgvAllTournaments";
             this.dgvAllTournaments.RowTemplate.Height = 37;
             this.dgvAllTournaments.Size = new System.Drawing.Size(863, 414);
@@ -71,7 +72,7 @@
             // 
             this.cbxYear.FormattingEnabled = true;
             this.cbxYear.Location = new System.Drawing.Point(359, 31);
-            this.cbxYear.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.cbxYear.Margin = new System.Windows.Forms.Padding(1);
             this.cbxYear.Name = "cbxYear";
             this.cbxYear.Size = new System.Drawing.Size(82, 21);
             this.cbxYear.TabIndex = 3;
@@ -80,7 +81,7 @@
             // btnSearch
             // 
             this.btnSearch.Location = new System.Drawing.Point(361, 55);
-            this.btnSearch.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.btnSearch.Margin = new System.Windows.Forms.Padding(1);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(74, 22);
             this.btnSearch.TabIndex = 4;
@@ -92,13 +93,15 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(884, 540);
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.cbxYear);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.dgvAllTournaments);
             this.Controls.Add(this.label1);
-            this.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(1);
             this.Name = "TournamentsByYear";
             this.Text = "List of Tournaments By Year";
             this.Load += new System.EventHandler(this.TournamentsByYear_Load);

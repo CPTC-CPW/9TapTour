@@ -9,8 +9,8 @@ namespace NineTapTour.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
-            AutomaticMigrationDataLossAllowed = true;
+            // DO NOT CHANGE TO TRUE!!
+            AutomaticMigrationsEnabled = false;
         }
 
         protected override void Seed(NineTapTour.Database.NineTapDb context)

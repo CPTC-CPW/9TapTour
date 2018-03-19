@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TournamentPlaceStandings));
             this.dgvTournamentStandings = new System.Windows.Forms.DataGridView();
             this.lblTournamentPlaceStandings = new System.Windows.Forms.Label();
             this.lblTournamentName = new System.Windows.Forms.Label();
@@ -41,7 +42,7 @@
             // 
             this.dgvTournamentStandings.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvTournamentStandings.Location = new System.Drawing.Point(0, 205);
-            this.dgvTournamentStandings.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.dgvTournamentStandings.Margin = new System.Windows.Forms.Padding(1);
             this.dgvTournamentStandings.Name = "dgvTournamentStandings";
             this.dgvTournamentStandings.RowTemplate.Height = 40;
             this.dgvTournamentStandings.Size = new System.Drawing.Size(1263, 397);
@@ -72,7 +73,7 @@
             // btnPrint
             // 
             this.btnPrint.Location = new System.Drawing.Point(1187, 679);
-            this.btnPrint.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.btnPrint.Margin = new System.Windows.Forms.Padding(1);
             this.btnPrint.Name = "btnPrint";
             this.btnPrint.Size = new System.Drawing.Size(97, 27);
             this.btnPrint.TabIndex = 3;
@@ -88,13 +89,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1264, 606);
             this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.lblTournamentName);
             this.Controls.Add(this.lblTournamentPlaceStandings);
             this.Controls.Add(this.dgvTournamentStandings);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(1);
             this.Name = "TournamentPlaceStandings";
             this.Text = "Tournament Place Standings";
             this.Load += new System.EventHandler(this.TournamentPlaceStandings_Load);
