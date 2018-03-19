@@ -5,8 +5,9 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Drawing;
 
-using NineTapTour.Migrations;
+
 using System.Data.Entity;
+using NineTapTour.Migrations;
 
 namespace NineTapTour.Forms
 {
