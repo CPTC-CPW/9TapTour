@@ -2372,23 +2372,7 @@ namespace NineTapTour.Forms
             }
 
         }
-        //runs fill member when you tab out of text box
-        //private void txtMemberNum_Leave(object sender, EventArgs e)
-        //{
-
-        //    List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-        //    RecordIndexOnEnter(total);
-        //    FillMember();
-
-        //}
-        ////runs fill member when you tab out of text box
-        //private void txtMemberNum2_Leave(object sender, EventArgs e)
-        //{          
-        //    List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-        //    RecordIndexOnEnter(total);
-        //    FillMember();
-        //}
-
+        
         /// <summary>
         /// Populates Tournament dropdown list to most recently modified tournament;
         /// </summary>
