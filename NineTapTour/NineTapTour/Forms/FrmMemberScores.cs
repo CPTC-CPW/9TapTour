@@ -44,7 +44,9 @@ namespace NineTapTour.Forms
 
         private void RadioIntialize()
         {
-
+            rdoSquadOne.TabStop = false;
+            rdoHandicapScore.TabStop = false;
+            rdoAllResults.TabStop = false;
             rdoSquad5.Visible = false;
             rdoSquad6.Visible = false;
             rdoSquad7.Visible = false;
@@ -226,7 +228,30 @@ namespace NineTapTour.Forms
                 //currentGame.Bonus = currentMem.Bonus;
                 //currentGame.Handicap = currentMem.Handicap;
 
+                //////////////////////////////////////////////////////////////// PAGINATION HAPPENS RIGHT HERE!!!! ////////////////////////////////////////////////////
+                List<Participant> total = TournamentDb.GetTournamentMemberListInOrder(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue))); //gets list in order so forloops itterate better
 
+                //if (buttonCheck == true) // if the right button was clicked
+                //{
+                //    for (int i = currentIndex; i < total.Count(); i++)
+                //    {
+                //        if (currentMem.Id == total[i].Member.Id)
+                //        {
+                //            currentIndex++;
+                //        }
+                //    }
+                //}
+                //else // if left button was clicked
+                //{
+                //    for (int i = 0; i < currentIndex; i++)
+                //    {
+                //        if (currentMem.Id == total[i].Member.Id)
+                //        {
+                //            currentIndex--;
+                //        }
+                //    }
+                //}
+                lblRecord.Text = "Record " + (currentIndex)  + " / " + total.Count();
 
 
 
@@ -2347,23 +2372,7 @@ namespace NineTapTour.Forms
             }
 
         }
-        //runs fill member when you tab out of text box
-        //private void txtMemberNum_Leave(object sender, EventArgs e)
-        //{
-
-        //    List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-        //    RecordIndexOnEnter(total);
-        //    FillMember();
-
-        //}
-        ////runs fill member when you tab out of text box
-        //private void txtMemberNum2_Leave(object sender, EventArgs e)
-        //{          
-        //    List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-        //    RecordIndexOnEnter(total);
-        //    FillMember();
-        //}
-
+        
         /// <summary>
         /// Populates Tournament dropdown list to most recently modified tournament;
         /// </summary>
@@ -2764,15 +2773,11 @@ namespace NineTapTour.Forms
                     currentMem.StartAvg = temp[0].AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
                     currentMem.Average = Convert.ToInt32(temp[0].trueAVG);
                     MemberDb.AddMember(currentMem);
-
-
                 }
                 catch
                 {
                     MessageBox.Show("Current Stats Not added to Tournament yet.");
                 }
-
-
             }
         }
 
@@ -2857,16 +2862,86 @@ namespace NineTapTour.Forms
             RecordIndexOnSquadSwitch(total);
             FillMember();
         }
-    }
 
+		private void txtMemberNum2_Leave(object sender, EventArgs e)
+		{
+			FillMember();
+		}
 
+		/// <summary>
+		/// The resize event for the form
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void frmMemberScores_Resize(object sender, EventArgs e)
+		{
+			SetFlowDirection(flpMemberScores);
+		}
 
+		/// <summary>
+		/// Sets the flow direction for the flowlayoutpanel depending
+		/// on the pixel width or height of the screen.
+		/// </summary>
+		/// <param name="flp">The flowlayoutpanel that is being passed in to have changes made to it.</param>
+		private void SetFlowDirection(FlowLayoutPanel flp)
+		{
+			if (Convert.ToInt32(Form.ActiveForm.Size.Width) > 1100 && Convert.ToInt32(Form.ActiveForm.Size.Height) < 766)
+			{
+				flp.FlowDirection = FlowDirection.TopDown;
+			}
+			else
+			{
+				flp.FlowDirection = FlowDirection.LeftToRight;
+			}
+		}
 
+		/// <summary>
+		/// After the size of the form has been changed, it checks the pixel
+		/// width and height to determine whether there needs to be scroll bars
+		/// or not.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void flpMemberScores_SizeChanged(object sender, EventArgs e)
+		{
+			SetFlowControlScrollBars(flpMemberScores);
+		}
 
-
-
-    /************************************************************************/
-
+		/// <summary>
+		/// Sets whether the scroll bars are enabled or disabled
+		/// and whether you can see them or not depending on the
+		/// pixel width or height of the screen.
+		/// </summary>
+		/// <param name="flp">The flowlayoutpanel that is being passed in to have changes made to it.</param>
+		private void SetFlowControlScrollBars(FlowLayoutPanel flp)
+		{
+			if (Convert.ToInt32(Form.ActiveForm.Size.Width) < 1300)
+			{
+				flpMemberScores.HorizontalScroll.Visible = true;
+				flpMemberScores.HorizontalScroll.Enabled = true;
+			}
+			if (Convert.ToInt32(Form.ActiveForm.Size.Height) < 750)
+			{
+				flpMemberScores.VerticalScroll.Visible = true;
+				flpMemberScores.VerticalScroll.Enabled = true;
+			}
+			if (Convert.ToInt32(Form.ActiveForm.Size.Width) > 1300)
+			{
+				flpMemberScores.HorizontalScroll.Visible = false;
+				flpMemberScores.HorizontalScroll.Enabled = false;
+			}
+			if (Convert.ToInt32(Form.ActiveForm.Size.Height) > 750)
+			{
+				flpMemberScores.VerticalScroll.Visible = false;
+				flpMemberScores.VerticalScroll.Enabled = false;
+			}
+		}
+		//runs fill member when you tab out of text box
+		private void txtMemberNum_Leave(object sender, EventArgs e)
+		{
+			FillMember();
+		}
+	}
 
     /// <summary>
     /// Class used to populate 3rd RichTextBox
@@ -2896,6 +2971,7 @@ namespace NineTapTour.Forms
         public int GameID { get; set; }
         #endregion
     }
+
 }
 
 

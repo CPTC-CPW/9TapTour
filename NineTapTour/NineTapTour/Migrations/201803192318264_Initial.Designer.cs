@@ -7,13 +7,13 @@ namespace NineTapTour.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class update2 : IMigrationMetadata
+    public sealed partial class Initial : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(update2));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Initial));
         
         string IMigrationMetadata.Id
         {
-            get { return "201510282007545_update2"; }
+            get { return "201803192318264_Initial"; }
         }
         
         string IMigrationMetadata.Source

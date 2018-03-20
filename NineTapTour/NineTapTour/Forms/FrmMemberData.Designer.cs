@@ -38,14 +38,6 @@
             this.lblMiddleIntial = new System.Windows.Forms.Label();
             this.lblMemberNum = new System.Windows.Forms.Label();
             this.txtMemberNumber = new System.Windows.Forms.TextBox();
-            this.txtBonus = new System.Windows.Forms.TextBox();
-            this.txtHandicap = new System.Windows.Forms.TextBox();
-            this.lblAverage = new System.Windows.Forms.Label();
-            this.lblTournAvg = new System.Windows.Forms.Label();
-            this.lblBonus = new System.Windows.Forms.Label();
-            this.txtNotes = new System.Windows.Forms.TextBox();
-            this.txtAverage = new System.Windows.Forms.TextBox();
-            this.lblNotes = new System.Windows.Forms.Label();
             this.grpMemberInfo = new System.Windows.Forms.GroupBox();
             this.mtxtBoxRejoinDate = new System.Windows.Forms.MaskedTextBox();
             this.mtxtBoxDateJoined = new System.Windows.Forms.MaskedTextBox();
@@ -72,11 +64,6 @@
             this.txtCity = new System.Windows.Forms.TextBox();
             this.txtAddress = new System.Windows.Forms.TextBox();
             this.txtEmail = new System.Windows.Forms.TextBox();
-            this.txtYearEndT = new System.Windows.Forms.TextBox();
-            this.txtMoneyEarned = new System.Windows.Forms.TextBox();
-            this.lblYET = new System.Windows.Forms.Label();
-            this.lblMoneyEarned = new System.Windows.Forms.Label();
-            this.lblLastBowled = new System.Windows.Forms.Label();
             this.groupRecord = new System.Windows.Forms.GroupBox();
             this.btnImportData = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
@@ -104,11 +91,30 @@
             this.chbLifetime = new System.Windows.Forms.CheckBox();
             this.lblLastPaid = new System.Windows.Forms.Label();
             this.lblPaymentInfo = new System.Windows.Forms.Label();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.mtxtBoxLastPayment = new System.Windows.Forms.MaskedTextBox();
+            this.flpMemberData = new System.Windows.Forms.FlowLayoutPanel();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.mtxtBoxLastBowled = new System.Windows.Forms.MaskedTextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.txtTournAvg = new System.Windows.Forms.TextBox();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.mtxtBoxLastBowled = new System.Windows.Forms.MaskedTextBox();
-            this.mtxtBoxLastPayment = new System.Windows.Forms.MaskedTextBox();
+            this.lblLastBowled = new System.Windows.Forms.Label();
+            this.lblMoneyEarned = new System.Windows.Forms.Label();
+            this.lblYET = new System.Windows.Forms.Label();
+            this.txtMoneyEarned = new System.Windows.Forms.TextBox();
+            this.txtYearEndT = new System.Windows.Forms.TextBox();
+            this.lblBonus = new System.Windows.Forms.Label();
+            this.lblTournAvg = new System.Windows.Forms.Label();
+            this.lblAverage = new System.Windows.Forms.Label();
+            this.txtHandicap = new System.Windows.Forms.TextBox();
+            this.txtBonus = new System.Windows.Forms.TextBox();
+            this.txtAverage = new System.Windows.Forms.TextBox();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.txtNotes = new System.Windows.Forms.TextBox();
+            this.lblNotes = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -117,13 +123,19 @@
             this.grpPrinter.SuspendLayout();
             this.grpGender.SuspendLayout();
             this.grpStatus.SuspendLayout();
+            this.flpMemberData.SuspendLayout();
+            this.panel7.SuspendLayout();
+            this.panel5.SuspendLayout();
+            this.panel4.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtLastName
             // 
             this.txtLastName.BackColor = System.Drawing.SystemColors.ControlLight;
             this.txtLastName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLastName.Location = new System.Drawing.Point(226, 31);
+            this.txtLastName.Location = new System.Drawing.Point(4, 31);
             this.txtLastName.MaxLength = 50;
             this.txtLastName.Name = "txtLastName";
             this.txtLastName.Size = new System.Drawing.Size(226, 37);
@@ -134,7 +146,7 @@
             // 
             this.txtFirstName.BackColor = System.Drawing.SystemColors.ControlLight;
             this.txtFirstName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFirstName.Location = new System.Drawing.Point(477, 31);
+            this.txtFirstName.Location = new System.Drawing.Point(238, 31);
             this.txtFirstName.MaxLength = 50;
             this.txtFirstName.Name = "txtFirstName";
             this.txtFirstName.Size = new System.Drawing.Size(232, 37);
@@ -145,7 +157,7 @@
             // 
             this.txtMiddleInitial.BackColor = System.Drawing.SystemColors.ControlLight;
             this.txtMiddleInitial.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMiddleInitial.Location = new System.Drawing.Point(731, 31);
+            this.txtMiddleInitial.Location = new System.Drawing.Point(488, 31);
             this.txtMiddleInitial.MaxLength = 10;
             this.txtMiddleInitial.Name = "txtMiddleInitial";
             this.txtMiddleInitial.Size = new System.Drawing.Size(119, 37);
@@ -156,7 +168,7 @@
             // 
             this.lblLastName.AutoSize = true;
             this.lblLastName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLastName.Location = new System.Drawing.Point(222, 9);
+            this.lblLastName.Location = new System.Drawing.Point(4, 9);
             this.lblLastName.Name = "lblLastName";
             this.lblLastName.Size = new System.Drawing.Size(80, 19);
             this.lblLastName.TabIndex = 2;
@@ -166,7 +178,7 @@
             // 
             this.lblFirstName.AutoSize = true;
             this.lblFirstName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFirstName.Location = new System.Drawing.Point(473, 9);
+            this.lblFirstName.Location = new System.Drawing.Point(242, 9);
             this.lblFirstName.Name = "lblFirstName";
             this.lblFirstName.Size = new System.Drawing.Size(82, 19);
             this.lblFirstName.TabIndex = 4;
@@ -176,7 +188,7 @@
             // 
             this.lblMiddleIntial.AutoSize = true;
             this.lblMiddleIntial.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMiddleIntial.Location = new System.Drawing.Point(727, 9);
+            this.lblMiddleIntial.Location = new System.Drawing.Point(490, 9);
             this.lblMiddleIntial.Name = "lblMiddleIntial";
             this.lblMiddleIntial.Size = new System.Drawing.Size(103, 19);
             this.lblMiddleIntial.TabIndex = 6;
@@ -186,7 +198,7 @@
             // 
             this.lblMemberNum.AutoSize = true;
             this.lblMemberNum.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMemberNum.Location = new System.Drawing.Point(34, 102);
+            this.lblMemberNum.Location = new System.Drawing.Point(51, 88);
             this.lblMemberNum.Name = "lblMemberNum";
             this.lblMemberNum.Size = new System.Drawing.Size(127, 19);
             this.lblMemberNum.TabIndex = 1;
@@ -195,7 +207,7 @@
             // txtMemberNumber
             // 
             this.txtMemberNumber.Font = new System.Drawing.Font("Calibri", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMemberNumber.Location = new System.Drawing.Point(12, 26);
+            this.txtMemberNumber.Location = new System.Drawing.Point(21, 9);
             this.txtMemberNumber.Multiline = true;
             this.txtMemberNumber.Name = "txtMemberNumber";
             this.txtMemberNumber.ReadOnly = true;
@@ -205,94 +217,6 @@
             this.txtMemberNumber.Text = "1";
             this.txtMemberNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtMemberNumber.TextChanged += new System.EventHandler(this.txtMemberNumber_TextChanged);
-            // 
-            // txtBonus
-            // 
-            this.txtBonus.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtBonus.Enabled = false;
-            this.txtBonus.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtBonus.Location = new System.Drawing.Point(761, 438);
-            this.txtBonus.MaxLength = 20;
-            this.txtBonus.Name = "txtBonus";
-            this.txtBonus.ReadOnly = true;
-            this.txtBonus.Size = new System.Drawing.Size(89, 47);
-            this.txtBonus.TabIndex = 40;
-            this.txtBonus.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // txtHandicap
-            // 
-            this.txtHandicap.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtHandicap.Enabled = false;
-            this.txtHandicap.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtHandicap.Location = new System.Drawing.Point(638, 438);
-            this.txtHandicap.MaxLength = 20;
-            this.txtHandicap.Name = "txtHandicap";
-            this.txtHandicap.ReadOnly = true;
-            this.txtHandicap.Size = new System.Drawing.Size(89, 47);
-            this.txtHandicap.TabIndex = 38;
-            this.txtHandicap.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // lblAverage
-            // 
-            this.lblAverage.AutoSize = true;
-            this.lblAverage.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAverage.Location = new System.Drawing.Point(405, 420);
-            this.lblAverage.Name = "lblAverage";
-            this.lblAverage.Size = new System.Drawing.Size(50, 15);
-            this.lblAverage.TabIndex = 33;
-            this.lblAverage.Text = "Average\r\n";
-            // 
-            // lblTournAvg
-            // 
-            this.lblTournAvg.AutoSize = true;
-            this.lblTournAvg.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTournAvg.Location = new System.Drawing.Point(649, 420);
-            this.lblTournAvg.Name = "lblTournAvg";
-            this.lblTournAvg.Size = new System.Drawing.Size(60, 15);
-            this.lblTournAvg.TabIndex = 37;
-            this.lblTournAvg.Text = "Handicap";
-            // 
-            // lblBonus
-            // 
-            this.lblBonus.AutoSize = true;
-            this.lblBonus.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBonus.Location = new System.Drawing.Point(785, 420);
-            this.lblBonus.Name = "lblBonus";
-            this.lblBonus.Size = new System.Drawing.Size(41, 15);
-            this.lblBonus.TabIndex = 39;
-            this.lblBonus.Text = "Bonus";
-            // 
-            // txtNotes
-            // 
-            this.txtNotes.BackColor = System.Drawing.SystemColors.Control;
-            this.txtNotes.Location = new System.Drawing.Point(38, 319);
-            this.txtNotes.MaxLength = 750;
-            this.txtNotes.Multiline = true;
-            this.txtNotes.Name = "txtNotes";
-            this.txtNotes.Size = new System.Drawing.Size(298, 218);
-            this.txtNotes.TabIndex = 59;
-            this.txtNotes.TabStop = false;
-            // 
-            // txtAverage
-            // 
-            this.txtAverage.BackColor = System.Drawing.SystemColors.Control;
-            this.txtAverage.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAverage.Location = new System.Drawing.Point(382, 438);
-            this.txtAverage.MaxLength = 20;
-            this.txtAverage.Name = "txtAverage";
-            this.txtAverage.Size = new System.Drawing.Size(99, 47);
-            this.txtAverage.TabIndex = 34;
-            this.txtAverage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // lblNotes
-            // 
-            this.lblNotes.AutoSize = true;
-            this.lblNotes.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNotes.Location = new System.Drawing.Point(36, 297);
-            this.lblNotes.Name = "lblNotes";
-            this.lblNotes.Size = new System.Drawing.Size(49, 19);
-            this.lblNotes.TabIndex = 58;
-            this.lblNotes.Text = "Notes";
             // 
             // grpMemberInfo
             // 
@@ -322,9 +246,10 @@
             this.grpMemberInfo.Controls.Add(this.txtAddress);
             this.grpMemberInfo.Controls.Add(this.txtEmail);
             this.grpMemberInfo.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpMemberInfo.Location = new System.Drawing.Point(382, 121);
+            this.grpMemberInfo.Location = new System.Drawing.Point(360, 93);
+            this.grpMemberInfo.Margin = new System.Windows.Forms.Padding(16, 3, 3, 3);
             this.grpMemberInfo.Name = "grpMemberInfo";
-            this.grpMemberInfo.Size = new System.Drawing.Size(469, 277);
+            this.grpMemberInfo.Size = new System.Drawing.Size(469, 278);
             this.grpMemberInfo.TabIndex = 8;
             this.grpMemberInfo.TabStop = false;
             this.grpMemberInfo.Text = "Member Information";
@@ -334,7 +259,7 @@
             this.mtxtBoxRejoinDate.Location = new System.Drawing.Point(343, 191);
             this.mtxtBoxRejoinDate.Mask = "00/00/0000";
             this.mtxtBoxRejoinDate.Name = "mtxtBoxRejoinDate";
-            this.mtxtBoxRejoinDate.Size = new System.Drawing.Size(100, 63);
+            this.mtxtBoxRejoinDate.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxRejoinDate.TabIndex = 30;
             this.mtxtBoxRejoinDate.ValidatingType = typeof(System.DateTime);
             // 
@@ -343,7 +268,7 @@
             this.mtxtBoxDateJoined.Location = new System.Drawing.Point(344, 138);
             this.mtxtBoxDateJoined.Mask = "00/00/0000";
             this.mtxtBoxDateJoined.Name = "mtxtBoxDateJoined";
-            this.mtxtBoxDateJoined.Size = new System.Drawing.Size(100, 63);
+            this.mtxtBoxDateJoined.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxDateJoined.TabIndex = 28;
             this.mtxtBoxDateJoined.ValidatingType = typeof(System.DateTime);
             // 
@@ -352,7 +277,7 @@
             this.mtxtBoxDOB.Location = new System.Drawing.Point(34, 41);
             this.mtxtBoxDOB.Mask = "00/00/0000";
             this.mtxtBoxDOB.Name = "mtxtBoxDOB";
-            this.mtxtBoxDOB.Size = new System.Drawing.Size(100, 63);
+            this.mtxtBoxDOB.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxDOB.TabIndex = 10;
             this.mtxtBoxDOB.ValidatingType = typeof(System.DateTime);
             this.mtxtBoxDOB.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.mtxtBoxDOB_MaskInputRejected);
@@ -421,7 +346,7 @@
             this.lblDOB.AutoSize = true;
             this.lblDOB.Location = new System.Drawing.Point(22, 23);
             this.lblDOB.Name = "lblDOB";
-            this.lblDOB.Size = new System.Drawing.Size(107, 15);
+            this.lblDOB.Size = new System.Drawing.Size(119, 15);
             this.lblDOB.TabIndex = 9;
             this.lblDOB.Text = "D.O.B. (mm/dd/yyyy)";
             // 
@@ -563,64 +488,14 @@
             this.txtEmail.Size = new System.Drawing.Size(290, 23);
             this.txtEmail.TabIndex = 26;
             // 
-            // txtYearEndT
-            // 
-            this.txtYearEndT.BackColor = System.Drawing.SystemColors.Control;
-            this.txtYearEndT.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtYearEndT.Location = new System.Drawing.Point(392, 517);
-            this.txtYearEndT.MaxLength = 20;
-            this.txtYearEndT.Name = "txtYearEndT";
-            this.txtYearEndT.Size = new System.Drawing.Size(124, 23);
-            this.txtYearEndT.TabIndex = 42;
-            // 
-            // txtMoneyEarned
-            // 
-            this.txtMoneyEarned.BackColor = System.Drawing.SystemColors.Control;
-            this.txtMoneyEarned.Enabled = false;
-            this.txtMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMoneyEarned.Location = new System.Drawing.Point(573, 517);
-            this.txtMoneyEarned.Name = "txtMoneyEarned";
-            this.txtMoneyEarned.Size = new System.Drawing.Size(100, 23);
-            this.txtMoneyEarned.TabIndex = 44;
-            this.txtMoneyEarned.TabStop = false;
-            // 
-            // lblYET
-            // 
-            this.lblYET.AutoSize = true;
-            this.lblYET.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblYET.Location = new System.Drawing.Point(389, 499);
-            this.lblYET.Name = "lblYET";
-            this.lblYET.Size = new System.Drawing.Size(127, 15);
-            this.lblYET.TabIndex = 41;
-            this.lblYET.Text = "Year End Tournaments";
-            // 
-            // lblMoneyEarned
-            // 
-            this.lblMoneyEarned.AutoSize = true;
-            this.lblMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMoneyEarned.Location = new System.Drawing.Point(570, 499);
-            this.lblMoneyEarned.Name = "lblMoneyEarned";
-            this.lblMoneyEarned.Size = new System.Drawing.Size(85, 15);
-            this.lblMoneyEarned.TabIndex = 43;
-            this.lblMoneyEarned.Text = "Money Earned";
-            // 
-            // lblLastBowled
-            // 
-            this.lblLastBowled.AutoSize = true;
-            this.lblLastBowled.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLastBowled.Location = new System.Drawing.Point(744, 499);
-            this.lblLastBowled.Name = "lblLastBowled";
-            this.lblLastBowled.Size = new System.Drawing.Size(72, 15);
-            this.lblLastBowled.TabIndex = 45;
-            this.lblLastBowled.Text = "Last Bowled";
-            // 
             // groupRecord
             // 
             this.groupRecord.Controls.Add(this.btnImportData);
             this.groupRecord.Controls.Add(this.btnSave);
             this.groupRecord.Controls.Add(this.btnNew);
             this.groupRecord.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupRecord.Location = new System.Drawing.Point(23, 583);
+            this.groupRecord.Location = new System.Drawing.Point(854, 3);
+            this.groupRecord.Margin = new System.Windows.Forms.Padding(3, 3, 20, 3);
             this.groupRecord.Name = "groupRecord";
             this.groupRecord.Size = new System.Drawing.Size(108, 113);
             this.groupRecord.TabIndex = 60;
@@ -657,7 +532,6 @@
             this.btnNew.Name = "btnNew";
             this.btnNew.Size = new System.Drawing.Size(75, 23);
             this.btnNew.TabIndex = 61;
-            this.btnNew.TabStop = false;
             this.btnNew.Text = "New";
             this.btnNew.UseVisualStyleBackColor = true;
             this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
@@ -669,7 +543,8 @@
             this.grpRecordNumber.Controls.Add(this.btnRightArrow);
             this.grpRecordNumber.Controls.Add(this.btnArrowLeft);
             this.grpRecordNumber.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpRecordNumber.Location = new System.Drawing.Point(149, 583);
+            this.grpRecordNumber.Location = new System.Drawing.Point(3, 537);
+            this.grpRecordNumber.Margin = new System.Windows.Forms.Padding(3, 3, 30, 3);
             this.grpRecordNumber.Name = "grpRecordNumber";
             this.grpRecordNumber.Size = new System.Drawing.Size(195, 100);
             this.grpRecordNumber.TabIndex = 64;
@@ -728,7 +603,8 @@
             // 
             this.grpStats.Controls.Add(this.btnStats);
             this.grpStats.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpStats.Location = new System.Drawing.Point(376, 583);
+            this.grpStats.Location = new System.Drawing.Point(231, 537);
+            this.grpStats.Margin = new System.Windows.Forms.Padding(3, 3, 30, 3);
             this.grpStats.Name = "grpStats";
             this.grpStats.Size = new System.Drawing.Size(79, 94);
             this.grpStats.TabIndex = 69;
@@ -750,7 +626,8 @@
             // 
             this.grpSearchBy.Controls.Add(this.btnMemberSearch);
             this.grpSearchBy.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpSearchBy.Location = new System.Drawing.Point(496, 583);
+            this.grpSearchBy.Location = new System.Drawing.Point(343, 537);
+            this.grpSearchBy.Margin = new System.Windows.Forms.Padding(3, 3, 30, 3);
             this.grpSearchBy.Name = "grpSearchBy";
             this.grpSearchBy.Size = new System.Drawing.Size(115, 100);
             this.grpSearchBy.TabIndex = 71;
@@ -775,7 +652,7 @@
             this.grpPrinter.Controls.Add(this.btnThisRecap);
             this.grpPrinter.Controls.Add(this.btnAllRecaps);
             this.grpPrinter.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpPrinter.Location = new System.Drawing.Point(643, 585);
+            this.grpPrinter.Location = new System.Drawing.Point(491, 537);
             this.grpPrinter.Name = "grpPrinter";
             this.grpPrinter.Size = new System.Drawing.Size(229, 85);
             this.grpPrinter.TabIndex = 73;
@@ -865,7 +742,7 @@
             this.grpGender.Controls.Add(this.rdoFemale);
             this.grpGender.Controls.Add(this.rdoMale);
             this.grpGender.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpGender.Location = new System.Drawing.Point(235, 128);
+            this.grpGender.Location = new System.Drawing.Point(172, 15);
             this.grpGender.Name = "grpGender";
             this.grpGender.Size = new System.Drawing.Size(101, 71);
             this.grpGender.TabIndex = 51;
@@ -877,7 +754,7 @@
             this.grpStatus.Controls.Add(this.rdoInActive);
             this.grpStatus.Controls.Add(this.rdoActive);
             this.grpStatus.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpStatus.Location = new System.Drawing.Point(38, 128);
+            this.grpStatus.Location = new System.Drawing.Point(3, 10);
             this.grpStatus.Name = "grpStatus";
             this.grpStatus.Size = new System.Drawing.Size(101, 79);
             this.grpStatus.TabIndex = 47;
@@ -888,7 +765,7 @@
             // 
             this.chbSenior.AutoSize = true;
             this.chbSenior.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chbSenior.Location = new System.Drawing.Point(156, 162);
+            this.chbSenior.Location = new System.Drawing.Point(114, 44);
             this.chbSenior.Name = "chbSenior";
             this.chbSenior.Size = new System.Drawing.Size(61, 19);
             this.chbSenior.TabIndex = 50;
@@ -900,7 +777,7 @@
             // 
             this.chbLifetime.AutoSize = true;
             this.chbLifetime.Font = new System.Drawing.Font("Calibri", 9.75F);
-            this.chbLifetime.Location = new System.Drawing.Point(38, 216);
+            this.chbLifetime.Location = new System.Drawing.Point(3, 3);
             this.chbLifetime.Name = "chbLifetime";
             this.chbLifetime.Size = new System.Drawing.Size(116, 19);
             this.chbLifetime.TabIndex = 54;
@@ -912,7 +789,7 @@
             // 
             this.lblLastPaid.AutoSize = true;
             this.lblLastPaid.Font = new System.Drawing.Font("Calibri", 9.75F);
-            this.lblLastPaid.Location = new System.Drawing.Point(35, 245);
+            this.lblLastPaid.Location = new System.Drawing.Point(3, 27);
             this.lblLastPaid.Name = "lblLastPaid";
             this.lblLastPaid.Size = new System.Drawing.Size(79, 15);
             this.lblLastPaid.TabIndex = 55;
@@ -923,21 +800,90 @@
             this.lblPaymentInfo.AutoSize = true;
             this.lblPaymentInfo.Font = new System.Drawing.Font("Calibri", 9.75F);
             this.lblPaymentInfo.ForeColor = System.Drawing.Color.Red;
-            this.lblPaymentInfo.Location = new System.Drawing.Point(35, 266);
+            this.lblPaymentInfo.Location = new System.Drawing.Point(3, 51);
             this.lblPaymentInfo.Name = "lblPaymentInfo";
             this.lblPaymentInfo.Size = new System.Drawing.Size(129, 15);
             this.lblPaymentInfo.TabIndex = 57;
             this.lblPaymentInfo.Text = "Yearly Payment is due.";
             this.lblPaymentInfo.Visible = false;
             // 
+            // mtxtBoxLastPayment
+            // 
+            this.mtxtBoxLastPayment.Location = new System.Drawing.Point(88, 27);
+            this.mtxtBoxLastPayment.Mask = "00/00/0000";
+            this.mtxtBoxLastPayment.Name = "mtxtBoxLastPayment";
+            this.mtxtBoxLastPayment.Size = new System.Drawing.Size(190, 21);
+            this.mtxtBoxLastPayment.TabIndex = 56;
+            this.mtxtBoxLastPayment.ValidatingType = typeof(System.DateTime);
+            // 
+            // flpMemberScores
+            // 
+            this.flpMemberData.AutoSize = true;
+            this.flpMemberData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpMemberData.Controls.Add(this.panel7);
+            this.flpMemberData.Controls.Add(this.groupRecord);
+            this.flpMemberData.Controls.Add(this.grpRecordNumber);
+            this.flpMemberData.Controls.Add(this.grpStats);
+            this.flpMemberData.Controls.Add(this.grpSearchBy);
+            this.flpMemberData.Controls.Add(this.grpPrinter);
+            this.flpMemberData.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpMemberData.Location = new System.Drawing.Point(0, 0);
+            this.flpMemberData.Name = "flpMemberScores";
+            this.flpMemberData.Size = new System.Drawing.Size(996, 749);
+            this.flpMemberData.TabIndex = 34;
+            this.flpMemberData.SizeChanged += new System.EventHandler(this.flpMemberScores_SizeChanged);
+            // 
+            // panel7
+            // 
+            this.panel7.Controls.Add(this.txtMemberNumber);
+            this.panel7.Controls.Add(this.panel5);
+            this.panel7.Controls.Add(this.grpMemberInfo);
+            this.panel7.Controls.Add(this.panel4);
+            this.panel7.Controls.Add(this.lblMemberNum);
+            this.panel7.Controls.Add(this.panel1);
+            this.panel7.Location = new System.Drawing.Point(3, 3);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(845, 528);
+            this.panel7.TabIndex = 74;
+            // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.mtxtBoxLastBowled);
+            this.panel5.Controls.Add(this.label2);
+            this.panel5.Controls.Add(this.txtTournAvg);
+            this.panel5.Controls.Add(this.lblLastBowled);
+            this.panel5.Controls.Add(this.lblMoneyEarned);
+            this.panel5.Controls.Add(this.lblYET);
+            this.panel5.Controls.Add(this.txtMoneyEarned);
+            this.panel5.Controls.Add(this.txtYearEndT);
+            this.panel5.Controls.Add(this.lblBonus);
+            this.panel5.Controls.Add(this.lblTournAvg);
+            this.panel5.Controls.Add(this.lblAverage);
+            this.panel5.Controls.Add(this.txtHandicap);
+            this.panel5.Controls.Add(this.txtBonus);
+            this.panel5.Controls.Add(this.txtAverage);
+            this.panel5.Location = new System.Drawing.Point(360, 386);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(482, 138);
+            this.panel5.TabIndex = 74;
+            // 
+            // mtxtBoxLastBowled
+            // 
+            this.mtxtBoxLastBowled.Location = new System.Drawing.Point(373, 107);
+            this.mtxtBoxLastBowled.Mask = "00/00/0000";
+            this.mtxtBoxLastBowled.Name = "mtxtBoxLastBowled";
+            this.mtxtBoxLastBowled.Size = new System.Drawing.Size(103, 21);
+            this.mtxtBoxLastBowled.TabIndex = 60;
+            this.mtxtBoxLastBowled.ValidatingType = typeof(System.DateTime);
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(510, 420);
+            this.label2.Location = new System.Drawing.Point(136, 10);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(101, 15);
-            this.label2.TabIndex = 35;
+            this.label2.TabIndex = 49;
             this.label2.Text = "30 Game Average";
             // 
             // txtTournAvg
@@ -945,31 +891,190 @@
             this.txtTournAvg.BackColor = System.Drawing.SystemColors.ControlLight;
             this.txtTournAvg.Enabled = false;
             this.txtTournAvg.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTournAvg.Location = new System.Drawing.Point(515, 438);
+            this.txtTournAvg.Location = new System.Drawing.Point(141, 28);
             this.txtTournAvg.MaxLength = 20;
             this.txtTournAvg.Name = "txtTournAvg";
             this.txtTournAvg.ReadOnly = true;
             this.txtTournAvg.Size = new System.Drawing.Size(89, 47);
-            this.txtTournAvg.TabIndex = 36;
+            this.txtTournAvg.TabIndex = 50;
             this.txtTournAvg.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // mtxtBoxLastBowled
+            // lblLastBowled
             // 
-            this.mtxtBoxLastBowled.Location = new System.Drawing.Point(747, 517);
-            this.mtxtBoxLastBowled.Mask = "00/00/0000";
-            this.mtxtBoxLastBowled.Name = "mtxtBoxLastBowled";
-            this.mtxtBoxLastBowled.Size = new System.Drawing.Size(103, 54);
-            this.mtxtBoxLastBowled.TabIndex = 46;
-            this.mtxtBoxLastBowled.ValidatingType = typeof(System.DateTime);
+            this.lblLastBowled.AutoSize = true;
+            this.lblLastBowled.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblLastBowled.Location = new System.Drawing.Point(370, 89);
+            this.lblLastBowled.Name = "lblLastBowled";
+            this.lblLastBowled.Size = new System.Drawing.Size(72, 15);
+            this.lblLastBowled.TabIndex = 59;
+            this.lblLastBowled.Text = "Last Bowled";
             // 
-            // mtxtBoxLastPayment
+            // lblMoneyEarned
             // 
-            this.mtxtBoxLastPayment.Location = new System.Drawing.Point(146, 241);
-            this.mtxtBoxLastPayment.Mask = "00/00/0000";
-            this.mtxtBoxLastPayment.Name = "mtxtBoxLastPayment";
-            this.mtxtBoxLastPayment.Size = new System.Drawing.Size(190, 54);
-            this.mtxtBoxLastPayment.TabIndex = 56;
-            this.mtxtBoxLastPayment.ValidatingType = typeof(System.DateTime);
+            this.lblMoneyEarned.AutoSize = true;
+            this.lblMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMoneyEarned.Location = new System.Drawing.Point(196, 89);
+            this.lblMoneyEarned.Name = "lblMoneyEarned";
+            this.lblMoneyEarned.Size = new System.Drawing.Size(85, 15);
+            this.lblMoneyEarned.TabIndex = 57;
+            this.lblMoneyEarned.Text = "Money Earned";
+            // 
+            // lblYET
+            // 
+            this.lblYET.AutoSize = true;
+            this.lblYET.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblYET.Location = new System.Drawing.Point(15, 89);
+            this.lblYET.Name = "lblYET";
+            this.lblYET.Size = new System.Drawing.Size(127, 15);
+            this.lblYET.TabIndex = 55;
+            this.lblYET.Text = "Year End Tournaments";
+            // 
+            // txtMoneyEarned
+            // 
+            this.txtMoneyEarned.BackColor = System.Drawing.SystemColors.Control;
+            this.txtMoneyEarned.Enabled = false;
+            this.txtMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMoneyEarned.Location = new System.Drawing.Point(199, 107);
+            this.txtMoneyEarned.Name = "txtMoneyEarned";
+            this.txtMoneyEarned.Size = new System.Drawing.Size(100, 23);
+            this.txtMoneyEarned.TabIndex = 58;
+            this.txtMoneyEarned.TabStop = false;
+            // 
+            // txtYearEndT
+            // 
+            this.txtYearEndT.BackColor = System.Drawing.SystemColors.Control;
+            this.txtYearEndT.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtYearEndT.Location = new System.Drawing.Point(18, 107);
+            this.txtYearEndT.MaxLength = 20;
+            this.txtYearEndT.Name = "txtYearEndT";
+            this.txtYearEndT.Size = new System.Drawing.Size(124, 23);
+            this.txtYearEndT.TabIndex = 56;
+            // 
+            // lblBonus
+            // 
+            this.lblBonus.AutoSize = true;
+            this.lblBonus.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblBonus.Location = new System.Drawing.Point(411, 10);
+            this.lblBonus.Name = "lblBonus";
+            this.lblBonus.Size = new System.Drawing.Size(41, 15);
+            this.lblBonus.TabIndex = 53;
+            this.lblBonus.Text = "Bonus";
+            // 
+            // lblTournAvg
+            // 
+            this.lblTournAvg.AutoSize = true;
+            this.lblTournAvg.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTournAvg.Location = new System.Drawing.Point(275, 10);
+            this.lblTournAvg.Name = "lblTournAvg";
+            this.lblTournAvg.Size = new System.Drawing.Size(60, 15);
+            this.lblTournAvg.TabIndex = 51;
+            this.lblTournAvg.Text = "Handicap";
+            // 
+            // lblAverage
+            // 
+            this.lblAverage.AutoSize = true;
+            this.lblAverage.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAverage.Location = new System.Drawing.Point(31, 10);
+            this.lblAverage.Name = "lblAverage";
+            this.lblAverage.Size = new System.Drawing.Size(50, 15);
+            this.lblAverage.TabIndex = 47;
+            this.lblAverage.Text = "Average\r\n";
+            // 
+            // txtHandicap
+            // 
+            this.txtHandicap.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtHandicap.Enabled = false;
+            this.txtHandicap.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtHandicap.Location = new System.Drawing.Point(264, 28);
+            this.txtHandicap.MaxLength = 20;
+            this.txtHandicap.Name = "txtHandicap";
+            this.txtHandicap.ReadOnly = true;
+            this.txtHandicap.Size = new System.Drawing.Size(89, 47);
+            this.txtHandicap.TabIndex = 52;
+            this.txtHandicap.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // txtBonus
+            // 
+            this.txtBonus.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtBonus.Enabled = false;
+            this.txtBonus.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtBonus.Location = new System.Drawing.Point(387, 28);
+            this.txtBonus.MaxLength = 20;
+            this.txtBonus.Name = "txtBonus";
+            this.txtBonus.ReadOnly = true;
+            this.txtBonus.Size = new System.Drawing.Size(89, 47);
+            this.txtBonus.TabIndex = 54;
+            this.txtBonus.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // txtAverage
+            // 
+            this.txtAverage.BackColor = System.Drawing.SystemColors.Control;
+            this.txtAverage.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtAverage.Location = new System.Drawing.Point(8, 28);
+            this.txtAverage.MaxLength = 20;
+            this.txtAverage.Name = "txtAverage";
+            this.txtAverage.Size = new System.Drawing.Size(99, 47);
+            this.txtAverage.TabIndex = 48;
+            this.txtAverage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.lblLastName);
+            this.panel4.Controls.Add(this.txtLastName);
+            this.panel4.Controls.Add(this.lblFirstName);
+            this.panel4.Controls.Add(this.txtFirstName);
+            this.panel4.Controls.Add(this.lblMiddleIntial);
+            this.panel4.Controls.Add(this.txtMiddleInitial);
+            this.panel4.Location = new System.Drawing.Point(232, 3);
+            this.panel4.Margin = new System.Windows.Forms.Padding(25, 3, 3, 3);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(610, 72);
+            this.panel4.TabIndex = 74;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.txtNotes);
+            this.panel1.Controls.Add(this.lblNotes);
+            this.panel1.Controls.Add(this.panel2);
+            this.panel1.Controls.Add(this.grpStatus);
+            this.panel1.Controls.Add(this.chbSenior);
+            this.panel1.Controls.Add(this.grpGender);
+            this.panel1.Location = new System.Drawing.Point(12, 110);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(309, 414);
+            this.panel1.TabIndex = 74;
+            // 
+            // txtNotes
+            // 
+            this.txtNotes.BackColor = System.Drawing.SystemColors.Control;
+            this.txtNotes.Location = new System.Drawing.Point(6, 188);
+            this.txtNotes.MaxLength = 750;
+            this.txtNotes.Multiline = true;
+            this.txtNotes.Name = "txtNotes";
+            this.txtNotes.Size = new System.Drawing.Size(298, 218);
+            this.txtNotes.TabIndex = 61;
+            this.txtNotes.TabStop = false;
+            // 
+            // lblNotes
+            // 
+            this.lblNotes.AutoSize = true;
+            this.lblNotes.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNotes.Location = new System.Drawing.Point(5, 168);
+            this.lblNotes.Name = "lblNotes";
+            this.lblNotes.Size = new System.Drawing.Size(49, 19);
+            this.lblNotes.TabIndex = 60;
+            this.lblNotes.Text = "Notes";
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.chbLifetime);
+            this.panel2.Controls.Add(this.lblLastPaid);
+            this.panel2.Controls.Add(this.mtxtBoxLastPayment);
+            this.panel2.Controls.Add(this.lblPaymentInfo);
+            this.panel2.Location = new System.Drawing.Point(3, 95);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(285, 70);
+            this.panel2.TabIndex = 74;
             // 
             // FrmMemberData
             // 
@@ -977,46 +1082,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoScrollMinSize = new System.Drawing.Size(100, 100);
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.AutoSize = true;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(959, 741);
-            this.Controls.Add(this.mtxtBoxLastPayment);
-            this.Controls.Add(this.mtxtBoxLastBowled);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.lblPaymentInfo);
-            this.Controls.Add(this.lblLastPaid);
-            this.Controls.Add(this.txtTournAvg);
-            this.Controls.Add(this.chbLifetime);
-            this.Controls.Add(this.chbSenior);
-            this.Controls.Add(this.grpStatus);
-            this.Controls.Add(this.grpGender);
-            this.Controls.Add(this.grpPrinter);
-            this.Controls.Add(this.grpSearchBy);
-            this.Controls.Add(this.grpStats);
-            this.Controls.Add(this.grpRecordNumber);
-            this.Controls.Add(this.groupRecord);
-            this.Controls.Add(this.lblLastBowled);
-            this.Controls.Add(this.lblMoneyEarned);
-            this.Controls.Add(this.lblYET);
-            this.Controls.Add(this.txtMoneyEarned);
-            this.Controls.Add(this.txtYearEndT);
-            this.Controls.Add(this.grpMemberInfo);
-            this.Controls.Add(this.lblNotes);
-            this.Controls.Add(this.txtNotes);
-            this.Controls.Add(this.lblBonus);
-            this.Controls.Add(this.lblTournAvg);
-            this.Controls.Add(this.lblAverage);
-            this.Controls.Add(this.txtHandicap);
-            this.Controls.Add(this.txtBonus);
-            this.Controls.Add(this.txtAverage);
-            this.Controls.Add(this.txtMemberNumber);
-            this.Controls.Add(this.lblMemberNum);
-            this.Controls.Add(this.lblMiddleIntial);
-            this.Controls.Add(this.lblFirstName);
-            this.Controls.Add(this.lblLastName);
-            this.Controls.Add(this.txtMiddleInitial);
-            this.Controls.Add(this.txtFirstName);
-            this.Controls.Add(this.txtLastName);
+            this.ClientSize = new System.Drawing.Size(996, 749);
+            this.Controls.Add(this.flpMemberData);
             this.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1025,6 +1094,7 @@
             this.Text = "Member Info";
             this.Load += new System.EventHandler(this.MemberDataForm_Load);
             this.Leave += new System.EventHandler(this.FrmMemberData_Leave);
+            this.Resize += new System.EventHandler(this.FrmMemberData_Resize);
             this.grpMemberInfo.ResumeLayout(false);
             this.grpMemberInfo.PerformLayout();
             this.groupRecord.ResumeLayout(false);
@@ -1036,6 +1106,17 @@
             this.grpGender.PerformLayout();
             this.grpStatus.ResumeLayout(false);
             this.grpStatus.PerformLayout();
+            this.flpMemberData.ResumeLayout(false);
+            this.panel7.ResumeLayout(false);
+            this.panel7.PerformLayout();
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1051,14 +1132,6 @@
         private System.Windows.Forms.Label lblMiddleIntial;
         private System.Windows.Forms.Label lblMemberNum;
         private System.Windows.Forms.TextBox txtMemberNumber;
-        private System.Windows.Forms.TextBox txtBonus;
-        private System.Windows.Forms.TextBox txtHandicap;
-        private System.Windows.Forms.Label lblAverage;
-        private System.Windows.Forms.Label lblTournAvg;
-        private System.Windows.Forms.Label lblBonus;
-        private System.Windows.Forms.TextBox txtNotes;
-        private System.Windows.Forms.TextBox txtAverage;
-        private System.Windows.Forms.Label lblNotes;
         private System.Windows.Forms.GroupBox grpMemberInfo;
         private System.Windows.Forms.TextBox txtState;
         private System.Windows.Forms.TextBox txtCity;
@@ -1075,11 +1148,6 @@
         private System.Windows.Forms.Label lblDateJoined;
         private System.Windows.Forms.Label lblRejoinDate;
         private System.Windows.Forms.Label lblSSN;
-        private System.Windows.Forms.TextBox txtYearEndT;
-        private System.Windows.Forms.TextBox txtMoneyEarned;
-        private System.Windows.Forms.Label lblYET;
-        private System.Windows.Forms.Label lblMoneyEarned;
-        private System.Windows.Forms.Label lblLastBowled;
         private System.Windows.Forms.GroupBox groupRecord;
         private System.Windows.Forms.GroupBox grpRecordNumber;
         private System.Windows.Forms.GroupBox grpStats;
@@ -1112,8 +1180,6 @@
         private System.Windows.Forms.CheckBox chbLifetime;
         private System.Windows.Forms.Label lblLastPaid;
         private System.Windows.Forms.Label lblPaymentInfo;
-        private System.Windows.Forms.TextBox txtTournAvg;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnImportData;
         private System.Windows.Forms.OpenFileDialog ofdOpen;
         private System.Windows.Forms.CheckBox chbSocial;
@@ -1121,7 +1187,28 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.MaskedTextBox mtxtBoxDateJoined;
         private System.Windows.Forms.MaskedTextBox mtxtBoxRejoinDate;
-        private System.Windows.Forms.MaskedTextBox mtxtBoxLastBowled;
         private System.Windows.Forms.MaskedTextBox mtxtBoxLastPayment;
+        private System.Windows.Forms.FlowLayoutPanel flpMemberData;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel7;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label lblNotes;
+        private System.Windows.Forms.TextBox txtNotes;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.MaskedTextBox mtxtBoxLastBowled;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox txtTournAvg;
+        private System.Windows.Forms.Label lblLastBowled;
+        private System.Windows.Forms.Label lblMoneyEarned;
+        private System.Windows.Forms.Label lblYET;
+        private System.Windows.Forms.TextBox txtMoneyEarned;
+        private System.Windows.Forms.TextBox txtYearEndT;
+        private System.Windows.Forms.Label lblBonus;
+        private System.Windows.Forms.Label lblTournAvg;
+        private System.Windows.Forms.Label lblAverage;
+        private System.Windows.Forms.TextBox txtHandicap;
+        private System.Windows.Forms.TextBox txtBonus;
+        private System.Windows.Forms.TextBox txtAverage;
     }
 }
