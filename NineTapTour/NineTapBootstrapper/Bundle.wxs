@@ -52,7 +52,8 @@
       <RollbackBoundary Id="PreReqsMet" />
       
       <!-- Had to manually copy the MSI from the NineTapInstaller folder into the NineTapBootstrapper\Files folder-->
-			<MsiPackage SourceFile="Files\9-TapTour.msi" /> 
+			<MsiPackage SourceFile="Files\9-TapTour.msi" />
+      <MsiPackage SourceFile="Files\MemberImportInstaller.msi" />
 		</Chain>
 	</Bundle>
 </Wix>
