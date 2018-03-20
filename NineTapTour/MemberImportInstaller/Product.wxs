@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define Member_Import_Data_TargetDir=$(var.Member_Import_Data.TargetDir)?>
+  <!--<?define NineTapTour_TargetDir=$(var.NineTapTour.TargetDir)?>-->
+	<Product Id="*" Name="MemberImportInstaller" Language="1033" Version="1.0.0.0" Manufacturer="Clover Park Technical College - Computer Programming" UpgradeCode="b91bafe0-0b84-4a81-9cac-97e65fff93a5">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <Media Id="1" Cabinet="MemberImportData.cab" EmbedCab="yes" />
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		
+
+		<Feature Id="ProductFeature" Title="MemberImportInstaller" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="9-Tap Tour" />
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<Component Id="Member_Import_Test.exe" Guid="9f7af170-05d8-423d-bc09-b058677864d5">
+			  <File Id="Member_Import_Test.exe" Name="Member_Import_Test.exe" Source="$(var.Member_Import_Data_TargetDir)Member_Import_Test.exe" />
+			</Component>
+			<Component Id="Member_Import_Test.exe.config" Guid="ebcf305e-c81f-4602-88e7-e99edf48ce13">
+			  <File Id="Member_Import_Test.exe.config" Name="Member_Import_Test.exe.config" Source="$(var.Member_Import_Data_TargetDir)Member_Import_Test.exe.config" />
+			</Component>
+			<Component Id="EntityFramework.dll" Guid="524df627-d175-42d8-b167-04412bde75f0">
+			  <File Id="EntityFramework.dll" Name="EntityFramework.dll" Source="$(var.Member_Import_Data_TargetDir)EntityFramework.dll" />
+			</Component>
+			<Component Id="EntityFramework.SqlServer.dll" Guid="ccb13de6-b35f-42ce-b57d-c5a284801c23">
+			  <File Id="EntityFramework.SqlServer.dll" Name="EntityFramework.SqlServer.dll" Source="$(var.Member_Import_Data_TargetDir)EntityFramework.SqlServer.dll" />
+			</Component>
+			<Component Id="FluentValidationNA.dll" Guid="30e62522-d90e-4f28-92ce-befed7e700b8">
+			  <File Id="FluentValidationNA.dll" Name="FluentValidationNA.dll" Source="$(var.Member_Import_Data_TargetDir)FluentValidationNA.dll" />
+			</Component>
+			<Component Id="System.Linq.Dynamic.dll" Guid="8733b5ba-c63d-4397-9ff5-5a01bc28ac04">
+			  <File Id="System.Linq.Dynamic.dll" Name="System.Linq.Dynamic.dll" Source="$(var.Member_Import_Data_TargetDir)System.Linq.Dynamic.dll" />
+			</Component>
+			<!--<Component Id="NineTapTour.exe" Guid="ffeaec8d-59cd-4281-b8e4-fbe760bda2ed">
+			  <File Id="NineTapTour.exe" Name="NineTapTour.exe" Source="$(var.NineTapTour_TargetDir)NineTapTour.exe" />
+			</Component>
+			<Component Id="NineTapTour.exe.config" Guid="dbb555d9-1f53-48e6-b5f0-2729e427bffd">
+			  <File Id="NineTapTour.exe.config" Name="NineTapTour.exe.config" Source="$(var.NineTapTour_TargetDir)NineTapTour.exe.config" />
+			</Component>-->
+		</ComponentGroup>
+	</Fragment>
+</Wix>

@@ -34,6 +34,7 @@
   <ItemGroup>
     <Content Include="Icon\9tap.ico" />
     <Content Include="License.rtf" />
+    <Content Include="NineTapBootstrapper.wax" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Icon" />

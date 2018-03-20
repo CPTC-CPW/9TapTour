@@ -4,9 +4,9 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>3.10</ProductVersion>
-    <ProjectGuid>687bb8fe-f8c1-4489-b42c-47ce3b7f7639</ProjectGuid>
+    <ProjectGuid>8564936e-e6c9-4aed-ba72-f5e2b2be7c62</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>9-TapTour</OutputName>
+    <OutputName>MemberImportInstaller</OutputName>
     <OutputType>Package</OutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -22,14 +22,6 @@
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CommandLineHelp.txt" />
-    <Content Include="Files\9tap.ico" />
-    <Content Include="Files\HorizontalBanner.bmp" />
-    <Content Include="Files\Information.ico" />
-    <Content Include="NineTapInstaller.wax" />
-    <Content Include="Resources\TournamentResultsTemplate.xls" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Member_Import_Test\Member_Import_Test\Member_Import_Data.csproj">
       <Name>Member_Import_Data</Name>
       <Project>{8b480b0c-419e-49e4-adb8-cb9509dde39d}</Project>
@@ -38,18 +30,6 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
-    <ProjectReference Include="..\NineTapTour\NineTapTour.csproj">
-      <Name>NineTapTour</Name>
-      <Project>{a8e1e43e-173c-46bc-8c7a-2e95d37086db}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Files" />
-    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />
