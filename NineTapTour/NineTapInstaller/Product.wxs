@@ -8,7 +8,9 @@
     <!-- Directory structure -->
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
-        <Directory Id="INSTALLFOLDER" Name="9-Tap Tour" />
+        <Directory Id="INSTALLFOLDER" Name="9-Tap Tour">
+          <Directory Id="Resources" Name="Resources" />
+        </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder" Name="Programs">
         <!-- Add shortcuts and remove on uninstall -->
@@ -28,6 +30,7 @@
     <!-- Components to install -->
     <Feature Id="ProductFeature" Title="NineTapInstaller" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="ResourceFiles"/>
       <ComponentRef Id="ProgramMenuDir"/>
     </Feature>
   
@@ -208,12 +211,12 @@
           <Shortcut Id="desktopShortcut" Advertise="yes" Directory="DesktopFolder"
                     Name="9TapTour" WorkingDirectory="INSTALLFOLDER"
                     IconIndex="0" Icon="Icon1.ico">
-            <Icon Id="Icon1.ico" SourceFile="$(var.NineTapTour_TargetDir)Icon\9tap.ico"/>
+            <Icon Id="Icon1.ico" SourceFile="Files\9tap.ico"/>
           </Shortcut>
           <Shortcut Id="startMenuShortcut" Directory="ApplicationProgramsFolder"
                     Name="9TapTour" WorkingDirectory="INSTALLFOLDER"
                     IconIndex="0" Advertise="yes" Icon="Icon2.ico">
-            <Icon Id="Icon2.ico" SourceFile="$(var.NineTapTour_TargetDir)Icon\9tap.ico"/>
+            <Icon Id="Icon2.ico" SourceFile="Files\9tap.ico"/>
           </Shortcut>
         </File>      
       </Component>
@@ -233,7 +236,12 @@
         <File Id="System.Linq.Dynamic.dll" Name="System.Linq.Dynamic.dll" Source="$(var.NineTapTour_TargetDir)System.Linq.Dynamic.dll" />
       </Component>
       <Component Id="Icon_9tap.ico" Guid="2bc93db2-51f3-4366-98af-e128f7b12c34">
-        <File Id="Icon_9tap.ico" Name="Ninetap.ico" Source="$(var.NineTapTour_TargetDir)Icon\9tap.ico" />
+        <File Id="Icon_9tap.ico" Name="Ninetap.ico" Source="Files\9tap.ico" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="ResourceFiles" Directory="Resources">
+      <Component Id="TournResultsTemplate" Guid="BFA36DC1-B45F-46B4-AA5A-C4C589DE655C">
+        <File Id="TournResultsTemplate" Name="TournamentResultsTemplate.xls" Source="Resources\TournamentResultsTemplate.xls" />
       </Component>
     </ComponentGroup>
   </Fragment>

@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CommandLineHelp.txt" />
+    <Content Include="Files\9tap.ico" />
     <Content Include="Files\HorizontalBanner.bmp" />
     <Content Include="Files\Information.ico" />
     <Content Include="Resources\TournamentResultsTemplate.xls" />
