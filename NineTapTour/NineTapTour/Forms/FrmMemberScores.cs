@@ -1001,7 +1001,7 @@ namespace NineTapTour.Forms
             //on enter, find the first index in which the member occurs in the tournament
             if (selectedTournament.Doubles == false)
             {
-                if (txtMemberNum.Text != "")
+                if (txtMemberNum.Text != "" && txtMemberNum.Text.All(Char.IsDigit))
                 {
                     currentMem = MemberDb.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
                     for (int i = 0; i < part.Count; i++)
