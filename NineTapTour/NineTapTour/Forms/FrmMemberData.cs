@@ -160,15 +160,13 @@ namespace NineTapTour.Forms
                     txtTournAvg.Text = Convert.ToInt16(last5[0].trueAVG).ToString();
                     currentMem.Average = Convert.ToInt32(last5[0].trueAVG);
 
-                    txtBonus.Text = last5[0].Bonus.ToString();
-                    currentMem.Bonus = Convert.ToInt16(txtBonus.Text);
+                    txtBonus.Text = currentMem.Bonus.ToString();
                 }
                 else
                 {
                     txtAverage.Text = currentMem.StartAvg.ToString();
                     txtTournAvg.Text = 0.ToString();
-                    txtBonus.Text = 0.ToString();
-                    currentMem.Bonus = Convert.ToInt16(txtBonus.Text);
+                    txtBonus.Text = currentMem.Bonus.ToString();
                 }
             }
             else
@@ -451,7 +449,6 @@ namespace NineTapTour.Forms
             //Then runs the rest of the btnSave_Click and adds a member into the database.
             if (isValid())
             {
-                rdoActive.Checked = true;
                 var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (confirm == DialogResult.No)
                     return;
@@ -619,7 +616,6 @@ namespace NineTapTour.Forms
                         txtTournAvg.Text = last5[0].trueAVG.ToString();
                         temp.Average = Convert.ToInt16(last5[0].trueAVG);
 
-                        txtBonus.Text = last5[0].Bonus.ToString();
                         temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
                     }
                     else //catches if director wants to change there average manually regardless of there player history
@@ -627,7 +623,6 @@ namespace NineTapTour.Forms
                         temp.StartAvg = Convert.ToInt32(txtAverage.Text);
                         txtTournAvg.Text = last5[0].trueAVG.ToString();
                         temp.Average = Convert.ToInt16(last5[0].trueAVG);
-                        txtBonus.Text = last5[0].Bonus.ToString();
                         temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
                     }
                 }
