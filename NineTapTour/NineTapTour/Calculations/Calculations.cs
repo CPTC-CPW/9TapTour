@@ -82,7 +82,7 @@ namespace NineTapTour.Calculations
                        latest[1].Bonus == latest[2].Bonus &&  //checks to see if there last 3 history were the same, after 3 times not placing, they gain a bonus point
                        latest[2].Bonus == latest[0].Bonus)
                     {
-                        return currentBonusPins++;
+                        return ++currentBonusPins;
                     }
                 }
                 return currentBonusPins;
