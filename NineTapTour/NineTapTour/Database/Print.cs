@@ -137,7 +137,7 @@ namespace NineTapTour.Database
                 graphic.DrawString(temp[i + (index * 40)].Score.ToString(), font, dBrush, startX + 48, startY + 173 + (i * 19));
 
                 //draw the member number
-                graphic.DrawString(temp[i + (index * 40)].MemberNo.ToString(), font, dBrush, startX + 120, startY + 173 + (i * 19));
+                graphic.DrawString(temp[i + (index * 40)].MemberId.ToString(), font, dBrush, startX + 120, startY + 173 + (i * 19));
 
                 string unpaid = "";
                 if(!temp[i + (index * 40)].Paid)
