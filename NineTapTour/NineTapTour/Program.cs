@@ -21,9 +21,9 @@ namespace NineTapTour
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-#if DEBUG //if app is set to release mode
+#if !DEBUG //if app is set to release mode
             SetConnectionString(@".\SQLExpress");
-#elif !DEBUG //set connection to dev database
+#elif DEBUG //set connection to dev database
             SetConnectionString(@"(localdb)\MSSQLLocalDB");
 #endif
 
