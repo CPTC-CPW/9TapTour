@@ -42,6 +42,7 @@
             this.LabelCurrentFileWorkingOn = new System.Windows.Forms.Label();
             this.OverAllProcessingExcel = new System.Windows.Forms.Label();
             this.cbxRegionSelect = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnOpenFile
@@ -152,12 +153,21 @@
             this.cbxRegionSelect.TabIndex = 11;
             this.cbxRegionSelect.SelectedIndexChanged += new System.EventHandler(this.cbxRegionSelect_SelectedIndexChanged);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(275, 305);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(0, 13);
+            this.label4.TabIndex = 12;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(405, 335);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.cbxRegionSelect);
             this.Controls.Add(this.OverAllProcessingExcel);
             this.Controls.Add(this.LabelCurrentFileWorkingOn);
@@ -193,6 +203,7 @@
         private System.Windows.Forms.Label LabelCurrentFileWorkingOn;
         private System.Windows.Forms.Label OverAllProcessingExcel;
         private System.Windows.Forms.ComboBox cbxRegionSelect;
+        private System.Windows.Forms.Label label4;
     }
 }
 
