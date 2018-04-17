@@ -1004,84 +1004,46 @@ namespace NineTapTour.Forms
                 if (txtMemberNum.Text != "" && txtMemberNum.Text.All(Char.IsDigit))
                 {
                     currentMem = MemberDb.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
-                    
-                    //set int value to selected squad
-                    int currentsNum = 0;
-                    if(rdoSquadOne.Checked == true)
-                    {
-                        currentsNum = 1;
-                    }
-                    else if(rdoSquadTwo.Checked == true)
-                    {
-                        currentsNum = 2;
-                    }
-                    else if (rdoSquadThree.Checked == true)
-                    {
-                        currentsNum = 3;
-                    }
-                    else if (rdoSquadFour.Checked == true)
-                    {
-                        currentsNum = 4;
-                    }
-                    else if (rdoSquad5.Checked == true)
-                    {
-                        currentsNum = 5;
-                    }
-                    else if (rdoSquad6.Checked == true)
-                    {
-                        currentsNum = 6;
-                    }
-                    else if (rdoSquad7.Checked == true)
-                    {
-                        currentsNum = 7;
-                    }
-                    else if (rdoSquad8.Checked == true)
-                    {
-                        currentsNum = 8;
-                    }
-
-
-
                     for (int i = 0; i < part.Count; i++)
                     {
-                        if (currentMem.Id == part[i].Member.Id && part[i].Squad == currentsNum )
+                        if (currentMem.Id == part[i].Member.Id)
                         {
                             lblRecord.Text = "Record " + (i + 1) + " / " + part.Count();
                             currentIndex = i + 1;
 
                             //set the squad radio buttons correctly before filling the member or when it tries to get the scores by id, it wont correctly filter by squad
-                            //if (part[i].Squad == 1)
-                            //{
-                            //    rdoSquadOne.Checked = true;
-                            //}
-                            //else if (part[i].Squad == 2)
-                            //{
-                            //    rdoSquadTwo.Checked = true;
-                            //}
-                            //else if (part[i].Squad == 3)
-                            //{
-                            //    rdoSquadThree.Checked = true;
-                            //}
-                            //else if (part[i].Squad == 4)
-                            //{
-                            //    rdoSquadFour.Checked = true;
-                            //}
-                            //else if (part[i].Squad == 5)
-                            //{
-                            //    rdoSquad5.Checked = true;
-                            //}
-                            //else if (part[i].Squad == 6)
-                            //{
-                            //    rdoSquad6.Checked = true;
-                            //}
-                            //else if (part[i].Squad == 7)
-                            //{
-                            //    rdoSquad7.Checked = true;
-                            //}
-                            //else if (part[i].Squad == 8)
-                            //{
-                            //    rdoSquad8.Checked = true;
-                            //}
+                            if (part[i].Squad == 1)
+                            {
+                                rdoSquadOne.Checked = true;
+                            }
+                            else if (part[i].Squad == 2)
+                            {
+                                rdoSquadTwo.Checked = true;
+                            }
+                            else if (part[i].Squad == 3)
+                            {
+                                rdoSquadThree.Checked = true;
+                            }
+                            else if (part[i].Squad == 4)
+                            {
+                                rdoSquadFour.Checked = true;
+                            }
+                            else if (part[i].Squad == 5)
+                            {
+                                rdoSquad5.Checked = true;
+                            }
+                            else if (part[i].Squad == 6)
+                            {
+                                rdoSquad6.Checked = true;
+                            }
+                            else if (part[i].Squad == 7)
+                            {
+                                rdoSquad7.Checked = true;
+                            }
+                            else if (part[i].Squad == 8)
+                            {
+                                rdoSquad8.Checked = true;
+                            }
 
                             break;
                         }
@@ -1590,7 +1552,6 @@ namespace NineTapTour.Forms
         public void refresh(bool seriesChange, int qbsNumber)
         {
             var scores = new List<MemberScores>();
-            listOfTopScore.Clear();
 
             // DEV NOTE: The text generated for the boxes in this is strange and has tabs that the 
             // code doesn't seem to be writing as far as I can tell.
@@ -1705,7 +1666,7 @@ namespace NineTapTour.Forms
                 }
                 catch (SqlException)
                 {
-                    listOfTopScore.Clear(); //to filter out if ther is no one ont he squad yet so the 3rd box wont get populated.
+
                 }
 
                 overallListOfTopScores = listOfTopScore;
@@ -2775,6 +2736,73 @@ namespace NineTapTour.Forms
             form.ShowDialog();
         }
 
+        private void rdoSquadOne_CheckedChanged(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
+            RecordIndexOnSquadSwitch(total);
+            FillMember();
+        }
+
+        private void rdoSquadTwo_CheckedChanged(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
+            RecordIndexOnSquadSwitch(total);
+            FillMember();
+        }
+
+
+  
+
+        private void rdoSquadFour_CheckedChanged(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
+            RecordIndexOnSquadSwitch(total);
+            FillMember();
+        }
+
+        private void rdoSquadThree_CheckedChanged(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
+            RecordIndexOnSquadSwitch(total);
+            FillMember();
+        }
+
+        private void rdoSquad5_CheckedChanged(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
+            RecordIndexOnSquadSwitch(total);
+            FillMember();
+        }
+
+        private void rdoSquad6_CheckedChanged(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
+            RecordIndexOnSquadSwitch(total);
+            FillMember();
+        }
+
+        private void rdoSquad7_CheckedChanged(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
+            RecordIndexOnSquadSwitch(total);
+            FillMember();
+        }
+
+        private void rdoSquad8_CheckedChanged(object sender, EventArgs e)
+        {
+            ScoreAndTotalClear();
+            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
+            RecordIndexOnSquadSwitch(total);
+            FillMember();
+        }
+
 		private void txtMemberNum2_Leave(object sender, EventArgs e)
 		{
 			FillMember();
@@ -2853,72 +2881,7 @@ namespace NineTapTour.Forms
 		{
 			FillMember();
 		}
-
-        private void rdoSquadOne_CheckedChanged_1(object sender, EventArgs e)
-        {
-            ScoreAndTotalClear();
-            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-            RecordIndexOnSquadSwitch(total);
-            FillMember();
-        }
-
-        private void RdoSquadTwo_CheckedChanged_1(object sender, EventArgs e)
-        {
-            ScoreAndTotalClear();
-            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-            RecordIndexOnSquadSwitch(total);
-            FillMember();
-
-        }
-
-        private void rdoSquadThree_CheckedChanged(object sender, EventArgs e)
-        {
-            ScoreAndTotalClear();
-            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-            RecordIndexOnSquadSwitch(total);
-            FillMember();
-        }
-
-        private void rdoSquadFour_CheckedChanged(object sender, EventArgs e)
-        {
-            ScoreAndTotalClear();
-            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-            RecordIndexOnSquadSwitch(total);
-            FillMember();
-        }
-
-        private void rdoSquad5_CheckedChanged(object sender, EventArgs e)
-        {
-            ScoreAndTotalClear();
-            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-            RecordIndexOnSquadSwitch(total);
-            FillMember();
-        }
-
-        private void rdoSquad6_CheckedChanged(object sender, EventArgs e)
-        {
-            ScoreAndTotalClear();
-            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-            RecordIndexOnSquadSwitch(total);
-            FillMember();
-        }
-
-        private void rdoSquad7_CheckedChanged(object sender, EventArgs e)
-        {
-            ScoreAndTotalClear();
-            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-            RecordIndexOnSquadSwitch(total);
-            FillMember();
-        }
-
-        private void rdoSquad8_CheckedChanged(object sender, EventArgs e)
-        {
-            ScoreAndTotalClear();
-            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-            RecordIndexOnSquadSwitch(total);
-            FillMember();
-        }
-    }
+	}
 
     /// <summary>
     /// Class used to populate 3rd RichTextBox

@@ -1298,15 +1298,15 @@ namespace Member_Import_Test
 
 
                     //if Current selected member has an excel file 
-                    //on finalzine do not reset the startAVG to their original avg. the start avg is now the Adjusted AVG
-                    //if (validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber)
-                    //{
-                    //    validMembers[members].StartAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerOrginalAVG;
-                    //}
+                    if (validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber)
+                    {
+                        validMembers[members].StartAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerOrginalAVG;
+                    }
                 }
             }
 
             frmPleaseWait please = new frmPleaseWait();
+            please.Show();
             updateMembers(validMembers);
             updatePlayerHistory(PlayerHistoryList);
             updateGameHistory(GameImport);
@@ -1322,7 +1322,6 @@ namespace Member_Import_Test
         {
             foreach (var ph in playerHistory)
             {
-                label4.Text = ($"Adding {MemberDb.GetMember(ph.MemberNumber, RegionID).FirstName} {MemberDb.GetMember(ph.MemberNumber,RegionID).LastName} to the Database");
                 PlayerHistoryDB.AddPlayerHistory(ph);
             }
         }

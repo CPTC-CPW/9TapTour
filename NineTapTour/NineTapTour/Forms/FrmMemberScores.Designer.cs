@@ -125,9 +125,9 @@
             this.btnTournamentResults = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.flpMemberScores = new System.Windows.Forms.FlowLayoutPanel();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -142,9 +142,9 @@
             this.pnlMemStat.SuspendLayout();
             this.panel1.SuspendLayout();
             this.flpMemberScores.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -209,7 +209,6 @@
             this.rdoSquad8.TabStop = true;
             this.rdoSquad8.Text = "Squad 8";
             this.rdoSquad8.UseVisualStyleBackColor = true;
-            this.rdoSquad8.CheckedChanged += new System.EventHandler(this.rdoSquad8_CheckedChanged);
             // 
             // rdoSquad6
             // 
@@ -221,7 +220,6 @@
             this.rdoSquad6.TabStop = true;
             this.rdoSquad6.Text = "Squad 6";
             this.rdoSquad6.UseVisualStyleBackColor = true;
-            this.rdoSquad6.CheckedChanged += new System.EventHandler(this.rdoSquad6_CheckedChanged);
             // 
             // rdoSquad7
             // 
@@ -233,7 +231,6 @@
             this.rdoSquad7.TabStop = true;
             this.rdoSquad7.Text = "Squad 7";
             this.rdoSquad7.UseVisualStyleBackColor = true;
-            this.rdoSquad7.CheckedChanged += new System.EventHandler(this.rdoSquad7_CheckedChanged);
             // 
             // rdoSquad5
             // 
@@ -245,7 +242,6 @@
             this.rdoSquad5.TabStop = true;
             this.rdoSquad5.Text = "Squad 5";
             this.rdoSquad5.UseVisualStyleBackColor = true;
-            this.rdoSquad5.CheckedChanged += new System.EventHandler(this.rdoSquad5_CheckedChanged);
             // 
             // rdoSquadFour
             // 
@@ -256,7 +252,6 @@
             this.rdoSquadFour.TabIndex = 23;
             this.rdoSquadFour.Text = "Squad 4";
             this.rdoSquadFour.UseVisualStyleBackColor = true;
-            this.rdoSquadFour.CheckedChanged += new System.EventHandler(this.rdoSquadFour_CheckedChanged);
             // 
             // rdoSquadThree
             // 
@@ -267,7 +262,6 @@
             this.rdoSquadThree.TabIndex = 22;
             this.rdoSquadThree.Text = "Squad 3";
             this.rdoSquadThree.UseVisualStyleBackColor = true;
-            this.rdoSquadThree.CheckedChanged += new System.EventHandler(this.rdoSquadThree_CheckedChanged);
             // 
             // rdoSquadTwo
             // 
@@ -278,7 +272,6 @@
             this.rdoSquadTwo.TabIndex = 21;
             this.rdoSquadTwo.Text = "Squad 2";
             this.rdoSquadTwo.UseVisualStyleBackColor = true;
-            this.rdoSquadTwo.CheckedChanged += new System.EventHandler(this.RdoSquadTwo_CheckedChanged_1);
             // 
             // rdoSquadOne
             // 
@@ -291,7 +284,6 @@
             this.rdoSquadOne.TabStop = true;
             this.rdoSquadOne.Text = "Squad 1";
             this.rdoSquadOne.UseVisualStyleBackColor = true;
-            this.rdoSquadOne.CheckedChanged += new System.EventHandler(this.rdoSquadOne_CheckedChanged_1);
             // 
             // txtLastName
             // 
@@ -1267,6 +1259,15 @@
             this.flpMemberScores.TabIndex = 1;
             this.flpMemberScores.SizeChanged += new System.EventHandler(this.flpMemberScores_SizeChanged);
             // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.grpReports);
+            this.panel3.Controls.Add(this.btnTournamentResults);
+            this.panel3.Location = new System.Drawing.Point(664, 550);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(139, 207);
+            this.panel3.TabIndex = 46;
+            // 
             // panel5
             // 
             this.panel5.Controls.Add(this.btnRecapByPin);
@@ -1287,15 +1288,6 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(206, 184);
             this.panel2.TabIndex = 46;
-            // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.grpReports);
-            this.panel3.Controls.Add(this.btnTournamentResults);
-            this.panel3.Location = new System.Drawing.Point(664, 550);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(139, 207);
-            this.panel3.TabIndex = 46;
             // 
             // panel4
             // 
@@ -1343,9 +1335,9 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.flpMemberScores.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
-            this.panel3.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.ResumeLayout(false);
 
