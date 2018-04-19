@@ -1305,14 +1305,9 @@ namespace Member_Import_Test
                 }
             }
 
-            //TODO Remove waiting form?
-            //frmPleaseWait please = new frmPleaseWait();
-            //please.Show();
             updateMembers(validMembers);
             updatePlayerHistory(PlayerHistoryList);
-            updateGameHistory(GameImport);
-            //please.Close();
-       
+            updateGameHistory(GameImport);  
 
             MessageBox.Show($"{validMembers.Count} members have been imported and all their bowling history has been added to the database");
 
