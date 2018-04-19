@@ -82,7 +82,7 @@
             this.cbxTourneyDropDown = new System.Windows.Forms.ComboBox();
             this.grpLeaders = new System.Windows.Forms.GroupBox();
             this.QBSBOX = new System.Windows.Forms.GroupBox();
-            this.rdoSquad8Resualts = new System.Windows.Forms.RadioButton();
+            this.rdoSquad8Results = new System.Windows.Forms.RadioButton();
             this.rdoSquad7Results = new System.Windows.Forms.RadioButton();
             this.rdoSquad6Results = new System.Windows.Forms.RadioButton();
             this.rdoSquad5Results = new System.Windows.Forms.RadioButton();
@@ -209,7 +209,7 @@
             this.rdoSquad8.TabStop = true;
             this.rdoSquad8.Text = "Squad 8";
             this.rdoSquad8.UseVisualStyleBackColor = true;
-            this.rdoSquad8.CheckedChanged += new System.EventHandler(this.rdoSquad8_CheckedChanged);
+            this.rdoSquad8.CheckedChanged += new System.EventHandler(this.rdoSquadNumber_CheckedChanged);
             // 
             // rdoSquad6
             // 
@@ -221,7 +221,7 @@
             this.rdoSquad6.TabStop = true;
             this.rdoSquad6.Text = "Squad 6";
             this.rdoSquad6.UseVisualStyleBackColor = true;
-            this.rdoSquad6.CheckedChanged += new System.EventHandler(this.rdoSquad6_CheckedChanged);
+            this.rdoSquad6.CheckedChanged += new System.EventHandler(this.rdoSquadNumber_CheckedChanged);
             // 
             // rdoSquad7
             // 
@@ -233,7 +233,7 @@
             this.rdoSquad7.TabStop = true;
             this.rdoSquad7.Text = "Squad 7";
             this.rdoSquad7.UseVisualStyleBackColor = true;
-            this.rdoSquad7.CheckedChanged += new System.EventHandler(this.rdoSquad7_CheckedChanged);
+            this.rdoSquad7.CheckedChanged += new System.EventHandler(this.rdoSquadNumber_CheckedChanged);
             // 
             // rdoSquad5
             // 
@@ -245,7 +245,7 @@
             this.rdoSquad5.TabStop = true;
             this.rdoSquad5.Text = "Squad 5";
             this.rdoSquad5.UseVisualStyleBackColor = true;
-            this.rdoSquad5.CheckedChanged += new System.EventHandler(this.rdoSquad5_CheckedChanged);
+            this.rdoSquad5.CheckedChanged += new System.EventHandler(this.rdoSquadNumber_CheckedChanged);
             // 
             // rdoSquadFour
             // 
@@ -256,7 +256,7 @@
             this.rdoSquadFour.TabIndex = 23;
             this.rdoSquadFour.Text = "Squad 4";
             this.rdoSquadFour.UseVisualStyleBackColor = true;
-            this.rdoSquadFour.CheckedChanged += new System.EventHandler(this.rdoSquadFour_CheckedChanged);
+            this.rdoSquadFour.CheckedChanged += new System.EventHandler(this.rdoSquadNumber_CheckedChanged);
             // 
             // rdoSquadThree
             // 
@@ -267,7 +267,7 @@
             this.rdoSquadThree.TabIndex = 22;
             this.rdoSquadThree.Text = "Squad 3";
             this.rdoSquadThree.UseVisualStyleBackColor = true;
-            this.rdoSquadThree.CheckedChanged += new System.EventHandler(this.rdoSquadThree_CheckedChanged);
+            this.rdoSquadThree.CheckedChanged += new System.EventHandler(this.rdoSquadNumber_CheckedChanged);
             // 
             // rdoSquadTwo
             // 
@@ -278,7 +278,7 @@
             this.rdoSquadTwo.TabIndex = 21;
             this.rdoSquadTwo.Text = "Squad 2";
             this.rdoSquadTwo.UseVisualStyleBackColor = true;
-            this.rdoSquadTwo.CheckedChanged += new System.EventHandler(this.RdoSquadTwo_CheckedChanged_1);
+            this.rdoSquadTwo.CheckedChanged += new System.EventHandler(this.rdoSquadNumber_CheckedChanged);
             // 
             // rdoSquadOne
             // 
@@ -291,7 +291,7 @@
             this.rdoSquadOne.TabStop = true;
             this.rdoSquadOne.Text = "Squad 1";
             this.rdoSquadOne.UseVisualStyleBackColor = true;
-            this.rdoSquadOne.CheckedChanged += new System.EventHandler(this.rdoSquadOne_CheckedChanged_1);
+            this.rdoSquadOne.CheckedChanged += new System.EventHandler(this.rdoSquadNumber_CheckedChanged);
             // 
             // txtLastName
             // 
@@ -776,7 +776,7 @@
             // 
             // QBSBOX
             // 
-            this.QBSBOX.Controls.Add(this.rdoSquad8Resualts);
+            this.QBSBOX.Controls.Add(this.rdoSquad8Results);
             this.QBSBOX.Controls.Add(this.rdoSquad7Results);
             this.QBSBOX.Controls.Add(this.rdoSquad6Results);
             this.QBSBOX.Controls.Add(this.rdoSquad5Results);
@@ -792,16 +792,16 @@
             this.QBSBOX.TabStop = false;
             this.QBSBOX.Text = "Qualify By Squad";
             // 
-            // rdoSquad8Resualts
+            // rdoSquad8Results
             // 
-            this.rdoSquad8Resualts.AutoSize = true;
-            this.rdoSquad8Resualts.Location = new System.Drawing.Point(4, 230);
-            this.rdoSquad8Resualts.Name = "rdoSquad8Resualts";
-            this.rdoSquad8Resualts.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquad8Resualts.TabIndex = 8;
-            this.rdoSquad8Resualts.Text = "Squad 8";
-            this.rdoSquad8Resualts.UseVisualStyleBackColor = true;
-            this.rdoSquad8Resualts.CheckedChanged += new System.EventHandler(this.rdoSquad8Resualts_CheckedChanged);
+            this.rdoSquad8Results.AutoSize = true;
+            this.rdoSquad8Results.Location = new System.Drawing.Point(4, 230);
+            this.rdoSquad8Results.Name = "rdoSquad8Results";
+            this.rdoSquad8Results.Size = new System.Drawing.Size(65, 17);
+            this.rdoSquad8Results.TabIndex = 8;
+            this.rdoSquad8Results.Text = "Squad 8";
+            this.rdoSquad8Results.UseVisualStyleBackColor = true;
+            this.rdoSquad8Results.CheckedChanged += new System.EventHandler(this.rdoSquad8Resualts_CheckedChanged);
             // 
             // rdoSquad7Results
             // 
@@ -1436,7 +1436,7 @@
         private System.Windows.Forms.TextBox txtMoney;
         private System.Windows.Forms.Button btnFinalizeTounament;
         private System.Windows.Forms.GroupBox QBSBOX;
-        private System.Windows.Forms.RadioButton rdoSquad8Resualts;
+        private System.Windows.Forms.RadioButton rdoSquad8Results;
         private System.Windows.Forms.RadioButton rdoSquad7Results;
         private System.Windows.Forms.RadioButton rdoSquad6Results;
         private System.Windows.Forms.RadioButton rdoSquad5Results;

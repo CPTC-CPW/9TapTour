@@ -39,8 +39,8 @@ namespace NineTapTour.Calculations
         {
 
             double calculateHandicap = Convert.ToDouble(BASE_AVERAGE_HANDICAP_CALCULATOR - currentAverage) * PERCENTAGE_TO_CALCULATE_HANDICAP;
-            //hotfix for anomoly on 230 AVG, should be -8 handicap regardless of math
-            if(currentAverage == 230)
+            //230 bowling average should be set to -8 handicap regardless of math
+            if (currentAverage == 230)
             {
                 calculateHandicap = -8;
                 return (int)calculateHandicap;

@@ -1298,20 +1298,16 @@ namespace Member_Import_Test
 
 
                     //if Current selected member has an excel file 
-                    //on finalzine do not reset the startAVG to their original avg. the start avg is now the Adjusted AVG
-                    //if (validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber)
-                    //{
-                    //    validMembers[members].StartAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerOrginalAVG;
-                    //}
+                    if (validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber)
+                    {
+                        validMembers[members].StartAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerOrginalAVG;
+                    }
                 }
             }
 
-            frmPleaseWait please = new frmPleaseWait();
             updateMembers(validMembers);
             updatePlayerHistory(PlayerHistoryList);
-            updateGameHistory(GameImport);
-            please.Close();
-       
+            updateGameHistory(GameImport);  
 
             MessageBox.Show($"{validMembers.Count} members have been imported and all their bowling history has been added to the database");
 
@@ -1322,7 +1318,7 @@ namespace Member_Import_Test
         {
             foreach (var ph in playerHistory)
             {
-                label4.Text = ($"Adding {MemberDb.GetMember(ph.MemberNumber, RegionID).FirstName} {MemberDb.GetMember(ph.MemberNumber,RegionID).LastName} to the Database");
+                label4.Text = ($"Adding {MemberDb.GetMember(ph.MemberNumber, RegionID).FirstName} {MemberDb.GetMember(ph.MemberNumber, RegionID).LastName} to the Database");
                 PlayerHistoryDB.AddPlayerHistory(ph);
             }
         }
