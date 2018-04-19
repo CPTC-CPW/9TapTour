@@ -1305,12 +1305,13 @@ namespace Member_Import_Test
                 }
             }
 
-            frmPleaseWait please = new frmPleaseWait();
-            please.Show();
+            //TODO Remove waiting form?
+            //frmPleaseWait please = new frmPleaseWait();
+            //please.Show();
             updateMembers(validMembers);
             updatePlayerHistory(PlayerHistoryList);
             updateGameHistory(GameImport);
-            please.Close();
+            //please.Close();
        
 
             MessageBox.Show($"{validMembers.Count} members have been imported and all their bowling history has been added to the database");
@@ -1322,6 +1323,7 @@ namespace Member_Import_Test
         {
             foreach (var ph in playerHistory)
             {
+                label4.Text = ($"Adding {MemberDb.GetMember(ph.MemberNumber, RegionID).FirstName} {MemberDb.GetMember(ph.MemberNumber, RegionID).LastName} to the Database");
                 PlayerHistoryDB.AddPlayerHistory(ph);
             }
         }
