@@ -647,21 +647,6 @@ namespace Member_Import_Test
             string firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
             string[] first0middle1 = firstAndMiddle.Split(' ');
 
-            if (playerFullName.Contains("Sr")) //catches the "sr " and sets their last name to only there last name
-            {
-                try
-                {
-                    playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(" "));
-                }
-                catch
-                {
-                    PlayerFinalFirstAndMiddle[0] = first0middle1[0];
-                }
-            }
-            else
-            {
-                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
-            }
 
             int playerOrgAVG;
             for (int i = 0; i < first0middle1.Length; i++)
@@ -775,7 +760,7 @@ namespace Member_Import_Test
                                 temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
                                 playerH.GamesPlayed = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
                                 DateTime compare = DateTime.FromOADate(Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2));
-                                if (temp.GameTotal > 4 && compare == Convert.ToDateTime("12/30/1899 12:00:00 AM"))
+                                if (temp.GameTotal >= 4 && compare == Convert.ToDateTime("12/30/1899 12:00:00 AM"))
                                 {
                                     break;
                                 }

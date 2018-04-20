@@ -518,7 +518,7 @@
             this.btnRightArrow.Location = new System.Drawing.Point(163, 50);
             this.btnRightArrow.Name = "btnRightArrow";
             this.btnRightArrow.Size = new System.Drawing.Size(53, 29);
-            this.btnRightArrow.TabIndex = 1;
+            this.btnRightArrow.TabIndex = 2;
             this.btnRightArrow.TabStop = false;
             this.btnRightArrow.Text = ">";
             this.btnRightArrow.UseVisualStyleBackColor = true;
@@ -538,7 +538,7 @@
             this.btnDelete.Location = new System.Drawing.Point(19, 85);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(197, 25);
-            this.btnDelete.TabIndex = 0;
+            this.btnDelete.TabIndex = 3;
             this.btnDelete.TabStop = false;
             this.btnDelete.Text = "Delete Member From Tournament";
             this.btnDelete.UseVisualStyleBackColor = true;
@@ -560,7 +560,7 @@
             this.btnNew.Location = new System.Drawing.Point(19, 19);
             this.btnNew.Name = "btnNew";
             this.btnNew.Size = new System.Drawing.Size(197, 25);
-            this.btnNew.TabIndex = 4;
+            this.btnNew.TabIndex = 0;
             this.btnNew.Text = "Add New/Update Record";
             this.btnNew.UseVisualStyleBackColor = true;
             this.btnNew.Click += new System.EventHandler(this.newRecap);
