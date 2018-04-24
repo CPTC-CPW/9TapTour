@@ -117,7 +117,14 @@ namespace NineTapTour.Database
             }
 
             // drawing the report title
-            graphic.DrawString(header + reportType + " Finals", bigFont, dBrush, startX + 10, startY + 27);
+            if (currentSquad == 0)
+            {
+                graphic.DrawString(header + reportType + " Final Standings", bigFont, dBrush, startX + 10, startY + 27);
+            }
+            else
+            {
+                graphic.DrawString(header + reportType + "     Squad "  + currentSquad + " Standings " , bigFont, dBrush, startX + 10, startY + 27);
+            }
 
             if (reportTypeNum == 0)
             {
@@ -131,7 +138,7 @@ namespace NineTapTour.Database
             for (int i = 0; i < temp.Count - (index * 40) && i < numToPrint; i++)
             {
                 //draw number for what place they are
-                graphic.DrawString((i + 1 + (index * 40)).ToString(), font, dBrush, startX + 6, startY + 173 + (i * 19));
+                graphic.DrawString((temp[i + (index * 40)].placing).ToString(), font, dBrush, startX + 6, startY + 173 + (i * 19));
 
                 //draw Score
                 graphic.DrawString(temp[i + (index * 40)].Score.ToString(), font, dBrush, startX + 48, startY + 173 + (i * 19));
@@ -153,11 +160,12 @@ namespace NineTapTour.Database
             }
         }
 
-        static public void printMemberReport(List<Forms.frmMemberScores.MemberScores> temp, Database.Tournament selectedTournament, int reportTypeNum)
+        static public void printMemberReport(List<Forms.frmMemberScores.MemberScores> temp, Database.Tournament selectedTournament, int reportTypeNum, int currentSquad)
         {
             Print.temp = temp;
             Print.selectedTournament = selectedTournament;
             Print.reportTypeNum = reportTypeNum;
+            Print.currentSquad = currentSquad;
 
             // Set up compenents for printing
             PrintDialog printDialog = new PrintDialog();
@@ -189,6 +197,7 @@ namespace NineTapTour.Database
         static List<Forms.frmMemberScores.MemberScores> temp = new List<Forms.frmMemberScores.MemberScores>();//for High score
         static Tournament selectedTournament;
         static int reportTypeNum;
+        static int currentSquad;
         /************************************************************************/
 
         static List<Member> mems = new List<Member>();

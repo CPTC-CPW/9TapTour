@@ -19,13 +19,15 @@ namespace NineTapTour.Forms
         // to know the report type
         // 0 for High game handicap/senior, 1 for game/high game, 2 for series/high series
         int reportTypeNum;
+        int currentSquad;
 
-        public FrmMemberScoresReports(List<frmMemberScores.MemberScores> temp, Database.Tournament selectedTournament, int reportTypeNum)
+        public FrmMemberScoresReports(List<frmMemberScores.MemberScores> temp, Database.Tournament selectedTournament, int reportTypeNum, int currentSquad)
         {
             InitializeComponent();
             this.temp = temp;
             this.selectedTournament = selectedTournament;
             this.reportTypeNum = reportTypeNum;
+            this.currentSquad = currentSquad;
         }
 
         private void btnPrint_Click(object sender, EventArgs e)
@@ -43,7 +45,7 @@ namespace NineTapTour.Forms
                     // only take the inputted number of members
                     temp = temp.Take(Convert.ToInt32(txtNumberOfMembers.Text)).ToList();
                     // print( go to print class )
-                    Database.Print.printMemberReport(temp, selectedTournament, reportTypeNum);
+                    Database.Print.printMemberReport(temp, selectedTournament, reportTypeNum,currentSquad);
                 }
                 // if user inputs a bigger number than the number of members
                 else
