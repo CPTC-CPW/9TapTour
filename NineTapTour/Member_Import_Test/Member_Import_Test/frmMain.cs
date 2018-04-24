@@ -760,7 +760,7 @@ namespace Member_Import_Test
                                 temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
                                 playerH.GamesPlayed = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
                                 DateTime compare = DateTime.FromOADate(Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2));
-                                if (temp.GameTotal >= 4 && compare == Convert.ToDateTime("12/30/1899 12:00:00 AM"))
+                                if (compare == Convert.ToDateTime("12/30/1899 12:00:00 AM"))
                                 {
                                     break;
                                 }
