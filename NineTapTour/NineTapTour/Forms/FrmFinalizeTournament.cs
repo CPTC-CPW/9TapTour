@@ -106,6 +106,11 @@ namespace NineTapTour.Forms
                     
                     temp = FinalizeTempDB.getFinalizeID(g);
                     temp.Notes = item.Notes;
+                    temp.memberNumber = MemberDb.GetMemberNumberbyID(item.MemberId);
+                    temp.Game1 = Convert.ToInt32(g.Game1);
+                    temp.Game2 = Convert.ToInt32(g.Game2);
+                    temp.Game3 = Convert.ToInt32(g.Game3);
+                    temp.Game4 = Convert.ToInt32(g.Game4);
                     temp.HandicapTotal = ((temp.Game1 + temp.Bonus + temp.Handicap) + (temp.Game2 + temp.Bonus + temp.Handicap) + (temp.Game3 + temp.Bonus + temp.Handicap) + (temp.Game4 + temp.Bonus + temp.Handicap));
                 }
                 else
@@ -118,14 +123,14 @@ namespace NineTapTour.Forms
                     temp.TournamentID = tourn.Id;
                     temp.GameId = item.GameId;
                     temp.MemberId = item.MemberId;
-                    temp.memberNumber = item.memberNumber;
+                    temp.memberNumber = MemberDb.GetMemberNumberbyID(item.MemberId);
                     temp.FirstName = item.FirstName;
                     temp.LastName = item.LastName;
                     temp.Squad = item.Squad;
-                    temp.Game1 = item.Game1;
-                    temp.Game2 = item.Game2;
-                    temp.Game3 = item.Game3;
-                    temp.Game4 = item.Game4;
+                    temp.Game1 = Convert.ToInt32(g.Game1);
+                    temp.Game2 = Convert.ToInt32(g.Game2);
+                    temp.Game3 = Convert.ToInt32(g.Game3);
+                    temp.Game4 = Convert.ToInt32(g.Game4);
                     temp.Notes = item.Notes;
                     temp.UseGame1 = item.UseGame1;
                     temp.UseGame2 = item.UseGame2;
@@ -1109,7 +1114,7 @@ namespace NineTapTour.Forms
                         {
                             PlayerHistory p = new PlayerHistory();
 
-                            p.MemberNumber = FinalizeTableList[i].MemberId;
+                            p.MemberNumber = FinalizeTableList[i].memberNumber;
                             int tempgameplayed = 0;
                             if (dataGridView1[GAME_1_VALID_COLUMN, i].Value.ToString() == "True")
                             {
