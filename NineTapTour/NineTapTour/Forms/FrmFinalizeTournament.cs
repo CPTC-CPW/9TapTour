@@ -111,7 +111,25 @@ namespace NineTapTour.Forms
                     temp.Game2 = Convert.ToInt32(g.Game2);
                     temp.Game3 = Convert.ToInt32(g.Game3);
                     temp.Game4 = Convert.ToInt32(g.Game4);
+                    temp.ScratchTotal = temp.Game1 + temp.Game2 + temp.Game3 + temp.Game4;
                     temp.HandicapTotal = ((temp.Game1 + temp.Bonus + temp.Handicap) + (temp.Game2 + temp.Bonus + temp.Handicap) + (temp.Game3 + temp.Bonus + temp.Handicap) + (temp.Game4 + temp.Bonus + temp.Handicap));
+                    if (item.Game1 > 0)
+                    {
+                        gplayed++;
+                    }
+                    if (item.Game2 > 0)
+                    {
+                        gplayed++;
+                    }
+                    if (item.Game3 > 0)
+                    {
+                        gplayed++;
+                    }
+                    if (item.Game4 > 0)
+                    {
+                        gplayed++;
+                    }
+                    temp.GameAvg = (temp.Game1 + temp.Game2 + temp.Game3 + temp.Game4) / gplayed;
                 }
                 else
                 {
