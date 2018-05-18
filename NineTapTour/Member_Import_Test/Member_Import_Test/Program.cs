@@ -25,7 +25,7 @@ namespace Member_Import_Test
             SetConnectionString(@"(localdb)\MSSQLLocalDB");
 #endif
 
-            Application.Run(new frmMain());
+             Application.Run(new frmMain());
         }
 
         private static void SetConnectionString(string dataSource)

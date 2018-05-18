@@ -45,6 +45,13 @@ namespace NineTapTour.Forms
         private void RadioIntialize()
         {
             rdoSquadOne.TabStop = false;
+            rdoSquadTwo.TabStop = false;
+            rdoSquadThree.TabStop = false;
+            rdoSquadFour.TabStop = false;
+            rdoSquad5.TabStop = false;
+            rdoSquad6.TabStop = false;
+            rdoSquad7.TabStop = false;
+            rdoSquad8.TabStop = false;
             rdoHandicapScore.TabStop = false;
             rdoAllResults.TabStop = false;
             rdoSquad5.Visible = false;
@@ -2323,8 +2330,8 @@ namespace NineTapTour.Forms
             {
 
                 var newFrmFinalizeTournament = new FrmFinalizeTournament(selectedTournament, overallListOfTopScores, RegionID);
-                newFrmFinalizeTournament.Dock = DockStyle.Fill;
-                newFrmFinalizeTournament.WindowState = FormWindowState.Maximized;
+                newFrmFinalizeTournament.Dock = DockStyle.Right;
+                newFrmFinalizeTournament.WindowState = FormWindowState.Normal;
                 newFrmFinalizeTournament.Show();
             }
 

@@ -418,15 +418,15 @@ namespace NineTapTour.Forms
 
         private void FrmStats_Load(object sender, EventArgs e)
         {
-            string[] firstname;
+          
             try
             {
-                firstname = mem.FirstName.Split(' ');
-                lblName.Text = firstname[0] + "    " + mem.LastName;
+               
+                lblName.Text = mem.FirstName + "    " + mem.LastName;
             }
             catch
             {
-                lblName.Text = mem.FirstName + " " + mem.LastName;
+                lblName.Text = mem.FirstName + "   " + mem.LastName;
             }
             lblMemberNumber.Text = Convert.ToString(memNum);
             try

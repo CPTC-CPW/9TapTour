@@ -182,29 +182,29 @@ namespace Member_Import_Test
 
                                         //these were just some of the notes that were left in the name (some signify life members, others are just short for the city they are from)
                                         // dooesnt need to be by the name, taken out on a case by case basis.
-                                        string[] notapartofname = { "life", "gst", "(Haw.)", "pa", "yk", "hj", "lg", "mv" };
+                                        //string[] notapartofname = { "life", "gst", "(Haw.)", "pa", "yk", "hj", "lg", "mv" };
 
 
-                                        string fName = File.Substring(currentIndex, Spaces[i]).Trim();
+                                        //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
 
-                                        newMem.FirstName = fName;
+                                        //newMem.FirstName = fName;
 
-                                        for (int d = 0; d < notapartofname.Length; d++)
-                                        {
-                                            if (fName.Contains(notapartofname[d]))
-                                            {
-                                                newMem.FirstName = fName.Substring(0, fName.IndexOf(notapartofname[d])).Trim();
-                                            }
-                                        }
+                                        //for (int d = 0; d < notapartofname.Length; d++)
+                                        //{
+                                        //    if (fName.Contains(notapartofname[d]))
+                                        //    {
+                                        //        newMem.FirstName = fName.Substring(0, fName.IndexOf(notapartofname[d])).Trim();
+                                        //    }
+                                        //}
 
 
 
                                         //Idea #2 Using String.Split\\
                                         //Issue if name contains space, would have to check for additional parts of name
 
-                                        //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
-                                        //string[] split = fName.Split(' ');
-                                        //newMem.FirstName = split[0];
+                                        string fName = File.Substring(currentIndex, Spaces[i]).Trim();
+                                        string[] split = fName.Split(' ');
+                                        newMem.FirstName = split[0];
 
                                         //Idea #3 Using String.Substring\\
                                         //Issue arises if spaces between names.

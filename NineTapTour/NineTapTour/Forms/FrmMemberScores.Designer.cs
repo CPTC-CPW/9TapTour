@@ -166,7 +166,7 @@
             this.txtMemberNum2.Location = new System.Drawing.Point(6, 45);
             this.txtMemberNum2.Name = "txtMemberNum2";
             this.txtMemberNum2.Size = new System.Drawing.Size(112, 20);
-            this.txtMemberNum2.TabIndex = 1;
+            this.txtMemberNum2.TabIndex = 2;
             this.txtMemberNum2.Visible = false;
             this.txtMemberNum2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMemberNum2_KeyDown);
             this.txtMemberNum2.Leave += new System.EventHandler(this.txtMemberNum2_Leave);
@@ -178,7 +178,7 @@
             this.txtMemberNum.Location = new System.Drawing.Point(6, 19);
             this.txtMemberNum.Name = "txtMemberNum";
             this.txtMemberNum.Size = new System.Drawing.Size(112, 20);
-            this.txtMemberNum.TabIndex = 0;
+            this.txtMemberNum.TabIndex = 1;
             this.txtMemberNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMemberNum_KeyDown);
             this.txtMemberNum.Leave += new System.EventHandler(this.txtMemberNum_Leave);
             // 
@@ -195,7 +195,7 @@
             this.groupBox1.Location = new System.Drawing.Point(4, 84);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(179, 122);
-            this.groupBox1.TabIndex = 22;
+            this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Squad Number";
             // 
@@ -205,7 +205,7 @@
             this.rdoSquad8.Location = new System.Drawing.Point(108, 96);
             this.rdoSquad8.Name = "rdoSquad8";
             this.rdoSquad8.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquad8.TabIndex = 27;
+            this.rdoSquad8.TabIndex = 11;
             this.rdoSquad8.TabStop = true;
             this.rdoSquad8.Text = "Squad 8";
             this.rdoSquad8.UseVisualStyleBackColor = true;
@@ -217,7 +217,7 @@
             this.rdoSquad6.Location = new System.Drawing.Point(108, 67);
             this.rdoSquad6.Name = "rdoSquad6";
             this.rdoSquad6.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquad6.TabIndex = 26;
+            this.rdoSquad6.TabIndex = 9;
             this.rdoSquad6.TabStop = true;
             this.rdoSquad6.Text = "Squad 6";
             this.rdoSquad6.UseVisualStyleBackColor = true;
@@ -229,7 +229,7 @@
             this.rdoSquad7.Location = new System.Drawing.Point(7, 96);
             this.rdoSquad7.Name = "rdoSquad7";
             this.rdoSquad7.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquad7.TabIndex = 25;
+            this.rdoSquad7.TabIndex = 10;
             this.rdoSquad7.TabStop = true;
             this.rdoSquad7.Text = "Squad 7";
             this.rdoSquad7.UseVisualStyleBackColor = true;
@@ -241,7 +241,7 @@
             this.rdoSquad5.Location = new System.Drawing.Point(6, 67);
             this.rdoSquad5.Name = "rdoSquad5";
             this.rdoSquad5.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquad5.TabIndex = 24;
+            this.rdoSquad5.TabIndex = 8;
             this.rdoSquad5.TabStop = true;
             this.rdoSquad5.Text = "Squad 5";
             this.rdoSquad5.UseVisualStyleBackColor = true;
@@ -253,7 +253,7 @@
             this.rdoSquadFour.Location = new System.Drawing.Point(108, 43);
             this.rdoSquadFour.Name = "rdoSquadFour";
             this.rdoSquadFour.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquadFour.TabIndex = 23;
+            this.rdoSquadFour.TabIndex = 7;
             this.rdoSquadFour.Text = "Squad 4";
             this.rdoSquadFour.UseVisualStyleBackColor = true;
             this.rdoSquadFour.CheckedChanged += new System.EventHandler(this.rdoSquadNumber_CheckedChanged);
@@ -264,7 +264,7 @@
             this.rdoSquadThree.Location = new System.Drawing.Point(6, 43);
             this.rdoSquadThree.Name = "rdoSquadThree";
             this.rdoSquadThree.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquadThree.TabIndex = 22;
+            this.rdoSquadThree.TabIndex = 6;
             this.rdoSquadThree.Text = "Squad 3";
             this.rdoSquadThree.UseVisualStyleBackColor = true;
             this.rdoSquadThree.CheckedChanged += new System.EventHandler(this.rdoSquadNumber_CheckedChanged);
@@ -275,7 +275,7 @@
             this.rdoSquadTwo.Location = new System.Drawing.Point(108, 20);
             this.rdoSquadTwo.Name = "rdoSquadTwo";
             this.rdoSquadTwo.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquadTwo.TabIndex = 21;
+            this.rdoSquadTwo.TabIndex = 5;
             this.rdoSquadTwo.Text = "Squad 2";
             this.rdoSquadTwo.UseVisualStyleBackColor = true;
             this.rdoSquadTwo.CheckedChanged += new System.EventHandler(this.rdoSquadNumber_CheckedChanged);
@@ -287,7 +287,7 @@
             this.rdoSquadOne.Location = new System.Drawing.Point(6, 20);
             this.rdoSquadOne.Name = "rdoSquadOne";
             this.rdoSquadOne.Size = new System.Drawing.Size(65, 17);
-            this.rdoSquadOne.TabIndex = 20;
+            this.rdoSquadOne.TabIndex = 4;
             this.rdoSquadOne.TabStop = true;
             this.rdoSquadOne.Text = "Squad 1";
             this.rdoSquadOne.UseVisualStyleBackColor = true;
@@ -379,7 +379,7 @@
             this.txtScratchScore1.MaxLength = 3;
             this.txtScratchScore1.Name = "txtScratchScore1";
             this.txtScratchScore1.Size = new System.Drawing.Size(57, 37);
-            this.txtScratchScore1.TabIndex = 0;
+            this.txtScratchScore1.TabIndex = 13;
             this.txtScratchScore1.TextChanged += new System.EventHandler(this.scratchTotal);
             // 
             // txtHandicapScore1
@@ -404,7 +404,7 @@
             this.txtScratchScore2.MaxLength = 3;
             this.txtScratchScore2.Name = "txtScratchScore2";
             this.txtScratchScore2.Size = new System.Drawing.Size(57, 37);
-            this.txtScratchScore2.TabIndex = 1;
+            this.txtScratchScore2.TabIndex = 14;
             this.txtScratchScore2.TextChanged += new System.EventHandler(this.scratchTotal);
             // 
             // txtHandicapScore2
@@ -429,7 +429,7 @@
             this.txtScratchScore3.MaxLength = 3;
             this.txtScratchScore3.Name = "txtScratchScore3";
             this.txtScratchScore3.Size = new System.Drawing.Size(57, 37);
-            this.txtScratchScore3.TabIndex = 2;
+            this.txtScratchScore3.TabIndex = 15;
             this.txtScratchScore3.TextChanged += new System.EventHandler(this.scratchTotal);
             // 
             // txtHandicapScore3
@@ -454,7 +454,7 @@
             this.txtScratchScore4.MaxLength = 3;
             this.txtScratchScore4.Name = "txtScratchScore4";
             this.txtScratchScore4.Size = new System.Drawing.Size(57, 37);
-            this.txtScratchScore4.TabIndex = 3;
+            this.txtScratchScore4.TabIndex = 16;
             this.txtScratchScore4.TextChanged += new System.EventHandler(this.scratchTotal);
             // 
             // txtHandicapScore4
@@ -509,7 +509,7 @@
             this.grpRecord.Location = new System.Drawing.Point(3, 550);
             this.grpRecord.Name = "grpRecord";
             this.grpRecord.Size = new System.Drawing.Size(235, 116);
-            this.grpRecord.TabIndex = 2;
+            this.grpRecord.TabIndex = 17;
             this.grpRecord.TabStop = false;
             this.grpRecord.Text = "Record";
             // 
@@ -560,7 +560,7 @@
             this.btnNew.Location = new System.Drawing.Point(19, 19);
             this.btnNew.Name = "btnNew";
             this.btnNew.Size = new System.Drawing.Size(197, 25);
-            this.btnNew.TabIndex = 0;
+            this.btnNew.TabIndex = 18;
             this.btnNew.Text = "Add New/Update Record";
             this.btnNew.UseVisualStyleBackColor = true;
             this.btnNew.Click += new System.EventHandler(this.newRecap);
@@ -634,7 +634,7 @@
             this.grpStats.Location = new System.Drawing.Point(6, 207);
             this.grpStats.Name = "grpStats";
             this.grpStats.Size = new System.Drawing.Size(360, 328);
-            this.grpStats.TabIndex = 1;
+            this.grpStats.TabIndex = 12;
             this.grpStats.TabStop = false;
             this.grpStats.Text = "Stats";
             // 
