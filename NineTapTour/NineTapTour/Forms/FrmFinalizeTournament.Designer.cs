@@ -68,7 +68,7 @@
             this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView1.Location = new System.Drawing.Point(12, 35);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(1240, 353);
+            this.dataGridView1.Size = new System.Drawing.Size(1240, 279);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1_OnCellEnter);
             this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
@@ -77,7 +77,7 @@
             // 
             // btnFinalize
             // 
-            this.btnFinalize.Location = new System.Drawing.Point(565, 870);
+            this.btnFinalize.Location = new System.Drawing.Point(560, 641);
             this.btnFinalize.Name = "btnFinalize";
             this.btnFinalize.Size = new System.Drawing.Size(104, 40);
             this.btnFinalize.TabIndex = 1;
@@ -108,17 +108,16 @@
             dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle4;
-            this.dataGridView2.Location = new System.Drawing.Point(12, 499);
+            this.dataGridView2.Location = new System.Drawing.Point(12, 356);
             this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.Size = new System.Drawing.Size(1240, 353);
+            this.dataGridView2.Size = new System.Drawing.Size(1240, 279);
             this.dataGridView2.TabIndex = 2;
-        
             // 
             // lblMemberNumber
             // 
             this.lblMemberNumber.AutoSize = true;
             this.lblMemberNumber.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMemberNumber.Location = new System.Drawing.Point(23, 460);
+            this.lblMemberNumber.Location = new System.Drawing.Point(28, 317);
             this.lblMemberNumber.Name = "lblMemberNumber";
             this.lblMemberNumber.Size = new System.Drawing.Size(134, 36);
             this.lblMemberNumber.TabIndex = 6;
@@ -128,7 +127,7 @@
             // 
             this.lblName.AutoSize = true;
             this.lblName.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblName.Location = new System.Drawing.Point(285, 460);
+            this.lblName.Location = new System.Drawing.Point(287, 317);
             this.lblName.Name = "lblName";
             this.lblName.Size = new System.Drawing.Size(87, 36);
             this.lblName.TabIndex = 7;
@@ -138,7 +137,7 @@
             // 
             this.lblStartAvg.AutoSize = true;
             this.lblStartAvg.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStartAvg.Location = new System.Drawing.Point(920, 460);
+            this.lblStartAvg.Location = new System.Drawing.Point(838, 317);
             this.lblStartAvg.Name = "lblStartAvg";
             this.lblStartAvg.Size = new System.Drawing.Size(30, 36);
             this.lblStartAvg.TabIndex = 29;

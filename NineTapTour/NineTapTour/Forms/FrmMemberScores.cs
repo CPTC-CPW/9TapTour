@@ -33,6 +33,7 @@ namespace NineTapTour.Forms
         public static List<Participant> overallListOfParticipants;
         int QBSNumber = 0;
         frmNewTournament currentTourneyPage;
+        List<int> howManySquadsCanBeFiltered = new List<int>();
 
 
         public frmMemberScores()
@@ -54,6 +55,10 @@ namespace NineTapTour.Forms
             rdoSquad8.TabStop = false;
             rdoHandicapScore.TabStop = false;
             rdoAllResults.TabStop = false;
+            cbFilterSquad5.Visible = false;
+            cbFilterSquad6.Visible = false;
+            cbFilterSquad7.Visible = false;
+            cbFilterSquad8.Visible = false;
             rdoSquad5.Visible = false;
             rdoSquad6.Visible = false;
             rdoSquad7.Visible = false;
@@ -62,12 +67,16 @@ namespace NineTapTour.Forms
             rdoSquad6Results.Visible = false;
             rdoSquad7Results.Visible = false;
             rdoSquad8Results.Visible = false;
+            cbAllSquads.Checked = true;
             if (cbxTourneyDropDown.SelectedIndex >= 0)
             {
                 if (selectedTournament.Squads == 5)
                 {
                     rdoSquad5.Visible = true;
                     rdoSquad5Results.Visible = true;
+                    cbFilterSquad5.Visible = true;
+                   
+
                 }
                 if (selectedTournament.Squads == 6)
                 {
@@ -75,6 +84,8 @@ namespace NineTapTour.Forms
                     rdoSquad6.Visible = true;
                     rdoSquad5Results.Visible = true;
                     rdoSquad6Results.Visible = true;
+                    cbFilterSquad5.Visible = true;
+                    cbFilterSquad6.Visible = true;
                 }
                 if (selectedTournament.Squads == 7)
                 {
@@ -84,6 +95,9 @@ namespace NineTapTour.Forms
                     rdoSquad5Results.Visible = true;
                     rdoSquad6Results.Visible = true;
                     rdoSquad7Results.Visible = true;
+                    cbFilterSquad5.Visible = true;
+                    cbFilterSquad6.Visible = true;
+                    cbFilterSquad7.Visible = true;
 
                 }
                 if (selectedTournament.Squads == 8)
@@ -96,6 +110,10 @@ namespace NineTapTour.Forms
                     rdoSquad6Results.Visible = true;
                     rdoSquad7Results.Visible = true;
                     rdoSquad8Results.Visible = true;
+                    cbFilterSquad5.Visible = true;
+                    cbFilterSquad6.Visible = true;
+                    cbFilterSquad7.Visible = true;
+                    cbFilterSquad8.Visible = true;
                 }
             }
         }
@@ -177,7 +195,7 @@ namespace NineTapTour.Forms
                 RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
                 overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
                 btnDelete.Enabled = true;
-
+               
                 refresh(false, QBSNumber);
                 // sets focus to member num becuse that is what a user will need next
                 rdoHandicapScore.Visible = true;
@@ -1400,6 +1418,7 @@ namespace NineTapTour.Forms
                 DoubleInitialize(false);
                 EnableButtonsWhenValidTournamentSelected();
                 RadioIntialize();
+                btnDelete.Enabled = true;
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
             }
@@ -1417,6 +1436,7 @@ namespace NineTapTour.Forms
                 currentIndex = 0;
                 // Gets the record for the selected tournament
                 RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
+                overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
                 refresh(false, QBSNumber);
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
@@ -1571,7 +1591,7 @@ namespace NineTapTour.Forms
                                     ORDER BY Participants.Member_Id";
                     getList.Parameters.AddWithValue("@TID", selectedTourney);
                 }
-                else
+                else if(qbsNumber > 0 && qbsNumber <= 8)
                 {
                     getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
                                     FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
@@ -1584,6 +1604,129 @@ namespace NineTapTour.Forms
                     getList.Parameters.AddWithValue("@SN", QBSNumber);
 
                 }
+                else if(howManySquadsCanBeFiltered.Count > 0 && QBSNumber == 9)
+                {
+                    if(howManySquadsCanBeFiltered.Count == 1)
+                    {
+                        getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
+                                    FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
+                                    JOIN Games ON Games.Id = Participants.Game_Id
+                                    JOIN Members ON Members.Id = Participants.Member_Id 
+                                    WHERE Tournaments.Id = @TID AND Participants.SquadNumber = @SN
+                                    GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
+                                    ORDER BY Participants.Member_Id";
+                        getList.Parameters.AddWithValue("@TID", selectedTourney);
+                        getList.Parameters.AddWithValue("@SN", howManySquadsCanBeFiltered[0]);
+                    }
+                    else if(howManySquadsCanBeFiltered.Count == 2)
+                    {
+                        getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
+                                    FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
+                                    JOIN Games ON Games.Id = Participants.Game_Id
+                                    JOIN Members ON Members.Id = Participants.Member_Id 
+                                    WHERE Tournaments.Id = @TID AND Participants.SquadNumber IN (@SN1,@SN2)
+                                    GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
+                                    ORDER BY Participants.Member_Id";
+                        getList.Parameters.AddWithValue("@TID", selectedTourney);
+                        getList.Parameters.AddWithValue("@SN1", howManySquadsCanBeFiltered[0]);
+                        getList.Parameters.AddWithValue("@SN2", howManySquadsCanBeFiltered[1]);
+
+                    }
+                    else if(howManySquadsCanBeFiltered.Count == 3)
+                    {
+                        getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
+                                    FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
+                                    JOIN Games ON Games.Id = Participants.Game_Id
+                                    JOIN Members ON Members.Id = Participants.Member_Id 
+                                    WHERE Tournaments.Id = @TID AND Participants.SquadNumber IN (@SN1,@SN2,@SN3)
+                                    GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
+                                    ORDER BY Participants.Member_Id";
+                        getList.Parameters.AddWithValue("@TID", selectedTourney);
+                        getList.Parameters.AddWithValue("@SN1", howManySquadsCanBeFiltered[0]);
+                        getList.Parameters.AddWithValue("@SN2", howManySquadsCanBeFiltered[1]);
+                        getList.Parameters.AddWithValue("@SN3", howManySquadsCanBeFiltered[2]);
+                    }
+                    else if (howManySquadsCanBeFiltered.Count == 4)
+                    {
+                        getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
+                                    FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
+                                    JOIN Games ON Games.Id = Participants.Game_Id
+                                    JOIN Members ON Members.Id = Participants.Member_Id 
+                                    WHERE Tournaments.Id = @TID AND Participants.SquadNumber IN (@SN1,@SN2,@SN3,@SN4)
+                                    GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
+                                    ORDER BY Participants.Member_Id";
+                        getList.Parameters.AddWithValue("@TID", selectedTourney);
+                        getList.Parameters.AddWithValue("@SN1", howManySquadsCanBeFiltered[0]);
+                        getList.Parameters.AddWithValue("@SN2", howManySquadsCanBeFiltered[1]);
+                        getList.Parameters.AddWithValue("@SN3", howManySquadsCanBeFiltered[2]);
+                        getList.Parameters.AddWithValue("@SN4", howManySquadsCanBeFiltered[3]);
+
+                    }
+                    else if (howManySquadsCanBeFiltered.Count == 5)
+                    {
+                        getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
+                                    FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
+                                    JOIN Games ON Games.Id = Participants.Game_Id
+                                    JOIN Members ON Members.Id = Participants.Member_Id 
+                                    WHERE Tournaments.Id = @TID AND Participants.SquadNumber IN (@SN1,@SN2,@SN3,@SN4,@SN5)
+                                    GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
+                                    ORDER BY Participants.Member_Id";
+                        getList.Parameters.AddWithValue("@TID", selectedTourney);
+                        getList.Parameters.AddWithValue("@SN1", howManySquadsCanBeFiltered[0]);
+                        getList.Parameters.AddWithValue("@SN2", howManySquadsCanBeFiltered[1]);
+                        getList.Parameters.AddWithValue("@SN3", howManySquadsCanBeFiltered[2]);
+                        getList.Parameters.AddWithValue("@SN4", howManySquadsCanBeFiltered[3]);
+                        getList.Parameters.AddWithValue("@SN5", howManySquadsCanBeFiltered[4]);
+
+
+                    }
+                    else if (howManySquadsCanBeFiltered.Count == 6)
+                    {
+                        getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
+                                    FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
+                                    JOIN Games ON Games.Id = Participants.Game_Id
+                                    JOIN Members ON Members.Id = Participants.Member_Id 
+                                    WHERE Tournaments.Id = @TID AND Participants.SquadNumber IN (@SN1,@SN2,@SN3,@SN4,@SN5,@SN6)
+                                    GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
+                                    ORDER BY Participants.Member_Id";
+                        getList.Parameters.AddWithValue("@TID", selectedTourney);
+                        getList.Parameters.AddWithValue("@SN1", howManySquadsCanBeFiltered[0]);
+                        getList.Parameters.AddWithValue("@SN2", howManySquadsCanBeFiltered[1]);
+                        getList.Parameters.AddWithValue("@SN3", howManySquadsCanBeFiltered[2]);
+                        getList.Parameters.AddWithValue("@SN4", howManySquadsCanBeFiltered[3]);
+                        getList.Parameters.AddWithValue("@SN5", howManySquadsCanBeFiltered[4]);
+                        getList.Parameters.AddWithValue("@SN6", howManySquadsCanBeFiltered[5]);
+
+
+                       
+                    }
+
+                    else if (howManySquadsCanBeFiltered.Count == 7)
+                    {
+                        getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
+                                    FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
+                                    JOIN Games ON Games.Id = Participants.Game_Id
+                                    JOIN Members ON Members.Id = Participants.Member_Id 
+                                    WHERE Tournaments.Id = @TID AND Participants.SquadNumber IN (@SN1,@SN2,@SN3,@SN4,@SN5,@SN6,@SN7)
+                                    GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
+                                    ORDER BY Participants.Member_Id";
+                        getList.Parameters.AddWithValue("@TID", selectedTourney);
+                        getList.Parameters.AddWithValue("@SN1", howManySquadsCanBeFiltered[0]);
+                        getList.Parameters.AddWithValue("@SN2", howManySquadsCanBeFiltered[1]);
+                        getList.Parameters.AddWithValue("@SN3", howManySquadsCanBeFiltered[2]);
+                        getList.Parameters.AddWithValue("@SN4", howManySquadsCanBeFiltered[3]);
+                        getList.Parameters.AddWithValue("@SN5", howManySquadsCanBeFiltered[4]);
+                        getList.Parameters.AddWithValue("@SN6", howManySquadsCanBeFiltered[5]);
+                        getList.Parameters.AddWithValue("@SN7", howManySquadsCanBeFiltered[6]);
+
+                    }
+
+
+
+
+                }
+
+
 
                 try
                 {
@@ -2919,7 +3062,341 @@ namespace NineTapTour.Forms
 		{
 			FillMember();
 		}
-	}
+
+        private void cbAllSquads_CheckedChanged(object sender, EventArgs e)
+        {
+            //if all squads is selected then uncheck and disable squad selections
+            if(cbAllSquads.Checked)
+            {
+                cbFilterSquad1.Checked = false;
+                cbFilterSquad2.Checked = false;
+                cbFilterSquad3.Checked = false;
+                cbFilterSquad4.Checked = false;
+                cbFilterSquad5.Checked = false;
+                cbFilterSquad6.Checked = false;
+                cbFilterSquad7.Checked = false;
+                cbFilterSquad8.Checked = false;
+
+                cbFilterSquad1.Enabled = false;
+                cbFilterSquad2.Enabled = false;
+                cbFilterSquad3.Enabled = false;
+                cbFilterSquad4.Enabled = false;
+                cbFilterSquad5.Enabled = false;
+                cbFilterSquad6.Enabled = false;
+                cbFilterSquad7.Enabled = false;
+                cbFilterSquad8.Enabled = false;
+
+
+                howManySquadsCanBeFiltered.Clear();
+                QBSNumber = 0;
+                refresh(false, QBSNumber);
+               
+            }
+            else
+            {
+                cbFilterSquad1.Checked = false;
+                cbFilterSquad2.Checked = false;
+                cbFilterSquad3.Checked = false;
+                cbFilterSquad4.Checked = false;
+                cbFilterSquad5.Checked = false;
+                cbFilterSquad6.Checked = false;
+                cbFilterSquad7.Checked = false;
+                cbFilterSquad8.Checked = false;
+
+
+                cbFilterSquad1.Enabled = true;
+                cbFilterSquad2.Enabled = true;
+                cbFilterSquad3.Enabled = true;
+                cbFilterSquad4.Enabled = true;
+                cbFilterSquad5.Enabled = true;
+                cbFilterSquad6.Enabled = true;
+                cbFilterSquad7.Enabled = true;
+                cbFilterSquad8.Enabled = true;
+            }
+        }
+
+        public int FilterCheck()
+        {
+            int check = 0;
+            if(cbFilterSquad1.Checked)
+            {
+                check++;
+            }
+            if (cbFilterSquad2.Checked)
+            {
+                check++;
+            }
+            if (cbFilterSquad3.Checked)
+            {
+                check++;
+            }
+            if (cbFilterSquad4.Checked)
+            {
+                check++;
+            }
+            if (cbFilterSquad5.Checked)
+            {
+                check++;
+            }
+            if (cbFilterSquad6.Checked)
+            {
+                check++;
+            }
+            if (cbFilterSquad7.Checked)
+            {
+                check++;
+            }
+            if (cbFilterSquad8.Checked)
+            {
+                check++;
+            }
+
+            return check;
+        }
+
+        private void cbFilterSquad1_CheckedChanged(object sender, EventArgs e)
+        {
+            if(FilterCheck() == selectedTournament.Squads)
+            {
+                howManySquadsCanBeFiltered.Clear();
+                cbAllSquads.Checked = true;
+            }
+            else if(cbFilterSquad1.Checked == false && howManySquadsCanBeFiltered.Contains(1))
+            {
+                howManySquadsCanBeFiltered.Remove(1);
+                if (FilterCheck() == 0)
+                {
+                    QBSNumber = 0;
+                    cbAllSquads.Checked = true;
+                }
+                else
+                {
+                    QBSNumber = 9;
+                    refresh(false, QBSNumber);
+                }
+                
+            }
+            else if(cbFilterSquad1.Checked == true && !(howManySquadsCanBeFiltered.Contains(1)))
+            {
+                howManySquadsCanBeFiltered.Add(1);
+                QBSNumber = 9;
+                refresh(false, QBSNumber);
+            }
+            
+        }
+
+        private void cbFilterSquad2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (FilterCheck() == selectedTournament.Squads)
+            {
+                howManySquadsCanBeFiltered.Clear();
+                cbAllSquads.Checked = true;
+            }
+            else if (cbFilterSquad2.Checked == false && howManySquadsCanBeFiltered.Contains(2))
+            {
+                howManySquadsCanBeFiltered.Remove(2);
+                if (FilterCheck() == 0)
+                {
+                    QBSNumber = 0;
+                    cbAllSquads.Checked = true;
+                }
+                else
+                {
+                    QBSNumber = 9;
+                    refresh(false, QBSNumber);
+                }
+             
+            }
+            else
+            {
+                howManySquadsCanBeFiltered.Add(2);
+                QBSNumber = 9;
+                refresh(false, QBSNumber);
+            }
+        }
+
+        private void cbFilterSquad3_CheckedChanged(object sender, EventArgs e)
+        {
+            if (FilterCheck() == selectedTournament.Squads)
+            {
+                howManySquadsCanBeFiltered.Clear();
+                cbAllSquads.Checked = true;
+            }
+            else if (cbFilterSquad3.Checked == false && howManySquadsCanBeFiltered.Contains(3))
+            {
+                howManySquadsCanBeFiltered.Remove(3);
+                if (FilterCheck() == 0)
+                {
+                    QBSNumber = 0;
+                    cbAllSquads.Checked = true;
+                }
+                else
+                {
+                    QBSNumber = 9;
+                    refresh(false, QBSNumber);
+                }
+              
+            }
+            else
+            {
+                howManySquadsCanBeFiltered.Add(3);
+                QBSNumber = 9;
+                refresh(false, QBSNumber);
+            }
+
+        }
+
+        private void cbFilterSquad4_CheckedChanged(object sender, EventArgs e)
+        {
+            if (FilterCheck() == selectedTournament.Squads)
+            {
+                howManySquadsCanBeFiltered.Clear();
+                cbAllSquads.Checked = true;
+            }
+            else if (cbFilterSquad4.Checked == false && howManySquadsCanBeFiltered.Contains(4))
+            {
+                howManySquadsCanBeFiltered.Remove(4);
+                if (FilterCheck() == 0)
+                {
+                    QBSNumber = 0;
+                    cbAllSquads.Checked = true;
+                }
+                else
+                {
+                    QBSNumber = 9;
+                    refresh(false, QBSNumber);
+                }
+              
+            }
+            else
+            {
+                howManySquadsCanBeFiltered.Add(4);
+                QBSNumber = 9;
+                refresh(false, QBSNumber);
+            }
+
+        }
+
+        private void cbFilterSquad5_CheckedChanged(object sender, EventArgs e)
+        {
+            if (FilterCheck() == selectedTournament.Squads)
+            {
+                howManySquadsCanBeFiltered.Clear();
+                cbAllSquads.Checked = true;
+            }
+            else if (cbFilterSquad5.Checked == false && howManySquadsCanBeFiltered.Contains(5))
+            {
+                howManySquadsCanBeFiltered.Remove(5);
+                if (FilterCheck() == 0)
+                {
+                    QBSNumber = 0;
+                    cbAllSquads.Checked = true;
+                }
+                else
+                {
+                    QBSNumber = 9;
+                    refresh(false, QBSNumber);
+                }
+        
+            }
+            else
+            {
+                howManySquadsCanBeFiltered.Add(5);
+                QBSNumber = 9;
+                refresh(false, QBSNumber);
+            }
+        }
+
+        private void cbFilterSquad6_CheckedChanged(object sender, EventArgs e)
+        {
+            if (FilterCheck() == selectedTournament.Squads)
+            {
+                howManySquadsCanBeFiltered.Clear();
+                cbAllSquads.Checked = true;
+            }
+            else if (cbFilterSquad6.Checked == false && howManySquadsCanBeFiltered.Contains(6))
+            {
+                howManySquadsCanBeFiltered.Remove(6);
+                if (FilterCheck() == 0)
+                {
+                    QBSNumber = 0;
+                    cbAllSquads.Checked = true;
+                }
+                else
+                {
+                    QBSNumber = 9;
+                    refresh(false, QBSNumber);
+                }
+        
+            }
+            else
+            {
+                howManySquadsCanBeFiltered.Add(6);
+                QBSNumber = 9;
+                refresh(false, QBSNumber);
+            }
+        }
+
+        private void cbFilterSquad7_CheckedChanged(object sender, EventArgs e)
+        {
+            if (FilterCheck() == selectedTournament.Squads)
+            {
+                howManySquadsCanBeFiltered.Clear();
+                cbAllSquads.Checked = true;
+            }
+            else if (cbFilterSquad7.Checked == false && howManySquadsCanBeFiltered.Contains(7))
+            {
+                howManySquadsCanBeFiltered.Remove(7);
+                if (FilterCheck() == 0)
+                {
+                    QBSNumber = 0;
+                    cbAllSquads.Checked = true;
+                }
+                else
+                {
+                    QBSNumber = 9;
+                    refresh(false, QBSNumber);
+                }
+               
+            }
+            else
+            {
+                howManySquadsCanBeFiltered.Add(7);
+                QBSNumber = 9;
+                refresh(false, QBSNumber);
+            }
+        }
+
+        private void cbFilterSquad8_CheckedChanged(object sender, EventArgs e)
+        {
+            if (FilterCheck() == selectedTournament.Squads)
+            {
+                howManySquadsCanBeFiltered.Clear();
+                cbAllSquads.Checked = true;
+            }
+            else if (cbFilterSquad8.Checked == false && howManySquadsCanBeFiltered.Contains(8))
+            {
+                howManySquadsCanBeFiltered.Remove(8);
+                if (FilterCheck() == 0)
+                {
+                    QBSNumber = 0;
+                    cbAllSquads.Checked = true;
+                }
+                else
+                {
+                    QBSNumber = 9;
+                    refresh(false, QBSNumber);
+                }
+             
+            }
+            else
+            {
+                howManySquadsCanBeFiltered.Add(8);
+                QBSNumber = 9;
+                refresh(false, QBSNumber);
+            }
+        }
+    }
 
     /// <summary>
     /// Class used to populate 3rd RichTextBox

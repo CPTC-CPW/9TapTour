@@ -26,7 +26,7 @@ namespace NineTapTour.Forms
         public FrmFinalizeTournament(Tournament tourn, List<TopScores> topscores, int RegionID)
         {
             InitializeComponent();
-            this.dataGridView1.DoubleBuffered(true);
+            this.dataGridView1.DoubleBuffered(false);
             this.dataGridView2.DoubleBuffered(true);
             this.currentT = tourn;
             this.topscores = topscores;
@@ -1193,41 +1193,44 @@ namespace NineTapTour.Forms
            
                 }
 
-            //checks so you can only edit avgs on there last bowled squad of the tournament
-            if (this.dataGridView1.CurrentCell.ColumnIndex == ADJUSTED_AVG_COLUMN)
-            {
-               
-                //check to see if they bowled in a later squad          
-                bool check = squadcheck(currentIndex);
-                while(check == true)
-                {
-                    currentIndex++;
-                    check = squadcheck(currentIndex);                
-                }
-
-          
-               
-            }
-
-
         }
 
-        private bool squadcheck(int cindex)
-        {
-          
-           if(cindex == FinalizeTableList.Count - 1) // if your on the last index
-            {
-                return false;    
-            }
-           else if(FinalizeTableList[cindex].memberNumber == FinalizeTableList[cindex + 1].memberNumber)//if a later squad occurs
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        //private void DataGridView2_FindCurrentIndex(object sender, DataGridViewCellStateChangedEventArgs e)
+        //{
+        //    //checks so you can only edit avgs on there last bowled squad of the tournament
+        //    if (this.dataGridView1.CurrentCell.ColumnIndex == ADJUSTED_AVG_COLUMN)
+        //    {
+
+        //        //check to see if they bowled in a later squad          
+        //        bool check = squadcheck(currentIndex);
+        //        while (check == true)
+        //        {
+        //            currentIndex++;
+        //            check = squadcheck(currentIndex);
+        //        }
+
+
+        //    }
+
+
+        ////}
+
+        //private bool squadcheck(int cindex)
+        //{
+
+        //    if (cindex == FinalizeTableList.Count - 1) // if your on the last index
+        //    {
+        //        return false;
+        //    }
+        //    else if (FinalizeTableList[cindex].memberNumber == FinalizeTableList[cindex + 1].memberNumber)//if a later squad occurs
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
 
         private void Refresh(List<PlayerHistory> temporary)
         {
@@ -1649,12 +1652,12 @@ namespace NineTapTour.Forms
                                 {
                                     if (placing > 0) // if member placed in tournament, calculate bonus pins based on placing
                                     {
-                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(true, placing, Convert.ToInt32(currentMember.Bonus), currentT.Doubles, currentMember.Number, RegionID);
+                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(true, placing, Convert.ToInt32(currentMember.Bonus), currentT.Doubles, currentMember.Number, RegionID,currentT.Date);
                                     }
 
                                     else  // if member didn't place in tournament, calculate bonus pins
                                     {
-                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(false, placing, Convert.ToInt32(currentMember.Bonus), currentT.Doubles, currentMember.Number, RegionID);
+                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(false, placing, Convert.ToInt32(currentMember.Bonus), currentT.Doubles, currentMember.Number, RegionID, currentT.Date);
                                     }
 
                                     addedalreeady.Add(FinalizeTableList[currentindex].MemberId);
@@ -1744,6 +1747,55 @@ namespace NineTapTour.Forms
 
                 temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
             }
+            else if (temp.Squad == 5)
+            {
+                for (int i = 0; i < FinalizeTableList.Count; i++)
+                {
+                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 5)
+                    {
+                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
+                    }
+                }
+
+                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
+            }
+            else if (temp.Squad == 6)
+            {
+                for (int i = 0; i < FinalizeTableList.Count; i++)
+                {
+                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 6)
+                    {
+                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
+                    }
+                }
+
+                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
+            }
+            else if (temp.Squad == 7)
+            {
+                for (int i = 0; i < FinalizeTableList.Count; i++)
+                {
+                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 7)
+                    {
+                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
+                    }
+                }
+
+                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
+            }
+            else if (temp.Squad == 8)
+            {
+                for (int i = 0; i < FinalizeTableList.Count; i++)
+                {
+                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 8)
+                    {
+                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
+                    }
+                }
+
+                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
+            }
+
 
 
             // // after grabbing the sum, it then must divide by 30

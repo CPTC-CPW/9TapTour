@@ -55,7 +55,7 @@ namespace NineTapTour.Calculations
             }
         }
 
-        public static int CalculateBonusPins(bool didMemberCash, int memberPlaced, int currentBonusPins, bool isDoublesTournament, int memNum,int RegionID)
+        public static int CalculateBonusPins(bool didMemberCash, int memberPlaced, int currentBonusPins, bool isDoublesTournament, int memNum,int RegionID, DateTime currentT)
         {
             
             int RETURN = 0;
@@ -65,28 +65,28 @@ namespace NineTapTour.Calculations
             }
             else
             {
-               RETURN = AddBonusPins(currentBonusPins, isDoublesTournament, memNum, RegionID);
+               RETURN = AddBonusPins(currentBonusPins, isDoublesTournament, memNum, RegionID, currentT);
             }
             return RETURN;
           
         }
 
-        public static int AddBonusPins(int currentBonusPins, bool isDoublesTournament, int MemNum, int RegionID)
+        public static int AddBonusPins(int currentBonusPins, bool isDoublesTournament, int MemNum, int RegionID, DateTime currenT)
         {
             if (currentBonusPins == MAX_BONUS_PINS_ALLOWED)
             {
                 return MAX_BONUS_PINS_ALLOWED;
             }
-            else if(PlayerHistoryDB.getLastFiveFromPlayerhistory(MemNum,RegionID).Count >= 3)
+            else if(PlayerHistoryDB.getLastFiveFromPlayerhistory(MemNum,RegionID).Count >= 2)
             {
                 List<PlayerHistory> latest = PlayerHistoryDB.getLastFiveFromPlayerhistory(MemNum,RegionID);
                 if(latest[0].TournamentDate != latest[1].TournamentDate &&
-                   latest[1].TournamentDate != latest[2].TournamentDate && //filtering history where they had bowled in a diffrent sqaud on the same day
-                   latest[2].TournamentDate != latest[0].TournamentDate)
+                   latest[1].TournamentDate != currenT && //filtering history where they had bowled in a diffrent sqaud on the same day
+                   currenT != latest[0].TournamentDate)
                 {
                     if(latest[0].Bonus == latest[1].Bonus &&
-                       latest[1].Bonus == latest[2].Bonus &&  //checks to see if there last 3 history were the same, after 3 times not placing, they gain a bonus point
-                       latest[2].Bonus == latest[0].Bonus)
+                       latest[1].Bonus == currentBonusPins &&  //checks to see if the last 2 bowling history is the same as it is currently, after 3 times not placing, they gain a bonus point
+                       currentBonusPins == latest[0].Bonus)
                     {
                         return ++currentBonusPins;
                     }
