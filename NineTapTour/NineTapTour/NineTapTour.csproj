@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>C:\Users\9-Tap Tour PS2\Desktop\NineTapTourSetup\</PublishUrl>
+    <PublishUrl>C:\Users\Xavier\9TapApplication\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -24,7 +24,7 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ProductName>9Tap Application</ProductName>
     <PublisherName>CPTC CPW 205</PublisherName>
-    <ApplicationRevision>34</ApplicationRevision>
+    <ApplicationRevision>39</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -342,9 +342,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Resources\TournamentResultsTemplate.xls">
+    <Content Include="Resources\TournamentResultsTemplate.xls">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="_NineTapTour_NineTapDbDataSet.xsc">
       <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
     </None>
@@ -366,7 +366,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\9tap.gif" />
+    <Content Include="Resources\9tap.gif" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -412,8 +412,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon\9tap.ico" />
-    <None Include="Resources\BowlingPin1.png" />
-    <None Include="Resources\9taplogo1.png" />
+    <Content Include="Resources\BowlingPin1.png" />
+    <Content Include="Resources\9taplogo1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

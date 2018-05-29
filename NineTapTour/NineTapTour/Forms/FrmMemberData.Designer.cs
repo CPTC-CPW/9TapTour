@@ -816,7 +816,7 @@
             this.mtxtBoxLastPayment.TabIndex = 56;
             this.mtxtBoxLastPayment.ValidatingType = typeof(System.DateTime);
             // 
-            // flpMemberScores
+            // flpMemberData
             // 
             this.flpMemberData.AutoSize = true;
             this.flpMemberData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -828,7 +828,7 @@
             this.flpMemberData.Controls.Add(this.grpPrinter);
             this.flpMemberData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpMemberData.Location = new System.Drawing.Point(0, 0);
-            this.flpMemberData.Name = "flpMemberScores";
+            this.flpMemberData.Name = "flpMemberData";
             this.flpMemberData.Size = new System.Drawing.Size(996, 749);
             this.flpMemberData.TabIndex = 34;
             this.flpMemberData.SizeChanged += new System.EventHandler(this.flpMemberScores_SizeChanged);
@@ -925,9 +925,9 @@
             this.lblYET.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblYET.Location = new System.Drawing.Point(15, 89);
             this.lblYET.Name = "lblYET";
-            this.lblYET.Size = new System.Drawing.Size(127, 15);
+            this.lblYET.Size = new System.Drawing.Size(60, 15);
             this.lblYET.TabIndex = 55;
-            this.lblYET.Text = "Year End Tournaments";
+            this.lblYET.Text = "Eligibility";
             // 
             // txtMoneyEarned
             // 

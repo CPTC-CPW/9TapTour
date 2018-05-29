@@ -516,10 +516,9 @@
             this.grpRecord.Controls.Add(this.lblRecord);
             this.grpRecord.Controls.Add(this.btnDelete);
             this.grpRecord.Controls.Add(this.btnLeftArrow);
-            this.grpRecord.Controls.Add(this.btnNew);
             this.grpRecord.Location = new System.Drawing.Point(3, 550);
             this.grpRecord.Name = "grpRecord";
-            this.grpRecord.Size = new System.Drawing.Size(235, 116);
+            this.grpRecord.Size = new System.Drawing.Size(235, 137);
             this.grpRecord.TabIndex = 17;
             this.grpRecord.TabStop = false;
             this.grpRecord.Text = "Record";
@@ -568,9 +567,9 @@
             // 
             // btnNew
             // 
-            this.btnNew.Location = new System.Drawing.Point(19, 19);
+            this.btnNew.Location = new System.Drawing.Point(216, 287);
             this.btnNew.Name = "btnNew";
-            this.btnNew.Size = new System.Drawing.Size(197, 25);
+            this.btnNew.Size = new System.Drawing.Size(138, 25);
             this.btnNew.TabIndex = 18;
             this.btnNew.Text = "Add New/Update Record";
             this.btnNew.UseVisualStyleBackColor = true;
@@ -625,6 +624,7 @@
             this.grpStats.Controls.Add(this.lblMoney);
             this.grpStats.Controls.Add(this.txtMoney);
             this.grpStats.Controls.Add(this.lblPlayer2);
+            this.grpStats.Controls.Add(this.btnNew);
             this.grpStats.Controls.Add(this.lblPlayer1);
             this.grpStats.Controls.Add(this.lblBonusPins);
             this.grpStats.Controls.Add(this.lblCap);
@@ -663,7 +663,7 @@
             // lblMoney
             // 
             this.lblMoney.AutoSize = true;
-            this.lblMoney.Location = new System.Drawing.Point(244, 262);
+            this.lblMoney.Location = new System.Drawing.Point(257, 241);
             this.lblMoney.Name = "lblMoney";
             this.lblMoney.Size = new System.Drawing.Size(65, 13);
             this.lblMoney.TabIndex = 24;
@@ -672,7 +672,7 @@
             // txtMoney
             // 
             this.txtMoney.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtMoney.Location = new System.Drawing.Point(244, 278);
+            this.txtMoney.Location = new System.Drawing.Point(247, 257);
             this.txtMoney.Name = "txtMoney";
             this.txtMoney.Size = new System.Drawing.Size(83, 20);
             this.txtMoney.TabIndex = 8;
@@ -772,6 +772,7 @@
             this.grpLeaders.Controls.Add(this.label3);
             this.grpLeaders.Controls.Add(this.label2);
             this.grpLeaders.Controls.Add(this.label1);
+            this.grpLeaders.Controls.Add(this.GRPQBS1);
             this.grpLeaders.Controls.Add(this.lblHighGame);
             this.grpLeaders.Controls.Add(this.richTextBox3);
             this.grpLeaders.Controls.Add(this.richTextBox2);
@@ -780,7 +781,7 @@
             this.grpLeaders.Controls.Add(this.lblGameSenior);
             this.grpLeaders.Location = new System.Drawing.Point(396, 138);
             this.grpLeaders.Name = "grpLeaders";
-            this.grpLeaders.Size = new System.Drawing.Size(456, 395);
+            this.grpLeaders.Size = new System.Drawing.Size(578, 395);
             this.grpLeaders.TabIndex = 29;
             this.grpLeaders.TabStop = false;
             this.grpLeaders.Text = "Leaders";
@@ -1245,7 +1246,6 @@
             this.panel1.Controls.Add(this.lbLastName2);
             this.panel1.Controls.Add(this.lblMiddleInitial2);
             this.panel1.Controls.Add(this.txtLastName2);
-            this.panel1.Controls.Add(this.GRPQBS1);
             this.panel1.Controls.Add(this.lblFirstName2);
             this.panel1.Controls.Add(this.lblFirstName);
             this.panel1.Controls.Add(this.lblMemberL);
@@ -1276,17 +1276,17 @@
             this.GRPQBS1.Controls.Add(this.cbFilterSquad2);
             this.GRPQBS1.Controls.Add(this.cbFilterSquad1);
             this.GRPQBS1.Controls.Add(this.cbAllSquads);
-            this.GRPQBS1.Location = new System.Drawing.Point(774, 9);
+            this.GRPQBS1.Location = new System.Drawing.Point(456, 31);
             this.GRPQBS1.Name = "GRPQBS1";
-            this.GRPQBS1.Size = new System.Drawing.Size(200, 121);
+            this.GRPQBS1.Size = new System.Drawing.Size(103, 262);
             this.GRPQBS1.TabIndex = 47;
             this.GRPQBS1.TabStop = false;
-            this.GRPQBS1.Text = "Qualify By Squad 2";
+            this.GRPQBS1.Text = "Filter Series by Squad";
             // 
             // cbFilterSquad8
             // 
             this.cbFilterSquad8.AutoSize = true;
-            this.cbFilterSquad8.Location = new System.Drawing.Point(102, 98);
+            this.cbFilterSquad8.Location = new System.Drawing.Point(6, 230);
             this.cbFilterSquad8.Name = "cbFilterSquad8";
             this.cbFilterSquad8.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad8.TabIndex = 8;
@@ -1297,7 +1297,7 @@
             // cbFilterSquad7
             // 
             this.cbFilterSquad7.AutoSize = true;
-            this.cbFilterSquad7.Location = new System.Drawing.Point(102, 75);
+            this.cbFilterSquad7.Location = new System.Drawing.Point(6, 203);
             this.cbFilterSquad7.Name = "cbFilterSquad7";
             this.cbFilterSquad7.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad7.TabIndex = 7;
@@ -1308,7 +1308,7 @@
             // cbFilterSquad6
             // 
             this.cbFilterSquad6.AutoSize = true;
-            this.cbFilterSquad6.Location = new System.Drawing.Point(102, 54);
+            this.cbFilterSquad6.Location = new System.Drawing.Point(6, 176);
             this.cbFilterSquad6.Name = "cbFilterSquad6";
             this.cbFilterSquad6.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad6.TabIndex = 6;
@@ -1319,7 +1319,7 @@
             // cbFilterSquad5
             // 
             this.cbFilterSquad5.AutoSize = true;
-            this.cbFilterSquad5.Location = new System.Drawing.Point(102, 32);
+            this.cbFilterSquad5.Location = new System.Drawing.Point(6, 149);
             this.cbFilterSquad5.Name = "cbFilterSquad5";
             this.cbFilterSquad5.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad5.TabIndex = 5;
@@ -1330,7 +1330,7 @@
             // cbFilterSquad4
             // 
             this.cbFilterSquad4.AutoSize = true;
-            this.cbFilterSquad4.Location = new System.Drawing.Point(6, 98);
+            this.cbFilterSquad4.Location = new System.Drawing.Point(6, 126);
             this.cbFilterSquad4.Name = "cbFilterSquad4";
             this.cbFilterSquad4.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad4.TabIndex = 4;
@@ -1341,7 +1341,7 @@
             // cbFilterSquad3
             // 
             this.cbFilterSquad3.AutoSize = true;
-            this.cbFilterSquad3.Location = new System.Drawing.Point(6, 76);
+            this.cbFilterSquad3.Location = new System.Drawing.Point(6, 100);
             this.cbFilterSquad3.Name = "cbFilterSquad3";
             this.cbFilterSquad3.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad3.TabIndex = 3;
@@ -1352,7 +1352,7 @@
             // cbFilterSquad2
             // 
             this.cbFilterSquad2.AutoSize = true;
-            this.cbFilterSquad2.Location = new System.Drawing.Point(6, 54);
+            this.cbFilterSquad2.Location = new System.Drawing.Point(6, 73);
             this.cbFilterSquad2.Name = "cbFilterSquad2";
             this.cbFilterSquad2.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad2.TabIndex = 2;
@@ -1363,7 +1363,7 @@
             // cbFilterSquad1
             // 
             this.cbFilterSquad1.AutoSize = true;
-            this.cbFilterSquad1.Location = new System.Drawing.Point(6, 33);
+            this.cbFilterSquad1.Location = new System.Drawing.Point(6, 50);
             this.cbFilterSquad1.Name = "cbFilterSquad1";
             this.cbFilterSquad1.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad1.TabIndex = 1;
@@ -1374,7 +1374,7 @@
             // cbAllSquads
             // 
             this.cbAllSquads.AutoSize = true;
-            this.cbAllSquads.Location = new System.Drawing.Point(64, 14);
+            this.cbAllSquads.Location = new System.Drawing.Point(6, 27);
             this.cbAllSquads.Name = "cbAllSquads";
             this.cbAllSquads.Size = new System.Drawing.Size(76, 17);
             this.cbAllSquads.TabIndex = 0;

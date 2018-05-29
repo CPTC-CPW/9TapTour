@@ -657,8 +657,18 @@ namespace NineTapTour.Forms
                 {
                     if (fileName != "TournamentResultsTemplate.xls" || !string.IsNullOrEmpty(fileName))
                     {
+
+                        var savefile = new SaveFileDialog();
+                        savefile.DefaultExt = "Excel Files (*.xls)|*.xls";
+                        savefile.FileName = fileName;
+                        savefile.ShowDialog();
+
+
+
+                        fileName = savefile.FileName;
+
                         xlWorkBook.SaveAs(fileName, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
-                        MessageBox.Show("Excel file created , you can find the file at: Documents/" + fileName);
+                        MessageBox.Show("Excel file created , you can find the file at: " + fileName);
                     }
                 }
                 catch

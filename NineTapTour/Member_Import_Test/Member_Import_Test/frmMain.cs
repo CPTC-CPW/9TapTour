@@ -1263,36 +1263,54 @@ namespace Member_Import_Test
 
         private void btn_FinalizeData_Click(object sender, EventArgs e)
         {
-            for (int members = 0; members < validMembers.Count; members++)
+            ////////////////////////////////////////////////////////////////REALIZED THE IDEA THAT THIS COODE IS IRRELAVANT NOW/////////////////////////////////////////
+            ////////////////////////////////////////////////////DURING TESTING THE DAT FILE MEMBER NUMBER AND EXCEL FILE DID NOT MATCH//////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////////NOW THIS SGHOULD NEVER HAPPEN////////////////////////////////////////////////////
+            //for (int members = 0; members < validMembers.Count; members++)
+            //{
+            //    for (int ExcelFileSlot = 0; ExcelFileSlot < ALLEXCELDATAFROMALLPLAYERS.Count; ExcelFileSlot++)
+
+            //    {
+            //        //if for some reason the member number on the DAT file and the member number on the excel file do not match, set the new permanent member number to that of the DAT file
+            //        if (validMembers[members].FirstName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerFirstName && validMembers[members].LastName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerLastName
+            //           && validMembers[members].Number != ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber)
+            //        {
+            //            ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber = validMembers[members].Number;
+            //            PlayerHistoryList[ExcelFileSlot].MemberNumber = validMembers[members].Number;             
+            //        }
+            //        else if ((validMembers[members].FirstName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerFirstName && validMembers[members].LastName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerLastName
+            //           && validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber))
+            //        {
+            //            PlayerHistoryList[ExcelFileSlot].MemberNumber = validMembers[members].Number;
+            //        }
+
+
+            //        //if Current selected member has an excel file 
+            //        if (validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber)
+            //        {
+            //            validMembers[members].StartAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerOrginalAVG;
+            //        }
+            //    }
+            //}
+
+            
+            updatePlayerHistory(PlayerHistoryList);
+            updateGameHistory(GameImport);
+
+            for (int i = 0; i < validMembers.Count; i++)
             {
-                for (int ExcelFileSlot = 0; ExcelFileSlot < ALLEXCELDATAFROMALLPLAYERS.Count; ExcelFileSlot++)
-
+                List<PlayerHistory> list = PlayerHistoryDB.getLastFiveFromPlayerhistory(validMembers[i].Number, RegionID);
+                if (list.Count > 0)
                 {
-                    //if for some reason the member number on the DAT file and the member number on the excel file do not match, set the new permanent member number to that of the DAT file
-                    if (validMembers[members].FirstName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerFirstName && validMembers[members].LastName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerLastName
-                       && validMembers[members].Number != ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber)
-                    {
-                        ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber = validMembers[members].Number;
-                        PlayerHistoryList[ExcelFileSlot].MemberNumber = validMembers[members].Number;             
-                    }
-                    else if ((validMembers[members].FirstName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerFirstName && validMembers[members].LastName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerLastName
-                       && validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber))
-                    {
-                        PlayerHistoryList[ExcelFileSlot].MemberNumber = validMembers[members].Number;
-                    }
-
-
-                    //if Current selected member has an excel file 
-                    if (validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber)
-                    {
-                        validMembers[members].StartAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerOrginalAVG;
-                    }
+                    validMembers[i].StartAvg = list[0].AVG; //set new avg to last bowled adjusted avg
+                    validMembers[i].Average = Convert.ToInt32(list[0].trueAVG); //last 30 game avg
+                    validMembers[i].Bonus = list[0].Bonus; //last adjusted bonus pin
                 }
             }
 
+           
             updateMembers(validMembers);
-            updatePlayerHistory(PlayerHistoryList);
-            updateGameHistory(GameImport);  
+
 
             MessageBox.Show($"{validMembers.Count} members have been imported and all their bowling history has been added to the database");
 
@@ -1303,7 +1321,6 @@ namespace Member_Import_Test
         {
             foreach (var ph in playerHistory)
             {
-                label4.Text = ($"Adding {MemberDb.GetMember(ph.MemberNumber, RegionID).FirstName} {MemberDb.GetMember(ph.MemberNumber, RegionID).LastName} to the Database");
                 PlayerHistoryDB.AddPlayerHistory(ph);
             }
         }

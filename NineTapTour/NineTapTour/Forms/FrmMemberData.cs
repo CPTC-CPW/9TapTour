@@ -55,7 +55,7 @@ namespace NineTapTour.Forms
 
             List<Member> ListOfMembers = MemberDb.GetMemberList(RegionID);
 
-            updateOnload(ListOfMembers);
+            //updateOnload(ListOfMembers);
 
             mtxtBoxDateJoined.Text = "";
             mtxtBoxDateJoined.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxDateJoined_MaskInputRejected);
@@ -927,7 +927,7 @@ namespace NineTapTour.Forms
         {
             foreach(var m in temp)
             {
-                MemberDb.AddMember(m);
+                MemberDb.AddMember(m); //if pulling from database on start up, do  i really need to add them back to the database?????
             }
         }
 
