@@ -1,0 +1,68 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace NineTapTour.Database
+{
+    public static class FormHelper
+    {
+        /// <summary>
+		/// Sets the flow direction for the flowlayoutpanel depending
+		/// on the pixel width or height of the screen.
+        /// </summary>
+        /// <param name="form">The form object that calls this method.</param>
+        /// <param name="flp">The flowlayoutpanel that is being passed in to have changes made to it.</param>
+        /// <param name="width">The maximum width at which the flow direction is changed to top down</param>
+        /// <param name="height">The minimum height at which the flow direction is changed to top down</param>
+        public static void SetFlowDirection(Form form, FlowLayoutPanel flp, int width, int height)
+        {
+            if (form.Size.Width > width && form.Size.Height < height)
+            {
+                flp.FlowDirection = FlowDirection.TopDown;
+            }
+            else
+            {
+                flp.FlowDirection = FlowDirection.LeftToRight;
+            }
+        }
+
+        /// <summary>
+        /// Sets whether the scroll bars are enabled or disabled
+        /// and whether you can see them or not depending on the
+        /// pixel width or height of the screen.
+        /// </summary>
+        /// <param name="form">The form obejct that calls this method</param>
+        /// <param name="flp">The flowlayoutpanel that is being passed in to have changes made to it.</param>
+        /// <param name="width">The width at which horizontal scroll bars are toggled.</param>
+        /// <param name="height">The height at which vertical scroll bars are toggled.</param>
+        public static void SetFlowControlScrollBars(Form form, FlowLayoutPanel flp, int width, int height)
+        {
+
+            if (form.Size.Width < width)
+            {
+                flp.HorizontalScroll.Visible = true;
+                flp.HorizontalScroll.Enabled = true;
+            }
+            else
+            {
+                flp.HorizontalScroll.Visible = false;
+                flp.HorizontalScroll.Enabled = false;
+            }
+
+            if (form.Size.Height < height)
+            {
+                flp.VerticalScroll.Visible = true;
+                flp.VerticalScroll.Enabled = true;
+            }
+            else
+            {
+                flp.VerticalScroll.Visible = false;
+                flp.VerticalScroll.Enabled = false;
+            }
+        }
+
+    }
+}
