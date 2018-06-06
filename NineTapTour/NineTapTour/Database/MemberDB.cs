@@ -8,6 +8,7 @@ using NineTapTour.Exceptions;
 using System.Data.SqlClient;
 using System.Data.Entity.Validation;
 using System.Windows.Forms;
+using NineTapTour.Models;
 
 namespace NineTapTour.Database
 {

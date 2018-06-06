@@ -8,6 +8,7 @@ using System.Drawing;
 
 using System.Data.Entity;
 using NineTapTour.Migrations;
+using NineTapTour.Models;
 
 namespace NineTapTour.Forms
 {

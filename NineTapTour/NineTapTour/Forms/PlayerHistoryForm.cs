@@ -11,6 +11,7 @@ using System.Data.SqlClient;
 using System.Drawing.Printing;
 using System.Configuration;
 using System.Data.Entity.Core.Objects;
+using NineTapTour.Models;
 
 namespace NineTapTour.Database
 {

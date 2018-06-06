@@ -97,23 +97,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calculations\Calculations.cs" />
-    <Compile Include="Database\ExcelMember.cs" />
+    <Compile Include="Models\ExcelMember.cs" />
     <Compile Include="Database\NineTapRegionDB.cs" />
-    <Compile Include="Database\NineTapRegion.cs" />
-    <Compile Include="Database\ExcelRow.cs" />
-    <Compile Include="Database\FinalizeTemp.cs" />
+    <Compile Include="Models\NineTapRegion.cs" />
+    <Compile Include="Models\ExcelRow.cs" />
+    <Compile Include="Models\FinalizeTemp.cs" />
     <Compile Include="Database\FinalizeTempDB.cs" />
-    <Compile Include="Database\Game.cs" />
-    <Compile Include="Database\Member.cs" />
+    <Compile Include="Models\Game.cs" />
+    <Compile Include="Models\Member.cs" />
     <Compile Include="Database\MemberDb.cs" />
-    <Compile Include="Database\PlayerHistory.cs" />
+    <Compile Include="Models\PlayerHistory.cs" />
     <Compile Include="Database\PlayerHistoryDB.cs" />
     <Compile Include="Database\Print.cs" />
-    <Compile Include="Database\Squad.cs" />
+    <Compile Include="Models\Squad.cs" />
     <Compile Include="Database\TournamentDb.cs" />
     <Compile Include="Exceptions\MemberTableException.cs" />
-    <Compile Include="Database\Participant.cs" />
-    <Compile Include="Database\Tournament.cs" />
+    <Compile Include="Models\Participant.cs" />
+    <Compile Include="Models\Tournament.cs" />
     <Compile Include="Exceptions\PlayerHistoryTableException.cs" />
     <Compile Include="Exceptions\TournamentTableException.cs" />
     <Compile Include="Forms\DoubleBuffer.cs" />

@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
 using System.Data.Entity;
+using NineTapTour.Models;
 
 namespace NineTapTour.Database
 {
@@ -63,7 +64,7 @@ namespace NineTapTour.Database
         /************************************************************************
         For Printing the Report Sections
         ************************************************************************/
-        public static void ReportPrint(List<Forms.frmMemberScores.MemberScores> temp, Database.Tournament selectedTournament, int reportTypeNum, PrintPageEventArgs e)
+        public static void ReportPrint(List<Forms.frmMemberScores.MemberScores> temp, Tournament selectedTournament, int reportTypeNum, PrintPageEventArgs e)
         {
             int numToPrint = 40;
             //This is what prints the data
@@ -160,7 +161,7 @@ namespace NineTapTour.Database
             }
         }
 
-        static public void printMemberReport(List<Forms.frmMemberScores.MemberScores> temp, Database.Tournament selectedTournament, int reportTypeNum, int currentSquad)
+        static public void printMemberReport(List<Forms.frmMemberScores.MemberScores> temp, Tournament selectedTournament, int reportTypeNum, int currentSquad)
         {
             Print.temp = temp;
             Print.selectedTournament = selectedTournament;
