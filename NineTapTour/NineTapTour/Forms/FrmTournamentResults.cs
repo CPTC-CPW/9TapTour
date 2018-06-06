@@ -11,6 +11,7 @@ using System.Linq.Dynamic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NineTapTour.Models;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace NineTapTour.Forms

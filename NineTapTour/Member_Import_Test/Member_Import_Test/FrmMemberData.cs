@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using Member_Import_Test.Classes;
 using NineTapTour.Database;
+using NineTapTour.Models;
 
 namespace Member_Import_Test
 {

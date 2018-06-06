@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NineTapTour.Database;
 using NineTapTour.Exceptions;
+using NineTapTour.Models;
 
 namespace NineTapTour.Forms
 {
