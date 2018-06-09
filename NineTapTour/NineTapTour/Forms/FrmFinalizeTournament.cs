@@ -449,75 +449,12 @@ namespace NineTapTour.Forms
         public List<FinalizeTemp> GetListFromTable(Tournament tourn)
         {
             var db = new NineTapDb();
-            List<FinalizeTemp> ParticipantList = new List<FinalizeTemp>();
-            var temp = (from p in db.FinalizeTemp
-                        join t in db.Tournaments on p.TournamentID equals t.Id
-                        where tourn.Id == t.Id
-                        orderby p.FirstName, p.Squad ascending
-                        select new
-                        {
-                            p.FinalizeID,
-                            p.TournamentID,
-                            p.GameId,
-                            p.MemberId,
-                            p.FirstName,
-                            p.LastName,
-                            p.Squad,
-                            p.Game1,
-                            p.Game2,
-                            p.Game3,
-                            p.Game4,
-                            p.UseGame1,
-                            p.UseGame2,
-                            p.UseGame3,
-                            p.UseGame4,
-                            p.AdjustedAvg,
-                            p.LeagueAverage,
-                            p.Notes,
-                            p.ScratchTotal,
-                            p.KeepAdjustedAvg,
-                            p.GameAvg,
-                            p.Handicap,
-                            p.Bonus,
-                            p.HandicapTotal,
-                            p.memberNumber,
-                            p.FinalizeRegionID
-
-
-                        }).ToList();
-            foreach (var item in temp)
-            {
-                FinalizeTemp NewParticipant = new FinalizeTemp();
-                NewParticipant.FinalizeID = item.FinalizeID;
-                NewParticipant.GameId = item.GameId;
-                NewParticipant.TournamentID = item.TournamentID;
-                NewParticipant.MemberId = item.MemberId;
-                NewParticipant.FirstName = item.FirstName;
-                NewParticipant.LastName = item.LastName;
-                NewParticipant.Game1 = (int)item.Game1;
-                NewParticipant.Game2 = (int)item.Game2;
-                NewParticipant.Game3 = (int)item.Game3;
-                NewParticipant.Game4 = (int)item.Game4;
-                NewParticipant.UseGame1 = (bool)item.UseGame1;
-                NewParticipant.UseGame2 = (bool)item.UseGame2;
-                NewParticipant.UseGame3 = (bool)item.UseGame3;
-                NewParticipant.UseGame4 = (bool)item.UseGame4;
-                NewParticipant.Notes = item.Notes;
-                NewParticipant.ScratchTotal = (int)item.ScratchTotal;
-                NewParticipant.Squad = item.Squad;
-                NewParticipant.KeepAdjustedAvg = item.KeepAdjustedAvg;
-                NewParticipant.GameAvg = (int)item.GameAvg;
-                NewParticipant.LeagueAverage = (int)item.LeagueAverage;
-                NewParticipant.AdjustedAvg = (int)item.AdjustedAvg;
-                NewParticipant.Handicap = (int)item.Handicap;
-                NewParticipant.Bonus = (int)item.Bonus;
-                NewParticipant.HandicapTotal = (int)item.HandicapTotal;
-                NewParticipant.memberNumber = item.memberNumber;
-                NewParticipant.FinalizeRegionID = item.FinalizeRegionID;
-                ParticipantList.Add(NewParticipant);
-            }
-
-            return ParticipantList;
+            //get list of participants by tournament
+            return db.FinalizeTemp
+                            .Where(p => p.TournamentID == tourn.Id)
+                            .OrderBy(p => p.FirstName)
+                            .ThenBy(p => p.Squad)
+                            .ToList();
         }
 
 
