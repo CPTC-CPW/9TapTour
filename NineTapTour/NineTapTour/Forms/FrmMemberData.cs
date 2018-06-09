@@ -8,8 +8,8 @@ using NineTapTour.Exceptions;
 using System.Drawing.Printing;
 using System.Data;
 using System.Runtime.InteropServices;
+using NineTapTour.Models;
 using Excel = Microsoft.Office.Interop.Excel;
-using Member_Import_Test.Classes;
 
 namespace NineTapTour.Forms
 {

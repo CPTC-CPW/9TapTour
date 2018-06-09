@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace NineTapTour.Database
+namespace NineTapTour.Models
 {
     public class Participant
     {

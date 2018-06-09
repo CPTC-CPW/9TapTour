@@ -14,6 +14,7 @@ using static NineTapTour._NineTapTour_NineTapDbDataSet;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Data.Entity;
+using NineTapTour.Models;
 
 /// <summary>
 /// Author Julie Edwards

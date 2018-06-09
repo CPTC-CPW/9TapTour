@@ -9,6 +9,8 @@ using NineTapTour.Database;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using NineTapTour.Forms;
+using NineTapTour.Models;
+
 namespace Member_Import_Test
 {
     public partial class frmMain : Form

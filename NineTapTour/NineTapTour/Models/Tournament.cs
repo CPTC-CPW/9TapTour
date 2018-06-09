@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace NineTapTour.Database
+namespace NineTapTour.Models
 {
     public class Tournament
     {

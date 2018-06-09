@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NineTapTour.Models;
+
 /*
     Author: Toby Fortuner
     Jun 5, 2016
