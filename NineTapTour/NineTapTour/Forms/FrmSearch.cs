@@ -181,6 +181,7 @@ namespace NineTapTour.Forms
             else
             {
                 EmptyGrid();
+                MessageBox.Show("There are no Bowlers with that information");
             }
             btnSelect.Focus();
         }
