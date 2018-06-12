@@ -97,6 +97,16 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.GRPQBS1 = new System.Windows.Forms.GroupBox();
+            this.cbFilterSquad8 = new System.Windows.Forms.CheckBox();
+            this.cbFilterSquad7 = new System.Windows.Forms.CheckBox();
+            this.cbFilterSquad6 = new System.Windows.Forms.CheckBox();
+            this.cbFilterSquad5 = new System.Windows.Forms.CheckBox();
+            this.cbFilterSquad4 = new System.Windows.Forms.CheckBox();
+            this.cbFilterSquad3 = new System.Windows.Forms.CheckBox();
+            this.cbFilterSquad2 = new System.Windows.Forms.CheckBox();
+            this.cbFilterSquad1 = new System.Windows.Forms.CheckBox();
+            this.cbAllSquads = new System.Windows.Forms.CheckBox();
             this.lblHighGame = new System.Windows.Forms.Label();
             this.richTextBox3 = new System.Windows.Forms.RichTextBox();
             this.richTextBox2 = new System.Windows.Forms.RichTextBox();
@@ -124,16 +134,6 @@
             this.btnFinalizeTounament = new System.Windows.Forms.Button();
             this.btnTournamentResults = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.GRPQBS1 = new System.Windows.Forms.GroupBox();
-            this.cbFilterSquad8 = new System.Windows.Forms.CheckBox();
-            this.cbFilterSquad7 = new System.Windows.Forms.CheckBox();
-            this.cbFilterSquad6 = new System.Windows.Forms.CheckBox();
-            this.cbFilterSquad5 = new System.Windows.Forms.CheckBox();
-            this.cbFilterSquad4 = new System.Windows.Forms.CheckBox();
-            this.cbFilterSquad3 = new System.Windows.Forms.CheckBox();
-            this.cbFilterSquad2 = new System.Windows.Forms.CheckBox();
-            this.cbFilterSquad1 = new System.Windows.Forms.CheckBox();
-            this.cbAllSquads = new System.Windows.Forms.CheckBox();
             this.flpMemberScores = new System.Windows.Forms.FlowLayoutPanel();
             this.panel5 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -147,11 +147,11 @@
             this.grpLeaders.SuspendLayout();
             this.QBSBOX.SuspendLayout();
             this.grpScoreType.SuspendLayout();
+            this.GRPQBS1.SuspendLayout();
             this.grpReports.SuspendLayout();
             this.grpComments.SuspendLayout();
             this.pnlMemStat.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.GRPQBS1.SuspendLayout();
             this.flpMemberScores.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -967,6 +967,124 @@
             this.label1.TabIndex = 5;
             this.label1.Text = "Game [Member No.] --- (Name)";
             // 
+            // GRPQBS1
+            // 
+            this.GRPQBS1.CausesValidation = false;
+            this.GRPQBS1.Controls.Add(this.cbFilterSquad8);
+            this.GRPQBS1.Controls.Add(this.cbFilterSquad7);
+            this.GRPQBS1.Controls.Add(this.cbFilterSquad6);
+            this.GRPQBS1.Controls.Add(this.cbFilterSquad5);
+            this.GRPQBS1.Controls.Add(this.cbFilterSquad4);
+            this.GRPQBS1.Controls.Add(this.cbFilterSquad3);
+            this.GRPQBS1.Controls.Add(this.cbFilterSquad2);
+            this.GRPQBS1.Controls.Add(this.cbFilterSquad1);
+            this.GRPQBS1.Controls.Add(this.cbAllSquads);
+            this.GRPQBS1.Location = new System.Drawing.Point(456, 31);
+            this.GRPQBS1.Name = "GRPQBS1";
+            this.GRPQBS1.Size = new System.Drawing.Size(103, 262);
+            this.GRPQBS1.TabIndex = 47;
+            this.GRPQBS1.TabStop = false;
+            this.GRPQBS1.Text = "Filter Series by Squad";
+            // 
+            // cbFilterSquad8
+            // 
+            this.cbFilterSquad8.AutoSize = true;
+            this.cbFilterSquad8.Location = new System.Drawing.Point(6, 230);
+            this.cbFilterSquad8.Name = "cbFilterSquad8";
+            this.cbFilterSquad8.Size = new System.Drawing.Size(66, 17);
+            this.cbFilterSquad8.TabIndex = 8;
+            this.cbFilterSquad8.Text = "Squad 8";
+            this.cbFilterSquad8.UseVisualStyleBackColor = true;
+            this.cbFilterSquad8.CheckedChanged += new System.EventHandler(this.cbFilterSquad8_CheckedChanged);
+            // 
+            // cbFilterSquad7
+            // 
+            this.cbFilterSquad7.AutoSize = true;
+            this.cbFilterSquad7.Location = new System.Drawing.Point(6, 203);
+            this.cbFilterSquad7.Name = "cbFilterSquad7";
+            this.cbFilterSquad7.Size = new System.Drawing.Size(66, 17);
+            this.cbFilterSquad7.TabIndex = 7;
+            this.cbFilterSquad7.Text = "Squad 7";
+            this.cbFilterSquad7.UseVisualStyleBackColor = true;
+            this.cbFilterSquad7.CheckedChanged += new System.EventHandler(this.cbFilterSquad7_CheckedChanged);
+            // 
+            // cbFilterSquad6
+            // 
+            this.cbFilterSquad6.AutoSize = true;
+            this.cbFilterSquad6.Location = new System.Drawing.Point(6, 176);
+            this.cbFilterSquad6.Name = "cbFilterSquad6";
+            this.cbFilterSquad6.Size = new System.Drawing.Size(66, 17);
+            this.cbFilterSquad6.TabIndex = 6;
+            this.cbFilterSquad6.Text = "Squad 6";
+            this.cbFilterSquad6.UseVisualStyleBackColor = true;
+            this.cbFilterSquad6.CheckedChanged += new System.EventHandler(this.cbFilterSquad6_CheckedChanged);
+            // 
+            // cbFilterSquad5
+            // 
+            this.cbFilterSquad5.AutoSize = true;
+            this.cbFilterSquad5.Location = new System.Drawing.Point(6, 149);
+            this.cbFilterSquad5.Name = "cbFilterSquad5";
+            this.cbFilterSquad5.Size = new System.Drawing.Size(66, 17);
+            this.cbFilterSquad5.TabIndex = 5;
+            this.cbFilterSquad5.Text = "Squad 5";
+            this.cbFilterSquad5.UseVisualStyleBackColor = true;
+            this.cbFilterSquad5.CheckedChanged += new System.EventHandler(this.cbFilterSquad5_CheckedChanged);
+            // 
+            // cbFilterSquad4
+            // 
+            this.cbFilterSquad4.AutoSize = true;
+            this.cbFilterSquad4.Location = new System.Drawing.Point(6, 126);
+            this.cbFilterSquad4.Name = "cbFilterSquad4";
+            this.cbFilterSquad4.Size = new System.Drawing.Size(66, 17);
+            this.cbFilterSquad4.TabIndex = 4;
+            this.cbFilterSquad4.Text = "Squad 4";
+            this.cbFilterSquad4.UseVisualStyleBackColor = true;
+            this.cbFilterSquad4.CheckedChanged += new System.EventHandler(this.cbFilterSquad4_CheckedChanged);
+            // 
+            // cbFilterSquad3
+            // 
+            this.cbFilterSquad3.AutoSize = true;
+            this.cbFilterSquad3.Location = new System.Drawing.Point(6, 100);
+            this.cbFilterSquad3.Name = "cbFilterSquad3";
+            this.cbFilterSquad3.Size = new System.Drawing.Size(66, 17);
+            this.cbFilterSquad3.TabIndex = 3;
+            this.cbFilterSquad3.Text = "Squad 3";
+            this.cbFilterSquad3.UseVisualStyleBackColor = true;
+            this.cbFilterSquad3.CheckedChanged += new System.EventHandler(this.cbFilterSquad3_CheckedChanged);
+            // 
+            // cbFilterSquad2
+            // 
+            this.cbFilterSquad2.AutoSize = true;
+            this.cbFilterSquad2.Location = new System.Drawing.Point(6, 73);
+            this.cbFilterSquad2.Name = "cbFilterSquad2";
+            this.cbFilterSquad2.Size = new System.Drawing.Size(66, 17);
+            this.cbFilterSquad2.TabIndex = 2;
+            this.cbFilterSquad2.Text = "Squad 2";
+            this.cbFilterSquad2.UseVisualStyleBackColor = true;
+            this.cbFilterSquad2.CheckedChanged += new System.EventHandler(this.cbFilterSquad2_CheckedChanged);
+            // 
+            // cbFilterSquad1
+            // 
+            this.cbFilterSquad1.AutoSize = true;
+            this.cbFilterSquad1.Location = new System.Drawing.Point(6, 50);
+            this.cbFilterSquad1.Name = "cbFilterSquad1";
+            this.cbFilterSquad1.Size = new System.Drawing.Size(66, 17);
+            this.cbFilterSquad1.TabIndex = 1;
+            this.cbFilterSquad1.Text = "Squad 1";
+            this.cbFilterSquad1.UseVisualStyleBackColor = true;
+            this.cbFilterSquad1.CheckedChanged += new System.EventHandler(this.cbFilterSquad1_CheckedChanged);
+            // 
+            // cbAllSquads
+            // 
+            this.cbAllSquads.AutoSize = true;
+            this.cbAllSquads.Location = new System.Drawing.Point(6, 27);
+            this.cbAllSquads.Name = "cbAllSquads";
+            this.cbAllSquads.Size = new System.Drawing.Size(76, 17);
+            this.cbAllSquads.TabIndex = 0;
+            this.cbAllSquads.Text = "All Squads";
+            this.cbAllSquads.UseVisualStyleBackColor = true;
+            this.cbAllSquads.CheckedChanged += new System.EventHandler(this.cbAllSquads_CheckedChanged);
+            // 
             // lblHighGame
             // 
             this.lblHighGame.AutoSize = true;
@@ -1264,124 +1382,6 @@
             this.panel1.Size = new System.Drawing.Size(993, 541);
             this.panel1.TabIndex = 0;
             // 
-            // GRPQBS1
-            // 
-            this.GRPQBS1.CausesValidation = false;
-            this.GRPQBS1.Controls.Add(this.cbFilterSquad8);
-            this.GRPQBS1.Controls.Add(this.cbFilterSquad7);
-            this.GRPQBS1.Controls.Add(this.cbFilterSquad6);
-            this.GRPQBS1.Controls.Add(this.cbFilterSquad5);
-            this.GRPQBS1.Controls.Add(this.cbFilterSquad4);
-            this.GRPQBS1.Controls.Add(this.cbFilterSquad3);
-            this.GRPQBS1.Controls.Add(this.cbFilterSquad2);
-            this.GRPQBS1.Controls.Add(this.cbFilterSquad1);
-            this.GRPQBS1.Controls.Add(this.cbAllSquads);
-            this.GRPQBS1.Location = new System.Drawing.Point(456, 31);
-            this.GRPQBS1.Name = "GRPQBS1";
-            this.GRPQBS1.Size = new System.Drawing.Size(103, 262);
-            this.GRPQBS1.TabIndex = 47;
-            this.GRPQBS1.TabStop = false;
-            this.GRPQBS1.Text = "Filter Series by Squad";
-            // 
-            // cbFilterSquad8
-            // 
-            this.cbFilterSquad8.AutoSize = true;
-            this.cbFilterSquad8.Location = new System.Drawing.Point(6, 230);
-            this.cbFilterSquad8.Name = "cbFilterSquad8";
-            this.cbFilterSquad8.Size = new System.Drawing.Size(66, 17);
-            this.cbFilterSquad8.TabIndex = 8;
-            this.cbFilterSquad8.Text = "Squad 8";
-            this.cbFilterSquad8.UseVisualStyleBackColor = true;
-            this.cbFilterSquad8.CheckedChanged += new System.EventHandler(this.cbFilterSquad8_CheckedChanged);
-            // 
-            // cbFilterSquad7
-            // 
-            this.cbFilterSquad7.AutoSize = true;
-            this.cbFilterSquad7.Location = new System.Drawing.Point(6, 203);
-            this.cbFilterSquad7.Name = "cbFilterSquad7";
-            this.cbFilterSquad7.Size = new System.Drawing.Size(66, 17);
-            this.cbFilterSquad7.TabIndex = 7;
-            this.cbFilterSquad7.Text = "Squad 7";
-            this.cbFilterSquad7.UseVisualStyleBackColor = true;
-            this.cbFilterSquad7.CheckedChanged += new System.EventHandler(this.cbFilterSquad7_CheckedChanged);
-            // 
-            // cbFilterSquad6
-            // 
-            this.cbFilterSquad6.AutoSize = true;
-            this.cbFilterSquad6.Location = new System.Drawing.Point(6, 176);
-            this.cbFilterSquad6.Name = "cbFilterSquad6";
-            this.cbFilterSquad6.Size = new System.Drawing.Size(66, 17);
-            this.cbFilterSquad6.TabIndex = 6;
-            this.cbFilterSquad6.Text = "Squad 6";
-            this.cbFilterSquad6.UseVisualStyleBackColor = true;
-            this.cbFilterSquad6.CheckedChanged += new System.EventHandler(this.cbFilterSquad6_CheckedChanged);
-            // 
-            // cbFilterSquad5
-            // 
-            this.cbFilterSquad5.AutoSize = true;
-            this.cbFilterSquad5.Location = new System.Drawing.Point(6, 149);
-            this.cbFilterSquad5.Name = "cbFilterSquad5";
-            this.cbFilterSquad5.Size = new System.Drawing.Size(66, 17);
-            this.cbFilterSquad5.TabIndex = 5;
-            this.cbFilterSquad5.Text = "Squad 5";
-            this.cbFilterSquad5.UseVisualStyleBackColor = true;
-            this.cbFilterSquad5.CheckedChanged += new System.EventHandler(this.cbFilterSquad5_CheckedChanged);
-            // 
-            // cbFilterSquad4
-            // 
-            this.cbFilterSquad4.AutoSize = true;
-            this.cbFilterSquad4.Location = new System.Drawing.Point(6, 126);
-            this.cbFilterSquad4.Name = "cbFilterSquad4";
-            this.cbFilterSquad4.Size = new System.Drawing.Size(66, 17);
-            this.cbFilterSquad4.TabIndex = 4;
-            this.cbFilterSquad4.Text = "Squad 4";
-            this.cbFilterSquad4.UseVisualStyleBackColor = true;
-            this.cbFilterSquad4.CheckedChanged += new System.EventHandler(this.cbFilterSquad4_CheckedChanged);
-            // 
-            // cbFilterSquad3
-            // 
-            this.cbFilterSquad3.AutoSize = true;
-            this.cbFilterSquad3.Location = new System.Drawing.Point(6, 100);
-            this.cbFilterSquad3.Name = "cbFilterSquad3";
-            this.cbFilterSquad3.Size = new System.Drawing.Size(66, 17);
-            this.cbFilterSquad3.TabIndex = 3;
-            this.cbFilterSquad3.Text = "Squad 3";
-            this.cbFilterSquad3.UseVisualStyleBackColor = true;
-            this.cbFilterSquad3.CheckedChanged += new System.EventHandler(this.cbFilterSquad3_CheckedChanged);
-            // 
-            // cbFilterSquad2
-            // 
-            this.cbFilterSquad2.AutoSize = true;
-            this.cbFilterSquad2.Location = new System.Drawing.Point(6, 73);
-            this.cbFilterSquad2.Name = "cbFilterSquad2";
-            this.cbFilterSquad2.Size = new System.Drawing.Size(66, 17);
-            this.cbFilterSquad2.TabIndex = 2;
-            this.cbFilterSquad2.Text = "Squad 2";
-            this.cbFilterSquad2.UseVisualStyleBackColor = true;
-            this.cbFilterSquad2.CheckedChanged += new System.EventHandler(this.cbFilterSquad2_CheckedChanged);
-            // 
-            // cbFilterSquad1
-            // 
-            this.cbFilterSquad1.AutoSize = true;
-            this.cbFilterSquad1.Location = new System.Drawing.Point(6, 50);
-            this.cbFilterSquad1.Name = "cbFilterSquad1";
-            this.cbFilterSquad1.Size = new System.Drawing.Size(66, 17);
-            this.cbFilterSquad1.TabIndex = 1;
-            this.cbFilterSquad1.Text = "Squad 1";
-            this.cbFilterSquad1.UseVisualStyleBackColor = true;
-            this.cbFilterSquad1.CheckedChanged += new System.EventHandler(this.cbFilterSquad1_CheckedChanged);
-            // 
-            // cbAllSquads
-            // 
-            this.cbAllSquads.AutoSize = true;
-            this.cbAllSquads.Location = new System.Drawing.Point(6, 27);
-            this.cbAllSquads.Name = "cbAllSquads";
-            this.cbAllSquads.Size = new System.Drawing.Size(76, 17);
-            this.cbAllSquads.TabIndex = 0;
-            this.cbAllSquads.Text = "All Squads";
-            this.cbAllSquads.UseVisualStyleBackColor = true;
-            this.cbAllSquads.CheckedChanged += new System.EventHandler(this.cbAllSquads_CheckedChanged);
-            // 
             // flpMemberScores
             // 
             this.flpMemberScores.Controls.Add(this.panel1);
@@ -1466,14 +1466,14 @@
             this.QBSBOX.PerformLayout();
             this.grpScoreType.ResumeLayout(false);
             this.grpScoreType.PerformLayout();
+            this.GRPQBS1.ResumeLayout(false);
+            this.GRPQBS1.PerformLayout();
             this.grpReports.ResumeLayout(false);
             this.grpComments.ResumeLayout(false);
             this.pnlMemStat.ResumeLayout(false);
             this.pnlMemStat.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.GRPQBS1.ResumeLayout(false);
-            this.GRPQBS1.PerformLayout();
             this.flpMemberScores.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
