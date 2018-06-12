@@ -32,15 +32,17 @@ namespace NineTapTour.Forms
 
         private void FrmSearch_Load(object sender, EventArgs e)
         {
-            
+            chkAdvancedView.Visible = false;
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
+            chkAdvancedView.Visible = true;
             dtagrdResults.DataSource = null;
 
             List<Member> memList = new List<Member>();
 
+            bool hasData = true;
             using (NineTapDb db = new NineTapDb())
             {
                 var query = from m in db.Members
@@ -101,7 +103,7 @@ namespace NineTapTour.Forms
                 query = query.OrderBy(m => m.Number);
 
                 Console.WriteLine(query.ToString());
-
+                
                 var results = query.Select(m => new
                 {
                     Number = m.Number,
@@ -135,56 +137,81 @@ namespace NineTapTour.Forms
                     
                 }).ToList();
 
-                memList = results.Select(m => new Member
+                if (results.Count > 0)
                 {
-                    Number = m.Number,
-                    FirstName = m.FirstName,
-                    LastName = m.LastName,
-                    IsActive = m.IsActive,
-                    MiddleInitial = m.MiddleInitial,
-                    DateOfBirth = m.DateOfBirth,
-                    Gender = m.Gender,
-                    Street = m.Street,
-                    City = m.City,
-                    State = m.State,
-                    PostalCode = m.PostalCode,
-                    Email = m.Email,
-                    PrimaryPhone = m.PrimaryPhone,
-                    SecondaryPhone = m.SecondaryPhone,
-                    Average = m.Average,
-                    StartAvg = m.StartAVG,
-                    Handicap = m.Handicap,
-                    Bonus = m.Bonus,
-                    JoinDate = m.JoinDate,
-                    RejoinDate = m.RejoinDate,
-                    LastBowled = m.LastBowled,
-                    LastPayment = m.LastPayment,
-                    IsLifetimeMember = m.IsLifetimeMember,
-                    MoneyEarned = m.MoneyEarned,
-                    Notes = m.Notes,
-                    Referrals = m.Referrals,
-                    IsSenior = m.IsSenior
-                }).ToList();
+                    memList = results.Select(m => new Member
+                    {
+                        Number = m.Number,
+                        FirstName = m.FirstName,
+                        LastName = m.LastName,
+                        IsActive = m.IsActive,
+                        MiddleInitial = m.MiddleInitial,
+                        DateOfBirth = m.DateOfBirth,
+                        Gender = m.Gender,
+                        Street = m.Street,
+                        City = m.City,
+                        State = m.State,
+                        PostalCode = m.PostalCode,
+                        Email = m.Email,
+                        PrimaryPhone = m.PrimaryPhone,
+                        SecondaryPhone = m.SecondaryPhone,
+                        Average = m.Average,
+                        StartAvg = m.StartAVG,
+                        Handicap = m.Handicap,
+                        Bonus = m.Bonus,
+                        JoinDate = m.JoinDate,
+                        RejoinDate = m.RejoinDate,
+                        LastBowled = m.LastBowled,
+                        LastPayment = m.LastPayment,
+                        IsLifetimeMember = m.IsLifetimeMember,
+                        MoneyEarned = m.MoneyEarned,
+                        Notes = m.Notes,
+                        Referrals = m.Referrals,
+                        IsSenior = m.IsSenior
+                    }).ToList();
 
-                foreach (Member m in memList)
+                    foreach (Member m in memList)
+                    {
+                        Console.WriteLine(m.Id);
+                    }
+                }
+                else
                 {
-                    Console.WriteLine(m.Id);
+                    hasData = false;
+                    memList.Add(new Member()
+                    {
+                        FirstName = "There are no users with that information",
+                    });
+
+                    foreach (Member m in memList){
+                        Console.WriteLine(m.Id);
+                    }
                 }
             }
 
-            if (memList.Count > 0)
-            {
-                dtagrdResults.DataSource = memList;
+            dtagrdResults.DataSource = memList;
 
-                AdvancedViewCheck();
-            }
-            else
+            if (!hasData)
             {
-                EmptyGrid();
-                MessageBox.Show("There are no Bowlers with that information");
+                dtagrdResults.Columns["Number"].Visible = false;
+                dtagrdResults.Columns["LastName"].Visible = false;
+                dtagrdResults.Columns["Email"].Visible = false;
+                dtagrdResults.Columns["Average"].Visible = false;
+                dtagrdResults.Columns["StartAvg"].Visible = false;
+                dtagrdResults.Columns["Handicap"].Visible = false;
+                dtagrdResults.Columns["Bonus"].Visible = false;
+                dtagrdResults.Columns["MoneyEarned"].Visible = false;
+                dtagrdResults.Columns["NineTapRegionID"].Visible = false;
+
+                chkAdvancedView.Visible = false;
             }
+
+            
+
+            AdvancedViewCheck();
             btnSelect.Focus();
         }
+
 
         private void chkAdvancedView_CheckStateChanged(object sender, EventArgs e)
         {
@@ -238,7 +265,7 @@ namespace NineTapTour.Forms
             //checks if Advanced View is not checked
             if (!chkAdvancedView.Checked)
             {
-                //dtagrdResults.Columns["IsActive"].Visible = false;
+                dtagrdResults.Columns["IsActive"].Visible = false;
                 dtagrdResults.Columns["MiddleInitial"].Visible = false;
                 dtagrdResults.Columns["DateOfBirth"].Visible = false;
                 dtagrdResults.Columns["Gender"].Visible = false;
@@ -273,7 +300,8 @@ namespace NineTapTour.Forms
             txtAverage.Clear();
             txtHandicap.Clear();
             txtBonus.Clear();
-            FillGrid();
+            EmptyGrid();
+            chkAdvancedView.Visible = false;
         }
 
         private void btnSelect_Click(object sender, EventArgs e)
