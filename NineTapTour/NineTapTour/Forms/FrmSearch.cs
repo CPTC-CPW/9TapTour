@@ -20,6 +20,7 @@ namespace NineTapTour.Forms
     public partial class FrmSearch : Form
     {
         int RegionID;
+        bool isChecked = false;
         public int searchResult { get; set; }
         /// <summary>
         /// Opens the "Search" form.
@@ -32,17 +33,14 @@ namespace NineTapTour.Forms
 
         private void FrmSearch_Load(object sender, EventArgs e)
         {
-            chkAdvancedView.Visible = false;
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            chkAdvancedView.Visible = true;
             dtagrdResults.DataSource = null;
 
             List<Member> memList = new List<Member>();
 
-            bool hasData = true;
             using (NineTapDb db = new NineTapDb())
             {
                 var query = from m in db.Members
@@ -137,6 +135,7 @@ namespace NineTapTour.Forms
                     
                 }).ToList();
 
+                //if there are results for the query, store the data from the results in a new Member class
                 if (results.Count > 0)
                 {
                     memList = results.Select(m => new Member
@@ -170,73 +169,94 @@ namespace NineTapTour.Forms
                         IsSenior = m.IsSenior
                     }).ToList();
 
-                    foreach (Member m in memList)
-                    {
-                        Console.WriteLine(m.Id);
-                    }
                 }
+                //If there is no matching data with the query, add a new member
+                //with Firstname being a message that there are no bowlers with that info
+                //and disable all other columns from being displayed
                 else
                 {
-                    hasData = false;
                     memList.Add(new Member()
                     {
                         FirstName = "There are no users with that information",
                     });
 
-                    foreach (Member m in memList){
-                        Console.WriteLine(m.Id);
-                    }
+                    dtagrdResults.DataSource = memList;
+                    disableData();
+                    isChecked = true;
+                }
+                //Display the member information for each member in the memList 
+                foreach (Member m in memList)
+                {
+                    Console.WriteLine(m.Id);
                 }
             }
-
             dtagrdResults.DataSource = memList;
-
-            if (!hasData)
-            {
-                dtagrdResults.Columns["Number"].Visible = false;
-                dtagrdResults.Columns["LastName"].Visible = false;
-                dtagrdResults.Columns["Email"].Visible = false;
-                dtagrdResults.Columns["Average"].Visible = false;
-                dtagrdResults.Columns["StartAvg"].Visible = false;
-                dtagrdResults.Columns["Handicap"].Visible = false;
-                dtagrdResults.Columns["Bonus"].Visible = false;
-                dtagrdResults.Columns["MoneyEarned"].Visible = false;
-                dtagrdResults.Columns["NineTapRegionID"].Visible = false;
-
-                chkAdvancedView.Visible = false;
-            }
-
-            
-
             AdvancedViewCheck();
             btnSelect.Focus();
+        }
+
+        //used when there are no query results and a message needs to be displayed
+        //stating as such
+        private void disableData() {
+            //Disables every column from being displayed besides the First name 
+            dtagrdResults.Columns["Number"].Visible = false;
+            dtagrdResults.Columns["LastName"].Visible = false;
+            dtagrdResults.Columns["Email"].Visible = false;
+            dtagrdResults.Columns["Average"].Visible = false;
+            dtagrdResults.Columns["StartAvg"].Visible = false;
+            dtagrdResults.Columns["Handicap"].Visible = false;
+            dtagrdResults.Columns["Bonus"].Visible = false;
+            dtagrdResults.Columns["MoneyEarned"].Visible = false;
+            dtagrdResults.Columns["NineTapRegionID"].Visible = false;
+            dtagrdResults.Columns["IsActive"].Visible = false;
+            dtagrdResults.Columns["MiddleInitial"].Visible = false;
+            dtagrdResults.Columns["DateOfBirth"].Visible = false;
+            dtagrdResults.Columns["Gender"].Visible = false;
+            dtagrdResults.Columns["Street"].Visible = false;
+            dtagrdResults.Columns["City"].Visible = false;
+            dtagrdResults.Columns["State"].Visible = false;
+            dtagrdResults.Columns["PostalCode"].Visible = false;
+            dtagrdResults.Columns["PrimaryPhone"].Visible = false;
+            dtagrdResults.Columns["SecondaryPhone"].Visible = false;
+            dtagrdResults.Columns["JoinDate"].Visible = false;
+            dtagrdResults.Columns["RejoinDate"].Visible = false;
+            dtagrdResults.Columns["LastBowled"].Visible = false;
+            dtagrdResults.Columns["LastPayment"].Visible = false;
+            dtagrdResults.Columns["IsLifetimeMember"].Visible = false;
+            dtagrdResults.Columns["MoneyEarned"].ValueType = typeof(decimal);
+            dtagrdResults.Columns["Notes"].Visible = false;
+            dtagrdResults.Columns["Referrals"].Visible = false;
+            dtagrdResults.Columns["IsSenior"].Visible = false;
         }
 
 
         private void chkAdvancedView_CheckStateChanged(object sender, EventArgs e)
         {
-            //dtagrdResults.Columns["IsActive"].Visible = !dtagrdResults.Columns["IsActive"].Visible;
-            dtagrdResults.Columns["MiddleInitial"].Visible = !dtagrdResults.Columns["MiddleInitial"].Visible;
-            dtagrdResults.Columns["DateOfBirth"].Visible = !dtagrdResults.Columns["DateOfBirth"].Visible;
-            dtagrdResults.Columns["Gender"].Visible = !dtagrdResults.Columns["Gender"].Visible;
-            dtagrdResults.Columns["Street"].Visible = !dtagrdResults.Columns["Street"].Visible;
-            dtagrdResults.Columns["City"].Visible = !dtagrdResults.Columns["City"].Visible;
-            dtagrdResults.Columns["State"].Visible = !dtagrdResults.Columns["State"].Visible;
-            dtagrdResults.Columns["PostalCode"].Visible = !dtagrdResults.Columns["PostalCode"].Visible;
-            dtagrdResults.Columns["PrimaryPhone"].Visible = !dtagrdResults.Columns["PrimaryPhone"].Visible;
-            dtagrdResults.Columns["SecondaryPhone"].Visible = !dtagrdResults.Columns["SecondaryPhone"].Visible;
-            //dtagrdResults.Columns["Average"].Visible = !dtagrdResults.Columns["Average"].Visible;
-            //dtagrdResults.Columns["Handicap"].Visible = !dtagrdResults.Columns["Handicap"].Visible;
-            //dtagrdResults.Columns["Bonus"].Visible = !dtagrdResults.Columns["Bonus"].Visible;
-            dtagrdResults.Columns["JoinDate"].Visible = !dtagrdResults.Columns["JoinDate"].Visible;
-            dtagrdResults.Columns["RejoinDate"].Visible = !dtagrdResults.Columns["RejoinDate"].Visible;
-            dtagrdResults.Columns["LastBowled"].Visible = !dtagrdResults.Columns["LastBowled"].Visible;
-            dtagrdResults.Columns["LastPayment"].Visible = !dtagrdResults.Columns["LastPayment"].Visible;
-            dtagrdResults.Columns["IsLifetimeMember"].Visible = !dtagrdResults.Columns["IsLifetimeMember"].Visible;
-            //dtagrdResults.Columns["MoneyEarned"].Visible = !dtagrdResults.Columns["MoneyEarned"].Visible;
-            dtagrdResults.Columns["Notes"].Visible = !dtagrdResults.Columns["Notes"].Visible;
-            dtagrdResults.Columns["Referrals"].Visible = !dtagrdResults.Columns["Referrals"].Visible;
-            dtagrdResults.Columns["IsSenior"].Visible = !dtagrdResults.Columns["IsSenior"].Visible;
+            if (isChecked == false)
+            {
+                //dtagrdResults.Columns["IsActive"].Visible = !dtagrdResults.Columns["IsActive"].Visible;
+                dtagrdResults.Columns["MiddleInitial"].Visible = !dtagrdResults.Columns["MiddleInitial"].Visible;
+                dtagrdResults.Columns["DateOfBirth"].Visible = !dtagrdResults.Columns["DateOfBirth"].Visible;
+                dtagrdResults.Columns["Gender"].Visible = !dtagrdResults.Columns["Gender"].Visible;
+                dtagrdResults.Columns["Street"].Visible = !dtagrdResults.Columns["Street"].Visible;
+                dtagrdResults.Columns["City"].Visible = !dtagrdResults.Columns["City"].Visible;
+                dtagrdResults.Columns["State"].Visible = !dtagrdResults.Columns["State"].Visible;
+                dtagrdResults.Columns["PostalCode"].Visible = !dtagrdResults.Columns["PostalCode"].Visible;
+                dtagrdResults.Columns["PrimaryPhone"].Visible = !dtagrdResults.Columns["PrimaryPhone"].Visible;
+                dtagrdResults.Columns["SecondaryPhone"].Visible = !dtagrdResults.Columns["SecondaryPhone"].Visible;
+                //dtagrdResults.Columns["Average"].Visible = !dtagrdResults.Columns["Average"].Visible;
+                //dtagrdResults.Columns["Handicap"].Visible = !dtagrdResults.Columns["Handicap"].Visible;
+                //dtagrdResults.Columns["Bonus"].Visible = !dtagrdResults.Columns["Bonus"].Visible;
+                dtagrdResults.Columns["JoinDate"].Visible = !dtagrdResults.Columns["JoinDate"].Visible;
+                dtagrdResults.Columns["RejoinDate"].Visible = !dtagrdResults.Columns["RejoinDate"].Visible;
+                dtagrdResults.Columns["LastBowled"].Visible = !dtagrdResults.Columns["LastBowled"].Visible;
+                dtagrdResults.Columns["LastPayment"].Visible = !dtagrdResults.Columns["LastPayment"].Visible;
+                dtagrdResults.Columns["IsLifetimeMember"].Visible = !dtagrdResults.Columns["IsLifetimeMember"].Visible;
+                //dtagrdResults.Columns["MoneyEarned"].Visible = !dtagrdResults.Columns["MoneyEarned"].Visible;
+                dtagrdResults.Columns["Notes"].Visible = !dtagrdResults.Columns["Notes"].Visible;
+                dtagrdResults.Columns["Referrals"].Visible = !dtagrdResults.Columns["Referrals"].Visible;
+                dtagrdResults.Columns["IsSenior"].Visible = !dtagrdResults.Columns["IsSenior"].Visible;
+            }
         }
 
         private void FillGrid()
