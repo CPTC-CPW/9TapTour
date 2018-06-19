@@ -262,6 +262,7 @@
             this.mtxtBoxRejoinDate.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxRejoinDate.TabIndex = 30;
             this.mtxtBoxRejoinDate.ValidatingType = typeof(System.DateTime);
+            this.mtxtBoxRejoinDate.Click += new System.EventHandler(this.mtxtBoxRejoinDate_Click);
             // 
             // mtxtBoxDateJoined
             // 
@@ -271,6 +272,7 @@
             this.mtxtBoxDateJoined.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxDateJoined.TabIndex = 28;
             this.mtxtBoxDateJoined.ValidatingType = typeof(System.DateTime);
+            this.mtxtBoxDateJoined.Click += new System.EventHandler(this.mtxtBoxDateJoined_Click);
             // 
             // mtxtBoxDOB
             // 
@@ -281,6 +283,7 @@
             this.mtxtBoxDOB.TabIndex = 10;
             this.mtxtBoxDOB.ValidatingType = typeof(System.DateTime);
             this.mtxtBoxDOB.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.mtxtBoxDOB_MaskInputRejected);
+            this.mtxtBoxDOB.Click += new System.EventHandler(this.mtxtBoxDOB_Click);
             // 
             // chbSocial
             // 
@@ -302,6 +305,7 @@
             this.mtxtBoxZip.ShortcutsEnabled = false;
             this.mtxtBoxZip.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxZip.TabIndex = 20;
+            this.mtxtBoxZip.Click += new System.EventHandler(this.mtxtBoxZip_Click);
             // 
             // mtxtBoxSSN
             // 
@@ -313,6 +317,7 @@
             this.mtxtBoxSSN.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.mtxtBoxSSN.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxSSN.TabIndex = 12;
+            this.mtxtBoxSSN.Click += new System.EventHandler(this.mtxtBoxSSN_Click);
             // 
             // mtxtBoxPhone2
             // 
@@ -322,6 +327,7 @@
             this.mtxtBoxPhone2.Name = "mtxtBoxPhone2";
             this.mtxtBoxPhone2.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxPhone2.TabIndex = 24;
+            this.mtxtBoxPhone2.Click += new System.EventHandler(this.mtxtBoxPhone2_Click);
             // 
             // mtxtBoxPhone
             // 
@@ -331,6 +337,7 @@
             this.mtxtBoxPhone.Name = "mtxtBoxPhone";
             this.mtxtBoxPhone.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxPhone.TabIndex = 22;
+            this.mtxtBoxPhone.Click += new System.EventHandler(this.mtxtBoxPhone_Click);
             // 
             // lblEmail
             // 
@@ -815,6 +822,7 @@
             this.mtxtBoxLastPayment.Size = new System.Drawing.Size(190, 21);
             this.mtxtBoxLastPayment.TabIndex = 56;
             this.mtxtBoxLastPayment.ValidatingType = typeof(System.DateTime);
+            this.mtxtBoxLastPayment.Click += new System.EventHandler(this.mtxtBoxLastPayment_Click);
             // 
             // flpMemberData
             // 
@@ -875,6 +883,7 @@
             this.mtxtBoxLastBowled.Size = new System.Drawing.Size(103, 21);
             this.mtxtBoxLastBowled.TabIndex = 60;
             this.mtxtBoxLastBowled.ValidatingType = typeof(System.DateTime);
+            this.mtxtBoxLastBowled.Click += new System.EventHandler(this.mtxtBoxLastBowled_Click);
             // 
             // label2
             // 

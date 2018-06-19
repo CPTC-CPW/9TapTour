@@ -1598,6 +1598,51 @@ namespace NineTapTour.Forms
         {
             FormHelper.SetFlowControlScrollBars(this, flpMemberData, 1080, 600);
         }
+
+        private void mtxtBoxDOB_Click(object sender, EventArgs e)
+        {
+            FormHelper.GoToFirstIndexInTextboxIfEmpty(mtxtBoxDOB);
+        }
+
+        private void mtxtBoxSSN_Click(object sender, EventArgs e)
+        {
+            FormHelper.GoToFirstIndexInTextboxIfEmpty(mtxtBoxSSN);
+        }
+
+        private void mtxtBoxZip_Click(object sender, EventArgs e)
+        {
+            FormHelper.GoToFirstIndexInTextboxIfEmpty(mtxtBoxZip);
+        }
+
+        private void mtxtBoxDateJoined_Click(object sender, EventArgs e)
+        {
+            FormHelper.GoToFirstIndexInTextboxIfEmpty(mtxtBoxDateJoined);
+        }
+
+        private void mtxtBoxPhone_Click(object sender, EventArgs e)
+        {
+            FormHelper.GoToFirstIndexInTextboxIfEmpty(mtxtBoxPhone);
+        }
+
+        private void mtxtBoxPhone2_Click(object sender, EventArgs e)
+        {
+            FormHelper.GoToFirstIndexInTextboxIfEmpty(mtxtBoxPhone2);
+        }
+
+        private void mtxtBoxRejoinDate_Click(object sender, EventArgs e)
+        {
+            FormHelper.GoToFirstIndexInTextboxIfEmpty(mtxtBoxRejoinDate);
+        }
+
+        private void mtxtBoxLastBowled_Click(object sender, EventArgs e)
+        {
+            FormHelper.GoToFirstIndexInTextboxIfEmpty(mtxtBoxLastBowled);
+        }
+
+        private void mtxtBoxLastPayment_Click(object sender, EventArgs e)
+        {
+            FormHelper.GoToFirstIndexInTextboxIfEmpty(mtxtBoxLastPayment);
+        }
     }
 }
 
