@@ -39,28 +39,28 @@ namespace NineTapTour.Forms
         int currentIndex = 0;
 
         //USE THIS IF YOU NEED TO MOVE AROUND THE ORDER IN WHICH THE COLUMNS ARE DISPLAYED 
-        static int INDEX_COLUMN = 0;
-        static int GAME_ID_COLUMN = 1;
-        static int NAME_COLUMN = 2;
-        static int GAME_1_COLUMN = 3;
-        static int GAME_1_VALID_COLUMN = 4;
-        static int GAME_2_COLUMN = 5;
-        static int GAME_2_VALID_COLUMN = 6;
-        static int GAME_3_COLUMN = 7;
-        static int GAME_3_VALID_COLUMN = 8;
-        static int GAME_4_COLUMN = 9;
-        static int GAME_4_VALID_COLUMN = 10;
-        static int SCRATCH_TOTAL_COLUMN = 11;
-        static int HANDICAP_TOTAL_COLUMN = 12;
-        static int ENTRY_AVERAGE_COLUMN = 13;
-        static int THIRTY_ENTRY_AVERAGE_COLUMN = 14;
-        static int ADJUSTED_AVG_COLUMN = 15;
-        static int DIRECTOR_CHECK_COLUMN = 16;
-        static int SQUAD_COLUMN = 17;
-        static int HANDICAP_COLUMN = 18;
-        static int BONUS_COLUMN = 19;
-        static int PRO_POT_COLUMN = 20;
-        static int NOTES_COLUMN_ = 21;
+        const int INDEX_COLUMN = 0;
+        const int GAME_ID_COLUMN = 1;
+        const int NAME_COLUMN = 2;
+        const int GAME_1_COLUMN = 3;
+        const int GAME_1_VALID_COLUMN = 4;
+        const int GAME_2_COLUMN = 5;
+        const int GAME_2_VALID_COLUMN = 6;
+        const int GAME_3_COLUMN = 7;
+        const int GAME_3_VALID_COLUMN = 8;
+        const int GAME_4_COLUMN = 9;
+        const int GAME_4_VALID_COLUMN = 10;
+        const int SCRATCH_TOTAL_COLUMN = 11;
+        const int HANDICAP_TOTAL_COLUMN = 12;
+        const int ENTRY_AVERAGE_COLUMN = 13;
+        const int THIRTY_ENTRY_AVERAGE_COLUMN = 14;
+        const int ADJUSTED_AVG_COLUMN = 15;
+        const int DIRECTOR_CHECK_COLUMN = 16;
+        const int SQUAD_COLUMN = 17;
+        const int HANDICAP_COLUMN = 18;
+        const int BONUS_COLUMN = 19;
+        const int PRO_POT_COLUMN = 20;
+        const int NOTES_COLUMN_ = 21;
 
 
 
@@ -536,10 +536,12 @@ namespace NineTapTour.Forms
                     e.ColumnIndex == GAME_4_VALID_COLUMN)
                 {
                     DataGridViewCell clickedCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                    bool isCellChecked = Convert.ToBoolean(clickedCell.Value);
 
+                    ToggleGameCellFormatting(GetCorrespondingGameCell(clickedCell), isCellChecked);
                     UpdateAvg(clickedCell.RowIndex);
                     getLeagueSum(FinalizeTableList[clickedCell.RowIndex]);
-                    CheckBoxDBSet(clickedCell.RowIndex, clickedCell.ColumnIndex, Convert.ToBoolean(clickedCell.Value));
+                    CheckBoxDBSet(clickedCell.RowIndex, clickedCell.ColumnIndex, isCellChecked);
                 }
 
                 // Check if cell changed was a DIRECTOR_CHECK cell
@@ -821,80 +823,63 @@ namespace NineTapTour.Forms
             RankGridView();
         }
 
+        /// <summary>
+        /// This method takes in a GAME_VALID_COLUMN cell and returns the correct corresponding GAME_COLUMN cell or vis versa.
+        /// </summary>
+        /// <param name="cell">A DataGridViewCell of either GAME_COLUMN or GAME_VALID_COLUMN type.</param>
+        /// <returns>The corresponding DataGridViewCell to the passed in GAME DataGridViewCell.</returns>
+        private DataGridViewCell GetCorrespondingGameCell(DataGridViewCell cell)
+        {
+            switch (cell.ColumnIndex)
+            {
+                case GAME_1_COLUMN:
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_1_VALID_COLUMN];
+                case GAME_2_COLUMN:
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_2_VALID_COLUMN];
+                case GAME_3_COLUMN:
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_3_VALID_COLUMN];
+                case GAME_4_COLUMN:
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_4_VALID_COLUMN];
+
+                case GAME_1_VALID_COLUMN:
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_1_COLUMN];
+                case GAME_2_VALID_COLUMN:
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_2_COLUMN];
+                case GAME_3_VALID_COLUMN:
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_3_COLUMN];
+                case GAME_4_VALID_COLUMN:
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_4_COLUMN];
+
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
+        /// This method toggles the strikeout text and red background of an invalid game.
+        /// </summary>
+        /// <param name="cell">The GAME_COLUMN cell to toggle.</param>
+        /// /// <param name="isGameCellValid">True resets the formatting to normal. False sets the font to strikeout and background color to red.</param>
+        private void ToggleGameCellFormatting(DataGridViewCell cell, bool isGameCellValid)
+        {
+            if (isGameCellValid)
+            {
+                cell.Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
+                cell.Style.BackColor = Color.White;
+            }
+            else
+            {
+                cell.Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
+                cell.Style.BackColor = Color.Red;
+            }
+        }
+
         //formats cells based off bool value for valid score, strike thru score on previous score column.
         //changes background color of score to orange if 50 below 30 game avg.
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-
             dataGridView1.SuspendLayout();
 
-            if (this.dataGridView1.Columns[e.ColumnIndex].Name == GAME_1_VALID_COLUMN_NAME && e.Value != null)
-            {
-
-                if (Convert.ToBoolean(e.Value) == true)
-                {
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Style.BackColor = Color.White;
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-                else
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Style.BackColor = Color.Red;
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-            }
-            if (this.dataGridView1.Columns[e.ColumnIndex].Name == GAME_2_VALID_COLUMN_NAME && e.Value != null)
-            {
-                if (Convert.ToBoolean(e.Value) == true)
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Style.BackColor = Color.White;
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-                else
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Style.BackColor = Color.Red;
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-            }
-            if (this.dataGridView1.Columns[e.ColumnIndex].Name == GAME_3_VALID_COLUMN_NAME && e.Value != null)
-            {
-                if (Convert.ToBoolean(e.Value) == true)
-                {
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Style.BackColor = Color.White;
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-                else
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Style.BackColor = Color.Red;
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-            }
-            if (this.dataGridView1.Columns[e.ColumnIndex].Name == GAME_4_VALID_COLUMN_NAME && e.Value != null)
-            {
-                if (Convert.ToBoolean(e.Value) == true)
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Style.BackColor = Color.White;
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-                else
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Style.BackColor = Color.Red;
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-            }
             if (this.dataGridView1.Columns[e.ColumnIndex].Name == THIRTY_ENTRY_AVERAGE_COLUMN_NAME && e.Value != null)
             {
                 if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Style.BackColor != Color.Red)
@@ -914,6 +899,7 @@ namespace NineTapTour.Forms
                     dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Style.BackColor = Color.Orange;
                 }
             }
+
             dataGridView1.ResumeLayout();
         }
         
