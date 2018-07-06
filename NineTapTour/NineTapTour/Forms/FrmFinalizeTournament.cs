@@ -104,7 +104,7 @@ namespace NineTapTour.Forms
                 Game g = FinalizeTempDB.getGame(item.GameId);
                 if (FinalizeTempDB.getFinalizeID(g).FinalizeID > 0)//if this column was already created and exists in the database , set the information to be what was already added to the database
                 {
-                    
+
                     temp = FinalizeTempDB.getFinalizeID(g);
                     temp.Notes = item.Notes;
                     temp.memberNumber = MemberDb.GetMemberNumberbyID(item.MemberId);
@@ -286,7 +286,7 @@ namespace NineTapTour.Forms
             {
                 DataRow newRow = dt.NewRow();
                 newRow[GAME_ID_COLUMN_NAME] = item.GameId;
-                newRow[NAME_COLUMN_NAME] = item.FirstName + " " + item.LastName;     
+                newRow[NAME_COLUMN_NAME] = item.FirstName + " " + item.LastName;
                 newRow[GAME_1_COLUMN_NAME] = item.Game1;
                 newRow[GAME_1_VALID_COLUMN_NAME] = item.UseGame1;
                 newRow[GAME_2_COLUMN_NAME] = item.Game2;
@@ -306,7 +306,7 @@ namespace NineTapTour.Forms
                 newRow[NOTES_COLUMN_NAME] = item.Notes;
                 newRow[INDEX_COLUMN_NAME] = index;
                 newRow[HANDICAP_TOTAL_COLUMN_NAME] = item.HandicapTotal;
-                dt.Rows.Add(newRow);        
+                dt.Rows.Add(newRow);
                 index++;
             }
             return dt;
@@ -521,163 +521,71 @@ namespace NineTapTour.Forms
         }
 
 
-
-        //Updates the finalizetemp table when check box for Use Game Score is clicked on.
+        /// <summary>
+        /// This method handles the changes made when any GAME_VALID or DIRECTOR_CHECK checkboxes are changed, including updating the FinalizeTemp table in the DB.
+        /// The DataGridView.CellValueChanged event occurs when the user-specified value is committed, which typically occurs when focus leaves the cell.
+        /// </summary>
         private void dataGridView1_OnCellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), GAME_1_VALID_COLUMN.ToString()) == 0)
+            if (e.RowIndex >= 0)
             {
-                bool checkBoxStatus = Convert.ToBoolean(dataGridView1.CurrentCell.EditedFormattedValue);
-                //checkBoxStatus gives you whether checkbox cell value of selected row for the
-                //"CheckBoxColumn" column value is checked or not. 
-                FinalizeTemp temp = new FinalizeTemp();
-                var row = dataGridView1.CurrentCell.RowIndex;
-                NineTapDb db = new NineTapDb();
-                if (checkBoxStatus)
+                // Check if cell changed was a GAME_VALID cell
+                if (e.ColumnIndex == GAME_1_VALID_COLUMN ||
+                    e.ColumnIndex == GAME_2_VALID_COLUMN ||
+                    e.ColumnIndex == GAME_3_VALID_COLUMN ||
+                    e.ColumnIndex == GAME_4_VALID_COLUMN)
                 {
-                    dataGridView1.Rows[row].Cells[GAME_1_VALID_COLUMN].Value = true;
-                    UpdateAvg(row);
-                    getLeagueSum(FinalizeTableList[row]);
-                    CheckBoxDBSet(row, GAME_1_COLUMN, true);
+                    DataGridViewCell clickedCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
 
+                    UpdateAvg(clickedCell.RowIndex);
+                    getLeagueSum(FinalizeTableList[clickedCell.RowIndex]);
+                    CheckBoxDBSet(clickedCell.RowIndex, clickedCell.ColumnIndex, Convert.ToBoolean(clickedCell.Value));
                 }
-                else
-                {
-                    dataGridView1.Rows[row].Cells[GAME_1_VALID_COLUMN].Value = false;
-                    UpdateAvg(row);
-                    getLeagueSum(FinalizeTableList[row]);
-                    CheckBoxDBSet(row, GAME_1_COLUMN, false);
-                }
-            }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), GAME_2_VALID_COLUMN.ToString()) == 0)
-            {
-                bool checkBoxStatus = Convert.ToBoolean(dataGridView1.CurrentCell.EditedFormattedValue);
-                //checkBoxStatus gives you whether checkbox cell value of selected row for the
-                //"CheckBoxColumn" column value is checked or not. 
-                var row = dataGridView1.CurrentCell.RowIndex;
-                if (checkBoxStatus)
-                {
-                    dataGridView1.Rows[row].Cells[GAME_2_VALID_COLUMN].Value = true;
-                    UpdateAvg(row);
-                    CheckBoxDBSet(row, GAME_2_COLUMN, true);
 
-                }
-                else
+                // Check if cell changed was a DIRECTOR_CHECK cell
+                else if (e.ColumnIndex == DIRECTOR_CHECK_COLUMN)
                 {
-                    dataGridView1.Rows[row].Cells[GAME_2_VALID_COLUMN].Value = false;
-                    UpdateAvg(row);
-                    CheckBoxDBSet(row, GAME_2_COLUMN, false);
-                }
-            }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), GAME_3_VALID_COLUMN.ToString()) == 0)
-            {
-                bool checkBoxStatus = Convert.ToBoolean(dataGridView1.CurrentCell.EditedFormattedValue);
-                //checkBoxStatus gives you whether checkbox cell value of selected row for the
-                //"CheckBoxColumn" column value is checked or not. 
-                var row = dataGridView1.CurrentCell.RowIndex;
-                if (checkBoxStatus)
-                {
-                    dataGridView1.Rows[row].Cells[GAME_3_VALID_COLUMN].Value = true;
-                    UpdateAvg(row);
+                    // If the DIRECTOR_CHECK cell was clicked, this code finds the member that belongs to that cell
+                    // and changes all of that member's games to match the clicked DIRECTOR_CHECK.
+                    DataGridViewRow clickedRow = dataGridView1.Rows[e.RowIndex];
+                    DataGridViewCell clickedCell = clickedRow.Cells[e.ColumnIndex];
 
-                    CheckBoxDBSet(row, GAME_3_COLUMN, true);
+                    // TODO: Move database code to appropriate database helper class.
+                    int gameId = Convert.ToInt32(clickedRow.Cells[GAME_ID_COLUMN].Value);
+                    int memId;
+                    using (var db = new NineTapDb())
+                    {
+                        memId = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Id;
+                    }
 
-                }
-                else
-                {
-                    dataGridView1.Rows[row].Cells[GAME_3_VALID_COLUMN].Value = false;
-                    UpdateAvg(row);
-                    CheckBoxDBSet(row, GAME_3_COLUMN, false);
-
-                }
-            }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), GAME_4_VALID_COLUMN.ToString()) == 0)
-            {
-                bool checkBoxStatus = Convert.ToBoolean(dataGridView1.CurrentCell.EditedFormattedValue);
-                //checkBoxStatus gives you whether checkbox cell value of selected row for the
-                //"CheckBoxColumn" column value is checked or not. 
-                var row = dataGridView1.CurrentCell.RowIndex;
-                if (checkBoxStatus)
-                {
-                    dataGridView1.Rows[row].Cells[GAME_4_VALID_COLUMN].Value = true;
-                    UpdateAvg(row);
-                    CheckBoxDBSet(row, GAME_4_COLUMN, true);
-
-
-                }
-                else
-                {
-                    dataGridView1.Rows[row].Cells[GAME_4_VALID_COLUMN].Value = false;
-                    UpdateAvg(row);
-                    CheckBoxDBSet(row, GAME_4_COLUMN, false);
-
-                }
-            }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), DIRECTOR_CHECK_COLUMN.ToString()) == 0)
-            {
-                int gameId = Convert.ToInt32(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[GAME_ID_COLUMN].Value);
-                int memId;
-                using (var db = new NineTapDb())
-                {
-                    memId = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Id;
-                }
-                bool checkBoxStatus = Convert.ToBoolean(dataGridView1.CurrentCell.EditedFormattedValue);
-                //checkBoxStatus gives you whether checkbox cell value of selected row for the
-                //"CheckBoxColumn" column value is checked or not. 
-
-                if (checkBoxStatus)
-                {
+                    bool isCellChecked = Convert.ToBoolean(clickedCell.Value);
                     for (int i = 0; i < FinalizeTableList.Count; i++)
                     {
                         if (FinalizeTableList[i].MemberId == memId)
                         {
-                            dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = true;
+                            dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = isCellChecked;
                         }
                     }
-
-                }
-                else
-                {
-                    for (int i = 0; i < FinalizeTableList.Count; i++)
-                    {
-                        if (FinalizeTableList[i].MemberId == memId)
-                        {
-                            dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = false;
-                        }
-                    }
-
-
                 }
             }
-
         }
 
+        /// <summary>
+        /// This method checks if the clicked column is an "Is Game Valid?" or "Director Check" column, and fires the EndEdit() method on the data grid view.
+        /// If the EndEdit() method isn't called, the data grid view wouldn't see the column as edited until the user click "out" of the cell.
+        /// The DataGridView.CellMouseUp event fires when the user releases a mouse button while over a cell.
+        /// </summary>
         private void dataGridView1_OnCellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
         {
-            // End of edition on each click on column of checkbox
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), GAME_1_VALID_COLUMN.ToString()) == 0)
+            if (e.RowIndex >= 0 &&
+                (e.ColumnIndex == GAME_1_VALID_COLUMN ||
+                e.ColumnIndex == GAME_2_VALID_COLUMN ||
+                e.ColumnIndex == GAME_3_VALID_COLUMN ||
+                e.ColumnIndex == GAME_4_VALID_COLUMN ||
+                e.ColumnIndex == DIRECTOR_CHECK_COLUMN))
             {
                 dataGridView1.EndEdit();
             }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), GAME_2_VALID_COLUMN.ToString()) == 0)
-            {
-                dataGridView1.EndEdit();
-            }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), GAME_3_VALID_COLUMN.ToString()) == 0)
-            {
-                dataGridView1.EndEdit();
-            }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), GAME_4_VALID_COLUMN.ToString()) == 0)
-            {
-                dataGridView1.EndEdit();
-            }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), DIRECTOR_CHECK_COLUMN.ToString()) == 0)
-            {
-                dataGridView1.EndEdit();
-            }
-
-
         }
 
         /// <summary>
@@ -919,7 +827,7 @@ namespace NineTapTour.Forms
         {
 
             dataGridView1.SuspendLayout();
-         
+
             if (this.dataGridView1.Columns[e.ColumnIndex].Name == GAME_1_VALID_COLUMN_NAME && e.Value != null)
             {
 
@@ -1213,9 +1121,9 @@ namespace NineTapTour.Forms
                 {
                     //catches the instance where cells technically do not exist. will not refresh if they dont exist yet.
                 }
-                    
-           
-                }
+
+
+            }
 
         }
 
@@ -1262,8 +1170,8 @@ namespace NineTapTour.Forms
             DataTable dtGames = new DataTable();
 
 
-          
-  
+
+
             dtGames.Columns.Add("Games").ReadOnly = true;
             dtGames.Columns.Add("Date", typeof(DateTime));
             dtGames.Columns.Add("Game1");
@@ -1394,7 +1302,7 @@ namespace NineTapTour.Forms
                     dataGridView2.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
                 }
             }
-          
+
 
 
 
@@ -1544,7 +1452,7 @@ namespace NineTapTour.Forms
         //        FrmStats playerhistory = new FrmStats(memId, "", MemberDb.GetMember(MemberDb.GetMemberNumberbyID(memId), RegionID), temporary, RegionID);
         //        playerhistory.ShowDialog();
         //    }
-            #endregion
+        #endregion
 
 
         //}
@@ -1676,7 +1584,7 @@ namespace NineTapTour.Forms
                                 {
                                     if (placing > 0) // if member placed in tournament, calculate bonus pins based on placing
                                     {
-                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(true, placing, Convert.ToInt32(currentMember.Bonus), currentT.Doubles, currentMember.Number, RegionID,currentT.Date);
+                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(true, placing, Convert.ToInt32(currentMember.Bonus), currentT.Doubles, currentMember.Number, RegionID, currentT.Date);
                                     }
 
                                     else  // if member didn't place in tournament, calculate bonus pins
@@ -1711,7 +1619,7 @@ namespace NineTapTour.Forms
             }
             else  // if all of the director checkboxes are not checked, then prompt user to check to finalize tournament
             {
-                
+
             }
         }
 
@@ -1841,16 +1749,16 @@ namespace NineTapTour.Forms
 
     }
 }
-    
 
 
 
-    
 
 
-        /***/
 
-    
+
+/***/
+
+
 
 
 
