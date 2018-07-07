@@ -35,6 +35,12 @@ namespace NineTapTour.Forms
             FinalizeTableList = GetAllInitialParticipantGameList(tourn);
             createDataGridView(tourn);
         }
+
+        private void FrmFinalizeTournament_Load(object sender, EventArgs e)
+        {
+            InitializeGameCellFormatting();
+        }
+
         List<PlayerHistory> temporary = new List<PlayerHistory>();
         int currentIndex = 0;
 
@@ -538,7 +544,7 @@ namespace NineTapTour.Forms
                     DataGridViewCell clickedCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
                     bool isCellChecked = Convert.ToBoolean(clickedCell.Value);
 
-                    ToggleGameCellFormatting(GetCorrespondingGameCell(clickedCell), isCellChecked);
+                    SetGameCellFormatting(GetCorrespondingGameCell(clickedCell), isCellChecked);
                     UpdateAvg(clickedCell.RowIndex);
                     getLeagueSum(FinalizeTableList[clickedCell.RowIndex]);
                     CheckBoxDBSet(clickedCell.RowIndex, clickedCell.ColumnIndex, isCellChecked);
@@ -856,51 +862,51 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// This method toggles the strikeout text and red background of an invalid game.
+        /// This method iterates over every row in dataGridView1 and sets the formatting of the game cells appropriately.
         /// </summary>
-        /// <param name="cell">The GAME_COLUMN cell to toggle.</param>
-        /// /// <param name="isGameCellValid">True resets the formatting to normal. False sets the font to strikeout and background color to red.</param>
-        private void ToggleGameCellFormatting(DataGridViewCell cell, bool isGameCellValid)
+        private void InitializeGameCellFormatting()
+        {
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                SetGameCellFormatting(row.Cells[GAME_1_COLUMN], Convert.ToBoolean(row.Cells[GAME_1_VALID_COLUMN].Value));
+                SetGameCellFormatting(row.Cells[GAME_2_COLUMN], Convert.ToBoolean(row.Cells[GAME_2_VALID_COLUMN].Value));
+                SetGameCellFormatting(row.Cells[GAME_3_COLUMN], Convert.ToBoolean(row.Cells[GAME_3_VALID_COLUMN].Value));
+                SetGameCellFormatting(row.Cells[GAME_4_COLUMN], Convert.ToBoolean(row.Cells[GAME_4_VALID_COLUMN].Value));
+            }
+        }
+
+        /// <summary>
+        /// This method sets the formatting of a game cell to either a valid or invalid state.
+        /// Valid format depends on the value of the game compared to the member's thirty game average.
+        /// Invalid format is strikeout font style with a red background.
+        /// </summary>
+        /// <param name="cell">The GAME_COLUMN cell to set the state of.</param>
+        /// <param name="isGameCellValid">The state to set the cell to.</param>
+        private void SetGameCellFormatting(DataGridViewCell cell, bool isGameCellValid)
         {
             if (isGameCellValid)
             {
                 cell.Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
-                cell.Style.BackColor = Color.White;
+
+                // Check the game's value compared to the member's past thirty games average.
+                int gameValue = Convert.ToInt32(cell.Value);
+                int thirtyAvg = Convert.ToInt32(dataGridView1.Rows[cell.RowIndex].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
+                if (gameValue > thirtyAvg - 50)
+                {
+                    // If the value is within acceptable parameters, change the background back to white.
+                    cell.Style.BackColor = Color.White; 
+                }
+                else
+                {
+                    // If the value is <= 50 below their thirty games average, set the background color to orange.
+                    cell.Style.BackColor = Color.Orange;
+                }
             }
             else
             {
                 cell.Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
                 cell.Style.BackColor = Color.Red;
             }
-        }
-
-        //formats cells based off bool value for valid score, strike thru score on previous score column.
-        //changes background color of score to orange if 50 below 30 game avg.
-        private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-        {
-            dataGridView1.SuspendLayout();
-
-            if (this.dataGridView1.Columns[e.ColumnIndex].Name == THIRTY_ENTRY_AVERAGE_COLUMN_NAME && e.Value != null)
-            {
-                if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Style.BackColor != Color.Red)
-                {
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Style.BackColor = Color.Orange;
-                }
-                if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Style.BackColor != Color.Red)
-                {
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Style.BackColor = Color.Orange;
-                }
-                if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Style.BackColor != Color.Red)
-                {
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Style.BackColor = Color.Orange;
-                }
-                if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Style.BackColor != Color.Red)
-                {
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Style.BackColor = Color.Orange;
-                }
-            }
-
-            dataGridView1.ResumeLayout();
         }
         
         private void DataGridView1_OnCellEnter(object sender, DataGridViewCellEventArgs e)
@@ -1633,20 +1639,5 @@ namespace NineTapTour.Forms
             }
 
         }
-
-
     }
 }
-
-
-
-
-
-
-
-/***/
-
-
-
-
-
