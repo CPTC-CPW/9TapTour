@@ -65,7 +65,7 @@ namespace NineTapTour.Migrations
 
         private readonly int _lowestBonusPin = 0;
         private readonly int _highestBonusPin = 0;
-
+        //Review the documentation before changing anything directly in the method
         protected override void Seed(NineTapTour.Database.NineTapDb context)
         {
             
