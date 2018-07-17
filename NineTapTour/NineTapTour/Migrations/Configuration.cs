@@ -65,7 +65,10 @@ namespace NineTapTour.Migrations
 
         private readonly int _lowestBonusPin = 0;
         private readonly int _highestBonusPin = 0;
+        //this is used for the index global in bogus so we can start our members at a specific number and then increment by 1
+        private readonly int memberNumberShift = 1;
         //Review the documentation before changing anything directly in the method
+        //for example if we set this to 0 the first member created will start at 0 then the second will be 1 and so on.
         protected override void Seed(NineTapTour.Database.NineTapDb context)
         {
             
@@ -96,7 +99,7 @@ namespace NineTapTour.Migrations
                     .RuleFor(m => m.SSN, f => f.Person.Ssn())
                     .RuleFor(m => m.PrimaryPhone, f => f.Person.Phone)
                     .RuleFor(m => m.NineTapRegionID, f => _startingRegionId)
-                    .RuleFor(m => m.Number, f => f.IndexGlobal + 1)
+                    .RuleFor(m => m.Number, f => f.IndexGlobal + memberNumberShift)
                     .RuleFor(m => m.Bonus, f => f.Random.Number(_lowestBonusPin, _highestBonusPin))
                     .Generate(_numOfMembersToGenerate);
             context.Members.AddRange(memberSeed);
