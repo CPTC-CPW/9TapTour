@@ -163,6 +163,8 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            decideMemberTab();
+
             var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
             OpenOrDisplayForm(ref mainMenu);          
         }
@@ -174,6 +176,8 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void memberToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            decideMemberTab();
+
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
             OpenOrDisplayForm(ref newfrmMemberData);
             currFrmMemberData = newfrmMemberData;
@@ -188,11 +192,24 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
         {
-        
+            decideMemberTab();
+
             var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
             OpenOrDisplayForm(ref newfrmMemberScores);
             currfrmScoresdata = newfrmMemberScores;
             currfrmScoresdata.UpdateTourneyComboBox();
+        }
+
+        public void decideMemberTab()
+        {
+            if (memberDataIsActive)
+            {
+                memberToolStripMenuItem.Enabled = false;
+            }
+            else
+            {
+                memberToolStripMenuItem.Enabled = true;
+            }
         }
 
         /// <summary>
