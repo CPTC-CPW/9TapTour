@@ -100,14 +100,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calculations\Calculations.cs" />
-    <Compile Include="Migrations\201807162121542_regionrelationtomember.cs" />
-    <Compile Include="Migrations\201807162121542_regionrelationtomember.Designer.cs">
-      <DependentUpon>201807162121542_regionrelationtomember.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201807162133450_testnorelation.cs" />
-    <Compile Include="Migrations\201807162133450_testnorelation.Designer.cs">
-      <DependentUpon>201807162133450_testnorelation.cs</DependentUpon>
-    </Compile>
     <Compile Include="Models\ExcelMember.cs" />
     <Compile Include="Database\FormHelper.cs" />
     <Compile Include="Database\NineTapRegionDB.cs" />
@@ -322,12 +314,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803192318264_Initial.resx">
       <DependentUpon>201803192318264_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201807162121542_regionrelationtomember.resx">
-      <DependentUpon>201807162121542_regionrelationtomember.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201807162133450_testnorelation.resx">
-      <DependentUpon>201807162133450_testnorelation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
