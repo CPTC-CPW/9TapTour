@@ -253,15 +253,28 @@ namespace NineTapTour.Forms
                         //prevents the message box from showing up when member data form is not active
                         memberDataIsActive = false;
                         return true;
-                        
+
                     }
                 }
-                else {
+                else
+                {
                     return true;
                 }
             }
         }
 
+        private void BackupDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+            if (folderDialog.ShowDialog() == DialogResult.OK)
+            {
+                DatabaseManagement.BackupDatabase(folderDialog.SelectedPath);
+            }
+        }
 
+        private void RestoreDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
