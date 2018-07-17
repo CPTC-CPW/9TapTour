@@ -55,7 +55,7 @@ namespace NineTapTour.Migrations
         private readonly int _numOfMembersToGenerate = 300;
 
         private readonly int _startingRegionId = 1;
-        private readonly int _endingRegionId = 2;
+        private readonly int _endingRegionId = 1;
 
         private readonly int _lowestBowlScore = 100;
         private readonly int _highestBowlScore = 299;
@@ -106,7 +106,7 @@ namespace NineTapTour.Migrations
                     .RuleFor(m => m.JoinDate, f => f.Date.Between(_earliestJoinDate, _latestJoinDate))
                     .RuleFor(m => m.SSN, f => f.Person.Ssn())
                     .RuleFor(m => m.PrimaryPhone, f => f.Person.Phone)
-                    .RuleFor(m => m.NineTapRegionID, f => _startingRegionId)
+                    .RuleFor(m => m.NineTapRegionID, f => f.Random.Number(_startingRegionId, _endingRegionId))// use random.number(_startingRegionId, EndingRegionId)
                     .RuleFor(m => m.Number, f => f.IndexGlobal + memberStartingNumber)
                     .RuleFor(m => m.Bonus, f => f.Random.Number(_lowestBonusPin, _highestBonusPin))
                     .Generate(_numOfMembersToGenerate);
