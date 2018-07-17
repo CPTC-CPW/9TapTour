@@ -73,6 +73,9 @@ namespace NineTapTour.Migrations
         //This will set the earliest year possible (in comparison to the date when running update-database )when creating fake members and their joined dates.
         private readonly int _earliestJoinYear = -10; //This should always be a negative number
 
+        private readonly DateTime _earliestJoinDate = DateTime.Now.AddYears(-10);
+        private readonly DateTime _latestJoinDate = DateTime.Now;
+
         //Review the documentation before changing anything directly in the method
         protected override void Seed(NineTapTour.Database.NineTapDb context)
         {
@@ -97,10 +100,10 @@ namespace NineTapTour.Migrations
                     .RuleFor(m => m.PostalCode, f => f.Address.ZipCode())
                     .RuleFor(m => m.DateOfBirth, f => f.Person.DateOfBirth)
                     .RuleFor(m => m.Email, f => f.Person.Email)
-                    .RuleFor(m => m.IsActive, f => true)
-                    .RuleFor(m => m.IsLifetimeMember, f => false)
+                    .RuleFor(m => m.IsActive, f => true)// use f.random.bool if you would like to randomize this
+                    .RuleFor(m => m.IsLifetimeMember, f => false)//use f.random.bool if you would like to randomize this
                     .RuleFor(m => m.IsSenior, f => f.Random.Bool())
-                    .RuleFor(m => m.JoinDate, f => f.Date.Between(DateTime.Now.AddYears(_earliestJoinYear), DateTime.Now).Date)
+                    .RuleFor(m => m.JoinDate, f => f.Date.Between(_earliestJoinDate, _latestJoinDate))
                     .RuleFor(m => m.SSN, f => f.Person.Ssn())
                     .RuleFor(m => m.PrimaryPhone, f => f.Person.Phone)
                     .RuleFor(m => m.NineTapRegionID, f => _startingRegionId)
