@@ -46,8 +46,8 @@ namespace NineTapTour.Migrations
         #endregion
 
         #region Known Issues **READ THIS IF YOU ARE HAVING ISSUES**
-        //TODO: KNOWN ISSUES -> isLifeTime must be false until an error pertaining to the checking and unchecking of it is fixed.Refer to issue #
-        //TODO:RegionId is set to only 1 region since an error occuring in sifting through members occurs when picking a region refer to issue #
+        //TODO: KNOWN ISSUES -> isLifeTime must be false until an error pertaining to the checking and unchecking of it is fixed.Refer to issue #304
+        //TODO:RegionId is set to only 1 region since an error occuring in sifting through members occurs when picking a region refer to issue #305 && #303
         //TODO: 
         #endregion
 
@@ -71,12 +71,14 @@ namespace NineTapTour.Migrations
 
         //THIS SHOULD ALWAYS BE A NEGATIVE NUMBER.
         //This will set the earliest year possible (in comparison to the date when running update-database )when creating fake members and their joined dates.
-        private readonly int _earliestJoinYear = -10; //This should always be a negative number
 
-        private readonly DateTime _earliestJoinDate = DateTime.Now.AddYears(-10);
+        private readonly DateTime _earliestJoinDate = DateTime.Now.AddYears(-10);//This should always be a negative number
         private readonly DateTime _latestJoinDate = DateTime.Now;
 
         //Review the documentation before changing anything directly in the method
+#if DEBUG
+        
+
         protected override void Seed(NineTapTour.Database.NineTapDb context)
         {
             
@@ -106,7 +108,7 @@ namespace NineTapTour.Migrations
                     .RuleFor(m => m.JoinDate, f => f.Date.Between(_earliestJoinDate, _latestJoinDate))
                     .RuleFor(m => m.SSN, f => f.Person.Ssn())
                     .RuleFor(m => m.PrimaryPhone, f => f.Person.Phone)
-                    .RuleFor(m => m.NineTapRegionID, f => f.Random.Number(_startingRegionId, _endingRegionId))// use random.number(_startingRegionId, EndingRegionId)
+                    .RuleFor(m => m.NineTapRegionID, f => f.Random.Number(_startingRegionId, _endingRegionId))
                     .RuleFor(m => m.Number, f => f.IndexGlobal + memberStartingNumber)
                     .RuleFor(m => m.Bonus, f => f.Random.Number(_lowestBonusPin, _highestBonusPin))
                     .Generate(_numOfMembersToGenerate);
@@ -114,5 +116,6 @@ namespace NineTapTour.Migrations
             }
             context.SaveChanges();
         }
+#endif
     }
 }
