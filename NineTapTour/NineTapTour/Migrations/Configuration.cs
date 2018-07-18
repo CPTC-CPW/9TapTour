@@ -111,6 +111,7 @@ namespace NineTapTour.Migrations
                     .RuleFor(m => m.NineTapRegionID, f => f.Random.Number(_startingRegionId, _endingRegionId))
                     .RuleFor(m => m.Number, f => f.IndexGlobal + memberStartingNumber)
                     .RuleFor(m => m.Bonus, f => f.Random.Number(_lowestBonusPin, _highestBonusPin))
+                    .Rules((f, m) => { m.Handicap = Calculations.Calculations.CalculateHandicapPins(m.StartAvg.Value);})//Calculations.Calculations.CalculateHandicapPins((temp.Average.Value))
                     .Generate(_numOfMembersToGenerate);
             context.Members.AddRange(memberSeed);
             }
