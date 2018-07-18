@@ -47,6 +47,8 @@ namespace NineTapTour.Forms
                     temp = temp.Take(Convert.ToInt32(txtNumberOfMembers.Text)).ToList();
                     // print( go to print class )
                     Database.Print.printMemberReport(temp, selectedTournament, reportTypeNum,currentSquad);
+
+                    this.Close();
                 }
                 // if user inputs a bigger number than the number of members
                 else
