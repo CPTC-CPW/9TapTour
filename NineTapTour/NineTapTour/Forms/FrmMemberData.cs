@@ -420,6 +420,34 @@ namespace NineTapTour.Forms
                 return false;
             }
 
+            //VALIDATE DOB WITHIN BOUNDS
+            if(DateTime.TryParse(mtxtBoxDOB.Text, out DateTime result))
+            {
+                DateTime DOB = DateTime.Parse(mtxtBoxDOB.Text);
+
+                if(DOB < DateTime.Parse("01/01/1753") || DOB > DateTime.Parse("12/31/9999"))
+                {
+                    //TODO: ADD VALIDATION MESSAGE
+                    MessageBox.Show("Date of birth must be between 1753 and 9999.");
+
+                    return false;
+                }
+            }
+
+            if (DateTime.TryParse(mtxtBoxDateJoined.Text, out DateTime result2))
+            {
+                DateTime DateJoined = DateTime.Parse(mtxtBoxDateJoined.Text);
+
+                if (DateJoined < DateTime.Parse("01/01/1753") || DateJoined > DateTime.Parse("12/31/9999"))
+                {
+                    //TODO: ADD VALIDATION MESSAGE
+                    MessageBox.Show("Join Date must be between 1753 and 9999.");
+
+                    return false;
+                }
+            }
+
+
             ///********************************************************************************************************
             //League average should only be between 125 - 210
             //*********************************************************************************************************/
@@ -618,7 +646,7 @@ namespace NineTapTour.Forms
 
                         temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
                     }
-                    else //catches if director wants to change there average manually regardless of there player history
+                    else //catches if director wants to change their average manually regardless of there player history
                     {
                         temp.StartAvg = Convert.ToInt32(txtAverage.Text);
                         txtTournAvg.Text = last5[0].trueAVG.ToString();
