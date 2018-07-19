@@ -11,6 +11,7 @@ namespace NineTapTour.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
+
     internal sealed class Configuration : DbMigrationsConfiguration<NineTapTour.Database.NineTapDb>
     {
         public Configuration()
@@ -111,6 +112,7 @@ namespace NineTapTour.Migrations
                     .RuleFor(m => m.NineTapRegionID, f => f.Random.Number(_startingRegionId, _endingRegionId))
                     .RuleFor(m => m.Number, f => f.IndexGlobal + memberStartingNumber)
                     .RuleFor(m => m.Bonus, f => f.Random.Number(_lowestBonusPin, _highestBonusPin))
+                    .Rules((f, m) => { m.Handicap = Calculations.Calculations.CalculateHandicapPins(m.StartAvg.Value);})
                     .Generate(_numOfMembersToGenerate);
             context.Members.AddRange(memberSeed);
             }
