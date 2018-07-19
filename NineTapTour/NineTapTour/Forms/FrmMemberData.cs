@@ -729,10 +729,10 @@ namespace NineTapTour.Forms
             mtxtBoxRejoinDate.Text = "";
             mtxtBoxRejoinDate.Mask = "00/00/0000";
 
-            mtxtBoxDateJoined.Text = "";
+            mtxtBoxDateJoined.Text = DateTime.Now.ToString("MM/dd/yyyy");
             mtxtBoxDateJoined.Mask = "00/00/0000";
 
-            mtxtBoxLastBowled.Text = "";
+            mtxtBoxLastBowled.Text = DateTime.Now.ToString("MM/dd/yyyy");
             mtxtBoxLastBowled.Mask = "00/00/0000";
 
             mtxtBoxLastPayment.Text = "";
