@@ -64,5 +64,16 @@ namespace NineTapTour.Database
             }
         }
 
+        /// <summary>
+        /// Selects last index of inputted value of the textbox
+        /// </summary>
+        /// <param name="txtBox">TextBox to be passed in</param>
+        public static void GoToFirstIndexInTextboxIfEmpty(TextBoxBase txtBox)
+        {
+            if (txtBox.Text.StartsWith(" ") || txtBox.Text.StartsWith("( ") || txtBox.Text == string.Empty)
+            {
+                txtBox.Select(0, 0);
+            }
+        }
     }
 }

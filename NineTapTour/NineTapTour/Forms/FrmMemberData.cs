@@ -1598,6 +1598,11 @@ namespace NineTapTour.Forms
         {
             FormHelper.SetFlowControlScrollBars(this, flpMemberData, 1080, 600);
         }
+
+        private void mtxtBox_Click(object sender, EventArgs e)
+        {
+            FormHelper.GoToFirstIndexInTextboxIfEmpty(sender as TextBoxBase);
+        }
     }
 }
 
