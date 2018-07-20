@@ -83,7 +83,23 @@ namespace NineTapTour.Migrations
 
         protected override void Seed(NineTapTour.Database.NineTapDb context)
         {
-            int i = 0;
+            //incrementer local variables to prevent data mismatch in areas of the database that are not related correctly.
+            //**DO NOT TOUCH THESE UNLESS THERE IS A REALL GOOD REASON LIKE A DATABASE CHANGE.**
+
+            #region Info about these **DO NOT TOUCH THESE UNLESS THERE IS A REALL GOOD REASON LIKE A DATABASE CHANGE.**
+            //Since tinkering with bogus, which is meant for relational databases and the current state of the database does not use
+            //this as it should there are some work arounds that I had to implement to avoid data mismatch
+            //index is use to keep track of what index we are currently at in the list to replicate the exact same data in other tables
+            //
+            //The two currently are handicap and bonus -> Basically when a member is created their handicap and bonus are added to a list
+            //then when a game is created the handi and bonus list, are tapped into and take the paralleled index for values.
+
+
+            #endregion
+            int index = 0;
+            List<int> handicapList = new List<int>();
+            List<int> bonusList = new List<int>();
+
             if (!context.NineTapRegion.Any())
             {
                 context.NineTapRegion.AddOrUpdate(r => r.NineTapRegionID,
@@ -93,14 +109,19 @@ namespace NineTapTour.Migrations
             }
             if (!context.Members.Any())
             {
-                List<int> handicapList = new List<int>();
+                #region Additional info about tournament 
+                //We only create one tournament as that's all we need for basic testing for most things.
+                //this can be expanded upon but you will need to correctly think about how the calculations would progress
+                //with each new tournament, an alternative is to create more and then go through each tournament and finalize the scores.
+                //if you really wanted to test entries over time calculation.
 
+
+                #endregion
                 var tournamentSeed = new Bogus.Faker<Tournament>().Rules((f, t) =>
                 {
-
                     t.Date = DateTime.Now;
                     t.Location = f.Address.City();
-                    t.Event = $"SomeTournament {++i}";
+                    t.Event = $"SomeTournament";
                     t.Notes = f.Lorem.Sentence();
                     t.Sponsors = f.Company.CompanyName();
                     t.Squads = 4;
@@ -108,6 +129,7 @@ namespace NineTapTour.Migrations
                     t.ThreeOutOf4 = false;
                     t.TourneyRegion = 1;
                 }).Generate(1);
+                
 
                 var memberSeed = new Bogus.Faker<Member>().RuleFor(m => m.FirstName, f => f.Name.FirstName())
                     .RuleFor(m => m.LastName, f => f.Name.LastName())
@@ -120,21 +142,23 @@ namespace NineTapTour.Migrations
                     .RuleFor(m => m.PostalCode, f => f.Address.ZipCode())
                     .RuleFor(m => m.DateOfBirth, f => f.Person.DateOfBirth)
                     .RuleFor(m => m.Email, f => f.Person.Email)
-                    .RuleFor(m => m.IsActive, f => true)// use f.random.bool if you would like to randomize this
-                    .RuleFor(m => m.IsLifetimeMember, f => false)//use f.random.bool if you would like to randomize this
+                    .RuleFor(m => m.IsActive, f => true) // use f.random.bool if you would like to randomize this
+                    .RuleFor(m => m.IsLifetimeMember,
+                        f => false) //use f.random.bool if you would like to randomize this
                     .RuleFor(m => m.IsSenior, f => f.Random.Bool())
                     .RuleFor(m => m.JoinDate, f => f.Date.Between(_earliestJoinDate, _latestJoinDate))
                     .RuleFor(m => m.SSN, f => f.Person.Ssn())
                     .RuleFor(m => m.PrimaryPhone, f => f.Person.Phone)
                     .RuleFor(m => m.NineTapRegionID, f => f.Random.Number(_startingRegionId, _endingRegionId))
-                    .RuleFor(m => m.Number, f => f.IndexGlobal + memberStartingNumber)
-                    .RuleFor(m => m.Bonus, f => f.Random.Number(_lowestBonusPin, _highestBonusPin))
-                    .Rules((f, m) => {
+                    .RuleFor(m => m.Number, f => f.IndexVariable++ + memberStartingNumber)
+//                    .RuleFor(m => m.Bonus, f => f.Random.Number(_lowestBonusPin, _highestBonusPin))
+                    .Rules((f, m) =>
+                    {
+                        m.Bonus = f.Random.Number(_lowestBonusPin, _highestBonusPin);
                         m.Handicap = Calculations.Calculations.CalculateHandicapPins(m.StartAvg.Value);
+                        bonusList.Add(m.Bonus);
                         handicapList.Add(m.Handicap.Value);
-                    })
-                    .Generate(_numOfMembersToGenerate);
-
+                    });
 
                 var gameSeed = new Bogus.Faker<Game>().Rules((f, g) => {
                     g.Game1 = f.Random.Number(100, 280);
@@ -142,19 +166,31 @@ namespace NineTapTour.Migrations
                     g.Game3 = g.Game1 - f.Random.Number(-15, 15);
                     g.Game4 = g.Game1 - f.Random.Number(-15, 15);
                     g.Notes = f.Lorem.Sentence();
-                    g.Handicap = handicapList[i++];
+                    g.Handicap = handicapList[index];
                     g.TotalScore = g.Game1 + g.Game2 + g.Game3 + g.Game4;
                     g.gameRegionID = 1;
-                    g.Bonus = 1;
-                    //todo: create a list for bonus
-                    //todo: may or may not need inputted average.
+                    g.Bonus = bonusList[index++];
                 });
-                var squadSeed = new Bogus.Faker<Squad>().RuleFor(s => s.Game, gameSeed.Generate(1)[0]).RuleFor(s => s.Number);
+//                var squadSeed = new Bogus.Faker<Squad>().RuleFor(s => s.Game, gameSeed.Generate(1)[0]).RuleFor(s => s.Number, i);
 
+                var participantSeed = new Bogus.Faker<Participant>().Rules((f, p) =>
+                {
+                    p.Member = memberSeed;//.Generate(15).ToList()[f.IndexVariable]
+                    p.Game = gameSeed;//.Generate(15).ToList()[f.IndexVariable++]
+                    p.Squad = f.Random.Number(1, 4);
+                    p.ParticipantRegionID = 1;
+                    p.Tournament = tournamentSeed[0];
+                }).Generate(_numOfMembersToGenerate);
 
+//                var participantSeed = new Bogus.Faker<Participant>()
+//                    .RuleFor(p => p.Member, f => memberSeed.Generate(15).ToList()[f.IndexVariable])
+//                    .RuleFor(p => p.Game, gameSeed.Generate(15)[counter++])
+//                    .RuleFor(p => p.ParticipantRegionID, 1)
+//                    .RuleFor(p => p.Squad, f => f.Random.Number(0, 4))
+//                    .RuleFor(p => p.Tournament, tournamentSeed[0])
+//                    .Generate(15);
 
-
-                context.Members.AddRange(memberSeed);
+                context.Participants.AddRange(participantSeed);
             }
             context.SaveChanges();
         }
