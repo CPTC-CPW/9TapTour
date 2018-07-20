@@ -165,7 +165,7 @@ namespace NineTapTour.Migrations
                     g.Game2 = g.Game1 - f.Random.Number(-15, 15);
                     g.Game3 = g.Game1 - f.Random.Number(-15, 15);
                     g.Game4 = g.Game1 - f.Random.Number(-15, 15);
-                    g.Notes = f.Lorem.Sentence();
+                    g.Notes = null;
                     g.Handicap = handicapList[index];
                     g.TotalScore = g.Game1 + g.Game2 + g.Game3 + g.Game4;
                     g.gameRegionID = 1;
