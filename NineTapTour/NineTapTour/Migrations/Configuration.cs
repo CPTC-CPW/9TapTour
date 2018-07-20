@@ -54,7 +54,7 @@ namespace NineTapTour.Migrations
         #endregion
 
         //If you want to configure 
-        private readonly int _numOfMembersToGenerate = 300;
+        private readonly int _numOfMembersToGenerate = 200;
 
         private readonly int _startingRegionId = 1;
         private readonly int _endingRegionId = 1;
@@ -66,7 +66,7 @@ namespace NineTapTour.Migrations
         private readonly int _highestAverage = 299;
 
         private readonly int _lowestBonusPin = 0;
-        private readonly int _highestBonusPin = 0;
+        private readonly int _highestBonusPin = 5;
         //this is used for the index global in bogus so we can start our members at a specific number and then increment by 1
         //for example if we set this to 0 the first member created will start at 0 then the second will be 1 and so on.
         private readonly int memberStartingNumber = 1;
