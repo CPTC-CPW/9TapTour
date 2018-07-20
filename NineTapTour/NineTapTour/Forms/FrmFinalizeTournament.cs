@@ -24,6 +24,7 @@ namespace NineTapTour.Forms
         List<int> ListofScratchScores = new List<int>(); //used for determining addition rules if the game was a 3o4 for scratch score / used more then once (made variable global)
 
 
+
         public FrmFinalizeTournament(Tournament tourn, List<TopScores> topscores, int RegionID)
         {
             InitializeComponent();
@@ -882,11 +883,13 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="cell">The GAME_COLUMN cell to set the state of.</param>
         /// <param name="isGameCellValid">The state to set the cell to.</param>
+
         private void SetGameCellFormatting(DataGridViewCell cell, bool isGameCellValid)
         {
             if (isGameCellValid)
             {
-                cell.Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
+                //Sets the style back to default
+                cell.Style.Font = null;
 
                 // Check the game's value compared to the member's past thirty games average.
                 int gameValue = Convert.ToInt32(cell.Value);
@@ -904,11 +907,10 @@ namespace NineTapTour.Forms
             }
             else
             {
-                cell.Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
                 cell.Style.BackColor = Color.Red;
             }
         }
-        
+
         private void DataGridView1_OnCellEnter(object sender, DataGridViewCellEventArgs e)
         {
             currentIndex = dataGridView1.CurrentCell.RowIndex;
