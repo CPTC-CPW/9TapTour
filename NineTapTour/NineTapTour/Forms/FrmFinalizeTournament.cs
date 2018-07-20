@@ -24,6 +24,7 @@ namespace NineTapTour.Forms
         List<int> ListofScratchScores = new List<int>(); //used for determining addition rules if the game was a 3o4 for scratch score / used more then once (made variable global)
 
 
+
         public FrmFinalizeTournament(Tournament tourn, List<TopScores> topscores, int RegionID)
         {
             InitializeComponent();
@@ -35,32 +36,38 @@ namespace NineTapTour.Forms
             FinalizeTableList = GetAllInitialParticipantGameList(tourn);
             createDataGridView(tourn);
         }
+
+        private void FrmFinalizeTournament_Load(object sender, EventArgs e)
+        {
+            InitializeGameCellFormatting();
+        }
+
         List<PlayerHistory> temporary = new List<PlayerHistory>();
         int currentIndex = 0;
 
         //USE THIS IF YOU NEED TO MOVE AROUND THE ORDER IN WHICH THE COLUMNS ARE DISPLAYED 
-        static int INDEX_COLUMN = 0;
-        static int GAME_ID_COLUMN = 1;
-        static int NAME_COLUMN = 2;
-        static int GAME_1_COLUMN = 3;
-        static int GAME_1_VALID_COLUMN = 4;
-        static int GAME_2_COLUMN = 5;
-        static int GAME_2_VALID_COLUMN = 6;
-        static int GAME_3_COLUMN = 7;
-        static int GAME_3_VALID_COLUMN = 8;
-        static int GAME_4_COLUMN = 9;
-        static int GAME_4_VALID_COLUMN = 10;
-        static int SCRATCH_TOTAL_COLUMN = 11;
-        static int HANDICAP_TOTAL_COLUMN = 12;
-        static int ENTRY_AVERAGE_COLUMN = 13;
-        static int THIRTY_ENTRY_AVERAGE_COLUMN = 14;
-        static int ADJUSTED_AVG_COLUMN = 15;
-        static int DIRECTOR_CHECK_COLUMN = 16;
-        static int SQUAD_COLUMN = 17;
-        static int HANDICAP_COLUMN = 18;
-        static int BONUS_COLUMN = 19;
-        static int PRO_POT_COLUMN = 20;
-        static int NOTES_COLUMN_ = 21;
+        const int INDEX_COLUMN = 0;
+        const int GAME_ID_COLUMN = 1;
+        const int NAME_COLUMN = 2;
+        const int GAME_1_COLUMN = 3;
+        const int GAME_1_VALID_COLUMN = 4;
+        const int GAME_2_COLUMN = 5;
+        const int GAME_2_VALID_COLUMN = 6;
+        const int GAME_3_COLUMN = 7;
+        const int GAME_3_VALID_COLUMN = 8;
+        const int GAME_4_COLUMN = 9;
+        const int GAME_4_VALID_COLUMN = 10;
+        const int SCRATCH_TOTAL_COLUMN = 11;
+        const int HANDICAP_TOTAL_COLUMN = 12;
+        const int ENTRY_AVERAGE_COLUMN = 13;
+        const int THIRTY_ENTRY_AVERAGE_COLUMN = 14;
+        const int ADJUSTED_AVG_COLUMN = 15;
+        const int DIRECTOR_CHECK_COLUMN = 16;
+        const int SQUAD_COLUMN = 17;
+        const int HANDICAP_COLUMN = 18;
+        const int BONUS_COLUMN = 19;
+        const int PRO_POT_COLUMN = 20;
+        const int NOTES_COLUMN_ = 21;
 
 
 
@@ -104,7 +111,7 @@ namespace NineTapTour.Forms
                 Game g = FinalizeTempDB.getGame(item.GameId);
                 if (FinalizeTempDB.getFinalizeID(g).FinalizeID > 0)//if this column was already created and exists in the database , set the information to be what was already added to the database
                 {
-                    
+
                     temp = FinalizeTempDB.getFinalizeID(g);
                     temp.Notes = item.Notes;
                     temp.memberNumber = MemberDb.GetMemberNumberbyID(item.MemberId);
@@ -286,7 +293,7 @@ namespace NineTapTour.Forms
             {
                 DataRow newRow = dt.NewRow();
                 newRow[GAME_ID_COLUMN_NAME] = item.GameId;
-                newRow[NAME_COLUMN_NAME] = item.FirstName + " " + item.LastName;     
+                newRow[NAME_COLUMN_NAME] = item.FirstName + " " + item.LastName;
                 newRow[GAME_1_COLUMN_NAME] = item.Game1;
                 newRow[GAME_1_VALID_COLUMN_NAME] = item.UseGame1;
                 newRow[GAME_2_COLUMN_NAME] = item.Game2;
@@ -306,7 +313,7 @@ namespace NineTapTour.Forms
                 newRow[NOTES_COLUMN_NAME] = item.Notes;
                 newRow[INDEX_COLUMN_NAME] = index;
                 newRow[HANDICAP_TOTAL_COLUMN_NAME] = item.HandicapTotal;
-                dt.Rows.Add(newRow);        
+                dt.Rows.Add(newRow);
                 index++;
             }
             return dt;
@@ -521,163 +528,73 @@ namespace NineTapTour.Forms
         }
 
 
-
-        //Updates the finalizetemp table when check box for Use Game Score is clicked on.
+        /// <summary>
+        /// This method handles the changes made when any GAME_VALID or DIRECTOR_CHECK checkboxes are changed, including updating the FinalizeTemp table in the DB.
+        /// The DataGridView.CellValueChanged event occurs when the user-specified value is committed, which typically occurs when focus leaves the cell.
+        /// </summary>
         private void dataGridView1_OnCellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), GAME_1_VALID_COLUMN.ToString()) == 0)
+            if (e.RowIndex >= 0)
             {
-                bool checkBoxStatus = Convert.ToBoolean(dataGridView1.CurrentCell.EditedFormattedValue);
-                //checkBoxStatus gives you whether checkbox cell value of selected row for the
-                //"CheckBoxColumn" column value is checked or not. 
-                FinalizeTemp temp = new FinalizeTemp();
-                var row = dataGridView1.CurrentCell.RowIndex;
-                NineTapDb db = new NineTapDb();
-                if (checkBoxStatus)
+                // Check if cell changed was a GAME_VALID cell
+                if (e.ColumnIndex == GAME_1_VALID_COLUMN ||
+                    e.ColumnIndex == GAME_2_VALID_COLUMN ||
+                    e.ColumnIndex == GAME_3_VALID_COLUMN ||
+                    e.ColumnIndex == GAME_4_VALID_COLUMN)
                 {
-                    dataGridView1.Rows[row].Cells[GAME_1_VALID_COLUMN].Value = true;
-                    UpdateAvg(row);
-                    getLeagueSum(FinalizeTableList[row]);
-                    CheckBoxDBSet(row, GAME_1_COLUMN, true);
+                    DataGridViewCell clickedCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                    bool isCellChecked = Convert.ToBoolean(clickedCell.Value);
 
+                    SetGameCellFormatting(GetCorrespondingGameCell(clickedCell), isCellChecked);
+                    UpdateAvg(clickedCell.RowIndex);
+                    getLeagueSum(FinalizeTableList[clickedCell.RowIndex]);
+                    CheckBoxDBSet(clickedCell.RowIndex, clickedCell.ColumnIndex, isCellChecked);
                 }
-                else
-                {
-                    dataGridView1.Rows[row].Cells[GAME_1_VALID_COLUMN].Value = false;
-                    UpdateAvg(row);
-                    getLeagueSum(FinalizeTableList[row]);
-                    CheckBoxDBSet(row, GAME_1_COLUMN, false);
-                }
-            }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), GAME_2_VALID_COLUMN.ToString()) == 0)
-            {
-                bool checkBoxStatus = Convert.ToBoolean(dataGridView1.CurrentCell.EditedFormattedValue);
-                //checkBoxStatus gives you whether checkbox cell value of selected row for the
-                //"CheckBoxColumn" column value is checked or not. 
-                var row = dataGridView1.CurrentCell.RowIndex;
-                if (checkBoxStatus)
-                {
-                    dataGridView1.Rows[row].Cells[GAME_2_VALID_COLUMN].Value = true;
-                    UpdateAvg(row);
-                    CheckBoxDBSet(row, GAME_2_COLUMN, true);
 
-                }
-                else
+                // Check if cell changed was a DIRECTOR_CHECK cell
+                else if (e.ColumnIndex == DIRECTOR_CHECK_COLUMN)
                 {
-                    dataGridView1.Rows[row].Cells[GAME_2_VALID_COLUMN].Value = false;
-                    UpdateAvg(row);
-                    CheckBoxDBSet(row, GAME_2_COLUMN, false);
-                }
-            }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), GAME_3_VALID_COLUMN.ToString()) == 0)
-            {
-                bool checkBoxStatus = Convert.ToBoolean(dataGridView1.CurrentCell.EditedFormattedValue);
-                //checkBoxStatus gives you whether checkbox cell value of selected row for the
-                //"CheckBoxColumn" column value is checked or not. 
-                var row = dataGridView1.CurrentCell.RowIndex;
-                if (checkBoxStatus)
-                {
-                    dataGridView1.Rows[row].Cells[GAME_3_VALID_COLUMN].Value = true;
-                    UpdateAvg(row);
+                    // If the DIRECTOR_CHECK cell was clicked, this code finds the member that belongs to that cell
+                    // and changes all of that member's games to match the clicked DIRECTOR_CHECK.
+                    DataGridViewRow clickedRow = dataGridView1.Rows[e.RowIndex];
+                    DataGridViewCell clickedCell = clickedRow.Cells[e.ColumnIndex];
 
-                    CheckBoxDBSet(row, GAME_3_COLUMN, true);
+                    // TODO: Move database code to appropriate database helper class.
+                    int gameId = Convert.ToInt32(clickedRow.Cells[GAME_ID_COLUMN].Value);
+                    int memId;
+                    using (var db = new NineTapDb())
+                    {
+                        memId = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Id;
+                    }
 
-                }
-                else
-                {
-                    dataGridView1.Rows[row].Cells[GAME_3_VALID_COLUMN].Value = false;
-                    UpdateAvg(row);
-                    CheckBoxDBSet(row, GAME_3_COLUMN, false);
-
-                }
-            }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), GAME_4_VALID_COLUMN.ToString()) == 0)
-            {
-                bool checkBoxStatus = Convert.ToBoolean(dataGridView1.CurrentCell.EditedFormattedValue);
-                //checkBoxStatus gives you whether checkbox cell value of selected row for the
-                //"CheckBoxColumn" column value is checked or not. 
-                var row = dataGridView1.CurrentCell.RowIndex;
-                if (checkBoxStatus)
-                {
-                    dataGridView1.Rows[row].Cells[GAME_4_VALID_COLUMN].Value = true;
-                    UpdateAvg(row);
-                    CheckBoxDBSet(row, GAME_4_COLUMN, true);
-
-
-                }
-                else
-                {
-                    dataGridView1.Rows[row].Cells[GAME_4_VALID_COLUMN].Value = false;
-                    UpdateAvg(row);
-                    CheckBoxDBSet(row, GAME_4_COLUMN, false);
-
-                }
-            }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), DIRECTOR_CHECK_COLUMN.ToString()) == 0)
-            {
-                int gameId = Convert.ToInt32(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[GAME_ID_COLUMN].Value);
-                int memId;
-                using (var db = new NineTapDb())
-                {
-                    memId = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Id;
-                }
-                bool checkBoxStatus = Convert.ToBoolean(dataGridView1.CurrentCell.EditedFormattedValue);
-                //checkBoxStatus gives you whether checkbox cell value of selected row for the
-                //"CheckBoxColumn" column value is checked or not. 
-
-                if (checkBoxStatus)
-                {
+                    bool isCellChecked = Convert.ToBoolean(clickedCell.Value);
                     for (int i = 0; i < FinalizeTableList.Count; i++)
                     {
                         if (FinalizeTableList[i].MemberId == memId)
                         {
-                            dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = true;
+                            dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = isCellChecked;
                         }
                     }
-
-                }
-                else
-                {
-                    for (int i = 0; i < FinalizeTableList.Count; i++)
-                    {
-                        if (FinalizeTableList[i].MemberId == memId)
-                        {
-                            dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = false;
-                        }
-                    }
-
-
                 }
             }
-
         }
 
+        /// <summary>
+        /// This method checks if the clicked column is an "Is Game Valid?" or "Director Check" column, and fires the EndEdit() method on the data grid view.
+        /// If the EndEdit() method isn't called, the data grid view wouldn't see the column as edited until the user click "out" of the cell.
+        /// The DataGridView.CellMouseUp event fires when the user releases a mouse button while over a cell.
+        /// </summary>
         private void dataGridView1_OnCellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
         {
-            // End of edition on each click on column of checkbox
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), GAME_1_VALID_COLUMN.ToString()) == 0)
+            if (e.RowIndex >= 0 &&
+                (e.ColumnIndex == GAME_1_VALID_COLUMN ||
+                e.ColumnIndex == GAME_2_VALID_COLUMN ||
+                e.ColumnIndex == GAME_3_VALID_COLUMN ||
+                e.ColumnIndex == GAME_4_VALID_COLUMN ||
+                e.ColumnIndex == DIRECTOR_CHECK_COLUMN))
             {
                 dataGridView1.EndEdit();
             }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), GAME_2_VALID_COLUMN.ToString()) == 0)
-            {
-                dataGridView1.EndEdit();
-            }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), GAME_3_VALID_COLUMN.ToString()) == 0)
-            {
-                dataGridView1.EndEdit();
-            }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), GAME_4_VALID_COLUMN.ToString()) == 0)
-            {
-                dataGridView1.EndEdit();
-            }
-            if (string.Compare(dataGridView1.CurrentCell.OwningColumn.Index.ToString(), DIRECTOR_CHECK_COLUMN.ToString()) == 0)
-            {
-                dataGridView1.EndEdit();
-            }
-
-
         }
 
         /// <summary>
@@ -913,199 +830,86 @@ namespace NineTapTour.Forms
             RankGridView();
         }
 
-        //formats cells based off bool value for valid score, strike thru score on previous score column.
-        //changes background color of score to orange if 50 below 30 game avg.
-        private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        /// <summary>
+        /// This method takes in a GAME_VALID_COLUMN cell and returns the correct corresponding GAME_COLUMN cell or vis versa.
+        /// </summary>
+        /// <param name="cell">A DataGridViewCell of either GAME_COLUMN or GAME_VALID_COLUMN type.</param>
+        /// <returns>The corresponding DataGridViewCell to the passed in GAME DataGridViewCell.</returns>
+        private DataGridViewCell GetCorrespondingGameCell(DataGridViewCell cell)
         {
-
-            dataGridView1.SuspendLayout();
-         
-            if (this.dataGridView1.Columns[e.ColumnIndex].Name == GAME_1_VALID_COLUMN_NAME && e.Value != null)
+            switch (cell.ColumnIndex)
             {
+                case GAME_1_COLUMN:
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_1_VALID_COLUMN];
+                case GAME_2_COLUMN:
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_2_VALID_COLUMN];
+                case GAME_3_COLUMN:
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_3_VALID_COLUMN];
+                case GAME_4_COLUMN:
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_4_VALID_COLUMN];
 
-                if (Convert.ToBoolean(e.Value) == true)
-                {
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Style.BackColor = Color.White;
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-                else
-                {
+                case GAME_1_VALID_COLUMN:
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_1_COLUMN];
+                case GAME_2_VALID_COLUMN:
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_2_COLUMN];
+                case GAME_3_VALID_COLUMN:
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_3_COLUMN];
+                case GAME_4_VALID_COLUMN:
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_4_COLUMN];
 
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Style.BackColor = Color.Red;
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
+                default:
+                    return null;
             }
-            if (this.dataGridView1.Columns[e.ColumnIndex].Name == GAME_2_VALID_COLUMN_NAME && e.Value != null)
-            {
-                if (Convert.ToBoolean(e.Value) == true)
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Style.BackColor = Color.White;
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-                else
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Style.BackColor = Color.Red;
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-            }
-            if (this.dataGridView1.Columns[e.ColumnIndex].Name == GAME_3_VALID_COLUMN_NAME && e.Value != null)
-            {
-                if (Convert.ToBoolean(e.Value) == true)
-                {
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Style.BackColor = Color.White;
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-                else
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Style.BackColor = Color.Red;
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-            }
-            if (this.dataGridView1.Columns[e.ColumnIndex].Name == GAME_4_VALID_COLUMN_NAME && e.Value != null)
-            {
-                if (Convert.ToBoolean(e.Value) == true)
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Style.BackColor = Color.White;
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-                else
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Style.BackColor = Color.Red;
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-            }
-            if (this.dataGridView1.Columns[e.ColumnIndex].Name == THIRTY_ENTRY_AVERAGE_COLUMN_NAME && e.Value != null)
-            {
-                if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Style.BackColor != Color.Red)
-                {
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_1_COLUMN].Style.BackColor = Color.Orange;
-                }
-                if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Style.BackColor != Color.Red)
-                {
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_2_COLUMN].Style.BackColor = Color.Orange;
-                }
-                if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Style.BackColor != Color.Red)
-                {
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_3_COLUMN].Style.BackColor = Color.Orange;
-                }
-                if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Style.BackColor != Color.Red)
-                {
-                    dataGridView1.Rows[e.RowIndex].Cells[GAME_4_COLUMN].Style.BackColor = Color.Orange;
-                }
-            }
-            dataGridView1.ResumeLayout();
         }
 
-
-        private void check_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        /// <summary>
+        /// This method iterates over every row in dataGridView1 and sets the formatting of the game cells appropriately.
+        /// </summary>
+        private void InitializeGameCellFormatting()
         {
-
-            dataGridView1.SuspendLayout();
-            if (this.dataGridView1.Columns[e.ColumnIndex].Name == GAME_1_VALID_COLUMN_NAME && e.Value != null)
+            foreach (DataGridViewRow row in dataGridView1.Rows)
             {
-
-                if (Convert.ToBoolean(e.Value) == true)
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.White;
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-                else
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.Red;
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
+                SetGameCellFormatting(row.Cells[GAME_1_COLUMN], Convert.ToBoolean(row.Cells[GAME_1_VALID_COLUMN].Value));
+                SetGameCellFormatting(row.Cells[GAME_2_COLUMN], Convert.ToBoolean(row.Cells[GAME_2_VALID_COLUMN].Value));
+                SetGameCellFormatting(row.Cells[GAME_3_COLUMN], Convert.ToBoolean(row.Cells[GAME_3_VALID_COLUMN].Value));
+                SetGameCellFormatting(row.Cells[GAME_4_COLUMN], Convert.ToBoolean(row.Cells[GAME_4_VALID_COLUMN].Value));
             }
-            if (this.dataGridView1.Columns[e.ColumnIndex].Name == GAME_2_VALID_COLUMN_NAME && e.Value != null)
-            {
-                if (Convert.ToBoolean(e.Value) == true)
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.White;
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-                else
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.Red;
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-            }
-            if (this.dataGridView1.Columns[e.ColumnIndex].Name == GAME_3_VALID_COLUMN_NAME && e.Value != null)
-            {
-                if (Convert.ToBoolean(e.Value) == true)
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.White;
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-                else
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.Red;
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-            }
-            if (this.dataGridView1.Columns[e.ColumnIndex].Name == GAME_4_VALID_COLUMN_NAME && e.Value != null)
-            {
-                if (Convert.ToBoolean(e.Value) == true)
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Regular);
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.White;
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-                else
-                {
-
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Font = new Font(dataGridView1.Font, FontStyle.Strikeout);
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.BackColor = Color.Red;
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-            }
-            if (this.dataGridView1.Columns[e.ColumnIndex].Name == THIRTY_ENTRY_AVERAGE_COLUMN_NAME && e.Value != null)
-            {
-                if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 2].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 2].Style.BackColor != Color.Red)
-                {
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 2].Style.BackColor = Color.Orange;
-                }
-                if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 4].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 4].Style.BackColor != Color.Red)
-                {
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 4].Style.BackColor = Color.Orange;
-                }
-                if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 6].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 6].Style.BackColor != Color.Red)
-                {
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 6].Style.BackColor = Color.Orange;
-                }
-                if (Convert.ToInt32(e.Value) > Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 8].Value) + 50 && dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 8].Style.BackColor != Color.Red)
-                {
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 8].Style.BackColor = Color.Orange;
-                }
-            }
-            dataGridView1.ResumeLayout();
         }
 
+        /// <summary>
+        /// This method sets the formatting of a game cell to either a valid or invalid state.
+        /// Valid format depends on the value of the game compared to the member's thirty game average.
+        /// Invalid format is strikeout font style with a red background.
+        /// </summary>
+        /// <param name="cell">The GAME_COLUMN cell to set the state of.</param>
+        /// <param name="isGameCellValid">The state to set the cell to.</param>
 
+        private void SetGameCellFormatting(DataGridViewCell cell, bool isGameCellValid)
+        {
+            if (isGameCellValid)
+            {
+                //Sets the style back to default
+                cell.Style.Font = null;
+
+                // Check the game's value compared to the member's past thirty games average.
+                int gameValue = Convert.ToInt32(cell.Value);
+                int thirtyAvg = Convert.ToInt32(dataGridView1.Rows[cell.RowIndex].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
+                if (gameValue > thirtyAvg - 50)
+                {
+                    // If the value is within acceptable parameters, change the background back to white.
+                    cell.Style.BackColor = Color.White; 
+                }
+                else
+                {
+                    // If the value is <= 50 below their thirty games average, set the background color to orange.
+                    cell.Style.BackColor = Color.Orange;
+                }
+            }
+            else
+            {
+                cell.Style.BackColor = Color.Red;
+            }
+        }
 
         private void DataGridView1_OnCellEnter(object sender, DataGridViewCellEventArgs e)
         {
@@ -1213,9 +1017,9 @@ namespace NineTapTour.Forms
                 {
                     //catches the instance where cells technically do not exist. will not refresh if they dont exist yet.
                 }
-                    
-           
-                }
+
+
+            }
 
         }
 
@@ -1262,8 +1066,8 @@ namespace NineTapTour.Forms
             DataTable dtGames = new DataTable();
 
 
-          
-  
+
+
             dtGames.Columns.Add("Games").ReadOnly = true;
             dtGames.Columns.Add("Date", typeof(DateTime));
             dtGames.Columns.Add("Game1");
@@ -1394,7 +1198,7 @@ namespace NineTapTour.Forms
                     dataGridView2.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
                 }
             }
-          
+
 
 
 
@@ -1544,7 +1348,7 @@ namespace NineTapTour.Forms
         //        FrmStats playerhistory = new FrmStats(memId, "", MemberDb.GetMember(MemberDb.GetMemberNumberbyID(memId), RegionID), temporary, RegionID);
         //        playerhistory.ShowDialog();
         //    }
-            #endregion
+        #endregion
 
 
         //}
@@ -1676,7 +1480,7 @@ namespace NineTapTour.Forms
                                 {
                                     if (placing > 0) // if member placed in tournament, calculate bonus pins based on placing
                                     {
-                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(true, placing, Convert.ToInt32(currentMember.Bonus), currentT.Doubles, currentMember.Number, RegionID,currentT.Date);
+                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(true, placing, Convert.ToInt32(currentMember.Bonus), currentT.Doubles, currentMember.Number, RegionID, currentT.Date);
                                     }
 
                                     else  // if member didn't place in tournament, calculate bonus pins
@@ -1711,7 +1515,7 @@ namespace NineTapTour.Forms
             }
             else  // if all of the director checkboxes are not checked, then prompt user to check to finalize tournament
             {
-                
+
             }
         }
 
@@ -1837,20 +1641,5 @@ namespace NineTapTour.Forms
             }
 
         }
-
-
     }
 }
-    
-
-
-
-    
-
-
-        /***/
-
-    
-
-
-
