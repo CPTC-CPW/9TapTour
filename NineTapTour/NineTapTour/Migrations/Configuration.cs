@@ -142,25 +142,6 @@ namespace NineTapTour.Migrations
                 
                 //Creates members and seeds in all important information, and some extra information to simulate.
                 var memberSeed = new Bogus.Faker<Member>()
-//                    .RuleFor(m => m.FirstName, f => f.Name.FirstName())
-//                    .RuleFor(m => m.LastName, f => f.Name.LastName())
-//                    .RuleFor(m => m.MiddleInitial, f => "")
-//                    .RuleFor(m => m.StartAvg, f => f.Random.Number(_lowestAverage, _highestAverage))
-//                    .RuleFor(m => m.Average, f => f.Random.Number(_lowestAverage, _highestAverage))
-//                    .RuleFor(m => m.City, f => f.Address.City())
-//                    .RuleFor(m => m.Street, f => f.Address.StreetAddress())
-//                    .RuleFor(m => m.State, f => f.Address.State())
-//                    .RuleFor(m => m.PostalCode, f => f.Address.ZipCode())
-//                    .RuleFor(m => m.DateOfBirth, f => f.Person.DateOfBirth)
-//                    .RuleFor(m => m.Email, f => f.Person.Email)
-//                    .RuleFor(m => m.IsActive, f => true) // use f.random.bool if you would like to randomize this
-//                    .RuleFor(m => m.IsLifetimeMember, f => false) //use f.random.bool if you would like to randomize this
-//                    .RuleFor(m => m.IsSenior, f => f.Random.Bool())
-//                    .RuleFor(m => m.JoinDate, f => f.Date.Between(_earliestJoinDate, _latestJoinDate))
-//                    .RuleFor(m => m.SSN, f => f.Person.Ssn())
-//                    .RuleFor(m => m.PrimaryPhone, f => f.Person.Phone)
-//                    .RuleFor(m => m.NineTapRegionID, f => f.Random.Number(_startingRegionId, _endingRegionId))
-//                    .RuleFor(m => m.Number, f => f.IndexVariable++ + _memberStartingNumber)
                     .Rules((f, m) =>
                     {
                         m.FirstName = f.Name.FirstName();
