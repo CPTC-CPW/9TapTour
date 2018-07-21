@@ -142,28 +142,46 @@ namespace NineTapTour.Migrations
                 
                 //Creates members and seeds in all important information, and some extra information to simulate.
                 var memberSeed = new Bogus.Faker<Member>()
-                    .RuleFor(m => m.FirstName, f => f.Name.FirstName())
-                    .RuleFor(m => m.LastName, f => f.Name.LastName())
-                    .RuleFor(m => m.MiddleInitial, f => "")
-                    .RuleFor(m => m.StartAvg, f => f.Random.Number(_lowestAverage, _highestAverage))
-                    .RuleFor(m => m.Average, f => f.Random.Number(_lowestAverage, _highestAverage))
-                    .RuleFor(m => m.City, f => f.Address.City())
-                    .RuleFor(m => m.Street, f => f.Address.StreetAddress())
-                    .RuleFor(m => m.State, f => f.Address.State())
-                    .RuleFor(m => m.PostalCode, f => f.Address.ZipCode())
-                    .RuleFor(m => m.DateOfBirth, f => f.Person.DateOfBirth)
-                    .RuleFor(m => m.Email, f => f.Person.Email)
-                    .RuleFor(m => m.IsActive, f => true) // use f.random.bool if you would like to randomize this
-                    .RuleFor(m => m.IsLifetimeMember, f => false) //use f.random.bool if you would like to randomize this
-                    .RuleFor(m => m.IsSenior, f => f.Random.Bool())
-                    .RuleFor(m => m.JoinDate, f => f.Date.Between(_earliestJoinDate, _latestJoinDate))
-                    .RuleFor(m => m.SSN, f => f.Person.Ssn())
-                    .RuleFor(m => m.PrimaryPhone, f => f.Person.Phone)
-                    .RuleFor(m => m.NineTapRegionID, f => f.Random.Number(_startingRegionId, _endingRegionId))
-                    .RuleFor(m => m.Number, f => f.IndexVariable++ + _memberStartingNumber)
-    //                    .RuleFor(m => m.Bonus, f => f.Random.Number(_lowestBonusPin, _highestBonusPin))
+//                    .RuleFor(m => m.FirstName, f => f.Name.FirstName())
+//                    .RuleFor(m => m.LastName, f => f.Name.LastName())
+//                    .RuleFor(m => m.MiddleInitial, f => "")
+//                    .RuleFor(m => m.StartAvg, f => f.Random.Number(_lowestAverage, _highestAverage))
+//                    .RuleFor(m => m.Average, f => f.Random.Number(_lowestAverage, _highestAverage))
+//                    .RuleFor(m => m.City, f => f.Address.City())
+//                    .RuleFor(m => m.Street, f => f.Address.StreetAddress())
+//                    .RuleFor(m => m.State, f => f.Address.State())
+//                    .RuleFor(m => m.PostalCode, f => f.Address.ZipCode())
+//                    .RuleFor(m => m.DateOfBirth, f => f.Person.DateOfBirth)
+//                    .RuleFor(m => m.Email, f => f.Person.Email)
+//                    .RuleFor(m => m.IsActive, f => true) // use f.random.bool if you would like to randomize this
+//                    .RuleFor(m => m.IsLifetimeMember, f => false) //use f.random.bool if you would like to randomize this
+//                    .RuleFor(m => m.IsSenior, f => f.Random.Bool())
+//                    .RuleFor(m => m.JoinDate, f => f.Date.Between(_earliestJoinDate, _latestJoinDate))
+//                    .RuleFor(m => m.SSN, f => f.Person.Ssn())
+//                    .RuleFor(m => m.PrimaryPhone, f => f.Person.Phone)
+//                    .RuleFor(m => m.NineTapRegionID, f => f.Random.Number(_startingRegionId, _endingRegionId))
+//                    .RuleFor(m => m.Number, f => f.IndexVariable++ + _memberStartingNumber)
                     .Rules((f, m) =>
                     {
+                        m.FirstName = f.Name.FirstName();
+                        m.LastName = f.Name.LastName();
+                        m.MiddleInitial = "";
+                        m.StartAvg = f.Random.Number(_lowestAverage, _highestAverage);
+                        m.Average = f.Random.Number(_lowestAverage, _highestAverage);
+                        m.City = f.Address.City();
+                        m.Street = f.Address.StreetAddress();
+                        m.State = f.Address.State();
+                        m.PostalCode = f.Address.ZipCode();
+                        m.DateOfBirth = f.Person.DateOfBirth;
+                        m.Email = f.Person.Email;
+                        m.IsActive = true;
+                        m.IsLifetimeMember = false;
+                        m.IsSenior = f.Random.Bool();
+                        m.JoinDate = f.Date.Between(_earliestJoinDate, _latestJoinDate);
+                        m.SSN = f.Person.Ssn();
+                        m.PrimaryPhone = f.Person.Phone;
+                        m.NineTapRegionID = f.Random.Number(_startingRegionId, _endingRegionId);
+                        m.Number = f.IndexVariable++ + _memberStartingNumber;
                         m.Bonus = f.Random.Number(_lowestBonusPin, _highestBonusPin);
                         m.Handicap = Calculations.Calculations.CalculateHandicapPins(m.StartAvg.Value);
                         bonusList.Add(m.Bonus);
@@ -172,7 +190,7 @@ namespace NineTapTour.Migrations
 
                 var gameSeed = new Bogus.Faker<Game>().Rules((f, g) => {
                     g.Game1 = f.Random.Number(100, 280);
-                    g.Game2 = g.Game1 - f.Random.Number(-_scoreAdjuster, _scoreAdjuster);//These values off set
+                    g.Game2 = g.Game1 - f.Random.Number(-_scoreAdjuster, _scoreAdjuster);//These values off set the scores they bowled
                     g.Game3 = g.Game1 - f.Random.Number(-_scoreAdjuster, _scoreAdjuster);
                     g.Game4 = g.Game1 - f.Random.Number(-_scoreAdjuster, _scoreAdjuster);
                     g.Notes = null;
@@ -180,12 +198,13 @@ namespace NineTapTour.Migrations
                     g.TotalScore = g.Game1 + g.Game2 + g.Game3 + g.Game4;
                     g.gameRegionID = 1;
                     g.Bonus = bonusList[index++];
+                    g.InputtedAvg = g.TotalScore / 4;
                 });
 
                 var participantSeed = new Bogus.Faker<Participant>().Rules((f, p) =>
                 {
-                    p.Member = memberSeed;//.Generate(15).ToList()[f.IndexVariable]
-                    p.Game = gameSeed;//.Generate(15).ToList()[f.IndexVariable++]
+                    p.Member = memberSeed;
+                    p.Game = gameSeed;
                     p.Squad = f.Random.Number(1, _maxSquads);
                     p.ParticipantRegionID = 1;
                     p.Tournament = tournamentSeed[0];
