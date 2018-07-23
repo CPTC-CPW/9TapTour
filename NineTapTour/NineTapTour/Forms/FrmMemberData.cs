@@ -159,7 +159,6 @@ namespace NineTapTour.Forms
                     currentMem.StartAvg = Convert.ToInt16(txtAverage.Text);
                     txtTournAvg.Text = Convert.ToInt16(last5[0].trueAVG).ToString();
                     currentMem.Average = Convert.ToInt32(last5[0].trueAVG);
-
                     txtBonus.Text = currentMem.Bonus.ToString();
                 }
                 else
@@ -297,9 +296,24 @@ namespace NineTapTour.Forms
 
                 #region Misc. Info
                 //TODO: Pull datetime from database correctly 
+                if (currentMem.DateOfBirth.HasValue)
+                {
+                    mtxtBoxDOB.Text = currentMem.DateOfBirth.Value.ToString("MM/dd/yyyy");
+                }
+                else
+                {
+                    mtxtBoxDOB.Text = "";
+                }
+
                 if (currentMem.JoinDate.HasValue)
+                {
                     mtxtBoxDateJoined.Text = currentMem.JoinDate.Value.ToString("MM/dd/yyyy");
-                
+                }
+                else
+                {
+                    mtxtBoxDateJoined.Text = "";
+                }
+
                 if (currentMem.RejoinDate.HasValue)
                 {
                     mtxtBoxRejoinDate.Text = currentMem.RejoinDate.Value.ToString("MM/dd/yyyy");
