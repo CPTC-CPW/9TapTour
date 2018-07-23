@@ -193,7 +193,6 @@ namespace NineTapTour.Forms
             var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
             OpenOrDisplayForm(ref newfrmMemberScores);
             currfrmScoresdata = newfrmMemberScores;
-            currfrmScoresdata.UpdateTourneyComboBox();
         }
 
         /// <summary>

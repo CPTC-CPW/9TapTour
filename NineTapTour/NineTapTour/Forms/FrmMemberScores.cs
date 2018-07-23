@@ -166,6 +166,8 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void FrmMemberScores_Activated(object sender, EventArgs e)
         {
+            RegionID = ((FrmMain)MdiParent).RegionID;
+
             //addedd in this line inorder to prevent the reset of the drop down list on memberscores form when switching between forms
             int tempcbx = cbxTourneyDropDown.SelectedIndex;
             rdoHandicapScore.Visible = false;
@@ -174,12 +176,16 @@ namespace NineTapTour.Forms
             ResetFields();
 
             MemberStatus("", Color.Black, SystemColors.Control, true);
-            cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
-            cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
-            cbxTourneyDropDown.ValueMember = "Id";
+            //cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
+            
 
 
             List<Tournament> temp2 = TournamentDb.GetTournamentList(RegionID);
+
+            ((FrmMain)MdiParent)._tournamentList = temp2;
+            cbxTourneyDropDown.DataSource = temp2;
+            cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
+            cbxTourneyDropDown.ValueMember = "Id";
 
             if (temp2.Count() > 0)
             {
@@ -2964,15 +2970,6 @@ namespace NineTapTour.Forms
                     MessageBox.Show("Current Stats Not added to Tournament yet.");
                 }
             }
-        }
-
-        public void UpdateTourneyComboBox()
-        {
-            RegionID = ((FrmMain)MdiParent).RegionID;
-            List<Tournament> t = TournamentDb.GetTournamentList(RegionID);
-            ((FrmMain)MdiParent)._tournamentList = t;
-            cbxTourneyDropDown.DataSource = t;
-            cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
         }
 
         private void btnTournamentResults_Click(object sender, EventArgs e)
