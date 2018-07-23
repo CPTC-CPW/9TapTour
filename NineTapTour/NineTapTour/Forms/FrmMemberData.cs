@@ -447,6 +447,21 @@ namespace NineTapTour.Forms
                 }
             }
 
+            
+
+            if (DateTime.TryParse(mtxtBoxRejoinDate.Text, out DateTime result3))
+            {
+                DateTime DateJoined = DateTime.Parse(mtxtBoxRejoinDate.Text);
+
+                if (DateJoined < DateTime.Parse("01/01/1753") || DateJoined > DateTime.Parse("12/31/9999"))
+                {
+                    //TODO: ADD VALIDATION MESSAGE
+                    MessageBox.Show("Rejoin Date must be between 1753 and 9999.");
+
+                    return false;
+                }
+            }
+
 
             ///********************************************************************************************************
             //League average should only be between 125 - 210
