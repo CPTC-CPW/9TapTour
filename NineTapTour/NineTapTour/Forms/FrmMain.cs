@@ -131,6 +131,7 @@ namespace NineTapTour.Forms
         }
 
         //method to highlight menu item to show user which page they have open
+        //also to disable button to current page
         private void menMain_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             if(activeItem != null)
@@ -139,6 +140,19 @@ namespace NineTapTour.Forms
             }
             activeItem = e.ClickedItem;
             activeItem.BackColor = SystemColors.ActiveCaption;
+
+            MenuStrip currentMenu = sender as MenuStrip;
+            for (int i = 0; i < currentMenu.Items.Count; i++)
+            {
+                // sets enabled to true for all items in currentMenu
+                // unless item is the clickedItem(activeItem)
+                currentMenu.Items[i].Enabled = true;
+                if (activeItem == currentMenu.Items[i])
+                {
+                    currentMenu.Items[i].Enabled = false;
+                }
+            }
+
         }
         //this method is for the buttons on the main form
         public void menuHighlight(string itemName)
@@ -193,7 +207,6 @@ namespace NineTapTour.Forms
             var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
             OpenOrDisplayForm(ref newfrmMemberScores);
             currfrmScoresdata = newfrmMemberScores;
-            currfrmScoresdata.UpdateTourneyComboBox();
         }
 
         /// <summary>
