@@ -2472,14 +2472,18 @@ namespace NineTapTour.Forms
             }
             else
             {
+                //Since this takes 20+ seconds to display the DGV this displays a swirling loading indicator.
+                Cursor.Current = Cursors.WaitCursor;
+                Application.DoEvents();
 
                 var newFrmFinalizeTournament = new FrmFinalizeTournament(selectedTournament, overallListOfTopScores, RegionID);
                 newFrmFinalizeTournament.Dock = DockStyle.Right;
                 newFrmFinalizeTournament.WindowState = FormWindowState.Normal;
                 newFrmFinalizeTournament.Show();
             }
-
-
+            //This sets it back to default arrow after the DGV is finish loading.
+            Cursor.Current = Cursors.Default;
+            Application.DoEvents();
         }
 
 
