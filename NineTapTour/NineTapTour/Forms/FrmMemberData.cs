@@ -421,7 +421,27 @@ namespace NineTapTour.Forms
             }
 
             //VALIDATE DOB WITHIN BOUNDS
-            if(DateTime.TryParse(mtxtBoxDOB.Text, out DateTime result))
+
+            if (!FormHelper.IsDateTimeTextBoxValid(mtxtBoxDOB))
+            {
+                MessageBox.Show("Date of birth must be between 1753 and 9999.");
+                return false;
+            }
+
+            if (!FormHelper.IsDateTimeTextBoxValid(mtxtBoxDateJoined))
+            {
+                MessageBox.Show("Join Date must be between 1753 and 9999.");
+                return false;
+            }
+
+            if (!FormHelper.IsDateTimeTextBoxValid(mtxtBoxRejoinDate))
+            {
+                MessageBox.Show("Rejoin Date must be between 1753 and 9999.");
+                return false;
+            }
+
+            /*
+            if (DateTime.TryParse(mtxtBoxDOB.Text, out DateTime result))
             {
                 DateTime DOB = DateTime.Parse(mtxtBoxDOB.Text);
 
@@ -461,6 +481,7 @@ namespace NineTapTour.Forms
                     return false;
                 }
             }
+            */
 
 
             ///********************************************************************************************************
@@ -476,6 +497,7 @@ namespace NineTapTour.Forms
 
             return true;
         }
+
         /// <summary>
         /// Saves the information entered in the "Member Data" form.
         /// </summary>
@@ -926,42 +948,12 @@ namespace NineTapTour.Forms
             not be visible even if their last payment was due before
             ********************************************************************************************************/
 
-            if(!chbLifetime.Checked)
-            {
-                if(DateTime.TryParse(mtxtBoxLastPayment.Text, out DateTime lastPayment))
-                {
-                    if (lastPayment <= DateTime.Now.AddYears(-1))
-                    {
-                        lblPaymentInfo.Visible = true;
-                    }
-                    else
-                    {
-                        lblPaymentInfo.Visible = false;
-                    }
-                }
-                else
-                {
-                    lblPaymentInfo.Visible = true;
-                }
-                
-            }
-            else
+            lblPaymentInfo.Visible = true;
+
+            if (chbLifetime.Checked || (DateTime.TryParse(mtxtBoxLastPayment.Text, out DateTime lastPayment) && lastPayment >= DateTime.Now.AddYears(-1)))
             {
                 lblPaymentInfo.Visible = false;
             }
-            
-            /*if (mtxtBoxLastPayment.Text != " / /" 
-                && Convert.ToDateTime(mtxtBoxLastPayment.Text) 
-                <= DateTime.Now.AddYears(-1) && chbLifetime.Checked == false)
-            *******************************************************************************************************
-            {
-                lblPaymentInfo.Visible = true;
-            }
-            else
-            {
-                lblPaymentInfo.Visible = false;
-            }
-            */
         }
         
         private void btnRecapByDate_Click(object sender, EventArgs e)

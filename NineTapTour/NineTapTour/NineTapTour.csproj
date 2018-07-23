@@ -98,6 +98,7 @@
   <ItemGroup>
     <Compile Include="Calculations\Calculations.cs" />
     <Compile Include="Database\ExcelMember.cs" />
+    <Compile Include="Database\FormHelper.cs" />
     <Compile Include="Database\NineTapRegionDB.cs" />
     <Compile Include="Database\NineTapRegion.cs" />
     <Compile Include="Database\ExcelRow.cs" />
