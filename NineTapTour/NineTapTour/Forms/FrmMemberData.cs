@@ -8,8 +8,8 @@ using NineTapTour.Exceptions;
 using System.Drawing.Printing;
 using System.Data;
 using System.Runtime.InteropServices;
+using NineTapTour.Models;
 using Excel = Microsoft.Office.Interop.Excel;
-using Member_Import_Test.Classes;
 
 namespace NineTapTour.Forms
 {
@@ -159,7 +159,6 @@ namespace NineTapTour.Forms
                     currentMem.StartAvg = Convert.ToInt16(txtAverage.Text);
                     txtTournAvg.Text = Convert.ToInt16(last5[0].trueAVG).ToString();
                     currentMem.Average = Convert.ToInt32(last5[0].trueAVG);
-
                     txtBonus.Text = currentMem.Bonus.ToString();
                 }
                 else
@@ -297,9 +296,24 @@ namespace NineTapTour.Forms
 
                 #region Misc. Info
                 //TODO: Pull datetime from database correctly 
+                if (currentMem.DateOfBirth.HasValue)
+                {
+                    mtxtBoxDOB.Text = currentMem.DateOfBirth.Value.ToString("MM/dd/yyyy");
+                }
+                else
+                {
+                    mtxtBoxDOB.Text = "";
+                }
+
                 if (currentMem.JoinDate.HasValue)
+                {
                     mtxtBoxDateJoined.Text = currentMem.JoinDate.Value.ToString("MM/dd/yyyy");
-                
+                }
+                else
+                {
+                    mtxtBoxDateJoined.Text = "";
+                }
+
                 if (currentMem.RejoinDate.HasValue)
                 {
                     mtxtBoxRejoinDate.Text = currentMem.RejoinDate.Value.ToString("MM/dd/yyyy");
@@ -794,10 +808,10 @@ namespace NineTapTour.Forms
             mtxtBoxRejoinDate.Text = "";
             mtxtBoxRejoinDate.Mask = "00/00/0000";
 
-            mtxtBoxDateJoined.Text = "";
+            mtxtBoxDateJoined.Text = DateTime.Now.ToString("MM/dd/yyyy");
             mtxtBoxDateJoined.Mask = "00/00/0000";
 
-            mtxtBoxLastBowled.Text = "";
+            mtxtBoxLastBowled.Text = DateTime.Now.ToString("MM/dd/yyyy");
             mtxtBoxLastBowled.Mask = "00/00/0000";
 
             mtxtBoxLastPayment.Text = "";
@@ -1644,54 +1658,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void FrmMemberData_Resize(object sender, EventArgs e)
         {
-            SetFlowDirection(flpMemberData);
-        }
-
-        /// <summary>
-        /// Sets the flow direction for the flowlayoutpanel depending
-        /// on the pixel width or height of the screen.
-        /// </summary>
-        /// <param name="flp">The flowlayoutpanel that is being passed in to have changes made to it.</param>
-        private void SetFlowDirection(FlowLayoutPanel flp)
-        {
-            if (Convert.ToInt32(Form.ActiveForm.Size.Width) > 1080 || Convert.ToInt32(Form.ActiveForm.Size.Height) < 730)
-            {
-                flp.FlowDirection = FlowDirection.TopDown;
-            }
-            else
-            {
-                flp.FlowDirection = FlowDirection.LeftToRight;
-            }
-        }
-
-        /// <summary>
-        /// Sets whether the scroll bars are enabled or disabled
-        /// and whether you can see them or not depending on the
-        /// pixel width or height of the screen.
-        /// </summary>
-        /// <param name="flp">The flowlayoutpanel that is being passed in to have changes made to it.</param>
-        private void SetFlowControlScrollBars(FlowLayoutPanel flp)
-        {
-            if (Convert.ToInt32(Form.ActiveForm.Size.Width) < 1080)
-            {
-                flp.HorizontalScroll.Visible = true;
-                flp.HorizontalScroll.Enabled = true;
-            }
-            if (Convert.ToInt32(Form.ActiveForm.Size.Height) < 600)
-            {
-                flp.VerticalScroll.Visible = true;
-                flp.VerticalScroll.Enabled = true;
-            }
-            if(Convert.ToInt32(Form.ActiveForm.Size.Width) > 1080)
-            {
-                flp.HorizontalScroll.Visible = false;
-                flp.HorizontalScroll.Enabled = false;
-            }
-            if(Convert.ToInt32(Form.ActiveForm.Size.Height) > 600)
-            {
-                flp.VerticalScroll.Visible = false;
-                flp.VerticalScroll.Enabled = false;
-            }
+            FormHelper.SetFlowDirection(this, flpMemberData, 1080, 730);
         }
 
         /// <summary>
@@ -1703,7 +1670,12 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void flpMemberScores_SizeChanged(object sender, EventArgs e)
         {
-            SetFlowControlScrollBars(flpMemberData);
+            FormHelper.SetFlowControlScrollBars(this, flpMemberData, 1080, 600);
+        }
+
+        private void mtxtBox_Click(object sender, EventArgs e)
+        {
+            FormHelper.GoToFirstIndexInTextboxIfEmpty(sender as TextBoxBase);
         }
     }
 }

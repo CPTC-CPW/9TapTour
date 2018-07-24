@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NineTapTour.Models;
 
 namespace NineTapTour.Forms
 {
@@ -15,13 +16,13 @@ namespace NineTapTour.Forms
         // the members and their scores
         List<frmMemberScores.MemberScores> temp;
         // used in the print class to print the date and location
-        Database.Tournament selectedTournament;
+        Tournament selectedTournament;
         // to know the report type
         // 0 for High game handicap/senior, 1 for game/high game, 2 for series/high series
         int reportTypeNum;
         int currentSquad;
 
-        public FrmMemberScoresReports(List<frmMemberScores.MemberScores> temp, Database.Tournament selectedTournament, int reportTypeNum, int currentSquad)
+        public FrmMemberScoresReports(List<frmMemberScores.MemberScores> temp, Tournament selectedTournament, int reportTypeNum, int currentSquad)
         {
             InitializeComponent();
             this.temp = temp;
@@ -46,6 +47,8 @@ namespace NineTapTour.Forms
                     temp = temp.Take(Convert.ToInt32(txtNumberOfMembers.Text)).ToList();
                     // print( go to print class )
                     Database.Print.printMemberReport(temp, selectedTournament, reportTypeNum,currentSquad);
+
+                    this.Close();
                 }
                 // if user inputs a bigger number than the number of members
                 else

@@ -11,6 +11,7 @@ using System.Data.SqlClient;
 using System.Drawing.Printing;
 using System.Configuration;
 using System.Data.Entity.Core.Objects;
+using NineTapTour.Models;
 
 namespace NineTapTour.Forms
 {
@@ -165,6 +166,8 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void FrmMemberScores_Activated(object sender, EventArgs e)
         {
+            RegionID = ((FrmMain)MdiParent).RegionID;
+
             //addedd in this line inorder to prevent the reset of the drop down list on memberscores form when switching between forms
             int tempcbx = cbxTourneyDropDown.SelectedIndex;
             rdoHandicapScore.Visible = false;
@@ -173,12 +176,16 @@ namespace NineTapTour.Forms
             ResetFields();
 
             MemberStatus("", Color.Black, SystemColors.Control, true);
-            cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
-            cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
-            cbxTourneyDropDown.ValueMember = "Id";
+            //cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
+            
 
 
             List<Tournament> temp2 = TournamentDb.GetTournamentList(RegionID);
+
+            ((FrmMain)MdiParent)._tournamentList = temp2;
+            cbxTourneyDropDown.DataSource = temp2;
+            cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
+            cbxTourneyDropDown.ValueMember = "Id";
 
             if (temp2.Count() > 0)
             {
@@ -2471,14 +2478,18 @@ namespace NineTapTour.Forms
             }
             else
             {
+                //Since this takes 20+ seconds to display the DGV this displays a swirling loading indicator.
+                Cursor.Current = Cursors.WaitCursor;
+                Application.DoEvents();
 
                 var newFrmFinalizeTournament = new FrmFinalizeTournament(selectedTournament, overallListOfTopScores, RegionID);
                 newFrmFinalizeTournament.Dock = DockStyle.Right;
                 newFrmFinalizeTournament.WindowState = FormWindowState.Normal;
                 newFrmFinalizeTournament.Show();
             }
-
-
+            //This sets it back to default arrow after the DGV is finish loading.
+            Cursor.Current = Cursors.Default;
+            Application.DoEvents();
         }
 
 
@@ -2961,15 +2972,6 @@ namespace NineTapTour.Forms
             }
         }
 
-        public void UpdateTourneyComboBox()
-        {
-            RegionID = ((FrmMain)MdiParent).RegionID;
-            List<Tournament> t = TournamentDb.GetTournamentList(RegionID);
-            ((FrmMain)MdiParent)._tournamentList = t;
-            cbxTourneyDropDown.DataSource = t;
-            cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
-        }
-
         private void btnTournamentResults_Click(object sender, EventArgs e)
         {
             FrmTournamentResults form = new FrmTournamentResults();
@@ -2996,24 +2998,7 @@ namespace NineTapTour.Forms
 		/// <param name="e"></param>
 		private void frmMemberScores_Resize(object sender, EventArgs e)
 		{
-			SetFlowDirection(flpMemberScores);
-		}
-
-		/// <summary>
-		/// Sets the flow direction for the flowlayoutpanel depending
-		/// on the pixel width or height of the screen.
-		/// </summary>
-		/// <param name="flp">The flowlayoutpanel that is being passed in to have changes made to it.</param>
-		private void SetFlowDirection(FlowLayoutPanel flp)
-		{
-			if (Convert.ToInt32(Form.ActiveForm.Size.Width) > 1100 && Convert.ToInt32(Form.ActiveForm.Size.Height) < 766)
-			{
-				flp.FlowDirection = FlowDirection.TopDown;
-			}
-			else
-			{
-				flp.FlowDirection = FlowDirection.LeftToRight;
-			}
+			FormHelper.SetFlowDirection(this, flpMemberScores, 1100, 766);
 		}
 
 		/// <summary>
@@ -3025,38 +3010,9 @@ namespace NineTapTour.Forms
 		/// <param name="e"></param>
 		private void flpMemberScores_SizeChanged(object sender, EventArgs e)
 		{
-			SetFlowControlScrollBars(flpMemberScores);
+			FormHelper.SetFlowControlScrollBars(this, flpMemberScores, 1300, 750);
 		}
 
-		/// <summary>
-		/// Sets whether the scroll bars are enabled or disabled
-		/// and whether you can see them or not depending on the
-		/// pixel width or height of the screen.
-		/// </summary>
-		/// <param name="flp">The flowlayoutpanel that is being passed in to have changes made to it.</param>
-		private void SetFlowControlScrollBars(FlowLayoutPanel flp)
-		{
-			if (Convert.ToInt32(Form.ActiveForm.Size.Width) < 1300)
-			{
-				flpMemberScores.HorizontalScroll.Visible = true;
-				flpMemberScores.HorizontalScroll.Enabled = true;
-			}
-			if (Convert.ToInt32(Form.ActiveForm.Size.Height) < 750)
-			{
-				flpMemberScores.VerticalScroll.Visible = true;
-				flpMemberScores.VerticalScroll.Enabled = true;
-			}
-			if (Convert.ToInt32(Form.ActiveForm.Size.Width) > 1300)
-			{
-				flpMemberScores.HorizontalScroll.Visible = false;
-				flpMemberScores.HorizontalScroll.Enabled = false;
-			}
-			if (Convert.ToInt32(Form.ActiveForm.Size.Height) > 750)
-			{
-				flpMemberScores.VerticalScroll.Visible = false;
-				flpMemberScores.VerticalScroll.Enabled = false;
-			}
-		}
 		//runs fill member when you tab out of text box
 		private void txtMemberNum_Leave(object sender, EventArgs e)
 		{

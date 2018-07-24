@@ -1,4 +1,5 @@
 using System.Data.Entity;
+using NineTapTour.Models;
 
 namespace NineTapTour.Database
 {

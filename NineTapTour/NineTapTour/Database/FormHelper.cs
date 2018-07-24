@@ -9,11 +9,6 @@ namespace NineTapTour.Database
 {
     public static class FormHelper
     {
-        public static bool IsMaskedTextBoxEmpty(MaskedTextBox box)
-        {
-            return box.MaskCompleted;
-        }
-
         public static bool IsDateTimeTextBoxValid(TextBoxBase box)
         {
             if (DateTime.TryParse(box.Text, out DateTime dateTime))
@@ -27,8 +22,8 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-		/// Sets the flow direction for the flowlayoutpanel depending
-		/// on the pixel width or height of the screen.
+		    /// Sets the flow direction for the flowlayoutpanel depending
+		    /// on the pixel width or height of the screen.
         /// </summary>
         /// <param name="form">The form object that calls this method.</param>
         /// <param name="flp">The flowlayoutpanel that is being passed in to have changes made to it.</param>

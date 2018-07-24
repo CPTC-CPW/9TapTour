@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Member_Import_Test.Classes
+namespace NineTapTour.Models
 {
     class ExcelRow
     {

@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Linq.Mapping;
-using System.Data.Entity;
-using System.ComponentModel;
 
-namespace NineTapTour.Database
+namespace NineTapTour.Models
 {
     public class Game
     {

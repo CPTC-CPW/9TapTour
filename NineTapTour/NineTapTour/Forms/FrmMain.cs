@@ -8,6 +8,7 @@ using System.Drawing;
 
 using System.Data.Entity;
 using NineTapTour.Migrations;
+using NineTapTour.Models;
 
 namespace NineTapTour.Forms
 {
@@ -194,7 +195,6 @@ namespace NineTapTour.Forms
             var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
             OpenOrDisplayForm(ref newfrmMemberScores);
             currfrmScoresdata = newfrmMemberScores;
-            currfrmScoresdata.UpdateTourneyComboBox();
         }
         
 
@@ -255,15 +255,39 @@ namespace NineTapTour.Forms
                         //prevents the message box from showing up when member data form is not active
                         memberDataIsActive = false;
                         return true;
-                        
+
                     }
                 }
-                else {
+                else
+                {
                     return true;
                 }
             }
         }
 
+        private void BackupDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+            if (folderDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (DatabaseManagement.BackupDatabase(folderDialog.SelectedPath))
+                {
+                    MessageBox.Show("Database successfully backed up!");
+                }
+            }
+        }
 
+        private void RestoreDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "Backup Files (*.bak)|*.bak";
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (DatabaseManagement.RestoreDatabase(fileDialog.FileName))
+                {
+                    MessageBox.Show("Database successfully restored from backup!");
+                }
+            }
+        }
     }
 }
