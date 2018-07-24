@@ -422,19 +422,19 @@ namespace NineTapTour.Forms
 
             //VALIDATE DOB WITHIN BOUNDS
 
-            if (!FormHelper.IsDateTimeTextBoxValid(mtxtBoxDOB))
+            if (mtxtBoxDOB.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDOB))
             {
                 MessageBox.Show("Date of birth must be between 1753 and 9999.");
                 return false;
             }
 
-            if (!FormHelper.IsDateTimeTextBoxValid(mtxtBoxDateJoined))
+            if (mtxtBoxDateJoined.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDateJoined))
             {
                 MessageBox.Show("Join Date must be between 1753 and 9999.");
                 return false;
             }
 
-            if (!FormHelper.IsDateTimeTextBoxValid(mtxtBoxRejoinDate))
+            if (mtxtBoxRejoinDate.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxRejoinDate))
             {
                 MessageBox.Show("Rejoin Date must be between 1753 and 9999.");
                 return false;

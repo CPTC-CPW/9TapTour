@@ -9,17 +9,21 @@ namespace NineTapTour.Database
 {
     public static class FormHelper
     {
+        public static bool IsMaskedTextBoxEmpty(MaskedTextBox box)
+        {
+            return box.MaskCompleted;
+        }
 
         public static bool IsDateTimeTextBoxValid(TextBoxBase box)
         {
             if (DateTime.TryParse(box.Text, out DateTime dateTime))
             {
-                return true;
+                if (dateTime >= DateTime.Parse("01/01/1753"))
+                {
+                    return true; 
+                }
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
