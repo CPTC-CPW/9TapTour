@@ -434,6 +434,70 @@ namespace NineTapTour.Forms
                 return false;
             }
 
+            //VALIDATE DOB WITHIN BOUNDS
+
+            if (mtxtBoxDOB.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDOB))
+            {
+                MessageBox.Show("Date of birth must be between 1753 and 9999.");
+                return false;
+            }
+
+            if (mtxtBoxDateJoined.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDateJoined))
+            {
+                MessageBox.Show("Join Date must be between 1753 and 9999.");
+                return false;
+            }
+
+            if (mtxtBoxRejoinDate.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxRejoinDate))
+            {
+                MessageBox.Show("Rejoin Date must be between 1753 and 9999.");
+                return false;
+            }
+
+            /*
+            if (DateTime.TryParse(mtxtBoxDOB.Text, out DateTime result))
+            {
+                DateTime DOB = DateTime.Parse(mtxtBoxDOB.Text);
+
+                if(DOB < DateTime.Parse("01/01/1753") || DOB > DateTime.Parse("12/31/9999"))
+                {
+                    //TODO: ADD VALIDATION MESSAGE
+                    MessageBox.Show("Date of birth must be between 1753 and 9999.");
+
+                    return false;
+                }
+            }
+
+            if (DateTime.TryParse(mtxtBoxDateJoined.Text, out DateTime result2))
+            {
+                DateTime DateJoined = DateTime.Parse(mtxtBoxDateJoined.Text);
+
+                if (DateJoined < DateTime.Parse("01/01/1753") || DateJoined > DateTime.Parse("12/31/9999"))
+                {
+                    //TODO: ADD VALIDATION MESSAGE
+                    MessageBox.Show("Join Date must be between 1753 and 9999.");
+
+                    return false;
+                }
+            }
+
+            
+
+            if (DateTime.TryParse(mtxtBoxRejoinDate.Text, out DateTime result3))
+            {
+                DateTime DateJoined = DateTime.Parse(mtxtBoxRejoinDate.Text);
+
+                if (DateJoined < DateTime.Parse("01/01/1753") || DateJoined > DateTime.Parse("12/31/9999"))
+                {
+                    //TODO: ADD VALIDATION MESSAGE
+                    MessageBox.Show("Rejoin Date must be between 1753 and 9999.");
+
+                    return false;
+                }
+            }
+            */
+
+
             ///********************************************************************************************************
             //League average should only be between 125 - 210
             //*********************************************************************************************************/
@@ -447,6 +511,7 @@ namespace NineTapTour.Forms
 
             return true;
         }
+
         /// <summary>
         /// Saves the information entered in the "Member Data" form.
         /// </summary>
@@ -632,7 +697,7 @@ namespace NineTapTour.Forms
 
                         temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text);
                     }
-                    else //catches if director wants to change there average manually regardless of there player history
+                    else //catches if director wants to change their average manually regardless of there player history
                     {
                         temp.StartAvg = Convert.ToInt32(txtAverage.Text);
                         txtTournAvg.Text = last5[0].trueAVG.ToString();
@@ -896,15 +961,10 @@ namespace NineTapTour.Forms
             added '&& chbLifetime.Checked == false' so when the member is a lifetime member, the lblPaymentInfo will 
             not be visible even if their last payment was due before
             ********************************************************************************************************/
-            
-            if (mtxtBoxLastPayment.Text != " / /" 
-                && Convert.ToDateTime(mtxtBoxLastPayment.Text) 
-                <= DateTime.Now.AddYears(-1) && chbLifetime.Checked == false)
-            /*******************************************************************************************************/
-            {
-                lblPaymentInfo.Visible = true;
-            }
-            else
+
+            lblPaymentInfo.Visible = true;
+
+            if (chbLifetime.Checked || (DateTime.TryParse(mtxtBoxLastPayment.Text, out DateTime lastPayment) && lastPayment >= DateTime.Now.AddYears(-1)))
             {
                 lblPaymentInfo.Visible = false;
             }
