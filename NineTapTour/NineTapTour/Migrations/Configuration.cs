@@ -167,6 +167,7 @@ namespace NineTapTour.Migrations
                         m.Handicap = Calculations.Calculations.CalculateHandicapPins(m.StartAvg.Value);
                         bonusList.Add(m.Bonus);
                         handicapList.Add(m.Handicap.Value);
+                        m.MoneyEarned = f.Random.Decimal(0, 300);
                     });
 
                 var gameSeed = new Bogus.Faker<Game>().Rules((f, g) => {
@@ -180,6 +181,7 @@ namespace NineTapTour.Migrations
                     g.gameRegionID = 1;
                     g.Bonus = bonusList[index++];
                     g.InputtedAvg = g.TotalScore / 4;
+                    g.MoneyWon = f.Random.Decimal(0, 0);
                 });
 
                 var participantSeed = new Bogus.Faker<Participant>().Rules((f, p) =>
