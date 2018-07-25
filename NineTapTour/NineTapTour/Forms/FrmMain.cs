@@ -14,8 +14,6 @@ namespace NineTapTour.Forms
 {
     public partial class FrmMain : Form
     {
-
-       
         public IOrderedEnumerable<Member> _membersList { get; set; }
         public List<Tournament> _tournamentList { get; set; }
         public ToolStripItem activeItem;
@@ -141,16 +139,31 @@ namespace NineTapTour.Forms
             activeItem = e.ClickedItem;
             activeItem.BackColor = SystemColors.ActiveCaption;
 
+
+            
             MenuStrip currentMenu = sender as MenuStrip;
             for (int i = 0; i < currentMenu.Items.Count; i++)
             {
                 // sets enabled to true for all items in currentMenu
                 // unless item is the clickedItem(activeItem)
-                currentMenu.Items[i].Enabled = true;
-                if (activeItem == currentMenu.Items[i])
+
+                if (activeItem.Text != "Tools")
                 {
-                    currentMenu.Items[i].Enabled = false;
+                    if (activeItem == currentMenu.Items[i])
+                    {
+
+                        currentMenu.Items[i].Enabled = false;
+
+
+                    }
+                    else
+                    {
+                        currentMenu.Items[i].Enabled = true;
+                    }
+
                 }
+                
+
             }
 
         }
@@ -260,7 +273,8 @@ namespace NineTapTour.Forms
                     var confirm = MessageBox.Show(@"Are you sure you want to leave without saving changes?", @"Member Data Not Saved", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (confirm == DialogResult.No)
                     {
-
+                        memberToolStripMenuItem.Enabled = false;
+                        tournamentToolStripMenuItem.Enabled = true;
                         return false;
 
                     }
@@ -268,6 +282,8 @@ namespace NineTapTour.Forms
                     {
                         //prevents the message box from showing up when member data form is not active
                         memberDataIsActive = false;
+                        memberToolStripMenuItem.Enabled = true;
+                        tournamentToolStripMenuItem.Enabled = false;
                         return true;
 
                     }
