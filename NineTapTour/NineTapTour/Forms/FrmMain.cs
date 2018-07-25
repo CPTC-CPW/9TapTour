@@ -164,6 +164,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
             var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
             OpenOrDisplayForm(ref mainMenu);          
         }
@@ -175,6 +176,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void memberToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
             OpenOrDisplayForm(ref newfrmMemberData);
             currFrmMemberData = newfrmMemberData;
@@ -189,12 +191,12 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
         {
-        
+
             var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
             OpenOrDisplayForm(ref newfrmMemberScores);
             currfrmScoresdata = newfrmMemberScores;
-            currfrmScoresdata.UpdateTourneyComboBox();
         }
+        
 
         /// <summary>
         /// 
@@ -253,15 +255,39 @@ namespace NineTapTour.Forms
                         //prevents the message box from showing up when member data form is not active
                         memberDataIsActive = false;
                         return true;
-                        
+
                     }
                 }
-                else {
+                else
+                {
                     return true;
                 }
             }
         }
 
+        private void BackupDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+            if (folderDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (DatabaseManagement.BackupDatabase(folderDialog.SelectedPath))
+                {
+                    MessageBox.Show("Database successfully backed up!");
+                }
+            }
+        }
 
+        private void RestoreDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "Backup Files (*.bak)|*.bak";
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (DatabaseManagement.RestoreDatabase(fileDialog.FileName))
+                {
+                    MessageBox.Show("Database successfully restored from backup!");
+                }
+            }
+        }
     }
 }
