@@ -321,7 +321,6 @@ namespace NineTapTour.Forms
             txtHandicap.Clear();
             txtBonus.Clear();
             EmptyGrid();
-            chkAdvancedView.Visible = false;
         }
 
         private void btnSelect_Click(object sender, EventArgs e)
