@@ -14,11 +14,9 @@ namespace NineTapTour.Forms
 {
     public partial class FrmMain : Form
     {
-
-       
         public IOrderedEnumerable<Member> _membersList { get; set; }
         public List<Tournament> _tournamentList { get; set; }
-        public ToolStripItem activeItem;
+        public ToolStripMenuItem activeItem;
         public FrmMemberData currFrmMemberData { get; set; }
 
         public frmMemberScores currfrmScoresdata { get; set; }
@@ -60,7 +58,7 @@ namespace NineTapTour.Forms
 
 
             //sets the first item of the menu bar to the active item and highlights it.
-            activeItem = menMain.Items[0];
+            activeItem = (ToolStripMenuItem)menMain.Items[0];
             activeItem.BackColor = SystemColors.ActiveCaption;
             newfrmStart.Show();
             newfrmStart.WindowState = FormWindowState.Maximized;
@@ -138,18 +136,24 @@ namespace NineTapTour.Forms
             {
                 activeItem.BackColor = SystemColors.Control;
             }
-            activeItem = e.ClickedItem;
+            activeItem = (ToolStripMenuItem)e.ClickedItem;
             activeItem.BackColor = SystemColors.ActiveCaption;
 
+
+            
             MenuStrip currentMenu = sender as MenuStrip;
             for (int i = 0; i < currentMenu.Items.Count; i++)
             {
                 // sets enabled to true for all items in currentMenu
                 // unless item is the clickedItem(activeItem)
-                currentMenu.Items[i].Enabled = true;
-                if (activeItem == currentMenu.Items[i])
+
+                if (activeItem == currentMenu.Items[i] && !activeItem.HasDropDownItems)
                 {
                     currentMenu.Items[i].Enabled = false;
+                }
+                else
+                {
+                    currentMenu.Items[i].Enabled = true;
                 }
             }
 
@@ -165,7 +169,7 @@ namespace NineTapTour.Forms
             {
                 if (itemName == menMain.Items[i].Text)
                 {
-                    activeItem = menMain.Items[i];
+                    activeItem = (ToolStripMenuItem)menMain.Items[i];
                     break;
                 }
             }
@@ -260,7 +264,9 @@ namespace NineTapTour.Forms
                     var confirm = MessageBox.Show(@"Are you sure you want to leave without saving changes?", @"Member Data Not Saved", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (confirm == DialogResult.No)
                     {
-
+                        memberToolStripMenuItem.Enabled = false;
+                        tournamentToolStripMenuItem.Enabled = true;
+                        mainMenuToolStripMenuItem.Enabled = true;
                         return false;
 
                     }
@@ -268,6 +274,7 @@ namespace NineTapTour.Forms
                     {
                         //prevents the message box from showing up when member data form is not active
                         memberDataIsActive = false;
+                        memberToolStripMenuItem.Enabled = true;
                         return true;
 
                     }
