@@ -377,6 +377,8 @@ namespace NineTapTour.Forms
             //string fileType = saveFile.DefaultExt = "Excel Files (*.xls)|*.xls"; // the extension to be added onto the end of the file name
             /*************************END OF REMOVE******************************/
             string data = null; // the data to be added to the excel spreadsheet cells
+            string tempData = null;
+            string tempData2 = null;
             int i = 0; // used to determine which row to save data into
             int j = 0; // used to determine which column to save the data into
 
@@ -411,15 +413,26 @@ namespace NineTapTour.Forms
                         // if it is the first row of the data table
                         if (i == 0)
                         {
+                            tempData = dt.Rows[i + 1].ItemArray[j].ToString();
                             // Add the place standing into the 4th row in the 1st column
                             // of the excel spreadsheet
                             if (j == 0)
                             {
                                 // check the place and then add "st", "nd", "rd" or "th
                                 string place = getPlace(data);
-                                xlWorkSheet.Cells[i + 4, j + 1] = data + place;
-                                // add place without "st" into column 11
-                                xlWorkSheet.Cells[i + 4, j + 11] = data;
+                                string tempPlace = getPlace(tempData);
+                                if (place == tempPlace)
+                                {
+                                    xlWorkSheet.Cells[i + 4, j + 1] = data + place + "T";
+                                    // add place without "st" into column 11
+                                    xlWorkSheet.Cells[i + 4, j + 11] = data;
+                                }
+                                else
+                                {
+                                    xlWorkSheet.Cells[i + 4, j + 1] = data + place;
+                                    // add place without "st" into column 11
+                                    xlWorkSheet.Cells[i + 4, j + 11] = data;
+                                }
                             }
                             // Add the name into the 2nd column of the 4th row
                             if (j == 1)
@@ -454,14 +467,26 @@ namespace NineTapTour.Forms
                         // if it is the second row of the data table
                         if (i == 1)
                         {
+                            tempData = dt.Rows[i - 1].ItemArray[j].ToString();
                             // Add the place standing into the 1st column of the 6th row
                             if (j == 0)
                             {
                                 // check the place and then add "st", "nd", "rd" or "th
                                 string place = getPlace(data);
-                                xlWorkSheet.Cells[i + 5, j + 1] = data + place;
-                                // add place without "nd" into column 11
-                                xlWorkSheet.Cells[i + 5, j + 11] = data;
+                                string tempPlace = getPlace(tempData);
+
+                                if (place == tempPlace)
+                                {
+                                    xlWorkSheet.Cells[i + 5, j + 1] = data + place + "T";
+                                    // add place without "nd" into column 11
+                                    xlWorkSheet.Cells[i + 5, j + 11] = data;
+                                }
+                                else
+                                {
+                                    xlWorkSheet.Cells[i + 5, j + 1] = data + place;
+                                    // add place without "nd" into column 11
+                                    xlWorkSheet.Cells[i + 5, j + 11] = data;
+                                }
                             }
                             // Add name into the 2nd column of the 6th row
                             if (j == 1)
@@ -496,14 +521,25 @@ namespace NineTapTour.Forms
                         // if it is the 3rd row of the data table
                         if (i == 2)
                         {
+                            tempData = dt.Rows[i + 1].ItemArray[j].ToString();
                             // Add the place standing into the first cell of the 8th row
                             if (j == 0)
                             {
                                 // check the place and then add "st", "nd", "rd" or "th
                                 string place = getPlace(data);
-                                xlWorkSheet.Cells[i + 6, j + 1] = data + place;
-                                // add place without "rd" into column 11
-                                xlWorkSheet.Cells[i + 6, j + 11] = data;
+                                string tempPlace = getPlace(tempData);
+                                if (place == tempPlace)
+                                {
+                                    xlWorkSheet.Cells[i + 6, j + 1] = data + place + "T";
+                                    // add place without "rd" into column 11
+                                    xlWorkSheet.Cells[i + 6, j + 11] = data;
+                                }
+                                else
+                                {
+                                    xlWorkSheet.Cells[i + 6, j + 1] = data + place;
+                                    // add place without "rd" into column 11
+                                    xlWorkSheet.Cells[i + 6, j + 11] = data;
+                                }
                             }
                             // Add the name into the second column of the 8th row
                             if (j == 1)
@@ -563,11 +599,29 @@ namespace NineTapTour.Forms
                             // 21st, 22nd, 23rd, etc.
                             if (j == 0)
                             {
-                                // check the place and then add "st", "nd", "rd" or "th
+                                tempData = dt.Rows[i - 1].ItemArray[j].ToString();
+                                if((i + 1) < dt.Rows.Count)
+                                {
+                                    tempData2 = dt.Rows[i + 1].ItemArray[j].ToString();
+                                }
+                                else
+                                {
+                                    tempData2 = tempData;
+                                }
+                                // check the place and then add "st", "nd", "rd" or "th"
                                 string place = getPlace(data);
-                                xlWorkSheet.Cells[i + 7, j + 1] = data + place;
-                                // add place without "st, nd, rd, or th" into column 11
-                                xlWorkSheet.Cells[i + 7, j + 11] = data;
+                                if (data == tempData || data == tempData2)
+                                {
+                                    xlWorkSheet.Cells[i + 7, j + 1] = data + place + "T";
+                                    // add place without "st, nd, rd, or th" into column 11
+                                    xlWorkSheet.Cells[i + 7, j + 11] = data;
+                                }
+                                else
+                                {
+                                    xlWorkSheet.Cells[i + 7, j + 1] = data + place;
+                                    // add place without "st, nd, rd, or th" into column 11
+                                    xlWorkSheet.Cells[i + 7, j + 11] = data;
+                                }
                             }
                             // Add the name into the 2nd column in all the rows 10 - 32 of the excel sheet
                             if (j == 1)
