@@ -16,7 +16,7 @@ namespace NineTapTour.Forms
     {
         public IOrderedEnumerable<Member> _membersList { get; set; }
         public List<Tournament> _tournamentList { get; set; }
-        public ToolStripItem activeItem;
+        public ToolStripMenuItem activeItem;
         public FrmMemberData currFrmMemberData { get; set; }
 
         public frmMemberScores currfrmScoresdata { get; set; }
@@ -58,7 +58,7 @@ namespace NineTapTour.Forms
 
 
             //sets the first item of the menu bar to the active item and highlights it.
-            activeItem = menMain.Items[0];
+            activeItem = (ToolStripMenuItem)menMain.Items[0];
             activeItem.BackColor = SystemColors.ActiveCaption;
             newfrmStart.Show();
             newfrmStart.WindowState = FormWindowState.Maximized;
@@ -136,7 +136,7 @@ namespace NineTapTour.Forms
             {
                 activeItem.BackColor = SystemColors.Control;
             }
-            activeItem = e.ClickedItem;
+            activeItem = (ToolStripMenuItem)e.ClickedItem;
             activeItem.BackColor = SystemColors.ActiveCaption;
 
 
@@ -147,23 +147,14 @@ namespace NineTapTour.Forms
                 // sets enabled to true for all items in currentMenu
                 // unless item is the clickedItem(activeItem)
 
-                if (activeItem.Text != "Tools")
+                if (activeItem == currentMenu.Items[i] && !activeItem.HasDropDownItems)
                 {
-                    if (activeItem == currentMenu.Items[i])
-                    {
-
-                        currentMenu.Items[i].Enabled = false;
-
-
-                    }
-                    else
-                    {
-                        currentMenu.Items[i].Enabled = true;
-                    }
-
+                    currentMenu.Items[i].Enabled = false;
                 }
-                
-
+                else
+                {
+                    currentMenu.Items[i].Enabled = true;
+                }
             }
 
         }
@@ -178,7 +169,7 @@ namespace NineTapTour.Forms
             {
                 if (itemName == menMain.Items[i].Text)
                 {
-                    activeItem = menMain.Items[i];
+                    activeItem = (ToolStripMenuItem)menMain.Items[i];
                     break;
                 }
             }
@@ -275,6 +266,7 @@ namespace NineTapTour.Forms
                     {
                         memberToolStripMenuItem.Enabled = false;
                         tournamentToolStripMenuItem.Enabled = true;
+                        mainMenuToolStripMenuItem.Enabled = true;
                         return false;
 
                     }
@@ -283,7 +275,6 @@ namespace NineTapTour.Forms
                         //prevents the message box from showing up when member data form is not active
                         memberDataIsActive = false;
                         memberToolStripMenuItem.Enabled = true;
-                        tournamentToolStripMenuItem.Enabled = false;
                         return true;
 
                     }
