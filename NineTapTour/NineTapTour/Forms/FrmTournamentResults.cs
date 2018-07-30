@@ -420,8 +420,7 @@ namespace NineTapTour.Forms
                             {
                                 // check the place and then add "st", "nd", "rd" or "th
                                 string place = getPlace(data);
-                                string tempPlace = getPlace(tempData);
-                                if (place == tempPlace)
+                                if (data == tempData)
                                 {
                                     xlWorkSheet.Cells[i + 4, j + 1] = data + place + "T";
                                     // add place without "st" into column 11
@@ -468,14 +467,13 @@ namespace NineTapTour.Forms
                         if (i == 1)
                         {
                             tempData = dt.Rows[i - 1].ItemArray[j].ToString();
+                            tempData2 = dt.Rows[i + 1].ItemArray[j].ToString();
                             // Add the place standing into the 1st column of the 6th row
                             if (j == 0)
                             {
                                 // check the place and then add "st", "nd", "rd" or "th
                                 string place = getPlace(data);
-                                string tempPlace = getPlace(tempData);
-
-                                if (place == tempPlace)
+                                if (data == tempData || data == tempData2)
                                 {
                                     xlWorkSheet.Cells[i + 5, j + 1] = data + place + "T";
                                     // add place without "nd" into column 11
@@ -522,13 +520,13 @@ namespace NineTapTour.Forms
                         if (i == 2)
                         {
                             tempData = dt.Rows[i + 1].ItemArray[j].ToString();
+                            tempData2 = dt.Rows[i - 1].ItemArray[j].ToString();
                             // Add the place standing into the first cell of the 8th row
                             if (j == 0)
                             {
                                 // check the place and then add "st", "nd", "rd" or "th
                                 string place = getPlace(data);
-                                string tempPlace = getPlace(tempData);
-                                if (place == tempPlace)
+                                if (data == tempData || data == tempData2)
                                 {
                                     xlWorkSheet.Cells[i + 6, j + 1] = data + place + "T";
                                     // add place without "rd" into column 11
@@ -656,53 +654,53 @@ namespace NineTapTour.Forms
                         // if we are on last row and i is less than 28
                         if (i == dt.Rows.Count - 1 && i < 27 && j == 5)
                         {
-                            if (i == 0)
-                            {
-                                // grab the extra rows in the excel spreadsheet starting at row 10
-                                Excel.Range range1 = xlWorkSheet.get_Range("A10", "O" + 34);
-                                // delete the extra rows
-                                range1.Delete();
-                                // calculate the total amount of money that was paid out
-                                xlWorkSheet.Cells[i + 10, j + 4] = "=SUM(I" + 4 + ":I" + (i + 2) + ")";
-                            }
-                            else if (i == 1)
-                            {
-                                // grab the extra rows in the excel spreadsheet starting at row 10
-                                Excel.Range range2 = xlWorkSheet.get_Range("A10", "O" + 34);
-                                // delete the extra rows
-                                range2.Delete();
-                                // calculate the total amount of money that was paid out
-                                xlWorkSheet.Cells[i + 9, j + 4] = "=SUM(I" + 4 + ":I" + (i + 6) + ")";
-                            }
-                            else if (i == 2)
-                            {
-                                // grab the extra rows in the excel spreadsheet starting at row 10
-                                Excel.Range range2 = xlWorkSheet.get_Range("A10", "O" + 34);
-                                // delete the extra rows
-                                range2.Delete();
-                                // calculate the total amount of money that was paid out
-                                xlWorkSheet.Cells[i + 8, j + 4] = "=SUM(I" + 4 + ":I" + (i + 7) + ")";
-                            }
-                            else
-                            {
-                                // grab the extra rows in the excel spreadsheet
+                        //    if (i == 0)
+                        //    {
+                        //        // grab the extra rows in the excel spreadsheet starting at row 10
+                        //        Excel.Range range1 = xlWorkSheet.get_Range("A10", "O" + 34);
+                        //        // delete the extra rows
+                        //        range1.Delete();
+                        //        // calculate the total amount of money that was paid out
+                        //        xlWorkSheet.Cells[i + 10, j + 4] = "=SUM(I" + 4 + ":I" + (i + 2) + ")";
+                        //    }
+                        //    else if (i == 1)
+                        //    {
+                        //        // grab the extra rows in the excel spreadsheet starting at row 10
+                        //        Excel.Range range2 = xlWorkSheet.get_Range("A10", "O" + 34);
+                        //        // delete the extra rows
+                        //        range2.Delete();
+                        //        // calculate the total amount of money that was paid out
+                        //        xlWorkSheet.Cells[i + 9, j + 4] = "=SUM(I" + 4 + ":I" + (i + 6) + ")";
+                        //    }
+                        //    else if (i == 2)
+                        //    {
+                        //        // grab the extra rows in the excel spreadsheet starting at row 10
+                        //        Excel.Range range2 = xlWorkSheet.get_Range("A10", "O" + 34);
+                        //        // delete the extra rows
+                        //        range2.Delete();
+                        //        // calculate the total amount of money that was paid out
+                        //        xlWorkSheet.Cells[i + 8, j + 4] = "=SUM(I" + 4 + ":I" + (i + 7) + ")";
+                        //    }
+                        //    else
+                        //    {
+                        //        // grab the extra rows in the excel spreadsheet
                                 Excel.Range range = xlWorkSheet.get_Range("A" + (i + 8), "O" + 34);
-                                // delete the extra rows
+                               // delete the extra rows
                                 range.Delete();
                                 // calculate the total amount of money that was paid out
                                 xlWorkSheet.Cells[i + 8, j + 4] = "=SUM(I" + 4 + ":I" + (i + 7) + ")";
                             }
-                        }
-                        // if we are on the last row and i is greater than or equal to 29
-                        if (i == dt.Rows.Count - 1 && i >= 27 && j == 5)
-                        {
-                            // grab the extra row in the excel spreadsheet
-                            Excel.Range range = xlWorkSheet.get_Range("A" + (i + 8), "O" + (i + 8));
-                            // delete that extra row
-                            range.Delete();
-                            // calculate the total amount of money that was paid out
-                            xlWorkSheet.Cells[i + 8, j + 4] = "=SUM(I" + 4 + ":I" + (i + 7) + ")";
-                        }
+                        //}
+                        //// if we are on the last row and i is greater than or equal to 29
+                        //if (i == dt.Rows.Count - 1 && i >= 27 && j == 5)
+                        //{
+                        //    // grab the extra row in the excel spreadsheet
+                        //    Excel.Range range = xlWorkSheet.get_Range("A" + (i + 8), "O" + (i + 8));
+                        //    // delete that extra row
+                        //    range.Delete();
+                        //    // calculate the total amount of money that was paid out
+                        //    xlWorkSheet.Cells[i + 8, j + 4] = "=SUM(I" + 4 + ":I" + (i + 7) + ")";
+                        //}
                     }
                 }
 
