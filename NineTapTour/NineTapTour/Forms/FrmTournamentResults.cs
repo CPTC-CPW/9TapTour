@@ -541,16 +541,16 @@ namespace NineTapTour.Forms
                                 }
                                 else if (data == "2")
                                 {
-                                    xlWorkSheet.Cells[i + 5, j + 1] = data + place + "T";
+                                    xlWorkSheet.Cells[i + 6, j + 1] = data + place + "T";
                                     xlWorkSheet.Cells[i + 7, j + 2] = "2nd Place";
                                     // add place without "nd" into column 11
-                                    xlWorkSheet.Cells[i + 5, j + 11] = data;
+                                    xlWorkSheet.Cells[i + 6, j + 11] = data;
                                 }
                                 else if(data == tempData2)
                                 {
-                                    xlWorkSheet.Cells[i + 5, j + 1] = data + place + "T";
+                                    xlWorkSheet.Cells[i + 6, j + 1] = data + place + "T";
                                     // add place without "nd" into column 11
-                                    xlWorkSheet.Cells[i + 5, j + 11] = data;
+                                    xlWorkSheet.Cells[i + 6, j + 11] = data;
                                 }
                                 else
                                 {
