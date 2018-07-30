@@ -466,14 +466,20 @@ namespace NineTapTour.Forms
                         // if it is the second row of the data table
                         if (i == 1)
                         {
-                            tempData = dt.Rows[i - 1].ItemArray[j].ToString();
-                            tempData2 = dt.Rows[i + 1].ItemArray[j].ToString();
+                            tempData = dt.Rows[i + 1].ItemArray[j].ToString();
                             // Add the place standing into the 1st column of the 6th row
                             if (j == 0)
                             {
                                 // check the place and then add "st", "nd", "rd" or "th
                                 string place = getPlace(data);
-                                if (data == tempData || data == tempData2)
+                                if (data == "1")
+                                {
+                                    xlWorkSheet.Cells[i + 5, j + 1] = data + place + "T";
+                                    xlWorkSheet.Cells[i + 6, j + 2] = "1st Place";
+                                    // add place without "nd" into column 11
+                                    xlWorkSheet.Cells[i + 5, j + 11] = data;
+                                }
+                                else if (data == tempData)
                                 {
                                     xlWorkSheet.Cells[i + 5, j + 1] = data + place + "T";
                                     // add place without "nd" into column 11
@@ -519,18 +525,32 @@ namespace NineTapTour.Forms
                         // if it is the 3rd row of the data table
                         if (i == 2)
                         {
-                            tempData = dt.Rows[i + 1].ItemArray[j].ToString();
-                            tempData2 = dt.Rows[i - 1].ItemArray[j].ToString();
+                            tempData2 = dt.Rows[i + 1].ItemArray[j].ToString();
+                            tempData = dt.Rows[i - 1].ItemArray[j].ToString();
                             // Add the place standing into the first cell of the 8th row
                             if (j == 0)
                             {
                                 // check the place and then add "st", "nd", "rd" or "th
                                 string place = getPlace(data);
-                                if (data == tempData || data == tempData2)
+                                if (data == "1")
                                 {
                                     xlWorkSheet.Cells[i + 6, j + 1] = data + place + "T";
+                                    xlWorkSheet.Cells[i + 7, j + 2] = "1st Place";
                                     // add place without "rd" into column 11
                                     xlWorkSheet.Cells[i + 6, j + 11] = data;
+                                }
+                                else if (data == "2")
+                                {
+                                    xlWorkSheet.Cells[i + 5, j + 1] = data + place + "T";
+                                    xlWorkSheet.Cells[i + 7, j + 2] = "2nd Place";
+                                    // add place without "nd" into column 11
+                                    xlWorkSheet.Cells[i + 5, j + 11] = data;
+                                }
+                                else if(data == tempData2)
+                                {
+                                    xlWorkSheet.Cells[i + 5, j + 1] = data + place + "T";
+                                    // add place without "nd" into column 11
+                                    xlWorkSheet.Cells[i + 5, j + 11] = data;
                                 }
                                 else
                                 {
