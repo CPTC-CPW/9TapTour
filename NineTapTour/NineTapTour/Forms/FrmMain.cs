@@ -132,28 +132,32 @@ namespace NineTapTour.Forms
         //also to disable button to current page
         private void menMain_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            if(activeItem != null)
+            if (activeItem != null)
             {
                 activeItem.BackColor = SystemColors.Control;
             }
             activeItem = (ToolStripMenuItem)e.ClickedItem;
-            activeItem.BackColor = SystemColors.ActiveCaption;
+            if (!activeItem.HasDropDownItems)
+            {
+                activeItem.BackColor = SystemColors.ActiveCaption;
+            }
 
-
-            
             MenuStrip currentMenu = sender as MenuStrip;
             for (int i = 0; i < currentMenu.Items.Count; i++)
             {
                 // sets enabled to true for all items in currentMenu
                 // unless item is the clickedItem(activeItem)
-
-                if (activeItem == currentMenu.Items[i] && !activeItem.HasDropDownItems)
+                // or clicked item has a drop down list
+                if (!activeItem.HasDropDownItems)
                 {
-                    currentMenu.Items[i].Enabled = false;
-                }
-                else
-                {
-                    currentMenu.Items[i].Enabled = true;
+                    if (activeItem == currentMenu.Items[i])
+                    {
+                        currentMenu.Items[i].Enabled = false;
+                    }
+                    else
+                    {
+                        currentMenu.Items[i].Enabled = true;
+                    }
                 }
             }
 
