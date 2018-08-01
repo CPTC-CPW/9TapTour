@@ -352,11 +352,11 @@ namespace NineTapTour.Forms
             // get the full path to where the tournament results template is located
             string getFilePath = Path.GetFullPath("Resources/TournamentResultsTemplate.xls");
             // get the date of the tourney and convert it to a string
-            string tourneyDate = Convert.ToString(tourny.Date);
+            string tourneyDate = tourny.Date.ToString("MM/dd/yyyy");
             // replace the forward slashes with a dash
             string tournyDate = tourneyDate.Replace("/", "-");
             // remove the time from the end of the date
-            string tournamentDate = tournyDate.Replace(" 12:00:00 AM", "");
+            string tournamentDate = tournyDate.Replace(tourneyDate, "");
             // create the name of the file by adding together the location, the event, and the
             // date of the tournament
             string fileName = tourny.Location + " " + tourny.Event + " " + tournamentDate + ".xls";
@@ -755,15 +755,15 @@ namespace NineTapTour.Forms
                 releaseObject(xlWorkSheet);
                 releaseObject(xlWorkBook);
                 releaseObject(xlApp);
-            }
+        }
             catch
             {
-                // if the workbook does not get opened, display an error message
-                MessageBox.Show("Must choose a file to export to.");
-                xlWorkBook.Close(true, misValue, misValue);
-                xlApp.Quit();
-            }
+            // if the workbook does not get opened, display an error message
+            MessageBox.Show("Must choose a file to export to.");
+            xlWorkBook.Close(true, misValue, misValue);
+            xlApp.Quit();
         }
+    }
 
         /// <summary>
         /// Checks to see what place the players have placed at 

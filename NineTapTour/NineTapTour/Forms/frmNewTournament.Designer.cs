@@ -99,6 +99,7 @@
             // 
             // dtpDate
             // 
+            this.dtpDate.Checked = false;
             this.dtpDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dtpDate.Location = new System.Drawing.Point(136, 65);
             this.dtpDate.Name = "dtpDate";
