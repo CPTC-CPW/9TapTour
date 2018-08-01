@@ -1751,7 +1751,11 @@ namespace NineTapTour.Forms
                     foreach (var i in reader)
                     {
                         num = listOfTopScore.Count();
+
+                        // TODO: fix null exception with tryparse
+                        // System.InvalidCastException: 'Object cannot be cast from DBNull to other types.'
                         int score = Convert.ToInt32(reader["Total"]);
+
                         List<int?> top4Games = new List<int?> { Convert.ToInt32(reader["Game1"]), Convert.ToInt32(reader["Game2"]), Convert.ToInt32(reader["Game3"]), Convert.ToInt32(reader["Game4"]) };
                         List<int> top3Games = TournamentStats.GetTop3OutOf4(top4Games);
                         if (Convert.ToInt32(reader["Member_ID"]) == id)
