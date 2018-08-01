@@ -314,5 +314,48 @@ namespace NineTapTour.Forms
                 }
             }
         }
+
+        private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // if on member info page with unsaved data
+            if (activeItem.Text == "Member Info" && !currFrmMemberData.IsSavedData())
+            {
+                // asks user if they want to leave w/o saving data
+                if (FrmMemberIsSavedData())
+                {
+
+                    mainmenu.Close();
+                }
+                // stays on page if clicked no
+                else
+                {
+                    e.Cancel = true;
+                }
+            }
+
+            // used on all other instances
+            else
+            {
+                if (ExitApplication() == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
+                else
+                {
+                    mainmenu.Close();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Asks if user wants to exit application
+        /// </summary>
+        /// <returns>returns DialogResult.No if No is clicked or DialogResult.Yes if yes is clicked</returns>
+        private DialogResult ExitApplication()
+        {
+            DialogResult result = MessageBox.Show("Are you sure you want to exit?", "Exit Application", 
+                                                  MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            return result;
+        }
     }
 }

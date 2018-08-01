@@ -34,11 +34,11 @@
             this.memberToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tournamentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.BackupDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RestoreDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateInactiveMembersToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.updateInactiveMembersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.BackupDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.RestoreDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -93,6 +93,20 @@
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
             // 
+            // BackupDatabaseToolStripMenuItem
+            // 
+            this.BackupDatabaseToolStripMenuItem.Name = "BackupDatabaseToolStripMenuItem";
+            this.BackupDatabaseToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.BackupDatabaseToolStripMenuItem.Text = "Backup Database";
+            this.BackupDatabaseToolStripMenuItem.Click += new System.EventHandler(this.BackupDatabaseToolStripMenuItem_Click);
+            // 
+            // RestoreDatabaseToolStripMenuItem
+            // 
+            this.RestoreDatabaseToolStripMenuItem.Name = "RestoreDatabaseToolStripMenuItem";
+            this.RestoreDatabaseToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.RestoreDatabaseToolStripMenuItem.Text = "Restore Database";
+            this.RestoreDatabaseToolStripMenuItem.Click += new System.EventHandler(this.RestoreDatabaseToolStripMenuItem_Click);
+            // 
             // updateInactiveMembersToolStripMenuItem1
             // 
             this.updateInactiveMembersToolStripMenuItem1.Name = "updateInactiveMembersToolStripMenuItem1";
@@ -114,20 +128,6 @@
             this.updateInactiveMembersToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.updateInactiveMembersToolStripMenuItem.Text = "Update Inactive Members";
             // 
-            // BackupDatabaseToolStripMenuItem
-            // 
-            this.BackupDatabaseToolStripMenuItem.Name = "BackupDatabaseToolStripMenuItem";
-            this.BackupDatabaseToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.BackupDatabaseToolStripMenuItem.Text = "Backup Database";
-            this.BackupDatabaseToolStripMenuItem.Click += new System.EventHandler(this.BackupDatabaseToolStripMenuItem_Click);
-            // 
-            // RestoreDatabaseToolStripMenuItem
-            // 
-            this.RestoreDatabaseToolStripMenuItem.Name = "RestoreDatabaseToolStripMenuItem";
-            this.RestoreDatabaseToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.RestoreDatabaseToolStripMenuItem.Text = "Restore Database";
-            this.RestoreDatabaseToolStripMenuItem.Click += new System.EventHandler(this.RestoreDatabaseToolStripMenuItem_Click);
-            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -144,6 +144,7 @@
             this.Name = "FrmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "9 Tap Tour";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_FormClosing);
             this.menMain.ResumeLayout(false);
             this.menMain.PerformLayout();
             this.ResumeLayout(false);
