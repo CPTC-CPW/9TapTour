@@ -637,7 +637,7 @@ namespace NineTapTour.Forms
         {
 
 
-
+            //
             if (IsValid())
             {
                 Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
@@ -847,6 +847,8 @@ namespace NineTapTour.Forms
                         player.Game.MoneyWon = 0;
                     else
                         player.Game.MoneyWon = Convert.ToDecimal(txtMoney.Text);
+                    
+                    // TODO: fix issue with not letting less than 4 scores inputted
 
                     if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim())
                         || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
@@ -1487,9 +1489,22 @@ namespace NineTapTour.Forms
             {
                 return false;
             }
-            if (txtMemberNum.Text == "" && txtScratchScore1.Text == "" && txtScratchScore2.Text == "" && txtScratchScore3.Text == "" && txtScratchScore4.Text == "")
+            if (txtMemberNum.Text == "")
             {
                 return false;
+            }
+            if (txtScratchScore1.Text == "" || txtScratchScore2.Text == "" || txtScratchScore3.Text == "" || txtScratchScore4.Text == "")
+            {
+                DialogResult result = MessageBox.Show("Are you sure you want to continue with a score missing?", "Are you sure?", 
+                                                      MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.No)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
             }
             return true;
         }
