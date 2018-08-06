@@ -17,33 +17,7 @@ namespace NineTapTour.Forms
 
     public partial class FrmFinalizeTournament : Form
     {
-        List<FinalizeTemp> FinalizeTableList = new List<FinalizeTemp>();
-        private Tournament currentT; //current tournament
-        private List<TopScores> topscores; //used to know who won the tournament and there placing
-        int RegionID;
-        List<int> ListofScratchScores = new List<int>(); //used for determining addition rules if the game was a 3o4 for scratch score / used more then once (made variable global)
-
-
-
-        public FrmFinalizeTournament(Tournament tourn, List<TopScores> topscores, int RegionID)
-        {
-            InitializeComponent();
-            this.dataGridView1.DoubleBuffered(false);
-            this.dataGridView2.DoubleBuffered(true);
-            this.currentT = tourn;
-            this.topscores = topscores;
-            this.RegionID = RegionID;
-            FinalizeTableList = GetAllInitialParticipantGameList(tourn);
-            createDataGridView(tourn);
-        }
-
-        private void FrmFinalizeTournament_Load(object sender, EventArgs e)
-        {
-            InitializeGameCellFormatting();
-        }
-
-        List<PlayerHistory> temporary = new List<PlayerHistory>();
-        int currentIndex = 0;
+        #region Constant Values
 
         //USE THIS IF YOU NEED TO MOVE AROUND THE ORDER IN WHICH THE COLUMNS ARE DISPLAYED 
         const int INDEX_COLUMN = 0;
@@ -69,35 +43,56 @@ namespace NineTapTour.Forms
         const int PRO_POT_COLUMN = 20;
         const int NOTES_COLUMN_ = 21;
 
-
-
-
-
         //USE THIS IF YOU WANT TO CHANGE THE NAME OF EACH COLUMN 
-        static string INDEX_COLUMN_NAME = "Index";
-        static string GAME_ID_COLUMN_NAME = "GameID";
-        static string NAME_COLUMN_NAME = "Name";
-        static string GAME_1_COLUMN_NAME = "Game 1";
-        static string GAME_1_VALID_COLUMN_NAME = "Valid Score1?";
-        static string GAME_2_COLUMN_NAME = "Game 2";
-        static string GAME_2_VALID_COLUMN_NAME = "Valid Score2?";
-        static string GAME_3_COLUMN_NAME = "Game 3";
-        static string GAME_3_VALID_COLUMN_NAME = "Valid Score3?";
-        static string GAME_4_COLUMN_NAME = "Game 4";
-        static string GAME_4_VALID_COLUMN_NAME = "Valid Score4?";
-        static string SCRATCH_TOTAL_COLUMN_NAME = "Scratch Total";
-        static string HANDICAP_TOTAL_COLUMN_NAME = "Handicap Total";
-        static string ENTRY_AVERAGE_COLUMN_NAME = "Entry AVG";
-        static string THIRTY_ENTRY_AVERAGE_COLUMN_NAME = "30 Entry AVG";
-        static string ADJUSTED_AVG_COLUMN_NAME = "ADJ AVG";
-        static string DIRECTOR_CHECK_COLUMN_NAME = "Director Check";
-        static string SQUAD_COLUMN_NAME = "Squad";
-        static string HANDICAP_COLUMN_NAME = "Handicap";
-        static string BONUS_COLUMN_NAME = "Bonus";
-        static string PRO_POT_COLUMN_NAME = "Pro Pot";
-        static string NOTES_COLUMN_NAME = "Notes";
+        const string INDEX_COLUMN_NAME = "Index";
+        const string GAME_ID_COLUMN_NAME = "GameID";
+        const string NAME_COLUMN_NAME = "Name";
+        const string GAME_1_COLUMN_NAME = "Game 1";
+        const string GAME_1_VALID_COLUMN_NAME = "Valid Score1?";
+        const string GAME_2_COLUMN_NAME = "Game 2";
+        const string GAME_2_VALID_COLUMN_NAME = "Valid Score2?";
+        const string GAME_3_COLUMN_NAME = "Game 3";
+        const string GAME_3_VALID_COLUMN_NAME = "Valid Score3?";
+        const string GAME_4_COLUMN_NAME = "Game 4";
+        const string GAME_4_VALID_COLUMN_NAME = "Valid Score4?";
+        const string SCRATCH_TOTAL_COLUMN_NAME = "Scratch Total";
+        const string HANDICAP_TOTAL_COLUMN_NAME = "Handicap Total";
+        const string ENTRY_AVERAGE_COLUMN_NAME = "Entry AVG";
+        const string THIRTY_ENTRY_AVERAGE_COLUMN_NAME = "30 Entry AVG";
+        const string ADJUSTED_AVG_COLUMN_NAME = "ADJ AVG";
+        const string DIRECTOR_CHECK_COLUMN_NAME = "Director Check";
+        const string SQUAD_COLUMN_NAME = "Squad";
+        const string HANDICAP_COLUMN_NAME = "Handicap";
+        const string BONUS_COLUMN_NAME = "Bonus";
+        const string PRO_POT_COLUMN_NAME = "Pro Pot";
+        const string NOTES_COLUMN_NAME = "Notes";
 
+        #endregion
 
+        List<FinalizeTemp> FinalizeTableList = new List<FinalizeTemp>();
+        private int RegionID;
+        private Tournament currTournament; //current tournament
+        private List<TopScores> topscores; //used to know who won the tournament and there placing
+        //List<int> ListofScratchScores = new List<int>(); //used for determining addition rules if the game was a 3o4 for scratch score / used more then once (made variable global)
+        // ^ Unused.
+        List<PlayerHistory> temporary = new List<PlayerHistory>();
+        //int currentIndex = 0;
+        // ^ Unused.
+
+        public FrmFinalizeTournament(Tournament t, List<TopScores> tScores, int region)
+        {
+            InitializeComponent();
+            currTournament = t;
+            topscores = tScores;
+            RegionID = region;
+        }
+
+        private void FrmFinalizeTournament_Load(object sender, EventArgs e)
+        {
+            FinalizeTableList = GetAllInitialParticipantGameList(currTournament);
+            createDataGridView(currTournament);
+            InitializeGameCellFormatting();
+        }
 
         private void createDataGridView(Tournament tourn)
         {
@@ -224,10 +219,10 @@ namespace NineTapTour.Forms
             //this.dataGridView1.Sort(this.dataGridView1.Columns["True Avg"], ListSortDirection.Descending);
 
             //sets sizes of check box columns "Valid Score1, ValidScore2, ValidScore3, Valid Score 4, and Keep True Avg?"
-            dataGridView1.SuspendLayout();
+            //dataGridView1.SuspendLayout();
             //var column = dataGridView1.Columns[NAME_COLUMN];
             //for (int i = 0; i <= 20; i++)
-            {
+            //{
 
                 //    column = dataGridView1.Columns[i];
 
@@ -243,8 +238,8 @@ namespace NineTapTour.Forms
                 //    {
                 //        column.Width = 75;
                 //    }
-            }
-            dataGridView1.ResumeLayout();
+            //}
+            //dataGridView1.ResumeLayout();
 
 
             dataGridView1.AllowUserToAddRows = false;
@@ -850,7 +845,8 @@ namespace NineTapTour.Forms
 
         private void DataGridView1_OnCellEnter(object sender, DataGridViewCellEventArgs e)
         {
-            currentIndex = dataGridView1.CurrentCell.RowIndex;
+            //currentIndex = dataGridView1.CurrentCell.RowIndex;
+            // ^ Seems not to be used - Devon
 
             //set name, member score and currentr avg based of of what row is selected.
             int gameId = Convert.ToInt32(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[GAME_ID_COLUMN].Value);
@@ -924,7 +920,7 @@ namespace NineTapTour.Forms
                                 p.Game4 = 0;
                             }
                             p.GamesPlayed = tempgameplayed;
-                            p.TournamentDate = currentT.Date;
+                            p.TournamentDate = currTournament.Date;
                             p.GameID = FinalizeTableList[i].GameId;
 
 
@@ -1294,7 +1290,7 @@ namespace NineTapTour.Forms
         {
             int check = 0; //int used to make sure all the director check boxes have been filled out
 
-            List<FinalizeTemp> FinalizeTableList = GetListFromTable(currentT);
+            List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
             int gamesPlayed = 0;
             List<int> addedalreeady = new List<int>(); // a list used to catch the players memberid soo that way their bonus pin isnt adjusted more than once per tournament 
 
@@ -1335,7 +1331,7 @@ namespace NineTapTour.Forms
                     List<PlayerHistory> pl = PlayerHistoryDB.getMemberPlayerHistory(MemberDb.GetMemberNumberbyID(memId), RegionID);
 
 
-                    ph.TournamentDate = currentT.Date;
+                    ph.TournamentDate = currTournament.Date;
                     ph.MemberNumber = currentMember.Number;
 
                     if (dataGridView1[GAME_1_VALID_COLUMN, currentindex].Value.ToString() == "True")
@@ -1417,12 +1413,12 @@ namespace NineTapTour.Forms
                                 {
                                     if (placing > 0) // if member placed in tournament, calculate bonus pins based on placing
                                     {
-                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(true, placing, Convert.ToInt32(currentMember.Bonus), currentT.Doubles, currentMember.Number, RegionID, currentT.Date);
+                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(true, placing, Convert.ToInt32(currentMember.Bonus), currTournament.Doubles, currentMember.Number, RegionID, currTournament.Date);
                                     }
 
                                     else  // if member didn't place in tournament, calculate bonus pins
                                     {
-                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(false, placing, Convert.ToInt32(currentMember.Bonus), currentT.Doubles, currentMember.Number, RegionID, currentT.Date);
+                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(false, placing, Convert.ToInt32(currentMember.Bonus), currTournament.Doubles, currentMember.Number, RegionID, currTournament.Date);
                                     }
 
                                     addedalreeady.Add(FinalizeTableList[currentindex].MemberId);
