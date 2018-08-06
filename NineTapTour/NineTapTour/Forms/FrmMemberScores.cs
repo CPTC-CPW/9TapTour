@@ -32,6 +32,9 @@ namespace NineTapTour.Forms
         public static Tournament selectedTournament;
         public static List<TopScores> overallListOfTopScores;
         public static List<Participant> overallListOfParticipants;
+
+        //QBS number is set by the radio buttons on the right side of the form "QUALIFY BY SQUAD" depending on which radio button is selected
+        //it will change it to the corresponding value.
         int QBSNumber = 0;
         frmNewTournament currentTourneyPage;
         List<int> howManySquadsCanBeFiltered = new List<int>();
@@ -139,24 +142,6 @@ namespace NineTapTour.Forms
             }
 
 
-        }
-        /// <summary>
-        /// entering a member number clears members data
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void txtMemberNum_TextChanged(object sender, EventArgs e)
-        {
-            if (currentMem == null || ((TextBox)sender).Text == "")
-            {
-                txtLastName.Clear();
-                txtFirstName.Clear();
-                txtMiddleInitial.Clear();
-                txtHandicap.Clear();
-                txtBonusPins.Clear();
-                MemberStatus("", Color.Black, SystemColors.Control, true);
-
-            }
         }
 
         /// <summary>
@@ -516,7 +501,7 @@ namespace NineTapTour.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public void scratchTotal(object sender, EventArgs e)
-        {
+            {
             int scratchTotal = 0;
             int cScore = 0;
             string id;
@@ -640,8 +625,12 @@ namespace NineTapTour.Forms
             //
             if (IsValid())
             {
+                //gets the current tournament from the database 
                 Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+
+                //get all the current members participating in the current tournament
                 List<Participant> total = TournamentDb.GetTournamentMemberList(currTourney);
+
                 //Doubles tournament
                 if (currTourney.Doubles)
                 {
@@ -770,7 +759,7 @@ namespace NineTapTour.Forms
                     #endregion
 
 
-
+                    //get the member from the database using the number from the memnum textbox
                     currentMem = MemberDb.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
                     player.Member = currentMem;
 
@@ -779,7 +768,7 @@ namespace NineTapTour.Forms
                     player.ParticipantRegionID = RegionID;
                     var db = new NineTapDb();
                     var gameId = (from p in db.Participants
-                                  where p.Member.Id== currentMem.Id
+                                  where p.Member.Id == currentMem.Id
                                   && p.Tournament.Id == currTourney.Id
                                   && p.Squad == squad
                                   select p.Game.Id).FirstOrDefault();
@@ -845,25 +834,44 @@ namespace NineTapTour.Forms
                     //defaults money earned to 0, or enters text box amount
                     if (txtMoney.Text == "" || txtMoney.Text == null)
                         player.Game.MoneyWon = 0;
+
                     else
                         player.Game.MoneyWon = Convert.ToDecimal(txtMoney.Text);
                     
+                    
+
                     // TODO: fix issue with not letting less than 4 scores inputted
 
-                    if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim())
-                        || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
-                    {
-                        MessageBox.Show("Please enter all scratch scores", "Blank Scores Not Allowed");
-                        return;
-                    }
-                    else if (!isNumeric(txtScratchScore1.Text.Trim()) || !isNumeric(txtScratchScore2.Text.Trim())
-                        || !isNumeric(txtScratchScore3.Text.Trim()) || !isNumeric(txtScratchScore4.Text.Trim()))
-                    {
-                        MessageBox.Show("Please enter only numbers", "Non-Integer Scores Not Allowed");
-                        return;
-                    }
-                    else
-                    {
+                    //if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim())
+                    //    || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
+                    //{
+                    //    MessageBox.Show("Please enter all scratch scores", "Blank Scores Not Allowed");
+                    //    return;
+                    //}
+
+                    //else if (!isNumeric(txtScratchScore1.Text.Trim()) || !isNumeric(txtScratchScore2.Text.Trim())
+                    //    || !isNumeric(txtScratchScore3.Text.Trim()) || !isNumeric(txtScratchScore4.Text.Trim()))
+                    //{
+
+                    //    MessageBox.Show("Please enter only numbers", "Non-Integer Scores Not Allowed");
+                    //    return;
+                    //}
+
+                    //for (int i = 0; i < scratchArray.Length; i++)
+                    //{
+                    //    if (!isNumeric(scratchArray[i].Text.Trim()))
+                    //    {
+                    //        if (string.IsNullOrWhiteSpace(scratchArray[i].Text))
+                    //        {
+
+                    //        }
+                    //        MessageBox.Show("Please enter only numbers", "Non-Integer Scores Not Allowed");
+                    //        return;
+                    //    }
+                    //}
+
+                    
+                    //where else would start
                         player.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[0].Text));
                         player.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[1].Text));
                         player.Game.Game3 = IsEmpty(txtScratchScore3) ? null : (int?)Convert.ToInt32((scratchArray[2].Text));
@@ -881,22 +889,15 @@ namespace NineTapTour.Forms
                             player.Game.Handicap = currentGame.Handicap;
                         }
                         player.Game.gameRegionID = RegionID;
-                        
 
                         // if compEntry checkbox is checked, set IsComp to true in game table
                         if (chbCompEntry.Checked)
                         {
                             player.Game.IsComp = true;
                         }
-
-
-                    
                         db.SaveChanges();
-
                         try
                         {
-
-
                             TournamentDb.AddMemberToTournament(player);
 #if DEBUG
                             MessageBox.Show(@"Bowler Added Successfully to Tournament!");
@@ -906,29 +907,18 @@ namespace NineTapTour.Forms
                             clear();
                             List<Participant> utotal = TournamentDb.GetTournamentMemberList(currTourney);
                             RecordIndexAfterAddUpdate(utotal);
-
-
                         }
                         catch (MemberAccessException ex)
                         {
                             MessageBox.Show(ex.Message);
-
                         }
-
-
-
-
                         //UPDATE LASTBOWLED DATE
                         //Sets last bowled to now and updates DB record
                         if (DateTime.Now > currentMem.LastBowled || currentMem.LastBowled == null)
                         {
                             currentMem.LastBowled = DateTime.Now;
                             MemberDb.AddMember(currentMem);
-
                         }
-
-                    }
-
                 }
                 refresh(false, QBSNumber);
             }
@@ -936,6 +926,7 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show("Please Fill out the Participants information!");
             }
+        
         }
 
         private string GetConnection()
@@ -1493,7 +1484,7 @@ namespace NineTapTour.Forms
             {
                 return false;
             }
-            if (txtScratchScore1.Text == "" || txtScratchScore2.Text == "" || txtScratchScore3.Text == "" || txtScratchScore4.Text == "")
+            if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
             {
                 DialogResult result = MessageBox.Show("Are you sure you want to continue with a score missing?", "Are you sure?", 
                                                       MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -1602,6 +1593,11 @@ namespace NineTapTour.Forms
                 SqlConnection con = new SqlConnection(TournamentStats.GetConnection());
                 SqlCommand getList = new SqlCommand();
                 getList.Connection = con;
+
+                using (NineTapDb context = new NineTapDb())
+                {
+                    var test = context.Tournaments.Where(t => t.Participant.Any(p => p.Tournament.Id == t.Id)).Select(s => { });
+                }
                 if (QBSNumber == 0)
                 {
                     getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id,  Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
