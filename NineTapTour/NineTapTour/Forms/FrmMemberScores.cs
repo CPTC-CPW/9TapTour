@@ -1596,174 +1596,23 @@ namespace NineTapTour.Forms
 
                 var listOfParticipants = ParticipantsDB.GetParticipants(selectedTournament.Id);
 
-                if (QBSNumber == 0)//TODO: GET RID OF THIS
-                {
-                    //todo: takes another parameter
-                    
-                    
-                    //getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id,  Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
-                    //                FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
-                    //                JOIN Games ON Games.Id = Participants.Game_Id
-                    //                JOIN Members ON Members.Id = Participants.Member_Id 
-                    //                WHERE Tournaments.Id = @TID
-                    //                GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
-                    //                ORDER BY Participants.Member_Id";
-                    //getList.Parameters.AddWithValue("@TID", selectedTourney);
-
-                    
-                }
-                else if(qbsNumber > 0 && qbsNumber <= 8)
+                if (qbsNumber > 0 && qbsNumber <= 8)
                 {
                     //TAKES A TOURNAMENT ID AND SQUAD NUMBER AND FILTERS FOR A LIST OF PARTICIPANTS.
                     listOfParticipants.Where(p => p.Squad == qbsNumber).ToList();
-
-                    //getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
-                    //                FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
-                    //                JOIN Games ON Games.Id = Participants.Game_Id
-                    //                JOIN Members ON Members.Id = Participants.Member_Id 
-                    //                WHERE Tournaments.Id = @TID AND Participants.SquadNumber = @SN
-                    //                GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
-                    //                ORDER BY Participants.Member_Id";
-                    //getList.Parameters.AddWithValue("@TID", selectedTourney);
-                    //getList.Parameters.AddWithValue("@SN", QBSNumber);
-
-                    
+ 
                 }
                 else if(howManySquadsCanBeFiltered.Count > 0 && QBSNumber == 9)
                 {
-                    
-                            //filters out each squad
-                            //take the list of participants where => if the squad number equals to any of the filtered numbers.
-                            listOfParticipants.Where(p =>  howManySquadsCanBeFiltered.Any(h => h == p.Squad)).ToList();
-                        
-                    
-
-                    // if (howManySquadsCanBeFiltered.Count == 1)
-                    //    {
-
-                    //    listOfParticipants = ParticipantsDB.GetParticipants(selectedTournament.Id).Where(p => p.Squad == howManySquadsCanBeFiltered[0]).ToList();
-                    //    getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
-                    //                FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
-                    //                JOIN Games ON Games.Id = Participants.Game_Id
-                    //                JOIN Members ON Members.Id = Participants.Member_Id 
-                    //                WHERE Tournaments.Id = @TID AND Participants.SquadNumber = @SN
-                    //                GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
-                    //                ORDER BY Participants.Member_Id";
-                    //    getList.Parameters.AddWithValue("@TID", selectedTourney);
-                    //    getList.Parameters.AddWithValue("@SN", howManySquadsCanBeFiltered[0]);
-                    //}
-                    //else if(howManySquadsCanBeFiltered.Count == 2)
-                    //{
-                    //    getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
-                    //                FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
-                    //                JOIN Games ON Games.Id = Participants.Game_Id
-                    //                JOIN Members ON Members.Id = Participants.Member_Id 
-                    //                WHERE Tournaments.Id = @TID AND Participants.SquadNumber IN (@SN1,@SN2)
-                    //                GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
-                    //                ORDER BY Participants.Member_Id";
-                    //    getList.Parameters.AddWithValue("@TID", selectedTourney);
-                    //    getList.Parameters.AddWithValue("@SN1", howManySquadsCanBeFiltered[0]);
-                    //    getList.Parameters.AddWithValue("@SN2", howManySquadsCanBeFiltered[1]);
-
-                    //}
-                    //else if(howManySquadsCanBeFiltered.Count == 3)
-                    //{
-                    //    getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
-                    //                FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
-                    //                JOIN Games ON Games.Id = Participants.Game_Id
-                    //                JOIN Members ON Members.Id = Participants.Member_Id 
-                    //                WHERE Tournaments.Id = @TID AND Participants.SquadNumber IN (@SN1,@SN2,@SN3)
-                    //                GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
-                    //                ORDER BY Participants.Member_Id";
-                    //    getList.Parameters.AddWithValue("@TID", selectedTourney);
-                    //    getList.Parameters.AddWithValue("@SN1", howManySquadsCanBeFiltered[0]);
-                    //    getList.Parameters.AddWithValue("@SN2", howManySquadsCanBeFiltered[1]);
-                    //    getList.Parameters.AddWithValue("@SN3", howManySquadsCanBeFiltered[2]);
-                    //}
-                    //else if (howManySquadsCanBeFiltered.Count == 4)
-                    //{
-                    //    getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
-                    //                FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
-                    //                JOIN Games ON Games.Id = Participants.Game_Id
-                    //                JOIN Members ON Members.Id = Participants.Member_Id 
-                    //                WHERE Tournaments.Id = @TID AND Participants.SquadNumber IN (@SN1,@SN2,@SN3,@SN4)
-                    //                GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
-                    //                ORDER BY Participants.Member_Id";
-                    //    getList.Parameters.AddWithValue("@TID", selectedTourney);
-                    //    getList.Parameters.AddWithValue("@SN1", howManySquadsCanBeFiltered[0]);
-                    //    getList.Parameters.AddWithValue("@SN2", howManySquadsCanBeFiltered[1]);
-                    //    getList.Parameters.AddWithValue("@SN3", howManySquadsCanBeFiltered[2]);
-                    //    getList.Parameters.AddWithValue("@SN4", howManySquadsCanBeFiltered[3]);
-
-                    //}
-                    //else if (howManySquadsCanBeFiltered.Count == 5)
-                    //{
-                    //    getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
-                    //                FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
-                    //                JOIN Games ON Games.Id = Participants.Game_Id
-                    //                JOIN Members ON Members.Id = Participants.Member_Id 
-                    //                WHERE Tournaments.Id = @TID AND Participants.SquadNumber IN (@SN1,@SN2,@SN3,@SN4,@SN5)
-                    //                GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
-                    //                ORDER BY Participants.Member_Id";
-                    //    getList.Parameters.AddWithValue("@TID", selectedTourney);
-                    //    getList.Parameters.AddWithValue("@SN1", howManySquadsCanBeFiltered[0]);
-                    //    getList.Parameters.AddWithValue("@SN2", howManySquadsCanBeFiltered[1]);
-                    //    getList.Parameters.AddWithValue("@SN3", howManySquadsCanBeFiltered[2]);
-                    //    getList.Parameters.AddWithValue("@SN4", howManySquadsCanBeFiltered[3]);
-                    //    getList.Parameters.AddWithValue("@SN5", howManySquadsCanBeFiltered[4]);
-
-
-                    //}
-                    //else if (howManySquadsCanBeFiltered.Count == 6)
-                    //{
-                    //    getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
-                    //                FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
-                    //                JOIN Games ON Games.Id = Participants.Game_Id
-                    //                JOIN Members ON Members.Id = Participants.Member_Id 
-                    //                WHERE Tournaments.Id = @TID AND Participants.SquadNumber IN (@SN1,@SN2,@SN3,@SN4,@SN5,@SN6)
-                    //                GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
-                    //                ORDER BY Participants.Member_Id";
-                    //    getList.Parameters.AddWithValue("@TID", selectedTourney);
-                    //    getList.Parameters.AddWithValue("@SN1", howManySquadsCanBeFiltered[0]);
-                    //    getList.Parameters.AddWithValue("@SN2", howManySquadsCanBeFiltered[1]);
-                    //    getList.Parameters.AddWithValue("@SN3", howManySquadsCanBeFiltered[2]);
-                    //    getList.Parameters.AddWithValue("@SN4", howManySquadsCanBeFiltered[3]);
-                    //    getList.Parameters.AddWithValue("@SN5", howManySquadsCanBeFiltered[4]);
-                    //    getList.Parameters.AddWithValue("@SN6", howManySquadsCanBeFiltered[5]);
-
-
-                       
-                    //}
-
-                    //else if (howManySquadsCanBeFiltered.Count == 7)
-                    //{
-                    //    getList.CommandText = @"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id, Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
-                    //                FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
-                    //                JOIN Games ON Games.Id = Participants.Game_Id
-                    //                JOIN Members ON Members.Id = Participants.Member_Id 
-                    //                WHERE Tournaments.Id = @TID AND Participants.SquadNumber IN (@SN1,@SN2,@SN3,@SN4,@SN5,@SN6,@SN7)
-                    //                GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
-                    //                ORDER BY Participants.Member_Id";
-                    //    getList.Parameters.AddWithValue("@TID", selectedTourney);
-                    //    getList.Parameters.AddWithValue("@SN1", howManySquadsCanBeFiltered[0]);
-                    //    getList.Parameters.AddWithValue("@SN2", howManySquadsCanBeFiltered[1]);
-                    //    getList.Parameters.AddWithValue("@SN3", howManySquadsCanBeFiltered[2]);
-                    //    getList.Parameters.AddWithValue("@SN4", howManySquadsCanBeFiltered[3]);
-                    //    getList.Parameters.AddWithValue("@SN5", howManySquadsCanBeFiltered[4]);
-                    //    getList.Parameters.AddWithValue("@SN6", howManySquadsCanBeFiltered[5]);
-                    //    getList.Parameters.AddWithValue("@SN7", howManySquadsCanBeFiltered[6]);
-
-                    //}
-
-
-
-
+                    //filters out each squad
+                    //take the list of participants where => if the squad number equals to any of the filtered numbers.
+                    listOfParticipants.Where(p => howManySquadsCanBeFiltered.Any(h => h == p.Squad)).ToList();
                 }
-
-
-
                 try
                 {
+
+
+
                     // open connection
                     con.Open();
 
@@ -1773,7 +1622,17 @@ namespace NineTapTour.Forms
                     int id = 0;
                     int count = 0;
                     int num = 0;
+                    foreach (Participant currParticipant in listOfParticipants)
+                    {
+                        num = listOfTopScore.Count();
 
+                        var allScoresWithOutNullGames = currParticipant.Game.allGameScores().Where(g => g.HasValue);
+                        int? totalScore = allScoresWithOutNullGames.Sum();
+
+                        var top4Games = allScoresWithOutNullGames;
+                        var top3Games = TournamentStats.GetTop3OutOf4(top4Games.ToList());
+
+                    }
                     // view results
                     foreach (var i in reader)
                     {

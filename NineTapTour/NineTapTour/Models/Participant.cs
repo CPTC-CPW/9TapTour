@@ -20,6 +20,5 @@ namespace NineTapTour.Models
 
         public int ParticipantRegionID { get; set; }
         #endregion
-
     }
 }
