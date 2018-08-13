@@ -1614,87 +1614,143 @@ namespace NineTapTour.Forms
 
 
                     // open connection
-                    con.Open();
+                   // con.Open();
 
                     // execute command(query)
-                    SqlDataReader reader = null;//getList.ExecuteReader();
+                    //SqlDataReader reader = null;//getList.ExecuteReader();
 
                     int id = 0;
                     int count = 0;
-                    int num = 0;
+                    int num = listOfTopScore.Count();
+
                     foreach (Participant currParticipant in listOfParticipants)
                     {
-                        num = listOfTopScore.Count();
-
+                        //get all games scores for the current participant that are not null
                         var allScoresWithOutNullGames = currParticipant.Game.allGameScores().Where(g => g.HasValue);
+                        //totals all games with out nulls/valid score
                         int? totalScore = allScoresWithOutNullGames.Sum();
 
                         var top4Games = allScoresWithOutNullGames;
                         var top3Games = TournamentStats.GetTop3OutOf4(top4Games.ToList());
 
+                        // checks if current member is not a current member
+                        if (currParticipant.Member.Id == id)
+                        {
+                            if (totalScore > listOfTopScore[count - 1].ScratchTotal)
+                            {
+                                listOfTopScore[count - 1].ScratchTotal = totalScore;
+                                listOfTopScore[count - 1].HandicapScore = totalScore + (listOfTopScore[count - 1].Handicap * 4) + (listOfTopScore[count - 1].Bonus * 4);
+                                listOfTopScore[count - 1].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
+                                listOfTopScore[count - 1].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * currParticipant.Member.Handicap) + (3 * listOfTopScore[count - 1].Bonus);
+                                listOfTopScore[count - 1].Game1 = currParticipant.Game.Game1;
+                                listOfTopScore[count - 1].Game2 = currParticipant.Game.Game2;
+                                listOfTopScore[count - 1].Game3 = currParticipant.Game.Game3;
+                                listOfTopScore[count - 1].Game4 = currParticipant.Game.Game4;
+                                listOfTopScore[count - 1].GameID = currParticipant.Game.Id;
+
+
+                            }
+                            else
+                            {
+                                if (count == num)
+                                {
+                                    TopScores temp = new TopScores();
+                                    listOfTopScore.Add(temp);
+                                }
+                                id = currParticipant.Member.Id;
+
+                                /// Populates info                         
+                                listOfTopScore[count].FirstName = currParticipant.Member.FirstName;
+                                listOfTopScore[count].LastName = currParticipant.Member.LastName;
+                                listOfTopScore[count].Game1 = currParticipant.Game.Game1;
+                                listOfTopScore[count].Game2 = currParticipant.Game.Game2;
+                                listOfTopScore[count].Game3 = currParticipant.Game.Game3;
+                                listOfTopScore[count].Game4 = currParticipant.Game.Game4;
+                                listOfTopScore[count].GameID = currParticipant.Game.Id;
+                                listOfTopScore[count].Handicap = currParticipant.Member.Handicap;
+                                listOfTopScore[count].memberID = id;
+                                //todo: change this as this is uneedeed
+                                try
+                                {
+                                    listOfTopScore[count].Bonus = currParticipant.Member.Bonus;
+                                }
+                                catch
+                                {
+                                    listOfTopScore[count].Bonus = 0;
+                                }
+
+                                listOfTopScore[count].ScratchTotal = totalScore;
+                                listOfTopScore[count].HandicapScore = totalScore + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);
+                                listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
+                                listOfTopScore[count].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * currParticipant.Member.Handicap) + (3 * listOfTopScore[count].Bonus);
+                                count++;
+                            }
+                        }
                     }
                     // view results
-                    foreach (var i in reader)
-                    {
-                        num = listOfTopScore.Count();
+                    //foreach (var i in reader)
+                    //{
+                    //    num = listOfTopScore.Count();
 
-                        // TODO: fix null exception with tryparse
-                        // System.InvalidCastException: 'Object cannot be cast from DBNull to other types.'
-                        int score = Convert.ToInt32(reader["Total"]);
+                    //    // TODO: fix null exception with tryparse
+                    //    // System.InvalidCastException: 'Object cannot be cast from DBNull to other types.'
+                    //    int score = Convert.ToInt32(reader["Total"]);
 
-                        List<int?> top4Games = new List<int?> { Convert.ToInt32(reader["Game1"]), Convert.ToInt32(reader["Game2"]), Convert.ToInt32(reader["Game3"]), Convert.ToInt32(reader["Game4"]) };
-                        List<int> top3Games = TournamentStats.GetTop3OutOf4(top4Games);
-                        if (Convert.ToInt32(reader["Member_ID"]) == id)
-                        {
-                            if (score > listOfTopScore[count - 1].ScratchTotal)
-                            {
-                                listOfTopScore[count - 1].ScratchTotal = score;
-                                listOfTopScore[count - 1].HandicapScore = score + (listOfTopScore[count - 1].Handicap * 4) + (listOfTopScore[count - 1].Bonus * 4);
-                                listOfTopScore[count - 1].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
-                                listOfTopScore[count - 1].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * Convert.ToInt32(reader["Handicap"])) + (3 * listOfTopScore[count - 1].Bonus);
-                                listOfTopScore[count - 1].Game1 = Convert.ToInt32(reader["Game1"]);
-                                listOfTopScore[count - 1].Game2 = Convert.ToInt32(reader["Game2"]);
-                                listOfTopScore[count - 1].Game3 = Convert.ToInt32(reader["Game3"]);
-                                listOfTopScore[count - 1].Game4 = Convert.ToInt32(reader["Game4"]);
-                                listOfTopScore[count - 1].GameID = Convert.ToInt32(reader["Id"]);
-                            }
-                        }
-                        else
-                        {
-                            if (count == num)
-                            {
-                                TopScores temp = new TopScores();
-                                listOfTopScore.Add(temp);
-                            }
+                    //    List<int?> top4Games = new List<int?> { Convert.ToInt32(reader["Game1"]), Convert.ToInt32(reader["Game2"]), Convert.ToInt32(reader["Game3"]), Convert.ToInt32(reader["Game4"]) };
+                    //    List<int> top3Games = TournamentStats.GetTop3OutOf4(top4Games);
+
+                    //    if (Convert.ToInt32(reader["Member_ID"]) == id)
+                    //    {
+                    //        if (score > listOfTopScore[count - 1].ScratchTotal)
+                    //        {
+                    //            listOfTopScore[count - 1].ScratchTotal = score;
+                    //            listOfTopScore[count - 1].HandicapScore = score + (listOfTopScore[count - 1].Handicap * 4) + (listOfTopScore[count - 1].Bonus * 4);
+                    //            listOfTopScore[count - 1].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
+                    //            listOfTopScore[count - 1].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * Convert.ToInt32(reader["Handicap"])) + (3 * listOfTopScore[count - 1].Bonus);
+                    //            listOfTopScore[count - 1].Game1 = Convert.ToInt32(reader["Game1"]);
+                    //            listOfTopScore[count - 1].Game2 = Convert.ToInt32(reader["Game2"]);
+                    //            listOfTopScore[count - 1].Game3 = Convert.ToInt32(reader["Game3"]);
+                    //            listOfTopScore[count - 1].Game4 = Convert.ToInt32(reader["Game4"]);
+                    //            listOfTopScore[count - 1].GameID = Convert.ToInt32(reader["Id"]);
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        if (count == num)
+                    //        {
+                    //            TopScores temp = new TopScores();
+                    //            listOfTopScore.Add(temp);
+                    //        }
 
 
-                            id = Convert.ToInt32(reader["Member_ID"]);
-                            /// Populates info                         
-                            listOfTopScore[count].FirstName = reader["FirstName"].ToString();
-                            listOfTopScore[count].LastName = reader["LastName"].ToString();
-                            listOfTopScore[count].Game1 = Convert.ToInt32(reader["Game1"]);
-                            listOfTopScore[count].Game2 = Convert.ToInt32(reader["Game2"]);
-                            listOfTopScore[count].Game3 = Convert.ToInt32(reader["Game3"]);
-                            listOfTopScore[count].Game4 = Convert.ToInt32(reader["Game4"]);
-                            listOfTopScore[count].GameID = Convert.ToInt32(reader["Id"]);
-                            listOfTopScore[count].Handicap = Convert.ToInt32(reader["Handicap"]);
-                            listOfTopScore[count].memberID = id;
-                            try
-                            {
-                                listOfTopScore[count].Bonus = Convert.ToInt32(reader["Bonus"]);
-                            }
-                            catch
-                            {
-                                listOfTopScore[count].Bonus = 0;
-                            }
-                            listOfTopScore[count].memberID = id;
-                            listOfTopScore[count].ScratchTotal = Convert.ToInt32(reader["Total"]);
-                            listOfTopScore[count].HandicapScore = score + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);
-                            listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
-                            listOfTopScore[count].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * Convert.ToInt32(reader["Handicap"])) + (3 * listOfTopScore[count].Bonus);
-                            count++;
-                        }
-                    }
+                    //        id = Convert.ToInt32(reader["Member_ID"]);
+                    //        /// Populates info                         
+                    //        listOfTopScore[count].FirstName = reader["FirstName"].ToString();
+                    //        listOfTopScore[count].LastName = reader["LastName"].ToString();
+                    //        listOfTopScore[count].Game1 = Convert.ToInt32(reader["Game1"]);
+                    //        listOfTopScore[count].Game2 = Convert.ToInt32(reader["Game2"]);
+                    //        listOfTopScore[count].Game3 = Convert.ToInt32(reader["Game3"]);
+                    //        listOfTopScore[count].Game4 = Convert.ToInt32(reader["Game4"]);
+                    //        listOfTopScore[count].GameID = Convert.ToInt32(reader["Id"]);
+                    //        listOfTopScore[count].Handicap = Convert.ToInt32(reader["Handicap"]);
+                    //        listOfTopScore[count].memberID = id;
+                    //        try
+                    //        {
+                    //            listOfTopScore[count].Bonus = Convert.ToInt32(reader["Bonus"];
+                    //        }
+                    //        catch
+                    //        {
+                    //            listOfTopScore[count].Bonus = 0;
+                    //        }
+
+                    //        listOfTopScore[count].memberID = id;
+                    //        listOfTopScore[count].ScratchTotal = Convert.ToInt32(reader["Total"]);
+                    //        listOfTopScore[count].HandicapScore = score + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);
+                    //        listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
+                    //        listOfTopScore[count].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * Convert.ToInt32(reader["Handicap"])) + (3 * listOfTopScore[count].Bonus);
+                    //        count++;
+                    //    }
+                    //}
                 }
                 catch (SqlException)
                 {
@@ -3261,14 +3317,14 @@ namespace NineTapTour.Forms
         public string LastName { get; set; }
         public int Placing { get; set; }
         public int? ScratchTotal { get; set; }
-        public int HandicapScore { get; set; }
+        public int? HandicapScore { get; set; }
         public int? Top3ScratchScore { get; set; }
         public int? Top3HandiScores { get; set; }
         public int? Game1 { get; set; }
         public int? Game2 { get; set; }
         public int? Game3 { get; set; }
         public int? Game4 { get; set; }
-        public int Handicap { get; set; }
+        public int? Handicap { get; set; }
         public int Bonus { get; set; }
         public int GameID { get; set; }
         #endregion
