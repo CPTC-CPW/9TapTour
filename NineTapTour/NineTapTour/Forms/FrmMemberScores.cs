@@ -1621,10 +1621,11 @@ namespace NineTapTour.Forms
 
                     int id = 0;
                     int count = 0;
-                    int num = listOfTopScore.Count();
+                    int num = 0;
 
                     foreach (Participant currParticipant in listOfParticipants)
                     {
+                        num = listOfTopScore.Count();
                         //get all games scores for the current participant that are not null
                         var allScoresWithOutNullGames = currParticipant.Game.allGameScores().Where(g => g.HasValue);
                         //totals all games with out nulls/valid score
@@ -1687,6 +1688,7 @@ namespace NineTapTour.Forms
                             }
                         }
                     }
+                    #region old code
                     // view results
                     //foreach (var i in reader)
                     //{
@@ -1751,6 +1753,7 @@ namespace NineTapTour.Forms
                     //        count++;
                     //    }
                     //}
+                    #endregion
                 }
                 catch (SqlException)
                 {
