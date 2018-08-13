@@ -1648,8 +1648,6 @@ namespace NineTapTour.Forms
                                 listOfTopScore[count - 1].Game3 = currParticipant.Game.Game3;
                                 listOfTopScore[count - 1].Game4 = currParticipant.Game.Game4;
                                 listOfTopScore[count - 1].GameID = currParticipant.Game.Id;
-
-
                             }
                         }
                         else
@@ -1682,7 +1680,7 @@ namespace NineTapTour.Forms
                             }
 
                             listOfTopScore[count].ScratchTotal = totalScore;
-                            listOfTopScore[count].HandicapScore = totalScore + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);
+                            listOfTopScore[count].HandicapScore = totalScore + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);//TODO: make "game count flexible"
                             listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
                             listOfTopScore[count].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * currParticipant.Member.Handicap) + (3 * listOfTopScore[count].Bonus);
                             count++;
@@ -2113,7 +2111,7 @@ namespace NineTapTour.Forms
                                 nullValues += 1;
                             }
                             #endregion
-                            scores.Add(new MemberScores { MemberId = i.memberID, FirstName = i.FirstName, LastName = i.LastName, Score = ((i.Game1 + i.Bonus + i.Handicap) + (i.Game2 + i.Bonus + i.Handicap) + (i.Game3 + i.Bonus + i.Handicap) + (i.Game4 + i.Handicap + i.Bonus)) });
+                            scores.Add(new MemberScores { MemberId = i.memberID, FirstName = i.FirstName, LastName = i.LastName, Score = ((i.Game1 + i.Bonus + i.Handicap) + (i.Game2 + i.Bonus + i.Handicap) + (i.Game3 + i.Bonus + i.Handicap)) });
                         }
                         scores.Sort(scoreComparer);
                         scores.Reverse();
