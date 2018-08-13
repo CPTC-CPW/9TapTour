@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NineTapTour.Models;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Collections;
 
 namespace NineTapTour.Forms
 {
@@ -379,8 +380,13 @@ namespace NineTapTour.Forms
             string data = null; // the data to be added to the excel spreadsheet cells
             string tempData = null;
             string tempData2 = null;
+            string tempData3 = null;
+            //int whiteSpace = Int32.Parse(txtWhiteSpace.Text);
+            
             int i = 0; // used to determine which row to save data into
             int j = 0; // used to determine which column to save the data into
+            bool FormatBool = false;
+            int tiePlace = 0;
 
             Excel.Application xlApp; // used to open the excel application
             Excel.Workbook xlWorkBook; // used to open the worksheet
@@ -592,6 +598,7 @@ namespace NineTapTour.Forms
                         // For rows 3 and higher in the data table
                         if (i >= 3)
                         {
+                            
                             // first insert a new line into the excel spreadsheet
                             if (i >= 27 && j == 0)
                             {
@@ -610,13 +617,19 @@ namespace NineTapTour.Forms
                                 //Excel.Range range = xlApp.get_Range(xlWorkSheet.Cells[i + 6, j + 1], xlWorkSheet.Cells[i + 6, j + 5]);
                                 //range.Merge();
                                 //range.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
-
                             }
+                            //if (i > dt.Rows.Count - whiteSpace)
+                            //{
+                               // Excel.Range swag = (Excel.Range)xlWorkSheet.Rows[dt.Rows.Count + 9];
+                               // swag.Insert();
+                            //}
                             // Add the place standing and 
                             // displays for example: 4th, 5th, 6th,
                             // 21st, 22nd, 23rd, etc.
+
                             if (j == 0)
                             {
+
                                 tempData = dt.Rows[i - 1].ItemArray[j].ToString();
                                 if((i + 1) < dt.Rows.Count)
                                 {
@@ -626,9 +639,34 @@ namespace NineTapTour.Forms
                                 {
                                     tempData2 = tempData;
                                 }
+
                                 // check the place and then add "st", "nd", "rd" or "th"
                                 string place = getPlace(data);
-                                if (data == tempData || data == tempData2)
+                                if(data == "1" || data == "2" || data == "3")
+                                {
+                                    Excel.Range R1 = (Excel.Range)xlWorkSheet.Cells[4, 1];
+                                    R1.Copy(Type.Missing);
+
+                                    Excel.Range R2 = (Excel.Range)xlWorkSheet.Cells[i + 7, 1];
+                                    R2.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
+                                    Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+
+                                    Excel.Range R3 = (Excel.Range)xlWorkSheet.Cells[4, 2];
+                                    R3.Copy(Type.Missing);
+
+                                    Excel.Range R4 = (Excel.Range)xlWorkSheet.Cells[i + 7, 2];
+                                    R4.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
+                                    Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+
+                                    tiePlace += 1;
+                                    FormatBool = true;
+                                    tempData3 = data;
+                                
+                                    xlWorkSheet.Cells[i + 7, j + 1] = data + place + "T";
+                                    // add place without "st, nd, rd, or th" into column 11
+                                    xlWorkSheet.Cells[i + 7, j + 11] = data;
+                            }
+                                else if (data == tempData || data == tempData2)
                                 {
                                     xlWorkSheet.Cells[i + 7, j + 1] = data + place + "T";
                                     // add place without "st, nd, rd, or th" into column 11
@@ -671,6 +709,7 @@ namespace NineTapTour.Forms
                                 xlWorkSheet.Cells[i + 7, j + 7] = data;
                             }
                         }
+
                         // if we are on last row and i is less than 28
                         if (i == dt.Rows.Count - 1 && i < 27 && j == 5)
                         {
@@ -721,7 +760,80 @@ namespace NineTapTour.Forms
                         //    // calculate the total amount of money that was paid out
                         //    xlWorkSheet.Cells[i + 8, j + 4] = "=SUM(I" + 4 + ":I" + (i + 7) + ")";
                         //}
+
                     }
+                }
+
+                if (FormatBool)
+                {
+                    for(i = 0; i < tiePlace; i++) {
+                        //get range on which to insert extra line
+                        Excel.Range line = (Excel.Range)xlWorkSheet.Rows[(i * 2) + 11];
+                        // insert the new row
+                        line.Insert();
+
+                        Excel.Range R5 = (Excel.Range)xlWorkSheet.Cells[5, 2];
+                        R5.Copy(Type.Missing);
+
+                        Excel.Range R6 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 2];
+                        R6.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
+                        Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+                        //
+
+                        Excel.Range R1 = (Excel.Range)xlWorkSheet.Cells[5, 6];
+                        R1.Copy(Type.Missing);
+
+                        Excel.Range R2 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 6];
+                        R2.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
+                        Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+                        //
+
+                        Excel.Range R3 = (Excel.Range)xlWorkSheet.Cells[5, 9];
+                        R3.Copy(Type.Missing);
+
+                        Excel.Range R4 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 9];
+                        R4.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
+                        Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+                        //
+
+                        Excel.Range R7 = (Excel.Range)xlWorkSheet.Cells[5, 3];
+                        R7.Copy(Type.Missing);
+
+                        Excel.Range R8 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 3];
+                        R8.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
+                        Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+                        //
+
+                        //merge cells together
+                        Excel.Range r = xlWorkSheet.get_Range("C" + ((i * 2) + 11), "E" + ((i * 2) + 11));
+                        // merge the cells of the excel sheet
+                        r.MergeCells = true;
+                        // get these cells
+                        Excel.Range r2 = xlWorkSheet.get_Range("F" + ((i * 2) + 11), "H" + ((i * 2) + 11));
+                        // merge the cells
+                        r2.MergeCells = true;
+                        
+                        //create a method out of all this shit you dumbass and pass in data when called
+                        if (tempData3 == "1")
+                        {
+                            xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "st Place";
+                        }
+                        else if(tempData3 == "2")
+                        {
+                            xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "nd Place";
+                        }
+                        else if (tempData3 == "3")
+                        {
+                            xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "rd Place";
+                        }
+
+                        //set money earned in red text next to place
+                        xlWorkSheet.Cells[(i * 2) + 11, 3] = dt.Rows[i + 3].ItemArray[4].ToString();
+
+                        xlWorkSheet.Cells[(i * 2) + 11, 6] = "$20 Progressive Pot";
+                    }
+
+                    
                 }
 
                 // saves the excel file with the file name
