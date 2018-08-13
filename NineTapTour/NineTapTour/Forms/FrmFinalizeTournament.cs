@@ -20,8 +20,8 @@ namespace NineTapTour.Forms
         #region Constant Values
 
         //USE THIS IF YOU NEED TO MOVE AROUND THE ORDER IN WHICH THE COLUMNS ARE DISPLAYED 
-        const int INDEX_COLUMN = 0;
-        const int GAME_ID_COLUMN = 1;
+        const int STANDING_COLUMN = 0;
+        const int MEMBER_NUMBER_COLUMN = 1;
         const int NAME_COLUMN = 2;
         const int GAME_1_COLUMN = 3;
         const int GAME_1_VALID_COLUMN = 4;
@@ -42,9 +42,11 @@ namespace NineTapTour.Forms
         const int BONUS_COLUMN = 19;
         const int PRO_POT_COLUMN = 20;
         const int NOTES_COLUMN_ = 21;
+        const int GAME_ID_COLUMN = 22;
 
         //USE THIS IF YOU WANT TO CHANGE THE NAME OF EACH COLUMN 
-        const string INDEX_COLUMN_NAME = "Index";
+        const string STANDING_COLUMN_NAME = "Standing";
+        const string MEMBER_NUMBER_COLUMN_NAME = "Member Number";
         const string GAME_ID_COLUMN_NAME = "GameID";
         const string NAME_COLUMN_NAME = "Name";
         const string GAME_1_COLUMN_NAME = "Game 1";
@@ -210,10 +212,7 @@ namespace NineTapTour.Forms
 
             dataGridView1.DataSource = DataView(DataViewList); //By default populates all datagrid with all participant for tournament.
 
-
-
-
-
+            dataGridView1.Columns[GAME_ID_COLUMN].Visible = false;
 
             ////Sort DataGridView by TrueAverage
             //this.dataGridView1.Sort(this.dataGridView1.Columns["True Avg"], ListSortDirection.Descending);
@@ -240,9 +239,6 @@ namespace NineTapTour.Forms
                 //    }
             //}
             //dataGridView1.ResumeLayout();
-
-
-            dataGridView1.AllowUserToAddRows = false;
         }
 
 
@@ -255,8 +251,8 @@ namespace NineTapTour.Forms
         {
             var db = new NineTapDb();
             DataTable dt = new DataTable();
-            dt.Columns.Add(INDEX_COLUMN_NAME); //0
-            dt.Columns.Add(GAME_ID_COLUMN_NAME).ReadOnly = true; //1
+            dt.Columns.Add(STANDING_COLUMN_NAME); //0
+            dt.Columns.Add(MEMBER_NUMBER_COLUMN_NAME).ReadOnly = true; //1
             dt.Columns.Add(NAME_COLUMN_NAME).ReadOnly = true; //2
             dt.Columns.Add(GAME_1_COLUMN_NAME).ReadOnly = true; //3
             dt.Columns.Add(new DataColumn(GAME_1_VALID_COLUMN_NAME, typeof(bool))); //4
@@ -278,6 +274,8 @@ namespace NineTapTour.Forms
             dt.Columns.Add(PRO_POT_COLUMN_NAME);//19
             dt.Columns.Add(NOTES_COLUMN_NAME);//20
 
+            dt.Columns.Add(GAME_ID_COLUMN_NAME).ReadOnly = true; //21
+
 
 
             //whatever list of participants you pass into method will be populated into grid
@@ -287,7 +285,8 @@ namespace NineTapTour.Forms
             foreach (var item in temp)
             {
                 DataRow newRow = dt.NewRow();
-                newRow[GAME_ID_COLUMN_NAME] = item.GameId;
+                newRow[STANDING_COLUMN_NAME] = index;
+                newRow[MEMBER_NUMBER_COLUMN_NAME] = item.memberNumber;
                 newRow[NAME_COLUMN_NAME] = item.FirstName + " " + item.LastName;
                 newRow[GAME_1_COLUMN_NAME] = item.Game1;
                 newRow[GAME_1_VALID_COLUMN_NAME] = item.UseGame1;
@@ -306,8 +305,8 @@ namespace NineTapTour.Forms
                 newRow[HANDICAP_COLUMN_NAME] = item.Handicap;
                 newRow[BONUS_COLUMN_NAME] = item.Bonus;
                 newRow[NOTES_COLUMN_NAME] = item.Notes;
-                newRow[INDEX_COLUMN_NAME] = index;
                 newRow[HANDICAP_TOTAL_COLUMN_NAME] = item.HandicapTotal;
+                newRow[GAME_ID_COLUMN_NAME] = item.GameId;
                 dt.Rows.Add(newRow);
                 index++;
             }
@@ -485,30 +484,21 @@ namespace NineTapTour.Forms
 
                     SetGameCellFormatting(GetCorrespondingGameCell(clickedCell), isCellChecked);
                     UpdateAvg(clickedCell.RowIndex);
-                    getLeagueSum(FinalizeTableList[clickedCell.RowIndex]);
                     CheckBoxDBSet(clickedCell.RowIndex, clickedCell.ColumnIndex, isCellChecked);
                 }
 
                 // Check if cell changed was a DIRECTOR_CHECK cell
                 else if (e.ColumnIndex == DIRECTOR_CHECK_COLUMN)
                 {
-                    // If the DIRECTOR_CHECK cell was clicked, this code finds the member that belongs to that cell
-                    // and changes all of that member's games to match the clicked DIRECTOR_CHECK.
-                    DataGridViewRow clickedRow = dataGridView1.Rows[e.RowIndex];
-                    DataGridViewCell clickedCell = clickedRow.Cells[e.ColumnIndex];
+                    // If the DIRECTOR_CHECK cell was clicked, this code changes all of that member's games to match the clicked DIRECTOR_CHECK.
 
-                    // TODO: Move database code to appropriate database helper class.
-                    int gameId = Convert.ToInt32(clickedRow.Cells[GAME_ID_COLUMN].Value);
-                    int memId;
-                    using (var db = new NineTapDb())
-                    {
-                        memId = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Id;
-                    }
+                    int memberNum = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[MEMBER_NUMBER_COLUMN].Value);
+                    bool isCellChecked = Convert.ToBoolean(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
 
-                    bool isCellChecked = Convert.ToBoolean(clickedCell.Value);
-                    for (int i = 0; i < FinalizeTableList.Count; i++)
+                    for (int i = 0; i < dataGridView1.Rows.Count; i++)
                     {
-                        if (FinalizeTableList[i].MemberId == memId)
+                        int otherMemberNum = Convert.ToInt32(dataGridView1.Rows[i].Cells[MEMBER_NUMBER_COLUMN].Value);
+                        if (otherMemberNum == memberNum)
                         {
                             dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = isCellChecked;
                         }
@@ -611,10 +601,6 @@ namespace NineTapTour.Forms
                 dataGridView1.Rows[row].Cells[ENTRY_AVERAGE_COLUMN].Value = sum / count;
                 dataGridView1.Rows[row].Cells[SCRATCH_TOTAL_COLUMN].Value = sum;
                 dataGridView1.Rows[row].Cells[HANDICAP_TOTAL_COLUMN].Value = sumWHandicap;
-                FinalizeTableList[row].GameAvg = sum / count;
-                FinalizeTableList[row].ScratchTotal = sum;
-                FinalizeTableList[row].HandicapTotal = sumWHandicap;
-
             }
         }
         //calculates league average for member based off last 30 games or total games played if less than 30.
@@ -851,6 +837,7 @@ namespace NineTapTour.Forms
 
         private void DataGridView1_OnCellEnter(object sender, DataGridViewCellEventArgs e)
         {
+            /*
             //currentIndex = dataGridView1.CurrentCell.RowIndex;
             // ^ Seems not to be used - Devon
 
@@ -859,8 +846,8 @@ namespace NineTapTour.Forms
             using (var db = new NineTapDb())
             {
                 //set labels to selected index
-                int memId = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Id;
-                Member Cmember = MemberDb.GetMember(MemberDb.GetMemberNumberbyID(memId), RegionID);
+                int memberNumber = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Number;
+                Member Cmember = MemberDb.GetMember(memberNumber, RegionID);
                 lblMemberNumber.Text = Cmember.Number.ToString();
                 lblName.Text = Cmember.FirstName + " " + Cmember.LastName;
                 lblStartAvg.Text = Cmember.StartAvg.ToString();
@@ -870,15 +857,16 @@ namespace NineTapTour.Forms
                 {
                     temporary = new List<PlayerHistory>();
 
-                    for (int i = 0; i < FinalizeTableList.Count; i++)
+                    for (int i = 0; i < dataGridView1.Rows.Count; i++)
                     {
-                        if (FinalizeTableList[i].MemberId == memId)
+                        int tempMemberNumber = Convert.ToInt32(dataGridView1.Rows[i].Cells[MEMBER_NUMBER_COLUMN].Value);
+                        if (tempMemberNumber == memberNumber)
                         {
                             PlayerHistory p = new PlayerHistory();
 
-                            p.MemberNumber = FinalizeTableList[i].memberNumber;
+                            p.MemberNumber = tempMemberNumber;
                             int tempgameplayed = 0;
-                            if (dataGridView1[GAME_1_VALID_COLUMN, i].Value.ToString() == "True")
+                            if (Convert.ToBoolean(dataGridView1[GAME_1_VALID_COLUMN, i].Value))
                             {
                                 tempgameplayed++;
                                 FinalizeTableList[i].UseGame1 = true;
@@ -890,7 +878,7 @@ namespace NineTapTour.Forms
                                 p.Game1 = 0;
 
                             }
-                            if (dataGridView1[GAME_2_VALID_COLUMN, i].Value.ToString() == "True")
+                            if (Convert.ToBoolean(dataGridView1[GAME_2_VALID_COLUMN, i].Value))
                             {
                                 tempgameplayed++;
                                 FinalizeTableList[i].UseGame2 = true;
@@ -902,7 +890,7 @@ namespace NineTapTour.Forms
                                 FinalizeTableList[i].UseGame2 = false;
                                 p.Game2 = 0;
                             }
-                            if (dataGridView1[GAME_3_VALID_COLUMN, i].Value.ToString() == "True")
+                            if (Convert.ToBoolean(dataGridView1[GAME_3_VALID_COLUMN, i].Value))
                             {
                                 tempgameplayed++;
                                 FinalizeTableList[i].UseGame3 = true;
@@ -914,7 +902,7 @@ namespace NineTapTour.Forms
                                 p.Game3 = 0;
 
                             }
-                            if (dataGridView1[GAME_4_VALID_COLUMN, i].Value.ToString() == "True")
+                            if (Convert.ToBoolean(dataGridView1[GAME_4_VALID_COLUMN, i].Value))
                             {
                                 tempgameplayed++;
                                 FinalizeTableList[i].UseGame4 = true;
@@ -956,10 +944,8 @@ namespace NineTapTour.Forms
                 {
                     //catches the instance where cells technically do not exist. will not refresh if they dont exist yet.
                 }
-
-
             }
-
+            */
         }
 
         //private void DataGridView2_FindCurrentIndex(object sender, DataGridViewCellStateChangedEventArgs e)
@@ -999,7 +985,7 @@ namespace NineTapTour.Forms
         //    }
         //}
 
-        private void Refresh(List<PlayerHistory> temporary)
+        private void RefreshMemberView()
         {
 
             DataTable dtGames = new DataTable();
@@ -1027,7 +1013,7 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Notes");
             dtGames.Columns.Add("GameID").ReadOnly = true;
 
-
+            /*
             foreach (var item in temporary)
             {
                 DataRow newRow = dtGames.NewRow();
@@ -1069,6 +1055,7 @@ namespace NineTapTour.Forms
                 dtGames.Rows.Add(newRow);
 
             }
+            */
 
             List<PlayerHistory> currentHistory = PlayerHistoryDB.getMemberPlayerHistoryCount(temporary[0].MemberNumber, RegionID);
 
