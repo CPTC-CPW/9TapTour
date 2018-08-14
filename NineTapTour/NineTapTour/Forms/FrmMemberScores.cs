@@ -1590,9 +1590,7 @@ namespace NineTapTour.Forms
 
                 /// Seperate top scores so that only top score from each participant shows up for each tournament,
                 /// no matter how many squads they rolled in for the tournament.
-                SqlConnection con = new SqlConnection(TournamentStats.GetConnection());
-                SqlCommand getList = new SqlCommand();
-                getList.Connection = con;
+
 
                 var listOfParticipants = ParticipantsDB.GetParticipants(selectedTournament.Id);
 
@@ -1783,9 +1781,11 @@ namespace NineTapTour.Forms
                         var temp = (from g in top5
                                     orderby g.Game.Game1
                                     select new { g.Game.Game1, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+
                         var temp2 = (from g in top5
                                      orderby g.Game.Game2
                                      select new { g.Game.Game2, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+
                         var temp3 = (from g in top5
                                      orderby g.Game.Game3
                                      select new { g.Game.Game3, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
@@ -2037,11 +2037,7 @@ namespace NineTapTour.Forms
                     }
                 }
                 #endregion
-
-                #region If not Three out of 4
-                // Do the third box
-
-                /////////////////////////////////
+                #region Populates 3rd Box
                 if (!selectedTournament.ThreeOutOf4)
                 {
                     /////////////////////////////////
@@ -2055,9 +2051,9 @@ namespace NineTapTour.Forms
                     {
                         foreach (var s in listOfTopScore)
                         {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game1 + s.Game2 + s.Game3 + s.Game4, MemberId = s.memberID });
+                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.allGameScores().Where(sc => sc.HasValue).Sum(), MemberId = s.memberID });
                         }
-                        //IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
+
                         scores.Sort(scoreComparer);
                         scores.Reverse();
                         scores = scores.ToList();
@@ -2090,28 +2086,28 @@ namespace NineTapTour.Forms
                     }
                     else if (rdoHandicapScore.Checked)
                     {
-                        foreach (var i in listOfTopScore)
+                        foreach (var s in listOfTopScore)
                         {
                             #region conditions for highest handicap scores
                             nullValues = 0;
-                            if (i.Game1 == 0)
+                            if (s.Game1 == 0)
                             {
                                 nullValues += 1;
                             }
-                            if (i.Game2 == 0)
+                            if (s.Game2 == 0)
                             {
                                 nullValues += 1;
                             }
-                            if (i.Game3 == 0)
+                            if (s.Game3 == 0)
                             {
                                 nullValues += 1;
                             }
-                            if (i.Game4 == 0)
+                            if (s.Game4 == 0)
                             {
                                 nullValues += 1;
                             }
                             #endregion
-                            scores.Add(new MemberScores { MemberId = i.memberID, FirstName = i.FirstName, LastName = i.LastName, Score = ((i.Game1 + i.Bonus + i.Handicap) + (i.Game2 + i.Bonus + i.Handicap) + (i.Game3 + i.Bonus + i.Handicap)) });
+                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.allGameScores().Sum() + (s.allGameScores().Count * s.Handicap) + (s.allGameScores().Count * s.Bonus), MemberId = s.memberID });
                         }
                         scores.Sort(scoreComparer);
                         scores.Reverse();
@@ -2145,6 +2141,7 @@ namespace NineTapTour.Forms
                     }
                 }
                 #endregion
+
                 #region Three Out Of 4
                 /////////////////////////////////////////////////////
                 /// Executes if tournament selected is 3 Out of 4 ///
@@ -2341,6 +2338,7 @@ namespace NineTapTour.Forms
             public string LastPaymentYear { get; set; }
 
             public bool Paid { get; set; }
+
         }
 
         class MemberScoresComparer : IComparer<MemberScores>
@@ -3330,5 +3328,14 @@ namespace NineTapTour.Forms
         public int Bonus { get; set; }
         public int GameID { get; set; }
         #endregion
+        public List<int?> allGameScores()
+        {
+            var newList = new List<int?>();
+            newList.Add(Game1);
+            newList.Add(Game2);
+            newList.Add(Game3);
+            newList.Add(Game4);
+            return newList.Where(sc => sc.HasValue).ToList();
+        }
     }
 }
