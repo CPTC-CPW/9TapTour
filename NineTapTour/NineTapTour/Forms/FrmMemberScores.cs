@@ -1588,10 +1588,6 @@ namespace NineTapTour.Forms
                 NineTapDb db = new NineTapDb();
                 int selectedTourney = selectedTournament.Id;
 
-                /// Seperate top scores so that only top score from each participant shows up for each tournament,
-                /// no matter how many squads they rolled in for the tournament.
-
-
                 var listOfParticipants = ParticipantsDB.GetParticipants(selectedTournament.Id);
 
                 if (qbsNumber > 0 && qbsNumber <= 8)
@@ -1608,15 +1604,6 @@ namespace NineTapTour.Forms
                 }
                 try
                 {
-
-
-
-                    // open connection
-                   // con.Open();
-
-                    // execute command(query)
-                    //SqlDataReader reader = null;//getList.ExecuteReader();
-
                     int id = 0;
                     int count = 0;
                     int num = 0;
@@ -1626,13 +1613,14 @@ namespace NineTapTour.Forms
                         num = listOfTopScore.Count();
                         //get all games scores for the current participant that are not null
                         var allScoresWithOutNullGames = currParticipant.Game.allGameScores().Where(g => g.HasValue);
+
                         //totals all games with out nulls/valid score
                         int? totalScore = allScoresWithOutNullGames.Sum();
 
                         var top4Games = allScoresWithOutNullGames;
                         var top3Games = TournamentStats.GetTop3OutOf4(top4Games.ToList());
 
-                        // checks if current member is not a current member
+                        // checks if current member is not a member
                         if (currParticipant.Member.Id == id)
                         {
                             if (totalScore > listOfTopScore[count - 1].ScratchTotal)
@@ -1685,72 +1673,6 @@ namespace NineTapTour.Forms
                         }
                         
                     }
-                    #region old code
-                    // view results
-                    //foreach (var i in reader)
-                    //{
-                    //    num = listOfTopScore.Count();
-
-                    //    // TODO: fix null exception with tryparse
-                    //    // System.InvalidCastException: 'Object cannot be cast from DBNull to other types.'
-                    //    int score = Convert.ToInt32(reader["Total"]);
-
-                    //    List<int?> top4Games = new List<int?> { Convert.ToInt32(reader["Game1"]), Convert.ToInt32(reader["Game2"]), Convert.ToInt32(reader["Game3"]), Convert.ToInt32(reader["Game4"]) };
-                    //    List<int> top3Games = TournamentStats.GetTop3OutOf4(top4Games);
-
-                    //    if (Convert.ToInt32(reader["Member_ID"]) == id)
-                    //    {
-                    //        if (score > listOfTopScore[count - 1].ScratchTotal)
-                    //        {
-                    //            listOfTopScore[count - 1].ScratchTotal = score;
-                    //            listOfTopScore[count - 1].HandicapScore = score + (listOfTopScore[count - 1].Handicap * 4) + (listOfTopScore[count - 1].Bonus * 4);
-                    //            listOfTopScore[count - 1].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
-                    //            listOfTopScore[count - 1].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * Convert.ToInt32(reader["Handicap"])) + (3 * listOfTopScore[count - 1].Bonus);
-                    //            listOfTopScore[count - 1].Game1 = Convert.ToInt32(reader["Game1"]);
-                    //            listOfTopScore[count - 1].Game2 = Convert.ToInt32(reader["Game2"]);
-                    //            listOfTopScore[count - 1].Game3 = Convert.ToInt32(reader["Game3"]);
-                    //            listOfTopScore[count - 1].Game4 = Convert.ToInt32(reader["Game4"]);
-                    //            listOfTopScore[count - 1].GameID = Convert.ToInt32(reader["Id"]);
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        if (count == num)
-                    //        {
-                    //            TopScores temp = new TopScores();
-                    //            listOfTopScore.Add(temp);
-                    //        }
-
-
-                    //        id = Convert.ToInt32(reader["Member_ID"]);
-                    //        /// Populates info                         
-                    //        listOfTopScore[count].FirstName = reader["FirstName"].ToString();
-                    //        listOfTopScore[count].LastName = reader["LastName"].ToString();
-                    //        listOfTopScore[count].Game1 = Convert.ToInt32(reader["Game1"]);
-                    //        listOfTopScore[count].Game2 = Convert.ToInt32(reader["Game2"]);
-                    //        listOfTopScore[count].Game3 = Convert.ToInt32(reader["Game3"]);
-                    //        listOfTopScore[count].Game4 = Convert.ToInt32(reader["Game4"]);
-                    //        listOfTopScore[count].GameID = Convert.ToInt32(reader["Id"]);
-                    //        listOfTopScore[count].Handicap = Convert.ToInt32(reader["Handicap"]);
-                    //        listOfTopScore[count].memberID = id;
-                    //        try
-                    //        {
-                    //            listOfTopScore[count].Bonus = Convert.ToInt32(reader["Bonus"];
-                    //        }
-                    //        catch
-                    //        {
-                    //            listOfTopScore[count].Bonus = 0;
-                    //        }
-
-                    //        listOfTopScore[count].memberID = id;
-                    //        listOfTopScore[count].ScratchTotal = Convert.ToInt32(reader["Total"]);
-                    //        listOfTopScore[count].HandicapScore = score + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);
-                    //        listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
-                    //        listOfTopScore[count].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * Convert.ToInt32(reader["Handicap"])) + (3 * listOfTopScore[count].Bonus);
-                    //        count++;
-                    //    }
-                    //}
-                    #endregion
                 }
                 catch (SqlException)
                 {
@@ -1763,8 +1685,6 @@ namespace NineTapTour.Forms
                 var top5 = db.Participants.Include(b => b.Member)
                 .Include(b => b.Game)
                 .Where(b => b.Tournament.Id == selectedTourney);
-
-                
 
                 #region Populates 1st Box
                 // This function combines the former refresh events into a single function, and since they all used the same variable names I just put
@@ -2037,6 +1957,7 @@ namespace NineTapTour.Forms
                     }
                 }
                 #endregion
+
                 #region Populates 3rd Box
                 if (!selectedTournament.ThreeOutOf4)
                 {
@@ -2296,6 +2217,7 @@ namespace NineTapTour.Forms
                 }
             }
         }
+
 
         /// <summary>
         /// Calculates each bowler's place standing. Accounts for ties.
