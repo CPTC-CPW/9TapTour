@@ -190,7 +190,7 @@ namespace NineTapTour.Forms
                 List<PlayerHistory> ExistingPlayerHistory = PlayerHistoryDB.getMemberPlayerHistory(item.memberNumber, RegionID);
                 if (ExistingPlayerHistory.Count == 0)
                 {
-                    getLeagueSum(temp);
+                    getLeagueSum(temp, FinalizeTableList);
                 }
                 for (int u = 0; u < ExistingPlayerHistory.Count; u++)
                 {
@@ -200,7 +200,7 @@ namespace NineTapTour.Forms
                     }
                     else if (u == ExistingPlayerHistory.Count - 1) // after looking at all the history, if its not in the playerhistory list, then adjust the league avg
                     {
-                        getLeagueSum(temp);
+                        getLeagueSum(temp, FinalizeTableList);
                     }
 
                 }
@@ -208,7 +208,9 @@ namespace NineTapTour.Forms
             }
             //pulls a list from the finalizetemp table and seeds the dataview with the table info.
             List<FinalizeTemp> DataViewList = GetListFromTable(tourn);
-            FinalizeTableList = DataViewList;
+
+            // Sort the list by the total score, including handicap, in descending order.
+            DataViewList.Sort((a, b) => a.HandicapTotal - b.HandicapTotal);
 
             dataGridView1.DataSource = DataView(DataViewList); //By default populates all datagrid with all participant for tournament.
 
@@ -216,29 +218,6 @@ namespace NineTapTour.Forms
 
             ////Sort DataGridView by TrueAverage
             //this.dataGridView1.Sort(this.dataGridView1.Columns["True Avg"], ListSortDirection.Descending);
-
-            //sets sizes of check box columns "Valid Score1, ValidScore2, ValidScore3, Valid Score 4, and Keep True Avg?"
-            //dataGridView1.SuspendLayout();
-            //var column = dataGridView1.Columns[NAME_COLUMN];
-            //for (int i = 0; i <= 20; i++)
-            //{
-
-                //    column = dataGridView1.Columns[i];
-
-                //    if (column.Index == GAME_1_VALID_COLUMN || column.Index == GAME_2_VALID_COLUMN || column.Index == GAME_3_VALID_COLUMN || column.Index == GAME_4_VALID_COLUMN || column.Index == DIRECTOR_CHECK_COLUMN)
-                //    {
-                //        column.Width = 50;
-                //    }
-                //    else if (column.Index == NAME_COLUMN)
-                //    {
-                //        column.Width = 100;
-                //    }
-                //    else
-                //    {
-                //        column.Width = 75;
-                //    }
-            //}
-            //dataGridView1.ResumeLayout();
         }
 
 
@@ -1446,17 +1425,18 @@ namespace NineTapTour.Forms
             }
         }
 
-        public void getLeagueSum(FinalizeTemp temp)
+        public void getLeagueSum(FinalizeTemp temp, List<FinalizeTemp> finalizeTableList)
         {
+            
             //RUNNING LEAGUE AVG 
             int SumFromGamesNotAddedYet = 0;
             //checks to see if they bowled an any squads before the current selected squad, if your on this line then they bowled at leats once
             temp.memberNumber = MemberDb.GetMemberNumberbyID(temp.MemberId);
             List<PlayerHistory> p = PlayerHistoryDB.getMemberPlayerHistory(temp.memberNumber, RegionID);
             int howmanyTimesdidheybowlbeforethissquad = 1;
-            for (int f = 0; f < FinalizeTableList.Count; f++)
+            for (int f = 0; f < finalizeTableList.Count; f++)
             {
-                if (temp.MemberId == FinalizeTableList[f].MemberId && FinalizeTableList[f].Squad < temp.Squad)
+                if (temp.MemberId == finalizeTableList[f].MemberId && finalizeTableList[f].Squad < temp.Squad)
                 {
                     howmanyTimesdidheybowlbeforethissquad++;
                 }
@@ -1468,11 +1448,11 @@ namespace NineTapTour.Forms
             }
             else if (temp.Squad == 2) //if current member bowled in any squad but squad 1, then get the league avg sum of this game, sum of any previous squads, and the last 26-29  from player history (depending on how many squads they bowled previously)
             {
-                for (int i = 0; i < FinalizeTableList.Count; i++)
+                for (int i = 0; i < finalizeTableList.Count; i++)
                 {
-                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 2)
+                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < 2)
                     {
-                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
+                        SumFromGamesNotAddedYet += finalizeTableList[i].GameAvg;
                     }
                 }
 
@@ -1480,11 +1460,11 @@ namespace NineTapTour.Forms
             }
             else if (temp.Squad == 3)
             {
-                for (int i = 0; i < FinalizeTableList.Count; i++)
+                for (int i = 0; i < finalizeTableList.Count; i++)
                 {
-                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 3)
+                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < 3)
                     {
-                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
+                        SumFromGamesNotAddedYet += finalizeTableList[i].GameAvg;
                     }
                 }
 
@@ -1492,11 +1472,11 @@ namespace NineTapTour.Forms
             }
             else if (temp.Squad == 4)
             {
-                for (int i = 0; i < FinalizeTableList.Count; i++)
+                for (int i = 0; i < finalizeTableList.Count; i++)
                 {
-                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 4)
+                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < 4)
                     {
-                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
+                        SumFromGamesNotAddedYet += finalizeTableList[i].GameAvg;
                     }
                 }
 
@@ -1504,11 +1484,11 @@ namespace NineTapTour.Forms
             }
             else if (temp.Squad == 5)
             {
-                for (int i = 0; i < FinalizeTableList.Count; i++)
+                for (int i = 0; i < finalizeTableList.Count; i++)
                 {
-                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 5)
+                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < 5)
                     {
-                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
+                        SumFromGamesNotAddedYet += finalizeTableList[i].GameAvg;
                     }
                 }
 
@@ -1516,11 +1496,11 @@ namespace NineTapTour.Forms
             }
             else if (temp.Squad == 6)
             {
-                for (int i = 0; i < FinalizeTableList.Count; i++)
+                for (int i = 0; i < finalizeTableList.Count; i++)
                 {
-                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 6)
+                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < 6)
                     {
-                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
+                        SumFromGamesNotAddedYet += finalizeTableList[i].GameAvg;
                     }
                 }
 
@@ -1528,11 +1508,11 @@ namespace NineTapTour.Forms
             }
             else if (temp.Squad == 7)
             {
-                for (int i = 0; i < FinalizeTableList.Count; i++)
+                for (int i = 0; i < finalizeTableList.Count; i++)
                 {
-                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 7)
+                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < 7)
                     {
-                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
+                        SumFromGamesNotAddedYet += finalizeTableList[i].GameAvg;
                     }
                 }
 
@@ -1540,11 +1520,11 @@ namespace NineTapTour.Forms
             }
             else if (temp.Squad == 8)
             {
-                for (int i = 0; i < FinalizeTableList.Count; i++)
+                for (int i = 0; i < finalizeTableList.Count; i++)
                 {
-                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 8)
+                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < 8)
                     {
-                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
+                        SumFromGamesNotAddedYet += finalizeTableList[i].GameAvg;
                     }
                 }
 
