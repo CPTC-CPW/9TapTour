@@ -409,6 +409,7 @@ namespace NineTapTour.Forms
                 xlWorkSheet.Cells[1, 1] = tourny.Location + tourny.Event;
                 // adds in the date of the tourney in the cell A2
                 xlWorkSheet.Cells[2, 1] = tourny.Date;
+                
                 // use these for loops to populate data in each of
                 // the rows and cells that have data
                 for (i = 0; i < dt.Rows.Count; i++)
@@ -748,7 +749,7 @@ namespace NineTapTour.Forms
                                // delete the extra rows
                                 range.Delete();
                                 // calculate the total amount of money that was paid out
-                                xlWorkSheet.Cells[i + 8, j + 4] = "=SUM(I" + 4 + ":I" + (i + 7) + ")";
+                                //xlWorkSheet.Cells[2, 8] = "=SUM(I" + 4 + ":I" + (i + 7) + ")";
                             }
                         //}
                         //// if we are on the last row and i is greater than or equal to 29
@@ -769,6 +770,9 @@ namespace NineTapTour.Forms
                 {
                     formatBigTie(tempData3, tiePlace, xlWorkSheet, i);
                 }
+
+                //set the Total Payout to the correct number
+                setTotalPayout(xlWorkSheet);
 
                 // saves the excel file with the file name
 
@@ -810,6 +814,19 @@ namespace NineTapTour.Forms
             xlApp.Quit();
         }
     }
+
+        //gets and sets the total amount of payout for the 
+        //winners in the total payout box of the excel sheet
+        private void setTotalPayout(Excel.Worksheet xlWorkSheet)
+        {
+            double money = 0;
+            for(int i = 0; i < dt.Rows.Count; i++)
+            {
+                money += Convert.ToDouble(dt.Rows[i].ItemArray[4]);
+            }
+
+            xlWorkSheet.Cells[2, 8] = money.ToString();
+        }
 
         private void formatBigTie(string tempData3, int tiePlace, Excel.Worksheet xlWorkSheet, int i)
         {
