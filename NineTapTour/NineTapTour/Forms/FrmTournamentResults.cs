@@ -629,8 +629,9 @@ namespace NineTapTour.Forms
 
                             if (j == 0)
                             {
-
+                                //store the place value of the player before the current
                                 tempData = dt.Rows[i - 1].ItemArray[j].ToString();
+                                //if there is a next player, grab their place value aswell
                                 if((i + 1) < dt.Rows.Count)
                                 {
                                     tempData2 = dt.Rows[i + 1].ItemArray[j].ToString();
@@ -642,38 +643,38 @@ namespace NineTapTour.Forms
 
                                 // check the place and then add "st", "nd", "rd" or "th"
                                 string place = getPlace(data);
+                                //if the player's score is tied for one of the top 3 spots, format sheet accordingly
                                 if(data == "1" || data == "2" || data == "3")
                                 {
-                                    Excel.Range R1 = (Excel.Range)xlWorkSheet.Cells[4, 1];
-                                    R1.Copy(Type.Missing);
+                                    //set the row with the place and name to bold, with a font size of 16, 
+                                    //and set the row's height to 22
+                                    xlWorkSheet.Cells[i + 7, 1].EntireRow.Font.Bold = true;
+                                    xlWorkSheet.get_Range("B" + (i + 7), "B" + (i + 7)).Cells.Font.Size = 16;
+                                    xlWorkSheet.Cells[i + 7, 1].EntireRow.RowHeight = 22;
 
-                                    Excel.Range R2 = (Excel.Range)xlWorkSheet.Cells[i + 7, 1];
-                                    R2.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
-                                    Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
-
-                                    Excel.Range R3 = (Excel.Range)xlWorkSheet.Cells[4, 2];
-                                    R3.Copy(Type.Missing);
-
-                                    Excel.Range R4 = (Excel.Range)xlWorkSheet.Cells[i + 7, 2];
-                                    R4.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
-                                    Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
-
+                                    //set variables used to format the second line
+                                    //added that shows placement and money earned i.e. the red text 
                                     tiePlace += 1;
                                     FormatBool = true;
                                     tempData3 = data;
-                                
+                                    
+                                    //Set the finishing place text with a T for tie
                                     xlWorkSheet.Cells[i + 7, j + 1] = data + place + "T";
                                     // add place without "st, nd, rd, or th" into column 11
                                     xlWorkSheet.Cells[i + 7, j + 11] = data;
-                            }
+                                }
+
+                                //check for a tie with either the player before or after the current player
                                 else if (data == tempData || data == tempData2)
                                 {
+                                    //set the finishing place text with a T for tie
                                     xlWorkSheet.Cells[i + 7, j + 1] = data + place + "T";
                                     // add place without "st, nd, rd, or th" into column 11
                                     xlWorkSheet.Cells[i + 7, j + 11] = data;
                                 }
                                 else
                                 {
+                                    //set the finishing place text
                                     xlWorkSheet.Cells[i + 7, j + 1] = data + place;
                                     // add place without "st, nd, rd, or th" into column 11
                                     xlWorkSheet.Cells[i + 7, j + 11] = data;
@@ -766,74 +767,7 @@ namespace NineTapTour.Forms
 
                 if (FormatBool)
                 {
-                    for(i = 0; i < tiePlace; i++) {
-                        //get range on which to insert extra line
-                        Excel.Range line = (Excel.Range)xlWorkSheet.Rows[(i * 2) + 11];
-                        // insert the new row
-                        line.Insert();
-
-                        Excel.Range R5 = (Excel.Range)xlWorkSheet.Cells[5, 2];
-                        R5.Copy(Type.Missing);
-
-                        Excel.Range R6 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 2];
-                        R6.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
-                        Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
-                        //
-
-                        Excel.Range R1 = (Excel.Range)xlWorkSheet.Cells[5, 6];
-                        R1.Copy(Type.Missing);
-
-                        Excel.Range R2 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 6];
-                        R2.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
-                        Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
-                        //
-
-                        Excel.Range R3 = (Excel.Range)xlWorkSheet.Cells[5, 9];
-                        R3.Copy(Type.Missing);
-
-                        Excel.Range R4 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 9];
-                        R4.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
-                        Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
-                        //
-
-                        Excel.Range R7 = (Excel.Range)xlWorkSheet.Cells[5, 3];
-                        R7.Copy(Type.Missing);
-
-                        Excel.Range R8 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 3];
-                        R8.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
-                        Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
-                        //
-
-                        //merge cells together
-                        Excel.Range r = xlWorkSheet.get_Range("C" + ((i * 2) + 11), "E" + ((i * 2) + 11));
-                        // merge the cells of the excel sheet
-                        r.MergeCells = true;
-                        // get these cells
-                        Excel.Range r2 = xlWorkSheet.get_Range("F" + ((i * 2) + 11), "H" + ((i * 2) + 11));
-                        // merge the cells
-                        r2.MergeCells = true;
-                        
-                        //create a method out of all this shit you dumbass and pass in data when called
-                        if (tempData3 == "1")
-                        {
-                            xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "st Place";
-                        }
-                        else if(tempData3 == "2")
-                        {
-                            xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "nd Place";
-                        }
-                        else if (tempData3 == "3")
-                        {
-                            xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "rd Place";
-                        }
-
-                        //set money earned in red text next to place
-                        xlWorkSheet.Cells[(i * 2) + 11, 3] = dt.Rows[i + 3].ItemArray[4].ToString();
-
-                        xlWorkSheet.Cells[(i * 2) + 11, 6] = "$20 Progressive Pot";
-                    }
-
-                    
+                    formatBigTie(tempData3, tiePlace, xlWorkSheet, i);
                 }
 
                 // saves the excel file with the file name
@@ -876,6 +810,81 @@ namespace NineTapTour.Forms
             xlApp.Quit();
         }
     }
+
+        private void formatBigTie(string tempData3, int tiePlace, Excel.Worksheet xlWorkSheet, int i)
+        {
+            for (i = 0; i < tiePlace; i++)
+            {
+                //get range on which to insert extra line
+                Excel.Range line = (Excel.Range)xlWorkSheet.Rows[(i * 2) + 11];
+                // insert the new row
+                line.Insert();
+
+                //get the formatting from this cell
+                Excel.Range R5 = (Excel.Range)xlWorkSheet.Cells[9, 2];
+                R5.Copy(Type.Missing);
+
+                //apply format to this cell
+                Excel.Range R6 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 2];
+                R6.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
+                Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+
+                //get the formatting from this cell
+                Excel.Range R1 = (Excel.Range)xlWorkSheet.Cells[9, 6];
+                R1.Copy(Type.Missing);
+
+                //apply format to this cell
+                Excel.Range R2 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 6];
+                R2.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
+                Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+
+                //get the formatting from this cell
+                Excel.Range R3 = (Excel.Range)xlWorkSheet.Cells[9, 9];
+                R3.Copy(Type.Missing);
+
+                //apply format to this cell
+                Excel.Range R4 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 9];
+                R4.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
+                Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+
+                //get the formatting from this cell
+                Excel.Range R7 = (Excel.Range)xlWorkSheet.Cells[9, 3];
+                R7.Copy(Type.Missing);
+
+                //apply format to this cell
+                Excel.Range R8 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 3];
+                R8.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
+                Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+
+                //get these cells
+                Excel.Range r = xlWorkSheet.get_Range("C" + ((i * 2) + 11), "E" + ((i * 2) + 11));
+                // merge the cells of the excel sheet
+                r.MergeCells = true;
+                // get these cells
+                Excel.Range r2 = xlWorkSheet.get_Range("F" + ((i * 2) + 11), "H" + ((i * 2) + 11));
+                // merge the cells
+                r2.MergeCells = true;
+
+                //display the player's placement in red text under their name
+                if (tempData3 == "1")
+                {
+                    xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "st Place";
+                }
+                else if (tempData3 == "2")
+                {
+                    xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "nd Place";
+                }
+                else if (tempData3 == "3")
+                {
+                    xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "rd Place";
+                }
+
+                //set money earned in red text next to place
+                xlWorkSheet.Cells[(i * 2) + 11, 3] = dt.Rows[i + 3].ItemArray[4].ToString();
+                //label the progressive prize pot
+                xlWorkSheet.Cells[(i * 2) + 11, 6] = "$20 Progressive Pot";
+            }
+        }
 
         /// <summary>
         /// Checks to see what place the players have placed at 
