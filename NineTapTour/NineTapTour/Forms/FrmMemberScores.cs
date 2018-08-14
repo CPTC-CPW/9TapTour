@@ -1597,14 +1597,14 @@ namespace NineTapTour.Forms
                 if (qbsNumber > 0 && qbsNumber <= 8)
                 {
                     //TAKES A TOURNAMENT ID AND SQUAD NUMBER AND FILTERS FOR A LIST OF PARTICIPANTS.
-                    listOfParticipants.Where(p => p.Squad == qbsNumber).ToList();
+                    listOfParticipants = listOfParticipants.Where(p => p.Squad == qbsNumber).ToList();
  
                 }
                 else if(howManySquadsCanBeFiltered.Count > 0 && QBSNumber == 9)
                 {
                     //filters out each squad
                     //take the list of participants where => if the squad number equals to any of the filtered numbers.
-                    listOfParticipants.Where(p => howManySquadsCanBeFiltered.Any(h => h == p.Squad)).ToList();
+                    listOfParticipants = listOfParticipants.Where(p => howManySquadsCanBeFiltered.Any(h => h == p.Squad)).ToList();
                 }
                 try
                 {
