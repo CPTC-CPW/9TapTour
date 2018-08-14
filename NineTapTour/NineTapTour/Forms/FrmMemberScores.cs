@@ -1620,9 +1620,10 @@ namespace NineTapTour.Forms
                         var top4Games = allScoresWithOutNullGames;
                         var top3Games = TournamentStats.GetTop3OutOf4(top4Games.ToList());
 
-                        // checks if current member is not a member
                         if (currParticipant.Member.Id == id)
                         {
+                            // If a member decides to play in multiple squads for the current tournament.
+                            //This will handle setting their topScore if it is higher than the previous high score
                             if (totalScore > listOfTopScore[count - 1].ScratchTotal)
                             {
                                 listOfTopScore[count - 1].ScratchTotal = totalScore;
