@@ -210,7 +210,7 @@ namespace NineTapTour.Forms
             List<FinalizeTemp> DataViewList = GetListFromTable(tourn);
 
             // Sort the list by the total score, including handicap, in descending order.
-            DataViewList.Sort((a, b) => a.HandicapTotal - b.HandicapTotal);
+            DataViewList.Sort((a, b) => b.HandicapTotal - a.HandicapTotal);
 
             dataGridView1.DataSource = DataView(DataViewList); //By default populates all datagrid with all participant for tournament.
 
@@ -420,15 +420,6 @@ namespace NineTapTour.Forms
             }
 
             return ParticipantList;
-        }
-
-        /// <summary>
-        /// This method grabs the data out of dataGridView1 and returns it as a list.
-        /// </summary>
-        /// <returns>A list of FinalizeTemp objects from the dataGridView1.DataSource</returns>
-        private List<FinalizeTemp> GetListFromDataGridView()
-        {
-            return (List<FinalizeTemp>)dataGridView1.DataSource;
         }
 
         //makes a list from the finalizetemp table to be used in dataview source
@@ -816,7 +807,6 @@ namespace NineTapTour.Forms
 
         private void DataGridView1_OnCellEnter(object sender, DataGridViewCellEventArgs e)
         {
-            /*
             //currentIndex = dataGridView1.CurrentCell.RowIndex;
             // ^ Seems not to be used - Devon
 
@@ -845,68 +835,61 @@ namespace NineTapTour.Forms
 
                             p.MemberNumber = tempMemberNumber;
                             int tempgameplayed = 0;
+
                             if (Convert.ToBoolean(dataGridView1[GAME_1_VALID_COLUMN, i].Value))
                             {
                                 tempgameplayed++;
-                                FinalizeTableList[i].UseGame1 = true;
-                                p.Game1 = FinalizeTableList[i].Game1;
+                                p.Game1 = Convert.ToInt32(dataGridView1.Rows[i].Cells[GAME_1_COLUMN].Value);
                             }
                             else
                             {
-                                FinalizeTableList[i].UseGame1 = false;
                                 p.Game1 = 0;
 
                             }
                             if (Convert.ToBoolean(dataGridView1[GAME_2_VALID_COLUMN, i].Value))
                             {
                                 tempgameplayed++;
-                                FinalizeTableList[i].UseGame2 = true;
-                                p.Game2 = FinalizeTableList[i].Game2;
+                                p.Game2 = Convert.ToInt32(dataGridView1.Rows[i].Cells[GAME_2_COLUMN].Value);
 
                             }
                             else
                             {
-                                FinalizeTableList[i].UseGame2 = false;
                                 p.Game2 = 0;
                             }
                             if (Convert.ToBoolean(dataGridView1[GAME_3_VALID_COLUMN, i].Value))
                             {
                                 tempgameplayed++;
-                                FinalizeTableList[i].UseGame3 = true;
-                                p.Game3 = FinalizeTableList[i].Game3;
+                                p.Game3 = Convert.ToInt32(dataGridView1.Rows[i].Cells[GAME_3_COLUMN].Value);
                             }
                             else
                             {
-                                FinalizeTableList[i].UseGame3 = false;
                                 p.Game3 = 0;
 
                             }
                             if (Convert.ToBoolean(dataGridView1[GAME_4_VALID_COLUMN, i].Value))
                             {
                                 tempgameplayed++;
-                                FinalizeTableList[i].UseGame4 = true;
-                                p.Game4 = FinalizeTableList[i].Game4;
+                                p.Game4 = Convert.ToInt32(dataGridView1.Rows[i].Cells[GAME_4_COLUMN].Value);
                             }
                             else
                             {
-                                FinalizeTableList[i].UseGame4 = false;
                                 p.Game4 = 0;
                             }
                             p.GamesPlayed = tempgameplayed;
                             p.TournamentDate = currTournament.Date;
-                            p.GameID = FinalizeTableList[i].GameId;
+                            p.GameID = Convert.ToInt32(dataGridView1.Rows[i].Cells[GAME_ID_COLUMN].Value);
 
 
 
-                            p.TotalScore = FinalizeTableList[i].ScratchTotal;
-                            p.HandiCap = FinalizeTableList[i].Handicap;
-                            p.Bonus = FinalizeTableList[i].Bonus;
+                            p.TotalScore = Convert.ToInt32(dataGridView1.Rows[i].Cells[SCRATCH_TOTAL_COLUMN].Value);
+                            p.HandiCap = Convert.ToInt32(dataGridView1.Rows[i].Cells[HANDICAP_COLUMN].Value);
+                            p.Bonus = Convert.ToInt32(dataGridView1.Rows[i].Cells[BONUS_COLUMN].Value);
                             p.MoneyWon = Convert.ToDecimal(FinalizeTempDB.getGame(gameId).MoneyWon);
                             p.PPHG = Convert.ToString(FinalizeTempDB.getGame(gameId).PlaceStanding);
                             p.ProPot = dataGridView1[PRO_POT_COLUMN, i].Value.ToString();
                             p.Notes = dataGridView1[NOTES_COLUMN_, i].Value.ToString();
                             p.AverageForGame = Convert.ToDouble(dataGridView1[ENTRY_AVERAGE_COLUMN, i].Value);
-                            p.trueAVG = FinalizeTableList[i].LeagueAverage;
+                            p.trueAVG = Convert.ToInt32(dataGridView1.Rows[i].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
                             p.AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, i].Value);
 
                             temporary.Add(p);
@@ -917,14 +900,13 @@ namespace NineTapTour.Forms
 
 
                     temporary.Reverse();
-                    Refresh(temporary);
+                    RefreshMemberView(temporary);
                 }
                 catch
                 {
                     //catches the instance where cells technically do not exist. will not refresh if they dont exist yet.
                 }
             }
-            */
         }
 
         //private void DataGridView2_FindCurrentIndex(object sender, DataGridViewCellStateChangedEventArgs e)
@@ -964,7 +946,7 @@ namespace NineTapTour.Forms
         //    }
         //}
 
-        private void RefreshMemberView()
+        private void RefreshMemberView(List<PlayerHistory> temporary)
         {
 
             DataTable dtGames = new DataTable();
@@ -992,7 +974,6 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Notes");
             dtGames.Columns.Add("GameID").ReadOnly = true;
 
-            /*
             foreach (var item in temporary)
             {
                 DataRow newRow = dtGames.NewRow();
@@ -1034,7 +1015,6 @@ namespace NineTapTour.Forms
                 dtGames.Rows.Add(newRow);
 
             }
-            */
 
             List<PlayerHistory> currentHistory = PlayerHistoryDB.getMemberPlayerHistoryCount(temporary[0].MemberNumber, RegionID);
 
@@ -1442,96 +1422,18 @@ namespace NineTapTour.Forms
                 }
             }
 
-            if (temp.Squad == 1)//if the current member bowled in squad one, then get the league avg sum of this game and the last 29 from player history
-            {
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + temp.GameAvg));
-            }
-            else if (temp.Squad == 2) //if current member bowled in any squad but squad 1, then get the league avg sum of this game, sum of any previous squads, and the last 26-29  from player history (depending on how many squads they bowled previously)
+            if (temp.Squad > 1)
             {
                 for (int i = 0; i < finalizeTableList.Count; i++)
                 {
-                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < 2)
+                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < temp.Squad)
                     {
                         SumFromGamesNotAddedYet += finalizeTableList[i].GameAvg;
                     }
                 }
-
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
-            }
-            else if (temp.Squad == 3)
-            {
-                for (int i = 0; i < finalizeTableList.Count; i++)
-                {
-                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < 3)
-                    {
-                        SumFromGamesNotAddedYet += finalizeTableList[i].GameAvg;
-                    }
-                }
-
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
-            }
-            else if (temp.Squad == 4)
-            {
-                for (int i = 0; i < finalizeTableList.Count; i++)
-                {
-                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < 4)
-                    {
-                        SumFromGamesNotAddedYet += finalizeTableList[i].GameAvg;
-                    }
-                }
-
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
-            }
-            else if (temp.Squad == 5)
-            {
-                for (int i = 0; i < finalizeTableList.Count; i++)
-                {
-                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < 5)
-                    {
-                        SumFromGamesNotAddedYet += finalizeTableList[i].GameAvg;
-                    }
-                }
-
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
-            }
-            else if (temp.Squad == 6)
-            {
-                for (int i = 0; i < finalizeTableList.Count; i++)
-                {
-                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < 6)
-                    {
-                        SumFromGamesNotAddedYet += finalizeTableList[i].GameAvg;
-                    }
-                }
-
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
-            }
-            else if (temp.Squad == 7)
-            {
-                for (int i = 0; i < finalizeTableList.Count; i++)
-                {
-                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < 7)
-                    {
-                        SumFromGamesNotAddedYet += finalizeTableList[i].GameAvg;
-                    }
-                }
-
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
-            }
-            else if (temp.Squad == 8)
-            {
-                for (int i = 0; i < finalizeTableList.Count; i++)
-                {
-                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < 8)
-                    {
-                        SumFromGamesNotAddedYet += finalizeTableList[i].GameAvg;
-                    }
-                }
-
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
             }
 
-
+            temp.LeagueAverage = Convert.ToInt32(LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg);
 
             // // after grabbing the sum, it then must divide by 30
             if (p.Count >= 30)
