@@ -59,6 +59,8 @@
             this.txtScratchTotal = new System.Windows.Forms.TextBox();
             this.txtHandicapTotal = new System.Windows.Forms.TextBox();
             this.grpRecord = new System.Windows.Forms.GroupBox();
+            this.btnLastRecord = new System.Windows.Forms.Button();
+            this.btnFirstRecord = new System.Windows.Forms.Button();
             this.btnRightArrow = new System.Windows.Forms.Button();
             this.lblRecord = new System.Windows.Forms.Label();
             this.btnDelete = new System.Windows.Forms.Button();
@@ -512,20 +514,46 @@
             // 
             // grpRecord
             // 
+            this.grpRecord.Controls.Add(this.btnLastRecord);
+            this.grpRecord.Controls.Add(this.btnFirstRecord);
             this.grpRecord.Controls.Add(this.btnRightArrow);
             this.grpRecord.Controls.Add(this.lblRecord);
             this.grpRecord.Controls.Add(this.btnDelete);
             this.grpRecord.Controls.Add(this.btnLeftArrow);
             this.grpRecord.Location = new System.Drawing.Point(3, 550);
             this.grpRecord.Name = "grpRecord";
-            this.grpRecord.Size = new System.Drawing.Size(235, 137);
+            this.grpRecord.Size = new System.Drawing.Size(235, 176);
             this.grpRecord.TabIndex = 17;
             this.grpRecord.TabStop = false;
             this.grpRecord.Text = "Record";
             // 
+            // btnLastRecord
+            // 
+            this.btnLastRecord.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold);
+            this.btnLastRecord.Location = new System.Drawing.Point(163, 82);
+            this.btnLastRecord.Name = "btnLastRecord";
+            this.btnLastRecord.Size = new System.Drawing.Size(53, 42);
+            this.btnLastRecord.TabIndex = 20;
+            this.btnLastRecord.TabStop = false;
+            this.btnLastRecord.Text = "Last Record";
+            this.btnLastRecord.UseVisualStyleBackColor = true;
+            this.btnLastRecord.Click += new System.EventHandler(this.btnLastRecord_Click);
+            // 
+            // btnFirstRecord
+            // 
+            this.btnFirstRecord.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold);
+            this.btnFirstRecord.Location = new System.Drawing.Point(19, 85);
+            this.btnFirstRecord.Name = "btnFirstRecord";
+            this.btnFirstRecord.Size = new System.Drawing.Size(56, 39);
+            this.btnFirstRecord.TabIndex = 19;
+            this.btnFirstRecord.TabStop = false;
+            this.btnFirstRecord.Text = "First Record";
+            this.btnFirstRecord.UseVisualStyleBackColor = true;
+            this.btnFirstRecord.Click += new System.EventHandler(this.btnFirstRecord_Click);
+            // 
             // btnRightArrow
             // 
-            this.btnRightArrow.Location = new System.Drawing.Point(163, 50);
+            this.btnRightArrow.Location = new System.Drawing.Point(163, 19);
             this.btnRightArrow.Name = "btnRightArrow";
             this.btnRightArrow.Size = new System.Drawing.Size(53, 29);
             this.btnRightArrow.TabIndex = 2;
@@ -537,7 +565,7 @@
             // lblRecord
             // 
             this.lblRecord.AutoSize = true;
-            this.lblRecord.Location = new System.Drawing.Point(77, 58);
+            this.lblRecord.Location = new System.Drawing.Point(77, 27);
             this.lblRecord.Name = "lblRecord";
             this.lblRecord.Size = new System.Drawing.Size(62, 13);
             this.lblRecord.TabIndex = 18;
@@ -545,7 +573,7 @@
             // 
             // btnDelete
             // 
-            this.btnDelete.Location = new System.Drawing.Point(19, 85);
+            this.btnDelete.Location = new System.Drawing.Point(19, 54);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(197, 25);
             this.btnDelete.TabIndex = 3;
@@ -556,7 +584,7 @@
             // 
             // btnLeftArrow
             // 
-            this.btnLeftArrow.Location = new System.Drawing.Point(19, 50);
+            this.btnLeftArrow.Location = new System.Drawing.Point(19, 19);
             this.btnLeftArrow.Name = "btnLeftArrow";
             this.btnLeftArrow.Size = new System.Drawing.Size(52, 29);
             this.btnLeftArrow.TabIndex = 1;
@@ -1393,7 +1421,7 @@
             this.flpMemberScores.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpMemberScores.Location = new System.Drawing.Point(0, 0);
             this.flpMemberScores.Name = "flpMemberScores";
-            this.flpMemberScores.Size = new System.Drawing.Size(1042, 749);
+            this.flpMemberScores.Size = new System.Drawing.Size(502, 749);
             this.flpMemberScores.TabIndex = 1;
             this.flpMemberScores.SizeChanged += new System.EventHandler(this.flpMemberScores_SizeChanged);
             // 
@@ -1413,7 +1441,7 @@
             this.panel2.Controls.Add(this.btnNewTournament);
             this.panel2.Controls.Add(this.btnTourSearch);
             this.panel2.Controls.Add(this.btnTournamentsByYear);
-            this.panel2.Location = new System.Drawing.Point(452, 550);
+            this.panel2.Location = new System.Drawing.Point(3, 732);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(206, 184);
             this.panel2.TabIndex = 46;
@@ -1422,7 +1450,7 @@
             // 
             this.panel3.Controls.Add(this.grpReports);
             this.panel3.Controls.Add(this.btnTournamentResults);
-            this.panel3.Location = new System.Drawing.Point(664, 550);
+            this.panel3.Location = new System.Drawing.Point(215, 732);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(139, 207);
             this.panel3.TabIndex = 46;
@@ -1431,7 +1459,7 @@
             // 
             this.panel4.Controls.Add(this.grpComments);
             this.panel4.Controls.Add(this.btnFinalizeTounament);
-            this.panel4.Location = new System.Drawing.Point(809, 550);
+            this.panel4.Location = new System.Drawing.Point(3, 945);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(212, 213);
             this.panel4.TabIndex = 46;
@@ -1595,5 +1623,7 @@
         private System.Windows.Forms.CheckBox cbFilterSquad2;
         private System.Windows.Forms.CheckBox cbFilterSquad1;
         private System.Windows.Forms.CheckBox cbAllSquads;
+        private System.Windows.Forms.Button btnLastRecord;
+        private System.Windows.Forms.Button btnFirstRecord;
     }
 }
