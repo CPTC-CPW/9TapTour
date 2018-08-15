@@ -1619,10 +1619,10 @@ namespace NineTapTour.Forms
 
                         var top4Games = allScoresWithOutNullGames;
                         var top3Games = TournamentStats.GetTop3OutOf4(top4Games.ToList());
-
+                        
+                        // If a member decides to play in multiple squads for the current tournament.
                         if (currParticipant.Member.Id == id)
                         {
-                            // If a member decides to play in multiple squads for the current tournament.
                             //This will handle setting their topScore if it is higher than the previous high score
                             if (totalScore > listOfTopScore[count - 1].ScratchTotal)
                             {
@@ -1637,6 +1637,7 @@ namespace NineTapTour.Forms
                                 listOfTopScore[count - 1].GameID = currParticipant.Game.Id;
                             }
                         }
+                        // different member than what was used in previous iteration of loop
                         else
                         {
                             if (count == num)
@@ -1644,6 +1645,7 @@ namespace NineTapTour.Forms
                                 TopScores temp = new TopScores();
                                 listOfTopScore.Add(temp);
                             }
+                            // set id to current member
                             id = currParticipant.Member.Id;
 
                             /// Populates info                         
