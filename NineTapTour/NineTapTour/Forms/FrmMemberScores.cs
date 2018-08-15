@@ -3106,7 +3106,6 @@ namespace NineTapTour.Forms
                     ResetFields();
                     refresh(false, QBSNumber);
                     RecordIndex(overallListOfParticipants);
-                    //bkm2
                     cbxTourneyDropDown.DataSource = TournamentDb.GetTournamentList(RegionID);
                     overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
                     cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
