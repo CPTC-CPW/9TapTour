@@ -188,7 +188,7 @@ namespace NineTapTour.Forms
                 overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
                 btnDelete.Enabled = true;
                
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
                 // sets focus to member num becuse that is what a user will need next
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
@@ -920,7 +920,7 @@ namespace NineTapTour.Forms
                             MemberDb.AddMember(currentMem);
                         }
                 }
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
             }
             else
             {
@@ -1437,7 +1437,7 @@ namespace NineTapTour.Forms
                 // Gets the record for the selected tournament
                 RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
                 overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
                 // sets focus to member num becuse that is what a user will need next
@@ -1559,12 +1559,12 @@ namespace NineTapTour.Forms
         */
         private void rdoScratchScore_CheckedChanged(object sender, EventArgs e)
         {
-            refresh(true, QBSNumber);
+            Refresh(true, QBSNumber);
         }
 
         private void rdoHandicapScore_CheckedChanged(object sender, EventArgs e)
         {
-            refresh(true, QBSNumber);
+            Refresh(true, QBSNumber);
         }
 
         /// <summary>
@@ -1574,7 +1574,7 @@ namespace NineTapTour.Forms
 
         List<TopScores> listOfTopScore = new List<TopScores>();
         IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
-        public void refresh(bool seriesChange, int qbsNumber)
+        public void Refresh(bool seriesChange, int qbsNumber)
         {
             var scores = new List<MemberScores>();
             listOfTopScore.Clear();
@@ -1584,7 +1584,6 @@ namespace NineTapTour.Forms
             try
             {
                 // Function scope data
-                int nullValues;
                 NineTapDb db = new NineTapDb();
                 int selectedTourney = selectedTournament.Id;
 
@@ -1606,11 +1605,9 @@ namespace NineTapTour.Forms
                 {
                     int id = 0;
                     int count = 0;
-                    int num = 0;
-
                     foreach (Participant currParticipant in listOfParticipants)
                     {
-                        num = listOfTopScore.Count();
+                        var num = listOfTopScore.Count();
                         //get all games scores for the current participant that are not null
                         var allScoresWithOutNullGames = currParticipant.Game.allGameScores().Where(g => g.HasValue);
 
@@ -1667,7 +1664,6 @@ namespace NineTapTour.Forms
                             {
                                 listOfTopScore[count].Bonus = 0;
                             }
-
                             listOfTopScore[count].ScratchTotal = totalScore;
                             listOfTopScore[count].HandicapScore = totalScore + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);//TODO: make "game count flexible"
                             listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
@@ -1736,27 +1732,27 @@ namespace NineTapTour.Forms
                         scores = scores.ToList();
                         for (int i = 0; i < scores.Count(); i++)
                         {
-                            int FirstNameLength = 0;
-                            int LastNameLength = 0;
+                            int firstNameLength = 0;
+                            int lastNameLength = 0;
                             if (scores[i].FirstName.Length < 6)
                             {
-                                FirstNameLength = scores[i].FirstName.Length;
+                                firstNameLength = scores[i].FirstName.Length;
 
                             }
                             else
                             {
-                                FirstNameLength = 6;
+                                firstNameLength = 6;
                             }
                             if (scores[i].LastName.Length < 6)
                             {
-                                LastNameLength = scores[i].LastName.Length;
+                                lastNameLength = scores[i].LastName.Length;
                             }
                             else
                             {
-                                LastNameLength = 6;
+                                lastNameLength = 6;
                             }
                             
-                            richTextBox1.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, FirstNameLength)}\t{scores[i].LastName.Substring(0, LastNameLength)}\t\t\t{scores[i].Score}\n");
+                            richTextBox1.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
                         }
                     }
                     else
@@ -1798,27 +1794,27 @@ namespace NineTapTour.Forms
                         scores = scores.ToList();
                         for (int i = 0; i < scores.Count(); i++)
                         {
-                            int FirstNameLength = 0;
-                            int LastNameLength = 0;
+                            int firstNameLength = 0;
+                            int lastNameLength = 0;
                             if (scores[i].FirstName.Length < 6)
                             {
-                                FirstNameLength = scores[i].FirstName.Length;
+                                firstNameLength = scores[i].FirstName.Length;
 
                             }
                             else
                             {
-                                FirstNameLength = 6;
+                                firstNameLength = 6;
                             }
                             if (scores[i].LastName.Length < 6)
                             {
-                                LastNameLength = scores[i].LastName.Length;
+                                lastNameLength = scores[i].LastName.Length;
                             }
                             else
                             {
-                                LastNameLength = 6;
+                                lastNameLength = 6;
                             }
 
-                            richTextBox1.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, FirstNameLength)}\t{scores[i].LastName.Substring(0, LastNameLength)}\t\t\t{scores[i].Score}\n");
+                            richTextBox1.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
                         }
                     }
                 }
@@ -2013,23 +2009,7 @@ namespace NineTapTour.Forms
                         foreach (var s in listOfTopScore)
                         {
                             #region conditions for highest handicap scores
-                            nullValues = 0;
-                            if (s.Game1 == 0)
-                            {
-                                nullValues += 1;
-                            }
-                            if (s.Game2 == 0)
-                            {
-                                nullValues += 1;
-                            }
-                            if (s.Game3 == 0)
-                            {
-                                nullValues += 1;
-                            }
-                            if (s.Game4 == 0)
-                            {
-                                nullValues += 1;
-                            }
+                            
                             #endregion
                             scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.allGameScores().Sum() + (s.allGameScores().Count * s.Handicap) + (s.allGameScores().Count * s.Bonus), MemberId = s.memberID });
                         }
@@ -2136,23 +2116,7 @@ namespace NineTapTour.Forms
                         foreach (var i in listOfTopScore)
                         {
                             #region conditions for highest handicap scores
-                            nullValues = 0;
-                            if (i.Game1 == 0)
-                            {
-                                nullValues += 1;
-                            }
-                            if (i.Game2 == 0)
-                            {
-                                nullValues += 1;
-                            }
-                            if (i.Game3 == 0)
-                            {
-                                nullValues += 1;
-                            }
-                            if (i.Game4 == 0)
-                            {
-                                nullValues += 1;
-                            }
+
                             #endregion
                             ///***********************
                             int one = Convert.ToInt32(i.Game1 + i.Handicap + i.Bonus);
@@ -2689,7 +2653,7 @@ namespace NineTapTour.Forms
         private void rdoAllResults_CheckedChanged(object sender, EventArgs e)
         {
             QBSNumber = 0;
-            refresh(false, QBSNumber);
+            Refresh(false, QBSNumber);
 
         }
 
@@ -2698,7 +2662,7 @@ namespace NineTapTour.Forms
             if (cbxTourneyDropDown.Size != null)
             {
                 QBSNumber = 1;
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
             }
         }
 
@@ -2707,7 +2671,7 @@ namespace NineTapTour.Forms
             if (cbxTourneyDropDown.Size != null)
             {
                 QBSNumber = 2;
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
             }
         }
 
@@ -2716,7 +2680,7 @@ namespace NineTapTour.Forms
             if (cbxTourneyDropDown.Size != null)
             {
                 QBSNumber = 3;
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
             }
         }
 
@@ -2725,7 +2689,7 @@ namespace NineTapTour.Forms
             if (cbxTourneyDropDown.Size != null)
             {
                 QBSNumber = 4;
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
             }
 
         }
@@ -2735,7 +2699,7 @@ namespace NineTapTour.Forms
             if (cbxTourneyDropDown.Size != null)
             {
                 QBSNumber = 5;
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
             }
 
         }
@@ -2746,7 +2710,7 @@ namespace NineTapTour.Forms
             if (cbxTourneyDropDown.Size != null)
             {
                 QBSNumber = 6;
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
             }
 
         }
@@ -2756,7 +2720,7 @@ namespace NineTapTour.Forms
             if (cbxTourneyDropDown.Size != null)
             {
                 QBSNumber = 7;
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
             };
         }
 
@@ -2765,7 +2729,7 @@ namespace NineTapTour.Forms
             if (cbxTourneyDropDown.Size != null)
             {
                 QBSNumber = 8;
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
             }
 
         }
@@ -2787,7 +2751,7 @@ namespace NineTapTour.Forms
                         Tournament t = TournamentDb.getTourneyByID(selectedTournament.Id);
                         TournamentDb.deleteTournament(t);
                         ResetFields();
-                        refresh(false, QBSNumber);
+                        Refresh(false, QBSNumber);
                         currentIndex = 0;
                         RecordIndex(overallListOfParticipants);
                         cbxTourneyDropDown.DataSource = TournamentDb.GetTournamentList(RegionID);
@@ -2822,7 +2786,7 @@ namespace NineTapTour.Forms
 
                     //resets all the feilds back to what it wouldve looked like withought such record existing
                     ResetFields();
-                    refresh(false, QBSNumber);
+                    Refresh(false, QBSNumber);
                     RecordIndex(overallListOfParticipants);
                     cbxTourneyDropDown.DataSource = TournamentDb.GetTournamentList(RegionID);
                     overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
@@ -2916,7 +2880,7 @@ namespace NineTapTour.Forms
 
                 howManySquadsCanBeFiltered.Clear();
                 QBSNumber = 0;
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
                
             }
             else
@@ -3000,7 +2964,7 @@ namespace NineTapTour.Forms
                 else
                 {
                     QBSNumber = 9;
-                    refresh(false, QBSNumber);
+                    Refresh(false, QBSNumber);
                 }
                 
             }
@@ -3008,7 +2972,7 @@ namespace NineTapTour.Forms
             {
                 howManySquadsCanBeFiltered.Add(1);
                 QBSNumber = 9;
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
             }
             
         }
@@ -3031,7 +2995,7 @@ namespace NineTapTour.Forms
                 else
                 {
                     QBSNumber = 9;
-                    refresh(false, QBSNumber);
+                    Refresh(false, QBSNumber);
                 }
              
             }
@@ -3039,7 +3003,7 @@ namespace NineTapTour.Forms
             {
                 howManySquadsCanBeFiltered.Add(2);
                 QBSNumber = 9;
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
             }
         }
 
@@ -3061,7 +3025,7 @@ namespace NineTapTour.Forms
                 else
                 {
                     QBSNumber = 9;
-                    refresh(false, QBSNumber);
+                    Refresh(false, QBSNumber);
                 }
               
             }
@@ -3069,7 +3033,7 @@ namespace NineTapTour.Forms
             {
                 howManySquadsCanBeFiltered.Add(3);
                 QBSNumber = 9;
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
             }
 
         }
@@ -3092,7 +3056,7 @@ namespace NineTapTour.Forms
                 else
                 {
                     QBSNumber = 9;
-                    refresh(false, QBSNumber);
+                    Refresh(false, QBSNumber);
                 }
               
             }
@@ -3100,7 +3064,7 @@ namespace NineTapTour.Forms
             {
                 howManySquadsCanBeFiltered.Add(4);
                 QBSNumber = 9;
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
             }
 
         }
@@ -3123,7 +3087,7 @@ namespace NineTapTour.Forms
                 else
                 {
                     QBSNumber = 9;
-                    refresh(false, QBSNumber);
+                    Refresh(false, QBSNumber);
                 }
         
             }
@@ -3131,7 +3095,7 @@ namespace NineTapTour.Forms
             {
                 howManySquadsCanBeFiltered.Add(5);
                 QBSNumber = 9;
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
             }
         }
 
@@ -3153,7 +3117,7 @@ namespace NineTapTour.Forms
                 else
                 {
                     QBSNumber = 9;
-                    refresh(false, QBSNumber);
+                    Refresh(false, QBSNumber);
                 }
         
             }
@@ -3161,7 +3125,7 @@ namespace NineTapTour.Forms
             {
                 howManySquadsCanBeFiltered.Add(6);
                 QBSNumber = 9;
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
             }
         }
 
@@ -3183,7 +3147,7 @@ namespace NineTapTour.Forms
                 else
                 {
                     QBSNumber = 9;
-                    refresh(false, QBSNumber);
+                    Refresh(false, QBSNumber);
                 }
                
             }
@@ -3191,7 +3155,7 @@ namespace NineTapTour.Forms
             {
                 howManySquadsCanBeFiltered.Add(7);
                 QBSNumber = 9;
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
             }
         }
 
@@ -3213,7 +3177,7 @@ namespace NineTapTour.Forms
                 else
                 {
                     QBSNumber = 9;
-                    refresh(false, QBSNumber);
+                    Refresh(false, QBSNumber);
                 }
              
             }
@@ -3221,7 +3185,7 @@ namespace NineTapTour.Forms
             {
                 howManySquadsCanBeFiltered.Add(8);
                 QBSNumber = 9;
-                refresh(false, QBSNumber);
+                Refresh(false, QBSNumber);
             }
         }
     }
