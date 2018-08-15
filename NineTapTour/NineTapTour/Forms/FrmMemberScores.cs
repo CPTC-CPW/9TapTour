@@ -177,7 +177,7 @@ namespace NineTapTour.Forms
                 var item = temp2.Max(x => x.Id);
                 cbxTourneyDropDown.SelectedValue = item;
             }
-            clear();
+            Clear();
             cbxTourneyDropDown.Visible = true;
             if (cbxTourneyDropDown.SelectedIndex >= 0 && cbxTourneyDropDown.Visible && cbxTourneyDropDown.SelectedIndex.ToString() != null)
             {
@@ -707,7 +707,7 @@ namespace NineTapTour.Forms
 #endif
                         ResetFields();
                         txtMemberNum.Focus();
-                        clear();
+                        Clear();
 
 
                     }
@@ -716,7 +716,7 @@ namespace NineTapTour.Forms
                         MessageBox.Show(ex.Message);
 
                     }
-                    clear();
+                    Clear();
                     txtMemberNum.Focus();
                 }
                 //IF the tournament type is NOT a DOUBLES tournament
@@ -904,7 +904,7 @@ namespace NineTapTour.Forms
 #endif
                             ResetFields();
                             txtMemberNum.Focus();
-                            clear();
+                            Clear();
                             List<Participant> utotal = TournamentDb.GetTournamentMemberList(currTourney);
                             RecordIndexAfterAddUpdate(utotal);
                         }
@@ -1230,7 +1230,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// clears memberNum, txtScratchScores, and High Game textboxes
         /// </summary>
-        private void clear()
+        private void Clear()
         {
             txtMemberNum.Clear();
             richTextBox1.Clear();
@@ -1590,34 +1590,33 @@ namespace NineTapTour.Forms
                 var listOfParticipants = ParticipantsDB.GetParticipants(selectedTournament.Id);
 
                 if (qbsNumber > 0 && qbsNumber <= 8)
-                {
                     //TAKES A TOURNAMENT ID AND SQUAD NUMBER AND FILTERS FOR A LIST OF PARTICIPANTS.
                     listOfParticipants = listOfParticipants.Where(p => p.Squad == qbsNumber).ToList();
- 
-                }
+
                 else if(howManySquadsCanBeFiltered.Count > 0 && QBSNumber == 9)
-                {
                     //filters out each squad
                     //take the list of participants where => if the squad number equals to any of the filtered numbers.
                     listOfParticipants = listOfParticipants.Where(p => howManySquadsCanBeFiltered.Any(h => h == p.Squad)).ToList();
-                }
                 try
                 {
                     int id = 0;
                     int count = 0;
                     foreach (Participant currParticipant in listOfParticipants)
                     {
-                        var num = listOfTopScore.Count();
-                        //get all games scores for the current participant that are not null
+                        
+                        //Gets all of the game scores that are valid (that have a value)
                         var allScoresWithOutNullGames = currParticipant.Game.allGameScores().Where(g => g.HasValue);
 
                         //totals all games with out nulls/valid score
                         int? totalScore = allScoresWithOutNullGames.Sum();
-
+                        //Sets a collection of all the games to a new variable.
                         var top4Games = allScoresWithOutNullGames;
+
+                        //Sets a collection of all the games using the 3 out of 4 ruleset
                         var top3Games = TournamentStats.GetTop3OutOf4(top4Games.ToList());
                         
                         // If a member decides to play in multiple squads for the current tournament.
+                        //this will overwrite their previous score.
                         if (currParticipant.Member.Id == id)
                         {
                             //This will handle setting their topScore if it is higher than the previous high score
@@ -1634,18 +1633,17 @@ namespace NineTapTour.Forms
                                 listOfTopScore[count - 1].GameID = currParticipant.Game.Id;
                             }
                         }
-                        // different member than what was used in previous iteration of loop
+                        // If the next member in the for loop is different from the previous member.
                         else
                         {
-                            if (count == num)
-                            {
+
                                 TopScores temp = new TopScores();
                                 listOfTopScore.Add(temp);
-                            }
+
                             // set id to current member
                             id = currParticipant.Member.Id;
 
-                            /// Populates info                         
+                            // Populates info                         
                             listOfTopScore[count].FirstName = currParticipant.Member.FirstName;
                             listOfTopScore[count].LastName = currParticipant.Member.LastName;
                             listOfTopScore[count].Game1 = currParticipant.Game.Game1;
@@ -1680,7 +1678,7 @@ namespace NineTapTour.Forms
                 }
 
                 overallListOfTopScores = listOfTopScore;
-                /// Top 5 LINQ query
+                // Top 5 LINQ query
                 var top5 = db.Participants.Include(b => b.Member)
                 .Include(b => b.Game)
                 .Where(b => b.Tournament.Id == selectedTourney);
@@ -1734,23 +1732,8 @@ namespace NineTapTour.Forms
                         {
                             int firstNameLength = 0;
                             int lastNameLength = 0;
-                            if (scores[i].FirstName.Length < 6)
-                            {
-                                firstNameLength = scores[i].FirstName.Length;
-
-                            }
-                            else
-                            {
-                                firstNameLength = 6;
-                            }
-                            if (scores[i].LastName.Length < 6)
-                            {
-                                lastNameLength = scores[i].LastName.Length;
-                            }
-                            else
-                            {
-                                lastNameLength = 6;
-                            }
+                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
+                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
                             
                             richTextBox1.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
                         }
@@ -1796,23 +1779,8 @@ namespace NineTapTour.Forms
                         {
                             int firstNameLength = 0;
                             int lastNameLength = 0;
-                            if (scores[i].FirstName.Length < 6)
-                            {
-                                firstNameLength = scores[i].FirstName.Length;
-
-                            }
-                            else
-                            {
-                                firstNameLength = 6;
-                            }
-                            if (scores[i].LastName.Length < 6)
-                            {
-                                lastNameLength = scores[i].LastName.Length;
-                            }
-                            else
-                            {
-                                lastNameLength = 6;
-                            }
+                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
+                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
 
                             richTextBox1.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
                         }
@@ -1866,28 +1834,11 @@ namespace NineTapTour.Forms
                         scores = scores.ToList();
                         for (int i = 0; i < scores.Count(); i++)
                         {
-                            int FirstNameLength = 0;
-                            int LastNameLength = 0;
-                            if (scores[i].FirstName.Length < 6)
-                            {
-                                FirstNameLength = scores[i].FirstName.Length;
-
-                            }
-                            else
-                            {
-                                FirstNameLength = 6;
-                            }
-                            if (scores[i].LastName.Length < 6)
-                            {
-                                LastNameLength = scores[i].LastName.Length;
-                            }
-                            else
-                            {
-                                LastNameLength = 6;
-                            }
-                            //richTextBox2.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
-                            //                        + "\t" + String.Format("{0, -5}", scores[i].Score + " " + "\n"));
-                            richTextBox2.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, FirstNameLength)}\t{scores[i].LastName.Substring(0, LastNameLength)}\t\t\t{scores[i].Score}\n");
+                            int firstNameLength = 0;
+                            int lastNameLength = 0;
+                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
+                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
+                            richTextBox2.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
                         }
                     }
                     else
@@ -1929,28 +1880,13 @@ namespace NineTapTour.Forms
                         scores = scores.ToList();
                         for (int i = 0; i < scores.Count(); i++)
                         {
-                            int FirstNameLength = 0;
-                            int LastNameLength = 0;
-                            if (scores[i].FirstName.Length < 6)
-                            {
-                                FirstNameLength = scores[i].FirstName.Length;
-
-                            }
-                            else
-                            {
-                                FirstNameLength = 6;
-                            }
-                            if (scores[i].LastName.Length < 6)
-                            {
-                                LastNameLength = scores[i].LastName.Length;
-                            }
-                            else
-                            {
-                                LastNameLength = 6;
-                            }
+                            int firstNameLength = 0;
+                            int lastNameLength = 0;
+                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
+                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
                             //richTextBox2.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
                             //                        + "\t" + String.Format("{0, -5}", scores[i].Score + " " + "\n"));
-                            richTextBox2.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, FirstNameLength)}\t{scores[i].LastName.Substring(0, LastNameLength)}\t\t\t{scores[i].Score}\n");
+                            richTextBox2.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
 
                         }
                     }
@@ -1979,29 +1915,14 @@ namespace NineTapTour.Forms
                         scores = scores.ToList();
                         for (int i = 0; i < scores.Count(); i++)
                         {
-                            int FirstNameLength = 0;
-                            int LastNameLength = 0;
-                            if (scores[i].FirstName.Length < 6)
-                            {
-                                FirstNameLength = scores[i].FirstName.Length;
-
-                            }
-                            else
-                            {
-                                FirstNameLength = 6;
-                            }
-                            if (scores[i].LastName.Length < 6)
-                            {
-                                LastNameLength = scores[i].LastName.Length;
-                            }
-                            else
-                            {
-                                LastNameLength = 6;
-                            }
+                            int firstNameLength = 0;
+                            int lastNameLength = 0;
+                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
+                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
 
                             CalculatePlaceStanding(scores);
 
-                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, FirstNameLength)}\t{scores[i].LastName.Substring(0, LastNameLength)}\t\t\t{scores[i].Score}\n");
+                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
                         }
                     }
                     else if (rdoHandicapScore.Checked)
@@ -2018,29 +1939,14 @@ namespace NineTapTour.Forms
                         scores = scores.ToList();
                         for (int i = 0; i < scores.Count(); i++)
                         {
-                            int FirstNameLength = 0;
-                            int LastNameLength = 0;
-                            if (scores[i].FirstName.Length < 6)
-                            {
-                                FirstNameLength = scores[i].FirstName.Length;
-
-                            }
-                            else
-                            {
-                                FirstNameLength = 6;
-                            }
-                            if (scores[i].LastName.Length < 6)
-                            {
-                                LastNameLength = scores[i].LastName.Length;
-                            }
-                            else
-                            {
-                                LastNameLength = 6;
-                            }
+                            int firstNameLength = 0;
+                            int lastNameLength = 0;
+                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
+                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
 
                             CalculatePlaceStanding(scores);
 
-                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, FirstNameLength)}\t{scores[i].LastName.Substring(0, LastNameLength)}\t\t\t{scores[i].Score}\n");
+                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
                         }
                     }
                 }
@@ -2048,7 +1954,7 @@ namespace NineTapTour.Forms
 
                 #region Three Out Of 4
                 /////////////////////////////////////////////////////
-                /// Executes if tournament selected is 3 Out of 4 ///
+                // Executes if tournament selected is 3 Out of 4 ///
                 /////////////////////////////////////////////////////
                 if (selectedTournament.ThreeOutOf4)
                 {
@@ -2076,39 +1982,24 @@ namespace NineTapTour.Forms
                             listOfScores.Sort();
                             listOfScores.Reverse();
 
-                            ///*************************
+                            //*************************
                             scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = listOfScores[0] + listOfScores[1] + listOfScores[2] });
                             listOfScores.Clear();
                         }
-                        //IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
+
                         scores.Sort(scoreComparer);
                         scores.Reverse();
                         scores = scores.ToList();
                         for (int i = 0; i < scores.Count(); i++)
                         {
-                            int FirstNameLength = 0;
-                            int LastNameLength = 0;
-                            if (scores[i].FirstName.Length < 6)
-                            {
-                                FirstNameLength = scores[i].FirstName.Length;
-
-                            }
-                            else
-                            {
-                                FirstNameLength = 6;
-                            }
-                            if (scores[i].LastName.Length < 6)
-                            {
-                                LastNameLength = scores[i].LastName.Length;
-                            }
-                            else
-                            {
-                                LastNameLength = 6;
-                            }
+                            int firstNameLength = 0;
+                            int lastNameLength = 0;
+                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
+                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
 
                             CalculatePlaceStanding(scores);
 
-                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, FirstNameLength)}\t{scores[i].LastName.Substring(0, LastNameLength)}\t\t\t{scores[i].Score}\n");
+                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
                         }
                     }
                     else if (rdoHandicapScore.Checked)
@@ -2118,7 +2009,7 @@ namespace NineTapTour.Forms
                             #region conditions for highest handicap scores
 
                             #endregion
-                            ///***********************
+                            //***********************
                             int one = Convert.ToInt32(i.Game1 + i.Handicap + i.Bonus);
                             int two = Convert.ToInt32(i.Game2 + i.Handicap + i.Bonus);
                             int three = Convert.ToInt32(i.Game3 + i.Handicap + i.Bonus);
@@ -2130,7 +2021,7 @@ namespace NineTapTour.Forms
                             listOfScores.Sort();
                             listOfScores.Reverse();
 
-                            ///*************************
+                            //*************************
                             scores.Add(new MemberScores { FirstName = i.FirstName, LastName = i.LastName, Score = listOfScores[0] + listOfScores[1] + listOfScores[2] });
                             listOfScores.Clear();
                         }
@@ -2139,29 +2030,14 @@ namespace NineTapTour.Forms
                         scores = scores.ToList();
                         for (int i = 0; i < scores.Count(); i++)
                         {
-                            int FirstNameLength = 0;
-                            int LastNameLength = 0;
-                            if (scores[i].FirstName.Length < 6)
-                            {
-                                FirstNameLength = scores[i].FirstName.Length;
-
-                            }
-                            else
-                            {
-                                FirstNameLength = 6;
-                            }
-                            if (scores[i].LastName.Length < 6)
-                            {
-                                LastNameLength = scores[i].LastName.Length;
-                            }
-                            else
-                            {
-                                LastNameLength = 6;
-                            }
+                            int firstNameLength = 0;
+                            int lastNameLength = 0;
+                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
+                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
 
                             CalculatePlaceStanding(scores);
 
-                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, FirstNameLength)}\t{scores[i].LastName.Substring(0, LastNameLength)}\t\t\t{scores[i].Score}\n");
+                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
                         }
                     }
                 }
