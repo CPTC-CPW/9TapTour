@@ -1583,7 +1583,7 @@ namespace NineTapTour.Forms
 
             if (cbxTourneyDropDown.SelectedIndex < 0)
             {
-                lblRecord.Text = "Record " + currentIndex + " / " + "0";
+                lblRecord.Text = "Record 0" + " / " + "0";
                 rdoHandicapScore.Visible = false;
                 rdoScratchScore.Visible = false;
                 DisableButtonsWhenValidTournamentSelected();
