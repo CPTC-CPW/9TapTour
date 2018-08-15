@@ -347,7 +347,16 @@ namespace NineTapTour.Forms
                 txtMoneyEarned.Text = String.Format("{0:C}", moneySum);
                 currentMem.MoneyEarned = moneySum;
                 txtNotes.Text = currentMem.Notes;
-                txtReferrals.Text = currentMem.Referrals.ToString();
+
+                if (currentMem.Referrals == null)
+                {
+                    txtReferrals.Text = "0";
+                }
+                else
+                {
+                    txtReferrals.Text = currentMem.Referrals.ToString();
+                }
+
                 chbSenior.Checked = currentMem.IsSenior;
 
                 if (currentMem.IsActive)
@@ -434,6 +443,18 @@ namespace NineTapTour.Forms
                 return false;
             }
 
+            //CHECK FOR VALID REFERRAL CHARACTERS
+            if(!int.TryParse(txtReferrals.Text, out int result))
+            {
+                MessageBox.Show("Referrals must contain digits only");
+                return false;
+            }
+            
+            
+                
+            
+
+
             //VALIDATE DOB WITHIN BOUNDS
 
             if (mtxtBoxDOB.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDOB))
@@ -453,50 +474,7 @@ namespace NineTapTour.Forms
                 MessageBox.Show("Rejoin Date must be between 1753 and 9999.");
                 return false;
             }
-
-            /*
-            if (DateTime.TryParse(mtxtBoxDOB.Text, out DateTime result))
-            {
-                DateTime DOB = DateTime.Parse(mtxtBoxDOB.Text);
-
-                if(DOB < DateTime.Parse("01/01/1753") || DOB > DateTime.Parse("12/31/9999"))
-                {
-                    //TODO: ADD VALIDATION MESSAGE
-                    MessageBox.Show("Date of birth must be between 1753 and 9999.");
-
-                    return false;
-                }
-            }
-
-            if (DateTime.TryParse(mtxtBoxDateJoined.Text, out DateTime result2))
-            {
-                DateTime DateJoined = DateTime.Parse(mtxtBoxDateJoined.Text);
-
-                if (DateJoined < DateTime.Parse("01/01/1753") || DateJoined > DateTime.Parse("12/31/9999"))
-                {
-                    //TODO: ADD VALIDATION MESSAGE
-                    MessageBox.Show("Join Date must be between 1753 and 9999.");
-
-                    return false;
-                }
-            }
-
             
-
-            if (DateTime.TryParse(mtxtBoxRejoinDate.Text, out DateTime result3))
-            {
-                DateTime DateJoined = DateTime.Parse(mtxtBoxRejoinDate.Text);
-
-                if (DateJoined < DateTime.Parse("01/01/1753") || DateJoined > DateTime.Parse("12/31/9999"))
-                {
-                    //TODO: ADD VALIDATION MESSAGE
-                    MessageBox.Show("Rejoin Date must be between 1753 and 9999.");
-
-                    return false;
-                }
-            }
-            */
-
 
             ///********************************************************************************************************
             //League average should only be between 125 - 210
