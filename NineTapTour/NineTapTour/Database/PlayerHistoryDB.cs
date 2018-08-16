@@ -106,7 +106,7 @@ namespace NineTapTour.Database
                     newHistory.Game2 = item.Game2;
                     newHistory.Game3 = item.Game3;
                     newHistory.Game4 = item.Game4;
-                    newHistory.TotalScore = (item.Game1 + item.Game2 + item.Game3 + item.Game4);
+                    newHistory.TotalScore = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0);
                     newHistory.AverageForGame = item.AverageForGame;
                     newHistory.trueAVG = item.trueAVG;
                     newHistory.AVG = item.AVG;
@@ -227,7 +227,7 @@ namespace NineTapTour.Database
                     newHistory.Game2 = item.Game2;
                     newHistory.Game3 = item.Game3;
                     newHistory.Game4 = item.Game4;
-                    newHistory.TotalScore = (item.Game1 + item.Game2 + item.Game3 + item.Game4);
+                    newHistory.TotalScore = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0); ;
                     newHistory.AverageForGame = item.AverageForGame;
                     newHistory.trueAVG = item.trueAVG;
                     newHistory.AVG = item.AVG;
@@ -285,7 +285,7 @@ namespace NineTapTour.Database
                     newHistory.Game2 = item.Game2;
                     newHistory.Game3 = item.Game3;
                     newHistory.Game4 = item.Game4;
-                    newHistory.TotalScore = (item.Game1 + item.Game2 + item.Game3 + item.Game4);
+                    newHistory.TotalScore = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0); ;
                     newHistory.AverageForGame = item.AverageForGame;
                     newHistory.trueAVG = item.trueAVG;
                     newHistory.AVG = item.AVG;
@@ -342,7 +342,7 @@ namespace NineTapTour.Database
                     newHistory.Game2 = item.Game2;
                     newHistory.Game3 = item.Game3;
                     newHistory.Game4 = item.Game4;
-                    newHistory.TotalScore = (item.Game1 + item.Game2 + item.Game3 + item.Game4);
+                    newHistory.TotalScore = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0); ;
                     newHistory.AverageForGame = item.AverageForGame;
                     newHistory.trueAVG = item.trueAVG;
                     newHistory.AVG = item.AVG;
@@ -400,7 +400,7 @@ namespace NineTapTour.Database
                     newHistory.Game2 = item.Game2;
                     newHistory.Game3 = item.Game3;
                     newHistory.Game4 = item.Game4;
-                    newHistory.TotalScore = (item.Game1 + item.Game2 + item.Game3 + item.Game4);
+                    newHistory.TotalScore = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0); ;
                     newHistory.AverageForGame = item.AverageForGame;
                     newHistory.trueAVG = item.trueAVG;
                     newHistory.AVG = item.AVG;
@@ -520,7 +520,7 @@ namespace NineTapTour.Database
                     newHistory.Game2 = item.Game2;
                     newHistory.Game3 = item.Game3;
                     newHistory.Game4 = item.Game4;
-                    newHistory.TotalScore = (item.Game1 + item.Game2 + item.Game3 + item.Game4);
+                    newHistory.TotalScore = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0); ;
                     newHistory.AverageForGame = item.AverageForGame;
                     newHistory.trueAVG = item.trueAVG;
                     newHistory.AVG = item.AVG;
