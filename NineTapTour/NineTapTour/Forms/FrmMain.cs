@@ -198,13 +198,14 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void memberToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
             OpenOrDisplayForm(ref newfrmMemberData);
             currFrmMemberData = newfrmMemberData;
             // sets bool var to true so the save data message will show up
             memberDataIsActive = true;
         }
+
+        
 
         /// <summary>
         /// 
@@ -265,8 +266,7 @@ namespace NineTapTour.Forms
             {
                 if (memberDataIsActive == true)
                 {
-                    var confirm = MessageBox.Show(@"Are you sure you want to leave without saving changes?", @"Member Data Not Saved", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                    if (confirm == DialogResult.No)
+                    if (!currFrmMemberData.MemberNavigate())
                     {
                         memberToolStripMenuItem.Enabled = false;
                         tournamentToolStripMenuItem.Enabled = true;
@@ -317,34 +317,66 @@ namespace NineTapTour.Forms
 
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // if on member info page with unsaved data
-            if (activeItem.Text == "Member Info" && !currFrmMemberData.IsSavedData())
-            {
-                // asks user if they want to leave w/o saving data
-                if (FrmMemberIsSavedData())
-                {
+            //Kamm Freudenstein
+            //08/14/2018
 
-                    mainmenu.Close();
+            //IF the Member Data Form has been activated and isn't null
+            if(currFrmMemberData != null)
+            {
+                //IF all the data on the Member Data Form IS valid
+                //Go ahead and close the application
+                if(currFrmMemberData.isValid())
+                {
+                    currFrmMemberData.SaveMemberData();
+
+                    //IF all entered data is valid, check if user really wants to exit
+
+                    if (ExitApplication() == DialogResult.No)
+                    {
+                        e.Cancel = true;
+                    }
+                    else
+                    {
+                        mainmenu.Close();
+                    }
                 }
-                // stays on page if clicked no
+                //IF the data on the Member Data From is NOT Valid
                 else
                 {
-                    e.Cancel = true;
+                    //IF the user chooses to navigate away and NOT save changes
+                    if (currFrmMemberData.MemberNavigate())
+                    {
+                        mainmenu.Close();
+                    }
+                    //ELSE just stick around
+                    else
+                    {
+                        e.Cancel = true;
+                    }
+                  
+                    
                 }
+                
             }
-
-            // used on all other instances
             else
             {
+                //IF all entered data is valid, check if user really wants to exit
+                
+                //Stick around if you don't want to exit
                 if (ExitApplication() == DialogResult.No)
                 {
                     e.Cancel = true;
                 }
+                //Hop up outta there
                 else
                 {
                     mainmenu.Close();
                 }
             }
+            
+
+           
+            
         }
 
         /// <summary>

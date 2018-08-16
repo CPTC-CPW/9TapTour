@@ -22,6 +22,9 @@ namespace NineTapTour.Forms
         private int _memberNum;
         int RegionID;
         int AllGames;
+        
+        //list of the names of boxes that have incompatible data
+        List<string> checkFields;
 
         public int MemberNum
         {
@@ -54,6 +57,9 @@ namespace NineTapTour.Forms
             RegionID = ((FrmMain)MdiParent).RegionID;
 
             List<Member> ListOfMembers = MemberDb.GetMemberList(RegionID);
+
+            //initialize list to hold validation messages for textboxes
+            checkFields = new List<string>();
 
             //updateOnload(ListOfMembers);
 
@@ -135,6 +141,13 @@ namespace NineTapTour.Forms
         {
             RegionID = ((FrmMain)MdiParent).RegionID;
             List<Member> ListOfMembers = MemberDb.GetMemberList(RegionID);
+
+            //set all member info group control background colors
+            foreach(Control c in grpMemberInfo.Controls)
+            {
+                c.BackColor = Color.White;
+            }
+            
 
             //set txtMemberNumber.Text back to one if there is no one in the the current selected region added yet
             if (MemberDb.GetMemberList(RegionID).Count == 0)
@@ -412,90 +425,96 @@ namespace NineTapTour.Forms
         // method checks for valid characters. 
         public bool isValid()
         {
-            //validating last name and first name
-            if (String.IsNullOrWhiteSpace(txtLastName.Text) && String.IsNullOrWhiteSpace(txtFirstName.Text))
+            //clear checkFields
+            checkFields.Clear();
+
+            //validate last name box
+            if (String.IsNullOrWhiteSpace(txtLastName.Text))
             {
-                MessageBox.Show("Both Last Name and First Name are required");
+                checkFields.Add("Last Name is required");
                 txtLastName.Clear();
-                txtFirstName.Clear();
-                return false;
-            }
-            else if (String.IsNullOrWhiteSpace(txtLastName.Text))
-            {
-                MessageBox.Show("Last Name is required.");
-                txtLastName.Clear();
-                return false;
+                txtLastName.BackColor = Color.LightPink;
+                //return false;
             }
 
-            else if (String.IsNullOrWhiteSpace(txtFirstName.Text))
+            //validate first name box
+            if (String.IsNullOrWhiteSpace(txtFirstName.Text))
             {
-                MessageBox.Show("First Name is required.");
+                checkFields.Add("First Name is required");
+
                 txtFirstName.Clear();
-                return false;
+                txtFirstName.BackColor = Color.LightPink;
+                //return false;
             }
 
             //VALIDATE DOB WITHIN BOUNDS
 
             if (mtxtBoxDOB.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDOB))
             {
-                MessageBox.Show("Date of birth must be between 1753 and 9999.");
-                return false;
+                checkFields.Add("Date of birth must be between 1753 and 9999.");
+                mtxtBoxDOB.BackColor = Color.LightPink;
+                //return false;
             }
 
             if (mtxtBoxDateJoined.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDateJoined))
             {
-                MessageBox.Show("Join Date must be between 1753 and 9999.");
-                return false;
+                checkFields.Add("Join Date must be between 1753 and 9999.");
+                mtxtBoxDateJoined.BackColor = Color.LightPink;
+                //return false;
             }
 
             if (mtxtBoxRejoinDate.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxRejoinDate))
             {
-                MessageBox.Show("Rejoin Date must be between 1753 and 9999.");
-                return false;
+                checkFields.Add("Rejoin Date must be between 1753 and 9999.");
+                mtxtBoxDateJoined.BackColor = Color.LightPink;
+                //return false;
             }
-
-            /*
-            if (DateTime.TryParse(mtxtBoxDOB.Text, out DateTime result))
+            
+            
+            //check to make sure box is not empty.  If so, attempt to parse referral number
+            if(!String.IsNullOrWhiteSpace(txtReferrals.Text))
             {
-                DateTime DOB = DateTime.Parse(mtxtBoxDOB.Text);
-
-                if(DOB < DateTime.Parse("01/01/1753") || DOB > DateTime.Parse("12/31/9999"))
+                if (!int.TryParse(txtReferrals.Text, out int result))
                 {
-                    //TODO: ADD VALIDATION MESSAGE
-                    MessageBox.Show("Date of birth must be between 1753 and 9999.");
-
-                    return false;
+                    checkFields.Add("Referrals must be a number.");
+                    txtReferrals.BackColor = Color.LightPink;
+                    //return false;
                 }
             }
 
-            if (DateTime.TryParse(mtxtBoxDateJoined.Text, out DateTime result2))
+            //check to make sure Social Security Number box is completely filled or empty
+            if(mtxtBoxSSN.Text != "   -  -")
             {
-                DateTime DateJoined = DateTime.Parse(mtxtBoxDateJoined.Text);
-
-                if (DateJoined < DateTime.Parse("01/01/1753") || DateJoined > DateTime.Parse("12/31/9999"))
+                if (!mtxtBoxSSN.MaskCompleted)
                 {
-                    //TODO: ADD VALIDATION MESSAGE
-                    MessageBox.Show("Join Date must be between 1753 and 9999.");
-
-                    return false;
+                    checkFields.Add("Social Security Number must have 9 digits");
+                    mtxtBoxSSN.BackColor = Color.LightPink;
                 }
             }
 
             
 
-            if (DateTime.TryParse(mtxtBoxRejoinDate.Text, out DateTime result3))
+            //validate that State Textbox contains only letters
+            char[] state = txtState.Text.ToCharArray();
+            bool isNumber = false;
+
+            foreach(char c in state)
             {
-                DateTime DateJoined = DateTime.Parse(mtxtBoxRejoinDate.Text);
-
-                if (DateJoined < DateTime.Parse("01/01/1753") || DateJoined > DateTime.Parse("12/31/9999"))
+                if (Char.IsNumber(c))
                 {
-                    //TODO: ADD VALIDATION MESSAGE
-                    MessageBox.Show("Rejoin Date must be between 1753 and 9999.");
-
-                    return false;
+                    isNumber = true;
                 }
             }
-            */
+
+            //if any character in state IS a NUMBER
+            if(isNumber)
+            {
+                checkFields.Add("State textbox must only contain letters");
+                txtState.BackColor = Color.LightPink;
+            }
+
+
+
 
 
             ///********************************************************************************************************
@@ -508,6 +527,17 @@ namespace NineTapTour.Forms
             //    return false;
             //}
             ///*******************************************************************************************************/
+            if (!String.IsNullOrWhiteSpace(txtReferrals.Text) && !int.TryParse(txtReferrals.Text, out int result2) ||
+               mtxtBoxRejoinDate.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxRejoinDate) ||
+               mtxtBoxDateJoined.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDateJoined) ||
+               mtxtBoxDOB.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDOB) ||
+               String.IsNullOrWhiteSpace(txtFirstName.Text) ||
+               String.IsNullOrWhiteSpace(txtLastName.Text) ||
+               isNumber == true || 
+               (mtxtBoxSSN.Text != "   -  -" && !mtxtBoxSSN.MaskCompleted))
+            {
+                return false;
+            }
 
             return true;
         }
@@ -520,18 +550,32 @@ namespace NineTapTour.Forms
         private void btnSave_Click(object sender, EventArgs e)
         {
             SaveMemberData();
+
+            if (checkFields.Count != 0)
+            {
+                string message = "";
+
+                foreach (String s in checkFields)
+                {
+                    message += s + "\n";
+                }
+
+                DialogResult confirm = MessageBox.Show(@message, @"There are errors for this member.", MessageBoxButtons.OK, MessageBoxIcon.Question);
+               
+
+            }
+            else
+            {
+                SaveMemberData();
+            }
         }
 
-        private void SaveMemberData()
+        public void SaveMemberData()
         {
             //checks to see if firstname,lastname, and zip is valid.
             //Then runs the rest of the btnSave_Click and adds a member into the database.
             if (isValid())
             {
-                var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (confirm == DialogResult.No)
-                    return;
-
                 ////use existing memberId if present or select the member id from the form
                 //int memId = (_memberId != -1) ? _memberId : Convert.ToInt32(txtMemberNumber.Text);
 
@@ -737,6 +781,7 @@ namespace NineTapTour.Forms
                     MessageBox.Show(ex.Message);
                 }
             }
+            
                 //catch (FormatException fe)
                 //{
                 //    Console.WriteLine("Error Number : " + fe.Message);
@@ -761,8 +806,12 @@ namespace NineTapTour.Forms
             }
             else
             {
-                txtMemberNumber.Text = (currentMem.Number - 1).ToString();
-                UpdateMemberInfo();
+                //newly introduced function call for button navigation
+                if(MemberNavigate())
+                {
+                    txtMemberNumber.Text = (currentMem.Number - 1).ToString();
+                    UpdateMemberInfo();
+                }
             }
 
         }
@@ -780,8 +829,13 @@ namespace NineTapTour.Forms
             }
             else
             {
-                txtMemberNumber.Text = (currentMem.Number + 1).ToString();
-                UpdateMemberInfo();
+                if(MemberNavigate())
+                {
+                    txtMemberNumber.Text = (currentMem.Number + 1).ToString();
+                    UpdateMemberInfo();
+                }
+
+                
             }
 
         }
@@ -845,12 +899,16 @@ namespace NineTapTour.Forms
         {
             try
             {
-                txtMemberNumber.Text = MemberDb.GetMemberList(RegionID)[0].Number.ToString();
-                UpdateMemberInfo();
+                if(MemberNavigate())
+                {
+                    txtMemberNumber.Text = MemberDb.GetMemberList(RegionID)[0].Number.ToString();
+                    UpdateMemberInfo();
+                }
+                
             }
             catch
             {
-                MessageBox.Show("There is no Members yet");
+                MessageBox.Show("There are no Members yet");
             }
             
         }
@@ -862,8 +920,13 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
-            txtMemberNumber.Text = MemberDb.GetMemberList(RegionID).Count.ToString();
-            UpdateMemberInfo();
+            if (MemberNavigate())
+            {
+                txtMemberNumber.Text = MemberDb.GetMemberList(RegionID).Count.ToString();
+                UpdateMemberInfo();
+            }
+
+            
         }
         
         /// <summary>
@@ -1677,7 +1740,45 @@ namespace NineTapTour.Forms
         {
             FormHelper.GoToFirstIndexInTextboxIfEmpty(sender as TextBoxBase);
         }
+
+        //return true if the user wants to navigate without fixing errors, 
+        //or there are no errors to fix
+        public bool MemberNavigate()
+        {
+            SaveMemberData();
+
+            if (checkFields.Count != 0)
+            {
+                string message = "";
+
+                foreach (String s in checkFields)
+                {
+                    message += s + "\n";
+                }
+
+                DialogResult confirm = MessageBox.Show(@message, @"There are errors, navigate away anyways?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if(confirm == DialogResult.Yes)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        private void FrmMemberData_Deactivate(object sender, EventArgs e)
+        {
+            MemberNavigate();
+        }
     }
+
+
 }
 
 
