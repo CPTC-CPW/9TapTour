@@ -10,6 +10,7 @@ using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Data.Entity.Core.Objects;
+using Bogus.Extensions;
 using NineTapTour.Models;
 using NineTapTour.Models.ViewModels;
 
@@ -1589,8 +1590,10 @@ namespace NineTapTour.Forms
 
                 var listOfParticipants = ParticipantsDB.GetParticipants(selectedTournament.Id);
 
+                listOfParticipants = listOfParticipants.GroupBy(p => p.Member.Id).Select(pg => pg.Max()).ToList();
+
+                //TAKES A TOURNAMENT ID AND SQUAD NUMBER AND FILTERS FOR A LIST OF PARTICIPANTS.
                 if (qbsNumber > 0 && qbsNumber <= 8)
-                    //TAKES A TOURNAMENT ID AND SQUAD NUMBER AND FILTERS FOR A LIST OF PARTICIPANTS.
                     listOfParticipants = listOfParticipants.Where(p => p.Squad == qbsNumber).ToList();
 
                 else if(howManySquadsCanBeFiltered.Count > 0 && QBSNumber == 9)
@@ -1601,11 +1604,14 @@ namespace NineTapTour.Forms
                 {
                     int id = 0;
                     int count = 0;
+
+
+
                     foreach (Participant currParticipant in listOfParticipants)
                     {
                         
                         //Gets all of the game scores that are valid (that have a value)
-                        var allScoresWithOutNullGames = currParticipant.Game.allGameScores().Where(g => g.HasValue);
+                        var allScoresWithOutNullGames = currParticipant.Game.AllGameScores().Where(g => g.HasValue);
 
                         //totals all games with out nulls/valid score
                         int? totalScore = allScoresWithOutNullGames.Sum();
@@ -1614,61 +1620,37 @@ namespace NineTapTour.Forms
 
                         //Sets a collection of all the games using the 3 out of 4 ruleset
                         var top3Games = TournamentStats.GetTop3OutOf4(top4Games.ToList());
-                        
-                        // If a member decides to play in multiple squads for the current tournament.
-                        //this will overwrite their previous score.
-                        if (currParticipant.Member.Id == id)
+
+                        TopScores temp = new TopScores();
+                        listOfTopScore.Add(temp);
+
+                        // set id to current member
+                        id = currParticipant.Member.Id;
+
+                        // Populates info                         
+                        listOfTopScore[count].FirstName = currParticipant.Member.FirstName;
+                        listOfTopScore[count].LastName = currParticipant.Member.LastName;
+                        listOfTopScore[count].Game1 = currParticipant.Game.Game1;
+                        listOfTopScore[count].Game2 = currParticipant.Game.Game2;
+                        listOfTopScore[count].Game3 = currParticipant.Game.Game3;
+                        listOfTopScore[count].Game4 = currParticipant.Game.Game4;
+                        listOfTopScore[count].GameID = currParticipant.Game.Id;
+                        listOfTopScore[count].Handicap = currParticipant.Member.Handicap;
+                        listOfTopScore[count].memberID = id;
+                        //todo: change this as this is uneedeed
+                        try
                         {
-                            //This will handle setting their topScore if it is higher than the previous high score
-                            if (totalScore > listOfTopScore[count - 1].ScratchTotal)
-                            {
-                                listOfTopScore[count - 1].ScratchTotal = totalScore;
-                                listOfTopScore[count - 1].HandicapScore = totalScore + (listOfTopScore[count - 1].Handicap * 4) + (listOfTopScore[count - 1].Bonus * 4);
-                                listOfTopScore[count - 1].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
-                                listOfTopScore[count - 1].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * currParticipant.Member.Handicap) + (3 * listOfTopScore[count - 1].Bonus);
-                                listOfTopScore[count - 1].Game1 = currParticipant.Game.Game1;
-                                listOfTopScore[count - 1].Game2 = currParticipant.Game.Game2;
-                                listOfTopScore[count - 1].Game3 = currParticipant.Game.Game3;
-                                listOfTopScore[count - 1].Game4 = currParticipant.Game.Game4;
-                                listOfTopScore[count - 1].GameID = currParticipant.Game.Id;
-                            }
+                            listOfTopScore[count].Bonus = currParticipant.Member.Bonus;
                         }
-                        // If the next member in the for loop is different from the previous member.
-                        else
+                        catch
                         {
-
-                                TopScores temp = new TopScores();
-                                listOfTopScore.Add(temp);
-
-                            // set id to current member
-                            id = currParticipant.Member.Id;
-
-                            // Populates info                         
-                            listOfTopScore[count].FirstName = currParticipant.Member.FirstName;
-                            listOfTopScore[count].LastName = currParticipant.Member.LastName;
-                            listOfTopScore[count].Game1 = currParticipant.Game.Game1;
-                            listOfTopScore[count].Game2 = currParticipant.Game.Game2;
-                            listOfTopScore[count].Game3 = currParticipant.Game.Game3;
-                            listOfTopScore[count].Game4 = currParticipant.Game.Game4;
-                            listOfTopScore[count].GameID = currParticipant.Game.Id;
-                            listOfTopScore[count].Handicap = currParticipant.Member.Handicap;
-                            listOfTopScore[count].memberID = id;
-                            //todo: change this as this is uneedeed
-                            try
-                            {
-                                listOfTopScore[count].Bonus = currParticipant.Member.Bonus;
-                            }
-                            catch
-                            {
-                                listOfTopScore[count].Bonus = 0;
-                            }
-                            listOfTopScore[count].ScratchTotal = totalScore;
-                            listOfTopScore[count].HandicapScore = totalScore + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);//TODO: make "game count flexible"
-                            listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
-                            listOfTopScore[count].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * currParticipant.Member.Handicap) + (3 * listOfTopScore[count].Bonus);
-                            count++;
+                            listOfTopScore[count].Bonus = 0;
                         }
-                        
+                        listOfTopScore[count].ScratchTotal = totalScore;
+                        listOfTopScore[count].HandicapScore = totalScore + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);//TODO: make "game count flexible"
+                        listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
+                        listOfTopScore[count].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * currParticipant.Member.Handicap) + (3 * listOfTopScore[count].Bonus);
+                        count++;
                     }
                 }
                 catch (SqlException)
