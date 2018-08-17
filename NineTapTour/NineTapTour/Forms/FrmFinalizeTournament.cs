@@ -17,37 +17,11 @@ namespace NineTapTour.Forms
 
     public partial class FrmFinalizeTournament : Form
     {
-        List<FinalizeTemp> FinalizeTableList = new List<FinalizeTemp>();
-        private Tournament currentT; //current tournament
-        private List<TopScores> topscores; //used to know who won the tournament and there placing
-        int RegionID;
-        List<int> ListofScratchScores = new List<int>(); //used for determining addition rules if the game was a 3o4 for scratch score / used more then once (made variable global)
-
-
-
-        public FrmFinalizeTournament(Tournament tourn, List<TopScores> topscores, int RegionID)
-        {
-            InitializeComponent();
-            this.dataGridView1.DoubleBuffered(false);
-            this.dataGridView2.DoubleBuffered(true);
-            this.currentT = tourn;
-            this.topscores = topscores;
-            this.RegionID = RegionID;
-            FinalizeTableList = GetAllInitialParticipantGameList(tourn);
-            createDataGridView(tourn);
-        }
-
-        private void FrmFinalizeTournament_Load(object sender, EventArgs e)
-        {
-            InitializeGameCellFormatting();
-        }
-
-        List<PlayerHistory> temporary = new List<PlayerHistory>();
-        int currentIndex = 0;
+        #region Constant Values
 
         //USE THIS IF YOU NEED TO MOVE AROUND THE ORDER IN WHICH THE COLUMNS ARE DISPLAYED 
-        const int INDEX_COLUMN = 0;
-        const int GAME_ID_COLUMN = 1;
+        const int STANDING_COLUMN = 0;
+        const int MEMBER_NUMBER_COLUMN = 1;
         const int NAME_COLUMN = 2;
         const int GAME_1_COLUMN = 3;
         const int GAME_1_VALID_COLUMN = 4;
@@ -68,186 +42,159 @@ namespace NineTapTour.Forms
         const int BONUS_COLUMN = 19;
         const int PRO_POT_COLUMN = 20;
         const int NOTES_COLUMN_ = 21;
-
-
-
-
+        const int GAME_ID_COLUMN = 22;
 
         //USE THIS IF YOU WANT TO CHANGE THE NAME OF EACH COLUMN 
-        static string INDEX_COLUMN_NAME = "Index";
-        static string GAME_ID_COLUMN_NAME = "GameID";
-        static string NAME_COLUMN_NAME = "Name";
-        static string GAME_1_COLUMN_NAME = "Game 1";
-        static string GAME_1_VALID_COLUMN_NAME = "Valid Score1?";
-        static string GAME_2_COLUMN_NAME = "Game 2";
-        static string GAME_2_VALID_COLUMN_NAME = "Valid Score2?";
-        static string GAME_3_COLUMN_NAME = "Game 3";
-        static string GAME_3_VALID_COLUMN_NAME = "Valid Score3?";
-        static string GAME_4_COLUMN_NAME = "Game 4";
-        static string GAME_4_VALID_COLUMN_NAME = "Valid Score4?";
-        static string SCRATCH_TOTAL_COLUMN_NAME = "Scratch Total";
-        static string HANDICAP_TOTAL_COLUMN_NAME = "Handicap Total";
-        static string ENTRY_AVERAGE_COLUMN_NAME = "Entry AVG";
-        static string THIRTY_ENTRY_AVERAGE_COLUMN_NAME = "30 Entry AVG";
-        static string ADJUSTED_AVG_COLUMN_NAME = "ADJ AVG";
-        static string DIRECTOR_CHECK_COLUMN_NAME = "Director Check";
-        static string SQUAD_COLUMN_NAME = "Squad";
-        static string HANDICAP_COLUMN_NAME = "Handicap";
-        static string BONUS_COLUMN_NAME = "Bonus";
-        static string PRO_POT_COLUMN_NAME = "Pro Pot";
-        static string NOTES_COLUMN_NAME = "Notes";
+        const string STANDING_COLUMN_NAME = "Standing";
+        const string MEMBER_NUMBER_COLUMN_NAME = "Member Number";
+        const string GAME_ID_COLUMN_NAME = "GameID";
+        const string NAME_COLUMN_NAME = "Name";
+        const string GAME_1_COLUMN_NAME = "Game 1";
+        const string GAME_1_VALID_COLUMN_NAME = "Valid Score1?";
+        const string GAME_2_COLUMN_NAME = "Game 2";
+        const string GAME_2_VALID_COLUMN_NAME = "Valid Score2?";
+        const string GAME_3_COLUMN_NAME = "Game 3";
+        const string GAME_3_VALID_COLUMN_NAME = "Valid Score3?";
+        const string GAME_4_COLUMN_NAME = "Game 4";
+        const string GAME_4_VALID_COLUMN_NAME = "Valid Score4?";
+        const string SCRATCH_TOTAL_COLUMN_NAME = "Scratch Total";
+        const string HANDICAP_TOTAL_COLUMN_NAME = "Handicap Total";
+        const string ENTRY_AVERAGE_COLUMN_NAME = "Entry AVG";
+        const string THIRTY_ENTRY_AVERAGE_COLUMN_NAME = "30 Entry AVG";
+        const string ADJUSTED_AVG_COLUMN_NAME = "ADJ AVG";
+        const string DIRECTOR_CHECK_COLUMN_NAME = "Director Check";
+        const string SQUAD_COLUMN_NAME = "Squad";
+        const string HANDICAP_COLUMN_NAME = "Handicap";
+        const string BONUS_COLUMN_NAME = "Bonus";
+        const string PRO_POT_COLUMN_NAME = "Pro Pot";
+        const string NOTES_COLUMN_NAME = "Notes";
 
+        #endregion
 
+        //List<FinalizeTemp> FinalizeTableList = new List<FinalizeTemp>();
+        private int RegionID;
+        private Tournament currTournament; //current tournament
+        private List<TopScores> topscores; //used to know who won the tournament and there placing
+        //List<int> ListofScratchScores = new List<int>(); //used for determining addition rules if the game was a 3o4 for scratch score / used more then once (made variable global)
+        // ^ Unused.
+        List<PlayerHistory> temporary = new List<PlayerHistory>();
+        //int currentIndex = 0;
+        // ^ Unused.
+
+        public FrmFinalizeTournament(Tournament t, List<TopScores> tScores, int region)
+        {
+            InitializeComponent();
+            currTournament = t;
+            topscores = tScores;
+            RegionID = region;
+        }
+
+        private void FrmFinalizeTournament_Load(object sender, EventArgs e)
+        {
+            createDataGridView(currTournament);
+            InitializeGameCellFormatting();
+        }
 
         private void createDataGridView(Tournament tourn)
         {
-            List<FinalizeTemp> ToBeAddedToDataBase = new List<FinalizeTemp>();
+            List<FinalizeTemp> FinalizeTableList = GetAllInitialParticipantGameList(currTournament);
 
             foreach (var item in FinalizeTableList)
             {
-                FinalizeTemp temp;
                 int gplayed = 0;
-
                 Game g = FinalizeTempDB.getGame(item.GameId);
-                if (FinalizeTempDB.getFinalizeID(g).FinalizeID > 0)//if this column was already created and exists in the database , set the information to be what was already added to the database
+                FinalizeTemp temp = FinalizeTempDB.getFinalizeID(g);
+
+                if (temp.FinalizeID <= 0)
                 {
-
-                    temp = FinalizeTempDB.getFinalizeID(g);
-                    temp.Notes = item.Notes;
-                    temp.memberNumber = MemberDb.GetMemberNumberbyID(item.MemberId);
-                    temp.Game1 = Convert.ToInt32(g.Game1);
-                    temp.Game2 = Convert.ToInt32(g.Game2);
-                    temp.Game3 = Convert.ToInt32(g.Game3);
-                    temp.Game4 = Convert.ToInt32(g.Game4);
-                    temp.ScratchTotal = temp.Game1 + temp.Game2 + temp.Game3 + temp.Game4;
-                    temp.HandicapTotal = ((temp.Game1 + temp.Bonus + temp.Handicap) + (temp.Game2 + temp.Bonus + temp.Handicap) + (temp.Game3 + temp.Bonus + temp.Handicap) + (temp.Game4 + temp.Bonus + temp.Handicap));
-                    if (item.Game1 > 0)
+                    temp = new FinalizeTemp
                     {
-                        gplayed++;
-                    }
-                    if (item.Game2 > 0)
-                    {
-                        gplayed++;
-                    }
-                    if (item.Game3 > 0)
-                    {
-                        gplayed++;
-                    }
-                    if (item.Game4 > 0)
-                    {
-                        gplayed++;
-                    }
-                    temp.GameAvg = (temp.Game1 + temp.Game2 + temp.Game3 + temp.Game4) / gplayed;
+                        FinalizeRegionID = RegionID,
+                        FinalizeID = FinalizeTableList.Count,
+                        TournamentID = tourn.Id,
+                        GameId = item.GameId,
+                        Squad = item.Squad,
+                        AdjustedAvg = 0,
+                    };
                 }
-                else
+
+                temp.Notes = item.Notes;
+                temp.memberNumber = MemberDb.GetMemberNumberbyID(item.MemberId);
+                temp.MemberId = item.MemberId;
+                temp.FirstName = item.FirstName;
+                temp.LastName = item.LastName;
+                temp.Handicap = item.Handicap;
+                temp.Bonus = item.Bonus;
+                temp.Game1 = g.Game1;
+                temp.Game2 = g.Game2;
+                temp.Game3 = g.Game3;
+                temp.Game4 = g.Game4;
+                temp.UseGame1 = item.UseGame1;
+                temp.UseGame2 = item.UseGame2;
+                temp.UseGame3 = item.UseGame3;
+                temp.UseGame4 = item.UseGame4;
+                temp.ScratchTotal = (temp.Game1 ?? 0) + (temp.Game2 ?? 0) + (temp.Game3 ?? 0) + (temp.Game4 ?? 0);
+                int hTotal = (temp.Game1.HasValue) ? ((temp.Game1 ?? 0) + temp.Bonus + temp.Handicap) : 0;
+                hTotal += (temp.Game2.HasValue) ? ((temp.Game2 ?? 0) + temp.Bonus + temp.Handicap) : 0;
+                hTotal += (temp.Game3.HasValue) ? ((temp.Game3 ?? 0) + temp.Bonus + temp.Handicap) : 0;
+                hTotal += (temp.Game4.HasValue) ? ((temp.Game4 ?? 0) + temp.Bonus + temp.Handicap) : 0;
+                temp.HandicapTotal = hTotal;
+                if (item.Game1 > 0)
                 {
-
-                    gplayed = 0;
-                    temp = new FinalizeTemp();
-                    temp.FinalizeRegionID = RegionID;
-                    temp.FinalizeID = FinalizeTableList.Count;
-                    temp.TournamentID = tourn.Id;
-                    temp.GameId = item.GameId;
-                    temp.MemberId = item.MemberId;
-                    temp.memberNumber = MemberDb.GetMemberNumberbyID(item.MemberId);
-                    temp.FirstName = item.FirstName;
-                    temp.LastName = item.LastName;
-                    temp.Squad = item.Squad;
-                    temp.Game1 = Convert.ToInt32(g.Game1);
-                    temp.Game2 = Convert.ToInt32(g.Game2);
-                    temp.Game3 = Convert.ToInt32(g.Game3);
-                    temp.Game4 = Convert.ToInt32(g.Game4);
-                    temp.Notes = item.Notes;
-                    temp.UseGame1 = item.UseGame1;
-                    temp.UseGame2 = item.UseGame2;
-                    temp.UseGame3 = item.UseGame3;
-                    temp.UseGame4 = item.UseGame4;
-                    temp.AdjustedAvg = 0;
-                    temp.ScratchTotal = temp.Game1 + temp.Game2 + temp.Game3 + temp.Game4;
-                    if (item.Game1 > 0)
-                    {
-                        gplayed++;
-                    }
-                    if (item.Game2 > 0)
-                    {
-                        gplayed++;
-                    }
-                    if (item.Game3 > 0)
-                    {
-                        gplayed++;
-                    }
-                    if (item.Game4 > 0)
-                    {
-                        gplayed++;
-                    }
-                    temp.GameAvg = (temp.Game1 + temp.Game2 + temp.Game3 + temp.Game4) / gplayed;
-                    temp.Handicap = item.Handicap;
-                    temp.Bonus = item.Bonus;
-                    temp.HandicapTotal = ((temp.Game1 + temp.Bonus + temp.Handicap) + (temp.Game2 + temp.Bonus + temp.Handicap) + (temp.Game3 + temp.Bonus + temp.Handicap) + (temp.Game4 + temp.Bonus + temp.Handicap));
-
-
+                    gplayed++;
                 }
+                if (item.Game2 > 0)
+                {
+                    gplayed++;
+                }
+                if (item.Game3 > 0)
+                {
+                    gplayed++;
+                }
+                if (item.Game4 > 0)
+                {
+                    gplayed++;
+                }
+                temp.GameAvg = ((temp.Game1 ?? 0) + (temp.Game2 ?? 0) + (temp.Game3 ?? 0) + (temp.Game4 ?? 0)) / gplayed;
+
+
+
 
                 //grabs running league average 
-                item.memberNumber = MemberDb.GetMemberNumberbyID(item.MemberId);
                 List<PlayerHistory> ExistingPlayerHistory = PlayerHistoryDB.getMemberPlayerHistory(item.memberNumber, RegionID);
                 if (ExistingPlayerHistory.Count == 0)
                 {
-                    getLeagueSum(temp);
+                    temp.LeagueAverage = CalcThirtyLeagueAverage(item.memberNumber, FinalizeTableList.Where(f => f.memberNumber == item.memberNumber && f.Squad <= item.Squad && (f.UseGame1 || f.UseGame2 || f.UseGame3 || f.UseGame4)).Select(f => f.GameAvg).ToList());
                 }
-                for (int u = 0; u < ExistingPlayerHistory.Count; u++)
+                else
                 {
-                    if (ExistingPlayerHistory[u].GameID == temp.GameId)
+                    for (int u = 0; u < ExistingPlayerHistory.Count; u++)
                     {
-                        break; //dont adjust the average if the PlayerHistory with said game id already exists;
-                    }
-                    else if (u == ExistingPlayerHistory.Count - 1) // after looking at all the history, if its not in the playerhistory list, then adjust the league avg
-                    {
-                        getLeagueSum(temp);
-                    }
+                        if (ExistingPlayerHistory[u].GameID == temp.GameId)
+                        {
+                            break; //dont adjust the average if the PlayerHistory with said game id already exists;
+                        }
+                        else if (u == ExistingPlayerHistory.Count - 1) // after looking at all the history, if its not in the playerhistory list, then adjust the league avg
+                        {
+                            temp.LeagueAverage = CalcThirtyLeagueAverage(item.memberNumber, FinalizeTableList.Where(f => f.memberNumber == item.memberNumber && f.Squad < item.Squad && (f.UseGame1 || f.UseGame2 || f.UseGame3 || f.UseGame4)).Select(f => f.GameAvg).ToList());
+                        }
 
+                    } 
                 }
                 FinalizeTempDB.AddFinalizeTempOnstart(temp);
             }
             //pulls a list from the finalizetemp table and seeds the dataview with the table info.
             List<FinalizeTemp> DataViewList = GetListFromTable(tourn);
-            FinalizeTableList = DataViewList;
 
-            dataGridView1.DataSource = DataView(tourn, DataViewList); //By default populates all datagrid with all participant for tournament.
+            // Sort the list by the total score, including handicap, in descending order.
+            DataViewList.Sort((a, b) => b.HandicapTotal - a.HandicapTotal);
 
+            dataGridView1.DataSource = DataView(DataViewList); //By default populates all datagrid with all participant for tournament.
 
-
-
-
+            dataGridView1.Columns[GAME_ID_COLUMN].Visible = false;
 
             ////Sort DataGridView by TrueAverage
             //this.dataGridView1.Sort(this.dataGridView1.Columns["True Avg"], ListSortDirection.Descending);
-
-            //sets sizes of check box columns "Valid Score1, ValidScore2, ValidScore3, Valid Score 4, and Keep True Avg?"
-            dataGridView1.SuspendLayout();
-            //var column = dataGridView1.Columns[NAME_COLUMN];
-            //for (int i = 0; i <= 20; i++)
-            {
-
-                //    column = dataGridView1.Columns[i];
-
-                //    if (column.Index == GAME_1_VALID_COLUMN || column.Index == GAME_2_VALID_COLUMN || column.Index == GAME_3_VALID_COLUMN || column.Index == GAME_4_VALID_COLUMN || column.Index == DIRECTOR_CHECK_COLUMN)
-                //    {
-                //        column.Width = 50;
-                //    }
-                //    else if (column.Index == NAME_COLUMN)
-                //    {
-                //        column.Width = 100;
-                //    }
-                //    else
-                //    {
-                //        column.Width = 75;
-                //    }
-            }
-            dataGridView1.ResumeLayout();
-
-
-            dataGridView1.AllowUserToAddRows = false;
         }
 
 
@@ -256,12 +203,12 @@ namespace NineTapTour.Forms
 
         //creates the dataview that will populate the datagridview table on form pulls from the finalizetemp table
         // CHANGE THESE IN THE ORDER YOU WANT THEM TO BE SEEN ON THE GRID VIEW (0 == far left) AND THEN CHANGE THE STATIC INTS AT THE TOP IN ORDER TO CHANGE THERE ORDER ON THE GRID VIEW WITHOUT HAVING TO TOUNCH ANY OTHER CODE
-        public DataTable DataView(Tournament tourn, List<FinalizeTemp> participantsList)
+        public DataTable DataView(List<FinalizeTemp> participantsList)
         {
             var db = new NineTapDb();
             DataTable dt = new DataTable();
-            dt.Columns.Add(INDEX_COLUMN_NAME); //0
-            dt.Columns.Add(GAME_ID_COLUMN_NAME).ReadOnly = true; //1
+            dt.Columns.Add(STANDING_COLUMN_NAME); //0
+            dt.Columns.Add(MEMBER_NUMBER_COLUMN_NAME).ReadOnly = true; //1
             dt.Columns.Add(NAME_COLUMN_NAME).ReadOnly = true; //2
             dt.Columns.Add(GAME_1_COLUMN_NAME).ReadOnly = true; //3
             dt.Columns.Add(new DataColumn(GAME_1_VALID_COLUMN_NAME, typeof(bool))); //4
@@ -274,7 +221,7 @@ namespace NineTapTour.Forms
             dt.Columns.Add(SCRATCH_TOTAL_COLUMN_NAME);//11
             dt.Columns.Add(HANDICAP_TOTAL_COLUMN_NAME);//12
             dt.Columns.Add(ENTRY_AVERAGE_COLUMN_NAME);//13
-            dt.Columns.Add(THIRTY_ENTRY_AVERAGE_COLUMN_NAME).ReadOnly = true;     //14  
+            dt.Columns.Add(THIRTY_ENTRY_AVERAGE_COLUMN_NAME);     //14  
             dt.Columns.Add(ADJUSTED_AVG_COLUMN_NAME); //15
             dt.Columns.Add(new DataColumn(DIRECTOR_CHECK_COLUMN_NAME, typeof(bool)));//16
             dt.Columns.Add(SQUAD_COLUMN_NAME).ReadOnly = true;//16
@@ -282,6 +229,8 @@ namespace NineTapTour.Forms
             dt.Columns.Add(BONUS_COLUMN_NAME).ReadOnly = true;//18
             dt.Columns.Add(PRO_POT_COLUMN_NAME);//19
             dt.Columns.Add(NOTES_COLUMN_NAME);//20
+
+            dt.Columns.Add(GAME_ID_COLUMN_NAME).ReadOnly = true; //21
 
 
 
@@ -292,15 +241,16 @@ namespace NineTapTour.Forms
             foreach (var item in temp)
             {
                 DataRow newRow = dt.NewRow();
-                newRow[GAME_ID_COLUMN_NAME] = item.GameId;
+                newRow[STANDING_COLUMN_NAME] = index;
+                newRow[MEMBER_NUMBER_COLUMN_NAME] = item.memberNumber;
                 newRow[NAME_COLUMN_NAME] = item.FirstName + " " + item.LastName;
-                newRow[GAME_1_COLUMN_NAME] = item.Game1;
+                newRow[GAME_1_COLUMN_NAME] = (item.Game1.HasValue) ? item.Game1.ToString() : "DNF";
                 newRow[GAME_1_VALID_COLUMN_NAME] = item.UseGame1;
-                newRow[GAME_2_COLUMN_NAME] = item.Game2;
+                newRow[GAME_2_COLUMN_NAME] = (item.Game2.HasValue) ? item.Game2.ToString() : "DNF";
                 newRow[GAME_2_VALID_COLUMN_NAME] = item.UseGame2;
-                newRow[GAME_3_COLUMN_NAME] = item.Game3;
+                newRow[GAME_3_COLUMN_NAME] = (item.Game3.HasValue) ? item.Game3.ToString() : "DNF";
                 newRow[GAME_3_VALID_COLUMN_NAME] = item.UseGame3;
-                newRow[GAME_4_COLUMN_NAME] = item.Game4;
+                newRow[GAME_4_COLUMN_NAME] = (item.Game4.HasValue) ? item.Game4.ToString() : "DNF";
                 newRow[GAME_4_VALID_COLUMN_NAME] = item.UseGame4;
                 newRow[THIRTY_ENTRY_AVERAGE_COLUMN_NAME] = item.LeagueAverage;
                 newRow[ENTRY_AVERAGE_COLUMN_NAME] = item.GameAvg;
@@ -311,8 +261,8 @@ namespace NineTapTour.Forms
                 newRow[HANDICAP_COLUMN_NAME] = item.Handicap;
                 newRow[BONUS_COLUMN_NAME] = item.Bonus;
                 newRow[NOTES_COLUMN_NAME] = item.Notes;
-                newRow[INDEX_COLUMN_NAME] = index;
                 newRow[HANDICAP_TOTAL_COLUMN_NAME] = item.HandicapTotal;
+                newRow[GAME_ID_COLUMN_NAME] = item.GameId;
                 dt.Rows.Add(newRow);
                 index++;
             }
@@ -367,78 +317,46 @@ namespace NineTapTour.Forms
                 NewParticipant.MemberId = item.MemberId;
                 NewParticipant.FirstName = item.FirstName;
                 NewParticipant.LastName = item.LastName;
-                NewParticipant.Game1 = (int)item.Game1;
-                NewParticipant.Game2 = (int)item.Game2;
-                NewParticipant.Game3 = (int)item.Game3;
-                NewParticipant.Game4 = (int)item.Game4;
-                if (item.UseGame1 == null)
-                {
-                    NewParticipant.UseGame1 = true;
-                }
-                else
-                {
-                    NewParticipant.UseGame1 = (bool)item.UseGame1;
-                }
-                if (item.UseGame2 == null)
-                {
-                    NewParticipant.UseGame2 = true;
-                }
-                else
-                {
-                    NewParticipant.UseGame2 = (bool)item.UseGame1;
-                }
-                if (item.UseGame3 == null)
-                {
-                    NewParticipant.UseGame3 = true;
-                }
-                else
-                {
-                    NewParticipant.UseGame3 = (bool)item.UseGame1;
-                }
-                if (item.UseGame4 == null)
-                {
-                    NewParticipant.UseGame4 = true;
-                }
-                else
-                {
-                    NewParticipant.UseGame4 = (bool)item.UseGame1;
-                }
+                NewParticipant.Game1 = item.Game1;
+                NewParticipant.Game2 = item.Game2;
+                NewParticipant.Game3 = item.Game3;
+                NewParticipant.Game4 = item.Game4;
 
+                NewParticipant.UseGame1 = item.UseGame1 ?? item.Game1.HasValue;
+                NewParticipant.UseGame2 = item.UseGame2 ?? item.Game2.HasValue;
+                NewParticipant.UseGame3 = item.UseGame3 ?? item.Game3.HasValue;
+                NewParticipant.UseGame4 = item.UseGame4 ?? item.Game4.HasValue;
 
-                if (item.Game1 > 0)
+                if (item.Game1.HasValue)
                 {
                     gplayed++;
                 }
-                if (item.Game2 > 0)
+                if (item.Game2.HasValue)
                 {
                     gplayed++;
                 }
-                if (item.Game3 > 0)
+                if (item.Game3.HasValue)
                 {
                     gplayed++;
                 }
-                if (item.Game4 > 0)
+                if (item.Game4.HasValue)
                 {
                     gplayed++;
                 }
 
                 NewParticipant.Notes = item.Notes;
-                NewParticipant.ScratchTotal = (int)(item.Game1 + item.Game2 + item.Game3 + item.Game4);
+                NewParticipant.ScratchTotal = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0);
                 NewParticipant.Squad = item.Squad;
-                NewParticipant.GameAvg = (int)(item.Game1 + item.Game2 + item.Game3 + item.Game4) / gplayed;
-                NewParticipant.Handicap = (int)item.Handicap;
-                try
-                {
-                    NewParticipant.Bonus = (int)item.Bonus;
-                }
-                catch
-                {
-                    NewParticipant.Bonus = 0;
-                }
-                NewParticipant.HandicapTotal = (int)((item.Game1 + item.Handicap + item.Bonus) +
-                                                     (item.Game2 + item.Handicap + item.Bonus) +
-                                                     (item.Game3 + item.Handicap + item.Bonus) +
-                                                     (item.Game4 + item.Handicap + item.Bonus));
+                NewParticipant.GameAvg = ((item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0)) / gplayed;
+                NewParticipant.Handicap = item.Handicap ?? 0;
+                NewParticipant.Bonus = item.Bonus ?? 0;
+
+                int hTotal = (item.Game1 != null) ? ((item.Game1 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
+                hTotal += (item.Game2 != null) ? ((item.Game2 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
+                hTotal += (item.Game3 != null) ? ((item.Game3 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
+                hTotal += (item.Game4 != null) ? ((item.Game4 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
+
+                NewParticipant.HandicapTotal = hTotal;
 
                 NewParticipant.memberNumber = item.Number;
                 NewParticipant.FinalizeRegionID = item.TourneyRegion;
@@ -448,9 +366,6 @@ namespace NineTapTour.Forms
 
             return ParticipantList;
         }
-
-
-
 
         //makes a list from the finalizetemp table to be used in dataview source
         public List<FinalizeTemp> GetListFromTable(Tournament tourn)
@@ -481,37 +396,57 @@ namespace NineTapTour.Forms
                 {
                     DataGridViewCell clickedCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
                     bool isCellChecked = Convert.ToBoolean(clickedCell.Value);
-
-                    SetGameCellFormatting(GetCorrespondingGameCell(clickedCell), isCellChecked);
                     UpdateAvg(clickedCell.RowIndex);
-                    getLeagueSum(FinalizeTableList[clickedCell.RowIndex]);
+                    UpdateLeagueAvg(e.RowIndex);
                     CheckBoxDBSet(clickedCell.RowIndex, clickedCell.ColumnIndex, isCellChecked);
+                    SetGameCellFormatting(GetCorrespondingGameCell(clickedCell), isCellChecked);
+                    dataGridView1_CellClick(null, null);
                 }
 
                 // Check if cell changed was a DIRECTOR_CHECK cell
                 else if (e.ColumnIndex == DIRECTOR_CHECK_COLUMN)
                 {
-                    // If the DIRECTOR_CHECK cell was clicked, this code finds the member that belongs to that cell
-                    // and changes all of that member's games to match the clicked DIRECTOR_CHECK.
-                    DataGridViewRow clickedRow = dataGridView1.Rows[e.RowIndex];
-                    DataGridViewCell clickedCell = clickedRow.Cells[e.ColumnIndex];
+                    // If the DIRECTOR_CHECK cell was clicked, this code changes all of that member's games to match the clicked DIRECTOR_CHECK.
 
-                    // TODO: Move database code to appropriate database helper class.
-                    int gameId = Convert.ToInt32(clickedRow.Cells[GAME_ID_COLUMN].Value);
-                    int memId;
-                    using (var db = new NineTapDb())
-                    {
-                        memId = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Id;
-                    }
+                    int memberNum = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[MEMBER_NUMBER_COLUMN].Value);
+                    bool isCellChecked = Convert.ToBoolean(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
 
-                    bool isCellChecked = Convert.ToBoolean(clickedCell.Value);
-                    for (int i = 0; i < FinalizeTableList.Count; i++)
+                    for (int i = 0; i < dataGridView1.Rows.Count; i++)
                     {
-                        if (FinalizeTableList[i].MemberId == memId)
+                        int otherMemberNum = Convert.ToInt32(dataGridView1.Rows[i].Cells[MEMBER_NUMBER_COLUMN].Value);
+                        if (otherMemberNum == memberNum)
                         {
                             dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = isCellChecked;
                         }
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// This method updates the 30 Game League Average for the game associated with the rowIndex passed in,
+        /// and the games for the same member, that come cronologically after that game.
+        /// </summary>
+        private void UpdateLeagueAvg(int rowIndex)
+        {
+            int memberNum = Convert.ToInt32(dataGridView1.Rows[rowIndex].Cells[MEMBER_NUMBER_COLUMN].Value);
+            int initialSquadNum = Convert.ToInt32(dataGridView1.Rows[rowIndex].Cells[SQUAD_COLUMN].Value);
+            
+            // This method queries the DataGridView for the rows belonging to the same member, as the passed in rowIndex.
+            DataRow[] rows = ((DataTable)dataGridView1.DataSource).Select(String.Format("[{0}] = {1}", MEMBER_NUMBER_COLUMN_NAME, memberNum));
+
+            foreach (DataRow row in rows)
+            {
+                int squadNum = Convert.ToInt32(row.Field<string>(SQUAD_COLUMN_NAME));
+                // If the squad number is equal to or greater than the passed in row's squad number, it needs to be updated.
+                if (squadNum >= initialSquadNum)
+                {
+                    // This list is required by the CalcThirtyLeagueAverage method. It is the Game Averages from the current game, and all the games previous in the current tournament.
+                    List<int> previousGameAverages = rows
+                        .Where(r => Convert.ToInt32(r.Field<string>(SQUAD_COLUMN_NAME)) <= squadNum && (r.Field<bool>(GAME_1_VALID_COLUMN_NAME) || r.Field<bool>(GAME_2_VALID_COLUMN_NAME) || r.Field<bool>(GAME_3_VALID_COLUMN_NAME) || r.Field<bool>(GAME_4_VALID_COLUMN_NAME)))
+                        .Select(r => Convert.ToInt32(r.Field<string>(ENTRY_AVERAGE_COLUMN_NAME)))
+                        .ToList();
+                    row.SetField(THIRTY_ENTRY_AVERAGE_COLUMN, CalcThirtyLeagueAverage(memberNum, previousGameAverages));
                 }
             }
         }
@@ -557,6 +492,7 @@ namespace NineTapTour.Forms
             temp.GameAvg = Convert.ToInt32(dataGridView1.Rows[row].Cells[ENTRY_AVERAGE_COLUMN].Value);
             temp.ScratchTotal = Convert.ToInt32(dataGridView1.Rows[row].Cells[SCRATCH_TOTAL_COLUMN].Value);
             temp.HandicapTotal = Convert.ToInt32(dataGridView1.Rows[row].Cells[HANDICAP_TOTAL_COLUMN].Value);
+            temp.LeagueAverage = Convert.ToInt32(dataGridView1.Rows[row].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
             db.Entry(temp).State = EntityState.Modified;
             db.SaveChanges();
             this.dataGridView1.CellValueChanged += this.dataGridView1_OnCellValueChanged;
@@ -610,10 +546,6 @@ namespace NineTapTour.Forms
                 dataGridView1.Rows[row].Cells[ENTRY_AVERAGE_COLUMN].Value = sum / count;
                 dataGridView1.Rows[row].Cells[SCRATCH_TOTAL_COLUMN].Value = sum;
                 dataGridView1.Rows[row].Cells[HANDICAP_TOTAL_COLUMN].Value = sumWHandicap;
-                FinalizeTableList[row].GameAvg = sum / count;
-                FinalizeTableList[row].ScratchTotal = sum;
-                FinalizeTableList[row].HandicapTotal = sumWHandicap;
-
             }
         }
         //calculates league average for member based off last 30 games or total games played if less than 30.
@@ -823,18 +755,17 @@ namespace NineTapTour.Forms
 
         private void SetGameCellFormatting(DataGridViewCell cell, bool isGameCellValid)
         {
-            if (isGameCellValid)
+            if (isGameCellValid && Int32.TryParse(cell.Value.ToString(), out int gameValue))
             {
                 //Sets the style back to default
                 cell.Style.Font = null;
 
                 // Check the game's value compared to the member's past thirty games average.
-                int gameValue = Convert.ToInt32(cell.Value);
                 int thirtyAvg = Convert.ToInt32(dataGridView1.Rows[cell.RowIndex].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
                 if (gameValue > thirtyAvg - 50)
                 {
                     // If the value is within acceptable parameters, change the background back to white.
-                    cell.Style.BackColor = Color.White; 
+                    cell.Style.BackColor = Color.White;
                 }
                 else
                 {
@@ -846,118 +777,6 @@ namespace NineTapTour.Forms
             {
                 cell.Style.BackColor = Color.Red;
             }
-        }
-
-        private void DataGridView1_OnCellEnter(object sender, DataGridViewCellEventArgs e)
-        {
-            currentIndex = dataGridView1.CurrentCell.RowIndex;
-
-            //set name, member score and currentr avg based of of what row is selected.
-            int gameId = Convert.ToInt32(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[GAME_ID_COLUMN].Value);
-            using (var db = new NineTapDb())
-            {
-                //set labels to selected index
-                int memId = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Id;
-                Member Cmember = MemberDb.GetMember(MemberDb.GetMemberNumberbyID(memId), RegionID);
-                lblMemberNumber.Text = Cmember.Number.ToString();
-                lblName.Text = Cmember.FirstName + " " + Cmember.LastName;
-                lblStartAvg.Text = Cmember.StartAvg.ToString();
-
-
-                try
-                {
-                    temporary = new List<PlayerHistory>();
-
-                    for (int i = 0; i < FinalizeTableList.Count; i++)
-                    {
-                        if (FinalizeTableList[i].MemberId == memId)
-                        {
-                            PlayerHistory p = new PlayerHistory();
-
-                            p.MemberNumber = FinalizeTableList[i].memberNumber;
-                            int tempgameplayed = 0;
-                            if (dataGridView1[GAME_1_VALID_COLUMN, i].Value.ToString() == "True")
-                            {
-                                tempgameplayed++;
-                                FinalizeTableList[i].UseGame1 = true;
-                                p.Game1 = FinalizeTableList[i].Game1;
-                            }
-                            else
-                            {
-                                FinalizeTableList[i].UseGame1 = false;
-                                p.Game1 = 0;
-
-                            }
-                            if (dataGridView1[GAME_2_VALID_COLUMN, i].Value.ToString() == "True")
-                            {
-                                tempgameplayed++;
-                                FinalizeTableList[i].UseGame2 = true;
-                                p.Game2 = FinalizeTableList[i].Game2;
-
-                            }
-                            else
-                            {
-                                FinalizeTableList[i].UseGame2 = false;
-                                p.Game2 = 0;
-                            }
-                            if (dataGridView1[GAME_3_VALID_COLUMN, i].Value.ToString() == "True")
-                            {
-                                tempgameplayed++;
-                                FinalizeTableList[i].UseGame3 = true;
-                                p.Game3 = FinalizeTableList[i].Game3;
-                            }
-                            else
-                            {
-                                FinalizeTableList[i].UseGame3 = false;
-                                p.Game3 = 0;
-
-                            }
-                            if (dataGridView1[GAME_4_VALID_COLUMN, i].Value.ToString() == "True")
-                            {
-                                tempgameplayed++;
-                                FinalizeTableList[i].UseGame4 = true;
-                                p.Game4 = FinalizeTableList[i].Game4;
-                            }
-                            else
-                            {
-                                FinalizeTableList[i].UseGame4 = false;
-                                p.Game4 = 0;
-                            }
-                            p.GamesPlayed = tempgameplayed;
-                            p.TournamentDate = currentT.Date;
-                            p.GameID = FinalizeTableList[i].GameId;
-
-
-
-                            p.TotalScore = FinalizeTableList[i].ScratchTotal;
-                            p.HandiCap = FinalizeTableList[i].Handicap;
-                            p.Bonus = FinalizeTableList[i].Bonus;
-                            p.MoneyWon = Convert.ToDecimal(FinalizeTempDB.getGame(gameId).MoneyWon);
-                            p.PPHG = Convert.ToString(FinalizeTempDB.getGame(gameId).PlaceStanding);
-                            p.ProPot = dataGridView1[PRO_POT_COLUMN, i].Value.ToString();
-                            p.Notes = dataGridView1[NOTES_COLUMN_, i].Value.ToString();
-                            p.AverageForGame = Convert.ToDouble(dataGridView1[ENTRY_AVERAGE_COLUMN, i].Value);
-                            p.trueAVG = FinalizeTableList[i].LeagueAverage;
-                            p.AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, i].Value);
-
-                            temporary.Add(p);
-
-
-                        }
-                    }
-
-
-                    temporary.Reverse();
-                    Refresh(temporary);
-                }
-                catch
-                {
-                    //catches the instance where cells technically do not exist. will not refresh if they dont exist yet.
-                }
-
-
-            }
-
         }
 
         //private void DataGridView2_FindCurrentIndex(object sender, DataGridViewCellStateChangedEventArgs e)
@@ -997,7 +816,7 @@ namespace NineTapTour.Forms
         //    }
         //}
 
-        private void Refresh(List<PlayerHistory> temporary)
+        private void RefreshMemberView(List<PlayerHistory> temporary)
         {
 
             DataTable dtGames = new DataTable();
@@ -1024,7 +843,6 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Money Won", typeof(Decimal));
             dtGames.Columns.Add("Notes");
             dtGames.Columns.Add("GameID").ReadOnly = true;
-
 
             foreach (var item in temporary)
             {
@@ -1135,25 +953,113 @@ namespace NineTapTour.Forms
                     dataGridView2.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
                 }
             }
-
-
-
-
         }
 
+        /// <summary>
+        /// This method populates the second DataGridView with information about the player associated with the cell that triggered the event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            //set name, member score and currentr avg based of of what row is selected.
+            int gameId = Convert.ToInt32(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[GAME_ID_COLUMN].Value);
+            using (var db = new NineTapDb())
+            {
+                //set labels to selected index
+                int memberNumber = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Number;
+                Member Cmember = MemberDb.GetMember(memberNumber, RegionID);
+                lblMemberNumber.Text = Cmember.Number.ToString();
+                lblName.Text = Cmember.FirstName + " " + Cmember.LastName;
+                lblStartAvg.Text = Cmember.StartAvg.ToString();
+
+
+                try
+                {
+                    temporary = new List<PlayerHistory>();
+
+                    for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                    {
+                        int tempMemberNumber = Convert.ToInt32(dataGridView1.Rows[i].Cells[MEMBER_NUMBER_COLUMN].Value);
+                        if (tempMemberNumber == memberNumber)
+                        {
+                            PlayerHistory p = new PlayerHistory();
+
+                            p.MemberNumber = tempMemberNumber;
+                            int tempgameplayed = 0;
+
+                            if (Convert.ToBoolean(dataGridView1[GAME_1_VALID_COLUMN, i].Value))
+                            {
+                                tempgameplayed++;
+                                p.Game1 = Convert.ToInt32(dataGridView1.Rows[i].Cells[GAME_1_COLUMN].Value);
+                            }
+                            else
+                            {
+                                p.Game1 = 0;
+
+                            }
+                            if (Convert.ToBoolean(dataGridView1[GAME_2_VALID_COLUMN, i].Value))
+                            {
+                                tempgameplayed++;
+                                p.Game2 = Convert.ToInt32(dataGridView1.Rows[i].Cells[GAME_2_COLUMN].Value);
+
+                            }
+                            else
+                            {
+                                p.Game2 = 0;
+                            }
+                            if (Convert.ToBoolean(dataGridView1[GAME_3_VALID_COLUMN, i].Value))
+                            {
+                                tempgameplayed++;
+                                p.Game3 = Convert.ToInt32(dataGridView1.Rows[i].Cells[GAME_3_COLUMN].Value);
+                            }
+                            else
+                            {
+                                p.Game3 = 0;
+
+                            }
+                            if (Convert.ToBoolean(dataGridView1[GAME_4_VALID_COLUMN, i].Value))
+                            {
+                                tempgameplayed++;
+                                p.Game4 = Convert.ToInt32(dataGridView1.Rows[i].Cells[GAME_4_COLUMN].Value);
+                            }
+                            else
+                            {
+                                p.Game4 = 0;
+                            }
+                            p.GamesPlayed = tempgameplayed;
+                            p.TournamentDate = currTournament.Date;
+                            p.GameID = Convert.ToInt32(dataGridView1.Rows[i].Cells[GAME_ID_COLUMN].Value);
 
 
 
+                            p.TotalScore = Convert.ToInt32(dataGridView1.Rows[i].Cells[SCRATCH_TOTAL_COLUMN].Value);
+                            p.HandiCap = Convert.ToInt32(dataGridView1.Rows[i].Cells[HANDICAP_COLUMN].Value);
+                            p.Bonus = Convert.ToInt32(dataGridView1.Rows[i].Cells[BONUS_COLUMN].Value);
+                            p.MoneyWon = Convert.ToDecimal(FinalizeTempDB.getGame(gameId).MoneyWon);
+                            p.PPHG = Convert.ToString(FinalizeTempDB.getGame(gameId).PlaceStanding);
+                            p.ProPot = dataGridView1[PRO_POT_COLUMN, i].Value.ToString();
+                            p.Notes = dataGridView1[NOTES_COLUMN_, i].Value.ToString();
+                            p.AverageForGame = Convert.ToDouble(dataGridView1[ENTRY_AVERAGE_COLUMN, i].Value);
+                            p.trueAVG = Convert.ToInt32(dataGridView1.Rows[i].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
+                            p.AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, i].Value);
+
+                            temporary.Add(p);
 
 
+                        }
+                    }
 
 
-
-
-
-
-
-
+                    temporary.Reverse();
+                    RefreshMemberView(temporary);
+                }
+                catch
+                {
+                    //catches the instance where cells technically do not exist. will not refresh if they dont exist yet.
+                }
+            }
+        }
 
         /***
         when you double clicke a cell, the selected cell(may not the clicked cell) will display the member's information 
@@ -1292,37 +1198,36 @@ namespace NineTapTour.Forms
 
         private void btnFinalize_Click(object sender, EventArgs e)
         {
-            int check = 0; //int used to make sure all the director check boxes have been filled out
+            bool isDirectorCheckFinished = true; //int used to make sure all the director check boxes have been filled out
 
-            List<FinalizeTemp> FinalizeTableList = GetListFromTable(currentT);
+            List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
             int gamesPlayed = 0;
             List<int> addedalreeady = new List<int>(); // a list used to catch the players memberid soo that way their bonus pin isnt adjusted more than once per tournament 
 
             //checks to make sure all the director had adjusted avgs and checked the box to make sure they did so.
             for (int i = 0; i < FinalizeTableList.Count; i++)
             {
-                if (dataGridView1[DIRECTOR_CHECK_COLUMN, i].Value.ToString() == "False")
-                {
-                    dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Style.BackColor = Color.Red;
-                }
-                else if (dataGridView1[DIRECTOR_CHECK_COLUMN, i].Value.ToString() == "True")
+                if (Convert.ToBoolean(dataGridView1[DIRECTOR_CHECK_COLUMN, i].Value))
                 {
                     dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Style.BackColor = Color.White;
-                    check++;
+                }
+                else
+                {
+                    dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Style.BackColor = Color.Red;
+                    isDirectorCheckFinished = false;
                 }
 
             }
 
             //START FINALIZATION
-            if (check == FinalizeTableList.Count)//if all the director check boxes are selected
+            if (isDirectorCheckFinished) //if all the director check boxes are selected
             {
-                for (int currentindex = 0; currentindex < FinalizeTableList.Count; currentindex++)
+                for (int i = 0; i < FinalizeTableList.Count; i++)
                 {
-                    int memberEntryCount = 0;
                     gamesPlayed = 0;
                     PlayerHistory ph = new PlayerHistory();
-                    ph.GameID = FinalizeTableList[currentindex].GameId;
-                    Game g = FinalizeTempDB.getGame(FinalizeTableList[currentindex].GameId);
+                    ph.GameID = FinalizeTableList[i].GameId;
+                    Game g = FinalizeTempDB.getGame(FinalizeTableList[i].GameId);
 
                     int memId;
                     using (var db = new NineTapDb())
@@ -1335,67 +1240,67 @@ namespace NineTapTour.Forms
                     List<PlayerHistory> pl = PlayerHistoryDB.getMemberPlayerHistory(MemberDb.GetMemberNumberbyID(memId), RegionID);
 
 
-                    ph.TournamentDate = currentT.Date;
+                    ph.TournamentDate = currTournament.Date;
                     ph.MemberNumber = currentMember.Number;
 
-                    if (dataGridView1[GAME_1_VALID_COLUMN, currentindex].Value.ToString() == "True")
+                    if (dataGridView1[GAME_1_VALID_COLUMN, i].Value.ToString() == "True")
                     {
                         gamesPlayed++;
                         g.UseGame1 = true;
-                        FinalizeTableList[currentindex].UseGame1 = true;
+                        FinalizeTableList[i].UseGame1 = true;
                     }
                     else
                     {
                         g.UseGame1 = false;
-                        FinalizeTableList[currentindex].UseGame1 = false;
+                        FinalizeTableList[i].UseGame1 = false;
                     }
-                    if (dataGridView1[GAME_2_VALID_COLUMN, currentindex].Value.ToString() == "True")
+                    if (dataGridView1[GAME_2_VALID_COLUMN, i].Value.ToString() == "True")
                     {
                         gamesPlayed++;
                         g.UseGame2 = true;
-                        FinalizeTableList[currentindex].UseGame2 = true;
+                        FinalizeTableList[i].UseGame2 = true;
                     }
                     else
                     {
                         g.UseGame2 = false;
-                        FinalizeTableList[currentindex].UseGame2 = false;
+                        FinalizeTableList[i].UseGame2 = false;
                     }
-                    if (dataGridView1[GAME_3_VALID_COLUMN, currentindex].Value.ToString() == "True")
+                    if (dataGridView1[GAME_3_VALID_COLUMN, i].Value.ToString() == "True")
                     {
                         gamesPlayed++;
                         g.UseGame3 = true;
-                        FinalizeTableList[currentindex].UseGame3 = true;
+                        FinalizeTableList[i].UseGame3 = true;
                     }
                     else
                     {
                         g.UseGame3 = false;
-                        FinalizeTableList[currentindex].UseGame3 = false;
+                        FinalizeTableList[i].UseGame3 = false;
                     }
-                    if (dataGridView1[GAME_4_VALID_COLUMN, currentindex].Value.ToString() == "True")
+                    if (dataGridView1[GAME_4_VALID_COLUMN, i].Value.ToString() == "True")
                     {
                         gamesPlayed++;
                         g.UseGame4 = true;
-                        FinalizeTableList[currentindex].UseGame4 = true;
+                        FinalizeTableList[i].UseGame4 = true;
                     }
                     else
                     {
                         g.UseGame4 = false;
-                        FinalizeTableList[currentindex].UseGame4 = false;
+                        FinalizeTableList[i].UseGame4 = false;
                     }
                     ph.GamesPlayed = gamesPlayed;
-                    ph.AverageForGame = FinalizeTableList[currentindex].GameAvg;
-                    ph.trueAVG = FinalizeTableList[currentindex].LeagueAverage;
+                    ph.AverageForGame = FinalizeTableList[i].GameAvg;
+                    ph.trueAVG = FinalizeTableList[i].LeagueAverage;
 
 
-                    ph.AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, currentindex].Value);
-                    ph.ProPot = dataGridView1[PRO_POT_COLUMN, currentindex].Value.ToString();
+                    ph.AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, i].Value);
+                    ph.ProPot = dataGridView1[PRO_POT_COLUMN, i].Value.ToString();
 
                     ph.MoneyWon = Convert.ToDecimal(g.MoneyWon);
 
-                    ph.Game1 = FinalizeTableList[currentindex].Game1;
-                    ph.Game2 = FinalizeTableList[currentindex].Game2;
-                    ph.Game3 = FinalizeTableList[currentindex].Game3;
-                    ph.Game4 = FinalizeTableList[currentindex].Game4;
+                    ph.Game1 = FinalizeTableList[i].Game1;
+                    ph.Game2 = FinalizeTableList[i].Game2;
+                    ph.Game3 = FinalizeTableList[i].Game3;
+                    ph.Game4 = FinalizeTableList[i].Game4;
 
                     // if member placed in tournament, then set placing & player history PPHG to game placestanding
                     // placing is used to calculate bonus pins
@@ -1413,27 +1318,27 @@ namespace NineTapTour.Forms
                         {
                             if (!addedalreeady.Contains(memId)) //if the current members bonus points were not already adjusted yet in the finalization of this tournament//only adjusts based of their highest series????
                             {
-                                if (topscores[topscore].GameID == FinalizeTableList[currentindex].GameId)//if the winners of the tournament exist in this current tournement
+                                if (topscores[topscore].GameID == FinalizeTableList[i].GameId)//if the winners of the tournament exist in this current tournement
                                 {
                                     if (placing > 0) // if member placed in tournament, calculate bonus pins based on placing
                                     {
-                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(true, placing, Convert.ToInt32(currentMember.Bonus), currentT.Doubles, currentMember.Number, RegionID, currentT.Date);
+                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(true, placing, Convert.ToInt32(currentMember.Bonus), currTournament.Doubles, currentMember.Number, RegionID, currTournament.Date);
                                     }
 
                                     else  // if member didn't place in tournament, calculate bonus pins
                                     {
-                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(false, placing, Convert.ToInt32(currentMember.Bonus), currentT.Doubles, currentMember.Number, RegionID, currentT.Date);
+                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(false, placing, Convert.ToInt32(currentMember.Bonus), currTournament.Doubles, currentMember.Number, RegionID, currTournament.Date);
                                     }
 
-                                    addedalreeady.Add(FinalizeTableList[currentindex].MemberId);
+                                    addedalreeady.Add(FinalizeTableList[i].MemberId);
                                 }
 
                             }
                         }
                     }
-                    ph.HandiCap = FinalizeTableList[currentindex].Handicap;
+                    ph.HandiCap = FinalizeTableList[i].Handicap;
                     g.InputtedAvg = ph.AVG;
-                    g.Notes = dataGridView1[NOTES_COLUMN_, currentindex].Value.ToString();
+                    g.Notes = dataGridView1[NOTES_COLUMN_, i].Value.ToString();
                     ph.Notes = g.Notes;
                     currentMember.StartAvg = ph.AVG;
                     ph.hisID = PlayerHistoryDB.getHisID(ph);
@@ -1442,10 +1347,10 @@ namespace NineTapTour.Forms
                     PlayerHistoryDB.AddPlayerHistory2(ph);
                     PlayerHistoryDB.AddGame(g);
                     MemberDb.AddMember(currentMember);
-                    FinalizeTableList[currentindex].FinalizeID = FinalizeTempDB.getFinalizeID(g).FinalizeID;
-                    FinalizeTableList[currentindex].AdjustedAvg = ph.AVG;
-                    FinalizeTableList[currentindex].HandicapTotal = Convert.ToInt32(dataGridView1[HANDICAP_TOTAL_COLUMN, currentindex].Value);
-                    FinalizeTempDB.AddFinalizeTempOnFinalize(FinalizeTableList[currentindex]);
+                    FinalizeTableList[i].FinalizeID = FinalizeTempDB.getFinalizeID(g).FinalizeID;
+                    FinalizeTableList[i].AdjustedAvg = ph.AVG;
+                    FinalizeTableList[i].HandicapTotal = Convert.ToInt32(dataGridView1[HANDICAP_TOTAL_COLUMN, i].Value);
+                    FinalizeTempDB.AddFinalizeTempOnFinalize(FinalizeTableList[i]);
 
                 }
                 Close();
@@ -1456,112 +1361,63 @@ namespace NineTapTour.Forms
             }
         }
 
-        public void getLeagueSum(FinalizeTemp temp)
+        /// <summary>
+        /// This function takes the averages from the current games being finalized, grabs the appropriate amount of player history, and calculates the 30 game average for the player.
+        /// </summary>
+        /// <param name="memberNum">The Member Number of the player whose averages we are calculating.</param>
+        /// <param name="currGameAverages">A list of the averages from the current games being finalized.</param>
+        /// <returns></returns>
+        private int CalcThirtyLeagueAverage(int memberNum, List<int> currGameAverages)
         {
+            if (currGameAverages.Count > 0)
+            {
+                List<PlayerHistory> playerHistory = PlayerHistoryDB.getMemberPlayerHistory(memberNum, RegionID);
+                int sumOfAllGameAverages = Convert.ToInt32(LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) + currGameAverages.Sum());
+
+                if (playerHistory.Count >= 30 || (playerHistory.Count + currGameAverages.Count) > 30)
+                {
+                    return sumOfAllGameAverages / 30;
+                }
+                else
+                {
+                    return sumOfAllGameAverages / (playerHistory.Count + currGameAverages.Count);
+                }
+            }
+            else
+            {
+                throw new ArgumentException("currGameAverages.Count was 0. This function calculates the avg from player history and the current games.");
+            }
+        }
+
+        public void getLeagueSum(FinalizeTemp temp, List<FinalizeTemp> finalizeTableList)
+        {
+            
             //RUNNING LEAGUE AVG 
             int SumFromGamesNotAddedYet = 0;
             //checks to see if they bowled an any squads before the current selected squad, if your on this line then they bowled at leats once
             temp.memberNumber = MemberDb.GetMemberNumberbyID(temp.MemberId);
             List<PlayerHistory> p = PlayerHistoryDB.getMemberPlayerHistory(temp.memberNumber, RegionID);
             int howmanyTimesdidheybowlbeforethissquad = 1;
-            for (int f = 0; f < FinalizeTableList.Count; f++)
+            for (int f = 0; f < finalizeTableList.Count; f++)
             {
-                if (temp.MemberId == FinalizeTableList[f].MemberId && FinalizeTableList[f].Squad < temp.Squad)
+                if (temp.MemberId == finalizeTableList[f].MemberId && finalizeTableList[f].Squad < temp.Squad)
                 {
                     howmanyTimesdidheybowlbeforethissquad++;
                 }
             }
 
-            if (temp.Squad == 1)//if the current member bowled in squad one, then get the league avg sum of this game and the last 29 from player history
+            if (temp.Squad > 1)
             {
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + temp.GameAvg));
-            }
-            else if (temp.Squad == 2) //if current member bowled in any squad but squad 1, then get the league avg sum of this game, sum of any previous squads, and the last 26-29  from player history (depending on how many squads they bowled previously)
-            {
-                for (int i = 0; i < FinalizeTableList.Count; i++)
+                for (int i = 0; i < finalizeTableList.Count; i++)
                 {
-                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 2)
+                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < temp.Squad)
                     {
-                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
+                        SumFromGamesNotAddedYet += finalizeTableList[i].GameAvg;
                     }
                 }
-
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
-            }
-            else if (temp.Squad == 3)
-            {
-                for (int i = 0; i < FinalizeTableList.Count; i++)
-                {
-                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 3)
-                    {
-                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
-                    }
-                }
-
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
-            }
-            else if (temp.Squad == 4)
-            {
-                for (int i = 0; i < FinalizeTableList.Count; i++)
-                {
-                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 4)
-                    {
-                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
-                    }
-                }
-
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
-            }
-            else if (temp.Squad == 5)
-            {
-                for (int i = 0; i < FinalizeTableList.Count; i++)
-                {
-                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 5)
-                    {
-                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
-                    }
-                }
-
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
-            }
-            else if (temp.Squad == 6)
-            {
-                for (int i = 0; i < FinalizeTableList.Count; i++)
-                {
-                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 6)
-                    {
-                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
-                    }
-                }
-
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
-            }
-            else if (temp.Squad == 7)
-            {
-                for (int i = 0; i < FinalizeTableList.Count; i++)
-                {
-                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 7)
-                    {
-                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
-                    }
-                }
-
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
-            }
-            else if (temp.Squad == 8)
-            {
-                for (int i = 0; i < FinalizeTableList.Count; i++)
-                {
-                    if (temp.MemberId == FinalizeTableList[i].MemberId && FinalizeTableList[i].Squad < 8)
-                    {
-                        SumFromGamesNotAddedYet += FinalizeTableList[i].GameAvg;
-                    }
-                }
-
-                temp.LeagueAverage = Convert.ToInt32((LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg));
             }
 
-
+            temp.LeagueAverage = Convert.ToInt32(LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg);
 
             // // after grabbing the sum, it then must divide by 30
             if (p.Count >= 30)
@@ -1577,6 +1433,17 @@ namespace NineTapTour.Forms
                 temp.LeagueAverage = temp.LeagueAverage / howmanyTimesdidheybowlbeforethissquad;
             }
 
+        }
+
+        /// <summary>
+        /// This method ensures that after the DataGridView is sorted by the user,
+        /// the formatting for invalid, and low scoring games still continues.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dataGridView1_Sorted(object sender, EventArgs e)
+        {
+            InitializeGameCellFormatting();
         }
     }
 }
