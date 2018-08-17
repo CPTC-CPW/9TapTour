@@ -176,7 +176,7 @@ namespace NineTapTour.Forms
                         }
                         else if (u == ExistingPlayerHistory.Count - 1) // after looking at all the history, if its not in the playerhistory list, then adjust the league avg
                         {
-                            temp.LeagueAverage = CalcThirtyLeagueAverage(item.memberNumber, FinalizeTableList.Where(f => f.memberNumber == item.memberNumber && f.Squad < item.Squad && (f.UseGame1 || f.UseGame2 || f.UseGame3 || f.UseGame4)).Select(f => f.GameAvg).ToList());
+                            temp.LeagueAverage = CalcThirtyLeagueAverage(item.memberNumber, FinalizeTableList.Where(f => f.memberNumber == item.memberNumber && f.Squad <= item.Squad && (f.UseGame1 || f.UseGame2 || f.UseGame3 || f.UseGame4)).Select(f => f.GameAvg).ToList());
                         }
 
                     } 
