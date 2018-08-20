@@ -1599,14 +1599,12 @@ namespace NineTapTour.Forms
             {
                 // Function scope data
                 NineTapDb db = new NineTapDb();
+
                 int selectedTourney = selectedTournament.Id;
 
                 var listOfParticipants = ParticipantsDB.GetParticipants(selectedTournament.Id);
 
                 var topScores = listOfParticipants.GroupBy(p => p.Member.Id).Select(pg => pg.Max()).ToList();
-
-
-
 
                 //TAKES A TOURNAMENT ID AND SQUAD NUMBER AND FILTERS FOR A LIST OF PARTICIPANTS.
                 if (qbsNumber > 0 && qbsNumber <= 8)
@@ -1623,11 +1621,6 @@ namespace NineTapTour.Forms
                     var testScores = new List<TopParticipantGameViewModel>();
                     foreach (Participant currParticipant in listOfParticipants)
                     {
-
-                        TopParticipantGameViewModel currTopScoreViewModel =
-                            new TopParticipantGameViewModel(currParticipant.Member.Id, currParticipant.Member.FirstName, currParticipant.Member.LastName, currParticipant.);
-                        testScores.Add(currTopScoreViewModel);
-                        
                         //Gets all of the game scores that are valid (that have a value)
                         var allScoresWithOutNullGames = currParticipant.Game.AllGameScores().Where(g => g.HasValue);
 
@@ -1639,6 +1632,16 @@ namespace NineTapTour.Forms
 
                         //Sets a collection of all the games using the 3 out of 4 ruleset
                         var top3Games = TournamentStats.GetTop3OutOf4(top4Games.ToList());
+
+                        TopParticipantGameViewModel currTopScoreViewModel =
+                            new TopParticipantGameViewModel(currParticipant.Member.Id, currParticipant.Member.FirstName,
+                                currParticipant.Member.LastName, 0, currParticipant.Game.AllGameScores().Sum().Value, 
+                                top3Games.Sum(), top3Games.Sum() + (3 * currParticipant.Member.Handicap) + (3 * currParticipant.Game.Bonus), 
+                                currParticipant.Game.Game1, currParticipant.Game.Game2, currParticipant.Game.Game3, currParticipant.Game.Game4, 
+                                currParticipant.Game.Handicap, currParticipant.Game.Bonus.Value, currParticipant.Game.Id);
+                        testScores.Add(currTopScoreViewModel);
+                        
+
 
                         TopScores temp = new TopScores();
                         listOfTopScore.Add(temp);
