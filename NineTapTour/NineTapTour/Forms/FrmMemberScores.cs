@@ -1573,6 +1573,19 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="seriesChange"></param>
 
+
+        /* Todo:       ********************************************************************************************************************************************
+        ********************************************************************************************************************************************
+        ********************************************************************************************************************************************
+        ********************************************************************************************************************************************
+        ********************************************************************************************************************************************
+         * ********************************************************************************************************************************************
+         * ********************************************************************************************************************************************
+         * ********************************************************************************************************************************************
+         * ********************************************************************************************************************************************
+         *
+             */
+
         List<TopScores> listOfTopScore = new List<TopScores>();
         IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
         public void Refresh(bool seriesChange, int qbsNumber)
@@ -1607,12 +1620,13 @@ namespace NineTapTour.Forms
                 {
                     int id = 0;
                     int count = 0;
-
+                    var testScores = new List<TopParticipantGameViewModel>();
                     foreach (Participant currParticipant in listOfParticipants)
                     {
-                        var testScores = new List<TopParticipantGameViewModel>();
-                        TopParticipantGameViewModel currTopScoreViewModel = new TopParticipantGameViewModel(memberID: currParticipant.Member.Id, firstName: currParticipant.Member.FirstName, lastName: currParticipant.Member.LastName, placing:)
-                        testScores.Add();
+
+                        TopParticipantGameViewModel currTopScoreViewModel =
+                            new TopParticipantGameViewModel(currParticipant.Member.Id, currParticipant.Member.FirstName, currParticipant.Member.LastName, currParticipant.);
+                        testScores.Add(currTopScoreViewModel);
                         
                         //Gets all of the game scores that are valid (that have a value)
                         var allScoresWithOutNullGames = currParticipant.Game.AllGameScores().Where(g => g.HasValue);
@@ -1651,7 +1665,8 @@ namespace NineTapTour.Forms
                         {
                             listOfTopScore[count].Bonus = 0;
                         }
-                        topScores[count].Game.TotalScore
+
+                        topScores[count].Game.TotalScore;
                         listOfTopScore[count].ScratchTotal = totalScore;
                         listOfTopScore[count].HandicapScore = totalScore + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);//TODO: make "game count flexible"
                         listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
@@ -2050,6 +2065,22 @@ namespace NineTapTour.Forms
         }
 
 
+        /* Todo:       ********************************************************************************************************************************************
+        ********************************************************************************************************************************************
+        ********************************************************************************************************************************************
+        ********************************************************************************************************************************************
+        ********************************************************************************************************************************************
+         * ********************************************************************************************************************************************
+         * ********************************************************************************************************************************************
+         * ********************************************************************************************************************************************
+         * ********************************************************************************************************************************************
+         *
+             */
+
+
+
+
+
         /// <summary>
         /// Calculates each bowler's place standing. Accounts for ties.
         /// </summary>
@@ -2070,6 +2101,15 @@ namespace NineTapTour.Forms
                 place++;
             }
         }
+
+
+
+
+
+
+
+
+
 
         private int? getScratchScore(int? gameScore, int? gameHandicap)
         {

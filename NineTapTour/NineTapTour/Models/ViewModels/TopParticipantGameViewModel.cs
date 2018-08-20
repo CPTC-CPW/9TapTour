@@ -8,7 +8,9 @@ namespace NineTapTour.Models.ViewModels
 {
     class TopParticipantGameViewModel
     {
-        public TopParticipantGameViewModel(int memberID, string firstName, string lastName, int placing, int? scratchTotal, int? handicapScore, int? top3ScratchScore, int? top3HandiScores, int? game1, int? game2, int? game3, int? game4, int? handicap, int bonus, int gameID)
+        public TopParticipantGameViewModel(int memberID, string firstName, string lastName, int placing, int? scratchTotal, int? handicapScore,
+
+            int? top3ScratchScore, int? top3HandiScores, int? game1, int? game2, int? game3, int? game4, int? handicap, int bonus, int gameID)
         {
             this.memberID = memberID;
             FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
