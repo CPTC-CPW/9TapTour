@@ -1590,7 +1590,10 @@ namespace NineTapTour.Forms
 
                 var listOfParticipants = ParticipantsDB.GetParticipants(selectedTournament.Id);
 
-                listOfParticipants = listOfParticipants.GroupBy(p => p.Member.Id).Select(pg => pg.Max()).ToList();
+                var topScores = listOfParticipants.GroupBy(p => p.Member.Id).Select(pg => pg.Max()).ToList();
+
+
+
 
                 //TAKES A TOURNAMENT ID AND SQUAD NUMBER AND FILTERS FOR A LIST OF PARTICIPANTS.
                 if (qbsNumber > 0 && qbsNumber <= 8)
@@ -1605,16 +1608,18 @@ namespace NineTapTour.Forms
                     int id = 0;
                     int count = 0;
 
-
-
                     foreach (Participant currParticipant in listOfParticipants)
                     {
+                        var testScores = new List<TopParticipantGameViewModel>();
+                        TopParticipantGameViewModel currTopScoreViewModel = new TopParticipantGameViewModel(memberID: currParticipant.Member.Id, firstName: currParticipant.Member.FirstName, lastName: currParticipant.Member.LastName, placing:)
+                        testScores.Add();
                         
                         //Gets all of the game scores that are valid (that have a value)
                         var allScoresWithOutNullGames = currParticipant.Game.AllGameScores().Where(g => g.HasValue);
 
                         //totals all games with out nulls/valid score
                         int? totalScore = allScoresWithOutNullGames.Sum();
+
                         //Sets a collection of all the games to a new variable.
                         var top4Games = allScoresWithOutNullGames;
 
@@ -1646,6 +1651,7 @@ namespace NineTapTour.Forms
                         {
                             listOfTopScore[count].Bonus = 0;
                         }
+                        topScores[count].Game.TotalScore
                         listOfTopScore[count].ScratchTotal = totalScore;
                         listOfTopScore[count].HandicapScore = totalScore + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);//TODO: make "game count flexible"
                         listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
