@@ -76,7 +76,7 @@ namespace NineTapTour.Forms
                     rdoSquad5.Visible = true;
                     rdoSquad5Results.Visible = true;
                     cbFilterSquad5.Visible = true;
-                   
+
 
                 }
                 if (selectedTournament.Squads == 6)
@@ -128,17 +128,20 @@ namespace NineTapTour.Forms
 
             if (cbxTourneyDropDown.SelectedIndex == -1)
             {
+                if (currentIndex <= 1)
+                {
+                    btnFirstRecord.Enabled = false;
+                }
                 btnLeftArrow.Enabled = false;
                 btnRightArrow.Enabled = false;
                 btnDelete.Enabled = false;
+                //btnLastRecord.Enabled = false;
             }
             else
             {
-                btnLeftArrow.Enabled = true;
+                //btnLeftArrow.Enabled = true;
                 btnRightArrow.Enabled = true;
             }
-
-
         }
         /// <summary>
         /// entering a member number clears members data
@@ -177,7 +180,7 @@ namespace NineTapTour.Forms
 
             MemberStatus("", Color.Black, SystemColors.Control, true);
             //cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
-            
+
 
 
             List<Tournament> temp2 = TournamentDb.GetTournamentList(RegionID);
@@ -202,7 +205,7 @@ namespace NineTapTour.Forms
                 RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
                 overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
                 btnDelete.Enabled = true;
-               
+
                 refresh(false, QBSNumber);
                 // sets focus to member num becuse that is what a user will need next
                 rdoHandicapScore.Visible = true;
@@ -283,7 +286,7 @@ namespace NineTapTour.Forms
                 //        }
                 //    }
                 //}
-                lblRecord.Text = "Record " + (currentIndex)  + " / " + total.Count();
+                lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count();
 
 
 
@@ -777,7 +780,7 @@ namespace NineTapTour.Forms
                     player.ParticipantRegionID = RegionID;
                     var db = new NineTapDb();
                     var gameId = (from p in db.Participants
-                                  where p.Member.Id== currentMem.Id
+                                  where p.Member.Id == currentMem.Id
                                   && p.Tournament.Id == currTourney.Id
                                   && p.Squad == squad
                                   select p.Game.Id).FirstOrDefault();
@@ -877,7 +880,7 @@ namespace NineTapTour.Forms
                             player.Game.Handicap = currentGame.Handicap;
                         }
                         player.Game.gameRegionID = RegionID;
-                        
+
 
                         // if compEntry checkbox is checked, set IsComp to true in game table
                         if (chbCompEntry.Checked)
@@ -886,7 +889,7 @@ namespace NineTapTour.Forms
                         }
 
 
-                    
+
                         db.SaveChanges();
 
                         try
@@ -1250,59 +1253,63 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
+            ReEnableNavigation();
 
             List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-            currentIndex++;
-            if (currentIndex > total.Count())
+
+            if (currentIndex >= total.Count())
             {
-                MessageBox.Show("There are no more players to go to!");
-                currentIndex--; // if it cant go up more then reset the index back to right index
+                btnRightArrow.Enabled = false;
+                btnLastRecord.Enabled = false;
+                return;
+            }
+
+            currentIndex++;
+
+            if (currentIndex >= total.Count())
+            {
                 btnRightArrow.Enabled = false;
                 btnLastRecord.Enabled = false;
             }
-            else
+
+            buttonCheck = true; // right button clicked
+            txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
+            if (total[currentIndex - 1].Squad == 1)
             {
-                ReEnableNavigation();
-
-                buttonCheck = true; // right button clicked
-                txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
-                if (total[currentIndex - 1].Squad == 1)
-                {
-                    rdoSquadOne.Checked = true;
-                }
-                else if (total[currentIndex - 1].Squad == 2)
-                {
-                    rdoSquadTwo.Checked = true;
-                }
-                else if (total[currentIndex - 1].Squad == 3)
-                {
-                    rdoSquadThree.Checked = true;
-                }
-                else if (total[currentIndex - 1].Squad == 4)
-                {
-                    rdoSquadFour.Checked = true;
-                }
-                else if (total[currentIndex - 1].Squad == 5)
-                {
-                    rdoSquad5.Checked = true;
-                }
-                else if (total[currentIndex - 1].Squad == 6)
-                {
-                    rdoSquad6.Checked = true;
-                }
-                else if (total[currentIndex - 1].Squad == 7)
-                {
-                    rdoSquad7.Checked = true;
-                }
-                else if (total[currentIndex - 1].Squad == 8)
-                {
-                    rdoSquad8.Checked = true;
-                }
-
-                lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count();
-
-                FillMember();
+                rdoSquadOne.Checked = true;
             }
+            else if (total[currentIndex - 1].Squad == 2)
+            {
+                rdoSquadTwo.Checked = true;
+            }
+            else if (total[currentIndex - 1].Squad == 3)
+            {
+                rdoSquadThree.Checked = true;
+            }
+            else if (total[currentIndex - 1].Squad == 4)
+            {
+                rdoSquadFour.Checked = true;
+            }
+            else if (total[currentIndex - 1].Squad == 5)
+            {
+                rdoSquad5.Checked = true;
+            }
+            else if (total[currentIndex - 1].Squad == 6)
+            {
+                rdoSquad6.Checked = true;
+            }
+            else if (total[currentIndex - 1].Squad == 7)
+            {
+                rdoSquad7.Checked = true;
+            }
+            else if (total[currentIndex - 1].Squad == 8)
+            {
+                rdoSquad8.Checked = true;
+            }
+
+            lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count();
+
+            FillMember();
         }
 
         /// <summary>
@@ -1310,68 +1317,63 @@ namespace NineTapTour.Forms
         /// </summary>
         private void btnLeftArrow_Click(object sender, EventArgs e)
         {
+            ReEnableNavigation();
+
             List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-            currentIndex--;
-            if (currentIndex <= 0)
+
+            if (currentIndex <= 1)
             {
-                MessageBox.Show("There are no more players to go back to!");
-                currentIndex++; //if it cant go down anymore, set the number back to the correct index
+                btnLeftArrow.Enabled = false;
+                btnFirstRecord.Enabled = false;
+                return;
+            }
+
+            currentIndex--;
+
+            if (currentIndex <= 1)
+            {
                 btnLeftArrow.Enabled = false;
                 btnFirstRecord.Enabled = false;
             }
-            else
+
+            txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
+
+            if (total[currentIndex - 1].Squad == 1)
             {
-
-                if (currentIndex <= 0)
-                {
-                    MessageBox.Show("You can't go back!");
-                    btnLeftArrow.Enabled = false;
-                    btnFirstRecord.Enabled = false;
-                }
-                else
-                {
-                    ReEnableNavigation();
-
-                    txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
-
-                    if (total[currentIndex - 1].Squad == 1)
-                    {
-                        rdoSquadOne.Checked = true;
-                    }
-                    else if (total[currentIndex - 1].Squad == 2)
-                    {
-                        rdoSquadTwo.Checked = true;
-                    }
-                    else if (total[currentIndex - 1].Squad == 3)
-                    {
-                        rdoSquadThree.Checked = true;
-                    }
-                    else if (total[currentIndex - 1].Squad == 4)
-                    {
-                        rdoSquadFour.Checked = true;
-                    }
-                    else if (total[currentIndex - 1].Squad == 5)
-                    {
-                        rdoSquad5.Checked = true;
-                    }
-                    else if (total[currentIndex - 1].Squad == 6)
-                    {
-                        rdoSquad6.Checked = true;
-                    }
-                    else if (total[currentIndex - 1].Squad == 7)
-                    {
-                        rdoSquad7.Checked = true;
-                    }
-                    else if (total[currentIndex - 1].Squad == 8)
-                    {
-                        rdoSquad8.Checked = true;
-                    }
-
-                    lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count();
-
-                    FillMember();
-                }
+                rdoSquadOne.Checked = true;
             }
+            else if (total[currentIndex - 1].Squad == 2)
+            {
+                rdoSquadTwo.Checked = true;
+            }
+            else if (total[currentIndex - 1].Squad == 3)
+            {
+                rdoSquadThree.Checked = true;
+            }
+            else if (total[currentIndex - 1].Squad == 4)
+            {
+                rdoSquadFour.Checked = true;
+            }
+            else if (total[currentIndex - 1].Squad == 5)
+            {
+                rdoSquad5.Checked = true;
+            }
+            else if (total[currentIndex - 1].Squad == 6)
+            {
+                rdoSquad6.Checked = true;
+            }
+            else if (total[currentIndex - 1].Squad == 7)
+            {
+                rdoSquad7.Checked = true;
+            }
+            else if (total[currentIndex - 1].Squad == 8)
+            {
+                rdoSquad8.Checked = true;
+            }
+
+            lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count();
+
+            FillMember();
         }
         /// <summary>
         /// Goes to the first record.
@@ -1380,67 +1382,58 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnFirstRecord_Click(object sender, EventArgs e)
         {
-            if(currentIndex <= 1)
+            ReEnableNavigation();
+
+            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
+
+            // Sets currentIndex to 1 in order to get the 1st record
+            currentIndex = 1;
+
+            // Gets the 1st record in the list
+            txtMemberNum.Text = Convert.ToString(total[0].Member.Number);
+
+            // Checks which squad the member belongs to and checks
+            // the corresponding squad radio button
+            // when member info is loaded
+            if (total[currentIndex].Squad == 1)
             {
-                MessageBox.Show("There are no more records to go back to!");
-
-                // Disables buttons left and first record buttons 
-                //if there are no more records go back to.
-                btnLeftArrow.Enabled = false;
-                btnFirstRecord.Enabled = false;
-
-                return;
+                rdoSquadOne.Checked = true;
             }
-            else
+            else if (total[currentIndex].Squad == 2)
             {
-                ReEnableNavigation();
-
-                List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-
-                // Sets currentIndex to 1 in order to get the 1st record
-                currentIndex = 1;
-
-                // Gets the 1st record in the list
-                txtMemberNum.Text = Convert.ToString(total[0].Member.Number);
-
-                // Checks which squad the member belongs to and checks
-                // the corresponding squad radio button
-                // when member info is loaded
-                if (total[currentIndex].Squad == 1)
-                {
-                    rdoSquadOne.Checked = true;
-                }
-                else if (total[currentIndex].Squad == 2)
-                {
-                    rdoSquadTwo.Checked = true;
-                }
-                else if (total[currentIndex].Squad == 3)
-                {
-                    rdoSquadThree.Checked = true;
-                }
-                else if (total[currentIndex].Squad == 4)
-                {
-                    rdoSquadFour.Checked = true;
-                }
-                else if (total[currentIndex].Squad == 5)
-                {
-                    rdoSquad5.Checked = true;
-                }
-                else if (total[currentIndex].Squad == 6)
-                {
-                    rdoSquad6.Checked = true;
-                }
-                else if (total[currentIndex].Squad == 7)
-                {
-                    rdoSquad7.Checked = true;
-                }
-                else if (total[currentIndex].Squad == 8)
-                {
-                    rdoSquad8.Checked = true;
-                }
-            
-                FillMember();
+                rdoSquadTwo.Checked = true;
             }
+            else if (total[currentIndex].Squad == 3)
+            {
+                rdoSquadThree.Checked = true;
+            }
+            else if (total[currentIndex].Squad == 4)
+            {
+                rdoSquadFour.Checked = true;
+            }
+            else if (total[currentIndex].Squad == 5)
+            {
+                rdoSquad5.Checked = true;
+            }
+            else if (total[currentIndex].Squad == 6)
+            {
+                rdoSquad6.Checked = true;
+            }
+            else if (total[currentIndex].Squad == 7)
+            {
+                rdoSquad7.Checked = true;
+            }
+            else if (total[currentIndex].Squad == 8)
+            {
+                rdoSquad8.Checked = true;
+            }
+
+            FillMember();
+
+            // Disables buttons left and first record buttons 
+            // if there are no more records go back to.
+            btnLeftArrow.Enabled = false;
+            btnFirstRecord.Enabled = false;
         }
 
         /// <summary>
@@ -1451,18 +1444,6 @@ namespace NineTapTour.Forms
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
             List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-
-            if (currentIndex == total.Count())
-            {
-                MessageBox.Show("There are no more players to go to!");
-
-                // Disables buttons right and last record buttons 
-                // if there are no more records go to.
-                btnLastRecord.Enabled = false;
-                btnRightArrow.Enabled = false;
-
-                return;
-            }
 
             ReEnableNavigation();
 
@@ -1506,6 +1487,11 @@ namespace NineTapTour.Forms
             }
 
             FillMember();
+
+            // Disables buttons right and last record buttons 
+            // if there are no more records go to.
+            btnLastRecord.Enabled = false;
+            btnRightArrow.Enabled = false;
         }
 
         /// <summary>
@@ -1612,7 +1598,11 @@ namespace NineTapTour.Forms
         private void EnableButtonsWhenValidTournamentSelected()
         {
             btnStats.Enabled = true;
-            btnLeftArrow.Enabled = true;
+            //bkm2
+            if (currentIndex > 1)
+            {
+                btnLeftArrow.Enabled = true;
+            }
             btnRightArrow.Enabled = true;
             btnPlaceStandings.Enabled = true;
             btnRecapByPin.Enabled = true;
@@ -1626,6 +1616,8 @@ namespace NineTapTour.Forms
             btnStats.Enabled = false;
             btnLeftArrow.Enabled = false;
             btnRightArrow.Enabled = false;
+            btnFirstRecord.Enabled = false;
+            btnLastRecord.Enabled = false;
         }
 
         /// <summary>
