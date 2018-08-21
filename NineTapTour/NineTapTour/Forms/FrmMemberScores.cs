@@ -1645,12 +1645,6 @@ namespace NineTapTour.Forms
                                 currParticipant.Game.Handicap, currParticipant.Game.Bonus.Value,
                                 currParticipant.Game.Id);
                         testScores.Add(currTopScoreViewModel);
-
-
-
-                        
-
-
                         #region commented out code
 
 
@@ -1693,9 +1687,35 @@ namespace NineTapTour.Forms
                         #endregion
                     }
                     //display in the the list box
-                    CalculatePlaceStanding(testScores, true);
 
+                    //scores.Sort(scoreComparer);
+                    //scores.Reverse();
+                    //scores = scores.ToList();
                     lbxHighGameHC.DataSource = testScores;
+                    
+
+                    lbxHighGameSC.DataSource = testScores;
+
+                    if (rdoScratchScore.Checked)
+                    {
+
+                        CalculatePlaceStanding(testScores, false);
+                        foreach (TopParticipantGameViewModel tpgvm in testScores)
+                        {
+                            lbxTopGameSeries.Items.Add(tpgvm.ToString(tpgvm.ScratchTotal));
+                        }
+                        //lbxTopGameSeries.DataSource = testScores;
+                    }
+                    else if (rdoHandicapScore.Checked)
+                    {
+
+                        CalculatePlaceStanding(testScores, true);
+                        foreach (TopParticipantGameViewModel tpgvm in testScores)
+                        {
+                            lbxTopGameSeries.Items.Add(tpgvm.ToString(tpgvm.HandicapScore));
+                        }
+                        //lbxTopGameSeries.DataSource = testScores;
+                    }
                 }
                 catch (SqlException)
                 {

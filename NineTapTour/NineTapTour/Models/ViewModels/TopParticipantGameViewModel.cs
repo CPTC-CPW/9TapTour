@@ -54,9 +54,9 @@ namespace NineTapTour.Models.ViewModels
         public int GameID { get; set; }
         #endregion
 
-        public  string ToString(int scorePassedIn)
+        public string ToString(int scorePassedIn)
         {
-            return $"{this.Placing} {this.FirstName} {this.LastName} {scorePassedIn}";
+            return $"{this.Placing}  {this.FirstName} {this.LastName}  {scorePassedIn}";
         }
 
 
