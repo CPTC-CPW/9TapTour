@@ -1569,7 +1569,7 @@ namespace NineTapTour.Forms
 
             if (cbxTourneyDropDown.SelectedIndex < 0)
             {
-                lblRecord.Text = "Record " + currentIndex + " / " + "0";
+                lblRecord.Text = "Record 0" + " / " + "0";
                 rdoHandicapScore.Visible = false;
                 rdoScratchScore.Visible = false;
                 DisableButtonsWhenValidTournamentSelected();
@@ -3098,7 +3098,6 @@ namespace NineTapTour.Forms
                     ResetFields();
                     refresh(false, QBSNumber);
                     RecordIndex(overallListOfParticipants);
-                    //bkm2
                     cbxTourneyDropDown.DataSource = TournamentDb.GetTournamentList(RegionID);
                     overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
                     cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
