@@ -308,9 +308,13 @@ namespace NineTapTour.Forms
             fileDialog.Filter = "Backup Files (*.bak)|*.bak";
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
-                if (DatabaseManagement.RestoreDatabase(fileDialog.FileName))
+                if (MessageBox.Show("Restoring the database will restart the application.", "Warning", MessageBoxButtons.OKCancel) == DialogResult.OK)
                 {
-                    MessageBox.Show("Database successfully restored from backup!");
+                    if (DatabaseManagement.RestoreDatabase(fileDialog.FileName))
+                    {
+                        MessageBox.Show("Database successfully restored from backup!");
+                        Application.Restart();
+                    }
                 }
             }
         }
@@ -321,28 +325,17 @@ namespace NineTapTour.Forms
             if (activeItem.Text == "Member Info" && !currFrmMemberData.IsSavedData())
             {
                 // asks user if they want to leave w/o saving data
-                if (FrmMemberIsSavedData())
-                {
-
-                    mainmenu.Close();
-                }
-                // stays on page if clicked no
-                else
+                if (!FrmMemberIsSavedData())
                 {
                     e.Cancel = true;
                 }
             }
-
             // used on all other instances
             else
             {
                 if (ExitApplication() == DialogResult.No)
                 {
                     e.Cancel = true;
-                }
-                else
-                {
-                    mainmenu.Close();
                 }
             }
         }
