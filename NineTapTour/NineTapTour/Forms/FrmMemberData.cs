@@ -23,8 +23,7 @@ namespace NineTapTour.Forms
         int RegionID;
         int AllGames;
         
-        //list of the names of boxes that have incompatible data
-        List<string> checkFields;
+      
 
         public int MemberNum
         {
@@ -58,8 +57,7 @@ namespace NineTapTour.Forms
 
             List<Member> ListOfMembers = MemberDb.GetMemberList(RegionID);
 
-            //initialize list to hold validation messages for textboxes
-            checkFields = new List<string>();
+          
 
             //updateOnload(ListOfMembers);
 
@@ -428,11 +426,18 @@ namespace NineTapTour.Forms
         //}
            
 
-        // method checks for valid characters. 
-        public bool isValid()
+        /// <summary>
+		/// This method creates validation for the input boxes on the Member Info page.
+		///
+		/// </summary>
+		/// <returns>A list of error messages, if any are added from incorrect input.</returns>
+        public List<string> isValid()
         {
-            //clear checkFields
-            checkFields.Clear();
+			//create list of error strings.  if there is an error with an input box, an error message 
+			//will get added to this list.  When this is returned, a check is made to see if the list
+			//contains any error messages.  If the list is empty, one knows that all the textboxes are 
+			//valid.  Otherwise, the error messages get displayed for the user's consideration
+			List<string> checkFields = new List<string>();
 
             //validate average box to not be 0 or empty
             if(txtAverage.Text == "0" || String.IsNullOrWhiteSpace(txtAverage.Text))
@@ -456,7 +461,6 @@ namespace NineTapTour.Forms
                 checkFields.Add("Last Name is required");
                 txtLastName.Clear();
                 txtLastName.BackColor = Color.LightPink;
-                //return false;
             }
 
             //validate first name box
@@ -466,7 +470,6 @@ namespace NineTapTour.Forms
 
                 txtFirstName.Clear();
                 txtFirstName.BackColor = Color.LightPink;
-                //return false;
             }
 
             //VALIDATE DOB WITHIN BOUNDS
@@ -475,21 +478,20 @@ namespace NineTapTour.Forms
             {
                 checkFields.Add("Date of birth must be between 1753 and 9999.");
                 mtxtBoxDOB.BackColor = Color.LightPink;
-                //return false;
             }
 
+			//dateJoined validation
             if (mtxtBoxDateJoined.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDateJoined))
             {
                 checkFields.Add("Join Date must be between 1753 and 9999.");
                 mtxtBoxDateJoined.BackColor = Color.LightPink;
-                //return false;
             }
 
+			//rejoin date validation
             if (mtxtBoxRejoinDate.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxRejoinDate))
             {
                 checkFields.Add("Rejoin Date must be between 1753 and 9999.");
                 mtxtBoxDateJoined.BackColor = Color.LightPink;
-                //return false;
             }
             
             
@@ -539,17 +541,17 @@ namespace NineTapTour.Forms
 
 
 
-            ///********************************************************************************************************
-            //League average should only be between 125 - 210
-            //*********************************************************************************************************/
-            //if (txtAverage.Text == "" || Convert.ToInt32(txtAverage.Text) < 125 || Convert.ToInt32(txtAverage.Text) > 210)
-            //{
-            //    MessageBox.Show("For your League Average, you should only input between 125 to 210.");
-            //    txtAverage.Focus();
-            //    return false;
-            //}
-            ///*******************************************************************************************************/
-            if (!String.IsNullOrWhiteSpace(txtReferrals.Text) && !int.TryParse(txtReferrals.Text, out int result2) ||
+			///********************************************************************************************************
+			//League average should only be between 125 - 210
+			//*********************************************************************************************************/
+			//if (txtAverage.Text == "" || Convert.ToInt32(txtAverage.Text) < 125 || Convert.ToInt32(txtAverage.Text) > 210)
+			//{
+			//    MessageBox.Show("For your League Average, you should only input between 125 to 210.");
+			//    txtAverage.Focus();
+			//    return false;
+			//}
+			///*******************************************************************************************************/
+			/*if (!String.IsNullOrWhiteSpace(txtReferrals.Text) && !int.TryParse(txtReferrals.Text, out int result2) ||
                mtxtBoxRejoinDate.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxRejoinDate) ||
                mtxtBoxDateJoined.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDateJoined) ||
                mtxtBoxDOB.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDOB) ||
@@ -566,7 +568,8 @@ namespace NineTapTour.Forms
                 return false;
             }
 
-            return true;
+            return true;*/
+			return checkFields;
         }
 
         /// <summary>
@@ -577,6 +580,8 @@ namespace NineTapTour.Forms
         private void btnSave_Click(object sender, EventArgs e)
         {
             SaveMemberData();
+
+			List<string> checkFields = isValid();
 
             if (checkFields.Count != 0)
             {
@@ -601,7 +606,7 @@ namespace NineTapTour.Forms
         {
             //checks to see if firstname,lastname, and zip is valid.
             //Then runs the rest of the btnSave_Click and adds a member into the database.
-            if (isValid())
+            if (isValid().Count == 0)
             {
                 ////use existing memberId if present or select the member id from the form
                 //int memId = (_memberId != -1) ? _memberId : Convert.ToInt32(txtMemberNumber.Text);
@@ -992,7 +997,7 @@ namespace NineTapTour.Forms
 
         private void btnThisRecap_Click(object sender, EventArgs e)
         {
-            if (isValid())
+            if (isValid().Count == 0)
             {
                 //Set up compenents for printing
                 PrintDialog printDialog = new PrintDialog();
@@ -1773,6 +1778,8 @@ namespace NineTapTour.Forms
         public bool MemberNavigate()
         {
             SaveMemberData();
+
+			List<string> checkFields = isValid();
 
             if (checkFields.Count != 0)
             {

@@ -325,7 +325,7 @@ namespace NineTapTour.Forms
             {
                 //IF all the data on the Member Data Form IS valid
                 //Go ahead and close the application
-                if(currFrmMemberData.isValid())
+                if(currFrmMemberData.isValid().Count == 0)
                 {
                     currFrmMemberData.SaveMemberData();
 
