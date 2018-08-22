@@ -1619,7 +1619,8 @@ namespace NineTapTour.Forms
                 try
                 {
 
-                    var testScores = new List<TopParticipantGameViewModel>();
+                    var topParticipantGameViewModels = new List<TopParticipantGameViewModel>();
+
                     foreach (Participant currParticipant in listOfParticipants)
                     {
                         //Gets all of the game scores that are valid (that have a value)
@@ -1644,7 +1645,7 @@ namespace NineTapTour.Forms
                                 currParticipant.Game.Game4,
                                 currParticipant.Game.Handicap, currParticipant.Game.Bonus.Value,
                                 currParticipant.Game.Id);
-                        testScores.Add(currTopScoreViewModel);
+                        topParticipantGameViewModels.Add(currTopScoreViewModel);
                         #region commented out code
 
 
@@ -1686,36 +1687,49 @@ namespace NineTapTour.Forms
 
                         #endregion
                     }
+
                     //display in the the list box
 
                     //scores.Sort(scoreComparer);
                     //scores.Reverse();
                     //scores = scores.ToList();
-                    lbxHighGameHC.DataSource = testScores;
-                    
 
-                    lbxHighGameSC.DataSource = testScores;
 
                     if (rdoScratchScore.Checked)
                     {
-
-                        CalculatePlaceStanding(testScores, false);
-                        foreach (TopParticipantGameViewModel tpgvm in testScores)
+                        topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.ScratchTotal).ToList();
+                        for (int i = 0; i < topParticipantGameViewModels.Count; i++)
                         {
-                            lbxTopGameSeries.Items.Add(tpgvm.ToString(tpgvm.ScratchTotal));
+                            if ( i > 0 && topParticipantGameViewModels[i - 1].ScratchTotal == topParticipantGameViewModels[i].ScratchTotal)
+                                topParticipantGameViewModels[i].Placing = i;
+                            else
+                                topParticipantGameViewModels[i].Placing = i + 1;
+                            
+                            topParticipantGameViewModels[i].SetScratchTotalToString();
                         }
-                        //lbxTopGameSeries.DataSource = testScores;
+                        lbxTopGameSeries.DataSource = topParticipantGameViewModels;
+                        lbxTopGameSeries.DisplayMember = "ScratchTotalToString";
                     }
                     else if (rdoHandicapScore.Checked)
                     {
 
-                        CalculatePlaceStanding(testScores, true);
-                        foreach (TopParticipantGameViewModel tpgvm in testScores)
+                        topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.HandicapScore).ToList();
+                        for (int i = 0; i < topParticipantGameViewModels.Count; i++)
                         {
-                            lbxTopGameSeries.Items.Add(tpgvm.ToString(tpgvm.HandicapScore));
+                            if (i > 0 && topParticipantGameViewModels[i - 1].HandicapScore == topParticipantGameViewModels[i].HandicapScore)
+                                topParticipantGameViewModels[i].Placing = i;
+                            else
+                                topParticipantGameViewModels[i].Placing = i + 1;
+
+                            topParticipantGameViewModels[i].SetHandicapTotalToString();
                         }
-                        //lbxTopGameSeries.DataSource = testScores;
+                        lbxTopGameSeries.DataSource = topParticipantGameViewModels;
+                        lbxTopGameSeries.DisplayMember = "HandicapTotalToString";
                     }
+                    lbxHighGameHC.DataSource = topParticipantGameViewModels;
+
+
+                    lbxHighGameSC.DataSource = topParticipantGameViewModels;
                 }
                 catch (SqlException)
                 {

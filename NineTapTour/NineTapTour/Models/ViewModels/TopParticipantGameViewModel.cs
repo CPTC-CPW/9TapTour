@@ -52,13 +52,18 @@ namespace NineTapTour.Models.ViewModels
         public int Handicap { get; set; }
         public int Bonus { get; set; }
         public int GameID { get; set; }
+        public string ScratchTotalToString { get; set; }
+        public string HandicapTotalToString { get; set; }      
         #endregion
 
-        public string ToString(int scorePassedIn)
+        public void SetScratchTotalToString()
         {
-            return $"{this.Placing}  {this.FirstName} {this.LastName}  {scorePassedIn}";
+            this.ScratchTotalToString = $"{this.Placing}  {this.FirstName} {this.LastName}  {this.ScratchTotal}";
         }
 
-
+        public void SetHandicapTotalToString()
+        {
+            this.HandicapTotalToString = $"{this.Placing}  {this.FirstName} {this.LastName}  {this.HandicapScore}";
+        }
     }
 }
