@@ -71,15 +71,9 @@ namespace NineTapTour.Forms
 
         #endregion
 
-        //List<FinalizeTemp> FinalizeTableList = new List<FinalizeTemp>();
         private int RegionID;
         private Tournament currTournament; //current tournament
         private List<TopScores> topscores; //used to know who won the tournament and there placing
-        //List<int> ListofScratchScores = new List<int>(); //used for determining addition rules if the game was a 3o4 for scratch score / used more then once (made variable global)
-        // ^ Unused.
-        List<PlayerHistory> temporary = new List<PlayerHistory>();
-        //int currentIndex = 0;
-        // ^ Unused.
 
         public FrmFinalizeTournament(Tournament t, List<TopScores> tScores, int region)
         {
@@ -207,30 +201,30 @@ namespace NineTapTour.Forms
         {
             var db = new NineTapDb();
             DataTable dt = new DataTable();
-            dt.Columns.Add(STANDING_COLUMN_NAME); //0
-            dt.Columns.Add(MEMBER_NUMBER_COLUMN_NAME).ReadOnly = true; //1
-            dt.Columns.Add(NAME_COLUMN_NAME).ReadOnly = true; //2
-            dt.Columns.Add(GAME_1_COLUMN_NAME).ReadOnly = true; //3
-            dt.Columns.Add(new DataColumn(GAME_1_VALID_COLUMN_NAME, typeof(bool))); //4
-            dt.Columns.Add(GAME_2_COLUMN_NAME).ReadOnly = true; //5
-            dt.Columns.Add(new DataColumn(GAME_2_VALID_COLUMN_NAME, typeof(bool))); //6
-            dt.Columns.Add(GAME_3_COLUMN_NAME).ReadOnly = true; //7
-            dt.Columns.Add(new DataColumn(GAME_3_VALID_COLUMN_NAME, typeof(bool)));//8
-            dt.Columns.Add(GAME_4_COLUMN_NAME).ReadOnly = true;//9
-            dt.Columns.Add(new DataColumn(GAME_4_VALID_COLUMN_NAME, typeof(bool)));//10
-            dt.Columns.Add(SCRATCH_TOTAL_COLUMN_NAME);//11
-            dt.Columns.Add(HANDICAP_TOTAL_COLUMN_NAME);//12
-            dt.Columns.Add(ENTRY_AVERAGE_COLUMN_NAME);//13
-            dt.Columns.Add(THIRTY_ENTRY_AVERAGE_COLUMN_NAME);     //14  
-            dt.Columns.Add(ADJUSTED_AVG_COLUMN_NAME); //15
-            dt.Columns.Add(new DataColumn(DIRECTOR_CHECK_COLUMN_NAME, typeof(bool)));//16
-            dt.Columns.Add(SQUAD_COLUMN_NAME).ReadOnly = true;//16
-            dt.Columns.Add(HANDICAP_COLUMN_NAME).ReadOnly = true;//17
-            dt.Columns.Add(BONUS_COLUMN_NAME).ReadOnly = true;//18
-            dt.Columns.Add(PRO_POT_COLUMN_NAME);//19
-            dt.Columns.Add(NOTES_COLUMN_NAME);//20
+            dt.Columns.Add(STANDING_COLUMN_NAME, typeof(int)); //0
+            dt.Columns.Add(MEMBER_NUMBER_COLUMN_NAME, typeof(int)).ReadOnly = true; //1
+            dt.Columns.Add(NAME_COLUMN_NAME, typeof(string)).ReadOnly = true; //2
+            dt.Columns.Add(GAME_1_COLUMN_NAME, typeof(string)).ReadOnly = true; //3
+            dt.Columns.Add(GAME_1_VALID_COLUMN_NAME, typeof(bool)); //4
+            dt.Columns.Add(GAME_2_COLUMN_NAME, typeof(string)).ReadOnly = true; //5
+            dt.Columns.Add(GAME_2_VALID_COLUMN_NAME, typeof(bool)); //6
+            dt.Columns.Add(GAME_3_COLUMN_NAME, typeof(string)).ReadOnly = true; //7
+            dt.Columns.Add(GAME_3_VALID_COLUMN_NAME, typeof(bool));//8
+            dt.Columns.Add(GAME_4_COLUMN_NAME, typeof(string)).ReadOnly = true;//9
+            dt.Columns.Add(GAME_4_VALID_COLUMN_NAME, typeof(bool));//10
+            dt.Columns.Add(SCRATCH_TOTAL_COLUMN_NAME, typeof(int));//11
+            dt.Columns.Add(HANDICAP_TOTAL_COLUMN_NAME, typeof(int));//12
+            dt.Columns.Add(ENTRY_AVERAGE_COLUMN_NAME, typeof(int));//13
+            dt.Columns.Add(THIRTY_ENTRY_AVERAGE_COLUMN_NAME, typeof(int));     //14  
+            dt.Columns.Add(ADJUSTED_AVG_COLUMN_NAME, typeof(int)); //15
+            dt.Columns.Add(DIRECTOR_CHECK_COLUMN_NAME, typeof(bool));//16
+            dt.Columns.Add(SQUAD_COLUMN_NAME, typeof(int)).ReadOnly = true;//16
+            dt.Columns.Add(HANDICAP_COLUMN_NAME, typeof(int)).ReadOnly = true;//17
+            dt.Columns.Add(BONUS_COLUMN_NAME, typeof(int)).ReadOnly = true;//18
+            dt.Columns.Add(PRO_POT_COLUMN_NAME, typeof(int));//19
+            dt.Columns.Add(NOTES_COLUMN_NAME, typeof(string));//20
 
-            dt.Columns.Add(GAME_ID_COLUMN_NAME).ReadOnly = true; //21
+            dt.Columns.Add(GAME_ID_COLUMN_NAME, typeof(int)).ReadOnly = true; //21
 
 
 
@@ -244,13 +238,13 @@ namespace NineTapTour.Forms
                 newRow[STANDING_COLUMN_NAME] = index;
                 newRow[MEMBER_NUMBER_COLUMN_NAME] = item.memberNumber;
                 newRow[NAME_COLUMN_NAME] = item.FirstName + " " + item.LastName;
-                newRow[GAME_1_COLUMN_NAME] = (item.Game1.HasValue) ? item.Game1.ToString() : "DNF";
+                newRow[GAME_1_COLUMN_NAME] = item.Game1;
                 newRow[GAME_1_VALID_COLUMN_NAME] = item.UseGame1;
-                newRow[GAME_2_COLUMN_NAME] = (item.Game2.HasValue) ? item.Game2.ToString() : "DNF";
+                newRow[GAME_2_COLUMN_NAME] = item.Game2.HasValue;
                 newRow[GAME_2_VALID_COLUMN_NAME] = item.UseGame2;
-                newRow[GAME_3_COLUMN_NAME] = (item.Game3.HasValue) ? item.Game3.ToString() : "DNF";
+                newRow[GAME_3_COLUMN_NAME] = item.Game3.HasValue;
                 newRow[GAME_3_VALID_COLUMN_NAME] = item.UseGame3;
-                newRow[GAME_4_COLUMN_NAME] = (item.Game4.HasValue) ? item.Game4.ToString() : "DNF";
+                newRow[GAME_4_COLUMN_NAME] = item.Game4.HasValue;
                 newRow[GAME_4_VALID_COLUMN_NAME] = item.UseGame4;
                 newRow[THIRTY_ENTRY_AVERAGE_COLUMN_NAME] = item.LeagueAverage;
                 newRow[ENTRY_AVERAGE_COLUMN_NAME] = item.GameAvg;
@@ -388,18 +382,19 @@ namespace NineTapTour.Forms
         {
             if (e.RowIndex >= 0)
             {
+                DataTable dataGrid = (DataTable)dataGridView1.DataSource;
+
                 // Check if cell changed was a GAME_VALID cell
                 if (e.ColumnIndex == GAME_1_VALID_COLUMN ||
                     e.ColumnIndex == GAME_2_VALID_COLUMN ||
                     e.ColumnIndex == GAME_3_VALID_COLUMN ||
                     e.ColumnIndex == GAME_4_VALID_COLUMN)
                 {
-                    DataGridViewCell clickedCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                    bool isCellChecked = Convert.ToBoolean(clickedCell.Value);
-                    UpdateAvg(clickedCell.RowIndex);
+                    bool isCellChecked = dataGrid.Rows[e.RowIndex].Field<bool>(e.ColumnIndex);
+                    UpdateAvg(e.RowIndex);
                     UpdateLeagueAvg(e.RowIndex);
-                    CheckBoxDBSet(clickedCell.RowIndex, clickedCell.ColumnIndex, isCellChecked);
-                    SetGameCellFormatting(GetCorrespondingGameCell(clickedCell), isCellChecked);
+                    CheckBoxDBSet(e.RowIndex, e.ColumnIndex, isCellChecked);
+                    SetGameCellFormatting(e.RowIndex, GetCorrespondingGameCellIndex(e.ColumnIndex), isCellChecked);
                     dataGridView1_CellClick(null, null);
                 }
 
@@ -408,16 +403,14 @@ namespace NineTapTour.Forms
                 {
                     // If the DIRECTOR_CHECK cell was clicked, this code changes all of that member's games to match the clicked DIRECTOR_CHECK.
 
-                    int memberNum = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[MEMBER_NUMBER_COLUMN].Value);
-                    bool isCellChecked = Convert.ToBoolean(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
+                    int memberNum = dataGrid.Rows[e.RowIndex].Field<int>(MEMBER_NUMBER_COLUMN);
+                    bool isCellChecked = dataGrid.Rows[e.RowIndex].Field<bool>(e.ColumnIndex);
 
-                    for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                    DataRow[] rows = dataGrid.Select(String.Format("[{0}] = {1}", MEMBER_NUMBER_COLUMN_NAME, memberNum));
+
+                    foreach (DataRow row in rows)
                     {
-                        int otherMemberNum = Convert.ToInt32(dataGridView1.Rows[i].Cells[MEMBER_NUMBER_COLUMN].Value);
-                        if (otherMemberNum == memberNum)
-                        {
-                            dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = isCellChecked;
-                        }
+                        row.SetField(DIRECTOR_CHECK_COLUMN, isCellChecked);
                     }
                 }
             }
@@ -429,22 +422,24 @@ namespace NineTapTour.Forms
         /// </summary>
         private void UpdateLeagueAvg(int rowIndex)
         {
-            int memberNum = Convert.ToInt32(dataGridView1.Rows[rowIndex].Cells[MEMBER_NUMBER_COLUMN].Value);
-            int initialSquadNum = Convert.ToInt32(dataGridView1.Rows[rowIndex].Cells[SQUAD_COLUMN].Value);
+            DataTable dataGrid = ((DataTable)dataGridView1.DataSource);
+
+            int memberNum = dataGrid.Rows[rowIndex].Field<int>(MEMBER_NUMBER_COLUMN_NAME);
+            int initialSquadNum = dataGrid.Rows[rowIndex].Field<int>(SQUAD_COLUMN_NAME);
             
             // This method queries the DataGridView for the rows belonging to the same member, as the passed in rowIndex.
-            DataRow[] rows = ((DataTable)dataGridView1.DataSource).Select(String.Format("[{0}] = {1}", MEMBER_NUMBER_COLUMN_NAME, memberNum));
+            DataRow[] rows = dataGrid.Select(String.Format("[{0}] = {1}", MEMBER_NUMBER_COLUMN_NAME, memberNum));
 
             foreach (DataRow row in rows)
             {
-                int squadNum = Convert.ToInt32(row.Field<string>(SQUAD_COLUMN_NAME));
+                int squadNum = row.Field<int>(SQUAD_COLUMN_NAME);
                 // If the squad number is equal to or greater than the passed in row's squad number, it needs to be updated.
                 if (squadNum >= initialSquadNum)
                 {
                     // This list is required by the CalcThirtyLeagueAverage method. It is the Game Averages from the current game, and all the games previous in the current tournament.
                     List<int> previousGameAverages = rows
-                        .Where(r => Convert.ToInt32(r.Field<string>(SQUAD_COLUMN_NAME)) <= squadNum && (r.Field<bool>(GAME_1_VALID_COLUMN_NAME) || r.Field<bool>(GAME_2_VALID_COLUMN_NAME) || r.Field<bool>(GAME_3_VALID_COLUMN_NAME) || r.Field<bool>(GAME_4_VALID_COLUMN_NAME)))
-                        .Select(r => Convert.ToInt32(r.Field<string>(ENTRY_AVERAGE_COLUMN_NAME)))
+                        .Where(r => r.Field<int>(SQUAD_COLUMN_NAME) <= squadNum && (r.Field<bool>(GAME_1_VALID_COLUMN_NAME) || r.Field<bool>(GAME_2_VALID_COLUMN_NAME) || r.Field<bool>(GAME_3_VALID_COLUMN_NAME) || r.Field<bool>(GAME_4_VALID_COLUMN_NAME)))
+                        .Select(r => r.Field<int>(ENTRY_AVERAGE_COLUMN_NAME))
                         .ToList();
                     row.SetField(THIRTY_ENTRY_AVERAGE_COLUMN, CalcThirtyLeagueAverage(memberNum, previousGameAverages));
                 }
@@ -700,34 +695,34 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// This method takes in a GAME_VALID_COLUMN cell and returns the correct corresponding GAME_COLUMN cell or vis versa.
+        /// This method takes in a GAME_COLUMN index and returns the correct corresponding GAME_VALID_COLUMN index or vise versa.
         /// </summary>
-        /// <param name="cell">A DataGridViewCell of either GAME_COLUMN or GAME_VALID_COLUMN type.</param>
-        /// <returns>The corresponding DataGridViewCell to the passed in GAME DataGridViewCell.</returns>
-        private DataGridViewCell GetCorrespondingGameCell(DataGridViewCell cell)
+        /// <param name="cell">An integer representing the column index of a GAME_COLUMN or GAME_VALID_COLUMN</param>
+        /// <returns>The corresponding column index to the passed in column index. Returns -1 if passed in column index is not a GAME_COLUMN or GAME_VALID_COLUMN</returns>
+        private int GetCorrespondingGameCellIndex(int colIndex)
         {
-            switch (cell.ColumnIndex)
+            switch (colIndex)
             {
                 case GAME_1_COLUMN:
-                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_1_VALID_COLUMN];
+                    return GAME_1_VALID_COLUMN;
                 case GAME_2_COLUMN:
-                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_2_VALID_COLUMN];
+                    return GAME_2_VALID_COLUMN;
                 case GAME_3_COLUMN:
-                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_3_VALID_COLUMN];
+                    return GAME_3_VALID_COLUMN;
                 case GAME_4_COLUMN:
-                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_4_VALID_COLUMN];
+                    return GAME_4_VALID_COLUMN;
 
                 case GAME_1_VALID_COLUMN:
-                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_1_COLUMN];
+                    return GAME_1_COLUMN;
                 case GAME_2_VALID_COLUMN:
-                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_2_COLUMN];
+                    return GAME_2_COLUMN;
                 case GAME_3_VALID_COLUMN:
-                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_3_COLUMN];
+                    return GAME_3_COLUMN;
                 case GAME_4_VALID_COLUMN:
-                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_4_COLUMN];
+                    return GAME_4_COLUMN;
 
                 default:
-                    return null;
+                    return -1;
             }
         }
 
@@ -736,12 +731,13 @@ namespace NineTapTour.Forms
         /// </summary>
         private void InitializeGameCellFormatting()
         {
-            foreach (DataGridViewRow row in dataGridView1.Rows)
+            DataRow[] dataGridRows = ((DataTable)dataGridView1.DataSource).Select();
+            for (int i = 0; i < dataGridRows.Length; i++)
             {
-                SetGameCellFormatting(row.Cells[GAME_1_COLUMN], Convert.ToBoolean(row.Cells[GAME_1_VALID_COLUMN].Value));
-                SetGameCellFormatting(row.Cells[GAME_2_COLUMN], Convert.ToBoolean(row.Cells[GAME_2_VALID_COLUMN].Value));
-                SetGameCellFormatting(row.Cells[GAME_3_COLUMN], Convert.ToBoolean(row.Cells[GAME_3_VALID_COLUMN].Value));
-                SetGameCellFormatting(row.Cells[GAME_4_COLUMN], Convert.ToBoolean(row.Cells[GAME_4_VALID_COLUMN].Value));
+                SetGameCellFormatting(i, GAME_1_COLUMN, dataGridRows[i].Field<bool>(GAME_1_VALID_COLUMN));
+                SetGameCellFormatting(i, GAME_2_COLUMN, dataGridRows[i].Field<bool>(GAME_2_VALID_COLUMN));
+                SetGameCellFormatting(i, GAME_3_COLUMN, dataGridRows[i].Field<bool>(GAME_3_VALID_COLUMN));
+                SetGameCellFormatting(i, GAME_4_COLUMN, dataGridRows[i].Field<bool>(GAME_4_VALID_COLUMN));
             }
         }
 
@@ -750,11 +746,14 @@ namespace NineTapTour.Forms
         /// Valid format depends on the value of the game compared to the member's thirty game average.
         /// Invalid format is strikeout font style with a red background.
         /// </summary>
-        /// <param name="cell">The GAME_COLUMN cell to set the state of.</param>
+        /// <param name="rowIndex">The row of the cell that you want to format.</param>
+        /// <param name="colIndex">The column of the cell that you want to format.</param>
         /// <param name="isGameCellValid">The state to set the cell to.</param>
 
-        private void SetGameCellFormatting(DataGridViewCell cell, bool isGameCellValid)
+        private void SetGameCellFormatting(int rowIndex, int colIndex, bool isGameCellValid)
         {
+            DataGridViewCell cell = dataGridView1.Rows[rowIndex].Cells[colIndex];
+
             if (isGameCellValid && Int32.TryParse(cell.Value.ToString(), out int gameValue))
             {
                 //Sets the style back to default
@@ -765,7 +764,7 @@ namespace NineTapTour.Forms
                 if (gameValue > thirtyAvg - 50)
                 {
                     // If the value is within acceptable parameters, change the background back to white.
-                    cell.Style.BackColor = Color.White;
+                    cell.Style.BackColor = (cell.RowIndex % 2 == 0) ? Color.White : Color.LightGray;
                 }
                 else
                 {
@@ -976,7 +975,7 @@ namespace NineTapTour.Forms
 
                 try
                 {
-                    temporary = new List<PlayerHistory>();
+                    List<PlayerHistory> temporary = new List<PlayerHistory>();
 
                     for (int i = 0; i < dataGridView1.Rows.Count; i++)
                     {
@@ -1209,7 +1208,7 @@ namespace NineTapTour.Forms
             {
                 if (Convert.ToBoolean(dataGridView1[DIRECTOR_CHECK_COLUMN, i].Value))
                 {
-                    dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Style.BackColor = Color.White;
+                    dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Style.BackColor = (i % 2 == 0) ? Color.White : Color.LightGray;
                 }
                 else
                 {
