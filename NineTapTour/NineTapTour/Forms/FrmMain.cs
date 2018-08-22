@@ -21,6 +21,12 @@ namespace NineTapTour.Forms
 
         public frmMemberScores currfrmScoresdata { get; set; }
 
+        /// <summary>
+        /// If this property is set to true, the application will not prompt the user to cancel a close in progress.
+        /// Currently this is used to ensure the application restarts after restoring the database.
+        /// </summary>
+        public bool AppMustClose { get; set; }
+
         public MainMenu mainmenu { get; set; }
         public int RegionID { get; set; }
         public Size MaxWorkAreaScreenSize { get; set; }
@@ -313,6 +319,7 @@ namespace NineTapTour.Forms
                     if (DatabaseManagement.RestoreDatabase(fileDialog.FileName))
                     {
                         MessageBox.Show("Database successfully restored from backup!");
+                        AppMustClose = true;
                         Application.Restart();
                     }
                 }
@@ -321,22 +328,25 @@ namespace NineTapTour.Forms
 
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // if on member info page with unsaved data
-            if (activeItem.Text == "Member Info" && !currFrmMemberData.IsSavedData())
+            if (!AppMustClose)
             {
-                // asks user if they want to leave w/o saving data
-                if (!FrmMemberIsSavedData())
+                // if on member info page with unsaved data
+                if (activeItem.Text == "Member Info" && !currFrmMemberData.IsSavedData())
                 {
-                    e.Cancel = true;
+                    // asks user if they want to leave w/o saving data
+                    if (!FrmMemberIsSavedData())
+                    {
+                        e.Cancel = true;
+                    }
                 }
-            }
-            // used on all other instances
-            else
-            {
-                if (ExitApplication() == DialogResult.No)
+                // used on all other instances
+                else
                 {
-                    e.Cancel = true;
-                }
+                    if (ExitApplication() == DialogResult.No)
+                    {
+                        e.Cancel = true;
+                    }
+                } 
             }
         }
 
