@@ -30,11 +30,6 @@ namespace NineTapTour.Models.ViewModels
             HandicapScore = this.ScratchTotal + (this.Handicap * 4) + (this.Bonus * 4); //TODO: implement flexibile num on ( 4 )
         }
 
-//
-//        listOfTopScore[count].HandicapScore = totalScore + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus* 4);//TODO: make "game count flexible"
-//        listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
-//        listOfTopScore[count].Top3HandiScores = top3Games[0]
-
         #region Properties
 
         public int memberID { get; set; }

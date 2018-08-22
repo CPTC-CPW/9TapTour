@@ -1621,7 +1621,9 @@ namespace NineTapTour.Forms
 
                     var topParticipantGameViewModels = new List<TopParticipantGameViewModel>();
 
-                    foreach (Participant currParticipant in listOfParticipants)
+                    var testAllGameScores = new List<TopParticipantGameViewModel>();
+
+                    foreach (Participant currParticipant in topScores)
                     {
                         //Gets all of the game scores that are valid (that have a value)
                         var allScoresWithOutNullGames = currParticipant.Game.AllGameScores().Where(g => g.HasValue);
@@ -1646,47 +1648,80 @@ namespace NineTapTour.Forms
                                 currParticipant.Game.Handicap, currParticipant.Game.Bonus.Value,
                                 currParticipant.Game.Id);
                         topParticipantGameViewModels.Add(currTopScoreViewModel);
-                        #region commented out code
 
-
-
-
-                        //
-                        //                        TopScores temp = new TopScores();
-                        //                        listOfTopScore.Add(temp);
-                        //
-                        //                        // set id to current member
-                        //                        id = currParticipant.Member.Id;
-                        //
-                        //                        // Populates info                         
-                        //                        listOfTopScore[count].FirstName = currParticipant.Member.FirstName;
-                        //                        listOfTopScore[count].LastName = currParticipant.Member.LastName;
-                        //                        listOfTopScore[count].Game1 = currParticipant.Game.Game1;
-                        //                        listOfTopScore[count].Game2 = currParticipant.Game.Game2;
-                        //                        listOfTopScore[count].Game3 = currParticipant.Game.Game3;
-                        //                        listOfTopScore[count].Game4 = currParticipant.Game.Game4;
-                        //                        listOfTopScore[count].GameID = currParticipant.Game.Id;
-                        //                        listOfTopScore[count].Handicap = currParticipant.Member.Handicap;
-                        //                        listOfTopScore[count].memberID = id;
-                        //                        //todo: change this as this is uneedeed
-                        //                        try
-                        //                        {
-                        //                            listOfTopScore[count].Bonus = currParticipant.Member.Bonus;
-                        //                        }
-                        //                        catch
-                        //                        {
-                        //                            listOfTopScore[count].Bonus = 0;
-                        //                        }
-                        //
-                        //                        topScores[count].Game.TotalScore;
-                        //                        listOfTopScore[count].ScratchTotal = totalScore;
-                        //                        listOfTopScore[count].HandicapScore = totalScore + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);//TODO: make "game count flexible"
-                        //                        listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
-                        //                        listOfTopScore[count].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * currParticipant.Member.Handicap) + (3 * listOfTopScore[count].Bonus);
-                        //                        count++;
-
-                        #endregion
                     }
+                    ////////
+
+                    foreach (Participant currParticipant in listOfParticipants)
+                    {
+                        //Gets all of the game scores that are valid (that have a value)
+                        var allScoresWithOutNullGames = currParticipant.Game.AllGameScores().Where(g => g.HasValue);
+
+                        //totals all games with out nulls/valid score
+                        int? totalScore = allScoresWithOutNullGames.Sum();
+
+                        //Sets a collection of all the games to a new variable.
+                        var top4Games = allScoresWithOutNullGames;
+
+                        //Sets a collection of all the games using the 3 out of 4 ruleset
+                        var top3Games = TournamentStats.GetTop3OutOf4(top4Games.ToList());
+
+                        TopParticipantGameViewModel currTopScoreViewModel =
+                            new TopParticipantGameViewModel(currParticipant.Member.Id, currParticipant.Member.FirstName,
+                                currParticipant.Member.LastName, 0, currParticipant.Game.AllGameScores().Sum().Value,
+                                top3Games.Sum(),
+                                top3Games.Sum() + (3 * currParticipant.Member.Handicap) +
+                                (3 * currParticipant.Game.Bonus),
+                                currParticipant.Game.Game1, currParticipant.Game.Game2, currParticipant.Game.Game3,
+                                currParticipant.Game.Game4,
+                                currParticipant.Game.Handicap, currParticipant.Game.Bonus.Value,
+                                currParticipant.Game.Id);
+
+                        testAllGameScores.Add(currTopScoreViewModel);
+                    }
+
+
+
+                    #region commented out code
+
+
+
+
+                    //
+                    //                        TopScores temp = new TopScores();
+                    //                        listOfTopScore.Add(temp);
+                    //
+                    //                        // set id to current member
+                    //                        id = currParticipant.Member.Id;
+                    //
+                    //                        // Populates info                         
+                    //                        listOfTopScore[count].FirstName = currParticipant.Member.FirstName;
+                    //                        listOfTopScore[count].LastName = currParticipant.Member.LastName;
+                    //                        listOfTopScore[count].Game1 = currParticipant.Game.Game1;
+                    //                        listOfTopScore[count].Game2 = currParticipant.Game.Game2;
+                    //                        listOfTopScore[count].Game3 = currParticipant.Game.Game3;
+                    //                        listOfTopScore[count].Game4 = currParticipant.Game.Game4;
+                    //                        listOfTopScore[count].GameID = currParticipant.Game.Id;
+                    //                        listOfTopScore[count].Handicap = currParticipant.Member.Handicap;
+                    //                        listOfTopScore[count].memberID = id;
+                    //                        //todo: change this as this is uneedeed
+                    //                        try
+                    //                        {
+                    //                            listOfTopScore[count].Bonus = currParticipant.Member.Bonus;
+                    //                        }
+                    //                        catch
+                    //                        {
+                    //                            listOfTopScore[count].Bonus = 0;
+                    //                        }
+                    //
+                    //                        topScores[count].Game.TotalScore;
+                    //                        listOfTopScore[count].ScratchTotal = totalScore;
+                    //                        listOfTopScore[count].HandicapScore = totalScore + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);//TODO: make "game count flexible"
+                    //                        listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
+                    //                        listOfTopScore[count].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * currParticipant.Member.Handicap) + (3 * listOfTopScore[count].Bonus);
+                    //                        count++;
+
+                    #endregion
 
                     //display in the the list box
 
@@ -1694,6 +1729,19 @@ namespace NineTapTour.Forms
                     //scores.Reverse();
                     //scores = scores.ToList();
 
+                    testAllGameScores = testAllGameScores.OrderByDescending(t => t.ScratchTotal).ToList();
+                    for (int i = 0; i < testAllGameScores.Count; i++)
+                    {
+                        if (i > 0 && testAllGameScores[i - 1].ScratchTotal == testAllGameScores[i].ScratchTotal)
+                            testAllGameScores[i].Placing = i;
+                        else
+                            testAllGameScores[i].Placing = i + 1;
+
+                        testAllGameScores[i].SetScratchTotalToString();
+                    }
+
+                    lbxHighGameSC.DataSource = testAllGameScores;
+                    lbxHighGameSC.DisplayMember = "ScratchTotalToString";
 
                     if (rdoScratchScore.Checked)
                     {
@@ -1726,10 +1774,10 @@ namespace NineTapTour.Forms
                         lbxTopGameSeries.DataSource = topParticipantGameViewModels;
                         lbxTopGameSeries.DisplayMember = "HandicapTotalToString";
                     }
-                    lbxHighGameHC.DataSource = topParticipantGameViewModels;
 
 
-                    lbxHighGameSC.DataSource = topParticipantGameViewModels;
+
+//                    lbxHighGameSC.DataSource = topParticipantGameViewModels;
                 }
                 catch (SqlException)
                 {
