@@ -551,6 +551,11 @@ namespace NineTapTour.Forms
 			//    return false;
 			//}
 			///*******************************************************************************************************/
+			///
+
+			//ALL of the below validation returning false if anything is not correct input should no longer be needed.
+			//We return checkFields, which should indicate our error messages
+
 			/*if (!String.IsNullOrWhiteSpace(txtReferrals.Text) && !int.TryParse(txtReferrals.Text, out int result2) ||
                mtxtBoxRejoinDate.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxRejoinDate) ||
                mtxtBoxDateJoined.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDateJoined) ||
@@ -569,6 +574,7 @@ namespace NineTapTour.Forms
             }
 
             return true;*/
+
 			return checkFields;
         }
 
