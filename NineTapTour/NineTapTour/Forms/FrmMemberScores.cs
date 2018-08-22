@@ -135,11 +135,9 @@ namespace NineTapTour.Forms
                 btnLeftArrow.Enabled = false;
                 btnRightArrow.Enabled = false;
                 btnDelete.Enabled = false;
-                //btnLastRecord.Enabled = false;
             }
             else
             {
-                //btnLeftArrow.Enabled = true;
                 btnRightArrow.Enabled = true;
             }
         }
@@ -1253,10 +1251,11 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
-            ReEnableNavigation();
 
             List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
 
+            // Disables buttons and breaks function
+            // if already at the last record
             if (currentIndex >= total.Count())
             {
                 btnRightArrow.Enabled = false;
@@ -1264,8 +1263,11 @@ namespace NineTapTour.Forms
                 return;
             }
 
+            ReEnableNavigation();
             currentIndex++;
 
+            // Disables buttons if last record
+            // is reached
             if (currentIndex >= total.Count())
             {
                 btnRightArrow.Enabled = false;
@@ -1317,10 +1319,11 @@ namespace NineTapTour.Forms
         /// </summary>
         private void btnLeftArrow_Click(object sender, EventArgs e)
         {
-            ReEnableNavigation();
 
             List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
 
+            // Disables buttons and breaks function
+            // if already at the first record
             if (currentIndex <= 1)
             {
                 btnLeftArrow.Enabled = false;
@@ -1328,8 +1331,11 @@ namespace NineTapTour.Forms
                 return;
             }
 
+            ReEnableNavigation();
             currentIndex--;
 
+            // Disables buttons if first record
+            // is reached
             if (currentIndex <= 1)
             {
                 btnLeftArrow.Enabled = false;
@@ -1382,12 +1388,22 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnFirstRecord_Click(object sender, EventArgs e)
         {
-            ReEnableNavigation();
 
             List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
 
+            // Disables buttons and breaks function
+            // if already at the 1st record
+            if (currentIndex <= 1)
+            {
+                btnLeftArrow.Enabled = false;
+                btnFirstRecord.Enabled = false;
+                return;
+            }
+
             // Sets currentIndex to 1 in order to get the 1st record
             currentIndex = 1;
+
+            ReEnableNavigation();
 
             // Gets the 1st record in the list
             txtMemberNum.Text = Convert.ToString(total[0].Member.Number);
@@ -1395,35 +1411,35 @@ namespace NineTapTour.Forms
             // Checks which squad the member belongs to and checks
             // the corresponding squad radio button
             // when member info is loaded
-            if (total[currentIndex].Squad == 1)
+            if (total[currentIndex - 1].Squad == 1)
             {
                 rdoSquadOne.Checked = true;
             }
-            else if (total[currentIndex].Squad == 2)
+            else if (total[currentIndex - 1].Squad == 2)
             {
                 rdoSquadTwo.Checked = true;
             }
-            else if (total[currentIndex].Squad == 3)
+            else if (total[currentIndex - 1].Squad == 3)
             {
                 rdoSquadThree.Checked = true;
             }
-            else if (total[currentIndex].Squad == 4)
+            else if (total[currentIndex - 1].Squad == 4)
             {
                 rdoSquadFour.Checked = true;
             }
-            else if (total[currentIndex].Squad == 5)
+            else if (total[currentIndex - 1].Squad == 5)
             {
                 rdoSquad5.Checked = true;
             }
-            else if (total[currentIndex].Squad == 6)
+            else if (total[currentIndex - 1].Squad == 6)
             {
                 rdoSquad6.Checked = true;
             }
-            else if (total[currentIndex].Squad == 7)
+            else if (total[currentIndex - 1].Squad == 7)
             {
                 rdoSquad7.Checked = true;
             }
-            else if (total[currentIndex].Squad == 8)
+            else if (total[currentIndex - 1].Squad == 8)
             {
                 rdoSquad8.Checked = true;
             }
@@ -1443,12 +1459,22 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
+
             List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
 
-            ReEnableNavigation();
+            // Disables buttons and breaks function
+            // if already at the last record
+            if (currentIndex >= total.Count())
+            {
+                btnRightArrow.Enabled = false;
+                btnLastRecord.Enabled = false;
+                return;
+            }
 
             // Sets currentIndex to the size of total
             currentIndex = total.Count();
+
+            ReEnableNavigation();
 
             // Gets the last record from the list
             txtMemberNum.Text = Convert.ToString(total[total.Count() - 1].Member.Number);
@@ -1598,7 +1624,6 @@ namespace NineTapTour.Forms
         private void EnableButtonsWhenValidTournamentSelected()
         {
             btnStats.Enabled = true;
-            //bkm2
             if (currentIndex > 1)
             {
                 btnLeftArrow.Enabled = true;
