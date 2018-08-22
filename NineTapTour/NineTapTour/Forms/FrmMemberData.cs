@@ -147,6 +147,12 @@ namespace NineTapTour.Forms
             {
                 c.BackColor = Color.White;
             }
+
+			foreach(Control d in panel5.Controls)
+			{
+				d.BackColor = Color.LightGray;
+			}
+            
             
 
             //set txtMemberNumber.Text back to one if there is no one in the the current selected region added yet
@@ -428,6 +434,22 @@ namespace NineTapTour.Forms
             //clear checkFields
             checkFields.Clear();
 
+            //validate average box to not be 0 or empty
+            if(txtAverage.Text == "0" || String.IsNullOrWhiteSpace(txtAverage.Text))
+            {
+                checkFields.Add("Average must be valid and greater than 0.");
+                txtAverage.Clear();
+                txtAverage.BackColor = Color.LightPink;
+            }
+
+            //validate average box to only contain numbers
+            if(!String.IsNullOrWhiteSpace(txtAverage.Text) && !int.TryParse(txtAverage.Text, out int result4))
+            {
+                checkFields.Add("Average must be a number.  Field can not contain letters.");
+                txtAverage.Clear();
+                txtAverage.BackColor = Color.LightPink;
+            }
+
             //validate last name box
             if (String.IsNullOrWhiteSpace(txtLastName.Text))
             {
@@ -534,7 +556,12 @@ namespace NineTapTour.Forms
                String.IsNullOrWhiteSpace(txtFirstName.Text) ||
                String.IsNullOrWhiteSpace(txtLastName.Text) ||
                isNumber == true || 
-               (mtxtBoxSSN.Text != "   -  -" && !mtxtBoxSSN.MaskCompleted))
+               (mtxtBoxSSN.Text != "   -  -" && !mtxtBoxSSN.MaskCompleted) ||
+               mtxtBoxDOB.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDOB) ||
+               mtxtBoxDateJoined.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDateJoined) ||
+               mtxtBoxRejoinDate.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxRejoinDate) ||
+               txtAverage.Text == "0" || String.IsNullOrWhiteSpace(txtAverage.Text) ||
+               !String.IsNullOrWhiteSpace(txtAverage.Text) && !int.TryParse(txtAverage.Text, out int result3))
             {
                 return false;
             }
