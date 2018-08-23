@@ -364,7 +364,16 @@ namespace NineTapTour.Forms
                 txtMoneyEarned.Text = String.Format("{0:C}", moneySum);
                 currentMem.MoneyEarned = moneySum;
                 txtNotes.Text = currentMem.Notes;
-                txtReferrals.Text = currentMem.Referrals.ToString();
+
+                if (currentMem.Referrals == null)
+                {
+                    txtReferrals.Text = "0";
+                }
+                else
+                {
+                    txtReferrals.Text = currentMem.Referrals.ToString();
+                }
+
                 chbSenior.Checked = currentMem.IsSenior;
 
                 if (currentMem.IsActive)
@@ -472,6 +481,18 @@ namespace NineTapTour.Forms
                 txtFirstName.BackColor = Color.LightPink;
             }
 
+            //CHECK FOR VALID REFERRAL CHARACTERS
+            if(!int.TryParse(txtReferrals.Text, out int result))
+            {
+                MessageBox.Show("Referrals must contain digits only");
+                return false;
+            }
+            
+            
+                
+            
+
+
             //VALIDATE DOB WITHIN BOUNDS
 
             if (mtxtBoxDOB.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDOB))
@@ -493,7 +514,6 @@ namespace NineTapTour.Forms
                 checkFields.Add("Rejoin Date must be between 1753 and 9999.");
                 mtxtBoxDateJoined.BackColor = Color.LightPink;
             }
-            
             
             //check to make sure box is not empty.  If so, attempt to parse referral number
             if(!String.IsNullOrWhiteSpace(txtReferrals.Text))
@@ -537,45 +557,7 @@ namespace NineTapTour.Forms
                 txtState.BackColor = Color.LightPink;
             }
 
-
-
-
-
-			///********************************************************************************************************
-			//League average should only be between 125 - 210
-			//*********************************************************************************************************/
-			//if (txtAverage.Text == "" || Convert.ToInt32(txtAverage.Text) < 125 || Convert.ToInt32(txtAverage.Text) > 210)
-			//{
-			//    MessageBox.Show("For your League Average, you should only input between 125 to 210.");
-			//    txtAverage.Focus();
-			//    return false;
-			//}
-			///*******************************************************************************************************/
-			///
-
-			//ALL of the below validation returning false if anything is not correct input should no longer be needed.
-			//We return checkFields, which should indicate our error messages
-
-			/*if (!String.IsNullOrWhiteSpace(txtReferrals.Text) && !int.TryParse(txtReferrals.Text, out int result2) ||
-               mtxtBoxRejoinDate.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxRejoinDate) ||
-               mtxtBoxDateJoined.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDateJoined) ||
-               mtxtBoxDOB.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDOB) ||
-               String.IsNullOrWhiteSpace(txtFirstName.Text) ||
-               String.IsNullOrWhiteSpace(txtLastName.Text) ||
-               isNumber == true || 
-               (mtxtBoxSSN.Text != "   -  -" && !mtxtBoxSSN.MaskCompleted) ||
-               mtxtBoxDOB.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDOB) ||
-               mtxtBoxDateJoined.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDateJoined) ||
-               mtxtBoxRejoinDate.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxRejoinDate) ||
-               txtAverage.Text == "0" || String.IsNullOrWhiteSpace(txtAverage.Text) ||
-               !String.IsNullOrWhiteSpace(txtAverage.Text) && !int.TryParse(txtAverage.Text, out int result3))
-            {
-                return false;
-            }
-
-            return true;*/
-
-			return checkFields;
+			    return checkFields;
         }
 
         /// <summary>
