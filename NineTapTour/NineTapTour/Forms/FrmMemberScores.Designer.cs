@@ -793,6 +793,7 @@
             this.lbxTopGameSeries.Name = "lbxTopGameSeries";
             this.lbxTopGameSeries.Size = new System.Drawing.Size(337, 82);
             this.lbxTopGameSeries.TabIndex = 50;
+            this.lbxTopGameSeries.Click += new System.EventHandler(this.lbxTopGameSeries_Click);
             // 
             // lbxHighGameSC
             // 
@@ -801,6 +802,7 @@
             this.lbxHighGameSC.Name = "lbxHighGameSC";
             this.lbxHighGameSC.Size = new System.Drawing.Size(337, 82);
             this.lbxHighGameSC.TabIndex = 49;
+            this.lbxHighGameSC.Click += new System.EventHandler(this.lbxHighGameSC_Click);
             // 
             // lbxHighGameHC
             // 
@@ -809,6 +811,7 @@
             this.lbxHighGameHC.Name = "lbxHighGameHC";
             this.lbxHighGameHC.Size = new System.Drawing.Size(337, 82);
             this.lbxHighGameHC.TabIndex = 48;
+            this.lbxHighGameHC.Click += new System.EventHandler(this.lbxHighGameHC_Click);
             // 
             // QBSBOX
             // 

@@ -3224,6 +3224,36 @@ namespace NineTapTour.Forms
                 Refresh(false, QBSNumber);
             }
         }
+
+        private void lbxHighGameHC_Click(object sender, EventArgs e)
+        {
+            ChangeToSelectedPerson(sender as ListBox);
+        }
+
+        private void lbxHighGameSC_Click(object sender, EventArgs e)
+        {
+            ChangeToSelectedPerson(sender as ListBox);
+        }
+
+        private void lbxTopGameSeries_Click(object sender, EventArgs e)
+        {
+            ChangeToSelectedPerson(sender as ListBox);
+        }
+
+        private void ChangeToSelectedPerson(ListBox listBox)
+        {
+            try
+            {
+                ParticipantsGameViewModel participant = (ParticipantsGameViewModel) listBox.SelectedItem;
+                txtMemberNum.Text = participant.MemberNo.ToString();
+            }
+            catch (InvalidCastException)
+            {
+                TopParticipantGameViewModel participant = (TopParticipantGameViewModel) listBox.SelectedItem;
+                txtMemberNum.Text = participant.memberID.ToString();
+            }
+            FillMember();
+        }
     }
 
     /// <summary>
