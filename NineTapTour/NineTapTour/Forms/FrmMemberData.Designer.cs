@@ -162,7 +162,6 @@
             this.txtMiddleInitial.Name = "txtMiddleInitial";
             this.txtMiddleInitial.Size = new System.Drawing.Size(119, 37);
             this.txtMiddleInitial.TabIndex = 7;
-            this.txtMiddleInitial.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // lblLastName
             // 
@@ -464,7 +463,6 @@
             this.txtState.Name = "txtState";
             this.txtState.Size = new System.Drawing.Size(32, 23);
             this.txtState.TabIndex = 18;
-            this.txtState.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtCity
             // 
@@ -474,7 +472,6 @@
             this.txtCity.Name = "txtCity";
             this.txtCity.Size = new System.Drawing.Size(100, 23);
             this.txtCity.TabIndex = 16;
-            this.txtCity.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtAddress
             // 
@@ -484,7 +481,6 @@
             this.txtAddress.Name = "txtAddress";
             this.txtAddress.Size = new System.Drawing.Size(290, 23);
             this.txtAddress.TabIndex = 14;
-            this.txtAddress.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtEmail
             // 
@@ -1101,6 +1097,7 @@
             this.KeyPreview = true;
             this.Name = "FrmMemberData";
             this.Text = "Member Info";
+            this.Deactivate += new System.EventHandler(this.FrmMemberData_Deactivate);
             this.Load += new System.EventHandler(this.MemberDataForm_Load);
             this.Leave += new System.EventHandler(this.FrmMemberData_Leave);
             this.Resize += new System.EventHandler(this.FrmMemberData_Resize);

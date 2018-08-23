@@ -317,7 +317,6 @@
             this.txtdateJoined.Name = "txtdateJoined";
             this.txtdateJoined.Size = new System.Drawing.Size(100, 23);
             this.txtdateJoined.TabIndex = 15;
-            this.txtdateJoined.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // mtxtBoxDOB
             // 
@@ -328,7 +327,6 @@
             this.mtxtBoxDOB.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxDOB.TabIndex = 9;
             this.mtxtBoxDOB.ValidatingType = typeof(System.DateTime);
-            this.mtxtBoxDOB.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // mtxtBoxZip
             // 
@@ -340,7 +338,6 @@
             this.mtxtBoxZip.ShortcutsEnabled = false;
             this.mtxtBoxZip.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxZip.TabIndex = 14;
-            this.mtxtBoxZip.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // mtxtBoxSSN
             // 
@@ -352,7 +349,6 @@
             this.mtxtBoxSSN.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.mtxtBoxSSN.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxSSN.TabIndex = 10;
-            this.mtxtBoxSSN.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // mtxtBoxPhone2
             // 
@@ -370,7 +366,6 @@
             this.mtxtBoxPhone.Name = "mtxtBoxPhone";
             this.mtxtBoxPhone.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxPhone.TabIndex = 16;
-            this.mtxtBoxPhone.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // lblEmail
             // 
@@ -469,7 +464,6 @@
             this.txtReferrals.Name = "txtReferrals";
             this.txtReferrals.Size = new System.Drawing.Size(54, 23);
             this.txtReferrals.TabIndex = 21;
-            this.txtReferrals.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // lblAddress
             // 
@@ -497,7 +491,6 @@
             this.txtState.Name = "txtState";
             this.txtState.Size = new System.Drawing.Size(32, 23);
             this.txtState.TabIndex = 13;
-            this.txtState.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtCity
             // 
@@ -507,7 +500,6 @@
             this.txtCity.Name = "txtCity";
             this.txtCity.Size = new System.Drawing.Size(100, 23);
             this.txtCity.TabIndex = 12;
-            this.txtCity.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtAddress
             // 
@@ -517,7 +509,6 @@
             this.txtAddress.Name = "txtAddress";
             this.txtAddress.Size = new System.Drawing.Size(290, 23);
             this.txtAddress.TabIndex = 11;
-            this.txtAddress.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtEmail
             // 
@@ -527,7 +518,6 @@
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(290, 23);
             this.txtEmail.TabIndex = 20;
-            this.txtEmail.TextChanged += new System.EventHandler(this.InputRequired);
             // 
             // txtYearEndT
             // 
