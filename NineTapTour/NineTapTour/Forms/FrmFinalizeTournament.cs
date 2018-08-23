@@ -173,7 +173,7 @@ namespace NineTapTour.Forms
                             temp.LeagueAverage = CalcThirtyLeagueAverage(item.memberNumber, FinalizeTableList.Where(f => f.memberNumber == item.memberNumber && f.Squad <= item.Squad && (f.UseGame1 || f.UseGame2 || f.UseGame3 || f.UseGame4)).Select(f => f.GameAvg).ToList());
                         }
 
-                    } 
+                    }
                 }
                 FinalizeTempDB.AddFinalizeTempOnstart(temp);
             }
@@ -240,11 +240,11 @@ namespace NineTapTour.Forms
                 newRow[NAME_COLUMN_NAME] = item.FirstName + " " + item.LastName;
                 newRow[GAME_1_COLUMN_NAME] = item.Game1;
                 newRow[GAME_1_VALID_COLUMN_NAME] = item.UseGame1;
-                newRow[GAME_2_COLUMN_NAME] = item.Game2.HasValue;
+                newRow[GAME_2_COLUMN_NAME] = item.Game2;
                 newRow[GAME_2_VALID_COLUMN_NAME] = item.UseGame2;
-                newRow[GAME_3_COLUMN_NAME] = item.Game3.HasValue;
+                newRow[GAME_3_COLUMN_NAME] = item.Game3;
                 newRow[GAME_3_VALID_COLUMN_NAME] = item.UseGame3;
-                newRow[GAME_4_COLUMN_NAME] = item.Game4.HasValue;
+                newRow[GAME_4_COLUMN_NAME] = item.Game4;
                 newRow[GAME_4_VALID_COLUMN_NAME] = item.UseGame4;
                 newRow[THIRTY_ENTRY_AVERAGE_COLUMN_NAME] = item.LeagueAverage;
                 newRow[ENTRY_AVERAGE_COLUMN_NAME] = item.GameAvg;
@@ -382,19 +382,18 @@ namespace NineTapTour.Forms
         {
             if (e.RowIndex >= 0)
             {
-                DataTable dataGrid = (DataTable)dataGridView1.DataSource;
-
                 // Check if cell changed was a GAME_VALID cell
                 if (e.ColumnIndex == GAME_1_VALID_COLUMN ||
                     e.ColumnIndex == GAME_2_VALID_COLUMN ||
                     e.ColumnIndex == GAME_3_VALID_COLUMN ||
                     e.ColumnIndex == GAME_4_VALID_COLUMN)
                 {
-                    bool isCellChecked = dataGrid.Rows[e.RowIndex].Field<bool>(e.ColumnIndex);
-                    UpdateAvg(e.RowIndex);
+                    DataGridViewCell clickedCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                    bool isCellChecked = Convert.ToBoolean(clickedCell.Value);
+                    UpdateAvg(clickedCell.RowIndex);
                     UpdateLeagueAvg(e.RowIndex);
-                    CheckBoxDBSet(e.RowIndex, e.ColumnIndex, isCellChecked);
-                    SetGameCellFormatting(e.RowIndex, GetCorrespondingGameCellIndex(e.ColumnIndex), isCellChecked);
+                    CheckBoxDBSet(clickedCell.RowIndex, clickedCell.ColumnIndex, isCellChecked);
+                    SetGameCellFormatting(GetCorrespondingGameCell(clickedCell), isCellChecked);
                     dataGridView1_CellClick(null, null);
                 }
 
@@ -403,10 +402,10 @@ namespace NineTapTour.Forms
                 {
                     // If the DIRECTOR_CHECK cell was clicked, this code changes all of that member's games to match the clicked DIRECTOR_CHECK.
 
-                    int memberNum = dataGrid.Rows[e.RowIndex].Field<int>(MEMBER_NUMBER_COLUMN);
-                    bool isCellChecked = dataGrid.Rows[e.RowIndex].Field<bool>(e.ColumnIndex);
+                    int memberNum = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[MEMBER_NUMBER_COLUMN].Value);
+                    bool isCellChecked = Convert.ToBoolean(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
 
-                    DataRow[] rows = dataGrid.Select(String.Format("[{0}] = {1}", MEMBER_NUMBER_COLUMN_NAME, memberNum));
+                    DataRow[] rows = ((DataTable)dataGridView1.DataSource).Select(String.Format("[{0}] = {1}", MEMBER_NUMBER_COLUMN_NAME, memberNum));
 
                     foreach (DataRow row in rows)
                     {
@@ -422,13 +421,11 @@ namespace NineTapTour.Forms
         /// </summary>
         private void UpdateLeagueAvg(int rowIndex)
         {
-            DataTable dataGrid = ((DataTable)dataGridView1.DataSource);
+            int memberNum = Convert.ToInt32(dataGridView1.Rows[rowIndex].Cells[MEMBER_NUMBER_COLUMN].Value);
+            int initialSquadNum = Convert.ToInt32(dataGridView1.Rows[rowIndex].Cells[SQUAD_COLUMN].Value);
 
-            int memberNum = dataGrid.Rows[rowIndex].Field<int>(MEMBER_NUMBER_COLUMN_NAME);
-            int initialSquadNum = dataGrid.Rows[rowIndex].Field<int>(SQUAD_COLUMN_NAME);
-            
             // This method queries the DataGridView for the rows belonging to the same member, as the passed in rowIndex.
-            DataRow[] rows = dataGrid.Select(String.Format("[{0}] = {1}", MEMBER_NUMBER_COLUMN_NAME, memberNum));
+            DataRow[] rows = ((DataTable)dataGridView1.DataSource).Select(String.Format("[{0}] = {1}", MEMBER_NUMBER_COLUMN_NAME, memberNum));
 
             foreach (DataRow row in rows)
             {
@@ -695,34 +692,34 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// This method takes in a GAME_COLUMN index and returns the correct corresponding GAME_VALID_COLUMN index or vise versa.
+        /// This method takes in a GAME_VALID_COLUMN cell and returns the correct corresponding GAME_COLUMN cell or vis versa.
         /// </summary>
-        /// <param name="cell">An integer representing the column index of a GAME_COLUMN or GAME_VALID_COLUMN</param>
-        /// <returns>The corresponding column index to the passed in column index. Returns -1 if passed in column index is not a GAME_COLUMN or GAME_VALID_COLUMN</returns>
-        private int GetCorrespondingGameCellIndex(int colIndex)
+        /// <param name="cell">A DataGridViewCell of either GAME_COLUMN or GAME_VALID_COLUMN type.</param>
+        /// <returns>The corresponding DataGridViewCell to the passed in GAME DataGridViewCell.</returns>
+        private DataGridViewCell GetCorrespondingGameCell(DataGridViewCell cell)
         {
-            switch (colIndex)
+            switch (cell.ColumnIndex)
             {
                 case GAME_1_COLUMN:
-                    return GAME_1_VALID_COLUMN;
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_1_VALID_COLUMN];
                 case GAME_2_COLUMN:
-                    return GAME_2_VALID_COLUMN;
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_2_VALID_COLUMN];
                 case GAME_3_COLUMN:
-                    return GAME_3_VALID_COLUMN;
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_3_VALID_COLUMN];
                 case GAME_4_COLUMN:
-                    return GAME_4_VALID_COLUMN;
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_4_VALID_COLUMN];
 
                 case GAME_1_VALID_COLUMN:
-                    return GAME_1_COLUMN;
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_1_COLUMN];
                 case GAME_2_VALID_COLUMN:
-                    return GAME_2_COLUMN;
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_2_COLUMN];
                 case GAME_3_VALID_COLUMN:
-                    return GAME_3_COLUMN;
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_3_COLUMN];
                 case GAME_4_VALID_COLUMN:
-                    return GAME_4_COLUMN;
+                    return dataGridView1.Rows[cell.RowIndex].Cells[GAME_4_COLUMN];
 
                 default:
-                    return -1;
+                    return null;
             }
         }
 
@@ -731,13 +728,12 @@ namespace NineTapTour.Forms
         /// </summary>
         private void InitializeGameCellFormatting()
         {
-            DataRow[] dataGridRows = ((DataTable)dataGridView1.DataSource).Select();
-            for (int i = 0; i < dataGridRows.Length; i++)
+            foreach (DataGridViewRow row in dataGridView1.Rows)
             {
-                SetGameCellFormatting(i, GAME_1_COLUMN, dataGridRows[i].Field<bool>(GAME_1_VALID_COLUMN));
-                SetGameCellFormatting(i, GAME_2_COLUMN, dataGridRows[i].Field<bool>(GAME_2_VALID_COLUMN));
-                SetGameCellFormatting(i, GAME_3_COLUMN, dataGridRows[i].Field<bool>(GAME_3_VALID_COLUMN));
-                SetGameCellFormatting(i, GAME_4_COLUMN, dataGridRows[i].Field<bool>(GAME_4_VALID_COLUMN));
+                SetGameCellFormatting(row.Cells[GAME_1_COLUMN], Convert.ToBoolean(row.Cells[GAME_1_VALID_COLUMN].Value));
+                SetGameCellFormatting(row.Cells[GAME_2_COLUMN], Convert.ToBoolean(row.Cells[GAME_2_VALID_COLUMN].Value));
+                SetGameCellFormatting(row.Cells[GAME_3_COLUMN], Convert.ToBoolean(row.Cells[GAME_3_VALID_COLUMN].Value));
+                SetGameCellFormatting(row.Cells[GAME_4_COLUMN], Convert.ToBoolean(row.Cells[GAME_4_VALID_COLUMN].Value));
             }
         }
 
@@ -746,14 +742,11 @@ namespace NineTapTour.Forms
         /// Valid format depends on the value of the game compared to the member's thirty game average.
         /// Invalid format is strikeout font style with a red background.
         /// </summary>
-        /// <param name="rowIndex">The row of the cell that you want to format.</param>
-        /// <param name="colIndex">The column of the cell that you want to format.</param>
+        /// <param name="cell">The GAME_COLUMN cell to set the state of.</param>
         /// <param name="isGameCellValid">The state to set the cell to.</param>
 
-        private void SetGameCellFormatting(int rowIndex, int colIndex, bool isGameCellValid)
+        private void SetGameCellFormatting(DataGridViewCell cell, bool isGameCellValid)
         {
-            DataGridViewCell cell = dataGridView1.Rows[rowIndex].Cells[colIndex];
-
             if (isGameCellValid && Int32.TryParse(cell.Value.ToString(), out int gameValue))
             {
                 //Sets the style back to default
@@ -1390,7 +1383,7 @@ namespace NineTapTour.Forms
 
         public void getLeagueSum(FinalizeTemp temp, List<FinalizeTemp> finalizeTableList)
         {
-            
+
             //RUNNING LEAGUE AVG 
             int SumFromGamesNotAddedYet = 0;
             //checks to see if they bowled an any squads before the current selected squad, if your on this line then they bowled at leats once
