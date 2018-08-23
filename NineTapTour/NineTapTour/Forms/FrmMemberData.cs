@@ -481,18 +481,6 @@ namespace NineTapTour.Forms
                 txtFirstName.BackColor = Color.LightPink;
             }
 
-            //CHECK FOR VALID REFERRAL CHARACTERS
-            if(!int.TryParse(txtReferrals.Text, out int result))
-            {
-                MessageBox.Show("Referrals must contain digits only");
-                return false;
-            }
-            
-            
-                
-            
-
-
             //VALIDATE DOB WITHIN BOUNDS
 
             if (mtxtBoxDOB.MaskCompleted && !FormHelper.IsDateTimeTextBoxValid(mtxtBoxDOB))
