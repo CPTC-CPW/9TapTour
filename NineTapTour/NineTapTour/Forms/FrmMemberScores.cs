@@ -1618,12 +1618,22 @@ namespace NineTapTour.Forms
                         .Where(p => howManySquadsCanBeFiltered.Any(h => h == p.Squad)).ToList();
                 try
                 {
+                    var participantsGameViewModels = new List<ParticipantsGameViewModel>();
 
                     var topParticipantGameViewModels = new List<TopParticipantGameViewModel>();
 
                     var testAllGameScores = new List<TopParticipantGameViewModel>();
 
-                    foreach (Participant currParticipant in topScores)
+                    foreach (Participant currParticipant in listOfParticipants)
+                    { 
+                        ParticipantsGameViewModel currTopScoreViewModel =
+                            new ParticipantsGameViewModel(currParticipant.Member.Id, currParticipant.Member.FirstName, currParticipant.Member.LastName, currParticipant.Squad,
+                                currParticipant.Game.AllGameScores().Max(), currParticipant.Member.Handicap, currParticipant.Member.Bonus);
+                        participantsGameViewModels.Add(currTopScoreViewModel);
+
+                    }
+
+                    foreach (Participant currParticipant in listOfParticipants)
                     {
                         //Gets all of the game scores that are valid (that have a value)
                         var allScoresWithOutNullGames = currParticipant.Game.AllGameScores().Where(g => g.HasValue);
@@ -1725,23 +1735,15 @@ namespace NineTapTour.Forms
 
                     //display in the the list box
 
-                    //scores.Sort(scoreComparer);
-                    //scores.Reverse();
-                    //scores = scores.ToList();
+                    participantsGameViewModels = participantsGameViewModels
+                        .OrderByDescending(t => t.HighScore + t.Handicap + t.Bonus).ToList();
+                    lbxHighGameHC.DataSource = participantsGameViewModels;
+                    lbxHighGameHC.DisplayMember = "HandicapScoreToString";
 
-                    testAllGameScores = testAllGameScores.OrderByDescending(t => t.ScratchTotal).ToList();
-                    for (int i = 0; i < testAllGameScores.Count; i++)
-                    {
-                        if (i > 0 && testAllGameScores[i - 1].ScratchTotal == testAllGameScores[i].ScratchTotal)
-                            testAllGameScores[i].Placing = i;
-                        else
-                            testAllGameScores[i].Placing = i + 1;
-
-                        testAllGameScores[i].SetScratchTotalToString();
-                    }
-
-                    lbxHighGameSC.DataSource = testAllGameScores;
-                    lbxHighGameSC.DisplayMember = "ScratchTotalToString";
+                    participantsGameViewModels = participantsGameViewModels.OrderByDescending(t => t.HighScore).ToList();
+                    
+                    lbxHighGameSC.DataSource = participantsGameViewModels;
+                    lbxHighGameSC.DisplayMember = "ScratchScoreToString";
 
                     if (rdoScratchScore.Checked)
                     {
