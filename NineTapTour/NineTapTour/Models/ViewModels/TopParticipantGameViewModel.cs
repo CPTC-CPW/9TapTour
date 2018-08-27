@@ -28,6 +28,8 @@ namespace NineTapTour.Models.ViewModels
             Bonus = bonus;
             GameID = gameID;
             HandicapScore = this.ScratchTotal + (this.Handicap * 4) + (this.Bonus * 4); //TODO: implement flexibile num on ( 4 )
+            SetHandicapTotalToString();
+            SetScratchTotalToString();
         }
 
         #region Properties

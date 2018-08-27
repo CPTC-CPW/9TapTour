@@ -1526,12 +1526,6 @@ namespace NineTapTour.Forms
             }
         }
 
-
-
-
-
-
-
         /// <summary>
         /// Clears scratch scores and scratch and handicap totals
         /// </summary>
@@ -1572,20 +1566,6 @@ namespace NineTapTour.Forms
         /// pass true if you are changing the radio buttons and only want to refresh the bottom box.
         /// </summary>
         /// <param name="seriesChange"></param>
-
-
-        /* Todo:       ********************************************************************************************************************************************
-        ********************************************************************************************************************************************
-        ********************************************************************************************************************************************
-        ********************************************************************************************************************************************
-        ********************************************************************************************************************************************
-         * ********************************************************************************************************************************************
-         * ********************************************************************************************************************************************
-         * ********************************************************************************************************************************************
-         * ********************************************************************************************************************************************
-         *
-             */
-
         List<TopScores> listOfTopScore = new List<TopScores>();
         IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
 
@@ -1601,10 +1581,13 @@ namespace NineTapTour.Forms
                 // Function scope data
                 NineTapDb db = new NineTapDb();
 
+                // Selects current tournament id
                 int selectedTourney = selectedTournament.Id;
 
+                // gets list of all particiants in current tournament
                 var listOfParticipants = ParticipantsDB.GetParticipants(selectedTournament.Id);
 
+                // 
                 var topScores = listOfParticipants.GroupBy(p => p.Member.Id).Select(pg => pg.Max()).ToList();
 
                 //TAKES A TOURNAMENT ID AND SQUAD NUMBER AND FILTERS FOR A LIST OF PARTICIPANTS.
@@ -1624,11 +1607,15 @@ namespace NineTapTour.Forms
 
                     var testAllGameScores = new List<TopParticipantGameViewModel>();
 
+                    // makes list of ParticipantsGameViewModel which will be used to populate scratch game and handicap game
+                    // listboxes which only allow 1 top game per person per squad
                     foreach (Participant currParticipant in listOfParticipants)
-                    { 
+                    {
+                        // creates temp variable for PaticipantsGameViewModel to store necessary info for each person 
                         ParticipantsGameViewModel currTopScoreViewModel =
                             new ParticipantsGameViewModel(currParticipant.Member.Id, currParticipant.Member.FirstName, currParticipant.Member.LastName, currParticipant.Squad,
                                 currParticipant.Game.AllGameScores().Max(), currParticipant.Member.Handicap, currParticipant.Member.Bonus);
+                        // adds person to list<ParticipantsGameViewModel>
                         participantsGameViewModels.Add(currTopScoreViewModel);
 
                     }
@@ -1660,7 +1647,6 @@ namespace NineTapTour.Forms
                         topParticipantGameViewModels.Add(currTopScoreViewModel);
 
                     }
-                    ////////
 
                     foreach (Participant currParticipant in listOfParticipants)
                     {
@@ -1689,9 +1675,6 @@ namespace NineTapTour.Forms
 
                         testAllGameScores.Add(currTopScoreViewModel);
                     }
-
-
-
                     #region commented out code
 
 
@@ -1733,53 +1716,45 @@ namespace NineTapTour.Forms
 
                     #endregion
 
-                    //display in the the list box
+                    //display data in the list boxes
 
+                    // orders list by highest handicap score game to lowest
                     participantsGameViewModels = participantsGameViewModels
                         .OrderByDescending(t => t.HighScore + t.Handicap + t.Bonus).ToList();
+                    // links handicap score listbox to list
                     lbxHighGameHC.DataSource = participantsGameViewModels;
+                    // displays specific tostring for displaying info dealing with high handicap score game
                     lbxHighGameHC.DisplayMember = "HandicapScoreToString";
 
+                    // orders list by highest scratch score game to lowest
                     participantsGameViewModels = participantsGameViewModels.OrderByDescending(t => t.HighScore).ToList();
-                    
+                    // links scratch score listbox to list
                     lbxHighGameSC.DataSource = participantsGameViewModels;
+                    // displays specific tostring for displaying info dealing with high scratch score game
                     lbxHighGameSC.DisplayMember = "ScratchScoreToString";
 
+                    // for high games series listbox (third listbox)
+                    // if scratch score radio button is checked
                     if (rdoScratchScore.Checked)
                     {
+                        // orders list by highest scoring scratch score total to lowest
                         topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.ScratchTotal).ToList();
-                        for (int i = 0; i < topParticipantGameViewModels.Count; i++)
-                        {
-                            if ( i > 0 && topParticipantGameViewModels[i - 1].ScratchTotal == topParticipantGameViewModels[i].ScratchTotal)
-                                topParticipantGameViewModels[i].Placing = i;
-                            else
-                                topParticipantGameViewModels[i].Placing = i + 1;
-                            
-                            topParticipantGameViewModels[i].SetScratchTotalToString();
-                        }
+                        
+                        // links game series listbox to list
                         lbxTopGameSeries.DataSource = topParticipantGameViewModels;
+                        //displays specific tostring for displaying info dealing with scratch score total
                         lbxTopGameSeries.DisplayMember = "ScratchTotalToString";
                     }
+                    // if handicap score radio button is checked
                     else if (rdoHandicapScore.Checked)
                     {
-
+                        // orders list by highest scoring handicap score total to lowest
                         topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.HandicapScore).ToList();
-                        for (int i = 0; i < topParticipantGameViewModels.Count; i++)
-                        {
-                            if (i > 0 && topParticipantGameViewModels[i - 1].HandicapScore == topParticipantGameViewModels[i].HandicapScore)
-                                topParticipantGameViewModels[i].Placing = i;
-                            else
-                                topParticipantGameViewModels[i].Placing = i + 1;
-
-                            topParticipantGameViewModels[i].SetHandicapTotalToString();
-                        }
+                        // links game series listbox to list
                         lbxTopGameSeries.DataSource = topParticipantGameViewModels;
+                        // displays specific tostring for displaying info dealing with handicap score total
                         lbxTopGameSeries.DisplayMember = "HandicapTotalToString";
                     }
-
-
-
-//                    lbxHighGameSC.DataSource = topParticipantGameViewModels;
                 }
                 catch (SqlException)
                 {
@@ -2178,22 +2153,6 @@ namespace NineTapTour.Forms
             }
         }
 
-        /* Todo:       ********************************************************************************************************************************************
-        ********************************************************************************************************************************************
-        ********************************************************************************************************************************************
-        ********************************************************************************************************************************************
-        ********************************************************************************************************************************************
-         * ********************************************************************************************************************************************
-         * ********************************************************************************************************************************************
-         * ********************************************************************************************************************************************
-         * ********************************************************************************************************************************************
-         *
-             */
-
-
-
-
-
         /// <summary>
         /// Calculates each bowler's place standing. Accounts for ties.
         /// </summary>
@@ -2232,15 +2191,6 @@ namespace NineTapTour.Forms
                 }
             }
         }
-
-
-
-
-
-
-
-
-
 
         private int? getScratchScore(int? gameScore, int? gameHandicap)
         {
