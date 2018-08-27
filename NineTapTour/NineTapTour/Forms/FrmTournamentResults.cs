@@ -27,6 +27,7 @@ namespace NineTapTour.Forms
         static string EARNINGS_COLUMN_NAME = "Earnings";
         static string MEMBER_ID_COLUMN_NAME = "Member ID";
         static string GAME_ID_COLUMN_NAME = "Game ID";
+        static string PROGRESSIVEPOT_COLUMN_NAME = "Progressive Pot";
 
         DataTable dt = new DataTable(); // Instantiate Data Table
         NineTapDb db = new NineTapDb(); // Get access to database
@@ -105,6 +106,7 @@ namespace NineTapTour.Forms
             dt.Columns.Add(EARNINGS_COLUMN_NAME).ReadOnly = false;
             dt.Columns.Add(MEMBER_ID_COLUMN_NAME).ReadOnly = true;
             dt.Columns.Add(GAME_ID_COLUMN_NAME).ReadOnly = true;
+            dt.Columns.Add(PROGRESSIVEPOT_COLUMN_NAME).ReadOnly = false;
 
             // Create rows and populate with each member's data for each row
             foreach (var item in cashedWinners)
@@ -117,6 +119,7 @@ namespace NineTapTour.Forms
                 newRow[EARNINGS_COLUMN_NAME] = item.MoneyWon;
                 newRow[MEMBER_ID_COLUMN_NAME] = item.MemberNumber;
                 newRow[GAME_ID_COLUMN_NAME] = item.GameId;
+                newRow[PROGRESSIVEPOT_COLUMN_NAME] = item.SidePot;
 
                 dt.Rows.Add(newRow);
             }
@@ -138,6 +141,7 @@ namespace NineTapTour.Forms
                 dgvTournamentResults.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 dgvTournamentResults.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 dgvTournamentResults.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvTournamentResults.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 
                 dgvTournamentResults.CurrentCell = dgvTournamentResults[4, 0];
             }
@@ -254,6 +258,7 @@ namespace NineTapTour.Forms
                                g.Handicap,
                                g.Bonus,
                                g.MoneyWon,
+                               g.SidePot,
                                g.Id,
                                g.Game1,
                                g.Game2,
@@ -278,6 +283,7 @@ namespace NineTapTour.Forms
                 m.Handicap = Convert.ToInt32(b.Handicap);
                 m.Bonus = Convert.ToInt32(b.Bonus);
                 m.MoneyWon = b.MoneyWon;
+                m.SidePot = b.SidePot;
                 m.GameId = b.Id;
                 m.Game1Score = Convert.ToInt32(b.Game1);
                 m.Game2Score = Convert.ToInt32(b.Game2);
@@ -319,14 +325,39 @@ namespace NineTapTour.Forms
             }
         }
 
-        /// <summary>
-        /// Saves participants' place standing and earnings won to the database
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnSaveChanges_Click(object sender, EventArgs e)
-        {
+        ///// <summary>
+        ///// Saves participants' place standing and earnings won to the database
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void btnSaveChanges_Click(object sender, EventArgs e)
+        //{
 
+        //    for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
+        //    {
+        //        int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
+        //        Game g = FinalizeTempDB.getGame(gameId);
+
+        //        g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
+        //        g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
+        //        g.gameRegionID = tourny.TourneyRegion;
+
+        //        db.Entry(g).State = System.Data.Entity.EntityState.Modified;
+        //        db.SaveChanges();
+        //    }
+
+        //    MessageBox.Show(@"Saved to database.");
+
+
+        //}
+        
+        private void exportToExcel()
+        {
+            /// <summary>
+            /// Saves participants' place standing and earnings won to the database
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
             for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
             {
                 int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
@@ -334,19 +365,16 @@ namespace NineTapTour.Forms
 
                 g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
                 g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
+                g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
+              
                 g.gameRegionID = tourny.TourneyRegion;
 
-                db.Entry(g).State = System.Data.Entity.EntityState.Modified;
+                //db.Entry(g).State = System.Data.Entity.EntityState.Modified;
                 db.SaveChanges();
             }
 
-            MessageBox.Show(@"Saved to database.");
+            //MessageBox.Show(@"Saved to database.");
 
-
-        }
-
-        private void exportToExcel()
-        {
             // have program open template file automatically and auto save
             // with a specific naming conventions such as "Pacific 3Of4 1-12-18" 
             // without using open/save file dialogues
@@ -409,7 +437,10 @@ namespace NineTapTour.Forms
                 xlWorkSheet.Cells[1, 1] = tourny.Location + tourny.Event;
                 // adds in the date of the tourney in the cell A2
                 xlWorkSheet.Cells[2, 1] = tourny.Date;
+
+                //////////////////////
                 
+
                 // use these for loops to populate data in each of
                 // the rows and cells that have data
                 for (i = 0; i < dt.Rows.Count; i++)
@@ -517,6 +548,10 @@ namespace NineTapTour.Forms
                             if (j == 5)
                             {
                                 xlWorkSheet.Cells[i + (4 + i), j + 7] = data;
+                            }
+                            if(j == 6)
+                            {
+                                xlWorkSheet.Cells[i + (5 + i), 9] = dt.Rows[i].ItemArray[7].ToString();
                             }
                         }
                         // For rows 3 and higher in the data table
@@ -774,9 +809,11 @@ namespace NineTapTour.Forms
                 }
 
                 //set money earned in red text next to place
-                xlWorkSheet.Cells[(i * 2) + 11, 3] = dt.Rows[i + 3].ItemArray[4].ToString();
+                xlWorkSheet.Cells[(i * 2) + 11, 3] = "=SUM(I" + ((i * 2) + 10) + ":I" + ((i * 2) + 11) + ")";
                 //label the progressive prize pot
                 xlWorkSheet.Cells[(i * 2) + 11, 6] = "$20 Progressive Pot";
+                //Set the Progressive pot earnings
+                xlWorkSheet.Cells[(i * 2) + 11, 9] = dt.Rows[i + 3].ItemArray[7].ToString();
             }
         }
 
@@ -832,6 +869,28 @@ namespace NineTapTour.Forms
             finally
             {
                 GC.Collect();
+            }
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            if (e.CloseReason == CloseReason.WindowsShutDown) return;
+
+            // Save all changes made to the dataGridView
+            for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
+            {
+                int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
+                Game g = FinalizeTempDB.getGame(gameId);
+
+                g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
+                g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
+                g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
+                g.gameRegionID = tourny.TourneyRegion;
+
+                db.Entry(g).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
             }
         }
     }

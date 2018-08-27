@@ -162,6 +162,7 @@ namespace NineTapTour.Database
                     g.InputtedAvg,
                     g.Id,
                     g.MoneyWon,
+                    g.SidePot,
                     g.Notes,
                     g.PlaceStanding,
                     g.UseGame1,
@@ -181,6 +182,7 @@ namespace NineTapTour.Database
                 currentGame.InputtedAvg = g.InputtedAvg;
                 currentGame.Id = g.Id;
                 currentGame.MoneyWon = g.MoneyWon;
+                currentGame.SidePot = g.SidePot;
                 currentGame.Notes = g.Notes;
                 currentGame.PlaceStanding = g.PlaceStanding;
                 currentGame.UseGame1 = g.UseGame1;
