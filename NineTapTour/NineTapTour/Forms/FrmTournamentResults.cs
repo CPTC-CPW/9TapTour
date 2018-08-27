@@ -119,8 +119,14 @@ namespace NineTapTour.Forms
                 newRow[EARNINGS_COLUMN_NAME] = item.MoneyWon;
                 newRow[MEMBER_ID_COLUMN_NAME] = item.MemberNumber;
                 newRow[GAME_ID_COLUMN_NAME] = item.GameId;
-                newRow[PROGRESSIVEPOT_COLUMN_NAME] = item.SidePot;
-
+                if (item.SidePot == null)
+                {
+                    newRow[PROGRESSIVEPOT_COLUMN_NAME] = "0.00";
+                }
+                else
+                {
+                    newRow[PROGRESSIVEPOT_COLUMN_NAME] = item.SidePot;
+                }
                 dt.Rows.Add(newRow);
             }
 
