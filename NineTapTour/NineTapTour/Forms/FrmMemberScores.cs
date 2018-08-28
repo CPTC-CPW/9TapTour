@@ -10,6 +10,7 @@ using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Data.Entity.Core.Objects;
+using System.Linq.Dynamic;
 using Bogus.Extensions;
 using NineTapTour.Models;
 using NineTapTour.Models.ViewModels;
@@ -1562,20 +1563,17 @@ namespace NineTapTour.Forms
             Refresh(true, QBSNumber);
         }
 
+        List<TopScores> listOfTopScore = new List<TopScores>();
+        IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
+
         /// <summary>
         /// pass true if you are changing the radio buttons and only want to refresh the bottom box.
         /// </summary>
         /// <param name="seriesChange"></param>
-        List<TopScores> listOfTopScore = new List<TopScores>();
-        IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
-
         public void Refresh(bool seriesChange, int qbsNumber)
         {
             var scores = new List<MemberScores>();
             listOfTopScore.Clear();
-            // DEV NOTE: The text generated for the boxes in this is strange and has tabs that the 
-            // code doesn't seem to be writing as far as I can tell.
-            // I think a bug fixer should look at this some time and try to see why it's happening
             try
             {
                 // Function scope data
@@ -1643,7 +1641,7 @@ namespace NineTapTour.Forms
                                 currParticipant.Game.Game1, currParticipant.Game.Game2, currParticipant.Game.Game3,
                                 currParticipant.Game.Game4,
                                 currParticipant.Game.Handicap, currParticipant.Game.Bonus.Value,
-                                currParticipant.Game.Id);
+                                currParticipant.Game.Id, currParticipant.Squad);
                         topParticipantGameViewModels.Add(currTopScoreViewModel);
 
                     }
@@ -1671,7 +1669,7 @@ namespace NineTapTour.Forms
                                 currParticipant.Game.Game1, currParticipant.Game.Game2, currParticipant.Game.Game3,
                                 currParticipant.Game.Game4,
                                 currParticipant.Game.Handicap, currParticipant.Game.Bonus.Value,
-                                currParticipant.Game.Id);
+                                currParticipant.Game.Id, currParticipant.Squad);
 
                         testAllGameScores.Add(currTopScoreViewModel);
                     }
@@ -3190,19 +3188,44 @@ namespace NineTapTour.Forms
             ChangeToSelectedPerson(sender as ListBox);
         }
 
-        private void ChangeToSelectedPerson(ListBox listBox)
+        private void ChangeToSelectedPerson(ListBox participantGamesListBox)
         {
             try
             {
-                ParticipantsGameViewModel participant = (ParticipantsGameViewModel) listBox.SelectedItem;
+                ParticipantsGameViewModel participant = (ParticipantsGameViewModel) participantGamesListBox.SelectedItem;
                 txtMemberNum.Text = participant.MemberNo.ToString();
+                FillMember();
+                int counter = 1;
+                foreach (Control control in groupBox1.Controls)
+                {
+                    RadioButton rdoButton = control as RadioButton;
+                    if (counter == participant.Squad)
+                    {
+                        if (rdoButton != null) rdoButton.Checked = true;
+                    }
+
+                    counter++;
+                }
             }
             catch (InvalidCastException)
             {
-                TopParticipantGameViewModel participant = (TopParticipantGameViewModel) listBox.SelectedItem;
+                TopParticipantGameViewModel participant = (TopParticipantGameViewModel) participantGamesListBox.SelectedItem;
                 txtMemberNum.Text = participant.memberID.ToString();
+                FillMember();
+                int counter = 1;
+                foreach (Control control in groupBox1.Controls)
+                {
+                    RadioButton rdoButton = control as RadioButton;
+                    if (counter == participant.Squad)
+                    {
+                        if (rdoButton != null) rdoButton.Checked = true;
+                    }
+
+                    counter++;
+                }
+
             }
-            FillMember();
+
         }
     }
 

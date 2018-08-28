@@ -10,7 +10,7 @@ namespace NineTapTour.Models.ViewModels
     {
         public TopParticipantGameViewModel(int memberID, string firstName, string lastName, int placing, int scratchTotal,
 
-            int? top3ScratchScore, int? top3HandiScores, int? game1, int? game2, int? game3, int? game4, int? handicap, int bonus, int gameID)//todo: change static numbers
+            int? top3ScratchScore, int? top3HandiScores, int? game1, int? game2, int? game3, int? game4, int? handicap, int bonus, int gameID, int squad)//todo: change static numbers
         {
             this.memberID = memberID;
             FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
@@ -27,6 +27,7 @@ namespace NineTapTour.Models.ViewModels
             Handicap = handicap ?? throw new ArgumentNullException(nameof(handicap));
             Bonus = bonus;
             GameID = gameID;
+            Squad = squad;
             HandicapScore = this.ScratchTotal + (this.Handicap * 4) + (this.Bonus * 4); //TODO: implement flexibile num on ( 4 )
             SetHandicapTotalToString();
             SetScratchTotalToString();
@@ -49,6 +50,7 @@ namespace NineTapTour.Models.ViewModels
         public int Handicap { get; set; }
         public int Bonus { get; set; }
         public int GameID { get; set; }
+        public int Squad { get; set; }
         public string ScratchTotalToString { get; set; }
         public string HandicapTotalToString { get; set; }      
         #endregion
