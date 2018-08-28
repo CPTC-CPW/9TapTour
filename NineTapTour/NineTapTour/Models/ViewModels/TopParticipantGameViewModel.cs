@@ -8,11 +8,11 @@ namespace NineTapTour.Models.ViewModels
 {
     class TopParticipantGameViewModel
     {
-        public TopParticipantGameViewModel(int memberID, string firstName, string lastName, int placing, int scratchTotal,
+        public TopParticipantGameViewModel(int memberNo, string firstName, string lastName, int placing, int scratchTotal,
 
             int? top3ScratchScore, int? top3HandiScores, int? game1, int? game2, int? game3, int? game4, int? handicap, int bonus, int gameID, int squad)//todo: change static numbers
         {
-            this.memberID = memberID;
+            this.MemberNo = memberNo;
             FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
             LastName = lastName ?? throw new ArgumentNullException(nameof(lastName));
             Placing = placing;
@@ -35,7 +35,7 @@ namespace NineTapTour.Models.ViewModels
 
         #region Properties
 
-        public int memberID { get; set; }
+        public int MemberNo { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int Placing { get; set; }
@@ -57,12 +57,12 @@ namespace NineTapTour.Models.ViewModels
 
         public void SetScratchTotalToString()
         {
-            this.ScratchTotalToString = $"{this.ScratchTotal,-10} {$"[{this.memberID}]",-16} {this.FirstName} {this.LastName}";
+            this.ScratchTotalToString = $"{this.ScratchTotal,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
         }
 
         public void SetHandicapTotalToString()
         {
-            this.HandicapTotalToString = $"{this.HandicapScore, -10} {$"[{this.memberID}]",-16} {this.FirstName} {this.LastName}";
+            this.HandicapTotalToString = $"{this.HandicapScore, -10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
         }
     }
 }

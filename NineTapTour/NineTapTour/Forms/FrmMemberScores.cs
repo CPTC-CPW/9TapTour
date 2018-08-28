@@ -1603,8 +1603,6 @@ namespace NineTapTour.Forms
 
                     var topParticipantGameViewModels = new List<TopParticipantGameViewModel>();
 
-                    var testAllGameScores = new List<TopParticipantGameViewModel>();
-
                     // makes list of ParticipantsGameViewModel which will be used to populate scratch game and handicap game
                     // listboxes which only allow 1 top game per person per squad
                     foreach (Participant currParticipant in listOfParticipants)
@@ -1644,34 +1642,6 @@ namespace NineTapTour.Forms
                                 currParticipant.Game.Id, currParticipant.Squad);
                         topParticipantGameViewModels.Add(currTopScoreViewModel);
 
-                    }
-
-                    foreach (Participant currParticipant in listOfParticipants)
-                    {
-                        //Gets all of the game scores that are valid (that have a value)
-                        var allScoresWithOutNullGames = currParticipant.Game.AllGameScores().Where(g => g.HasValue);
-
-                        //totals all games with out nulls/valid score
-                        int? totalScore = allScoresWithOutNullGames.Sum();
-
-                        //Sets a collection of all the games to a new variable.
-                        var top4Games = allScoresWithOutNullGames;
-
-                        //Sets a collection of all the games using the 3 out of 4 ruleset
-                        var top3Games = TournamentStats.GetTop3OutOf4(top4Games.ToList());
-
-                        TopParticipantGameViewModel currTopScoreViewModel =
-                            new TopParticipantGameViewModel(currParticipant.Member.Id, currParticipant.Member.FirstName,
-                                currParticipant.Member.LastName, 0, currParticipant.Game.AllGameScores().Sum().Value,
-                                top3Games.Sum(),
-                                top3Games.Sum() + (3 * currParticipant.Member.Handicap) +
-                                (3 * currParticipant.Game.Bonus),
-                                currParticipant.Game.Game1, currParticipant.Game.Game2, currParticipant.Game.Game3,
-                                currParticipant.Game.Game4,
-                                currParticipant.Game.Handicap, currParticipant.Game.Bonus.Value,
-                                currParticipant.Game.Id, currParticipant.Squad);
-
-                        testAllGameScores.Add(currTopScoreViewModel);
                     }
                     #region commented out code
 
@@ -3190,18 +3160,28 @@ namespace NineTapTour.Forms
 
         private void ChangeToSelectedPerson(ListBox participantGamesListBox)
         {
+            // try to set as participantsGameViewModel
             try
             {
+                // set participant to current item in selected listbox
                 ParticipantsGameViewModel participant = (ParticipantsGameViewModel) participantGamesListBox.SelectedItem;
+                // set member num textbox to current participants member number
                 txtMemberNum.Text = participant.MemberNo.ToString();
+                // call method to display members information
                 FillMember();
+                // selects the squad that the participant is in
                 FormHelper.SelectParticipantSquad(participant.Squad, groupBox1);
             }
+            // sets as TopParticipantGameViewModel if throws error
             catch (InvalidCastException)
             {
+                // set participant to current item in selected listbox
                 TopParticipantGameViewModel participant = (TopParticipantGameViewModel) participantGamesListBox.SelectedItem;
-                txtMemberNum.Text = participant.memberID.ToString();
+                // set member num textbox to current participants member number
+                txtMemberNum.Text = participant.MemberNo.ToString();
+                // call method to display members information
                 FillMember();
+                // selects the squad that the participant is in
                 FormHelper.SelectParticipantSquad(participant.Squad, groupBox1);
             }
         }
