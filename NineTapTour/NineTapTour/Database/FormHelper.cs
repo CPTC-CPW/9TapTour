@@ -87,5 +87,22 @@ namespace NineTapTour.Database
                 txtBox.Select(0, 0);
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="squadNumber"></param>
+        /// <param name="groupBox"></param>
+        public static void SelectParticipantSquad(int squadNumber, GroupBox groupBox)
+        {
+            foreach (Control control in groupBox.Controls)
+            {
+                RadioButton rdoButton = control as RadioButton;
+                if (rdoButton.Text.Contains(squadNumber.ToString()))
+                {
+                    rdoButton.Checked = true;
+                }
+            }
+        }
     }
 }

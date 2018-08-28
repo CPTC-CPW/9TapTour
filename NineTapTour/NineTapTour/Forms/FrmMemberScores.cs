@@ -3195,37 +3195,15 @@ namespace NineTapTour.Forms
                 ParticipantsGameViewModel participant = (ParticipantsGameViewModel) participantGamesListBox.SelectedItem;
                 txtMemberNum.Text = participant.MemberNo.ToString();
                 FillMember();
-                int counter = 1;
-                foreach (Control control in groupBox1.Controls)
-                {
-                    RadioButton rdoButton = control as RadioButton;
-                    if (counter == participant.Squad)
-                    {
-                        if (rdoButton != null) rdoButton.Checked = true;
-                    }
-
-                    counter++;
-                }
+                FormHelper.SelectParticipantSquad(participant.Squad, groupBox1);
             }
             catch (InvalidCastException)
             {
                 TopParticipantGameViewModel participant = (TopParticipantGameViewModel) participantGamesListBox.SelectedItem;
                 txtMemberNum.Text = participant.memberID.ToString();
                 FillMember();
-                int counter = 1;
-                foreach (Control control in groupBox1.Controls)
-                {
-                    RadioButton rdoButton = control as RadioButton;
-                    if (counter == participant.Squad)
-                    {
-                        if (rdoButton != null) rdoButton.Checked = true;
-                    }
-
-                    counter++;
-                }
-
+                FormHelper.SelectParticipantSquad(participant.Squad, groupBox1);
             }
-
         }
     }
 

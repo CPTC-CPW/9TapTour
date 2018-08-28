@@ -970,7 +970,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(23, 281);
+            this.label3.Location = new System.Drawing.Point(8, 283);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(149, 13);
             this.label3.TabIndex = 7;
@@ -988,7 +988,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(23, 158);
+            this.label1.Location = new System.Drawing.Point(6, 158);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(151, 13);
             this.label1.TabIndex = 5;
@@ -1124,11 +1124,11 @@
             // lblSeries
             // 
             this.lblSeries.AutoSize = true;
-            this.lblSeries.Location = new System.Drawing.Point(23, 35);
+            this.lblSeries.Location = new System.Drawing.Point(6, 35);
             this.lblSeries.Name = "lblSeries";
-            this.lblSeries.Size = new System.Drawing.Size(149, 13);
+            this.lblSeries.Size = new System.Drawing.Size(148, 13);
             this.lblSeries.TabIndex = 1;
-            this.lblSeries.Text = "Series [Member No.] -- (Name)";
+            this.lblSeries.Text = "Game [Member No.] -- (Name)";
             // 
             // lblGameSenior
             // 

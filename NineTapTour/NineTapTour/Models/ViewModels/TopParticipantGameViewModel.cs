@@ -57,12 +57,12 @@ namespace NineTapTour.Models.ViewModels
 
         public void SetScratchTotalToString()
         {
-            this.ScratchTotalToString = $"{this.ScratchTotal}  [{this.memberID}] -- {this.FirstName} {this.LastName}";
+            this.ScratchTotalToString = $"{this.ScratchTotal,-10} {$"[{this.memberID}]",-16} {this.FirstName} {this.LastName}";
         }
 
         public void SetHandicapTotalToString()
         {
-            this.HandicapTotalToString = $"{this.HandicapScore} [{this.memberID}] -- {this.FirstName} {this.LastName}";
+            this.HandicapTotalToString = $"{this.HandicapScore, -10} {$"[{this.memberID}]",-16} {this.FirstName} {this.LastName}";
         }
     }
 }
