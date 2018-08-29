@@ -25,7 +25,7 @@ namespace NineTapTour.Forms
         /// If this property is set to true, the application will not prompt the user to cancel a close in progress.
         /// Currently this is used to ensure the application restarts after restoring the database.
         /// </summary>
-        public bool AppMustClose { get; set; }
+        private bool AppMustClose { get; set; }
 
         public MainMenu mainmenu { get; set; }
         public int RegionID { get; set; }
