@@ -14,5 +14,6 @@
         public int Game3Score { get; set; }
         public int Game4Score { get; set; }
         public int TotalScore { get; set; }
+        public decimal? SidePot { get; set; }
     }
 }
