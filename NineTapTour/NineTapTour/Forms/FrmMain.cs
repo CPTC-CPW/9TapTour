@@ -21,6 +21,12 @@ namespace NineTapTour.Forms
 
         public frmMemberScores currfrmScoresdata { get; set; }
 
+        /// <summary>
+        /// If this property is set to true, the application will not prompt the user to cancel a close in progress.
+        /// Currently this is used to ensure the application restarts after restoring the database.
+        /// </summary>
+        private bool AppMustClose { get; set; }
+
         public MainMenu mainmenu { get; set; }
         public int RegionID { get; set; }
         public Size MaxWorkAreaScreenSize { get; set; }
@@ -308,75 +314,61 @@ namespace NineTapTour.Forms
             fileDialog.Filter = "Backup Files (*.bak)|*.bak";
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
-                if (DatabaseManagement.RestoreDatabase(fileDialog.FileName))
+                if (MessageBox.Show("Restoring the database will restart the application.", "Warning", MessageBoxButtons.OKCancel) == DialogResult.OK)
                 {
-                    MessageBox.Show("Database successfully restored from backup!");
+                    if (DatabaseManagement.RestoreDatabase(fileDialog.FileName))
+                    {
+                        MessageBox.Show("Database successfully restored from backup!");
+                        AppMustClose = true;
+                        Application.Restart();
+                    }
                 }
             }
         }
 
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //Kamm Freudenstein
-            //08/14/2018
-
-            //IF the Member Data Form has been activated and isn't null
-            if(currFrmMemberData != null)
+            // Check the AppMustClose boolean to see if we need to bypass the user check.
+            if (!AppMustClose)
             {
-                //IF all the data on the Member Data Form IS valid
-                //Go ahead and close the application
-                if(currFrmMemberData.isValid().Count == 0)
+                //IF the Member Data Form has been activated and isn't null
+                if (currFrmMemberData != null)
                 {
-                    currFrmMemberData.SaveMemberData();
+                    //IF all the data on the Member Data Form IS valid
+                    //Go ahead and close the application
+                    if (currFrmMemberData.isValid().Count == 0)
+                    {
+                        currFrmMemberData.SaveMemberData();
 
+                        //IF all entered data is valid, check if user really wants to exit
+
+                        if (ExitApplication() == DialogResult.No)
+                        {
+                            e.Cancel = true;
+                        }
+                    }
+                    //IF the data on the Member Data From is NOT Valid
+                    else
+                    {
+                        //IF the user chooses to navigate away and save changes
+                        if (!currFrmMemberData.MemberNavigate())
+                        {
+                            e.Cancel = true;
+                        }
+                    }
+
+                }
+                else
+                {
                     //IF all entered data is valid, check if user really wants to exit
 
+                    //Stick around if you don't want to exit
                     if (ExitApplication() == DialogResult.No)
                     {
                         e.Cancel = true;
                     }
-                    else
-                    {
-                        mainmenu.Close();
-                    }
-                }
-                //IF the data on the Member Data From is NOT Valid
-                else
-                {
-                    //IF the user chooses to navigate away and NOT save changes
-                    if (currFrmMemberData.MemberNavigate())
-                    {
-                        mainmenu.Close();
-                    }
-                    //ELSE just stick around
-                    else
-                    {
-                        e.Cancel = true;
-                    }
-                  
-                    
-                }
-                
+                } 
             }
-            else
-            {
-                //IF all entered data is valid, check if user really wants to exit
-                
-                //Stick around if you don't want to exit
-                if (ExitApplication() == DialogResult.No)
-                {
-                    e.Cancel = true;
-                }
-                //Hop up outta there
-                else
-                {
-                    mainmenu.Close();
-                }
-            }
-            
-
-           
-            
         }
 
         /// <summary>
