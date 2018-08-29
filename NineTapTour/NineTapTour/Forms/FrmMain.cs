@@ -328,75 +328,41 @@ namespace NineTapTour.Forms
 
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //Kamm Freudenstein
-            //08/14/2018
-
-            //IF the Member Data Form has been activated and isn't null
-            if(currFrmMemberData != null)
-            {
-                //IF all the data on the Member Data Form IS valid
-                //Go ahead and close the application
-                if(currFrmMemberData.isValid().Count == 0)
-                {
-                    currFrmMemberData.SaveMemberData();
-
-                    //IF all entered data is valid, check if user really wants to exit
-
-                    if (ExitApplication() == DialogResult.No)
-                    {
-                        e.Cancel = true;
-                    }
-                    else
-                    {
-                        mainmenu.Close();
-                    }
-                }
-                //IF the data on the Member Data From is NOT Valid
-                else
-                {
-                    //IF the user chooses to navigate away and NOT save changes
-                    if (currFrmMemberData.MemberNavigate())
-                    {
-                        mainmenu.Close();
-                    }
-                    //ELSE just stick around
-                    else
-                    {
-                        e.Cancel = true;
-                    }
-                  
-                    
-                }
-                
-            }
-            else
-            {
-                //IF all entered data is valid, check if user really wants to exit
-                
-                //Stick around if you don't want to exit
-                if (ExitApplication() == DialogResult.No)
-                {
-                    e.Cancel = true;
-                }
-                //Hop up outta there
-                else
-                {
-                    mainmenu.Close();
-                }
+            // Check the AppMustClose boolean to see if we need to bypass the user check.
             if (!AppMustClose)
             {
-                // if on member info page with unsaved data
-                if (activeItem.Text == "Member Info" && !currFrmMemberData.IsSavedData())
+                //IF the Member Data Form has been activated and isn't null
+                if (currFrmMemberData != null)
                 {
-                    // asks user if they want to leave w/o saving data
-                    if (!FrmMemberIsSavedData())
+                    //IF all the data on the Member Data Form IS valid
+                    //Go ahead and close the application
+                    if (currFrmMemberData.isValid().Count == 0)
                     {
-                        e.Cancel = true;
+                        currFrmMemberData.SaveMemberData();
+
+                        //IF all entered data is valid, check if user really wants to exit
+
+                        if (ExitApplication() == DialogResult.No)
+                        {
+                            e.Cancel = true;
+                        }
                     }
+                    //IF the data on the Member Data From is NOT Valid
+                    else
+                    {
+                        //IF the user chooses to navigate away and save changes
+                        if (!currFrmMemberData.MemberNavigate())
+                        {
+                            e.Cancel = true;
+                        }
+                    }
+
                 }
-                // used on all other instances
                 else
                 {
+                    //IF all entered data is valid, check if user really wants to exit
+
+                    //Stick around if you don't want to exit
                     if (ExitApplication() == DialogResult.No)
                     {
                         e.Cancel = true;
