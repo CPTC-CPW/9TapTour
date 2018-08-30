@@ -641,20 +641,24 @@ namespace NineTapTour.Forms
 
                     NineTapDb db = new NineTapDb();
                     int gameId = (from p in db.Participants
-                                  where p.Member.Id == currentMem.Id
-                                  && p.Tournament.Id == currTourney.Id
-                                  select p.Game.Id).FirstOrDefault();
+                        where p.Member.Id == currentMem.Id
+                              && p.Tournament.Id == currTourney.Id
+                        select p.Game.Id).FirstOrDefault();
                     int gameId2 = (from p in db.Participants
-                                   where p.Member.Id == currentMem2.Id
-                                   && p.Tournament.Id == currTourney.Id
-                                   select p.Game.Id).FirstOrDefault();
+                        where p.Member.Id == currentMem2.Id
+                              && p.Tournament.Id == currTourney.Id
+                        select p.Game.Id).FirstOrDefault();
                     player.Game.Id = gameId;
 
                     //selects the ID of the combobox of tournaments and stores the
                     //tournament property within the participants class.
                     player.Tournament = currTourney;
-                    player.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[0].Text));
-                    player.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[1].Text));
+                    player.Game.Game1 = IsEmpty(txtScratchScore1)
+                        ? null
+                        : (int?) Convert.ToInt32((scratchArray[0].Text));
+                    player.Game.Game2 = IsEmpty(txtScratchScore2)
+                        ? null
+                        : (int?) Convert.ToInt32((scratchArray[1].Text));
                     player.Game.Game3 = 0;
                     player.Game.Game4 = 0;
                     player.Game.Bonus = currentMem.Bonus;
@@ -662,14 +666,19 @@ namespace NineTapTour.Forms
                     player2.Game.Id = gameId2;
 
                     player2.Tournament = currTourney;
-                    player2.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[2].Text));
-                    player2.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[3].Text));
+                    player2.Game.Game1 = IsEmpty(txtScratchScore1)
+                        ? null
+                        : (int?) Convert.ToInt32((scratchArray[2].Text));
+                    player2.Game.Game2 = IsEmpty(txtScratchScore2)
+                        ? null
+                        : (int?) Convert.ToInt32((scratchArray[3].Text));
                     player2.Game.Game3 = 0;
                     player2.Game.Game4 = 0;
                     player2.Game.Bonus = currentMem2.Bonus;
                     player2.Game.Handicap = currentMem2.Handicap;
 
                     #region radio button
+
                     if (rdoSquadOne.Checked)
                     {
                         player.Squad = 1;
@@ -690,6 +699,7 @@ namespace NineTapTour.Forms
                         player.Squad = 4;
                         player2.Squad = 4;
                     }
+
                     #endregion
 
                     player.Member = MemberDb.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
@@ -715,6 +725,7 @@ namespace NineTapTour.Forms
                         MessageBox.Show(ex.Message);
 
                     }
+
                     Clear();
                     txtMemberNum.Focus();
                 }
@@ -722,7 +733,9 @@ namespace NineTapTour.Forms
                 else
                 {
                     int squad = 0;
+
                     #region get Squad
+
                     if (rdoSquadOne.Checked == true)
                     {
                         squad = 1;
@@ -755,6 +768,7 @@ namespace NineTapTour.Forms
                     {
                         squad = 8;
                     }
+
                     #endregion
 
 
@@ -767,20 +781,20 @@ namespace NineTapTour.Forms
                     player.ParticipantRegionID = RegionID;
                     var db = new NineTapDb();
                     var gameId = (from p in db.Participants
-                                  where p.Member.Id == currentMem.Id
-                                  && p.Tournament.Id == currTourney.Id
-                                  && p.Squad == squad
-                                  select p.Game.Id).FirstOrDefault();
+                        where p.Member.Id == currentMem.Id
+                              && p.Tournament.Id == currTourney.Id
+                              && p.Squad == squad
+                        select p.Game.Id).FirstOrDefault();
                     var parID = (from p in db.Participants
-                                 where p.Member.Id == currentMem.Id
-                                 && p.Tournament.Id == currTourney.Id
-                                 && p.Squad == squad
-                                 select p.Id).FirstOrDefault();
+                        where p.Member.Id == currentMem.Id
+                              && p.Tournament.Id == currTourney.Id
+                              && p.Squad == squad
+                        select p.Id).FirstOrDefault();
                     var parList = (from p in db.Participants
-                                   select new
-                                   {
-                                       p.Id
-                                   }).ToList();
+                        select new
+                        {
+                            p.Id
+                        }).ToList();
 
                     if (parID == 0) //if participant doesnt exist yet give them a participantID
                     {
@@ -797,6 +811,7 @@ namespace NineTapTour.Forms
                     player.Tournament = currTourney;
 
                     #region radio button
+
                     if (rdoSquadOne.Checked)
                     {
                         player.Squad = 1;
@@ -829,7 +844,9 @@ namespace NineTapTour.Forms
                     {
                         player.Squad = 8;
                     }
+
                     #endregion
+
                     //defaults money earned to 0, or enters text box amount
                     if (txtMoney.Text == "" || txtMoney.Text == null)
                         player.Game.MoneyWon = 0;
@@ -837,24 +854,36 @@ namespace NineTapTour.Forms
                     else
                         player.Game.MoneyWon = Convert.ToDecimal(txtMoney.Text);
 
-                    if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim())
-                        || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
+                    if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text
+                                                                               .Trim())
+                                                                           || string.IsNullOrEmpty(txtScratchScore3.Text
+                                                                               .Trim()) || string.IsNullOrEmpty(
+                                                                               txtScratchScore4.Text.Trim()))
                     {
                         MessageBox.Show("Please enter all scratch scores", "Blank Scores Not Allowed");
                         return;
                     }
                     else if (!isNumeric(txtScratchScore1.Text.Trim()) || !isNumeric(txtScratchScore2.Text.Trim())
-                        || !isNumeric(txtScratchScore3.Text.Trim()) || !isNumeric(txtScratchScore4.Text.Trim()))
+                                                                      || !isNumeric(txtScratchScore3.Text.Trim()) ||
+                                                                      !isNumeric(txtScratchScore4.Text.Trim()))
                     {
                         MessageBox.Show("Please enter only numbers", "Non-Integer Scores Not Allowed");
                         return;
                     }
                     else
                     {
-                        player.Game.Game1 = IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32((scratchArray[0].Text));
-                        player.Game.Game2 = IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32((scratchArray[1].Text));
-                        player.Game.Game3 = IsEmpty(txtScratchScore3) ? null : (int?)Convert.ToInt32((scratchArray[2].Text));
-                        player.Game.Game4 = IsEmpty(txtScratchScore4) ? null : (int?)Convert.ToInt32((scratchArray[3].Text));
+                        player.Game.Game1 = IsEmpty(txtScratchScore1)
+                            ? null
+                            : (int?) Convert.ToInt32((scratchArray[0].Text));
+                        player.Game.Game2 = IsEmpty(txtScratchScore2)
+                            ? null
+                            : (int?) Convert.ToInt32((scratchArray[1].Text));
+                        player.Game.Game3 = IsEmpty(txtScratchScore3)
+                            ? null
+                            : (int?) Convert.ToInt32((scratchArray[2].Text));
+                        player.Game.Game4 = IsEmpty(txtScratchScore4)
+                            ? null
+                            : (int?) Convert.ToInt32((scratchArray[3].Text));
 
                         Game currentGame = GetScoresById(currentMem.Id);
                         if (currentGame == null)
@@ -867,6 +896,7 @@ namespace NineTapTour.Forms
                             player.Game.Bonus = currentGame.Bonus;
                             player.Game.Handicap = currentGame.Handicap;
                         }
+
                         player.Game.gameRegionID = RegionID;
 
                         // if compEntry checkbox is checked, set IsComp to true in game table
@@ -874,6 +904,7 @@ namespace NineTapTour.Forms
                         {
                             player.Game.IsComp = true;
                         }
+
                         db.SaveChanges();
                         try
                         {
@@ -891,6 +922,7 @@ namespace NineTapTour.Forms
                         {
                             MessageBox.Show(ex.Message);
                         }
+
                         //UPDATE LASTBOWLED DATE
                         //Sets last bowled to now and updates DB record
                         if (DateTime.Now > currentMem.LastBowled || currentMem.LastBowled == null)
@@ -898,8 +930,10 @@ namespace NineTapTour.Forms
                             currentMem.LastBowled = DateTime.Now;
                             MemberDb.AddMember(currentMem);
                         }
+                    }
+
+                    Refresh(false, QBSNumber);
                 }
-                Refresh(false, QBSNumber);
             }
             else
             {
