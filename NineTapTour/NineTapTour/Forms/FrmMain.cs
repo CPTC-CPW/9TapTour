@@ -21,6 +21,12 @@ namespace NineTapTour.Forms
 
         public frmMemberScores currfrmScoresdata { get; set; }
 
+        /// <summary>
+        /// If this property is set to true, the application will not prompt the user to cancel a close in progress.
+        /// Currently this is used to ensure the application restarts after restoring the database.
+        /// </summary>
+        private bool AppMustClose { get; set; }
+
         public MainMenu mainmenu { get; set; }
         public int RegionID { get; set; }
         public Size MaxWorkAreaScreenSize { get; set; }
@@ -132,28 +138,32 @@ namespace NineTapTour.Forms
         //also to disable button to current page
         private void menMain_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            if(activeItem != null)
+            if (activeItem != null)
             {
                 activeItem.BackColor = SystemColors.Control;
             }
             activeItem = (ToolStripMenuItem)e.ClickedItem;
-            activeItem.BackColor = SystemColors.ActiveCaption;
+            if (!activeItem.HasDropDownItems)
+            {
+                activeItem.BackColor = SystemColors.ActiveCaption;
+            }
 
-
-            
             MenuStrip currentMenu = sender as MenuStrip;
             for (int i = 0; i < currentMenu.Items.Count; i++)
             {
                 // sets enabled to true for all items in currentMenu
                 // unless item is the clickedItem(activeItem)
-
-                if (activeItem == currentMenu.Items[i] && !activeItem.HasDropDownItems)
+                // or clicked item has a drop down list
+                if (!activeItem.HasDropDownItems)
                 {
-                    currentMenu.Items[i].Enabled = false;
-                }
-                else
-                {
-                    currentMenu.Items[i].Enabled = true;
+                    if (activeItem == currentMenu.Items[i])
+                    {
+                        currentMenu.Items[i].Enabled = false;
+                    }
+                    else
+                    {
+                        currentMenu.Items[i].Enabled = true;
+                    }
                 }
             }
 
@@ -194,13 +204,14 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void memberToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
             OpenOrDisplayForm(ref newfrmMemberData);
             currFrmMemberData = newfrmMemberData;
             // sets bool var to true so the save data message will show up
             memberDataIsActive = true;
         }
+
+        
 
         /// <summary>
         /// 
@@ -261,8 +272,7 @@ namespace NineTapTour.Forms
             {
                 if (memberDataIsActive == true)
                 {
-                    var confirm = MessageBox.Show(@"Are you sure you want to leave without saving changes?", @"Member Data Not Saved", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                    if (confirm == DialogResult.No)
+                    if (!currFrmMemberData.MemberNavigate())
                     {
                         memberToolStripMenuItem.Enabled = false;
                         tournamentToolStripMenuItem.Enabled = true;
@@ -304,11 +314,72 @@ namespace NineTapTour.Forms
             fileDialog.Filter = "Backup Files (*.bak)|*.bak";
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
-                if (DatabaseManagement.RestoreDatabase(fileDialog.FileName))
+                if (MessageBox.Show("Restoring the database will restart the application.", "Warning", MessageBoxButtons.OKCancel) == DialogResult.OK)
                 {
-                    MessageBox.Show("Database successfully restored from backup!");
+                    if (DatabaseManagement.RestoreDatabase(fileDialog.FileName))
+                    {
+                        MessageBox.Show("Database successfully restored from backup!");
+                        AppMustClose = true;
+                        Application.Restart();
+                    }
                 }
             }
+        }
+
+        private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Check the AppMustClose boolean to see if we need to bypass the user check.
+            if (!AppMustClose)
+            {
+                //IF the Member Data Form has been activated and isn't null
+                if (currFrmMemberData != null)
+                {
+                    //IF all the data on the Member Data Form IS valid
+                    //Go ahead and close the application
+                    if (currFrmMemberData.isValid().Count == 0)
+                    {
+                        currFrmMemberData.SaveMemberData();
+
+                        //IF all entered data is valid, check if user really wants to exit
+
+                        if (ExitApplication() == DialogResult.No)
+                        {
+                            e.Cancel = true;
+                        }
+                    }
+                    //IF the data on the Member Data From is NOT Valid
+                    else
+                    {
+                        //IF the user chooses to navigate away and save changes
+                        if (!currFrmMemberData.MemberNavigate())
+                        {
+                            e.Cancel = true;
+                        }
+                    }
+
+                }
+                else
+                {
+                    //IF all entered data is valid, check if user really wants to exit
+
+                    //Stick around if you don't want to exit
+                    if (ExitApplication() == DialogResult.No)
+                    {
+                        e.Cancel = true;
+                    }
+                } 
+            }
+        }
+
+        /// <summary>
+        /// Asks if user wants to exit application
+        /// </summary>
+        /// <returns>returns DialogResult.No if No is clicked or DialogResult.Yes if yes is clicked</returns>
+        private DialogResult ExitApplication()
+        {
+            DialogResult result = MessageBox.Show("Are you sure you want to exit?", "Exit Application", 
+                                                  MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            return result;
         }
     }
 }

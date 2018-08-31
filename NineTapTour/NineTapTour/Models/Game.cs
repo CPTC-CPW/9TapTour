@@ -36,6 +36,7 @@ namespace NineTapTour.Models
         [System.ComponentModel.DataAnnotations.Schema.NotMapped]
         public int? TotalScore { get; set; }
         public decimal? MoneyWon { get; set; }
+        public decimal? SidePot { get; set; }
         public byte? PlaceStanding { get; set;}
 
         public int gameRegionID { get; set; }

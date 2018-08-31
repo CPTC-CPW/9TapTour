@@ -450,12 +450,16 @@ namespace NineTapTour.Forms
                 for (int i = 0; i < Last30.Count; i++)
                 {
 
-                    game1AVG += Last30[i].Game1;
-                    game2AVG += Last30[i].Game2;
-                    game3AVG += Last30[i].Game3;
-                    game4AVG += Last30[i].Game4;
-                    scratchTotal += (Last30[i].Game1 + Last30[i].Game2 + Last30[i].Game3 + Last30[i].Game4);
-                    gameTotal += (Last30[i].Game1 + Last30[i].HandiCap + Last30[i].Bonus) + (Last30[i].Game2 + Last30[i].HandiCap + Last30[i].Bonus) + (Last30[i].Game3 + Last30[i].HandiCap + Last30[i].Bonus) + (Last30[i].Game4 + Last30[i].HandiCap + Last30[i].Bonus);
+                    game1AVG += Last30[i].Game1 ?? 0;
+                    game2AVG += Last30[i].Game2 ?? 0;
+                    game3AVG += Last30[i].Game3 ?? 0;
+                    game4AVG += Last30[i].Game4 ?? 0;
+                    scratchTotal += (Last30[i].Game1 ?? 0) + (Last30[i].Game2 ?? 0) + (Last30[i].Game3 ?? 0) + (Last30[i].Game4 ?? 0);
+                    int total = (Last30[i].Game1 != null) ? (Last30[i].Game1 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
+                    total += (Last30[i].Game2 != null) ? (Last30[i].Game2 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
+                    total += (Last30[i].Game3 != null) ? (Last30[i].Game3 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
+                    total += (Last30[i].Game4 != null) ? (Last30[i].Game4 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
+                    gameTotal = total;
                 }
 
                 game1AVG /= Last30.Count;
@@ -640,7 +644,7 @@ namespace NineTapTour.Forms
                         pHist[saveX].Game4 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
                     }
                     saveY++;
-                    pHist[saveX].TotalScore = (pHist[saveX].Game1 + pHist[saveX].Game2 + pHist[saveX].Game3 + pHist[saveX].Game4);
+                    pHist[saveX].TotalScore = (pHist[saveX].Game1 ?? 0) + (pHist[saveX].Game2 ?? 0) + (pHist[saveX].Game3 ?? 0) + (pHist[saveX].Game4 ?? 0);
                     saveY++;
                     //skip total score with handicap. not apart of Playerhistory class
                     saveY++;

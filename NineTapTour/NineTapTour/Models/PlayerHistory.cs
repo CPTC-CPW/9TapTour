@@ -18,10 +18,10 @@ namespace NineTapTour.Models
         public int GameID {get ; set; }
 
 
-        public int Game1 { get; set; }
-        public int Game2 { get; set; }
-        public int Game3 { get; set; }
-        public int Game4 { get; set; }
+        public int? Game1 { get; set; }
+        public int? Game2 { get; set; }
+        public int? Game3 { get; set; }
+        public int? Game4 { get; set; }
 
 
         public int TotalScore { get; set; }

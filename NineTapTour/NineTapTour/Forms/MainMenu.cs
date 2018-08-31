@@ -82,11 +82,14 @@ namespace NineTapTour.Forms
 
         private void MainMenu_Paint(object sender, PaintEventArgs e)
         {
-#if DEBUG
             Graphics g = e.Graphics;
             Font drawFont = new Font("Arial", 12);
-            SolidBrush drawBrush = new SolidBrush(Color.Red);
+            SolidBrush drawBrush = new SolidBrush(Color.White);
             PointF drawPoint = new PointF(10, 2);
+            g.DrawString("Version: 1.2.0.0", drawFont, drawBrush, drawPoint);
+#if DEBUG
+            drawBrush.Color = Color.Red;
+            drawPoint.Y += 16;
             g.DrawString("DEVELOPMENT VERSION NOT FOR PRODUCTION", drawFont, drawBrush, drawPoint);
 #endif
         }

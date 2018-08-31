@@ -15,10 +15,10 @@ namespace NineTapTour.Models
         public String FirstName { get; set; }
         public String LastName { get; set; }
         public int Squad { get; set; }
-        public int Game1 { get; set; }
-        public int Game2 { get; set; }
-        public int Game3 { get; set; }
-        public int Game4 { get; set; }
+        public int? Game1 { get; set; }
+        public int? Game2 { get; set; }
+        public int? Game3 { get; set; }
+        public int? Game4 { get; set; }
         [DefaultValue(true)]
         public bool UseGame1 { get; set; }
         [DefaultValue(true)]

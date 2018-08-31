@@ -32,7 +32,6 @@
             this.lblTournamentName = new System.Windows.Forms.Label();
             this.btnExportToExcel = new System.Windows.Forms.Button();
             this.dgvTournamentResults = new System.Windows.Forms.DataGridView();
-            this.btnSaveChanges = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTournamentResults)).BeginInit();
             this.SuspendLayout();
             // 
@@ -58,7 +57,7 @@
             // 
             // btnExportToExcel
             // 
-            this.btnExportToExcel.Location = new System.Drawing.Point(506, 78);
+            this.btnExportToExcel.Location = new System.Drawing.Point(506, 24);
             this.btnExportToExcel.Name = "btnExportToExcel";
             this.btnExportToExcel.Size = new System.Drawing.Size(132, 36);
             this.btnExportToExcel.TabIndex = 2;
@@ -76,22 +75,11 @@
             this.dgvTournamentResults.TabIndex = 0;
             this.dgvTournamentResults.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTournamentResults_CellEnter);
             // 
-            // btnSaveChanges
-            // 
-            this.btnSaveChanges.Location = new System.Drawing.Point(506, 27);
-            this.btnSaveChanges.Name = "btnSaveChanges";
-            this.btnSaveChanges.Size = new System.Drawing.Size(132, 36);
-            this.btnSaveChanges.TabIndex = 1;
-            this.btnSaveChanges.Text = "Save Changes";
-            this.btnSaveChanges.UseVisualStyleBackColor = true;
-            this.btnSaveChanges.Click += new System.EventHandler(this.btnSaveChanges_Click);
-            // 
             // FrmTournamentResults
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(667, 588);
-            this.Controls.Add(this.btnSaveChanges);
+            this.ClientSize = new System.Drawing.Size(667, 590);
             this.Controls.Add(this.dgvTournamentResults);
             this.Controls.Add(this.btnExportToExcel);
             this.Controls.Add(this.lblTournamentName);
@@ -111,6 +99,5 @@
         private System.Windows.Forms.Label lblTournamentName;
         private System.Windows.Forms.Button btnExportToExcel;
         private System.Windows.Forms.DataGridView dgvTournamentResults;
-        private System.Windows.Forms.Button btnSaveChanges;
     }
 }

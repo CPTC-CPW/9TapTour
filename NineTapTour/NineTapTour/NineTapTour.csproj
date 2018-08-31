@@ -109,6 +109,14 @@
     <Compile Include="Calculations\Calculations.cs" />
     <Compile Include="Database\DatabaseManagement.cs" />
     <Compile Include="Database\ParticipantsDB.cs" />
+    <Compile Include="Migrations\201808162022459_NullableGameScores.cs" />
+    <Compile Include="Migrations\201808162022459_NullableGameScores.Designer.cs">
+      <DependentUpon>201808162022459_NullableGameScores.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201808302003521_ProgressivePotx.cs" />
+    <Compile Include="Migrations\201808302003521_ProgressivePotx.Designer.cs">
+      <DependentUpon>201808302003521_ProgressivePotx.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\ExcelMember.cs" />
     <Compile Include="Database\FormHelper.cs" />
     <Compile Include="Database\NineTapRegionDB.cs" />
@@ -326,6 +334,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803192318264_Initial.resx">
       <DependentUpon>201803192318264_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808162022459_NullableGameScores.resx">
+      <DependentUpon>201808162022459_NullableGameScores.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808302003521_ProgressivePotx.resx">
+      <DependentUpon>201808302003521_ProgressivePotx.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
