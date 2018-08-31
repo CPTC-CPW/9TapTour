@@ -108,7 +108,6 @@
   <ItemGroup>
     <Compile Include="Calculations\Calculations.cs" />
     <Compile Include="Database\DatabaseManagement.cs" />
-    <Compile Include="Database\Mappings.cs" />
     <Compile Include="Database\ParticipantsDB.cs" />
     <Compile Include="Models\ExcelMember.cs" />
     <Compile Include="Database\FormHelper.cs" />
