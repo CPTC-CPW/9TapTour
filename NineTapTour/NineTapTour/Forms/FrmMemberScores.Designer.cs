@@ -83,6 +83,9 @@
             this.grpTournamentFile = new System.Windows.Forms.GroupBox();
             this.cbxTourneyDropDown = new System.Windows.Forms.ComboBox();
             this.grpLeaders = new System.Windows.Forms.GroupBox();
+            this.lbxTopGameSeries = new System.Windows.Forms.ListBox();
+            this.lbxHighGameSC = new System.Windows.Forms.ListBox();
+            this.lbxHighGameHC = new System.Windows.Forms.ListBox();
             this.QBSBOX = new System.Windows.Forms.GroupBox();
             this.rdoSquad8Results = new System.Windows.Forms.RadioButton();
             this.rdoSquad7Results = new System.Windows.Forms.RadioButton();
@@ -110,9 +113,6 @@
             this.cbFilterSquad1 = new System.Windows.Forms.CheckBox();
             this.cbAllSquads = new System.Windows.Forms.CheckBox();
             this.lblHighGame = new System.Windows.Forms.Label();
-            this.richTextBox3 = new System.Windows.Forms.RichTextBox();
-            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.lblSeries = new System.Windows.Forms.Label();
             this.lblGameSenior = new System.Windows.Forms.Label();
             this.grpReports = new System.Windows.Forms.GroupBox();
@@ -795,6 +795,9 @@
             // 
             // grpLeaders
             // 
+            this.grpLeaders.Controls.Add(this.lbxTopGameSeries);
+            this.grpLeaders.Controls.Add(this.lbxHighGameSC);
+            this.grpLeaders.Controls.Add(this.lbxHighGameHC);
             this.grpLeaders.Controls.Add(this.QBSBOX);
             this.grpLeaders.Controls.Add(this.grpScoreType);
             this.grpLeaders.Controls.Add(this.label3);
@@ -802,9 +805,6 @@
             this.grpLeaders.Controls.Add(this.label1);
             this.grpLeaders.Controls.Add(this.GRPQBS1);
             this.grpLeaders.Controls.Add(this.lblHighGame);
-            this.grpLeaders.Controls.Add(this.richTextBox3);
-            this.grpLeaders.Controls.Add(this.richTextBox2);
-            this.grpLeaders.Controls.Add(this.richTextBox1);
             this.grpLeaders.Controls.Add(this.lblSeries);
             this.grpLeaders.Controls.Add(this.lblGameSenior);
             this.grpLeaders.Location = new System.Drawing.Point(396, 138);
@@ -813,6 +813,33 @@
             this.grpLeaders.TabIndex = 29;
             this.grpLeaders.TabStop = false;
             this.grpLeaders.Text = "Leaders";
+            // 
+            // lbxTopGameSeries
+            // 
+            this.lbxTopGameSeries.FormattingEnabled = true;
+            this.lbxTopGameSeries.Location = new System.Drawing.Point(5, 299);
+            this.lbxTopGameSeries.Name = "lbxTopGameSeries";
+            this.lbxTopGameSeries.Size = new System.Drawing.Size(337, 82);
+            this.lbxTopGameSeries.TabIndex = 50;
+            this.lbxTopGameSeries.Click += new System.EventHandler(this.lbxTopGameSeries_Click);
+            // 
+            // lbxHighGameSC
+            // 
+            this.lbxHighGameSC.FormattingEnabled = true;
+            this.lbxHighGameSC.Location = new System.Drawing.Point(6, 176);
+            this.lbxHighGameSC.Name = "lbxHighGameSC";
+            this.lbxHighGameSC.Size = new System.Drawing.Size(337, 82);
+            this.lbxHighGameSC.TabIndex = 49;
+            this.lbxHighGameSC.Click += new System.EventHandler(this.lbxHighGameSC_Click);
+            // 
+            // lbxHighGameHC
+            // 
+            this.lbxHighGameHC.FormattingEnabled = true;
+            this.lbxHighGameHC.Location = new System.Drawing.Point(6, 51);
+            this.lbxHighGameHC.Name = "lbxHighGameHC";
+            this.lbxHighGameHC.Size = new System.Drawing.Size(337, 82);
+            this.lbxHighGameHC.TabIndex = 48;
+            this.lbxHighGameHC.Click += new System.EventHandler(this.lbxHighGameHC_Click);
             // 
             // QBSBOX
             // 
@@ -971,7 +998,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(23, 281);
+            this.label3.Location = new System.Drawing.Point(8, 283);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(149, 13);
             this.label3.TabIndex = 7;
@@ -989,7 +1016,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(23, 158);
+            this.label1.Location = new System.Drawing.Point(6, 158);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(151, 13);
             this.label1.TabIndex = 5;
@@ -1122,42 +1149,14 @@
             this.lblHighGame.TabIndex = 4;
             this.lblHighGame.Text = "High Game Scratch";
             // 
-            // richTextBox3
-            // 
-            this.richTextBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBox3.Location = new System.Drawing.Point(26, 297);
-            this.richTextBox3.Name = "richTextBox3";
-            this.richTextBox3.Size = new System.Drawing.Size(317, 83);
-            this.richTextBox3.TabIndex = 22;
-            this.richTextBox3.TabStop = false;
-            this.richTextBox3.Text = "";
-            // 
-            // richTextBox2
-            // 
-            this.richTextBox2.Location = new System.Drawing.Point(26, 174);
-            this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.Size = new System.Drawing.Size(317, 86);
-            this.richTextBox2.TabIndex = 22;
-            this.richTextBox2.TabStop = false;
-            this.richTextBox2.Text = "";
-            // 
-            // richTextBox1
-            // 
-            this.richTextBox1.Location = new System.Drawing.Point(26, 51);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(317, 85);
-            this.richTextBox1.TabIndex = 22;
-            this.richTextBox1.TabStop = false;
-            this.richTextBox1.Text = "";
-            // 
             // lblSeries
             // 
             this.lblSeries.AutoSize = true;
-            this.lblSeries.Location = new System.Drawing.Point(23, 35);
+            this.lblSeries.Location = new System.Drawing.Point(6, 35);
             this.lblSeries.Name = "lblSeries";
-            this.lblSeries.Size = new System.Drawing.Size(149, 13);
+            this.lblSeries.Size = new System.Drawing.Size(148, 13);
             this.lblSeries.TabIndex = 1;
-            this.lblSeries.Text = "Series [Member No.] -- (Name)";
+            this.lblSeries.Text = "Game [Member No.] -- (Name)";
             // 
             // lblGameSenior
             // 
@@ -1555,9 +1554,6 @@
         private System.Windows.Forms.Button btnSeries;
         private System.Windows.Forms.Button btnGame;
         private System.Windows.Forms.Button btnSenior;
-        private System.Windows.Forms.RichTextBox richTextBox3;
-        private System.Windows.Forms.RichTextBox richTextBox2;
-        private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Label lblSeries;
         private System.Windows.Forms.Label lblGameSenior;
         private System.Windows.Forms.Label lblHighGame;
@@ -1623,6 +1619,9 @@
         private System.Windows.Forms.CheckBox cbFilterSquad2;
         private System.Windows.Forms.CheckBox cbFilterSquad1;
         private System.Windows.Forms.CheckBox cbAllSquads;
+        private System.Windows.Forms.ListBox lbxTopGameSeries;
+        private System.Windows.Forms.ListBox lbxHighGameSC;
+        private System.Windows.Forms.ListBox lbxHighGameHC;
         private System.Windows.Forms.Button btnLastRecord;
         private System.Windows.Forms.Button btnFirstRecord;
     }

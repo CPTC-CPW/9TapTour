@@ -10,6 +10,8 @@ using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Data.Entity.Core.Objects;
+using System.Linq.Dynamic;
+using Bogus.Extensions;
 using NineTapTour.Models;
 using NineTapTour.Models.ViewModels;
 
@@ -1246,9 +1248,9 @@ namespace NineTapTour.Forms
         private void Clear()
         {
             txtMemberNum.Clear();
-            richTextBox1.Clear();
-            richTextBox2.Clear();
-            richTextBox3.Clear();
+//            richTextBox1.Clear();
+//            richTextBox2.Clear();
+//            richTextBox3.Clear();
         }
 
         /// <summary>
@@ -1707,12 +1709,6 @@ namespace NineTapTour.Forms
             }
         }
 
-
-
-
-
-
-
         /// <summary>
         /// Clears scratch scores and scratch and handicap totals
         /// </summary>
@@ -1749,519 +1745,600 @@ namespace NineTapTour.Forms
             Refresh(true, QBSNumber);
         }
 
+        List<TopScores> listOfTopScore = new List<TopScores>();
+        IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
+
         /// <summary>
         /// pass true if you are changing the radio buttons and only want to refresh the bottom box.
         /// </summary>
         /// <param name="seriesChange"></param>
-
-        List<TopScores> listOfTopScore = new List<TopScores>();
-        IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
         public void Refresh(bool seriesChange, int qbsNumber)
         {
             var scores = new List<MemberScores>();
             listOfTopScore.Clear();
-            // DEV NOTE: The text generated for the boxes in this is strange and has tabs that the 
-            // code doesn't seem to be writing as far as I can tell.
-            // I think a bug fixer should look at this some time and try to see why it's happening
             try
             {
                 // Function scope data
                 NineTapDb db = new NineTapDb();
+
+                // Selects current tournament id
                 int selectedTourney = selectedTournament.Id;
 
+                // gets list of all particiants in current tournament
                 var listOfParticipants = ParticipantsDB.GetParticipants(selectedTournament.Id);
 
+                // 
+                var topScores = listOfParticipants.GroupBy(p => p.Member.Id).Select(pg => pg.Max()).ToList();
+
+                //TAKES A TOURNAMENT ID AND SQUAD NUMBER AND FILTERS FOR A LIST OF PARTICIPANTS.
                 if (qbsNumber > 0 && qbsNumber <= 8)
-                    //TAKES A TOURNAMENT ID AND SQUAD NUMBER AND FILTERS FOR A LIST OF PARTICIPANTS.
                     listOfParticipants = listOfParticipants.Where(p => p.Squad == qbsNumber).ToList();
 
-                else if(howManySquadsCanBeFiltered.Count > 0 && QBSNumber == 9)
+                else if (howManySquadsCanBeFiltered.Count > 0 && QBSNumber == 9)
                     //filters out each squad
                     //take the list of participants where => if the squad number equals to any of the filtered numbers.
-                    listOfParticipants = listOfParticipants.Where(p => howManySquadsCanBeFiltered.Any(h => h == p.Squad)).ToList();
+                    listOfParticipants = listOfParticipants
+                        .Where(p => howManySquadsCanBeFiltered.Any(h => h == p.Squad)).ToList();
                 try
                 {
-                    int id = 0;
-                    int count = 0;
+                    var participantsGameViewModels = new List<ParticipantsGameViewModel>();
+
+                    var topParticipantGameViewModels = new List<TopParticipantGameViewModel>();
+
+                    // makes list of ParticipantsGameViewModel which will be used to populate scratch game and handicap game
+                    // listboxes which only allow 1 top game per person per squad
                     foreach (Participant currParticipant in listOfParticipants)
                     {
-                        
+                        // creates temp variable for PaticipantsGameViewModel to store necessary info for each person 
+                        ParticipantsGameViewModel currTopScoreViewModel =
+                            new ParticipantsGameViewModel(currParticipant.Member.Id, currParticipant.Member.FirstName, currParticipant.Member.LastName, currParticipant.Squad,
+                                currParticipant.Game.AllGameScores().Max(), currParticipant.Member.Handicap, currParticipant.Member.Bonus);
+                        // adds person to list<ParticipantsGameViewModel>
+                        participantsGameViewModels.Add(currTopScoreViewModel);
+
+                    }
+
+                    foreach (Participant currParticipant in listOfParticipants)
+                    {
                         //Gets all of the game scores that are valid (that have a value)
-                        var allScoresWithOutNullGames = currParticipant.Game.allGameScores().Where(g => g.HasValue);
+                        var allScoresWithOutNullGames = currParticipant.Game.AllGameScores().Where(g => g.HasValue);
 
                         //totals all games with out nulls/valid score
                         int? totalScore = allScoresWithOutNullGames.Sum();
+
                         //Sets a collection of all the games to a new variable.
                         var top4Games = allScoresWithOutNullGames;
 
                         //Sets a collection of all the games using the 3 out of 4 ruleset
                         var top3Games = TournamentStats.GetTop3OutOf4(top4Games.ToList());
+
+                        TopParticipantGameViewModel currTopScoreViewModel =
+                            new TopParticipantGameViewModel(currParticipant.Member.Id, currParticipant.Member.FirstName,
+                                currParticipant.Member.LastName, 0, currParticipant.Game.AllGameScores().Sum().Value,
+                                top3Games.Sum(),
+                                top3Games.Sum() + (3 * currParticipant.Member.Handicap) +
+                                (3 * currParticipant.Game.Bonus),
+                                currParticipant.Game.Game1, currParticipant.Game.Game2, currParticipant.Game.Game3,
+                                currParticipant.Game.Game4,
+                                currParticipant.Game.Handicap, currParticipant.Game.Bonus.Value,
+                                currParticipant.Game.Id, currParticipant.Squad);
+                        topParticipantGameViewModels.Add(currTopScoreViewModel);
+
+                    }
+                    #region commented out code
+
+
+
+
+                    //
+                    //                        TopScores temp = new TopScores();
+                    //                        listOfTopScore.Add(temp);
+                    //
+                    //                        // set id to current member
+                    //                        id = currParticipant.Member.Id;
+                    //
+                    //                        // Populates info                         
+                    //                        listOfTopScore[count].FirstName = currParticipant.Member.FirstName;
+                    //                        listOfTopScore[count].LastName = currParticipant.Member.LastName;
+                    //                        listOfTopScore[count].Game1 = currParticipant.Game.Game1;
+                    //                        listOfTopScore[count].Game2 = currParticipant.Game.Game2;
+                    //                        listOfTopScore[count].Game3 = currParticipant.Game.Game3;
+                    //                        listOfTopScore[count].Game4 = currParticipant.Game.Game4;
+                    //                        listOfTopScore[count].GameID = currParticipant.Game.Id;
+                    //                        listOfTopScore[count].Handicap = currParticipant.Member.Handicap;
+                    //                        listOfTopScore[count].memberID = id;
+                    //                        //todo: change this as this is uneedeed
+                    //                        try
+                    //                        {
+                    //                            listOfTopScore[count].Bonus = currParticipant.Member.Bonus;
+                    //                        }
+                    //                        catch
+                    //                        {
+                    //                            listOfTopScore[count].Bonus = 0;
+                    //                        }
+                    //
+                    //                        topScores[count].Game.TotalScore;
+                    //                        listOfTopScore[count].ScratchTotal = totalScore;
+                    //                        listOfTopScore[count].HandicapScore = totalScore + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);//TODO: make "game count flexible"
+                    //                        listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
+                    //                        listOfTopScore[count].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * currParticipant.Member.Handicap) + (3 * listOfTopScore[count].Bonus);
+                    //                        count++;
+
+                    #endregion
+
+                    //display data in the list boxes
+
+                    // orders list by highest handicap score game to lowest
+                    participantsGameViewModels = participantsGameViewModels
+                        .OrderByDescending(t => t.HighScore + t.Handicap + t.Bonus).ToList();
+                    // links handicap score listbox to list
+                    lbxHighGameHC.DataSource = participantsGameViewModels;
+                    // displays specific tostring for displaying info dealing with high handicap score game
+                    lbxHighGameHC.DisplayMember = "HandicapScoreToString";
+
+                    // orders list by highest scratch score game to lowest
+                    participantsGameViewModels = participantsGameViewModels.OrderByDescending(t => t.HighScore).ToList();
+                    // links scratch score listbox to list
+                    lbxHighGameSC.DataSource = participantsGameViewModels;
+                    // displays specific tostring for displaying info dealing with high scratch score game
+                    lbxHighGameSC.DisplayMember = "ScratchScoreToString";
+
+                    // for high games series listbox (third listbox)
+                    // if scratch score radio button is checked
+                    if (rdoScratchScore.Checked)
+                    {
+                        // orders list by highest scoring scratch score total to lowest
+                        topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.ScratchTotal).ToList();
                         
-                        // If a member decides to play in multiple squads for the current tournament.
-                        //this will overwrite their previous score.
-                        if (currParticipant.Member.Id == id)
-                        {
-                            //This will handle setting their topScore if it is higher than the previous high score
-                            if (totalScore > listOfTopScore[count - 1].ScratchTotal)
-                            {
-                                listOfTopScore[count - 1].ScratchTotal = totalScore;
-                                listOfTopScore[count - 1].HandicapScore = totalScore + (listOfTopScore[count - 1].Handicap * 4) + (listOfTopScore[count - 1].Bonus * 4);
-                                listOfTopScore[count - 1].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
-                                listOfTopScore[count - 1].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * currParticipant.Member.Handicap) + (3 * listOfTopScore[count - 1].Bonus);
-                                listOfTopScore[count - 1].Game1 = currParticipant.Game.Game1;
-                                listOfTopScore[count - 1].Game2 = currParticipant.Game.Game2;
-                                listOfTopScore[count - 1].Game3 = currParticipant.Game.Game3;
-                                listOfTopScore[count - 1].Game4 = currParticipant.Game.Game4;
-                                listOfTopScore[count - 1].GameID = currParticipant.Game.Id;
-                            }
-                        }
-                        // If the next member in the for loop is different from the previous member.
-                        else
-                        {
-
-                                TopScores temp = new TopScores();
-                                listOfTopScore.Add(temp);
-
-                            // set id to current member
-                            id = currParticipant.Member.Id;
-
-                            // Populates info                         
-                            listOfTopScore[count].FirstName = currParticipant.Member.FirstName;
-                            listOfTopScore[count].LastName = currParticipant.Member.LastName;
-                            listOfTopScore[count].Game1 = currParticipant.Game.Game1;
-                            listOfTopScore[count].Game2 = currParticipant.Game.Game2;
-                            listOfTopScore[count].Game3 = currParticipant.Game.Game3;
-                            listOfTopScore[count].Game4 = currParticipant.Game.Game4;
-                            listOfTopScore[count].GameID = currParticipant.Game.Id;
-                            listOfTopScore[count].Handicap = currParticipant.Member.Handicap;
-                            listOfTopScore[count].memberID = id;
-                            //todo: change this as this is uneedeed
-                            try
-                            {
-                                listOfTopScore[count].Bonus = currParticipant.Member.Bonus;
-                            }
-                            catch
-                            {
-                                listOfTopScore[count].Bonus = 0;
-                            }
-                            listOfTopScore[count].ScratchTotal = totalScore;
-                            listOfTopScore[count].HandicapScore = totalScore + (listOfTopScore[count].Handicap * 4) + (listOfTopScore[count].Bonus * 4);//TODO: make "game count flexible"
-                            listOfTopScore[count].Top3ScratchScore = top3Games[0] + top3Games[1] + top3Games[2];
-                            listOfTopScore[count].Top3HandiScores = top3Games[0] + top3Games[1] + top3Games[2] + (3 * currParticipant.Member.Handicap) + (3 * listOfTopScore[count].Bonus);
-                            count++;
-                        }
-                        
+                        // links game series listbox to list
+                        lbxTopGameSeries.DataSource = topParticipantGameViewModels;
+                        //displays specific tostring for displaying info dealing with scratch score total
+                        lbxTopGameSeries.DisplayMember = "ScratchTotalToString";
+                    }
+                    // if handicap score radio button is checked
+                    else if (rdoHandicapScore.Checked)
+                    {
+                        // orders list by highest scoring handicap score total to lowest
+                        topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.HandicapScore).ToList();
+                        // links game series listbox to list
+                        lbxTopGameSeries.DataSource = topParticipantGameViewModels;
+                        // displays specific tostring for displaying info dealing with handicap score total
+                        lbxTopGameSeries.DisplayMember = "HandicapTotalToString";
                     }
                 }
                 catch (SqlException)
                 {
                     //what is the 3rd box?
-                    listOfTopScore.Clear(); //filter out if there is no one on the squad yet so the 3rd box won't get populated
+                    listOfTopScore
+                        .Clear(); //filter out if there is no one on the squad yet so the 3rd box won't get populated
                 }
+                #region COMMENTED CODE
 
-                overallListOfTopScores = listOfTopScore;
-                // Top 5 LINQ query
-                var top5 = db.Participants.Include(b => b.Member)
-                .Include(b => b.Game)
-                .Where(b => b.Tournament.Id == selectedTourney);
 
-                #region Populates 1st Box
-                // This function combines the former refresh events into a single function, and since they all used the same variable names I just put
-                // their old data in a scope block so they could be reused
-                if (!seriesChange)
-                {
-                    richTextBox1.Clear();
-                    richTextBox1.Font = new Font(FontFamily.GenericMonospace, richTextBox1.Font.Size);
-                    richTextBox1.Text = ("#" + "\t" + "Name" + "\t\t\t" + "HighScore" + "\n");
-                    
-                    if (QBSNumber == 0)
-                    {
 
-                        var temp = (from g in top5
-                                    orderby g.Game.Game1
-                                    select new { g.Game.Game1, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
 
-                        var temp2 = (from g in top5
-                                     orderby g.Game.Game2
-                                     select new { g.Game.Game2, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+                //                overallListOfTopScores = listOfTopScore;
+                //                // Top 5 LINQ query
+                //                var top5 = db.Participants.Include(b => b.Member)
+                //                .Include(b => b.Game)
+                //                .Where(b => b.Tournament.Id == selectedTourney);
+                //
+                //                #region Populates 1st Box
+                //                // This function combines the former refresh events into a single function, and since they all used the same variable names I just put
+                //                // their old data in a scope block so they could be reused
+                //                if (!seriesChange)
+                //                {
+                //                    richTextBox1.Clear();
+                //                    richTextBox1.Font = new Font(FontFamily.GenericMonospace, richTextBox1.Font.Size);
+                //                    richTextBox1.Text = ("#" + "\t" + "Name" + "\t\t\t" + "HighScore" + "\n");
+                //                    
+                //                    if (QBSNumber == 0)
+                //                    {
+                //
+                //                        var temp = (from g in top5
+                //                                    orderby g.Game.Game1
+                //                                    select new { g.Game.Game1, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+                //
+                //                        var temp2 = (from g in top5
+                //                                     orderby g.Game.Game2
+                //                                     select new { g.Game.Game2, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+                //
+                //                        var temp3 = (from g in top5
+                //                                     orderby g.Game.Game3
+                //                                     select new { g.Game.Game3, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+                //                        var temp4 = (from g in top5
+                //                                     orderby g.Game.Game4
+                //                                     select new { g.Game.Game4, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+                //                        foreach (var s in temp)
+                //                        {
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game1, s.Handicap) });
+                //                        }
+                //                        foreach (var s in temp2)
+                //                        {
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game2, s.Handicap) });
+                //                        }
+                //                        foreach (var s in temp3)
+                //                        {
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game3, s.Handicap) });
+                //                        }
+                //                        foreach (var s in temp4)
+                //                        {
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game4, s.Handicap) });
+                //                        }
+                //                        scores.Sort(scoreComparer);
+                //                        scores.Reverse();
+                //                        scores = scores.ToList();
+                //                        for (int i = 0; i < scores.Count(); i++)
+                //                        {
+                //                            int firstNameLength = 0;
+                //                            int lastNameLength = 0;
+                //                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
+                //                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
+                //                            
+                //                            richTextBox1.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var temp = (from g in top5
+                //                                    orderby g.Game.Game1
+                //                                    where g.Squad == QBSNumber
+                //                                    select new { g.Game.Game1, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+                //                        var temp2 = (from g in top5
+                //                                     orderby g.Game.Game2
+                //                                     where g.Squad == QBSNumber
+                //                                     select new { g.Game.Game2, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+                //                        var temp3 = (from g in top5
+                //                                     orderby g.Game.Game3
+                //                                     where g.Squad == QBSNumber
+                //                                     select new { g.Game.Game3, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+                //                        var temp4 = (from g in top5
+                //                                     orderby g.Game.Game4
+                //                                     where g.Squad == QBSNumber
+                //                                     select new { g.Game.Game4, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
+                //                        foreach (var s in temp)
+                //                        {
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game1, s.Handicap) });
+                //                        }
+                //                        foreach (var s in temp2)
+                //                        {
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game2, s.Handicap) });
+                //                        }
+                //                        foreach (var s in temp3)
+                //                        {
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game3, s.Handicap) });
+                //                        }
+                //                        foreach (var s in temp4)
+                //                        {
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game4, s.Handicap) });
+                //                        }
+                //                        scores.Sort(scoreComparer);
+                //                        scores.Reverse();
+                //                        scores = scores.ToList();
+                //                        for (int i = 0; i < scores.Count(); i++)
+                //                        {
+                //                            int firstNameLength = 0;
+                //                            int lastNameLength = 0;
+                //                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
+                //                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
+                //
+                //                            richTextBox1.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
+                //                        }
+                //                    }
+                //                }
+                //                #endregion
+                //
+                //                #region Populates 2nd Box
+                //                // Do the 2nd box
+                //                if (!seriesChange)
+                //                {
+                //
+                //                    richTextBox2.Clear();
+                //                    richTextBox2.Font = new Font(FontFamily.GenericMonospace, richTextBox2.Font.Size);
+                //                    richTextBox2.Text = ("#" + "\t" + "Name" + "\t\t\t" + "HighScore" + "\n");
+                //                    scores.Clear();
+                //
+                //                    if (QBSNumber == 0)
+                //                    {
+                //
+                //                        var temp = (from g in top5
+                //                                    orderby g.Game.Game1
+                //                                    select new { g.Game.Game1, g.Member.FirstName, g.Member.LastName });
+                //                        var temp2 = (from g in top5
+                //                                     orderby g.Game.Game2
+                //                                     select new { g.Game.Game2, g.Member.FirstName, g.Member.LastName });
+                //                        var temp3 = (from g in top5
+                //                                     orderby g.Game.Game3
+                //                                     select new { g.Game.Game3, g.Member.FirstName, g.Member.LastName });
+                //                        var temp4 = (from g in top5
+                //                                     orderby g.Game.Game4
+                //                                     select new { g.Game.Game4, g.Member.FirstName, g.Member.LastName });
+                //                        foreach (var s in temp)
+                //                        {
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game1 });
+                //                        }
+                //                        foreach (var s in temp2)
+                //                        {
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game2 });
+                //                        }
+                //                        foreach (var s in temp3)
+                //                        {
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game3 });
+                //                        }
+                //                        foreach (var s in temp4)
+                //                        {
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game4 });
+                //                        }
+                //                        scores.Sort(scoreComparer);
+                //                        scores.Reverse();
+                //                        scores = scores.ToList();
+                //                        for (int i = 0; i < scores.Count(); i++)
+                //                        {
+                //                            int firstNameLength = 0;
+                //                            int lastNameLength = 0;
+                //                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
+                //                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
+                //                            richTextBox2.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        var temp = (from g in top5
+                //                                    orderby g.Game.Game1
+                //                                    where g.Squad == QBSNumber
+                //                                    select new { g.Game.Game1, g.Member.FirstName, g.Member.LastName });
+                //                        var temp2 = (from g in top5
+                //                                     orderby g.Game.Game2
+                //                                     where g.Squad == QBSNumber
+                //                                     select new { g.Game.Game2, g.Member.FirstName, g.Member.LastName });
+                //                        var temp3 = (from g in top5
+                //                                     orderby g.Game.Game3
+                //                                     where g.Squad == QBSNumber
+                //                                     select new { g.Game.Game3, g.Member.FirstName, g.Member.LastName });
+                //                        var temp4 = (from g in top5
+                //                                     orderby g.Game.Game4
+                //                                     where g.Squad == QBSNumber
+                //                                     select new { g.Game.Game4, g.Member.FirstName, g.Member.LastName });
+                //                        foreach (var s in temp)
+                //                        {
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game1 });
+                //                        }
+                //                        foreach (var s in temp2)
+                //                        {
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game2 });
+                //                        }
+                //                        foreach (var s in temp3)
+                //                        {
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game3 });
+                //                        }
+                //                        foreach (var s in temp4)
+                //                        {
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game4 });
+                //                        }
+                //                        scores.Sort(scoreComparer);
+                //                        scores.Reverse();
+                //                        scores = scores.ToList();
+                //                        for (int i = 0; i < scores.Count(); i++)
+                //                        {
+                //                            int firstNameLength = 0;
+                //                            int lastNameLength = 0;
+                //                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
+                //                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
+                //                            //richTextBox2.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
+                //                            //                        + "\t" + String.Format("{0, -5}", scores[i].Score + " " + "\n"));
+                //                            richTextBox2.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
+                //
+                //                        }
+                //                    }
+                //                }
+                //                #endregion
+                //
+                //                #region Populates 3rd Box
+                //                if (!selectedTournament.ThreeOutOf4)
+                //                {
+                //                    /////////////////////////////////
+                //                    richTextBox3.Clear();
+                //                    richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
+                //                    richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
+                //                    scores.Clear();
+                //
+                //                    //populate total score
+                //                    if (rdoScratchScore.Checked)
+                //                    {
+                //                        foreach (var s in listOfTopScore)
+                //                        {
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.allGameScores().Where(sc => sc.HasValue).Sum(), MemberId = s.memberID });
+                //                        }
+                //
+                //                        scores.Sort(scoreComparer);
+                //                        scores.Reverse();
+                //                        scores = scores.ToList();
+                //                        for (int i = 0; i < scores.Count(); i++)
+                //                        {
+                //                            int firstNameLength = 0;
+                //                            int lastNameLength = 0;
+                //                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
+                //                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
+                //
+                //                            CalculatePlaceStanding(scores);
+                //
+                //                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
+                //                        }
+                //                    }
+                //                    else if (rdoHandicapScore.Checked)
+                //                    {
+                //                        foreach (var s in listOfTopScore)
+                //                        {
+                //                            #region conditions for highest handicap scores
+                //                            
+                //                            #endregion
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.allGameScores().Sum() + (s.allGameScores().Count * s.Handicap) + (s.allGameScores().Count * s.Bonus), MemberId = s.memberID });
+                //                        }
+                //                        scores.Sort(scoreComparer);
+                //                        scores.Reverse();
+                //                        scores = scores.ToList();
+                //                        for (int i = 0; i < scores.Count(); i++)
+                //                        {
+                //                            int firstNameLength = 0;
+                //                            int lastNameLength = 0;
+                //                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
+                //                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
+                //
+                //                            CalculatePlaceStanding(scores);
+                //
+                //                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
+                //                        }
+                //                    }
+                //                }
+                //                #endregion
+                //
+                //                #region Three Out Of 4
+                //                /////////////////////////////////////////////////////
+                //                // Executes if tournament selected is 3 Out of 4 ///
+                //                /////////////////////////////////////////////////////
+                //                if (selectedTournament.ThreeOutOf4)
+                //                {
+                //                    /////////////////////////////////
+                //                    richTextBox3.Clear();
+                //                    richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
+                //                    richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t\t" + "High Series" + "\n");
+                //                    scores.Clear();
+                //
+                //                    // List to get top 3 scores   
+                //                    List<int> listOfScores = new List<int>();
+                //
+                //                    if (rdoScratchScore.Checked)
+                //                    {
+                //                        foreach (var s in listOfTopScore)
+                //                        {
+                //                            int one = Convert.ToInt32(s.Game1);
+                //                            int two = Convert.ToInt32(s.Game2);
+                //                            int three = Convert.ToInt32(s.Game3);
+                //                            int four = Convert.ToInt32(s.Game4);
+                //                            listOfScores.Add(one);
+                //                            listOfScores.Add(two);
+                //                            listOfScores.Add(three);
+                //                            listOfScores.Add(four);
+                //                            listOfScores.Sort();
+                //                            listOfScores.Reverse();
+                //
+                //                            //*************************
+                //                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = listOfScores[0] + listOfScores[1] + listOfScores[2] });
+                //                            listOfScores.Clear();
+                //                        }
+                //
+                //                        scores.Sort(scoreComparer);
+                //                        scores.Reverse();
+                //                        scores = scores.ToList();
+                //                        for (int i = 0; i < scores.Count(); i++)
+                //                        {
+                //                            int firstNameLength = 0;
+                //                            int lastNameLength = 0;
+                //                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
+                //                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
+                //
+                //                            CalculatePlaceStanding(scores);
+                //
+                //                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
+                //                        }
+                //                    }
+                //                    else if (rdoHandicapScore.Checked)
+                //                    {
+                //                        foreach (var i in listOfTopScore)
+                //                        {
+                //                            #region conditions for highest handicap scores
+                //
+                //                            #endregion
+                //                            //***********************
+                //                            int one = Convert.ToInt32(i.Game1 + i.Handicap + i.Bonus);
+                //                            int two = Convert.ToInt32(i.Game2 + i.Handicap + i.Bonus);
+                //                            int three = Convert.ToInt32(i.Game3 + i.Handicap + i.Bonus);
+                //                            int four = Convert.ToInt32(i.Game4 + i.Handicap + i.Bonus);
+                //                            listOfScores.Add(one);
+                //                            listOfScores.Add(two);
+                //                            listOfScores.Add(three);
+                //                            listOfScores.Add(four);
+                //                            listOfScores.Sort();
+                //                            listOfScores.Reverse();
+                //
+                //                            //*************************
+                //                            scores.Add(new MemberScores { FirstName = i.FirstName, LastName = i.LastName, Score = listOfScores[0] + listOfScores[1] + listOfScores[2] });
+                //                            listOfScores.Clear();
+                //                        }
+                //                        scores.Sort(scoreComparer);
+                //                        scores.Reverse();
+                //                        scores = scores.ToList();
+                //                        for (int i = 0; i < scores.Count(); i++)
+                //                        {
+                //                            int firstNameLength = 0;
+                //                            int lastNameLength = 0;
+                //                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
+                //                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
+                //
+                //                            CalculatePlaceStanding(scores);
+                //
+                //                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
+                //                        }
+                //                    }
+                //                }
+                //                #endregion 
 
-                        var temp3 = (from g in top5
-                                     orderby g.Game.Game3
-                                     select new { g.Game.Game3, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
-                        var temp4 = (from g in top5
-                                     orderby g.Game.Game4
-                                     select new { g.Game.Game4, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
-                        foreach (var s in temp)
-                        {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game1, s.Handicap) });
-                        }
-                        foreach (var s in temp2)
-                        {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game2, s.Handicap) });
-                        }
-                        foreach (var s in temp3)
-                        {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game3, s.Handicap) });
-                        }
-                        foreach (var s in temp4)
-                        {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game4, s.Handicap) });
-                        }
-                        scores.Sort(scoreComparer);
-                        scores.Reverse();
-                        scores = scores.ToList();
-                        for (int i = 0; i < scores.Count(); i++)
-                        {
-                            int firstNameLength = 0;
-                            int lastNameLength = 0;
-                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
-                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
-                            
-                            richTextBox1.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
-                        }
-                    }
-                    else
-                    {
-                        var temp = (from g in top5
-                                    orderby g.Game.Game1
-                                    where g.Squad == QBSNumber
-                                    select new { g.Game.Game1, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
-                        var temp2 = (from g in top5
-                                     orderby g.Game.Game2
-                                     where g.Squad == QBSNumber
-                                     select new { g.Game.Game2, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
-                        var temp3 = (from g in top5
-                                     orderby g.Game.Game3
-                                     where g.Squad == QBSNumber
-                                     select new { g.Game.Game3, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
-                        var temp4 = (from g in top5
-                                     orderby g.Game.Game4
-                                     where g.Squad == QBSNumber
-                                     select new { g.Game.Game4, g.Game.Handicap, g.Member.FirstName, g.Member.LastName });
-                        foreach (var s in temp)
-                        {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game1, s.Handicap) });
-                        }
-                        foreach (var s in temp2)
-                        {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game2, s.Handicap) });
-                        }
-                        foreach (var s in temp3)
-                        {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game3, s.Handicap) });
-                        }
-                        foreach (var s in temp4)
-                        {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = getScratchScore(s.Game4, s.Handicap) });
-                        }
-                        scores.Sort(scoreComparer);
-                        scores.Reverse();
-                        scores = scores.ToList();
-                        for (int i = 0; i < scores.Count(); i++)
-                        {
-                            int firstNameLength = 0;
-                            int lastNameLength = 0;
-                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
-                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
-
-                            richTextBox1.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
-                        }
-                    }
-                }
                 #endregion
-
-                #region Populates 2nd Box
-                // Do the 2nd box
-                if (!seriesChange)
+                // Assign Place Standing from scores to overallListOfTopScores
+                for (int i = 0; i < overallListOfTopScores.Count; i++)
                 {
-
-                    richTextBox2.Clear();
-                    richTextBox2.Font = new Font(FontFamily.GenericMonospace, richTextBox2.Font.Size);
-                    richTextBox2.Text = ("#" + "\t" + "Name" + "\t\t\t" + "HighScore" + "\n");
-                    scores.Clear();
-
-                    if (QBSNumber == 0)
+                    foreach (var item in scores)
                     {
-
-                        var temp = (from g in top5
-                                    orderby g.Game.Game1
-                                    select new { g.Game.Game1, g.Member.FirstName, g.Member.LastName });
-                        var temp2 = (from g in top5
-                                     orderby g.Game.Game2
-                                     select new { g.Game.Game2, g.Member.FirstName, g.Member.LastName });
-                        var temp3 = (from g in top5
-                                     orderby g.Game.Game3
-                                     select new { g.Game.Game3, g.Member.FirstName, g.Member.LastName });
-                        var temp4 = (from g in top5
-                                     orderby g.Game.Game4
-                                     select new { g.Game.Game4, g.Member.FirstName, g.Member.LastName });
-                        foreach (var s in temp)
+                        if (overallListOfTopScores[i].memberID == item.MemberId)
                         {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game1 });
-                        }
-                        foreach (var s in temp2)
-                        {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game2 });
-                        }
-                        foreach (var s in temp3)
-                        {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game3 });
-                        }
-                        foreach (var s in temp4)
-                        {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game4 });
-                        }
-                        scores.Sort(scoreComparer);
-                        scores.Reverse();
-                        scores = scores.ToList();
-                        for (int i = 0; i < scores.Count(); i++)
-                        {
-                            int firstNameLength = 0;
-                            int lastNameLength = 0;
-                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
-                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
-                            richTextBox2.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
-                        }
-                    }
-                    else
-                    {
-                        var temp = (from g in top5
-                                    orderby g.Game.Game1
-                                    where g.Squad == QBSNumber
-                                    select new { g.Game.Game1, g.Member.FirstName, g.Member.LastName });
-                        var temp2 = (from g in top5
-                                     orderby g.Game.Game2
-                                     where g.Squad == QBSNumber
-                                     select new { g.Game.Game2, g.Member.FirstName, g.Member.LastName });
-                        var temp3 = (from g in top5
-                                     orderby g.Game.Game3
-                                     where g.Squad == QBSNumber
-                                     select new { g.Game.Game3, g.Member.FirstName, g.Member.LastName });
-                        var temp4 = (from g in top5
-                                     orderby g.Game.Game4
-                                     where g.Squad == QBSNumber
-                                     select new { g.Game.Game4, g.Member.FirstName, g.Member.LastName });
-                        foreach (var s in temp)
-                        {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game1 });
-                        }
-                        foreach (var s in temp2)
-                        {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game2 });
-                        }
-                        foreach (var s in temp3)
-                        {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game3 });
-                        }
-                        foreach (var s in temp4)
-                        {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Game4 });
-                        }
-                        scores.Sort(scoreComparer);
-                        scores.Reverse();
-                        scores = scores.ToList();
-                        for (int i = 0; i < scores.Count(); i++)
-                        {
-                            int firstNameLength = 0;
-                            int lastNameLength = 0;
-                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
-                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
-                            //richTextBox2.AppendText((i + 1).ToString() + "\t" + String.Format("{0, -20}", scores[i].FirstName + " " + scores[i].LastName)
-                            //                        + "\t" + String.Format("{0, -5}", scores[i].Score + " " + "\n"));
-                            richTextBox2.AppendText($"{i + 1}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
-
+                            overallListOfTopScores[i].Placing = item.placing;
                         }
                     }
                 }
-                #endregion
 
-                #region Populates 3rd Box
-                if (!selectedTournament.ThreeOutOf4)
-                {
-                    /////////////////////////////////
-                    richTextBox3.Clear();
-                    richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
-                    richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t" + "High Series" + "\n");
-                    scores.Clear();
-
-                    //populate total score
-                    if (rdoScratchScore.Checked)
-                    {
-                        foreach (var s in listOfTopScore)
-                        {
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.allGameScores().Where(sc => sc.HasValue).Sum(), MemberId = s.memberID });
-                        }
-
-                        scores.Sort(scoreComparer);
-                        scores.Reverse();
-                        scores = scores.ToList();
-                        for (int i = 0; i < scores.Count(); i++)
-                        {
-                            int firstNameLength = 0;
-                            int lastNameLength = 0;
-                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
-                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
-
-                            CalculatePlaceStanding(scores);
-
-                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
-                        }
-                    }
-                    else if (rdoHandicapScore.Checked)
-                    {
-                        foreach (var s in listOfTopScore)
-                        {
-                            #region conditions for highest handicap scores
-                            
-                            #endregion
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.allGameScores().Sum() + (s.allGameScores().Count * s.Handicap) + (s.allGameScores().Count * s.Bonus), MemberId = s.memberID });
-                        }
-                        scores.Sort(scoreComparer);
-                        scores.Reverse();
-                        scores = scores.ToList();
-                        for (int i = 0; i < scores.Count(); i++)
-                        {
-                            int firstNameLength = 0;
-                            int lastNameLength = 0;
-                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
-                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
-
-                            CalculatePlaceStanding(scores);
-
-                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
-                        }
-                    }
-                }
-                #endregion
-
-                #region Three Out Of 4
-                /////////////////////////////////////////////////////
-                // Executes if tournament selected is 3 Out of 4 ///
-                /////////////////////////////////////////////////////
-                if (selectedTournament.ThreeOutOf4)
-                {
-                    /////////////////////////////////
-                    richTextBox3.Clear();
-                    richTextBox3.Font = new Font(FontFamily.GenericMonospace, richTextBox3.Font.Size);
-                    richTextBox3.Text = ("#" + "\t" + "Name" + "\t\t\t" + "High Series" + "\n");
-                    scores.Clear();
-
-                    // List to get top 3 scores   
-                    List<int> listOfScores = new List<int>();
-
-                    if (rdoScratchScore.Checked)
-                    {
-                        foreach (var s in listOfTopScore)
-                        {
-                            int one = Convert.ToInt32(s.Game1);
-                            int two = Convert.ToInt32(s.Game2);
-                            int three = Convert.ToInt32(s.Game3);
-                            int four = Convert.ToInt32(s.Game4);
-                            listOfScores.Add(one);
-                            listOfScores.Add(two);
-                            listOfScores.Add(three);
-                            listOfScores.Add(four);
-                            listOfScores.Sort();
-                            listOfScores.Reverse();
-
-                            //*************************
-                            scores.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = listOfScores[0] + listOfScores[1] + listOfScores[2] });
-                            listOfScores.Clear();
-                        }
-
-                        scores.Sort(scoreComparer);
-                        scores.Reverse();
-                        scores = scores.ToList();
-                        for (int i = 0; i < scores.Count(); i++)
-                        {
-                            int firstNameLength = 0;
-                            int lastNameLength = 0;
-                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
-                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
-
-                            CalculatePlaceStanding(scores);
-
-                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
-                        }
-                    }
-                    else if (rdoHandicapScore.Checked)
-                    {
-                        foreach (var i in listOfTopScore)
-                        {
-                            #region conditions for highest handicap scores
-
-                            #endregion
-                            //***********************
-                            int one = Convert.ToInt32(i.Game1 + i.Handicap + i.Bonus);
-                            int two = Convert.ToInt32(i.Game2 + i.Handicap + i.Bonus);
-                            int three = Convert.ToInt32(i.Game3 + i.Handicap + i.Bonus);
-                            int four = Convert.ToInt32(i.Game4 + i.Handicap + i.Bonus);
-                            listOfScores.Add(one);
-                            listOfScores.Add(two);
-                            listOfScores.Add(three);
-                            listOfScores.Add(four);
-                            listOfScores.Sort();
-                            listOfScores.Reverse();
-
-                            //*************************
-                            scores.Add(new MemberScores { FirstName = i.FirstName, LastName = i.LastName, Score = listOfScores[0] + listOfScores[1] + listOfScores[2] });
-                            listOfScores.Clear();
-                        }
-                        scores.Sort(scoreComparer);
-                        scores.Reverse();
-                        scores = scores.ToList();
-                        for (int i = 0; i < scores.Count(); i++)
-                        {
-                            int firstNameLength = 0;
-                            int lastNameLength = 0;
-                            firstNameLength = scores[i].FirstName.Length < 6 ? scores[i].FirstName.Length : 6;
-                            lastNameLength = scores[i].LastName.Length < 6 ? scores[i].LastName.Length : 6;
-
-                            CalculatePlaceStanding(scores);
-
-                            richTextBox3.AppendText($"{scores[i].placing}\t{scores[i].FirstName.Substring(0, firstNameLength)}\t{scores[i].LastName.Substring(0, lastNameLength)}\t\t\t{scores[i].Score}\n");
-                        }
-                    }
-                }
-                #endregion            
             }
-            finally
+            catch
             {
 
-            }//TODO ADDED FOR ERRORS REMOVE WHEN FIXED
-
-            // Assign Place Standing from scores to overallListOfTopScores
-            for (int i = 0; i < overallListOfTopScores.Count; i++)
-            {
-                foreach (var item in scores)
-                {
-                    if (overallListOfTopScores[i].memberID == item.MemberId)
-                    {
-                        overallListOfTopScores[i].Placing = item.placing;
-                    }
-                }
             }
         }
-
 
         /// <summary>
         /// Calculates each bowler's place standing. Accounts for ties.
         /// </summary>
         /// <param name="winners"></param>
-        private static void CalculatePlaceStanding(List<MemberScores> winners)
+        private static void CalculatePlaceStanding(List<TopParticipantGameViewModel> winners, bool scoreToOrganizeBy)
         {
             int place = 1;
-            for (int i = 0; i < winners.Count; i++)
+            if (scoreToOrganizeBy == false)
             {
-                if (i > 0 && winners[i].Score == winners[i - 1].Score)
+                for (int i = 0; i < winners.Count; i++)
                 {
-                    winners[i].placing = winners[i - 1].placing;
+                    if (i > 0 && winners[i].ScratchTotal == winners[i - 1].ScratchTotal)
+                    {
+                        winners[i].Placing = winners[i - 1].Placing;
+                    }
+                    else
+                    {
+                        winners[i].Placing = place;
+                    }
+                    place++;
                 }
-                else
+            }
+            if (scoreToOrganizeBy == true)
+            {
+                for (int i = 0; i < winners.Count; i++)
                 {
-                    winners[i].placing = place;
+                    if (i > 0 && winners[i].HandicapScore == winners[i - 1].HandicapScore)
+                    {
+                        winners[i].Placing = winners[i - 1].Placing;
+                    }
+                    else
+                    {
+                        winners[i].Placing = place;
+                    }
+                    place++;
                 }
-                place++;
             }
         }
 
@@ -2689,8 +2766,9 @@ namespace NineTapTour.Forms
                     temp.Sort(scoreComparer);
                     temp.Reverse();
 
-                    CalculatePlaceStanding(temp);
-
+//                    CalculatePlaceStanding(temp);
+                    //TODO: FIX THIS LATER
+                    throw new NotImplementedException();
                     if (temp.Count() != 0)
                     {
                         FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, 2/*reportTypeNum, 0 for High game handicap/senior, 1 for game/high game, 2 for series/high series*/, currentsNum);
@@ -3248,6 +3326,49 @@ namespace NineTapTour.Forms
                 howManySquadsCanBeFiltered.Add(8);
                 QBSNumber = 9;
                 Refresh(false, QBSNumber);
+            }
+        }
+
+        private void lbxHighGameHC_Click(object sender, EventArgs e)
+        {
+            ChangeToSelectedPerson(sender as ListBox);
+        }
+
+        private void lbxHighGameSC_Click(object sender, EventArgs e)
+        {
+            ChangeToSelectedPerson(sender as ListBox);
+        }
+
+        private void lbxTopGameSeries_Click(object sender, EventArgs e)
+        {
+            ChangeToSelectedPerson(sender as ListBox);
+        }
+
+        private void ChangeToSelectedPerson(ListBox participantGamesListBox)
+        {
+            // try to set as participantsGameViewModel
+            try
+            {
+                // set participant to current item in selected listbox
+                ParticipantsGameViewModel participant = (ParticipantsGameViewModel) participantGamesListBox.SelectedItem;
+                // set member num textbox to current participants member number
+                txtMemberNum.Text = participant.MemberNo.ToString();
+                // call method to display members information
+                FillMember();
+                // selects the squad that the participant is in
+                FormHelper.SelectParticipantSquad(participant.Squad, groupBox1);
+            }
+            // sets as TopParticipantGameViewModel if throws error
+            catch (InvalidCastException)
+            {
+                // set participant to current item in selected listbox
+                TopParticipantGameViewModel participant = (TopParticipantGameViewModel) participantGamesListBox.SelectedItem;
+                // set member num textbox to current participants member number
+                txtMemberNum.Text = participant.MemberNo.ToString();
+                // call method to display members information
+                FillMember();
+                // selects the squad that the participant is in
+                FormHelper.SelectParticipantSquad(participant.Squad, groupBox1);
             }
         }
     }

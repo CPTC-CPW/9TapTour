@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Linq.Mapping;
@@ -43,14 +44,12 @@ namespace NineTapTour.Models
         [DefaultValue(false)]
         public bool IsComp { get; set; } // comp is someone who bowls for free because they are helping with tournament 
 
-        public List<int?> allGameScores()
+        public List<int?> AllGameScores()
         {
-            var newList = new List<int?>();
-            newList.Add(Game1);
-            newList.Add(Game2);
-            newList.Add(Game3);
-            newList.Add(Game4);
+            var newList = new List<int?> {Game1, Game2, Game3, Game4};
             return newList;
         }
+
+        
     }
 }
