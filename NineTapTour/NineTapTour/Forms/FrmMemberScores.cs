@@ -19,8 +19,6 @@ namespace NineTapTour.Forms
 {
     public partial class frmMemberScores : Form
     {
-
-        //IOrderedEnumerable<Member> _membersList;
         public int RegionID;
         Member currentMem;
         Member currentMem2;
@@ -29,7 +27,6 @@ namespace NineTapTour.Forms
         int currentIndex = 0;         //Count for record counting
         Participant player = new Participant();
         Participant player2 = new Participant();
-        //bool doubles = true;
         public static Tournament selectedTournament;
         public static List<TopScores> overallListOfTopScores;
         public static List<Participant> overallListOfParticipants;
@@ -37,7 +34,6 @@ namespace NineTapTour.Forms
         //QBS number is set by the radio buttons on the right side of the form "QUALIFY BY SQUAD" depending on which radio button is selected
         //it will change it to the corresponding value.
         int QBSNumber = 0;
-        frmNewTournament currentTourneyPage;
         List<int> howManySquadsCanBeFiltered = new List<int>();
 
 
