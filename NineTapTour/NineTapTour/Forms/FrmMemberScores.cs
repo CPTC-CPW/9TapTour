@@ -729,45 +729,7 @@ namespace NineTapTour.Forms
                 //IF the tournament type is NOT a DOUBLES tournament
                 else
                 {
-                    int squad = 0;
-
-                    #region get Squad
-
-                    if (rdoSquadOne.Checked == true)
-                    {
-                        squad = 1;
-                    }
-                    else if (rdoSquadTwo.Checked == true)
-                    {
-                        squad = 2;
-                    }
-                    else if (rdoSquadThree.Checked == true)
-                    {
-                        squad = 3;
-                    }
-                    else if (rdoSquadFour.Checked == true)
-                    {
-                        squad = 4;
-                    }
-                    else if (rdoSquad5.Checked == true)
-                    {
-                        squad = 5;
-                    }
-                    else if (rdoSquad6.Checked == true)
-                    {
-                        squad = 6;
-                    }
-                    else if (rdoSquad7.Checked == true)
-                    {
-                        squad = 7;
-                    }
-                    else if (rdoSquad8.Checked == true)
-                    {
-                        squad = 8;
-                    }
-
-                    #endregion
-
+                    int squad = GetCurrentSquadNumber();  
 
                     //get the member from the database using the number from the memnum textbox
                     currentMem = MemberDb.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
@@ -806,44 +768,8 @@ namespace NineTapTour.Forms
                     //selects the ID of the combobox of tournaments and stores the
                     //tournament property within the participants class.
                     player.Tournament = currTourney;
-
-                    #region radio button
-
-                    if (rdoSquadOne.Checked)
-                    {
-                        player.Squad = 1;
-                    }
-                    else if (rdoSquadTwo.Checked)
-                    {
-                        player.Squad = 2;
-                    }
-                    else if (rdoSquadThree.Checked)
-                    {
-                        player.Squad = 3;
-                    }
-                    else if (rdoSquadFour.Checked)
-                    {
-                        player.Squad = 4;
-                    }
-                    else if (rdoSquad5.Checked)
-                    {
-                        player.Squad = 5;
-                    }
-                    else if (rdoSquad6.Checked)
-                    {
-                        player.Squad = 6;
-                    }
-                    else if (rdoSquad7.Checked)
-                    {
-                        player.Squad = 7;
-                    }
-                    else
-                    {
-                        player.Squad = 8;
-                    }
-
-                    #endregion
-
+                    player.Squad = GetCurrentSquadNumber();
+                   
                     //defaults money earned to 0, or enters text box amount
                     if (txtMoney.Text == "" || txtMoney.Text == null)
                         player.Game.MoneyWon = 0;
@@ -1036,27 +962,11 @@ namespace NineTapTour.Forms
                 {
                     currentMem = MemberDb.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
 
-                    int currentsNum = 0;
-                    if (rdoSquadOne.Checked)
-                        currentsNum = 1;
-                    else if (rdoSquadTwo.Checked)
-                        currentsNum = 2;
-                    else if (rdoSquadThree.Checked)
-                        currentsNum = 3;
-                    else if (rdoSquadFour.Checked)
-                        currentsNum = 4;
-                    else if (rdoSquad5.Checked)
-                        currentsNum = 5;
-                    else if (rdoSquad6.Checked)
-                        currentsNum = 6;
-                    else if (rdoSquad7.Checked)
-                        currentsNum = 7;
-                    else if (rdoSquad8.Checked)
-                        currentsNum = 8;
+                    int currentSquadNumber = GetCurrentSquadNumber();
 
                     for (int i = 0; i < part.Count; i++)
                     {
-                        if (currentMem.Id == part[i].Member.Id && part[i].Squad == currentsNum)
+                        if (currentMem.Id == part[i].Member.Id && part[i].Squad == currentSquadNumber)
                         {
                             lblRecord.Text = "Record " + (i + 1) + " / " + part.Count();
                             currentIndex = i + 1;
@@ -1075,6 +985,27 @@ namespace NineTapTour.Forms
 
         }
 
+        private int GetCurrentSquadNumber()
+        {
+            if (rdoSquadOne.Checked)
+                return 1;
+            else if (rdoSquadTwo.Checked)
+                return 2;
+            else if (rdoSquadThree.Checked)
+                return 3;
+            else if (rdoSquadFour.Checked)
+                return 4;
+            else if (rdoSquad5.Checked)
+                return 5;
+            else if (rdoSquad6.Checked)
+                return 6;
+            else if (rdoSquad7.Checked)
+                return 7;
+            else if (rdoSquad8.Checked)
+                return 8;
+            throw new Exception("A squad must be checked!");
+        }
+
         public void RecordIndexOnSquadSwitch(List<Participant> part)
         {
             int squad = 0;
@@ -1082,38 +1013,7 @@ namespace NineTapTour.Forms
             {
                 if (txtMemberNum.Text != "")
                 {
-                    if (rdoSquadOne.Checked == true)
-                    {
-                        squad = 1;
-                    }
-                    else if (rdoSquadTwo.Checked == true)
-                    {
-                        squad = 2;
-                    }
-                    else if (rdoSquadThree.Checked == true)
-                    {
-                        squad = 3;
-                    }
-                    else if (rdoSquadFour.Checked == true)
-                    {
-                        squad = 4;
-                    }
-                    else if (rdoSquad5.Checked == true)
-                    {
-                        squad = 5;
-                    }
-                    else if (rdoSquad6.Checked == true)
-                    {
-                        squad = 6;
-                    }
-                    else if (rdoSquad7.Checked == true)
-                    {
-                        squad = 7;
-                    }
-                    else if (rdoSquad8.Checked == true)
-                    {
-                        squad = 8;
-                    }
+                    squad = GetCurrentSquadNumber();
 
                     for (int i = 0; i < part.Count; i++)
                     {
@@ -1178,39 +1078,8 @@ namespace NineTapTour.Forms
             NineTapDb db = new NineTapDb();
             Game memScores = new Game();
             int squad = 0;
-
-            if (rdoSquadOne.Checked)
-            {
-                squad = 1;
-            }
-            else if (rdoSquadTwo.Checked)
-            {
-                squad = 2;
-            }
-            else if (rdoSquadThree.Checked)
-            {
-                squad = 3;
-            }
-            else if (rdoSquadFour.Checked)
-            {
-                squad = 4;
-            }
-            else if (rdoSquad5.Checked)
-            {
-                squad = 5;
-            }
-            else if (rdoSquad6.Checked)
-            {
-                squad = 6;
-            }
-            else if (rdoSquad7.Checked)
-            {
-                squad = 7;
-            }
-            else if (rdoSquad8.Checked)
-            {
-                squad = 8;
-            }
+            squad = GetCurrentSquadNumber();
+            
 
             try
             {
