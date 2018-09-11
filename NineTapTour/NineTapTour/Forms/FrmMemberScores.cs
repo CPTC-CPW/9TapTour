@@ -1463,7 +1463,7 @@ namespace NineTapTour.Forms
 
             // Disables buttons and breaks function
             // if already at the last record
-            if (currentIndex >= total.Count())
+            if (currentIndex >= total.Count)
             {
                 btnRightArrow.Enabled = false;
                 btnLastRecord.Enabled = false;
@@ -1471,42 +1471,42 @@ namespace NineTapTour.Forms
             }
 
             // Sets currentIndex to the size of total
-            currentIndex = total.Count();
+            currentIndex = total.Count;
 
             ReEnableNavigation();
 
             // Gets the last record from the list
-            txtMemberNum.Text = Convert.ToString(total[total.Count() - 1].Member.Number);
-
-            if (total[total.Count() - 1].Squad == 1)
+            txtMemberNum.Text = Convert.ToString(total[total.Count - 1].Member.Number);
+            int lastMemberSquad = total[total.Count - 1].Squad;
+            if (lastMemberSquad == 1)
             {
                 rdoSquadOne.Checked = true;
             }
-            else if (total[total.Count() - 1].Squad == 2)
+            else if (lastMemberSquad == 2)
             {
                 rdoSquadTwo.Checked = true;
             }
-            else if (total[total.Count() - 1].Squad == 3)
+            else if (lastMemberSquad == 3)
             {
                 rdoSquadThree.Checked = true;
             }
-            else if (total[total.Count() - 1].Squad == 4)
+            else if (lastMemberSquad == 4)
             {
                 rdoSquadFour.Checked = true;
             }
-            else if (total[total.Count() - 1].Squad == 5)
+            else if (lastMemberSquad == 5)
             {
                 rdoSquad5.Checked = true;
             }
-            else if (total[total.Count() - 1].Squad == 6)
+            else if (lastMemberSquad == 6)
             {
                 rdoSquad6.Checked = true;
             }
-            else if (total[total.Count() - 1].Squad == 7)
+            else if (lastMemberSquad == 7)
             {
                 rdoSquad7.Checked = true;
             }
-            else if (total[total.Count() - 1].Squad == 8)
+            else if (lastMemberSquad == 8)
             {
                 rdoSquad8.Checked = true;
             }
