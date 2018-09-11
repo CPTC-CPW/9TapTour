@@ -994,6 +994,10 @@ namespace NineTapTour.Forms
 
         }
 
+        /// <summary>
+        /// Gets the currently selected squad number
+        /// </summary>
+        /// <returns></returns>
         private int GetCurrentSquadNumber()
         {
             if (rdoSquadOne.Checked)
