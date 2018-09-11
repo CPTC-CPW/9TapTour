@@ -2700,18 +2700,18 @@ namespace NineTapTour.Forms
 
         private void cbAllSquads_CheckedChanged(object sender, EventArgs e)
         {
+            cbFilterSquad1.Checked = false;
+            cbFilterSquad2.Checked = false;
+            cbFilterSquad3.Checked = false;
+            cbFilterSquad4.Checked = false;
+            cbFilterSquad5.Checked = false;
+            cbFilterSquad6.Checked = false;
+            cbFilterSquad7.Checked = false;
+            cbFilterSquad8.Checked = false;
+
             //if all squads is selected then uncheck and disable squad selections
             if(cbAllSquads.Checked)
             {
-                cbFilterSquad1.Checked = false;
-                cbFilterSquad2.Checked = false;
-                cbFilterSquad3.Checked = false;
-                cbFilterSquad4.Checked = false;
-                cbFilterSquad5.Checked = false;
-                cbFilterSquad6.Checked = false;
-                cbFilterSquad7.Checked = false;
-                cbFilterSquad8.Checked = false;
-
                 cbFilterSquad1.Enabled = false;
                 cbFilterSquad2.Enabled = false;
                 cbFilterSquad3.Enabled = false;
@@ -2721,24 +2721,12 @@ namespace NineTapTour.Forms
                 cbFilterSquad7.Enabled = false;
                 cbFilterSquad8.Enabled = false;
 
-
                 howManySquadsCanBeFiltered.Clear();
                 QBSNumber = 0;
-                Refresh(false, QBSNumber);
-               
+                Refresh(false, QBSNumber);   
             }
             else
             {
-                cbFilterSquad1.Checked = false;
-                cbFilterSquad2.Checked = false;
-                cbFilterSquad3.Checked = false;
-                cbFilterSquad4.Checked = false;
-                cbFilterSquad5.Checked = false;
-                cbFilterSquad6.Checked = false;
-                cbFilterSquad7.Checked = false;
-                cbFilterSquad8.Checked = false;
-
-
                 cbFilterSquad1.Enabled = true;
                 cbFilterSquad2.Enabled = true;
                 cbFilterSquad3.Enabled = true;
