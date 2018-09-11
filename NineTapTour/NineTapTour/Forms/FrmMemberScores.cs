@@ -898,39 +898,8 @@ namespace NineTapTour.Forms
             else
             {
                 currentIndex = 1;
-                if (players[currentIndex - 1].Squad == 1)
-                {
-                    rdoSquadOne.Checked = true;
-                }
-                else if (players[currentIndex - 1].Squad == 2)
-                {
-                    rdoSquadTwo.Checked = true;
-                }
-                else if (players[currentIndex - 1].Squad == 3)
-                {
-                    rdoSquadThree.Checked = true;
-                }
-                else if (players[currentIndex - 1].Squad == 4)
-                {
-                    rdoSquadFour.Checked = true;
-                }
-                else if (players[currentIndex - 1].Squad == 5)
-                {
-                    rdoSquad5.Checked = true;
-                }
-                else if (players[currentIndex - 1].Squad == 6)
-                {
-                    rdoSquad6.Checked = true;
-                }
-                else if (players[currentIndex - 1].Squad == 7)
-                {
-                    rdoSquad7.Checked = true;
-                }
-                else if (players[currentIndex - 1].Squad == 8)
-                {
-                    rdoSquad8.Checked = true;
-                }
-
+                int playerSquadNumber = players[currentIndex - 1].Squad;
+                CheckSquadRadioButton(playerSquadNumber);
 
                 lblRecord.Text = "Record " + (currentIndex) + " / " + players.Count();
                 txtMemberNum.Text = players[currentIndex - 1].Member.Number.ToString();
@@ -939,6 +908,46 @@ namespace NineTapTour.Forms
             }
 
 
+        }
+
+        /// <summary>
+        /// Checks the radio button for the corresponding squad
+        /// </summary>
+        /// <param name="playerSquadNumber">Squad number of player to check</param>
+        private void CheckSquadRadioButton(int playerSquadNumber)
+        {
+            if (playerSquadNumber == 1)
+            {
+                rdoSquadOne.Checked = true;
+            }
+            else if (playerSquadNumber == 2)
+            {
+                rdoSquadTwo.Checked = true;
+            }
+            else if (playerSquadNumber == 3)
+            {
+                rdoSquadThree.Checked = true;
+            }
+            else if (playerSquadNumber == 4)
+            {
+                rdoSquadFour.Checked = true;
+            }
+            else if (playerSquadNumber == 5)
+            {
+                rdoSquad5.Checked = true;
+            }
+            else if (playerSquadNumber == 6)
+            {
+                rdoSquad6.Checked = true;
+            }
+            else if (playerSquadNumber == 7)
+            {
+                rdoSquad7.Checked = true;
+            }
+            else if (playerSquadNumber == 8)
+            {
+                rdoSquad8.Checked = true;
+            }
         }
 
         /// <summary>
@@ -1144,38 +1153,8 @@ namespace NineTapTour.Forms
             }
 
             txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
-            if (total[currentIndex - 1].Squad == 1)
-            {
-                rdoSquadOne.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 2)
-            {
-                rdoSquadTwo.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 3)
-            {
-                rdoSquadThree.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 4)
-            {
-                rdoSquadFour.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 5)
-            {
-                rdoSquad5.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 6)
-            {
-                rdoSquad6.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 7)
-            {
-                rdoSquad7.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 8)
-            {
-                rdoSquad8.Checked = true;
-            }
+            int playerSquadNumber = total[currentIndex - 1].Squad;
+            CheckSquadRadioButton(playerSquadNumber);
 
             lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count();
 
@@ -1211,39 +1190,8 @@ namespace NineTapTour.Forms
             }
 
             txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
-
-            if (total[currentIndex - 1].Squad == 1)
-            {
-                rdoSquadOne.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 2)
-            {
-                rdoSquadTwo.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 3)
-            {
-                rdoSquadThree.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 4)
-            {
-                rdoSquadFour.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 5)
-            {
-                rdoSquad5.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 6)
-            {
-                rdoSquad6.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 7)
-            {
-                rdoSquad7.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 8)
-            {
-                rdoSquad8.Checked = true;
-            }
+            int playerSquadNumber = total[currentIndex - 1].Squad;
+            CheckSquadRadioButton(playerSquadNumber);
 
             lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count();
 
@@ -1276,41 +1224,8 @@ namespace NineTapTour.Forms
             // Gets the 1st record in the list
             txtMemberNum.Text = Convert.ToString(total[0].Member.Number);
 
-            // Checks which squad the member belongs to and checks
-            // the corresponding squad radio button
-            // when member info is loaded
-            if (total[currentIndex - 1].Squad == 1)
-            {
-                rdoSquadOne.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 2)
-            {
-                rdoSquadTwo.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 3)
-            {
-                rdoSquadThree.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 4)
-            {
-                rdoSquadFour.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 5)
-            {
-                rdoSquad5.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 6)
-            {
-                rdoSquad6.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 7)
-            {
-                rdoSquad7.Checked = true;
-            }
-            else if (total[currentIndex - 1].Squad == 8)
-            {
-                rdoSquad8.Checked = true;
-            }
+            int playerSquadNumber = total[currentIndex - 1].Squad;
+            CheckSquadRadioButton(playerSquadNumber);
 
             FillMember();
 
@@ -1347,38 +1262,7 @@ namespace NineTapTour.Forms
             // Gets the last record from the list
             txtMemberNum.Text = Convert.ToString(total[total.Count - 1].Member.Number);
             int lastMemberSquad = total[total.Count - 1].Squad;
-            if (lastMemberSquad == 1)
-            {
-                rdoSquadOne.Checked = true;
-            }
-            else if (lastMemberSquad == 2)
-            {
-                rdoSquadTwo.Checked = true;
-            }
-            else if (lastMemberSquad == 3)
-            {
-                rdoSquadThree.Checked = true;
-            }
-            else if (lastMemberSquad == 4)
-            {
-                rdoSquadFour.Checked = true;
-            }
-            else if (lastMemberSquad == 5)
-            {
-                rdoSquad5.Checked = true;
-            }
-            else if (lastMemberSquad == 6)
-            {
-                rdoSquad6.Checked = true;
-            }
-            else if (lastMemberSquad == 7)
-            {
-                rdoSquad7.Checked = true;
-            }
-            else if (lastMemberSquad == 8)
-            {
-                rdoSquad8.Checked = true;
-            }
+            CheckSquadRadioButton(lastMemberSquad);
 
             FillMember();
 
