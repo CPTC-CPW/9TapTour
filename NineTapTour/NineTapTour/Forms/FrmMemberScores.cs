@@ -170,7 +170,7 @@ namespace NineTapTour.Forms
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             cbxTourneyDropDown.ValueMember = "Id";
 
-            if (temp2.Count() > 0)
+            if (temp2.Count > 0)
             {
                 var item = temp2.Max(x => x.Id);
                 cbxTourneyDropDown.SelectedValue = item;
@@ -266,7 +266,7 @@ namespace NineTapTour.Forms
                 //        }
                 //    }
                 //}
-                lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count();
+                lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count;
 
 
 
@@ -889,11 +889,11 @@ namespace NineTapTour.Forms
             int temp = 0;
             if (cbxTourneyDropDown.SelectedIndex < 0)
             {
-                lblRecord.Text = "Record " + (temp) + " / " + players.Count();
+                lblRecord.Text = "Record " + (temp) + " / " + players.Count;
             }
             else if (players.Count == 0)
             {
-                lblRecord.Text = "Record " + (temp) + " / " + players.Count();
+                lblRecord.Text = "Record " + (temp) + " / " + players.Count;
             }
             else
             {
@@ -901,7 +901,7 @@ namespace NineTapTour.Forms
                 int playerSquadNumber = players[currentIndex - 1].Squad;
                 CheckSquadRadioButton(playerSquadNumber);
 
-                lblRecord.Text = "Record " + (currentIndex) + " / " + players.Count();
+                lblRecord.Text = "Record " + (currentIndex) + " / " + players.Count;
                 txtMemberNum.Text = players[currentIndex - 1].Member.Number.ToString();
                 FillMember();
 
@@ -956,7 +956,7 @@ namespace NineTapTour.Forms
         /// <param name="pat"> a list of participant objects </param>
         public void RecordIndexAfterAddUpdate(List<Participant> pat)
         {
-            lblRecord.Text = "Record " + (pat.Count + 1) + " / " + pat.Count();
+            lblRecord.Text = "Record " + (pat.Count + 1) + " / " + pat.Count;
             currentIndex = pat.Count + 1;
         }
 
@@ -977,13 +977,13 @@ namespace NineTapTour.Forms
                     {
                         if (currentMem.Id == part[i].Member.Id && part[i].Squad == currentSquadNumber)
                         {
-                            lblRecord.Text = "Record " + (i + 1) + " / " + part.Count();
+                            lblRecord.Text = "Record " + (i + 1) + " / " + part.Count;
                             currentIndex = i + 1;
 
                             break;
                         }
                         //if no break occurs, set the current index to that of the next potential index
-                        lblRecord.Text = "Record " + (part.Count + 1) + " / " + part.Count();
+                        lblRecord.Text = "Record " + (part.Count + 1) + " / " + part.Count;
                         currentIndex = part.Count + 1;
 
                     }
@@ -1032,12 +1032,12 @@ namespace NineTapTour.Forms
                     {
                         if (currentMem.Id == part[i].Member.Id && part[i].Squad == squad)
                         {
-                            lblRecord.Text = "Record " + (i + 1) + " / " + part.Count();
+                            lblRecord.Text = "Record " + (i + 1) + " / " + part.Count;
                             currentIndex = i + 1;
                             break;
                         }
                         //if no break occurs, set the current index to that of the next potential index
-                        lblRecord.Text = "Record " + (part.Count + 1) + " / " + part.Count();
+                        lblRecord.Text = "Record " + (part.Count + 1) + " / " + part.Count;
                         currentIndex = part.Count + 1;
                     }
                 }
@@ -1138,7 +1138,7 @@ namespace NineTapTour.Forms
 
             // Disables buttons and breaks function
             // if already at the last record
-            if (currentIndex >= total.Count())
+            if (currentIndex >= total.Count)
             {
                 btnRightArrow.Enabled = false;
                 btnLastRecord.Enabled = false;
@@ -1150,7 +1150,7 @@ namespace NineTapTour.Forms
 
             // Disables buttons if last record
             // is reached
-            if (currentIndex >= total.Count())
+            if (currentIndex >= total.Count)
             {
                 btnRightArrow.Enabled = false;
                 btnLastRecord.Enabled = false;
@@ -1160,7 +1160,7 @@ namespace NineTapTour.Forms
             int playerSquadNumber = total[currentIndex - 1].Squad;
             CheckSquadRadioButton(playerSquadNumber);
 
-            lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count();
+            lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count;
 
             FillMember();
         }
@@ -1197,7 +1197,7 @@ namespace NineTapTour.Forms
             int playerSquadNumber = total[currentIndex - 1].Squad;
             CheckSquadRadioButton(playerSquadNumber);
 
-            lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count();
+            lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count;
 
             FillMember();
         }
@@ -1449,7 +1449,7 @@ namespace NineTapTour.Forms
                 Console.WriteLine(tour.TourneyNameDate);
             }
 #endif
-            if (tours.Count() > 0)
+            if (tours.Count > 0)
             {
                 cbxTourneyDropDown.DataSource = tours;
                 cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
@@ -2246,7 +2246,7 @@ namespace NineTapTour.Forms
                     temp.Sort(scoreComparer);
                     temp.Reverse();
 
-                    if (temp.Count() != 0)
+                    if (temp.Count != 0)
                     {
                         //find out what squad is selected At the moment of series button click
                         int currentsNum = 0;
@@ -2329,7 +2329,7 @@ namespace NineTapTour.Forms
                         currentsNum = 8;
 
 
-                    if (temp.Count() != 0)
+                    if (temp.Count != 0)
 
                     {
                         FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, 1/*reportTypeNum, 0 for High game handicap/senior, 1 for game/high game, 2 for series/high series*/, currentsNum);
