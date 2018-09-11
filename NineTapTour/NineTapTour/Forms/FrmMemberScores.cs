@@ -1711,20 +1711,7 @@ namespace NineTapTour.Forms
             txtScratchTotal.Clear();
             txtHandicapTotal.Clear();
         }
-        /// <summary>
-        /// Checks if current member has an existing entry into Squad 3
-        /// and clears the scores if the member does NOT
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
 
-        /* TODO Error
-        private void btnTournamentsByYear_Click(object sender, EventArgs e)
-        {            
-            FrmListTournamentsByYear listTournaments = new FrmListTournamentsByYear();
-            listTournaments.ShowDialog();
-        }
-        */
         private void rdoScratchScore_CheckedChanged(object sender, EventArgs e)
         {
             Refresh(true, QBSNumber);
