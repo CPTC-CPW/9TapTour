@@ -943,11 +943,7 @@ namespace NineTapTour.Forms
             }
         
         }
-
-        private string GetConnection()
-        {
-            return ConfigurationManager.ConnectionStrings["NineTapDbConnection"].ConnectionString;
-        }
+        
         #endregion
         /// <summary>
         /// Checks a string for numeric values
