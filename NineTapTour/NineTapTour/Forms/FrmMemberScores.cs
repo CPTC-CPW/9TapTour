@@ -2248,26 +2248,9 @@ namespace NineTapTour.Forms
 
                     if (temp.Count != 0)
                     {
-                        //find out what squad is selected At the moment of series button click
-                        int currentsNum = 0;
-                        if (rdoSquad1Results.Checked)
-                            currentsNum = 1;
-                        else if (rdoSquad2Results.Checked)
-                            currentsNum = 2;
-                        else if (rdoSquad3Results.Checked)
-                            currentsNum = 3;
-                        else if (rdoSquad4Results.Checked)
-                            currentsNum = 4;
-                        else if (rdoSquad5Results.Checked)
-                            currentsNum = 5;
-                        else if (rdoSquad6Results.Checked)
-                            currentsNum = 6;
-                        else if (rdoSquad7Results.Checked)
-                            currentsNum = 7;
-                        else if (rdoSquad8Results.Checked)
-                            currentsNum = 8;
+                        int currentsNum = GetSquadResultsNumberChecked();
 
-                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, 0/*reportTypeNum, 0 for High game handicap/senior, 1 for game/high game, 2 for series/high series*/,currentsNum);
+                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, 0/*reportTypeNum, 0 for High game handicap/senior, 1 for game/high game, 2 for series/high series*/, currentsNum);
                         //report.Dock = DockStyle.Fill;
                         report.Show();
                     }
@@ -2277,6 +2260,32 @@ namespace NineTapTour.Forms
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Get the squad number for the current Squad Results Radio Button that is checked
+        /// </summary>
+        /// <returns></returns>
+        private int GetSquadResultsNumberChecked()
+        {
+            int currentsNum = 0;
+            if (rdoSquad1Results.Checked)
+                currentsNum = 1;
+            else if (rdoSquad2Results.Checked)
+                currentsNum = 2;
+            else if (rdoSquad3Results.Checked)
+                currentsNum = 3;
+            else if (rdoSquad4Results.Checked)
+                currentsNum = 4;
+            else if (rdoSquad5Results.Checked)
+                currentsNum = 5;
+            else if (rdoSquad6Results.Checked)
+                currentsNum = 6;
+            else if (rdoSquad7Results.Checked)
+                currentsNum = 7;
+            else if (rdoSquad8Results.Checked)
+                currentsNum = 8;
+            return currentsNum;
         }
 
         private void btnGame_Click(object sender, EventArgs e)
@@ -2310,24 +2319,7 @@ namespace NineTapTour.Forms
                     temp.Reverse();
 
                     //find out what squad is selected At the moment of series button click
-                    int currentsNum = 0;
-                    if (rdoSquad1Results.Checked)
-                        currentsNum = 1;
-                    else if (rdoSquad2Results.Checked)
-                        currentsNum = 2;
-                    else if (rdoSquad3Results.Checked)
-                        currentsNum = 3;
-                    else if (rdoSquad4Results.Checked)
-                        currentsNum = 4;
-                    else if (rdoSquad5Results.Checked)
-                        currentsNum = 5;
-                    else if (rdoSquad6Results.Checked)
-                        currentsNum = 6;
-                    else if (rdoSquad7Results.Checked)
-                        currentsNum = 7;
-                    else if (rdoSquad8Results.Checked)
-                        currentsNum = 8;
-
+                    int currentsNum = GetSquadResultsNumberChecked();
 
                     if (temp.Count != 0)
 
@@ -2475,27 +2467,7 @@ namespace NineTapTour.Forms
                     #endregion
 
                     //find out what squad is selected At the moment of series button click
-                    int currentsNum = 0;
-                    if (rdoSquad1Results.Checked)
-                        currentsNum = 1;
-                    else if (rdoSquad2Results.Checked)
-                        currentsNum = 2;
-                    else if (rdoSquad3Results.Checked)
-                        currentsNum = 3;
-                    else if (rdoSquad4Results.Checked)
-                        currentsNum = 4;
-                    else if (rdoSquad5Results.Checked)
-                        currentsNum = 5;
-                    else if (rdoSquad6Results.Checked)
-                        currentsNum = 6;
-                    else if (rdoSquad7Results.Checked)
-                        currentsNum = 7;
-                    else if (rdoSquad8Results.Checked)
-                        currentsNum = 8;
-
-
-
-
+                    int currentsNum = GetSquadResultsNumberChecked();
 
                     temp.Sort(scoreComparer);
                     temp.Reverse();
