@@ -27,7 +27,6 @@ namespace NineTapTour.Forms
         TextBox[] scratchArray = new TextBox[4];
         TextBox[] handicappArray = new TextBox[4];
         int currentIndex = 0;         //Count for record counting
-        bool buttonCheck; // boolean value used to determine which record index button was clicked
         Participant player = new Participant();
         Participant player2 = new Participant();
         //bool doubles = true;
@@ -1279,7 +1278,6 @@ namespace NineTapTour.Forms
                 btnLastRecord.Enabled = false;
             }
 
-            buttonCheck = true; // right button clicked
             txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
             if (total[currentIndex - 1].Squad == 1)
             {
