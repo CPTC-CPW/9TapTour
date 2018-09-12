@@ -1525,7 +1525,7 @@ namespace NineTapTour.Forms
                     {
                         // creates temp variable for PaticipantsGameViewModel to store necessary info for each person 
                         ParticipantsGameViewModel currTopScoreViewModel =
-                            new ParticipantsGameViewModel(currParticipant.Member.Id, currParticipant.Member.FirstName, currParticipant.Member.LastName, currParticipant.Squad,
+                            new ParticipantsGameViewModel(currParticipant.Member.Number, currParticipant.Member.FirstName, currParticipant.Member.LastName, currParticipant.Squad,
                                 currParticipant.Game.AllGameScores().Max(), currParticipant.Member.Handicap, currParticipant.Member.Bonus);
                         // adds person to list<ParticipantsGameViewModel>
                         participantsGameViewModels.Add(currTopScoreViewModel);
@@ -1547,7 +1547,7 @@ namespace NineTapTour.Forms
                         var top3Games = TournamentStats.GetTop3OutOf4(top4Games.ToList());
 
                         TopParticipantGameViewModel currTopScoreViewModel =
-                            new TopParticipantGameViewModel(currParticipant.Member.Id, currParticipant.Member.FirstName,
+                            new TopParticipantGameViewModel(currParticipant.Member.Number, currParticipant.Member.FirstName,
                                 currParticipant.Member.LastName, 0, currParticipant.Game.AllGameScores().Sum().Value,
                                 top3Games.Sum(),
                                 top3Games.Sum() + (3 * currParticipant.Member.Handicap) +
