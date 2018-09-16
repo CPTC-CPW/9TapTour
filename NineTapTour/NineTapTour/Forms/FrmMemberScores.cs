@@ -2779,46 +2779,19 @@ namespace NineTapTour.Forms
 
         private void cbFilterSquad1_CheckedChanged(object sender, EventArgs e)
         {
-            //If all check boxes on filtered are checked then uncheck all and check allSquads
-            if(FilterCheck() == selectedTournament.Squads)
-            {
-                howManySquadsCanBeFiltered.Clear();
-                cbAllSquads.Checked = true;
-            }
-            else if(cbFilterSquad1.Checked == false && howManySquadsCanBeFiltered.Contains(1))
-            {
-                howManySquadsCanBeFiltered.Remove(1);
-                if (FilterCheck() == 0)
-                {
-                    QBSNumber = 0;
-                    cbAllSquads.Checked = true;
-                }
-                else
-                {
-                    QBSNumber = 9;
-                    Refresh(false, QBSNumber);
-                }
-                
-            }
-            else if(cbFilterSquad1.Checked == true && !(howManySquadsCanBeFiltered.Contains(1)))
-            {
-                howManySquadsCanBeFiltered.Add(1);
-                QBSNumber = 9;
-                Refresh(false, QBSNumber);
-            }
-            
+            SquadFilter(sender as CheckBox, 1);
         }
 
-        private void cbFilterSquad2_CheckedChanged(object sender, EventArgs e)
+        private void SquadFilter(CheckBox squadCheckBox, byte squadNum)
         {
             if (FilterCheck() == selectedTournament.Squads)
             {
                 howManySquadsCanBeFiltered.Clear();
                 cbAllSquads.Checked = true;
             }
-            else if (cbFilterSquad2.Checked == false && howManySquadsCanBeFiltered.Contains(2))
+            else if (squadCheckBox.Checked == false && howManySquadsCanBeFiltered.Contains(squadNum))
             {
-                howManySquadsCanBeFiltered.Remove(2);
+                howManySquadsCanBeFiltered.Remove(squadNum);
                 if (FilterCheck() == 0)
                 {
                     QBSNumber = 0;
@@ -2829,196 +2802,48 @@ namespace NineTapTour.Forms
                     QBSNumber = 9;
                     Refresh(false, QBSNumber);
                 }
-             
             }
             else
             {
-                howManySquadsCanBeFiltered.Add(2);
+                howManySquadsCanBeFiltered.Add(squadNum);
                 QBSNumber = 9;
                 Refresh(false, QBSNumber);
             }
+        }
+
+        private void cbFilterSquad2_CheckedChanged(object sender, EventArgs e)
+        {
+            SquadFilter(sender as CheckBox, 2);
         }
 
         private void cbFilterSquad3_CheckedChanged(object sender, EventArgs e)
         {
-            if (FilterCheck() == selectedTournament.Squads)
-            {
-                howManySquadsCanBeFiltered.Clear();
-                cbAllSquads.Checked = true;
-            }
-            else if (cbFilterSquad3.Checked == false && howManySquadsCanBeFiltered.Contains(3))
-            {
-                howManySquadsCanBeFiltered.Remove(3);
-                if (FilterCheck() == 0)
-                {
-                    QBSNumber = 0;
-                    cbAllSquads.Checked = true;
-                }
-                else
-                {
-                    QBSNumber = 9;
-                    Refresh(false, QBSNumber);
-                }
-              
-            }
-            else
-            {
-                howManySquadsCanBeFiltered.Add(3);
-                QBSNumber = 9;
-                Refresh(false, QBSNumber);
-            }
-
+            SquadFilter(sender as CheckBox, 3);
         }
 
         private void cbFilterSquad4_CheckedChanged(object sender, EventArgs e)
         {
-            if (FilterCheck() == selectedTournament.Squads)
-            {
-                howManySquadsCanBeFiltered.Clear();
-                cbAllSquads.Checked = true;
-            }
-            else if (cbFilterSquad4.Checked == false && howManySquadsCanBeFiltered.Contains(4))
-            {
-                howManySquadsCanBeFiltered.Remove(4);
-                if (FilterCheck() == 0)
-                {
-                    QBSNumber = 0;
-                    cbAllSquads.Checked = true;
-                }
-                else
-                {
-                    QBSNumber = 9;
-                    Refresh(false, QBSNumber);
-                }
-              
-            }
-            else
-            {
-                howManySquadsCanBeFiltered.Add(4);
-                QBSNumber = 9;
-                Refresh(false, QBSNumber);
-            }
-
+            SquadFilter(sender as CheckBox, 4);
         }
 
         private void cbFilterSquad5_CheckedChanged(object sender, EventArgs e)
         {
-            if (FilterCheck() == selectedTournament.Squads)
-            {
-                howManySquadsCanBeFiltered.Clear();
-                cbAllSquads.Checked = true;
-            }
-            else if (cbFilterSquad5.Checked == false && howManySquadsCanBeFiltered.Contains(5))
-            {
-                howManySquadsCanBeFiltered.Remove(5);
-                if (FilterCheck() == 0)
-                {
-                    QBSNumber = 0;
-                    cbAllSquads.Checked = true;
-                }
-                else
-                {
-                    QBSNumber = 9;
-                    Refresh(false, QBSNumber);
-                }
-        
-            }
-            else
-            {
-                howManySquadsCanBeFiltered.Add(5);
-                QBSNumber = 9;
-                Refresh(false, QBSNumber);
-            }
+            SquadFilter(sender as CheckBox, 5);
         }
 
         private void cbFilterSquad6_CheckedChanged(object sender, EventArgs e)
         {
-            if (FilterCheck() == selectedTournament.Squads)
-            {
-                howManySquadsCanBeFiltered.Clear();
-                cbAllSquads.Checked = true;
-            }
-            else if (cbFilterSquad6.Checked == false && howManySquadsCanBeFiltered.Contains(6))
-            {
-                howManySquadsCanBeFiltered.Remove(6);
-                if (FilterCheck() == 0)
-                {
-                    QBSNumber = 0;
-                    cbAllSquads.Checked = true;
-                }
-                else
-                {
-                    QBSNumber = 9;
-                    Refresh(false, QBSNumber);
-                }
-        
-            }
-            else
-            {
-                howManySquadsCanBeFiltered.Add(6);
-                QBSNumber = 9;
-                Refresh(false, QBSNumber);
-            }
+            SquadFilter(sender as CheckBox, 6);
         }
 
         private void cbFilterSquad7_CheckedChanged(object sender, EventArgs e)
         {
-            if (FilterCheck() == selectedTournament.Squads)
-            {
-                howManySquadsCanBeFiltered.Clear();
-                cbAllSquads.Checked = true;
-            }
-            else if (cbFilterSquad7.Checked == false && howManySquadsCanBeFiltered.Contains(7))
-            {
-                howManySquadsCanBeFiltered.Remove(7);
-                if (FilterCheck() == 0)
-                {
-                    QBSNumber = 0;
-                    cbAllSquads.Checked = true;
-                }
-                else
-                {
-                    QBSNumber = 9;
-                    Refresh(false, QBSNumber);
-                }
-               
-            }
-            else
-            {
-                howManySquadsCanBeFiltered.Add(7);
-                QBSNumber = 9;
-                Refresh(false, QBSNumber);
-            }
+            SquadFilter(sender as CheckBox, 7);
         }
 
         private void cbFilterSquad8_CheckedChanged(object sender, EventArgs e)
         {
-            if (FilterCheck() == selectedTournament.Squads)
-            {
-                howManySquadsCanBeFiltered.Clear();
-                cbAllSquads.Checked = true;
-            }
-            else if (cbFilterSquad8.Checked == false && howManySquadsCanBeFiltered.Contains(8))
-            {
-                howManySquadsCanBeFiltered.Remove(8);
-                if (FilterCheck() == 0)
-                {
-                    QBSNumber = 0;
-                    cbAllSquads.Checked = true;
-                }
-                else
-                {
-                    QBSNumber = 9;
-                    Refresh(false, QBSNumber);
-                }
-             
-            }
-            else
-            {
-                howManySquadsCanBeFiltered.Add(8);
-                QBSNumber = 9;
-                Refresh(false, QBSNumber);
-            }
+            SquadFilter(sender as CheckBox, 8);
         }
 
         private void lbxHighGameHC_Click(object sender, EventArgs e)
