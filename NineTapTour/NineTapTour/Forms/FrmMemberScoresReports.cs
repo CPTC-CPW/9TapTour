@@ -45,6 +45,7 @@ namespace NineTapTour.Forms
                 {
                     // only take the inputted number of members
                     temp = temp.Take(Convert.ToInt32(txtNumberOfMembers.Text)).ToList();
+                    CalculatePlaceStandings(temp);
                     // print( go to print class )
                     Database.Print.printMemberReport(temp, selectedTournament, reportTypeNum,currentSquad);
 
@@ -60,6 +61,31 @@ namespace NineTapTour.Forms
             catch (FormatException)
             {
                 MessageBox.Show("Please only input a number");
+            }
+        }
+
+        /// <summary>
+        /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding
+        /// </summary>
+        /// <param name="temp"></param>
+        private void CalculatePlaceStandings(List<frmMemberScores.MemberScores> temp)
+        {
+            int lastScore = int.MaxValue;
+            int lastPosition = 0;
+            const byte PositionOffset = 1;
+            for (int currPosition = 0; currPosition < temp.Count; currPosition++)
+            {
+                if(temp[currPosition].Score != lastScore) //if scores are not a tie
+                {
+                    ++lastPosition;
+                    lastScore = temp[currPosition].Score.Value;
+                    temp[currPosition].placing = currPosition + PositionOffset;
+                }
+                else
+                {
+                    lastPosition = currPosition;
+                    temp[currPosition].placing = lastPosition;
+                }
             }
         }
     }
