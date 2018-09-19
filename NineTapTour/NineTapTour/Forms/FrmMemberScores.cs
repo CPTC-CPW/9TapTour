@@ -1972,125 +1972,119 @@ namespace NineTapTour.Forms
             }
             else
             {
-                
-
-
-
-
-
                 using (NineTapDb db = new NineTapDb())
                 {
                     var temp = new List<MemberScores>();
 
                     //instead of recreating existing data, just set temp to whats populated in the third rich textbox at the time of pressing the "series" printing.
-                    foreach (var s in overallListOfTopScores)
-                    {
-                        Member mem  = MemberDb.GetMember(MemberDb.GetMemberNumberbyID(s.memberID), RegionID);
-                        if (selectedTournament.ThreeOutOf4 == false)
-                        {
-                            if (rdoScratchScore.Checked == true)
-                            {                                                                                                                                 //technically we want the member Number here
-                                temp.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.ScratchTotal, MemberId = mem.Number, placing = s.Placing, Paid = (mem.IsLifetimeMember == true || (mem.LastPayment != null && (mem.LastPayment.Value <= DateTime.Today.AddHours(-1)))) });
-                            }
-                            else
-                            {
-                                temp.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.HandicapScore, MemberId = mem.Number, placing = s.Placing, Paid = (mem.IsLifetimeMember == true || (mem.LastPayment != null && (mem.LastPayment.Value <= DateTime.Today.AddHours(-1)))) });
-                            }
-                        }
-                        else
-                        {
-                            if (rdoScratchScore.Checked == true)
-                            {                                                                                                                                 //technically we want the member Number here
-                                temp.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Top3ScratchScore, MemberId = mem.Number, placing = s.Placing, Paid = (mem.IsLifetimeMember == true || (mem.LastPayment != null && (mem.LastPayment.Value <= DateTime.Today.AddHours(-1)))) });
-                            }
-                            else
-                            {
-                                temp.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Top3HandiScores, MemberId = mem.Number, placing = s.Placing, Paid = (mem.IsLifetimeMember == true || (mem.LastPayment != null && (mem.LastPayment.Value <= DateTime.Today.AddHours(-1)))) });
-                            }
+                    //foreach (var s in overallListOfTopScores)
+                    //{
+                        //Member mem  = MemberDb.GetMember(MemberDb.GetMemberNumberbyID(s.memberID), RegionID);
+                        //if (selectedTournament.ThreeOutOf4 == false)
+                        //{
+                        //    if (rdoScratchScore.Checked == true)
+                        //    {                                                                                                                                 //technically we want the member Number here
+                        //        temp.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.ScratchTotal, MemberId = mem.Number, placing = s.Placing, Paid = (mem.IsLifetimeMember == true || (mem.LastPayment != null && (mem.LastPayment.Value <= DateTime.Today.AddHours(-1)))) });
+                        //    }
+                        //    else
+                        //    {
+                        //        temp.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.HandicapScore, MemberId = mem.Number, placing = s.Placing, Paid = (mem.IsLifetimeMember == true || (mem.LastPayment != null && (mem.LastPayment.Value <= DateTime.Today.AddHours(-1)))) });
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    if (rdoScratchScore.Checked == true)
+                        //    {                                                                                                                                 //technically we want the member Number here
+                        //        temp.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Top3ScratchScore, MemberId = mem.Number, placing = s.Placing, Paid = (mem.IsLifetimeMember == true || (mem.LastPayment != null && (mem.LastPayment.Value <= DateTime.Today.AddHours(-1)))) });
+                        //    }
+                        //    else
+                        //    {
+                        //        temp.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Top3HandiScores, MemberId = mem.Number, placing = s.Placing, Paid = (mem.IsLifetimeMember == true || (mem.LastPayment != null && (mem.LastPayment.Value <= DateTime.Today.AddHours(-1)))) });
+                        //    }
 
 
-                        }
-                    }
+                        //}
+                    //}
 
 
 
 
                     //these 2 regions would recreate data that already exists on trhe page
                     #region PRINTING HANDICAP TOURNAMENT RESULTS
-                    //if (rdoHandicapScore.Checked)
-                    //{
-                    //    if (selectedTournament.ThreeOutOf4 && QBSNumber == 0) //overall best standings for 3of4 tournament
-                    //    {
-                    //        temp = (from g in (db.Participants.Include(b => b.Member)
-                    //                                .Include(b => b.Game)
-                    //                                .Where(b => b.Tournament.Id == selectedTournament.Id))
-                    //                orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3 + g.Game.Bonus * 3) - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min())) descending
-                    //                select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3) + (g.Game.Bonus * 3) - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
-                    //    }
-                    //    else if (selectedTournament.ThreeOutOf4 && QBSNumber > 0) //best standings based on sqaud for  3of4 tournament
-                    //    {
-                    //        temp = (from g in (db.Participants.Include(b => b.Member)
-                    //                      .Include(b => b.Game)
-                    //                      .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b => b.Squad == QBSNumber))
-                    //                orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3 + g.Game.Bonus * 3) - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min())) descending
-                    //                select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3) + (g.Game.Bonus * 3) - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
+                    if (rdoHandicapScore.Checked)
+                    {
+                        if (selectedTournament.ThreeOutOf4 && QBSNumber == 0) //overall best standings for 3of4 tournament
+                        {
+                            temp = (from g in (db.Participants.Include(b => b.Member)
+                                                    .Include(b => b.Game)
+                                                    .Where(b => b.Tournament.Id == selectedTournament.Id))
+                                    orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3 + g.Game.Bonus * 3) - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min())) descending
+                                    select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3) + (g.Game.Bonus * 3) - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
+                        }
+                        else if (selectedTournament.ThreeOutOf4 && QBSNumber > 0) //best standings based on sqaud for  3of4 tournament
+                        {
+                            temp = (from g in (db.Participants.Include(b => b.Member)
+                                          .Include(b => b.Game)
+                                          .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b => b.Squad == QBSNumber))
+                                    orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3 + g.Game.Bonus * 3) - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min())) descending
+                                    select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3) + (g.Game.Bonus * 3) - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
 
-                    //    }
-                    //    else if (!selectedTournament.ThreeOutOf4 && QBSNumber == 0) //overall standings for a regular tournament
-                    //    {
-                    //        temp = (from g in (db.Participants.Include(b => b.Member)
-                    //                                .Include(b => b.Game)
-                    //                                .Where(b => b.Tournament.Id == selectedTournament.Id))
-                    //                orderby ((g.Game.Game1 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game2 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game3 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game4 + g.Game.Bonus + g.Game.Handicap)) descending
-                    //                select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = (g.Game.Game1 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game2 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game3 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game4 + g.Game.Bonus + g.Game.Handicap), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
-                    //    }
-                    //    else if (!selectedTournament.ThreeOutOf4 && QBSNumber > 0) //standings based on squad for a regular tournament
-                    //    {
-                    //        temp = (from g in (db.Participants.Include(b => b.Member)
-                    //                                .Include(b => b.Game)
-                    //                                .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b => b.Squad == QBSNumber))
-                    //                orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4 + g.Game.Bonus * 4)) descending
-                    //                select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4) + (g.Game.Bonus * 4), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
-                    //    }
-                    //}
+                        }
+                        else if (!selectedTournament.ThreeOutOf4 && QBSNumber == 0) //overall standings for a regular tournament
+                        {
+                            temp = (from g in (db.Participants.Include(b => b.Member)
+                                                    .Include(b => b.Game)
+                                                    .Where(b => b.Tournament.Id == selectedTournament.Id))
+                                    orderby ((g.Game.Game1 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game2 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game3 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game4 + g.Game.Bonus + g.Game.Handicap)) descending
+                                    select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = (g.Game.Game1 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game2 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game3 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game4 + g.Game.Bonus + g.Game.Handicap), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
+                        }
+                        else if (!selectedTournament.ThreeOutOf4 && QBSNumber > 0) //standings based on squad for a regular tournament
+                        {
+                            temp = (from g in (db.Participants.Include(b => b.Member)
+                                                    .Include(b => b.Game)
+                                                    .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b => b.Squad == QBSNumber))
+                                    orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4 + g.Game.Bonus * 4)) descending
+                                    select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4) + (g.Game.Bonus * 4), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
+                        }
+                    }
                     #endregion
                     #region PRINTING SCRATCH TOURNAMENT RESULTS
-                    //else if (rdoScratchScore.Checked)
-                    //{
-                    //    if (selectedTournament.ThreeOutOf4 && QBSNumber == 0) //overall best standings for 3of4 tournament
-                    //    {
-                    //        temp = (from g in (db.Participants.Include(b => b.Member)
-                    //                                .Include(b => b.Game)
-                    //                                .Where(b => b.Tournament.Id == selectedTournament.Id))
-                    //                orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min())) descending
-                    //                select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
-                    //    }
-                    //    else if (selectedTournament.ThreeOutOf4 && QBSNumber > 0) //best standings based on sqaud for  3of4 tournament
-                    //    {
-                    //        temp = (from g in (db.Participants.Include(b => b.Member)
-                    //                      .Include(b => b.Game)
-                    //                      .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b => b.Squad == QBSNumber))
-                    //                orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min())) descending
-                    //                select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
+                    else if (rdoScratchScore.Checked)
+                    {
+                        if (selectedTournament.ThreeOutOf4 && QBSNumber == 0) //overall best standings for 3of4 tournament
+                        {
+                            temp = (from g in (db.Participants.Include(b => b.Member)
+                                                    .Include(b => b.Game)
+                                                    .Where(b => b.Tournament.Id == selectedTournament.Id))
+                                    orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min())) descending
+                                    select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
+                        }
+                        else if (selectedTournament.ThreeOutOf4 && QBSNumber > 0) //best standings based on sqaud for  3of4 tournament
+                        {
+                            temp = (from g in (db.Participants.Include(b => b.Member)
+                                          .Include(b => b.Game)
+                                          .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b => b.Squad == QBSNumber))
+                                    orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min())) descending
+                                    select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
 
-                    //    }
-                    //    else if (!selectedTournament.ThreeOutOf4 && QBSNumber == 0) //overall standings for a regular tournament
-                    //    {
-                    //        temp = (from g in (db.Participants.Include(b => b.Member)
-                    //                                .Include(b => b.Game)
-                    //                                .Where(b => b.Tournament.Id == selectedTournament.Id))
-                    //                orderby ((g.Game.Game1) + (g.Game.Game2) + (g.Game.Game3) + (g.Game.Game4)) descending
-                    //                select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = (g.Game.Game1) + (g.Game.Game2) + (g.Game.Game3) + (g.Game.Game4), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
-                    //    }
-                    //    else if (!selectedTournament.ThreeOutOf4 && QBSNumber > 0) //standings based on squad for a regular tournament
-                    //    {
-                    //        temp = (from g in (db.Participants.Include(b => b.Member)
-                    //                                .Include(b => b.Game)
-                    //                                .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b => b.Squad == QBSNumber))
-                    //                orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4) descending
-                    //                select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4, LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
-                    //    }
-                    //}
+                        }
+                        else if (!selectedTournament.ThreeOutOf4 && QBSNumber == 0) //overall standings for a regular tournament
+                        {
+                            temp = (from g in (db.Participants.Include(b => b.Member)
+                                                    .Include(b => b.Game)
+                                                    .Where(b => b.Tournament.Id == selectedTournament.Id))
+                                    orderby ((g.Game.Game1) + (g.Game.Game2) + (g.Game.Game3) + (g.Game.Game4)) descending
+                                    select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = (g.Game.Game1) + (g.Game.Game2) + (g.Game.Game3) + (g.Game.Game4), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
+                        }
+                        else if (!selectedTournament.ThreeOutOf4 && QBSNumber > 0) //standings based on squad for a regular tournament
+                        {
+                            temp = (from g in (db.Participants.Include(b => b.Member)
+                                                    .Include(b => b.Game)
+                                                    .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b => b.Squad == QBSNumber))
+                                    orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4) descending
+                                    select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4, LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
+                        }
+                    }
                     #endregion
 
                     //find out what squad is selected At the moment of series button click
@@ -2099,9 +2093,9 @@ namespace NineTapTour.Forms
                     temp.Sort(scoreComparer);
                     temp.Reverse();
 
-//                    CalculatePlaceStanding(temp);
+                    //CalculatePlaceStanding(temp, false);
                     //TODO: FIX THIS LATER
-                    throw new NotImplementedException();
+                    //throw new NotImplementedException();
                     if (temp.Count() != 0)
                     {
                         FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, 2/*reportTypeNum, 0 for High game handicap/senior, 1 for game/high game, 2 for series/high series*/, currentsNum);
@@ -2408,46 +2402,19 @@ namespace NineTapTour.Forms
 
         private void cbFilterSquad1_CheckedChanged(object sender, EventArgs e)
         {
-            //If all check boxes on filtered are checked then uncheck all and check allSquads
-            if(FilterCheck() == selectedTournament.Squads)
-            {
-                howManySquadsCanBeFiltered.Clear();
-                cbAllSquads.Checked = true;
-            }
-            else if(cbFilterSquad1.Checked == false && howManySquadsCanBeFiltered.Contains(1))
-            {
-                howManySquadsCanBeFiltered.Remove(1);
-                if (FilterCheck() == 0)
-                {
-                    QBSNumber = 0;
-                    cbAllSquads.Checked = true;
-                }
-                else
-                {
-                    QBSNumber = 9;
-                    Refresh(false, QBSNumber);
-                }
-                
-            }
-            else if(cbFilterSquad1.Checked == true && !(howManySquadsCanBeFiltered.Contains(1)))
-            {
-                howManySquadsCanBeFiltered.Add(1);
-                QBSNumber = 9;
-                Refresh(false, QBSNumber);
-            }
-            
+            SquadFilter(sender as CheckBox, 1);
         }
 
-        private void cbFilterSquad2_CheckedChanged(object sender, EventArgs e)
+        private void SquadFilter(CheckBox squadCheckBox, byte squadNum)
         {
             if (FilterCheck() == selectedTournament.Squads)
             {
                 howManySquadsCanBeFiltered.Clear();
                 cbAllSquads.Checked = true;
             }
-            else if (cbFilterSquad2.Checked == false && howManySquadsCanBeFiltered.Contains(2))
+            else if (squadCheckBox.Checked == false && howManySquadsCanBeFiltered.Contains(squadNum))
             {
-                howManySquadsCanBeFiltered.Remove(2);
+                howManySquadsCanBeFiltered.Remove(squadNum);
                 if (FilterCheck() == 0)
                 {
                     QBSNumber = 0;
@@ -2458,196 +2425,48 @@ namespace NineTapTour.Forms
                     QBSNumber = 9;
                     Refresh(false, QBSNumber);
                 }
-             
             }
             else
             {
-                howManySquadsCanBeFiltered.Add(2);
+                howManySquadsCanBeFiltered.Add(squadNum);
                 QBSNumber = 9;
                 Refresh(false, QBSNumber);
             }
+        }
+
+        private void cbFilterSquad2_CheckedChanged(object sender, EventArgs e)
+        {
+            SquadFilter(sender as CheckBox, 2);
         }
 
         private void cbFilterSquad3_CheckedChanged(object sender, EventArgs e)
         {
-            if (FilterCheck() == selectedTournament.Squads)
-            {
-                howManySquadsCanBeFiltered.Clear();
-                cbAllSquads.Checked = true;
-            }
-            else if (cbFilterSquad3.Checked == false && howManySquadsCanBeFiltered.Contains(3))
-            {
-                howManySquadsCanBeFiltered.Remove(3);
-                if (FilterCheck() == 0)
-                {
-                    QBSNumber = 0;
-                    cbAllSquads.Checked = true;
-                }
-                else
-                {
-                    QBSNumber = 9;
-                    Refresh(false, QBSNumber);
-                }
-              
-            }
-            else
-            {
-                howManySquadsCanBeFiltered.Add(3);
-                QBSNumber = 9;
-                Refresh(false, QBSNumber);
-            }
-
+            SquadFilter(sender as CheckBox, 3);
         }
 
         private void cbFilterSquad4_CheckedChanged(object sender, EventArgs e)
         {
-            if (FilterCheck() == selectedTournament.Squads)
-            {
-                howManySquadsCanBeFiltered.Clear();
-                cbAllSquads.Checked = true;
-            }
-            else if (cbFilterSquad4.Checked == false && howManySquadsCanBeFiltered.Contains(4))
-            {
-                howManySquadsCanBeFiltered.Remove(4);
-                if (FilterCheck() == 0)
-                {
-                    QBSNumber = 0;
-                    cbAllSquads.Checked = true;
-                }
-                else
-                {
-                    QBSNumber = 9;
-                    Refresh(false, QBSNumber);
-                }
-              
-            }
-            else
-            {
-                howManySquadsCanBeFiltered.Add(4);
-                QBSNumber = 9;
-                Refresh(false, QBSNumber);
-            }
-
+            SquadFilter(sender as CheckBox, 4);
         }
 
         private void cbFilterSquad5_CheckedChanged(object sender, EventArgs e)
         {
-            if (FilterCheck() == selectedTournament.Squads)
-            {
-                howManySquadsCanBeFiltered.Clear();
-                cbAllSquads.Checked = true;
-            }
-            else if (cbFilterSquad5.Checked == false && howManySquadsCanBeFiltered.Contains(5))
-            {
-                howManySquadsCanBeFiltered.Remove(5);
-                if (FilterCheck() == 0)
-                {
-                    QBSNumber = 0;
-                    cbAllSquads.Checked = true;
-                }
-                else
-                {
-                    QBSNumber = 9;
-                    Refresh(false, QBSNumber);
-                }
-        
-            }
-            else
-            {
-                howManySquadsCanBeFiltered.Add(5);
-                QBSNumber = 9;
-                Refresh(false, QBSNumber);
-            }
+            SquadFilter(sender as CheckBox, 5);
         }
 
         private void cbFilterSquad6_CheckedChanged(object sender, EventArgs e)
         {
-            if (FilterCheck() == selectedTournament.Squads)
-            {
-                howManySquadsCanBeFiltered.Clear();
-                cbAllSquads.Checked = true;
-            }
-            else if (cbFilterSquad6.Checked == false && howManySquadsCanBeFiltered.Contains(6))
-            {
-                howManySquadsCanBeFiltered.Remove(6);
-                if (FilterCheck() == 0)
-                {
-                    QBSNumber = 0;
-                    cbAllSquads.Checked = true;
-                }
-                else
-                {
-                    QBSNumber = 9;
-                    Refresh(false, QBSNumber);
-                }
-        
-            }
-            else
-            {
-                howManySquadsCanBeFiltered.Add(6);
-                QBSNumber = 9;
-                Refresh(false, QBSNumber);
-            }
+            SquadFilter(sender as CheckBox, 6);
         }
 
         private void cbFilterSquad7_CheckedChanged(object sender, EventArgs e)
         {
-            if (FilterCheck() == selectedTournament.Squads)
-            {
-                howManySquadsCanBeFiltered.Clear();
-                cbAllSquads.Checked = true;
-            }
-            else if (cbFilterSquad7.Checked == false && howManySquadsCanBeFiltered.Contains(7))
-            {
-                howManySquadsCanBeFiltered.Remove(7);
-                if (FilterCheck() == 0)
-                {
-                    QBSNumber = 0;
-                    cbAllSquads.Checked = true;
-                }
-                else
-                {
-                    QBSNumber = 9;
-                    Refresh(false, QBSNumber);
-                }
-               
-            }
-            else
-            {
-                howManySquadsCanBeFiltered.Add(7);
-                QBSNumber = 9;
-                Refresh(false, QBSNumber);
-            }
+            SquadFilter(sender as CheckBox, 7);
         }
 
         private void cbFilterSquad8_CheckedChanged(object sender, EventArgs e)
         {
-            if (FilterCheck() == selectedTournament.Squads)
-            {
-                howManySquadsCanBeFiltered.Clear();
-                cbAllSquads.Checked = true;
-            }
-            else if (cbFilterSquad8.Checked == false && howManySquadsCanBeFiltered.Contains(8))
-            {
-                howManySquadsCanBeFiltered.Remove(8);
-                if (FilterCheck() == 0)
-                {
-                    QBSNumber = 0;
-                    cbAllSquads.Checked = true;
-                }
-                else
-                {
-                    QBSNumber = 9;
-                    Refresh(false, QBSNumber);
-                }
-             
-            }
-            else
-            {
-                howManySquadsCanBeFiltered.Add(8);
-                QBSNumber = 9;
-                Refresh(false, QBSNumber);
-            }
+            SquadFilter(sender as CheckBox, 8);
         }
 
         private void lbxHighGameHC_Click(object sender, EventArgs e)
