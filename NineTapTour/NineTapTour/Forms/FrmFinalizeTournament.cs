@@ -175,7 +175,7 @@ namespace NineTapTour.Forms
 
                     }
                 }
-                FinalizeTempDB.AddFinalizeTempOnstart(temp);
+                FinalizeTempDB.AddFinalizeTemp(temp);
             }
             //pulls a list from the finalizetemp table and seeds the dataview with the table info.
             List<FinalizeTemp> DataViewList = GetListFromTable(tourn);
@@ -1342,7 +1342,7 @@ namespace NineTapTour.Forms
                     FinalizeTableList[i].FinalizeID = FinalizeTempDB.getFinalizeID(g).FinalizeID;
                     FinalizeTableList[i].AdjustedAvg = ph.AVG;
                     FinalizeTableList[i].HandicapTotal = Convert.ToInt32(dataGridView1[HANDICAP_TOTAL_COLUMN, i].Value);
-                    FinalizeTempDB.AddFinalizeTempOnFinalize(FinalizeTableList[i]);
+                    FinalizeTempDB.AddFinalizeTemp(FinalizeTableList[i]);
 
                 }
                 Close();
