@@ -57,31 +57,26 @@ namespace NineTapTour.Forms
 
             List<Member> ListOfMembers = MemberDb.GetMemberList(RegionID);
 
-          
+
 
             //updateOnload(ListOfMembers);
+            toolTip1.IsBalloon = true;
 
-            mtxtBoxDateJoined.Text = "";
-            mtxtBoxDateJoined.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxDateJoined_MaskInputRejected);
+            mtxtBoxDateJoined.MaskInputRejected += new MaskInputRejectedEventHandler(DateMaskTextBoxInput_MaskInputRejected);
             mtxtBoxDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDOB_KeyDown);
-            toolTip1.IsBalloon = true;
 
-            mtxtBoxRejoinDate.Text = "";
-            mtxtBoxRejoinDate.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxRejoinDate_MaskInputRejected);
+            mtxtBoxRejoinDate.MaskInputRejected += new MaskInputRejectedEventHandler(DateMaskTextBoxInput_MaskInputRejected);
             mtxtBoxRejoinDate.KeyDown += new KeyEventHandler(mtxtBoxRejoinDate_KeyDown);
-            toolTip1.IsBalloon = true;
             //_membersList = ((FrmMain)MdiParent)._membersList;
 
-            mtxtBoxLastBowled.Text = "";
-            mtxtBoxLastBowled.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxLastBowled_MaskInputRejected);
+            mtxtBoxLastBowled.MaskInputRejected += new MaskInputRejectedEventHandler(DateMaskTextBoxInput_MaskInputRejected);
             mtxtBoxLastBowled.KeyDown += new KeyEventHandler(mtxtBoxLastBowled_KeyDown);
-            toolTip1.IsBalloon = true;
 
-            mtxtBoxLastPayment.Text = "";
-            mtxtBoxLastPayment.MaskInputRejected += new MaskInputRejectedEventHandler(MtxtBoxLastPayment_MaskInputRejected);
+            mtxtBoxLastPayment.MaskInputRejected += new MaskInputRejectedEventHandler(DateMaskTextBoxInput_MaskInputRejected);
             mtxtBoxLastPayment.KeyDown += new KeyEventHandler(MtxtBoxLastPayment_KeyDown);
-            toolTip1.IsBalloon = true;
             
+            mtxtBoxDOB.MaskInputRejected += new MaskInputRejectedEventHandler(DateMaskTextBoxInput_MaskInputRejected);
+
             UpdateMemberInfo();
         }
         
@@ -209,7 +204,6 @@ namespace NineTapTour.Forms
                 txtFirstName.Text = "";
                 txtMiddleInitial.Text = "";
                 mtxtBoxDOB.Text = "";
-                mtxtBoxDOB.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxDOB_MaskInputRejected);
                 mtxtBoxDOB.KeyDown += new KeyEventHandler(mtxtBoxDOB_KeyDown);
                 toolTip1.IsBalloon = true;
 
@@ -238,7 +232,6 @@ namespace NineTapTour.Forms
                 #region Misc. Info
                 mtxtBoxDateJoined.Text = "";
                 mtxtBoxDateJoined.Text = "";
-                mtxtBoxDateJoined.MaskInputRejected += new MaskInputRejectedEventHandler(mtxtBoxDateJoined_MaskInputRejected);
                 mtxtBoxDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDateJoined_KeyDown);
                 toolTip1.IsBalloon = true;
                 
@@ -1591,53 +1584,9 @@ namespace NineTapTour.Forms
             toolTip1.Hide(mtxtBoxDOB);
         }
 
-        private void mtxtBoxDOB_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
-        {
-            if (mtxtBoxDOB.MaskFull)
-            {
-                toolTip1.ToolTipTitle = "Input Rejected - Too Much Data";
-                toolTip1.Show("You cannot enter any more data into the date field. " +
-                    "Delete some characters in order to insert more data.", mtxtBoxDOB, 0, -20, 5000);
-            }
-            else if (e.Position == mtxtBoxDOB.Mask.Length)
-            {
-                toolTip1.ToolTipTitle = "Input Rejected - End of Field";
-                toolTip1.Show("You cannot add extra characters to the end " +
-                    "of this date field.", mtxtBoxDOB, 0, -20, 5000);
-            }
-            else
-            {
-                toolTip1.ToolTipTitle = "Input Rejected";
-                toolTip1.Show("You can only add numeric characters (0-9) " +
-                    "into this date field.", mtxtBoxDOB, 0, -20, 5000);
-            }
-        }
-
         private void mtxtBoxDateJoined_KeyDown(object sender, KeyEventArgs e)
         {
             toolTip1.Hide(mtxtBoxDateJoined);
-        }
-
-        private void mtxtBoxDateJoined_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
-        {
-            if (mtxtBoxDateJoined.MaskFull)
-            {
-                toolTip1.ToolTipTitle = "Input Rejected - Too Much Data";
-                toolTip1.Show("You cannot enter any more data into the date field. " +
-                    "Delete some characters in order to insert more data.", mtxtBoxDateJoined, 0, -20, 5000);
-            }
-            else if (e.Position == mtxtBoxDateJoined.Mask.Length)
-            {
-                toolTip1.ToolTipTitle = "Input Rejected - End of Field";
-                toolTip1.Show("You cannot add extra characters to the end " +
-                    "of this date field.", mtxtBoxDateJoined, 0, -20, 5000);
-            }
-            else
-            {
-                toolTip1.ToolTipTitle = "Input Rejected";
-                toolTip1.Show("You can only add numeric characters (0-9) " +
-                    "into this date field.", mtxtBoxDateJoined, 0, -20, 5000);
-            }
         }
 
         private void mtxtBoxRejoinDate_KeyDown(object sender, KeyEventArgs e)
@@ -1645,54 +1594,9 @@ namespace NineTapTour.Forms
             toolTip1.Hide(mtxtBoxDateJoined);
         }
 
-        private void mtxtBoxRejoinDate_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
-        {
-
-            if (mtxtBoxRejoinDate.MaskFull)
-            {
-                toolTip1.ToolTipTitle = "Input Rejected - Too Much Data";
-                toolTip1.Show("You cannot enter any more data into the date field. " +
-                    "Delete some characters in order to insert more data.", mtxtBoxRejoinDate, 0, -20, 5000);
-            }
-            else if (e.Position == mtxtBoxRejoinDate.Mask.Length)
-            {
-                toolTip1.ToolTipTitle = "Input Rejected - End of Field";
-                toolTip1.Show("You cannot add extra characters to the end " +
-                    "of this date field.", mtxtBoxRejoinDate, 0, -20, 5000);
-            }
-            else
-            {
-                toolTip1.ToolTipTitle = "Input Rejected";
-                toolTip1.Show("You can only add numeric characters (0-9) " +
-                    "into this date field.", mtxtBoxRejoinDate, 0, -20, 5000);
-            }
-        }
-
         private void mtxtBoxLastBowled_KeyDown(object sender, KeyEventArgs e)
         {
             toolTip1.Hide(mtxtBoxLastBowled);
-        }
-
-        private void mtxtBoxLastBowled_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
-        {
-            if (mtxtBoxLastBowled.MaskFull)
-            {
-                toolTip1.ToolTipTitle = "Input Rejected - Too Much Data";
-                toolTip1.Show("You cannot enter any more data into the date field. " +
-                    "Delete some characters in order to insert more data.", mtxtBoxLastBowled, 0, -20, 5000);
-            }
-            else if (e.Position == mtxtBoxLastBowled.Mask.Length)
-            {
-                toolTip1.ToolTipTitle = "Input Rejected - End of Field";
-                toolTip1.Show("You cannot add extra characters to the end " +
-                    "of this date field.", mtxtBoxLastBowled, 0, -20, 5000);
-            }
-            else
-            {
-                toolTip1.ToolTipTitle = "Input Rejected";
-                toolTip1.Show("You can only add numeric characters (0-9) " +
-                    "into this date field.", mtxtBoxLastBowled, 0, -20, 5000);
-            }
         }
 
         private void MtxtBoxLastPayment_KeyDown(object sender, KeyEventArgs e)
@@ -1700,25 +1604,26 @@ namespace NineTapTour.Forms
             toolTip1.Hide(mtxtBoxLastPayment);
         }
 
-        private void MtxtBoxLastPayment_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
+        private void DateMaskTextBoxInput_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
         {
-            if (mtxtBoxLastPayment.MaskFull)
+            MaskedTextBox box = sender as MaskedTextBox;
+            if (box.MaskFull)
             {
                 toolTip1.ToolTipTitle = "Input Rejected - Too Much Data";
                 toolTip1.Show("You cannot enter any more data into the date field. " +
-                    "Delete some characters in order to insert more data.", mtxtBoxLastPayment, 0, -20, 5000);
+                    "Delete some characters in order to insert more data.", box, 0, -20, 5000);
             }
-            else if (e.Position == mtxtBoxLastPayment.Mask.Length)
+            else if (e.Position == box.Mask.Length)
             {
                 toolTip1.ToolTipTitle = "Input Rejected - End of Field";
                 toolTip1.Show("You cannot add extra characters to the end " +
-                    "of this date field.", mtxtBoxLastBowled, 0, -20, 5000);
+                    "of this date field.", box, 0, -20, 5000);
             }
             else
             {
                 toolTip1.ToolTipTitle = "Input Rejected";
                 toolTip1.Show("You can only add numeric characters (0-9) " +
-                    "into this date field.", mtxtBoxLastBowled, 0, -20, 5000);
+                    "into this date field.", box, 0, -20, 5000);
             }
         }
 
