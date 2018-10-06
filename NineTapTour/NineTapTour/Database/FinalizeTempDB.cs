@@ -11,43 +11,7 @@ namespace NineTapTour.Database
 {
     class FinalizeTempDB
     {
-        public static void AddFinalizeTempOnstart(FinalizeTemp temp)
-        {
-            try
-            {
-                using (var db = new NineTapDb())
-                {
-                    //checks if tournament is new or already existing in db
-                    if (!db.FinalizeTemp.Any(f => f.GameId == temp.GameId))
-                    {
-                        db.Entry(temp).State = EntityState.Added;
-                        /*************************************************************************
-                        updates the handicap of a member that participated in the tournament in the database 
-                        ***There is a problem in the database's member's average, so it was not 
-                           used, but I believe it should be
-                           -The problem might be when a tournament record is added, it is not 
-                           updating the member's average in the database.
-                        *************************************************************************/
-                        db.Members.First(x => x.Id == temp.MemberId).Handicap = Calculations.Calculations.CalculateHandicapPins(Convert.ToInt16(LeagueAverage(db.Members.First(x => x.Id == temp.MemberId))));
-                        /************************************************************************/
-                        db.SaveChanges();
-                    }
-                    else
-                    {
-                        db.Entry(temp).State = EntityState.Modified;
-                        db.SaveChanges();
-                    }
-       
-            
-                }
-            }
-            catch (SqlException ex)
-            {
-                throw new Exception("Error Number : " + ex.Number + " - " + ex.Message);
-            }
-        }
-
-        public static void AddFinalizeTempOnFinalize(FinalizeTemp temp)
+        public static void AddFinalizeTemp(FinalizeTemp temp)
         {
             try
             {
@@ -82,8 +46,6 @@ namespace NineTapTour.Database
                 throw new Exception("Error Number : " + ex.Number + " - " + ex.Message);
             }
         }
-
-
 
         /***************************************************************
         calculates the average

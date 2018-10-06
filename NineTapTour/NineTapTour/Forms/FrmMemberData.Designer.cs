@@ -281,7 +281,6 @@
             this.mtxtBoxDOB.Size = new System.Drawing.Size(100, 23);
             this.mtxtBoxDOB.TabIndex = 10;
             this.mtxtBoxDOB.ValidatingType = typeof(System.DateTime);
-            this.mtxtBoxDOB.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.mtxtBoxDOB_MaskInputRejected);
             this.mtxtBoxDOB.Click += new System.EventHandler(this.mtxtBox_Click);
             // 
             // chbSocial
