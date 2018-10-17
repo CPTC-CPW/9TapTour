@@ -59,7 +59,7 @@
             this.txtNumberOfMembers.Location = new System.Drawing.Point(91, 100);
             this.txtNumberOfMembers.Name = "txtNumberOfMembers";
             this.txtNumberOfMembers.Size = new System.Drawing.Size(100, 20);
-            this.txtNumberOfMembers.TabIndex = 2;
+            this.txtNumberOfMembers.TabIndex = 0;
             // 
             // FrmMemberScoresReports
             // 
