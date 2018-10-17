@@ -70,22 +70,21 @@ namespace NineTapTour.Forms
         /// <param name="temp"></param>
         private void CalculatePlaceStandings(List<frmMemberScores.MemberScores> temp)
         {
-            int lastScore = int.MaxValue;
-            int lastPosition = 0;
-            const byte PositionOffset = 1;
+            //int lastScore = int.MaxValue;
+            //int lastPosition = 0;
+            //const byte PositionOffset = 1;
+            int place = 1;
             for (int currPosition = 0; currPosition < temp.Count; currPosition++)
             {
-                if(temp[currPosition].Score != lastScore) //if scores are not a tie
+                if (currPosition > 0 && temp[currPosition].Score == temp[currPosition - 1].Score)
                 {
-                    ++lastPosition;
-                    lastScore = temp[currPosition].Score.Value;
-                    temp[currPosition].placing = currPosition + PositionOffset;
+                    temp[currPosition].placing = temp[currPosition - 1].placing;
                 }
                 else
                 {
-                    lastPosition = currPosition;
-                    temp[currPosition].placing = lastPosition;
+                    temp[currPosition].placing = place;
                 }
+                place++;
             }
         }
     }
