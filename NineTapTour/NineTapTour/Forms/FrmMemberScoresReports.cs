@@ -14,7 +14,7 @@ namespace NineTapTour.Forms
     public partial class FrmMemberScoresReports : Form
     {
         // the members and their scores
-        List<frmMemberScores.MemberScores> temp;
+        List<Models.MemberScores> temp;
         // used in the print class to print the date and location
         Tournament selectedTournament;
         // to know the report type
@@ -22,7 +22,7 @@ namespace NineTapTour.Forms
         int reportTypeNum;
         int currentSquad;
 
-        public FrmMemberScoresReports(List<frmMemberScores.MemberScores> temp, Tournament selectedTournament, int reportTypeNum, int currentSquad)
+        public FrmMemberScoresReports(List<MemberScores> temp, Tournament selectedTournament, int reportTypeNum, int currentSquad)
         {
             InitializeComponent();
             this.temp = temp;
@@ -45,7 +45,7 @@ namespace NineTapTour.Forms
                 {
                     // only take the inputted number of members
                     temp = temp.Take(Convert.ToInt32(txtNumberOfMembers.Text)).ToList();
-                    CalculatePlaceStandings(temp);
+                    Calculations.Calculations.CalculatePlaceStandings(temp);
                     // print( go to print class )
                     Database.Print.printMemberReport(temp, selectedTournament, reportTypeNum,currentSquad);
 
@@ -61,30 +61,6 @@ namespace NineTapTour.Forms
             catch (FormatException)
             {
                 MessageBox.Show("Please only input a number");
-            }
-        }
-
-        /// <summary>
-        /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding
-        /// </summary>
-        /// <param name="temp"></param>
-        private void CalculatePlaceStandings(List<frmMemberScores.MemberScores> temp)
-        {
-            //int lastScore = int.MaxValue;
-            //int lastPosition = 0;
-            //const byte PositionOffset = 1;
-            int place = 1;
-            for (int currPosition = 0; currPosition < temp.Count; currPosition++)
-            {
-                if (currPosition > 0 && temp[currPosition].Score == temp[currPosition - 1].Score)
-                {
-                    temp[currPosition].placing = temp[currPosition - 1].placing;
-                }
-                else
-                {
-                    temp[currPosition].placing = place;
-                }
-                place++;
             }
         }
     }

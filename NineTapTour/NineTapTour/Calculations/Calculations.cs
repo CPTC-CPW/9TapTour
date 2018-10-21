@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NineTapTour.Calculations
 {
-    public class Calculations
+    public static class Calculations
     {
         /// <summary>
         /// Constants are based on 9-Tap Rules for adding and deducting pins based on type
@@ -178,6 +178,75 @@ namespace NineTapTour.Calculations
             //grabs the ceiling of the double when divided by 5
             decimal numberOfPlacementsBasedOnParticipants =(Math.Round(Convert.ToDecimal(numberOfParticipantsInTournament / 5)));
             return numberOfPlacementsBasedOnParticipants;
+        }
+
+        /// <summary>
+        /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding
+        /// </summary>
+        /// <param name="temp"></param>
+        public static void CalculatePlaceStandings(List<MemberScores> temp)
+        {
+            //remove duplicates
+            RemoveDuplicateBowers(temp);
+
+            //ensure bowlers are sorted by score
+            temp.Sort(new MemberScoresComparer());
+            temp.Reverse();
+
+
+            int place = 1;
+            for (int currPosition = 0; currPosition < temp.Count; currPosition++)
+            {
+                if (currPosition > 0 && temp[currPosition].Score == temp[currPosition - 1].Score)
+                {
+                    temp[currPosition].placing = temp[currPosition - 1].placing;
+                }
+                else
+                {
+                    temp[currPosition].placing = place;
+                }
+                place++;
+            }
+        }
+
+        /// <summary>
+        /// Removes the lower scores of duplicate bowlers by MemberId
+        /// </summary>
+        /// <param name="temp"></param>
+        private static void RemoveDuplicateBowers(List<MemberScores> temp)
+        {
+            for (int i = 0; i < temp.Count; i++)
+            {
+                List<MemberScores> removal = new List<MemberScores>();
+                for (int j = i + 1; j < temp.Count; j++)
+                {
+                    if(temp[i].MemberId == temp[j].MemberId)
+                    {
+                        if (temp[i].Score >= temp[j].Score)
+                            removal.Add(temp[j]);
+                        else
+                            removal.Add(temp[i]);
+                    }
+                }
+
+                foreach (MemberScores deleteMember in removal)
+                {
+                    temp.Remove(deleteMember);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Currently sorts member scores in ASCENDING order
+    /// </summary>
+    public class MemberScoresComparer : IComparer<MemberScores>
+    {
+        int IComparer<MemberScores>.Compare(MemberScores x, MemberScores y)
+        {
+            int score1 = x.Score.HasValue ? (int)x.Score : 0;
+            int score2 = y.Score.HasValue ? (int)y.Score : 0;
+            return score1.CompareTo(score2);
         }
     }
 }

@@ -64,7 +64,7 @@ namespace NineTapTour.Database
         /************************************************************************
         For Printing the Report Sections
         ************************************************************************/
-        public static void ReportPrint(List<Forms.frmMemberScores.MemberScores> temp, Tournament selectedTournament, int reportTypeNum, PrintPageEventArgs e)
+        public static void ReportPrint(List<Models.MemberScores> temp, Tournament selectedTournament, int reportTypeNum, PrintPageEventArgs e)
         {
             int numToPrint = 40;
             //This is what prints the data
@@ -161,7 +161,7 @@ namespace NineTapTour.Database
             }
         }
 
-        static public void printMemberReport(List<Forms.frmMemberScores.MemberScores> temp, Tournament selectedTournament, int reportTypeNum, int currentSquad)
+        static public void printMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, int reportTypeNum, int currentSquad)
         {
             Print.temp = temp;
             Print.selectedTournament = selectedTournament;
@@ -195,7 +195,7 @@ namespace NineTapTour.Database
             e.HasMorePages = ((index * 40) < temp.Count);
         }
 
-        static List<Forms.frmMemberScores.MemberScores> temp = new List<Forms.frmMemberScores.MemberScores>();//for High score
+        static List<MemberScores> temp = new List<MemberScores>();//for High score
         static Tournament selectedTournament;
         static int reportTypeNum;
         static int currentSquad;
