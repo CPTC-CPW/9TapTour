@@ -441,6 +441,7 @@ namespace NineTapTour.Forms
 			//contains any error messages.  If the list is empty, one knows that all the textboxes are 
 			//valid.  Otherwise, the error messages get displayed for the user's consideration
 			List<string> checkFields = new List<string>();
+            bool IsValid = true;
 
             //validate average box to only contain numbers
             if (!String.IsNullOrWhiteSpace(txtAverage.Text) && !int.TryParse(txtAverage.Text, out int result4))
@@ -448,6 +449,7 @@ namespace NineTapTour.Forms
                 checkFields.Add("Average must be a number.  Field can not contain letters.");
                 txtAverage.Clear();
                 txtAverage.BackColor = Color.LightPink;
+                IsValid = false;
             }
 
             //validate average box to not be 0 or empty
@@ -456,6 +458,7 @@ namespace NineTapTour.Forms
                 checkFields.Add("Average must be valid and greater than 0.");
                 txtAverage.Clear();
                 txtAverage.BackColor = Color.LightPink;
+                IsValid = false;
             }
 
             //validate last name box
@@ -464,15 +467,16 @@ namespace NineTapTour.Forms
                 checkFields.Add("Last Name is required");
                 txtLastName.Clear();
                 txtLastName.BackColor = Color.LightPink;
+                IsValid = false;
             }
 
             //validate first name box
             if (String.IsNullOrWhiteSpace(txtFirstName.Text))
             {
                 checkFields.Add("First Name is required");
-
                 txtFirstName.Clear();
                 txtFirstName.BackColor = Color.LightPink;
+                IsValid = false;
             }
 
             //VALIDATE DOB WITHIN BOUNDS
@@ -481,6 +485,7 @@ namespace NineTapTour.Forms
             {
                 checkFields.Add("Date of birth must be between 1753 and 9999.");
                 mtxtBoxDOB.BackColor = Color.LightPink;
+                IsValid = false;
             }
 
 			//dateJoined validation
@@ -488,6 +493,7 @@ namespace NineTapTour.Forms
             {
                 checkFields.Add("Join Date must be between 1753 and 9999.");
                 mtxtBoxDateJoined.BackColor = Color.LightPink;
+                IsValid = false;
             }
 
 			//rejoin date validation
@@ -495,6 +501,7 @@ namespace NineTapTour.Forms
             {
                 checkFields.Add("Rejoin Date must be between 1753 and 9999.");
                 mtxtBoxDateJoined.BackColor = Color.LightPink;
+                IsValid = false;
             }
             
             //check to make sure box is not empty.  If so, attempt to parse referral number
@@ -504,7 +511,7 @@ namespace NineTapTour.Forms
                 {
                     checkFields.Add("Referrals must be a number.");
                     txtReferrals.BackColor = Color.LightPink;
-                    //return false;
+                    IsValid = false;
                 }
             }
 
@@ -515,6 +522,7 @@ namespace NineTapTour.Forms
                 {
                     checkFields.Add("Social Security Number must have 9 digits");
                     mtxtBoxSSN.BackColor = Color.LightPink;
+                    IsValid = false;
                 }
             }
 
@@ -537,9 +545,18 @@ namespace NineTapTour.Forms
             {
                 checkFields.Add("State textbox must only contain letters");
                 txtState.BackColor = Color.LightPink;
+                IsValid = false;
             }
 
-			    return checkFields;
+            if (IsValid == false)
+            {
+                return checkFields;
+            }
+            else
+            {
+                checkFields.Clear();
+                return checkFields;
+            }
         }
 
         /// <summary>
