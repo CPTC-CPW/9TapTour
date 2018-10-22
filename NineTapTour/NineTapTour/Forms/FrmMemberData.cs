@@ -10,6 +10,7 @@ using System.Data;
 using System.Runtime.InteropServices;
 using NineTapTour.Models;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Text.RegularExpressions;
 
 namespace NineTapTour.Forms
 {
@@ -441,18 +442,18 @@ namespace NineTapTour.Forms
 			//valid.  Otherwise, the error messages get displayed for the user's consideration
 			List<string> checkFields = new List<string>();
 
-            //validate average box to not be 0 or empty
-            if(txtAverage.Text == "0" || String.IsNullOrWhiteSpace(txtAverage.Text))
+            //validate average box to only contain numbers
+            if (!String.IsNullOrWhiteSpace(txtAverage.Text) && !int.TryParse(txtAverage.Text, out int result4))
             {
-                checkFields.Add("Average must be valid and greater than 0.");
+                checkFields.Add("Average must be a number.  Field can not contain letters.");
                 txtAverage.Clear();
                 txtAverage.BackColor = Color.LightPink;
             }
 
-            //validate average box to only contain numbers
-            if(!String.IsNullOrWhiteSpace(txtAverage.Text) && !int.TryParse(txtAverage.Text, out int result4))
+            //validate average box to not be 0 or empty
+            if (txtAverage.Text == "0" || String.IsNullOrWhiteSpace(txtAverage.Text) || txtAverage.Text.Contains("-") || Convert.ToInt32(txtAverage.Text) > 300)
             {
-                checkFields.Add("Average must be a number.  Field can not contain letters.");
+                checkFields.Add("Average must be valid and greater than 0.");
                 txtAverage.Clear();
                 txtAverage.BackColor = Color.LightPink;
             }
