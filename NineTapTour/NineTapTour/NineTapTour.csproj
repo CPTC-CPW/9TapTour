@@ -120,7 +120,6 @@
     <Compile Include="Models\ExcelMember.cs" />
     <Compile Include="Database\FormHelper.cs" />
     <Compile Include="Database\NineTapRegionDB.cs" />
-    <Compile Include="Models\MemberScores.cs" />
     <Compile Include="Models\NineTapRegion.cs" />
     <Compile Include="Models\ExcelRow.cs" />
     <Compile Include="Models\FinalizeTemp.cs" />
