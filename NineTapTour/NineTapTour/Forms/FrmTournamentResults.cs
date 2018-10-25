@@ -354,7 +354,7 @@ namespace NineTapTour.Forms
         //    MessageBox.Show(@"Saved to database.");
         //}
         
-        private void exportToExcel()
+        private void expExcel()
         {
             /// <summary>
             /// Saves participants' place standing and earnings won to the database
