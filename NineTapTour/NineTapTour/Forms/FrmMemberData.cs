@@ -800,10 +800,16 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnArrowLeft_Click(object sender, EventArgs e)
         {
+            //cursor begins when arrow is clicked
+            Cursor.Current = Cursors.WaitCursor;
+
             List<Member> m = MemberDb.GetMemberList(RegionID);
             if (MemberDb.GetMemberList(RegionID).Count == 0 || currentMem.Number <= m[0].Number)
             {
+                //turns loading cursor off.
+                Cursor.Current = Cursors.Default;
                 MessageBox.Show(@"Beginning of file.", @"Notice");
+                
             }
             else
             {
@@ -812,6 +818,8 @@ namespace NineTapTour.Forms
                 {
                     txtMemberNumber.Text = (currentMem.Number - 1).ToString();
                     UpdateMemberInfo();
+                    //turns loading cursor off
+                    Cursor.Current = Cursors.Default;
                 }
             }
 
@@ -824,8 +832,12 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
+            //turns on a loading cursor while new bowler is loaded.
+            Cursor.Current = Cursors.WaitCursor;
             if (MemberDb.GetMemberList(RegionID).Count == 0 || currentMem.Number >= MemberDb.GetMemberList(RegionID).Count)
             {
+                //turns loading cursor off.
+                Cursor.Current = Cursors.Default;
                 MessageBox.Show(@"End of file.", @"Notice");
             }
             else
@@ -834,6 +846,8 @@ namespace NineTapTour.Forms
                 {
                     txtMemberNumber.Text = (currentMem.Number + 1).ToString();
                     UpdateMemberInfo();
+                    //turns loading cursor off.
+                    Cursor.Current = Cursors.Default;
                 }
 
                 
