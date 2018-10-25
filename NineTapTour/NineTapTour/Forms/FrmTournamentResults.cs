@@ -352,8 +352,6 @@ namespace NineTapTour.Forms
         //    }
 
         //    MessageBox.Show(@"Saved to database.");
-
-
         //}
         
         private void exportToExcel()
