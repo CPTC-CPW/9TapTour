@@ -1480,7 +1480,7 @@ namespace NineTapTour.Forms
         }
 
         List<TopScores> listOfTopScore = new List<TopScores>();
-        IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
+        IComparer<MemberScores> scoreComparer = new Calculations.MemberScoresComparer();
 
         /// <summary>
         /// pass true if you are changing the radio buttons and only want to refresh the bottom box.
@@ -1710,33 +1710,9 @@ namespace NineTapTour.Forms
             return gameScore + gameHandicap;
         }
 
-        public class MemberScores
-        {
-            public string FirstName { get; set; }
+        
 
-            public string LastName { get; set; }
-
-            public int placing { get; set; }
-
-            public int? Score { get; set; }
-
-            public int MemberId { get; set; } // Renamed MemberNo to MemberId because that is the actual info being assigned to this property
-
-            public string LastPaymentYear { get; set; }
-
-            public bool Paid { get; set; }
-
-        }
-
-        class MemberScoresComparer : IComparer<MemberScores>
-        {
-            int IComparer<MemberScores>.Compare(MemberScores x, MemberScores y)
-            {
-                int score1 = x.Score.HasValue ? (int)x.Score : 0;
-                int score2 = y.Score.HasValue ? (int)y.Score : 0;
-                return score1.CompareTo(score2);
-            }
-        }
+        
 
         private void btnTournamentsByYear_Click(object sender, EventArgs e)
         {
