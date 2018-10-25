@@ -63,5 +63,10 @@ namespace NineTapTour.Forms
                 MessageBox.Show("Please only input a number");
             }
         }
+
+        private void FrmMemberScoresReports_Load(object sender, EventArgs e)
+        {
+            txtNumberOfMembers.Focus();
+        }
     }
 }
