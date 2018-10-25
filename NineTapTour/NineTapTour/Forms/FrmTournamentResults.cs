@@ -42,7 +42,7 @@ namespace NineTapTour.Forms
         {
             InitializeComponent();
         }
-
+    
         private void FrmTournamentResults_Load(object sender, EventArgs e)
         {
             // Set compEntries to 0; increment when building winners list
@@ -89,7 +89,6 @@ namespace NineTapTour.Forms
             // Create datagridview and populate with cashedWinners list
             CreateDataGridView(cashedWinners);
         }
-
 
         /// <summary>
         /// Creates the DataGridView table and populates it with the list of cashed winners
@@ -353,11 +352,9 @@ namespace NineTapTour.Forms
         //    }
 
         //    MessageBox.Show(@"Saved to database.");
-
-
         //}
         
-        private void exportToExcel()
+        private void eToExcel()
         {
             /// <summary>
             /// Saves participants' place standing and earnings won to the database
