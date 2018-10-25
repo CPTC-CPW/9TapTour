@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+
 /// <summary>
 /// Author Julie Edwards
 /// </summary>
@@ -36,10 +37,9 @@ namespace NineTapTour.Forms
             string fileName = @"C:\Users\Public\NineTapTour.txt";
             File.CreateText(fileName);
             FileStream stream = File.Create(fileName);
-            stream.Close();
-            
-        
+            stream.Close();     
         }
+
         static public void WriteWordDoc(String content) {
             string fileName = @"C:\Users\Public\NineTapTour.txt";
             FileStream stream = File.Create(fileName);
