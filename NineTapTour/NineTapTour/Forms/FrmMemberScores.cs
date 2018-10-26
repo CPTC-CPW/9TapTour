@@ -28,7 +28,7 @@ namespace NineTapTour.Forms
         Participant player = new Participant();
         Participant player2 = new Participant();
         public static Tournament selectedTournament;
-        public static List<TopScores> overallListOfTopScores;
+        public static List<TopScores> overallListOfTopScores = new List<TopScores>();
         public static List<Participant> overallListOfParticipants;
 
         //QBS number is set by the radio buttons on the right side of the form "QUALIFY BY SQUAD" depending on which radio button is selected
@@ -1480,7 +1480,7 @@ namespace NineTapTour.Forms
         }
 
         List<TopScores> listOfTopScore = new List<TopScores>();
-        IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
+        IComparer<MemberScores> scoreComparer = new Calculations.MemberScoresComparer();
 
         /// <summary>
         /// pass true if you are changing the radio buttons and only want to refresh the bottom box.
@@ -1710,33 +1710,9 @@ namespace NineTapTour.Forms
             return gameScore + gameHandicap;
         }
 
-        public class MemberScores
-        {
-            public string FirstName { get; set; }
+        
 
-            public string LastName { get; set; }
-
-            public int placing { get; set; }
-
-            public int? Score { get; set; }
-
-            public int MemberId { get; set; } // Renamed MemberNo to MemberId because that is the actual info being assigned to this property
-
-            public string LastPaymentYear { get; set; }
-
-            public bool Paid { get; set; }
-
-        }
-
-        class MemberScoresComparer : IComparer<MemberScores>
-        {
-            int IComparer<MemberScores>.Compare(MemberScores x, MemberScores y)
-            {
-                int score1 = x.Score.HasValue ? (int)x.Score : 0;
-                int score2 = y.Score.HasValue ? (int)y.Score : 0;
-                return score1.CompareTo(score2);
-            }
-        }
+        
 
         private void btnTournamentsByYear_Click(object sender, EventArgs e)
         {
@@ -2510,44 +2486,6 @@ namespace NineTapTour.Forms
                 // selects the squad that the participant is in
                 FormHelper.SelectParticipantSquad(participant.Squad, groupBox1);
             }
-        }
-    }
-
-    /// <summary>
-    /// Class used to populate 3rd RichTextBox
-    /// </summary>
-    public partial class TopScores
-    {
-        public TopScores()
-        {
-
-        }
-        #region Properties
-
-        public int memberID { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public int Placing { get; set; }
-        public int? ScratchTotal { get; set; }
-        public int? HandicapScore { get; set; }
-        public int? Top3ScratchScore { get; set; }
-        public int? Top3HandiScores { get; set; }
-        public int? Game1 { get; set; }
-        public int? Game2 { get; set; }
-        public int? Game3 { get; set; }
-        public int? Game4 { get; set; }
-        public int? Handicap { get; set; }
-        public int Bonus { get; set; }
-        public int GameID { get; set; }
-        #endregion
-        public List<int?> allGameScores()
-        {
-            var newList = new List<int?>();
-            newList.Add(Game1);
-            newList.Add(Game2);
-            newList.Add(Game3);
-            newList.Add(Game4);
-            return newList.Where(sc => sc.HasValue).ToList();
         }
     }
 }
