@@ -18,7 +18,6 @@ namespace Member_Import_Test
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-
 #if !DEBUG //if app is set to release mode
             SetConnectionString(@".\SQLExpress");
 #elif DEBUG //set connection to dev database
