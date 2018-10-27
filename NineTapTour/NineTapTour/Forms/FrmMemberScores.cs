@@ -1952,39 +1952,6 @@ namespace NineTapTour.Forms
                 {
                     var temp = new List<MemberScores>();
 
-                    //instead of recreating existing data, just set temp to whats populated in the third rich textbox at the time of pressing the "series" printing.
-                    //foreach (var s in overallListOfTopScores)
-                    //{
-                        //Member mem  = MemberDb.GetMember(MemberDb.GetMemberNumberbyID(s.memberID), RegionID);
-                        //if (selectedTournament.ThreeOutOf4 == false)
-                        //{
-                        //    if (rdoScratchScore.Checked == true)
-                        //    {                                                                                                                                 //technically we want the member Number here
-                        //        temp.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.ScratchTotal, MemberId = mem.Number, placing = s.Placing, Paid = (mem.IsLifetimeMember == true || (mem.LastPayment != null && (mem.LastPayment.Value <= DateTime.Today.AddHours(-1)))) });
-                        //    }
-                        //    else
-                        //    {
-                        //        temp.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.HandicapScore, MemberId = mem.Number, placing = s.Placing, Paid = (mem.IsLifetimeMember == true || (mem.LastPayment != null && (mem.LastPayment.Value <= DateTime.Today.AddHours(-1)))) });
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    if (rdoScratchScore.Checked == true)
-                        //    {                                                                                                                                 //technically we want the member Number here
-                        //        temp.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Top3ScratchScore, MemberId = mem.Number, placing = s.Placing, Paid = (mem.IsLifetimeMember == true || (mem.LastPayment != null && (mem.LastPayment.Value <= DateTime.Today.AddHours(-1)))) });
-                        //    }
-                        //    else
-                        //    {
-                        //        temp.Add(new MemberScores { FirstName = s.FirstName, LastName = s.LastName, Score = s.Top3HandiScores, MemberId = mem.Number, placing = s.Placing, Paid = (mem.IsLifetimeMember == true || (mem.LastPayment != null && (mem.LastPayment.Value <= DateTime.Today.AddHours(-1)))) });
-                        //    }
-
-
-                        //}
-                    //}
-
-
-
-
                     //these 2 regions would recreate data that already exists on trhe page
                     #region PRINTING HANDICAP TOURNAMENT RESULTS
                     if (rdoHandicapScore.Checked)
@@ -2069,9 +2036,6 @@ namespace NineTapTour.Forms
                     temp.Sort(scoreComparer);
                     temp.Reverse();
 
-                    //CalculatePlaceStanding(temp, false);
-                    //TODO: FIX THIS LATER
-                    //throw new NotImplementedException();
                     if (temp.Count() != 0)
                     {
                         FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, 2/*reportTypeNum, 0 for High game handicap/senior, 1 for game/high game, 2 for series/high series*/, currentsNum);
