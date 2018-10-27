@@ -31,9 +31,6 @@ namespace NineTapTour.Forms
         public static List<TopScores> overallListOfTopScores = new List<TopScores>();
         public static List<Participant> overallListOfParticipants;
 
-        //QBS number is set by the radio buttons on the right side of the form "QUALIFY BY SQUAD" depending on which radio button is selected
-        //it will change it to the corresponding value.
-        int QBSNumber = 0;
         List<int> howManySquadsCanBeFiltered = new List<int>();
 
 
@@ -186,7 +183,7 @@ namespace NineTapTour.Forms
                 overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
                 btnDelete.Enabled = true;
                
-                Refresh(false, QBSNumber);
+                Refresh(false);
                 // sets focus to member num becuse that is what a user will need next
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
@@ -855,7 +852,7 @@ namespace NineTapTour.Forms
                         }
                     }
 
-                    Refresh(false, QBSNumber);
+                    Refresh(false);
                 }
             }
             else
@@ -1363,7 +1360,7 @@ namespace NineTapTour.Forms
                 // Gets the record for the selected tournament
                 RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
                 overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
-                Refresh(false, QBSNumber);
+                Refresh(false);
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
                 // sets focus to member num becuse that is what a user will need next
@@ -1471,12 +1468,12 @@ namespace NineTapTour.Forms
 
         private void rdoScratchScore_CheckedChanged(object sender, EventArgs e)
         {
-            Refresh(true, QBSNumber);
+            Refresh(true);
         }
 
         private void rdoHandicapScore_CheckedChanged(object sender, EventArgs e)
         {
-            Refresh(true, QBSNumber);
+            Refresh(true);
         }
 
         List<TopScores> listOfTopScore = new List<TopScores>();
@@ -1486,7 +1483,7 @@ namespace NineTapTour.Forms
         /// pass true if you are changing the radio buttons and only want to refresh the bottom box.
         /// </summary>
         /// <param name="seriesChange"></param>
-        public void Refresh(bool seriesChange, int qbsNumber)
+        public void Refresh(bool seriesChange)
         {
             var scores = new List<MemberScores>();
             listOfTopScore.Clear();
@@ -1504,11 +1501,13 @@ namespace NineTapTour.Forms
                 // 
                 var topScores = listOfParticipants.GroupBy(p => p.Member.Id).Select(pg => pg.Max()).ToList();
 
-                //TAKES A TOURNAMENT ID AND SQUAD NUMBER AND FILTERS FOR A LIST OF PARTICIPANTS.
-                if (qbsNumber > 0 && qbsNumber <= 8)
-                    listOfParticipants = listOfParticipants.Where(p => p.Squad == qbsNumber).ToList();
+                int qualifyBySquadNumber = GetSquadResultsNumberChecked();
 
-                else if (howManySquadsCanBeFiltered.Count > 0 && QBSNumber == 9)
+                //TAKES A TOURNAMENT ID AND SQUAD NUMBER AND FILTERS FOR A LIST OF PARTICIPANTS.
+                if (qualifyBySquadNumber > 0 && qualifyBySquadNumber <= 8)
+                    listOfParticipants = listOfParticipants.Where(p => p.Squad == qualifyBySquadNumber).ToList();
+
+                else if (howManySquadsCanBeFiltered.Count > 0 && qualifyBySquadNumber == 9)
                     //filters out each squad
                     //take the list of participants where => if the squad number equals to any of the filtered numbers.
                     listOfParticipants = listOfParticipants
@@ -1869,6 +1868,7 @@ namespace NineTapTour.Forms
 
         /// <summary>
         /// Get the squad number for the current Squad Results Radio Button that is checked
+        /// Returns the number of the squad of 0 if "All Squads" is selected
         /// </summary>
         /// <returns></returns>
         private int GetSquadResultsNumberChecked()
@@ -1952,11 +1952,13 @@ namespace NineTapTour.Forms
                 {
                     var temp = new List<MemberScores>();
 
+                    int qualifyBySquadNumber = GetSquadResultsNumberChecked();
+
                     //these 2 regions would recreate data that already exists on trhe page
                     #region PRINTING HANDICAP TOURNAMENT RESULTS
                     if (rdoHandicapScore.Checked)
                     {
-                        if (selectedTournament.ThreeOutOf4 && QBSNumber == 0) //overall best standings for 3of4 tournament
+                        if (selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall best standings for 3of4 tournament
                         {
                             temp = (from g in (db.Participants.Include(b => b.Member)
                                                     .Include(b => b.Game)
@@ -1964,16 +1966,16 @@ namespace NineTapTour.Forms
                                     orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3 + g.Game.Bonus * 3) - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min())) descending
                                     select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3) + (g.Game.Bonus * 3) - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
                         }
-                        else if (selectedTournament.ThreeOutOf4 && QBSNumber > 0) //best standings based on sqaud for  3of4 tournament
+                        else if (selectedTournament.ThreeOutOf4 && qualifyBySquadNumber > 0) //best standings based on sqaud for  3of4 tournament
                         {
                             temp = (from g in (db.Participants.Include(b => b.Member)
                                           .Include(b => b.Game)
-                                          .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b => b.Squad == QBSNumber))
+                                          .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b => b.Squad == qualifyBySquadNumber))
                                     orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3 + g.Game.Bonus * 3) - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min())) descending
                                     select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3) + (g.Game.Bonus * 3) - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
 
                         }
-                        else if (!selectedTournament.ThreeOutOf4 && QBSNumber == 0) //overall standings for a regular tournament
+                        else if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall standings for a regular tournament
                         {
                             temp = (from g in (db.Participants.Include(b => b.Member)
                                                     .Include(b => b.Game)
@@ -1981,11 +1983,11 @@ namespace NineTapTour.Forms
                                     orderby ((g.Game.Game1 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game2 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game3 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game4 + g.Game.Bonus + g.Game.Handicap)) descending
                                     select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = (g.Game.Game1 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game2 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game3 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game4 + g.Game.Bonus + g.Game.Handicap), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
                         }
-                        else if (!selectedTournament.ThreeOutOf4 && QBSNumber > 0) //standings based on squad for a regular tournament
+                        else if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber > 0) //standings based on squad for a regular tournament
                         {
                             temp = (from g in (db.Participants.Include(b => b.Member)
                                                     .Include(b => b.Game)
-                                                    .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b => b.Squad == QBSNumber))
+                                                    .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b => b.Squad == qualifyBySquadNumber))
                                     orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4 + g.Game.Bonus * 4)) descending
                                     select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4) + (g.Game.Bonus * 4), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
                         }
@@ -1994,7 +1996,7 @@ namespace NineTapTour.Forms
                     #region PRINTING SCRATCH TOURNAMENT RESULTS
                     else if (rdoScratchScore.Checked)
                     {
-                        if (selectedTournament.ThreeOutOf4 && QBSNumber == 0) //overall best standings for 3of4 tournament
+                        if (selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall best standings for 3of4 tournament
                         {
                             temp = (from g in (db.Participants.Include(b => b.Member)
                                                     .Include(b => b.Game)
@@ -2002,16 +2004,16 @@ namespace NineTapTour.Forms
                                     orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min())) descending
                                     select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
                         }
-                        else if (selectedTournament.ThreeOutOf4 && QBSNumber > 0) //best standings based on sqaud for  3of4 tournament
+                        else if (selectedTournament.ThreeOutOf4 && qualifyBySquadNumber > 0) //best standings based on sqaud for  3of4 tournament
                         {
                             temp = (from g in (db.Participants.Include(b => b.Member)
                                           .Include(b => b.Game)
-                                          .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b => b.Squad == QBSNumber))
+                                          .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b => b.Squad == qualifyBySquadNumber))
                                     orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min())) descending
                                     select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 - (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
 
                         }
-                        else if (!selectedTournament.ThreeOutOf4 && QBSNumber == 0) //overall standings for a regular tournament
+                        else if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall standings for a regular tournament
                         {
                             temp = (from g in (db.Participants.Include(b => b.Member)
                                                     .Include(b => b.Game)
@@ -2019,11 +2021,11 @@ namespace NineTapTour.Forms
                                     orderby ((g.Game.Game1) + (g.Game.Game2) + (g.Game.Game3) + (g.Game.Game4)) descending
                                     select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = (g.Game.Game1) + (g.Game.Game2) + (g.Game.Game3) + (g.Game.Game4), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
                         }
-                        else if (!selectedTournament.ThreeOutOf4 && QBSNumber > 0) //standings based on squad for a regular tournament
+                        else if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber > 0) //standings based on squad for a regular tournament
                         {
                             temp = (from g in (db.Participants.Include(b => b.Member)
                                                     .Include(b => b.Game)
-                                                    .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b => b.Squad == QBSNumber))
+                                                    .Where(b => b.Tournament.Id == selectedTournament.Id).Where(b => b.Squad == qualifyBySquadNumber))
                                     orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4) descending
                                     select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4, LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
                         }
@@ -2055,86 +2057,15 @@ namespace NineTapTour.Forms
         #region changing the sqaud number
         private void rdoAllResults_CheckedChanged(object sender, EventArgs e)
         {
-            QBSNumber = 0;
-            Refresh(false, QBSNumber);
-
+            Refresh(false);
         }
 
-        private void rdoSquad1Results_CheckedChanged(object sender, EventArgs e)
+        private void rdoSquadResults_CheckChanged(object sender, EventArgs e)
         {
             if (cbxTourneyDropDown.Size != null)
             {
-                QBSNumber = 1;
-                Refresh(false, QBSNumber);
+                Refresh(false);
             }
-        }
-
-        private void rdoSquad2Results_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cbxTourneyDropDown.Size != null)
-            {
-                QBSNumber = 2;
-                Refresh(false, QBSNumber);
-            }
-        }
-
-        private void rdoSquad3Results_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cbxTourneyDropDown.Size != null)
-            {
-                QBSNumber = 3;
-                Refresh(false, QBSNumber);
-            }
-        }
-
-        private void rdoSquad4Results_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cbxTourneyDropDown.Size != null)
-            {
-                QBSNumber = 4;
-                Refresh(false, QBSNumber);
-            }
-
-        }
-
-        private void rdoSquad5Results_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cbxTourneyDropDown.Size != null)
-            {
-                QBSNumber = 5;
-                Refresh(false, QBSNumber);
-            }
-
-        }
-
-        private void rdoSquad6Results_CheckedChanged(object sender, EventArgs e)
-        {
-
-            if (cbxTourneyDropDown.Size != null)
-            {
-                QBSNumber = 6;
-                Refresh(false, QBSNumber);
-            }
-
-        }
-
-        private void rdoSquad7Results_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cbxTourneyDropDown.Size != null)
-            {
-                QBSNumber = 7;
-                Refresh(false, QBSNumber);
-            };
-        }
-
-        private void rdoSquad8Resualts_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cbxTourneyDropDown.Size != null)
-            {
-                QBSNumber = 8;
-                Refresh(false, QBSNumber);
-            }
-
         }
         #endregion  
 
@@ -2154,7 +2085,7 @@ namespace NineTapTour.Forms
                         Tournament t = TournamentDb.getTourneyByID(selectedTournament.Id);
                         TournamentDb.deleteTournament(t);
                         ResetFields();
-                        Refresh(false, QBSNumber);
+                        Refresh(false);
                         currentIndex = 0;
                         RecordIndex(overallListOfParticipants);
                         cbxTourneyDropDown.DataSource = TournamentDb.GetTournamentList(RegionID);
@@ -2191,7 +2122,7 @@ namespace NineTapTour.Forms
 
                     //resets all the feilds back to what it wouldve looked like withought such record existing
                     ResetFields();
-                    Refresh(false, QBSNumber);
+                    Refresh(false);
                     RecordIndex(overallListOfParticipants);
                     cbxTourneyDropDown.DataSource = TournamentDb.GetTournamentList(RegionID);
                     overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
@@ -2285,8 +2216,7 @@ namespace NineTapTour.Forms
                 cbFilterSquad8.Enabled = false;
 
                 howManySquadsCanBeFiltered.Clear();
-                QBSNumber = 0;
-                Refresh(false, QBSNumber);   
+                Refresh(false);   
             }
             else
             {
@@ -2357,20 +2287,17 @@ namespace NineTapTour.Forms
                 howManySquadsCanBeFiltered.Remove(squadNum);
                 if (FilterCheck() == 0)
                 {
-                    QBSNumber = 0;
                     cbAllSquads.Checked = true;
                 }
                 else
                 {
-                    QBSNumber = 9;
-                    Refresh(false, QBSNumber);
+                    Refresh(false);
                 }
             }
             else
             {
                 howManySquadsCanBeFiltered.Add(squadNum);
-                QBSNumber = 9;
-                Refresh(false, QBSNumber);
+                Refresh(false);
             }
         }
 

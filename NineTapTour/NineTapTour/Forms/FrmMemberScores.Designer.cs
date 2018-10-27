@@ -868,7 +868,7 @@
             this.rdoSquad8Results.TabIndex = 8;
             this.rdoSquad8Results.Text = "Squad 8";
             this.rdoSquad8Results.UseVisualStyleBackColor = true;
-            this.rdoSquad8Results.CheckedChanged += new System.EventHandler(this.rdoSquad8Resualts_CheckedChanged);
+            this.rdoSquad8Results.CheckedChanged += new System.EventHandler(this.rdoSquadResults_CheckChanged);
             // 
             // rdoSquad7Results
             // 
@@ -879,7 +879,7 @@
             this.rdoSquad7Results.TabIndex = 7;
             this.rdoSquad7Results.Text = "Squad 7";
             this.rdoSquad7Results.UseVisualStyleBackColor = true;
-            this.rdoSquad7Results.CheckedChanged += new System.EventHandler(this.rdoSquad7Results_CheckedChanged);
+            this.rdoSquad7Results.CheckedChanged += new System.EventHandler(this.rdoSquadResults_CheckChanged);
             // 
             // rdoSquad6Results
             // 
@@ -890,7 +890,7 @@
             this.rdoSquad6Results.TabIndex = 6;
             this.rdoSquad6Results.Text = "Squad 6";
             this.rdoSquad6Results.UseVisualStyleBackColor = true;
-            this.rdoSquad6Results.CheckedChanged += new System.EventHandler(this.rdoSquad6Results_CheckedChanged);
+            this.rdoSquad6Results.CheckedChanged += new System.EventHandler(this.rdoSquadResults_CheckChanged);
             // 
             // rdoSquad5Results
             // 
@@ -901,7 +901,7 @@
             this.rdoSquad5Results.TabIndex = 5;
             this.rdoSquad5Results.Text = "Squad 5";
             this.rdoSquad5Results.UseVisualStyleBackColor = true;
-            this.rdoSquad5Results.CheckedChanged += new System.EventHandler(this.rdoSquad5Results_CheckedChanged);
+            this.rdoSquad5Results.CheckedChanged += new System.EventHandler(this.rdoSquadResults_CheckChanged);
             // 
             // rdoSquad4Results
             // 
@@ -912,7 +912,7 @@
             this.rdoSquad4Results.TabIndex = 4;
             this.rdoSquad4Results.Text = "Squad 4";
             this.rdoSquad4Results.UseVisualStyleBackColor = true;
-            this.rdoSquad4Results.CheckedChanged += new System.EventHandler(this.rdoSquad4Results_CheckedChanged);
+            this.rdoSquad4Results.CheckedChanged += new System.EventHandler(this.rdoSquadResults_CheckChanged);
             // 
             // rdoSquad3Results
             // 
@@ -923,7 +923,7 @@
             this.rdoSquad3Results.TabIndex = 3;
             this.rdoSquad3Results.Text = "Squad 3";
             this.rdoSquad3Results.UseVisualStyleBackColor = true;
-            this.rdoSquad3Results.CheckedChanged += new System.EventHandler(this.rdoSquad3Results_CheckedChanged);
+            this.rdoSquad3Results.CheckedChanged += new System.EventHandler(this.rdoAllResults_CheckedChanged);
             // 
             // rdoSquad2Results
             // 
@@ -934,7 +934,7 @@
             this.rdoSquad2Results.TabIndex = 2;
             this.rdoSquad2Results.Text = "Squad 2";
             this.rdoSquad2Results.UseVisualStyleBackColor = true;
-            this.rdoSquad2Results.CheckedChanged += new System.EventHandler(this.rdoSquad2Results_CheckedChanged);
+            this.rdoSquad2Results.CheckedChanged += new System.EventHandler(this.rdoSquadResults_CheckChanged);
             // 
             // rdoSquad1Results
             // 
@@ -945,7 +945,7 @@
             this.rdoSquad1Results.TabIndex = 1;
             this.rdoSquad1Results.Text = "Squad 1";
             this.rdoSquad1Results.UseVisualStyleBackColor = true;
-            this.rdoSquad1Results.CheckedChanged += new System.EventHandler(this.rdoSquad1Results_CheckedChanged);
+            this.rdoSquad1Results.CheckedChanged += new System.EventHandler(this.rdoSquadResults_CheckChanged);
             // 
             // rdoAllResults
             // 
@@ -1420,7 +1420,7 @@
             this.flpMemberScores.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpMemberScores.Location = new System.Drawing.Point(0, 0);
             this.flpMemberScores.Name = "flpMemberScores";
-            this.flpMemberScores.Size = new System.Drawing.Size(502, 749);
+            this.flpMemberScores.Size = new System.Drawing.Size(1042, 749);
             this.flpMemberScores.TabIndex = 1;
             this.flpMemberScores.SizeChanged += new System.EventHandler(this.flpMemberScores_SizeChanged);
             // 
@@ -1440,7 +1440,7 @@
             this.panel2.Controls.Add(this.btnNewTournament);
             this.panel2.Controls.Add(this.btnTourSearch);
             this.panel2.Controls.Add(this.btnTournamentsByYear);
-            this.panel2.Location = new System.Drawing.Point(3, 732);
+            this.panel2.Location = new System.Drawing.Point(452, 550);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(206, 184);
             this.panel2.TabIndex = 46;
@@ -1449,7 +1449,7 @@
             // 
             this.panel3.Controls.Add(this.grpReports);
             this.panel3.Controls.Add(this.btnTournamentResults);
-            this.panel3.Location = new System.Drawing.Point(215, 732);
+            this.panel3.Location = new System.Drawing.Point(664, 550);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(139, 207);
             this.panel3.TabIndex = 46;
@@ -1458,7 +1458,7 @@
             // 
             this.panel4.Controls.Add(this.grpComments);
             this.panel4.Controls.Add(this.btnFinalizeTounament);
-            this.panel4.Location = new System.Drawing.Point(3, 945);
+            this.panel4.Location = new System.Drawing.Point(809, 550);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(212, 213);
             this.panel4.TabIndex = 46;
