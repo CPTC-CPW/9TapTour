@@ -1585,23 +1585,7 @@ namespace NineTapTour.Forms
             {
                 using (NineTapDb db = new NineTapDb())
                 {
-                    var temp = (from g in (db.Participants.Include(b => b.Member)
-                                            .Include(b => b.Game)
-                                            .Where(b => b.Tournament.Id == selectedTournament.Id))
-
-                                select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1.Value, LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) }).Concat(
-                        (from g in (db.Participants.Include(b => b.Member)
-                                            .Include(b => b.Game)
-                                            .Where(b => b.Tournament.Id == selectedTournament.Id))
-                         select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game2.Value, LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) })).Concat(
-                        (from g in (db.Participants.Include(b => b.Member)
-                                            .Include(b => b.Game)
-                                            .Where(b => b.Tournament.Id == selectedTournament.Id))
-                         select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game3.Value, LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) })).Concat(
-                        (from g in (db.Participants.Include(b => b.Member)
-                                            .Include(b => b.Game)
-                                            .Where(b => b.Tournament.Id == selectedTournament.Id))
-                         select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game4.Value, LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= EntityFunctions.AddYears(DateTime.Now, -1)))) })).ToList();
+                    List<MemberScores> temp = ParticipantsDB.GetGameMemberScores(db, selectedTournament.Id);
                     temp.Sort(scoreComparer);
                     temp.Reverse();
 

@@ -20,6 +20,27 @@ namespace NineTapTour.Database
             }
         }
 
+        public static List<MemberScores> GetGameMemberScores(NineTapDb db, int selectedTourney)
+        {
+            return (from g in (db.Participants.Include(b => b.Member)
+                                     .Include(b => b.Game)
+                                     .Where(b => b.Tournament.Id == selectedTourney))
+
+                    select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1.Value, LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1)))) }).Concat(
+                (from g in (db.Participants.Include(b => b.Member)
+                                    .Include(b => b.Game)
+                                    .Where(b => b.Tournament.Id == selectedTourney))
+                 select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game2.Value, LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1)))) })).Concat(
+                (from g in (db.Participants.Include(b => b.Member)
+                                    .Include(b => b.Game)
+                                    .Where(b => b.Tournament.Id == selectedTourney))
+                 select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game3.Value, LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1)))) })).Concat(
+                (from g in (db.Participants.Include(b => b.Member)
+                                    .Include(b => b.Game)
+                                    .Where(b => b.Tournament.Id == selectedTourney))
+                 select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game4.Value, LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1)))) })).ToList();
+        }
+
         /// <summary>
         /// Gets a list of Senior scores for the Senior Report
         /// </summary>
@@ -28,10 +49,10 @@ namespace NineTapTour.Database
         /// <returns></returns>
         public static List<MemberScores> GetSeniorMemberScores(NineTapDb db, int selectedTourneyId)
         {
-            var temp = (from g in (db.Participants.Include(nameof(Participant.Member))
-                                                       .Include(nameof(Participant.Game))
+            var temp = (from g in db.Participants.Include(b => b.Member)
+                                                       .Include(b => b.Game)
                                                        .Where(b => b.Tournament.Id == selectedTourneyId)
-                                                       .Where(b => b.Member.IsSenior))
+                                                       .Where(b => b.Member.IsSenior)
 
                         select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game1.Value, LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1)))) }).Concat(
                                    (from g in (db.Participants.Include(nameof(Participant.Member))
