@@ -1475,18 +1475,6 @@ namespace NineTapTour.Forms
             }
 
         }
-        //runs fill member when enter key is pressed on text box
-        private void txtMemberNum2_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyData == Keys.Enter)
-            {
-
-                List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-                RecordIndexOnEnter(total);
-                FillMember();
-            }
-
-        }
         
         /// <summary>
         /// Populates Tournament dropdown list to most recently modified tournament;
@@ -1884,11 +1872,6 @@ namespace NineTapTour.Forms
             RecordIndexOnSquadSwitch(total);
             FillMember();
         }
-
-		private void txtMemberNum2_Leave(object sender, EventArgs e)
-		{
-			FillMember();
-		}
 
 		/// <summary>
 		/// The resize event for the form
