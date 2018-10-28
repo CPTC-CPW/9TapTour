@@ -14,6 +14,7 @@ using System.Linq.Dynamic;
 using Bogus.Extensions;
 using NineTapTour.Models;
 using NineTapTour.Models.ViewModels;
+using static NineTapTour.Database.ReportHelper;
 
 namespace NineTapTour.Forms
 {
@@ -1610,7 +1611,7 @@ namespace NineTapTour.Forms
                     if (temp.Count != 0)
 
                     {
-                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, 1/*reportTypeNum, 0 for High game handicap/senior, 1 for game/high game, 2 for series/high series*/, currentsNum);
+                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, ReportType.HighGame, currentsNum);
                         report.Show();
                     }
                     else
@@ -1721,7 +1722,7 @@ namespace NineTapTour.Forms
 
                     if (temp.Count() != 0)
                     {
-                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, 2/*reportTypeNum, 0 for High game handicap/senior, 1 for game/high game, 2 for series/high series*/, currentsNum);
+                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, ReportType.HighSeries, currentsNum);
                         report.Show();
                     }
                     else
