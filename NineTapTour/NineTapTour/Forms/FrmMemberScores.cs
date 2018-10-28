@@ -2325,28 +2325,18 @@ namespace NineTapTour.Forms
 
         private void ChangeToSelectedPerson(ListBox participantGamesListBox)
         {
-            // try to set as participantsGameViewModel
-            try
+            if(participantGamesListBox.SelectedItem is ParticipantsGameViewModel)
             {
-                // set participant to current item in selected listbox
-                ParticipantsGameViewModel participant = (ParticipantsGameViewModel) participantGamesListBox.SelectedItem;
-                // set member num textbox to current participants member number
+                ParticipantsGameViewModel participant = participantGamesListBox.SelectedItem as ParticipantsGameViewModel;
                 txtMemberNum.Text = participant.MemberNo.ToString();
-                // call method to display members information
                 FillMember();
-                // selects the squad that the participant is in
                 FormHelper.SelectParticipantSquad(participant.Squad, groupBox1);
             }
-            // sets as TopParticipantGameViewModel if throws error
-            catch (InvalidCastException)
+            else if(participantGamesListBox.SelectedItem is TopParticipantGameViewModel)
             {
-                // set participant to current item in selected listbox
-                TopParticipantGameViewModel participant = (TopParticipantGameViewModel) participantGamesListBox.SelectedItem;
-                // set member num textbox to current participants member number
+                TopParticipantGameViewModel participant = participantGamesListBox.SelectedItem as TopParticipantGameViewModel;
                 txtMemberNum.Text = participant.MemberNo.ToString();
-                // call method to display members information
                 FillMember();
-                // selects the squad that the participant is in
                 FormHelper.SelectParticipantSquad(participant.Squad, groupBox1);
             }
         }
