@@ -2308,17 +2308,7 @@ namespace NineTapTour.Forms
             SquadFilter(sender as CheckBox, 8);
         }
 
-        private void lbxHighGameHC_Click(object sender, EventArgs e)
-        {
-            ChangeToSelectedPerson(sender as ListBox);
-        }
-
-        private void lbxHighGameSC_Click(object sender, EventArgs e)
-        {
-            ChangeToSelectedPerson(sender as ListBox);
-        }
-
-        private void lbxTopGameSeries_Click(object sender, EventArgs e)
+        private void lbxGameLeader_Click(object sender, EventArgs e)
         {
             ChangeToSelectedPerson(sender as ListBox);
         }
