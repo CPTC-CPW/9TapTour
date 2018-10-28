@@ -30,7 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMemberScores));
             this.grpMemberNum = new System.Windows.Forms.GroupBox();
-            this.txtMemberNum2 = new System.Windows.Forms.TextBox();
             this.txtMemberNum = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.rdoSquad8 = new System.Windows.Forms.RadioButton();
@@ -127,12 +126,6 @@
             this.btnTourSearch = new System.Windows.Forms.Button();
             this.btnTournamentsByYear = new System.Windows.Forms.Button();
             this.btnPlaceStandings = new System.Windows.Forms.Button();
-            this.lblMiddleInitial2 = new System.Windows.Forms.Label();
-            this.lblFirstName2 = new System.Windows.Forms.Label();
-            this.lbLastName2 = new System.Windows.Forms.Label();
-            this.txtMiddleInitial2 = new System.Windows.Forms.TextBox();
-            this.txtFirstName2 = new System.Windows.Forms.TextBox();
-            this.txtLastName2 = new System.Windows.Forms.TextBox();
             this.btnFinalizeTounament = new System.Windows.Forms.Button();
             this.btnTournamentResults = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -163,7 +156,6 @@
             // 
             // grpMemberNum
             // 
-            this.grpMemberNum.Controls.Add(this.txtMemberNum2);
             this.grpMemberNum.Controls.Add(this.txtMemberNum);
             this.grpMemberNum.Location = new System.Drawing.Point(4, 3);
             this.grpMemberNum.Name = "grpMemberNum";
@@ -171,18 +163,6 @@
             this.grpMemberNum.TabIndex = 0;
             this.grpMemberNum.TabStop = false;
             this.grpMemberNum.Text = "Enter Member Number";
-            // 
-            // txtMemberNum2
-            // 
-            this.txtMemberNum2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtMemberNum2.Enabled = false;
-            this.txtMemberNum2.Location = new System.Drawing.Point(6, 45);
-            this.txtMemberNum2.Name = "txtMemberNum2";
-            this.txtMemberNum2.Size = new System.Drawing.Size(112, 20);
-            this.txtMemberNum2.TabIndex = 2;
-            this.txtMemberNum2.Visible = false;
-            this.txtMemberNum2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMemberNum2_KeyDown);
-            this.txtMemberNum2.Leave += new System.EventHandler(this.txtMemberNum2_Leave);
             // 
             // txtMemberNum
             // 
@@ -1294,75 +1274,6 @@
             this.btnPlaceStandings.UseVisualStyleBackColor = true;
             this.btnPlaceStandings.Click += new System.EventHandler(this.btnPlaceStandings_Click);
             // 
-            // lblMiddleInitial2
-            // 
-            this.lblMiddleInitial2.AutoSize = true;
-            this.lblMiddleInitial2.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.lblMiddleInitial2.Location = new System.Drawing.Point(663, 66);
-            this.lblMiddleInitial2.Name = "lblMiddleInitial2";
-            this.lblMiddleInitial2.Size = new System.Drawing.Size(99, 19);
-            this.lblMiddleInitial2.TabIndex = 36;
-            this.lblMiddleInitial2.Text = "Middle Initial";
-            // 
-            // lblFirstName2
-            // 
-            this.lblFirstName2.AutoSize = true;
-            this.lblFirstName2.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.lblFirstName2.Location = new System.Drawing.Point(424, 66);
-            this.lblFirstName2.Name = "lblFirstName2";
-            this.lblFirstName2.Size = new System.Drawing.Size(82, 19);
-            this.lblFirstName2.TabIndex = 37;
-            this.lblFirstName2.Text = "First Name";
-            // 
-            // lbLastName2
-            // 
-            this.lbLastName2.AutoSize = true;
-            this.lbLastName2.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
-            this.lbLastName2.Location = new System.Drawing.Point(201, 66);
-            this.lbLastName2.Name = "lbLastName2";
-            this.lbLastName2.Size = new System.Drawing.Size(80, 19);
-            this.lbLastName2.TabIndex = 38;
-            this.lbLastName2.Text = "Last Name";
-            // 
-            // txtMiddleInitial2
-            // 
-            this.txtMiddleInitial2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtMiddleInitial2.Enabled = false;
-            this.txtMiddleInitial2.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMiddleInitial2.Location = new System.Drawing.Point(667, 88);
-            this.txtMiddleInitial2.Multiline = true;
-            this.txtMiddleInitial2.Name = "txtMiddleInitial2";
-            this.txtMiddleInitial2.ReadOnly = true;
-            this.txtMiddleInitial2.Size = new System.Drawing.Size(105, 38);
-            this.txtMiddleInitial2.TabIndex = 39;
-            this.txtMiddleInitial2.TabStop = false;
-            // 
-            // txtFirstName2
-            // 
-            this.txtFirstName2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtFirstName2.Enabled = false;
-            this.txtFirstName2.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFirstName2.Location = new System.Drawing.Point(428, 88);
-            this.txtFirstName2.Multiline = true;
-            this.txtFirstName2.Name = "txtFirstName2";
-            this.txtFirstName2.ReadOnly = true;
-            this.txtFirstName2.Size = new System.Drawing.Size(206, 38);
-            this.txtFirstName2.TabIndex = 40;
-            this.txtFirstName2.TabStop = false;
-            // 
-            // txtLastName2
-            // 
-            this.txtLastName2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtLastName2.Enabled = false;
-            this.txtLastName2.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLastName2.Location = new System.Drawing.Point(205, 88);
-            this.txtLastName2.Multiline = true;
-            this.txtLastName2.Name = "txtLastName2";
-            this.txtLastName2.ReadOnly = true;
-            this.txtLastName2.Size = new System.Drawing.Size(206, 38);
-            this.txtLastName2.TabIndex = 41;
-            this.txtLastName2.TabStop = false;
-            // 
             // btnFinalizeTounament
             // 
             this.btnFinalizeTounament.Location = new System.Drawing.Point(4, 178);
@@ -1388,19 +1299,13 @@
             // 
             this.panel1.Controls.Add(this.lblLastName);
             this.panel1.Controls.Add(this.txtLastName);
-            this.panel1.Controls.Add(this.lbLastName2);
-            this.panel1.Controls.Add(this.lblMiddleInitial2);
-            this.panel1.Controls.Add(this.txtLastName2);
-            this.panel1.Controls.Add(this.lblFirstName2);
             this.panel1.Controls.Add(this.lblFirstName);
             this.panel1.Controls.Add(this.lblMemberL);
             this.panel1.Controls.Add(this.grpStats);
             this.panel1.Controls.Add(this.pnlMemStat);
-            this.panel1.Controls.Add(this.txtMiddleInitial2);
             this.panel1.Controls.Add(this.grpLeaders);
             this.panel1.Controls.Add(this.txtFirstName);
             this.panel1.Controls.Add(this.groupBox1);
-            this.panel1.Controls.Add(this.txtFirstName2);
             this.panel1.Controls.Add(this.grpMemberNum);
             this.panel1.Controls.Add(this.txtMiddleInitial);
             this.panel1.Controls.Add(this.lblMiddleInitial);
@@ -1571,19 +1476,12 @@
         private System.Windows.Forms.GroupBox grpScoreType;
         private System.Windows.Forms.RadioButton rdoScratchScore;
         private System.Windows.Forms.RadioButton rdoHandicapScore;
-        private System.Windows.Forms.TextBox txtMemberNum2;
         private System.Windows.Forms.Label lblPlayer2;
         private System.Windows.Forms.Label lblPlayer1;
         private System.Windows.Forms.Button btnTourSearch;
         private System.Windows.Forms.Button btnTournamentsByYear;
         private System.Windows.Forms.Button btnPlaceStandings;
         private System.Windows.Forms.Button btnRecapByPin;
-        private System.Windows.Forms.Label lblMiddleInitial2;
-        private System.Windows.Forms.Label lblFirstName2;
-        private System.Windows.Forms.Label lbLastName2;
-        private System.Windows.Forms.TextBox txtMiddleInitial2;
-        private System.Windows.Forms.TextBox txtFirstName2;
-        private System.Windows.Forms.TextBox txtLastName2;
         private System.Windows.Forms.RadioButton rdoSquad8;
         private System.Windows.Forms.RadioButton rdoSquad6;
         private System.Windows.Forms.RadioButton rdoSquad7;
