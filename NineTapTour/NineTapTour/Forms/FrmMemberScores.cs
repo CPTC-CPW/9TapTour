@@ -236,38 +236,10 @@ namespace NineTapTour.Forms
         {
             if (currentGame != null)
             {
-                // The game bonus & handicap shouldn't be changed to current member bonus/handicap
-                //currentGame.Bonus = currentMem.Bonus;
-                //currentGame.Handicap = currentMem.Handicap;
-
                 //////////////////////////////////////////////////////////////// PAGINATION HAPPENS RIGHT HERE!!!! ////////////////////////////////////////////////////
                 List<Participant> total = TournamentDb.GetTournamentMemberListInOrder(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue))); //gets list in order so forloops itterate better
-
-                //if (buttonCheck == true) // if the right button was clicked
-                //{
-                //    for (int i = currentIndex; i < total.Count(); i++)
-                //    {
-                //        if (currentMem.Id == total[i].Member.Id)
-                //        {
-                //            currentIndex++;
-                //        }
-                //    }
-                //}
-                //else // if left button was clicked
-                //{
-                //    for (int i = 0; i < currentIndex; i++)
-                //    {
-                //        if (currentMem.Id == total[i].Member.Id)
-                //        {
-                //            currentIndex--;
-                //        }
-                //    }
-                //}
+              
                 lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count;
-
-
-
-
 
                 // if IsComp true then check CompEntry checkbox
                 chbCompEntry.Checked = false;
