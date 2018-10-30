@@ -127,9 +127,9 @@ namespace NineTapTour.Forms
             handicappArray = new TextBox[4] { txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4 };
 
             if (cbxTourneyDropDown.SelectedIndex == -1)
-            {
+            {       
                 if (currentIndex <= 1)
-                {
+                {           
                     btnFirstRecord.Enabled = false;
                 }
                 btnLeftArrow.Enabled = false;
@@ -527,11 +527,6 @@ namespace NineTapTour.Forms
                 txtScratchTotal.Text = scratchTotal.ToString();
             }
             TextBox tx = (TextBox)sender;
-            //auto tab to the next textbox when textbox1's length is 3.
-            if (tx.Text.Length == 3)
-            {
-                SendKeys.Send("{TAB}");
-            }
 
             //this code will adjust the scratch and handicap total (textboxes) only if its a 3of4 tournament ( taking out the lowest game)
             if (txtScratchScore1.Text != "" && txtScratchScore2.Text != "" && txtScratchScore3.Text != "" && txtScratchScore4.Text != "")
@@ -576,8 +571,23 @@ namespace NineTapTour.Forms
                     txtHandicapTotal.Text = handicapTotal.ToString();
 
                 }
+
             }
 
+            ////auto tab to the next textbox when textbox1's length is 3.                ///////////////////////////////////////////////////////////// Here
+            if (tx.Text.Length == 3)
+            {
+                if (txtScratchScore4.Text.Length == 3 && txtScratchScore4.Focused == true)
+                {
+                    //when last score is entered bowler record will be added
+                    AddNewUpdateRecord();
+                }
+                else
+                {
+                    SendKeys.Send("{TAB}");
+                }
+
+            }
 
         }
 
@@ -611,12 +621,21 @@ namespace NineTapTour.Forms
         }
         #region New Recap
         /// <summary>
-        /// enter a tournamnet participant into a specific tournament
-        /// save scores and info in database
+        /// Activates when Add New/Update Record is clicked
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public void newRecap(object sender, EventArgs e)
+        {
+            AddNewUpdateRecord();
+
+        }
+
+        /// <summary>
+        /// enter a tournamnet participant into a specific tournament
+        /// save scores and info in database
+        /// </summary>
+        private void AddNewUpdateRecord()
         {
             ReEnableNavigation();
             if (IsValid())
@@ -638,13 +657,13 @@ namespace NineTapTour.Forms
 
                     NineTapDb db = new NineTapDb();
                     int gameId = (from p in db.Participants
-                        where p.Member.Id == currentMem.Id
-                              && p.Tournament.Id == currTourney.Id
-                        select p.Game.Id).FirstOrDefault();
+                                  where p.Member.Id == currentMem.Id
+                                        && p.Tournament.Id == currTourney.Id
+                                  select p.Game.Id).FirstOrDefault();
                     int gameId2 = (from p in db.Participants
-                        where p.Member.Id == currentMem2.Id
-                              && p.Tournament.Id == currTourney.Id
-                        select p.Game.Id).FirstOrDefault();
+                                   where p.Member.Id == currentMem2.Id
+                                         && p.Tournament.Id == currTourney.Id
+                                   select p.Game.Id).FirstOrDefault();
                     player.Game.Id = gameId;
 
                     //selects the ID of the combobox of tournaments and stores the
@@ -652,10 +671,10 @@ namespace NineTapTour.Forms
                     player.Tournament = currTourney;
                     player.Game.Game1 = IsEmpty(txtScratchScore1)
                         ? null
-                        : (int?) Convert.ToInt32((scratchArray[0].Text));
+                        : (int?)Convert.ToInt32((scratchArray[0].Text));
                     player.Game.Game2 = IsEmpty(txtScratchScore2)
                         ? null
-                        : (int?) Convert.ToInt32((scratchArray[1].Text));
+                        : (int?)Convert.ToInt32((scratchArray[1].Text));
                     player.Game.Game3 = 0;
                     player.Game.Game4 = 0;
                     player.Game.Bonus = currentMem.Bonus;
@@ -665,10 +684,10 @@ namespace NineTapTour.Forms
                     player2.Tournament = currTourney;
                     player2.Game.Game1 = IsEmpty(txtScratchScore1)
                         ? null
-                        : (int?) Convert.ToInt32((scratchArray[2].Text));
+                        : (int?)Convert.ToInt32((scratchArray[2].Text));
                     player2.Game.Game2 = IsEmpty(txtScratchScore2)
                         ? null
-                        : (int?) Convert.ToInt32((scratchArray[3].Text));
+                        : (int?)Convert.ToInt32((scratchArray[3].Text));
                     player2.Game.Game3 = 0;
                     player2.Game.Game4 = 0;
                     player2.Game.Bonus = currentMem2.Bonus;
@@ -729,7 +748,7 @@ namespace NineTapTour.Forms
                 //IF the tournament type is NOT a DOUBLES tournament
                 else
                 {
-                    int squad = GetCurrentSquadNumber();  
+                    int squad = GetCurrentSquadNumber();
 
                     //get the member from the database using the number from the memnum textbox
                     currentMem = MemberDb.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
@@ -740,20 +759,20 @@ namespace NineTapTour.Forms
                     player.ParticipantRegionID = RegionID;
                     var db = new NineTapDb();
                     var gameId = (from p in db.Participants
-                        where p.Member.Id == currentMem.Id
-                              && p.Tournament.Id == currTourney.Id
-                              && p.Squad == squad
-                        select p.Game.Id).FirstOrDefault();
+                                  where p.Member.Id == currentMem.Id
+                                        && p.Tournament.Id == currTourney.Id
+                                        && p.Squad == squad
+                                  select p.Game.Id).FirstOrDefault();
                     var parID = (from p in db.Participants
-                        where p.Member.Id == currentMem.Id
-                              && p.Tournament.Id == currTourney.Id
-                              && p.Squad == squad
-                        select p.Id).FirstOrDefault();
+                                 where p.Member.Id == currentMem.Id
+                                       && p.Tournament.Id == currTourney.Id
+                                       && p.Squad == squad
+                                 select p.Id).FirstOrDefault();
                     var parList = (from p in db.Participants
-                        select new
-                        {
-                            p.Id
-                        }).ToList();
+                                   select new
+                                   {
+                                       p.Id
+                                   }).ToList();
 
                     if (parID == 0) //if participant doesnt exist yet give them a participantID
                     {
@@ -769,7 +788,7 @@ namespace NineTapTour.Forms
                     //tournament property within the participants class.
                     player.Tournament = currTourney;
                     player.Squad = GetCurrentSquadNumber();
-                   
+
                     //defaults money earned to 0, or enters text box amount
                     if (txtMoney.Text == "" || txtMoney.Text == null)
                         player.Game.MoneyWon = 0;
@@ -797,16 +816,16 @@ namespace NineTapTour.Forms
                     {
                         player.Game.Game1 = IsEmpty(txtScratchScore1)
                             ? null
-                            : (int?) Convert.ToInt32((scratchArray[0].Text));
+                            : (int?)Convert.ToInt32((scratchArray[0].Text));
                         player.Game.Game2 = IsEmpty(txtScratchScore2)
                             ? null
-                            : (int?) Convert.ToInt32((scratchArray[1].Text));
+                            : (int?)Convert.ToInt32((scratchArray[1].Text));
                         player.Game.Game3 = IsEmpty(txtScratchScore3)
                             ? null
-                            : (int?) Convert.ToInt32((scratchArray[2].Text));
+                            : (int?)Convert.ToInt32((scratchArray[2].Text));
                         player.Game.Game4 = IsEmpty(txtScratchScore4)
                             ? null
-                            : (int?) Convert.ToInt32((scratchArray[3].Text));
+                            : (int?)Convert.ToInt32((scratchArray[3].Text));
 
                         Game currentGame = GetScoresById(currentMem.Id);
                         if (currentGame == null)
@@ -862,9 +881,8 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show("Please Fill out the Participants information!");
             }
-        
         }
-        
+
         #endregion
         /// <summary>
         /// Checks a string for numeric values
