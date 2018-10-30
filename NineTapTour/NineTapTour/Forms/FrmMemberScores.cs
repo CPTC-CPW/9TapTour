@@ -574,9 +574,10 @@ namespace NineTapTour.Forms
 
             }
 
-            ////auto tab to the next textbox when textbox1's length is 3.                ///////////////////////////////////////////////////////////// Here
+            ////auto tab to the next textbox when textbox's length is 3.           
             if (tx.Text.Length == 3)
             {
+                //if you enter in the last games score it will automatically be recorded with out pressing Add/Update
                 if (txtScratchScore4.Text.Length == 3 && txtScratchScore4.Focused == true)
                 {
                     //when last score is entered bowler record will be added
