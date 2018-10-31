@@ -1190,6 +1190,8 @@ namespace NineTapTour.Forms
 
         private void btnFinalize_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
+
             bool isDirectorCheckFinished = true; //int used to make sure all the director check boxes have been filled out
 
             List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
@@ -1351,6 +1353,7 @@ namespace NineTapTour.Forms
             {
 
             }
+            Cursor.Current = Cursors.Default;
         }
 
         /// <summary>
