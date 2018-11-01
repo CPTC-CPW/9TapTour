@@ -1,0 +1,20 @@
+Date: 			October 25, 2018
+
+Scrum Master:	Aaron H
+Cat Herder:		Krista
+Tech Lead:		Anthony
+Architect:		Nelson
+Product Master:	Dennis
+														As of: October 30th
+Issue #393:	Amy & Krista (About Page)					Status: 80%
+Issue #386:	Nelson, Casey, Aaron H. (navigating delay)	Status: 90%
+Issue #367:	Anthony, Koda, Rob (automated builds)		Status: 95%
+
+User Manual:	Dennis & Andrew		Status: 50%
+Unit Testing:	Chad & Aaron V.		Status: 50%
+
+For Class on Thursday (Nov 1st):
+Break into teams of 3-4 people and decipher the issues & decide if we're keeping all the issues
+
+Ask client: Should we add a "Rules" page => What would he want?
+
