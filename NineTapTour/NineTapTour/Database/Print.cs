@@ -8,6 +8,7 @@ using System.Drawing.Printing;
 using System.Windows.Forms;
 using System.Data.Entity;
 using NineTapTour.Models;
+using static NineTapTour.Database.ReportHelper;
 
 namespace NineTapTour.Database
 {
@@ -64,7 +65,7 @@ namespace NineTapTour.Database
         /************************************************************************
         For Printing the Report Sections
         ************************************************************************/
-        public static void ReportPrint(List<Models.MemberScores> temp, Tournament selectedTournament, int reportTypeNum, PrintPageEventArgs e)
+        public static void ReportPrint(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, PrintPageEventArgs e)
         {
             int numToPrint = 40;
             //This is what prints the data
@@ -104,15 +105,15 @@ namespace NineTapTour.Database
             string reportType = "";
 
             // for drawing the report type using the reportTypeNum
-            if (reportTypeNum == 0)
+            if (reportTypeNum == ReportType.HighGameSenior)
             {
                 reportType = "Game Senior";
             }
-            else if (reportTypeNum == 1)
+            else if (reportTypeNum == ReportType.HighGame)
             {
                 reportType = "Game";
             }
-            else
+            else if(reportTypeNum == ReportType.HighSeries)
             {
                 reportType = "Series";
             }
@@ -161,7 +162,7 @@ namespace NineTapTour.Database
             }
         }
 
-        static public void printMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, int reportTypeNum, int currentSquad)
+        static public void printMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad)
         {
             Print.temp = temp;
             Print.selectedTournament = selectedTournament;
@@ -197,7 +198,7 @@ namespace NineTapTour.Database
 
         static List<MemberScores> temp = new List<MemberScores>();//for High score
         static Tournament selectedTournament;
-        static int reportTypeNum;
+        static ReportType reportTypeNum;
         static int currentSquad;
         /************************************************************************/
 
