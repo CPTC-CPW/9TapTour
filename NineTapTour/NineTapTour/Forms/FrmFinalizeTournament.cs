@@ -87,6 +87,79 @@ namespace NineTapTour.Forms
         {
             createDataGridView(currTournament);
             InitializeGameCellFormatting();
+            sizeFinalizeGridView();
+        }
+
+        public void sizeFinalizeGridView() {
+            dataGridView1.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridView1.Columns[0].Width = 50; // AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;//.Columns[0].Width = 5;    // STANDING_COLUMN = 0;
+
+            dataGridView1.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridView1.Columns[1].Width = 50;
+
+            dataGridView1.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridView1.Columns[2].Width = 75;
+
+            dataGridView1.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridView1.Columns[3].Width = 50;
+
+            dataGridView1.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridView1.Columns[4].Width = 25;    // GAME_1_VALID_COLUMN = 4;
+
+            dataGridView1.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;  // GAME_2_COLUMN = 5;
+            dataGridView1.Columns[5].Width = 50;
+
+            dataGridView1.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;  // GAME_2_VALID_COLUMN = 6;
+            dataGridView1.Columns[6].Width = 25;
+
+            dataGridView1.Columns[7].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // GAME_3_COLUMN = 7;
+            dataGridView1.Columns[7].Width = 50;
+
+            dataGridView1.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // GAME_3_VALID_COLUMN = 8;
+            dataGridView1.Columns[8].Width = 25;
+
+            dataGridView1.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // GAME_4_COLUMN = 9;
+            dataGridView1.Columns[9].Width = 50;
+
+            dataGridView1.Columns[10].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // GAME_4_VALID_COLUMN = 10;
+            dataGridView1.Columns[10].Width = 25;
+
+            dataGridView1.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;    // SCRATCH_TOTAL_COLUMN = 11;
+
+            dataGridView1.Columns[12].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;  // HANDICAP_TOTAL_COLUMN = 12;
+
+            dataGridView1.Columns[13].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;   // ENTRY_AVERAGE_COLUMN = 13;
+
+            dataGridView1.Columns[14].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;  // THIRTY_ENTRY_AVERAGE_COLUMN = 14;
+
+            dataGridView1.Columns[15].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;   //  ADJUSTED_AVG_COLUMN = 15;
+
+            dataGridView1.Columns[16].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; //  DIRECTOR_CHECK_COLUMN = 16;
+            dataGridView1.Columns[16].Width = 40;
+
+            dataGridView1.Columns[17].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // SQUAD_COLUMN = 17;
+            dataGridView1.Columns[17].Width = 40;
+
+            dataGridView1.Columns[18].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // HANDICAP_COLUMN = 18;
+            dataGridView1.Columns[18].Width = 35; // HDCP
+
+            dataGridView1.Columns[19].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // BONUS_COLUMN = 19;
+
+            dataGridView1.Columns[19].Width =  35; 
+
+            dataGridView1.Columns[20].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridView1.Columns[20].Width = 50;   // PRO_POT_COLUMN = 20;
+
+            dataGridView1.Columns[21].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; // .Width = 2;   // NOTES_COLUMN_ = 21;
+
+            dataGridView1.Columns[22].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; // .Width = 2;   // GAME_ID_COLUMN = 22;
+
+
+
+
+
+
+
         }
 
         private void createDataGridView(Tournament tourn)
