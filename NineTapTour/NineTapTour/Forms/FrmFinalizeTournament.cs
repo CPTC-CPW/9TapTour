@@ -87,62 +87,39 @@ namespace NineTapTour.Forms
         {
             createDataGridView(currTournament);
             InitializeGameCellFormatting();
-            sizeFinalizeGridView();
+            sizeFinalizeGridView(); // resizes the columns of finalize form
         }
 
         public void sizeFinalizeGridView() {
-            dataGridView1.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            int columnCount = 22 
+            for (int colWidth = 0; colWidth < columnCount; colWidth++)
+            {
+                dataGridView1.Columns[colWidth].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            }
+            
             dataGridView1.Columns[0].Width = 50;  
-            dataGridView1.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[1].Width = 50;
-            dataGridView1.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[2].Width = 150;
-            dataGridView1.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[3].Width = 50;
-            dataGridView1.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[4].Width = 25;
-            dataGridView1.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
             dataGridView1.Columns[5].Width = 50;
-            dataGridView1.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[6].Width = 25;
-            dataGridView1.Columns[7].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
             dataGridView1.Columns[7].Width = 50;
-            dataGridView1.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
             dataGridView1.Columns[8].Width = 25;
-            dataGridView1.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
             dataGridView1.Columns[9].Width = 50;
-            dataGridView1.Columns[10].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
             dataGridView1.Columns[10].Width = 25;
-            dataGridView1.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;  
             dataGridView1.Columns[11].Width = 50;
-            dataGridView1.Columns[12].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;  
             dataGridView1.Columns[12].Width = 50;
-            dataGridView1.Columns[13].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;  
             dataGridView1.Columns[13].Width = 50;
-            dataGridView1.Columns[14].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
             dataGridView1.Columns[14].Width = 50;
-            dataGridView1.Columns[15].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;  
             dataGridView1.Columns[15].Width = 50;
-            dataGridView1.Columns[16].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
             dataGridView1.Columns[16].Width = 50;
-            dataGridView1.Columns[17].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
             dataGridView1.Columns[17].Width = 40;
-            dataGridView1.Columns[18].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
             dataGridView1.Columns[18].Width = 35; 
-            dataGridView1.Columns[19].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridView1.Columns[19].Width =  35; 
-            dataGridView1.Columns[20].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridView1.Columns[19].Width = 35; 
             dataGridView1.Columns[20].Width = 50;
-            dataGridView1.Columns[21].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[21].Width = 150;
             dataGridView1.Columns[22].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; 
-
-
-
-
-
-
-
         }
 
         private void createDataGridView(Tournament tourn)
