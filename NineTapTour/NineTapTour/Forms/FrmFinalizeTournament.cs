@@ -50,21 +50,21 @@ namespace NineTapTour.Forms
         const string GAME_ID_COLUMN_NAME = "GameID";
         const string NAME_COLUMN_NAME = "Name";
         const string GAME_1_COLUMN_NAME = "Game 1";
-        const string GAME_1_VALID_COLUMN_NAME = "Valid Score1?";
+        const string GAME_1_VALID_COLUMN_NAME = "Valid Score1?"; // Why cant remove the name?
         const string GAME_2_COLUMN_NAME = "Game 2";
-        const string GAME_2_VALID_COLUMN_NAME = "Valid Score2?";
+        const string GAME_2_VALID_COLUMN_NAME = "Valid Score2?"; // Why cant remove the name?
         const string GAME_3_COLUMN_NAME = "Game 3";
-        const string GAME_3_VALID_COLUMN_NAME = "Valid Score3?";
+        const string GAME_3_VALID_COLUMN_NAME = "Valid Score3?"; // Why cant remove the name?
         const string GAME_4_COLUMN_NAME = "Game 4";
-        const string GAME_4_VALID_COLUMN_NAME = "Valid Score4?";
+        const string GAME_4_VALID_COLUMN_NAME = "Valid Score4?"; // Why cant remove the name?
         const string SCRATCH_TOTAL_COLUMN_NAME = "Scratch Total";
-        const string HANDICAP_TOTAL_COLUMN_NAME = "Handicap Total";
+        const string HANDICAP_TOTAL_COLUMN_NAME = "HDCP Total";
         const string ENTRY_AVERAGE_COLUMN_NAME = "Entry AVG";
         const string THIRTY_ENTRY_AVERAGE_COLUMN_NAME = "30 Entry AVG";
         const string ADJUSTED_AVG_COLUMN_NAME = "ADJ AVG";
         const string DIRECTOR_CHECK_COLUMN_NAME = "Director Check";
         const string SQUAD_COLUMN_NAME = "Squad";
-        const string HANDICAP_COLUMN_NAME = "Handicap";
+        const string HANDICAP_COLUMN_NAME = "HDCP";
         const string BONUS_COLUMN_NAME = "Bonus";
         const string PRO_POT_COLUMN_NAME = "Pro Pot";
         const string NOTES_COLUMN_NAME = "Notes";
@@ -92,73 +92,50 @@ namespace NineTapTour.Forms
 
         public void sizeFinalizeGridView() {
             dataGridView1.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridView1.Columns[0].Width = 50;   // STANDING_COLUMN = 0;
-
+            dataGridView1.Columns[0].Width = 50;  
             dataGridView1.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[1].Width = 50;
-
             dataGridView1.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[2].Width = 150;
-
             dataGridView1.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[3].Width = 50;
-
             dataGridView1.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridView1.Columns[4].Width = 25;    // GAME_1_VALID_COLUMN = 4;
-
-            dataGridView1.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;  // GAME_2_COLUMN = 5;
+            dataGridView1.Columns[4].Width = 25;
+            dataGridView1.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
             dataGridView1.Columns[5].Width = 50;
-
-            dataGridView1.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;  // GAME_2_VALID_COLUMN = 6;
+            dataGridView1.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[6].Width = 25;
-
-            dataGridView1.Columns[7].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // GAME_3_COLUMN = 7;
+            dataGridView1.Columns[7].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
             dataGridView1.Columns[7].Width = 50;
-
-            dataGridView1.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // GAME_3_VALID_COLUMN = 8;
+            dataGridView1.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
             dataGridView1.Columns[8].Width = 25;
-
-            dataGridView1.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // GAME_4_COLUMN = 9;
+            dataGridView1.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
             dataGridView1.Columns[9].Width = 50;
-
-            dataGridView1.Columns[10].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // GAME_4_VALID_COLUMN = 10;
+            dataGridView1.Columns[10].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
             dataGridView1.Columns[10].Width = 25;
-
-            dataGridView1.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;    // SCRATCH_TOTAL_COLUMN = 11;
+            dataGridView1.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;  
             dataGridView1.Columns[11].Width = 50;
-
-            dataGridView1.Columns[12].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;  // HANDICAP_TOTAL_COLUMN = 12;
+            dataGridView1.Columns[12].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;  
             dataGridView1.Columns[12].Width = 50;
-
-            dataGridView1.Columns[13].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;   // ENTRY_AVERAGE_COLUMN = 13;
+            dataGridView1.Columns[13].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;  
             dataGridView1.Columns[13].Width = 50;
-
-            dataGridView1.Columns[14].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;  // THIRTY_ENTRY_AVERAGE_COLUMN = 14;
+            dataGridView1.Columns[14].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
             dataGridView1.Columns[14].Width = 50;
-
-            dataGridView1.Columns[15].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;   //  ADJUSTED_AVG_COLUMN = 15;
+            dataGridView1.Columns[15].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;  
             dataGridView1.Columns[15].Width = 50;
-
-            dataGridView1.Columns[16].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; //  DIRECTOR_CHECK_COLUMN = 16;
-            dataGridView1.Columns[16].Width = 40;
-
-            dataGridView1.Columns[17].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // SQUAD_COLUMN = 17;
+            dataGridView1.Columns[16].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
+            dataGridView1.Columns[16].Width = 50;
+            dataGridView1.Columns[17].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
             dataGridView1.Columns[17].Width = 40;
-
-            dataGridView1.Columns[18].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // HANDICAP_COLUMN = 18;
-            dataGridView1.Columns[18].Width = 35; // HDCP
-
-            dataGridView1.Columns[19].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // BONUS_COLUMN = 19;
-
+            dataGridView1.Columns[18].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; 
+            dataGridView1.Columns[18].Width = 35; 
+            dataGridView1.Columns[19].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[19].Width =  35; 
-
             dataGridView1.Columns[20].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridView1.Columns[20].Width = 50;   // PRO_POT_COLUMN = 20;
-
-            dataGridView1.Columns[21].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // .Width = 2;   // NOTES_COLUMN_ = 21;
+            dataGridView1.Columns[20].Width = 50;
+            dataGridView1.Columns[21].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[21].Width = 150;
-
-            dataGridView1.Columns[22].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; // .Width = 2;   // GAME_ID_COLUMN = 22;
+            dataGridView1.Columns[22].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; 
 
 
 
