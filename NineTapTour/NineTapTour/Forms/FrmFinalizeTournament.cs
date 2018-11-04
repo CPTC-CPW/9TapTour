@@ -91,12 +91,12 @@ namespace NineTapTour.Forms
         }
 
         public void sizeFinalizeGridView() {
-            int columnCount = 22 
+            int columnCount = 22;
             for (int colWidth = 0; colWidth < columnCount; colWidth++)
             {
                 dataGridView1.Columns[colWidth].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             }
-            
+ 
             dataGridView1.Columns[0].Width = 50;  
             dataGridView1.Columns[1].Width = 50;
             dataGridView1.Columns[2].Width = 150;
