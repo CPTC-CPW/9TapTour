@@ -92,13 +92,13 @@ namespace NineTapTour.Forms
 
         public void sizeFinalizeGridView() {
             dataGridView1.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridView1.Columns[0].Width = 50; // AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;//.Columns[0].Width = 5;    // STANDING_COLUMN = 0;
+            dataGridView1.Columns[0].Width = 50;   // STANDING_COLUMN = 0;
 
             dataGridView1.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[1].Width = 50;
 
             dataGridView1.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridView1.Columns[2].Width = 75;
+            dataGridView1.Columns[2].Width = 150;
 
             dataGridView1.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[3].Width = 50;
@@ -124,15 +124,20 @@ namespace NineTapTour.Forms
             dataGridView1.Columns[10].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // GAME_4_VALID_COLUMN = 10;
             dataGridView1.Columns[10].Width = 25;
 
-            dataGridView1.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;    // SCRATCH_TOTAL_COLUMN = 11;
+            dataGridView1.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;    // SCRATCH_TOTAL_COLUMN = 11;
+            dataGridView1.Columns[11].Width = 50;
 
-            dataGridView1.Columns[12].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;  // HANDICAP_TOTAL_COLUMN = 12;
+            dataGridView1.Columns[12].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;  // HANDICAP_TOTAL_COLUMN = 12;
+            dataGridView1.Columns[12].Width = 50;
 
-            dataGridView1.Columns[13].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;   // ENTRY_AVERAGE_COLUMN = 13;
+            dataGridView1.Columns[13].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;   // ENTRY_AVERAGE_COLUMN = 13;
+            dataGridView1.Columns[13].Width = 50;
 
-            dataGridView1.Columns[14].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;  // THIRTY_ENTRY_AVERAGE_COLUMN = 14;
+            dataGridView1.Columns[14].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;  // THIRTY_ENTRY_AVERAGE_COLUMN = 14;
+            dataGridView1.Columns[14].Width = 50;
 
-            dataGridView1.Columns[15].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;   //  ADJUSTED_AVG_COLUMN = 15;
+            dataGridView1.Columns[15].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;   //  ADJUSTED_AVG_COLUMN = 15;
+            dataGridView1.Columns[15].Width = 50;
 
             dataGridView1.Columns[16].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; //  DIRECTOR_CHECK_COLUMN = 16;
             dataGridView1.Columns[16].Width = 40;
@@ -150,7 +155,8 @@ namespace NineTapTour.Forms
             dataGridView1.Columns[20].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[20].Width = 50;   // PRO_POT_COLUMN = 20;
 
-            dataGridView1.Columns[21].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; // .Width = 2;   // NOTES_COLUMN_ = 21;
+            dataGridView1.Columns[21].AutoSizeMode = DataGridViewAutoSizeColumnMode.None; // .Width = 2;   // NOTES_COLUMN_ = 21;
+            dataGridView1.Columns[21].Width = 150;
 
             dataGridView1.Columns[22].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; // .Width = 2;   // GAME_ID_COLUMN = 22;
 
