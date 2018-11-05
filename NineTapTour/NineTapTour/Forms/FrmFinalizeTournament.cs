@@ -90,36 +90,35 @@ namespace NineTapTour.Forms
             sizeFinalizeGridView(); // resizes the columns of finalize form
         }
 
-        public void sizeFinalizeGridView() {
+        public void sizeFinalizeGridView() { 
             int columnCount = 22;
             for (int colWidth = 0; colWidth < columnCount; colWidth++)
             {
                 dataGridView1.Columns[colWidth].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             }
- 
-            dataGridView1.Columns[0].Width = 50;  
-            dataGridView1.Columns[1].Width = 50;
-            dataGridView1.Columns[2].Width = 150;
-            dataGridView1.Columns[3].Width = 42;
-            dataGridView1.Columns[4].Width = 45;
-            dataGridView1.Columns[5].Width = 42;
-            dataGridView1.Columns[6].Width = 45;
-            dataGridView1.Columns[7].Width = 42;
-            dataGridView1.Columns[8].Width = 45;
-            dataGridView1.Columns[9].Width = 42;
-            dataGridView1.Columns[10].Width = 45;
-            dataGridView1.Columns[11].Width = 50;
-            dataGridView1.Columns[12].Width = 50;
-            dataGridView1.Columns[13].Width = 45;
-            dataGridView1.Columns[14].Width = 45;
-            dataGridView1.Columns[15].Width = 40;
-            dataGridView1.Columns[16].Width = 50;
-            dataGridView1.Columns[17].Width = 40;
-            dataGridView1.Columns[18].Width = 35; 
-            dataGridView1.Columns[19].Width = 35;
-            dataGridView1.Columns[20].Width = 40;
-            dataGridView1.Columns[21].Width = 150;
-            dataGridView1.Columns[22].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; 
+            dataGridView1.Columns[STANDING_COLUMN].Width = 50;  
+            dataGridView1.Columns[MEMBER_NUMBER_COLUMN].Width = 50;
+            dataGridView1.Columns[NAME_COLUMN].Width = 150;
+            dataGridView1.Columns[GAME_1_COLUMN].Width = 42;
+            dataGridView1.Columns[GAME_1_VALID_COLUMN].Width = 45;
+            dataGridView1.Columns[GAME_2_COLUMN].Width = 42;
+            dataGridView1.Columns[GAME_2_VALID_COLUMN].Width = 45;
+            dataGridView1.Columns[GAME_3_COLUMN].Width = 42;
+            dataGridView1.Columns[GAME_3_VALID_COLUMN].Width = 45;
+            dataGridView1.Columns[GAME_4_COLUMN].Width = 42;
+            dataGridView1.Columns[GAME_4_VALID_COLUMN].Width = 45;
+            dataGridView1.Columns[SCRATCH_TOTAL_COLUMN].Width = 50;
+            dataGridView1.Columns[HANDICAP_TOTAL_COLUMN].Width = 50;
+            dataGridView1.Columns[ENTRY_AVERAGE_COLUMN].Width = 45;
+            dataGridView1.Columns[THIRTY_ENTRY_AVERAGE_COLUMN].Width = 45;
+            dataGridView1.Columns[ADJUSTED_AVG_COLUMN].Width = 40;
+            dataGridView1.Columns[DIRECTOR_CHECK_COLUMN].Width = 50;
+            dataGridView1.Columns[SQUAD_COLUMN].Width = 40;
+            dataGridView1.Columns[HANDICAP_COLUMN].Width = 35; 
+            dataGridView1.Columns[BONUS_COLUMN].Width = 35;
+            dataGridView1.Columns[PRO_POT_COLUMN].Width = 40;
+            dataGridView1.Columns[NOTES_COLUMN_].Width = 150;
+            dataGridView1.Columns[GAME_ID_COLUMN].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; 
         }
 
         private void createDataGridView(Tournament tourn)
