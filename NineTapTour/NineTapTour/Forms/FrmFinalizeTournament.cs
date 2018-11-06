@@ -836,6 +836,7 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Notes");
             dtGames.Columns.Add("GameID").ReadOnly = true;
 
+            decimal totalMoneyEarned = 0;
             foreach (var item in temporary)
             {
                 DataRow newRow = dtGames.NewRow();
@@ -876,7 +877,12 @@ namespace NineTapTour.Forms
 
                 dtGames.Rows.Add(newRow);
 
+                // To know total to add to the Money Won heading label
+                totalMoneyEarned += item.MoneyWon;
+
             }
+            dtGames.Columns["Money Won"].ColumnName = $"Money Won ({totalMoneyEarned})";
+
 
             List<PlayerHistory> currentHistory = PlayerHistoryDB.getMemberPlayerHistoryCount(temporary[0].MemberNumber, RegionID);
 
