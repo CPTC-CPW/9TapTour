@@ -45,18 +45,19 @@ namespace NineTapTour.Forms
         const int GAME_ID_COLUMN = 22;
 
         //USE THIS IF YOU WANT TO CHANGE THE NAME OF EACH COLUMN 
+        //Column names must be unique but the HeaderText can be changed in the DataGridView to change the text that is displayed
         const string STANDING_COLUMN_NAME = "Standing";
         const string MEMBER_NUMBER_COLUMN_NAME = "Member Number";
         const string GAME_ID_COLUMN_NAME = "GameID";
         const string NAME_COLUMN_NAME = "Name";
         const string GAME_1_COLUMN_NAME = "Game 1";
-        const string GAME_1_VALID_COLUMN_NAME = "Valid Score1?"; // Why cant remove the name?
+        const string GAME_1_VALID_COLUMN_NAME = "Valid Score1?";
         const string GAME_2_COLUMN_NAME = "Game 2";
-        const string GAME_2_VALID_COLUMN_NAME = "Valid Score2?"; // Why cant remove the name?
+        const string GAME_2_VALID_COLUMN_NAME = "Valid Score2?";
         const string GAME_3_COLUMN_NAME = "Game 3";
-        const string GAME_3_VALID_COLUMN_NAME = "Valid Score3?"; // Why cant remove the name?
+        const string GAME_3_VALID_COLUMN_NAME = "Valid Score3?";
         const string GAME_4_COLUMN_NAME = "Game 4";
-        const string GAME_4_VALID_COLUMN_NAME = "Valid Score4?"; // Why cant remove the name?
+        const string GAME_4_VALID_COLUMN_NAME = "Valid Score4?";
         const string SCRATCH_TOTAL_COLUMN_NAME = "Scratch Total";
         const string HANDICAP_TOTAL_COLUMN_NAME = "HDCP Total";
         const string ENTRY_AVERAGE_COLUMN_NAME = "Entry AVG";
@@ -218,6 +219,12 @@ namespace NineTapTour.Forms
             dataGridView1.DataSource = DataView(DataViewList); //By default populates all datagrid with all participant for tournament.
 
             dataGridView1.Columns[GAME_ID_COLUMN].Visible = false;
+
+            //Replace "Valid Score #?" column header with an empty string
+            dataGridView1.Columns[GAME_1_VALID_COLUMN].HeaderText = string.Empty;
+            dataGridView1.Columns[GAME_2_VALID_COLUMN].HeaderText = string.Empty;
+            dataGridView1.Columns[GAME_3_VALID_COLUMN].HeaderText = string.Empty;
+            dataGridView1.Columns[GAME_4_VALID_COLUMN].HeaderText = string.Empty;
 
             ////Sort DataGridView by TrueAverage
             //this.dataGridView1.Sort(this.dataGridView1.Columns["True Avg"], ListSortDirection.Descending);
