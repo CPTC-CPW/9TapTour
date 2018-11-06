@@ -99,5 +99,14 @@ namespace NineTapTour.Calculations.Test
             int handicapResult = Calculations.CalculateHandicapPins(avg);
             Assert.AreEqual(handicapResult, expectedHandicap);
         }
+
+        [TestMethod]
+        [DataRow(5, 1)]
+        [DataRow(0, 0)]
+        public void CalculateNumberOfMembersThatCanPlaceInATournament_ReturnsExpectedAmount(int numParticipants, int expectedNumThatCanPlace)
+        {
+            decimal resultNumThatCanPlace = Calculations.CalculateNumberOfMembersThatCanPlaceInATournament(numParticipants);
+            Assert.AreEqual(resultNumThatCanPlace, expectedNumThatCanPlace);
+        }
     }
 }
