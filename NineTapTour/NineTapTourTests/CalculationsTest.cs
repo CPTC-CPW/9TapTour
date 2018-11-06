@@ -103,10 +103,11 @@ namespace NineTapTour.Calculations.Test
         [TestMethod]
         [DataRow(5, 1)]
         [DataRow(0, 0)]
+        [DataRow(6, 2)]
         public void CalculateNumberOfMembersThatCanPlaceInATournament_ReturnsExpectedAmount(int numParticipants, int expectedNumThatCanPlace)
         {
             decimal resultNumThatCanPlace = Calculations.CalculateNumberOfMembersThatCanPlaceInATournament(numParticipants);
-            Assert.AreEqual(resultNumThatCanPlace, expectedNumThatCanPlace);
+            Assert.AreEqual(expectedNumThatCanPlace, resultNumThatCanPlace);
         }
     }
 }
