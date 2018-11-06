@@ -39,7 +39,7 @@
             this.btnPrint.Location = new System.Drawing.Point(102, 144);
             this.btnPrint.Name = "btnPrint";
             this.btnPrint.Size = new System.Drawing.Size(75, 23);
-            this.btnPrint.TabIndex = 0;
+            this.btnPrint.TabIndex = 1;
             this.btnPrint.Text = "Print";
             this.btnPrint.UseVisualStyleBackColor = true;
             this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
@@ -59,7 +59,7 @@
             this.txtNumberOfMembers.Location = new System.Drawing.Point(91, 100);
             this.txtNumberOfMembers.Name = "txtNumberOfMembers";
             this.txtNumberOfMembers.Size = new System.Drawing.Size(100, 20);
-            this.txtNumberOfMembers.TabIndex = 2;
+            this.txtNumberOfMembers.TabIndex = 0;
             // 
             // FrmMemberScoresReports
             // 
@@ -74,6 +74,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmMemberScoresReports";
             this.Text = "FrmMemberScoresReports";
+            this.Load += new System.EventHandler(this.FrmMemberScoresReports_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

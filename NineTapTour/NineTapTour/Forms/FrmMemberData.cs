@@ -10,6 +10,7 @@ using System.Data;
 using System.Runtime.InteropServices;
 using NineTapTour.Models;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Text.RegularExpressions;
 
 namespace NineTapTour.Forms
 {
@@ -440,21 +441,24 @@ namespace NineTapTour.Forms
 			//contains any error messages.  If the list is empty, one knows that all the textboxes are 
 			//valid.  Otherwise, the error messages get displayed for the user's consideration
 			List<string> checkFields = new List<string>();
-
-            //validate average box to not be 0 or empty
-            if(txtAverage.Text == "0" || String.IsNullOrWhiteSpace(txtAverage.Text))
-            {
-                checkFields.Add("Average must be valid and greater than 0.");
-                txtAverage.Clear();
-                txtAverage.BackColor = Color.LightPink;
-            }
+            bool IsValid = true;
 
             //validate average box to only contain numbers
-            if(!String.IsNullOrWhiteSpace(txtAverage.Text) && !int.TryParse(txtAverage.Text, out int result4))
+            if (!String.IsNullOrWhiteSpace(txtAverage.Text) && !int.TryParse(txtAverage.Text, out int result4))
             {
                 checkFields.Add("Average must be a number.  Field can not contain letters.");
                 txtAverage.Clear();
                 txtAverage.BackColor = Color.LightPink;
+                IsValid = false;
+            }
+
+            //validate average box to not be 0 or empty
+            if (txtAverage.Text == "0" || String.IsNullOrWhiteSpace(txtAverage.Text) || txtAverage.Text.Contains("-") || Convert.ToInt32(txtAverage.Text) > 300)
+            {
+                checkFields.Add("Average must be valid and greater than 0.");
+                txtAverage.Clear();
+                txtAverage.BackColor = Color.LightPink;
+                IsValid = false;
             }
 
             //validate last name box
@@ -463,15 +467,16 @@ namespace NineTapTour.Forms
                 checkFields.Add("Last Name is required");
                 txtLastName.Clear();
                 txtLastName.BackColor = Color.LightPink;
+                IsValid = false;
             }
 
             //validate first name box
             if (String.IsNullOrWhiteSpace(txtFirstName.Text))
             {
                 checkFields.Add("First Name is required");
-
                 txtFirstName.Clear();
                 txtFirstName.BackColor = Color.LightPink;
+                IsValid = false;
             }
 
             //VALIDATE DOB WITHIN BOUNDS
@@ -480,6 +485,7 @@ namespace NineTapTour.Forms
             {
                 checkFields.Add("Date of birth must be between 1753 and 9999.");
                 mtxtBoxDOB.BackColor = Color.LightPink;
+                IsValid = false;
             }
 
 			//dateJoined validation
@@ -487,6 +493,7 @@ namespace NineTapTour.Forms
             {
                 checkFields.Add("Join Date must be between 1753 and 9999.");
                 mtxtBoxDateJoined.BackColor = Color.LightPink;
+                IsValid = false;
             }
 
 			//rejoin date validation
@@ -494,6 +501,7 @@ namespace NineTapTour.Forms
             {
                 checkFields.Add("Rejoin Date must be between 1753 and 9999.");
                 mtxtBoxDateJoined.BackColor = Color.LightPink;
+                IsValid = false;
             }
             
             //check to make sure box is not empty.  If so, attempt to parse referral number
@@ -503,7 +511,7 @@ namespace NineTapTour.Forms
                 {
                     checkFields.Add("Referrals must be a number.");
                     txtReferrals.BackColor = Color.LightPink;
-                    //return false;
+                    IsValid = false;
                 }
             }
 
@@ -514,6 +522,7 @@ namespace NineTapTour.Forms
                 {
                     checkFields.Add("Social Security Number must have 9 digits");
                     mtxtBoxSSN.BackColor = Color.LightPink;
+                    IsValid = false;
                 }
             }
 
@@ -536,9 +545,18 @@ namespace NineTapTour.Forms
             {
                 checkFields.Add("State textbox must only contain letters");
                 txtState.BackColor = Color.LightPink;
+                IsValid = false;
             }
 
-			    return checkFields;
+            if (IsValid == false)
+            {
+                return checkFields;
+            }
+            else
+            {
+                checkFields.Clear();
+                return checkFields;
+            }
         }
 
         /// <summary>
@@ -800,10 +818,16 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnArrowLeft_Click(object sender, EventArgs e)
         {
+            //cursor begins when arrow is clicked
+            Cursor.Current = Cursors.WaitCursor;
+
             List<Member> m = MemberDb.GetMemberList(RegionID);
             if (MemberDb.GetMemberList(RegionID).Count == 0 || currentMem.Number <= m[0].Number)
             {
+                //turns loading cursor off.
+                Cursor.Current = Cursors.Default;
                 MessageBox.Show(@"Beginning of file.", @"Notice");
+                
             }
             else
             {
@@ -812,6 +836,8 @@ namespace NineTapTour.Forms
                 {
                     txtMemberNumber.Text = (currentMem.Number - 1).ToString();
                     UpdateMemberInfo();
+                    //turns loading cursor off
+                    Cursor.Current = Cursors.Default;
                 }
             }
 
@@ -824,8 +850,12 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
+            //turns on a loading cursor while new bowler is loaded.
+            Cursor.Current = Cursors.WaitCursor;
             if (MemberDb.GetMemberList(RegionID).Count == 0 || currentMem.Number >= MemberDb.GetMemberList(RegionID).Count)
             {
+                //turns loading cursor off.
+                Cursor.Current = Cursors.Default;
                 MessageBox.Show(@"End of file.", @"Notice");
             }
             else
@@ -834,6 +864,8 @@ namespace NineTapTour.Forms
                 {
                     txtMemberNumber.Text = (currentMem.Number + 1).ToString();
                     UpdateMemberInfo();
+                    //turns loading cursor off.
+                    Cursor.Current = Cursors.Default;
                 }
 
                 
