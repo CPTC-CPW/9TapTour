@@ -87,5 +87,17 @@ namespace NineTapTour.Calculations.Test
             //last member in list (score of 500)
             Assert.AreEqual(members[6].placing, 7);
         }
+
+        [TestMethod]
+        [DataRow(230, -8)] // special case
+        [DataRow(220, 0)]
+        [DataRow(270, -45)]
+        [DataRow(170, 45)]
+        [DataRow(120, 70)] // max handicap should be 70
+        public void CalculateHandicapPins_ReturnsExpectedAmount(int avg, int expectedHandicap)
+        {
+            int handicapResult = Calculations.CalculateHandicapPins(avg);
+            Assert.AreEqual(handicapResult, expectedHandicap);
+        }
     }
 }
