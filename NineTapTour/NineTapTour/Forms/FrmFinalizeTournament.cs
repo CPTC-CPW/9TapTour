@@ -118,7 +118,7 @@ namespace NineTapTour.Forms
             dataGridView1.Columns[HANDICAP_COLUMN].Width = 35; 
             dataGridView1.Columns[BONUS_COLUMN].Width = 35;
             dataGridView1.Columns[PRO_POT_COLUMN].Width = 40;
-            dataGridView1.Columns[NOTES_COLUMN_].Width = 150;
+            dataGridView1.Columns[NOTES_COLUMN_].Width = 225;
             dataGridView1.Columns[GAME_ID_COLUMN].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; 
         }
 
