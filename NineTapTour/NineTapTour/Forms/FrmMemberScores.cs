@@ -369,7 +369,7 @@ namespace NineTapTour.Forms
             }
             TextBox tx = (TextBox)sender;
 
-            //this code will adjust the scratch and handicap total (textboxes) only if its a 3of4 tournament ( taking out the lowest game) //////////////////////////////////////////////////Here
+            //this code will adjust the scratch and handicap total (textboxes) only if its a 3of4 tournament ( taking out the lowest game) 
             if (txtScratchScore1.Text != "" && txtScratchScore2.Text != "" && txtScratchScore3.Text != "" && txtScratchScore4.Text != "")
             {
                 int handicapTotal = 0;
