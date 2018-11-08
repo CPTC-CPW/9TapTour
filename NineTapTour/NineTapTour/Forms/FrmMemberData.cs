@@ -452,10 +452,11 @@ namespace NineTapTour.Forms
                 IsValid = false;
             }
 
-            //validate average box to not be 0 or empty
+            // validate average box to not be 0 or empty
+            // creates a visible label for validating the average
             if (txtAverage.Text == "0" || String.IsNullOrWhiteSpace(txtAverage.Text) || txtAverage.Text.Contains("-") || Convert.ToInt32(txtAverage.Text) > 300)
             {
-                checkFields.Add("Average must be valid and greater than 0.");
+                lblAverageValidation.Visible = true;
                 txtAverage.Clear();
                 txtAverage.BackColor = Color.LightPink;
                 IsValid = false;
@@ -579,7 +580,9 @@ namespace NineTapTour.Forms
                     message += s + "\n";
                 }
 
-                DialogResult confirm = MessageBox.Show(@message, @"There are errors for this member.", MessageBoxButtons.OK, MessageBoxIcon.Question);
+                DialogResult confirm = MessageBox.Show(@message, 
+                    @"There are errors for this member. Cannot be saved.", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Question);
                
 
             }
@@ -1606,11 +1609,6 @@ namespace NineTapTour.Forms
           mtxtBoxSSN.PasswordChar = chbSocial.Checked ? '\0' : '*';
         }
 
-        private void txtMemberNumber_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void mtxtBoxDOB_KeyDown(object sender, KeyEventArgs e)
         {
             toolTip1.Hide(mtxtBoxDOB);
@@ -1703,7 +1701,9 @@ namespace NineTapTour.Forms
                     message += s + "\n";
                 }
 
-                DialogResult confirm = MessageBox.Show(@message, @"There are errors, navigate away anyways?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult confirm = MessageBox.Show(@message, 
+                    @"There are errors, navigate away anyways?", 
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if(confirm == DialogResult.Yes)
                 {
                     return true;

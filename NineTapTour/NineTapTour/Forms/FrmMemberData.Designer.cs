@@ -115,6 +115,7 @@
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.lblAverageValidation = new System.Windows.Forms.Label();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -215,7 +216,6 @@
             this.txtMemberNumber.TabStop = false;
             this.txtMemberNumber.Text = "1";
             this.txtMemberNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtMemberNumber.TextChanged += new System.EventHandler(this.txtMemberNumber_TextChanged);
             // 
             // grpMemberInfo
             // 
@@ -851,6 +851,7 @@
             // 
             // panel5
             // 
+            this.panel5.Controls.Add(this.lblAverageValidation);
             this.panel5.Controls.Add(this.mtxtBoxLastBowled);
             this.panel5.Controls.Add(this.label2);
             this.panel5.Controls.Add(this.txtTournAvg);
@@ -865,14 +866,14 @@
             this.panel5.Controls.Add(this.txtHandicap);
             this.panel5.Controls.Add(this.txtBonus);
             this.panel5.Controls.Add(this.txtAverage);
-            this.panel5.Location = new System.Drawing.Point(360, 386);
+            this.panel5.Location = new System.Drawing.Point(360, 377);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(482, 138);
+            this.panel5.Size = new System.Drawing.Size(482, 147);
             this.panel5.TabIndex = 74;
             // 
             // mtxtBoxLastBowled
             // 
-            this.mtxtBoxLastBowled.Location = new System.Drawing.Point(373, 107);
+            this.mtxtBoxLastBowled.Location = new System.Drawing.Point(375, 118);
             this.mtxtBoxLastBowled.Mask = "00/00/0000";
             this.mtxtBoxLastBowled.Name = "mtxtBoxLastBowled";
             this.mtxtBoxLastBowled.Size = new System.Drawing.Size(103, 21);
@@ -884,7 +885,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(136, 10);
+            this.label2.Location = new System.Drawing.Point(145, 23);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(101, 15);
             this.label2.TabIndex = 49;
@@ -895,7 +896,7 @@
             this.txtTournAvg.BackColor = System.Drawing.SystemColors.ControlLight;
             this.txtTournAvg.Enabled = false;
             this.txtTournAvg.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTournAvg.Location = new System.Drawing.Point(141, 28);
+            this.txtTournAvg.Location = new System.Drawing.Point(150, 41);
             this.txtTournAvg.MaxLength = 20;
             this.txtTournAvg.Name = "txtTournAvg";
             this.txtTournAvg.ReadOnly = true;
@@ -907,7 +908,7 @@
             // 
             this.lblLastBowled.AutoSize = true;
             this.lblLastBowled.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLastBowled.Location = new System.Drawing.Point(370, 89);
+            this.lblLastBowled.Location = new System.Drawing.Point(372, 100);
             this.lblLastBowled.Name = "lblLastBowled";
             this.lblLastBowled.Size = new System.Drawing.Size(72, 15);
             this.lblLastBowled.TabIndex = 59;
@@ -917,7 +918,7 @@
             // 
             this.lblMoneyEarned.AutoSize = true;
             this.lblMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMoneyEarned.Location = new System.Drawing.Point(196, 89);
+            this.lblMoneyEarned.Location = new System.Drawing.Point(198, 100);
             this.lblMoneyEarned.Name = "lblMoneyEarned";
             this.lblMoneyEarned.Size = new System.Drawing.Size(85, 15);
             this.lblMoneyEarned.TabIndex = 57;
@@ -927,7 +928,7 @@
             // 
             this.lblYET.AutoSize = true;
             this.lblYET.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblYET.Location = new System.Drawing.Point(15, 89);
+            this.lblYET.Location = new System.Drawing.Point(17, 100);
             this.lblYET.Name = "lblYET";
             this.lblYET.Size = new System.Drawing.Size(60, 15);
             this.lblYET.TabIndex = 55;
@@ -938,7 +939,7 @@
             this.txtMoneyEarned.BackColor = System.Drawing.SystemColors.Control;
             this.txtMoneyEarned.Enabled = false;
             this.txtMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMoneyEarned.Location = new System.Drawing.Point(199, 107);
+            this.txtMoneyEarned.Location = new System.Drawing.Point(201, 118);
             this.txtMoneyEarned.Name = "txtMoneyEarned";
             this.txtMoneyEarned.Size = new System.Drawing.Size(100, 23);
             this.txtMoneyEarned.TabIndex = 58;
@@ -948,7 +949,7 @@
             // 
             this.txtYearEndT.BackColor = System.Drawing.SystemColors.Control;
             this.txtYearEndT.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtYearEndT.Location = new System.Drawing.Point(18, 107);
+            this.txtYearEndT.Location = new System.Drawing.Point(20, 118);
             this.txtYearEndT.MaxLength = 20;
             this.txtYearEndT.Name = "txtYearEndT";
             this.txtYearEndT.Size = new System.Drawing.Size(124, 23);
@@ -958,7 +959,7 @@
             // 
             this.lblBonus.AutoSize = true;
             this.lblBonus.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBonus.Location = new System.Drawing.Point(411, 10);
+            this.lblBonus.Location = new System.Drawing.Point(364, 23);
             this.lblBonus.Name = "lblBonus";
             this.lblBonus.Size = new System.Drawing.Size(41, 15);
             this.lblBonus.TabIndex = 53;
@@ -968,7 +969,7 @@
             // 
             this.lblTournAvg.AutoSize = true;
             this.lblTournAvg.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTournAvg.Location = new System.Drawing.Point(275, 10);
+            this.lblTournAvg.Location = new System.Drawing.Point(256, 23);
             this.lblTournAvg.Name = "lblTournAvg";
             this.lblTournAvg.Size = new System.Drawing.Size(60, 15);
             this.lblTournAvg.TabIndex = 51;
@@ -978,7 +979,7 @@
             // 
             this.lblAverage.AutoSize = true;
             this.lblAverage.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAverage.Location = new System.Drawing.Point(31, 10);
+            this.lblAverage.Location = new System.Drawing.Point(68, 23);
             this.lblAverage.Name = "lblAverage";
             this.lblAverage.Size = new System.Drawing.Size(50, 15);
             this.lblAverage.TabIndex = 47;
@@ -989,7 +990,7 @@
             this.txtHandicap.BackColor = System.Drawing.SystemColors.ControlLight;
             this.txtHandicap.Enabled = false;
             this.txtHandicap.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtHandicap.Location = new System.Drawing.Point(264, 28);
+            this.txtHandicap.Location = new System.Drawing.Point(245, 41);
             this.txtHandicap.MaxLength = 20;
             this.txtHandicap.Name = "txtHandicap";
             this.txtHandicap.ReadOnly = true;
@@ -1002,7 +1003,7 @@
             this.txtBonus.BackColor = System.Drawing.SystemColors.ControlLight;
             this.txtBonus.Enabled = false;
             this.txtBonus.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtBonus.Location = new System.Drawing.Point(387, 28);
+            this.txtBonus.Location = new System.Drawing.Point(340, 41);
             this.txtBonus.MaxLength = 20;
             this.txtBonus.Name = "txtBonus";
             this.txtBonus.ReadOnly = true;
@@ -1014,7 +1015,7 @@
             // 
             this.txtAverage.BackColor = System.Drawing.SystemColors.Control;
             this.txtAverage.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAverage.Location = new System.Drawing.Point(8, 28);
+            this.txtAverage.Location = new System.Drawing.Point(45, 41);
             this.txtAverage.MaxLength = 20;
             this.txtAverage.Name = "txtAverage";
             this.txtAverage.Size = new System.Drawing.Size(99, 47);
@@ -1079,6 +1080,18 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(285, 70);
             this.panel2.TabIndex = 74;
+            // 
+            // lblAverageValidation
+            // 
+            this.lblAverageValidation.AutoSize = true;
+            this.lblAverageValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblAverageValidation.ForeColor = System.Drawing.Color.Red;
+            this.lblAverageValidation.Location = new System.Drawing.Point(42, 8);
+            this.lblAverageValidation.Name = "lblAverageValidation";
+            this.lblAverageValidation.Size = new System.Drawing.Size(179, 15);
+            this.lblAverageValidation.TabIndex = 75;
+            this.lblAverageValidation.Text = "Average must be greater than 0.";
+            this.lblAverageValidation.Visible = false;
             // 
             // FrmMemberData
             // 
@@ -1215,5 +1228,6 @@
         private System.Windows.Forms.TextBox txtHandicap;
         private System.Windows.Forms.TextBox txtBonus;
         private System.Windows.Forms.TextBox txtAverage;
+        private System.Windows.Forms.Label lblAverageValidation;
     }
 }
