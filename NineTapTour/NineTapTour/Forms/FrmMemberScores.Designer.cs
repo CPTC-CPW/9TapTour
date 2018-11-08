@@ -579,7 +579,7 @@
             this.btnNew.Name = "btnNew";
             this.btnNew.Size = new System.Drawing.Size(138, 25);
             this.btnNew.TabIndex = 18;
-            this.btnNew.Text = "Add New/Update Record";
+            this.btnNew.Text = "Add New Record";
             this.btnNew.UseVisualStyleBackColor = true;
             this.btnNew.Click += new System.EventHandler(this.newRecap);
             // 
