@@ -1714,7 +1714,7 @@ namespace NineTapTour.Forms
                     cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
                     cbxTourneyDropDown.ValueMember = "Id";
                     //corrects any changes to the members stats after finalizing to the last accurate data
-                    List<PlayerHistory> temp = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Number, RegionID);
+                    List<PlayerHistory> temp = PlayerHistoryDB.getLastFiveTournaments(currentMem.Number, RegionID);
                     currentMem.Handicap = temp[0].HandiCap;
                     currentMem.Bonus = temp[0].Bonus;
                     currentMem.StartAvg = temp[0].AVG; // avg will have to be adjusted manually by director if last player history avg was not correct

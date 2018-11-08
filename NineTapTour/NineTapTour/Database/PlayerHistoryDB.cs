@@ -362,7 +362,7 @@ namespace NineTapTour.Database
             return Return;
         }
 
-        public static List<PlayerHistory> getLastFiveFromPlayerhistory(int memNum, int RegionId)
+        public static List<PlayerHistory> getLastFiveTournaments(int memNum, int RegionId)
         {
             List<PlayerHistory> Return = new List<PlayerHistory>();
             using (var db = new NineTapDb())

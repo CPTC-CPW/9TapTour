@@ -1301,7 +1301,7 @@ namespace Member_Import_Test
 
             for (int i = 0; i < validMembers.Count; i++)
             {
-                List<PlayerHistory> list = PlayerHistoryDB.getLastFiveFromPlayerhistory(validMembers[i].Number, RegionID);
+                List<PlayerHistory> list = PlayerHistoryDB.getLastFiveTournaments(validMembers[i].Number, RegionID);
                 if (list.Count > 0)
                 {
                     validMembers[i].StartAvg = list[0].AVG; //set new avg to last bowled adjusted avg

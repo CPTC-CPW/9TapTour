@@ -22,7 +22,7 @@ namespace NineTapTour.Calculations
         const int DEDUCT_1 = 1;
         const int DEDUCT_2 = 2;
         const int DEDUCT_3 = 3;
-        const int FIRST_PLACE_DEDUCTION = 1;
+        const int FIRST_PLACE = 1;
         const int MIN_PLACEMENT_DEDUCT_2_PINS = 6;
         const int MAX_PLACEMENT_DEDUCT_2_PINS = 10;
         const int MIN_PLACEMENT_DEDUCT_3_PINS = 2;
@@ -56,88 +56,61 @@ namespace NineTapTour.Calculations
             }
         }
 
-        public static int CalculateBonusPins(bool didMemberCash, int memberPlaced, int currentBonusPins, bool isDoublesTournament, int memNum,int RegionID, DateTime currentT)
+        public static int AdjustBonusPins(int memberPlaced, int currentBonusPins, int memNum, int RegionID, DateTime currentT)
         {
-            
-            int RETURN = 0;
-            if (didMemberCash)
+            if (memberPlaced > 0)
             {
-              RETURN =  DeductBonusPins(memberPlaced, currentBonusPins, isDoublesTournament);
+                return  DeductFromBonusPins(memberPlaced, currentBonusPins);
             }
-            else
-            {
-               RETURN = AddBonusPins(currentBonusPins, isDoublesTournament, memNum, RegionID, currentT);
-            }
-            return RETURN;
-          
+            return AddToBonusPins(currentBonusPins, memNum, RegionID, currentT);
         }
 
-        public static int AddBonusPins(int currentBonusPins, bool isDoublesTournament, int MemNum, int RegionID, DateTime currenT)
+        public static int AddToBonusPins(int currentBonusPins, int MemNum, int RegionID, DateTime currenT)
         {
             if (currentBonusPins == MAX_BONUS_PINS_ALLOWED)
             {
                 return MAX_BONUS_PINS_ALLOWED;
             }
-            else if(PlayerHistoryDB.getLastFiveFromPlayerhistory(MemNum,RegionID).Count >= 2)
+            List<PlayerHistory> latestTournaments = PlayerHistoryDB.getLastFiveTournaments(MemNum, RegionID);
+
+            if (latestTournaments.Count >= 2)
             {
-                List<PlayerHistory> latest = PlayerHistoryDB.getLastFiveFromPlayerhistory(MemNum,RegionID);
-                if(latest[0].TournamentDate != latest[1].TournamentDate &&
-                   latest[1].TournamentDate != currenT && //filtering history where they had bowled in a diffrent sqaud on the same day
-                   currenT != latest[0].TournamentDate)
+                // Filtering history where they had bowled in a diffrent sqaud on the same day
+                if (latestTournaments[0].TournamentDate != latestTournaments[1].TournamentDate &&
+                   latestTournaments[1].TournamentDate != currenT && 
+                   currenT != latestTournaments[0].TournamentDate)
                 {
-                    if(latest[0].Bonus == latest[1].Bonus &&
-                       latest[1].Bonus == currentBonusPins &&  //checks to see if the last 2 bowling history is the same as it is currently, after 3 times not placing, they gain a bonus point
-                       currentBonusPins == latest[0].Bonus)
+                    // Checks to see if the last 2 bowling history is the same as it is currently, 
+                    // after 3 times not placing, they gain a bonus point
+                    if (latestTournaments[0].Bonus == latestTournaments[1].Bonus &&
+                       latestTournaments[1].Bonus == currentBonusPins)
                     {
                         return ++currentBonusPins;
                     }
                 }
                 return currentBonusPins;
-
             }
             else
             {
-              
                 return currentBonusPins;
             }
         }
 
-        public static int DeductBonusPins(int memberPlaced, int currentBonusPins, bool isDoublesTournament)
+        public static int DeductFromBonusPins(int memberPlaced, int currentBonusPins)
         {
             int bonusPinsAfterDeduction;
 
-            if (memberPlaced == FIRST_PLACE_DEDUCTION)
+            if (memberPlaced == FIRST_PLACE)
             {
-                if (isDoublesTournament)
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - DoublesTournamentRoundPinValue(DEDUCT_HALF);
-                }
-                else
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - currentBonusPins;
-                }
+                bonusPinsAfterDeduction = currentBonusPins - currentBonusPins;
             }
-            else if (memberPlaced >= MIN_PLACEMENT_DEDUCT_3_PINS && memberPlaced <= MAX_PLACEMENT_DEDUCT_3_PINS)
+            else if (memberPlaced <= MAX_PLACEMENT_DEDUCT_3_PINS)
             {
-                if (isDoublesTournament)
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - DoublesTournamentRoundPinValue(DEDUCT_HALF);
-                }
-                else
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - DEDUCT_3;
-                }
+                bonusPinsAfterDeduction = currentBonusPins - DEDUCT_3;
             }
-            else if (memberPlaced >= MIN_PLACEMENT_DEDUCT_2_PINS && memberPlaced <= MAX_PLACEMENT_DEDUCT_2_PINS)
+            else if (memberPlaced <= MAX_PLACEMENT_DEDUCT_2_PINS)
             {
-                if (isDoublesTournament)
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - DoublesTournamentRoundPinValue(DEDUCT_HALF);
-                }
-                else
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - DEDUCT_2;
-                }
+                bonusPinsAfterDeduction = currentBonusPins - DEDUCT_2;
             }
             else
             {
