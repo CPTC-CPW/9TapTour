@@ -454,7 +454,8 @@ namespace NineTapTour.Forms
 
             // validate average box to not be 0 or empty
             // creates a visible label for validating the average
-            if (txtAverage.Text == "0" || String.IsNullOrWhiteSpace(txtAverage.Text) || txtAverage.Text.Contains("-") || Convert.ToInt32(txtAverage.Text) > 300)
+            if (txtAverage.Text == "0" || String.IsNullOrWhiteSpace(txtAverage.Text) || 
+                txtAverage.Text.Contains("-") || Convert.ToInt32(txtAverage.Text) > 300)
             {
                 lblAverageValidation.Visible = true;
                 txtAverage.Clear();
@@ -582,9 +583,7 @@ namespace NineTapTour.Forms
 
                 DialogResult confirm = MessageBox.Show(@message, 
                     @"There are errors for this member. Cannot be saved.", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Question);
-               
-
+                    MessageBoxButtons.OK, MessageBoxIcon.Question);               
             }
             else
             {
@@ -596,14 +595,13 @@ namespace NineTapTour.Forms
         {
             //checks to see if firstname,lastname, and zip is valid.
             //Then runs the rest of the btnSave_Click and adds a member into the database.
-            if (isValid().Count == 0)
+            if (isValid().Count == 0 &&
+                lblAverageValidation.Visible == false)
             {
-                ////use existing memberId if present or select the member id from the form
-                //int memId = (_memberId != -1) ? _memberId : Convert.ToInt32(txtMemberNumber.Text);
-
                 //checks to see if MemberID exists 
                 int memId;
-                   Member temp = new Member();
+
+                Member temp = new Member();
           
                 temp.Number = Convert.ToInt32(txtMemberNumber.Text);
                 temp.IsActive = rdoActive.Checked;
@@ -621,7 +619,7 @@ namespace NineTapTour.Forms
                     temp.JoinDate = null;
                 }
 
-                #region Personal Info
+                // Personal Info
                 temp.LastName = txtLastName.Text;
                 temp.FirstName = txtFirstName.Text;
                 temp.MiddleInitial = txtMiddleInitial.Text;
@@ -653,40 +651,35 @@ namespace NineTapTour.Forms
                 temp.SSN = mtxtBoxSSN.Text;
                 temp.IsSenior = chbSenior.Checked;
                 temp.Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male;
-                #endregion
 
-                #region Postal Address
+                // Postal Address
                 temp.Street = txtAddress.Text;
                 temp.City = txtCity.Text;
                 temp.State = txtState.Text;
                 temp.PostalCode = mtxtBoxZip.Text;
-                #endregion
 
-                #region Contact Info
+                // Contact Info
                 temp.Email = txtEmail.Text;
                 temp.PrimaryPhone = mtxtBoxPhone.Text;
                 temp.SecondaryPhone = mtxtBoxPhone2.Text;
-                #endregion
 
-                #region Score Info
-                /*************************************************************************************
-                used to say Average = 0; which is always making the average in the database 0
-                **************************************************************************************/
+                // Score Info
+                /****************************************************************************
+                used to say Average = 0; which will make the average in the database 0
+                *****************************************************************************/
                 double avg = 0;
                 try
                 {
-                   avg = Convert.ToDouble(txtTournAvg.Text);
+                    avg = Convert.ToDouble(txtTournAvg.Text);
                 }
-                catch
+                catch (Exception e)
                 {
-               
+                    MessageBox.Show(e.ToString());
                 }
                 temp.Average = (txtTournAvg.Text == string.Empty) ? 0 : Convert.ToInt16(avg);
-                /*************************************************************************************/
+                /****************************************************************************/
            
                 temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.Average.Value));
-
-                #endregion
 
                 #region Misc. Info
 
@@ -803,14 +796,6 @@ namespace NineTapTour.Forms
                     MessageBox.Show(ex.Message);
                 }
             }
-            
-                //catch (FormatException fe)
-                //{
-                //    Console.WriteLine("Error Number : " + fe.Message);
-                //    //TODO - this field is a catch all for errors in fields that require numbers 
-                //    //League Score, Handicap, and referrals
-                //   // MessageBox.Show("Referrals must be an integer number value.");
-                //}
         }
         
 
@@ -835,19 +820,23 @@ namespace NineTapTour.Forms
             else
             {
                 //newly introduced function call for button navigation
-                if(MemberNavigate())
-                {
-                    txtMemberNumber.Text = (currentMem.Number - 1).ToString();
-                    UpdateMemberInfo();
-                    //turns loading cursor off
-                    Cursor.Current = Cursors.Default;
-                }
+                //if(MemberNavigate())
+                //{
+                //    txtMemberNumber.Text = (currentMem.Number - 1).ToString();
+                //    UpdateMemberInfo();
+                //    //turns loading cursor off
+                //    Cursor.Current = Cursors.Default;
+                //}
+                txtMemberNumber.Text = (currentMem.Number - 1).ToString();
+                UpdateMemberInfo();
+                //turns loading cursor off
+                Cursor.Current = Cursors.Default;
             }
-
         }
 
         /// <summary>
-        /// Displays the next "Member Number"'s information when the right arrow button is clicked.
+        /// Displays the next "Member Number"'s information when the right 
+        /// arrow button is clicked.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -855,7 +844,8 @@ namespace NineTapTour.Forms
         {
             //turns on a loading cursor while new bowler is loaded.
             Cursor.Current = Cursors.WaitCursor;
-            if (MemberDb.GetMemberList(RegionID).Count == 0 || currentMem.Number >= MemberDb.GetMemberList(RegionID).Count)
+            if (MemberDb.GetMemberList(RegionID).Count == 0 || 
+                currentMem.Number >= MemberDb.GetMemberList(RegionID).Count)
             {
                 //turns loading cursor off.
                 Cursor.Current = Cursors.Default;
@@ -863,17 +853,20 @@ namespace NineTapTour.Forms
             }
             else
             {
-                if(MemberNavigate())
-                {
-                    txtMemberNumber.Text = (currentMem.Number + 1).ToString();
-                    UpdateMemberInfo();
-                    //turns loading cursor off.
-                    Cursor.Current = Cursors.Default;
-                }
-
-                
+                //if(MemberNavigate())
+                //{
+                //    txtMemberNumber.Text = (currentMem.Number + 1).ToString();
+                //    UpdateMemberInfo();
+                //    //turns loading cursor off.
+                //    Cursor.Current = Cursors.Default;
+                //}
+                txtMemberNumber.Text = (currentMem.Number + 1).ToString();
+                UpdateMemberInfo();
+                //turns loading cursor off.
+                Cursor.Current = Cursors.Default;
             }
-
+            // removes average label validation
+            lblAverageValidation.Visible = false;
         }
 
         //After the InitializeComponent(); call, the dateRejoin Format & dateLastBowled are reused.
@@ -935,18 +928,18 @@ namespace NineTapTour.Forms
         {
             try
             {
-                if(MemberNavigate())
-                {
-                    txtMemberNumber.Text = MemberDb.GetMemberList(RegionID)[0].Number.ToString();
-                    UpdateMemberInfo();
-                }
-                
+                //if(MemberNavigate())
+                //{
+                //    txtMemberNumber.Text = MemberDb.GetMemberList(RegionID)[0].Number.ToString();
+                //    UpdateMemberInfo();
+                //}
+                txtMemberNumber.Text = MemberDb.GetMemberList(RegionID)[0].Number.ToString();
+                UpdateMemberInfo();
             }
             catch
             {
                 MessageBox.Show("There are no Members yet");
             }
-            
         }
 
         /// <summary>
@@ -956,13 +949,13 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
-            if (MemberNavigate())
-            {
-                txtMemberNumber.Text = MemberDb.GetMemberList(RegionID).Count.ToString();
-                UpdateMemberInfo();
-            }
-
-            
+            //if (MemberNavigate())
+            //{
+            //    txtMemberNumber.Text = MemberDb.GetMemberList(RegionID).Count.ToString();
+            //    UpdateMemberInfo();
+            //}
+            txtMemberNumber.Text = MemberDb.GetMemberList(RegionID).Count.ToString();
+            UpdateMemberInfo();
         }
         
         /// <summary>
@@ -1028,10 +1021,10 @@ namespace NineTapTour.Forms
                     Convert.ToInt32(txtMemberNumber.Text), 
                     txtCity.Text,
                     txtFirstName.Text, 
-                    txtLastName.Text
-                    , txtAverage.Text
-                    , Convert.ToInt32(txtBonus.Text)), 
-                e);
+                    txtLastName.Text, 
+                    txtAverage.Text, 
+                    Convert.ToInt32(txtBonus.Text)), 
+                    e);
         }
 
         private void chbLifetime_CheckedChanged(object sender, EventArgs e)
@@ -1686,42 +1679,44 @@ namespace NineTapTour.Forms
 
         //return true if the user wants to navigate without fixing errors, 
         //or there are no errors to fix
-        public bool MemberNavigate()
-        {
-            SaveMemberData();
+   //     public bool MemberNavigate()
+   //     {
+   //         SaveMemberData();
 
-			List<string> checkFields = isValid();
+			//List<string> checkFields = isValid();
 
-            if (checkFields.Count != 0)
-            {
-                string message = "";
+   //         if (checkFields.Count != 0 || 
+   //             lblAverageValidation.Visible == true)
+   //         {
+   //             string message = "";
 
-                foreach (String s in checkFields)
-                {
-                    message += s + "\n";
-                }
+   //             foreach (String s in checkFields)
+   //             {
+   //                 message += s + "\n";
+   //             }
 
-                DialogResult confirm = MessageBox.Show(@message, 
-                    @"There are errors, navigate away anyways?", 
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if(confirm == DialogResult.Yes)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return true;
-            }
-        }
+   //             DialogResult confirm = MessageBox.Show(@message, 
+   //                 @"There are errors, navigate away anyways?", 
+   //                 MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+   //             if(confirm == DialogResult.Yes)
+   //             {
+   //                 return true;
+   //             }
+   //             else
+   //             {
+   //                 return false;
+   //             }
+   //         }
+   //         else
+   //         {
+   //             return true;
+   //         }
+   //     }
 
         private void FrmMemberData_Deactivate(object sender, EventArgs e)
         {
-            MemberNavigate();
+            // removes average validation label
+            lblAverageValidation.Visible = false;
         }
     }
 

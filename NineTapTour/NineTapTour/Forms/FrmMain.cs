@@ -263,37 +263,37 @@ namespace NineTapTour.Forms
         /// saving changes. Returns false if data is not saved and user does want to save changes.</returns>
         private bool FrmMemberIsSavedData()
         {
-            if (currFrmMemberData.IsSavedData())
-            {
-                return true;
-            }
+            //if (currFrmMemberData.IsSavedData())
+            //{
+            //    return true;
+            //}
+            //else
+            //{
+            //    if (memberDataIsActive == true)
+            //    {
+            //        if (!currFrmMemberData.MemberNavigate())
+            //        {
+            //            memberToolStripMenuItem.Enabled = false;
+            //            tournamentToolStripMenuItem.Enabled = true;
+            //            mainMenuToolStripMenuItem.Enabled = true;
+            //            return false;
 
-            else
-            {
-                if (memberDataIsActive == true)
-                {
-                    if (!currFrmMemberData.MemberNavigate())
-                    {
-                        memberToolStripMenuItem.Enabled = false;
-                        tournamentToolStripMenuItem.Enabled = true;
-                        mainMenuToolStripMenuItem.Enabled = true;
-                        return false;
+            //        }
+            //        else
+            //        {
+            //            //prevents the message box from showing up when member data form is not active
+            //            memberDataIsActive = false;
+            //            memberToolStripMenuItem.Enabled = true;
+            //            return true;
 
-                    }
-                    else
-                    {
-                        //prevents the message box from showing up when member data form is not active
-                        memberDataIsActive = false;
-                        memberToolStripMenuItem.Enabled = true;
-                        return true;
-
-                    }
-                }
-                else
-                {
-                    return true;
-                }
-            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        return true;
+            //    }
+            //}
+            return true;
         }
 
         private void BackupDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
@@ -351,10 +351,11 @@ namespace NineTapTour.Forms
                     else
                     {
                         //IF the user chooses to navigate away and save changes
-                        if (!currFrmMemberData.MemberNavigate())
-                        {
-                            e.Cancel = true;
-                        }
+                        //if (!currFrmMemberData.MemberNavigate())
+                        //{
+                        //    e.Cancel = true;
+                        //}
+                        e.Cancel = true;
                     }
 
                 }
@@ -375,11 +376,11 @@ namespace NineTapTour.Forms
         /// Asks if user wants to exit application
         /// </summary>
         /// <returns>returns DialogResult.No if No is clicked or DialogResult.Yes if yes is clicked</returns>
-        private DialogResult ExitApplication()
-        {
-            DialogResult result = MessageBox.Show("Are you sure you want to exit?", "Exit Application", 
-                                                  MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            return result;
-        }
+        //private DialogResult ExitApplication()
+        //{
+        //    DialogResult result = MessageBox.Show("Are you sure you want to exit?", "Exit Application", 
+        //                                          MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        //    return result;
+        //}
     }
 }

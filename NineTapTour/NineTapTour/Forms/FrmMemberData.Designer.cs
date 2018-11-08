@@ -96,6 +96,7 @@
             this.flpMemberData = new System.Windows.Forms.FlowLayoutPanel();
             this.panel7 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
+            this.lblAverageValidation = new System.Windows.Forms.Label();
             this.mtxtBoxLastBowled = new System.Windows.Forms.MaskedTextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.txtTournAvg = new System.Windows.Forms.TextBox();
@@ -115,7 +116,6 @@
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.lblAverageValidation = new System.Windows.Forms.Label();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -871,6 +871,18 @@
             this.panel5.Size = new System.Drawing.Size(482, 147);
             this.panel5.TabIndex = 74;
             // 
+            // lblAverageValidation
+            // 
+            this.lblAverageValidation.AutoSize = true;
+            this.lblAverageValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblAverageValidation.ForeColor = System.Drawing.Color.Red;
+            this.lblAverageValidation.Location = new System.Drawing.Point(57, 0);
+            this.lblAverageValidation.Name = "lblAverageValidation";
+            this.lblAverageValidation.Size = new System.Drawing.Size(179, 15);
+            this.lblAverageValidation.TabIndex = 75;
+            this.lblAverageValidation.Text = "Average must be greater than 0.";
+            this.lblAverageValidation.Visible = false;
+            // 
             // mtxtBoxLastBowled
             // 
             this.mtxtBoxLastBowled.Location = new System.Drawing.Point(375, 118);
@@ -1080,18 +1092,6 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(285, 70);
             this.panel2.TabIndex = 74;
-            // 
-            // lblAverageValidation
-            // 
-            this.lblAverageValidation.AutoSize = true;
-            this.lblAverageValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
-            this.lblAverageValidation.ForeColor = System.Drawing.Color.Red;
-            this.lblAverageValidation.Location = new System.Drawing.Point(42, 8);
-            this.lblAverageValidation.Name = "lblAverageValidation";
-            this.lblAverageValidation.Size = new System.Drawing.Size(179, 15);
-            this.lblAverageValidation.TabIndex = 75;
-            this.lblAverageValidation.Text = "Average must be greater than 0.";
-            this.lblAverageValidation.Visible = false;
             // 
             // FrmMemberData
             // 
