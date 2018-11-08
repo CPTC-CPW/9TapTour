@@ -114,6 +114,12 @@
     <Compile Include="Database\DatabaseManagement.cs" />
     <Compile Include="Database\ParticipantsDB.cs" />
     <Compile Include="Database\ReportHelper.cs" />
+    <Compile Include="Forms\FrmAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmAbout.Designer.cs">
+      <DependentUpon>FrmAbout.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\201808162022459_NullableGameScores.cs" />
     <Compile Include="Migrations\201808162022459_NullableGameScores.Designer.cs">
       <DependentUpon>201808162022459_NullableGameScores.cs</DependentUpon>
@@ -281,6 +287,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Forms\FrmAbout.resx">
+      <DependentUpon>FrmAbout.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmAddRegion.resx">
       <DependentUpon>FrmAddRegion.cs</DependentUpon>
     </EmbeddedResource>

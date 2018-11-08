@@ -39,6 +39,7 @@
             this.updateInactiveMembersToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.updateInactiveMembersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,6 +51,7 @@
             this.mainMenuToolStripMenuItem,
             this.memberToolStripMenuItem,
             this.tournamentToolStripMenuItem,
+            this.AboutToolStripMenuItem,
             this.toolsToolStripMenuItem});
             this.menMain.Location = new System.Drawing.Point(0, 0);
             this.menMain.Name = "menMain";
@@ -128,6 +130,14 @@
             this.updateInactiveMembersToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.updateInactiveMembersToolStripMenuItem.Text = "Update Inactive Members";
             // 
+            // AboutToolStripMenuItem
+            // 
+            this.AboutToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
+            this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
+            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.AboutToolStripMenuItem.Text = "About";
+            this.AboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -164,5 +174,6 @@
         private System.Windows.Forms.ToolStripMenuItem updateInactiveMembersToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem BackupDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem RestoreDatabaseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem AboutToolStripMenuItem;
     }
 }

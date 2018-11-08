@@ -211,8 +211,6 @@ namespace NineTapTour.Forms
             memberDataIsActive = true;
         }
 
-        
-
         /// <summary>
         /// 
         /// </summary>
@@ -225,7 +223,18 @@ namespace NineTapTour.Forms
             OpenOrDisplayForm(ref newfrmMemberScores);
             currfrmScoresdata = newfrmMemberScores;
         }
-        
+
+        /// <summary>
+        /// Opens FrmAbout.cs from the menMain menu toolstrip on FrmMain.cs
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void AboutToolStripMenuItem_Click(object sender, EventArgs e) 
+            {
+            var newFrmAbout = Application.OpenForms["FrmAbout"] as FrmAbout;
+
+            OpenOrDisplayForm(ref newFrmAbout);
+        }
 
         /// <summary>
         /// 
