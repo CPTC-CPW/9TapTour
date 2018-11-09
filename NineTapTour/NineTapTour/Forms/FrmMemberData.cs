@@ -117,6 +117,10 @@ namespace NineTapTour.Forms
         {
             RegionID = ((FrmMain)MdiParent).RegionID;
             List<Member> ListOfMembers = MemberDb.GetMemberList(RegionID);
+
+            // removes average label validation
+            lblAverageValidation.Visible = false;
+
             //set all member info group control background colors
             foreach(Control c in grpMemberInfo.Controls)
             {
@@ -738,7 +742,7 @@ namespace NineTapTour.Forms
         {
             //turns on a loading cursor while new bowler is loaded.
             Cursor.Current = Cursors.WaitCursor;
-            if (MemberDb.GetMemberList(RegionID).Count == 0 || 
+            if (MemberDb.GetMemberList(RegionID).Count == 0 ||
                 currentMem.Number >= MemberDb.GetMemberList(RegionID).Count)
             {
                 //turns loading cursor off.
@@ -752,8 +756,6 @@ namespace NineTapTour.Forms
                 //turns loading cursor off.
                 Cursor.Current = Cursors.Default;
             }
-            // removes average label validation
-            lblAverageValidation.Visible = false;
         }
 
         //After the InitializeComponent(); call, the dateRejoin 
@@ -1518,12 +1520,6 @@ namespace NineTapTour.Forms
         private void mtxtBox_Click(object sender, EventArgs e)
         {
             FormHelper.GoToFirstIndexInTextboxIfEmpty(sender as TextBoxBase);
-        }
-
-        private void FrmMemberData_Deactivate(object sender, EventArgs e)
-        {
-            // removes average validation label
-            lblAverageValidation.Visible = false;
         }
     }
 }

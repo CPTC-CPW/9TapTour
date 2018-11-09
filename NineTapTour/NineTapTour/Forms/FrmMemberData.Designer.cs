@@ -1109,7 +1109,6 @@
             this.KeyPreview = true;
             this.Name = "FrmMemberData";
             this.Text = "Member Info";
-            this.Deactivate += new System.EventHandler(this.FrmMemberData_Deactivate);
             this.Load += new System.EventHandler(this.MemberDataForm_Load);
             this.Leave += new System.EventHandler(this.FrmMemberData_Leave);
             this.Resize += new System.EventHandler(this.FrmMemberData_Resize);
