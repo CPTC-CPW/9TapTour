@@ -265,28 +265,5 @@ namespace NineTapTour.Forms
                 }
             }
         }
-
-        private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            // Check the AppMustClose boolean to see if we need to bypass the user check.
-            if (!AppMustClose)
-            {
-                //IF the Member Data Form has been activated and isn't null
-                if (currFrmMemberData != null)
-                {
-                    //IF all the data on the Member Data Form IS valid
-                    //Go ahead and close the application
-                    if (currFrmMemberData.isValid().Count == 0)
-                    {
-                        currFrmMemberData.SaveMemberData();
-                    }
-                    //IF the data on the Member Data From is NOT Valid
-                    else
-                    {
-                        e.Cancel = true;
-                    }
-                }
-            }
-        }
     }
 }
