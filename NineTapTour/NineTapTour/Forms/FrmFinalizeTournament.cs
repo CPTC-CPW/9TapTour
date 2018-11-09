@@ -847,6 +847,8 @@ namespace NineTapTour.Forms
         //    }
         //}
 
+        
+
         private void RefreshMemberView(List<PlayerHistory> temporary)
         {
 
@@ -875,6 +877,9 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Notes");
             dtGames.Columns.Add("GameID").ReadOnly = true;
 
+            // Money Won label string is referenced multiple locations
+            string moneyWon = "Money Won";
+            decimal totalMoneyEarned = 0;
             foreach (var item in temporary)
             {
                 DataRow newRow = dtGames.NewRow();
@@ -908,14 +913,21 @@ namespace NineTapTour.Forms
                 newRow["Handicap"] = item.HandiCap;
                 newRow["Bonus"] = item.Bonus;
                 newRow["Pro Pot"] = item.ProPot;
-                newRow["Money Won"] = item.MoneyWon;
+                newRow[moneyWon] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
                 newRow["GameID"] = item.GameID;
 
                 dtGames.Rows.Add(newRow);
 
+                // To know total to add to the Money Won heading label
+                totalMoneyEarned += item.MoneyWon;
+
             }
+            string moneyWonWithTotal = $"{moneyWon} ({totalMoneyEarned + PlayerHistoryDB.GetTotalMoneyWon(temporary[0].MemberNumber, RegionID)})";
+            dtGames.Columns[moneyWon].ColumnName = moneyWonWithTotal;
+
+            
 
             List<PlayerHistory> currentHistory = PlayerHistoryDB.getMemberPlayerHistoryCount(temporary[0].MemberNumber, RegionID);
 
@@ -953,7 +965,7 @@ namespace NineTapTour.Forms
                 newRow["Handicap"] = item.HandiCap;
                 newRow["Bonus"] = item.Bonus;
                 newRow["Pro Pot"] = item.ProPot;
-                newRow["Money Won"] = item.MoneyWon;
+                newRow[moneyWonWithTotal] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
                 newRow["GameID"] = item.GameID;
