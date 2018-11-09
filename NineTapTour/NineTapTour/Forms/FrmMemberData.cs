@@ -499,12 +499,15 @@ namespace NineTapTour.Forms
 
         public void SaveMemberData()
         {
+            // tests average entered score
+            Int32.TryParse(txtAverage.Text, out int avgTest);            
             // checks to see if firstname,lastname, and zip is valid.
             // Then runs the rest of the btnSave_Click and adds a 
             // member into the database.
             if (isValid().Count == 0 &&
-                lblAverageValidation.Visible == false)
+                avgTest > 0)
             {
+                lblAverageValidation.Visible = false;
                 //checks to see if MemberID exists 
                 int memId;
                 Member temp = new Member();
