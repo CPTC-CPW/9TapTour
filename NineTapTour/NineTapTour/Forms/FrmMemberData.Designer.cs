@@ -878,9 +878,9 @@
             this.lblAverageValidation.ForeColor = System.Drawing.Color.Red;
             this.lblAverageValidation.Location = new System.Drawing.Point(57, 0);
             this.lblAverageValidation.Name = "lblAverageValidation";
-            this.lblAverageValidation.Size = new System.Drawing.Size(179, 15);
+            this.lblAverageValidation.Size = new System.Drawing.Size(182, 15);
             this.lblAverageValidation.TabIndex = 75;
-            this.lblAverageValidation.Text = "Average must be greater than 0.";
+            this.lblAverageValidation.Text = "Average must be between 1-300.";
             this.lblAverageValidation.Visible = false;
             // 
             // mtxtBoxLastBowled
