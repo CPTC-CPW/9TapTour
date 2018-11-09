@@ -505,7 +505,7 @@ namespace NineTapTour.Forms
             // Then runs the rest of the btnSave_Click and adds a 
             // member into the database.
             if (isValid().Count == 0 &&
-                avgTest > 0)
+                avgTest > 0 && avgTest < 300)
             {
                 lblAverageValidation.Visible = false;
                 //checks to see if MemberID exists 
