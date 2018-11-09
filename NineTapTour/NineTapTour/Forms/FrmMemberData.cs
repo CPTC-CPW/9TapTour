@@ -340,21 +340,8 @@ namespace NineTapTour.Forms
                 {
                     mtxtBoxLastPayment.Text = "";
                     lblPaymentInfo.Visible = false;
-                }
-                moneySum = 0;
-                db = new NineTapDb();
-                result = (from p in db.PlayerHistory
-                              where p.MemberNumber == currentMem.Number && p.regionID == RegionID
-                              orderby p.TournamentDate descending
-                              select new
-                              {
-                                  p.MoneyWon
-                              }).ToArray();
-                foreach (var v in result)
-                {
-                    moneySum += v.MoneyWon;
-                }
-                currentMem.MoneyEarned = moneySum;
+                }                
+                currentMem.MoneyEarned = PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number, RegionID);
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
                 MemberDb.AddMember(currentMem); 
             }
