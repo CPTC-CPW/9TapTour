@@ -375,7 +375,7 @@ namespace NineTapTour.Forms
             }
             // validate average box to not be 0 or empty
             // creates a visible label for validating the average
-            if (FormHelper.IsAverageValid(txtAverage.Text))
+            if (!FormHelper.IsAverageValid(txtAverage.Text))
             {
                 lblAverageValidation.Visible = true;
                 txtAverage.Clear();
@@ -498,9 +498,8 @@ namespace NineTapTour.Forms
 
         public void SaveMemberData()
         {      
-            // checks to see if firstname,lastname, and zip is valid.
-            // Then runs the rest of the btnSave_Click and adds a 
-            // member into the database.
+            // checks validation then runs the rest of the 
+            // btnSave_Click and adds a member into the database.
             if (isValid().Count == 0 &&
                 FormHelper.IsAverageValid(txtAverage.Text))
             {
