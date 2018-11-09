@@ -365,16 +365,6 @@ namespace NineTapTour.Forms
 			List<string> checkFields = new List<string>();
             bool IsValid = true;
             //validate average box to only contain numbers
-            if (!String.IsNullOrWhiteSpace(txtAverage.Text) && 
-                !int.TryParse(txtAverage.Text, out int result4))
-            {
-                checkFields.Add("Average must be a number.  Field can not contain letters.");
-                txtAverage.Clear();
-                txtAverage.BackColor = Color.LightPink;
-                IsValid = false;
-            }
-            // validate average box to not be 0 or empty
-            // creates a visible label for validating the average
             if (!FormHelper.IsAverageValid(txtAverage.Text))
             {
                 lblAverageValidation.Visible = true;
