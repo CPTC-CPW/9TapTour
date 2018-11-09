@@ -104,5 +104,17 @@ namespace NineTapTour.Database
                 }
             }
         }
+
+        /// <summary>
+        /// Tests a string input for being an integer
+        /// between 1-300.
+        /// </summary>
+        /// <param name="strAvg">string test</param>
+        /// <returns>bool result</returns>
+        public static bool IsAverageValid(string strAvg)
+        {
+            Int32.TryParse(strAvg, out int test);
+            return test > 0 && test < 300;
+        }
     }
 }
