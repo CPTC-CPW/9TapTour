@@ -431,7 +431,9 @@ namespace NineTapTour.Forms
             if (IsValidTextboxes())
             {
                 SaveMemberData();
+#if DEBUG
                 MessageBox.Show("Member saved.");
+#endif
             }
         }
 
