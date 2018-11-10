@@ -45,26 +45,27 @@ namespace NineTapTour.Forms
         const int GAME_ID_COLUMN = 22;
 
         //USE THIS IF YOU WANT TO CHANGE THE NAME OF EACH COLUMN 
+        //Column names must be unique but the HeaderText can be changed in the DataGridView to change the text that is displayed
         const string STANDING_COLUMN_NAME = "Standing";
         const string MEMBER_NUMBER_COLUMN_NAME = "Member Number";
         const string GAME_ID_COLUMN_NAME = "GameID";
         const string NAME_COLUMN_NAME = "Name";
         const string GAME_1_COLUMN_NAME = "Game 1";
-        const string GAME_1_VALID_COLUMN_NAME = "Valid Score1?";
+        const string GAME_1_VALID_COLUMN_NAME = "1?";
         const string GAME_2_COLUMN_NAME = "Game 2";
-        const string GAME_2_VALID_COLUMN_NAME = "Valid Score2?";
+        const string GAME_2_VALID_COLUMN_NAME = "2?";
         const string GAME_3_COLUMN_NAME = "Game 3";
-        const string GAME_3_VALID_COLUMN_NAME = "Valid Score3?";
+        const string GAME_3_VALID_COLUMN_NAME = "3?";
         const string GAME_4_COLUMN_NAME = "Game 4";
-        const string GAME_4_VALID_COLUMN_NAME = "Valid Score4?";
+        const string GAME_4_VALID_COLUMN_NAME = "4?";
         const string SCRATCH_TOTAL_COLUMN_NAME = "Scratch Total";
-        const string HANDICAP_TOTAL_COLUMN_NAME = "Handicap Total";
+        const string HANDICAP_TOTAL_COLUMN_NAME = "HDCP Total";
         const string ENTRY_AVERAGE_COLUMN_NAME = "Entry AVG";
         const string THIRTY_ENTRY_AVERAGE_COLUMN_NAME = "30 Entry AVG";
         const string ADJUSTED_AVG_COLUMN_NAME = "ADJ AVG";
         const string DIRECTOR_CHECK_COLUMN_NAME = "Director Check";
         const string SQUAD_COLUMN_NAME = "Squad";
-        const string HANDICAP_COLUMN_NAME = "Handicap";
+        const string HANDICAP_COLUMN_NAME = "HDCP";
         const string BONUS_COLUMN_NAME = "Bonus";
         const string PRO_POT_COLUMN_NAME = "Pro Pot";
         const string NOTES_COLUMN_NAME = "Notes";
@@ -85,8 +86,66 @@ namespace NineTapTour.Forms
 
         private void FrmFinalizeTournament_Load(object sender, EventArgs e)
         {
+#if DEBUG
+            CheckBox toggleAllDirectorCheck = new CheckBox();
+            toggleAllDirectorCheck.Text = "Toggle All Director Checks";
+            toggleAllDirectorCheck.CheckedChanged += new EventHandler(ToggleDirectorCheck_CheckChanged);
+            Controls.Add(toggleAllDirectorCheck);
+#endif
+
             createDataGridView(currTournament);
             InitializeGameCellFormatting();
+            sizeFinalizeGridView(); // resizes the columns of finalize form
+        }
+
+#if DEBUG
+        private void ToggleDirectorCheck_CheckChanged(object sender, EventArgs e)
+        {
+            List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
+            for (int i = 0; i < FinalizeTableList.Count; i++)
+            {
+                //if Toggle is checked, check all Director checks
+                if ((sender as CheckBox).Checked)
+                {
+                    dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = true;
+                }
+                else //Toggle is unchecked, uncheck all Director Check Boxes
+                {
+                    dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = false;
+                }
+            }
+        }
+#endif
+
+        public void sizeFinalizeGridView() { 
+            int columnCount = 22;
+            for (int colWidth = 0; colWidth < columnCount; colWidth++)
+            {
+                dataGridView1.Columns[colWidth].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            }
+            dataGridView1.Columns[STANDING_COLUMN].Width = 50;  
+            dataGridView1.Columns[MEMBER_NUMBER_COLUMN].Width = 50;
+            dataGridView1.Columns[NAME_COLUMN].Width = 150;
+            dataGridView1.Columns[GAME_1_COLUMN].Width = 42;
+            dataGridView1.Columns[GAME_1_VALID_COLUMN].Width = 25;
+            dataGridView1.Columns[GAME_2_COLUMN].Width = 42;
+            dataGridView1.Columns[GAME_2_VALID_COLUMN].Width = 25;
+            dataGridView1.Columns[GAME_3_COLUMN].Width = 42;
+            dataGridView1.Columns[GAME_3_VALID_COLUMN].Width = 25;
+            dataGridView1.Columns[GAME_4_COLUMN].Width = 42;
+            dataGridView1.Columns[GAME_4_VALID_COLUMN].Width = 25;
+            dataGridView1.Columns[SCRATCH_TOTAL_COLUMN].Width = 50;
+            dataGridView1.Columns[HANDICAP_TOTAL_COLUMN].Width = 50;
+            dataGridView1.Columns[ENTRY_AVERAGE_COLUMN].Width = 45;
+            dataGridView1.Columns[THIRTY_ENTRY_AVERAGE_COLUMN].Width = 45;
+            dataGridView1.Columns[ADJUSTED_AVG_COLUMN].Width = 40;
+            dataGridView1.Columns[DIRECTOR_CHECK_COLUMN].Width = 50;
+            dataGridView1.Columns[SQUAD_COLUMN].Width = 40;
+            dataGridView1.Columns[HANDICAP_COLUMN].Width = 35; 
+            dataGridView1.Columns[BONUS_COLUMN].Width = 35;
+            dataGridView1.Columns[PRO_POT_COLUMN].Width = 40;
+            dataGridView1.Columns[NOTES_COLUMN_].Width = 225;
+            dataGridView1.Columns[GAME_ID_COLUMN].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; 
         }
 
         private void createDataGridView(Tournament tourn)
@@ -186,6 +245,12 @@ namespace NineTapTour.Forms
             dataGridView1.DataSource = DataView(DataViewList); //By default populates all datagrid with all participant for tournament.
 
             dataGridView1.Columns[GAME_ID_COLUMN].Visible = false;
+
+            //Replace "Valid Score #?" column header with an empty string
+            dataGridView1.Columns[GAME_1_VALID_COLUMN].HeaderText = string.Empty;
+            dataGridView1.Columns[GAME_2_VALID_COLUMN].HeaderText = string.Empty;
+            dataGridView1.Columns[GAME_3_VALID_COLUMN].HeaderText = string.Empty;
+            dataGridView1.Columns[GAME_4_VALID_COLUMN].HeaderText = string.Empty;
 
             ////Sort DataGridView by TrueAverage
             //this.dataGridView1.Sort(this.dataGridView1.Columns["True Avg"], ListSortDirection.Descending);
@@ -808,6 +873,8 @@ namespace NineTapTour.Forms
         //    }
         //}
 
+        
+
         private void RefreshMemberView(List<PlayerHistory> temporary)
         {
 
@@ -836,6 +903,9 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Notes");
             dtGames.Columns.Add("GameID").ReadOnly = true;
 
+            // Money Won label string is referenced multiple locations
+            string moneyWon = "Money Won";
+            decimal totalMoneyEarned = 0;
             foreach (var item in temporary)
             {
                 DataRow newRow = dtGames.NewRow();
@@ -869,14 +939,21 @@ namespace NineTapTour.Forms
                 newRow["Handicap"] = item.HandiCap;
                 newRow["Bonus"] = item.Bonus;
                 newRow["Pro Pot"] = item.ProPot;
-                newRow["Money Won"] = item.MoneyWon;
+                newRow[moneyWon] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
                 newRow["GameID"] = item.GameID;
 
                 dtGames.Rows.Add(newRow);
 
+                // To know total to add to the Money Won heading label
+                totalMoneyEarned += item.MoneyWon;
+
             }
+            string moneyWonWithTotal = $"{moneyWon} ({totalMoneyEarned + PlayerHistoryDB.GetTotalMoneyWon(temporary[0].MemberNumber, RegionID)})";
+            dtGames.Columns[moneyWon].ColumnName = moneyWonWithTotal;
+
+            
 
             List<PlayerHistory> currentHistory = PlayerHistoryDB.getMemberPlayerHistoryCount(temporary[0].MemberNumber, RegionID);
 
@@ -914,7 +991,7 @@ namespace NineTapTour.Forms
                 newRow["Handicap"] = item.HandiCap;
                 newRow["Bonus"] = item.Bonus;
                 newRow["Pro Pot"] = item.ProPot;
-                newRow["Money Won"] = item.MoneyWon;
+                newRow[moneyWonWithTotal] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
                 newRow["GameID"] = item.GameID;
@@ -1190,6 +1267,8 @@ namespace NineTapTour.Forms
 
         private void btnFinalize_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
+
             bool isDirectorCheckFinished = true; //int used to make sure all the director check boxes have been filled out
 
             List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
@@ -1351,6 +1430,7 @@ namespace NineTapTour.Forms
             {
 
             }
+            Cursor.Current = Cursors.Default;
         }
 
         /// <summary>

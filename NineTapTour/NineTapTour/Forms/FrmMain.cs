@@ -91,25 +91,6 @@ namespace NineTapTour.Forms
            
             bool isSavedData = true;
 
-            // determines whether FrmMemberData is saved before leaving and if calls 
-            // FrmMemberIsSavedData to determine you want to leave without saving changes
-            // else return you to FrmMemberData.
-            if (currFrmMemberData != null)
-            {
-                if (!FrmMemberIsSavedData())
-                {
-                    isSavedData = false;
-                    currFrmMemberData.BringToFront();
-                    currFrmMemberData.Activate();
-                    menuHighlight("Member Info");
-                }
-                else
-                {
-                    currFrmMemberData.UpdateMemberInfo();
-                }
-            }
-
-
             if (isSavedData) //checks to see if you are leaving page without saved data.
             {
                 if (form != null)
@@ -255,47 +236,6 @@ namespace NineTapTour.Forms
             UpdatefrmActiveMem.Show();
         }
 
-        /// <summary>
-        /// This method calls a FrmMemberData method to determine if data is saved.
-        /// if data not saved prompts user whether they still want to leave without saving data.
-        /// </summary>
-        /// <returns>returns true if data is saved or if data is not saved and user wants to continue without
-        /// saving changes. Returns false if data is not saved and user does want to save changes.</returns>
-        private bool FrmMemberIsSavedData()
-        {
-            if (currFrmMemberData.IsSavedData())
-            {
-                return true;
-            }
-
-            else
-            {
-                if (memberDataIsActive == true)
-                {
-                    if (!currFrmMemberData.MemberNavigate())
-                    {
-                        memberToolStripMenuItem.Enabled = false;
-                        tournamentToolStripMenuItem.Enabled = true;
-                        mainMenuToolStripMenuItem.Enabled = true;
-                        return false;
-
-                    }
-                    else
-                    {
-                        //prevents the message box from showing up when member data form is not active
-                        memberDataIsActive = false;
-                        memberToolStripMenuItem.Enabled = true;
-                        return true;
-
-                    }
-                }
-                else
-                {
-                    return true;
-                }
-            }
-        }
-
         private void BackupDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderDialog = new FolderBrowserDialog();
@@ -324,62 +264,6 @@ namespace NineTapTour.Forms
                     }
                 }
             }
-        }
-
-        private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            // Check the AppMustClose boolean to see if we need to bypass the user check.
-            if (!AppMustClose)
-            {
-                //IF the Member Data Form has been activated and isn't null
-                if (currFrmMemberData != null)
-                {
-                    //IF all the data on the Member Data Form IS valid
-                    //Go ahead and close the application
-                    if (currFrmMemberData.isValid().Count == 0)
-                    {
-                        currFrmMemberData.SaveMemberData();
-
-                        //IF all entered data is valid, check if user really wants to exit
-
-                        if (ExitApplication() == DialogResult.No)
-                        {
-                            e.Cancel = true;
-                        }
-                    }
-                    //IF the data on the Member Data From is NOT Valid
-                    else
-                    {
-                        //IF the user chooses to navigate away and save changes
-                        if (!currFrmMemberData.MemberNavigate())
-                        {
-                            e.Cancel = true;
-                        }
-                    }
-
-                }
-                else
-                {
-                    //IF all entered data is valid, check if user really wants to exit
-
-                    //Stick around if you don't want to exit
-                    if (ExitApplication() == DialogResult.No)
-                    {
-                        e.Cancel = true;
-                    }
-                } 
-            }
-        }
-
-        /// <summary>
-        /// Asks if user wants to exit application
-        /// </summary>
-        /// <returns>returns DialogResult.No if No is clicked or DialogResult.Yes if yes is clicked</returns>
-        private DialogResult ExitApplication()
-        {
-            DialogResult result = MessageBox.Show("Are you sure you want to exit?", "Exit Application", 
-                                                  MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            return result;
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NineTapTour.Models;
+using static NineTapTour.Database.ReportHelper;
 
 namespace NineTapTour.Forms
 {
@@ -17,12 +18,11 @@ namespace NineTapTour.Forms
         List<Models.MemberScores> temp;
         // used in the print class to print the date and location
         Tournament selectedTournament;
-        // to know the report type
-        // 0 for High game handicap/senior, 1 for game/high game, 2 for series/high series
-        int reportTypeNum;
+        
+        ReportType reportTypeNum;
         int currentSquad;
 
-        public FrmMemberScoresReports(List<MemberScores> temp, Tournament selectedTournament, int reportTypeNum, int currentSquad)
+        public FrmMemberScoresReports(List<MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad)
         {
             InitializeComponent();
             this.temp = temp;
