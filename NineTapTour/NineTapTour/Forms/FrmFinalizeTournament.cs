@@ -86,10 +86,36 @@ namespace NineTapTour.Forms
 
         private void FrmFinalizeTournament_Load(object sender, EventArgs e)
         {
+#if DEBUG
+            CheckBox toggleAllDirectorCheck = new CheckBox();
+            toggleAllDirectorCheck.Text = "Toggle All Director Checks";
+            toggleAllDirectorCheck.CheckedChanged += new EventHandler(ToggleDirectorCheck_CheckChanged);
+            Controls.Add(toggleAllDirectorCheck);
+#endif
+
             createDataGridView(currTournament);
             InitializeGameCellFormatting();
             sizeFinalizeGridView(); // resizes the columns of finalize form
         }
+
+#if DEBUG
+        private void ToggleDirectorCheck_CheckChanged(object sender, EventArgs e)
+        {
+            List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
+            for (int i = 0; i < FinalizeTableList.Count; i++)
+            {
+                //if Toggle is checked, check all Director checks
+                if ((sender as CheckBox).Checked)
+                {
+                    dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = true;
+                }
+                else //Toggle is unchecked, uncheck all Director Check Boxes
+                {
+                    dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = false;
+                }
+            }
+        }
+#endif
 
         public void sizeFinalizeGridView() { 
             int columnCount = 22;
