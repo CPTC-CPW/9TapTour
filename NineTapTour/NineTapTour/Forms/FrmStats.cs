@@ -520,17 +520,23 @@ namespace NineTapTour.Forms
                     }
                 }
             }
-            for (int i = 0; i < dataGridView1.RowCount; i++)
+
+            int gameCount = dataGridView1.RowCount; // variable for how many rows will show up
+            int thirtyEntry = 30; // variable for how many rows are highlighted as per client request
+            if (gameCount > thirtyEntry)
             {
-               
-                dataGridView1.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
-
+                for (int i = 0; i < thirtyEntry; i++)
+                {
+                    dataGridView1.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
+                }
             }
-
-
-
-
-
+            else
+            {
+                for (int z = 0; z < gameCount; z++)
+                {
+                    dataGridView1.Rows[z].Cells[9].Style.BackColor = Color.GreenYellow;
+                }
+            }
 
 
             //sets any game over 250 to bold black
