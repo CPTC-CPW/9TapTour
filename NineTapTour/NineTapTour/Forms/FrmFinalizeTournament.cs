@@ -210,9 +210,6 @@ namespace NineTapTour.Forms
                 }
                 temp.GameAvg = ((temp.Game1 ?? 0) + (temp.Game2 ?? 0) + (temp.Game3 ?? 0) + (temp.Game4 ?? 0)) / gplayed;
 
-
-
-
                 //grabs running league average 
                 List<PlayerHistory> ExistingPlayerHistory = PlayerHistoryDB.getMemberPlayerHistory(item.memberNumber, RegionID);
                 if (ExistingPlayerHistory.Count == 0)
@@ -256,10 +253,6 @@ namespace NineTapTour.Forms
             //this.dataGridView1.Sort(this.dataGridView1.Columns["True Avg"], ListSortDirection.Descending);
         }
 
-
-
-
-
         //creates the dataview that will populate the datagridview table on form pulls from the finalizetemp table
         // CHANGE THESE IN THE ORDER YOU WANT THEM TO BE SEEN ON THE GRID VIEW (0 == far left) AND THEN CHANGE THE STATIC INTS AT THE TOP IN ORDER TO CHANGE THERE ORDER ON THE GRID VIEW WITHOUT HAVING TO TOUNCH ANY OTHER CODE
         public DataTable DataView(List<FinalizeTemp> participantsList)
@@ -290,7 +283,6 @@ namespace NineTapTour.Forms
             dt.Columns.Add(NOTES_COLUMN_NAME, typeof(string));//20
 
             dt.Columns.Add(GAME_ID_COLUMN_NAME, typeof(int)).ReadOnly = true; //21
-
 
 
             //whatever list of participants you pass into method will be populated into grid
@@ -328,7 +320,7 @@ namespace NineTapTour.Forms
             return dt;
         }
 
-
+  
         /// <summary>
         /// THis method Gets a list of all participant objects for the tournament passed into method.
         /// </summary>
@@ -364,8 +356,6 @@ namespace NineTapTour.Forms
                             g.Bonus,
                             m.Number,
                             t.TourneyRegion
-
-
 
                         }).ToList();
             foreach (var item in temp)
@@ -687,64 +677,6 @@ namespace NineTapTour.Forms
         }
 
 
-
-        //public void UpdateMemberMoneyWon(GameParticipant p)
-        //{
-        //    var db = new NineTapDb();
-        //    //Find member
-        //    var member = db.Members.Find(p.MemberId);
-        //    //Find Game
-        //    var game = db.Games.Find(p.GameId);
-        //    if (p.MoneyWon != game.MoneyWon)
-        //    {
-        //        //member.MoneyEarned -= game.MoneyWon;//Member doesnt contain a money earned property yet but member page has a text box for one.
-        //        //member.MoneyEarned += p.MoneyWon;
-        //        //db.Entry(member).CurrentValues.SetValues(member.Id);
-        //        //db.SaveChanges();
-
-        //        game.MoneyWon = p.MoneyWon;
-        //        db.Entry(game).CurrentValues.SetValues(game.Id);
-        //        db.SaveChanges();
-
-        //    }
-        //}
-
-        /// <summary>
-        /// This method recieves an individual GameParticipant object and saves its values to
-        /// FinalizeTempTable
-        /// </summary>
-        /// <param name="UpdatedGame"></param>
-        /// <returns>Return true if Game saved to database, false if not.</returns>
-        //public bool SaveIndividualGame(GameParticipant UpdatedGame)
-        //{
-        //    var db = new NineTapDb();
-
-        //    var GameOriginal = db.FinalizeTemp.Find(UpdatedGame.GameId);
-
-        //    if (GameOriginal != null)
-        //    {
-        //        try
-        //        {
-        //            //update finalize temp table with new values.
-        //            db.Entry(GameOriginal).CurrentValues.SetValues(UpdatedGame.GameId);
-        //            db.SaveChanges();
-
-        //        }
-        //        catch
-        //        {
-        //            //return false if issue saving changes to database.
-        //            return false;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        //return false if cant find game.
-        //        return false;
-
-        //    }
-        //    return true;
-        //}
-
         /// <summary>
         /// This method will get a list of all tournament participants and return a sort the list by scores.
         /// </summary>
@@ -835,53 +767,12 @@ namespace NineTapTour.Forms
                 cell.Style.BackColor = Color.Red;
             }
         }
-
-        //private void DataGridView2_FindCurrentIndex(object sender, DataGridViewCellStateChangedEventArgs e)
-        //{
-        //    //checks so you can only edit avgs on there last bowled squad of the tournament
-        //    if (this.dataGridView1.CurrentCell.ColumnIndex == ADJUSTED_AVG_COLUMN)
-        //    {
-
-        //        //check to see if they bowled in a later squad          
-        //        bool check = squadcheck(currentIndex);
-        //        while (check == true)
-        //        {
-        //            currentIndex++;
-        //            check = squadcheck(currentIndex);
-        //        }
-
-
-        //    }
-
-
-        ////}
-
-        //private bool squadcheck(int cindex)
-        //{
-
-        //    if (cindex == FinalizeTableList.Count - 1) // if your on the last index
-        //    {
-        //        return false;
-        //    }
-        //    else if (FinalizeTableList[cindex].memberNumber == FinalizeTableList[cindex + 1].memberNumber)//if a later squad occurs
-        //    {
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-        //}
-
         
 
         private void RefreshMemberView(List<PlayerHistory> temporary)
         {
 
             DataTable dtGames = new DataTable();
-
-
-
 
             dtGames.Columns.Add("Games").ReadOnly = true;
             dtGames.Columns.Add("Date", typeof(DateTime));
@@ -1002,8 +893,6 @@ namespace NineTapTour.Forms
             dataGridView2.DataSource = dtGames;
 
 
-
-
             for (int i = 0; i < dataGridView2.RowCount; i++)
             {
                 for (int t = 0; t < temporary.Count; t++)
@@ -1115,10 +1004,8 @@ namespace NineTapTour.Forms
 
                             temporary.Add(p);
 
-
                         }
                     }
-
 
                     temporary.Reverse();
                     RefreshMemberView(temporary);
