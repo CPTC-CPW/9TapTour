@@ -91,6 +91,11 @@ namespace NineTapTour.Migrations
 #if DEBUG
         protected override void Seed(NineTapTour.Database.NineTapDb context)
         {
+            // System.Diagnostics is a Debug tool for Seed Data
+            // Reference: http://blog.theodybrothers.com/2015/09/debugging-your-seed-method-when-running.html
+            //if (System.Diagnostics.Debugger.IsAttached == false)
+            //    System.Diagnostics.Debugger.Launch();
+
             if (!context.Members.Any())
             {
                 // Incrementer local variables to prevent data mismatch in areas of the database 
@@ -134,7 +139,6 @@ namespace NineTapTour.Migrations
                 // time calculation.
                 #endregion
 
-                // Original
                 var tournamentSeed = new Bogus.Faker<Tournament>().Rules((f, t) =>
                 {
                     t.Date = DateTime.Now;
@@ -147,20 +151,6 @@ namespace NineTapTour.Migrations
                     t.ThreeOutOf4 = false;
                     t.TourneyRegion = 1;
                 }).Generate(1);
-
-                // Edited 11/13
-                //var tournamentSeed = new Bogus.Faker<Tournament>().Rules((f, t) =>
-                //{
-                //    t.Date = DateTime.Now;
-                //    t.Location = f.Address.City();
-                //    t.Event = $"SomeTournament {index}";
-                //    t.Notes = f.Lorem.Sentence();
-                //    t.Sponsors = f.Company.CompanyName();
-                //    t.Squads = _maxSquads;
-                //    t.Doubles = false;
-                //    t.ThreeOutOf4 = false;
-                //    t.TourneyRegion = 1;
-                //}).Generate(4);
 
                 // Creates members and seeds in all important information, and some extra information 
                 // to simulate.
@@ -209,8 +199,7 @@ namespace NineTapTour.Migrations
                     g.InputtedAvg = g.TotalScore / 4;
                     g.MoneyWon = f.Random.Decimal(0, 0);
                 });
-
-                // Original
+                
                 var participantSeed = new Bogus.Faker<Participant>().Rules((f, p) =>
                 {
                     p.Member = memberSeed;
@@ -221,35 +210,14 @@ namespace NineTapTour.Migrations
                 })
                 .Generate(_numOfMembersToGenerate);
 
-                // Added 11/13
-                //Random rand = new Random();
-                //int rInt = rand.Next(0, 4);
-
-                // Edited 11/13
-                //var participantSeed = new Bogus.Faker<Participant>().Rules((f, p) =>
-                //{
-                //    p.Member = memberSeed;
-                //    p.Game = gameSeed;
-                //    p.Squad = f.Random.Number(1, _maxSquads);
-                //    p.ParticipantRegionID = 1;
-                //    p.Tournament = tournamentSeed[rInt];
-                //})
-                //.Generate(_numOfMembersToGenerate);
-
                 // At this point you will generate one member per participant, that will also have
                 // a game related to a single tournament.
                 context.Participants.AddRange(participantSeed);
 
-                // Add 11/13
-                //int tournamentCount = 1;
-                //while (tournamentCount < tournamentSeed.Count)
-                //{
-                //    foreach (var p in participantSeed)
-                //    {
-                //        p.Tournament = tournamentSeed[tournamentCount];
-                //    }
-                //    tournamentCount++;
-                //}
+                foreach (var p in participantSeed)
+                {
+                    context.Participants.AddRange();
+                }
             }
             context.SaveChanges();
         }
