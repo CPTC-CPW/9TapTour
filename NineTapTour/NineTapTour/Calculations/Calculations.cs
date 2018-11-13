@@ -32,7 +32,8 @@ namespace NineTapTour.Calculations
         const double PERCENTAGE_TO_CALCULATE_HANDICAP = .9;
 
         /// <summary>
-        /// method uses integer division based on client's calculation 
+        /// Calculates handicap pins to be 90% of the difference between 220 and a bowlerh's 9 tap tour average.
+        /// The maximum a handicap can be is 70 pins.
         /// </summary>
         /// <param name="currentAverage"></param>
         /// <returns></returns>
@@ -126,16 +127,15 @@ namespace NineTapTour.Calculations
         }
 
         /// <summary>
-        /// method uses integer division based on client's calculation 1 in 5 participants
-        /// place in a tournament
+        /// Number of participants that can place in tournament are total entries minus comp entries (tournament 
+        /// workers that do not have to pay entry fees) and divides by 5 using integer division. 
         /// </summary>
-        /// <param name="numberOfParticipantsInTournament"></param>
-        /// <returns></returns>
-        public static decimal CalculateNumberOfMembersThatCanPlaceInATournament(int numberOfParticipantsInTournament)
+        /// <param name="totalEntries">all tournament participants including comp entries</param>
+        /// <param name="compEntries">tournament participants that also work at tournament</param>
+        /// <returns>the quantity of members that can place in a tournament</returns>
+        public static int CalculateNumberOfMembersThatCanPlaceInATournament(int totalEntries, int compEntries)
         {
-            //grabs the ceiling of the double when divided by 5
-            decimal numberOfPlacementsBasedOnParticipants =(Math.Round(Convert.ToDecimal(numberOfParticipantsInTournament) / 5));
-            return numberOfPlacementsBasedOnParticipants;
+            return (totalEntries - compEntries) / 5;
         }
 
         /// <summary>
