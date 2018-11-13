@@ -89,7 +89,7 @@ namespace NineTapTour.Calculations.Test
         }
 
         [TestMethod]
-        [DataRow(230, -8)] // special case
+        [DataRow(230, -9)] // special case
         [DataRow(220, 0)]
         [DataRow(270, -45)]
         [DataRow(170, 45)]
