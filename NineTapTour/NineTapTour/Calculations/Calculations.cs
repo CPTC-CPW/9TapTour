@@ -38,16 +38,7 @@ namespace NineTapTour.Calculations
         /// <returns></returns>
         public static int CalculateHandicapPins(int currentAverage)
         {
-
-            double calculateHandicap = Convert.ToDouble(BASE_AVERAGE_HANDICAP_CALCULATOR - currentAverage) * PERCENTAGE_TO_CALCULATE_HANDICAP;
-            if (calculateHandicap > MAX_HANDICAP_PINS)
-            {
-                return MAX_HANDICAP_PINS;
-            }
-            else
-            {
-                return (int)(calculateHandicap);
-            }
+            return Math.Min(MAX_HANDICAP_PINS, (BASE_AVERAGE_HANDICAP_CALCULATOR - currentAverage) * 9 / 10);
         }
 
         public static int AdjustBonusPins(int memberPlaced, int currentBonusPins, int memNum, int RegionID, DateTime currentT)
@@ -143,7 +134,7 @@ namespace NineTapTour.Calculations
         public static decimal CalculateNumberOfMembersThatCanPlaceInATournament(int numberOfParticipantsInTournament)
         {
             //grabs the ceiling of the double when divided by 5
-            decimal numberOfPlacementsBasedOnParticipants =(Math.Round(Convert.ToDecimal(numberOfParticipantsInTournament / 5)));
+            decimal numberOfPlacementsBasedOnParticipants =(Math.Round(Convert.ToDecimal(numberOfParticipantsInTournament) / 5));
             return numberOfPlacementsBasedOnParticipants;
         }
 
