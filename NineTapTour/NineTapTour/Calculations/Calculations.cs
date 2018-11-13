@@ -32,7 +32,7 @@ namespace NineTapTour.Calculations
         const double PERCENTAGE_TO_CALCULATE_HANDICAP = .9;
 
         /// <summary>
-        /// Calculates handicap pins to be 90% of the difference between 220 and a bowlerh's 9 tap tour average.
+        /// Calculates handicap pins to be 90% of the difference between 220 and a bowler's 9 tap tour average.
         /// The maximum a handicap can be is 70 pins.
         /// </summary>
         /// <param name="currentAverage"></param>
@@ -42,7 +42,7 @@ namespace NineTapTour.Calculations
             return Math.Min(MAX_HANDICAP_PINS, (BASE_AVERAGE_HANDICAP_CALCULATOR - currentAverage) * 9 / 10);
         }
 
-        public static int AdjustBonusPins(int memberPlaced, int currentBonusPins, int memNum, int RegionID, DateTime currentT)
+        public static int GetAdjustedBonusPins(int memberPlaced, int currentBonusPins, int memNum, int RegionID, DateTime currentT)
         {
             if (memberPlaced > 0)
             {

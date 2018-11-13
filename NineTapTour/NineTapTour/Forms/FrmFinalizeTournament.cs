@@ -1314,7 +1314,7 @@ namespace NineTapTour.Forms
                             {
                                 if (topscores[topscore].GameID == FinalizeTableList[i].GameId)//if the winners of the tournament exist in this current tournement
                                 {
-                                    currentMember.Bonus = Calculations.Calculations.AdjustBonusPins(placing, currentMember.Bonus, currentMember.Number, RegionID, currTournament.Date);
+                                    currentMember.Bonus = Calculations.Calculations.GetAdjustedBonusPins(placing, currentMember.Bonus, currentMember.Number, RegionID, currTournament.Date);
                                     addedAlready.Add(FinalizeTableList[i].MemberId);
                                 }
 
