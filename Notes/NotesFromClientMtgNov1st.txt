@@ -1,0 +1,68 @@
+Class Meeting with Rob
+November 1, 2018
+
+	- Client wants to move away from some Excel features due to so many issues
+	- If someone is proficient in Excel. Write extraction file for excel. 
+		+ Organize it into another excel file that's more usable
+		+ Or plug into a database (Anthony)
+		+ There are API's for this (per Ken) MDI -> Excel. 
+	- #358 - flag client 2 weeks prior to someone going inactive
+	- UI design: Okay to move the graphics around? Client: "All for it, whatever is functional or works"
+	- Old program: Has all tournament statistics dated back to early 2000's.
+	  New program: Can't export single tournament information
+			+ The information is eliminated after the next statistics are updated.
+			+ When it processes information i.e. click -> "Finalize Tournament" -> has lots of bugs. 
+			+ (Classes need to be restructered...)
+			+ When it came to finalize tournament, couldn't input the scores that were to be sent off
+	- 3 out of 4 tournament -> All 4 count towards the average. 
+		+ Everyone bowls 4 games. 
+		+ Keeps their average. 
+		+ Throws out low game for the standings only
+	Game info: Scratch is w/o handicap
+	- Need to manually fill in Adjusted Avg. on the finalize page. 
+		+ Print new recaps after you hit 'Finalize' Basically it's the most updated information
+		+ But the program isn't saving this?
+		+ Recap has Adjusted Average, Handicap, Bonus pins
+		+ Wants the finalize page to show their cumalative money earnings for Director awareness
+		+ Currently manually transfer information from new program to old program??
+	- Bonus column on finalize page isn't working properly
+		+ bonus is to level the playing field
+		+ these are added when you haven't won money within 3 tournaments.
+		+ 1 bonus pin for every 3 tournaments you haven't cashed
+		+ Max: 5 (per game that time)
+		+ 100 bowlers -> 20 people win money
+		+ When you cash there are rules (in the 9Tap Rules)
+	- Compute averages... 220 - MemberAverage = x
+		+ 90% of x is their handicap
+	- If someone had 2 entries for one tournament. Has 2 blank pages. 
+		+ If they cashed on any entry that day, it needs to be last on the finalize page
+		+ Could stay the same if 
+		+ 0's to start after entry (next tournament)
+		+ Win bonus pins per tournament not per entry!
+		+ all for null? start counting 3 0's after this tournament.
+		+ don't start accumulating until next tournament
+		if(CASHED) {
+			return 'X' || "*" (null) for the rest of the entries instead of 0
+			calculates bonus for next tournament as 0
+		}
+	- the 1 will show up on the tournament it was earned
+		+ finalize is 1 tournament behind for the bonus pins
+		+ BUT it applies to the next tournament
+	- ON FINALIZE PAGE IT SHOWS THE BONUS PINS EARNED FOR THAT TOURNAMENT THAT WILL APPLY TO THE NEXT TOURNAMENT
+	- Can we change labels? -> brainstorm with Client for clarity sake
+		+ Bonus section especially
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

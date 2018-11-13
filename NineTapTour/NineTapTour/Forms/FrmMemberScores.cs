@@ -340,7 +340,7 @@ namespace NineTapTour.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public void scratchTotal(object sender, EventArgs e)
-            {
+        {
             int scratchTotal = 0;
             int cScore = 0;
             string id;
@@ -368,13 +368,8 @@ namespace NineTapTour.Forms
                 txtScratchTotal.Text = scratchTotal.ToString();
             }
             TextBox tx = (TextBox)sender;
-            //auto tab to the next textbox when textbox1's length is 3.
-            if (tx.Text.Length == 3)
-            {
-                SendKeys.Send("{TAB}");
-            }
 
-            //this code will adjust the scratch and handicap total (textboxes) only if its a 3of4 tournament ( taking out the lowest game)
+            //this code will adjust the scratch and handicap total (textboxes) only if its a 3of4 tournament ( taking out the lowest game) 
             if (txtScratchScore1.Text != "" && txtScratchScore2.Text != "" && txtScratchScore3.Text != "" && txtScratchScore4.Text != "")
             {
                 int handicapTotal = 0;
@@ -417,8 +412,25 @@ namespace NineTapTour.Forms
                     txtHandicapTotal.Text = handicapTotal.ToString();
 
                 }
+
             }
 
+            ////auto tab to the next textbox when textbox's length is 3.           
+            if (tx.Text.Length == 3)
+            {
+                //if you enter in the last games score it will automatically be recorded with out pressing Add/Update
+                if (txtScratchScore4.Text.Length == 3 && txtScratchScore4.Focused == true)
+                {
+                    //when last score is entered bowler record will be added
+                    AddNewUpdateRecord();
+                    btnNew.Focus();
+                }
+                else
+                {
+                    SendKeys.Send("{TAB}");
+                }
+
+            }
 
         }
 
@@ -452,12 +464,20 @@ namespace NineTapTour.Forms
         }
         #region New Recap
         /// <summary>
-        /// enter a tournamnet participant into a specific tournament
-        /// save scores and info in database
+        /// Activates when Add New/Update Record is clicked
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public void newRecap(object sender, EventArgs e)
+        {
+            AddNewUpdateRecord();
+        }
+
+        /// <summary>
+        /// enter a tournamnet participant into a specific tournament
+        /// save scores and info in database
+        /// </summary>
+        private void AddNewUpdateRecord()
         {
             ReEnableNavigation();
             if (IsValid())
@@ -575,9 +595,12 @@ namespace NineTapTour.Forms
 #if DEBUG
                         MessageBox.Show(@"Bowler Added Successfully to Tournament!");
 #endif
-                        ResetFields();
-                        txtMemberNum.Focus();
-                        Clear();
+                        //if btnNew is being clicked 
+                        if (btnNew.ContainsFocus)
+                        {
+                            //clears score boxes
+                            ResetScores();
+                        }
                         List<Participant> utotal = TournamentDb.GetTournamentMemberList(currTourney);
                         RecordIndexAfterAddUpdate(utotal);
                     }
@@ -601,9 +624,17 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show("Please Fill out the Participants information!");
             }
-        
         }
-        
+        /// <summary>
+        /// clears game scores of bowlers.
+        /// </summary>
+        private void ResetScores()
+        {
+            ResetFields();
+            txtMemberNum.Focus();
+            Clear();
+        }
+
         #endregion
         /// <summary>
         /// Checks a string for numeric values
@@ -831,7 +862,7 @@ namespace NineTapTour.Forms
             Game memScores = new Game();
             int squad = 0;
             squad = GetCurrentSquadNumber();
-            
+
 
             try
             {
@@ -860,9 +891,9 @@ namespace NineTapTour.Forms
         private void Clear()
         {
             txtMemberNum.Clear();
-//            richTextBox1.Clear();
-//            richTextBox2.Clear();
-//            richTextBox3.Clear();
+            //            richTextBox1.Clear();
+            //            richTextBox2.Clear();
+            //            richTextBox3.Clear();
         }
 
         /// <summary>
@@ -1141,7 +1172,7 @@ namespace NineTapTour.Forms
             }
             if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
             {
-                DialogResult result = MessageBox.Show("Are you sure you want to continue with a score missing?", "Are you sure?", 
+                DialogResult result = MessageBox.Show("Are you sure you want to continue with a score missing?", "Are you sure?",
                                                       MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.No)
                 {
@@ -1305,7 +1336,7 @@ namespace NineTapTour.Forms
                     {
                         // orders list by highest scoring scratch score total to lowest
                         topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.ScratchTotal).ToList();
-                        
+
                         // links game series listbox to list
                         lbxTopGameSeries.DataSource = topParticipantGameViewModels;
                         //displays specific tostring for displaying info dealing with scratch score total
@@ -1392,9 +1423,9 @@ namespace NineTapTour.Forms
             return gameScore + gameHandicap;
         }
 
-        
 
-        
+
+
 
         private void btnTournamentsByYear_Click(object sender, EventArgs e)
         {
@@ -1754,23 +1785,23 @@ namespace NineTapTour.Forms
 			FormHelper.SetFlowDirection(this, flpMemberScores, 1100, 766);
 		}
 
-		/// <summary>
-		/// After the size of the form has been changed, it checks the pixel
-		/// width and height to determine whether there needs to be scroll bars
-		/// or not.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void flpMemberScores_SizeChanged(object sender, EventArgs e)
-		{
-			FormHelper.SetFlowControlScrollBars(this, flpMemberScores, 1300, 750);
-		}
+        /// <summary>
+        /// After the size of the form has been changed, it checks the pixel
+        /// width and height to determine whether there needs to be scroll bars
+        /// or not.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void flpMemberScores_SizeChanged(object sender, EventArgs e)
+        {
+            FormHelper.SetFlowControlScrollBars(this, flpMemberScores, 1300, 750);
+        }
 
-		//runs fill member when you tab out of text box
-		private void txtMemberNum_Leave(object sender, EventArgs e)
-		{
-			FillMember();
-		}
+        //runs fill member when you tab out of text box
+        private void txtMemberNum_Leave(object sender, EventArgs e)
+        {
+            FillMember();
+        }
 
         private void cbAllSquads_CheckedChanged(object sender, EventArgs e)
         {
@@ -1784,7 +1815,7 @@ namespace NineTapTour.Forms
             cbFilterSquad8.Checked = false;
 
             //if all squads is selected then uncheck and disable squad selections
-            if(cbAllSquads.Checked)
+            if (cbAllSquads.Checked)
             {
                 cbFilterSquad1.Enabled = false;
                 cbFilterSquad2.Enabled = false;
@@ -1814,7 +1845,7 @@ namespace NineTapTour.Forms
         public int FilterCheck()
         {
             int check = 0;
-            if(cbFilterSquad1.Checked)
+            if (cbFilterSquad1.Checked)
             {
                 check++;
             }
