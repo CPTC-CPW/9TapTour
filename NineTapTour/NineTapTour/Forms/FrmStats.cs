@@ -522,10 +522,10 @@ namespace NineTapTour.Forms
             }
 
             int gameCount = dataGridView1.RowCount; // variable for how many rows will show up
-            int thirtyEntry = 30; // variable for how many rows are highlighted as per client request
-            if (gameCount > thirtyEntry)
+            const int THIRTY_ENTRY = 30; // variable for how many rows are highlighted as per client request
+            if (gameCount > THIRTY_ENTRY)
             {
-                for (int i = 0; i < thirtyEntry; i++)
+                for (int i = 0; i < THIRTY_ENTRY; i++)
                 {
                     dataGridView1.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
                 }
