@@ -135,50 +135,50 @@ namespace NineTapTour.Migrations
                 #endregion
                 
                 var tournamentSeed = new Bogus.Faker<Tournament>().Rules((f, t) =>
-                    {
-                        t.Date = DateTime.Now;
-                        t.Location = f.Address.City();
-                        t.Event = $"SomeTournament {index}";
-                        t.Notes = f.Lorem.Sentence();
-                        t.Sponsors = f.Company.CompanyName();
-                        t.Squads = _maxSquads;
-                        t.Doubles = false;
-                        t.ThreeOutOf4 = false;
-                        t.TourneyRegion = 1;
-                    }).Generate(1);
+                {
+                    t.Date = DateTime.Now;
+                    t.Location = f.Address.City();
+                    t.Event = $"SomeTournament {index}";
+                    t.Notes = f.Lorem.Sentence();
+                    t.Sponsors = f.Company.CompanyName();
+                    t.Squads = _maxSquads;
+                    t.Doubles = false;
+                    t.ThreeOutOf4 = false;
+                    t.TourneyRegion = 1;
+                }).Generate(1);
 
                 // Creates members and seeds in all important information, and some extra information 
                 // to simulate.
-                var memberSeed = new Bogus.Faker<Member>()
-                    .Rules((f, m) =>
-                    {
-                        m.FirstName = f.Name.FirstName();
-                        m.LastName = f.Name.LastName();
-                        m.MiddleInitial = "";
-                        m.StartAvg = f.Random.Number(_lowestAverage, _highestAverage);
-                        m.Average = f.Random.Number(_lowestAverage, _highestAverage);
-                        m.City = f.Address.City();
-                        m.Street = f.Address.StreetAddress();
-                        m.State = f.Address.State();
-                        m.PostalCode = f.Address.ZipCode();
-                        m.DateOfBirth = f.Person.DateOfBirth;
-                        m.Email = f.Person.Email;
-                        m.IsActive = true;
-                        m.IsLifetimeMember = false;
-                        m.IsSenior = f.Random.Bool();
-                        m.JoinDate = f.Date.Between(_earliestJoinDate, _latestJoinDate);
-                        m.SSN = f.Person.Ssn();
-                        m.PrimaryPhone = f.Person.Phone;
-                        m.NineTapRegionID = f.Random.Number(_startingRegionId, _endingRegionId);
-                        m.Number = f.IndexVariable++ + _memberStartingNumber;
-                        m.Bonus = f.Random.Number(_lowestBonusPin, _highestBonusPin);
-                        m.Handicap = Calculations.Calculations.CalculateHandicapPins(m.StartAvg.Value);
-                        bonusList.Add(m.Bonus);
-                        handicapList.Add(m.Handicap.Value);
-                        m.MoneyEarned = f.Random.Decimal(0, 300);
-                    });
+                var memberSeed = new Bogus.Faker<Member>().Rules((f, m) =>
+                {
+                    m.FirstName = f.Name.FirstName();
+                    m.LastName = f.Name.LastName();
+                    m.MiddleInitial = "";
+                    m.StartAvg = f.Random.Number(_lowestAverage, _highestAverage);
+                    m.Average = f.Random.Number(_lowestAverage, _highestAverage);
+                    m.City = f.Address.City();
+                    m.Street = f.Address.StreetAddress();
+                    m.State = f.Address.State();
+                    m.PostalCode = f.Address.ZipCode();
+                    m.DateOfBirth = f.Person.DateOfBirth;
+                    m.Email = f.Person.Email;
+                    m.IsActive = true;
+                    m.IsLifetimeMember = false;
+                    m.IsSenior = f.Random.Bool();
+                    m.JoinDate = f.Date.Between(_earliestJoinDate, _latestJoinDate);
+                    m.SSN = f.Person.Ssn();
+                    m.PrimaryPhone = f.Person.Phone;
+                    m.NineTapRegionID = f.Random.Number(_startingRegionId, _endingRegionId);
+                    m.Number = f.IndexVariable++ + _memberStartingNumber;
+                    m.Bonus = f.Random.Number(_lowestBonusPin, _highestBonusPin);
+                    m.Handicap = Calculations.Calculations.CalculateHandicapPins(m.StartAvg.Value);
+                    bonusList.Add(m.Bonus);
+                    handicapList.Add(m.Handicap.Value);
+                    m.MoneyEarned = f.Random.Decimal(0, 300);
+                });
 
-                var gameSeed = new Bogus.Faker<Game>().Rules((f, g) => {
+                var gameSeed = new Bogus.Faker<Game>().Rules((f, g) => 
+                {
                     g.Game1 = f.Random.Number(100, 280);
 
                     // These values off set the scores they bowled
