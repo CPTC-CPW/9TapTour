@@ -467,6 +467,13 @@ namespace NineTapTour.Forms
                 {
                     // If the DIRECTOR_CHECK cell was clicked, this code changes all of that member's games to match the clicked DIRECTOR_CHECK.
 
+                    int AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, e.RowIndex].Value);
+
+                    if (AVG > 0)
+                    {
+                        dataGridView1[ADJUSTED_AVG_COLUMN, e.RowIndex].Style.BackColor = Color.White;
+                        dataGridView1[DIRECTOR_CHECK_COLUMN, e.RowIndex].Style.BackColor = Color.White;
+                    }
                     int memberNum = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[MEMBER_NUMBER_COLUMN].Value);
                     bool isCellChecked = Convert.ToBoolean(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
 
@@ -1268,7 +1275,7 @@ namespace NineTapTour.Forms
         private void btnFinalize_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-
+            
             bool isDirectorCheckFinished = true; //int used to make sure all the director check boxes have been filled out
 
             List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
@@ -1278,6 +1285,13 @@ namespace NineTapTour.Forms
             //checks to make sure all the director had adjusted avgs and checked the box to make sure they did so.
             for (int i = 0; i < FinalizeTableList.Count; i++)
             {
+                int AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, i].Value);
+
+                if (AVG == 0)
+                {
+                    dataGridView1.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Style.BackColor = Color.Red;
+                    isDirectorCheckFinished = false;
+                }
                 if (Convert.ToBoolean(dataGridView1[DIRECTOR_CHECK_COLUMN, i].Value))
                 {
                     dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Style.BackColor = (i % 2 == 0) ? Color.White : Color.LightGray;
@@ -1287,6 +1301,7 @@ namespace NineTapTour.Forms
                     dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Style.BackColor = Color.Red;
                     isDirectorCheckFinished = false;
                 }
+                
 
             }
 
@@ -1361,9 +1376,11 @@ namespace NineTapTour.Forms
                     ph.GamesPlayed = gamesPlayed;
                     ph.AverageForGame = FinalizeTableList[i].GameAvg;
                     ph.trueAVG = FinalizeTableList[i].LeagueAverage;
+                    
 
 
                     ph.AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, i].Value);
+
                     ph.ProPot = dataGridView1[PRO_POT_COLUMN, i].Value.ToString();
 
                     ph.MoneyWon = Convert.ToDecimal(g.MoneyWon);
@@ -1516,6 +1533,11 @@ namespace NineTapTour.Forms
         private void dataGridView1_Sorted(object sender, EventArgs e)
         {
             InitializeGameCellFormatting();
+        }
+
+        private void btnAdjustedAvg_Click(object sender, EventArgs e)
+        {
+            createDataGridView(currTournament);
         }
     }
 }
