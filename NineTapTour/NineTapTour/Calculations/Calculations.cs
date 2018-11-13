@@ -127,13 +127,13 @@ namespace NineTapTour.Calculations
         }
 
         /// <summary>
-        /// Number of participants that can place in tournament are total entries minus comp entries (tournament 
+        /// Number of participants that can place in tournament. Total entries minus comp entries (tournament 
         /// workers that do not have to pay entry fees) and divides by 5 using integer division. 
         /// </summary>
         /// <param name="totalEntries">all tournament participants including comp entries</param>
         /// <param name="compEntries">tournament participants that also work at tournament</param>
         /// <returns>the quantity of members that can place in a tournament</returns>
-        public static int CalculateNumberOfMembersThatCanPlaceInATournament(int totalEntries, int compEntries)
+        public static int GetQtyOfMembersThatCanPlace(int totalEntries, int compEntries)
         {
             return (totalEntries - compEntries) / 5;
         }

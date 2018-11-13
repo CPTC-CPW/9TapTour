@@ -101,12 +101,14 @@ namespace NineTapTour.Calculations.Test
         }
 
         [TestMethod]
-        [DataRow(5, 1)]
-        [DataRow(0, 0)]
-        [DataRow(6, 2)]
-        public void CalculateNumberOfMembersThatCanPlaceInATournament_ReturnsExpectedAmount(int numParticipants, int expectedNumThatCanPlace)
+        [DataRow(106, 5, 20)]
+        [DataRow(101, 0, 20)]
+        [DataRow(100, 0, 20)]
+        [DataRow(100, 5, 19)]
+        [DataRow(100, 4, 19)]
+        public void CalculateNumberOfMembersThatCanPlaceInATournament_ReturnsExpectedAmount(int totalParticipants, int compParticipants, int expectedNumThatCanPlace)
         {
-            decimal resultNumThatCanPlace = Calculations.CalculateNumberOfMembersThatCanPlaceInATournament(numParticipants);
+            decimal resultNumThatCanPlace = Calculations.GetQtyOfMembersThatCanPlace(totalParticipants, compParticipants);
             Assert.AreEqual(expectedNumThatCanPlace, resultNumThatCanPlace);
         }
     }
