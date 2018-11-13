@@ -1535,9 +1535,6 @@ namespace NineTapTour.Forms
             InitializeGameCellFormatting();
         }
 
-        private void btnAdjustedAvg_Click(object sender, EventArgs e)
-        {
-            createDataGridView(currTournament);
-        }
+
     }
 }
