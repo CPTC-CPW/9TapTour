@@ -538,17 +538,12 @@ namespace NineTapTour.Forms
         //makes the 30 game avg column green and potential games to be added to light blue
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         { 
+   
             dataGridView1.SuspendLayout();
-
-            dataGridView1.SuspendLayout();
-            //var column = dataGridView1.Columns["Notes"];
-            //column.Width = 95;
 
 
             int top5 = 0;
-            
-     
-
+ 
             for(int i = 0; i < dataGridView1.RowCount; i++)
             {
                 for (int t = 0; t < ToBeAdd.Count; t++)
