@@ -42,13 +42,23 @@ namespace NineTapTour.Calculations
             return Math.Min(MAX_HANDICAP_PINS, (BASE_AVERAGE_HANDICAP_CALCULATOR - currentAverage) * 9 / 10);
         }
 
-        public static int GetAdjustedBonusPins(int memberPlaced, int currentBonusPins, int memNum, int RegionID, DateTime currentT)
+        /// <summary>
+        /// Returns the adjusted bonus pins after a tournament depending on if a bowler placed
+        /// and what ranking a bowler placed.
+        /// </summary>
+        /// <param name="memberPlaced">Ranking a bowler placed. 0 if not placed</param>
+        /// <param name="currentBonusPins">Bonus pins the participant had before this tournament</param>
+        /// <param name="memNum">Member number that used to identify bowler by user</param>
+        /// <param name="RegionID">RegionId from where the tournament is played</param>
+        /// <param name="currentDate">Date when the current tournament is taking place</param>
+        /// <returns>Adjusted bonus pins after current tournament</returns>
+        public static int GetAdjustedBonusPins(int memberPlaced, int currentBonusPins, int memNum, int RegionID, DateTime currentDate)
         {
             if (memberPlaced > 0)
             {
                 return  DeductFromBonusPins(memberPlaced, currentBonusPins);
             }
-            return AddToBonusPins(currentBonusPins, memNum, RegionID, currentT);
+            return AddToBonusPins(currentBonusPins, memNum, RegionID, currentDate);
         }
 
         public static int AddToBonusPins(int currentBonusPins, int MemNum, int RegionID, DateTime currenT)
@@ -61,7 +71,7 @@ namespace NineTapTour.Calculations
 
             if (latestTournaments.Count >= 2)
             {
-                // Filtering history where they had bowled in a diffrent sqaud on the same day
+                // Filtering history where they had bowled in a diffrent squad on the same day
                 if (latestTournaments[0].TournamentDate != latestTournaments[1].TournamentDate &&
                    latestTournaments[1].TournamentDate != currenT && 
                    currenT != latestTournaments[0].TournamentDate)
