@@ -463,9 +463,9 @@ namespace NineTapTour.Forms
                 }
 
                 // Check if cell changed was a DIRECTOR_CHECK cell
+                // If the DIRECTOR_CHECK cell was clicked, 
                 else if (e.ColumnIndex == DIRECTOR_CHECK_COLUMN)
                 {
-                    // If the DIRECTOR_CHECK cell was clicked, this code changes all of that member's games to match the clicked DIRECTOR_CHECK.
 
                     //Grabs the cell that contains the Adjust avg 
                     int AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, e.RowIndex].Value);
@@ -476,6 +476,9 @@ namespace NineTapTour.Forms
                         dataGridView1[ADJUSTED_AVG_COLUMN, e.RowIndex].Style.BackColor = Color.White;
                         dataGridView1[DIRECTOR_CHECK_COLUMN, e.RowIndex].Style.BackColor = Color.White;
                     }
+
+
+                    //this code changes all of that member's games to match the clicked DIRECTOR_CHECK.
                     int memberNum = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[MEMBER_NUMBER_COLUMN].Value);
                     bool isCellChecked = Convert.ToBoolean(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
 
