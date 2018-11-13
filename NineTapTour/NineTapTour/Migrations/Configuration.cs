@@ -158,7 +158,7 @@ namespace NineTapTour.Migrations
                     m.Average = f.Random.Number(_lowestAverage, _highestAverage);
                     m.City = f.Address.City();
                     m.Street = f.Address.StreetAddress();
-                    m.State = f.Address.State();
+                    m.State = f.Address.StateAbbr();
                     m.PostalCode = f.Address.ZipCode();
                     m.DateOfBirth = f.Person.DateOfBirth;
                     m.Email = f.Person.Email;
