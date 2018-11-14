@@ -50,36 +50,37 @@ namespace NineTapTour.Calculations
         /// <param name="currentBonusPins">Bonus pins the participant had before this tournament</param>
         /// <param name="memNum">Member number that used to identify bowler by user</param>
         /// <param name="RegionID">RegionId from where the tournament is played</param>
-        /// <param name="currentDate">Date when the current tournament is taking place</param>
+        /// <param name="currTournamentDate">Date when the current tournament is taking place</param>
         /// <returns>Adjusted bonus pins after current tournament</returns>
-        public static int GetAdjustedBonusPins(int memberPlaced, int currentBonusPins, int memNum, int RegionID, DateTime currentDate)
+        public static int GetAdjustedBonusPins(int memberPlaced, int currentBonusPins, int memNum, int RegionID, DateTime currTournamentDate)
         {
             if (memberPlaced > 0)
             {
                 return  DeductFromBonusPins(memberPlaced, currentBonusPins);
             }
-            return AddToBonusPins(currentBonusPins, memNum, RegionID, currentDate);
+            return AddToBonusPins(currentBonusPins, memNum, RegionID, currTournamentDate, PlayerHistoryDB.getLastFiveTournaments(memNum, RegionID));
         }
 
-        public static int AddToBonusPins(int currentBonusPins, int MemNum, int RegionID, DateTime currenT)
+        public static int AddToBonusPins(int currentBonusPins, int memberNum, int RegionID, DateTime currTournamentDate, List<PlayerHistory> latest2Tournaments)
         {
             if (currentBonusPins == MAX_BONUS_PINS_ALLOWED)
             {
                 return MAX_BONUS_PINS_ALLOWED;
             }
-            List<PlayerHistory> latestTournaments = PlayerHistoryDB.getLastFiveTournaments(MemNum, RegionID);
+            //List<PlayerHistory> latest2Tournaments = PlayerHistoryDB.getLastFiveTournaments(MemNum, RegionID);
 
-            if (latestTournaments.Count >= 2)
+            if (latest2Tournaments.Count >= 2)
             {
-                // Filtering history where they had bowled in a diffrent squad on the same day
-                if (latestTournaments[0].TournamentDate != latestTournaments[1].TournamentDate &&
-                   latestTournaments[1].TournamentDate != currenT && 
-                   currenT != latestTournaments[0].TournamentDate)
+                // Filtering history where they had bowled in a different squad on the same day
+                // TODO: Ask if checking for different gameId would be better here
+                if (latest2Tournaments[0].TournamentDate != latest2Tournaments[1].TournamentDate &&
+                   latest2Tournaments[1].TournamentDate != currTournamentDate && 
+                   currTournamentDate != latest2Tournaments[0].TournamentDate)
                 {
                     // Checks to see if the last 2 bowling history is the same as it is currently, 
                     // after 3 times not placing, they gain a bonus point
-                    if (latestTournaments[0].Bonus == latestTournaments[1].Bonus &&
-                       latestTournaments[1].Bonus == currentBonusPins)
+                    if (latest2Tournaments[0].Bonus == latest2Tournaments[1].Bonus &&
+                       latest2Tournaments[1].Bonus == currentBonusPins)
                     {
                         return ++currentBonusPins;
                     }
