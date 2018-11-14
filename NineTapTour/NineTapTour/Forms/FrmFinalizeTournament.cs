@@ -468,10 +468,10 @@ namespace NineTapTour.Forms
                 {
 
                     //Grabs the cell that contains the Adjust avg 
-                    int AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, e.RowIndex].Value);
+                    int adjustedAverage = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, e.RowIndex].Value);
 
                     //if true sets to backcolor to white automatically if director check button gets checked after entering number
-                    if (AVG > 0)
+                    if (adjustedAverage > 0)
                     {
                         dataGridView1[ADJUSTED_AVG_COLUMN, e.RowIndex].Style.BackColor = Color.White;
                         dataGridView1[DIRECTOR_CHECK_COLUMN, e.RowIndex].Style.BackColor = Color.White;
@@ -1292,10 +1292,10 @@ namespace NineTapTour.Forms
             for (int i = 0; i < FinalizeTableList.Count; i++)
             {
                 //Gets avg from Adjust average column
-                int AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, i].Value);
+                int adjustedAverage = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, i].Value);
 
                 //if true changes background color to red and doesn't submit
-                if (AVG == 0)
+                if (adjustedAverage == 0)
                 {
                     dataGridView1.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Style.BackColor = Color.Red;
                     isDirectorCheckFinished = false;
