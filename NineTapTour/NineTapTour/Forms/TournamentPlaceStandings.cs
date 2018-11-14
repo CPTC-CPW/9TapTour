@@ -24,17 +24,18 @@ namespace NineTapTour.Forms
             {
                 lblTournamentName.Text += " (DOUBLES TOURNAMENT)";                 
             }
+
             if (frmMemberScores.selectedTournament.ThreeOutOf4)
             {
                 lblTournamentName.Text += " (3 OUT OF 4 TOURNAMENT)";
             }
-            
             dgvTournamentStandings.DataSource = frmMemberScores.overallListOfTopScores;
         }
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
             printDialog1.Document = printDocument1;
+
             if (printDialog1.ShowDialog() == DialogResult.OK)
             {
                 printDocument1.Print();
