@@ -117,6 +117,7 @@ namespace NineTapTour.Migrations
                 int index = 0;
                 List<int> handicapList = new List<int>();
                 List<int> bonusList = new List<int>();
+                List<int> avgList = new List<int>();
 
                 // Create Regions
                 if (!context.NineTapRegion.Any())
@@ -150,7 +151,7 @@ namespace NineTapTour.Migrations
                     t.Doubles = false;
                     t.ThreeOutOf4 = false;
                     t.TourneyRegion = 1;
-                }).Generate(10);
+                }).Generate(4);
 
                 // Creates members and seeds in all important information, and some extra information 
                 // to simulate.
@@ -179,6 +180,7 @@ namespace NineTapTour.Migrations
                     m.Handicap = Calculations.Calculations.CalculateHandicapPins(m.StartAvg.Value);
                     bonusList.Add(m.Bonus);
                     handicapList.Add(m.Handicap.Value);
+                    avgList.Add(m.StartAvg.Value);
                     m.MoneyEarned = f.Random.Decimal(0, 300);
                 });
 
@@ -199,20 +201,50 @@ namespace NineTapTour.Migrations
                     g.InputtedAvg = g.TotalScore / 4;
                     g.MoneyWon = f.Random.Decimal(0, 0);
                 });
-                
+
                 var participantSeed = new Bogus.Faker<Participant>().Rules((f, p) =>
                 {
                     p.Member = memberSeed;
                     p.Game = gameSeed;
                     p.Squad = f.Random.Number(1, _maxSquads);
                     p.ParticipantRegionID = 1;
-                    p.Tournament = tournamentSeed[f.Random.Number(0, 9)];
+                    p.Tournament = tournamentSeed[f.Random.Number(0, 3)];
                 })
                 .Generate(_numOfMembersToGenerate);
+
+                index = 0;
 
                 // At this point you will generate one member per participant, that will also have
                 // a game related to a single tournament.
                 context.Participants.AddRange(participantSeed);
+
+                foreach (var p in participantSeed)
+                {
+                    var playerHistorySeed = new Bogus.Faker<PlayerHistory>().Rules((f, ph) =>
+                    {
+                        ph.GamesPlayed = 4;
+                        ph.TournamentDate = DateTime.Now.AddDays(f.Random.Int(-63, -56));
+                        ph.Game1 = f.Random.Number(100, 280);
+
+                        // These values off set the scores they bowled
+                        ph.Game2 = ph.Game1 - f.Random.Number(-_scoreAdjuster, _scoreAdjuster);
+                        ph.Game3 = ph.Game1 - f.Random.Number(-_scoreAdjuster, _scoreAdjuster);
+                        ph.Game4 = ph.Game1 - f.Random.Number(-_scoreAdjuster, _scoreAdjuster);
+
+                        ph.TotalScore = ph.Game1.Value + ph.Game2.Value + ph.Game3.Value + ph.Game4.Value;
+                        ph.HandiCap = handicapList[index];
+                        ph.AVG = avgList[index];
+                        ph.trueAVG = avgList[index];
+                        ph.Bonus = bonusList[index++];
+                        ph.MoneyWon = f.Random.Decimal(0, 0);
+                        ph.Notes = null;
+                        ph.AverageForGame = ph.TotalScore / 4;      
+                        ph.ProPot = null;
+                        ph.PPHG = null;
+                        ph.regionID = 1;
+                    });
+                    context.PlayerHistory.Add(playerHistorySeed);
+                }
             }
             context.SaveChanges();
         }
