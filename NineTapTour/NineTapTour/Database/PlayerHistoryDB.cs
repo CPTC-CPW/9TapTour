@@ -362,14 +362,40 @@ namespace NineTapTour.Database
             return Return;
         }
 
-        public static List<PlayerHistory> getLastFiveTournaments(int memNum, int RegionId)
+        public static List<PlayerHistory> GetLastTwoDistinctTournaments(int memberNum, int regionId)
         {
-            List<PlayerHistory> Return = new List<PlayerHistory>();
+            var lastTwoTournamentsQuery = new NineTapDb()
+                        .PlayerHistory
+                        .Where(ph => ph.MemberNumber == memberNum && ph.regionID == regionId)
+                        .GroupBy(ph => ph.TournamentDate)
+                        .Select(ph => ph.First())
+                        .Select(ph => new { ph.TournamentDate, ph.Bonus })
+                        .OrderByDescending(ph => ph.TournamentDate)
+                        .Take(2)
+                        .ToList();
+
+            List<PlayerHistory> lastTwoTournaments = new List<PlayerHistory>();
+
+            foreach (var tournament in lastTwoTournamentsQuery)
+            {
+                PlayerHistory currPlayerHistory = new PlayerHistory
+                {
+                    TournamentDate = tournament.TournamentDate,
+                    Bonus = tournament.Bonus
+                };
+                lastTwoTournaments.Add(currPlayerHistory);
+            }
+            return lastTwoTournaments;
+        }
+
+        public static List<PlayerHistory> getLastFiveTournaments(int memNum, int regionId)
+        {
+            List<PlayerHistory> lastFiveTournaments = new List<PlayerHistory>();
             using (var db = new NineTapDb())
             {
                 //will only grab the last 5 where the AVG was adjusted, that way the bonus pins cant be affected by bowling in more then one squad
                 var temp = (from h in db.PlayerHistory
-                            where h.MemberNumber == memNum && h.regionID == RegionId && h.AVG > 0 //only grabs tournaments where avgerage was determined. that way it doest grab history from a diffrent sqaud
+                            where h.MemberNumber == memNum && h.regionID == regionId && h.AVG > 0 //only grabs tournaments where avgerage was determined. that way it doest grab history from a diffrent sqaud
                             orderby h.TournamentDate descending, h.hisID descending
                             select new
                             {
@@ -391,32 +417,32 @@ namespace NineTapTour.Database
                             }).Take(5).ToList();
                 foreach (var item in temp)
                 {
-                    PlayerHistory newHistory = new PlayerHistory();
-
-
-                    newHistory.GamesPlayed = item.GamesPlayed;
-                    newHistory.TournamentDate = item.TournamentDate;
-                    newHistory.Game1 = item.Game1;
-                    newHistory.Game2 = item.Game2;
-                    newHistory.Game3 = item.Game3;
-                    newHistory.Game4 = item.Game4;
-                    newHistory.TotalScore = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0); ;
-                    newHistory.AverageForGame = item.AverageForGame;
-                    newHistory.trueAVG = item.trueAVG;
-                    newHistory.AVG = item.AVG;
-                    newHistory.HandiCap = item.HandiCap;
-                    newHistory.Bonus = item.Bonus;
-                    newHistory.ProPot = item.ProPot;
-                    newHistory.PPHG = item.PPHG;
-                    newHistory.MoneyWon = item.MoneyWon;
-                    newHistory.Notes = item.Notes;
-                    Return.Add(newHistory);
+                    PlayerHistory newHistory = new PlayerHistory
+                    {
+                        GamesPlayed = item.GamesPlayed,
+                        TournamentDate = item.TournamentDate,
+                        Game1 = item.Game1,
+                        Game2 = item.Game2,
+                        Game3 = item.Game3,
+                        Game4 = item.Game4,
+                        TotalScore = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0),
+                        AverageForGame = item.AverageForGame,
+                        trueAVG = item.trueAVG,
+                        AVG = item.AVG,
+                        HandiCap = item.HandiCap,
+                        Bonus = item.Bonus,
+                        ProPot = item.ProPot,
+                        PPHG = item.PPHG,
+                        MoneyWon = item.MoneyWon,
+                        Notes = item.Notes
+                    };
+                    lastFiveTournaments.Add(newHistory);
                 }
 
 
             }
 
-            return Return;
+            return lastFiveTournaments;
         }
 
 

@@ -72,7 +72,6 @@ namespace NineTapTour.Calculations
             if (latest2Tournaments.Count >= 2)
             {
                 // Filtering history where they had bowled in a different squad on the same day
-                // TODO: Ask if checking for different gameId would be better here
                 if (latest2Tournaments[0].TournamentDate != latest2Tournaments[1].TournamentDate &&
                    latest2Tournaments[1].TournamentDate != currTournamentDate && 
                    currTournamentDate != latest2Tournaments[0].TournamentDate)
