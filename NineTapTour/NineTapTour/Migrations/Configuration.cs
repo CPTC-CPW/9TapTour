@@ -141,7 +141,7 @@ namespace NineTapTour.Migrations
 
                 var tournamentSeed = new Bogus.Faker<Tournament>().Rules((f, t) =>
                 {
-                    t.Date = DateTime.Now;
+                    t.Date = DateTime.Now.AddDays(f.Random.Int(-56, -7));
                     t.Location = f.Address.City();
                     t.Event = $"SomeTournament {index}";
                     t.Notes = f.Lorem.Sentence();
