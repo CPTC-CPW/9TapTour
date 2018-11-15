@@ -88,11 +88,16 @@ namespace NineTapTour.Forms
         {
 #if DEBUG
             CheckBox toggleAllDirectorCheck = new CheckBox();
-            toggleAllDirectorCheck.Text = "Toggle All Director Checks";
+            toggleAllDirectorCheck.Text = "Dir Check";
             toggleAllDirectorCheck.CheckedChanged += new EventHandler(ToggleDirectorCheck_CheckChanged);
+            toggleAllDirectorCheck.Location = new Point(10, 0);
             Controls.Add(toggleAllDirectorCheck);
+            CheckBox toggleAllAdjustedAverages = new CheckBox();
+            toggleAllAdjustedAverages.Text = "Adj Avg";
+            toggleAllAdjustedAverages.CheckedChanged += new EventHandler(ToggleAllAdjustedAverages_CheckChanged);
+            toggleAllAdjustedAverages.Location = new Point(120, 0);
+            Controls.Add(toggleAllAdjustedAverages);
 #endif
-
             createDataGridView(currTournament);
             InitializeGameCellFormatting();
             sizeFinalizeGridView(); // resizes the columns of finalize form
@@ -115,8 +120,39 @@ namespace NineTapTour.Forms
                 }
             }
         }
-#endif
 
+        private void ToggleAllAdjustedAverages_CheckChanged(object sender, EventArgs e)
+        {
+            bool resetAdjustedAverages = false;
+            List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
+            for (int i = 0; i < FinalizeTableList.Count; i++)
+            {
+                var adjustedAverage = 
+                    dataGridView1.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Value;
+                if (adjustedAverage.Equals(0))
+                {
+                    dataGridView1.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Value =
+                        dataGridView1.Rows[i].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value;
+                }
+                else
+                {
+                    resetAdjustedAverages = true;
+                }                
+            }
+            if (resetAdjustedAverages)
+            {
+                ResetAdjustedAverages(FinalizeTableList);
+            }
+        }
+
+        private void ResetAdjustedAverages(List<FinalizeTemp> FinalizeTableList)
+        {
+            for (int i = 0; i < FinalizeTableList.Count; i++)
+            {
+                dataGridView1.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Value = 0;
+            }
+        }
+#endif      
         public void sizeFinalizeGridView() { 
             int columnCount = 22;
             for (int colWidth = 0; colWidth < columnCount; colWidth++)
@@ -210,9 +246,6 @@ namespace NineTapTour.Forms
                 }
                 temp.GameAvg = ((temp.Game1 ?? 0) + (temp.Game2 ?? 0) + (temp.Game3 ?? 0) + (temp.Game4 ?? 0)) / gplayed;
 
-
-
-
                 //grabs running league average 
                 List<PlayerHistory> ExistingPlayerHistory = PlayerHistoryDB.getMemberPlayerHistory(item.memberNumber, RegionID);
                 if (ExistingPlayerHistory.Count == 0)
@@ -254,11 +287,11 @@ namespace NineTapTour.Forms
 
             ////Sort DataGridView by TrueAverage
             //this.dataGridView1.Sort(this.dataGridView1.Columns["True Avg"], ListSortDirection.Descending);
+#if DEBUG
+            // resets the adjusted averages
+            ResetAdjustedAverages(FinalizeTableList);
+#endif
         }
-
-
-
-
 
         //creates the dataview that will populate the datagridview table on form pulls from the finalizetemp table
         // CHANGE THESE IN THE ORDER YOU WANT THEM TO BE SEEN ON THE GRID VIEW (0 == far left) AND THEN CHANGE THE STATIC INTS AT THE TOP IN ORDER TO CHANGE THERE ORDER ON THE GRID VIEW WITHOUT HAVING TO TOUNCH ANY OTHER CODE
