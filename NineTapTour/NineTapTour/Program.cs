@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity.Core.EntityClient;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -27,7 +29,51 @@ namespace NineTapTour
             SetConnectionString(@"(localdb)\MSSQLLocalDB");
 #endif
 
+            SetUpGlobalExceptionHandling();
+
             Application.Run(new FrmMain());
+
+            RemoveGlobalExceptionHandling();
+        }
+
+        /// <summary>
+        /// Remove event handlers to eliminate memory leaks on application close
+        /// </summary>
+        private static void RemoveGlobalExceptionHandling()
+        {
+            Application.ThreadException -= LogThreadException;
+            AppDomain.CurrentDomain.UnhandledException -= LogUnhandledException;
+        }
+
+        private static void SetUpGlobalExceptionHandling()
+        {
+            Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(LogThreadException);
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(LogUnhandledException);
+        }
+
+        private static void LogThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            RecordExceptionToFile(e.Exception);
+        }
+
+        private static void LogUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            RecordExceptionToFile(e.ExceptionObject as Exception);
+        }
+
+        private static void RecordExceptionToFile(Exception e)
+        {
+            string desktopFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string errorLogPath = System.IO.Path.Combine(desktopFolder, "9-TapErrors");
+            string fileTitle = $"Error {Guid.NewGuid()}";
+            File.WriteAllText(errorLogPath, e.ToString());
+            ShowExceptionDialog("Error", "exception was thrown", e);
+        }
+
+        private static DialogResult ShowExceptionDialog(string title, string message, Exception e)
+        {
+            return MessageBox.Show("Program terminated because of " + e.Message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private static void SetConnectionString(string dataSource)
