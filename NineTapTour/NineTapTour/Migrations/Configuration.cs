@@ -150,7 +150,7 @@ namespace NineTapTour.Migrations
                     t.Doubles = false;
                     t.ThreeOutOf4 = false;
                     t.TourneyRegion = 1;
-                }).Generate(1);
+                }).Generate(10);
 
                 // Creates members and seeds in all important information, and some extra information 
                 // to simulate.
@@ -206,18 +206,13 @@ namespace NineTapTour.Migrations
                     p.Game = gameSeed;
                     p.Squad = f.Random.Number(1, _maxSquads);
                     p.ParticipantRegionID = 1;
-                    p.Tournament = tournamentSeed[0];
+                    p.Tournament = tournamentSeed[f.Random.Number(0, 9)];
                 })
                 .Generate(_numOfMembersToGenerate);
 
                 // At this point you will generate one member per participant, that will also have
                 // a game related to a single tournament.
                 context.Participants.AddRange(participantSeed);
-
-                foreach (var p in participantSeed)
-                {
-                    context.Participants.AddRange();
-                }
             }
             context.SaveChanges();
         }
