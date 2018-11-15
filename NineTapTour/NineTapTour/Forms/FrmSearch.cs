@@ -102,6 +102,7 @@ namespace NineTapTour.Forms
 
                 Console.WriteLine(query.ToString());
                 
+                //HACK: Look at this anonymous type. Not pulling MoneyEarned from database
                 var results = query.Select(m => new
                 {
                     Number = m.Number,
