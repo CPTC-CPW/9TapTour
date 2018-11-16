@@ -96,10 +96,7 @@ namespace NineTapTour.Forms
                     Int32.TryParse(txtBonus.Text, out temp);
                     query = query.Where(m => m.Bonus == temp);
                 }
-                query = query.OrderBy(m => m.Number);
-
-                Console.WriteLine(query.ToString());
-                
+                query = query.OrderBy(m => m.Number);              
                 List<Member> results = query.ToList();
 
                 if (results.Count > 0)
