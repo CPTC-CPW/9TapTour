@@ -25,19 +25,21 @@ namespace NineTapTour.Migrations
         // https://github.com/bchavez/Bogus
         //
         // This method will seed the database for Regions and Members as of the current 
-        // database implementation 7/16/18
+        // database implementation.
+        // Initial Work Alex Ramirez: 7/16/18
+        // Updated Work Anthony McCann: 11/16/18
         //
         #region Description
-        // Description Checks to see if a database currently exists
-        // If one does NOT exist build regions and then builds fake member data to 
-        // replicate real world ninetap data that is configurable
-        // see instruction region below.
+        // Checks to see if a database currently exists. If one does NOT exist, builds 
+        // regions and then builds fake member data to replicate real world ninetap 
+        // data that is configurable see Instructions region below.
         #endregion
 
         #region Instructions
         // To rebuild/reconfigure the database go to the sql server object explorer then
-        // find the ninetap database right click and check close connection then hit ok
-        // and run UPDATE-DATABASE in the packamanger console
+        // find the ninetap database right click and check close connection and make sure
+        // delete backup is also checked (is by default) then hit ok, make sure project
+        // has been recently built and run UPDATE-DATABASE in the Package Manager Console.
         //
         //
         // Use any of the read only fields to set and configure the data being created 
@@ -56,65 +58,76 @@ namespace NineTapTour.Migrations
         //       https://github.com/CPTC-CPW/9TapTour/issues?q=is%3Aissue+305+is%3Aopen
         #endregion
 
-        // If you want to configure 
-        private readonly int _numOfMembersToGenerate = 200;
+        // Configurable values below. Understanding each variable before editing is recommended.
+        // Variables organized by how the Seed method cascades.
 
+        // Variable _memberStartingNumber is used for the index global in Bogus so we can 
+        // start our members at a specific number and then increment by one. For example, 
+        // if we set this to 0 the first member created will start at 0 then the second 
+        // will be 1 and so on.
+        private readonly int _memberStartingNumber = 1;
+
+        // Currently only 1 region enabled
         private readonly int _startingRegionId = 1;
         private readonly int _endingRegionId = 1;
 
+        // For initial Game Seed randomization
         private readonly int _lowestBowlScore = 100;
-        private readonly int _highestBowlScore = 299;
+        private readonly int _highestBowlScore = 280;
 
-        private readonly int _lowestAverage = 100;
-        private readonly int _highestAverage = 299;
-
-        private readonly int _lowestBonusPin = 0;
-        private readonly int _highestBonusPin = 5;
-
-        // Variable _memberStartingNumber is used for the index global in bogus so we can 
-        // start our members at a specific number and then increment by 1
-        // For example if we set this to 0 the first member created will start at 0 then 
-        // the second will be 1 and so on.
-        private readonly int _memberStartingNumber = 1;
-
+        // To adjust games 2, 3, and 4's scores of initial randomizing for differentiation
         private readonly int _scoreAdjuster = 15;
 
-        // Variable _earliestJoinDate SHOULD ALWAYS BE A NEGATIVE NUMBER.
-        // This will set the earliest year possible (in comparison to the date when running 
-        // Update-Database) when creating fake members and their joined dates.
-        private readonly DateTime _earliestJoinDate = DateTime.Now.AddYears(-10); // <-- Negative Num Required
-
-        private readonly DateTime _latestJoinDate = DateTime.Now;
+        // For new Tournament Seed
+        private readonly int _numberOfCurrentTournamentsToCreate = 2;
+        private readonly int _furthestBackTournamentDatesInDays = 56;
+        private readonly int _mostCurrentTournamentDatesInDays = 7;
         private readonly int _maxSquads = 4;
+
+        // For Member Info randomization
+        private readonly int _lowestAverage = 100;
+        private readonly int _highestAverage = 299;
+        private readonly int _lowestBonusPin = 0;
+        private readonly int _highestBonusPin = 5;
+        private readonly int _joinDatesInYearsAgo = 10;
+        private readonly string _lastPossibleJoinDate = "08/01/2017";
+
+        // For Participant Seed .Generate of Members
+        private readonly int _numOfMembersToGenerate = 200;
+
+        // For PlayerHistory Seed
+        private readonly int _tournamentDatesInYearsAgo = 1;
+        private readonly string _lastTournamentDate = "08/01/2018";
 
         // Review the documentation before changing anything directly in the Seed method
 #if DEBUG
         protected override void Seed(NineTapTour.Database.NineTapDb context)
         {
-            // System.Diagnostics is a Debug tool for Seed Data
+            // System.Diagnostics is a Debug tool for Seed Data (Uncomment statement below Reference if needed)
             // Reference: http://blog.theodybrothers.com/2015/09/debugging-your-seed-method-when-running.html
             //if (System.Diagnostics.Debugger.IsAttached == false)
             //    System.Diagnostics.Debugger.Launch();
 
             if (!context.Members.Any())
             {
-                // Incrementer local variables to prevent data mismatch in areas of the database 
+                // Increment local variables to prevent data mismatch in areas of the database 
                 // that are not related correctly.
                 // **DO NOT TOUCH THESE UNLESS THERE IS A REAL GOOD REASON, LIKE A DATABASE CHANGE.**
 
                 #region Info about these **DO NOT TOUCH THESE UNLESS THERE IS A REAL GOOD REASON, LIKE A DATABASE CHANGE.**
                 // Since tinkering with Bogus, which is meant for relational databases and the 
                 // current state of the database does not use this as it should there are some 
-                // work arounds that I had to implement to avoid data mismatch. Index is use to 
-                // keep track of what index we are currently at in the list to replicate the exact 
-                // same data in other tables.
+                // work arounds that I had to implement to avoid data mismatch. Index variables
+                // are used to keep track of what index we are currently at in the list to 
+                // replicate the exact same data in other tables.
                 //
-                // The two indexes currently are handicap and bonus -> Basically when a member is 
-                // created their handicap and bonus are added to a list then when a game is created 
-                // the handicap and bonus list are tapped into and take the parallel index for values.
+                // The indexes are currently handicap, bonus, averages. -> Basically when a member is 
+                // created their handicap, bonus, and averages are added to a list then when a game is 
+                // created. The lists are tapped into and take a parallel index for values.
                 #endregion
 
-                int index = 0;
+                int initialSeedIndexForLists = 0;
+                int playerHistoryIndexForLists = 0;
                 List<int> handicapList = new List<int>();
                 List<int> bonusList = new List<int>();
                 List<int> avgList = new List<int>();
@@ -133,35 +146,33 @@ namespace NineTapTour.Migrations
                 // you want them to be spread out).
 
                 #region Additional info about tournament 
-                // We only create one tournament as that's all we need for basic testing for most things.
-                // This can be expanded upon but you will need to correctly think about how the calculations 
-                // would progress with each new tournament, an alternative is to create more and then go 
-                // through each tournament and finalize the scores. If you really wanted to test entries over 
-                // time calculation.
+                // We create however many tournaments are inputted into the variable _numberOfCurrentTournamentsToCreate
+                // that need to be finalized on the GUI with money won amounts adjusted manually. Each member has a 
+                // PlayerHistory of one tournament, half of which have money earned previously. 
                 #endregion
 
+                // Creates tournaments
                 var tournamentSeed = new Bogus.Faker<Tournament>().Rules((f, t) =>
                 {
-                    t.Date = DateTime.Now.AddDays(f.Random.Int(-56, -7));
+                    t.Date = DateTime.Now.AddDays(f.Random.Int(-_furthestBackTournamentDatesInDays, -_mostCurrentTournamentDatesInDays));
                     t.Location = f.Address.City();
-                    t.Event = $"SomeTournament {index}";
+                    t.Event = $"SomeTournament {initialSeedIndexForLists}";
                     t.Notes = f.Lorem.Sentence();
                     t.Sponsors = f.Company.CompanyName();
                     t.Squads = _maxSquads;
                     t.Doubles = false;
                     t.ThreeOutOf4 = false;
                     t.TourneyRegion = 1;
-                }).Generate(3);
+                }).Generate(_numberOfCurrentTournamentsToCreate);
 
-                // Creates members and seeds in all important information, and some extra information 
-                // to simulate.
+                // Creates Members Information
                 var memberSeed = new Bogus.Faker<Member>().Rules((f, m) =>
                 {
                     m.FirstName = f.Name.FirstName();
                     m.LastName = f.Name.LastName();
                     m.MiddleInitial = "";
                     m.StartAvg = f.Random.Number(_lowestAverage, _highestAverage);
-                    m.Average = f.Random.Number(_lowestAverage, _highestAverage);
+                    m.Average = m.StartAvg + f.Random.Number(-_scoreAdjuster, _scoreAdjuster);
                     m.City = f.Address.City();
                     m.Street = f.Address.StreetAddress();
                     m.State = f.Address.StateAbbr();
@@ -171,7 +182,7 @@ namespace NineTapTour.Migrations
                     m.IsActive = true;
                     m.IsLifetimeMember = false;
                     m.IsSenior = f.Random.Bool();
-                    m.JoinDate = f.Date.Between(_earliestJoinDate, _latestJoinDate);
+                    m.JoinDate = f.Date.Past(_joinDatesInYearsAgo, refDate: DateTime.Parse(_lastPossibleJoinDate)); ;
                     m.SSN = f.Person.Ssn();
                     m.PrimaryPhone = f.Person.Phone;
                     m.NineTapRegionID = f.Random.Number(_startingRegionId, _endingRegionId);
@@ -184,73 +195,75 @@ namespace NineTapTour.Migrations
                     m.MoneyEarned = f.Random.Decimal(0, 300);
                 });
 
+                // Creates four games for each Member based off their information
                 var gameSeed = new Bogus.Faker<Game>().Rules((f, g) =>
                 {
-                    g.Game1 = f.Random.Number(100, 280);
-
+                    g.Game1 = f.Random.Number(_lowestBowlScore, _highestBowlScore);
                     // These values off set the scores they bowled
                     g.Game2 = g.Game1 - f.Random.Number(-_scoreAdjuster, _scoreAdjuster);
                     g.Game3 = g.Game1 - f.Random.Number(-_scoreAdjuster, _scoreAdjuster);
                     g.Game4 = g.Game1 - f.Random.Number(-_scoreAdjuster, _scoreAdjuster);
-
                     g.Notes = null;
-                    g.Handicap = handicapList[index];
+                    g.Handicap = handicapList[initialSeedIndexForLists];
                     g.TotalScore = g.Game1 + g.Game2 + g.Game3 + g.Game4;
                     g.gameRegionID = 1;
-                    g.Bonus = bonusList[index++];
+                    g.Bonus = bonusList[initialSeedIndexForLists++];
                     g.InputtedAvg = g.TotalScore / 4;
                     g.MoneyWon = f.Random.Decimal(0, 0);
                 });
 
+                // ParticipantSeed uses all other seeds besides the PlayerHistory seed 
+                // to create members, their games, squad placement, region, and a random
+                // tournament.
                 var participantSeed = new Bogus.Faker<Participant>().Rules((f, p) =>
                 {
                     p.Member = memberSeed;
                     p.Game = gameSeed;
                     p.Squad = f.Random.Number(1, _maxSquads);
                     p.ParticipantRegionID = 1;
-                    p.Tournament = tournamentSeed[f.Random.Number(0, 2)];
+                    p.Tournament = tournamentSeed[f.Random.Number(0, (_numberOfCurrentTournamentsToCreate - 1))];
                 })
                 .Generate(_numOfMembersToGenerate);
-                
-                // At this point you will generate one member per participant, that will also have
-                // a game related to a single tournament.
+
+                // Add all above seeds
                 context.Participants.AddRange(participantSeed);
 
-                // Reset index variable to zero to iterate through inital lists of participants/members
-                // to give each parallel participant/member one tournament of Player History.
+                // Create random to use in MoneyWon formula
                 Random rand = new Random();
-                index = 0;
+                // Iterate through all participants created in the participantSeed
                 foreach (var p in participantSeed)
                 {
+                    // Creates PlayerHistory for each Member
                     var playerHistorySeed = new Bogus.Faker<PlayerHistory>().Rules((f, ph) =>
                     {
-                        ph.MemberNumber = index + 1;
+                        ph.MemberNumber = playerHistoryIndexForLists + 1;
                         ph.GamesPlayed = 4;
-                        ph.TournamentDate = f.Date.Past(1, refDate: DateTime.Parse("08/01/2018"));
-                        ph.Game1 = f.Random.Number(100, 280);
-
+                        ph.TournamentDate = f.Date.Past(_tournamentDatesInYearsAgo, refDate: DateTime.Parse(_lastTournamentDate));
+                        ph.Game1 = avgList[playerHistoryIndexForLists];
                         // These values off set the scores they bowled
                         ph.Game2 = ph.Game1 - f.Random.Number(-_scoreAdjuster, _scoreAdjuster);
                         ph.Game3 = ph.Game1 - f.Random.Number(-_scoreAdjuster, _scoreAdjuster);
                         ph.Game4 = ph.Game1 - f.Random.Number(-_scoreAdjuster, _scoreAdjuster);
-
                         ph.TotalScore = ph.Game1.Value + ph.Game2.Value + ph.Game3.Value + ph.Game4.Value;
-                        ph.HandiCap = handicapList[index];
-                        ph.AVG = avgList[index];
-                        ph.trueAVG = avgList[index];
-                        ph.Bonus = bonusList[index++];
+                        ph.HandiCap = handicapList[playerHistoryIndexForLists];                        
                         ph.MoneyWon = f.Random.Decimal(0, 1);
-                        ph.MoneyWon *= (index % 2) * (rand.Next(0, 1000));
+                        ph.MoneyWon *= (playerHistoryIndexForLists % 2) * (rand.Next(0, 1000));
                         ph.Notes = null;
-                        ph.AverageForGame = ph.TotalScore / 4;      
+                        ph.AverageForGame = ph.TotalScore / 4;
+                        ph.AVG = avgList[playerHistoryIndexForLists];
+                        ph.trueAVG = avgList[playerHistoryIndexForLists];
+                        ph.Bonus = bonusList[playerHistoryIndexForLists];
                         ph.ProPot = null;
                         ph.PPHG = $"{Math.Max(ph.Game1.Value, Math.Max(ph.Game2.Value, Math.Max(ph.Game3.Value, ph.Game4.Value)))}";
                         ph.regionID = 1;
+                        playerHistoryIndexForLists++;
                     });
 
+                    // Add PlayerHistory seed
                     context.PlayerHistory.Add(playerHistorySeed);
                 }
             }
+            // Save All
             context.SaveChanges();
         }
 #endif
