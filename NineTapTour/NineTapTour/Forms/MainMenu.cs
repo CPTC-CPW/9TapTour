@@ -86,7 +86,7 @@ namespace NineTapTour.Forms
             Font drawFont = new Font("Arial", 12);
             SolidBrush drawBrush = new SolidBrush(Color.White);
             PointF drawPoint = new PointF(10, 2);
-            g.DrawString("Version: 1.5.0", drawFont, drawBrush, drawPoint);
+            g.DrawString("Version: 1.5.1", drawFont, drawBrush, drawPoint);
 #if DEBUG
             drawBrush.Color = Color.Red;
             drawPoint.Y += 16;

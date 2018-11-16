@@ -221,21 +221,28 @@ namespace NineTapTour.Forms
         /// <param name="winners"></param>
         private static void KeepHighestScoringGame(List<ExcelMember> winners)
         {
-            for (int i = 0; i < winners.Count() - 1; i++)
+            List<ExcelMember> removal = new List<ExcelMember>();
+            //find all duplicate bowlers and their lower scores
+            for (int i = 0; i < winners.Count; i++)
             {
-                // if member bowled more than one game
-                while (winners[i].MemberNumber == winners[i + 1].MemberNumber)
+                for (int j = i + 1; j < winners.Count; j++)
                 {
-                    // remove lower scoring games
-                    if (winners[i].TotalScore >= winners[i + 1].TotalScore)
+                    //Check to see if it's the same bowler
+                    if(winners[i].MemberNumber == winners[j].MemberNumber)
                     {
-                        winners.Remove(winners[i + 1]);
-                    }
-                    else
-                    {
-                        winners.Remove(winners[i]);
+                        //remove the lower score
+                        if (winners[i].TotalScore >= winners[j].TotalScore)
+                            removal.Add(winners[j]);
+                        else
+                            removal.Add(winners[i]);
                     }
                 }
+            }
+
+            //remove lower scores
+            foreach (ExcelMember member in removal)
+            {
+                winners.Remove(member);
             }
         }
 
