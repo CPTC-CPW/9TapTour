@@ -151,7 +151,7 @@ namespace NineTapTour.Migrations
                     t.Doubles = false;
                     t.ThreeOutOf4 = false;
                     t.TourneyRegion = 1;
-                }).Generate(4);
+                }).Generate(3);
 
                 // Creates members and seeds in all important information, and some extra information 
                 // to simulate.
@@ -208,22 +208,25 @@ namespace NineTapTour.Migrations
                     p.Game = gameSeed;
                     p.Squad = f.Random.Number(1, _maxSquads);
                     p.ParticipantRegionID = 1;
-                    p.Tournament = tournamentSeed[f.Random.Number(0, 3)];
+                    p.Tournament = tournamentSeed[f.Random.Number(0, 2)];
                 })
                 .Generate(_numOfMembersToGenerate);
-
-                index = 0;
-
+                
                 // At this point you will generate one member per participant, that will also have
                 // a game related to a single tournament.
                 context.Participants.AddRange(participantSeed);
 
+                // Reset index variable to zero to iterate through inital lists of participants/members
+                // to give each parallel participant/member one tournament of Player History.
+                Random rand = new Random();
+                index = 0;
                 foreach (var p in participantSeed)
                 {
                     var playerHistorySeed = new Bogus.Faker<PlayerHistory>().Rules((f, ph) =>
                     {
+                        ph.MemberNumber = index + 1;
                         ph.GamesPlayed = 4;
-                        ph.TournamentDate = DateTime.Now.AddDays(f.Random.Int(-63, -56));
+                        ph.TournamentDate = f.Date.Past(1, refDate: DateTime.Parse("08/01/2018"));
                         ph.Game1 = f.Random.Number(100, 280);
 
                         // These values off set the scores they bowled
@@ -236,13 +239,15 @@ namespace NineTapTour.Migrations
                         ph.AVG = avgList[index];
                         ph.trueAVG = avgList[index];
                         ph.Bonus = bonusList[index++];
-                        ph.MoneyWon = f.Random.Decimal(0, 0);
+                        ph.MoneyWon = f.Random.Decimal(0, 1);
+                        ph.MoneyWon *= (index % 2) * (rand.Next(0, 1000));
                         ph.Notes = null;
                         ph.AverageForGame = ph.TotalScore / 4;      
                         ph.ProPot = null;
-                        ph.PPHG = null;
+                        ph.PPHG = $"{Math.Max(ph.Game1.Value, Math.Max(ph.Game2.Value, Math.Max(ph.Game3.Value, ph.Game4.Value)))}";
                         ph.regionID = 1;
                     });
+
                     context.PlayerHistory.Add(playerHistorySeed);
                 }
             }
