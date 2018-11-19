@@ -1354,7 +1354,8 @@ namespace NineTapTour.Forms
             //START FINALIZATION
             if (isDirectorCheckFinished) //if all the director check boxes are selected
             {
-                for (int i = 0; i < FinalizeTableList.Count; i++)
+                //for (int i = 0; i < FinalizeTableList.Count; i++)
+                Parallel.For(0, FinalizeTableList.Count, i =>
                 {
                     gamesPlayed = 0;
                     PlayerHistory ph = new PlayerHistory();
@@ -1422,7 +1423,7 @@ namespace NineTapTour.Forms
                     ph.GamesPlayed = gamesPlayed;
                     ph.AverageForGame = FinalizeTableList[i].GameAvg;
                     ph.trueAVG = FinalizeTableList[i].LeagueAverage;
-                    
+
 
 
                     ph.AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, i].Value);
@@ -1486,7 +1487,7 @@ namespace NineTapTour.Forms
                     FinalizeTableList[i].HandicapTotal = Convert.ToInt32(dataGridView1[HANDICAP_TOTAL_COLUMN, i].Value);
                     FinalizeTempDB.AddFinalizeTemp(FinalizeTableList[i]);
 
-                }
+                });
                 Close();
             }
             else  // if all of the director checkboxes are not checked, then prompt user to check to finalize tournament
