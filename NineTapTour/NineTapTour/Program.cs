@@ -32,17 +32,6 @@ namespace NineTapTour
             SetUpGlobalExceptionHandling();
 
             Application.Run(new FrmMain());
-
-            RemoveGlobalExceptionHandling();
-        }
-
-        /// <summary>
-        /// Remove event handlers to eliminate memory leaks on application close
-        /// </summary>
-        private static void RemoveGlobalExceptionHandling()
-        {
-            Application.ThreadException -= LogThreadException;
-            AppDomain.CurrentDomain.UnhandledException -= LogUnhandledException;
         }
 
         private static void SetUpGlobalExceptionHandling()
