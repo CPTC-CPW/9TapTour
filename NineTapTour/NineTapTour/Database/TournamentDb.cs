@@ -104,6 +104,13 @@ namespace NineTapTour.Database
             }
         }
 
+        public static int GetTotalNumberParticipantsInTournament(Tournament currTourney)
+        {
+            NineTapDb db = new NineTapDb();
+            return db.Participants
+                .Where(p => p.Tournament.Id == currTourney.Id)
+                .Count();
+        }
 
         public static List<Member> GetUniqueTourMembers(Tournament currTourney)
         {
