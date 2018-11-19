@@ -153,12 +153,14 @@ namespace NineTapTour.Forms
             }
         }
 #endif      
-        public void sizeFinalizeGridView() { 
-            int columnCount = 22;
-            for (int colWidth = 0; colWidth < columnCount; colWidth++)
-            {
-                dataGridView1.Columns[colWidth].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            }
+        public void sizeFinalizeGridView() {
+            //Columns are sized below the loop. Loop is unnecessary?
+            //int columnCount = 22;
+            //for (int colWidth = 0; colWidth < columnCount; colWidth++)
+            //{
+            //    dataGridView1.Columns[colWidth].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            //};
+            dataGridView1.DoubleBuffered(true);
             dataGridView1.Columns[STANDING_COLUMN].Width = 50;  
             dataGridView1.Columns[MEMBER_NUMBER_COLUMN].Width = 50;
             dataGridView1.Columns[NAME_COLUMN].Width = 150;
@@ -188,7 +190,8 @@ namespace NineTapTour.Forms
         {
             List<FinalizeTemp> FinalizeTableList = GetAllInitialParticipantGameList(currTournament);
 
-            foreach (var item in FinalizeTableList)
+            //foreach (var item in FinalizeTableList)
+            Parallel.ForEach(FinalizeTableList, item =>
             {
                 int gplayed = 0;
                 Game g = FinalizeTempDB.getGame(item.GameId);
@@ -268,7 +271,8 @@ namespace NineTapTour.Forms
                     }
                 }
                 FinalizeTempDB.AddFinalizeTemp(temp);
-            }
+            });
+
             //pulls a list from the finalizetemp table and seeds the dataview with the table info.
             List<FinalizeTemp> DataViewList = GetListFromTable(tourn);
 
