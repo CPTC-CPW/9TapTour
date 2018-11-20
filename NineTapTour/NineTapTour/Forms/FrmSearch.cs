@@ -103,75 +103,12 @@ namespace NineTapTour.Forms
                     Int32.TryParse(txtBonus.Text, out temp);
                     query = query.Where(m => m.Bonus == temp);
                 }
+                query = query.OrderBy(m => m.Number);              
+                List<Member> results = query.ToList();
 
-                query = query.OrderBy(m => m.Number);
-
-                Console.WriteLine(query.ToString());
-                
-                var results = query.Select(m => new
-                {
-                    Number = m.Number,
-                    FirstName = m.FirstName,
-                    LastName = m.LastName,
-                    IsActive = m.IsActive,
-                    MiddleInitial = m.MiddleInitial,
-                    DateOfBirth = m.DateOfBirth,
-                    Gender = m.Gender,
-                    Street = m.Street,
-                    City = m.City,
-                    State = m.State,
-                    PostalCode = m.PostalCode,
-                    Email = m.Email,
-                    PrimaryPhone = m.PrimaryPhone,
-                    SecondaryPhone = m.SecondaryPhone,
-                    StartAVG = m.StartAvg,       
-                    Average = m.Average,
-                    Handicap = m.Handicap,
-                    Bonus = m.Bonus,
-                    JoinDate = m.JoinDate,
-                    RejoinDate = m.RejoinDate,
-                    LastBowled = m.LastBowled,
-                    LastPayment = m.LastPayment,
-                    IsLifetimeMember = m.IsLifetimeMember,
-                    MoneyEarned = m.MoneyEarned,
-                    Notes = m.Notes,
-                    Referrals = m.Referrals,
-                    IsSenior = m.IsSenior,
-                }).ToList();
-
-                //if there are results for the query, store the data from the results in a new Member class
                 if (results.Count > 0)
                 {
-                    memList = results.Select(m => new Member
-                    {
-                        Number = m.Number,
-                        FirstName = m.FirstName,
-                        LastName = m.LastName,
-                        IsActive = m.IsActive,
-                        MiddleInitial = m.MiddleInitial,
-                        DateOfBirth = m.DateOfBirth,
-                        Gender = m.Gender,
-                        Street = m.Street,
-                        City = m.City,
-                        State = m.State,
-                        PostalCode = m.PostalCode,
-                        Email = m.Email,
-                        PrimaryPhone = m.PrimaryPhone,
-                        SecondaryPhone = m.SecondaryPhone,
-                        Average = m.Average,
-                        StartAvg = m.StartAVG,
-                        Handicap = m.Handicap,
-                        Bonus = m.Bonus,
-                        JoinDate = m.JoinDate,
-                        RejoinDate = m.RejoinDate,
-                        LastBowled = m.LastBowled,
-                        LastPayment = m.LastPayment,
-                        IsLifetimeMember = m.IsLifetimeMember,
-                        MoneyEarned = m.MoneyEarned,
-                        Notes = m.Notes,
-                        Referrals = m.Referrals,
-                        IsSenior = m.IsSenior
-                    }).ToList();
+                    memList = results;
                 }
                 else
                 {   //If there is no matching data with the query, add a new member
@@ -182,15 +119,8 @@ namespace NineTapTour.Forms
                         FirstName = "There are no users with that information",
                     });
 
-                    dtagrdResults.DataSource = memList;
                     disableData();
                     isChecked = true;
-                }
-
-                //Display the member information for each member in the memList 
-                foreach (Member m in memList)
-                {
-                    Console.WriteLine(m.Id);
                 }
             }
             dtagrdResults.DataSource = memList;

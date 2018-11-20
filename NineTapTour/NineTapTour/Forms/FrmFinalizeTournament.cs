@@ -88,11 +88,16 @@ namespace NineTapTour.Forms
         {
 #if DEBUG
             CheckBox toggleAllDirectorCheck = new CheckBox();
-            toggleAllDirectorCheck.Text = "Toggle All Director Checks";
+            toggleAllDirectorCheck.Text = "Dir Check";
             toggleAllDirectorCheck.CheckedChanged += new EventHandler(ToggleDirectorCheck_CheckChanged);
+            toggleAllDirectorCheck.Location = new Point(10, 0);
             Controls.Add(toggleAllDirectorCheck);
+            CheckBox toggleAllAdjustedAverages = new CheckBox();
+            toggleAllAdjustedAverages.Text = "Adj Avg";
+            toggleAllAdjustedAverages.CheckedChanged += new EventHandler(ToggleAllAdjustedAverages_CheckChanged);
+            toggleAllAdjustedAverages.Location = new Point(120, 0);
+            Controls.Add(toggleAllAdjustedAverages);
 #endif
-
             createDataGridView(currTournament);
             InitializeGameCellFormatting();
             sizeFinalizeGridView(); // resizes the columns of finalize form
@@ -115,10 +120,40 @@ namespace NineTapTour.Forms
                 }
             }
         }
-#endif
 
-        public void sizeFinalizeGridView()
-        { 
+        private void ToggleAllAdjustedAverages_CheckChanged(object sender, EventArgs e)
+        {
+            bool resetAdjustedAverages = false;
+            List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
+            for (int i = 0; i < FinalizeTableList.Count; i++)
+            {
+                var adjustedAverage = 
+                    dataGridView1.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Value;
+                if (adjustedAverage.Equals(0))
+                {
+                    dataGridView1.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Value =
+                        dataGridView1.Rows[i].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value;
+                }
+                else
+                {
+                    resetAdjustedAverages = true;
+                }                
+            }
+            if (resetAdjustedAverages)
+            {
+                ResetAdjustedAverages(FinalizeTableList);
+            }
+        }
+
+        private void ResetAdjustedAverages(List<FinalizeTemp> FinalizeTableList)
+        {
+            for (int i = 0; i < FinalizeTableList.Count; i++)
+            {
+                dataGridView1.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Value = 0;
+            }
+        }
+#endif      
+        public void sizeFinalizeGridView() { 
             int columnCount = 22;
             for (int colWidth = 0; colWidth < columnCount; colWidth++)
             {
@@ -251,6 +286,10 @@ namespace NineTapTour.Forms
 
             ////Sort DataGridView by TrueAverage
             //this.dataGridView1.Sort(this.dataGridView1.Columns["True Avg"], ListSortDirection.Descending);
+#if DEBUG
+            // resets the adjusted averages
+            ResetAdjustedAverages(FinalizeTableList);
+#endif
         }
 
         //creates the dataview that will populate the datagridview table on form pulls from the finalizetemp table
@@ -453,10 +492,22 @@ namespace NineTapTour.Forms
                 }
 
                 // Check if cell changed was a DIRECTOR_CHECK cell
+                // If the DIRECTOR_CHECK cell was clicked, 
                 else if (e.ColumnIndex == DIRECTOR_CHECK_COLUMN)
                 {
-                    // If the DIRECTOR_CHECK cell was clicked, this code changes all of that member's games to match the clicked DIRECTOR_CHECK.
 
+                    //Grabs the cell that contains the Adjust avg 
+                    int adjustedAverage = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, e.RowIndex].Value);
+
+                    //if true sets to backcolor to white automatically if director check button gets checked after entering number
+                    if (adjustedAverage > 0)
+                    {
+                        dataGridView1[ADJUSTED_AVG_COLUMN, e.RowIndex].Style.BackColor = Color.White;
+                        dataGridView1[DIRECTOR_CHECK_COLUMN, e.RowIndex].Style.BackColor = Color.White;
+                    }
+
+
+                    //this code changes all of that member's games to match the clicked DIRECTOR_CHECK.
                     int memberNum = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[MEMBER_NUMBER_COLUMN].Value);
                     bool isCellChecked = Convert.ToBoolean(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
 
@@ -1033,7 +1084,8 @@ namespace NineTapTour.Forms
         private void btnFinalize_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-
+            
+            
             bool isDirectorCheckFinished = true; //int used to make sure all the director check boxes have been filled out
 
             List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
@@ -1043,6 +1095,16 @@ namespace NineTapTour.Forms
             //checks to make sure all the director had adjusted avgs and checked the box to make sure they did so.
             for (int i = 0; i < FinalizeTableList.Count; i++)
             {
+                //Gets avg from Adjust average column
+                int adjustedAverage = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, i].Value);
+
+                //if true changes background color to red and doesn't submit
+                if (adjustedAverage == 0)
+                {
+                    dataGridView1.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Style.BackColor = Color.Red;
+                    isDirectorCheckFinished = false;
+                }
+                //if director checkbox is checked set to white and continue
                 if (Convert.ToBoolean(dataGridView1[DIRECTOR_CHECK_COLUMN, i].Value))
                 {
                     dataGridView1.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Style.BackColor = (i % 2 == 0) ? Color.White : Color.LightGray;
@@ -1127,8 +1189,10 @@ namespace NineTapTour.Forms
                     ph.GamesPlayed = gamesPlayed;
                     ph.AverageForGame = FinalizeTableList[i].GameAvg;
                     ph.trueAVG = FinalizeTableList[i].LeagueAverage;
+                    
 
                     ph.AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, i].Value);
+
                     ph.ProPot = dataGridView1[PRO_POT_COLUMN, i].Value.ToString();
 
                     ph.MoneyWon = Convert.ToDecimal(g.MoneyWon);
@@ -1282,5 +1346,7 @@ namespace NineTapTour.Forms
         {
             InitializeGameCellFormatting();
         }
+
+
     }
 }
