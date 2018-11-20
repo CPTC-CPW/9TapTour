@@ -1687,12 +1687,6 @@ namespace NineTapTour.Forms
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            //Grabs the tournament from the combobox and casts to Tournament
-            selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
-            //Repopulates list of participants with the current tournament
-            overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
-
-
             //needs to delete current member information from datbase in all important places
             if (selectedTournament.Doubles == false)
             {
@@ -1724,11 +1718,6 @@ namespace NineTapTour.Forms
 
                         return;
                     }
-                }
-                if(txtMemberNum.Text == String.Empty)
-                {
-                    MessageBox.Show("You must enter a member you want to delete.");
-                    return;
                 }
 
                 try
