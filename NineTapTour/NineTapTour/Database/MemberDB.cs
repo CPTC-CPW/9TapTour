@@ -101,6 +101,9 @@ namespace NineTapTour.Database
             }
         }
 
+        /// <summary>
+        /// Get the number of Members in a particular region
+        /// </summary>
         public static int GetMemberListCount(int regionId)
         {
             NineTapDb db = new NineTapDb();

@@ -154,12 +154,6 @@ namespace NineTapTour.Forms
         }
 #endif      
         public void sizeFinalizeGridView() {
-            //Columns are sized below the loop. Loop is unnecessary?
-            //int columnCount = 22;
-            //for (int colWidth = 0; colWidth < columnCount; colWidth++)
-            //{
-            //    dataGridView1.Columns[colWidth].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            //};
             dataGridView1.DoubleBuffered(true);
             dataGridView1.Columns[STANDING_COLUMN].Width = 50;  
             dataGridView1.Columns[MEMBER_NUMBER_COLUMN].Width = 50;
@@ -190,6 +184,7 @@ namespace NineTapTour.Forms
         {
             List<FinalizeTemp> FinalizeTableList = GetAllInitialParticipantGameList(currTournament);
 
+            //Below is a multithreaded version of a foreach loop to spread processing across all available cores
             //foreach (var item in FinalizeTableList)
             Parallel.ForEach(FinalizeTableList, item =>
             {
@@ -1354,6 +1349,7 @@ namespace NineTapTour.Forms
             //START FINALIZATION
             if (isDirectorCheckFinished) //if all the director check boxes are selected
             {
+                //Multithreaded version of a for loop, spreads processing across all available cores
                 //for (int i = 0; i < FinalizeTableList.Count; i++)
                 Parallel.For(0, FinalizeTableList.Count, i =>
                 {
