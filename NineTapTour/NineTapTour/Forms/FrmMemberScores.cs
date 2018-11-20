@@ -1105,8 +1105,8 @@ namespace NineTapTour.Forms
                 // resets the current index to zero when changing the tournament
                 currentIndex = 0;
                 // Gets the record for the selected tournament
-                RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
                 overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
+                RecordIndex(overallListOfParticipants);
                 Refresh(false);
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
