@@ -360,7 +360,9 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Bonus").ReadOnly = true;
             dtGames.Columns.Add("Pro Pot").ReadOnly = true;
             dtGames.Columns.Add("Place").ReadOnly = true;
-            dtGames.Columns.Add("Money Won", typeof(Decimal));
+
+            string moneyWonWithTotal = $"Money Won ({PlayerHistoryDB.GetTotalMoneyWon(memNum, RegionID)})";
+            dtGames.Columns.Add(moneyWonWithTotal, typeof(Decimal));
             dtGames.Columns.Add("Notes");
             dtGames.Columns.Add("GmID").ReadOnly = true;
 
@@ -398,7 +400,7 @@ namespace NineTapTour.Forms
                 newRow["HDCP"] = item.HandiCap;
                 newRow["Bonus"] = item.Bonus;
                 newRow["Pro Pot"] = item.ProPot;
-                newRow["Money Won"] = item.MoneyWon;
+                newRow[moneyWonWithTotal] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
                 newRow["GmID"] = item.GameID;
@@ -443,7 +445,7 @@ namespace NineTapTour.Forms
                 newRow["HDCP"] = item.HandiCap;
                 newRow["Bonus"] = item.Bonus;
                 newRow["Pro Pot"] = item.ProPot;
-                newRow["Money Won"] = item.MoneyWon;
+                newRow[moneyWonWithTotal] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
                 newRow["GmID"] = item.GameID;
