@@ -1688,6 +1688,7 @@ namespace NineTapTour.Forms
         private void btnDelete_Click(object sender, EventArgs e)
         {
 
+            //Maybe refactor this into a method to spread through program. Fix for creating tournament and not having it updated.
             //Grabs the tournament from the combobox and casts to Tournament
             selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
             //Repopulates list of participants with the current tournament
