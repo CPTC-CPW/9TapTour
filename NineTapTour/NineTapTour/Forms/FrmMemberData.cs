@@ -130,17 +130,19 @@ namespace NineTapTour.Forms
 			{
 				d.BackColor = Color.LightGray;
 			}
+            int memberCount = MemberDb.GetMemberListCount(RegionID);
 
-            
-            if (MemberDb.GetMemberList(RegionID).Count == 0)
-            {   // set txtMemberNumber.Text back to one if there is no one in the the 
-                // current selected region added yet
+            // set txtMemberNumber.Text back to one if there is no one in the the 
+            // current selected region added yet
+            if (memberCount == 0)
+            {
                 txtMemberNumber.Text = "1";
             }
-            else if(Convert.ToInt16(txtMemberNumber.Text) > MemberDb.GetMemberList(RegionID).Count)
-            {   // if last region selected had more members then current selected 
-                // region, set txtmemberNumber.Text to its highest member count for the selcted region
-                txtMemberNumber.Text = MemberDb.GetMemberList(RegionID).Count.ToString();
+            // if last region selected had more members then current selected 
+            // region, set txtmemberNumber.Text to its highest member count for the selcted region
+            else if(Convert.ToInt16(txtMemberNumber.Text) > memberCount)
+            {
+                txtMemberNumber.Text = MemberDb.GetMemberListCount(RegionID).ToString();
             }
 
             _memberNum = Convert.ToInt32(txtMemberNumber.Text);
@@ -730,8 +732,7 @@ namespace NineTapTour.Forms
             //cursor begins when arrow is clicked
             Cursor.Current = Cursors.WaitCursor;
             List<Member> m = MemberDb.GetMemberList(RegionID);
-
-            if (MemberDb.GetMemberList(RegionID).Count == 0 || currentMem.Number <= m[0].Number)
+            if (m.Count == 0 || currentMem.Number <= m[0].Number)
             {
                 //turns loading cursor off.
                 Cursor.Current = Cursors.Default;
@@ -757,8 +758,9 @@ namespace NineTapTour.Forms
         {
             //turns on a loading cursor while new bowler is loaded.
             Cursor.Current = Cursors.WaitCursor;
-
-            if (MemberDb.GetMemberList(RegionID).Count == 0 || currentMem.Number >= MemberDb.GetMemberList(RegionID).Count)
+            int memberCount = MemberDb.GetMemberListCount(RegionID);
+            if (memberCount == 0 ||
+                currentMem.Number >= memberCount)
             {
                 //turns loading cursor off.
                 Cursor.Current = Cursors.Default;
@@ -845,7 +847,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
-            txtMemberNumber.Text = MemberDb.GetMemberList(RegionID).Count.ToString();
+            txtMemberNumber.Text = MemberDb.GetMemberListCount(RegionID).ToString();
             UpdateMemberInfo();
         }
         
