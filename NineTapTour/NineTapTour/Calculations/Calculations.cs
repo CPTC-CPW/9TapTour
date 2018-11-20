@@ -61,25 +61,33 @@ namespace NineTapTour.Calculations
             return AddToBonusPins(currentBonusPins, memNum, RegionID, currTournamentDate, PlayerHistoryDB.GetLastFiveTournaments(memNum, RegionID));
         }
 
-        public static int AddToBonusPins(int currentBonusPins, int memberNum, int RegionID, DateTime currTournamentDate, List<PlayerHistory> latest2Tournaments)
+        /// <summary>
+        /// Adds to bonus pins if necessary and returns the new total bonus pins for a member
+        /// </summary>
+        /// <param name="currentBonusPins">Bonus pins before calculating new bonus pins</param>
+        /// <param name="memberNum">Member number for the member to calculate bonus pins</param>
+        /// <param name="RegionID">Region the current tournament is taking place</param>
+        /// <param name="currTournamentDate">The date the tournament took place</param>
+        /// <param name="last2Tournaments">The last two distinct tournaments</param>
+        /// <returns></returns>
+        public static int AddToBonusPins(int currentBonusPins, int memberNum, int RegionID, DateTime currTournamentDate, List<PlayerHistory> last2Tournaments)
         {
             if (currentBonusPins == MAX_BONUS_PINS_ALLOWED)
             {
                 return MAX_BONUS_PINS_ALLOWED;
             }
-            //List<PlayerHistory> latest2Tournaments = PlayerHistoryDB.getLastFiveTournaments(MemNum, RegionID);
 
-            if (latest2Tournaments.Count >= 2)
+            if (last2Tournaments.Count >= 2)
             {
                 // Filtering history where they had bowled in a different squad on the same day
-                if (latest2Tournaments[0].TournamentDate != latest2Tournaments[1].TournamentDate &&
-                   latest2Tournaments[1].TournamentDate != currTournamentDate && 
-                   currTournamentDate != latest2Tournaments[0].TournamentDate)
+                if (last2Tournaments[0].TournamentDate != last2Tournaments[1].TournamentDate &&
+                   last2Tournaments[1].TournamentDate != currTournamentDate && 
+                   currTournamentDate != last2Tournaments[0].TournamentDate)
                 {
                     // Checks to see if the last 2 bowling history is the same as it is currently, 
                     // after 3 times not placing, they gain a bonus point
-                    if (latest2Tournaments[0].Bonus == latest2Tournaments[1].Bonus &&
-                       latest2Tournaments[1].Bonus == currentBonusPins)
+                    if (last2Tournaments[0].Bonus == last2Tournaments[1].Bonus &&
+                       last2Tournaments[1].Bonus == currentBonusPins)
                     {
                         return ++currentBonusPins;
                     }
@@ -122,18 +130,6 @@ namespace NineTapTour.Calculations
             {
                 return bonusPinsAfterDeduction;
             }
-        }
-
-        /// <summary>
-        /// method rounds half pin deduction to the nearest whole number based
-        /// on client's calculation
-        /// </summary>
-        /// <param name="halfPinDeduction"></param>
-        /// <returns></returns>
-        public static int DoublesTournamentRoundPinValue(double halfPinDeduction)
-        {
-            int doublesPinDeduction = (int)Math.Round(halfPinDeduction, MidpointRounding.AwayFromZero);
-            return doublesPinDeduction;
         }
 
         /// <summary>
