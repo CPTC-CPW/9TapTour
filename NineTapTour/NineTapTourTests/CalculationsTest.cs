@@ -111,5 +111,12 @@ namespace NineTapTour.Calculations.Test
             decimal resultNumThatCanPlace = Calculations.GetQtyOfMembersThatCanPlace(totalParticipants, compParticipants);
             Assert.AreEqual(expectedNumThatCanPlace, resultNumThatCanPlace);
         }
+
+        [TestMethod]
+        [DataRow(0, 1, 1)]
+        public static void AddToBonusPins_ReturnsExpectedBonusPins(int currentBonusPins, int memberNum, int RegionId, DateTime currTournamentDate, List<PlayerHistory> last2Tournaments, int expectedBonusPins)
+        {
+
+        }
     }
 }
