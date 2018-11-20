@@ -503,22 +503,24 @@ namespace NineTapTour.Forms
                 temp.Email = txtEmail.Text;
                 temp.PrimaryPhone = txtPhone.Text;
                 temp.SecondaryPhone = txtPhone2.Text;
+
                 // Score Info
                 /****************************************************************************
-                used to say Average = 0; which will make the average in the database 0
+                / This used to say Average = 0; which will make the average in the database 0.
+                / This code block assigns txt30GameAvg.Text to temp.Average.
                 *****************************************************************************/
-                double avg = 0;
-                try
+                if (Int32.TryParse(txt30GameAvg.Text, out int thirtyGameAverage))
                 {
-                    avg = Convert.ToDouble(txt30GameAvg.Text);
+                    temp.Average = thirtyGameAverage;
                 }
-                catch (Exception e)
+                else
                 {
-                    MessageBox.Show(e.ToString());
+                    temp.Average = 0;
                 }
-                temp.Average = (txt30GameAvg.Text == string.Empty) ? 0 : Convert.ToInt16(avg);
                 /****************************************************************************/
-                temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.Average.Value));
+                temp.Handicap = 
+                    Calculations.Calculations.CalculateHandicapPins(temp.Average.Value);
+                
                 // Misc. Info
                 if (!String.IsNullOrWhiteSpace(txtRejoinDate.Text))
                 {
