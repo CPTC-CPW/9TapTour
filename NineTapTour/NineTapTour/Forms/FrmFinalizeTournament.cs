@@ -153,12 +153,13 @@ namespace NineTapTour.Forms
             }
         }
 #endif      
-        public void sizeFinalizeGridView() { 
+        public void sizeFinalizeGridView() {
             int columnCount = 22;
             for (int colWidth = 0; colWidth < columnCount; colWidth++)
             {
                 dataGridView1.Columns[colWidth].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             }
+
             dataGridView1.Columns[STANDING_COLUMN].Width = 50;  
             dataGridView1.Columns[MEMBER_NUMBER_COLUMN].Width = 50;
             dataGridView1.Columns[NAME_COLUMN].Width = 150;
@@ -188,7 +189,9 @@ namespace NineTapTour.Forms
         {
             List<FinalizeTemp> FinalizeTableList = GetAllInitialParticipantGameList(currTournament);
 
-            foreach (var item in FinalizeTableList)
+            //Below is a multithreaded version of a foreach loop to spread processing across all available cores
+            //foreach (var item in FinalizeTableList)
+            Parallel.ForEach(FinalizeTableList, item =>
             {
                 int gplayed = 0;
                 Game g = FinalizeTempDB.getGame(item.GameId);
@@ -268,7 +271,8 @@ namespace NineTapTour.Forms
                     }
                 }
                 FinalizeTempDB.AddFinalizeTemp(temp);
-            }
+            });
+
             //pulls a list from the finalizetemp table and seeds the dataview with the table info.
             List<FinalizeTemp> DataViewList = GetListFromTable(tourn);
 
@@ -1350,7 +1354,9 @@ namespace NineTapTour.Forms
             //START FINALIZATION
             if (isDirectorCheckFinished) //if all the director check boxes are selected
             {
-                for (int i = 0; i < FinalizeTableList.Count; i++)
+                //Multithreaded version of a for loop, spreads processing across all available cores
+                //for (int i = 0; i < FinalizeTableList.Count; i++)
+                Parallel.For(0, FinalizeTableList.Count, i =>
                 {
                     gamesPlayed = 0;
                     PlayerHistory ph = new PlayerHistory();
@@ -1418,7 +1424,7 @@ namespace NineTapTour.Forms
                     ph.GamesPlayed = gamesPlayed;
                     ph.AverageForGame = FinalizeTableList[i].GameAvg;
                     ph.trueAVG = FinalizeTableList[i].LeagueAverage;
-                    
+
 
 
                     ph.AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, i].Value);
@@ -1482,7 +1488,7 @@ namespace NineTapTour.Forms
                     FinalizeTableList[i].HandicapTotal = Convert.ToInt32(dataGridView1[HANDICAP_TOTAL_COLUMN, i].Value);
                     FinalizeTempDB.AddFinalizeTemp(FinalizeTableList[i]);
 
-                }
+                });
                 Close();
             }
             else  // if all of the director checkboxes are not checked, then prompt user to check to finalize tournament

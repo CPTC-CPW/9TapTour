@@ -176,9 +176,10 @@ namespace NineTapTour.Forms
             {
                 // resets the current index to zero when changing the tournament
                 currentIndex = 0;
-                // Gets the record for the selected tournament
-                RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
+
                 overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
+                RecordIndex(overallListOfParticipants);
+                
                 btnDelete.Enabled = true;
                
                 Refresh(false);
@@ -220,19 +221,12 @@ namespace NineTapTour.Forms
         {
             if (currentGame != null)
             {
-                //////////////////////////////////////////////////////////////// PAGINATION HAPPENS RIGHT HERE!!!! ////////////////////////////////////////////////////
-                List<Participant> total = TournamentDb.GetTournamentMemberListInOrder(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue))); //gets list in order so forloops itterate better
+                Tournament tourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+                int total = TournamentDb.GetTotalNumberParticipantsInTournament(tourney);
               
-                lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count;
+                lblRecord.Text = "Record " + (currentIndex) + " / " + total;
 
-                // if IsComp true then check CompEntry checkbox
-                chbCompEntry.Checked = false;
-                if (currentGame.IsComp)
-                {
-                    chbCompEntry.Checked = true;
-                }
-
-
+                chbCompEntry.Checked = currentGame.IsComp ? true : false;
 
                 txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
                 txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
@@ -240,11 +234,6 @@ namespace NineTapTour.Forms
                 txtScratchScore4.Text = Convert.ToString(currentGame.Game4);
                 txtScratchScore1.Focus();
                 txtMoney.Text = currentGame.MoneyWon.ToString();
-                // put game.handicap in Handicap field for that tournament game
-                //txtHandicap.Text = currentGame.Handicap.ToString();
-
-
-
             }
         }
         #endregion
@@ -256,58 +245,58 @@ namespace NineTapTour.Forms
                 currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
 
                 string searchNumber = txtMemberNum.Text;
-                for (int i = 0; i < searchNumber.Length; i++)
+
+                //don't do any further processing if there is no member number
+                if (searchNumber.Trim() == string.Empty)
+                    return;
+
+                if (!int.TryParse(searchNumber, out int number))
                 {
-                    if (!char.IsNumber(searchNumber[i]))
-                    {
-                        MessageBox.Show("Please input numbers only.", "Your Attention Please.");
-                        txtMemberNum.Clear();
-                        return;
-                    }
+                    MessageBox.Show("Please input numbers only.", "Your attention please.");
+                    return;
                 }
-                if (searchNumber.Trim() != "")
+
+                
+
+                int memberNumber = Convert.ToInt16(txtMemberNum.Text);
+                currentMem = MemberDb.GetMember(memberNumber, RegionID);
+                if (currentMem != null)
                 {
-                    int memberNumber = Convert.ToInt16(txtMemberNum.Text);
-                    currentMem = MemberDb.GetMember(memberNumber, RegionID);
-                    if (currentMem != null)
+                    if (currentMem.IsActive)
                     {
-                        if (currentMem.IsActive)
-                        {
-                            MemberStatus("Active", Color.Green, Color.Lime, false);
-                        }
-                        else
-                        {
-                            MemberStatus("Inactive", Color.Red, Color.Pink, true);
-                        }
-                        txtScratchScore1.Focus();
-
-                        txtLastName.Text = currentMem.LastName;
-                        txtFirstName.Text = currentMem.FirstName;
-                        txtMiddleInitial.Text = currentMem.MiddleInitial;
-
-                        Game currentGame = GetScoresById(currentMem.Id);
-
-                        //set the handicap and bonus pins to their most recent if they were not added to the tournament yet
-                        if (currentGame == null)
-                        {
-                            txtHandicap.Text = currentMem.Handicap.ToString();
-                            txtBonusPins.Text = currentMem.Bonus.ToString();
-                        }
-                        else //sets the right historic bowler handicap and bonus pins during this tournament
-                        {
-                            txtHandicap.Text = currentGame.Handicap.ToString();
-                            txtBonusPins.Text = currentGame.Bonus.ToString();
-                        }
-
-                        GetScores(currentGame);
-
+                        MemberStatus("Active", Color.Green, Color.Lime, false);
                     }
                     else
                     {
-                        MessageBox.Show(string.Format("A member with the number {0} does not exist", txtMemberNum.Text), "Your Attention Please.");
-                        txtMemberNum.Clear();
+                        MemberStatus("Inactive", Color.Red, Color.Pink, true);
                     }
-                    
+                    txtScratchScore1.Focus();
+
+                    txtLastName.Text = currentMem.LastName;
+                    txtFirstName.Text = currentMem.FirstName;
+                    txtMiddleInitial.Text = currentMem.MiddleInitial;
+
+                    Game currentGame = GetScoresById(currentMem.Id);
+
+                    //set the handicap and bonus pins to their most recent if they were not added to the tournament yet
+                    if (currentGame == null)
+                    {
+                        txtHandicap.Text = currentMem.Handicap.ToString();
+                        txtBonusPins.Text = currentMem.Bonus.ToString();
+                    }
+                    else //sets the right historic bowler handicap and bonus pins during this tournament
+                    {
+                        txtHandicap.Text = currentGame.Handicap.ToString();
+                        txtBonusPins.Text = currentGame.Bonus.ToString();
+                    }
+
+                    GetScores(currentGame);
+
+                }
+                else
+                {
+                    MessageBox.Show(string.Format("A member with the number {0} does not exist", txtMemberNum.Text), "Your Attention Please.");
+                    txtMemberNum.Clear();
                 }
             }
         }
@@ -1769,10 +1758,15 @@ namespace NineTapTour.Forms
 
         private void rdoSquadNumber_CheckedChanged(object sender, EventArgs e)
         {
-            ScoreAndTotalClear();
-            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-            RecordIndexOnSquadSwitch(total);
-            FillMember();
+            //only run the code the code for the radio button that is checked
+            if((sender as RadioButton).Checked)
+            {
+                ScoreAndTotalClear();
+                List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
+                RecordIndexOnSquadSwitch(total);
+                FillMember();
+            }
+            
         }
 
 		/// <summary>
