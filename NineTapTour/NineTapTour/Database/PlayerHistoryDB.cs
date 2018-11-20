@@ -362,7 +362,7 @@ namespace NineTapTour.Database
             return Return;
         }
 
-        public static List<PlayerHistory> GetLastTwoDistinctTournaments(int memberNum, int regionId)
+        public static List<PlayerHistory> GetLastTwoDistinctTournamentsByDate(int memberNum, int regionId)
         {
             var lastTwoTournamentsQuery = new NineTapDb()
                         .PlayerHistory
@@ -388,7 +388,7 @@ namespace NineTapTour.Database
             return lastTwoTournaments;
         }
 
-        public static List<PlayerHistory> getLastFiveTournaments(int memNum, int regionId)
+        public static List<PlayerHistory> GetLastFiveTournaments(int memNum, int regionId)
         {
             List<PlayerHistory> lastFiveTournaments = new List<PlayerHistory>();
             using (var db = new NineTapDb())

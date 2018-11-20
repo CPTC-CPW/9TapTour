@@ -58,7 +58,7 @@ namespace NineTapTour.Calculations
             {
                 return  DeductFromBonusPins(memberPlaced, currentBonusPins);
             }
-            return AddToBonusPins(currentBonusPins, memNum, RegionID, currTournamentDate, PlayerHistoryDB.getLastFiveTournaments(memNum, RegionID));
+            return AddToBonusPins(currentBonusPins, memNum, RegionID, currTournamentDate, PlayerHistoryDB.GetLastFiveTournaments(memNum, RegionID));
         }
 
         public static int AddToBonusPins(int currentBonusPins, int memberNum, int RegionID, DateTime currTournamentDate, List<PlayerHistory> latest2Tournaments)

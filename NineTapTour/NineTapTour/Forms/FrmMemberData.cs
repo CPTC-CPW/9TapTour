@@ -165,7 +165,7 @@ namespace NineTapTour.Forms
             if (searchMem == null)
             {
                 currentMem = MemberDb.GetMember(_memberNum,RegionID);
-                List<PlayerHistory> last5 = PlayerHistoryDB.getLastFiveTournaments(currentMem.Number, RegionID);
+                List<PlayerHistory> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
                 if (last5.Count >= 1)
                 {
                     txtAverage.Text = currentMem.StartAvg.ToString(); //whatever the bowler director decides his average to be is right. dont pull from the player hstory page
@@ -747,7 +747,7 @@ namespace NineTapTour.Forms
                 }
                 temp.Id = memId;
 
-                List<PlayerHistory> last5 = PlayerHistoryDB.getLastFiveTournaments(currentMem.Number, RegionID);
+                List<PlayerHistory> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
                 if (last5.Count >= 1)
                 { // sets the average to that of their last adjusted average
                     if (Convert.ToInt32(txtAverage.Text) == last5[0].AVG)
@@ -1297,7 +1297,7 @@ namespace NineTapTour.Forms
                     CurrentExcelData.Add(r);
                 }
 
-                List<PlayerHistory> reset = PlayerHistoryDB.getLastFiveTournaments(currentMem.Number, RegionID);
+                List<PlayerHistory> reset = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
                 currentMem.StartAvg = reset[0].AVG;
                 currentMem.Average = Convert.ToInt32(reset[0].trueAVG);
                 currentMem.Handicap = Calculations.Calculations.CalculateHandicapPins(Convert.ToInt32(currentMem.StartAvg));
