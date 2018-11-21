@@ -37,10 +37,6 @@ namespace NineTapTour.Forms
             AllMembers = MemberDb.GetMemberList(RegionID);
             UpdateList();
         }
-        
-        private void FrmUpdateActiveMem_Load(object sender, EventArgs e)
-        {
-        }
 
         private void UpdateList()
         {
