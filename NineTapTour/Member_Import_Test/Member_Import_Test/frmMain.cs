@@ -727,19 +727,20 @@ namespace Member_Import_Test
 
                 xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
                 range = xlWorkSheet.UsedRange;
-                for (int row = 3; row <= range.Rows.Count; row++)
+                // starts the checking at row 3 since first two rows are title info
+                for (int row = 3; row <= range.Rows.Count; row++)   
                 {
                     try
-                    {
+                    {   // skips col 1 & 2 to check if the 4 game scores  = 0 
                         if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
+                            && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0
+                            && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0
+                            && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
                         {
-                            continue;
+                            continue; //after checking this proceeds to continue the loop statement
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception ex) // not used needs to be addressed
                     {
                         continue;
                     }

@@ -86,7 +86,9 @@ namespace NineTapTour.Calculations
                    currenT != latest[0].TournamentDate)
                 {
                     if(latest[0].Bonus == latest[1].Bonus &&
-                       latest[1].Bonus == currentBonusPins &&  //checks to see if the last 2 bowling history is the same as it is currently, after 3 times not placing, they gain a bonus point
+                       latest[1].Bonus == currentBonusPins &&  
+                       // previous 2 lines of code checks to see if the last 2 bowling history is the same as it is currently,
+                       // after 3 times not placing, they gain a bonus point
                        currentBonusPins == latest[0].Bonus)
                     {
                         return ++currentBonusPins;
