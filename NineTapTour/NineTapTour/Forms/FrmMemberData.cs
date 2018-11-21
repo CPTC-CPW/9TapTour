@@ -804,9 +804,8 @@ namespace NineTapTour.Forms
         // top of thew orginal data on the form finalize page
         private void btnStats_Click(object sender, EventArgs e)
         {
-            List<PlayerHistory> nothing = new List<PlayerHistory>(); 
             FrmStats p = new FrmStats(currentMem.Number, currentMem.FirstName + 
-                currentMem.LastName + currentMem.MiddleInitial, currentMem, nothing, RegionID);
+                currentMem.LastName + currentMem.MiddleInitial, currentMem, RegionID);
             p.ShowDialog();
         }
 
