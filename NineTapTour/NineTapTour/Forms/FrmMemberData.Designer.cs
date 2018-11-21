@@ -39,6 +39,11 @@
             this.lblMemberNum = new System.Windows.Forms.Label();
             this.txtMemberNumber = new System.Windows.Forms.TextBox();
             this.grpMemberInfo = new System.Windows.Forms.GroupBox();
+            this.lblStateValidation = new System.Windows.Forms.Label();
+            this.lblSSNValidation = new System.Windows.Forms.Label();
+            this.lblReferralsValidation = new System.Windows.Forms.Label();
+            this.lblDateJoinedValidation = new System.Windows.Forms.Label();
+            this.lblDOBValidation = new System.Windows.Forms.Label();
             this.txtRejoinDate = new System.Windows.Forms.MaskedTextBox();
             this.txtDateJoined = new System.Windows.Forms.MaskedTextBox();
             this.txtDOB = new System.Windows.Forms.MaskedTextBox();
@@ -112,17 +117,12 @@
             this.txtBonus = new System.Windows.Forms.TextBox();
             this.txtAverage = new System.Windows.Forms.TextBox();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.lblFirstNameValidation = new System.Windows.Forms.Label();
+            this.lblLastNameValidation = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.lblDOBValidation = new System.Windows.Forms.Label();
-            this.lblLastNameValidation = new System.Windows.Forms.Label();
-            this.lblFirstNameValidation = new System.Windows.Forms.Label();
-            this.lblDateJoinedValidation = new System.Windows.Forms.Label();
-            this.lblSSNValidation = new System.Windows.Forms.Label();
-            this.lblStateValidation = new System.Windows.Forms.Label();
-            this.lblReferralsValidation = new System.Windows.Forms.Label();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -264,6 +264,66 @@
             this.grpMemberInfo.TabIndex = 8;
             this.grpMemberInfo.TabStop = false;
             this.grpMemberInfo.Text = "Member Information";
+            // 
+            // lblStateValidation
+            // 
+            this.lblStateValidation.AutoSize = true;
+            this.lblStateValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblStateValidation.ForeColor = System.Drawing.Color.Red;
+            this.lblStateValidation.Location = new System.Drawing.Point(171, 119);
+            this.lblStateValidation.Name = "lblStateValidation";
+            this.lblStateValidation.Size = new System.Drawing.Size(59, 15);
+            this.lblStateValidation.TabIndex = 83;
+            this.lblStateValidation.Text = "Required.";
+            this.lblStateValidation.Visible = false;
+            // 
+            // lblSSNValidation
+            // 
+            this.lblSSNValidation.AutoSize = true;
+            this.lblSSNValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblSSNValidation.ForeColor = System.Drawing.Color.Red;
+            this.lblSSNValidation.Location = new System.Drawing.Point(370, 23);
+            this.lblSSNValidation.Name = "lblSSNValidation";
+            this.lblSSNValidation.Size = new System.Drawing.Size(59, 15);
+            this.lblSSNValidation.TabIndex = 82;
+            this.lblSSNValidation.Text = "Required.";
+            this.lblSSNValidation.Visible = false;
+            // 
+            // lblReferralsValidation
+            // 
+            this.lblReferralsValidation.AutoSize = true;
+            this.lblReferralsValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblReferralsValidation.ForeColor = System.Drawing.Color.Red;
+            this.lblReferralsValidation.Location = new System.Drawing.Point(404, 215);
+            this.lblReferralsValidation.Name = "lblReferralsValidation";
+            this.lblReferralsValidation.Size = new System.Drawing.Size(59, 15);
+            this.lblReferralsValidation.TabIndex = 81;
+            this.lblReferralsValidation.Text = "Required.";
+            this.lblReferralsValidation.Visible = false;
+            // 
+            // lblDateJoinedValidation
+            // 
+            this.lblDateJoinedValidation.AutoSize = true;
+            this.lblDateJoinedValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblDateJoinedValidation.ForeColor = System.Drawing.Color.Red;
+            this.lblDateJoinedValidation.Location = new System.Drawing.Point(342, 77);
+            this.lblDateJoinedValidation.Name = "lblDateJoinedValidation";
+            this.lblDateJoinedValidation.Size = new System.Drawing.Size(85, 15);
+            this.lblDateJoinedValidation.TabIndex = 79;
+            this.lblDateJoinedValidation.Text = "Date required.";
+            this.lblDateJoinedValidation.Visible = false;
+            // 
+            // lblDOBValidation
+            // 
+            this.lblDOBValidation.AutoSize = true;
+            this.lblDOBValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblDOBValidation.ForeColor = System.Drawing.Color.Red;
+            this.lblDOBValidation.Location = new System.Drawing.Point(143, 44);
+            this.lblDOBValidation.Name = "lblDOBValidation";
+            this.lblDOBValidation.Size = new System.Drawing.Size(132, 15);
+            this.lblDOBValidation.TabIndex = 76;
+            this.lblDOBValidation.Text = "Date of birth incorrect.";
+            this.lblDOBValidation.Visible = false;
             // 
             // txtRejoinDate
             // 
@@ -1062,6 +1122,30 @@
             this.panel4.Size = new System.Drawing.Size(610, 72);
             this.panel4.TabIndex = 74;
             // 
+            // lblFirstNameValidation
+            // 
+            this.lblFirstNameValidation.AutoSize = true;
+            this.lblFirstNameValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblFirstNameValidation.ForeColor = System.Drawing.Color.Red;
+            this.lblFirstNameValidation.Location = new System.Drawing.Point(330, 9);
+            this.lblFirstNameValidation.Name = "lblFirstNameValidation";
+            this.lblFirstNameValidation.Size = new System.Drawing.Size(118, 15);
+            this.lblFirstNameValidation.TabIndex = 78;
+            this.lblFirstNameValidation.Text = "First name required.";
+            this.lblFirstNameValidation.Visible = false;
+            // 
+            // lblLastNameValidation
+            // 
+            this.lblLastNameValidation.AutoSize = true;
+            this.lblLastNameValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblLastNameValidation.ForeColor = System.Drawing.Color.Red;
+            this.lblLastNameValidation.Location = new System.Drawing.Point(86, 9);
+            this.lblLastNameValidation.Name = "lblLastNameValidation";
+            this.lblLastNameValidation.Size = new System.Drawing.Size(115, 15);
+            this.lblLastNameValidation.TabIndex = 77;
+            this.lblLastNameValidation.Text = "Last name required.";
+            this.lblLastNameValidation.Visible = false;
+            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.txtNotes);
@@ -1106,90 +1190,6 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(285, 70);
             this.panel2.TabIndex = 74;
-            // 
-            // lblDOBValidation
-            // 
-            this.lblDOBValidation.AutoSize = true;
-            this.lblDOBValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
-            this.lblDOBValidation.ForeColor = System.Drawing.Color.Red;
-            this.lblDOBValidation.Location = new System.Drawing.Point(143, 44);
-            this.lblDOBValidation.Name = "lblDOBValidation";
-            this.lblDOBValidation.Size = new System.Drawing.Size(132, 15);
-            this.lblDOBValidation.TabIndex = 76;
-            this.lblDOBValidation.Text = "Date of birth incorrect.";
-            this.lblDOBValidation.Visible = false;
-            // 
-            // lblLastNameValidation
-            // 
-            this.lblLastNameValidation.AutoSize = true;
-            this.lblLastNameValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
-            this.lblLastNameValidation.ForeColor = System.Drawing.Color.Red;
-            this.lblLastNameValidation.Location = new System.Drawing.Point(86, 9);
-            this.lblLastNameValidation.Name = "lblLastNameValidation";
-            this.lblLastNameValidation.Size = new System.Drawing.Size(115, 15);
-            this.lblLastNameValidation.TabIndex = 77;
-            this.lblLastNameValidation.Text = "Last name required.";
-            this.lblLastNameValidation.Visible = false;
-            // 
-            // lblFirstNameValidation
-            // 
-            this.lblFirstNameValidation.AutoSize = true;
-            this.lblFirstNameValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
-            this.lblFirstNameValidation.ForeColor = System.Drawing.Color.Red;
-            this.lblFirstNameValidation.Location = new System.Drawing.Point(330, 9);
-            this.lblFirstNameValidation.Name = "lblFirstNameValidation";
-            this.lblFirstNameValidation.Size = new System.Drawing.Size(118, 15);
-            this.lblFirstNameValidation.TabIndex = 78;
-            this.lblFirstNameValidation.Text = "First name required.";
-            this.lblFirstNameValidation.Visible = false;
-            // 
-            // lblDateJoinedValidation
-            // 
-            this.lblDateJoinedValidation.AutoSize = true;
-            this.lblDateJoinedValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
-            this.lblDateJoinedValidation.ForeColor = System.Drawing.Color.Red;
-            this.lblDateJoinedValidation.Location = new System.Drawing.Point(342, 77);
-            this.lblDateJoinedValidation.Name = "lblDateJoinedValidation";
-            this.lblDateJoinedValidation.Size = new System.Drawing.Size(85, 15);
-            this.lblDateJoinedValidation.TabIndex = 79;
-            this.lblDateJoinedValidation.Text = "Date required.";
-            this.lblDateJoinedValidation.Visible = false;
-            // 
-            // lblSSNValidation
-            // 
-            this.lblSSNValidation.AutoSize = true;
-            this.lblSSNValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
-            this.lblSSNValidation.ForeColor = System.Drawing.Color.Red;
-            this.lblSSNValidation.Location = new System.Drawing.Point(370, 23);
-            this.lblSSNValidation.Name = "lblSSNValidation";
-            this.lblSSNValidation.Size = new System.Drawing.Size(59, 15);
-            this.lblSSNValidation.TabIndex = 82;
-            this.lblSSNValidation.Text = "Required.";
-            this.lblSSNValidation.Visible = false;
-            // 
-            // lblStateValidation
-            // 
-            this.lblStateValidation.AutoSize = true;
-            this.lblStateValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
-            this.lblStateValidation.ForeColor = System.Drawing.Color.Red;
-            this.lblStateValidation.Location = new System.Drawing.Point(171, 119);
-            this.lblStateValidation.Name = "lblStateValidation";
-            this.lblStateValidation.Size = new System.Drawing.Size(59, 15);
-            this.lblStateValidation.TabIndex = 83;
-            this.lblStateValidation.Text = "Required.";
-            this.lblStateValidation.Visible = false;
-            // 
-            // lblReferralsValidation
-            // 
-            this.lblReferralsValidation.AutoSize = true;
-            this.lblReferralsValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
-            this.lblReferralsValidation.ForeColor = System.Drawing.Color.Red;
-            this.lblReferralsValidation.Location = new System.Drawing.Point(404, 215);
-            this.lblReferralsValidation.Name = "lblReferralsValidation";
-            this.lblReferralsValidation.Size = new System.Drawing.Size(59, 15);
-            this.lblReferralsValidation.TabIndex = 81;
-            this.lblReferralsValidation.Text = "Required.";
-            this.lblReferralsValidation.Visible = false;
             // 
             // FrmMemberData
             // 
