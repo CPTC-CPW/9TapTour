@@ -36,10 +36,5 @@ namespace NineTapTour.Forms
                 this.Close();         
             }
         }
-
-        private void FrmAddRegion_Load(object sender, EventArgs e)
-        {
-
-        }
     }
 }

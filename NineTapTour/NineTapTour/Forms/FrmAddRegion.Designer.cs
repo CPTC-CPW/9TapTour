@@ -73,7 +73,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmAddRegion";
             this.Text = "Add Region";
-            this.Load += new System.EventHandler(this.FrmAddRegion_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
