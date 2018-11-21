@@ -176,11 +176,6 @@ namespace NineTapTour.Forms
             }
         }
 
-        // on load grabs an updated version of the all the player informantion so you dont have to go their page to update their player information to the right information
-        private void MainMenu_Load(object sender, EventArgs e)
-        {
-        }
-
         private void cbxRegionSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
             List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
