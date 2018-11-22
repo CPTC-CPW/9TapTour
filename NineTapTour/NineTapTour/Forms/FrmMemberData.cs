@@ -370,9 +370,6 @@ namespace NineTapTour.Forms
 
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
                 MemberDb.AddMember(currentMem);
-#if DEBUG
-                MessageBox.Show("Member saved");
-#endif
             }
         }           
 
@@ -667,7 +664,10 @@ namespace NineTapTour.Forms
                 // Adds Member to Database
                 try
                 {
-                    //TODO: JOE Avoid pulling all members from DB every time
+                    MemberDb.AddMember(temp);
+#if DEBUG
+                    MessageBox.Show("Member saved");
+#endif
                     ((FrmMain)MdiParent)._membersList = 
                         MemberDb.GetMemberList(RegionID).OrderBy(m => m.Number);
                     UpdateMemberInfo();
