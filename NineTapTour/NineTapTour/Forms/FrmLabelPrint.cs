@@ -145,7 +145,6 @@ namespace NineTapTour.Forms
             //print out 1 sheet of members, e.HasMorePages = true will cause print to be triggered again automatically
             PrintLabelSheetOf10(nextMemberLabels, e);
             currPage++;
-
         }
 
         private void PrintLabelSheetOf10(List<Member> memberLabel, PrintPageEventArgs e)
