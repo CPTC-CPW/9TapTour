@@ -369,7 +369,6 @@ namespace NineTapTour.Forms
                     PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number, RegionID);
 
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
-                MemberDb.AddMember(currentMem);
             }
         }           
 
