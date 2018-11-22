@@ -369,7 +369,10 @@ namespace NineTapTour.Forms
                     PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number, RegionID);
 
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
-                MemberDb.AddMember(currentMem); 
+                MemberDb.AddMember(currentMem);
+#if DEBUG
+                MessageBox.Show("Member saved");
+#endif
             }
         }           
 
@@ -458,13 +461,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (IsValidTextboxes())
-            {
-                SaveMemberData();
-#if DEBUG
-                MessageBox.Show("Member saved.");
-#endif
-            }
+            SaveMemberData();
         }
 
         public void SaveMemberData()
