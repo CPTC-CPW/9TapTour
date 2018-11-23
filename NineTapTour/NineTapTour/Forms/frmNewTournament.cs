@@ -17,13 +17,13 @@ namespace NineTapTour.Forms
     {
         // If a new tournament was selected to edit, this will be set to something other than null.
         Tournament tourToEdit;
-     
         
         public frmNewTournament()
         {
             InitializeComponent();
             txtSquads.Text = 4.ToString();
         }
+
         /// <summary>
         /// Closes the tournament form.
         /// </summary>
@@ -53,6 +53,7 @@ namespace NineTapTour.Forms
             NewTournament.TourneyRegion = ((FrmMain)MdiParent).RegionID;
             int numSquads;
             bool validateSquads = int.TryParse(txtSquads.Text, out numSquads);
+
             if (validateSquads)
             {
                 if (numSquads < 1 || numSquads > 9)
@@ -76,6 +77,7 @@ namespace NineTapTour.Forms
             {
                 NewTournament.Doubles = true;
             }
+
             if (ckbx3outOf4.Checked)
             {
                 NewTournament.ThreeOutOf4 = true;
@@ -111,7 +113,6 @@ namespace NineTapTour.Forms
                         }
                     }
                 }
-
             }
             catch (TournamentTableException ex)
             {
@@ -256,7 +257,6 @@ namespace NineTapTour.Forms
             {
                 ckbxDoubles.Enabled = true;
             }
-
         }
     }
 }

@@ -22,6 +22,7 @@ namespace NineTapTour.Forms
         int RegionID;
         bool isChecked = false;
         public int searchResult { get; set; }
+
         /// <summary>
         /// Opens the "Search" form.
         /// </summary>
@@ -54,18 +55,21 @@ namespace NineTapTour.Forms
                     Int32.TryParse(txtMemNumber.Text, out temp);
                     query = query.Where(m => m.Number.Equals(temp));
                 }
+
                 // First Name?
                 if (!String.IsNullOrWhiteSpace(txtFirstName.Text))
                 {
                     string temp = txtFirstName.Text.ToLower().Trim();
                     query = query.Where(m => m.FirstName.ToLower().Contains(temp));
                 }
+
                 // Last Name?
                 if (!String.IsNullOrWhiteSpace(txtLastName.Text))
                 {
                     string temp = txtLastName.Text.ToLower().Trim();
                     query = query.Where(m => m.LastName.ToLower().Contains(temp));
                 }
+
                 // Is Active?
                 if (rdoActiveYes.Checked)
                 {
@@ -75,6 +79,7 @@ namespace NineTapTour.Forms
                 {
                     query = query.Where(m => m.IsActive.Equals(false));
                 }
+
                 // Average?
                 if (!String.IsNullOrWhiteSpace(txtAverage.Text))
                 {
@@ -82,6 +87,7 @@ namespace NineTapTour.Forms
                     Int32.TryParse(txtAverage.Text, out temp);
                     query = query.Where(m => m.Average == temp);
                 }
+
                 // Handicap?
                 if (!String.IsNullOrWhiteSpace(txtHandicap.Text))
                 {
@@ -89,6 +95,7 @@ namespace NineTapTour.Forms
                     Int32.TryParse(txtHandicap.Text, out temp);
                     query = query.Where(m => m.Handicap == temp);
                 }
+
                 // Bonus?
                 if (!String.IsNullOrWhiteSpace(txtBonus.Text))
                 {
@@ -103,11 +110,10 @@ namespace NineTapTour.Forms
                 {
                     memList = results;
                 }
-                //If there is no matching data with the query, add a new member
-                //with Firstname being a message that there are no bowlers with that info
-                //and disable all other columns from being displayed
                 else
-                {
+                {   //If there is no matching data with the query, add a new member
+                    //with Firstname being a message that there are no bowlers with that info
+                    //and disable all other columns from being displayed
                     memList.Add(new Member()
                     {
                         FirstName = "There are no users with that information",
@@ -156,12 +162,10 @@ namespace NineTapTour.Forms
             dtagrdResults.Columns["IsSenior"].Visible = false;
         }
 
-
         private void chkAdvancedView_CheckStateChanged(object sender, EventArgs e)
         {
             if (isChecked == false)
             {
-                //dtagrdResults.Columns["IsActive"].Visible = !dtagrdResults.Columns["IsActive"].Visible;
                 dtagrdResults.Columns["MiddleInitial"].Visible = !dtagrdResults.Columns["MiddleInitial"].Visible;
                 dtagrdResults.Columns["DateOfBirth"].Visible = !dtagrdResults.Columns["DateOfBirth"].Visible;
                 dtagrdResults.Columns["Gender"].Visible = !dtagrdResults.Columns["Gender"].Visible;
@@ -171,15 +175,11 @@ namespace NineTapTour.Forms
                 dtagrdResults.Columns["PostalCode"].Visible = !dtagrdResults.Columns["PostalCode"].Visible;
                 dtagrdResults.Columns["PrimaryPhone"].Visible = !dtagrdResults.Columns["PrimaryPhone"].Visible;
                 dtagrdResults.Columns["SecondaryPhone"].Visible = !dtagrdResults.Columns["SecondaryPhone"].Visible;
-                //dtagrdResults.Columns["Average"].Visible = !dtagrdResults.Columns["Average"].Visible;
-                //dtagrdResults.Columns["Handicap"].Visible = !dtagrdResults.Columns["Handicap"].Visible;
-                //dtagrdResults.Columns["Bonus"].Visible = !dtagrdResults.Columns["Bonus"].Visible;
                 dtagrdResults.Columns["JoinDate"].Visible = !dtagrdResults.Columns["JoinDate"].Visible;
                 dtagrdResults.Columns["RejoinDate"].Visible = !dtagrdResults.Columns["RejoinDate"].Visible;
                 dtagrdResults.Columns["LastBowled"].Visible = !dtagrdResults.Columns["LastBowled"].Visible;
                 dtagrdResults.Columns["LastPayment"].Visible = !dtagrdResults.Columns["LastPayment"].Visible;
                 dtagrdResults.Columns["IsLifetimeMember"].Visible = !dtagrdResults.Columns["IsLifetimeMember"].Visible;
-                //dtagrdResults.Columns["MoneyEarned"].Visible = !dtagrdResults.Columns["MoneyEarned"].Visible;
                 dtagrdResults.Columns["Notes"].Visible = !dtagrdResults.Columns["Notes"].Visible;
                 dtagrdResults.Columns["Referrals"].Visible = !dtagrdResults.Columns["Referrals"].Visible;
                 dtagrdResults.Columns["IsSenior"].Visible = !dtagrdResults.Columns["IsSenior"].Visible;
@@ -209,6 +209,7 @@ namespace NineTapTour.Forms
             //probably don't want SSN or ID to show up at all.
             dtagrdResults.Columns["Id"].Visible = false;
             dtagrdResults.Columns["SSN"].Visible = false;
+
             //checks if Advanced View is not checked
             if (!chkAdvancedView.Checked)
             {
@@ -222,15 +223,11 @@ namespace NineTapTour.Forms
                 dtagrdResults.Columns["PostalCode"].Visible = false;
                 dtagrdResults.Columns["PrimaryPhone"].Visible = false;
                 dtagrdResults.Columns["SecondaryPhone"].Visible = false;
-                //dtagrdResults.Columns["Average"].Visible = false;
-                //dtagrdResults.Columns["Handicap"].Visible = false;
-                //dtagrdResults.Columns["Bonus"].Visible = false;
                 dtagrdResults.Columns["JoinDate"].Visible = false;
                 dtagrdResults.Columns["RejoinDate"].Visible = false;
                 dtagrdResults.Columns["LastBowled"].Visible = false;
                 dtagrdResults.Columns["LastPayment"].Visible = false;
                 dtagrdResults.Columns["IsLifetimeMember"].Visible = false;
-                //dtagrdResults.Columns["MoneyEarned"].Visible = false;
                 dtagrdResults.Columns["MoneyEarned"].ValueType = typeof(decimal);
                 dtagrdResults.Columns["Notes"].Visible = false;
                 dtagrdResults.Columns["Referrals"].Visible = false;
@@ -255,10 +252,6 @@ namespace NineTapTour.Forms
             if (dtagrdResults.Rows.Count > 0)
             {
                 searchResult = (int)dtagrdResults.SelectedRows[0].Cells[1].Value;
-                // Member Number
-                //Console.WriteLine(dtagrdResults.SelectedRows[0].Cells[1].Value.ToString());
-                // Member Name
-                //Console.WriteLine(dtagrdResults.SelectedRows[0].Cells[3].Value.ToString());
                 this.Close();
             }
         }
@@ -272,7 +265,5 @@ namespace NineTapTour.Forms
         {
             this.Close();
         }
-
-
     }
 }
