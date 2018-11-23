@@ -21,11 +21,11 @@ namespace NineTapTour.Forms
         private int memNum;
         private string memName;
         static int TURN_BOLD_IF_BOWLED_OVER_NUMBER = 250;
-        List<PlayerHistory> ToBeAdd;
         List<PlayerHistory> ph;
         int RegionID;
 
-        public FrmStats(int memberId, string memberName, Member currentMem, List<PlayerHistory> ToBeAdded, int RegionID)
+
+        public FrmStats(int memberId, string memberName, Member currentMem, int RegionID)
         {
             InitializeComponent();
             this.memId = memberId;
@@ -34,18 +34,11 @@ namespace NineTapTour.Forms
             this.memName = memberName;
             this.mem = currentMem;
             this.dataGridView1.DoubleBuffered(false);
-            this.ToBeAdd = ToBeAdded;
             dataGridView1.DataSource = tableview();
             dataGridView1.DefaultCellStyle.Alignment = DataGridViewContentAlignment.BottomCenter;
-
-            if(ToBeAdded.Count == 0)
-            {
-                btnSaveChanges.Enabled = true;
-            }
-            else
-            {
-                btnSaveChanges.Enabled = false;
-            }
+      
+            // Disable saving if nothing to save
+            btnSaveChanges.Enabled = (dataGridView1.RowCount == 0) ? false : true;
 
             dataGridView1.SuspendLayout();
             var column = dataGridView1.Columns[0]; // Games *
@@ -382,48 +375,6 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Notes");
             dtGames.Columns.Add("GmID").ReadOnly = true;
 
-            foreach (var item in ToBeAdd)
-            {
-                DataRow newRow = dtGames.NewRow();
-                newRow["Games"] = item.GamesPlayed;
-                newRow["Date"] = item.TournamentDate.ToShortDateString();
-                if (item.Game1 == 0)
-                    newRow["Gm1"] = null;
-                else
-                    newRow["Gm1"] = item.Game1;
-
-                if (item.Game2 == 0)
-                    newRow["Gm2"] = null;
-                else
-                    newRow["Gm2"] = item.Game2;
-                if (item.Game3 == 0)
-                    newRow["Gm3"] = null;
-                else
-                    newRow["Gm3"] = item.Game3;
-                if (item.Game4 == 0)
-                    newRow["Gm4"] = null;
-                else
-                    newRow["Gm4"] = item.Game4;
-                newRow["Scratch Total"] = item.TotalScore;
-                newRow["Game Total w/HDCP"] = item.TotalScore + (item.HandiCap * item.GamesPlayed);
-                newRow["Entry AVG"] = item.AverageForGame;
-                newRow["30 Entry AVG"] = item.trueAVG;
-
-                if (item.AVG == 0)
-                    newRow["Adj. AVG"] = null;
-                else
-                    newRow["Adj. AVG"] = item.AVG;
-                newRow["HDCP"] = item.HandiCap;
-                newRow["Bonus"] = item.Bonus;
-                newRow["Pro Pot"] = item.ProPot;
-                newRow["Money Won"] = item.MoneyWon;
-                newRow["Place"] = item.PPHG;
-                newRow["Notes"] = item.Notes;
-                newRow["GmID"] = item.GameID;
-
-                dtGames.Rows.Add(newRow);
-            }
-            
             foreach (var item in temp)
             {
                 DataRow newRow = dtGames.NewRow();
@@ -545,34 +496,25 @@ namespace NineTapTour.Forms
             e.Graphics.DrawImage(bm, 0, 0);
         }
 
-        //makes the 30 game avg column green and potential games to be added to light blue
+
+        /// <summary>
+        /// Changes the background color for each cell in the "30 Entry AVG" column to green
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         { 
-   
             dataGridView1.SuspendLayout();
 
-            int top5 = 0;
-            
-            for(int i = 0; i < dataGridView1.RowCount; i++)
-            {
-                for (int t = 0; t < ToBeAdd.Count; t++)
-                {
-                    if (ToBeAdd[t].GameID == Convert.ToInt32(dataGridView1.Rows[i].Cells[17].Value))
-                    {
-                        for (int r = 0; r < dataGridView1.ColumnCount; r++)
-                        {
-                            dataGridView1.Rows[i].Cells[r].Style.BackColor = Color.LightBlue;                   
-                        }
-                    }
-                }
-            }
-            int gameCount = dataGridView1.RowCount; // variable for how many rows will show up
-            const int THIRTY_ENTRY = 30; // variable for how many rows are highlighted as per client request
+            int currRowCount = e.RowIndex + 1; 
+            string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
 
-            for (int i = 0; i < Math.Min(THIRTY_ENTRY, gameCount); i++)
-            // loop to assign color and compares which is lower to determine how many to turn greenyellow
+            // Only first 30 rows should be highlighted
+            const int THIRTY_ENTRIES = 30;
+
+            if (columnName == "30 Entry AVG" && currRowCount <= THIRTY_ENTRIES)
             {
-                dataGridView1.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
+                dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.GreenYellow;
             }
 
             dataGridView1.ResumeLayout();
