@@ -19,18 +19,14 @@ using NineTapTour.Models;
 /// <summary>
 /// Author Julie Edwards
 /// </summary>
-
-
-
 namespace NineTapTour.Forms
 {
     public partial class FrmUpdateActiveMem : Form
     {
         int RegionID;
-        //Member currentMem;
         DateTime targetDate;
-        List<Member> InActiveList; //= MemberDb.GetMemberList();
-        List<Member> AllMembers;// = MemberDb.GetMemberList();
+        List<Member> InActiveList; 
+        List<Member> AllMembers;
         public FrmUpdateActiveMem(int RID)
         {
             InitializeComponent();
@@ -41,19 +37,11 @@ namespace NineTapTour.Forms
             AllMembers = MemberDb.GetMemberList(RegionID);
             UpdateList();
         }
-        
-        private void FrmUpdateActiveMem_Load(object sender, EventArgs e)
-        {
-        
-       
-        }
 
         private void UpdateList()
         {
             try
             {
-
-
                 AllMembers.ForEach(delegate (Member mem)
                 {
                     if (mem.IsActive && (mem.LastBowled <= targetDate || mem.LastBowled.ToString() == ""))
@@ -61,7 +49,6 @@ namespace NineTapTour.Forms
                         checkedListBox1.Items.Add(mem);
                     }
                 });
-
             }
             catch
             {
@@ -81,11 +68,9 @@ namespace NineTapTour.Forms
             {
                 try
                 {
-
                     //PrintToWord.CreateWordDoc("InActive.txt");//copy to word
                     foreach (Member mem in checkedListBox1.CheckedItems)
                     {
-
                         mem.IsActive = false;
                         //PrintToWord.WriteWordDoc("Name" + mem.FirstName + " " + mem.LastName);
                         db.Entry(mem).State = EntityState.Modified;
@@ -99,9 +84,7 @@ namespace NineTapTour.Forms
                 {
                     //MessageBox.Show("No Members Selected");
                 }
-              
             }
         }
-
     }
 }

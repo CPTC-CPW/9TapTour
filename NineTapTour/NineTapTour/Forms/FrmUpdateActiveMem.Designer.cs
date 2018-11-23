@@ -107,7 +107,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmUpdateActiveMem";
             this.Text = "Update Inactive Members";
-            this.Load += new System.EventHandler(this.FrmUpdateActiveMem_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
