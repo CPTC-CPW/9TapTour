@@ -30,18 +30,21 @@ namespace NineTapTour.Forms
         public MainMenu mainmenu { get; set; }
         public int RegionID { get; set; }
         public Size MaxWorkAreaScreenSize { get; set; }
+
         //initializes a bool var for handling if the memberdata form is active so it has proper scope for handling the save data popup showing up on the wrong forms
         bool memberDataIsActive = false;
+
         /// <summary>
         /// Opens Main form 
         /// Retrieves information from the database in order.
         /// </summary>
-
         public FrmMain()
         {
             InitializeComponent();
+
             //this size is the height and width of the primary screen minus the start bar (if the user has a start bar)
             MaxWorkAreaScreenSize = new Size( Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height );
+
             //run any pending database migrations on start
             NineTapDb db = new NineTapDb();
             System.Data.Entity.Database.SetInitializer<NineTapDb>(new MigrateDatabaseToLatestVersion<NineTapDb, Configuration>());
@@ -50,10 +53,10 @@ namespace NineTapTour.Forms
             _tournamentList = TournamentDb.GetTournamentList(RegionID);
 
             var newfrmStart = new MainMenu {MdiParent = this};
+
             //sets the height and width of the parent form... this can not be resized later... all child forms must 
             //fit in its bounds... the only exception is using a scrollbar on the side or bottom...
             setHeightAndWidth(MaxWorkAreaScreenSize);
-            
             
             //on start up make sure regionID is set 
             var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
@@ -61,14 +64,11 @@ namespace NineTapTour.Forms
             RegionID = mainMenu.getRegionID();
             mainmenu = mainMenu;
 
-
-
             //sets the first item of the menu bar to the active item and highlights it.
             activeItem = (ToolStripMenuItem)menMain.Items[0];
             activeItem.BackColor = SystemColors.ActiveCaption;
             newfrmStart.Show();
             newfrmStart.WindowState = FormWindowState.Maximized;
-            
         }
 
         /// <summary>
@@ -88,7 +88,6 @@ namespace NineTapTour.Forms
         /// <param name="form">forms that haven't been opened yet(?)</param>
         public void OpenOrDisplayForm<T>(ref T form) where T : Form, new()
         {
-           
             bool isSavedData = true;
 
             if (isSavedData) //checks to see if you are leaving page without saved data.
@@ -112,7 +111,6 @@ namespace NineTapTour.Forms
                 form.WindowState = FormWindowState.Maximized;
                 form.Show();
             }
-            
         }
 
         //method to highlight menu item to show user which page they have open
@@ -123,7 +121,9 @@ namespace NineTapTour.Forms
             {
                 activeItem.BackColor = SystemColors.Control;
             }
+
             activeItem = (ToolStripMenuItem)e.ClickedItem;
+
             if (!activeItem.HasDropDownItems)
             {
                 activeItem.BackColor = SystemColors.ActiveCaption;
@@ -147,7 +147,6 @@ namespace NineTapTour.Forms
                     }
                 }
             }
-
         }
         //this method is for the buttons on the main form
         public void menuHighlight(string itemName)
@@ -156,6 +155,7 @@ namespace NineTapTour.Forms
             {
                 activeItem.BackColor = SystemColors.Control;
             }
+
             for(int i = 0; i <= menMain.Items.Count; i++)
             {
                 if (itemName == menMain.Items[i].Text)
@@ -201,7 +201,6 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
             OpenOrDisplayForm(ref newfrmMemberScores);
             currfrmScoresdata = newfrmMemberScores;
