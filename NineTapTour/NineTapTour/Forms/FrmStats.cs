@@ -575,12 +575,16 @@ namespace NineTapTour.Forms
             {
                 if (plays[b].Bonus == 0 && plays[b].MoneyWon > 0)
                 {
-                    if (plays[b].TournamentDate == plays[b-1].TournamentDate)
-                    {
-
-                        dataGridView1.Rows[b-1].Cells[12].Style.BackColor = Color.White;
-                    }
-                    dataGridView1.Rows[b].Cells[12].Style.BackColor = Color.HotPink;
+                    //if (plays[b].TournamentDate == plays[b - 1].TournamentDate)
+                    //{
+                    //    dataGridView1.Rows[b].Cells[12].Style.BackColor = Color.White;
+                    //    dataGridView1.Rows[b - 1].Cells[12].Style.BackColor = Color.HotPink;
+                    //}
+                    //else
+                    //{
+                        dataGridView1.Rows[b].Cells[12].Style.BackColor = Color.HotPink;
+                    //}
+                    
                 }
                  
             }
