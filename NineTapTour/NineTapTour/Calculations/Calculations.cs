@@ -58,7 +58,7 @@ namespace NineTapTour.Calculations
             {
                 return  DeductFromBonusPins(memberPlaced, currentBonusPins);
             }
-            return AddToBonusPins(currentBonusPins, memNum, RegionID, currTournamentDate, PlayerHistoryDB.GetLastFiveTournaments(memNum, RegionID));
+            return AddToBonusPins(currentBonusPins, currTournamentDate, PlayerHistoryDB.GetLastFiveTournaments(memNum, RegionID));
         }
 
         /// <summary>
@@ -68,36 +68,76 @@ namespace NineTapTour.Calculations
         /// <param name="memberNum">Member number for the member to calculate bonus pins</param>
         /// <param name="RegionID">Region the current tournament is taking place</param>
         /// <param name="currTournamentDate">The date the tournament took place</param>
-        /// <param name="last2Tournaments">The last two distinct tournaments</param>
+        /// <param name="latestTournaments">The last two distinct tournaments</param>
         /// <returns></returns>
-        public static int AddToBonusPins(int currentBonusPins, int memberNum, int RegionID, DateTime currTournamentDate, List<PlayerHistory> last2Tournaments)
+        public static int AddToBonusPins(int currentBonusPins, DateTime currTournamentDate, List<PlayerHistory> latestTournaments)
         {
-            if (currentBonusPins == MAX_BONUS_PINS_ALLOWED)
+            if (latestTournaments == null)
             {
-                return MAX_BONUS_PINS_ALLOWED;
+                throw new ArgumentNullException();
             }
 
-            if (last2Tournaments.Count >= 2)
+            if (latestTournaments.Count < 2 || currentBonusPins == MAX_BONUS_PINS_ALLOWED)
+            {
+                return currentBonusPins;
+            }
+
+            //int distinctTournamentCount = 0;
+            PlayerHistory lastTournament = latestTournaments[0];
+            PlayerHistory secondToLastTournament = null;
+            for (int i = 0; i < latestTournaments.Count - 1 && secondToLastTournament == null; i++)
+            {
+                if (latestTournaments[i].TournamentDate == latestTournaments[i + 1].TournamentDate)
+                {
+                    // if won the same tournament on a different squad
+                    if (latestTournaments[i].Bonus != latestTournaments[i + 1].Bonus)
+                    {
+                        return currentBonusPins;
+                    }
+                }
+                // if had not won past three distinct tournaments including this one
+                else if (secondToLastTournament != null && currentBonusPins == lastTournament.Bonus 
+                        && currentBonusPins == secondToLastTournament.Bonus)
+                {
+                    return ++currentBonusPins;
+                }
+            }
+            return currentBonusPins;
+
+            // Filter out tournaments that are not distinct by date
+            latestTournaments = GetDistinctTournaments(latestTournaments);
+
+            if (latestTournaments.Count >= 2)
             {
                 // Filtering history where they had bowled in a different squad on the same day
-                if (last2Tournaments[0].TournamentDate != last2Tournaments[1].TournamentDate &&
-                   last2Tournaments[1].TournamentDate != currTournamentDate && 
-                   currTournamentDate != last2Tournaments[0].TournamentDate)
-                {
+                //if (latestTournaments[0].TournamentDate != latestTournaments[1].TournamentDate &&
+                //   latestTournaments[1].TournamentDate != currTournamentDate && 
+                //   currTournamentDate != latestTournaments[0].TournamentDate)
+                //{
                     // Checks to see if the last 2 bowling history is the same as it is currently, 
                     // after 3 times not placing, they gain a bonus point
-                    if (last2Tournaments[0].Bonus == last2Tournaments[1].Bonus &&
-                       last2Tournaments[1].Bonus == currentBonusPins)
+                    if (latestTournaments[0].Bonus == latestTournaments[1].Bonus &&
+                       latestTournaments[1].Bonus == currentBonusPins)
                     {
                         return ++currentBonusPins;
                     }
-                }
+                //}
                 return currentBonusPins;
             }
             else
             {
                 return currentBonusPins;
             }
+        }
+
+        private static List<PlayerHistory> GetDistinctTournaments(IList<PlayerHistory> tournaments)
+        {
+            return tournaments
+                .OrderByDescending(t => t.TournamentDate)
+                .GroupBy(t => t.TournamentDate)
+                .Select(t => t.First())
+                .Take(2)
+                .ToList();
         }
 
         public static int DeductFromBonusPins(int memberPlaced, int currentBonusPins)

@@ -112,11 +112,149 @@ namespace NineTapTour.Calculations.Test
             Assert.AreEqual(expectedNumThatCanPlace, resultNumThatCanPlace);
         }
 
-        [TestMethod]
-        [DataRow(0, 1, 1)]
-        public static void AddToBonusPins_ReturnsExpectedBonusPins(int currentBonusPins, int memberNum, int RegionId, DateTime currTournamentDate, List<PlayerHistory> last2Tournaments, int expectedBonusPins)
+        [TestMethod]                   // Scenarios:
+        [DataRow(0, 17, 12, 31, 0, 1)] // - Did not cash last 3
+        [DataRow(5, 17, 12, 31, 1, 5)] // - Max bonus pins should be 5 even while not cashing last 3
+        [DataRow(4, 17, 12, 31, 1, 4)] // - Cashed 2nd tournament ago
+        [DataRow(3, 17, 12, 31, 2, 3)] // - Cashed 3rd tournament ago
+        [DataRow(0, 17, 12, 31, 3, 1)] // - Cashed 4th tournament ago
+        [DataRow(0, 17, 12, 31, 4, 0)] // - Cashed 3rd tournament ago but not last 3 entries (multiple tournament entry)
+        [DataRow(0, 17, 12, 31, 5, 0)] // - Cashed 2nd tournament ago as multiple entry but not the other 2
+        [DataRow(0, 17, 12, 31, 7, 0)] // - Cashed 3rd tournament ago as multiple entry but not the other 2
+        [DataRow(0, 17, 12, 31, 6, 1)] // - Did not cash last 3 with a multiple entry
+        public void AddToBonusPins_ReturnsExpectedBonusPins(int currentBonusPins,int currTournYear, int currTournMonth, int currTournDay, int playerHistoryListNum, int expectedBonusPins)
         {
+            DateTime currTournamentDate = new DateTime(currTournYear, currTournMonth, currTournDay);
+            List<PlayerHistory> last2Tournaments = GetPlayerHistoryTestData(playerHistoryListNum);
 
+            int resultBonusPins = Calculations.AddToBonusPins(currentBonusPins, currTournamentDate, last2Tournaments);
+
+            Assert.AreEqual(expectedBonusPins, resultBonusPins);
+        }
+
+        private static List<PlayerHistory> GetPlayerHistoryTestData(int listNum)
+        {
+            switch (listNum)
+            {
+                case 0:
+                    return new List<PlayerHistory>()
+                    {
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,30), Bonus = 0
+                        },
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,29), Bonus = 0
+                        }
+                    };
+                case 1:
+                    return new List<PlayerHistory>()
+                    {
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,30), Bonus = 5
+                        },
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,29), Bonus = 5
+                        }
+                    };
+                case 2:
+                    return new List<PlayerHistory>()
+                    {
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,30), Bonus = 3
+                        },
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,29), Bonus = 4
+                        }
+                    };
+                case 3:
+                    return new List<PlayerHistory>()
+                    {
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,30), Bonus = 0
+                        },
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,29), Bonus = 0
+                        },
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,28), Bonus = 1
+                        }
+                    };
+                case 4:
+                    return new List<PlayerHistory>()
+                    {
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,30), Bonus = 0
+                        },
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,30), Bonus = 0
+                        },
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,29), Bonus = 1
+                        }
+                    };
+                case 5:
+                    return new List<PlayerHistory>()
+                    {
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,30), Bonus = 0
+                        },
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,30), Bonus = 1
+                        },
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,29), Bonus = 0
+                        }
+                    };
+                case 6:
+                    return new List<PlayerHistory>()
+                    {
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,30), Bonus = 0
+                        },
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,30), Bonus = 0
+                        },
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,29), Bonus = 0
+                        }
+                    };
+                case 7:
+                    return new List<PlayerHistory>()
+                    {
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,30), Bonus = 0
+                        },
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,29), Bonus = 0
+                        },
+                        new PlayerHistory()
+                        {
+                            TournamentDate = new DateTime(17,12,29), Bonus = 1
+                        }
+                    };
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }
