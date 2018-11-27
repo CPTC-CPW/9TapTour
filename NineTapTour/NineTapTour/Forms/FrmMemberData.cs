@@ -425,43 +425,11 @@ namespace NineTapTour.Forms
                 valid = false;
             }
 
-            // validate date of birth textbox
-            if (!FormHelper.IsDateTimeValid(txtDOB.Text))
-            {
-                lblDOBValidation.Visible = true;
-                txtDOB.BackColor = Color.LightPink;
-                valid = false;
-            }
-
 			// validate dateJoined textbox
             if (!FormHelper.IsDateTimeValid(txtDateJoined.Text))
             {
                 lblDateJoinedValidation.Visible = true;
                 txtDateJoined.BackColor = Color.LightPink;
-                valid = false;
-            }
-
-            // validate referrals textbox
-            if (!int.TryParse(txtReferrals.Text, out int result))
-            {
-                lblReferralsValidation.Visible = true;
-                txtReferrals.BackColor = Color.LightPink;
-                valid = false;
-            }
-
-            // validate SSN textbox
-            if (txtSSN.Text.Length != 11)
-            {
-                lblSSNValidation.Visible = true;
-                txtSSN.BackColor = Color.LightPink;
-                valid = false;
-            }
-
-            // validate state textbox
-            if (!FormHelper.IsStateValid(txtState.Text))
-            {
-                lblStateValidation.Visible = true;
-                txtState.BackColor = Color.LightPink;
                 valid = false;
             }
             return valid;
