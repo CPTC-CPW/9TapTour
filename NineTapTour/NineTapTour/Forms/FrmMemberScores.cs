@@ -1687,9 +1687,7 @@ namespace NineTapTour.Forms
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-
-            //Maybe refactor this into a method to spread through program. Fix for creating tournament and not having it updated.
-            //Grabs the tournament from the combobox and casts to Tournament
+            //Grabs the tournament from the selected tournament combobox and casts it to selected Tournament
             selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
             //Repopulates list of participants with the current tournament
             overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
@@ -1712,6 +1710,7 @@ namespace NineTapTour.Forms
                         return;
                     else
                     {
+                        //If Deleting a tournament using the delete member from tourny button is not desired functionality then the else can be deleted.
                         //delete tournament if there are no participants.
                         Tournament t = TournamentDb.getTourneyByID(selectedTournament.Id);
                         TournamentDb.deleteTournament(t);
@@ -1737,7 +1736,6 @@ namespace NineTapTour.Forms
 
                 try
                 {
-
                     Game g = GetScoresById(currentMem.Id);
                     //Delete from player history
                     PlayerHistory p = PlayerHistoryDB.getPlayerHistoryByGameID(g.Id);
