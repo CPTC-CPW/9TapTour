@@ -517,10 +517,11 @@ namespace NineTapTour.Forms
                 dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.GreenYellow;
             }
             
-            List<PlayerHistory> plays = PlayerHistoryDB.getMemberPlayerHistory(memNum, RegionID);
+           
             if (columnName == "Bonus")
             {
-                if(plays[e.RowIndex].Bonus == 0 && plays[e.RowIndex].MoneyWon > 0 )
+                List<PlayerHistory> plays = PlayerHistoryDB.getMemberPlayerHistory(memNum, RegionID);
+                if (plays[e.RowIndex].Bonus == 0 && plays[e.RowIndex].MoneyWon > 0 )
                 {
                     dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.HotPink;
                     if(e.RowIndex > 0)
@@ -530,6 +531,10 @@ namespace NineTapTour.Forms
                             if (plays[e.RowIndex].TournamentDate == plays[z].TournamentDate)
                             {
                                 dataGridView1.Rows[z].Cells[e.ColumnIndex].Style.BackColor = Color.HotPink;
+                            }
+                            else
+                            {
+                                break; // to break out of the loop if the prev tournament date does not match the current row.
                             }
                         }
                     }     
