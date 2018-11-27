@@ -209,8 +209,16 @@ namespace NineTapTour.Database
             }
         }
             
-
-
+        /// <summary>
+        /// Returns the ID of a member based on their Member Number
+        /// </summary>
+        public static int GetMemberIdByNumber(int memberNumber, int regionId, NineTapDb db)
+        {
+            return (from m in db.Members
+                    where m.Number == memberNumber &&
+                        m.NineTapRegionID == regionId
+                    select m.Id).SingleOrDefault();
+        }
 
         public static int GetMemberNumberbyID(int MemberID)
         {
