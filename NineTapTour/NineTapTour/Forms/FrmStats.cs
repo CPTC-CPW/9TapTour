@@ -516,33 +516,27 @@ namespace NineTapTour.Forms
             {
                 dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.GreenYellow;
             }
-
-
-            // *********************************************** TESTING **************************************************************
+            
             List<PlayerHistory> plays = PlayerHistoryDB.getMemberPlayerHistory(memNum, RegionID);
-
-            for (int b = 0; b < gameCount; b++)
+            if (columnName == "Bonus")
             {
-                for (int z = b + 1; z < gameCount; z++)
+                if(plays[e.RowIndex].Bonus == 0 && plays[e.RowIndex].MoneyWon > 0 )
                 {
-
-                    if (plays[b].Bonus == 0 && plays[b].MoneyWon > 0)
+                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.HotPink;
+                    if(e.RowIndex > 0)
                     {
-                        dataGridView1.Rows[b].Cells[12].Style.BackColor = Color.HotPink;
-                    }
-                
-                    if (plays[b].TournamentDate == plays[z].TournamentDate)
-                    {
-                        dataGridView1.Rows[b].Cells[12].Style.BackColor = Color.CornflowerBlue;
-                    }
-                }              
+                        for (int z = e.RowIndex; z > 0; z--)
+                        {
+                            if (plays[e.RowIndex].TournamentDate == plays[z].TournamentDate)
+                            {
+                                dataGridView1.Rows[z].Cells[e.ColumnIndex].Style.BackColor = Color.HotPink;
+                            }
+                        }
+                    }     
+                }    
             }
-        
 
-        // ****************************************************************************************************************** Testing
-
-
-        dataGridView1.ResumeLayout();
+            dataGridView1.ResumeLayout();
 
         }
 
