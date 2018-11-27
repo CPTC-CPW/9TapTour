@@ -13,7 +13,8 @@ namespace NineTapTour.Forms
 {
     public partial class TournamentsByYear : Form
     {
-       public int RID;
+        public int RID;
+
         public TournamentsByYear(int RegionID)
         {
             InitializeComponent();

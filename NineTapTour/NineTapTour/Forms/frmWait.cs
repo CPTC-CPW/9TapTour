@@ -16,10 +16,5 @@ namespace NineTapTour.Forms
         {
             InitializeComponent();
         }
-
-        private void frmPleaseWait_Load(object sender, EventArgs e)
-        {
-   
-        }
     }
 }
