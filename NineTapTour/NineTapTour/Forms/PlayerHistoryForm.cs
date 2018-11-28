@@ -19,7 +19,6 @@ namespace NineTapTour.Database
     {
         private int id;
        
-
         public PlayerHistoryForm(int id)
         {
             InitializeComponent();
