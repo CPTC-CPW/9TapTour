@@ -95,6 +95,10 @@ namespace NineTapTour.Calculations
                         return currentBonusPins;
                     }
                 }
+                else if (secondToLastTournament != null)
+                {
+                    secondToLastTournament = latestTournaments[i + 1];
+                }
                 // if had not won past three distinct tournaments including this one
                 else if (secondToLastTournament != null && currentBonusPins == lastTournament.Bonus 
                         && currentBonusPins == secondToLastTournament.Bonus)
