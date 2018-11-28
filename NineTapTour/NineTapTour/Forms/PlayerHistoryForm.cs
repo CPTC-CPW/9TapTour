@@ -18,7 +18,7 @@ namespace NineTapTour.Database
     public partial class PlayerHistoryForm : Form
     {
         private int id;
-        int regionID;
+       
 
         public PlayerHistoryForm(int id)
         {
