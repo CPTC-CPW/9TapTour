@@ -150,5 +150,36 @@ namespace NineTapTour.Database
             return uppercaseState.Length == 2 && 
                 USstates.Contains(uppercaseState);
         }
+
+        /// <summary>
+        /// This method gets the values for the Filter series radio buttons
+        /// and returns a list of booleans that correspond to the squads chosen.
+        /// Index 0 is All Squads
+        /// </summary>
+        /// <param name="groupBox">Specifically the Filter Series box, GRPQBS1 </param>
+        public static List<bool> getFilterSeriesList(GroupBox groupBox)
+        {
+            List<bool> filterSeries = new List<bool>();
+            foreach (Control control in groupBox.Controls)
+            {
+                CheckBox check = control as CheckBox;
+                filterSeries.Add(check.Checked);
+            }
+            filterSeries.Reverse();
+            return filterSeries;
+        }
+
+        public static int findLastCheck(List<bool> filterSeries)
+        {
+            int last = 0;
+            for (int i = 0; i <= filterSeries.Count() - 1; i++)
+            {
+                if (filterSeries[i] == true)
+                {
+                    last = i;
+                }
+            }
+            return last;
+        }
     }
 }

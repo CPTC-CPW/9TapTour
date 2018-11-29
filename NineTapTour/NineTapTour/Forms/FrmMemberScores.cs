@@ -1500,11 +1500,15 @@ namespace NineTapTour.Forms
                 {
                     List<MemberScores> temp = ParticipantsDB.GetSeniorMemberScores(db, selectedTournament.Id);
 
+                    //new stuff here
+                    List<bool> filterSeries = FormHelper.getFilterSeriesList(GRPQBS1);
+                    int seriesCurrentSquad = FormHelper.findLastCheck(filterSeries);
+
                     if (temp.Count != 0)
                     {
                         int currentsNum = GetSquadResultsNumberChecked();
 
-                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, 0/*reportTypeNum, 0 for High game handicap/senior, 1 for game/high game, 2 for series/high series*/, currentsNum);
+                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, 0/*reportTypeNum, 0 for High game handicap/senior, 1 for game/high game, 2 for series/high series*/, currentsNum, seriesCurrentSquad);
                         //report.Dock = DockStyle.Fill;
                         report.Show();
                     }
@@ -1558,13 +1562,17 @@ namespace NineTapTour.Forms
                     temp.Sort(scoreComparer);
                     temp.Reverse();
 
+                    //new stuff here
+                    List<bool> filterSeries = FormHelper.getFilterSeriesList(GRPQBS1);
+                    int seriesCurrentSquad = FormHelper.findLastCheck(filterSeries);
+
                     //find out what squad is selected At the moment of series button click
                     int currentsNum = GetSquadResultsNumberChecked();
 
                     if (temp.Count != 0)
 
                     {
-                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, ReportType.HighGame, currentsNum);
+                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, ReportType.HighGame, currentsNum, seriesCurrentSquad);
                         report.Show();
                     }
                     else
@@ -1588,6 +1596,10 @@ namespace NineTapTour.Forms
                     var temp = new List<MemberScores>();
 
                     int qualifyBySquadNumber = GetSquadResultsNumberChecked();
+
+                    //new stuff here
+                    List<bool> filterSeries = FormHelper.getFilterSeriesList(GRPQBS1);
+                    int seriesCurrentSquad = FormHelper.findLastCheck(filterSeries);
 
                     //these 2 regions would recreate data that already exists on trhe page
                     #region PRINTING HANDICAP TOURNAMENT RESULTS
@@ -1640,7 +1652,7 @@ namespace NineTapTour.Forms
 
                     if (temp.Count() != 0)
                     {
-                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, ReportType.HighSeries, qualifyBySquadNumber);
+                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, ReportType.HighSeries, qualifyBySquadNumber, seriesCurrentSquad);
                         report.Show();
                     }
                     else

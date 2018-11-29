@@ -115,6 +115,14 @@ namespace NineTapTour.Database
             }
             else if(reportTypeNum == ReportType.HighSeries)
             {
+                if (seriesCurrentSquad == 0)
+                {
+                    graphic.DrawString("Final", bigFont, dBrush, startX + 250, startY + 70);
+                }
+                else
+                {
+                    graphic.DrawString("Through Squad " + seriesCurrentSquad, bigFont, dBrush, startX + 250, startY + 70);
+                }
                 reportType = "Series";
             }
 
@@ -122,6 +130,11 @@ namespace NineTapTour.Database
             if (currentSquad == 0)
             {
                 graphic.DrawString(header + reportType + " Final Standings", bigFont, dBrush, startX + 10, startY + 27);
+            }
+            //if series button was clicked, should not say final based on qual by squad. Still shows if qual by squad filters.
+            else if (currentSquad == 0 && string.Equals(reportType, "Series"))
+            {
+                graphic.DrawString(header + reportType + " Standings", bigFont, dBrush, startX + 10, startY + 27);
             }
             else
             {
@@ -163,12 +176,13 @@ namespace NineTapTour.Database
             }
         }
 
-        static public void printMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad)
+        static public void printMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, int seriesCurrentSquad)
         {
             Print.temp = temp;
             Print.selectedTournament = selectedTournament;
             Print.reportTypeNum = reportTypeNum;
             Print.currentSquad = currentSquad;
+            Print.seriesCurrentSquad = seriesCurrentSquad;
 
             // Set up compenents for printing
             PrintDialog printDialog = new PrintDialog();
@@ -201,6 +215,7 @@ namespace NineTapTour.Database
         static Tournament selectedTournament;
         static ReportType reportTypeNum;
         static int currentSquad;
+        static int seriesCurrentSquad;
         /************************************************************************/
 
         static List<Member> mems = new List<Member>();
