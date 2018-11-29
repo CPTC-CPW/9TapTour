@@ -25,14 +25,15 @@ namespace NineTapTour.Forms
 
         TextBox[] scratchArray = new TextBox[4];
         TextBox[] handicappArray = new TextBox[4];
-        int currentIndex = 0;         //Count for record counting
+
+        //Count for record counting
+        int currentIndex = 0;         
         Participant player = new Participant();
         public static Tournament selectedTournament;
         public static List<TopScores> overallListOfTopScores = new List<TopScores>();
         public static List<Participant> overallListOfParticipants;
 
         List<int> howManySquadsCanBeFiltered = new List<int>();
-
 
         public frmMemberScores()
         {
@@ -64,6 +65,7 @@ namespace NineTapTour.Forms
             rdoSquad7Results.Visible = false;
             rdoSquad8Results.Visible = false;
             cbAllSquads.Checked = true;
+
             if (cbxTourneyDropDown.SelectedIndex >= 0)
             {
                 if (selectedTournament.Squads == 5)
@@ -74,6 +76,7 @@ namespace NineTapTour.Forms
 
 
                 }
+
                 if (selectedTournament.Squads == 6)
                 {
                     rdoSquad5.Visible = true;
@@ -83,6 +86,7 @@ namespace NineTapTour.Forms
                     cbFilterSquad5.Visible = true;
                     cbFilterSquad6.Visible = true;
                 }
+
                 if (selectedTournament.Squads == 7)
                 {
                     rdoSquad5.Visible = true;
@@ -96,6 +100,7 @@ namespace NineTapTour.Forms
                     cbFilterSquad7.Visible = true;
 
                 }
+
                 if (selectedTournament.Squads == 8)
                 {
                     rdoSquad5.Visible = true;
@@ -127,6 +132,7 @@ namespace NineTapTour.Forms
                 {
                     btnFirstRecord.Enabled = false;
                 }
+
                 btnLeftArrow.Enabled = false;
                 btnRightArrow.Enabled = false;
                 btnDelete.Enabled = false;
@@ -146,7 +152,7 @@ namespace NineTapTour.Forms
         {
             RegionID = ((FrmMain)MdiParent).RegionID;
 
-            //addedd in this line inorder to prevent the reset of the drop down list on memberscores form when switching between forms
+            //added in this line inorder to prevent the reset of the drop down list on memberscores form when switching between forms
             int tempcbx = cbxTourneyDropDown.SelectedIndex;
             rdoHandicapScore.Visible = false;
             rdoScratchScore.Visible = false;
@@ -154,9 +160,6 @@ namespace NineTapTour.Forms
             ResetFields();
 
             MemberStatus("", Color.Black, SystemColors.Control, true);
-            //cbxTourneyDropDown.DataSource = ((FrmMain)MdiParent)._tournamentList;
-
-
 
             List<Tournament> temp2 = TournamentDb.GetTournamentList(RegionID);
 
@@ -170,8 +173,10 @@ namespace NineTapTour.Forms
                 var item = temp2.Max(x => x.Id);
                 cbxTourneyDropDown.SelectedValue = item;
             }
+
             Clear();
             cbxTourneyDropDown.Visible = true;
+
             if (cbxTourneyDropDown.SelectedIndex >= 0 && cbxTourneyDropDown.Visible && cbxTourneyDropDown.SelectedIndex.ToString() != null)
             {
                 // resets the current index to zero when changing the tournament
@@ -187,9 +192,7 @@ namespace NineTapTour.Forms
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
                 txtMemberNum.Focus();
-
             }
-
         }
 
         /// <summary>
@@ -215,7 +218,6 @@ namespace NineTapTour.Forms
 
         #region GetMember
 
-
         //Get players scores
         private void GetScores(Game currentGame)
         {
@@ -240,6 +242,7 @@ namespace NineTapTour.Forms
         private void FillMember()
         {
             Tournament currTourney = null;
+
             if (cbxTourneyDropDown.SelectedValue != null)
             {
                 currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
@@ -255,8 +258,6 @@ namespace NineTapTour.Forms
                     MessageBox.Show("Please input numbers only.", "Your attention please.");
                     return;
                 }
-
-                
 
                 int memberNumber = Convert.ToInt16(txtMemberNum.Text);
                 currentMem = MemberDb.GetMember(memberNumber, RegionID);
@@ -301,9 +302,6 @@ namespace NineTapTour.Forms
             }
         }
 
-
-
-
         /// <summary>
         /// method to set the member status colors on lblMemberStatus forecolor and pnlMemStat background color
         /// </summary>
@@ -316,6 +314,7 @@ namespace NineTapTour.Forms
             lblMemberStatus.Text = text;
             lblMemberStatus.ForeColor = forColor;
             pnlMemStat.BackColor = backColor;
+
             foreach (TextBox scratch in scratchArray)
             {
                 scratch.Clear();
@@ -333,9 +332,11 @@ namespace NineTapTour.Forms
             int scratchTotal = 0;
             int cScore = 0;
             string id;
+
             foreach (TextBox score in scratchArray)
             {
                 id = Regex.Match(score.Name, @"\d+").Value;
+
                 if (int.TryParse(score.Text, out cScore))
                 {
                     if (cScore >= 0 && cScore <= 300)
@@ -356,6 +357,7 @@ namespace NineTapTour.Forms
                 }
                 txtScratchTotal.Text = scratchTotal.ToString();
             }
+
             TextBox tx = (TextBox)sender;
 
             //this code will adjust the scratch and handicap total (textboxes) only if its a 3of4 tournament ( taking out the lowest game) 
@@ -381,6 +383,7 @@ namespace NineTapTour.Forms
                             {
                                 scratchasInt[g] = 0;
                             }
+
                             try
                             {
                                 handicapasInt[g] = Convert.ToInt32(handicappArray[g].Text);
@@ -396,12 +399,9 @@ namespace NineTapTour.Forms
                     scratchTotal -= scratchasInt.Min();
                     handicapTotal -= handicapasInt.Min();
 
-
                     txtScratchTotal.Text = scratchTotal.ToString();
                     txtHandicapTotal.Text = handicapTotal.ToString();
-
                 }
-
             }
 
             ////auto tab to the next textbox when textbox's length is 3.           
@@ -418,9 +418,7 @@ namespace NineTapTour.Forms
                 {
                     SendKeys.Send("{TAB}");
                 }
-
             }
-
         }
 
         /// <summary>
@@ -431,6 +429,7 @@ namespace NineTapTour.Forms
         private void handicapTotal(string id, int score)
         {
             int totalScore = 0;
+
             foreach (TextBox hScore in handicappArray)
             {
                 if (hScore.Name.Contains(id))
@@ -444,6 +443,7 @@ namespace NineTapTour.Forms
                         hScore.Clear();
                     }
                 }
+
                 if (hScore.Text != "")
                 {
                     totalScore += Convert.ToInt32(hScore.Text);
@@ -451,6 +451,7 @@ namespace NineTapTour.Forms
             }
             txtHandicapTotal.Text = Convert.ToString(totalScore);
         }
+
         #region New Recap
         /// <summary>
         /// Activates when Add New/Update Record is clicked
@@ -469,6 +470,7 @@ namespace NineTapTour.Forms
         private void AddNewUpdateRecord()
         {
             ReEnableNavigation();
+
             if (IsValid())
             {
                 //gets the current tournament from the database 
@@ -477,27 +479,28 @@ namespace NineTapTour.Forms
                 //get all the current members participating in the current tournament
                 List<Participant> total = TournamentDb.GetTournamentMemberList(currTourney);
 
-
                 int squad = GetCurrentSquadNumber();  
 
                 //get the member from the database using the number from the memnum textbox
                 currentMem = MemberDb.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
                 player.Member = currentMem;
 
-
                 player.Game = new Game();
                 player.ParticipantRegionID = RegionID;
                 var db = new NineTapDb();
+
                 var gameId = (from p in db.Participants
                     where p.Member.Id == currentMem.Id
                             && p.Tournament.Id == currTourney.Id
                             && p.Squad == squad
                     select p.Game.Id).FirstOrDefault();
+
                 var parID = (from p in db.Participants
                     where p.Member.Id == currentMem.Id
                             && p.Tournament.Id == currTourney.Id
                             && p.Squad == squad
                     select p.Id).FirstOrDefault();
+
                 var parList = (from p in db.Participants
                     select new
                     {
@@ -514,6 +517,7 @@ namespace NineTapTour.Forms
                 }
 
                 player.Game.Id = gameId;
+
                 //selects the ID of the combobox of tournaments and stores the
                 //tournament property within the participants class.
                 player.Tournament = currTourney;
@@ -547,17 +551,21 @@ namespace NineTapTour.Forms
                     player.Game.Game1 = IsEmpty(txtScratchScore1)
                         ? null
                         : (int?) Convert.ToInt32((scratchArray[0].Text));
+
                     player.Game.Game2 = IsEmpty(txtScratchScore2)
                         ? null
                         : (int?) Convert.ToInt32((scratchArray[1].Text));
+
                     player.Game.Game3 = IsEmpty(txtScratchScore3)
                         ? null
                         : (int?) Convert.ToInt32((scratchArray[2].Text));
+
                     player.Game.Game4 = IsEmpty(txtScratchScore4)
                         ? null
                         : (int?) Convert.ToInt32((scratchArray[3].Text));
 
                     Game currentGame = GetScoresById(currentMem.Id);
+
                     if (currentGame == null)
                     {
                         player.Game.Bonus = currentMem.Bonus;
@@ -578,6 +586,7 @@ namespace NineTapTour.Forms
                     }
 
                     db.SaveChanges();
+
                     try
                     {
                         TournamentDb.AddMemberToTournament(player);
@@ -614,6 +623,7 @@ namespace NineTapTour.Forms
                 MessageBox.Show("Please Fill out the Participants information!");
             }
         }
+
         /// <summary>
         /// clears game scores of bowlers.
         /// </summary>
@@ -646,6 +656,7 @@ namespace NineTapTour.Forms
         {
             //sets first index on start up and switching of tournaments
             int temp = 0;
+
             if (cbxTourneyDropDown.SelectedIndex < 0)
             {
                 lblRecord.Text = "Record " + (temp) + " / " + players.Count;
@@ -663,10 +674,7 @@ namespace NineTapTour.Forms
                 lblRecord.Text = "Record " + (currentIndex) + " / " + players.Count;
                 txtMemberNum.Text = players[currentIndex - 1].Member.Number.ToString();
                 FillMember();
-
             }
-
-
         }
 
         /// <summary>
@@ -719,10 +727,8 @@ namespace NineTapTour.Forms
             currentIndex = pat.Count + 1;
         }
 
-
         public void RecordIndexOnEnter(List<Participant> part)
         {
-
             //on enter, find the first index in which the member occurs in the tournament
             if (selectedTournament.Doubles == false)
             {
@@ -741,16 +747,13 @@ namespace NineTapTour.Forms
 
                             break;
                         }
+
                         //if no break occurs, set the current index to that of the next potential index
                         lblRecord.Text = "Record " + (part.Count + 1) + " / " + part.Count;
                         currentIndex = part.Count + 1;
-
                     }
-
-
                 }
             }
-
         }
 
         /// <summary>
@@ -781,6 +784,7 @@ namespace NineTapTour.Forms
         public void RecordIndexOnSquadSwitch(List<Participant> part)
         {
             int squad = 0;
+
             if (selectedTournament.Doubles == false)
             {
                 if (txtMemberNum.Text != "")
@@ -793,8 +797,10 @@ namespace NineTapTour.Forms
                         {
                             lblRecord.Text = "Record " + (i + 1) + " / " + part.Count;
                             currentIndex = i + 1;
+
                             break;
                         }
+
                         //if no break occurs, set the current index to that of the next potential index
                         lblRecord.Text = "Record " + (part.Count + 1) + " / " + part.Count;
                         currentIndex = part.Count + 1;
@@ -802,9 +808,7 @@ namespace NineTapTour.Forms
                 }
             }
         }
-
-
-
+        
         /// <summary>
         /// check for empty text box
         /// </summary>
@@ -852,7 +856,6 @@ namespace NineTapTour.Forms
             int squad = 0;
             squad = GetCurrentSquadNumber();
 
-
             try
             {
                 int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
@@ -893,11 +896,9 @@ namespace NineTapTour.Forms
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
 
-            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-
             // Disables buttons and breaks function
             // if already at the last record
-            if (currentIndex >= total.Count)
+            if (currentIndex >= overallListOfParticipants.Count)
             {
                 btnRightArrow.Enabled = false;
                 btnLastRecord.Enabled = false;
@@ -909,17 +910,17 @@ namespace NineTapTour.Forms
 
             // Disables buttons if last record
             // is reached
-            if (currentIndex >= total.Count)
+            if (currentIndex >= overallListOfParticipants.Count)
             {
                 btnRightArrow.Enabled = false;
                 btnLastRecord.Enabled = false;
             }
 
-            txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
-            int playerSquadNumber = total[currentIndex - 1].Squad;
+            txtMemberNum.Text = Convert.ToString(overallListOfParticipants[currentIndex - 1].Member.Number);
+            int playerSquadNumber = overallListOfParticipants[currentIndex - 1].Squad;
             CheckSquadRadioButton(playerSquadNumber);
 
-            lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count;
+            lblRecord.Text = "Record " + (currentIndex) + " / " + overallListOfParticipants.Count;
 
             FillMember();
         }
@@ -929,9 +930,6 @@ namespace NineTapTour.Forms
         /// </summary>
         private void btnLeftArrow_Click(object sender, EventArgs e)
         {
-
-            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-
             // Disables buttons and breaks function
             // if already at the first record
             if (currentIndex <= 1)
@@ -952,14 +950,15 @@ namespace NineTapTour.Forms
                 btnFirstRecord.Enabled = false;
             }
 
-            txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
-            int playerSquadNumber = total[currentIndex - 1].Squad;
+            txtMemberNum.Text = Convert.ToString(overallListOfParticipants[currentIndex - 1].Member.Number);
+            int playerSquadNumber = overallListOfParticipants[currentIndex - 1].Squad;
             CheckSquadRadioButton(playerSquadNumber);
 
-            lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count;
+            lblRecord.Text = "Record " + (currentIndex) + " / " + overallListOfParticipants.Count;
 
             FillMember();
         }
+
         /// <summary>
         /// Goes to the first record.
         /// </summary>
@@ -967,9 +966,6 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnFirstRecord_Click(object sender, EventArgs e)
         {
-
-            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-
             // Disables buttons and breaks function
             // if already at the 1st record
             if (currentIndex <= 1)
@@ -985,9 +981,9 @@ namespace NineTapTour.Forms
             ReEnableNavigation();
 
             // Gets the 1st record in the list
-            txtMemberNum.Text = Convert.ToString(total[0].Member.Number);
+            txtMemberNum.Text = Convert.ToString(overallListOfParticipants[0].Member.Number);
 
-            int playerSquadNumber = total[currentIndex - 1].Squad;
+            int playerSquadNumber = overallListOfParticipants[currentIndex - 1].Squad;
             CheckSquadRadioButton(playerSquadNumber);
 
             FillMember();
@@ -1005,12 +1001,9 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
-
-            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-
             // Disables buttons and breaks function
             // if already at the last record
-            if (currentIndex >= total.Count)
+            if (currentIndex >= overallListOfParticipants.Count)
             {
                 btnRightArrow.Enabled = false;
                 btnLastRecord.Enabled = false;
@@ -1018,13 +1011,13 @@ namespace NineTapTour.Forms
             }
 
             // Sets currentIndex to the size of total
-            currentIndex = total.Count;
+            currentIndex = overallListOfParticipants.Count;
 
             ReEnableNavigation();
 
             // Gets the last record from the list
-            txtMemberNum.Text = Convert.ToString(total[total.Count - 1].Member.Number);
-            int lastMemberSquad = total[total.Count - 1].Squad;
+            txtMemberNum.Text = Convert.ToString(overallListOfParticipants[overallListOfParticipants.Count - 1].Member.Number);
+            int lastMemberSquad = overallListOfParticipants[overallListOfParticipants.Count - 1].Squad;
             CheckSquadRadioButton(lastMemberSquad);
 
             FillMember();
@@ -1065,9 +1058,9 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void cbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
-
             // resets the fields when a different tournament is selected
             ResetFields();
+
             // assigns the selectedTournament variable as the selected Tournament from the comboBox
             selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
 
@@ -1100,22 +1093,20 @@ namespace NineTapTour.Forms
                 rdoScratchScore.Visible = false;
                 DisableButtonsWhenValidTournamentSelected();
             }
+
             if (cbxTourneyDropDown.SelectedIndex >= 0 && cbxTourneyDropDown.Visible)
             {
                 // resets the current index to zero when changing the tournament
                 currentIndex = 0;
                 // Gets the record for the selected tournament
-                RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
                 overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
+                RecordIndex(overallListOfParticipants);
                 Refresh(false);
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
                 // sets focus to member num becuse that is what a user will need next
                 txtMemberNum.Focus();
-
             }
-
-
         }
 
         /// <summary>
@@ -1124,10 +1115,12 @@ namespace NineTapTour.Forms
         private void EnableButtonsWhenValidTournamentSelected()
         {
             btnStats.Enabled = true;
+
             if (currentIndex > 1)
             {
                 btnLeftArrow.Enabled = true;
             }
+
             btnRightArrow.Enabled = true;
             btnPlaceStandings.Enabled = true;
             btnRecapByPin.Enabled = true;
@@ -1155,10 +1148,12 @@ namespace NineTapTour.Forms
             {
                 return false;
             }
+
             if (txtMemberNum.Text == "")
             {
                 return false;
             }
+
             if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
             {
                 DialogResult result = MessageBox.Show("Are you sure you want to continue with a score missing?", "Are you sure?",
@@ -1234,6 +1229,7 @@ namespace NineTapTour.Forms
         {
             var scores = new List<MemberScores>();
             listOfTopScore.Clear();
+
             try
             {
                 NineTapDb db = new NineTapDb();
@@ -1269,9 +1265,9 @@ namespace NineTapTour.Forms
                         ParticipantsGameViewModel currTopScoreViewModel =
                             new ParticipantsGameViewModel(currParticipant.Member.Number, currParticipant.Member.FirstName, currParticipant.Member.LastName, currParticipant.Squad,
                                 currParticipant.Game.AllGameScores().Max(), currParticipant.Member.Handicap, currParticipant.Member.Bonus);
+
                         // adds person to list<ParticipantsGameViewModel>
                         participantsGameViewModels.Add(currTopScoreViewModel);
-
                     }
 
                     foreach (Participant currParticipant in listOfParticipants)
@@ -1298,12 +1294,11 @@ namespace NineTapTour.Forms
                                 currParticipant.Game.Game4,
                                 currParticipant.Game.Handicap, currParticipant.Game.Bonus.Value,
                                 currParticipant.Game.Id, currParticipant.Squad);
-                        topParticipantGameViewModels.Add(currTopScoreViewModel);
 
+                        topParticipantGameViewModels.Add(currTopScoreViewModel);
                     }
 
                     //display data in the list boxes
-
                     // orders list by highest handicap score game to lowest
                     participantsGameViewModels = participantsGameViewModels
                         .OrderByDescending(t => t.HighScore + t.Handicap + t.Bonus).ToList();
@@ -1328,6 +1323,7 @@ namespace NineTapTour.Forms
 
                         // links game series listbox to list
                         lbxTopGameSeries.DataSource = topParticipantGameViewModels;
+
                         //displays specific tostring for displaying info dealing with scratch score total
                         lbxTopGameSeries.DisplayMember = "ScratchTotalToString";
                     }
@@ -1336,8 +1332,10 @@ namespace NineTapTour.Forms
                     {
                         // orders list by highest scoring handicap score total to lowest
                         topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.HandicapScore).ToList();
+
                         // links game series listbox to list
                         lbxTopGameSeries.DataSource = topParticipantGameViewModels;
+
                         // displays specific tostring for displaying info dealing with handicap score total
                         lbxTopGameSeries.DisplayMember = "HandicapTotalToString";
                     }
@@ -1360,7 +1358,6 @@ namespace NineTapTour.Forms
                         }
                     }
                 }
-
             }
             catch
             {
@@ -1375,6 +1372,7 @@ namespace NineTapTour.Forms
         private static void CalculatePlaceStanding(List<TopParticipantGameViewModel> winners, bool scoreToOrganizeBy)
         {
             int place = 1;
+
             if (scoreToOrganizeBy == false)
             {
                 for (int i = 0; i < winners.Count; i++)
@@ -1390,6 +1388,7 @@ namespace NineTapTour.Forms
                     place++;
                 }
             }
+
             if (scoreToOrganizeBy == true)
             {
                 for (int i = 0; i < winners.Count; i++)
@@ -1412,10 +1411,6 @@ namespace NineTapTour.Forms
             return gameScore + gameHandicap;
         }
 
-
-
-
-
         private void btnTournamentsByYear_Click(object sender, EventArgs e)
         {
             TournamentsByYear listTournaments = new TournamentsByYear(RegionID);
@@ -1433,13 +1428,11 @@ namespace NineTapTour.Forms
             NineTapTour.Database.Print.printByTour((Tournament)cbxTourneyDropDown.SelectedItem);
         }
 
-
         private void btnPlaceStandings_Click(object sender, EventArgs e)
         {
             TournamentPlaceStandings form = new TournamentPlaceStandings();
             form.ShowDialog();
         }
-
 
         //runs fill member when enter key is pressed on text box
         private void txtMemberNum_KeyDown(object sender, KeyEventArgs e)
@@ -1450,7 +1443,6 @@ namespace NineTapTour.Forms
                 RecordIndexOnEnter(total);
                 FillMember();
             }
-
         }
         
         /// <summary>
@@ -1468,6 +1460,7 @@ namespace NineTapTour.Forms
                 }
             }
         }
+
         //opens the FinalizeTourn form, checks to make sure a tourn is selected.
         private void btnFinalizeTounament_Click(object sender, EventArgs e)
         {
@@ -1486,12 +1479,11 @@ namespace NineTapTour.Forms
                 newFrmFinalizeTournament.WindowState = FormWindowState.Normal;
                 newFrmFinalizeTournament.Show();
             }
+
             //This sets it back to default arrow after the DGV is finish loading.
             Cursor.Current = Cursors.Default;
             Application.DoEvents();
         }
-
-
 
         /*******************************************************************************
         When the report section buttons are clicked, it will take them to the FrmMemberScoresReports to ask for how many they want to take for printing
@@ -1532,6 +1524,7 @@ namespace NineTapTour.Forms
         private int GetSquadResultsNumberChecked()
         {
             int currentsNum = 0;
+
             if (rdoSquad1Results.Checked)
                 currentsNum = 1;
             else if (rdoSquad2Results.Checked)
@@ -1619,6 +1612,7 @@ namespace NineTapTour.Forms
                         }
                     }
                     #endregion
+
                     #region PRINTING SCRATCH TOURNAMENT RESULTS
                     else if (rdoScratchScore.Checked)
                     {
@@ -1696,6 +1690,7 @@ namespace NineTapTour.Forms
                         cbxTourneyDropDown.DataSource = TournamentDb.GetTournamentList(RegionID);
                         cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
                         cbxTourneyDropDown.ValueMember = "Id";
+
                         if (TournamentDb.GetTournamentList(RegionID).Count <= 0)
                         {
                             btnDelete.Enabled = false;
@@ -1704,7 +1699,6 @@ namespace NineTapTour.Forms
                             btnFirstRecord.Enabled = false;
                             btnLastRecord.Enabled = false;
                         }
-
                         return;
                     }
                 }
@@ -1713,15 +1707,19 @@ namespace NineTapTour.Forms
                 {
 
                     Game g = GetScoresById(currentMem.Id);
+
                     //Delete from player history
                     PlayerHistory p = PlayerHistoryDB.getPlayerHistoryByGameID(g.Id);
                     PlayerHistoryDB.DeletePlayerHistory(p);
+
                     //Delete from FinalizeTemp
                     FinalizeTemp ft = FinalizeTempDB.getFinalizeID(FinalizeTempDB.getGame(g.Id));
                     FinalizeTempDB.DeleteFinilizeTemp(ft);
+
                     //Delete from Participants list
                     Participant par = FinalizeTempDB.getParticipantbyGameID(g.Id);
                     FinalizeTempDB.deleteParticipant(par);
+
                     //Delete the game itself
                     PlayerHistoryDB.DeleteGame(g);
 
@@ -1733,11 +1731,14 @@ namespace NineTapTour.Forms
                     overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
                     cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
                     cbxTourneyDropDown.ValueMember = "Id";
+
                     //corrects any changes to the members stats after finalizing to the last accurate data
                     List<PlayerHistory> temp = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
                     currentMem.Handicap = temp[0].HandiCap;
                     currentMem.Bonus = temp[0].Bonus;
-                    currentMem.StartAvg = temp[0].AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
+
+                    // avg will have to be adjusted manually by director if last player history avg was not correct
+                    currentMem.StartAvg = temp[0].AVG; 
                     currentMem.Average = Convert.ToInt32(temp[0].trueAVG);
                     MemberDb.AddMember(currentMem);
                     ReEnableNavigation();
@@ -1762,8 +1763,7 @@ namespace NineTapTour.Forms
             if((sender as RadioButton).Checked)
             {
                 ScoreAndTotalClear();
-                List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-                RecordIndexOnSquadSwitch(total);
+                RecordIndexOnSquadSwitch(overallListOfParticipants);
                 FillMember();
             }
             
@@ -1839,39 +1839,46 @@ namespace NineTapTour.Forms
         public int FilterCheck()
         {
             int check = 0;
+
             if (cbFilterSquad1.Checked)
             {
                 check++;
             }
+
             if (cbFilterSquad2.Checked)
             {
                 check++;
             }
+
             if (cbFilterSquad3.Checked)
             {
                 check++;
             }
+
             if (cbFilterSquad4.Checked)
             {
                 check++;
             }
+
             if (cbFilterSquad5.Checked)
             {
                 check++;
             }
+
             if (cbFilterSquad6.Checked)
             {
                 check++;
             }
+
             if (cbFilterSquad7.Checked)
             {
                 check++;
             }
+
             if (cbFilterSquad8.Checked)
             {
                 check++;
             }
-
             return check;
         }
 
