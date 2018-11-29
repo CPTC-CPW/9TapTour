@@ -16,12 +16,14 @@ namespace NineTapTour.Forms
     {
         public FrmMain currMainFrm { get; set; }
         public int regionID { get; set; }
+
         /// <summary>
         /// Opens the "Main Menu" form.
         /// </summary>
         public MainMenu()
         {
             InitializeComponent();
+
             //check to see if any regions exist, if not create a local region(for first time start up)
             if(NineTapRegionDB.getNumberOfRegions() == 0)
             {
@@ -29,15 +31,15 @@ namespace NineTapTour.Forms
                 nTemp.NineTapRegionName = "Local";
                 NineTapRegionDB.AddRegion(nTemp);
             }
+
             //set the global int region so it can be used to filter each region throughout the program
             List <NineTapRegion>  nList = NineTapRegionDB.GetRegionList();
             cbxRegionSelect.DataSource = nList;
             cbxRegionSelect.DisplayMember = "NineTapRegionName";
             this.regionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
-           
-           
 
         }
+
         /// <summary>
         /// Closes the "Main Menu" form when the "Exit" button is clicked.
         /// </summary>
@@ -74,6 +76,7 @@ namespace NineTapTour.Forms
             ((FrmMain)MdiParent).menuHighlight(btnMemberData.Text);
             ((FrmMain)MdiParent).memberToolStripMenuItem_Click(sender, e);
         }
+
         /// <summary>
         /// Brings up the "Member Scores" form when the "Member Scores" button is clicked.
         /// </summary>
@@ -92,7 +95,7 @@ namespace NineTapTour.Forms
             Font drawFont = new Font("Arial", 12);
             SolidBrush drawBrush = new SolidBrush(Color.White);
             PointF drawPoint = new PointF(10, 2);
-            g.DrawString("Version: 1.4.3", drawFont, drawBrush, drawPoint);
+            g.DrawString("Version: 1.5.1", drawFont, drawBrush, drawPoint);
 #if DEBUG
             drawBrush.Color = Color.Red;
             drawPoint.Y += 16;
@@ -117,26 +120,34 @@ namespace NineTapTour.Forms
                 {
                     PlayerHistoryDB.DeletePlayerHistory(p);
                 }
+
                 // Delete FinilizeTemp where FinalizeID = selected regionID
                 List<FinalizeTemp> fin = FinalizeTempDB.GetFinalizeList(regionID);
+
                 foreach (var f in fin)
                 {
                     FinalizeTempDB.DeleteFinilizeTemp(f);
                 }
+
                 // Delete Participants where Participant RegionID = regionID
                 List<Participant> par = FinalizeTempDB.GetparticpantList(regionID);
+
                 foreach (var p in par)
                 {
                     FinalizeTempDB.deleteParticipant(p);
                 }
+
                 // Delete Games where GameRegionID = regionID
                 List<Game> gam = FinalizeTempDB.GetGameList(regionID);
+
                 foreach (var g in gam)
                 {
                     PlayerHistoryDB.DeleteGame(g);
                 }
+
                 //delete Tournaments where Tournament RegionID = Region ID
                 List<Tournament> tourn = TournamentDb.GetTournamentList(regionID);
+
                 foreach (var t in tourn)
                 {
                     TournamentDb.deleteTournament(t);
@@ -144,6 +155,7 @@ namespace NineTapTour.Forms
 
                 //Delete from Member Table where Memmber RegionID is = selected region ID
                 List<Member> mem = MemberDb.GetMemberList(regionID);
+
                 foreach (var m in mem)
                 {
                     MemberDb.DeleteMember(m);
@@ -159,44 +171,23 @@ namespace NineTapTour.Forms
                     n.NineTapRegionID = 1;
                     n.NineTapRegionName = "Local";
                     NineTapRegionDB.AddRegion(n);
-
                 }
 
                 refreshRegionlist();
 
                 pl.Close();
                 MessageBox.Show(name + " Database was successfully cleared!");
-
-
             }
-        }
-
-        // on load grabs an updated version of the all the player informantion so you dont have to go their page to update their player information to the right information
-        private void MainMenu_Load(object sender, EventArgs e)
-        {
-            //List<Member> memberList = MemberDb.GetMemberList(regionID);
-            
-            //for(int i = 0; i < memberList.Count; i++)
-            //{
-
-            //    List<PlayerHistory> ph = PlayerHistoryDB.getLastFiveFromPlayerhistory(memberList[i].Number,regionID);
-            //    if (ph.Count > 0)
-            //    {
-            //        memberList[i].StartAvg = ph[0].AVG;
-            //        memberList[i].Average = Convert.ToInt32(ph[0].trueAVG);
-            //        MemberDb.AddMember(memberList[i]);
-            //    }
-            //}
-
         }
 
         private void cbxRegionSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
             List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
             this.regionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
-            try// added a try catch block in order to catch the error that occurs at the very first launch of the program.
-               //(the MDi parent is not set yet, so it has to skip over this step on its very first launch or the program wont start)
-            {
+
+            try
+            {   // added a try catch block in order to catch the error that occurs at the very first launch of the program.
+                //(the MDi parent is not set yet, so it has to skip over this step on its very first launch or the program wont start)
                 ((FrmMain)MdiParent).RegionID = regionID;
                 ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList(regionID).OrderBy(m => m.Number);
             }
@@ -204,7 +195,6 @@ namespace NineTapTour.Forms
             {
 
             }
-
         }
 
         public int getRegionID()
@@ -226,6 +216,5 @@ namespace NineTapTour.Forms
             region.ShowDialog();
             refreshRegionlist();
         }
-
 	}
 }

@@ -9,17 +9,7 @@ namespace NineTapTour.Database
 {
     public static class FormHelper
     {
-        public static bool IsDateTimeTextBoxValid(TextBoxBase box)
-        {
-            if (DateTime.TryParse(box.Text, out DateTime dateTime))
-            {
-                if (dateTime >= DateTime.Parse("01/01/1753"))
-                {
-                    return true; 
-                }
-            }
-            return false;
-        }
+
 
         /// <summary>
 		    /// Sets the flow direction for the flowlayoutpanel depending
@@ -103,6 +93,62 @@ namespace NineTapTour.Database
                     rdoButton.Checked = true;
                 }
             }
+        }
+
+        /// <summary>
+        /// Tests a string input for being an integer
+        /// between 1-300. Returns true if valid.
+        /// </summary>
+        /// <param name="strAvg">string average</param>
+        /// <returns>bool result</returns>
+        public static bool IsAverageValid(string strAvg)
+        {
+            Int32.TryParse(strAvg, out int test);
+            return test > 0 && test < 300;
+        }
+
+        /// <summary>
+        /// Validates string input for being a date later
+        /// than 1900. Returns true if valid.
+        /// </summary>
+        /// <param name="box">string date</param>
+        /// <returns>bool result</returns>
+        public static bool IsDateTimeValid(string strDate)
+        {
+            DateTime century = new DateTime(1900, 01, 01);
+            if (DateTime.TryParse(strDate, out DateTime dateTime))
+            {
+                if (dateTime >= century)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Validates string input for being a US state.
+        /// Returns 
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        public static bool IsStateValid(string state)
+        {
+            string uppercaseState = state.ToUpper().Trim();
+            string[] USstates = 
+                {
+                    "AL","AK","AS","AZ","AR","CA","CO",
+                    "CT","DE","DC","FM","FL","GA","GU",
+                    "HI","ID","IL","IN","IA","KS","KY",
+                    "LA","ME","MH","MD","MA","MI","MN",
+                    "MS","MO","MT","NE","NV","NH","NJ",
+                    "NM","NY","NC","ND","MP","OH","OK",
+                    "OR","PW","PA","PR","RI","SC","SD",
+                    "TN","TX","UT","VT","VI","VA","WA",
+                    "WV","WI","WY" 
+                };
+            return uppercaseState.Length == 2 && 
+                USstates.Contains(uppercaseState);
         }
     }
 }

@@ -30,18 +30,21 @@ namespace NineTapTour.Forms
         public MainMenu mainmenu { get; set; }
         public int RegionID { get; set; }
         public Size MaxWorkAreaScreenSize { get; set; }
+
         //initializes a bool var for handling if the memberdata form is active so it has proper scope for handling the save data popup showing up on the wrong forms
         bool memberDataIsActive = false;
+
         /// <summary>
         /// Opens Main form 
         /// Retrieves information from the database in order.
         /// </summary>
-
         public FrmMain()
         {
             InitializeComponent();
+
             //this size is the height and width of the primary screen minus the start bar (if the user has a start bar)
             MaxWorkAreaScreenSize = new Size( Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height );
+
             //run any pending database migrations on start
             NineTapDb db = new NineTapDb();
             System.Data.Entity.Database.SetInitializer<NineTapDb>(new MigrateDatabaseToLatestVersion<NineTapDb, Configuration>());
@@ -50,10 +53,10 @@ namespace NineTapTour.Forms
             _tournamentList = TournamentDb.GetTournamentList(RegionID);
 
             var newfrmStart = new MainMenu {MdiParent = this};
+
             //sets the height and width of the parent form... this can not be resized later... all child forms must 
             //fit in its bounds... the only exception is using a scrollbar on the side or bottom...
             setHeightAndWidth(MaxWorkAreaScreenSize);
-            
             
             //on start up make sure regionID is set 
             var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
@@ -61,14 +64,11 @@ namespace NineTapTour.Forms
             RegionID = mainMenu.getRegionID();
             mainmenu = mainMenu;
 
-
-
             //sets the first item of the menu bar to the active item and highlights it.
             activeItem = (ToolStripMenuItem)menMain.Items[0];
             activeItem.BackColor = SystemColors.ActiveCaption;
             newfrmStart.Show();
             newfrmStart.WindowState = FormWindowState.Maximized;
-            
         }
 
         /// <summary>
@@ -88,27 +88,7 @@ namespace NineTapTour.Forms
         /// <param name="form">forms that haven't been opened yet(?)</param>
         public void OpenOrDisplayForm<T>(ref T form) where T : Form, new()
         {
-           
             bool isSavedData = true;
-
-            // determines whether FrmMemberData is saved before leaving and if calls 
-            // FrmMemberIsSavedData to determine you want to leave without saving changes
-            // else return you to FrmMemberData.
-            if (currFrmMemberData != null)
-            {
-                if (!FrmMemberIsSavedData())
-                {
-                    isSavedData = false;
-                    currFrmMemberData.BringToFront();
-                    currFrmMemberData.Activate();
-                    menuHighlight("Member Info");
-                }
-                else
-                {
-                    currFrmMemberData.UpdateMemberInfo();
-                }
-            }
-
 
             if (isSavedData) //checks to see if you are leaving page without saved data.
             {
@@ -131,7 +111,6 @@ namespace NineTapTour.Forms
                 form.WindowState = FormWindowState.Maximized;
                 form.Show();
             }
-            
         }
 
         //method to highlight menu item to show user which page they have open
@@ -142,7 +121,9 @@ namespace NineTapTour.Forms
             {
                 activeItem.BackColor = SystemColors.Control;
             }
+
             activeItem = (ToolStripMenuItem)e.ClickedItem;
+
             if (!activeItem.HasDropDownItems)
             {
                 activeItem.BackColor = SystemColors.ActiveCaption;
@@ -166,7 +147,6 @@ namespace NineTapTour.Forms
                     }
                 }
             }
-
         }
         //this method is for the buttons on the main form
         public void menuHighlight(string itemName)
@@ -175,6 +155,7 @@ namespace NineTapTour.Forms
             {
                 activeItem.BackColor = SystemColors.Control;
             }
+
             for(int i = 0; i <= menMain.Items.Count; i++)
             {
                 if (itemName == menMain.Items[i].Text)
@@ -218,7 +199,6 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
             OpenOrDisplayForm(ref newfrmMemberScores);
             currfrmScoresdata = newfrmMemberScores;
@@ -264,47 +244,6 @@ namespace NineTapTour.Forms
             UpdatefrmActiveMem.Show();
         }
 
-        /// <summary>
-        /// This method calls a FrmMemberData method to determine if data is saved.
-        /// if data not saved prompts user whether they still want to leave without saving data.
-        /// </summary>
-        /// <returns>returns true if data is saved or if data is not saved and user wants to continue without
-        /// saving changes. Returns false if data is not saved and user does want to save changes.</returns>
-        private bool FrmMemberIsSavedData()
-        {
-            if (currFrmMemberData.IsSavedData())
-            {
-                return true;
-            }
-
-            else
-            {
-                if (memberDataIsActive == true)
-                {
-                    if (!currFrmMemberData.MemberNavigate())
-                    {
-                        memberToolStripMenuItem.Enabled = false;
-                        tournamentToolStripMenuItem.Enabled = true;
-                        mainMenuToolStripMenuItem.Enabled = true;
-                        return false;
-
-                    }
-                    else
-                    {
-                        //prevents the message box from showing up when member data form is not active
-                        memberDataIsActive = false;
-                        memberToolStripMenuItem.Enabled = true;
-                        return true;
-
-                    }
-                }
-                else
-                {
-                    return true;
-                }
-            }
-        }
-
         private void BackupDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderDialog = new FolderBrowserDialog();
@@ -333,62 +272,6 @@ namespace NineTapTour.Forms
                     }
                 }
             }
-        }
-
-        private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            // Check the AppMustClose boolean to see if we need to bypass the user check.
-            if (!AppMustClose)
-            {
-                //IF the Member Data Form has been activated and isn't null
-                if (currFrmMemberData != null)
-                {
-                    //IF all the data on the Member Data Form IS valid
-                    //Go ahead and close the application
-                    if (currFrmMemberData.isValid().Count == 0)
-                    {
-                        currFrmMemberData.SaveMemberData();
-
-                        //IF all entered data is valid, check if user really wants to exit
-
-                        if (ExitApplication() == DialogResult.No)
-                        {
-                            e.Cancel = true;
-                        }
-                    }
-                    //IF the data on the Member Data From is NOT Valid
-                    else
-                    {
-                        //IF the user chooses to navigate away and save changes
-                        if (!currFrmMemberData.MemberNavigate())
-                        {
-                            e.Cancel = true;
-                        }
-                    }
-
-                }
-                else
-                {
-                    //IF all entered data is valid, check if user really wants to exit
-
-                    //Stick around if you don't want to exit
-                    if (ExitApplication() == DialogResult.No)
-                    {
-                        e.Cancel = true;
-                    }
-                } 
-            }
-        }
-
-        /// <summary>
-        /// Asks if user wants to exit application
-        /// </summary>
-        /// <returns>returns DialogResult.No if No is clicked or DialogResult.Yes if yes is clicked</returns>
-        private DialogResult ExitApplication()
-        {
-            DialogResult result = MessageBox.Show("Are you sure you want to exit?", "Exit Application", 
-                                                  MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            return result;
         }
     }
 }

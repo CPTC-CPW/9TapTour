@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NineTapTour.Database;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -81,7 +82,18 @@ namespace NineTapTour.Models
         public int? Referrals { get; set; }
         //[Required]
         public bool IsSenior { get; set; }
-        public decimal MoneyEarned { get; set; }
+
+        private decimal _moneyEarned;
+
+        /// <summary>
+        /// Setting this property will update the value in the database but
+        /// money earned will be calculated from the PlayerHistory.
+        /// </summary>
+        public decimal MoneyEarned
+        {
+            get { return PlayerHistoryDB.GetTotalMoneyWon(Number, NineTapRegionID); }
+            set { _moneyEarned = value;  }
+        }
         public int NineTapRegionID { get; set; }
         #endregion
 
