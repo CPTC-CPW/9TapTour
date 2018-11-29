@@ -735,16 +735,11 @@ namespace Member_Import_Test
                 {
                     try
                     {
-                        if (
-                            (((range.Cells[row, 14] as Excel.Range).Value2) == null)  // if pot won ...
-                            || 
-                            
-                            ((Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0
+
+                        if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0
                             && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0
                             && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0
-                            && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0))
-                            ||
-                              Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2) < 5) //for the sake of Hawaii
+                            && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
                         {
                             continue;
                         }
