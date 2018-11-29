@@ -82,62 +82,42 @@ namespace NineTapTour.Calculations
                 return currentBonusPins;
             }
 
-            //int distinctTournamentCount = 0;
-            PlayerHistory lastTournament = latestTournaments[0];
-            PlayerHistory secondToLastTournament = null;
-            for (int i = 0; i < latestTournaments.Count - 1 && secondToLastTournament == null; i++)
+            #region Check for wins as multiple entries and get distinct tournaments by date
+            PlayerHistory lastTourney = latestTournaments[0];
+            int i = 1;
+            while (i < latestTournaments.Count && lastTourney.TournamentDate == latestTournaments[i].TournamentDate)
             {
-                if (latestTournaments[i].TournamentDate == latestTournaments[i + 1].TournamentDate)
+                // if won the last tournament on a different squad
+                if (lastTourney.Bonus != latestTournaments[i].Bonus)
                 {
-                    // if won the same tournament on a different squad
-                    if (latestTournaments[i].Bonus != latestTournaments[i + 1].Bonus)
-                    {
-                        return currentBonusPins;
-                    }
+                    return currentBonusPins;
                 }
-                // if had not won past three distinct tournaments including this one
-                else if (secondToLastTournament != null && currentBonusPins == lastTournament.Bonus 
-                        && currentBonusPins == secondToLastTournament.Bonus)
+                i++;
+            }
+
+            PlayerHistory secondToLast = latestTournaments[i];
+            if (secondToLast == null)
+            {
+                return currentBonusPins;
+            }
+            
+            while (i < latestTournaments.Count && secondToLast.TournamentDate == latestTournaments[i].TournamentDate)
+            {
+                // if won the second to last tournament on a different squad
+                if (lastTourney.Bonus != latestTournaments[i].Bonus)
                 {
-                    return ++currentBonusPins;
+                    return currentBonusPins;
                 }
+                i++;
+            }
+            #endregion
+
+            // After 3 games not placing add a bonus pin
+            if (currentBonusPins == lastTourney.Bonus && currentBonusPins == secondToLast.Bonus)
+            {
+                return currentBonusPins + 1;
             }
             return currentBonusPins;
-
-            // Filter out tournaments that are not distinct by date
-            latestTournaments = GetDistinctTournaments(latestTournaments);
-
-            if (latestTournaments.Count >= 2)
-            {
-                // Filtering history where they had bowled in a different squad on the same day
-                //if (latestTournaments[0].TournamentDate != latestTournaments[1].TournamentDate &&
-                //   latestTournaments[1].TournamentDate != currTournamentDate && 
-                //   currTournamentDate != latestTournaments[0].TournamentDate)
-                //{
-                    // Checks to see if the last 2 bowling history is the same as it is currently, 
-                    // after 3 times not placing, they gain a bonus point
-                    if (latestTournaments[0].Bonus == latestTournaments[1].Bonus &&
-                       latestTournaments[1].Bonus == currentBonusPins)
-                    {
-                        return ++currentBonusPins;
-                    }
-                //}
-                return currentBonusPins;
-            }
-            else
-            {
-                return currentBonusPins;
-            }
-        }
-
-        private static List<PlayerHistory> GetDistinctTournaments(IList<PlayerHistory> tournaments)
-        {
-            return tournaments
-                .OrderByDescending(t => t.TournamentDate)
-                .GroupBy(t => t.TournamentDate)
-                .Select(t => t.First())
-                .Take(2)
-                .ToList();
         }
 
         public static int DeductFromBonusPins(int memberPlaced, int currentBonusPins)
