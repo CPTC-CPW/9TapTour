@@ -144,7 +144,6 @@
             this.Name = "FrmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "9 Tap Tour";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_FormClosing);
             this.menMain.ResumeLayout(false);
             this.menMain.PerformLayout();
             this.ResumeLayout(false);

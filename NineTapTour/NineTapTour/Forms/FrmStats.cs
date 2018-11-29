@@ -48,24 +48,67 @@ namespace NineTapTour.Forms
             }
 
             dataGridView1.SuspendLayout();
-            var column = dataGridView1.Columns[0];
-            column.Width = 51;
-            column = dataGridView1.Columns[1];
-            column.Width = 66;
+            var column = dataGridView1.Columns[0]; // Games *
+            column.Width = 45;
+            column = dataGridView1.Columns[1]; // Date * 
+            column.Width = 65;
 
-            for (int h = 2; h < dataGridView1.Columns.Count; h++)
+            column = dataGridView1.Columns[2]; // Game 1 *
+            column.Width = 35;
+
+            column = dataGridView1.Columns[3]; // Game 2 *
+            column.Width = 35;
+
+            column = dataGridView1.Columns[4]; // Game 3 *
+            column.Width = 35;
+
+            column = dataGridView1.Columns[5]; //Game 4 *
+            column.Width = 35;
+
+            column = dataGridView1.Columns[6]; // Scratch total
+            column.Width = 45;
+
+            column = dataGridView1.Columns[7]; //Game total with handicap
+            column.Width = 55;
+
+            column = dataGridView1.Columns[8]; // Entry Avg
+            column.Width = 45;
+
+            column = dataGridView1.Columns[9]; // 30 entry avg
+            column.Width = 45;
+
+            column = dataGridView1.Columns[10]; // Adj Avg
+            column.Width = 45;
+
+            column = dataGridView1.Columns[11]; // Handicap
+            column.Width = 45;
+
+            column = dataGridView1.Columns[12]; // Bonus
+            column.Width = 45;
+
+            column = dataGridView1.Columns[13]; // Pro Pot
+            column.Width = 45;
+
+            column = dataGridView1.Columns[14]; // Place
+            column.Width = 45;
+
+            column = dataGridView1.Columns[15]; // Money Won
+            column.Width = 45;
+
+            column = dataGridView1.Columns[16]; // Notes
+            column.Width = 180;
+
+            column = dataGridView1.Columns[17]; // game ID
+            column.Width = 45;
+
+            foreach (DataGridViewColumn col in dataGridView1.Columns) // to center header cell titles
             {
-                column = dataGridView1.Columns[h];
-                column.Width = 55;
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
+
             ph = PlayerHistoryDB.getMemberPlayerHistoryByTotal(memNum, RegionID);
-
-
-                        
+              
         }
-    
-
-       
 
         struct statHolder
         {
@@ -303,23 +346,23 @@ namespace NineTapTour.Forms
                         });
             dtGames.Columns.Add("Games").ReadOnly = true;
             dtGames.Columns.Add("Date", typeof(DateTime));
-            dtGames.Columns.Add("Game1");
+            dtGames.Columns.Add("Gm1");
             //dtGames.Columns.Add(new DataColumn("Selected", typeof(bool)));
-            dtGames.Columns.Add("Game2");
-            dtGames.Columns.Add("Game3");
-            dtGames.Columns.Add("Game4"); 
+            dtGames.Columns.Add("Gm2");
+            dtGames.Columns.Add("Gm3");
+            dtGames.Columns.Add("Gm4"); 
             dtGames.Columns.Add("Scratch Total", typeof(Int32)).ReadOnly = true;
             dtGames.Columns.Add("Game Total w/HDCP", typeof(Int32)).ReadOnly = true;
             dtGames.Columns.Add("Entry AVG", typeof(Int32)).ReadOnly = true;
             dtGames.Columns.Add("30 Entry AVG", typeof(Int32)).ReadOnly = true;
-            dtGames.Columns.Add("Adjusted AVG");
-            dtGames.Columns.Add("Handicap").ReadOnly = true;
+            dtGames.Columns.Add("Adj. AVG");
+            dtGames.Columns.Add("HDCP").ReadOnly = true;
             dtGames.Columns.Add("Bonus").ReadOnly = true;
             dtGames.Columns.Add("Pro Pot").ReadOnly = true;
             dtGames.Columns.Add("Place").ReadOnly = true;
             dtGames.Columns.Add("Money Won", typeof(Decimal));
             dtGames.Columns.Add("Notes");
-            dtGames.Columns.Add("GameID").ReadOnly = true;
+            dtGames.Columns.Add("GmID").ReadOnly = true;
 
 
             foreach (var item in ToBeAdd)
@@ -328,37 +371,37 @@ namespace NineTapTour.Forms
                 newRow["Games"] = item.GamesPlayed;
                 newRow["Date"] = item.TournamentDate.ToShortDateString();
                 if (item.Game1 == 0)
-                    newRow["Game1"] = null;
+                    newRow["Gm1"] = null;
                 else
-                    newRow["Game1"] = item.Game1;
+                    newRow["Gm1"] = item.Game1;
 
                 if (item.Game2 == 0)
-                    newRow["Game2"] = null;
+                    newRow["Gm2"] = null;
                 else
-                    newRow["Game2"] = item.Game2;
+                    newRow["Gm2"] = item.Game2;
                 if (item.Game3 == 0)
-                    newRow["Game3"] = null;
+                    newRow["Gm3"] = null;
                 else
-                    newRow["Game3"] = item.Game3;
+                    newRow["Gm3"] = item.Game3;
                 if (item.Game4 == 0)
-                    newRow["Game4"] = null;
+                    newRow["Gm4"] = null;
                 else
-                    newRow["Game4"] = item.Game4;
+                    newRow["Gm4"] = item.Game4;
                 newRow["Scratch Total"] = item.TotalScore;
                 newRow["Game Total w/HDCP"] = item.TotalScore + (item.HandiCap * item.GamesPlayed);
                 newRow["Entry AVG"] = item.AverageForGame;
                 newRow["30 Entry AVG"] = item.trueAVG;
                 if (item.AVG == 0)
-                    newRow["Adjusted AVG"] = null;
+                    newRow["Adj. AVG"] = null;
                 else
-                    newRow["Adjusted AVG"] = item.AVG;
-                newRow["Handicap"] = item.HandiCap;
+                    newRow["Adj. AVG"] = item.AVG;
+                newRow["HDCP"] = item.HandiCap;
                 newRow["Bonus"] = item.Bonus;
                 newRow["Pro Pot"] = item.ProPot;
                 newRow["Money Won"] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
-                newRow["GameID"] = item.GameID;
+                newRow["GmID"] = item.GameID;
 
                 dtGames.Rows.Add(newRow);
 
@@ -373,37 +416,37 @@ namespace NineTapTour.Forms
                 newRow["Games"] = item.GamesPlayed;
                 newRow["Date"] = item.TournamentDate.ToShortDateString();
                 if (item.Game1 == 0)
-                    newRow["Game1"] = null;
+                    newRow["Gm1"] = null;
                 else
-                    newRow["Game1"] = item.Game1;
+                    newRow["Gm1"] = item.Game1;
 
                 if (item.Game2 == 0)
-                    newRow["Game2"] = null;
+                    newRow["Gm2"] = null;
                 else
-                    newRow["Game2"] = item.Game2;
+                    newRow["Gm2"] = item.Game2;
                 if (item.Game3 == 0)
-                    newRow["Game3"] = null;
+                    newRow["Gm3"] = null;
                 else
-                    newRow["Game3"] = item.Game3;
+                    newRow["Gm3"] = item.Game3;
                 if (item.Game4 == 0)
-                    newRow["Game4"] = null;
+                    newRow["Gm4"] = null;
                 else
-                    newRow["Game4"] = item.Game4;
+                    newRow["Gm4"] = item.Game4;
                 newRow["Scratch Total"] = item.ScratchTotal;
                 newRow["Game Total w/HDCP"] = item.TotalScore;
                 newRow["Entry AVG"] = Convert.ToDouble((item.Game1 + item.Game2 + item.Game3 + item.Game4) / item.GamesPlayed);
                 newRow["30 Entry AVG"] = item.trueAVG;
                 if (item.AVG == 0)
-                    newRow["Adjusted AVG"] = null;
+                    newRow["Adj. AVG"] = null;
                 else
-                    newRow["Adjusted AVG"] = item.AVG;
-                newRow["Handicap"] = item.HandiCap;
+                    newRow["Adj. AVG"] = item.AVG;
+                newRow["HDCP"] = item.HandiCap;
                 newRow["Bonus"] = item.Bonus;
                 newRow["Pro Pot"] = item.ProPot;
                 newRow["Money Won"] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
-                newRow["GameID"] = item.GameID;
+                newRow["GmID"] = item.GameID;
 
                 dtGames.Rows.Add(newRow);
 
@@ -495,17 +538,12 @@ namespace NineTapTour.Forms
         //makes the 30 game avg column green and potential games to be added to light blue
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         { 
+   
             dataGridView1.SuspendLayout();
-
-            dataGridView1.SuspendLayout();
-            var column = dataGridView1.Columns["Notes"];
-            column.Width = 95;
 
 
             int top5 = 0;
-            
-     
-
+ 
             for(int i = 0; i < dataGridView1.RowCount; i++)
             {
                 for (int t = 0; t < ToBeAdd.Count; t++)
@@ -520,87 +558,15 @@ namespace NineTapTour.Forms
                     }
                 }
             }
-            for (int i = 0; i < dataGridView1.RowCount; i++)
+
+            int gameCount = dataGridView1.RowCount; // variable for how many rows will show up
+            const int THIRTY_ENTRY = 30; // variable for how many rows are highlighted as per client request
+
+            for (int i = 0; i < Math.Min(THIRTY_ENTRY, gameCount); i++)
+            // loop to assign color and compares which is lower to determine how many to turn greenyellow
             {
-               
                 dataGridView1.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
-
             }
-
-
-
-
-
-
-
-            //sets any game over 250 to bold black
-            //for (int k = 0; k < dataGridView1.Rows.Count; k++)
-            //{
-            //    int game1;
-            //    bool Game1 = int.TryParse(dataGridView1.Rows[k].Cells[2].Value.ToString(), out game1);
-
-            //    int game2;
-            //    bool Game2 = int.TryParse(dataGridView1.Rows[k].Cells[3].Value.ToString(), out game2);
-
-            //    int game3;
-            //    bool Game3 = int.TryParse(dataGridView1.Rows[k].Cells[4].Value.ToString(), out game3);
-
-            //    int game4;
-            //    bool Game4 = int.TryParse(dataGridView1.Rows[k].Cells[5].Value.ToString(), out game4);
-
-
-            //    if (game1 > TURN_BOLD_IF_BOWLED_OVER_NUMBER && Game1 == true)
-            //    {
-            //        dataGridView1.Rows[k].Cells[2].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
-            //        dataGridView1[2, k].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
-            //    }
-            //    if (game2 > TURN_BOLD_IF_BOWLED_OVER_NUMBER && Game2 == true)
-            //    {
-            //        dataGridView1.Rows[k].Cells[3].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
-            //    }
-            //    if (game3 > TURN_BOLD_IF_BOWLED_OVER_NUMBER && Game3 == true)
-            //    {
-            //        dataGridView1.Rows[k].Cells[4].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
-            //    }
-            //    if (game4 > TURN_BOLD_IF_BOWLED_OVER_NUMBER && Game4 == true)
-            //    {
-            //        dataGridView1.Rows[k].Cells[5].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
-            //    }
-
-            //}
-
-            //sets there career top 5 scratch series scores to red font
-            //for (int j = 0; j < dataGridView1.Rows.Count; j++)
-            //{
-            //    if (top5 <= 5)
-            //    {
-            //        if (Convert.ToInt32(dataGridView1.Rows[j].Cells[6].Value) == ph[0].TotalScore)
-            //        {
-            //            dataGridView1.Rows[j].Cells[6].Style.ForeColor = Color.Red;
-            //            top5++;
-            //        }
-            //        if (Convert.ToInt32(dataGridView1.Rows[j].Cells[6].Value) == ph[1].TotalScore)
-            //        {
-            //            dataGridView1.Rows[j].Cells[6].Style.ForeColor = Color.Red;
-            //            top5++;
-            //        }
-            //        if (Convert.ToInt32(dataGridView1.Rows[j].Cells[6].Value) == ph[2].TotalScore)
-            //        {
-            //            dataGridView1.Rows[j].Cells[6].Style.ForeColor = Color.Red;
-            //            top5++;
-            //        }
-            //        if (Convert.ToInt32(dataGridView1.Rows[j].Cells[6].Value) == ph[3].TotalScore)
-            //        {
-            //            dataGridView1.Rows[j].Cells[6].Style.ForeColor = Color.Red;
-            //            top5++;
-            //        }
-            //        if (Convert.ToInt32(dataGridView1.Rows[j].Cells[6].Value) == ph[4].TotalScore)
-            //        {
-            //            dataGridView1.Rows[j].Cells[6].Style.ForeColor = Color.Red;
-            //            top5++;
-            //        }
-            //    }
-            //}
 
 
             dataGridView1.ResumeLayout();

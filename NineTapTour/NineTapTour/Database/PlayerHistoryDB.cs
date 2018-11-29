@@ -624,8 +624,22 @@ namespace NineTapTour.Database
 
             
         }
-           
 
+        /// <summary>
+        /// Returns the total money won throughout a player's history
+        /// </summary>
+        /// <param name="memberNumber">the memberNumber property of the member</param>
+        /// <param name="regionId">the RegionId property indicating where the member is from </param>
+        /// <returns></returns>
+        public static decimal GetTotalMoneyWon(int memberNumber, int regionId)
+        {
+            //return the sum of all money won or 0 if no entries are present for this bowler in the database
+            var db = new NineTapDb();
+            return db.PlayerHistory
+                    .Where(p => p.MemberNumber == memberNumber && p.regionID == regionId)
+                    .Select(p => (decimal?)p.MoneyWon)
+                    .Sum() ?? 0; 
+        }
 
     }
 }
