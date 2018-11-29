@@ -148,6 +148,19 @@ namespace NineTapTour.Forms
                 }
             }
         }
+
+        /// <summary>
+        /// Opens the 'About' form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void AboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var aboutForm = Application.OpenForms["About"] as FrmAbout;
+
+            OpenOrDisplayForm(ref aboutForm);
+        }
+
         //this method is for the buttons on the main form
         public void menuHighlight(string itemName)
         {
@@ -173,9 +186,9 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
-            OpenOrDisplayForm(ref mainMenu);          
+
+            OpenOrDisplayForm(ref mainMenu);
         }
 
         /// <summary>
@@ -242,6 +255,35 @@ namespace NineTapTour.Forms
             RegionID = mainmenu.getRegionID();
             var UpdatefrmActiveMem = new FrmUpdateActiveMem(RegionID);          
             UpdatefrmActiveMem.Show();
+        }
+
+            else
+            {
+                if (memberDataIsActive == true)
+                {
+                    if (!currFrmMemberData.MemberNavigate())
+                    {
+                        memberToolStripMenuItem.Enabled = false;
+                        tournamentToolStripMenuItem.Enabled = true;
+                        mainMenuToolStripMenuItem.Enabled = true;
+                        AboutToolStripMenuItem.Enabled = true;
+                        return false;
+
+                    }
+                    else
+                    {
+                        //prevents the message box from showing up when member data form is not active
+                        memberDataIsActive = false;
+                        memberToolStripMenuItem.Enabled = true;
+                        return true;
+
+                    }
+                }
+                else
+                {
+                    return true;
+                }
+            }
         }
 
         private void BackupDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
