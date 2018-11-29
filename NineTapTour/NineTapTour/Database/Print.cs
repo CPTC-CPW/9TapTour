@@ -128,6 +128,7 @@ namespace NineTapTour.Database
                 graphic.DrawString(header + reportType + "     Squad "  + currentSquad + " Standings " , bigFont, dBrush, startX + 10, startY + 27);
             }
 
+
             if (reportTypeNum == 0)
             {
                 reportType = "Game";
