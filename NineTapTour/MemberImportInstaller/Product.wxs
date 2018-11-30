@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?define Member_Import_Data_TargetDir=$(var.Member_Import_Data.ProjectDir)bin\Release\?>
   <!--<?define NineTapTour_TargetDir=$(var.NineTapTour.TargetDir)?>-->
-	<Product Id="*" Name="MemberImportInstaller" Language="1033" Version="1.5.1" Manufacturer="Clover Park Technical College - Computer Programming" UpgradeCode="b91bafe0-0b84-4a81-9cac-97e65fff93a5">
+	<Product Id="*" Name="MemberImportInstaller" Language="1033" Version="1.6.0" Manufacturer="Clover Park Technical College - Computer Programming" UpgradeCode="b91bafe0-0b84-4a81-9cac-97e65fff93a5">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <Media Id="1" Cabinet="MemberImportData.cab" EmbedCab="yes" />
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
