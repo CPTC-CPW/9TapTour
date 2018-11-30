@@ -1703,33 +1703,7 @@ namespace NineTapTour.Forms
             //needs to delete current member information from datbase in all important places
             if (overallListOfParticipants.Count == 0)
             {
-                var confirm = MessageBox.Show(@"No players currently in tournament, would you like to delete the Tournament?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (confirm == DialogResult.No)
-                    return;
-                else
-                {
-                    //If Deleting a tournament using the delete member from tourny button is not desired functionality then the else can be deleted.
-                    //delete tournament if there are no participants.
-                    Tournament t = TournamentDb.getTourneyByID(selectedTournament.Id);
-                    TournamentDb.deleteTournament(t);
-                    ResetFields();
-                    Refresh(false);
-                    currentIndex = 0;
-                    RecordIndex(overallListOfParticipants);
-                    cbxTourneyDropDown.DataSource = TournamentDb.GetTournamentList(RegionID);
-                    cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
-                    cbxTourneyDropDown.ValueMember = "Id";
-                    if (TournamentDb.GetTournamentList(RegionID).Count <= 0)
-                    {
-                        btnDelete.Enabled = false;
-                        btnLeftArrow.Enabled = false;
-                        btnRightArrow.Enabled = false;
-                        btnFirstRecord.Enabled = false;
-                        btnLastRecord.Enabled = false;
-                    }
-
-                    return;
-                }
+                var confirm = MessageBox.Show(@"No players currently in tournament", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             try
