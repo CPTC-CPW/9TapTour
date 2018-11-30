@@ -82,6 +82,7 @@ namespace NineTapTour.Forms
                     // execute command(query)
                     SqlDataReader reader = gameOrder.ExecuteReader();
                     List<TournamentStatsList> listOfTourney = new List<TournamentStatsList>();
+
                     // view results
                     while (reader.Read())
                     {
@@ -89,26 +90,10 @@ namespace NineTapTour.Forms
                         temp.Handicap = Convert.ToInt32(reader["Handicap"]);
                         temp.Bonus = Convert.ToInt32(reader["Bonus"]);                      
                         List<int?> scores = new List<int?> { Convert.ToInt32(reader["Game1"]), Convert.ToInt32(reader["Game2"]), Convert.ToInt32(reader["Game3"]), Convert.ToInt32(reader["Game4"]) };
-                        #region Old Way                       
-                        //if (Convert.ToInt32(reader["Game1"]) <= Convert.ToInt32(reader["Game2"]) && Convert.ToInt32(reader["Game1"]) <= Convert.ToInt32(reader["Game3"]) && Convert.ToInt32(reader["Game1"]) <= Convert.ToInt32(reader["Game4"]))
-                        //{
-                        //    temp.ScratchTotal = Convert.ToInt32(reader["Game2"]) + Convert.ToInt32(reader["Game3"]) + Convert.ToInt32(reader["Game4"]);                            
-                        //}
-                        //if (Convert.ToInt32(reader["Game2"]) <= Convert.ToInt32(reader["Game1"]) && Convert.ToInt32(reader["Game2"]) <= Convert.ToInt32(reader["Game3"]) && Convert.ToInt32(reader["Game2"]) <= Convert.ToInt32(reader["Game4"]))
-                        //{
-                        //    temp.ScratchTotal = Convert.ToInt32(reader["Game1"]) + Convert.ToInt32(reader["Game3"]) + Convert.ToInt32(reader["Game4"]);
-                        //}
-                        //if (Convert.ToInt32(reader["Game3"]) <= Convert.ToInt32(reader["Game1"]) && Convert.ToInt32(reader["Game3"]) <= Convert.ToInt32(reader["Game2"]) && Convert.ToInt32(reader["Game3"]) <= Convert.ToInt32(reader["Game4"]))
-                        //{
-                        //    temp.ScratchTotal = Convert.ToInt32(reader["Game1"]) + Convert.ToInt32(reader["Game2"]) + Convert.ToInt32(reader["Game4"]);
-                        //}
-                        //if (Convert.ToInt32(reader["Game4"]) <= Convert.ToInt32(reader["Game1"]) && Convert.ToInt32(reader["Game4"]) <= Convert.ToInt32(reader["Game2"]) && Convert.ToInt32(reader["Game4"]) <= Convert.ToInt32(reader["Game3"]))
-                        //{
-                        //    temp.ScratchTotal = Convert.ToInt32(reader["Game1"]) + Convert.ToInt32(reader["Game2"]) + Convert.ToInt32(reader["Game3"]);
-                        //}
-                        #endregion
+
                         List<int> topScores = GetTop3OutOf4(scores);
                         int scratchTotal = 0;
+
                         for (int i = 0; i < 3; i++)
                         {
                             scratchTotal += topScores[i];
@@ -150,6 +135,7 @@ namespace NineTapTour.Forms
                     listOfValidScores.Add(scores[i].Value);
                 }                
             }
+
             listOfValidScores.Sort();
             listOfValidScores.Reverse();
             return listOfValidScores;            
@@ -191,6 +177,5 @@ namespace NineTapTour.Forms
         public int? Game4 { get; set; }
         public int? Handicap { get; set; }
         public int? Bonus { get; set; }
-
     }
 }

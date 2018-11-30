@@ -21,12 +21,11 @@ namespace NineTapTour.Forms
         private int memNum;
         private string memName;
         static int TURN_BOLD_IF_BOWLED_OVER_NUMBER = 250;
-        List<PlayerHistory> ToBeAdd;
         List<PlayerHistory> ph;
         int RegionID;
 
 
-        public FrmStats(int memberId, string memberName, Member currentMem, List<PlayerHistory> ToBeAdded, int RegionID)
+        public FrmStats(int memberId, string memberName, Member currentMem, int RegionID)
         {
             InitializeComponent();
             this.memId = memberId;
@@ -35,17 +34,11 @@ namespace NineTapTour.Forms
             this.memName = memberName;
             this.mem = currentMem;
             this.dataGridView1.DoubleBuffered(false);
-            this.ToBeAdd = ToBeAdded;
             dataGridView1.DataSource = tableview();
             dataGridView1.DefaultCellStyle.Alignment = DataGridViewContentAlignment.BottomCenter;
-            if(ToBeAdded.Count == 0)
-            {
-                btnSaveChanges.Enabled = true;
-            }
-            else
-            {
-                btnSaveChanges.Enabled = false;
-            }
+      
+            // Disable saving if nothing to save
+            btnSaveChanges.Enabled = (dataGridView1.RowCount == 0) ? false : true;
 
             dataGridView1.SuspendLayout();
             var column = dataGridView1.Columns[0]; // Games *
@@ -107,7 +100,6 @@ namespace NineTapTour.Forms
             }
 
             ph = PlayerHistoryDB.getMemberPlayerHistoryByTotal(memNum, RegionID);
-              
         }
 
         struct statHolder
@@ -143,6 +135,7 @@ namespace NineTapTour.Forms
                 AvgPerGame = ((Game1.HasValue ? Game1 : 0) + (Game2.HasValue ? Game2 : 0) + (Game3.HasValue ? Game3 : 0) + (Game4.HasValue ? Game4 : 0));
 
                 int div = ((Game1.HasValue ? 1 : 0) + (Game2.HasValue ? 1 : 0) + (Game3.HasValue ? 1 : 0) + (Game4.HasValue ? 1 : 0));
+
                 if (div != 0)
                 {
                     AvgPerGame /= div;
@@ -177,6 +170,7 @@ namespace NineTapTour.Forms
         {
 
             var db = new NineTapDb();
+
             var temp = (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
                         join g in db.Games on p.Game.Id equals g.Id
@@ -203,6 +197,7 @@ namespace NineTapTour.Forms
                         }).ToList();
 
             List<statHolder> stats = new List<statHolder>();
+
             for (int i = 0; i < temp.Count; i++)
             {
                 stats.Add(new statHolder(
@@ -218,71 +213,84 @@ namespace NineTapTour.Forms
                              temp[i].Game4,
                              temp[i].Handicap,
                              temp[i].Bonus
-                        )
-                    );
+                        ));
             }
+
             double sum = 0;
             double count = 0;
             #region Game 1 Average
+
             for (int i = 0; i < stats.Count; i++)
             {
                 count++;
                 sum += Convert.ToInt32(stats[i].Game1);
             }
+
             txtGame1.Text = String.Format("{0:N2}", (sum / count));
             #endregion
             #region Game 2 Average
             sum = 0;
             count = 0;
+
             for (int i = 0; i < stats.Count; i++)
             {
                 count++;
                 sum += Convert.ToInt32(stats[i].Game2);
             }
+
             txtGame2.Text = String.Format("{0:N2}", (sum / count));
             #endregion
             #region Game 3 Average
             sum = 0;
             count = 0;
+
             for (int i = 0; i < stats.Count; i++)
             {
                 count++;
                 sum += Convert.ToInt32(stats[i].Game3);
             }
+
             txtGame3.Text = String.Format("{0:N2}", (sum / count));
             #endregion
             #region Game 4 Average
             sum = 0;
             count = 0;
+
             for (int i = 0; i < stats.Count; i++)
             {
                 count++;
                 sum += Convert.ToInt32(stats[i].Game4);
             }
+
             txtGame4.Text = String.Format("{0:N2}", (sum / count));
             #endregion
             #region Scratch Total Average
             sum = 0;
             count = 0;
+
             for (int i = 0; i < stats.Count; i++)
             {
                 count++;
                 sum += Convert.ToInt32(stats[i].ScratchTotal);
             }
+
             txtScratchTotal.Text = String.Format("{0:N2}", (sum / count));
             #endregion
             #region Game Total Average
             sum = 0;
             count = 0;
+
             for (int i = 0; i < stats.Count; i++)
             {
                 count++;
                 sum += Convert.ToInt32(stats[i].GameTotal);
             }
+
             txtGameTotal.Text = String.Format("{0:N2}", (sum / count));
             #endregion
             #region Average Game Score
             sum = 0;
+
             foreach (var item in stats)
             {
                 sum += Convert.ToDouble(item.AvgPerGame);
@@ -294,21 +302,25 @@ namespace NineTapTour.Forms
             #region Handicap Average
             sum = 0;
             count = 0;
+
             for (int i = 0; i < stats.Count; i++)
             {
                 count++;
                 sum += Convert.ToInt32(stats[i].Handicap);
             }
+
             txtHandicap.Text = String.Format("{0:N2}", (sum / count));
             #endregion
             #region Bonus Pins Average
             sum = 0;
             count = 0;
+
             for (int i = 0; i < stats.Count; i++)
             {
                 count++;
                 sum += Convert.ToInt32(stats[i].Bonus);
             }
+
             txtBonus.Text = String.Format("{0:N2}", (sum / count));
             #endregion
 
@@ -316,7 +328,6 @@ namespace NineTapTour.Forms
 
         public DataTable tableview()
         {
-
             DataTable dtGames = new DataTable();
             var db = new NineTapDb();
             var temp = (from p in db.PlayerHistory
@@ -344,10 +355,10 @@ namespace NineTapTour.Forms
                             p.PPHG,
                             p.Notes
                         });
+
             dtGames.Columns.Add("Games").ReadOnly = true;
             dtGames.Columns.Add("Date", typeof(DateTime));
             dtGames.Columns.Add("Gm1");
-            //dtGames.Columns.Add(new DataColumn("Selected", typeof(bool)));
             dtGames.Columns.Add("Gm2");
             dtGames.Columns.Add("Gm3");
             dtGames.Columns.Add("Gm4"); 
@@ -360,61 +371,18 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Bonus").ReadOnly = true;
             dtGames.Columns.Add("Pro Pot").ReadOnly = true;
             dtGames.Columns.Add("Place").ReadOnly = true;
-            dtGames.Columns.Add("Money Won", typeof(Decimal));
+
+            string moneyWonWithTotal = $"Money Won ({PlayerHistoryDB.GetTotalMoneyWon(memNum, RegionID)})";
+            dtGames.Columns.Add(moneyWonWithTotal, typeof(Decimal));
             dtGames.Columns.Add("Notes");
             dtGames.Columns.Add("GmID").ReadOnly = true;
 
-
-            foreach (var item in ToBeAdd)
-            {
-                DataRow newRow = dtGames.NewRow();
-                newRow["Games"] = item.GamesPlayed;
-                newRow["Date"] = item.TournamentDate.ToShortDateString();
-                if (item.Game1 == 0)
-                    newRow["Gm1"] = null;
-                else
-                    newRow["Gm1"] = item.Game1;
-
-                if (item.Game2 == 0)
-                    newRow["Gm2"] = null;
-                else
-                    newRow["Gm2"] = item.Game2;
-                if (item.Game3 == 0)
-                    newRow["Gm3"] = null;
-                else
-                    newRow["Gm3"] = item.Game3;
-                if (item.Game4 == 0)
-                    newRow["Gm4"] = null;
-                else
-                    newRow["Gm4"] = item.Game4;
-                newRow["Scratch Total"] = item.TotalScore;
-                newRow["Game Total w/HDCP"] = item.TotalScore + (item.HandiCap * item.GamesPlayed);
-                newRow["Entry AVG"] = item.AverageForGame;
-                newRow["30 Entry AVG"] = item.trueAVG;
-                if (item.AVG == 0)
-                    newRow["Adj. AVG"] = null;
-                else
-                    newRow["Adj. AVG"] = item.AVG;
-                newRow["HDCP"] = item.HandiCap;
-                newRow["Bonus"] = item.Bonus;
-                newRow["Pro Pot"] = item.ProPot;
-                newRow["Money Won"] = item.MoneyWon;
-                newRow["Place"] = item.PPHG;
-                newRow["Notes"] = item.Notes;
-                newRow["GmID"] = item.GameID;
-
-                dtGames.Rows.Add(newRow);
-
-            }
-
-
-
             foreach (var item in temp)
             {
-
                 DataRow newRow = dtGames.NewRow();
                 newRow["Games"] = item.GamesPlayed;
                 newRow["Date"] = item.TournamentDate.ToShortDateString();
+
                 if (item.Game1 == 0)
                     newRow["Gm1"] = null;
                 else
@@ -436,6 +404,7 @@ namespace NineTapTour.Forms
                 newRow["Game Total w/HDCP"] = item.TotalScore;
                 newRow["Entry AVG"] = Convert.ToDouble((item.Game1 + item.Game2 + item.Game3 + item.Game4) / item.GamesPlayed);
                 newRow["30 Entry AVG"] = item.trueAVG;
+
                 if (item.AVG == 0)
                     newRow["Adj. AVG"] = null;
                 else
@@ -443,29 +412,20 @@ namespace NineTapTour.Forms
                 newRow["HDCP"] = item.HandiCap;
                 newRow["Bonus"] = item.Bonus;
                 newRow["Pro Pot"] = item.ProPot;
-                newRow["Money Won"] = item.MoneyWon;
+                newRow[moneyWonWithTotal] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
                 newRow["GmID"] = item.GameID;
 
                 dtGames.Rows.Add(newRow);
-
             }
-
             return dtGames;
         }
 
-
-
-
-
-
         private void FrmStats_Load(object sender, EventArgs e)
         {
-          
             try
             {
-               
                 lblName.Text = mem.FirstName + "    " + mem.LastName;
             }
             catch
@@ -473,6 +433,7 @@ namespace NineTapTour.Forms
                 lblName.Text = mem.FirstName + "   " + mem.LastName;
             }
             lblMemberNumber.Text = Convert.ToString(memNum);
+
             try
             {
                 lblStartAvg.Text = mem.StartAvg.ToString();
@@ -481,6 +442,7 @@ namespace NineTapTour.Forms
             {
                 lblStartAvg.Text = 0.ToString();
             }
+
             List<PlayerHistory> Last30 = PlayerHistoryDB.getTop30FromPlayerHistory(mem.Number);
             int game1AVG = 0;
             int game2AVG = 0;
@@ -488,6 +450,7 @@ namespace NineTapTour.Forms
             int game4AVG = 0;
             int scratchTotal = 0;
             int gameTotal = 0;
+
             if (Last30.Count > 0)
             {
                 for (int i = 0; i < Last30.Count; i++)
@@ -504,7 +467,6 @@ namespace NineTapTour.Forms
                     total += (Last30[i].Game4 != null) ? (Last30[i].Game4 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
                     gameTotal = total;
                 }
-
                 game1AVG /= Last30.Count;
                 game2AVG /= Last30.Count;
                 game3AVG /= Last30.Count;
@@ -517,12 +479,12 @@ namespace NineTapTour.Forms
                 txtScratchTotal.Text = scratchTotal.ToString();
                 txtGameTotal.Text = gameTotal.ToString();
             }
-
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             printDialog1.Document = printDocument1;
+
             if (printDialog1.ShowDialog() == DialogResult.OK)
             {
                 printDocument1.Print();
@@ -535,49 +497,35 @@ namespace NineTapTour.Forms
             this.dataGridView1.DrawToBitmap(bm, new Rectangle(0, 0, this.dataGridView1.Width, this.dataGridView1.Height));
             e.Graphics.DrawImage(bm, 0, 0);
         }
-        //makes the 30 game avg column green and potential games to be added to light blue
+
+
+        /// <summary>
+        /// Changes the background color for each cell in the "30 Entry AVG" column to green
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         { 
-   
             dataGridView1.SuspendLayout();
 
+            int currRowCount = e.RowIndex + 1; 
+            string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
 
-            int top5 = 0;
- 
-            for(int i = 0; i < dataGridView1.RowCount; i++)
+            // Only first 30 rows should be highlighted
+            const int THIRTY_ENTRIES = 30;
+
+            if (columnName == "30 Entry AVG" && currRowCount <= THIRTY_ENTRIES)
             {
-                for (int t = 0; t < ToBeAdd.Count; t++)
-                {
-                    if (ToBeAdd[t].GameID == Convert.ToInt32(dataGridView1.Rows[i].Cells[17].Value))
-                    {
-                        for (int r = 0; r < dataGridView1.ColumnCount; r++)
-                        {
-                            dataGridView1.Rows[i].Cells[r].Style.BackColor = Color.LightBlue;                   
-                        }
-
-                    }
-                }
+                dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.GreenYellow;
             }
-
-            int gameCount = dataGridView1.RowCount; // variable for how many rows will show up
-            const int THIRTY_ENTRY = 30; // variable for how many rows are highlighted as per client request
-
-            for (int i = 0; i < Math.Min(THIRTY_ENTRY, gameCount); i++)
-            // loop to assign color and compares which is lower to determine how many to turn greenyellow
-            {
-                dataGridView1.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
-            }
-
 
             dataGridView1.ResumeLayout();
-
         }
 
         private void btnSaveChanges_Click(object sender, EventArgs e)
         {
             //grab untouched playerhistory
             List<PlayerHistory> pHist = PlayerHistoryDB.getMemberPlayerHistory(mem.Number, RegionID);
-
 
             //RESTORE THE DATAGRID BACK TO THE DATE DESCINDING 
             dataGridView1.Sort(dataGridView1.Columns["Date"], System.ComponentModel.ListSortDirection.Descending);
@@ -594,51 +542,80 @@ namespace NineTapTour.Forms
                     {
                         pHist[saveX].Game1 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);        
                     }
+
                     saveY++;
+
                     if (dataGridView1[saveY, saveX].Value.ToString() != "")
                     {
                         pHist[saveX].Game2 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
                     }
+
                     saveY++;
+
                     if (dataGridView1[saveY, saveX].Value.ToString() != "")
                     {
                         pHist[saveX].Game3 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
                     }
+
                     saveY++;
+
                     if (dataGridView1[saveY, saveX].Value.ToString() != "")
                     {
                         pHist[saveX].Game4 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
                     }
+
                     saveY++;
+
                     pHist[saveX].TotalScore = (pHist[saveX].Game1 ?? 0) + (pHist[saveX].Game2 ?? 0) + (pHist[saveX].Game3 ?? 0) + (pHist[saveX].Game4 ?? 0);
+
                     saveY++;
+
                     //skip total score with handicap. not apart of Playerhistory class
                     saveY++;
+
                     pHist[saveX].AverageForGame = Convert.ToDouble(pHist[saveX].TotalScore / pHist[saveX].GamesPlayed);
+
                     saveY++;
+
                     //skip 30 game avg. doesnt need to be adjusted here. more complicated, adjust seperately.
                     saveY++;
+
                     if (dataGridView1[saveY, saveX].Value.ToString() != "")
                     {
                         pHist[saveX].AVG = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
                     }                    
+
                     saveY++; 
+
                     pHist[saveX].HandiCap = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
+
                     saveY++;
+
                     pHist[saveX].Bonus = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
+
                     saveY++;
+
                     pHist[saveX].ProPot = Convert.ToString(dataGridView1[saveY, saveX].Value);
+
                     saveY++;
+
                     pHist[saveX].PPHG = Convert.ToString(dataGridView1[saveY, saveX].Value);
+
                     saveY++;
+
                     pHist[saveX].MoneyWon = Convert.ToDecimal(dataGridView1[saveY, saveX].Value);
+
                     saveY++;
+
                     pHist[saveX].Notes = Convert.ToString(dataGridView1[saveY, saveX].Value);
+
                     saveY++;
+
                     //skip gameID, should never be editted
                     saveY++;
                 }
             }
+
             //update info
             foreach(var item in pHist)
             {
@@ -650,7 +627,6 @@ namespace NineTapTour.Forms
             }
             //refresh page
             dataGridView1.DataSource = tableview();
-
         }
     }
 }
