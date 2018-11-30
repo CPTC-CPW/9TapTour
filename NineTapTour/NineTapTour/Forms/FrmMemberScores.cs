@@ -895,11 +895,10 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
-            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
 
             // Disables buttons and breaks function
             // if already at the last record
-            if (currentIndex >= total.Count)
+            if (currentIndex >= overallListOfParticipants.Count)
             {
                 btnRightArrow.Enabled = false;
                 btnLastRecord.Enabled = false;
@@ -911,17 +910,17 @@ namespace NineTapTour.Forms
 
             // Disables buttons if last record
             // is reached
-            if (currentIndex >= total.Count)
+            if (currentIndex >= overallListOfParticipants.Count)
             {
                 btnRightArrow.Enabled = false;
                 btnLastRecord.Enabled = false;
             }
 
-            txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
-            int playerSquadNumber = total[currentIndex - 1].Squad;
+            txtMemberNum.Text = Convert.ToString(overallListOfParticipants[currentIndex - 1].Member.Number);
+            int playerSquadNumber = overallListOfParticipants[currentIndex - 1].Squad;
             CheckSquadRadioButton(playerSquadNumber);
 
-            lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count;
+            lblRecord.Text = "Record " + (currentIndex) + " / " + overallListOfParticipants.Count;
 
             FillMember();
         }
@@ -931,8 +930,6 @@ namespace NineTapTour.Forms
         /// </summary>
         private void btnLeftArrow_Click(object sender, EventArgs e)
         {
-            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-
             // Disables buttons and breaks function
             // if already at the first record
             if (currentIndex <= 1)
@@ -953,11 +950,11 @@ namespace NineTapTour.Forms
                 btnFirstRecord.Enabled = false;
             }
 
-            txtMemberNum.Text = Convert.ToString(total[currentIndex - 1].Member.Number);
-            int playerSquadNumber = total[currentIndex - 1].Squad;
+            txtMemberNum.Text = Convert.ToString(overallListOfParticipants[currentIndex - 1].Member.Number);
+            int playerSquadNumber = overallListOfParticipants[currentIndex - 1].Squad;
             CheckSquadRadioButton(playerSquadNumber);
 
-            lblRecord.Text = "Record " + (currentIndex) + " / " + total.Count;
+            lblRecord.Text = "Record " + (currentIndex) + " / " + overallListOfParticipants.Count;
 
             FillMember();
         }
@@ -969,8 +966,6 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnFirstRecord_Click(object sender, EventArgs e)
         {
-            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-
             // Disables buttons and breaks function
             // if already at the 1st record
             if (currentIndex <= 1)
@@ -986,9 +981,9 @@ namespace NineTapTour.Forms
             ReEnableNavigation();
 
             // Gets the 1st record in the list
-            txtMemberNum.Text = Convert.ToString(total[0].Member.Number);
+            txtMemberNum.Text = Convert.ToString(overallListOfParticipants[0].Member.Number);
 
-            int playerSquadNumber = total[currentIndex - 1].Squad;
+            int playerSquadNumber = overallListOfParticipants[currentIndex - 1].Squad;
             CheckSquadRadioButton(playerSquadNumber);
 
             FillMember();
@@ -1006,11 +1001,9 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
-            List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-
             // Disables buttons and breaks function
             // if already at the last record
-            if (currentIndex >= total.Count)
+            if (currentIndex >= overallListOfParticipants.Count)
             {
                 btnRightArrow.Enabled = false;
                 btnLastRecord.Enabled = false;
@@ -1018,13 +1011,13 @@ namespace NineTapTour.Forms
             }
 
             // Sets currentIndex to the size of total
-            currentIndex = total.Count;
+            currentIndex = overallListOfParticipants.Count;
 
             ReEnableNavigation();
 
             // Gets the last record from the list
-            txtMemberNum.Text = Convert.ToString(total[total.Count - 1].Member.Number);
-            int lastMemberSquad = total[total.Count - 1].Squad;
+            txtMemberNum.Text = Convert.ToString(overallListOfParticipants[overallListOfParticipants.Count - 1].Member.Number);
+            int lastMemberSquad = overallListOfParticipants[overallListOfParticipants.Count - 1].Squad;
             CheckSquadRadioButton(lastMemberSquad);
 
             FillMember();
@@ -1106,8 +1099,8 @@ namespace NineTapTour.Forms
                 // resets the current index to zero when changing the tournament
                 currentIndex = 0;
                 // Gets the record for the selected tournament
-                RecordIndex(TournamentDb.GetTournamentMemberList(GetTournamentById(selectedTournament.Id)));
                 overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
+                RecordIndex(overallListOfParticipants);
                 Refresh(false);
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
@@ -1770,8 +1763,7 @@ namespace NineTapTour.Forms
             if((sender as RadioButton).Checked)
             {
                 ScoreAndTotalClear();
-                List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-                RecordIndexOnSquadSwitch(total);
+                RecordIndexOnSquadSwitch(overallListOfParticipants);
                 FillMember();
             }
             
