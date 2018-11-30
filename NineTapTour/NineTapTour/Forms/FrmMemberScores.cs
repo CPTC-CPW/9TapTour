@@ -800,10 +800,6 @@ namespace NineTapTour.Forms
 
                             break;
                         }
-
-                        //if no break occurs, set the current index to that of the next potential index
-                        lblRecord.Text = "Record " + (part.Count + 1) + " / " + part.Count;
-                        currentIndex = part.Count + 1;
                     }
                 }
             }
