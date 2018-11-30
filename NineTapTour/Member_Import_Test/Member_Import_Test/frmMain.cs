@@ -724,18 +724,12 @@ namespace Member_Import_Test
 
             for (int sheetNum = 1; sheetNum <= xlWorkBook.Worksheets.Count; sheetNum++)
             {
-                if(sheetNum == xlWorkBook.Worksheets.Count) // if the count number is the oldest excel sheet other wise change to one
-                {
-                    // CheckToPullInfoOldestExcel();
-                }
-
                 xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
                 range = xlWorkSheet.UsedRange;
                 for (int row = 3; row <= range.Rows.Count; row++)
                 {
                     try
                     {
-
                         if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0
                             && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0
                             && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0
