@@ -169,13 +169,9 @@ namespace NineTapTour.Forms
         /// <returns>List of participants who cash</returns>
         private List<ExcelMember> BuildCashedWinnersList(List<ExcelMember> winners)
         {
-            // Deduct comp entries from total tournament entries to determine paid entries
-            // This is used to calculate number of participants who cash
-            int adjustedTournamentEntries = totalTournamentEntries - compEntries;
-
-            // Calculate number of participants who cash (i.e. 1 out of 5)
+            // Calculate number of participants who cash (i.e. 1 out of 5 minus comp entries)
             // numCashedWinners is the number of winners who cash
-            int numCashedWinners = (int)Calculations.Calculations.CalculateNumberOfMembersThatCanPlaceInATournament(adjustedTournamentEntries);
+            int numCashedWinners = Calculations.Calculations.GetQtyOfMembersThatCanPlace(totalTournamentEntries, compEntries);
 
             // Create list for winners who cashed
             List<ExcelMember> cashedWinners = new List<ExcelMember>();
