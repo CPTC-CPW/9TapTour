@@ -1709,41 +1709,51 @@ namespace NineTapTour.Forms
 
             try
             {
-                Game g = GetScoresById(currentMem.Id);
-                //Delete from player history
-                PlayerHistory p = PlayerHistoryDB.getPlayerHistoryByGameID(g.Id);
-                PlayerHistoryDB.DeletePlayerHistory(p);
-                //Delete from FinalizeTemp
-                FinalizeTemp ft = FinalizeTempDB.getFinalizeID(FinalizeTempDB.getGame(g.Id));
-                FinalizeTempDB.DeleteFinilizeTemp(ft);
-                //Delete from Participants list
-                Participant par = FinalizeTempDB.getParticipantbyGameID(g.Id);
-                FinalizeTempDB.deleteParticipant(par);
-                //Delete the game itself
-                PlayerHistoryDB.DeleteGame(g);
-
-                //resets all the feilds back to what it wouldve looked like withought such record existing
-                ResetFields();
-                Refresh(false);
-                RecordIndex(overallListOfParticipants);
-                cbxTourneyDropDown.DataSource = TournamentDb.GetTournamentList(RegionID);
-                overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
-                cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
-                cbxTourneyDropDown.ValueMember = "Id";
-                //corrects any changes to the members stats after finalizing to the last accurate data
-                List<PlayerHistory> temp = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Number, RegionID);
-                currentMem.Handicap = temp[0].HandiCap;
-                currentMem.Bonus = temp[0].Bonus;
-                currentMem.StartAvg = temp[0].AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
-                currentMem.Average = Convert.ToInt32(temp[0].trueAVG);
-                MemberDb.AddMember(currentMem);
-                ReEnableNavigation();
+                RemoveParticipantFromTournament();
+                RefreshMemberScoresForm();
             }
             catch
             {
                 MessageBox.Show("Current Stats Not added to Tournament yet.");
-                ReEnableNavigation();
             }
+            ReEnableNavigation();
+        }
+
+        private void RefreshMemberScoresForm()
+        {
+            //resets all the fields back to what it wouldve looked like without such record existing
+            ResetFields();
+            Refresh(false);
+            RecordIndex(overallListOfParticipants);
+            cbxTourneyDropDown.DataSource = TournamentDb.GetTournamentList(RegionID);
+            overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
+            cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
+            cbxTourneyDropDown.ValueMember = "Id";
+        }
+
+        private void RemoveParticipantFromTournament()
+        {
+            Game g = GetScoresById(currentMem.Id);
+            //Delete from player history
+            PlayerHistory p = PlayerHistoryDB.getPlayerHistoryByGameID(g.Id);
+            PlayerHistoryDB.DeletePlayerHistory(p);
+            //Delete from FinalizeTemp
+            FinalizeTemp ft = FinalizeTempDB.getFinalizeID(FinalizeTempDB.getGame(g.Id));
+            FinalizeTempDB.DeleteFinilizeTemp(ft);
+            //Delete from Participants list
+            Participant par = FinalizeTempDB.getParticipantbyGameID(g.Id);
+            FinalizeTempDB.deleteParticipant(par);
+            //Delete the game itself
+            PlayerHistoryDB.DeleteGame(g);
+
+
+            //corrects any changes to the members stats after finalizing to the last accurate data
+            List<PlayerHistory> temp = PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Number, RegionID);
+            currentMem.Handicap = temp[0].HandiCap;
+            currentMem.Bonus = temp[0].Bonus;
+            currentMem.StartAvg = temp[0].AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
+            currentMem.Average = Convert.ToInt32(temp[0].trueAVG);
+            MemberDb.AddMember(currentMem);
         }
 
         private void btnTournamentResults_Click(object sender, EventArgs e)
