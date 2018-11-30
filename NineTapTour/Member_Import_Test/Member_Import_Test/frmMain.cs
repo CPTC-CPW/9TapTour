@@ -756,7 +756,7 @@ namespace Member_Import_Test
                     playerH.regionID = RegionID;
                     //only process file if they have been added as a member first and are active ?
                         if (MemberDb.GetMember(temp.PlayerNumber, RegionID).IsActive == true)
-                    {
+                        {
                             try
                             {
                                 temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
@@ -1301,7 +1301,7 @@ namespace Member_Import_Test
 
             for (int i = 0; i < validMembers.Count; i++)
             {
-                List<PlayerHistory> list = PlayerHistoryDB.getLastFiveFromPlayerhistory(validMembers[i].Number, RegionID);
+                List<PlayerHistory> list = PlayerHistoryDB.GetLastFiveTournaments(validMembers[i].Number, RegionID);
                 if (list.Count > 0)
                 {
                     validMembers[i].StartAvg = list[0].AVG; //set new avg to last bowled adjusted avg

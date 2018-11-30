@@ -1093,7 +1093,7 @@ namespace NineTapTour.Forms
 
             List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
             int gamesPlayed = 0;
-            List<int> addedalreeady = new List<int>(); // a list used to catch the players memberid soo that way their bonus pin isnt adjusted more than once per tournament 
+            List<int> addedAlready = new List<int>(); // a list used to catch the players memberid soo that way their bonus pin isnt adjusted more than once per tournament 
 
             //checks to make sure all the director had adjusted avgs and checked the box to make sure they did so.
             for (int i = 0; i < FinalizeTableList.Count; i++)
@@ -1221,20 +1221,12 @@ namespace NineTapTour.Forms
                     {
                         if (FinalizeTempDB.getHistoryID(g.Id) == 0) //if this adjustement was not added to the database yet
                         {
-                            if (!addedalreeady.Contains(memId)) //if the current members bonus points were not already adjusted yet in the finalization of this tournament//only adjusts based of their highest series????
+                            if (!addedAlready.Contains(memId)) //if the current members bonus points were not already adjusted yet in the finalization of this tournament//only adjusts based of their highest series????
                             {
                                 if (topscores[topscore].GameID == FinalizeTableList[i].GameId)//if the winners of the tournament exist in this current tournement
                                 {
-                                    if (placing > 0) // if member placed in tournament, calculate bonus pins based on placing
-                                    {
-                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(true, placing, Convert.ToInt32(currentMember.Bonus), currTournament.Doubles, currentMember.Number, RegionID, currTournament.Date);
-                                    }
-                                    else  // if member didn't place in tournament, calculate bonus pins
-                                    {
-                                        currentMember.Bonus = Calculations.Calculations.CalculateBonusPins(false, placing, Convert.ToInt32(currentMember.Bonus), currTournament.Doubles, currentMember.Number, RegionID, currTournament.Date);
-                                    }
-
-                                    addedalreeady.Add(FinalizeTableList[i].MemberId);
+                                    currentMember.Bonus = Calculations.Calculations.GetAdjustedBonusPins(placing, currentMember.Bonus, currentMember.Number, RegionID, currTournament.Date);
+                                    addedAlready.Add(FinalizeTableList[i].MemberId);
                                 }
 
                             }
