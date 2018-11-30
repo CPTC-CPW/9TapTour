@@ -72,17 +72,13 @@ namespace NineTapTour.Calculations
         /// <returns></returns>
         public static int AddToBonusPins(int currentBonusPins, DateTime currTournamentDate, List<PlayerHistory> latestTournaments)
         {
-            if (latestTournaments == null)
-            {
-                throw new ArgumentNullException();
-            }
-
-            if (latestTournaments.Count < 2 || currentBonusPins == MAX_BONUS_PINS_ALLOWED)
+            if (latestTournaments == null || latestTournaments.Count < 2 || currentBonusPins == MAX_BONUS_PINS_ALLOWED)
             {
                 return currentBonusPins;
             }
 
             #region Check for wins as multiple entries and get distinct tournaments by date
+
             PlayerHistory lastTourney = latestTournaments[0];
             int i = 1;
             while (i < latestTournaments.Count && lastTourney.TournamentDate == latestTournaments[i].TournamentDate)
