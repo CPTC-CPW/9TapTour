@@ -698,7 +698,6 @@ namespace NineTapTour.Forms
         public double LeagueAvgFromPlayerHistory(int mem, int howmany, int regionid)
         {
             double sum = 0;
-            double avg = 0;
             var db = new NineTapDb();
             var temp = (from p in db.PlayerHistory
                         where p.MemberNumber == mem && p.regionID == regionid
