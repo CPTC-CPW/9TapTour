@@ -724,7 +724,6 @@ namespace Member_Import_Test
 
             for (int sheetNum = 1; sheetNum <= xlWorkBook.Worksheets.Count; sheetNum++)
             {
-
                 xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
                 range = xlWorkSheet.UsedRange;
                 for (int row = 3; row <= range.Rows.Count; row++)
@@ -732,9 +731,9 @@ namespace Member_Import_Test
                     try
                     {
                         if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
+                            && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0
+                            && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0
+                            && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
                         {
                             continue;
                         }
