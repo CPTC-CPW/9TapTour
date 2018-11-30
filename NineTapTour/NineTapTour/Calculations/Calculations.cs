@@ -22,7 +22,7 @@ namespace NineTapTour.Calculations
         const int DEDUCT_1 = 1;
         const int DEDUCT_2 = 2;
         const int DEDUCT_3 = 3;
-        const int FIRST_PLACE_DEDUCTION = 1;
+        const int FIRST_PLACE = 1;
         const int MIN_PLACEMENT_DEDUCT_2_PINS = 6;
         const int MAX_PLACEMENT_DEDUCT_2_PINS = 10;
         const int MIN_PLACEMENT_DEDUCT_3_PINS = 2;
@@ -32,114 +32,105 @@ namespace NineTapTour.Calculations
         const double PERCENTAGE_TO_CALCULATE_HANDICAP = .9;
 
         /// <summary>
-        /// method uses integer division based on client's calculation 
+        /// Calculates handicap pins to be 90% of the difference between 220 and a bowler's 9 tap tour average.
+        /// The maximum a handicap can be is 70 pins.
         /// </summary>
         /// <param name="currentAverage"></param>
         /// <returns></returns>
         public static int CalculateHandicapPins(int currentAverage)
         {
-
-            double calculateHandicap = Convert.ToDouble(BASE_AVERAGE_HANDICAP_CALCULATOR - currentAverage) * PERCENTAGE_TO_CALCULATE_HANDICAP;
-            //230 bowling average should be set to -8 handicap regardless of math
-            if (currentAverage == 230)
-            {
-                calculateHandicap = -8;
-                return (int)calculateHandicap;
-            }
-            if (calculateHandicap > MAX_HANDICAP_PINS)
-            {
-                return MAX_HANDICAP_PINS;
-            }
-            else
-            {
-                return (int)(calculateHandicap);
-            }
+            return Math.Min(MAX_HANDICAP_PINS, (BASE_AVERAGE_HANDICAP_CALCULATOR - currentAverage) * 9 / 10);
         }
 
-        public static int CalculateBonusPins(bool didMemberCash, int memberPlaced, int currentBonusPins, bool isDoublesTournament, int memNum,int RegionID, DateTime currentT)
+        /// <summary>
+        /// Returns the adjusted bonus pins after a tournament depending on if a bowler placed
+        /// and what ranking a bowler placed.
+        /// </summary>
+        /// <param name="memberPlaced">Ranking a bowler placed. 0 if not placed</param>
+        /// <param name="currentBonusPins">Bonus pins the participant had before this tournament</param>
+        /// <param name="memNum">Member number that used to identify bowler by user</param>
+        /// <param name="RegionID">RegionId from where the tournament is played</param>
+        /// <param name="currTournamentDate">Date when the current tournament is taking place</param>
+        /// <returns>Adjusted bonus pins after current tournament</returns>
+        public static int GetAdjustedBonusPins(int memberPlaced, int currentBonusPins, int memNum, int RegionID, DateTime currTournamentDate)
         {
-            
-            int RETURN = 0;
-            if (didMemberCash)
+            if (memberPlaced > 0)
             {
-              RETURN =  DeductBonusPins(memberPlaced, currentBonusPins, isDoublesTournament);
+                return  DeductFromBonusPins(memberPlaced, currentBonusPins);
             }
-            else
-            {
-               RETURN = AddBonusPins(currentBonusPins, isDoublesTournament, memNum, RegionID, currentT);
-            }
-            return RETURN;
-          
+            return AddToBonusPins(currentBonusPins, currTournamentDate, PlayerHistoryDB.GetLastFiveTournaments(memNum, RegionID));
         }
 
-        public static int AddBonusPins(int currentBonusPins, bool isDoublesTournament, int MemNum, int RegionID, DateTime currenT)
+        /// <summary>
+        /// Adds to bonus pins if necessary and returns the new total bonus pins for a member
+        /// </summary>
+        /// <param name="currentBonusPins">Bonus pins before calculating new bonus pins</param>
+        /// <param name="memberNum">Member number for the member to calculate bonus pins</param>
+        /// <param name="RegionID">Region the current tournament is taking place</param>
+        /// <param name="currTournamentDate">The date the tournament took place</param>
+        /// <param name="latestTournaments">The last two distinct tournaments</param>
+        /// <returns></returns>
+        public static int AddToBonusPins(int currentBonusPins, DateTime currTournamentDate, List<PlayerHistory> latestTournaments)
         {
-            if (currentBonusPins == MAX_BONUS_PINS_ALLOWED)
+            if (latestTournaments == null || latestTournaments.Count < 2 || currentBonusPins == MAX_BONUS_PINS_ALLOWED)
             {
-                return MAX_BONUS_PINS_ALLOWED;
+                return currentBonusPins;
             }
-            else if(PlayerHistoryDB.getLastFiveFromPlayerhistory(MemNum,RegionID).Count >= 2)
+
+            #region Check for wins as multiple entries and get distinct tournaments by date
+
+            PlayerHistory lastTourney = latestTournaments[0];
+            int i = 1;
+            while (i < latestTournaments.Count && lastTourney.TournamentDate == latestTournaments[i].TournamentDate)
             {
-                List<PlayerHistory> latest = PlayerHistoryDB.getLastFiveFromPlayerhistory(MemNum,RegionID);
-                if(latest[0].TournamentDate != latest[1].TournamentDate &&
-                   latest[1].TournamentDate != currenT && //filtering history where they had bowled in a diffrent sqaud on the same day
-                   currenT != latest[0].TournamentDate)
+                // if won the last tournament on a different squad
+                if (lastTourney.Bonus != latestTournaments[i].Bonus)
                 {
-                    if(latest[0].Bonus == latest[1].Bonus &&
-                       latest[1].Bonus == currentBonusPins &&  
-                       // previous 2 lines of code checks to see if the last 2 bowling history is the same as it is currently,
-                       // after 3 times not placing, they gain a bonus point
-                       currentBonusPins == latest[0].Bonus)
-                    {
-                        return ++currentBonusPins;
-                    }
+                    return currentBonusPins;
                 }
-                return currentBonusPins;
+                i++;
+            }
 
-            }
-            else
+            PlayerHistory secondToLast = latestTournaments[i];
+            if (secondToLast == null)
             {
-              
                 return currentBonusPins;
             }
+            
+            while (i < latestTournaments.Count && secondToLast.TournamentDate == latestTournaments[i].TournamentDate)
+            {
+                // if won the second to last tournament on a different squad
+                if (lastTourney.Bonus != latestTournaments[i].Bonus)
+                {
+                    return currentBonusPins;
+                }
+                i++;
+            }
+            #endregion
+
+            // After 3 games not placing add a bonus pin
+            if (currentBonusPins == lastTourney.Bonus && currentBonusPins == secondToLast.Bonus)
+            {
+                return currentBonusPins + 1;
+            }
+            return currentBonusPins;
         }
 
-        public static int DeductBonusPins(int memberPlaced, int currentBonusPins, bool isDoublesTournament)
+        public static int DeductFromBonusPins(int memberPlaced, int currentBonusPins)
         {
             int bonusPinsAfterDeduction;
 
-            if (memberPlaced == FIRST_PLACE_DEDUCTION)
+            if (memberPlaced == FIRST_PLACE)
             {
-                if (isDoublesTournament)
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - DoublesTournamentRoundPinValue(DEDUCT_HALF);
-                }
-                else
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - currentBonusPins;
-                }
+                bonusPinsAfterDeduction = currentBonusPins - currentBonusPins;
             }
-            else if (memberPlaced >= MIN_PLACEMENT_DEDUCT_3_PINS && memberPlaced <= MAX_PLACEMENT_DEDUCT_3_PINS)
+            else if (memberPlaced <= MAX_PLACEMENT_DEDUCT_3_PINS)
             {
-                if (isDoublesTournament)
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - DoublesTournamentRoundPinValue(DEDUCT_HALF);
-                }
-                else
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - DEDUCT_3;
-                }
+                bonusPinsAfterDeduction = currentBonusPins - DEDUCT_3;
             }
-            else if (memberPlaced >= MIN_PLACEMENT_DEDUCT_2_PINS && memberPlaced <= MAX_PLACEMENT_DEDUCT_2_PINS)
+            else if (memberPlaced <= MAX_PLACEMENT_DEDUCT_2_PINS)
             {
-                if (isDoublesTournament)
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - DoublesTournamentRoundPinValue(DEDUCT_HALF);
-                }
-                else
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - DEDUCT_2;
-                }
+                bonusPinsAfterDeduction = currentBonusPins - DEDUCT_2;
             }
             else
             {
@@ -158,28 +149,15 @@ namespace NineTapTour.Calculations
         }
 
         /// <summary>
-        /// method rounds half pin deduction to the nearest whole number based
-        /// on client's calculation
+        /// Number of participants that can place in tournament. Total entries minus comp entries (tournament 
+        /// workers that do not have to pay entry fees) and divides by 5 using integer division. 
         /// </summary>
-        /// <param name="halfPinDeduction"></param>
-        /// <returns></returns>
-        public static int DoublesTournamentRoundPinValue(double halfPinDeduction)
+        /// <param name="totalEntries">all tournament participants including comp entries</param>
+        /// <param name="compEntries">tournament participants that also work at tournament</param>
+        /// <returns>the quantity of members that can place in a tournament</returns>
+        public static int GetQtyOfMembersThatCanPlace(int totalEntries, int compEntries)
         {
-            int doublesPinDeduction = (int)Math.Round(halfPinDeduction, MidpointRounding.AwayFromZero);
-            return doublesPinDeduction;
-        }
-
-        /// <summary>
-        /// method uses integer division based on client's calculation 1 in 5 participants
-        /// place in a tournament
-        /// </summary>
-        /// <param name="numberOfParticipantsInTournament"></param>
-        /// <returns></returns>
-        public static decimal CalculateNumberOfMembersThatCanPlaceInATournament(int numberOfParticipantsInTournament)
-        {
-            //grabs the ceiling of the double when divided by 5
-            decimal numberOfPlacementsBasedOnParticipants =(Math.Round(Convert.ToDecimal(numberOfParticipantsInTournament / 5)));
-            return numberOfPlacementsBasedOnParticipants;
+            return (totalEntries - compEntries) / 5;
         }
 
         /// <summary>
