@@ -500,7 +500,8 @@ namespace NineTapTour.Forms
 
 
         /// <summary>
-        /// Changes the background color for each cell in the "30 Entry AVG" column to green
+        /// Changes the background color for the top thirty cells in the "30 Entry AVG" column
+        /// Changes background color of bonus cells if game was in a tournament that bonus pins reset to 0 (player cashed)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -513,38 +514,52 @@ namespace NineTapTour.Forms
 
             // Only first 30 rows should be highlighted
             const int THIRTY_ENTRIES = 30;
+            DataGridViewCell currCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
 
             if (columnName == "30 Entry AVG" && currRowCount <= THIRTY_ENTRIES)
             {
-                dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.GreenYellow;
+                currCell.Style.BackColor = Color.GreenYellow;
             }
-            
-           
-            if (columnName == "Bonus")
+            else if (columnName == "Bonus")
             {
-                List<PlayerHistory> plays = PlayerHistoryDB.getMemberPlayerHistory(memNum, RegionID);
-                if (plays[e.RowIndex].Bonus == 0 && plays[e.RowIndex].MoneyWon > 0 )
+                int currBonus = Convert.ToInt32(currCell.Value);
+                const int MONEY_WON_INDEX = 15;
+                double currMoneyWon = Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[MONEY_WON_INDEX].Value);
+                bool currBonusHasReset = false;
+
+                // change current bonus pins cell background color if 0 has reset
+                if (currBonus == 0 && currMoneyWon > 0)
                 {
-                    dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.HotPink;
-                    if(e.RowIndex > 0)
+                    currCell.Style.BackColor = Color.HotPink;
+                    currBonusHasReset = true;
+                }
+
+                const int DATE_INDEX = 1;
+                DateTime currDate = Convert.ToDateTime(dataGridView1.Rows[e.RowIndex].Cells[DATE_INDEX].Value);
+                int currRowIndex = e.RowIndex - 1;
+
+                // while the same tournament in a different row above
+                while (currRowIndex >= 0 && currDate == Convert.ToDateTime(dataGridView1.Rows[currRowIndex].Cells[DATE_INDEX].Value))
+                {
+                    // if bonus has reset and is the same tournament, then highlight this
+                    if (currBonusHasReset)
                     {
-                        for (int z = e.RowIndex; z > 0; z--)
+                        dataGridView1.Rows[currRowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.HotPink;
+                    }
+                    else // if bonus hasn't reset then check to see if it does reset in a different row in same tournament
+                    {
+                        int nextBonus = Convert.ToInt32(dataGridView1.Rows[currRowIndex].Cells[e.ColumnIndex].Value);
+                        double nextMoneyWon = Convert.ToDouble(dataGridView1.Rows[currRowIndex].Cells[MONEY_WON_INDEX].Value);
+
+                        if (nextBonus == 0 && nextMoneyWon > 0)
                         {
-                            if (plays[e.RowIndex].TournamentDate == plays[z].TournamentDate)
-                            {
-                                dataGridView1.Rows[z].Cells[e.ColumnIndex].Style.BackColor = Color.HotPink;
-                            }
-                            else
-                            {
-                                break; // to break out of the loop if the prev tournament date does not match the current row.
-                            }
+                            currCell.Style.BackColor = Color.HotPink;
                         }
-                    }     
-                }    
+                    }
+                    currRowIndex--;
+                }
             }
-
             dataGridView1.ResumeLayout();
-
         }
 
         private void btnSaveChanges_Click(object sender, EventArgs e)
