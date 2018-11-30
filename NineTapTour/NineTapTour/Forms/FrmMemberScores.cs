@@ -1704,6 +1704,7 @@ namespace NineTapTour.Forms
             if (overallListOfParticipants.Count == 0)
             {
                 var confirm = MessageBox.Show(@"No players currently in tournament", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
 
             try
