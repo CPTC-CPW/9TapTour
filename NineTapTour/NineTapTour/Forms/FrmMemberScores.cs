@@ -185,7 +185,8 @@ namespace NineTapTour.Forms
                 overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
                 RecordIndex(overallListOfParticipants);
                 
-                btnDelete.Enabled = true;
+                // enables delete button
+                btnDelete.Enabled = false;
                
                 Refresh(false);
                 // sets focus to member num becuse that is what a user will need next
@@ -1081,7 +1082,8 @@ namespace NineTapTour.Forms
                 txtMemberNum.Enabled = true;
                 EnableButtonsWhenValidTournamentSelected();
                 RadioIntialize();
-                btnDelete.Enabled = true;
+                // enables delete button
+                btnDelete.Enabled = false;
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
             }
