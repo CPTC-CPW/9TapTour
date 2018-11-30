@@ -101,6 +101,14 @@ namespace NineTapTour.Database
             }
         }
 
+        /// <summary>
+        /// Get the number of Members in a particular region
+        /// </summary>
+        public static int GetMemberListCount(int regionId)
+        {
+            NineTapDb db = new NineTapDb();
+            return db.Members.Where(member => member.NineTapRegionID == regionId).Count();
+        }
 
         public static List<Member> GetALLMembersList()
         {
@@ -201,8 +209,16 @@ namespace NineTapTour.Database
             }
         }
             
-
-
+        /// <summary>
+        /// Returns the ID of a member based on their Member Number
+        /// </summary>
+        public static int GetMemberIdByNumber(int memberNumber, int regionId, NineTapDb db)
+        {
+            return (from m in db.Members
+                    where m.Number == memberNumber &&
+                        m.NineTapRegionID == regionId
+                    select m.Id).SingleOrDefault();
+        }
 
         public static int GetMemberNumberbyID(int MemberID)
         {

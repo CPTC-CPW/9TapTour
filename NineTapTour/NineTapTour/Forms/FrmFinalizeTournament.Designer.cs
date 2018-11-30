@@ -153,7 +153,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1264, 986);
+            this.ClientSize = new System.Drawing.Size(1264, 716);
             this.Controls.Add(this.lblStartAvg);
             this.Controls.Add(this.lblName);
             this.Controls.Add(this.lblMemberNumber);

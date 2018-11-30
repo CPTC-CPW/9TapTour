@@ -19,6 +19,7 @@ namespace NineTapTour.Forms
         Tournament singleTour;
         bool single;
         int RegionID;
+
         /// <summary>
         /// This takes a tour list and modifies it. The tour you pass in will
         /// be different when this form has finished running.
@@ -58,7 +59,6 @@ namespace NineTapTour.Forms
             {
                 var query = from t in db.Tournaments
                             where t.TourneyRegion == RegionID
-                                //orderby t.Date descending
                             select t;
                 
                 // Location?
@@ -67,12 +67,14 @@ namespace NineTapTour.Forms
                     string temp = txtSearch.Text.ToLower().Trim();
                     query = query.Where(t => t.Location.ToLower().Contains(temp));
                 }
+
                 // Event?
                 if (!String.IsNullOrWhiteSpace(txtEvent.Text))
                 {
                     string temp = txtEvent.Text.ToLower().Trim();
                     query = query.Where(t => t.Event.ToLower().Contains(temp));
                 }
+
                 // Date?
                 if (chkDate.Checked)
                 {
@@ -87,6 +89,7 @@ namespace NineTapTour.Forms
                         query = query.Where(t => t.Date >= dtpFrom.Value && t.Date <= dtpTo.Value);
                     }
                 }
+
                 query = query.OrderBy(t => t.Date);
 
                 Console.WriteLine(query.ToString());
@@ -139,7 +142,8 @@ namespace NineTapTour.Forms
                     tours.Add(tour);
                     this.Close();
                 }
-            } else
+            }
+            else
             {
                 singleTour = (Tournament)listSearch.SelectedItem;
                 this.Close();
@@ -152,7 +156,8 @@ namespace NineTapTour.Forms
             {
                 btnAccept.Enabled = true;
                 listSearch.TabStop = true;
-            } else
+            }
+            else
             {
                 btnAccept.Enabled = false;
                 listSearch.TabStop = false;
@@ -208,7 +213,8 @@ namespace NineTapTour.Forms
             {
                 dtpFrom.Enabled = true;
                 dtpTo.Enabled = true;
-            } else
+            }
+            else
             {
                 dtpFrom.Enabled = false;
                 dtpTo.Enabled = false;

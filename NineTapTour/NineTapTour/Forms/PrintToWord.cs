@@ -21,19 +21,7 @@ namespace NineTapTour.Forms
 {
     class PrintToWord
     {
-        //BEGIN WORD DOCUMENT CREATION
-
-        //extra Info @
-        //http://www.dotnetperls.com/streamwriter
-        //    using (StreamWriter writer =
-        //new StreamWriter("important.txt"))
-        //    {
-        //        writer.Write("Word ");
-        //        writer.WriteLine("word 2");
-        //        writer.WriteLine("Line");
-        //    }
-        //end extra info
-       static public void CreateWordDoc(String docName) {
+        static public void CreateWordDoc(String docName) {
             string fileName = @"C:\Users\Public\NineTapTour.txt";
             File.CreateText(fileName);
             FileStream stream = File.Create(fileName);
@@ -47,11 +35,14 @@ namespace NineTapTour.Forms
             stream.Close();
         }
 
-       static public void OpenWordDoc()
+        static public void OpenWordDoc()
         {
             string fileName = @"C:\Users\Public\NineTapTour.txt";
+
             // Open in Word:
+
             Process.Start("WINWORD.EXE", fileName);
+
             //End WORD DOCUMENT CREATION
         }
     }

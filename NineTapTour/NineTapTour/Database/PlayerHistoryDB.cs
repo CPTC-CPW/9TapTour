@@ -607,21 +607,12 @@ namespace NineTapTour.Database
         /// <returns></returns>
         public static decimal GetTotalMoneyWon(int memberNumber, int regionId)
         {
-            decimal moneySum = 0;
+            //return the sum of all money won or 0 if no entries are present for this bowler in the database
             var db = new NineTapDb();
-            var result = (from p in db.PlayerHistory
-                          where p.MemberNumber == memberNumber && p.regionID == regionId
-                          orderby p.TournamentDate descending
-                          select new
-                          {
-                              p.MoneyWon
-                          }).ToArray();
-
-            foreach (var v in result)
-            {
-                moneySum += v.MoneyWon;
-            }
-            return moneySum;
+            return db.PlayerHistory
+                    .Where(p => p.MemberNumber == memberNumber && p.regionID == regionId)
+                    .Select(p => (decimal?)p.MoneyWon)
+                    .Sum() ?? 0; 
         }
 
     }

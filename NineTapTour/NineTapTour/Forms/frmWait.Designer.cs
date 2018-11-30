@@ -57,7 +57,6 @@
             this.Opacity = 0.89D;
             this.Text = "Loading";
             this.UseWaitCursor = true;
-            this.Load += new System.EventHandler(this.frmPleaseWait_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
