@@ -796,8 +796,6 @@ namespace NineTapTour.Forms
                         if (currentMem.Id == part[i].Member.Id && part[i].Squad == squad)
                         {
                             lblRecord.Text = "Record " + (i + 1) + " / " + part.Count;
-                            currentIndex = i + 1;
-
                             break;
                         }
                     }
