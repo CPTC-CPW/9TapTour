@@ -362,30 +362,25 @@ namespace NineTapTour.Database
             return Return;
         }
 
-        public static List<PlayerHistory> GetLastTwoDistinctTournamentsByDate(int memberNum, int regionId)
+        /// <summary>
+        /// Gets the last eight tournaments selecting only the tournament date and bonus pins.
+        /// Used to calculate bonus pins.
+        /// </summary>
+        /// <param name="memNum"></param>
+        /// <param name="regionId"></param>
+        /// <returns></returns>
+        public static List<PlayerHistory> GetLastEightTournaments(int memNum, int regionId)
         {
-            var lastTwoTournamentsQuery = new NineTapDb()
-                        .PlayerHistory
-                        .Where(ph => ph.MemberNumber == memberNum && ph.regionID == regionId)
-                        .GroupBy(ph => ph.TournamentDate)
-                        .Select(ph => ph.First())
-                        .Select(ph => new { ph.TournamentDate, ph.Bonus })
-                        .OrderByDescending(ph => ph.TournamentDate)
-                        .Take(2)
-                        .ToList();
-
-            List<PlayerHistory> lastTwoTournaments = new List<PlayerHistory>();
-
-            foreach (var tournament in lastTwoTournamentsQuery)
-            {
-                PlayerHistory currPlayerHistory = new PlayerHistory
-                {
-                    TournamentDate = tournament.TournamentDate,
-                    Bonus = tournament.Bonus
-                };
-                lastTwoTournaments.Add(currPlayerHistory);
-            }
-            return lastTwoTournaments;
+            return new NineTapDb().PlayerHistory
+                    .Where(ph => ph.MemberNumber == memNum && ph.regionID == regionId)
+                    .OrderByDescending(ph => ph.TournamentDate)
+                    .Select(ph => new PlayerHistory()
+                    {
+                        TournamentDate = ph.TournamentDate,
+                        Bonus = ph.Bonus
+                    })
+                    .Take(8)
+                    .ToList();
         }
 
         public static List<PlayerHistory> GetLastFiveTournaments(int memNum, int regionId)
@@ -395,7 +390,7 @@ namespace NineTapTour.Database
             {
                 //will only grab the last 5 where the AVG was adjusted, that way the bonus pins cant be affected by bowling in more then one squad
                 var temp = (from h in db.PlayerHistory
-                            where h.MemberNumber == memNum && h.regionID == regionId && h.AVG > 0 //only grabs tournaments where avgerage was determined. that way it doest grab history from a diffrent sqaud
+                            where h.MemberNumber == memNum && h.regionID == regionId && h.AVG > 0 //only grabs tournaments where average was determined. that way it doest grab history from a diffrent sqaud
                             orderby h.TournamentDate descending, h.hisID descending
                             select new
                             {
