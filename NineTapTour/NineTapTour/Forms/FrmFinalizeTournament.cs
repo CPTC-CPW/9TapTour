@@ -74,13 +74,11 @@ namespace NineTapTour.Forms
 
         private int RegionID;
         private Tournament currTournament; //current tournament
-        private List<TopScores> topscores; //used to know who won the tournament and there placing
 
-        public FrmFinalizeTournament(Tournament t, List<TopScores> tScores, int region)
+        public FrmFinalizeTournament(Tournament t, int region)
         {
             InitializeComponent();
             currTournament = t;
-            topscores = tScores;
             RegionID = region;
         }
 
@@ -1217,21 +1215,15 @@ namespace NineTapTour.Forms
                     }
 
                     //CALCULATES THE NEW BONUS PINS
-                    for (int topscore = 0; topscore < topscores.Count; topscore++)
+                    if (FinalizeTempDB.getHistoryID(g.Id) == 0) //if this adjustement was not added to the database yet
                     {
-                        if (FinalizeTempDB.getHistoryID(g.Id) == 0) //if this adjustement was not added to the database yet
+                        if (!addedAlready.Contains(memId)) //if the current members bonus points were not already adjusted yet in the finalization of this tournament//only adjusts based of their highest series????
                         {
-                            if (!addedAlready.Contains(memId)) //if the current members bonus points were not already adjusted yet in the finalization of this tournament//only adjusts based of their highest series????
-                            {
-                                if (topscores[topscore].GameID == FinalizeTableList[i].GameId)//if the winners of the tournament exist in this current tournement
-                                {
-                                    currentMember.Bonus = Calculations.Calculations.GetAdjustedBonusPins(placing, currentMember.Bonus, currentMember.Number, RegionID, currTournament.Date);
-                                    addedAlready.Add(FinalizeTableList[i].MemberId);
-                                }
-
-                            }
+                            currentMember.Bonus = Calculations.Calculations.GetAdjustedBonusPins(placing, currentMember.Bonus, currentMember.Number, RegionID, currTournament.Date);
+                            addedAlready.Add(FinalizeTableList[i].MemberId);
                         }
                     }
+                    
 
                     ph.HandiCap = FinalizeTableList[i].Handicap;
                     g.InputtedAvg = ph.AVG;
