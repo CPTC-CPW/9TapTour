@@ -45,9 +45,8 @@ namespace NineTapTour.Forms
                 // if good to go
                 else if (Convert.ToInt32(txtNumberOfMembers.Text) <= temp.Count)
                 {
-                    // only take the inputted number of members
-                    temp = temp.Take(Convert.ToInt32(txtNumberOfMembers.Text)).ToList();
                     Calculations.Calculations.CalculatePlaceStandings(temp);
+                    temp = TakeAmountOfMembers();
                     // print( go to print class )
                     Database.Print.printMemberReport(temp, selectedTournament, reportTypeNum, currentSquad, seriesCurrentSquad);
 
@@ -64,6 +63,21 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show("Please only input a number");
             }
+        }
+
+        /// <summary>
+        /// Takes the top amount of members ranked by placing order requested by the textbox. If there is
+        /// a tie in the last placing requested, the number of members is extended to include them
+        /// </summary>
+        /// <returns>Top placing MemberScores</returns>
+        private List<MemberScores> TakeAmountOfMembers()
+        {
+            int numMembers = Convert.ToInt32(txtNumberOfMembers.Text);
+            while (numMembers < temp.Count && temp[numMembers - 1].placing == temp[numMembers].placing)
+            {
+                numMembers++;
+            }
+            return temp.Take(numMembers).ToList();
         }
 
         private void FrmMemberScoresReports_Load(object sender, EventArgs e)
