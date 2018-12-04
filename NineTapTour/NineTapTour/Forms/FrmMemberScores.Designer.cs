@@ -694,6 +694,7 @@
             this.lblPlayer2.Size = new System.Drawing.Size(42, 13);
             this.lblPlayer2.TabIndex = 12;
             this.lblPlayer2.Text = "Player2";
+            this.lblPlayer2.Visible = false;
             // 
             // lblPlayer1
             // 
@@ -703,6 +704,7 @@
             this.lblPlayer1.Size = new System.Drawing.Size(42, 13);
             this.lblPlayer1.TabIndex = 11;
             this.lblPlayer1.Text = "Player1";
+            this.lblPlayer1.Visible = false;
             // 
             // lblBonusPins
             // 
