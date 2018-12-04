@@ -59,8 +59,9 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnAbout_Click(object sender, EventArgs e)
         {
-            // TODO finish 
-            MessageBox.Show("9-tap tour inc. is a unique, fun, and professionally run tournament. Members enjoy our Beat the board format, with four games per squad. Yet the fun, big payouts, special pots and the 9 tap version of bowling itself, brings new excitement to tournaments. \n Approximately one bowler in every 5 entries will cash. Other optional ways to cash are: 9 tap Jackpot, Progressive Pot, high game pots, brackets, scratch game and series pot, and more depending on where and when you bowl these Side Pots may vary from time to time. 9 Tap Tour also has BIG added tournaments. Each quarterly Tournament may have eligibility requirements for members who bowl during that Quarter. \n");
+            ((FrmMain)MdiParent).RegionID = regionID; // Retrieving ID from menMain
+            ((FrmMain)MdiParent).menuHighlight(btnAbout.Text); // Highlighting corresponding tab; "About"
+            ((FrmMain)MdiParent).AboutToolStripMenuItem_Click(sender, e); // Activate the click method for About
         }
 
         /// <summary>
@@ -71,7 +72,7 @@ namespace NineTapTour.Forms
         private void btnMemberData_Click(object sender, EventArgs e)
         {
             ((FrmMain)MdiParent).RegionID = regionID;
-            ((FrmMain)MdiParent).menuHighlight(btnMemberData.Text);
+            ((FrmMain)MdiParent).menuHighlight(btnMemberData.Text); //"Member Info"
             ((FrmMain)MdiParent).memberToolStripMenuItem_Click(sender, e);
         }
 
@@ -83,7 +84,7 @@ namespace NineTapTour.Forms
         private void btnMemberScores_Click(object sender, EventArgs e)
         {
             ((FrmMain)MdiParent).RegionID = regionID;
-            ((FrmMain)MdiParent).menuHighlight(btnMemberScores.Text);
+            ((FrmMain)MdiParent).menuHighlight(btnMemberScores.Text); // "Member Scores"
             ((FrmMain)MdiParent).tournamentToolStripMenuItem_Click(sender, e);
         }
 

@@ -218,18 +218,6 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// Opens FrmAbout.cs from the menMain menu toolstrip on FrmMain.cs
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void AboutToolStripMenuItem_Click(object sender, EventArgs e) 
-            {
-            var newFrmAbout = Application.OpenForms["FrmAbout"] as FrmAbout;
-
-            OpenOrDisplayForm(ref newFrmAbout);
-        }
-
-        /// <summary>
         /// 
         /// </summary>
         /// <param name="sender"></param>
@@ -255,35 +243,6 @@ namespace NineTapTour.Forms
             RegionID = mainmenu.getRegionID();
             var UpdatefrmActiveMem = new FrmUpdateActiveMem(RegionID);          
             UpdatefrmActiveMem.Show();
-        }
-
-            else
-            {
-                if (memberDataIsActive == true)
-                {
-                    if (!currFrmMemberData.MemberNavigate())
-                    {
-                        memberToolStripMenuItem.Enabled = false;
-                        tournamentToolStripMenuItem.Enabled = true;
-                        mainMenuToolStripMenuItem.Enabled = true;
-                        AboutToolStripMenuItem.Enabled = true;
-                        return false;
-
-                    }
-                    else
-                    {
-                        //prevents the message box from showing up when member data form is not active
-                        memberDataIsActive = false;
-                        memberToolStripMenuItem.Enabled = true;
-                        return true;
-
-                    }
-                }
-                else
-                {
-                    return true;
-                }
-            }
         }
 
         private void BackupDatabaseToolStripMenuItem_Click(object sender, EventArgs e)

@@ -182,7 +182,6 @@
         private System.Windows.Forms.ToolStripMenuItem updateInactiveMembersToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem BackupDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem RestoreDatabaseToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem AboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mainMenuToolStripMenuItem;
     }
 }
