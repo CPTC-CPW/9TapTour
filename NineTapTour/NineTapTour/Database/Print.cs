@@ -116,14 +116,14 @@ namespace NineTapTour.Database
             else if(reportTypeNum == ReportType.HighSeries)
             {
                 //The 'Through squad x' header is only drawn for Series Reports
-                if (seriesCurrentSquad == 0) //'All Squads' is checked
+                /*if (seriesCurrentSquad == 0) //'All Squads' is checked
                 {
                     graphic.DrawString("Final", bigFont, dBrush, startX + 250, startY + 70);
                 }
                 else //A different squad is checked.
                 {
                     graphic.DrawString("Through Squad " + seriesCurrentSquad, bigFont, dBrush, startX + 250, startY + 70);
-                }
+                }*/
                 reportType = "Series";
             }
 
@@ -177,13 +177,13 @@ namespace NineTapTour.Database
             }
         }
 
-        static public void printMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, int seriesCurrentSquad)
+        static public void printMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList)
         {
             Print.temp = temp;
             Print.selectedTournament = selectedTournament;
             Print.reportTypeNum = reportTypeNum;
             Print.currentSquad = currentSquad;
-            Print.seriesCurrentSquad = seriesCurrentSquad;
+            Print.squadList = squadList;
 
             // Set up compenents for printing
             PrintDialog printDialog = new PrintDialog();
@@ -216,7 +216,7 @@ namespace NineTapTour.Database
         static Tournament selectedTournament;
         static ReportType reportTypeNum;
         static int currentSquad;
-        static int seriesCurrentSquad;
+        static List<int> squadList;
         /************************************************************************/
 
         static List<Member> mems = new List<Member>();

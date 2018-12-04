@@ -147,6 +147,26 @@ namespace NineTapTour.Database
                     orderby ((g.Game.Game1) + (g.Game.Game2) + (g.Game.Game3) + (g.Game.Game4)) descending
                     select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = (g.Game.Game1) + (g.Game.Game2) + (g.Game.Game3) + (g.Game.Game4), LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1)))) }).ToList();
         }
+
+        public static List<MemberScores> GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(NineTapDb db, List<int> squadList, int selectedTourney)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static List<MemberScores> GetStandingsForTournamentByFilterSeriesByHandicap(NineTapDb db, List<int> squadList, int selectedTourney)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static List<MemberScores> GetStandingsForThreeOf4ByFilterSeriesByScratch(NineTapDb db, List<int> squadList, int selectedTourney)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static List<MemberScores> GetStandingsForTournamentByFilterSeriesByScratch(NineTapDb db, List<int> squadList, int selectedTourney)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

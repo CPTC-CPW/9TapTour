@@ -171,21 +171,22 @@ namespace NineTapTour.Database
 
         /// <summary>
         /// This method takes the list from getFilterSeriesList() 
-        /// and returns the index of the last squad checked (the "latest" squad).
+        /// and returns a list of the chosen squads.
+        /// 0 is all squads
         /// </summary>
         /// <param name="filterSeries">A list of 9 booleans determined by GRPQBS1n on FrmMemberScores</param> 
         /// <returns></returns>
-        public static int findLastCheck(List<bool> filterSeries)
+        public static List<int> squadNumList(List<bool> filterSeries)
         {
-            int last = 0;
+            List<int> squadList = new List<int>();
             for (int i = 0; i <= filterSeries.Count() - 1; i++)
             {
                 if (filterSeries[i] == true)
                 {
-                    last = i;
+                    squadList.Add(i);
                 }
             }
-            return last;
+            return squadList;
         }
     }
 }

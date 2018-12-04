@@ -21,16 +21,16 @@ namespace NineTapTour.Forms
         
         ReportType reportTypeNum;
         int currentSquad;
-        int seriesCurrentSquad;
+        List<int> squadList;
 
-        public FrmMemberScoresReports(List<MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, int seriesCurrentSquad)
+        public FrmMemberScoresReports(List<MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList)
         {
             InitializeComponent();
             this.temp = temp;
             this.selectedTournament = selectedTournament;
             this.reportTypeNum = reportTypeNum;
             this.currentSquad = currentSquad;
-            this.seriesCurrentSquad = seriesCurrentSquad;
+            this.squadList = squadList;
         }
 
         private void btnPrint_Click(object sender, EventArgs e)
@@ -48,7 +48,7 @@ namespace NineTapTour.Forms
                     Calculations.Calculations.CalculatePlaceStandings(temp);
                     temp = TakeAmountOfMembers();
                     // print( go to print class )
-                    Database.Print.printMemberReport(temp, selectedTournament, reportTypeNum, currentSquad, seriesCurrentSquad);
+                    Database.Print.printMemberReport(temp, selectedTournament, reportTypeNum, currentSquad, squadList);
 
                     this.Close();
                 }
