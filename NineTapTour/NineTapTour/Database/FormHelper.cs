@@ -134,6 +134,7 @@ namespace NineTapTour.Database
         /// <returns></returns>
         public static bool IsStateValid(string state)
         {
+            string uppercaseState = state.ToUpper().Trim();
             string[] USstates = 
                 {
                     "AL","AK","AS","AZ","AR","CA","CO",
@@ -146,8 +147,8 @@ namespace NineTapTour.Database
                     "TN","TX","UT","VT","VI","VA","WA",
                     "WV","WI","WY" 
                 };
-            return state.Length == 2 && 
-                USstates.Contains(state);
+            return uppercaseState.Length == 2 && 
+                USstates.Contains(uppercaseState);
         }
     }
 }

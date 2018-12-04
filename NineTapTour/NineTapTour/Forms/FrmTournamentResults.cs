@@ -118,6 +118,7 @@ namespace NineTapTour.Forms
                 newRow[EARNINGS_COLUMN_NAME] = item.MoneyWon;
                 newRow[MEMBER_ID_COLUMN_NAME] = item.MemberNumber;
                 newRow[GAME_ID_COLUMN_NAME] = item.GameId;
+
                 if (item.SidePot == null)
                 {
                     newRow[PROGRESSIVEPOT_COLUMN_NAME] = "0.00";
@@ -168,13 +169,9 @@ namespace NineTapTour.Forms
         /// <returns>List of participants who cash</returns>
         private List<ExcelMember> BuildCashedWinnersList(List<ExcelMember> winners)
         {
-            // Deduct comp entries from total tournament entries to determine paid entries
-            // This is used to calculate number of participants who cash
-            int adjustedTournamentEntries = totalTournamentEntries - compEntries;
-
-            // Calculate number of participants who cash (i.e. 1 out of 5)
+            // Calculate number of participants who cash (i.e. 1 out of 5 minus comp entries)
             // numCashedWinners is the number of winners who cash
-            int numCashedWinners = (int)Calculations.Calculations.CalculateNumberOfMembersThatCanPlaceInATournament(adjustedTournamentEntries);
+            int numCashedWinners = Calculations.Calculations.GetQtyOfMembersThatCanPlace(totalTournamentEntries, compEntries);
 
             // Create list for winners who cashed
             List<ExcelMember> cashedWinners = new List<ExcelMember>();
@@ -221,21 +218,28 @@ namespace NineTapTour.Forms
         /// <param name="winners"></param>
         private static void KeepHighestScoringGame(List<ExcelMember> winners)
         {
-            for (int i = 0; i < winners.Count() - 1; i++)
+            List<ExcelMember> removal = new List<ExcelMember>();
+            //find all duplicate bowlers and their lower scores
+            for (int i = 0; i < winners.Count; i++)
             {
-                // if member bowled more than one game
-                while (winners[i].MemberNumber == winners[i + 1].MemberNumber)
+                for (int j = i + 1; j < winners.Count; j++)
                 {
-                    // remove lower scoring games
-                    if (winners[i].TotalScore >= winners[i + 1].TotalScore)
+                    //Check to see if it's the same bowler
+                    if(winners[i].MemberNumber == winners[j].MemberNumber)
                     {
-                        winners.Remove(winners[i + 1]);
-                    }
-                    else
-                    {
-                        winners.Remove(winners[i]);
+                        //remove the lower score
+                        if (winners[i].TotalScore >= winners[j].TotalScore)
+                            removal.Add(winners[j]);
+                        else
+                            removal.Add(winners[i]);
                     }
                 }
+            }
+
+            //remove lower scores
+            foreach (ExcelMember member in removal)
+            {
+                winners.Remove(member);
             }
         }
 
@@ -273,6 +277,7 @@ namespace NineTapTour.Forms
                            }).ToList();
 
             totalTournamentEntries = bowlers.Count();
+
             // Use each anonymous type (bowler) to create a new ExcelMember object
             // and add them to the winners list
             foreach (var b in bowlers)
@@ -308,7 +313,6 @@ namespace NineTapTour.Forms
                     int lowScore = scores.Min();
                     m.TotalScore -= lowScore + m.Handicap + m.Bonus;
                 }
-
                 tournyBowlers.Add(m);
             }
             return tournyBowlers;
@@ -329,30 +333,6 @@ namespace NineTapTour.Forms
                 please.Close();
             }
         }
-
-        ///// <summary>
-        ///// Saves participants' place standing and earnings won to the database
-        ///// </summary>
-        ///// <param name="sender"></param>
-        ///// <param name="e"></param>
-        //private void btnSaveChanges_Click(object sender, EventArgs e)
-        //{
-
-        //    for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
-        //    {
-        //        int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
-        //        Game g = FinalizeTempDB.getGame(gameId);
-
-        //        g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
-        //        g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
-        //        g.gameRegionID = tourny.TourneyRegion;
-
-        //        db.Entry(g).State = System.Data.Entity.EntityState.Modified;
-        //        db.SaveChanges();
-        //    }
-
-        //    MessageBox.Show(@"Saved to database.");
-        //}
         
         private void exportToExcel()
         {
@@ -371,48 +351,37 @@ namespace NineTapTour.Forms
                 g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
               
                 g.gameRegionID = tourny.TourneyRegion;
-
-                //db.Entry(g).State = System.Data.Entity.EntityState.Modified;
+                
                 db.SaveChanges();
             }
-
-            //MessageBox.Show(@"Saved to database.");
+            
 
             // have program open template file automatically and auto save
             // with a specific naming conventions such as "Pacific 3Of4 1-12-18" 
             // without using open/save file dialogues
             // get the full path to where the tournament results template is located
             string getFilePath = Path.GetFullPath("Resources/TournamentResultsTemplate.xls");
+
             // get the date of the tourney and convert it to a string
             string tourneyDate = tourny.Date.ToString("MM/dd/yyyy");
+
             // replace the forward slashes with a dash
             string tournyDate = tourneyDate.Replace("/", "-");
+
             // remove the time from the end of the date
             string tournamentDate = tournyDate.Replace(tourneyDate, "");
+
             // create the name of the file by adding together the location, the event, and the
             // date of the tournament
             string fileName = tourny.Location + " " + tourny.Event + " " + tournamentDate + ".xls";
+
             // save the file in the documents folder
             string saveFile = @"\Documents\" + fileName;
 
-            // If the above is done then remove this code here:
-            ///**********************REMOVE THIS CODE********************************/
-            //MessageBox.Show("Open the file to export to."); // lets the user know to pick a file to export to
-            //var openFile = new OpenFileDialog(); // creates a new open file dialog
-            //openFile.ShowDialog(); // shows the file explorer and allows user to choose file
-            //MessageBox.Show("Name the file and pick a location to save it."); // tells the user to name the file and save it somewhere
-            //var saveFile = new SaveFileDialog(); // creates new save file dialog
-            //saveFile.ShowDialog(); // displays the file explorer to allow the file to be saved
-
-            //string getFile = Convert.ToString(openFile.FileName); // allows the file that the user opened to be written to
-            //string fileName = saveFile.FileName; // the file name the user gave the save file to be used to save the file later
-            //string fileType = saveFile.DefaultExt = "Excel Files (*.xls)|*.xls"; // the extension to be added onto the end of the file name
-            /*************************END OF REMOVE******************************/
             string data = null; // the data to be added to the excel spreadsheet cells
             string tempData = null;
             string tempData2 = null;
             string tempData3 = null;
-            //int whiteSpace = Int32.Parse(txtWhiteSpace.Text);
             
             int i = 0; // used to determine which row to save data into
             int j = 0; // used to determine which column to save the data into
@@ -426,6 +395,7 @@ namespace NineTapTour.Forms
 
             xlApp = new Excel.Application(); // open the excel application
             xlWorkBook = xlApp.Workbooks.Add(misValue);
+
             // get and open the excel file:
             try
             {
@@ -433,16 +403,15 @@ namespace NineTapTour.Forms
                 xlWorkBook = xlApp.Workbooks.Open(getFilePath, misValue, misValue, misValue, misValue, misValue,
                                                    misValue, misValue, misValue, misValue, misValue, misValue,
                                                    misValue, misValue, misValue);
+
                 // gets the sheet on the excel file that will be written to
                 xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
 
                 // adds in the tourney location in the cell A1
                 xlWorkSheet.Cells[1, 1] = tourny.Location + tourny.Event;
+
                 // adds in the date of the tourney in the cell A2
                 xlWorkSheet.Cells[2, 1] = tourny.Date;
-
-                //////////////////////
-                
 
                 // use these for loops to populate data in each of
                 // the rows and cells that have data
@@ -451,12 +420,14 @@ namespace NineTapTour.Forms
                     for (j = 0; j <= dt.Columns.Count - 1; j++)
                     {
                         data = dt.Rows[i].ItemArray[j].ToString();
+
                         // runs for the first 3 places in the data table
                         // due to their special formatting
                         if(i < 3)
                         {
                             //store the place of the next player for comparison of ties
                             tempData = dt.Rows[i + 1].ItemArray[j].ToString();
+
                             // add place standing into the first column of the current row
                             if (j == 0)
                             {
@@ -468,123 +439,141 @@ namespace NineTapTour.Forms
                                     {
                                         // add place into 1st column with a "T" for tie
                                         xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "stT";
+
                                         // add placement to 2nd column 1 row down
                                         xlWorkSheet.Cells[(i * 2) + 5, j + 2] = "1st Place";
+
                                         // add place without "st" into column 11
                                         xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
                                     }
-                                    // no tie
+                                    
                                     else
-                                    {
+                                    {   // no tie
                                         // add place into 1st column
                                         xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "st";
+
                                         // add place without "st" into column 11
                                         xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
                                     }
                                 }
-                                //check for second place
                                 else if (data == "2")
-                                {
+                                {   //check for second place
                                     // check for second place tie
                                     if (i > 1 || data == tempData)
                                     {
                                         // add place into 1st column with a "T" for tie
                                         xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "ndT";
+
                                         // add placement to 2nd column 1 row down
                                         xlWorkSheet.Cells[(i * 2) + 5, j + 2] = "2nd Place";
+
                                         // add place without "st" into column 11
                                         xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
                                     }
-                                    //no tie
                                     else
-                                    {
+                                    {   //no tie
                                         // add place into 1st column
                                         xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "nd";
+
                                         // add place without "st" into column 11
                                         xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
                                     }
                                 }
-                                //else its third place
                                 else
-                                {
+                                {   //else its third place
                                     //check for tie with player below
                                     if (data == tempData)
                                     {
                                         xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "rdT";
                                         xlWorkSheet.Cells[9, j + 2] = "3rd Place";
+
                                         // add place without "st" into column 11
                                         xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
                                     }
                                     else
                                     {
                                         xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "rd";
+
                                         // add place without "st" into column 11
                                         xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
                                     }
                                 }
                             }
+
                             // Add the name into the 2nd column of the current row
                             if (j == 1)
                             {
                                 xlWorkSheet.Cells[i + (4 + i), j + 1] = data;
                             }
+
                             // Add the handicap into the 6th column of the current
                             if (j == 2)
                             {
                                 xlWorkSheet.Cells[i + (4 + i), j + 4] = data;
                             }
+
                             // Add the total score into the 7th column of the current row
                             if (j == 3)
                             {
                                 xlWorkSheet.Cells[i + (4 + i), j + 4] = data;
                             }
+
                             // Add the money won into the 9th column of the current row
                             if (j == 4)
                             {
                                 xlWorkSheet.Cells[i + (4 + i), j + 5] = data;
+
                                 // put equation into column 15 that will display the total
                                 // amount the player earned minus the yearly membership and
                                 // any money adjustments
                                 xlWorkSheet.Cells[i + (4 + i), j + 11] = "=I" + (i + 4) + "+I" + (i + 5) + "-M" + (i + 4) + "-N" + (i + 4);
                             }
+
                             // Add the member number into the 12th column of the 4th row
                             if (j == 5)
                             {
                                 xlWorkSheet.Cells[i + (4 + i), j + 7] = data;
                             }
+
                             if(j == 6)
                             {
                                 xlWorkSheet.Cells[i + (5 + i), 9] = dt.Rows[i].ItemArray[7].ToString();
                             }
                         }
+
                         // For rows 3 and higher in the data table
                         if (i >= 3)
                         {
-                            
                             // first insert a new line into the excel spreadsheet
                             if (i >= 27 && j == 0)
                             {
                                 // Get the range on where to insert a new row into the spreadsheet
                                 Excel.Range line = (Excel.Range)xlWorkSheet.Rows[i + 7];
+
                                 // insert the new row
                                 line.Insert();
+
                                 // get these cells
                                 Excel.Range r = xlWorkSheet.get_Range("B" + (i + 7), "E" + (i + 7));
+
                                 // merge the cells of the excel sheet
                                 r.MergeCells = true;
+
                                 // get these cells
                                 Excel.Range r2 = xlWorkSheet.get_Range("G" + (i + 7), "H" + (i + 7));
+
                                 // merge the cells
                                 r2.MergeCells = true;
                             }
+
                             // Add the place standing and 
                             // displays for example: 4th, 5th, 6th,
                             // 21st, 22nd, 23rd, etc.
-
                             if (j == 0)
                             {
                                 //store the place value of the player before the current
                                 tempData = dt.Rows[i - 1].ItemArray[j].ToString();
+
                                 //if there is a next player, grab their place value aswell
                                 if((i + 1) < dt.Rows.Count)
                                 {
@@ -597,6 +586,7 @@ namespace NineTapTour.Forms
 
                                 // check the place and then add "st", "nd", "rd" or "th"
                                 string place = getPlace(data);
+
                                 //if the player's score is tied for one of the top 3 spots, format sheet accordingly
                                 if(data == "1" || data == "2" || data == "3")
                                 {
@@ -614,13 +604,12 @@ namespace NineTapTour.Forms
                                     
                                     //Set the finishing place text with a T for tie
                                     xlWorkSheet.Cells[i + 7, j + 1] = data + place + "T";
+
                                     // add place without "st, nd, rd, or th" into column 11
                                     xlWorkSheet.Cells[i + 7, j + 11] = data;
                                 }
-
-                                //check for a tie with either the player before or after the current player
                                 else if (data == tempData || data == tempData2)
-                                {
+                                {   //check for a tie with either the player before or after the current player
                                     //set the finishing place text with a T for tie
                                     xlWorkSheet.Cells[i + 7, j + 1] = data + place + "T";
                                     // add place without "st, nd, rd, or th" into column 11
@@ -634,30 +623,36 @@ namespace NineTapTour.Forms
                                     xlWorkSheet.Cells[i + 7, j + 11] = data;
                                 }
                             }
+
                             // Add the name into the 2nd column in all the rows 10 - 32 of the excel sheet
                             if (j == 1)
                             {
                                 xlWorkSheet.Cells[i + 7, j + 1] = data;
                             }
+
                             // Add the handicap in the 6th column in all the rows 10 - 32 of the excel sheet
                             if (j == 2)
                             {
                                 xlWorkSheet.Cells[i + 7, j + 4] = data;
                             }
+
                             // Add the total score in the 7th column in all the rows 10 - 32 of the excel sheet
                             if (j == 3)
                             {
                                 xlWorkSheet.Cells[i + 7, j + 4] = data;
                             }
+
                             // Add the money won into the 9th column in all the rows 10 - 32 of the excel sheet
                             if (j == 4)
                             {
                                 xlWorkSheet.Cells[i + 7, j + 5] = data;
+
                                 // put equation into column 15 that will display the total
                                 // amount the player earned minus the yearly membership and
                                 // any money adjustments
                                 xlWorkSheet.Cells[i + 7, j + 11] = "=I" + (i + 7) + "-M" + (i + 7) + "-N" + (i + 7);
                             }
+
                             // Add the member number into the 12th column in all the rows 10 - 32 of the excel sheet
                             if (j == 5)
                             {
@@ -687,18 +682,14 @@ namespace NineTapTour.Forms
                 setTotalPayout(xlWorkSheet);
 
                 // saves the excel file with the file name
-
                 try
                 {
                     if (fileName != "TournamentResultsTemplate.xls" || !string.IsNullOrEmpty(fileName))
                     {
-
                         var savefile = new SaveFileDialog();
                         savefile.DefaultExt = "Excel Files (*.xls)|*.xls";
                         savefile.FileName = fileName;
                         savefile.ShowDialog();
-
-
 
                         fileName = savefile.FileName;
 
@@ -717,26 +708,26 @@ namespace NineTapTour.Forms
                 releaseObject(xlWorkSheet);
                 releaseObject(xlWorkBook);
                 releaseObject(xlApp);
-        }
+            }
             catch
             {
             // if the workbook does not get opened, display an error message
             MessageBox.Show("Must choose a file to export to.");
             xlWorkBook.Close(true, misValue, misValue);
             xlApp.Quit();
+            }
         }
-    }
 
         //gets and sets the total amount of payout for the 
         //winners in the total payout box of the excel sheet
         private void setTotalPayout(Excel.Worksheet xlWorkSheet)
         {
             double money = 0;
+
             for(int i = 0; i < dt.Rows.Count; i++)
             {
                 money += Convert.ToDouble(dt.Rows[i].ItemArray[4]);
             }
-
             xlWorkSheet.Cells[2, 8] = money.ToString();
         }
 
@@ -747,6 +738,7 @@ namespace NineTapTour.Forms
             {
                 //get range on which to insert extra line
                 Excel.Range line = (Excel.Range)xlWorkSheet.Rows[(i * 2) + 11];
+
                 // insert the new row
                 line.Insert();
 
@@ -789,11 +781,14 @@ namespace NineTapTour.Forms
                 //get the cells from the current cell: current row ((i * 2) + 11), column C
                 //to the cell: current row, column E
                 Excel.Range r = xlWorkSheet.get_Range("C" + ((i * 2) + 11), "E" + ((i * 2) + 11));
+
                 // merge the selected cells together
                 r.MergeCells = true;
+
                 // get these cells from the current cell: current row, column F
                 //to the cell: current row, column H
                 Excel.Range r2 = xlWorkSheet.get_Range("F" + ((i * 2) + 11), "H" + ((i * 2) + 11));
+
                 // merge the selected cells together
                 r2.MergeCells = true;
 
@@ -813,8 +808,10 @@ namespace NineTapTour.Forms
 
                 //set money earned in red text next to place
                 xlWorkSheet.Cells[(i * 2) + 11, 3] = "=SUM(I" + ((i * 2) + 10) + ":I" + ((i * 2) + 11) + ")";
+
                 //label the progressive prize pot
                 xlWorkSheet.Cells[(i * 2) + 11, 6] = "$20 Progressive Pot";
+
                 //Set the Progressive pot earnings
                 xlWorkSheet.Cells[(i * 2) + 11, 9] = dt.Rows[i + 3].ItemArray[7].ToString();
             }
@@ -830,24 +827,20 @@ namespace NineTapTour.Forms
         /// <returns></returns>
         private string getPlace(string data)
         {
-            // if it is the 1st, 21st, 31st, 41st, 51st, 61st, 71st, 81st, or 91st return st
             if (data == "1" || data == "21" || data == "31" || data == "41" || data == "51" || data == "61" || data == "71" || data == "81" || data == "91")
-            {
+            {   // if it is the 1st, 21st, 31st, 41st, 51st, 61st, 71st, 81st, or 91st return st
                 return "st";
             }
-            // if it is the 2nd, 22nd, 32nd, 42nd, 52nd, 62nd, 72nd, 82nd, or 92nd return nd
             else if (data == "2" || data == "22" || data == "32" || data == "42" || data == "52" || data == "62" || data == "72" || data == "82" || data == "92")
-            {
+            {   // if it is the 2nd, 22nd, 32nd, 42nd, 52nd, 62nd, 72nd, 82nd, or 92nd return nd
                 return "nd";
             }
-            // if it is the 3rd, 23rd, 33rd, 43rd, 53rd, 63rd, 73rd, 83rd, or 93rd return rd
             else if (data == "3" || data == "23" || data == "33" || data == "43" || data == "53" || data == "63" || data == "73" || data == "83" || data == "93")
-            {
+            {   // if it is the 3rd, 23rd, 33rd, 43rd, 53rd, 63rd, 73rd, 83rd, or 93rd return rd
                 return "rd";
             }
-            // if it is any other number than the ones above return th
             else
-            {
+            {   // if it is any other number than the ones above return th
                 return "th";
             }
         }

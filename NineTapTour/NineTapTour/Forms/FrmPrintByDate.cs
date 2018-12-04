@@ -54,7 +54,8 @@ namespace NineTapTour.Forms
                 btnPrint.Enabled = true;
                 listTours.DataSource = tours;
                 listTours.DisplayMember = "TourneyNameDate";
-            } else
+            }
+            else
             {
                 btnPrint.Enabled = false;
                 listTours.Items.Clear();
