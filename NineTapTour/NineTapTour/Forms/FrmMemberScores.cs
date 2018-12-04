@@ -1500,9 +1500,8 @@ namespace NineTapTour.Forms
                 {
                     List<MemberScores> temp = ParticipantsDB.GetSeniorMemberScores(db, selectedTournament.Id);
 
-                    //new stuff here
-                    List<bool> filterSeries = FormHelper.getFilterSeriesList(GRPQBS1);
-                    int seriesCurrentSquad = FormHelper.findLastCheck(filterSeries);
+                    //seriesCurrentSquad is not used in Senior Report
+                    int seriesCurrentSquad = 0;
 
                     if (temp.Count != 0)
                     {
@@ -1562,9 +1561,8 @@ namespace NineTapTour.Forms
                     temp.Sort(scoreComparer);
                     temp.Reverse();
 
-                    //new stuff here
-                    List<bool> filterSeries = FormHelper.getFilterSeriesList(GRPQBS1);
-                    int seriesCurrentSquad = FormHelper.findLastCheck(filterSeries);
+                    //seriesCurrentSquad is not used in Game Report
+                    int seriesCurrentSquad = 0;
 
                     //find out what squad is selected At the moment of series button click
                     int currentsNum = GetSquadResultsNumberChecked();
@@ -1597,7 +1595,7 @@ namespace NineTapTour.Forms
 
                     int qualifyBySquadNumber = GetSquadResultsNumberChecked();
 
-                    //new stuff here
+                    //Gets information from Filter Series by Squad checkboxes and gets the latest squad to pass when Series is clicked.
                     List<bool> filterSeries = FormHelper.getFilterSeriesList(GRPQBS1);
                     int seriesCurrentSquad = FormHelper.findLastCheck(filterSeries);
 

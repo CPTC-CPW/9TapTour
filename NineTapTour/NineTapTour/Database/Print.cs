@@ -115,11 +115,12 @@ namespace NineTapTour.Database
             }
             else if(reportTypeNum == ReportType.HighSeries)
             {
-                if (seriesCurrentSquad == 0)
+                //The 'Through squad x' header is only drawn for Series Reports
+                if (seriesCurrentSquad == 0) //'All Squads' is checked
                 {
                     graphic.DrawString("Final", bigFont, dBrush, startX + 250, startY + 70);
                 }
-                else
+                else //A different squad is checked.
                 {
                     graphic.DrawString("Through Squad " + seriesCurrentSquad, bigFont, dBrush, startX + 250, startY + 70);
                 }
@@ -131,7 +132,7 @@ namespace NineTapTour.Database
             {
                 graphic.DrawString(header + reportType + " Final Standings", bigFont, dBrush, startX + 10, startY + 27);
             }
-            //if series button was clicked, should not say final based on qual by squad. Still shows if qual by squad filters.
+            //If Series button was clicked, should not say final based on qual by squad, rather by Fitler Series by Squad. Still shows qual by squad filters on the listed players.
             else if (currentSquad == 0 && string.Equals(reportType, "Series"))
             {
                 graphic.DrawString(header + reportType + " Standings", bigFont, dBrush, startX + 10, startY + 27);

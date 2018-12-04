@@ -156,7 +156,7 @@ namespace NineTapTour.Database
         /// and returns a list of booleans that correspond to the squads chosen.
         /// Index 0 is All Squads
         /// </summary>
-        /// <param name="groupBox">Specifically the Filter Series box, GRPQBS1 </param>
+        /// <param name="groupBox">Specifically, the Filter Series box, GRPQBS1n on FrmMemberScores </param>
         public static List<bool> getFilterSeriesList(GroupBox groupBox)
         {
             List<bool> filterSeries = new List<bool>();
@@ -169,6 +169,12 @@ namespace NineTapTour.Database
             return filterSeries;
         }
 
+        /// <summary>
+        /// This method takes the list from getFilterSeriesList() 
+        /// and returns the index of the last squad checked (the "latest" squad).
+        /// </summary>
+        /// <param name="filterSeries">A list of 9 booleans determined by GRPQBS1n on FrmMemberScores</param> 
+        /// <returns></returns>
         public static int findLastCheck(List<bool> filterSeries)
         {
             int last = 0;

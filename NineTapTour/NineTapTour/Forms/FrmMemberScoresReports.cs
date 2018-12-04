@@ -49,7 +49,7 @@ namespace NineTapTour.Forms
                     temp = temp.Take(Convert.ToInt32(txtNumberOfMembers.Text)).ToList();
                     Calculations.Calculations.CalculatePlaceStandings(temp);
                     // print( go to print class )
-                    Database.Print.printMemberReport(temp, selectedTournament, reportTypeNum,currentSquad,seriesCurrentSquad);
+                    Database.Print.printMemberReport(temp, selectedTournament, reportTypeNum, currentSquad, seriesCurrentSquad);
 
                     this.Close();
                 }
