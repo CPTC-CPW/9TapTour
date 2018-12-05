@@ -1207,10 +1207,10 @@ namespace NineTapTour.Forms
 
                     // if member placed in tournament, then set placing & player history PPHG to game placestanding
                     // placing is used to calculate bonus pins
-                    int placing = 0;
-                    if (g.PlaceStanding != null)
+                    byte placing = 0;
+                    if (g.PlaceStanding.HasValue)
                     {
-                        placing = Convert.ToInt16(g.PlaceStanding);
+                        placing = g.PlaceStanding.Value;
                         ph.PPHG = Convert.ToString(g.PlaceStanding);
                     }
 

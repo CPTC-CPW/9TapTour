@@ -371,16 +371,19 @@ namespace NineTapTour.Database
         /// <returns></returns>
         public static List<PlayerHistory> GetLastEightTournaments(int memNum, int regionId)
         {
-            return new NineTapDb().PlayerHistory
-                    .Where(ph => ph.MemberNumber == memNum && ph.regionID == regionId)
-                    .OrderByDescending(ph => ph.TournamentDate)
-                    .Select(ph => new PlayerHistory()
-                    {
-                        TournamentDate = ph.TournamentDate,
-                        Bonus = ph.Bonus
-                    })
-                    .Take(8)
-                    .ToList();
+            var queryResult = new NineTapDb().PlayerHistory
+                                    .Where(ph => ph.MemberNumber == memNum && ph.regionID == regionId)
+                                    .OrderByDescending(ph => ph.TournamentDate)
+                                    .Select(ph => new {ph.TournamentDate, ph.Bonus})
+                                    .Take(8)
+                                    .ToList();
+
+            return queryResult.Select(qr => new PlayerHistory()
+                            {
+                                TournamentDate = qr.TournamentDate,
+                                Bonus = qr.Bonus
+                            })
+                            .ToList();
         }
 
         public static List<PlayerHistory> GetLastFiveTournaments(int memNum, int regionId)

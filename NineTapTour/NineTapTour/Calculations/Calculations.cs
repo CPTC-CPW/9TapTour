@@ -52,13 +52,13 @@ namespace NineTapTour.Calculations
         /// <param name="RegionID">RegionId from where the tournament is played</param>
         /// <param name="currTournamentDate">Date when the current tournament is taking place</param>
         /// <returns>Adjusted bonus pins after current tournament</returns>
-        public static int GetAdjustedBonusPins(int memberPlaced, int currentBonusPins, int memNum, int RegionID, DateTime currTournamentDate)
+        public static int GetAdjustedBonusPins(byte memberPlaced, int currentBonusPins, int memNum, int RegionID, DateTime currTournamentDate)
         {
             if (memberPlaced > 0)
             {
                 return  DeductFromBonusPins(memberPlaced, currentBonusPins);
             }
-            return AddToBonusPins(currentBonusPins, currTournamentDate, PlayerHistoryDB.GetLastFiveTournaments(memNum, RegionID));
+            return AddToBonusPins(currentBonusPins, currTournamentDate, PlayerHistoryDB.GetLastEightTournaments(memNum, RegionID));
         }
 
         /// <summary>
