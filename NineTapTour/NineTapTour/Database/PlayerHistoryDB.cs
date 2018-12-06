@@ -566,58 +566,12 @@ namespace NineTapTour.Database
 
         public static PlayerHistory getPlayerHistoryByGameID (int GameID)
         {
-            PlayerHistory p = new PlayerHistory();
             using (var db = new NineTapDb())
             {
-                var temp = (from h in db.PlayerHistory
+                PlayerHistory temp = (from h in db.PlayerHistory
                             where h.GameID == GameID
-                            select new
-                            {
-                                h.GameID,
-                                h.GamesPlayed,
-                                h.TournamentDate,
-                                h.Game1,
-                                h.Game2,
-                                h.Game3,
-                                h.Game4,
-                                h.AverageForGame,
-                                h.trueAVG,
-                                h.AVG,
-                                h.HandiCap,
-                                h.Bonus,
-                                h.ProPot,
-                                h.MoneyWon,
-                                h.PPHG,
-                                h.Notes,
-                                h.hisID,
-                                h.MemberNumber,
-                                h.TotalScore
-                            });
-
-                foreach(var item in temp)
-                {
-                    p.AverageForGame = item.AverageForGame;
-                    p.AVG = item.AVG;
-                    p.Bonus = item.Bonus;
-                    p.Game1 = item.Game1;
-                    p.Game2 = item.Game2;
-                    p.Game3 = item.Game3;
-                    p.Game4 = item.Game4;
-                    p.GameID = item.GameID;
-                    p.GamesPlayed = item.GamesPlayed;
-                    p.HandiCap = item.HandiCap;
-                    p.hisID = item.hisID;
-                    p.MemberNumber = item.MemberNumber;
-                    p.MoneyWon = item.MoneyWon;
-                    p.Notes = item.Notes;
-                    p.PPHG = item.PPHG;
-                    p.ProPot = item.ProPot;
-                    p.TotalScore = item.TotalScore;
-                    p.TournamentDate = item.TournamentDate;
-                    p.trueAVG = item.trueAVG;
-                }
-                return p;
-
+                            select h).SingleOrDefault();
+                return temp;
             }
             
 
