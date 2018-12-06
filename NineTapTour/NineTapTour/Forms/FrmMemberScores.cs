@@ -226,7 +226,7 @@ namespace NineTapTour.Forms
                 Tournament tourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
                 int total = TournamentDb.GetTotalNumberParticipantsInTournament(tourney);
               
-                lblRecord.Text = "Record " + (currentIndex) + " / " + total;
+                lblRecord.Text = "Record " + (currentIndex + 1) + " / " + total;
 
                 chbCompEntry.Checked = currentGame.IsComp ? true : false;
 
@@ -667,12 +667,12 @@ namespace NineTapTour.Forms
             }
             else
             {
-                currentIndex = 1;
-                int playerSquadNumber = players[currentIndex - 1].Squad;
-                CheckSquadRadioButton(playerSquadNumber);
+                currentIndex = 0;
+                int playerSquadNumber = players[currentIndex].Squad;
+                CheckSquadRadioButton(playerSquadNumber + 1);
 
-                lblRecord.Text = "Record " + (currentIndex) + " / " + players.Count;
-                txtMemberNum.Text = players[currentIndex - 1].Member.Number.ToString();
+                lblRecord.Text = "Record " + (currentIndex + 1) + " / " + players.Count;
+                txtMemberNum.Text = players[currentIndex].Member.Number.ToString();
                 FillMember();
             }
         }
@@ -723,8 +723,8 @@ namespace NineTapTour.Forms
         /// <param name="pat"> a list of participant objects </param>
         public void RecordIndexAfterAddUpdate(List<Participant> pat)
         {
-            lblRecord.Text = "Record " + (pat.Count + 1) + " / " + pat.Count;
-            currentIndex = pat.Count + 1;
+            lblRecord.Text = "Record " + (pat.Count) + " / " + pat.Count;
+            currentIndex = pat.Count;
         }
 
         public void RecordIndexOnEnter(List<Participant> part)
@@ -743,14 +743,14 @@ namespace NineTapTour.Forms
                         if (currentMem.Id == part[i].Member.Id && part[i].Squad == currentSquadNumber)
                         {
                             lblRecord.Text = "Record " + (i + 1) + " / " + part.Count;
-                            currentIndex = i + 1;
+                            currentIndex = i;
 
                             break;
                         }
 
                         //if no break occurs, set the current index to that of the next potential index
-                        lblRecord.Text = "Record " + (part.Count + 1) + " / " + part.Count;
-                        currentIndex = part.Count + 1;
+                        lblRecord.Text = "Record " + (part.Count) + " / " + part.Count;
+                        currentIndex = part.Count;
                     }
                 }
             }
@@ -796,7 +796,7 @@ namespace NineTapTour.Forms
                         if (currentMem.Id == part[i].Member.Id && part[i].Squad == squad)
                         {
                             lblRecord.Text = "Record " + (i + 1) + " / " + part.Count;
-                            currentIndex = i + 1;
+                            currentIndex = i;
 
                             break;
                         }
@@ -891,18 +891,19 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
+            currentIndex++;
 
             // Disables buttons and breaks function
             // if already at the last record
-            if (currentIndex >= overallListOfParticipants.Count)
+            if (currentIndex >= overallListOfParticipants.Count + 1)
             {
+                currentIndex--;
                 btnRightArrow.Enabled = false;
                 btnLastRecord.Enabled = false;
                 return;
             }
 
             ReEnableNavigation();
-            currentIndex++;
 
             // Disables buttons if last record
             // is reached
@@ -912,11 +913,11 @@ namespace NineTapTour.Forms
                 btnLastRecord.Enabled = false;
             }
 
-            txtMemberNum.Text = Convert.ToString(overallListOfParticipants[currentIndex - 1].Member.Number);
-            int playerSquadNumber = overallListOfParticipants[currentIndex - 1].Squad;
-            CheckSquadRadioButton(playerSquadNumber);
+            txtMemberNum.Text = Convert.ToString(overallListOfParticipants[currentIndex].Member.Number);
+            int playerSquadNumber = overallListOfParticipants[currentIndex].Squad;
+            CheckSquadRadioButton(playerSquadNumber + 1);
 
-            lblRecord.Text = "Record " + (currentIndex) + " / " + overallListOfParticipants.Count;
+            lblRecord.Text = "Record " + (currentIndex + 1) + " / " + overallListOfParticipants.Count;
 
             FillMember();
         }
@@ -926,31 +927,32 @@ namespace NineTapTour.Forms
         /// </summary>
         private void btnLeftArrow_Click(object sender, EventArgs e)
         {
+            currentIndex--;
             // Disables buttons and breaks function
             // if already at the first record
-            if (currentIndex <= 1)
+            if (currentIndex <= -1)
             {
+                currentIndex++;
                 btnLeftArrow.Enabled = false;
                 btnFirstRecord.Enabled = false;
                 return;
             }
 
             ReEnableNavigation();
-            currentIndex--;
 
             // Disables buttons if first record
             // is reached
-            if (currentIndex <= 1)
+            if (currentIndex <= 0)
             {
                 btnLeftArrow.Enabled = false;
                 btnFirstRecord.Enabled = false;
             }
 
-            txtMemberNum.Text = Convert.ToString(overallListOfParticipants[currentIndex - 1].Member.Number);
-            int playerSquadNumber = overallListOfParticipants[currentIndex - 1].Squad;
-            CheckSquadRadioButton(playerSquadNumber);
+            txtMemberNum.Text = Convert.ToString(overallListOfParticipants[currentIndex].Member.Number);
+            int playerSquadNumber = overallListOfParticipants[currentIndex].Squad;
+            CheckSquadRadioButton(playerSquadNumber + 1);
 
-            lblRecord.Text = "Record " + (currentIndex) + " / " + overallListOfParticipants.Count;
+            lblRecord.Text = "Record " + (currentIndex + 1) + " / " + overallListOfParticipants.Count;
 
             FillMember();
         }
@@ -964,7 +966,7 @@ namespace NineTapTour.Forms
         {
             // Disables buttons and breaks function
             // if already at the 1st record
-            if (currentIndex <= 1)
+            if (currentIndex <= -1)
             {
                 btnLeftArrow.Enabled = false;
                 btnFirstRecord.Enabled = false;
@@ -972,15 +974,16 @@ namespace NineTapTour.Forms
             }
 
             // Sets currentIndex to 1 in order to get the 1st record
-            currentIndex = 1;
+            currentIndex = 0;
 
+            lblRecord.Text = "Record " + (currentIndex + 1) + " / " + overallListOfParticipants.Count;
             ReEnableNavigation();
 
             // Gets the 1st record in the list
             txtMemberNum.Text = Convert.ToString(overallListOfParticipants[0].Member.Number);
 
-            int playerSquadNumber = overallListOfParticipants[currentIndex - 1].Squad;
-            CheckSquadRadioButton(playerSquadNumber);
+            int playerSquadNumber = overallListOfParticipants[currentIndex].Squad;
+            CheckSquadRadioButton(playerSquadNumber + 1);
 
             FillMember();
 
@@ -1007,14 +1010,15 @@ namespace NineTapTour.Forms
             }
 
             // Sets currentIndex to the size of total
-            currentIndex = overallListOfParticipants.Count;
+            currentIndex = overallListOfParticipants.Count - 1;
 
+            lblRecord.Text = "Record " + (currentIndex + 1) + " / " + overallListOfParticipants.Count;
             ReEnableNavigation();
 
             // Gets the last record from the list
             txtMemberNum.Text = Convert.ToString(overallListOfParticipants[overallListOfParticipants.Count - 1].Member.Number);
             int lastMemberSquad = overallListOfParticipants[overallListOfParticipants.Count - 1].Squad;
-            CheckSquadRadioButton(lastMemberSquad);
+            CheckSquadRadioButton(lastMemberSquad + 1);
 
             FillMember();
 
@@ -1689,6 +1693,7 @@ namespace NineTapTour.Forms
             try
             {
                 RemoveParticipantFromTournament();
+
                 RefreshMemberScoresForm();
             }
             catch
