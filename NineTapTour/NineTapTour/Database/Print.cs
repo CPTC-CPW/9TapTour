@@ -116,14 +116,81 @@ namespace NineTapTour.Database
             else if(reportTypeNum == ReportType.HighSeries)
             {
                 //The 'Through squad x' header is only drawn for Series Reports
-                /*if (seriesCurrentSquad == 0) //'All Squads' is checked
+                if (squadList[0] == 0) //'All Squads' is checked
                 {
                     graphic.DrawString("Final", bigFont, dBrush, startX + 250, startY + 70);
                 }
                 else //A different squad is checked.
                 {
-                    graphic.DrawString("Through Squad " + seriesCurrentSquad, bigFont, dBrush, startX + 250, startY + 70);
-                }*/
+                    //create helper ints and bool
+                    int min = squadList[0];
+                    int max = squadList[squadList.Count - 1];
+                    string list = string.Join(",", squadList.ToArray());
+                    bool consective = true;
+                    
+                    
+                    
+                    if(squadList.Count == 1) //if one squad
+                    {
+                        if(min == 1) // checks for squad 1 is test for progresson based filter
+                        {
+                            graphic.DrawString("Through Squad " + min, bigFont, dBrush, startX + 250, startY + 70);
+                        }
+                        else
+                        {
+                            graphic.DrawString("Squad " + min, bigFont, dBrush, startX + 250, startY + 70);
+                        }
+                    }
+                    else //if more then one squad
+                    {
+                        //test to see if squads giving are consective
+                        for(int i = 1; i < squadList.Count; i++)
+                        {
+                            if(squadList[i] - squadList[i-1] != 1)
+                            {
+                                consective = false;
+                            }
+                        }
+
+                        if(squadList.Count == 2) //if filtering two squads
+                        {
+                            if(consective) //Calls if bool consective is true
+                            {
+                                if(min == 1)
+                                {
+                                    graphic.DrawString("Through Squads" + max, bigFont, dBrush, startX + 250, startY + 70);
+                                }
+                                else
+                                {
+                                graphic.DrawString("Squads " + min + " Through " + max, bigFont, dBrush, startX + 250, startY + 70);
+                                }
+                            }
+                            else // if bool not true
+                            {
+                                graphic.DrawString("Squad " + min + " and " + max, bigFont, dBrush, startX + 250, startY + 70);
+                            }
+                        }
+                        else // if threee or more squads being filtered
+                        {
+                            if(consective)
+                            {
+                                if(min == 1)
+                                {
+                                    graphic.DrawString("Squads Through " + max, bigFont, dBrush, startX + 250, startY + 70);
+                                }
+                                else
+                                {
+                                     graphic.DrawString("Squads " + min + " Through " + max, bigFont, dBrush, startX + 250, startY + 70);
+                                }
+                            }
+                            else
+                            {
+                                graphic.DrawString("Squads " + list, bigFont, dBrush, startX + 250, startY + 70); //how to print a list?
+                            }
+                        }
+
+                    }
+                }
                 reportType = "Series";
             }
 
