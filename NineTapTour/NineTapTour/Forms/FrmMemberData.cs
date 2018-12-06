@@ -43,6 +43,8 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void MemberDataForm_Load(object sender, EventArgs e)
         {
+            this.WindowState = FormWindowState.Maximized;
+
             //finds all Controls and change BackColor of each control color when 
             //the control is on focus
             foreach (Control ctrl in this.Controls)
@@ -116,7 +118,6 @@ namespace NineTapTour.Forms
         /// <param name="searchMem"></param>
         public void UpdateMemberInfo(Member searchMem = null)
         {
-            RemoveValidation();
             RegionID = ((FrmMain)MdiParent).RegionID;  
             
             //set all member info group control background colors
@@ -432,8 +433,6 @@ namespace NineTapTour.Forms
             // btnSave_Click and adds a member into the database.
             if (IsValidTextboxes())
             {
-                RemoveValidation();
-
                 //checks to see if MemberID exists 
                 int memId;
                 Member temp = new Member();
@@ -637,26 +636,6 @@ namespace NineTapTour.Forms
                 {
                     MessageBox.Show(ex.Message);
                 }
-            }
-        }
-
-        private void RemoveValidation()
-        {
-            Label[] validationLabels =
-            {
-                lblLastNameValidation,
-                lblFirstNameValidation,
-                lblDOBValidation,
-                lblSSNValidation,
-                lblDateJoinedValidation,
-                lblStateValidation,
-                lblReferralsValidation,
-                lblAverageValidation
-            };
-
-            for (int i = 0; i < validationLabels.Length; i++)
-            {
-                validationLabels[i].Visible = false;
             }
         }
 
@@ -1211,11 +1190,11 @@ namespace NineTapTour.Forms
                 PlayerFinalFirstAndMiddle[i] = first0middle1[0];
             }
 
-            try
+            if ( Int32.TryParse( ( ( range.Cells[1, 10] as Excel.Range ).Value2 ), out int result ) )
             {
-                playerOrgAVG = Convert.ToInt32((range.Cells[1, 10] as Excel.Range).Value2);
+                playerOrgAVG = result;
             }
-            catch (Exception NotAValidNumber)
+            else
             {
                 playerOrgAVG = -1;
             }
@@ -1242,18 +1221,11 @@ namespace NineTapTour.Forms
 
                 for (int row = 3; row <= range.Rows.Count; row++)
                 {
-                    try
+                    if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0 &&
+                        Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0 &&
+                        Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0 &&
+                        Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
                     {
-                        if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
-                        {
-                            continue;
-                        }
-                    }
-                    catch (Exception ex)
-                    {                    
                         continue;
                     }
 
