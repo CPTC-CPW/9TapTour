@@ -1,0 +1,11 @@
+Questions for Rob
+
+1. Do you want the ability to delete an entire tournament? Where would you want this option? We were thinking in the edit tournmaent section.
+
+2. Is the standings form required? Is it used? Can we remove this code if it is unnecessary?
+
+3. Do you finalize tournament before reviewing the tournament results or after? 
+
+4. Can we get a copy of Hawaii's excel sheet?
+
+5. Does he use the money won on the member scores page?  (We can disable it if he doesn't edit it on that page) 
