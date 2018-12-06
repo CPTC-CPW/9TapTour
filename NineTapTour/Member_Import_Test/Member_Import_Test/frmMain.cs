@@ -644,9 +644,17 @@ namespace Member_Import_Test
 
             string playerFullName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
             string playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
+            if (!playerLastName.Equals(","))
+            {
+                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf("."));
+            }
 
 
             string firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
+            if (!firstAndMiddle.Equals(","))
+            {
+                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(".") + 2);
+            }
             string[] first0middle1 = firstAndMiddle.Split(' ');
 
 
