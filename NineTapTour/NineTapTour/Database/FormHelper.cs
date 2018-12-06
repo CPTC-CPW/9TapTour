@@ -188,5 +188,20 @@ namespace NineTapTour.Database
             }
             return squadList;
         }
+
+        /// <summary>
+        /// This method looks at the squad list and deterine if it doens't 'skip' squads
+        /// eg if the list is 1,2,3 it's true. if 1,2,4 it's false.
+        /// </summary>
+        /// <param name="squadList">A list of squads selected in Fitler series</param>
+        /// <returns></returns>
+        public static bool isContinuous(List<int> squadList) {
+            for (int i = 1; i < squadList.Count(); i++) {
+                if (squadList[i] - squadList[i - 1] != 1) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }
