@@ -66,18 +66,7 @@ namespace NineTapTour.Forms
             // Create a List<ExcelMember> and populate it with this tournament's participants
             List<ExcelMember> winners = BuildWinnersList();
 
-            /* Sort winners by memberId before iterating over winners
-               list and only keeping member's highest scoring game */
-            winners.Sort((x, y) => x.MemberNumber.CompareTo(value: y.MemberNumber));
-
-            // Keep each member's highest scoring game
-            KeepHighestScoringGame(winners);
-
-            // Sort winners by score (highest to lowest) before running place standing algorithm
-            winners.Sort((x, y) => y.TotalScore.CompareTo(value: x.TotalScore));
-
-            // Assign place standings to bowlers, requires list to already be sorted by score, descending
-            CalculatePlaceStanding(winners);
+            Calculations.Calculations.CalculatePlaceStandings(winners);
 
             /***************************
                  CREATE DATA TABLE

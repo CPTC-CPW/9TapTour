@@ -167,7 +167,7 @@ namespace NineTapTour.Calculations
         public static void CalculatePlaceStandings(List<MemberScores> temp)
         {
             //remove duplicates
-            RemoveDuplicateBowers(temp);
+            RemoveDuplicateBowlers(temp);
 
             //ensure bowlers are sorted by score
             temp.Sort(new MemberScoresComparer());
@@ -175,9 +175,9 @@ namespace NineTapTour.Calculations
 
 
             int place = 1;
-            for (int currPosition = 0; currPosition < temp.Count; currPosition++)
+            for (int currPosition = 1; currPosition < temp.Count; currPosition++)
             {
-                if (currPosition > 0 && temp[currPosition].Score == temp[currPosition - 1].Score)
+                if (temp[currPosition].Score == temp[currPosition - 1].Score)
                 {
                     temp[currPosition].placing = temp[currPosition - 1].placing;
                 }
@@ -190,14 +190,41 @@ namespace NineTapTour.Calculations
         }
 
         /// <summary>
+        /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding
+        /// </summary>
+        /// <param name="members"></param>
+        public static void CalculatePlaceStandings(List<ExcelMember> members)
+        {
+            //remove duplicates
+            RemoveDuplicateBowlers(members);
+
+            //ensure bowlers are sorted by score
+            members.Sort((x, y) => y.TotalScore.CompareTo(x.TotalScore));
+
+            int place = 1;
+            for (int currPosition = 0; currPosition < members.Count; currPosition++)
+            {
+                if (currPosition > 0 && members[currPosition].TotalScore == members[currPosition - 1].TotalScore)
+                {
+                    members[currPosition].PlaceStanding = members[currPosition - 1].PlaceStanding;
+                }
+                else
+                {
+                    members[currPosition].PlaceStanding = place;
+                }
+                place++;
+            }
+        }
+
+        /// <summary>
         /// Removes the lower scores of duplicate bowlers by MemberId
         /// </summary>
         /// <param name="temp"></param>
-        private static void RemoveDuplicateBowers(List<MemberScores> temp)
+        private static void RemoveDuplicateBowlers(List<MemberScores> temp)
         {
+            List<MemberScores> removal = new List<MemberScores>();
             for (int i = 0; i < temp.Count; i++)
             {
-                List<MemberScores> removal = new List<MemberScores>();
                 for (int j = i + 1; j < temp.Count; j++)
                 {
                     if(temp[i].MemberId == temp[j].MemberId)
@@ -212,6 +239,34 @@ namespace NineTapTour.Calculations
                 foreach (MemberScores deleteMember in removal)
                 {
                     temp.Remove(deleteMember);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Finds all duplicate bowlers and removes all duplicates that aren't that bowler's
+        /// highest score
+        /// </summary>
+        /// <param name="members"></param>
+        private static void RemoveDuplicateBowlers(List<ExcelMember> members)
+        {
+            List<ExcelMember> removal = new List<ExcelMember>();
+            for (int i = 0; i < members.Count; i++)
+            {
+                for (int j = i + 1; j < members.Count; j++)
+                {
+                    if (members[i].MemberNumber == members[j].MemberNumber)
+                    {
+                        if (members[i].TotalScore >= members[j].TotalScore)
+                            removal.Add(members[j]);
+                        else
+                            removal.Add(members[i]);
+                    }
+                }
+
+                foreach (ExcelMember deleteMember in removal)
+                {
+                    members.Remove(deleteMember);
                 }
             }
         }
