@@ -1599,15 +1599,15 @@ namespace NineTapTour.Forms
                     #region PRINTING HANDICAP TOURNAMENT RESULTS
                     if (rdoHandicapScore.Checked)
                     {
-                        if (selectedTournament.ThreeOutOf4 && squadList.Contains(0))
+                        /*if (selectedTournament.ThreeOutOf4 && squadList.Contains(0))
                         {
                             temp = ParticipantsDB.GetStandingsForThreeOutOf4ByHandicap(db, selectedTournament.Id);
                         }
                         else if (selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
                         {
                             temp = ParticipantsDB.GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(db, squadList, selectedTournament.Id);
-                        }
-                        /*else if (selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall best standings for 3of4 tournament
+                        }*/
+                        if (selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall best standings for 3of4 tournament
                         {
                             temp = ParticipantsDB.GetStandingsForThreeOutOf4ByHandicap(db, selectedTournament.Id);
                         }
@@ -1615,65 +1615,65 @@ namespace NineTapTour.Forms
                         {
                             temp = ParticipantsDB.GetStandingsForThreeOf4BySquadNumberByHandicap(db, qualifyBySquadNumber, selectedTournament.Id);
 
-                        }*/
+                        }
 
-                        else if (!selectedTournament.ThreeOutOf4 && squadList.Contains(0))
+                        /*else if (!selectedTournament.ThreeOutOf4 && squadList.Contains(0))
                         {
                             temp = ParticipantsDB.GetStandingsForTournamentByHandicap(db, selectedTournament.Id);
                         }
                         else if (!selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
                         {
                             temp = ParticipantsDB.GetStandingsForTournamentByFilterSeriesByHandicap(db, squadList, selectedTournament.Id);
-                        }
-                        /*else if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall standings for a regular tournament
+                        }*/
+                        if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall standings for a regular tournament
                         {
                             temp = ParticipantsDB.GetStandingsForTournamentByHandicap(db, selectedTournament.Id);
                         }
                         else if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber > 0) //standings based on squad for a regular tournament
                         {
                             temp = ParticipantsDB.GetStandingsForTournamentBySquadByHandicap(db, qualifyBySquadNumber, selectedTournament.Id);
-                        }*/
+                        }
                     }
                     #endregion
 
                     #region PRINTING SCRATCH TOURNAMENT RESULTS
                     else if (rdoScratchScore.Checked)
                     {
-                        if (selectedTournament.ThreeOutOf4 && squadList.Contains(0))
+                        /*if (selectedTournament.ThreeOutOf4 && squadList.Contains(0))
                         {
                             temp = ParticipantsDB.GetStandingsForThreeOf4ByScratch(db, selectedTournament.Id);
                         }
                         else if (selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
                         {
                             temp = ParticipantsDB.GetStandingsForThreeOf4ByFilterSeriesByScratch(db, squadList, selectedTournament.Id);
-                        }
+                        }*/
 
-                        /*if (selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall best standings for 3of4 tournament
+                        if (selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall best standings for 3of4 tournament
                         {
                             temp = ParticipantsDB.GetStandingsForThreeOf4ByScratch(db, selectedTournament.Id);
                         }
                         else if (selectedTournament.ThreeOutOf4 && qualifyBySquadNumber > 0) //best standings based on sqaud for  3of4 tournament
                         {
                             temp = ParticipantsDB.GetStandingsThreeOfFourBySquadScratch(db, qualifyBySquadNumber, selectedTournament.Id);
-                        }*/
+                        }
 
-                        else if (!selectedTournament.ThreeOutOf4 && squadList.Contains(0))
+                        /*else if (!selectedTournament.ThreeOutOf4 && squadList.Contains(0))
                         {
                             temp = ParticipantsDB.GetStandingsForTournamentByScratch(db, selectedTournament.Id);
                         }
                         else if (!selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
                         {
                             temp = ParticipantsDB.GetStandingsForTournamentByFilterSeriesByScratch(db, squadList, selectedTournament.Id);
-                        }
+                        }*/
 
-                        /*else if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall standings for a regular tournament
+                        if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall standings for a regular tournament
                         {
                             temp = ParticipantsDB.GetStandingsForTournamentByScratch(db, selectedTournament.Id);
                         }
                         else if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber > 0) //standings based on squad for a regular tournament
                         {
                             temp = ParticipantsDB.GetStandingsForTournamentBySquadScratch(db, qualifyBySquadNumber, selectedTournament.Id);
-                        }*/
+                        }
                     }
                     #endregion
 
