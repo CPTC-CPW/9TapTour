@@ -176,7 +176,7 @@ namespace NineTapTour.Database
                             {
                                 if(min == 1)
                                 {
-                                    graphic.DrawString("Squads Through " + max, bigFont, dBrush, startX + 250, startY + 70);
+                                    graphic.DrawString("Through squad" + max, bigFont, dBrush, startX + 250, startY + 70);
                                 }
                                 else
                                 {
