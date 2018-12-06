@@ -686,8 +686,8 @@ namespace NineTapTour.Forms
                 {
                     if (fileName != "TournamentResultsTemplate.xls" || !string.IsNullOrEmpty(fileName))
                     {
-                        var savefile = new SaveFileDialog();
-                        savefile.DefaultExt = "Excel Files (*.xls)|*.xls";
+                        SaveFileDialog savefile = new SaveFileDialog();
+                        savefile.Filter = "Excel Files (*.xls)|*.xls";
                         savefile.FileName = fileName;
                         savefile.ShowDialog();
 
