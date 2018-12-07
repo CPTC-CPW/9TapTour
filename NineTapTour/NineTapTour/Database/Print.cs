@@ -115,6 +115,82 @@ namespace NineTapTour.Database
             }
             else if(reportTypeNum == ReportType.HighSeries)
             {
+                //The 'Through squad x' header is only drawn for Series Reports
+                if (squadList[0] == 0) //'All Squads' is checked
+                {
+                    graphic.DrawString("Final", bigFont, dBrush, startX + 250, startY + 70);
+                }
+                else //A different squad is checked.
+                {
+                    //create helper ints and bool
+                    int min = squadList[0];
+                    int max = squadList[squadList.Count - 1];
+                    string list = string.Join(",", squadList.ToArray());
+                    bool consective = true;
+                    
+                    
+                    
+                    if(squadList.Count == 1) //if one squad
+                    {
+                        if(min == 1) // checks for squad 1 is test for progresson based filter
+                        {
+                            graphic.DrawString("Through Squad " + min, bigFont, dBrush, startX + 250, startY + 70);
+                        }
+                        else
+                        {
+                            graphic.DrawString("Squad " + min, bigFont, dBrush, startX + 250, startY + 70);
+                        }
+                    }
+                    else //if more then one squad
+                    {
+                        //test to see if squads giving are consective
+                        for(int i = 1; i < squadList.Count; i++)
+                        {
+                            if(squadList[i] - squadList[i-1] != 1)
+                            {
+                                consective = false;
+                            }
+                        }
+
+                        if(squadList.Count == 2) //if filtering two squads
+                        {
+                            if(consective) //Calls if bool consective is true
+                            {
+                                if(min == 1)
+                                {
+                                    graphic.DrawString("Through Squads" + max, bigFont, dBrush, startX + 250, startY + 70);
+                                }
+                                else
+                                {
+                                graphic.DrawString("Squads " + min + " Through " + max, bigFont, dBrush, startX + 250, startY + 70);
+                                }
+                            }
+                            else // if bool not true
+                            {
+                                graphic.DrawString("Squad " + min + " and " + max, bigFont, dBrush, startX + 250, startY + 70);
+                            }
+                        }
+                        else // if threee or more squads being filtered
+                        {
+                            if(consective)
+                            {
+                                if(min == 1)
+                                {
+                                    graphic.DrawString("Through squad" + max, bigFont, dBrush, startX + 250, startY + 70);
+                                }
+                                else
+                                {
+                                     graphic.DrawString("Squads " + min + " Through " + max, bigFont, dBrush, startX + 250, startY + 70);
+                                }
+                            }
+                            else
+                            {
+                                graphic.DrawString("Squads " + list, bigFont, dBrush, startX + 250, startY + 70); //how to print a list?
+                            }
+                        }
+
+                    }
+                }
                 reportType = "Series";
             }
 
@@ -123,10 +199,16 @@ namespace NineTapTour.Database
             {
                 graphic.DrawString(header + reportType + " Final Standings", bigFont, dBrush, startX + 10, startY + 27);
             }
+            //If Series button was clicked, should not say final based on qual by squad, rather by Fitler Series by Squad. Still shows qual by squad filters on the listed players.
+            else if (currentSquad == 0 && string.Equals(reportType, "Series"))
+            {
+                graphic.DrawString(header + reportType + " Standings", bigFont, dBrush, startX + 10, startY + 27);
+            }
             else
             {
                 graphic.DrawString(header + reportType + "     Squad "  + currentSquad + " Standings " , bigFont, dBrush, startX + 10, startY + 27);
             }
+
 
             if (reportTypeNum == 0)
             {
@@ -162,12 +244,13 @@ namespace NineTapTour.Database
             }
         }
 
-        static public void printMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad)
+        static public void printMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList)
         {
             Print.temp = temp;
             Print.selectedTournament = selectedTournament;
             Print.reportTypeNum = reportTypeNum;
             Print.currentSquad = currentSquad;
+            Print.squadList = squadList;
 
             // Set up compenents for printing
             PrintDialog printDialog = new PrintDialog();
@@ -200,6 +283,7 @@ namespace NineTapTour.Database
         static Tournament selectedTournament;
         static ReportType reportTypeNum;
         static int currentSquad;
+        static List<int> squadList;
         /************************************************************************/
 
         static List<Member> mems = new List<Member>();
