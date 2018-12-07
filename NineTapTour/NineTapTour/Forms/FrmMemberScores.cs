@@ -601,8 +601,8 @@ namespace NineTapTour.Forms
                             //clears score boxes
                             ResetScores();
                         }
-                        List<Participant> utotal = TournamentDb.GetTournamentMemberList(currTourney);
-                        RecordIndexAfterAddUpdate(utotal);
+                        overallListOfParticipants = TournamentDb.GetTournamentMemberList(currTourney);
+                        RecordIndexAfterAddUpdate(overallListOfParticipants);
                     }
                     catch (MemberAccessException ex)
                     {
@@ -617,7 +617,6 @@ namespace NineTapTour.Forms
                         MemberDb.AddMember(currentMem);
                     }
                 }
-
                 Refresh(false);
             }
             else
