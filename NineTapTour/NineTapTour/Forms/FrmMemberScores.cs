@@ -26,6 +26,7 @@ namespace NineTapTour.Forms
         TextBox[] scratchArray = new TextBox[4];
         TextBox[] handicappArray = new TextBox[4];
 
+        public bool switchingParticipents = false;
         //Count for record counting
         int currentIndex = 0;         
         Participant player = new Participant();
@@ -781,23 +782,22 @@ namespace NineTapTour.Forms
             throw new Exception("A squad must be checked!");
         }
 
-        public void RecordIndexOnSquadSwitch(List<Participant> part)
+        public void RecordIndexOnSquadSwitch()
         {
             int squad = 0;
 
-            if (selectedTournament.Doubles == false)
+            if (selectedTournament.Doubles == false && switchingParticipents == false)
             {
                 if (txtMemberNum.Text != "")
                 {
                     squad = GetCurrentSquadNumber();
 
-                    for (int i = 0; i < part.Count; i++)
+                    for (int i = 0; i < overallListOfParticipants.Count; i++)
                     {
-                        if (currentMem.Id == part[i].Member.Id && part[i].Squad == squad)
+                        if (currentMem.Id == overallListOfParticipants[i].Member.Id && overallListOfParticipants[i].Squad == squad)
                         {
-                            lblRecord.Text = "Record " + (i + 1) + " / " + part.Count;
+                            lblRecord.Text = "Record " + (i + 1) + " / " + overallListOfParticipants.Count;
                             currentIndex = i;
-
                             break;
                         }
                     }
@@ -891,6 +891,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
+            switchingParticipents = true;
             currentIndex++;
 
             // Disables buttons and breaks function
@@ -920,6 +921,7 @@ namespace NineTapTour.Forms
             lblRecord.Text = "Record " + (currentIndex + 1) + " / " + overallListOfParticipants.Count;
 
             FillMember();
+            switchingParticipents = false;
         }
 
         /// <summary>
@@ -927,6 +929,8 @@ namespace NineTapTour.Forms
         /// </summary>
         private void btnLeftArrow_Click(object sender, EventArgs e)
         {
+            switchingParticipents = true;
+
             currentIndex--;
             // Disables buttons and breaks function
             // if already at the first record
@@ -955,6 +959,8 @@ namespace NineTapTour.Forms
             lblRecord.Text = "Record " + (currentIndex + 1) + " / " + overallListOfParticipants.Count;
 
             FillMember();
+
+            switchingParticipents = false;
         }
 
         /// <summary>
@@ -964,6 +970,9 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnFirstRecord_Click(object sender, EventArgs e)
         {
+
+            switchingParticipents = true;
+
             // Disables buttons and breaks function
             // if already at the 1st record
             if (currentIndex <= -1)
@@ -991,6 +1000,9 @@ namespace NineTapTour.Forms
             // if there are no more records go back to.
             btnLeftArrow.Enabled = false;
             btnFirstRecord.Enabled = false;
+
+
+            switchingParticipents = false;
         }
 
         /// <summary>
@@ -1000,6 +1012,8 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
+            switchingParticipents = true;
+
             // Disables buttons and breaks function
             // if already at the last record
             if (currentIndex >= overallListOfParticipants.Count)
@@ -1026,6 +1040,9 @@ namespace NineTapTour.Forms
             // if there are no more records go to.
             btnLastRecord.Enabled = false;
             btnRightArrow.Enabled = false;
+
+
+            switchingParticipents = false;
         }
 
         /// <summary>
@@ -1752,7 +1769,7 @@ namespace NineTapTour.Forms
             if((sender as RadioButton).Checked)
             {
                 ScoreAndTotalClear();
-                RecordIndexOnSquadSwitch(overallListOfParticipants);
+                RecordIndexOnSquadSwitch();
                 FillMember();
             }
             
