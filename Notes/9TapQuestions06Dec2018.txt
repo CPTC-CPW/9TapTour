@@ -13,3 +13,7 @@ Questions for Rob
 6. Are doubles tournaments or brackets tournaments higher priority?
 
 7. When is the tournament in January?
+
+8. Clarification of issue #280
+
+9. Does he want the dropdown list for issue #168
