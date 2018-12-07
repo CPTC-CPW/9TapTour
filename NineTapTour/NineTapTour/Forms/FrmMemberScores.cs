@@ -1539,7 +1539,6 @@ namespace NineTapTour.Forms
                 {
                     List<MemberScores> temp = ParticipantsDB.GetGameMemberScores(db, selectedTournament.Id);
                     temp.Sort(scoreComparer);
-                    temp.Reverse();
 
                     //find out what squad is selected At the moment of series button click
                     int currentsNum = GetSquadResultsNumberChecked();
@@ -1619,7 +1618,6 @@ namespace NineTapTour.Forms
                     #endregion
 
                     temp.Sort(scoreComparer);
-                    temp.Reverse();
 
                     if (temp.Count() != 0)
                     {

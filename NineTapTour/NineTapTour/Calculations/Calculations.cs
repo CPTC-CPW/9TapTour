@@ -171,8 +171,6 @@ namespace NineTapTour.Calculations
 
             //ensure bowlers are sorted by score
             temp.Sort(new MemberScoresComparer());
-            temp.Reverse();
-
 
             int place = 1;
             for (int currPosition = 1; currPosition < temp.Count; currPosition++)
@@ -281,7 +279,7 @@ namespace NineTapTour.Calculations
         {
             int score1 = x.Score.HasValue ? (int)x.Score : 0;
             int score2 = y.Score.HasValue ? (int)y.Score : 0;
-            return score1.CompareTo(score2);
+            return score2.CompareTo(score1);
         }
     }
 }
