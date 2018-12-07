@@ -1592,8 +1592,8 @@ namespace NineTapTour.Forms
                     int qualifyBySquadNumber = GetSquadResultsNumberChecked();
 
                     //Gets information from Filter Series by Squad checkboxes and gets the latest squad to pass when Series is clicked.
-                    List<bool> filterSeries = FormHelper.getFilterSeriesList(GRPQBS1);
-                    List<int> squadList = FormHelper.squadNumList(filterSeries);
+                    List<bool> filterSeries = FormHelper.GetFilterSeriesList(GRPQBS1);
+                    List<int> squadList = FormHelper.SquadNumList(filterSeries);
 
                     //these 2 regions would recreate data that already exists on trhe page
                     #region PRINTING HANDICAP TOURNAMENT RESULTS
