@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmTournamentResults));
             this.lblTournamentResults = new System.Windows.Forms.Label();
             this.lblTournamentName = new System.Windows.Forms.Label();
             this.btnExportToExcel = new System.Windows.Forms.Button();
@@ -84,6 +85,7 @@
             this.Controls.Add(this.btnExportToExcel);
             this.Controls.Add(this.lblTournamentName);
             this.Controls.Add(this.lblTournamentResults);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmTournamentResults";
             this.Text = "Tournament Results";
             this.Load += new System.EventHandler(this.FrmTournamentResults_Load);
