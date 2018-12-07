@@ -166,6 +166,10 @@ namespace NineTapTour.Calculations
         /// <param name="temp"></param>
         public static void CalculatePlaceStandings(List<MemberScores> temp)
         {
+            if (temp.Count == 0)
+            {
+                return;
+            }
             //remove duplicates
             RemoveDuplicateBowlers(temp);
 
@@ -173,6 +177,7 @@ namespace NineTapTour.Calculations
             temp.Sort(new MemberScoresComparer());
 
             int place = 1;
+            temp[0].placing = place++;
             for (int currPosition = 1; currPosition < temp.Count; currPosition++)
             {
                 if (temp[currPosition].Score == temp[currPosition - 1].Score)
@@ -193,6 +198,11 @@ namespace NineTapTour.Calculations
         /// <param name="members"></param>
         public static void CalculatePlaceStandings(List<ExcelMember> members)
         {
+            if (members.Count == 0)
+            {
+                return;
+            }
+
             //remove duplicates
             RemoveDuplicateBowlers(members);
 
@@ -200,9 +210,10 @@ namespace NineTapTour.Calculations
             members.Sort((x, y) => y.TotalScore.CompareTo(x.TotalScore));
 
             int place = 1;
-            for (int currPosition = 0; currPosition < members.Count; currPosition++)
+            members[0].PlaceStanding = place;
+            for (int currPosition = 1; currPosition < members.Count; currPosition++)
             {
-                if (currPosition > 0 && members[currPosition].TotalScore == members[currPosition - 1].TotalScore)
+                if (members[currPosition].TotalScore == members[currPosition - 1].TotalScore)
                 {
                     members[currPosition].PlaceStanding = members[currPosition - 1].PlaceStanding;
                 }
@@ -299,11 +310,26 @@ namespace NineTapTour.Calculations
             return members.Where(m => m.PlaceStanding <= lowestPlacement).ToList();
         }
 
-        
+        /// <summary>
+        /// Makes a list of Members ordered by placement, keeping only the highest score for each member. Players
+        /// below the lowestPlacement (1st is highest) threshold are not included in the new list.
+        /// </summary>
+        /// <param name="members">list of members to copy and process</param>
+        /// <param name="lowestPlacement">The lowest placement to accept (1st is highest)</param>
+        /// <returns></returns>
+        public static List<MemberScores> MakeTopMembersByPlacementList(List<MemberScores> members, int lowestPlacement)
+        {
+            // Makes copy of list so CalculatePlaceStandings won't affect the original
+            members = members.ToList();
+            CalculatePlaceStandings(members);
+
+            // takes only top place members above lowest placement threshold
+            return members.Where(m => m.placing <= lowestPlacement).ToList();
+        }
     }
 
     /// <summary>
-    /// Currently sorts member scores in ASCENDING order
+    /// Sorts member scores in descending order
     /// </summary>
     public class MemberScoresComparer : IComparer<MemberScores>
     {
