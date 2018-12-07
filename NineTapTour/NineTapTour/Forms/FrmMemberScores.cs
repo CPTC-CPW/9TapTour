@@ -479,6 +479,7 @@ namespace NineTapTour.Forms
 
                 //get all the current members participating in the current tournament
                 List<Participant> total = TournamentDb.GetTournamentMemberList(currTourney);
+                overallListOfParticipants = TournamentDb.GetTournamentMemberList(currTourney);
 
                 int squad = GetCurrentSquadNumber();  
 
@@ -896,9 +897,8 @@ namespace NineTapTour.Forms
 
             // Disables buttons and breaks function
             // if already at the last record
-            if (currentIndex >= overallListOfParticipants.Count + 1)
+            if (currentIndex >= overallListOfParticipants.Count)
             {
-                currentIndex--;
                 btnRightArrow.Enabled = false;
                 btnLastRecord.Enabled = false;
                 return;
@@ -908,7 +908,7 @@ namespace NineTapTour.Forms
 
             // Disables buttons if last record
             // is reached
-            if (currentIndex >= overallListOfParticipants.Count)
+            if (currentIndex + 1 >= overallListOfParticipants.Count)
             {
                 btnRightArrow.Enabled = false;
                 btnLastRecord.Enabled = false;
@@ -1744,6 +1744,11 @@ namespace NineTapTour.Forms
             //Delete from Participants list
             Participant par = FinalizeTempDB.getParticipantbyGameID(g.Id);
             FinalizeTempDB.deleteParticipant(par);
+            overallListOfParticipants.Remove(par);
+            if(currentIndex + 1 == overallListOfParticipants.Count)
+            {
+                currentIndex--;
+            }
             //Delete the game itself
             PlayerHistoryDB.DeleteGame(g);
 
