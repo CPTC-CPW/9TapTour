@@ -268,6 +268,38 @@ namespace NineTapTour.Calculations
                 }
             }
         }
+
+        /// <summary>
+        /// Makes a list of Members ordered by placement, keeping only the highest score for each member. Only players that
+        /// can cash in the tournament are included in the new list.
+        /// </summary>
+        /// <param name="members">list of members to copy and process</param>
+        /// <param name="totalEntries">total amount of tournament entries</param>
+        /// <param name="compEntries">comp entry amoun in a tournament</param>
+        /// <returns></returns>
+        public static List<ExcelMember> MakeTopMembersByPlacementList(List<ExcelMember> members, int totalEntries, int compEntries)
+        {
+            return MakeTopMembersByPlacementList(members, GetQtyOfMembersThatCanPlace(totalEntries, compEntries));
+        }
+
+        /// <summary>
+        /// Makes a list of Members ordered by placement, keeping only the highest score for each member. Players
+        /// below the lowestPlacement (1st is highest) threshold are not included in the new list.
+        /// </summary>
+        /// <param name="members">list of members to copy and process</param>
+        /// <param name="lowestPlacement">The lowest placement to accept (1st is highest)</param>
+        /// <returns></returns>
+        public static List<ExcelMember> MakeTopMembersByPlacementList(List<ExcelMember> members, int lowestPlacement)
+        {
+            // Makes copy of list so CalculatePlaceStandings won't affect the original
+            members = members.ToList();
+            CalculatePlaceStandings(members);
+
+            // takes only top place members above lowest placement threshold
+            return members.Where(m => m.PlaceStanding <= lowestPlacement).ToList();
+        }
+
+        
     }
 
     /// <summary>

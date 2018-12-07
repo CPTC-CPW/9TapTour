@@ -59,21 +59,12 @@ namespace NineTapTour.Forms
                 lblTournamentName.Text += " (3 OUT OF 4 TOURNAMENT)";
             }
 
-            /***************************
-               BUILD LIST OF $ WINNERS
-             **************************/
-
             // Create a List<ExcelMember> and populate it with this tournament's participants
             List<ExcelMember> winners = BuildWinnersList();
 
-            Calculations.Calculations.CalculatePlaceStandings(winners);
-
-            /***************************
-                 CREATE DATA TABLE
-            **************************/
-
             // Create list of participants who cash
-            List<ExcelMember> cashedWinners = BuildCashedWinnersList(winners);
+            List<ExcelMember> cashedWinners = Calculations.Calculations.
+                    MakeTopMembersByPlacementList(winners, totalTournamentEntries, compEntries);
 
             // Create datagridview and populate with cashedWinners list
             CreateDataGridView(cashedWinners);
@@ -150,87 +141,6 @@ namespace NineTapTour.Forms
             }
         }
 
-        /// <summary>
-        /// Creates list of tournament participants who cash based on their place standing 
-        /// in tournament and the cash calculation. 
-        /// </summary>
-        /// <param name="winners">List of unique participants in tournament</param>
-        /// <returns>List of participants who cash</returns>
-        private List<ExcelMember> BuildCashedWinnersList(List<ExcelMember> winners)
-        {
-            // Calculate number of participants who cash (i.e. 1 out of 5 minus comp entries)
-            // numCashedWinners is the number of winners who cash
-            int numCashedWinners = Calculations.Calculations.GetQtyOfMembersThatCanPlace(totalTournamentEntries, compEntries);
-
-            // Create list for winners who cashed
-            List<ExcelMember> cashedWinners = new List<ExcelMember>();
-
-            // Winners who placed under or equal to the place equal to the value of numCashedWinners
-            // should be added to datagridview to account for participants who tied for last place
-            // i.e. adjustedTournamentEntries is 15, so numCashedWinners is 3
-            // if there are two participants who tied for 3rd place, both participants cash, so actual cashed winners is 4
-            for (int i = 0; i < winners.Count; i++)
-            {
-                if (winners[i].PlaceStanding <= numCashedWinners)
-                {
-                    cashedWinners.Add(winners[i]);
-                }
-            }
-            return cashedWinners;
-        }
-
-        /// <summary>
-        /// Calculates each bowler's place standing, and populates the PlaceStanding 
-        /// property of each ExcelMember
-        /// </summary>
-        /// <param name="winners"></param>
-        private static void CalculatePlaceStanding(List<ExcelMember> winners)
-        {
-            int place = 1;
-            for (int i = 0; i < winners.Count; i++)
-            {
-                if (i > 0 && winners[i].TotalScore == winners[i - 1].TotalScore)
-                {
-                    winners[i].PlaceStanding = winners[i - 1].PlaceStanding;
-                }
-                else
-                {
-                    winners[i].PlaceStanding = place;
-                }
-                place++;
-            }
-        }
-
-        /// <summary>
-        /// Iterates over winners and keeps only a bowlers highest scoring game
-        /// </summary>
-        /// <param name="winners"></param>
-        private static void KeepHighestScoringGame(List<ExcelMember> winners)
-        {
-            List<ExcelMember> removal = new List<ExcelMember>();
-            //find all duplicate bowlers and their lower scores
-            for (int i = 0; i < winners.Count; i++)
-            {
-                for (int j = i + 1; j < winners.Count; j++)
-                {
-                    //Check to see if it's the same bowler
-                    if(winners[i].MemberNumber == winners[j].MemberNumber)
-                    {
-                        //remove the lower score
-                        if (winners[i].TotalScore >= winners[j].TotalScore)
-                            removal.Add(winners[j]);
-                        else
-                            removal.Add(winners[i]);
-                    }
-                }
-            }
-
-            //remove lower scores
-            foreach (ExcelMember member in removal)
-            {
-                winners.Remove(member);
-            }
-        }
 
         /// <summary>
         /// Returns a list of tourament winners
