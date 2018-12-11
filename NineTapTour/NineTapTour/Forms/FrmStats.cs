@@ -20,7 +20,6 @@ namespace NineTapTour.Forms
         private int memId;
         private int memNum;
         private string memName;
-       
         List<PlayerHistory> ph;
         int RegionID;
 
