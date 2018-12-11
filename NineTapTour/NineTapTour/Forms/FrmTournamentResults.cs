@@ -526,7 +526,18 @@ namespace NineTapTour.Forms
                                 // put equation into column 15 that will display the total
                                 // amount the player earned minus the yearly membership and
                                 // any money adjustments
-                                xlWorkSheet.Cells[i + (4 + i), j + 11] = "=I" + (i + 4) + "+I" + (i + 5) + "-M" + (i + 4) + "-N" + (i + 4);
+                               if(i == 0)
+                                {
+                                    xlWorkSheet.Cells[i + (4 + i), j + 11] = "=I" + (i + 4) + "+I" + (i + 5) + "-M" + (i + 4) + "-N" + (i + 4);
+                                }
+                                else if (i == 1)
+                                {
+                                    xlWorkSheet.Cells[i + (4 + i), j + 11] = "=I" + (i + 5) + "+I" + (i + 6) + "-M" + (i + 5) + "-N" + (i + 5);
+                                }
+                                else
+                                {
+                                    xlWorkSheet.Cells[i + (4 + i), j + 11] = "=I" + (i + 6) + "+I" + (i + 7) + "-M" + (i + 6) + "-N" + (i + 6);
+                                }
                             }
 
                             // Add the member number into the 12th column of the 4th row
