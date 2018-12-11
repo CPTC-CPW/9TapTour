@@ -157,7 +157,7 @@ namespace NineTapTour.Database
         /// Index 0 is All Squads
         /// </summary>
         /// <param name="groupBox">Specifically, the Filter Series box, GRPQBS1n on FrmMemberScores </param>
-        public static List<bool> getFilterSeriesList(GroupBox groupBox)
+        public static List<bool> GetFilterSeriesList(GroupBox groupBox)
         {
             List<bool> filterSeries = new List<bool>();
             foreach (Control control in groupBox.Controls)
@@ -176,10 +176,10 @@ namespace NineTapTour.Database
         /// </summary>
         /// <param name="filterSeries">A list of 9 booleans determined by GRPQBS1n on FrmMemberScores</param> 
         /// <returns></returns>
-        public static List<int> squadNumList(List<bool> filterSeries)
+        public static List<int> SquadNumList(List<bool> filterSeries)
         {
             List<int> squadList = new List<int>();
-            for (int i = 0; i <= filterSeries.Count() - 1; i++)
+            for (int i = 0; i <= filterSeries.Count - 1; i++)
             {
                 if (filterSeries[i] == true)
                 {
@@ -195,7 +195,7 @@ namespace NineTapTour.Database
         /// </summary>
         /// <param name="squadList">A list of squads selected in Fitler series</param>
         /// <returns></returns>
-        public static bool isContinuous(List<int> squadList) {
+        public static bool IsContinuous(List<int> squadList) {
             for (int i = 1; i < squadList.Count(); i++) {
                 if (squadList[i] - squadList[i - 1] != 1) {
                     return false;

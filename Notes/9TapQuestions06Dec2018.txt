@@ -9,3 +9,11 @@ Questions for Rob
 4. Can we get a copy of Hawaii's excel sheet?
 
 5. Does he use the money won on the member scores page?  (We can disable it if he doesn't edit it on that page) 
+
+6. Are doubles tournaments or brackets tournaments higher priority?
+
+7. When is the tournament in January?
+
+8. Clarification of issue #280
+
+9. Does he want the dropdown list for issue #168
