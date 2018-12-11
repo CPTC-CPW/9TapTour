@@ -57,5 +57,10 @@ namespace NineTapTour.Forms
                 MessageBox.Show("There are only " + temp.Count + " participant/s in the tournament selected.");
             }
         }
+
+        private void FrmMemberScoresReports_Load(object sender, EventArgs e)
+        {
+            txtNumberOfMembers.Focus();
+        }
     }
 }
