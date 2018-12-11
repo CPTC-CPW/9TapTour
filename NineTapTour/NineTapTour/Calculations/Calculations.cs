@@ -170,6 +170,10 @@ namespace NineTapTour.Calculations
             {
                 return;
             }
+
+            // Makes copy so original list won't be affected
+            temp = temp.ToList();
+
             //remove duplicates
             RemoveDuplicateBowlers(temp);
 
@@ -195,6 +199,69 @@ namespace NineTapTour.Calculations
         /// <summary>
         /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding
         /// </summary>
+        /// <param name="games"></param>
+        public static void CalculatePlaceStandings(List<Game> games)
+        {
+            if (games.Count == 0)
+            {
+                return;
+            }
+
+            // Makes copy so original list won't be affected
+            games = games.ToList();
+
+            int compEntries = games.Where(g => g.IsComp).Count();
+            int totalEntries = games.Count();
+
+            int lowestPlacement = GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
+
+            //ensure bowlers are sorted by highest scoring game
+            games.Sort(new GameComparer());
+
+            byte place = 1;
+            games[0].PlaceStanding = place++;
+            for (int currPosition = 1; currPosition < games.Count; currPosition++)
+            {
+                Game currGame = games[currPosition];
+                Game prevGame = games[currPosition - 1];
+
+                int currTourneyTotal = GetTourneyTotal(currGame);
+                int prevTourneyTotal = GetTourneyTotal(prevGame);
+
+                if (currTourneyTotal == prevTourneyTotal)
+                {
+                    currGame.PlaceStanding = prevGame.PlaceStanding;
+                }
+                else if (place <= lowestPlacement)
+                {
+                    currGame.PlaceStanding = place;
+                }
+                else // if place > lowestPlacement. Those who don't place get 0s as place standing
+                {
+                    currGame.PlaceStanding = 0;
+                }
+                place++;
+            }
+        }
+
+        /// <summary>
+        /// Finds the highest game in a tournament by a player
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        private static int GetTourneyTotal(Game game)
+        {
+            int game1 = game.Game1 ?? 0;
+            int game2 = game.Game2 ?? 0;
+            int game3 = game.Game3 ?? 0;
+            int game4 = game.Game4 ?? 0;
+
+            return game1 + game2 + game3 + game4;
+        }
+
+        /// <summary>
+        /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding
+        /// </summary>
         /// <param name="members"></param>
         public static void CalculatePlaceStandings(List<ExcelMember> members)
         {
@@ -203,6 +270,9 @@ namespace NineTapTour.Calculations
                 return;
             }
 
+            // Makes copy so original list won't be affected
+            members = members.ToList();
+
             //remove duplicates
             RemoveDuplicateBowlers(members);
 
@@ -210,7 +280,7 @@ namespace NineTapTour.Calculations
             members.Sort((x, y) => y.TotalScore.CompareTo(x.TotalScore));
 
             int place = 1;
-            members[0].PlaceStanding = place;
+            members[0].PlaceStanding = place++;
             for (int currPosition = 1; currPosition < members.Count; currPosition++)
             {
                 if (members[currPosition].TotalScore == members[currPosition - 1].TotalScore)
@@ -302,8 +372,6 @@ namespace NineTapTour.Calculations
         /// <returns></returns>
         public static List<ExcelMember> MakeTopMembersByPlacementList(List<ExcelMember> members, int lowestPlacement)
         {
-            // Makes copy of list so CalculatePlaceStandings won't affect the original
-            members = members.ToList();
             CalculatePlaceStandings(members);
 
             // takes only top place members above lowest placement threshold
@@ -319,8 +387,6 @@ namespace NineTapTour.Calculations
         /// <returns></returns>
         public static List<MemberScores> MakeTopMembersByPlacementList(List<MemberScores> members, int lowestPlacement)
         {
-            // Makes copy of list so CalculatePlaceStandings won't affect the original
-            members = members.ToList();
             CalculatePlaceStandings(members);
 
             // takes only top place members above lowest placement threshold
@@ -338,6 +404,30 @@ namespace NineTapTour.Calculations
             int score1 = x.Score.HasValue ? (int)x.Score : 0;
             int score2 = y.Score.HasValue ? (int)y.Score : 0;
             return score2.CompareTo(score1);
+        }
+    }
+
+    /// <summary>
+    /// Sorts Games by highest scored Game in descending order
+    /// </summary>
+    public class GameComparer : IComparer<Game>
+    {
+        int IComparer<Game>.Compare(Game x, Game y)
+        {
+            int xGame1 = x.Game1 ?? 0;
+            int xGame2 = x.Game2 ?? 0;
+            int xGame3 = x.Game3 ?? 0;
+            int xGame4 = x.Game4 ?? 0;
+
+            int yGame1 = y.Game1 ?? 0;
+            int yGame2 = y.Game2 ?? 0;
+            int yGame3 = y.Game3 ?? 0;
+            int yGame4 = y.Game4 ?? 0;
+
+            int xGameTotal = xGame1 + xGame2 + xGame3 + xGame4;
+            int yGameTotal = yGame1 + yGame2 + yGame3 + yGame4;
+
+            return yGameTotal.CompareTo(xGameTotal);
         }
     }
 }
