@@ -100,18 +100,18 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(14, 10);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(48, 13);
+            this.label1.Size = new System.Drawing.Size(95, 13);
             this.label1.TabIndex = 8;
-            this.label1.Text = "Location";
+            this.label1.Text = "Search by location";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(14, 59);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(35, 13);
+            this.label2.Size = new System.Drawing.Size(114, 13);
             this.label2.TabIndex = 9;
-            this.label2.Text = "Event";
+            this.label2.Text = "Search by event name";
             // 
             // dtpFrom
             // 
@@ -165,9 +165,9 @@
             this.chkDate.AutoSize = true;
             this.chkDate.Location = new System.Drawing.Point(17, 106);
             this.chkDate.Name = "chkDate";
-            this.chkDate.Size = new System.Drawing.Size(49, 17);
+            this.chkDate.Size = new System.Drawing.Size(98, 17);
             this.chkDate.TabIndex = 15;
-            this.chkDate.Text = "Date";
+            this.chkDate.Text = "Search by date";
             this.chkDate.UseVisualStyleBackColor = true;
             this.chkDate.CheckedChanged += new System.EventHandler(this.chkDate_CheckedChanged);
             // 

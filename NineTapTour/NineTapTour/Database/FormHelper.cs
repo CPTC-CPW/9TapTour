@@ -150,5 +150,58 @@ namespace NineTapTour.Database
             return uppercaseState.Length == 2 && 
                 USstates.Contains(uppercaseState);
         }
+
+        /// <summary>
+        /// This method gets the values for the Filter series radio buttons
+        /// and returns a list of booleans that correspond to the squads chosen.
+        /// Index 0 is All Squads
+        /// </summary>
+        /// <param name="groupBox">Specifically, the Filter Series box, GRPQBS1n on FrmMemberScores </param>
+        public static List<bool> GetFilterSeriesList(GroupBox groupBox)
+        {
+            List<bool> filterSeries = new List<bool>();
+            foreach (Control control in groupBox.Controls)
+            {
+                CheckBox check = control as CheckBox;
+                filterSeries.Add(check.Checked);
+            }
+            filterSeries.Reverse();
+            return filterSeries;
+        }
+
+        /// <summary>
+        /// This method takes the list from getFilterSeriesList() 
+        /// and returns a list of the chosen squads.
+        /// 0 is all squads
+        /// </summary>
+        /// <param name="filterSeries">A list of 9 booleans determined by GRPQBS1n on FrmMemberScores</param> 
+        /// <returns></returns>
+        public static List<int> SquadNumList(List<bool> filterSeries)
+        {
+            List<int> squadList = new List<int>();
+            for (int i = 0; i <= filterSeries.Count - 1; i++)
+            {
+                if (filterSeries[i] == true)
+                {
+                    squadList.Add(i);
+                }
+            }
+            return squadList;
+        }
+
+        /// <summary>
+        /// This method looks at the squad list and deterine if it doens't 'skip' squads
+        /// eg if the list is 1,2,3 it's true. if 1,2,4 it's false.
+        /// </summary>
+        /// <param name="squadList">A list of squads selected in Fitler series</param>
+        /// <returns></returns>
+        public static bool IsContinuous(List<int> squadList) {
+            for (int i = 1; i < squadList.Count(); i++) {
+                if (squadList[i] - squadList[i - 1] != 1) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }
