@@ -1120,23 +1120,44 @@ namespace NineTapTour.Forms
             //START FINALIZATION
             if (isDirectorCheckFinished) //if all the director check boxes are selected
             {
+                // Used to later calculate place standing and bonus pins
+                var games = new List<Game>();
+
+                // Used to later input place standing results
+                var playerHistories = new List<PlayerHistory>();
+
+                // Used to later store bonus pins - <gameId, currMember>
+                //var gameIdMemberMap = new Dictionary<int, Member>();
+                var members = new List<Member>();
+
                 //Multithreaded version of a for loop, spreads processing across all available cores
                 //for (int i = 0; i < FinalizeTableList.Count; i++)
                 Parallel.For(0, FinalizeTableList.Count, i =>
                 {
                     gamesPlayed = 0;
-                    PlayerHistory ph = new PlayerHistory();
-                    ph.GameID = FinalizeTableList[i].GameId;
-                    Game g = FinalizeTempDB.getGame(FinalizeTableList[i].GameId);
+                    int currGameId = FinalizeTableList[i].GameId;
 
-                    int memId;
-                    using (var db = new NineTapDb())
+                    PlayerHistory ph = new PlayerHistory
                     {
-                        memId = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == g.Id).Member.Id;
-                    }
+                        GameID = currGameId
+                    };
+                    playerHistories.Add(ph);
 
-                    Member currentMember = MemberDb.GetMember(MemberDb.GetMemberNumberbyID(memId), RegionID);
-                    List<PlayerHistory> pl = PlayerHistoryDB.getMemberPlayerHistory(MemberDb.GetMemberNumberbyID(memId), RegionID);
+                    Game g = FinalizeTempDB.getGame(currGameId);
+                    games.Add(g);
+
+                    Member currentMember = MemberDb.GetMemberByGameId(currGameId);
+                    //gameIdMemberMap.Add(currGameId, currentMember);
+                    if (addedAlready.Contains(currentMember.Id))
+                    {
+
+                    }
+                    else
+                    {
+                        games.Add(g);
+                        addedAlready.Add(currentMember.Id);
+                    }
+                    List<PlayerHistory> pl = PlayerHistoryDB.getMemberPlayerHistory(currentMember.Number, RegionID);
 
                     ph.TournamentDate = currTournament.Date;
                     ph.MemberNumber = currentMember.Number;
@@ -1214,10 +1235,12 @@ namespace NineTapTour.Forms
                         ph.PPHG = Convert.ToString(g.PlaceStanding);
                     }
 
+                    
+
                     //CALCULATES THE NEW BONUS PINS
                     if (FinalizeTempDB.getHistoryID(g.Id) == 0) //if this adjustement was not added to the database yet
                     {
-                        if (!addedAlready.Contains(memId)) //if the current members bonus points were not already adjusted yet in the finalization of this tournament//only adjusts based of their highest series????
+                        if (!addedAlready.Contains(currentMember.Id)) //if the current members bonus points were not already adjusted yet in the finalization of this tournament//only adjusts based of their highest series????
                         {
                             currentMember.Bonus = Calculations.Calculations.GetAdjustedBonusPins(placing, currentMember.Bonus, currentMember.Number, RegionID, currTournament.Date);
                             addedAlready.Add(FinalizeTableList[i].MemberId);
@@ -1241,6 +1264,15 @@ namespace NineTapTour.Forms
                     FinalizeTableList[i].HandicapTotal = Convert.ToInt32(dataGridView1[HANDICAP_TOTAL_COLUMN, i].Value);
                     FinalizeTempDB.AddFinalizeTemp(FinalizeTableList[i]);
                 });
+
+                Calculations.Calculations.CalculatePlaceStandings(games);
+                for (int i = 0; i < games.Count; i++)
+                {
+                    byte placeStanding = games[i].PlaceStanding ?? 0;
+                    playerHistories[i].PPHG = Convert.ToString(games[i].PlaceStanding);
+                    members[i].Bonus = Calculations.Calculations.GetAdjustedBonusPins(placeStanding, members[i].Bonus, members[i].Number, RegionID, currTournament.Date);
+                }
+                
                 Close();
             }
             else  // if all of the director checkboxes are not checked, then prompt user to check to finalize tournament
