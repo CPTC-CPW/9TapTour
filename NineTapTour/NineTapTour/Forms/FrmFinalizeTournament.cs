@@ -860,6 +860,7 @@ namespace NineTapTour.Forms
             // Money Won label string is referenced multiple locations
             string moneyWon = "Money Won";
             decimal totalMoneyEarned = 0;
+
             foreach (var item in temporary)
             {
                 DataRow newRow = dtGames.NewRow();
@@ -1067,7 +1068,7 @@ namespace NineTapTour.Forms
                             p.HandiCap = Convert.ToInt32(dataGridView1.Rows[i].Cells[HANDICAP_COLUMN].Value);
                             p.Bonus = Convert.ToInt32(dataGridView1.Rows[i].Cells[BONUS_COLUMN].Value);
                             p.MoneyWon = Convert.ToDecimal(FinalizeTempDB.getGame(gameId).MoneyWon);
-                            p.PPHG = Convert.ToString(FinalizeTempDB.getGame(gameId).PlaceStanding);
+                            p.PPHG = Convert.ToString(dataGridView1.Rows[i].Cells[STANDING_COLUMN].Value);
                             p.ProPot = dataGridView1[PRO_POT_COLUMN, i].Value.ToString();
                             p.Notes = dataGridView1[NOTES_COLUMN_, i].Value.ToString();
                             p.AverageForGame = Convert.ToDouble(dataGridView1[ENTRY_AVERAGE_COLUMN, i].Value);
