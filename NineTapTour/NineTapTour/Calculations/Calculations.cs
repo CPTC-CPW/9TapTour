@@ -207,12 +207,8 @@ namespace NineTapTour.Calculations
                 return;
             }
 
-            // Makes copy so original list won't be affected
-            games = games.ToList();
-
             int compEntries = games.Where(g => g.IsComp).Count();
             int totalEntries = games.Count();
-
             int lowestPlacement = GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
 
             //ensure bowlers are sorted by highest scoring game
@@ -225,10 +221,7 @@ namespace NineTapTour.Calculations
                 Game currGame = games[currPosition];
                 Game prevGame = games[currPosition - 1];
 
-                int currTourneyTotal = GetTourneyTotal(currGame);
-                int prevTourneyTotal = GetTourneyTotal(prevGame);
-
-                if (currTourneyTotal == prevTourneyTotal)
+                if (currGame.TotalScore == prevGame.TotalScore)
                 {
                     currGame.PlaceStanding = prevGame.PlaceStanding;
                 }
@@ -245,18 +238,108 @@ namespace NineTapTour.Calculations
         }
 
         /// <summary>
-        /// Finds the highest game in a tournament by a player
+        /// Keeps the highest scoring game between the one passed in and the one stored in the dictionary
+        /// for the associated member. If a member doesn't exist as a key one is created with member passed 
+        /// in with the Game as its value.
+        /// is passed in. 
         /// </summary>
-        /// <param name="game"></param>
-        /// <returns></returns>
-        private static int GetTourneyTotal(Game game)
+        /// <param name="currMember">the member to keep or add the highest game of (key)</param>
+        /// <param name="currGame">the highest game to keep or add (value)</param>
+        /// <param name="membersHighestGameMap">Dictionar to track members' highest games</param>
+        public static void KeepHighestScoringGame(Member currMember, Game currGame, Dictionary<Member, Game> membersHighestGameMap)
         {
-            int game1 = game.Game1 ?? 0;
-            int game2 = game.Game2 ?? 0;
-            int game3 = game.Game3 ?? 0;
-            int game4 = game.Game4 ?? 0;
+            Member prevMember = membersHighestGameMap.Keys.Where(m => m.Number == currMember.Number).FirstOrDefault();
 
-            return game1 + game2 + game3 + game4;
+            // if this member has already entered this tournament
+            if (membersHighestGameMap.TryGetValue(prevMember, out Game prevHighestGame))
+            {
+                // keep the highest game for this member
+                if (prevHighestGame.TotalScore < currGame.TotalScore)
+                {
+                    membersHighestGameMap[prevMember] = currGame;
+                }
+            }
+            else // add new member number and their game
+            {
+                membersHighestGameMap.Add(currMember, currGame);
+            }
+        }
+
+        public static Dictionary<FinalizeTemp, int> CalculatePlaceStandings(List<FinalizeTemp> members)
+        {
+            if (members.Count == 0)
+            {
+                return new Dictionary<FinalizeTemp, int>();
+            }
+
+            // original members won't be affected
+            members = members.ToList();
+
+            // Sort the list by the total score, including handicap, in descending order.
+            members.Sort((a, b) => b.HandicapTotal.CompareTo(a.HandicapTotal));
+
+            // only non duplicates used for placing
+            List<FinalizeTemp> removals = RemoveDuplicateBowlers(members);
+
+
+            // links FinalizeTemp to an integer used for placing
+            var membersPlacingMap = new Dictionary<FinalizeTemp, int>();
+            foreach (var member in members)
+            {
+                membersPlacingMap.Add(member, 0);
+            }
+
+            int place = 1;
+            membersPlacingMap[members[0]] = place++;
+
+            // Calculate each members placing
+            for (int currPosition = 1; currPosition < members.Count; currPosition++)
+            {
+                FinalizeTemp currMember = members[currPosition];
+                FinalizeTemp prevMember = members[currPosition - 1];
+
+                if (currMember.HandicapTotal == prevMember.HandicapTotal)
+                {
+                    membersPlacingMap[currMember] = membersPlacingMap[prevMember];
+                }
+                else
+                {
+                    membersPlacingMap[currMember] = place;
+                }
+                place++;
+            }
+
+            // Add duplicate entries to end of list
+            foreach(var member in removals)
+            {
+                membersPlacingMap.Add(member, 0);
+            }
+
+            return membersPlacingMap;
+        }
+
+        private static List<FinalizeTemp> RemoveDuplicateBowlers(List<FinalizeTemp> members)
+        {
+            List<FinalizeTemp> removal = new List<FinalizeTemp>();
+            for (int i = 0; i < members.Count; i++)
+            {
+                for (int j = i + 1; j < members.Count; j++)
+                {
+                    if (members[i].memberNumber == members[j].memberNumber)
+                    {
+                        if (members[i].HandicapTotal >= members[j].HandicapTotal)
+                            removal.Add(members[j]);
+                        else
+                            removal.Add(members[i]);
+                    }
+                }
+
+                foreach (FinalizeTemp deleteMember in removal)
+                {
+                    members.Remove(deleteMember);
+                }
+            }
+            return removal;
         }
 
         /// <summary>
@@ -414,20 +497,10 @@ namespace NineTapTour.Calculations
     {
         int IComparer<Game>.Compare(Game x, Game y)
         {
-            int xGame1 = x.Game1 ?? 0;
-            int xGame2 = x.Game2 ?? 0;
-            int xGame3 = x.Game3 ?? 0;
-            int xGame4 = x.Game4 ?? 0;
+            int xTotalScore = x.TotalScore ?? 0;
+            int yTotalScore = y.TotalScore ?? 0;
 
-            int yGame1 = y.Game1 ?? 0;
-            int yGame2 = y.Game2 ?? 0;
-            int yGame3 = y.Game3 ?? 0;
-            int yGame4 = y.Game4 ?? 0;
-
-            int xGameTotal = xGame1 + xGame2 + xGame3 + xGame4;
-            int yGameTotal = yGame1 + yGame2 + yGame3 + yGame4;
-
-            return yGameTotal.CompareTo(xGameTotal);
+            return yTotalScore.CompareTo(xTotalScore);
         }
     }
 }
