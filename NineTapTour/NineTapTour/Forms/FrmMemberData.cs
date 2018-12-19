@@ -1218,41 +1218,33 @@ namespace NineTapTour.Forms
             {
                 xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
                 range = xlWorkSheet.UsedRange;
-
+                double noGameMoneyWon = 0;
                 for (int row = 3; row <= range.Rows.Count; row++)
                 {
                     ExcelRow temp = new ExcelRow();
                     PlayerHistory playerH = new PlayerHistory();
                     Game GameHistory = new Game();
-                    Member memberMoneyWonNoGame = new Member();
 
-                    if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0 &&
-                        Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0 &&
-                        Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0 &&
-                        Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
+                    //if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0 &&
+                    //    Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0 &&
+                    //    Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0 &&
+                    //    Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
+                    //{
+                    //        continue;
+                    //}
+
+                    if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == null &&
+                        Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == null &&
+                        Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == null &&
+                        Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == null)
                     {
                         if (Convert.ToString((range.Cells[row, 15] as Excel.Range).Value2) != "")
                         {
-                            temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
-                            memberMoneyWonNoGame.Notes = temp.Notes;
-
-                            temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
-                            memberMoneyWonNoGame.MoneyEarned = Convert.ToDecimal(temp.Cash);
-                            
-                            
-
-                           
-                            continue;
-
-                        }
-                        else
-                        {
+                            noGameMoneyWon = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
                             continue;
                         }
                     }
-
                     
-                   
                     GameHistory.gameRegionID = RegionID;
                     temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
                     temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
@@ -1262,7 +1254,7 @@ namespace NineTapTour.Forms
                     
                     playerH.MemberNumber = currentMem.Number;
                     playerH.regionID = RegionID;
-
+                    
                     if (currentMem.Number == temp.PlayerNumber)
                     {//only process file if they have been added as a member first 
                         try
