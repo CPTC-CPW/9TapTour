@@ -1221,23 +1221,45 @@ namespace NineTapTour.Forms
 
                 for (int row = 3; row <= range.Rows.Count; row++)
                 {
+                    ExcelRow temp = new ExcelRow();
+                    PlayerHistory playerH = new PlayerHistory();
+                    Game GameHistory = new Game();
+                    Member memberMoneyWonNoGame = new Member();
+
                     if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0 &&
                         Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0 &&
                         Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0 &&
                         Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
                     {
-                        continue;
+                        if (Convert.ToString((range.Cells[row, 15] as Excel.Range).Value2) != "")
+                        {
+                            temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
+                            memberMoneyWonNoGame.Notes = temp.Notes;
+
+                            temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
+                            memberMoneyWonNoGame.MoneyEarned = Convert.ToDecimal(temp.Cash);
+                            
+                            
+
+                           
+                            continue;
+
+                        }
+                        else
+                        {
+                            continue;
+                        }
                     }
 
-                    ExcelRow temp = new ExcelRow();
-                    PlayerHistory playerH = new PlayerHistory();
-                    Game GameHistory = new Game();
+                    
+                   
                     GameHistory.gameRegionID = RegionID;
                     temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
                     temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
                     temp.PlayerLastName = playerLastName;
                     temp.PlayerOrginalAVG = playerOrgAVG;
                     temp.PlayerNumber = currentMem.Number;
+                    
                     playerH.MemberNumber = currentMem.Number;
                     playerH.regionID = RegionID;
 
