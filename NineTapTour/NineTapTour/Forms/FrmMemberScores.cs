@@ -670,7 +670,7 @@ namespace NineTapTour.Forms
             {
                 currentIndex = 0;
                 int playerSquadNumber = players[currentIndex].Squad;
-                CheckSquadRadioButton(playerSquadNumber + 1);
+                CheckSquadRadioButton(playerSquadNumber);
 
                 lblRecord.Text = "Record " + (currentIndex + 1) + " / " + players.Count;
                 txtMemberNum.Text = players[currentIndex].Member.Number.ToString();
@@ -915,7 +915,7 @@ namespace NineTapTour.Forms
 
             txtMemberNum.Text = Convert.ToString(overallListOfParticipants[currentIndex].Member.Number);
             int playerSquadNumber = overallListOfParticipants[currentIndex].Squad;
-            CheckSquadRadioButton(playerSquadNumber + 1);
+            CheckSquadRadioButton(playerSquadNumber);
 
             lblRecord.Text = "Record " + (currentIndex + 1) + " / " + overallListOfParticipants.Count;
 
@@ -953,7 +953,7 @@ namespace NineTapTour.Forms
 
             txtMemberNum.Text = Convert.ToString(overallListOfParticipants[currentIndex].Member.Number);
             int playerSquadNumber = overallListOfParticipants[currentIndex].Squad;
-            CheckSquadRadioButton(playerSquadNumber + 1);
+            CheckSquadRadioButton(playerSquadNumber);
 
             lblRecord.Text = "Record " + (currentIndex + 1) + " / " + overallListOfParticipants.Count;
 
@@ -991,7 +991,7 @@ namespace NineTapTour.Forms
             txtMemberNum.Text = Convert.ToString(overallListOfParticipants[0].Member.Number);
 
             int playerSquadNumber = overallListOfParticipants[currentIndex].Squad;
-            CheckSquadRadioButton(playerSquadNumber + 1);
+            CheckSquadRadioButton(playerSquadNumber);
 
             FillMember();
 
@@ -1031,7 +1031,7 @@ namespace NineTapTour.Forms
             // Gets the last record from the list
             txtMemberNum.Text = Convert.ToString(overallListOfParticipants[overallListOfParticipants.Count - 1].Member.Number);
             int lastMemberSquad = overallListOfParticipants[overallListOfParticipants.Count - 1].Squad;
-            CheckSquadRadioButton(lastMemberSquad + 1);
+            CheckSquadRadioButton(lastMemberSquad);
 
             FillMember();
 
