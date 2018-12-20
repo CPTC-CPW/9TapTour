@@ -1219,32 +1219,25 @@ namespace NineTapTour.Forms
                 xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
                 range = xlWorkSheet.UsedRange;
                 double noGameMoneyWon = 0;
+                
                 for (int row = 3; row <= range.Rows.Count; row++)
                 {
                     ExcelRow temp = new ExcelRow();
                     PlayerHistory playerH = new PlayerHistory();
                     Game GameHistory = new Game();
 
-                    //if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0 &&
-                    //    Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0 &&
-                    //    Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0 &&
-                    //    Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
-                    //{
-                    //        continue;
-                    //}
-
-                    if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == null &&
-                        Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == null &&
-                        Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == null &&
-                        Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == null)
+                    // string tester = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
+                    if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0 &&
+                        Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0 &&
+                        Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0 &&
+                        Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0 &&
+                        Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2) != null
+                        )
                     {
-                        if (Convert.ToString((range.Cells[row, 15] as Excel.Range).Value2) != "")
-                        {
-                            noGameMoneyWon = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
-                            continue;
-                        }
+                        noGameMoneyWon += Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
+                        continue;
                     }
-                    
+
                     GameHistory.gameRegionID = RegionID;
                     temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
                     temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
@@ -1416,6 +1409,7 @@ namespace NineTapTour.Forms
                         {
                             temp.Cash = 0;
                         }
+                        playerH.MoneyWon += Convert.ToDecimal(noGameMoneyWon);
 
                         temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
                         GameHistory.Notes = temp.Notes;
@@ -1424,11 +1418,16 @@ namespace NineTapTour.Forms
                         GameHistory.Id = AllGames + 1;
                         AllGames++;
                         playerH.GameID = GameHistory.Id;
+                        
                         PlayerHistoryDB.AddGame(GameHistory);
                         PlayerHistoryDB.AddPlayerHistory(playerH);
                         returnMe.Add(temp);
+                        //currentMem.MoneyEarned += Convert.ToDecimal(noGameMoneyWon);
+                        noGameMoneyWon = 0;
                     }
+                  
                 }
+               
             }
             xlWorkBook.Close(0);
             xlApp.Quit();
