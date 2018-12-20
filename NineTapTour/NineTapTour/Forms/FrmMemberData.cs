@@ -1146,7 +1146,7 @@ namespace NineTapTour.Forms
                     moneySum += v.MoneyWon;
                 }
 
-                currentMem.MoneyEarned += moneySum; // test
+                currentMem.MoneyEarned += moneySum; 
 
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
 
@@ -1227,12 +1227,6 @@ namespace NineTapTour.Forms
                     PlayerHistory playerH = new PlayerHistory();
                     Game GameHistory = new Game();
 
-                    //if ((sheetNum == xlWorkBook.Worksheets.Count) && (row == 46))
-                    //{
-                    //    noGameMoneyWon += Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
-                    //}
-
-                    // string tester = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
                     if (row != 46)
                     {
                         if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0 &&
@@ -1431,7 +1425,6 @@ namespace NineTapTour.Forms
                         PlayerHistoryDB.AddGame(GameHistory);
                         PlayerHistoryDB.AddPlayerHistory(playerH);
                         returnMe.Add(temp);
-                       // currentMem.MoneyEarned += Convert.ToDecimal(noGameMoneyWon);
                         noGameMoneyWon = 0;
                     }
                   
