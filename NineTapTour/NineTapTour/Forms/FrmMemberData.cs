@@ -1126,7 +1126,7 @@ namespace NineTapTour.Forms
                     {
                         for(int delete = 0; delete < AlreadyImportedPH.Count; delete++)
                         {
-                            Game game = FinalizeTempDB.getGame(AlreadyImportedPH[delete].GameID);
+                            Game game = GameDB.GetGame(AlreadyImportedPH[delete].GameID);
                             PlayerHistoryDB.DeleteGame(game);
                             PlayerHistoryDB.DeletePlayerHistory(AlreadyImportedPH[delete]);
                         }

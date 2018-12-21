@@ -1702,7 +1702,7 @@ namespace NineTapTour.Forms
             PlayerHistory p = PlayerHistoryDB.getPlayerHistoryByGameID(g.Id);
             PlayerHistoryDB.DeletePlayerHistory(p);
             //Delete from FinalizeTemp
-            FinalizeTemp ft = FinalizeTempDB.getFinalizeID(FinalizeTempDB.getGame(g.Id));
+            FinalizeTemp ft = FinalizeTempDB.getFinalizeID(GameDB.GetGame(g.Id));
             FinalizeTempDB.DeleteFinilizeTemp(ft);
             //Delete from Participants list
             Participant par = FinalizeTempDB.getParticipantbyGameID(g.Id);

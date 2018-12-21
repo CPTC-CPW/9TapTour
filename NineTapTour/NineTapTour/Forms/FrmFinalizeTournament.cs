@@ -192,7 +192,7 @@ namespace NineTapTour.Forms
             Parallel.ForEach(FinalizeTableList, item =>
             {
                 int gplayed = 0;
-                Game g = FinalizeTempDB.getGame(item.GameId);
+                Game g = GameDB.GetGame(item.GameId);
                 FinalizeTemp temp = FinalizeTempDB.getFinalizeID(g);
 
                 if (temp.FinalizeID <= 0)
@@ -1067,7 +1067,7 @@ namespace NineTapTour.Forms
                             p.TotalScore = Convert.ToInt32(dataGridView1.Rows[i].Cells[SCRATCH_TOTAL_COLUMN].Value);
                             p.HandiCap = Convert.ToInt32(dataGridView1.Rows[i].Cells[HANDICAP_COLUMN].Value);
                             p.Bonus = Convert.ToInt32(dataGridView1.Rows[i].Cells[BONUS_COLUMN].Value);
-                            p.MoneyWon = Convert.ToDecimal(FinalizeTempDB.getGame(gameId).MoneyWon);
+                            p.MoneyWon = Convert.ToDecimal(GameDB.GetGame(gameId).MoneyWon);
                             p.PPHG = Convert.ToString(dataGridView1.Rows[i].Cells[STANDING_COLUMN].Value);
                             p.ProPot = dataGridView1[PRO_POT_COLUMN, i].Value.ToString();
                             p.Notes = dataGridView1[NOTES_COLUMN_, i].Value.ToString();
@@ -1146,7 +1146,7 @@ namespace NineTapTour.Forms
 
                     playerHistoryPlacings.Add(ph);
 
-                    Game currGame = FinalizeTempDB.getGame(currGameId);
+                    Game currGame = GameDB.GetGame(currGameId);
                     Member currMember = MemberDb.GetMemberByGameId(currGameId);
 
                     compEntriesCounter += (currGame.IsComp) ? 1 : 0;

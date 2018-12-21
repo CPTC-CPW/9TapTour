@@ -243,7 +243,7 @@ namespace NineTapTour.Forms
             for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
             {
                 int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
-                Game g = FinalizeTempDB.getGame(gameId);
+                Game g = GameDB.GetGame(gameId);
 
                 g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
                 g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
@@ -777,7 +777,7 @@ namespace NineTapTour.Forms
             for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
             {
                 int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
-                Game g = FinalizeTempDB.getGame(gameId);
+                Game g = GameDB.GetGame(gameId);
 
                 g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
                 g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
