@@ -169,23 +169,6 @@ namespace NineTapTour.Database
 
 
         }
-        public static void AddGame(Game temp)
-        {
-            try
-            {
-                using (var db = new NineTapDb())
-                {
-                    db.Entry(temp).State = db.Games.Any(his => his.Id == temp.Id) ?
-                         EntityState.Modified :
-                         EntityState.Added;
-                    db.SaveChanges();
-                }
-            }
-            catch (SqlException ex)
-            {
-                throw new PlayerHistoryTableException("Error Number : " + ex.Number + " - " + ex.Message);
-            }
-        }
 
         public static List<PlayerHistory> getMemberPlayerHistory(int memnum, int RegionId)
         {

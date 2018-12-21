@@ -1296,7 +1296,7 @@ namespace Member_Import_Test
 
             
             updatePlayerHistory(PlayerHistoryList);
-            updateGameHistory(GameImport);
+            GameDB.AddOrUpdateSomeGames(GameImport);
 
             for (int i = 0; i < validMembers.Count; i++)
             {
@@ -1336,14 +1336,6 @@ namespace Member_Import_Test
                 }
             }
             
-        }
-
-        private void updateGameHistory (List<Game> Game)
-        {
-            foreach (var m in Game)
-            {
-               PlayerHistoryDB.AddGame(m);
-            }
         }
 
         private void cbxRegionSelect_SelectedIndexChanged(object sender, EventArgs e)

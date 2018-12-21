@@ -1251,7 +1251,7 @@ namespace NineTapTour.Forms
                     ph.regionID = RegionID;
                     currGame.gameRegionID = RegionID;
                     PlayerHistoryDB.AddPlayerHistory2(ph);
-                    PlayerHistoryDB.AddGame(currGame);
+                    GameDB.AddOrUpdateGame(currGame);
                     MemberDb.AddMember(currMember);
                     FinalizeTableList[i].FinalizeID = FinalizeTempDB.getFinalizeID(currGame).FinalizeID;
                     FinalizeTableList[i].AdjustedAvg = ph.AVG;

@@ -1425,7 +1425,7 @@ namespace NineTapTour.Forms
                         GameHistory.Id = AllGames + 1;
                         AllGames++;
                         playerH.GameID = GameHistory.Id;
-                        PlayerHistoryDB.AddGame(GameHistory);
+                        GameDB.AddOrUpdateGame(GameHistory);
                         PlayerHistoryDB.AddPlayerHistory(playerH);
                         returnMe.Add(temp);
                     }
