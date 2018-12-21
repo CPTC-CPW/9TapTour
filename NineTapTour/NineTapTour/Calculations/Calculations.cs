@@ -46,17 +46,22 @@ namespace NineTapTour.Calculations
         /// Returns the adjusted bonus pins after a tournament depending on if a bowler placed
         /// and what ranking a bowler placed.
         /// </summary>
-        /// <param name="memberPlaced">Ranking a bowler placed. 0 if not placed</param>
+        /// <param name="memberPlacement">Ranking a bowler placed. 0 if not placed</param>
+        /// <param name="totalEntries">Total entries for the tournament</param>
+        /// <param name="compEntries">Entries that do not have to pay entry fee</param>
         /// <param name="currentBonusPins">Bonus pins the participant had before this tournament</param>
         /// <param name="memNum">Member number that used to identify bowler by user</param>
         /// <param name="RegionID">RegionId from where the tournament is played</param>
         /// <param name="currTournamentDate">Date when the current tournament is taking place</param>
         /// <returns>Adjusted bonus pins after current tournament</returns>
-        public static int GetAdjustedBonusPins(byte memberPlaced, int currentBonusPins, int memNum, int RegionID, DateTime currTournamentDate)
+        public static int GetAdjustedBonusPins(byte memberPlacement, int totalEntries, int compEntries, int currentBonusPins, 
+                                                int memNum, int RegionID, DateTime currTournamentDate)
         {
-            if (memberPlaced > 0)
+            int lowestPlacementToCash = GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
+
+            if (memberPlacement <= lowestPlacementToCash)
             {
-                return  DeductFromBonusPins(memberPlaced, currentBonusPins);
+                return  DeductFromBonusPins(memberPlacement, currentBonusPins);
             }
             return AddToBonusPins(currentBonusPins, currTournamentDate, PlayerHistoryDB.GetLastEightTournaments(memNum, RegionID));
         }
@@ -207,12 +212,8 @@ namespace NineTapTour.Calculations
                 return;
             }
 
-            int compEntries = games.Where(g => g.IsComp).Count();
-            int totalEntries = games.Count();
-            int lowestPlacement = GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
-
-            //ensure bowlers are sorted by highest scoring game
-            games.Sort(new GameComparer());
+            // Sorted by highest scoring game
+            games.Sort(new GameScoreComparer());
 
             byte place = 1;
             games[0].PlaceStanding = place++;
@@ -225,13 +226,9 @@ namespace NineTapTour.Calculations
                 {
                     currGame.PlaceStanding = prevGame.PlaceStanding;
                 }
-                else if (place <= lowestPlacement)
+                else
                 {
                     currGame.PlaceStanding = place;
-                }
-                else // if place > lowestPlacement. Those who don't place get 0s as place standing
-                {
-                    currGame.PlaceStanding = 0;
                 }
                 place++;
             }
@@ -246,22 +243,23 @@ namespace NineTapTour.Calculations
         /// <param name="currMember">the member to keep or add the highest game of (key)</param>
         /// <param name="currGame">the highest game to keep or add (value)</param>
         /// <param name="membersHighestGameMap">Dictionar to track members' highest games</param>
-        public static void KeepHighestScoringGame(Member currMember, Game currGame, Dictionary<Member, Game> membersHighestGameMap)
+        public static void TrackHighestScoringGame(Member currMember, Game currGame, Dictionary<Member, Game> membersHighestGameMap)
         {
             Member prevMember = membersHighestGameMap.Keys.Where(m => m.Number == currMember.Number).FirstOrDefault();
 
-            // if this member has already entered this tournament
-            if (membersHighestGameMap.TryGetValue(prevMember, out Game prevHighestGame))
+            // Add member to map if not already in map
+            if (prevMember == null)
             {
-                // keep the highest game for this member
+                membersHighestGameMap.Add(currMember, currGame);
+            }
+            else // keep the highest game for this member
+            {
+                membersHighestGameMap.TryGetValue(prevMember, out Game prevHighestGame);
+                
                 if (prevHighestGame.TotalScore < currGame.TotalScore)
                 {
                     membersHighestGameMap[prevMember] = currGame;
                 }
-            }
-            else // add new member number and their game
-            {
-                membersHighestGameMap.Add(currMember, currGame);
             }
         }
 
@@ -493,7 +491,7 @@ namespace NineTapTour.Calculations
     /// <summary>
     /// Sorts Games by highest scored Game in descending order
     /// </summary>
-    public class GameComparer : IComparer<Game>
+    public class GameScoreComparer : IComparer<Game>
     {
         int IComparer<Game>.Compare(Game x, Game y)
         {
