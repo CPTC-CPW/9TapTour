@@ -73,52 +73,59 @@ namespace NineTapTour.Calculations
         /// <param name="memberNum">Member number for the member to calculate bonus pins</param>
         /// <param name="RegionID">Region the current tournament is taking place</param>
         /// <param name="currTournamentDate">The date the tournament took place</param>
-        /// <param name="latestTournaments">The last two distinct tournaments</param>
+        /// <param name="latestGames">The last two distinct tournaments</param>
         /// <returns></returns>
-        public static int AddToBonusPins(int currentBonusPins, DateTime currTournamentDate, List<PlayerHistory> latestTournaments)
+        public static int AddToBonusPins(int currentBonusPins, DateTime currTournamentDate, List<PlayerHistory> latestGames)
         {
-            if (latestTournaments == null || latestTournaments.Count < 2 || currentBonusPins == MAX_BONUS_PINS_ALLOWED)
+            if (latestGames == null || latestGames.Count < 2 || currentBonusPins == MAX_BONUS_PINS_ALLOWED)
             {
                 return currentBonusPins;
             }
 
-            #region Check for wins as multiple entries and get distinct tournaments by date
+            PlayerHistory lastTourney = latestGames[0];
 
-            PlayerHistory lastTourney = latestTournaments[0];
-            int i = 1;
-            while (i < latestTournaments.Count && lastTourney.TournamentDate == latestTournaments[i].TournamentDate)
+            if (PlayerDidCash(lastTourney))
             {
-                // if won the last tournament on a different squad
-                if (lastTourney.Bonus != latestTournaments[i].Bonus)
+                return currentBonusPins;
+            }
+
+            // if won the last tournament on a different squad
+            int i = 1;
+            while (i < latestGames.Count && lastTourney.TournamentDate == latestGames[i].TournamentDate)
+            { 
+                if (PlayerDidCash(latestGames[i]))
                 {
                     return currentBonusPins;
                 }
                 i++;
             }
 
-            PlayerHistory secondToLast = latestTournaments[i];
+            PlayerHistory secondToLast = latestGames[i];
+
+            // if a second to last tournament doesn't exist
             if (secondToLast == null)
             {
                 return currentBonusPins;
             }
-            
-            while (i < latestTournaments.Count && secondToLast.TournamentDate == latestTournaments[i].TournamentDate)
+            i++;
+
+            // if won the second to last tournament on a different squad
+            while (i < latestGames.Count && secondToLast.TournamentDate == latestGames[i].TournamentDate)
             {
-                // if won the second to last tournament on a different squad
-                if (lastTourney.Bonus != latestTournaments[i].Bonus)
+                if (PlayerDidCash(latestGames[i]))
                 {
                     return currentBonusPins;
                 }
                 i++;
             }
-            #endregion
 
-            // After 3 games not placing add a bonus pin
-            if (currentBonusPins == lastTourney.Bonus && currentBonusPins == secondToLast.Bonus)
-            {
-                return currentBonusPins + 1;
-            }
-            return currentBonusPins;
+            // Add one if did not cash last 3 tournaments including the current
+            return currentBonusPins + 1;
+        }
+
+        private static bool PlayerDidCash(PlayerHistory playerHistory)
+        {
+            return playerHistory.MoneyWon > 0;
         }
 
         public static int DeductFromBonusPins(int memberPlaced, int currentBonusPins)
@@ -232,36 +239,7 @@ namespace NineTapTour.Calculations
                 }
                 place++;
             }
-        }
-
-        /// <summary>
-        /// Keeps the highest scoring game between the one passed in and the one stored in the dictionary
-        /// for the associated member. If a member doesn't exist as a key one is created with member passed 
-        /// in with the Game as its value.
-        /// is passed in. 
-        /// </summary>
-        /// <param name="currMember">the member to keep or add the highest game of (key)</param>
-        /// <param name="currGame">the highest game to keep or add (value)</param>
-        /// <param name="membersHighestGameMap">Dictionar to track members' highest games</param>
-        public static void TrackHighestScoringGame(Member currMember, Game currGame, Dictionary<Member, Game> membersHighestGameMap)
-        {
-            Member prevMember = membersHighestGameMap.Keys.Where(m => m.Number == currMember.Number).FirstOrDefault();
-
-            // Add member to map if not already in map
-            if (prevMember == null)
-            {
-                membersHighestGameMap.Add(currMember, currGame);
-            }
-            else // keep the highest game for this member
-            {
-                membersHighestGameMap.TryGetValue(prevMember, out Game prevHighestGame);
-                
-                if (prevHighestGame.TotalScore < currGame.TotalScore)
-                {
-                    membersHighestGameMap[prevMember] = currGame;
-                }
-            }
-        }
+        }     
 
         public static Dictionary<FinalizeTemp, int> CalculatePlaceStandings(List<FinalizeTemp> members)
         {
