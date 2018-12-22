@@ -99,31 +99,7 @@ namespace NineTapTour.Database
                 {
                     return false;
                 }
-
             }
-
-        }
-
-        public static int getHistoryID(int gameID)
-        {
-            int returnme = 0;
-
-            var db = new NineTapDb();
-            var temp = (
-
-                from g in db.PlayerHistory
-                where g.GameID == gameID
-                select new
-                {
-                    g.hisID
-                });
-            foreach (var v in temp)
-            {
-                returnme = v.hisID;
-            }
-            return returnme;
-
-            /*****************/
         }
 
         public static List<Participant> getGameParticipantList(int id)
@@ -307,8 +283,22 @@ namespace NineTapTour.Database
             }
         }
 
+        public static int GetCompEntryQtyByTourney(int tourneyId)
+        {
+            var db = new NineTapDb();
+            return db.FinalizeTemp
+                    .Join(db.Games,
+                        ft => ft.GameId,
+                        g => g.Id,
+                        (ft, g) => new { g.IsComp, ft.TournamentID })
+                    .Where(ftg => ftg.TournamentID == tourneyId && ftg.IsComp)
+                    .Count();
 
 
+                    //.Include(t => t.Participant.Select(p => p.Game).Where(g => g.IsComp))
+                    //.Where(t => t.Id == tourneyId)
+                    //.Count();
+        }
     }
 
 
