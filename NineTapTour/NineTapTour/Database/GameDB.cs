@@ -103,6 +103,5 @@ namespace NineTapTour.Database
             }
             db.SaveChanges();
         }
-
     }
 }

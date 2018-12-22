@@ -357,14 +357,14 @@ namespace NineTapTour.Database
             var queryResult = new NineTapDb().PlayerHistory
                                     .Where(ph => ph.MemberNumber == memNum && ph.regionID == regionId)
                                     .OrderByDescending(ph => ph.TournamentDate)
-                                    .Select(ph => new {ph.TournamentDate, ph.Bonus})
+                                    .Select(ph => new {ph.TournamentDate, ph.MoneyWon})
                                     .Take(8)
                                     .ToList();
 
             return queryResult.Select(qr => new PlayerHistory()
                             {
                                 TournamentDate = qr.TournamentDate,
-                                Bonus = qr.Bonus
+                                MoneyWon = qr.MoneyWon
                             })
                             .ToList();
         }
@@ -598,12 +598,7 @@ namespace NineTapTour.Database
                     p.trueAVG = item.trueAVG;
                 }
                 return p;
-
             }
-            
-
-
-            
         }
 
         /// <summary>
@@ -622,5 +617,14 @@ namespace NineTapTour.Database
                     .Sum() ?? 0; 
         }
 
+        /// <summary>
+        /// Returns true if a PlayerHistory with the same GameId exist in the database
+        /// </summary>
+        /// <param name="gameId"></param>
+        /// <returns></returns>
+        public static bool PlayerHistoryExists(int gameId)
+        {
+            return new NineTapDb().PlayerHistory.Any(ph => ph.GameID == gameId);
+        }
     }
 }
