@@ -18,7 +18,7 @@ namespace NineTapTour.Calculations.Test
             List<MemberScores> members = GetMemberScoreTestData();
             int numBowlersWithDuplicates = members.Count;
 
-            Calculations.CalculatePlaceStandings(members);
+            members = Calculations.CalculatePlaceStandings(members);
 
             int numBowlersAfterPlaceStandingsCalculation = members.Count;
 
@@ -68,7 +68,7 @@ namespace NineTapTour.Calculations.Test
         public void CalculatePlaceStandings_DisplaysTiesForBowlersWithSameScores()
         {
             List<MemberScores> members = GetMemberScoreTestData();
-            Calculations.CalculatePlaceStandings(members);
+            members = Calculations.CalculatePlaceStandings(members);
             
             //check first bowler is A with 1000; lesser score (800) is removed
             Assert.AreEqual(members[0].MemberId, 1);
@@ -114,7 +114,7 @@ namespace NineTapTour.Calculations.Test
 
         [TestMethod]                   // Scenarios:
         [DataRow(0, 17, 12, 31, 0, 1)] // - Did not cash last 3
-        [DataRow(5, 17, 12, 31, 1, 5)] // - Max bonus pins should be 5 even while not cashing last 3
+        [DataRow(5, 17, 12, 31, 0, 5)] // - Max bonus pins should be 5 even while not cashing last 3
         [DataRow(4, 17, 12, 31, 1, 4)] // - Cashed 2nd tournament ago
         [DataRow(3, 17, 12, 31, 2, 3)] // - Cashed 3rd tournament ago
         [DataRow(0, 17, 12, 31, 3, 1)] // - Cashed 4th tournament ago
@@ -136,120 +136,120 @@ namespace NineTapTour.Calculations.Test
         {
             switch (listNum)
             {
-                case 0:
+                case 0: // Did not cash last 3
                     return new List<PlayerHistory>()
                     {
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,30), Bonus = 0
+                            TournamentDate = new DateTime(17,12,30), MoneyWon = 0
                         },
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,29), Bonus = 0
+                            TournamentDate = new DateTime(17,12,29), MoneyWon = 0
                         }
                     };
-                case 1:
+                case 1: // Cashed 2nd tournament ago
                     return new List<PlayerHistory>()
                     {
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,30), Bonus = 5
+                            TournamentDate = new DateTime(17,12,30), MoneyWon = 1
                         },
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,29), Bonus = 5
+                            TournamentDate = new DateTime(17,12,29), MoneyWon = 0
                         }
                     };
-                case 2:
+                case 2: // Cashed 3rd tournament ago
                     return new List<PlayerHistory>()
                     {
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,30), Bonus = 3
+                            TournamentDate = new DateTime(17,12,30), MoneyWon = 0
                         },
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,29), Bonus = 4
+                            TournamentDate = new DateTime(17,12,29), MoneyWon = 1
                         }
                     };
-                case 3:
+                case 3: // Cashed 4th tournament ago
                     return new List<PlayerHistory>()
                     {
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,30), Bonus = 0
+                            TournamentDate = new DateTime(17,12,30), MoneyWon = 0
                         },
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,29), Bonus = 0
+                            TournamentDate = new DateTime(17,12,29), MoneyWon = 0
                         },
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,28), Bonus = 1
+                            TournamentDate = new DateTime(17,12,28), MoneyWon = 1
                         }
                     };
-                case 4:
+                case 4: // Cashed 3rd tournament ago but not last 3 entries (multiple tournament entry)
                     return new List<PlayerHistory>()
                     {
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,30), Bonus = 0
+                            TournamentDate = new DateTime(17,12,30), MoneyWon = 0
                         },
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,30), Bonus = 0
+                            TournamentDate = new DateTime(17,12,30), MoneyWon = 0
                         },
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,29), Bonus = 1
+                            TournamentDate = new DateTime(17,12,29), MoneyWon = 1
                         }
                     };
-                case 5:
+                case 5: // Cashed 2nd tournament ago as multiple entry but not the other 2
                     return new List<PlayerHistory>()
                     {
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,30), Bonus = 0
+                            TournamentDate = new DateTime(17,12,30), MoneyWon = 0
                         },
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,30), Bonus = 1
+                            TournamentDate = new DateTime(17,12,30), MoneyWon = 1
                         },
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,29), Bonus = 0
+                            TournamentDate = new DateTime(17,12,29), MoneyWon = 0
                         }
                     };
-                case 6:
+                case 6: // Did not cash last 3 with a multiple entry
                     return new List<PlayerHistory>()
                     {
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,30), Bonus = 0
+                            TournamentDate = new DateTime(17,12,30), MoneyWon = 0
                         },
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,30), Bonus = 0
+                            TournamentDate = new DateTime(17,12,30), MoneyWon = 0
                         },
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,29), Bonus = 0
+                            TournamentDate = new DateTime(17,12,29), MoneyWon = 0
                         }
                     };
-                case 7:
+                case 7: // Cashed 3rd tournament ago as multiple entry but not the other 2
                     return new List<PlayerHistory>()
                     {
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,30), Bonus = 0
+                            TournamentDate = new DateTime(17,12,30), MoneyWon = 0
                         },
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,29), Bonus = 0
+                            TournamentDate = new DateTime(17,12,29), MoneyWon = 0
                         },
                         new PlayerHistory()
                         {
-                            TournamentDate = new DateTime(17,12,29), Bonus = 1
+                            TournamentDate = new DateTime(17,12,29), MoneyWon = 1
                         }
                     };
                 default:
