@@ -357,14 +357,15 @@ namespace NineTapTour.Database
             var queryResult = new NineTapDb().PlayerHistory
                                     .Where(ph => ph.MemberNumber == memNum && ph.regionID == regionId)
                                     .OrderByDescending(ph => ph.TournamentDate)
-                                    .Select(ph => new {ph.TournamentDate, ph.MoneyWon})
+                                    .Select(ph => new {ph.TournamentDate, ph.MoneyWon, ph.Bonus})
                                     .Take(8)
                                     .ToList();
 
             return queryResult.Select(qr => new PlayerHistory()
                             {
                                 TournamentDate = qr.TournamentDate,
-                                MoneyWon = qr.MoneyWon
+                                MoneyWon = qr.MoneyWon,
+                                Bonus = qr.Bonus
                             })
                             .ToList();
         }

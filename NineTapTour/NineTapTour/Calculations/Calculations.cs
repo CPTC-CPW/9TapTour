@@ -82,6 +82,8 @@ namespace NineTapTour.Calculations
                 return currentBonusPins;
             }
 
+            #region Check for cashed games and bonus pins as multiple entries and get distinct tournaments by date
+
             PlayerHistory lastTourney = latestGames[0];
 
             if (PlayerDidCash(lastTourney))
@@ -89,11 +91,11 @@ namespace NineTapTour.Calculations
                 return currentBonusPins;
             }
 
-            // if won the last tournament on a different squad
+            // if cashed or gained a bonus pin for last tournament on a different squad
             int i = 1;
             while (i < latestGames.Count && lastTourney.TournamentDate == latestGames[i].TournamentDate)
-            { 
-                if (PlayerDidCash(latestGames[i]))
+            {
+                if (PlayerDidCash(latestGames[i]) || lastTourney.Bonus != latestGames[i].Bonus)
                 {
                     return currentBonusPins;
                 }
@@ -109,18 +111,23 @@ namespace NineTapTour.Calculations
             }
             i++;
 
-            // if won the second to last tournament on a different squad
+            // if cashed or gained a bonus pin for 2nd to last tournament on a different squad
             while (i < latestGames.Count && secondToLast.TournamentDate == latestGames[i].TournamentDate)
             {
-                if (PlayerDidCash(latestGames[i]))
+                if (PlayerDidCash(latestGames[i]) || secondToLast.Bonus != latestGames[i].Bonus)
                 {
                     return currentBonusPins;
                 }
                 i++;
             }
+            #endregion
 
-            // Add one if did not cash last 3 tournaments including the current
-            return currentBonusPins + 1;
+            // Add bonus pin after 3 tournaments not placing
+            if (currentBonusPins == lastTourney.Bonus && currentBonusPins == secondToLast.Bonus)
+            {
+                return currentBonusPins + 1;
+            }
+            return currentBonusPins;
         }
 
         private static bool PlayerDidCash(PlayerHistory playerHistory)
