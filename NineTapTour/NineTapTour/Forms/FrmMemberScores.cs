@@ -1483,11 +1483,14 @@ namespace NineTapTour.Forms
                 {
                     List<MemberScores> temp = ParticipantsDB.GetSeniorMemberScores(db, selectedTournament.Id);
 
+                    //squadList is not used in Senior Report. Passes empty list.
+                    List<int> squadList = new List<int>();
+
                     if (temp.Count != 0)
                     {
                         int currentsNum = GetSquadResultsNumberChecked();
 
-                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, 0/*reportTypeNum, 0 for High game handicap/senior, 1 for game/high game, 2 for series/high series*/, currentsNum);
+                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, 0/*reportTypeNum, 0 for High game handicap/senior, 1 for game/high game, 2 for series/high series*/, currentsNum, squadList);
                         //report.Dock = DockStyle.Fill;
                         report.Show();
                     }
@@ -1540,13 +1543,16 @@ namespace NineTapTour.Forms
                     List<MemberScores> temp = ParticipantsDB.GetGameMemberScores(db, selectedTournament.Id);
                     temp.Sort(scoreComparer);
 
+                    //seriesCurrentSquad is not used in Game Report. Passes empty
+                    List<int> squadList = new List<int>();
+
                     //find out what squad is selected At the moment of series button click
                     int currentsNum = GetSquadResultsNumberChecked();
 
                     if (temp.Count != 0)
 
                     {
-                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, ReportType.HighGame, currentsNum);
+                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, ReportType.HighGame, currentsNum, squadList);
                         report.Show();
                     }
                     else
@@ -1571,10 +1577,23 @@ namespace NineTapTour.Forms
 
                     int qualifyBySquadNumber = GetSquadResultsNumberChecked();
 
+                    //Gets information from Filter Series by Squad checkboxes and gets the latest squad to pass when Series is clicked.
+                    List<bool> filterSeries = FormHelper.GetFilterSeriesList(GRPQBS1);
+                    List<int> squadList = FormHelper.SquadNumList(filterSeries);
+
                     //these 2 regions would recreate data that already exists on trhe page
                     #region PRINTING HANDICAP TOURNAMENT RESULTS
                     if (rdoHandicapScore.Checked)
                     {
+                        if (selectedTournament.ThreeOutOf4 && squadList.Contains(0))
+                        {
+                            temp = ParticipantsDB.GetStandingsForThreeOutOf4ByHandicap(db, selectedTournament.Id);
+                        }
+                        else if (selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
+                        {
+                            temp = ParticipantsDB.GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(db, squadList, selectedTournament.Id);
+                        }
+                        /*
                         if (selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall best standings for 3of4 tournament
                         {
                             temp = ParticipantsDB.GetStandingsForThreeOutOf4ByHandicap(db, selectedTournament.Id);
@@ -1583,21 +1602,40 @@ namespace NineTapTour.Forms
                         {
                             temp = ParticipantsDB.GetStandingsForThreeOf4BySquadNumberByHandicap(db, qualifyBySquadNumber, selectedTournament.Id);
 
+                        }*/
+
+                        else if (!selectedTournament.ThreeOutOf4 && squadList.Contains(0))
+                        {
+                            temp = ParticipantsDB.GetStandingsForTournamentByHandicap(db, selectedTournament.Id);
                         }
-                        else if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall standings for a regular tournament
+                        else if (!selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
+                        {
+                            temp = ParticipantsDB.GetStandingsForTournamentByFilterSeriesByHandicap(db, squadList, selectedTournament.Id);
+                        }
+
+                        /*if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall standings for a regular tournament
                         {
                             temp = ParticipantsDB.GetStandingsForTournamentByHandicap(db, selectedTournament.Id);
                         }
                         else if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber > 0) //standings based on squad for a regular tournament
                         {
                             temp = ParticipantsDB.GetStandingsForTournamentBySquadByHandicap(db, qualifyBySquadNumber, selectedTournament.Id);
-                        }
+                        }*/
                     }
                     #endregion
 
                     #region PRINTING SCRATCH TOURNAMENT RESULTS
                     else if (rdoScratchScore.Checked)
                     {
+                        if (selectedTournament.ThreeOutOf4 && squadList.Contains(0))
+                        {
+                            temp = ParticipantsDB.GetStandingsForThreeOf4ByScratch(db, selectedTournament.Id);
+                        }
+                        else if (selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
+                        {
+                            temp = ParticipantsDB.GetStandingsForThreeOf4ByFilterSeriesByScratch(db, squadList, selectedTournament.Id);
+                        }
+                        /*
                         if (selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall best standings for 3of4 tournament
                         {
                             temp = ParticipantsDB.GetStandingsForThreeOf4ByScratch(db, selectedTournament.Id);
@@ -1606,14 +1644,24 @@ namespace NineTapTour.Forms
                         {
                             temp = ParticipantsDB.GetStandingsThreeOfFourBySquadScratch(db, qualifyBySquadNumber, selectedTournament.Id);
                         }
-                        else if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall standings for a regular tournament
+                        */
+                        else if (!selectedTournament.ThreeOutOf4 && squadList.Contains(0))
+                        {
+                            temp = ParticipantsDB.GetStandingsForTournamentByScratch(db, selectedTournament.Id);
+                        }
+                        else if (!selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
+                        {
+                            temp = ParticipantsDB.GetStandingsForTournamentByFilterSeriesByScratch(db, squadList, selectedTournament.Id);
+                        }
+                        /*
+                        if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall standings for a regular tournament
                         {
                             temp = ParticipantsDB.GetStandingsForTournamentByScratch(db, selectedTournament.Id);
                         }
                         else if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber > 0) //standings based on squad for a regular tournament
                         {
                             temp = ParticipantsDB.GetStandingsForTournamentBySquadScratch(db, qualifyBySquadNumber, selectedTournament.Id);
-                        }
+                        }*/
                     }
                     #endregion
 
@@ -1621,7 +1669,7 @@ namespace NineTapTour.Forms
 
                     if (temp.Count() != 0)
                     {
-                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, ReportType.HighSeries, qualifyBySquadNumber);
+                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, ReportType.HighSeries, qualifyBySquadNumber, squadList);
                         report.Show();
                     }
                     else
