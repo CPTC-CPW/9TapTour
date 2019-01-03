@@ -1204,6 +1204,8 @@ namespace NineTapTour.Forms
             int playerNumberAsInt = 0;
             int.TryParse(playerNumber, out playerNumberAsInt);
 
+
+            // hawaii numbers are not 234 they have H in front need to adress that by removing the h 
             if (playerNumberAsInt != 0)
             {
                 playerNumberAsInt = Convert.ToInt32((range.Cells[1, 14] as Excel.Range).Value2);
@@ -1219,15 +1221,30 @@ namespace NineTapTour.Forms
                 xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
                 range = xlWorkSheet.UsedRange;
                 double noGameMoneyWon = 0;
-                
-                for (int row = 3; row <= range.Rows.Count; row++)
+
+
+                int rowNum;
+                int subRow;
+                // region 2 = hawaii
+                if(RegionID == 2)
+                {
+                    rowNum = 4;
+                    subRow = 3;
+                }
+                else
+                {
+                    rowNum = 3;
+                    subRow = 46;
+                }
+
+                for (int row = rowNum; row <= range.Rows.Count; row++)
                 {
  
                     ExcelRow temp = new ExcelRow();
                     PlayerHistory playerH = new PlayerHistory();
                     Game GameHistory = new Game();
 
-                    if (row != 46)
+                    if (row != subRow)
                     {
                         if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0 &&
                         Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0 &&
@@ -1240,7 +1257,13 @@ namespace NineTapTour.Forms
                             continue;
                         }
                     }
-               
+
+
+
+
+
+
+
                     GameHistory.gameRegionID = RegionID;
                     temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
                     temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
