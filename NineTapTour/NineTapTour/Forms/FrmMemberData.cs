@@ -1200,9 +1200,9 @@ namespace NineTapTour.Forms
             }
 
             String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
-            bool hawaii = (RegionID == 2); // checks to see if RegionID is equal to Hawaii
+            bool isRegionHawaii = (RegionID == 2); // checks to see if RegionID is equal to Hawaii
             
-            if(hawaii) 
+            if(isRegionHawaii) 
             {
                 playerNumber = Regex.Replace(playerNumber, "[^0-9]", "");  // strip the member number to straight number
             }
@@ -1233,7 +1233,7 @@ namespace NineTapTour.Forms
                 int rowNum;
                 int subRow;
                 
-                if(hawaii)
+                if(isRegionHawaii)
                 {
                     rowNum = 4;
                     subRow = 3;
