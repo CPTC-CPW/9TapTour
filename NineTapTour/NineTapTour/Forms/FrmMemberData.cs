@@ -1200,21 +1200,28 @@ namespace NineTapTour.Forms
             }
 
             String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
+            bool hawaii = (RegionID == 2);
+            
+            if(hawaii) 
+            {
+                playerNumber = Regex.Replace(playerNumber, "[^0-9]", "");  // strip the member number to straight number
+            }
             String[] playerNumberAfterSplit;
             int playerNumberAsInt = 0;
             int.TryParse(playerNumber, out playerNumberAsInt);
 
-
-            // hawaii numbers are not 234 they have H in front need to adress that by removing the h 
+            // hawaii numbers are not 234 they have H  or H- in front need to address that by removing the h 
             if (playerNumberAsInt != 0)
             {
-                playerNumberAsInt = Convert.ToInt32((range.Cells[1, 14] as Excel.Range).Value2);
+                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumber, "[^0-9]", "")); 
+                                                                                               //Convert.ToInt32((range.Cells[1, 14] as Excel.Range).Value2);
             }
             else if (playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
             {
                 playerNumberAfterSplit = playerNumber.Split('/');
-                playerNumberAsInt = Convert.ToInt32(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1]);
+                playerNumberAsInt = Convert.ToInt32( Regex.Replace(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1] , "[^0-9]", ""));
             }
+
 
             for (int sheetNum = 1; sheetNum <= xlWorkBook.Worksheets.Count; sheetNum++)
             {
@@ -1226,7 +1233,7 @@ namespace NineTapTour.Forms
                 int rowNum;
                 int subRow;
                 // region 2 = hawaii
-                if(RegionID == 2)
+                if(hawaii)
                 {
                     rowNum = 4;
                     subRow = 3;
@@ -1260,11 +1267,7 @@ namespace NineTapTour.Forms
 
 
 
-
-
-
-
-                    GameHistory.gameRegionID = RegionID;
+            GameHistory.gameRegionID = RegionID;
                     temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
                     temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
                     temp.PlayerLastName = playerLastName;
