@@ -1272,6 +1272,9 @@ namespace NineTapTour.Forms
                         }
                     }
 
+                    // compare against original master about how importing line by line.
+                    
+
                     //if (row != subRow)
                     //{
                     //    if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0 &&
