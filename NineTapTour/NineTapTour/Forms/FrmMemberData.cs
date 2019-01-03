@@ -1200,7 +1200,7 @@ namespace NineTapTour.Forms
             }
 
             String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
-            bool hawaii = (RegionID == 2);
+            bool hawaii = (RegionID == 2); // checks to see if RegionID is equal to Hawaii
             
             if(hawaii) 
             {
@@ -1211,10 +1211,10 @@ namespace NineTapTour.Forms
             int.TryParse(playerNumber, out playerNumberAsInt);
 
             // hawaii numbers are not 234 they have H  or H- in front need to address that by removing the h 
+            // used regex to remove any non numeric expressions from player number be it a letter or a - 
             if (playerNumberAsInt != 0)
             {
                 playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumber, "[^0-9]", "")); 
-                                                                                               //Convert.ToInt32((range.Cells[1, 14] as Excel.Range).Value2);
             }
             else if (playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
             {
@@ -1232,7 +1232,7 @@ namespace NineTapTour.Forms
 
                 int rowNum;
                 int subRow;
-                // region 2 = hawaii
+                
                 if(hawaii)
                 {
                     rowNum = 4;
@@ -1255,7 +1255,7 @@ namespace NineTapTour.Forms
                     string game2 = Convert.ToString((range.Cells[row, 3] as Excel.Range).Value2);
                     string game3 = Convert.ToString((range.Cells[row, 3] as Excel.Range).Value2);
                     string game4 = Convert.ToString((range.Cells[row, 3] as Excel.Range).Value2);
-                    string testpot = Convert.ToString((range.Cells[row, 6] as Excel.Range).Value2);
+                    string testFin = Convert.ToString((range.Cells[row, 6] as Excel.Range).Value2);
 
                     if (row != subRow)
                     {
@@ -1264,7 +1264,7 @@ namespace NineTapTour.Forms
                             string.IsNullOrWhiteSpace(game2) &&
                             string.IsNullOrWhiteSpace(game3) &&
                             string.IsNullOrWhiteSpace(game4) &&
-                            !string.IsNullOrWhiteSpace(testpot)
+                            !string.IsNullOrWhiteSpace(testFin)
                         )
                         {
                             noGameMoneyWon += Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
@@ -1288,8 +1288,6 @@ namespace NineTapTour.Forms
                     //        continue;
                     //    }
                     //}
-
-
 
                     GameHistory.gameRegionID = RegionID;
                     temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
