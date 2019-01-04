@@ -1252,13 +1252,21 @@ namespace NineTapTour.Forms
                     Game GameHistory = new Game();
 
                     string game1 = Convert.ToString((range.Cells[row, 3] as Excel.Range).Value2);
-                    string game2 = Convert.ToString((range.Cells[row, 3] as Excel.Range).Value2);
-                    string game3 = Convert.ToString((range.Cells[row, 3] as Excel.Range).Value2);
-                    string game4 = Convert.ToString((range.Cells[row, 3] as Excel.Range).Value2);
-                    string testFin = Convert.ToString((range.Cells[row, 6] as Excel.Range).Value2);
+                    string game2 = Convert.ToString((range.Cells[row, 4] as Excel.Range).Value2);
+                    string game3 = Convert.ToString((range.Cells[row, 5] as Excel.Range).Value2);
+                    string game4 = Convert.ToString((range.Cells[row, 6] as Excel.Range).Value2);
+                    string testFin = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
 
-                    if (row != subRow)
+                    // if (row != subRow)
+                    // {
+                    if (
+                        string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 2] as Excel.Range).Value2)) &&
+                        string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 15] as Excel.Range).Value2))
+                        )
                     {
+                        continue;
+                    }
+
                         if(
                             string.IsNullOrWhiteSpace(game1) &&
                             string.IsNullOrWhiteSpace(game2) &&
@@ -1270,7 +1278,7 @@ namespace NineTapTour.Forms
                             noGameMoneyWon += Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
                             continue;
                         }
-                    }
+                    //}
 
                     // compare against original master about how importing line by line.
                     
