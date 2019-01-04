@@ -1222,26 +1222,20 @@ namespace NineTapTour.Forms
                 playerNumberAsInt = Convert.ToInt32( Regex.Replace(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1] , "[^0-9]", ""));
             }
 
-
             for (int sheetNum = 1; sheetNum <= xlWorkBook.Worksheets.Count; sheetNum++)
             {
                 xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
                 range = xlWorkSheet.UsedRange;
                 double noGameMoneyWon = 0;
-
-
                 int rowNum;
-                int subRow;
                 
                 if(isRegionHawaii)
                 {
                     rowNum = 4;
-                    subRow = 3;
                 }
                 else
                 {
                     rowNum = 3;
-                    subRow = 46;
                 }
 
                 for (int row = rowNum; row <= range.Rows.Count; row++)
@@ -1256,9 +1250,7 @@ namespace NineTapTour.Forms
                     string game3 = Convert.ToString((range.Cells[row, 5] as Excel.Range).Value2);
                     string game4 = Convert.ToString((range.Cells[row, 6] as Excel.Range).Value2);
                     string testFin = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
-
-                    // if (row != subRow)
-                    // {
+                    
                     if (
                         string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 2] as Excel.Range).Value2)) &&
                         string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 15] as Excel.Range).Value2))
@@ -1267,35 +1259,18 @@ namespace NineTapTour.Forms
                         continue;
                     }
 
-                        if(
-                            string.IsNullOrWhiteSpace(game1) &&
-                            string.IsNullOrWhiteSpace(game2) &&
-                            string.IsNullOrWhiteSpace(game3) &&
-                            string.IsNullOrWhiteSpace(game4) &&
-                            !string.IsNullOrWhiteSpace(testFin)
-                        )
-                        {
-                            noGameMoneyWon += Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
-                            continue;
-                        }
-                    //}
-
-                    // compare against original master about how importing line by line.
-                    
-
-                    //if (row != subRow)
-                    //{
-                    //    if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0 &&
-                    //    Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0 &&
-                    //    Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0 &&
-                    //    Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0 &&
-                    //    Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2) != null
-                    //    )
-                    //    {
-                    //        noGameMoneyWon += Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
-                    //        continue;
-                    //    }
-                    //}
+                    if(
+                        string.IsNullOrWhiteSpace(game1) &&
+                        string.IsNullOrWhiteSpace(game2) &&
+                        string.IsNullOrWhiteSpace(game3) &&
+                        string.IsNullOrWhiteSpace(game4) &&
+                        !string.IsNullOrWhiteSpace(testFin)
+                    )
+                    {
+                        noGameMoneyWon += Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
+                        continue;
+                    }
+               
 
                     GameHistory.gameRegionID = RegionID;
                     temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
