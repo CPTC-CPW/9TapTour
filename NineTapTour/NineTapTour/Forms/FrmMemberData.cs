@@ -1251,7 +1251,7 @@ namespace NineTapTour.Forms
                     string game4 = Convert.ToString((range.Cells[row, 6] as Excel.Range).Value2);
                     string testFin = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
                     
-                    if (
+                    if ( // if no date or cash then continue to the next line
                         string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 2] as Excel.Range).Value2)) &&
                         string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 15] as Excel.Range).Value2))
                         )
@@ -1259,7 +1259,7 @@ namespace NineTapTour.Forms
                         continue;
                     }
 
-                    if(
+                    if( // if the four games have no data AKA no games bowled and there is a finish place then add the cash to moneywon
                         string.IsNullOrWhiteSpace(game1) &&
                         string.IsNullOrWhiteSpace(game2) &&
                         string.IsNullOrWhiteSpace(game3) &&
