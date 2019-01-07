@@ -20,7 +20,6 @@ namespace NineTapTour.Forms
         private int memId;
         private int memNum;
         private string memName;
-        static int TURN_BOLD_IF_BOWLED_OVER_NUMBER = 250;
         List<PlayerHistory> ph;
         int RegionID;
 

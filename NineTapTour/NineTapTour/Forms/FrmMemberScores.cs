@@ -30,7 +30,6 @@ namespace NineTapTour.Forms
         int currentIndex = 0;         
         Participant player = new Participant();
         public static Tournament selectedTournament;
-        public static List<TopScores> overallListOfTopScores = new List<TopScores>();
         public static List<Participant> overallListOfParticipants;
 
         List<int> howManySquadsCanBeFiltered = new List<int>();
@@ -1342,18 +1341,6 @@ namespace NineTapTour.Forms
                     listOfTopScore
                         .Clear(); //filter out if there is no one on the squad yet so the 3rd box won't get populated
                 }
-
-                // Assign Place Standing from scores to overallListOfTopScores
-                for (int i = 0; i < overallListOfTopScores.Count; i++)
-                {
-                    foreach (var item in scores)
-                    {
-                        if (overallListOfTopScores[i].memberID == item.MemberId)
-                        {
-                            overallListOfTopScores[i].Placing = item.placing;
-                        }
-                    }
-                }
             }
             catch
             {
@@ -1470,7 +1457,7 @@ namespace NineTapTour.Forms
                 Cursor.Current = Cursors.WaitCursor;
                 Application.DoEvents();
 
-                var newFrmFinalizeTournament = new FrmFinalizeTournament(selectedTournament, overallListOfTopScores, RegionID);
+                var newFrmFinalizeTournament = new FrmFinalizeTournament(selectedTournament, RegionID);
                 newFrmFinalizeTournament.Dock = DockStyle.Right;
                 newFrmFinalizeTournament.WindowState = FormWindowState.Normal;
                 newFrmFinalizeTournament.Show();
@@ -1555,7 +1542,6 @@ namespace NineTapTour.Forms
                 {
                     List<MemberScores> temp = ParticipantsDB.GetGameMemberScores(db, selectedTournament.Id);
                     temp.Sort(scoreComparer);
-                    temp.Reverse();
 
                     //seriesCurrentSquad is not used in Game Report. Passes empty
                     List<int> squadList = new List<int>();
@@ -1680,7 +1666,6 @@ namespace NineTapTour.Forms
                     #endregion
 
                     temp.Sort(scoreComparer);
-                    temp.Reverse();
 
                     if (temp.Count() != 0)
                     {
@@ -1765,7 +1750,7 @@ namespace NineTapTour.Forms
             PlayerHistory p = PlayerHistoryDB.getPlayerHistoryByGameID(g.Id);
             PlayerHistoryDB.DeletePlayerHistory(p);
             //Delete from FinalizeTemp
-            FinalizeTemp ft = FinalizeTempDB.getFinalizeID(FinalizeTempDB.getGame(g.Id));
+            FinalizeTemp ft = FinalizeTempDB.getFinalizeID(GameDB.GetGame(g.Id));
             FinalizeTempDB.DeleteFinilizeTemp(ft);
             //Delete from Participants list
             Participant par = FinalizeTempDB.getParticipantbyGameID(g.Id);
