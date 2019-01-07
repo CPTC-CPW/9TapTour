@@ -863,11 +863,11 @@
             // 
             this.lblLastPaid.AutoSize = true;
             this.lblLastPaid.Font = new System.Drawing.Font("Calibri", 9.75F);
-            this.lblLastPaid.Location = new System.Drawing.Point(3, 27);
+            this.lblLastPaid.Location = new System.Drawing.Point(0, 25);
             this.lblLastPaid.Name = "lblLastPaid";
-            this.lblLastPaid.Size = new System.Drawing.Size(79, 15);
+            this.lblLastPaid.Size = new System.Drawing.Size(152, 15);
             this.lblLastPaid.TabIndex = 55;
-            this.lblLastPaid.Text = "Last Payment";
+            this.lblLastPaid.Text = "Year Membership Will End";
             // 
             // lblPaymentInfo
             // 
@@ -883,10 +883,10 @@
             // 
             // txtLastPayment
             // 
-            this.txtLastPayment.Location = new System.Drawing.Point(88, 27);
+            this.txtLastPayment.Location = new System.Drawing.Point(158, 24);
             this.txtLastPayment.Mask = "00/00/0000";
             this.txtLastPayment.Name = "txtLastPayment";
-            this.txtLastPayment.Size = new System.Drawing.Size(190, 21);
+            this.txtLastPayment.Size = new System.Drawing.Size(127, 21);
             this.txtLastPayment.TabIndex = 56;
             this.txtLastPayment.ValidatingType = typeof(System.DateTime);
             this.txtLastPayment.Click += new System.EventHandler(this.mtxtBox_Click);

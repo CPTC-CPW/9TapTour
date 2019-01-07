@@ -117,8 +117,7 @@ namespace NineTapTour.Forms
         public void UpdateMemberInfo(Member searchMem = null)
         {
             RemoveValidation();
-            RegionID = ((FrmMain)MdiParent).RegionID;
-            List<Member> ListOfMembers = MemberDb.GetMemberList(RegionID);   
+            RegionID = ((FrmMain)MdiParent).RegionID;  
             
             //set all member info group control background colors
             foreach(Control c in grpMemberInfo.Controls)
@@ -130,6 +129,7 @@ namespace NineTapTour.Forms
 			{
 				d.BackColor = Color.LightGray;
 			}
+
             int memberCount = MemberDb.GetMemberListCount(RegionID);
 
             // set txtMemberNumber.Text back to one if there is no one in the the 
@@ -142,7 +142,7 @@ namespace NineTapTour.Forms
             // region, set txtmemberNumber.Text to its highest member count for the selcted region
             else if(Convert.ToInt16(txtMemberNumber.Text) > memberCount)
             {
-                txtMemberNumber.Text = MemberDb.GetMemberListCount(RegionID).ToString();
+                txtMemberNumber.Text = memberCount.ToString();
             }
 
             _memberNum = Convert.ToInt32(txtMemberNumber.Text);
@@ -320,22 +320,6 @@ namespace NineTapTour.Forms
                 }
 
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
-                decimal moneySum = 0;
-                var result = (from p in db.PlayerHistory
-                              where p.MemberNumber == currentMem.Id
-                              orderby p.TournamentDate descending
-                              select new
-                              {
-                                  p.MoneyWon
-                              }).ToArray();
-
-                foreach(var v in result)
-                {
-                    moneySum += v.MoneyWon;
-                }               
-
-                txtMoneyEarned.Text = String.Format("{0:C}", moneySum);
-                currentMem.MoneyEarned = moneySum;
                 txtNotes.Text = currentMem.Notes;
 
                 if (currentMem.Referrals == null)
@@ -385,7 +369,6 @@ namespace NineTapTour.Forms
                     PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number, RegionID);
 
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
-                MemberDb.AddMember(currentMem); 
             }
         }           
 
@@ -425,43 +408,11 @@ namespace NineTapTour.Forms
                 valid = false;
             }
 
-            // validate date of birth textbox
-            if (!FormHelper.IsDateTimeValid(txtDOB.Text))
-            {
-                lblDOBValidation.Visible = true;
-                txtDOB.BackColor = Color.LightPink;
-                valid = false;
-            }
-
 			// validate dateJoined textbox
             if (!FormHelper.IsDateTimeValid(txtDateJoined.Text))
             {
                 lblDateJoinedValidation.Visible = true;
                 txtDateJoined.BackColor = Color.LightPink;
-                valid = false;
-            }
-
-            // validate referrals textbox
-            if (!int.TryParse(txtReferrals.Text, out int result))
-            {
-                lblReferralsValidation.Visible = true;
-                txtReferrals.BackColor = Color.LightPink;
-                valid = false;
-            }
-
-            // validate SSN textbox
-            if (txtSSN.Text.Length != 11)
-            {
-                lblSSNValidation.Visible = true;
-                txtSSN.BackColor = Color.LightPink;
-                valid = false;
-            }
-
-            // validate state textbox
-            if (!FormHelper.IsStateValid(txtState.Text))
-            {
-                lblStateValidation.Visible = true;
-                txtState.BackColor = Color.LightPink;
                 valid = false;
             }
             return valid;
@@ -474,13 +425,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (IsValidTextboxes())
-            {
-                SaveMemberData();
-#if DEBUG
-                MessageBox.Show("Member saved.");
-#endif
-            }
+            SaveMemberData();
         }
 
         public void SaveMemberData()
@@ -625,13 +570,13 @@ namespace NineTapTour.Forms
 
                 // check to see if memberId exists before putting it in 
                 // current selected regions database
-                if(MemberDb.GetMember(temp.Number,RegionID).Id > 0)
+                if(MemberDb.MemberExists(temp))
                 {
-                    memId = MemberDb.GetMember(temp.Number, RegionID).Id;
+                    memId = MemberDb.GetMemberIdByNumber(temp.Number, RegionID, new NineTapDb());
                 }
                 else
                 {
-                    memId = MemberDb.GetALLMembersList().Count + 1;
+                    memId = MemberDb.GetMemberListCount(RegionID) + 1;
                 }
 
                 temp.Id = memId;
@@ -684,11 +629,11 @@ namespace NineTapTour.Forms
                 try
                 {
                     MemberDb.AddMember(temp);
-
-                    //_membersList = MemberDb.GetMemberList().OrderBy(m => m.Number);
+#if DEBUG
+                    MessageBox.Show("Member saved");
+#endif
                     ((FrmMain)MdiParent)._membersList = 
                         MemberDb.GetMemberList(RegionID).OrderBy(m => m.Number);
-                    //_membersList = ((FrmMain)MdiParent)._membersList;
                     UpdateMemberInfo();
                 }
                 catch (MemberTableException ex)
@@ -805,7 +750,7 @@ namespace NineTapTour.Forms
             _memberId = -1;
 
             //get latest member number, or set to 1 if no members in database
-            int nextMemberNumber = MemberDb.GetMemberList(RegionID).Count + 1;
+            int nextMemberNumber = MemberDb.GetMemberListCount(RegionID) + 1;
             txtMemberNumber.Text = nextMemberNumber.ToString();
 
             currentMem = new Member
