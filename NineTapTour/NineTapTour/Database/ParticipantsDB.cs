@@ -71,7 +71,6 @@ namespace NineTapTour.Database
                                                        .Where(b => b.Member.IsSenior))
                                     select new MemberScores { MemberId = g.Member.Number, FirstName = g.Member.FirstName, LastName = g.Member.LastName, Score = g.Game.Game4.Value, LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(), Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1)))) })).ToList();
             temp.Sort(new MemberScoresComparer());
-            temp.Reverse();
             return temp;
         }
 
