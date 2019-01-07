@@ -99,85 +99,7 @@ namespace NineTapTour.Database
                 {
                     return false;
                 }
-
             }
-
-        }
-
-        public static Game getGame(int gameID)
-        {
-            Game currentGame = new Game();
-
-            var db = new NineTapDb();
-            var temp = (
-
-                from g in db.Games
-                where g.Id == gameID
-                select new
-                {
-                    g.Bonus,
-                    g.Game1,
-                    g.Game2,
-                    g.Game3,
-                    g.Game4,
-                    g.Handicap,
-                    g.InputtedAvg,
-                    g.Id,
-                    g.MoneyWon,
-                    g.SidePot,
-                    g.Notes,
-                    g.PlaceStanding,
-                    g.UseGame1,
-                    g.UseGame2,
-                    g.UseGame3,
-                    g.UseGame4
-
-                });
-            foreach (var g in temp)
-            {
-                currentGame.Bonus = g.Bonus;
-                currentGame.Game1 = g.Game1;
-                currentGame.Game2 = g.Game2;
-                currentGame.Game3 = g.Game3;
-                currentGame.Game4 = g.Game4;
-                currentGame.Handicap = g.Handicap;
-                currentGame.InputtedAvg = g.InputtedAvg;
-                currentGame.Id = g.Id;
-                currentGame.MoneyWon = g.MoneyWon;
-                currentGame.SidePot = g.SidePot;
-                currentGame.Notes = g.Notes;
-                currentGame.PlaceStanding = g.PlaceStanding;
-                currentGame.UseGame1 = g.UseGame1;
-                currentGame.UseGame2 = g.UseGame2;
-                currentGame.UseGame3 = g.UseGame3;
-                currentGame.UseGame4 = g.UseGame4;
-
-            }
-            return currentGame;
-
-        }
-
-
-        public static int getHistoryID(int gameID)
-        {
-            int returnme = 0;
-
-            var db = new NineTapDb();
-            var temp = (
-
-                from g in db.PlayerHistory
-                where g.GameID == gameID
-                select new
-                {
-                    g.hisID
-                });
-            foreach (var v in temp)
-            {
-                returnme = v.hisID;
-            }
-            return returnme;
-
-            /*****************/
         }
 
         public static List<Participant> getGameParticipantList(int id)
@@ -361,8 +283,22 @@ namespace NineTapTour.Database
             }
         }
 
+        public static int GetCompEntryQtyByTourney(int tourneyId)
+        {
+            var db = new NineTapDb();
+            return db.FinalizeTemp
+                    .Join(db.Games,
+                        ft => ft.GameId,
+                        g => g.Id,
+                        (ft, g) => new { g.IsComp, ft.TournamentID })
+                    .Where(ftg => ftg.TournamentID == tourneyId && ftg.IsComp)
+                    .Count();
 
 
+                    //.Include(t => t.Participant.Select(p => p.Game).Where(g => g.IsComp))
+                    //.Where(t => t.Id == tourneyId)
+                    //.Count();
+        }
     }
 
 
