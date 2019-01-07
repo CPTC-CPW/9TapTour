@@ -35,49 +35,29 @@ namespace NineTapTour.Forms
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
-            try
-            {
-                // if user inputs 0
-                if (Convert.ToInt32(txtNumberOfMembers.Text) == 0)
-                {
-                    MessageBox.Show("Please do not Input 0.");
-                }
-                // if good to go
-                else if (Convert.ToInt32(txtNumberOfMembers.Text) <= temp.Count)
-                {
-                    Calculations.Calculations.CalculatePlaceStandings(temp);
-                    temp = TakeAmountOfMembers();
-                    // print( go to print class )
-                    Database.Print.printMemberReport(temp, selectedTournament, reportTypeNum, currentSquad, squadList);
-
-                    this.Close();
-                }
-                // if user inputs a bigger number than the number of members
-                else
-                {
-                    MessageBox.Show("There are only " + temp.Count + " participant/s in the tournament selected.");
-                }
-            }
-            // if user did not input a number
-            catch (FormatException)
+            if (!int.TryParse(txtNumberOfMembers.Text, out int numMembers))
             {
                 MessageBox.Show("Please only input a number");
             }
-        }
-
-        /// <summary>
-        /// Takes the top amount of members ranked by placing order requested by the textbox. If there is
-        /// a tie in the last placing requested, the number of members is extended to include them
-        /// </summary>
-        /// <returns>Top placing MemberScores</returns>
-        private List<MemberScores> TakeAmountOfMembers()
-        {
-            int numMembers = Convert.ToInt32(txtNumberOfMembers.Text);
-            while (numMembers < temp.Count && temp[numMembers - 1].placing == temp[numMembers].placing)
+            // if user inputs 0
+            else if (numMembers == 0)
             {
-                numMembers++;
+                MessageBox.Show("Please do not Input 0.");
             }
-            return temp.Take(numMembers).ToList();
+            // if good to go
+            else if (numMembers <= temp.Count)
+            {
+                temp = Calculations.Calculations.MakeTopMembersByPlacementList(temp, numMembers);
+                // print( go to print class )
+                Database.Print.printMemberReport(temp, selectedTournament, reportTypeNum, currentSquad, squadList);
+
+                this.Close();
+            }
+            // if user inputs a bigger number than the number of members
+            else
+            {
+                MessageBox.Show("There are only " + temp.Count + " participant/s in the tournament selected.");
+            }
         }
 
         private void FrmMemberScoresReports_Load(object sender, EventArgs e)

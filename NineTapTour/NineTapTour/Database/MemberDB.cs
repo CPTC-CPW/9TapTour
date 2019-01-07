@@ -208,6 +208,15 @@ namespace NineTapTour.Database
                 return currentMember;
             }
         }
+
+        public static Member GetMemberByGameId(int gameId)
+        {
+            return new NineTapDb().Participants
+                                  .Include(b => b.Game)
+                                  .Include(b => b.Member)
+                                  .First(p => p.Game.Id == gameId)
+                                  .Member;
+        }
             
         /// <summary>
         /// Returns the ID of a member based on their Member Number
