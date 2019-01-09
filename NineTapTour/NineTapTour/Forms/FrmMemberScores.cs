@@ -981,28 +981,31 @@ namespace NineTapTour.Forms
                 btnFirstRecord.Enabled = false;
                 return;
             }
+            if(overallListOfParticipants.Count > 1)
+            {
+                // Sets currentIndex to 1 in order to get the 1st record
+                currentIndex = 0;
 
-            // Sets currentIndex to 1 in order to get the 1st record
-            currentIndex = 0;
+                lblRecord.Text = "Record " + (currentIndex + 1) + " / " + overallListOfParticipants.Count;
+                ReEnableNavigation();
 
-            lblRecord.Text = "Record " + (currentIndex + 1) + " / " + overallListOfParticipants.Count;
-            ReEnableNavigation();
+                // Gets the 1st record in the list
+                txtMemberNum.Text = Convert.ToString(overallListOfParticipants[0].Member.Number);
 
-            // Gets the 1st record in the list
-            txtMemberNum.Text = Convert.ToString(overallListOfParticipants[0].Member.Number);
+                int playerSquadNumber = overallListOfParticipants[currentIndex].Squad;
+                CheckSquadRadioButton(playerSquadNumber);
 
-            int playerSquadNumber = overallListOfParticipants[currentIndex].Squad;
-            CheckSquadRadioButton(playerSquadNumber);
+                FillMember();
 
-            FillMember();
-
-            // Disables buttons left and first record buttons 
-            // if there are no more records go back to.
-            btnLeftArrow.Enabled = false;
-            btnFirstRecord.Enabled = false;
+                // Disables buttons left and first record buttons 
+                // if there are no more records go back to.
+                btnLeftArrow.Enabled = false;
+                btnFirstRecord.Enabled = false;
 
 
-            switchingParticipents = false;
+                switchingParticipents = false;
+            }
+
         }
 
         /// <summary>
