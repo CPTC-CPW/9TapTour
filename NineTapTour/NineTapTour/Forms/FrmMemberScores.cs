@@ -898,6 +898,7 @@ namespace NineTapTour.Forms
             // if already at the last record
             if (currentIndex >= overallListOfParticipants.Count)
             {
+                currentIndex--;
                 btnRightArrow.Enabled = false;
                 btnLastRecord.Enabled = false;
                 return;
