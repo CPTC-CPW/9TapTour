@@ -553,6 +553,7 @@ namespace NineTapTour.Database
             {
                 var temp = (from h in db.PlayerHistory
                             where h.GameID == GameID
+
                             select new
                             {
                                 h.GameID,
