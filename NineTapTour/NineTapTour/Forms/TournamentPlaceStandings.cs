@@ -29,7 +29,6 @@ namespace NineTapTour.Forms
             {
                 lblTournamentName.Text += " (3 OUT OF 4 TOURNAMENT)";
             }
-            dgvTournamentStandings.DataSource = frmMemberScores.overallListOfTopScores;
         }
 
         private void btnPrint_Click(object sender, EventArgs e)

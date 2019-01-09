@@ -43,6 +43,8 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void MemberDataForm_Load(object sender, EventArgs e)
         {
+            this.WindowState = FormWindowState.Maximized;
+
             //finds all Controls and change BackColor of each control color when 
             //the control is on focus
             foreach (Control ctrl in this.Controls)
@@ -116,7 +118,6 @@ namespace NineTapTour.Forms
         /// <param name="searchMem"></param>
         public void UpdateMemberInfo(Member searchMem = null)
         {
-            RemoveValidation();
             RegionID = ((FrmMain)MdiParent).RegionID;  
             
             //set all member info group control background colors
@@ -432,8 +433,6 @@ namespace NineTapTour.Forms
             // btnSave_Click and adds a member into the database.
             if (IsValidTextboxes())
             {
-                RemoveValidation();
-
                 //checks to see if MemberID exists 
                 int memId;
                 Member temp = new Member();
@@ -637,26 +636,6 @@ namespace NineTapTour.Forms
                 {
                     MessageBox.Show(ex.Message);
                 }
-            }
-        }
-
-        private void RemoveValidation()
-        {
-            Label[] validationLabels =
-            {
-                lblLastNameValidation,
-                lblFirstNameValidation,
-                lblDOBValidation,
-                lblSSNValidation,
-                lblDateJoinedValidation,
-                lblStateValidation,
-                lblReferralsValidation,
-                lblAverageValidation
-            };
-
-            for (int i = 0; i < validationLabels.Length; i++)
-            {
-                validationLabels[i].Visible = false;
             }
         }
 
@@ -1126,7 +1105,7 @@ namespace NineTapTour.Forms
                     {
                         for(int delete = 0; delete < AlreadyImportedPH.Count; delete++)
                         {
-                            Game game = FinalizeTempDB.getGame(AlreadyImportedPH[delete].GameID);
+                            Game game = GameDB.GetGame(AlreadyImportedPH[delete].GameID);
                             PlayerHistoryDB.DeleteGame(game);
                             PlayerHistoryDB.DeletePlayerHistory(AlreadyImportedPH[delete]);
                         }
@@ -1185,11 +1164,24 @@ namespace NineTapTour.Forms
 
             Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
             Excel.Range range = xlWorkSheet.UsedRange;
+
             string[] PlayerFinalFirstAndMiddle = { "", "" };
             string[] PlayersFinalLastAndMiddle = { "", "" };
+            string playerLastName = "";
+            string firstAndMiddle = "";
             string playerFullName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
-            string playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
-            string firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
+            if (playerFullName.Contains(","))
+            {
+                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
+                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
+            }
+            // Checks to see if a period instead of a comma was accidentally placed in member name. (Rob's Request)
+            else if (playerFullName.Contains("."))
+            {
+                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf("."));
+                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(".") + 2);
+            }
+                        
             string[] first0middle1 = firstAndMiddle.Split(' ');
             int playerOrgAVG;
 
@@ -1198,11 +1190,11 @@ namespace NineTapTour.Forms
                 PlayerFinalFirstAndMiddle[i] = first0middle1[0];
             }
 
-            try
+            if ( Int32.TryParse( ( ( range.Cells[1, 10] as Excel.Range ).Value2 ), out int result ) )
             {
-                playerOrgAVG = Convert.ToInt32((range.Cells[1, 10] as Excel.Range).Value2);
+                playerOrgAVG = result;
             }
-            catch (Exception NotAValidNumber)
+            else
             {
                 playerOrgAVG = -1;
             }
@@ -1229,18 +1221,11 @@ namespace NineTapTour.Forms
 
                 for (int row = 3; row <= range.Rows.Count; row++)
                 {
-                    try
+                    if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0 &&
+                        Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0 &&
+                        Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0 &&
+                        Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
                     {
-                        if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
-                        {
-                            continue;
-                        }
-                    }
-                    catch (Exception ex)
-                    {                    
                         continue;
                     }
 
@@ -1425,7 +1410,7 @@ namespace NineTapTour.Forms
                         GameHistory.Id = AllGames + 1;
                         AllGames++;
                         playerH.GameID = GameHistory.Id;
-                        PlayerHistoryDB.AddGame(GameHistory);
+                        GameDB.AddOrUpdateGame(GameHistory);
                         PlayerHistoryDB.AddPlayerHistory(playerH);
                         returnMe.Add(temp);
                     }

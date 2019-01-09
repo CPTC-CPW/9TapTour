@@ -640,17 +640,24 @@ namespace Member_Import_Test
 
             string[] PlayerFinalFirstAndMiddle = { "", "" };
             string[] PlayersFinalLastAndMiddle = { "", "" };
-
-
+            string playerLastName = "";
+            string firstAndMiddle = "";
             string playerFullName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
-            string playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
+            if (playerFullName.Contains(","))
+            {
+                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
+                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
+            }
+            // Checks to see if a period instead of a comma was accidentally placed in member name. (Rob's Request)
+            else if (playerFullName.Contains("."))
+            {
+                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf("."));
+                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(".") + 2);
+            }
 
-
-            string firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
             string[] first0middle1 = firstAndMiddle.Split(' ');
-
-
             int playerOrgAVG;
+
             for (int i = 0; i < first0middle1.Length; i++)
             {
                 PlayerFinalFirstAndMiddle[i] = first0middle1[0];
@@ -1296,7 +1303,7 @@ namespace Member_Import_Test
 
             
             updatePlayerHistory(PlayerHistoryList);
-            updateGameHistory(GameImport);
+            GameDB.AddOrUpdateSomeGames(GameImport);
 
             for (int i = 0; i < validMembers.Count; i++)
             {
@@ -1336,14 +1343,6 @@ namespace Member_Import_Test
                 }
             }
             
-        }
-
-        private void updateGameHistory (List<Game> Game)
-        {
-            foreach (var m in Game)
-            {
-               PlayerHistoryDB.AddGame(m);
-            }
         }
 
         private void cbxRegionSelect_SelectedIndexChanged(object sender, EventArgs e)
