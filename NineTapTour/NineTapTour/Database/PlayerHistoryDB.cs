@@ -548,9 +548,10 @@ namespace NineTapTour.Database
 
         public static PlayerHistory getPlayerHistoryByGameID (int GameID)
         {
+            PlayerHistory p = new PlayerHistory();
             using (var db = new NineTapDb())
             {
-                PlayerHistory temp = (from h in db.PlayerHistory
+                var temp = (from h in db.PlayerHistory
                             where h.GameID == GameID
 
                             select new
