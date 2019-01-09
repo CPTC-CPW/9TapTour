@@ -779,6 +779,30 @@ namespace NineTapTour.Forms
                 return 8;
             throw new Exception("A squad must be checked!");
         }
+
+        public void RecordIndexOnSquadSwitch(List<Participant> part)
+        {
+            int squad = 0;
+
+            if (selectedTournament.Doubles == false)
+            {
+                if (txtMemberNum.Text != "")
+                {
+                    squad = GetCurrentSquadNumber();
+
+                    for (int i = 0; i < part.Count; i++)
+                    {
+                        if (currentMem.Id == part[i].Member.Id && part[i].Squad == squad)
+                        {
+                            lblRecord.Text = "Record " + (i + 1) + " / " + part.Count;
+                            currentIndex = i + 1;
+
+                            break;
+                        }
+                    }
+                }
+            }
+        }
         
         /// <summary>
         /// check for empty text box
@@ -1756,6 +1780,7 @@ namespace NineTapTour.Forms
             if((sender as RadioButton).Checked)
             {
                 ScoreAndTotalClear();
+                RecordIndexOnSquadSwitch(overallListOfParticipants);
                 FillMember();
             }
             
