@@ -1137,8 +1137,6 @@ namespace NineTapTour.Forms
                     Game currGame = GameDB.GetGame(currGameId);
                     Member currMember = MemberDb.GetMemberByGameId(currGameId);
 
-                    List<PlayerHistory> pl = PlayerHistoryDB.getMemberPlayerHistory(currMember.Number, RegionID);
-
                     ph.TournamentDate = currTournament.Date;
                     ph.MemberNumber = currMember.Number;
 
