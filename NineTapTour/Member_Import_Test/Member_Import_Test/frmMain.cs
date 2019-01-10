@@ -533,7 +533,7 @@ namespace Member_Import_Test
 
                             }
 
-                            NineTapTour.Database.MemberDb.AddMember(validMembers[j]);
+                            NineTapTour.Database.MemberDb.AddOrUpdateMember(validMembers[j]);
                         }
                     }
                     //show the results to the user
@@ -1339,7 +1339,7 @@ namespace Member_Import_Test
             {
                 if (MemberDb.MemberExists(members[i]) == false)
                 {
-                    MemberDb.AddMember(members[i]);
+                    MemberDb.AddOrUpdateMember(members[i]);
                 }
             }
             

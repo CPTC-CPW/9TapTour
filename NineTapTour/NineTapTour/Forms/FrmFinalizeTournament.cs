@@ -1235,7 +1235,7 @@ namespace NineTapTour.Forms
 
                     PlayerHistoryDB.AddPlayerHistory2(ph);
                     GameDB.AddOrUpdateGame(currGame);
-                    MemberDb.AddMember(currMember);
+                    MemberDb.AddOrUpdateMember(currMember);
 
                     FinalizeTableList[i].FinalizeID = FinalizeTempDB.getFinalizeID(currGame).FinalizeID;
                     FinalizeTableList[i].AdjustedAvg = ph.AVG;
