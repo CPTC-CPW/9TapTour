@@ -74,13 +74,11 @@ namespace NineTapTour.Forms
 
         private int RegionID;
         private Tournament currTournament; //current tournament
-        private List<TopScores> topscores; //used to know who won the tournament and there placing
 
-        public FrmFinalizeTournament(Tournament t, List<TopScores> tScores, int region)
+        public FrmFinalizeTournament(Tournament t, int region)
         {
             InitializeComponent();
             currTournament = t;
-            topscores = tScores;
             RegionID = region;
         }
 
@@ -190,11 +188,10 @@ namespace NineTapTour.Forms
             List<FinalizeTemp> FinalizeTableList = GetAllInitialParticipantGameList(currTournament);
 
             //Below is a multithreaded version of a foreach loop to spread processing across all available cores
-            //foreach (var item in FinalizeTableList)
             Parallel.ForEach(FinalizeTableList, item =>
             {
                 int gplayed = 0;
-                Game g = FinalizeTempDB.getGame(item.GameId);
+                Game g = GameDB.GetGame(item.GameId);
                 FinalizeTemp temp = FinalizeTempDB.getFinalizeID(g);
 
                 if (temp.FinalizeID <= 0)
@@ -275,10 +272,10 @@ namespace NineTapTour.Forms
             //pulls a list from the finalizetemp table and seeds the dataview with the table info.
             List<FinalizeTemp> DataViewList = GetListFromTable(tourn);
 
-            // Sort the list by the total score, including handicap, in descending order.
-            DataViewList.Sort((a, b) => b.HandicapTotal - a.HandicapTotal);
+            // Links FinalizeTemp to an integer that is placing information
+            Dictionary<FinalizeTemp, int> membersPlacingMap = Calculations.Calculations.CalculatePlaceStandings(DataViewList);
 
-            dataGridView1.DataSource = DataView(DataViewList); //By default populates all datagrid with all participant for tournament.
+            dataGridView1.DataSource = SetDataView(membersPlacingMap); //By default populates all datagrid with all participant for tournament.
 
             dataGridView1.Columns[GAME_ID_COLUMN].Visible = false;
 
@@ -298,7 +295,7 @@ namespace NineTapTour.Forms
 
         //creates the dataview that will populate the datagridview table on form pulls from the finalizetemp table
         // CHANGE THESE IN THE ORDER YOU WANT THEM TO BE SEEN ON THE GRID VIEW (0 == far left) AND THEN CHANGE THE STATIC INTS AT THE TOP IN ORDER TO CHANGE THERE ORDER ON THE GRID VIEW WITHOUT HAVING TO TOUNCH ANY OTHER CODE
-        public DataTable DataView(List<FinalizeTemp> participantsList)
+        public DataTable SetDataView(Dictionary<FinalizeTemp,int> participantsList)
         {
             var db = new NineTapDb();
             DataTable dt = new DataTable();
@@ -328,13 +325,17 @@ namespace NineTapTour.Forms
             dt.Columns.Add(GAME_ID_COLUMN_NAME, typeof(int)).ReadOnly = true; //21
 
             //whatever list of participants you pass into method will be populated into grid
-            List<FinalizeTemp> temp = participantsList;
-            int index = 1;
+            List<FinalizeTemp> temp = participantsList.Keys.ToList();
+
             //loops thru each person's info in tournament and populates the dataview with data from DB.
             foreach (var item in temp)
             {
                 DataRow newRow = dt.NewRow();
-                newRow[STANDING_COLUMN_NAME] = index;
+
+                // 0 signifies duplicate entry
+                if (participantsList[item] != 0)
+                    newRow[STANDING_COLUMN_NAME] = participantsList[item];
+
                 newRow[MEMBER_NUMBER_COLUMN_NAME] = item.memberNumber;
                 newRow[NAME_COLUMN_NAME] = item.FirstName + " " + item.LastName;
                 newRow[GAME_1_COLUMN_NAME] = item.Game1;
@@ -357,7 +358,6 @@ namespace NineTapTour.Forms
                 newRow[HANDICAP_TOTAL_COLUMN_NAME] = item.HandicapTotal;
                 newRow[GAME_ID_COLUMN_NAME] = item.GameId;
                 dt.Rows.Add(newRow);
-                index++;
             }
             return dt;
         }
@@ -856,6 +856,7 @@ namespace NineTapTour.Forms
             // Money Won label string is referenced multiple locations
             string moneyWon = "Money Won";
             decimal totalMoneyEarned = 0;
+
             foreach (var item in temporary)
             {
                 DataRow newRow = dtGames.NewRow();
@@ -1062,8 +1063,8 @@ namespace NineTapTour.Forms
                             p.TotalScore = Convert.ToInt32(dataGridView1.Rows[i].Cells[SCRATCH_TOTAL_COLUMN].Value);
                             p.HandiCap = Convert.ToInt32(dataGridView1.Rows[i].Cells[HANDICAP_COLUMN].Value);
                             p.Bonus = Convert.ToInt32(dataGridView1.Rows[i].Cells[BONUS_COLUMN].Value);
-                            p.MoneyWon = Convert.ToDecimal(FinalizeTempDB.getGame(gameId).MoneyWon);
-                            p.PPHG = Convert.ToString(FinalizeTempDB.getGame(gameId).PlaceStanding);
+                            p.MoneyWon = Convert.ToDecimal(GameDB.GetGame(gameId).MoneyWon);
+                            p.PPHG = Convert.ToString(dataGridView1.Rows[i].Cells[STANDING_COLUMN].Value);
                             p.ProPot = dataGridView1[PRO_POT_COLUMN, i].Value.ToString();
                             p.Notes = dataGridView1[NOTES_COLUMN_, i].Value.ToString();
                             p.AverageForGame = Convert.ToDouble(dataGridView1[ENTRY_AVERAGE_COLUMN, i].Value);
@@ -1093,7 +1094,6 @@ namespace NineTapTour.Forms
 
             List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
             int gamesPlayed = 0;
-            List<int> addedAlready = new List<int>(); // a list used to catch the players memberid soo that way their bonus pin isnt adjusted more than once per tournament 
 
             //checks to make sure all the director had adjusted avgs and checked the box to make sure they did so.
             for (int i = 0; i < FinalizeTableList.Count; i++)
@@ -1122,72 +1122,73 @@ namespace NineTapTour.Forms
             //START FINALIZATION
             if (isDirectorCheckFinished) //if all the director check boxes are selected
             {
+                // total comp entries for the current tournament
+                int compEntriesQty = FinalizeTempDB.GetCompEntryQtyByTourney(currTournament.Id);
+
                 //Multithreaded version of a for loop, spreads processing across all available cores
-                //for (int i = 0; i < FinalizeTableList.Count; i++)
                 Parallel.For(0, FinalizeTableList.Count, i =>
                 {
                     gamesPlayed = 0;
+                    int currGameId = FinalizeTableList[i].GameId;
+
                     PlayerHistory ph = new PlayerHistory();
-                    ph.GameID = FinalizeTableList[i].GameId;
-                    Game g = FinalizeTempDB.getGame(FinalizeTableList[i].GameId);
+                    ph.GameID = currGameId;
 
-                    int memId;
-                    using (var db = new NineTapDb())
-                    {
-                        memId = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == g.Id).Member.Id;
-                    }
+                    Game currGame = GameDB.GetGame(currGameId);
+                    Member currMember = MemberDb.GetMemberByGameId(currGameId);
 
-                    Member currentMember = MemberDb.GetMember(MemberDb.GetMemberNumberbyID(memId), RegionID);
-                    List<PlayerHistory> pl = PlayerHistoryDB.getMemberPlayerHistory(MemberDb.GetMemberNumberbyID(memId), RegionID);
+                    List<PlayerHistory> pl = PlayerHistoryDB.getMemberPlayerHistory(currMember.Number, RegionID);
 
                     ph.TournamentDate = currTournament.Date;
-                    ph.MemberNumber = currentMember.Number;
+                    ph.MemberNumber = currMember.Number;
 
-                    if (dataGridView1[GAME_1_VALID_COLUMN, i].Value.ToString() == "True")
+                    int currDataGridRowIndex = FindCurrDataGridRowIndex(currGameId);
+
+                    if (dataGridView1[GAME_1_VALID_COLUMN, currDataGridRowIndex].Value.ToString() == "True")
                     {
                         gamesPlayed++;
-                        g.UseGame1 = true;
+                        currGame.UseGame1 = true;
                         FinalizeTableList[i].UseGame1 = true;
                     }
                     else
                     {
-                        g.UseGame1 = false;
+                        currGame.UseGame1 = false;
                         FinalizeTableList[i].UseGame1 = false;
                     }
 
-                    if (dataGridView1[GAME_2_VALID_COLUMN, i].Value.ToString() == "True")
+                    if (dataGridView1[GAME_2_VALID_COLUMN, currDataGridRowIndex].Value.ToString() == "True")
                     {
                         gamesPlayed++;
-                        g.UseGame2 = true;
+                        currGame.UseGame2 = true;
                         FinalizeTableList[i].UseGame2 = true;
                     }
                     else
                     {
-                        g.UseGame2 = false;
+                        currGame.UseGame2 = false;
                         FinalizeTableList[i].UseGame2 = false;
                     }
 
-                    if (dataGridView1[GAME_3_VALID_COLUMN, i].Value.ToString() == "True")
+                    if (dataGridView1[GAME_3_VALID_COLUMN, currDataGridRowIndex].Value.ToString() == "True")
                     {
                         gamesPlayed++;
-                        g.UseGame3 = true;
+                        currGame.UseGame3 = true;
                         FinalizeTableList[i].UseGame3 = true;
                     }
                     else
                     {
-                        g.UseGame3 = false;
+                        currGame.UseGame3 = false;
                         FinalizeTableList[i].UseGame3 = false;
                     }
 
-                    if (dataGridView1[GAME_4_VALID_COLUMN, i].Value.ToString() == "True")
+                    if (dataGridView1[GAME_4_VALID_COLUMN, currDataGridRowIndex].Value.ToString() == "True")
                     {
                         gamesPlayed++;
-                        g.UseGame4 = true;
+                        currGame.UseGame4 = true;
                         FinalizeTableList[i].UseGame4 = true;
                     }
                     else
                     {
-                        g.UseGame4 = false;
+                        currGame.UseGame4 = false;
                         FinalizeTableList[i].UseGame4 = false;
                     }
 
@@ -1196,59 +1197,55 @@ namespace NineTapTour.Forms
                     ph.trueAVG = FinalizeTableList[i].LeagueAverage;
 
 
-                    ph.AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, i].Value);
+                    ph.AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, currDataGridRowIndex].Value);
 
-                    ph.ProPot = dataGridView1[PRO_POT_COLUMN, i].Value.ToString();
+                    ph.ProPot = dataGridView1[PRO_POT_COLUMN, currDataGridRowIndex].Value.ToString();
 
-                    ph.MoneyWon = Convert.ToDecimal(g.MoneyWon);
+                    ph.MoneyWon = Convert.ToDecimal(currGame.MoneyWon);
 
                     ph.Game1 = FinalizeTableList[i].Game1;
                     ph.Game2 = FinalizeTableList[i].Game2;
                     ph.Game3 = FinalizeTableList[i].Game3;
                     ph.Game4 = FinalizeTableList[i].Game4;
 
-                    // if member placed in tournament, then set placing & player history PPHG to game placestanding
-                    // placing is used to calculate bonus pins
-                    int placing = 0;
-                    if (g.PlaceStanding != null)
-                    {
-                        placing = Convert.ToInt16(g.PlaceStanding);
-                        ph.PPHG = Convert.ToString(g.PlaceStanding);
-                    }
+                    DataGridViewCell placeCell = dataGridView1[STANDING_COLUMN, currDataGridRowIndex];
+                    byte placeStanding = (placeCell.Value == DBNull.Value) ? (byte) 0 : Convert.ToByte(placeCell.Value);
 
-                    //CALCULATES THE NEW BONUS PINS
-                    for (int topscore = 0; topscore < topscores.Count; topscore++)
+                    // if bowler's highest game in tournament (only lower scoring duplicates get 0s)
+                    if (placeStanding > 0)
                     {
-                        if (FinalizeTempDB.getHistoryID(g.Id) == 0) //if this adjustement was not added to the database yet
+                        currGame.PlaceStanding = Convert.ToByte(placeStanding);
+                        ph.PPHG = placeStanding.ToString();
+
+                        // Adjust bonus pins only if game has not been finalized previously
+                        if (!PlayerHistoryDB.PlayerHistoryExists(currGame.Id))
                         {
-                            if (!addedAlready.Contains(memId)) //if the current members bonus points were not already adjusted yet in the finalization of this tournament//only adjusts based of their highest series????
-                            {
-                                if (topscores[topscore].GameID == FinalizeTableList[i].GameId)//if the winners of the tournament exist in this current tournement
-                                {
-                                    currentMember.Bonus = Calculations.Calculations.GetAdjustedBonusPins(placing, currentMember.Bonus, currentMember.Number, RegionID, currTournament.Date);
-                                    addedAlready.Add(FinalizeTableList[i].MemberId);
-                                }
-
-                            }
+                            currMember.Bonus = Calculations.Calculations.GetAdjustedBonusPins(placeStanding, FinalizeTableList.Count, compEntriesQty,
+                                                                                        currMember.Bonus, currMember.Number, RegionID, currTournament.Date);
+                            ph.Bonus = currMember.Bonus;
                         }
                     }
 
                     ph.HandiCap = FinalizeTableList[i].Handicap;
-                    g.InputtedAvg = ph.AVG;
-                    g.Notes = dataGridView1[NOTES_COLUMN_, i].Value.ToString();
-                    ph.Notes = g.Notes;
-                    currentMember.StartAvg = ph.AVG;
+                    currGame.InputtedAvg = ph.AVG;
+                    currGame.Notes = dataGridView1[NOTES_COLUMN_, currDataGridRowIndex].Value.ToString();
+                    ph.Notes = currGame.Notes;
+                    currMember.StartAvg = ph.AVG;
                     ph.hisID = PlayerHistoryDB.getHisID(ph);
                     ph.regionID = RegionID;
-                    g.gameRegionID = RegionID;
+                    currGame.gameRegionID = RegionID;
+
                     PlayerHistoryDB.AddPlayerHistory2(ph);
-                    PlayerHistoryDB.AddGame(g);
-                    MemberDb.AddMember(currentMember);
-                    FinalizeTableList[i].FinalizeID = FinalizeTempDB.getFinalizeID(g).FinalizeID;
+                    GameDB.AddOrUpdateGame(currGame);
+                    MemberDb.AddMember(currMember);
+
+                    FinalizeTableList[i].FinalizeID = FinalizeTempDB.getFinalizeID(currGame).FinalizeID;
                     FinalizeTableList[i].AdjustedAvg = ph.AVG;
-                    FinalizeTableList[i].HandicapTotal = Convert.ToInt32(dataGridView1[HANDICAP_TOTAL_COLUMN, i].Value);
+                    FinalizeTableList[i].HandicapTotal = Convert.ToInt32(dataGridView1[HANDICAP_TOTAL_COLUMN, currDataGridRowIndex].Value);
+
                     FinalizeTempDB.AddFinalizeTemp(FinalizeTableList[i]);
                 });
+
                 Close();
             }
             else  // if all of the director checkboxes are not checked, then prompt user to check to finalize tournament
@@ -1256,6 +1253,25 @@ namespace NineTapTour.Forms
 
             }
             Cursor.Current = Cursors.Default;
+        }
+
+        /// <summary>
+        /// Gets the row of data grid by the Game Id value stored in that row.
+        /// Returns -1 if not found.
+        /// </summary>
+        /// <param name="currGameId"></param>
+        /// <returns>The row index of the Game Id</returns>
+        private int FindCurrDataGridRowIndex(int currGameId)
+        {
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                DataGridViewCell gameIdCell = row.Cells[GAME_ID_COLUMN];
+                if (Convert.ToInt32(gameIdCell.Value) == currGameId)
+                {
+                    return gameIdCell.RowIndex;
+                }
+            }
+            return -1;
         }
 
         /// <summary>

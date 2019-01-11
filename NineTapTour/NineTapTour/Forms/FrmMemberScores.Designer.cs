@@ -682,6 +682,7 @@
             this.txtMoney.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtMoney.Location = new System.Drawing.Point(247, 257);
             this.txtMoney.Name = "txtMoney";
+            this.txtMoney.ReadOnly = true;
             this.txtMoney.Size = new System.Drawing.Size(83, 20);
             this.txtMoney.TabIndex = 8;
             this.txtMoney.TabStop = false;

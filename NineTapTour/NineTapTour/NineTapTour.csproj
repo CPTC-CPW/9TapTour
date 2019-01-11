@@ -112,6 +112,7 @@
   <ItemGroup>
     <Compile Include="Calculations\Calculations.cs" />
     <Compile Include="Database\DatabaseManagement.cs" />
+    <Compile Include="Database\GameDB.cs" />
     <Compile Include="Database\ParticipantsDB.cs" />
     <Compile Include="Database\ReportHelper.cs" />
     <Compile Include="Migrations\201808162022459_NullableGameScores.cs" />
@@ -381,6 +382,9 @@
     <Content Include="Resources\TournamentResultsTemplate.xls">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\9tapUserManual.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="_NineTapTour_NineTapDbDataSet.xsc">
       <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
     </None>

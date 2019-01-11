@@ -1,0 +1,73 @@
+Notes
+
+Ken tested Bonus Pins
+  - Deductions worked for Bonus Pins
+  - Still testing proper bonus pin addition
+  - Back buttons on tournament results page crashes program
+    + Koda: when adding new person to database, it increments index under the hood but not on the page.
+        So it's trying to go back but then it's out of range
+        ***Disable buttons for this weekends version -- Casey**
+  - Deliver working version on Friday to Rob, so far it's looking good
+    + Rob has something that needs to be reviewed/pulled before shipped
+    + Explain delete button bug to R.Victor... maybe just deactivate the button? Ask how important this is
+
+Meeting with Rob Victor January 9th, 2019
+
+  - Recap Scores Page, there's 2 buttons - forward & back don't work
+    + Can't disable
+    + Trying to get Hawaii version shipped
+    + DON'T GO BACK AFTER ENTERING THE FIRST PERSON, IT WILL CRASH (only test case)
+    + Got delete working
+  - Bonus Pins deductions working right
+    + haven't properly tested additions
+      + You can put someone in 3-4 squads in one tournament to test the bonus pins addition
+      + We thought it had to be 3 separate tournaments
+      + Now we're hearing it is PER ENTRY
+        - So we have some calculations to fix...
+    Bonus Pin Example:
+      ____________1
+      ____________0 __ $100 This 0 counts towards the 3 0's you need 
+      ____________0
+      ____________0
+      ____________1
+      
+     X 0 X - 0($100) - 0 - 0 - 1 - 
+       + restarts when you cash (Special Case), the X was a visual notation identifying when to start counting 0's again
+     4 - 2($100) - 2 - 2 - ...
+     Wants a visual represenation, we changed the color
+     
+     Must Haves:
+      - More after tournament testing
+      - User Manual... 
+        + placed old manuals in own folder, so the most recent is easy to find
+        + Need Hawaii able to use the program, so the manual should be ready
+        + Anyone not working on a specific issue will work on Manual
+
+Rob talking about Brackets
+  - 8 people in one bracket for 3 games, top 2 always get money
+    - Buy-in can change to higher amounts
+    - Locally we take best 3 scores
+  - Hawaii runs their bracket on games 2, 3, & 4
+  - Las Vegas does a combination 
+  - What happens in a tie... talk to Linda
+    - ending tie just splits money
+    - middle tie... higher percentage above their average
+  - If she doesn't have enough people, they do a bye/pass for 2 random people
+  - The head-to-head matches are randomized anyway
+  - Is there a cap on how many brackets to enter?
+    - No, enter as many tournaments as there are
+    - They can play against the same person in multiple brackets
+    - But the bowler can't be in the same bracket twice
+  - Need a "mini bracket" should be able to tell it how big of a bracket
+    - Ex. Doubles tournaments are only 2 games, so they do a 4 person bracket
+  - Want to post bracket when it's filled out... 
+  - Wants a hand hold device so she can input scores instead of writing them down (i.e. laptop to start)
+  - Need to incorporate Member numbers that are associated with their names
+  - Want handheld device to be a scanner... so they can barcode/QR/Mbr# on recap then punch in score
+  
+ Can we regulate Member ID
+ H 5
+ H-5
+ H5
+ - Go with # only... 
+  
