@@ -705,12 +705,20 @@ namespace Member_Import_Test
             }
           
             String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
+            bool isRegionHawaii = (RegionID == 2); // checks to see if RegionID is equal to Hawaii
+
+            if (isRegionHawaii)
+            {
+                playerNumber = Regex.Replace(playerNumber, "[^0-9]", "");  // strip the member number to straight number
+            }
+
             String[] playerNumberAfterSplit;
             int playerNumberAsInt = 0;
             int.TryParse(playerNumber, out playerNumberAsInt);
+
             if (playerNumberAsInt != 0)
             {
-                playerNumberAsInt = Convert.ToInt32((range.Cells[1, 14] as Excel.Range).Value2);
+                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumber, "[^0-9]", ""));
             }
             else if (playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
             {
@@ -719,7 +727,7 @@ namespace Member_Import_Test
                     try
                     {
                         playerNumberAfterSplit = playerNumber.Split(splitters[i]);
-                        playerNumberAsInt = Convert.ToInt32(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1]);
+                        playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1], "[^0-9]", ""));
                     }
                     catch 
                     {
@@ -733,25 +741,41 @@ namespace Member_Import_Test
             {
                 xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
                 range = xlWorkSheet.UsedRange;
+
+                double noGameMoneyWon = 0;
+
                 for (int row = 3; row <= range.Rows.Count; row++)
                 {
-                    try
-                    {
-                        if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0
-                            && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0
-                            && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0
-                            && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
-                        {
-                            continue;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        continue;
-                    }
                     ExcelRow temp = new ExcelRow();
                     PlayerHistory playerH = new PlayerHistory();
                     Game GameHistory = new Game();
+
+                    string game1 = Convert.ToString((range.Cells[row, 3] as Excel.Range).Value2);
+                    string game2 = Convert.ToString((range.Cells[row, 4] as Excel.Range).Value2);
+                    string game3 = Convert.ToString((range.Cells[row, 5] as Excel.Range).Value2);
+                    string game4 = Convert.ToString((range.Cells[row, 6] as Excel.Range).Value2);
+                    string testFin = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
+
+                    if ( // if no date or cash then continue to the next line
+                        string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 2] as Excel.Range).Value2)) &&
+                        string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 15] as Excel.Range).Value2))
+                        )
+                    {
+                        continue;
+                    }
+
+                    if ( // if the four games have no data AKA no games bowled and there is a finish place then add the cash to moneywon
+                        string.IsNullOrWhiteSpace(game1) &&
+                        string.IsNullOrWhiteSpace(game2) &&
+                        string.IsNullOrWhiteSpace(game3) &&
+                        string.IsNullOrWhiteSpace(game4) &&
+                        !string.IsNullOrWhiteSpace(testFin)
+                    )
+                    {
+                        noGameMoneyWon += Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
+                        continue;
+                    }
+
                     GameHistory.gameRegionID = RegionID;
                     temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
                     temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
@@ -886,8 +910,6 @@ namespace Member_Import_Test
                             }
                             temp.PotPro = Convert.ToString((range.Cells[row, 13] as Excel.Range).Value2);
                             playerH.ProPot = temp.PotPro;
-
-                           
                             temp.FinPPHG = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
                             playerH.PPHG = temp.FinPPHG;
 
@@ -914,6 +936,8 @@ namespace Member_Import_Test
                             {
                                 temp.Cash = 0;
                             }
+                            playerH.MoneyWon += Convert.ToDecimal(noGameMoneyWon); 
+
                             temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
                             GameHistory.Notes = temp.Notes;
                             playerH.Notes = temp.Notes;
@@ -924,6 +948,7 @@ namespace Member_Import_Test
                             GameImport.Add(GameHistory);
                             PlayerHistoryList.Add(playerH);
                             returnMe.Add(temp);
+                            noGameMoneyWon = 0; 
                             progressBar2.Increment(1);
                         
                         }
