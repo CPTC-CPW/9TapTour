@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity.Validation;
 using NineTapTour.Models;
+using System.Windows.Forms;
 
 namespace NineTapTour.Database
 {
@@ -28,9 +29,17 @@ namespace NineTapTour.Database
                     db.SaveChanges();
                 }
             }
-            catch (SqlException ex)
+            catch (DbUpdateException ex)
             {
-                throw new PlayerHistoryTableException("Error Number : " + ex.Number + " - " + ex.Message);
+                //throw new PlayerHistoryTableException("Error Number : " + ex.Number + " - " + ex.Message);
+
+                //Display error to user so it can be fixed
+                Member member = MemberDb.GetMember(temp.MemberNumber, temp.regionID);
+                //For more info on "?." see null conditional docs https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-conditional-operators 
+                MessageBox.Show(
+                    $"There was a problem with Member Number: {temp.MemberNumber}, {member?.FirstName} {member?.LastName}.\n" +
+                    $"Please verify all tournament dates for that member\n" +
+                    $"PLEASE WRITE THIS DOWN OR TAKE A PICTURE AND FIX THE MEMBER EXCEL FILE.");
             }
         }
         public static void AddPlayerHistory2(PlayerHistory temp)
