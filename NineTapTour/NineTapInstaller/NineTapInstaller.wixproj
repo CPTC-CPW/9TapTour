@@ -27,6 +27,7 @@
     <Content Include="Files\HorizontalBanner.bmp" />
     <Content Include="Files\Information.ico" />
     <Content Include="NineTapInstaller.wax" />
+    <Content Include="Resources\9tapUserManual.docx" />
     <Content Include="Resources\TournamentResultsTemplate.xls" />
   </ItemGroup>
   <ItemGroup>

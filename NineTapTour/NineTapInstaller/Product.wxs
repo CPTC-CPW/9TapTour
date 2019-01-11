@@ -246,6 +246,9 @@
       <Component Id="TournResultsTemplate" Guid="BFA36DC1-B45F-46B4-AA5A-C4C589DE655C">
         <File Id="TournResultsTemplate" Name="TournamentResultsTemplate.xls" Source="Resources\TournamentResultsTemplate.xls" />
       </Component>
+      <Component Id="UserManual" Guid="51F0FB6F-F60E-46D6-906E-AF50E0B96001">
+        <File Id="UserManual" Name="9TapUserManual.docx" Source="Resources\9TapUserManual.docx" />
+      </Component>
     </ComponentGroup>
   </Fragment>
 </Wix>
