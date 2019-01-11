@@ -39,7 +39,8 @@ namespace NineTapTour.Calculations
         /// <returns></returns>
         public static int CalculateHandicapPins(int currentAverage)
         {
-            return Math.Min(MAX_HANDICAP_PINS, (BASE_AVERAGE_HANDICAP_CALCULATOR - currentAverage) * 9 / 10);
+            return 1;
+            //return Math.Min(MAX_HANDICAP_PINS, (BASE_AVERAGE_HANDICAP_CALCULATOR - currentAverage) * 9 / 10);
         }
 
         /// <summary>
