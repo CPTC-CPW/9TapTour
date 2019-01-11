@@ -27,6 +27,7 @@ namespace NineTapTour.Models
         public int TotalScore { get; set; }
         public int HandiCap { get; set; }
 
+        // Indicates Bonus pins to be applied to the next game instead of current
         public int Bonus { get; set; }
 
         public decimal MoneyWon { get; set; }

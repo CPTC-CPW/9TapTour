@@ -1208,8 +1208,6 @@ namespace NineTapTour.Forms
                     ph.Game3 = FinalizeTableList[i].Game3;
                     ph.Game4 = FinalizeTableList[i].Game4;
 
-                    ph.Bonus = currGame.Bonus ?? 0;
-
                     DataGridViewCell placeCell = dataGridView1[STANDING_COLUMN, currDataGridRowIndex];
                     byte placeStanding = (placeCell.Value == DBNull.Value) ? (byte) 0 : Convert.ToByte(placeCell.Value);
 
@@ -1224,9 +1222,9 @@ namespace NineTapTour.Forms
                         {
                             currMember.Bonus = Calculations.Calculations.GetAdjustedBonusPins(placeStanding, FinalizeTableList.Count, compEntriesQty,
                                                                                         currMember.Bonus, currMember.Number, RegionID, currTournament.Date);
+                            ph.Bonus = currMember.Bonus;
                         }
                     }
-
 
                     ph.HandiCap = FinalizeTableList[i].Handicap;
                     currGame.InputtedAvg = ph.AVG;
