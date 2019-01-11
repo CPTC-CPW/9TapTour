@@ -743,17 +743,6 @@ namespace Member_Import_Test
                 range = xlWorkSheet.UsedRange;
 
                 double noGameMoneyWon = 0;
-                int rowNum;
-
-                if (isRegionHawaii)
-                {
-                    rowNum = 4;
-                }
-                else
-                {
-                    rowNum = 3;
-                }
-
 
                 for (int row = 3; row <= range.Rows.Count; row++)
                 {
