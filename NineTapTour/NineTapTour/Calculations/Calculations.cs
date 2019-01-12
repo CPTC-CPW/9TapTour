@@ -47,7 +47,7 @@ namespace NineTapTour.Calculations
         /// and what ranking a bowler placed.
         /// </summary>
         /// <param name="memberPlacement">Ranking a bowler placed. 0 if not placed</param>
-        /// <param name="totalEntries">Total entries for the tournament</param>
+        /// <param name="totalEntries">Total entries for the tournament by all members</param>
         /// <param name="compEntries">Entries that do not have to pay entry fee</param>
         /// <param name="currentBonusPins">Bonus pins the participant had before this tournament</param>
         /// <param name="memNum">Member number that used to identify bowler by user</param>
@@ -55,7 +55,7 @@ namespace NineTapTour.Calculations
         /// <param name="currTournamentDate">Date when the current tournament is taking place</param>
         /// <returns>Adjusted bonus pins after current tournament</returns>
         public static int GetAdjustedBonusPins(byte memberPlacement, int totalEntries, int compEntries, int currentBonusPins, 
-                                                int memNum, int RegionID, DateTime currTournamentDate)
+                                                int memNum, int RegionID, DateTime currTournamentDate, int currTournamentId)
         {
             int lowestPlacementToCash = GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
 
@@ -63,7 +63,12 @@ namespace NineTapTour.Calculations
             {
                 return  DeductFromBonusPins(memberPlacement, currentBonusPins);
             }
-            return AddToBonusPins(currentBonusPins, currTournamentDate, PlayerHistoryDB.GetLastEightTournaments(memNum, RegionID));
+
+            // Gets the amount of entries the member has for the tournament
+            int membersGameEntryCount = FinalizeTempDB.GetMembersGameEntryCount(currTournamentId, memNum);
+            List<PlayerHistory> latestGames = PlayerHistoryDB.GetLastFifteenTournaments(memNum, RegionID);
+
+            return AddToBonusPins(currentBonusPins, currTournamentDate, latestGames, membersGameEntryCount);
         }
 
         /// <summary>
@@ -75,9 +80,16 @@ namespace NineTapTour.Calculations
         /// <param name="currTournamentDate">The date the tournament took place</param>
         /// <param name="latestGames">The last two distinct tournaments</param>
         /// <returns></returns>
-        public static int AddToBonusPins(int currentBonusPins, DateTime currTournamentDate, List<PlayerHistory> latestGames)
+        public static int AddToBonusPins(int currentBonusPins, DateTime currTournamentDate, List<PlayerHistory> latestGames, int membersGameEntryCount)
         {
-            if (latestGames == null || latestGames.Count < 2 || currentBonusPins == MAX_BONUS_PINS_ALLOWED)
+            // if has atleast 3 losses in current tournament
+            if (membersGameEntryCount >= 3)
+            {
+                return currentBonusPins + 1;
+            }
+
+            // if has 2 or less losses and no previous games or bonus pins are maxed out
+            if (latestGames == null || latestGames.Count == 0 || currentBonusPins == MAX_BONUS_PINS_ALLOWED)
             {
                 return currentBonusPins;
             }
@@ -91,11 +103,11 @@ namespace NineTapTour.Calculations
                 return currentBonusPins;
             }
 
-            // if cashed or gained a bonus pin for last tournament on a different squad
+            // if cashed last tournament on a different squad
             int i = 1;
             while (i < latestGames.Count && lastTourney.TournamentDate == latestGames[i].TournamentDate)
             {
-                if (PlayerDidCash(latestGames[i]) || lastTourney.Bonus != latestGames[i].Bonus)
+                if (PlayerDidCash(latestGames[i]))
                 {
                     return currentBonusPins;
                 }
@@ -103,15 +115,28 @@ namespace NineTapTour.Calculations
             }
 
             PlayerHistory secondToLast = latestGames[i];
+            i++;
+
+            // if gained a bonus pin last tournament atleast 1 or more of the losses in that tournament were accounted for
+            if (secondToLast != null && lastTourney.Bonus != secondToLast.Bonus)
+            {
+                //int indexOfLastCashedGame = 
+                return currentBonusPins;
+            }
+
+            // if current tourney losses with previous tourney losses are atleast 3
+            if (membersGameEntryCount + i - 1 >= 3)
+            {
+                return currentBonusPins + 1;
+            }
 
             // if a second to last tournament doesn't exist or player cashed
             if (secondToLast == null || PlayerDidCash(secondToLast))
             {
                 return currentBonusPins;
             }
-            i++;
 
-            // if cashed or gained a bonus pin for 2nd to last tournament on a different squad
+            // if cashed 2nd to last tournament on a different squad
             while (i < latestGames.Count && secondToLast.TournamentDate == latestGames[i].TournamentDate)
             {
                 if (PlayerDidCash(latestGames[i]) || secondToLast.Bonus != latestGames[i].Bonus)
@@ -121,6 +146,8 @@ namespace NineTapTour.Calculations
                 i++;
             }
             #endregion
+
+
 
             // Add bonus pin after 3 tournaments not placing
             if (currentBonusPins == lastTourney.Bonus && currentBonusPins == secondToLast.Bonus)
