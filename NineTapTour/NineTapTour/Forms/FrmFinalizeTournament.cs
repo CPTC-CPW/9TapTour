@@ -1140,7 +1140,7 @@ namespace NineTapTour.Forms
                     ph.TournamentDate = currTournament.Date;
                     ph.MemberNumber = currMember.Number;
 
-                    int currDataGridRowIndex = FindCurrDataGridRowIndex(currGameId);
+                    int currDataGridRowIndex = FindDataGridRowIndex(currGameId);
 
                     if (dataGridView1[GAME_1_VALID_COLUMN, currDataGridRowIndex].Value.ToString() == "True")
                     {
@@ -1219,7 +1219,7 @@ namespace NineTapTour.Forms
                         if (!PlayerHistoryDB.PlayerHistoryExists(currGame.Id))
                         {
                             currMember.Bonus = Calculations.Calculations.GetAdjustedBonusPins(placeStanding, FinalizeTableList.Count, compEntriesQty,
-                                                                                        currMember.Bonus, currMember.Number, RegionID, currTournament.Date);
+                                                                                        currMember.Bonus, currMember.Number, RegionID, currTournament.Date, currTournament.Id);
                             ph.Bonus = currMember.Bonus;
                         }
                     }
@@ -1259,7 +1259,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="currGameId"></param>
         /// <returns>The row index of the Game Id</returns>
-        private int FindCurrDataGridRowIndex(int currGameId)
+        private int FindDataGridRowIndex(int currGameId)
         {
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
