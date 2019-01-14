@@ -1319,7 +1319,7 @@ namespace NineTapTour.Forms
                                 currParticipant.Game.Handicap, 
                                 currParticipant.Game.Bonus.Value,
                                 currParticipant.Game.Id,
-                                currParticipant.Squad);
+                                currParticipant.Squad); 
 
                         topParticipantGameViewModels.Add(currTopScoreViewModel);
                     }
