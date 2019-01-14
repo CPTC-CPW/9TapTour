@@ -346,19 +346,20 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Gets the last eight tournaments selecting only the tournament date and bonus pins.
+        /// Gets the last quantity of games selecting only the tournament date and bonus pins.
         /// Used to calculate bonus pins.
         /// </summary>
-        /// <param name="memNum"></param>
-        /// <param name="regionId"></param>
+        /// <param name="memNum"> member number of player</param>
+        /// <param name="regionId">region the tournament takes place</param>
+        /// <param name="gameQty">quantity of games to pull from the database</param>
         /// <returns></returns>
-        public static List<PlayerHistory> GetLastFifteenTournaments(int memNum, int regionId)
+        public static List<PlayerHistory> GetLastQtyGamesBonus(int memNum, int regionId, int gameQty)
         {
             var queryResult = new NineTapDb().PlayerHistory
                                     .Where(ph => ph.MemberNumber == memNum && ph.regionID == regionId)
                                     .OrderByDescending(ph => ph.TournamentDate)
                                     .Select(ph => new {ph.TournamentDate, ph.MoneyWon, ph.Bonus})
-                                    .Take(15)
+                                    .Take(gameQty)
                                     .ToList();
 
             return queryResult.Select(qr => new PlayerHistory()
