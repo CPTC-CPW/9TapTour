@@ -98,7 +98,13 @@ namespace NineTapTour.Calculations
             // find first index of a tournament with a cashed game
             int lastCashedTourneyIndex = FindLastCashedTourneyIndex(latestGames);
 
-            if (lastCashedTourneyIndex == -1 || lastCashedTourneyIndex + currTourneyEntryCount < 3)
+            if (lastCashedTourneyIndex == -1 && latestGames.Count + currTourneyEntryCount >= 3 
+                    && (latestGames.Count + currTourneyEntryCount) % 3 == 0)
+            {
+                return currentBonusPins + 1;
+            }
+
+            if (lastCashedTourneyIndex + currTourneyEntryCount < 3)
             {
                 return currentBonusPins;
             }
