@@ -22,7 +22,7 @@ namespace NineTapTour.Calculations
         const int DEDUCT_1 = 1;
         const int DEDUCT_2 = 2;
         const int DEDUCT_3 = 3;
-        const int FIRST_PLACE_DEDUCTION = 1;
+        const int FIRST_PLACE = 1;
         const int MIN_PLACEMENT_DEDUCT_2_PINS = 6;
         const int MAX_PLACEMENT_DEDUCT_2_PINS = 10;
         const int MIN_PLACEMENT_DEDUCT_3_PINS = 2;
@@ -32,112 +32,124 @@ namespace NineTapTour.Calculations
         const double PERCENTAGE_TO_CALCULATE_HANDICAP = .9;
 
         /// <summary>
-        /// method uses integer division based on client's calculation 
+        /// Calculates handicap pins to be 90% of the difference between 220 and a bowler's 9 tap tour average.
+        /// The maximum a handicap can be is 70 pins.
         /// </summary>
         /// <param name="currentAverage"></param>
         /// <returns></returns>
         public static int CalculateHandicapPins(int currentAverage)
         {
-
-            double calculateHandicap = Convert.ToDouble(BASE_AVERAGE_HANDICAP_CALCULATOR - currentAverage) * PERCENTAGE_TO_CALCULATE_HANDICAP;
-            //230 bowling average should be set to -8 handicap regardless of math
-            if (currentAverage == 230)
-            {
-                calculateHandicap = -8;
-                return (int)calculateHandicap;
-            }
-            if (calculateHandicap > MAX_HANDICAP_PINS)
-            {
-                return MAX_HANDICAP_PINS;
-            }
-            else
-            {
-                return (int)(calculateHandicap);
-            }
+            return Math.Min(MAX_HANDICAP_PINS, (BASE_AVERAGE_HANDICAP_CALCULATOR - currentAverage) * 9 / 10);
         }
 
-        public static int CalculateBonusPins(bool didMemberCash, int memberPlaced, int currentBonusPins, bool isDoublesTournament, int memNum,int RegionID, DateTime currentT)
+        /// <summary>
+        /// Returns the adjusted bonus pins after a tournament depending on if a bowler placed
+        /// and what ranking a bowler placed.
+        /// </summary>
+        /// <param name="memberPlacement">Ranking a bowler placed. 0 if not placed</param>
+        /// <param name="totalEntries">Total entries for the tournament</param>
+        /// <param name="compEntries">Entries that do not have to pay entry fee</param>
+        /// <param name="currentBonusPins">Bonus pins the participant had before this tournament</param>
+        /// <param name="memNum">Member number that used to identify bowler by user</param>
+        /// <param name="RegionID">RegionId from where the tournament is played</param>
+        /// <param name="currTournamentDate">Date when the current tournament is taking place</param>
+        /// <returns>Adjusted bonus pins after current tournament</returns>
+        public static int GetAdjustedBonusPins(byte memberPlacement, int totalEntries, int compEntries, int currentBonusPins, 
+                                                int memNum, int RegionID, DateTime currTournamentDate)
         {
-            
-            int RETURN = 0;
-            if (didMemberCash)
+            int lowestPlacementToCash = GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
+
+            if (memberPlacement <= lowestPlacementToCash)
             {
-              RETURN =  DeductBonusPins(memberPlaced, currentBonusPins, isDoublesTournament);
+                return  DeductFromBonusPins(memberPlacement, currentBonusPins);
             }
-            else
-            {
-               RETURN = AddBonusPins(currentBonusPins, isDoublesTournament, memNum, RegionID, currentT);
-            }
-            return RETURN;
-          
+            return AddToBonusPins(currentBonusPins, currTournamentDate, PlayerHistoryDB.GetLastEightTournaments(memNum, RegionID));
         }
 
-        public static int AddBonusPins(int currentBonusPins, bool isDoublesTournament, int MemNum, int RegionID, DateTime currenT)
+        /// <summary>
+        /// Adds to bonus pins if necessary and returns the new total bonus pins for a member
+        /// </summary>
+        /// <param name="currentBonusPins">Bonus pins before calculating new bonus pins</param>
+        /// <param name="memberNum">Member number for the member to calculate bonus pins</param>
+        /// <param name="RegionID">Region the current tournament is taking place</param>
+        /// <param name="currTournamentDate">The date the tournament took place</param>
+        /// <param name="latestGames">The last two distinct tournaments</param>
+        /// <returns></returns>
+        public static int AddToBonusPins(int currentBonusPins, DateTime currTournamentDate, List<PlayerHistory> latestGames)
         {
-            if (currentBonusPins == MAX_BONUS_PINS_ALLOWED)
+            if (latestGames == null || latestGames.Count < 2 || currentBonusPins == MAX_BONUS_PINS_ALLOWED)
             {
-                return MAX_BONUS_PINS_ALLOWED;
+                return currentBonusPins;
             }
-            else if(PlayerHistoryDB.getLastFiveFromPlayerhistory(MemNum,RegionID).Count >= 2)
+
+            #region Check for cashed games and bonus pins as multiple entries and get distinct tournaments by date
+
+            PlayerHistory lastTourney = latestGames[0];
+
+            if (PlayerDidCash(lastTourney))
             {
-                List<PlayerHistory> latest = PlayerHistoryDB.getLastFiveFromPlayerhistory(MemNum,RegionID);
-                if(latest[0].TournamentDate != latest[1].TournamentDate &&
-                   latest[1].TournamentDate != currenT && //filtering history where they had bowled in a diffrent sqaud on the same day
-                   currenT != latest[0].TournamentDate)
+                return currentBonusPins;
+            }
+
+            // if cashed or gained a bonus pin for last tournament on a different squad
+            int i = 1;
+            while (i < latestGames.Count && lastTourney.TournamentDate == latestGames[i].TournamentDate)
+            {
+                if (PlayerDidCash(latestGames[i]) || lastTourney.Bonus != latestGames[i].Bonus)
                 {
-                    if(latest[0].Bonus == latest[1].Bonus &&
-                       latest[1].Bonus == currentBonusPins &&  //checks to see if the last 2 bowling history is the same as it is currently, after 3 times not placing, they gain a bonus point
-                       currentBonusPins == latest[0].Bonus)
-                    {
-                        return ++currentBonusPins;
-                    }
+                    return currentBonusPins;
                 }
-                return currentBonusPins;
+                i++;
+            }
 
-            }
-            else
+            PlayerHistory secondToLast = latestGames[i];
+
+            // if a second to last tournament doesn't exist or player cashed
+            if (secondToLast == null || PlayerDidCash(secondToLast))
             {
-              
                 return currentBonusPins;
             }
+            i++;
+
+            // if cashed or gained a bonus pin for 2nd to last tournament on a different squad
+            while (i < latestGames.Count && secondToLast.TournamentDate == latestGames[i].TournamentDate)
+            {
+                if (PlayerDidCash(latestGames[i]) || secondToLast.Bonus != latestGames[i].Bonus)
+                {
+                    return currentBonusPins;
+                }
+                i++;
+            }
+            #endregion
+
+            // Add bonus pin after 3 tournaments not placing
+            if (currentBonusPins == lastTourney.Bonus && currentBonusPins == secondToLast.Bonus)
+            {
+                return currentBonusPins + 1;
+            }
+            return currentBonusPins;
         }
 
-        public static int DeductBonusPins(int memberPlaced, int currentBonusPins, bool isDoublesTournament)
+        private static bool PlayerDidCash(PlayerHistory playerHistory)
+        {
+            return playerHistory.MoneyWon > 0;
+        }
+
+        public static int DeductFromBonusPins(int memberPlaced, int currentBonusPins)
         {
             int bonusPinsAfterDeduction;
 
-            if (memberPlaced == FIRST_PLACE_DEDUCTION)
+            if (memberPlaced == FIRST_PLACE)
             {
-                if (isDoublesTournament)
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - DoublesTournamentRoundPinValue(DEDUCT_HALF);
-                }
-                else
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - currentBonusPins;
-                }
+                bonusPinsAfterDeduction = currentBonusPins - currentBonusPins;
             }
-            else if (memberPlaced >= MIN_PLACEMENT_DEDUCT_3_PINS && memberPlaced <= MAX_PLACEMENT_DEDUCT_3_PINS)
+            else if (memberPlaced <= MAX_PLACEMENT_DEDUCT_3_PINS)
             {
-                if (isDoublesTournament)
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - DoublesTournamentRoundPinValue(DEDUCT_HALF);
-                }
-                else
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - DEDUCT_3;
-                }
+                bonusPinsAfterDeduction = currentBonusPins - DEDUCT_3;
             }
-            else if (memberPlaced >= MIN_PLACEMENT_DEDUCT_2_PINS && memberPlaced <= MAX_PLACEMENT_DEDUCT_2_PINS)
+            else if (memberPlaced <= MAX_PLACEMENT_DEDUCT_2_PINS)
             {
-                if (isDoublesTournament)
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - DoublesTournamentRoundPinValue(DEDUCT_HALF);
-                }
-                else
-                {
-                    bonusPinsAfterDeduction = currentBonusPins - DEDUCT_2;
-                }
+                bonusPinsAfterDeduction = currentBonusPins - DEDUCT_2;
             }
             else
             {
@@ -156,48 +168,43 @@ namespace NineTapTour.Calculations
         }
 
         /// <summary>
-        /// method rounds half pin deduction to the nearest whole number based
-        /// on client's calculation
+        /// Number of participants that can place in tournament. Total entries minus comp entries (tournament 
+        /// workers that do not have to pay entry fees) and divides by 5 using integer division. 
         /// </summary>
-        /// <param name="halfPinDeduction"></param>
-        /// <returns></returns>
-        public static int DoublesTournamentRoundPinValue(double halfPinDeduction)
+        /// <param name="totalEntries">all tournament participants including comp entries</param>
+        /// <param name="compEntries">tournament participants that also work at tournament</param>
+        /// <returns>the quantity of members that can place in a tournament</returns>
+        public static int GetQtyOfMembersThatCanPlace(int totalEntries, int compEntries)
         {
-            int doublesPinDeduction = (int)Math.Round(halfPinDeduction, MidpointRounding.AwayFromZero);
-            return doublesPinDeduction;
+            return (totalEntries - compEntries) / 5;
         }
 
         /// <summary>
-        /// method uses integer division based on client's calculation 1 in 5 participants
-        /// place in a tournament
+        /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding. Duplicate entries are removed.
+        /// returned list is sorted by highest score
         /// </summary>
-        /// <param name="numberOfParticipantsInTournament"></param>
-        /// <returns></returns>
-        public static decimal CalculateNumberOfMembersThatCanPlaceInATournament(int numberOfParticipantsInTournament)
+        /// <param name="temp">list of MemberScores sorted by Score with placestanding, without duplicate members</param>
+        public static List<MemberScores> CalculatePlaceStandings(List<MemberScores> temp)
         {
-            //grabs the ceiling of the double when divided by 5
-            decimal numberOfPlacementsBasedOnParticipants =(Math.Round(Convert.ToDecimal(numberOfParticipantsInTournament / 5)));
-            return numberOfPlacementsBasedOnParticipants;
-        }
+            if (temp.Count == 0)
+            {
+                return temp;
+            }
 
-        /// <summary>
-        /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding
-        /// </summary>
-        /// <param name="temp"></param>
-        public static void CalculatePlaceStandings(List<MemberScores> temp)
-        {
+            // Makes copy so original list won't be affected
+            temp = temp.ToList();
+
             //remove duplicates
-            RemoveDuplicateBowers(temp);
+            RemoveDuplicateBowlers(temp);
 
             //ensure bowlers are sorted by score
             temp.Sort(new MemberScoresComparer());
-            temp.Reverse();
-
 
             int place = 1;
-            for (int currPosition = 0; currPosition < temp.Count; currPosition++)
+            temp[0].placing = place++;
+            for (int currPosition = 1; currPosition < temp.Count; currPosition++)
             {
-                if (currPosition > 0 && temp[currPosition].Score == temp[currPosition - 1].Score)
+                if (temp[currPosition].Score == temp[currPosition - 1].Score)
                 {
                     temp[currPosition].placing = temp[currPosition - 1].placing;
                 }
@@ -207,17 +214,147 @@ namespace NineTapTour.Calculations
                 }
                 place++;
             }
+
+            return temp;
+        }   
+
+        /// <summary>
+        /// Calculates place standings of bowlers and returns a Dictionary of placestandings mapped to
+        /// a bowlers FinalizeTemp. Sorted by Placement order but with 0s (duplicate entries) last.
+        /// </summary>
+        /// <param name="members"></param>
+        /// <returns>Dictionary of FinalizeTemps and ints where ints are placings. Sorted by highest score with duplicate members last</returns>
+        public static Dictionary<FinalizeTemp, int> CalculatePlaceStandings(List<FinalizeTemp> members)
+        {
+            if (members.Count == 0)
+            {
+                return new Dictionary<FinalizeTemp, int>();
+            }
+
+            // original members list won't be affected
+            members = members.ToList();
+
+            // Sort the list by the total score, including handicap, in descending order.
+            members.Sort((a, b) => b.HandicapTotal.CompareTo(a.HandicapTotal));
+
+            // only non duplicates used for placing
+            List<FinalizeTemp> removals = RemoveDuplicateBowlers(members);
+
+
+            // links FinalizeTemp to an integer used for placing
+            var membersPlacingMap = new Dictionary<FinalizeTemp, int>();
+            foreach (var member in members)
+            {
+                membersPlacingMap.Add(member, 0);
+            }
+
+            int place = 1;
+            membersPlacingMap[members[0]] = place++;
+
+            // Calculate each members placing
+            for (int currPosition = 1; currPosition < members.Count; currPosition++)
+            {
+                FinalizeTemp currMember = members[currPosition];
+                FinalizeTemp prevMember = members[currPosition - 1];
+
+                if (currMember.HandicapTotal == prevMember.HandicapTotal)
+                {
+                    membersPlacingMap[currMember] = membersPlacingMap[prevMember];
+                }
+                else
+                {
+                    membersPlacingMap[currMember] = place;
+                }
+                place++;
+            }
+
+            // Add duplicate entries to end of list
+            foreach(var member in removals)
+            {
+                membersPlacingMap.Add(member, 0);
+            }
+
+            return membersPlacingMap;
+        }
+
+        /// <summary>
+        /// Removes duplicate members by lowestHandicap based on memberNumber. 
+        /// </summary>
+        /// <param name="members"></param>
+        /// <returns>list of removed FinalizeTemps</returns>
+        private static List<FinalizeTemp> RemoveDuplicateBowlers(List<FinalizeTemp> members)
+        {
+            List<FinalizeTemp> removal = new List<FinalizeTemp>();
+            for (int i = 0; i < members.Count; i++)
+            {
+                for (int j = i + 1; j < members.Count; j++)
+                {
+                    if (members[i].memberNumber == members[j].memberNumber)
+                    {
+                        if (members[i].HandicapTotal >= members[j].HandicapTotal)
+                            removal.Add(members[j]);
+                        else
+                            removal.Add(members[i]);
+                    }
+                }
+
+                foreach (FinalizeTemp deleteMember in removal)
+                {
+                    members.Remove(deleteMember);
+                }
+            }
+            return removal;
+        }
+
+        /// <summary>
+        /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding
+        /// </summary>
+        /// <param name="members"></param>
+        /// <returns>List of ExcelMembers with duplicate members removed ordered by TotalScore with assigned placement</returns>
+        public static List<ExcelMember> CalculatePlaceStandings(List<ExcelMember> members)
+        {
+            if (members.Count == 0)
+            {
+                return members;
+            }
+
+            // Makes copy so original list won't be affected
+            members = members.ToList();
+
+            //remove duplicates
+            RemoveDuplicateBowlers(members);
+
+            //ensure bowlers are sorted by score
+            members.Sort((x, y) => y.TotalScore.CompareTo(x.TotalScore));
+
+            int place = 1;
+            members[0].PlaceStanding = place++;
+
+            for (int currPosition = 1; currPosition < members.Count; currPosition++)
+            {
+                if (members[currPosition].TotalScore == members[currPosition - 1].TotalScore)
+                {
+                    members[currPosition].PlaceStanding = members[currPosition - 1].PlaceStanding;
+                }
+                else
+                {
+                    members[currPosition].PlaceStanding = place;
+                }
+                place++;
+            }
+
+            return members;
         }
 
         /// <summary>
         /// Removes the lower scores of duplicate bowlers by MemberId
         /// </summary>
         /// <param name="temp"></param>
-        private static void RemoveDuplicateBowers(List<MemberScores> temp)
+        private static void RemoveDuplicateBowlers(List<MemberScores> temp)
         {
+            List<MemberScores> removal = new List<MemberScores>();
             for (int i = 0; i < temp.Count; i++)
             {
-                List<MemberScores> removal = new List<MemberScores>();
                 for (int j = i + 1; j < temp.Count; j++)
                 {
                     if(temp[i].MemberId == temp[j].MemberId)
@@ -235,10 +372,81 @@ namespace NineTapTour.Calculations
                 }
             }
         }
+
+        /// <summary>
+        /// Finds all duplicate bowlers and removes all duplicates that aren't that bowler's
+        /// highest score
+        /// </summary>
+        /// <param name="members"></param>
+        private static void RemoveDuplicateBowlers(List<ExcelMember> members)
+        {
+            List<ExcelMember> removal = new List<ExcelMember>();
+            for (int i = 0; i < members.Count; i++)
+            {
+                for (int j = i + 1; j < members.Count; j++)
+                {
+                    if (members[i].MemberNumber == members[j].MemberNumber)
+                    {
+                        if (members[i].TotalScore >= members[j].TotalScore)
+                            removal.Add(members[j]);
+                        else
+                            removal.Add(members[i]);
+                    }
+                }
+
+                foreach (ExcelMember deleteMember in removal)
+                {
+                    members.Remove(deleteMember);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Makes a list of Members ordered by placement, keeping only the highest score for each member. Only players that
+        /// can cash in the tournament are included in the new list.
+        /// </summary>
+        /// <param name="members">list of members to copy and process</param>
+        /// <param name="totalEntries">total amount of tournament entries</param>
+        /// <param name="compEntries">comp entry amoun in a tournament</param>
+        /// <returns>List of ExcelMembers ordered by placement without duplicate ExcelMembers MemberNumbers to the placement that should cash</returns>
+        public static List<ExcelMember> MakeTopMembersByPlacementList(List<ExcelMember> members, int totalEntries, int compEntries)
+        {
+            return MakeTopMembersByPlacementList(members, GetQtyOfMembersThatCanPlace(totalEntries, compEntries));
+        }
+
+        /// <summary>
+        /// Makes a list of Members ordered by placement, keeping only the highest score for each member. Players
+        /// below the lowestPlacement (1st is highest) threshold are not included in the new list.
+        /// </summary>
+        /// <param name="members">list of members to copy and process</param>
+        /// <param name="lowestPlacement">The lowest placement to accept (1st is highest)</param>
+        /// <returns>List of ExcelMembers ordered by placement without duplicate ExcelMembers MemberNumbers to the lowest selected placement</returns>
+        public static List<ExcelMember> MakeTopMembersByPlacementList(List<ExcelMember> members, int lowestPlacement)
+        {
+            members = CalculatePlaceStandings(members);
+
+            // takes only top place members above or at lowest placement threshold
+            return members.Where(m => m.PlaceStanding <= lowestPlacement).ToList();
+        }
+
+        /// <summary>
+        /// Makes a list of Members ordered by placement, keeping only the highest score for each member. Players
+        /// below the lowestPlacement (1st is highest) threshold are not included in the new list.
+        /// </summary>
+        /// <param name="members">list of members to copy and process</param>
+        /// <param name="lowestPlacement">The lowest placement to accept (1st is highest)</param>
+        /// <returns>List of MemberScores ordered by placement without duplicate MemberScore MemberIds to the lowest selected placement</returns>
+        public static List<MemberScores> MakeTopMembersByPlacementList(List<MemberScores> members, int lowestPlacement)
+        {
+            members = CalculatePlaceStandings(members);
+
+            // takes only top place members above lowest placement threshold
+            return members.Where(m => m.placing <= lowestPlacement).ToList();
+        }
     }
 
     /// <summary>
-    /// Currently sorts member scores in ASCENDING order
+    /// Sorts member scores in descending order
     /// </summary>
     public class MemberScoresComparer : IComparer<MemberScores>
     {
@@ -246,7 +454,7 @@ namespace NineTapTour.Calculations
         {
             int score1 = x.Score.HasValue ? (int)x.Score : 0;
             int score2 = y.Score.HasValue ? (int)y.Score : 0;
-            return score1.CompareTo(score2);
+            return score2.CompareTo(score1);
         }
     }
 }

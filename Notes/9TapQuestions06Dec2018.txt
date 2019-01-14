@@ -1,0 +1,23 @@
+Questions for Rob
+
+1. Do you want the ability to delete an entire tournament? Where would you want this option? We were thinking in the edit tournmaent section.
+    Yes and in edit tournament
+
+2. Is the standings form required? Is it used? Can we remove this code if it is unnecessary?
+    Leave unfunctional for now. In the future we can implement this
+
+3. Do you finalize tournament before reviewing the tournament results or after? 
+    Before. Tournament results before finalizing
+
+4. Can we get a copy of Hawaii's excel sheet?
+    We have a local copy that can be uploaded
+
+5. Does he use the money won on the member scores page?  (We can disable it if he doesn't edit it on that page) 
+    Disable on the member scores form
+
+6. Are doubles tournaments or brackets tournaments higher priority?
+    Brackets next quarter as highest priority. Doubles and Teams tournaments down the road
+
+7. When is the tournament in January?
+    Jan 25th, 26th, 27th
+    *Note: We have Jan 12th and Jan 19th to test normal tournaments

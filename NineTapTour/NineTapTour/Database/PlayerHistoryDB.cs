@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity.Validation;
 using NineTapTour.Models;
+using System.Windows.Forms;
 
 namespace NineTapTour.Database
 {
@@ -28,9 +29,17 @@ namespace NineTapTour.Database
                     db.SaveChanges();
                 }
             }
-            catch (SqlException ex)
+            catch (DbUpdateException ex)
             {
-                throw new PlayerHistoryTableException("Error Number : " + ex.Number + " - " + ex.Message);
+                //throw new PlayerHistoryTableException("Error Number : " + ex.Number + " - " + ex.Message);
+
+                //Display error to user so it can be fixed
+                Member member = MemberDb.GetMember(temp.MemberNumber, temp.regionID);
+                //For more info on "?." see null conditional docs https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-conditional-operators 
+                MessageBox.Show(
+                    $"There was a problem with Member Number: {temp.MemberNumber}, {member?.FirstName} {member?.LastName}.\n" +
+                    $"Please verify all tournament dates for that member\n" +
+                    $"PLEASE WRITE THIS DOWN OR TAKE A PICTURE AND FIX THE MEMBER EXCEL FILE.");
             }
         }
         public static void AddPlayerHistory2(PlayerHistory temp)
@@ -168,23 +177,6 @@ namespace NineTapTour.Database
             }
 
 
-        }
-        public static void AddGame(Game temp)
-        {
-            try
-            {
-                using (var db = new NineTapDb())
-                {
-                    db.Entry(temp).State = db.Games.Any(his => his.Id == temp.Id) ?
-                         EntityState.Modified :
-                         EntityState.Added;
-                    db.SaveChanges();
-                }
-            }
-            catch (SqlException ex)
-            {
-                throw new PlayerHistoryTableException("Error Number : " + ex.Number + " - " + ex.Message);
-            }
         }
 
         public static List<PlayerHistory> getMemberPlayerHistory(int memnum, int RegionId)
@@ -362,14 +354,39 @@ namespace NineTapTour.Database
             return Return;
         }
 
-        public static List<PlayerHistory> getLastFiveFromPlayerhistory(int memNum, int RegionId)
+        /// <summary>
+        /// Gets the last eight tournaments selecting only the tournament date and bonus pins.
+        /// Used to calculate bonus pins.
+        /// </summary>
+        /// <param name="memNum"></param>
+        /// <param name="regionId"></param>
+        /// <returns></returns>
+        public static List<PlayerHistory> GetLastEightTournaments(int memNum, int regionId)
         {
-            List<PlayerHistory> Return = new List<PlayerHistory>();
+            var queryResult = new NineTapDb().PlayerHistory
+                                    .Where(ph => ph.MemberNumber == memNum && ph.regionID == regionId)
+                                    .OrderByDescending(ph => ph.TournamentDate)
+                                    .Select(ph => new {ph.TournamentDate, ph.MoneyWon, ph.Bonus})
+                                    .Take(8)
+                                    .ToList();
+
+            return queryResult.Select(qr => new PlayerHistory()
+                            {
+                                TournamentDate = qr.TournamentDate,
+                                MoneyWon = qr.MoneyWon,
+                                Bonus = qr.Bonus
+                            })
+                            .ToList();
+        }
+
+        public static List<PlayerHistory> GetLastFiveTournaments(int memNum, int regionId)
+        {
+            List<PlayerHistory> lastFiveTournaments = new List<PlayerHistory>();
             using (var db = new NineTapDb())
             {
                 //will only grab the last 5 where the AVG was adjusted, that way the bonus pins cant be affected by bowling in more then one squad
                 var temp = (from h in db.PlayerHistory
-                            where h.MemberNumber == memNum && h.regionID == RegionId && h.AVG > 0 //only grabs tournaments where avgerage was determined. that way it doest grab history from a diffrent sqaud
+                            where h.MemberNumber == memNum && h.regionID == regionId && h.AVG > 0 //only grabs tournaments where average was determined. that way it doest grab history from a diffrent sqaud
                             orderby h.TournamentDate descending, h.hisID descending
                             select new
                             {
@@ -391,32 +408,32 @@ namespace NineTapTour.Database
                             }).Take(5).ToList();
                 foreach (var item in temp)
                 {
-                    PlayerHistory newHistory = new PlayerHistory();
-
-
-                    newHistory.GamesPlayed = item.GamesPlayed;
-                    newHistory.TournamentDate = item.TournamentDate;
-                    newHistory.Game1 = item.Game1;
-                    newHistory.Game2 = item.Game2;
-                    newHistory.Game3 = item.Game3;
-                    newHistory.Game4 = item.Game4;
-                    newHistory.TotalScore = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0); ;
-                    newHistory.AverageForGame = item.AverageForGame;
-                    newHistory.trueAVG = item.trueAVG;
-                    newHistory.AVG = item.AVG;
-                    newHistory.HandiCap = item.HandiCap;
-                    newHistory.Bonus = item.Bonus;
-                    newHistory.ProPot = item.ProPot;
-                    newHistory.PPHG = item.PPHG;
-                    newHistory.MoneyWon = item.MoneyWon;
-                    newHistory.Notes = item.Notes;
-                    Return.Add(newHistory);
+                    PlayerHistory newHistory = new PlayerHistory
+                    {
+                        GamesPlayed = item.GamesPlayed,
+                        TournamentDate = item.TournamentDate,
+                        Game1 = item.Game1,
+                        Game2 = item.Game2,
+                        Game3 = item.Game3,
+                        Game4 = item.Game4,
+                        TotalScore = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0),
+                        AverageForGame = item.AverageForGame,
+                        trueAVG = item.trueAVG,
+                        AVG = item.AVG,
+                        HandiCap = item.HandiCap,
+                        Bonus = item.Bonus,
+                        ProPot = item.ProPot,
+                        PPHG = item.PPHG,
+                        MoneyWon = item.MoneyWon,
+                        Notes = item.Notes
+                    };
+                    lastFiveTournaments.Add(newHistory);
                 }
 
 
             }
 
-            return Return;
+            return lastFiveTournaments;
         }
 
 
@@ -545,6 +562,7 @@ namespace NineTapTour.Database
             {
                 var temp = (from h in db.PlayerHistory
                             where h.GameID == GameID
+
                             select new
                             {
                                 h.GameID,
@@ -591,12 +609,7 @@ namespace NineTapTour.Database
                     p.trueAVG = item.trueAVG;
                 }
                 return p;
-
             }
-            
-
-
-            
         }
 
         /// <summary>
@@ -615,5 +628,14 @@ namespace NineTapTour.Database
                     .Sum() ?? 0; 
         }
 
+        /// <summary>
+        /// Returns true if a PlayerHistory with the same GameId exist in the database
+        /// </summary>
+        /// <param name="gameId"></param>
+        /// <returns></returns>
+        public static bool PlayerHistoryExists(int gameId)
+        {
+            return new NineTapDb().PlayerHistory.Any(ph => ph.GameID == gameId);
+        }
     }
 }

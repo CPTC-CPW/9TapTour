@@ -162,7 +162,7 @@
             this.Controls.Add(this.dataGridView1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmFinalizeTournament";
-            this.Text = "FrmFinalizeTournament";
+            this.Text = "Finalize Tournament Results";
             this.Load += new System.EventHandler(this.FrmFinalizeTournament_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();

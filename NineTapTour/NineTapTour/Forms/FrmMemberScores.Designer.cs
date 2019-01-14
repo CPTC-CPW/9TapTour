@@ -682,6 +682,7 @@
             this.txtMoney.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtMoney.Location = new System.Drawing.Point(247, 257);
             this.txtMoney.Name = "txtMoney";
+            this.txtMoney.ReadOnly = true;
             this.txtMoney.Size = new System.Drawing.Size(83, 20);
             this.txtMoney.TabIndex = 8;
             this.txtMoney.TabStop = false;
@@ -694,6 +695,7 @@
             this.lblPlayer2.Size = new System.Drawing.Size(42, 13);
             this.lblPlayer2.TabIndex = 12;
             this.lblPlayer2.Text = "Player2";
+            this.lblPlayer2.Visible = false;
             // 
             // lblPlayer1
             // 
@@ -703,6 +705,7 @@
             this.lblPlayer1.Size = new System.Drawing.Size(42, 13);
             this.lblPlayer1.TabIndex = 11;
             this.lblPlayer1.Text = "Player1";
+            this.lblPlayer1.Visible = false;
             // 
             // lblBonusPins
             // 

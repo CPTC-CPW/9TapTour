@@ -43,6 +43,8 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void MemberDataForm_Load(object sender, EventArgs e)
         {
+            this.WindowState = FormWindowState.Maximized;
+
             //finds all Controls and change BackColor of each control color when 
             //the control is on focus
             foreach (Control ctrl in this.Controls)
@@ -116,7 +118,6 @@ namespace NineTapTour.Forms
         /// <param name="searchMem"></param>
         public void UpdateMemberInfo(Member searchMem = null)
         {
-            RemoveValidation();
             RegionID = ((FrmMain)MdiParent).RegionID;  
             
             //set all member info group control background colors
@@ -150,9 +151,7 @@ namespace NineTapTour.Forms
             if (searchMem == null)
             {
                 currentMem = MemberDb.GetMember(_memberNum,RegionID);
-                List<PlayerHistory> last5 = PlayerHistoryDB
-                    .getLastFiveFromPlayerhistory(currentMem.Number, RegionID);
-
+                List<PlayerHistory> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
                 if (last5.Count >= 1)
                 {   //whatever the bowler director decides his average to be is right. 
                     // dont pull from the player hstory page
@@ -434,8 +433,6 @@ namespace NineTapTour.Forms
             // btnSave_Click and adds a member into the database.
             if (IsValidTextboxes())
             {
-                RemoveValidation();
-
                 //checks to see if MemberID exists 
                 int memId;
                 Member temp = new Member();
@@ -580,9 +577,8 @@ namespace NineTapTour.Forms
                 }
 
                 temp.Id = memId;
-                List<PlayerHistory> last5 = 
-                    PlayerHistoryDB.getLastFiveFromPlayerhistory(currentMem.Number, RegionID);
 
+                List<PlayerHistory> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
                 if (last5.Count >= 1)
                 {   // sets the average to that of their last adjusted average
                     if (Convert.ToInt32(txtAverage.Text) == last5[0].AVG)
@@ -640,26 +636,6 @@ namespace NineTapTour.Forms
                 {
                     MessageBox.Show(ex.Message);
                 }
-            }
-        }
-
-        private void RemoveValidation()
-        {
-            Label[] validationLabels =
-            {
-                lblLastNameValidation,
-                lblFirstNameValidation,
-                lblDOBValidation,
-                lblSSNValidation,
-                lblDateJoinedValidation,
-                lblStateValidation,
-                lblReferralsValidation,
-                lblAverageValidation
-            };
-
-            for (int i = 0; i < validationLabels.Length; i++)
-            {
-                validationLabels[i].Visible = false;
             }
         }
 
@@ -1129,7 +1105,7 @@ namespace NineTapTour.Forms
                     {
                         for(int delete = 0; delete < AlreadyImportedPH.Count; delete++)
                         {
-                            Game game = FinalizeTempDB.getGame(AlreadyImportedPH[delete].GameID);
+                            Game game = GameDB.GetGame(AlreadyImportedPH[delete].GameID);
                             PlayerHistoryDB.DeleteGame(game);
                             PlayerHistoryDB.DeletePlayerHistory(AlreadyImportedPH[delete]);
                         }
@@ -1143,9 +1119,7 @@ namespace NineTapTour.Forms
                     CurrentExcelData.Add(r);
                 }
 
-                List<PlayerHistory> reset = PlayerHistoryDB
-                    .getLastFiveFromPlayerhistory(currentMem.Number, RegionID);
-
+                List<PlayerHistory> reset = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
                 currentMem.StartAvg = reset[0].AVG;
                 currentMem.Average = Convert.ToInt32(reset[0].trueAVG);
                 currentMem.Handicap = Calculations.Calculations
@@ -1172,7 +1146,7 @@ namespace NineTapTour.Forms
                     moneySum += v.MoneyWon;
                 }
 
-                currentMem.MoneyEarned = moneySum;
+                currentMem.MoneyEarned += moneySum; 
 
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
 
@@ -1190,11 +1164,24 @@ namespace NineTapTour.Forms
 
             Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
             Excel.Range range = xlWorkSheet.UsedRange;
+
             string[] PlayerFinalFirstAndMiddle = { "", "" };
             string[] PlayersFinalLastAndMiddle = { "", "" };
+            string playerLastName = "";
+            string firstAndMiddle = "";
             string playerFullName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
-            string playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
-            string firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
+            if (playerFullName.Contains(","))
+            {
+                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
+                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
+            }
+            // Checks to see if a period instead of a comma was accidentally placed in member name. (Rob's Request)
+            else if (playerFullName.Contains("."))
+            {
+                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf("."));
+                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(".") + 2);
+            }
+                        
             string[] first0middle1 = firstAndMiddle.Split(' ');
             int playerOrgAVG;
 
@@ -1203,64 +1190,98 @@ namespace NineTapTour.Forms
                 PlayerFinalFirstAndMiddle[i] = first0middle1[0];
             }
 
-            try
+            if ( Int32.TryParse( ( ( range.Cells[1, 10] as Excel.Range ).Value2 ), out int result ) )
             {
-                playerOrgAVG = Convert.ToInt32((range.Cells[1, 10] as Excel.Range).Value2);
+                playerOrgAVG = result;
             }
-            catch (Exception NotAValidNumber)
+            else
             {
                 playerOrgAVG = -1;
             }
 
             String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
+            bool isRegionHawaii = (RegionID == 2); // checks to see if RegionID is equal to Hawaii
+            
+            if(isRegionHawaii) 
+            {
+                playerNumber = Regex.Replace(playerNumber, "[^0-9]", "");  // strip the member number to straight number
+            }
             String[] playerNumberAfterSplit;
             int playerNumberAsInt = 0;
             int.TryParse(playerNumber, out playerNumberAsInt);
 
+            // hawaii numbers are not 234 they have H  or H- in front need to address that by removing the h 
+            // used regex to remove any non numeric expressions from player number be it a letter or a - 
             if (playerNumberAsInt != 0)
             {
-                playerNumberAsInt = Convert.ToInt32((range.Cells[1, 14] as Excel.Range).Value2);
+                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumber, "[^0-9]", "")); 
             }
             else if (playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
             {
                 playerNumberAfterSplit = playerNumber.Split('/');
-                playerNumberAsInt = Convert.ToInt32(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1]);
+                playerNumberAsInt = Convert.ToInt32( Regex.Replace(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1] , "[^0-9]", ""));
             }
 
             for (int sheetNum = 1; sheetNum <= xlWorkBook.Worksheets.Count; sheetNum++)
             {
                 xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
                 range = xlWorkSheet.UsedRange;
-
-                for (int row = 3; row <= range.Rows.Count; row++)
+                double noGameMoneyWon = 0;
+                int rowNum;
+                
+                if(isRegionHawaii)
                 {
-                    try
-                    {
-                        if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
-                        {
-                            continue;
-                        }
-                    }
-                    catch (Exception ex)
-                    {                    
-                        continue;
-                    }
+                    rowNum = 4;
+                }
+                else
+                {
+                    rowNum = 3;
+                }
+
+                for (int row = rowNum; row <= range.Rows.Count; row++)
+                {
 
                     ExcelRow temp = new ExcelRow();
                     PlayerHistory playerH = new PlayerHistory();
                     Game GameHistory = new Game();
+
+                    string game1 = Convert.ToString((range.Cells[row, 3] as Excel.Range).Value2);
+                    string game2 = Convert.ToString((range.Cells[row, 4] as Excel.Range).Value2);
+                    string game3 = Convert.ToString((range.Cells[row, 5] as Excel.Range).Value2);
+                    string game4 = Convert.ToString((range.Cells[row, 6] as Excel.Range).Value2);
+                    string testFin = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
+                    
+                    if ( // if no date or cash then continue to the next line
+                        string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 2] as Excel.Range).Value2)) &&
+                        string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 15] as Excel.Range).Value2))
+                        )
+                    {
+                        continue;
+                    }
+
+                    if( // if the four games have no data AKA no games bowled and there is a finish place then add the cash to moneywon
+                        string.IsNullOrWhiteSpace(game1) &&
+                        string.IsNullOrWhiteSpace(game2) &&
+                        string.IsNullOrWhiteSpace(game3) &&
+                        string.IsNullOrWhiteSpace(game4) &&
+                        !string.IsNullOrWhiteSpace(testFin)
+                    )
+                    {
+                        noGameMoneyWon += Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
+                        continue;
+                    }
+               
+
                     GameHistory.gameRegionID = RegionID;
                     temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
                     temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
                     temp.PlayerLastName = playerLastName;
                     temp.PlayerOrginalAVG = playerOrgAVG;
                     temp.PlayerNumber = currentMem.Number;
+                    
                     playerH.MemberNumber = currentMem.Number;
                     playerH.regionID = RegionID;
-
+                    
                     if (currentMem.Number == temp.PlayerNumber)
                     {//only process file if they have been added as a member first 
                         try
@@ -1422,6 +1443,7 @@ namespace NineTapTour.Forms
                         {
                             temp.Cash = 0;
                         }
+                        playerH.MoneyWon += Convert.ToDecimal(noGameMoneyWon);
 
                         temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
                         GameHistory.Notes = temp.Notes;
@@ -1430,11 +1452,15 @@ namespace NineTapTour.Forms
                         GameHistory.Id = AllGames + 1;
                         AllGames++;
                         playerH.GameID = GameHistory.Id;
-                        PlayerHistoryDB.AddGame(GameHistory);
+
+                        GameDB.AddOrUpdateGame(GameHistory);
                         PlayerHistoryDB.AddPlayerHistory(playerH);
                         returnMe.Add(temp);
+                        noGameMoneyWon = 0;
                     }
+                  
                 }
+               
             }
             xlWorkBook.Close(0);
             xlApp.Quit();

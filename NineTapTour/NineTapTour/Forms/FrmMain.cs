@@ -274,5 +274,10 @@ namespace NineTapTour.Forms
                 }
             }
         }
+
+        private void userManualToolStripMenuItem_Click(object sender, EventArgs e)
+        {   // just need to find out the location that the program will install the manual and update the following line
+            System.Diagnostics.Process.Start(@"Resources\9TapUserManual.docx");
+        }
     }
 }

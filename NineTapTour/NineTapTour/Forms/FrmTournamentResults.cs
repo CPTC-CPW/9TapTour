@@ -59,32 +59,12 @@ namespace NineTapTour.Forms
                 lblTournamentName.Text += " (3 OUT OF 4 TOURNAMENT)";
             }
 
-            /***************************
-               BUILD LIST OF $ WINNERS
-             **************************/
-
             // Create a List<ExcelMember> and populate it with this tournament's participants
             List<ExcelMember> winners = BuildWinnersList();
 
-            /* Sort winners by memberId before iterating over winners
-               list and only keeping member's highest scoring game */
-            winners.Sort((x, y) => x.MemberNumber.CompareTo(value: y.MemberNumber));
-
-            // Keep each member's highest scoring game
-            KeepHighestScoringGame(winners);
-
-            // Sort winners by score (highest to lowest) before running place standing algorithm
-            winners.Sort((x, y) => y.TotalScore.CompareTo(value: x.TotalScore));
-
-            // Assign place standings to bowlers, requires list to already be sorted by score, descending
-            CalculatePlaceStanding(winners);
-
-            /***************************
-                 CREATE DATA TABLE
-            **************************/
-
             // Create list of participants who cash
-            List<ExcelMember> cashedWinners = BuildCashedWinnersList(winners);
+            List<ExcelMember> cashedWinners = Calculations.Calculations.
+                    MakeTopMembersByPlacementList(winners, totalTournamentEntries, compEntries);
 
             // Create datagridview and populate with cashedWinners list
             CreateDataGridView(cashedWinners);
@@ -161,91 +141,6 @@ namespace NineTapTour.Forms
             }
         }
 
-        /// <summary>
-        /// Creates list of tournament participants who cash based on their place standing 
-        /// in tournament and the cash calculation. 
-        /// </summary>
-        /// <param name="winners">List of unique participants in tournament</param>
-        /// <returns>List of participants who cash</returns>
-        private List<ExcelMember> BuildCashedWinnersList(List<ExcelMember> winners)
-        {
-            // Deduct comp entries from total tournament entries to determine paid entries
-            // This is used to calculate number of participants who cash
-            int adjustedTournamentEntries = totalTournamentEntries - compEntries;
-
-            // Calculate number of participants who cash (i.e. 1 out of 5)
-            // numCashedWinners is the number of winners who cash
-            int numCashedWinners = (int)Calculations.Calculations.CalculateNumberOfMembersThatCanPlaceInATournament(adjustedTournamentEntries);
-
-            // Create list for winners who cashed
-            List<ExcelMember> cashedWinners = new List<ExcelMember>();
-
-            // Winners who placed under or equal to the place equal to the value of numCashedWinners
-            // should be added to datagridview to account for participants who tied for last place
-            // i.e. adjustedTournamentEntries is 15, so numCashedWinners is 3
-            // if there are two participants who tied for 3rd place, both participants cash, so actual cashed winners is 4
-            for (int i = 0; i < winners.Count; i++)
-            {
-                if (winners[i].PlaceStanding <= numCashedWinners)
-                {
-                    cashedWinners.Add(winners[i]);
-                }
-            }
-            return cashedWinners;
-        }
-
-        /// <summary>
-        /// Calculates each bowler's place standing, and populates the PlaceStanding 
-        /// property of each ExcelMember
-        /// </summary>
-        /// <param name="winners"></param>
-        private static void CalculatePlaceStanding(List<ExcelMember> winners)
-        {
-            int place = 1;
-            for (int i = 0; i < winners.Count; i++)
-            {
-                if (i > 0 && winners[i].TotalScore == winners[i - 1].TotalScore)
-                {
-                    winners[i].PlaceStanding = winners[i - 1].PlaceStanding;
-                }
-                else
-                {
-                    winners[i].PlaceStanding = place;
-                }
-                place++;
-            }
-        }
-
-        /// <summary>
-        /// Iterates over winners and keeps only a bowlers highest scoring game
-        /// </summary>
-        /// <param name="winners"></param>
-        private static void KeepHighestScoringGame(List<ExcelMember> winners)
-        {
-            List<ExcelMember> removal = new List<ExcelMember>();
-            //find all duplicate bowlers and their lower scores
-            for (int i = 0; i < winners.Count; i++)
-            {
-                for (int j = i + 1; j < winners.Count; j++)
-                {
-                    //Check to see if it's the same bowler
-                    if(winners[i].MemberNumber == winners[j].MemberNumber)
-                    {
-                        //remove the lower score
-                        if (winners[i].TotalScore >= winners[j].TotalScore)
-                            removal.Add(winners[j]);
-                        else
-                            removal.Add(winners[i]);
-                    }
-                }
-            }
-
-            //remove lower scores
-            foreach (ExcelMember member in removal)
-            {
-                winners.Remove(member);
-            }
-        }
 
         /// <summary>
         /// Returns a list of tourament winners
@@ -348,7 +243,7 @@ namespace NineTapTour.Forms
             for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
             {
                 int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
-                Game g = FinalizeTempDB.getGame(gameId);
+                Game g = GameDB.GetGame(gameId);
 
                 g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
                 g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
@@ -530,7 +425,18 @@ namespace NineTapTour.Forms
                                 // put equation into column 15 that will display the total
                                 // amount the player earned minus the yearly membership and
                                 // any money adjustments
-                                xlWorkSheet.Cells[i + (4 + i), j + 11] = "=I" + (i + 4) + "+I" + (i + 5) + "-M" + (i + 4) + "-N" + (i + 4);
+                               if(i == 0)
+                                {
+                                    xlWorkSheet.Cells[i + (4 + i), j + 11] = "=I" + (i + 4) + "+I" + (i + 5) + "-M" + (i + 4) + "-N" + (i + 4);
+                                }
+                                else if (i == 1)
+                                {
+                                    xlWorkSheet.Cells[i + (4 + i), j + 11] = "=I" + (i + 5) + "+I" + (i + 6) + "-M" + (i + 5) + "-N" + (i + 5);
+                                }
+                                else
+                                {
+                                    xlWorkSheet.Cells[i + (4 + i), j + 11] = "=I" + (i + 6) + "+I" + (i + 7) + "-M" + (i + 6) + "-N" + (i + 6);
+                                }
                             }
 
                             // Add the member number into the 12th column of the 4th row
@@ -690,8 +596,8 @@ namespace NineTapTour.Forms
                 {
                     if (fileName != "TournamentResultsTemplate.xls" || !string.IsNullOrEmpty(fileName))
                     {
-                        var savefile = new SaveFileDialog();
-                        savefile.DefaultExt = "Excel Files (*.xls)|*.xls";
+                        SaveFileDialog savefile = new SaveFileDialog();
+                        savefile.Filter = "Excel Files (*.xls)|*.xls";
                         savefile.FileName = fileName;
                         savefile.ShowDialog();
 
@@ -882,7 +788,7 @@ namespace NineTapTour.Forms
             for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
             {
                 int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
-                Game g = FinalizeTempDB.getGame(gameId);
+                Game g = GameDB.GetGame(gameId);
 
                 g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
                 g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);

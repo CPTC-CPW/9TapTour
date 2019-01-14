@@ -640,17 +640,24 @@ namespace Member_Import_Test
 
             string[] PlayerFinalFirstAndMiddle = { "", "" };
             string[] PlayersFinalLastAndMiddle = { "", "" };
-
-
+            string playerLastName = "";
+            string firstAndMiddle = "";
             string playerFullName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
-            string playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
+            if (playerFullName.Contains(","))
+            {
+                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
+                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
+            }
+            // Checks to see if a period instead of a comma was accidentally placed in member name. (Rob's Request)
+            else if (playerFullName.Contains("."))
+            {
+                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf("."));
+                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(".") + 2);
+            }
 
-
-            string firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
             string[] first0middle1 = firstAndMiddle.Split(' ');
-
-
             int playerOrgAVG;
+
             for (int i = 0; i < first0middle1.Length; i++)
             {
                 PlayerFinalFirstAndMiddle[i] = first0middle1[0];
@@ -698,12 +705,20 @@ namespace Member_Import_Test
             }
           
             String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
+            bool isRegionHawaii = (RegionID == 2); // checks to see if RegionID is equal to Hawaii
+
+            if (isRegionHawaii)
+            {
+                playerNumber = Regex.Replace(playerNumber, "[^0-9]", "");  // strip the member number to straight number
+            }
+
             String[] playerNumberAfterSplit;
             int playerNumberAsInt = 0;
             int.TryParse(playerNumber, out playerNumberAsInt);
+
             if (playerNumberAsInt != 0)
             {
-                playerNumberAsInt = Convert.ToInt32((range.Cells[1, 14] as Excel.Range).Value2);
+                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumber, "[^0-9]", ""));
             }
             else if (playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
             {
@@ -712,7 +727,7 @@ namespace Member_Import_Test
                     try
                     {
                         playerNumberAfterSplit = playerNumber.Split(splitters[i]);
-                        playerNumberAsInt = Convert.ToInt32(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1]);
+                        playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1], "[^0-9]", ""));
                     }
                     catch 
                     {
@@ -724,28 +739,43 @@ namespace Member_Import_Test
 
             for (int sheetNum = 1; sheetNum <= xlWorkBook.Worksheets.Count; sheetNum++)
             {
-
                 xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
                 range = xlWorkSheet.UsedRange;
+
+                double noGameMoneyWon = 0;
+
                 for (int row = 3; row <= range.Rows.Count; row++)
                 {
-                    try
-                    {
-                        if (Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2) == 0
-                       && Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2) == 0)
-                        {
-                            continue;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        continue;
-                    }
                     ExcelRow temp = new ExcelRow();
                     PlayerHistory playerH = new PlayerHistory();
                     Game GameHistory = new Game();
+
+                    string game1 = Convert.ToString((range.Cells[row, 3] as Excel.Range).Value2);
+                    string game2 = Convert.ToString((range.Cells[row, 4] as Excel.Range).Value2);
+                    string game3 = Convert.ToString((range.Cells[row, 5] as Excel.Range).Value2);
+                    string game4 = Convert.ToString((range.Cells[row, 6] as Excel.Range).Value2);
+                    string testFin = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
+
+                    if ( // if no date or cash then continue to the next line
+                        string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 2] as Excel.Range).Value2)) &&
+                        string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 15] as Excel.Range).Value2))
+                        )
+                    {
+                        continue;
+                    }
+
+                    if ( // if the four games have no data AKA no games bowled and there is a finish place then add the cash to moneywon
+                        string.IsNullOrWhiteSpace(game1) &&
+                        string.IsNullOrWhiteSpace(game2) &&
+                        string.IsNullOrWhiteSpace(game3) &&
+                        string.IsNullOrWhiteSpace(game4) &&
+                        !string.IsNullOrWhiteSpace(testFin)
+                    )
+                    {
+                        noGameMoneyWon += Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
+                        continue;
+                    }
+
                     GameHistory.gameRegionID = RegionID;
                     temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
                     temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
@@ -756,7 +786,7 @@ namespace Member_Import_Test
                     playerH.regionID = RegionID;
                     //only process file if they have been added as a member first and are active ?
                         if (MemberDb.GetMember(temp.PlayerNumber, RegionID).IsActive == true)
-                    {
+                        {
                             try
                             {
                                 temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
@@ -880,8 +910,6 @@ namespace Member_Import_Test
                             }
                             temp.PotPro = Convert.ToString((range.Cells[row, 13] as Excel.Range).Value2);
                             playerH.ProPot = temp.PotPro;
-
-                           
                             temp.FinPPHG = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
                             playerH.PPHG = temp.FinPPHG;
 
@@ -908,6 +936,8 @@ namespace Member_Import_Test
                             {
                                 temp.Cash = 0;
                             }
+                            playerH.MoneyWon += Convert.ToDecimal(noGameMoneyWon); 
+
                             temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
                             GameHistory.Notes = temp.Notes;
                             playerH.Notes = temp.Notes;
@@ -918,6 +948,7 @@ namespace Member_Import_Test
                             GameImport.Add(GameHistory);
                             PlayerHistoryList.Add(playerH);
                             returnMe.Add(temp);
+                            noGameMoneyWon = 0; 
                             progressBar2.Increment(1);
                         
                         }
@@ -1297,11 +1328,11 @@ namespace Member_Import_Test
 
             
             updatePlayerHistory(PlayerHistoryList);
-            updateGameHistory(GameImport);
+            GameDB.AddOrUpdateSomeGames(GameImport);
 
             for (int i = 0; i < validMembers.Count; i++)
             {
-                List<PlayerHistory> list = PlayerHistoryDB.getLastFiveFromPlayerhistory(validMembers[i].Number, RegionID);
+                List<PlayerHistory> list = PlayerHistoryDB.GetLastFiveTournaments(validMembers[i].Number, RegionID);
                 if (list.Count > 0)
                 {
                     validMembers[i].StartAvg = list[0].AVG; //set new avg to last bowled adjusted avg
@@ -1337,14 +1368,6 @@ namespace Member_Import_Test
                 }
             }
             
-        }
-
-        private void updateGameHistory (List<Game> Game)
-        {
-            foreach (var m in Game)
-            {
-               PlayerHistoryDB.AddGame(m);
-            }
         }
 
         private void cbxRegionSelect_SelectedIndexChanged(object sender, EventArgs e)

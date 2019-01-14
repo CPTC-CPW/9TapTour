@@ -1,6 +1,6 @@
 ﻿namespace NineTapTour.Models
 {
-    class ExcelMember
+    public class ExcelMember
     {
         public int PlaceStanding { get; set; }
         public int MemberNumber { get; set; }
