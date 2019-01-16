@@ -33,7 +33,9 @@ namespace NineTapTour.Forms
         NineTapDb db = new NineTapDb(); // Get access to database
         Tournament tourny = frmMemberScores.selectedTournament; // Get Tournament
         static int totalTournamentEntries;  // Total number of entries for all squads in tournament
-        static string clientInput; // how many winners the client wants to see
+        static int clientInput; // how many winners the client wants to see
+        List<ExcelMember> cashedWinners = new List<ExcelMember>();
+
         // Floor directors get a comp entry into tournament when they help with tournament. 
         // They don't pay the entry fee, but do qualify to cash.
         static int compEntries; 
@@ -63,21 +65,18 @@ namespace NineTapTour.Forms
             List<ExcelMember> winners = BuildWinnersList();
 
             // Create list of participants who cash
-            List<ExcelMember> cashedWinners = Calculations.Calculations.
+             cashedWinners = Calculations.Calculations.
                     MakeTopMembersByPlacementList(winners, totalTournamentEntries, compEntries);
 
 
-            // 
-            clientInput = Convert.ToInt32(tbClientInputCount.Text);
-            // Create datagridview and populate with cashedWinners list
-            CreateDataGridView(cashedWinners);
+
         }
 
         /// <summary>
         /// Creates the DataGridView table and populates it with the list of cashed winners
         /// </summary>
         /// <param name="cashedWinners"></param>
-        private void CreateDataGridView(List<ExcelMember> cashedWinners)
+        private void CreateDataGridView(List<ExcelMember> cashedWinners, int clientInput)
         {
             // Create data table and add columns 
             // Columns with ReadOnly set to False are editable        
@@ -89,6 +88,23 @@ namespace NineTapTour.Forms
             dt.Columns.Add(MEMBER_ID_COLUMN_NAME).ReadOnly = true;
             dt.Columns.Add(GAME_ID_COLUMN_NAME).ReadOnly = true;
             dt.Columns.Add(PROGRESSIVEPOT_COLUMN_NAME).ReadOnly = false;
+
+
+            // testing code for client input
+            int winnersCount = 0;
+            if(cashedWinners.Count() > 0)
+            {
+                winnersCount = cashedWinners.Count();
+            }
+
+            
+            if (clientInput > cashedWinners.Count)
+            {
+                for (int z = cashedWinners.Count; z < clientInput; z++)
+                {
+                    // insert the cash data
+                }
+            }
 
             // Create rows and populate with each member's data for each row
             foreach (var item in cashedWinners)
@@ -111,6 +127,25 @@ namespace NineTapTour.Forms
                     newRow[PROGRESSIVEPOT_COLUMN_NAME] = item.SidePot;
                 }
                 dt.Rows.Add(newRow);
+            }
+
+            int countTempMoney = 0;
+
+            for (int tr = winnersCount; tr < clientInput; tr++)
+            {
+                //   double earnings = VariablesForTournamentResults.TempMoneyFinal[countTempMoney];
+                DataRow newRow = dt.NewRow();
+
+                newRow[PLACE_STANDING_COLUMN_NAME] = tr + 1;
+                newRow[FULLNAME_COLUMN_NAME] = "";
+                newRow[HANDICAP_COLUMN_NAME] = "";
+                newRow[TOTAL_SCORE_COLUMN_NAME] = "";
+                newRow[EARNINGS_COLUMN_NAME] = ""; // earnings;
+                newRow[MEMBER_ID_COLUMN_NAME] = "";
+                newRow[GAME_ID_COLUMN_NAME] = tr;
+                newRow[PROGRESSIVEPOT_COLUMN_NAME] = "0.00";
+                dt.Rows.Add(newRow);
+                countTempMoney++;
             }
 
             // If there is data in datatable rows, then set datatable as source for datagridview
@@ -787,6 +822,8 @@ namespace NineTapTour.Forms
 
             if (e.CloseReason == CloseReason.WindowsShutDown) return;
 
+            
+
             // Save all changes made to the dataGridView
             for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
             {
@@ -805,8 +842,8 @@ namespace NineTapTour.Forms
 
         private void tbClientInputCount_TextChanged(object sender, EventArgs e)
         {
-            dgvTournamentResults.Rows.Clear();
-            dgvTournamentResults.Refresh();
+           // dgvTournamentResults.Rows.Clear();
+           // dgvTournamentResults.Refresh();
         }
 
         private void tbClientInputCount_KeyDown(object sender, KeyEventArgs e)
@@ -816,14 +853,20 @@ namespace NineTapTour.Forms
                 this.dgvTournamentResults.DataSource = null;
                 this.dgvTournamentResults.Rows.Clear();
                 this.dgvTournamentResults.Columns.Clear();
+
                 if (tbClientInputCount.Text == null || tbClientInputCount.Text == "")
                 {
                     MessageBox.Show("Please Enter Number Of Winners");
                 }
                 else
                 {
+                    clientInput = Convert.ToInt32(tbClientInputCount.Text);
+                    // need try catch or if else to check that the input data can actually become an int
                     tbClientInputCount.Enabled = false;
-                   
+
+                    // Create datagridview and populate with cashedWinners list
+                    CreateDataGridView(cashedWinners, clientInput);
+
                 }
             }
         }
