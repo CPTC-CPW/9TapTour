@@ -1304,20 +1304,27 @@ namespace NineTapTour.Forms
                         var top3Games = TournamentStats.GetTop3OutOf4(top4Games.ToList());
 
                         TopParticipantGameViewModel currTopScoreViewModel =
-                            new TopParticipantGameViewModel(currParticipant.Member.Number, currParticipant.Member.FirstName,
-                                currParticipant.Member.LastName, 0, currParticipant.Game.AllGameScores().Sum().Value,
+                            new TopParticipantGameViewModel(
+                                currParticipant.Member.Number,
+                                currParticipant.Member.FirstName,
+                                currParticipant.Member.LastName,
+                                0, 
+                                currParticipant.Game.AllGameScores().Sum().Value,
                                 top3Games.Sum(),
-                                top3Games.Sum() + (3 * currParticipant.Member.Handicap) +
-                                (3 * currParticipant.Game.Bonus),
-                                currParticipant.Game.Game1, currParticipant.Game.Game2, currParticipant.Game.Game3,
+                                top3Games.Sum() + (3 * currParticipant.Member.Handicap) + (3 * currParticipant.Game.Bonus),
+                                currParticipant.Game.Game1,
+                                currParticipant.Game.Game2,
+                                currParticipant.Game.Game3,
                                 currParticipant.Game.Game4,
-                                currParticipant.Game.Handicap, currParticipant.Game.Bonus.Value,
-                                currParticipant.Game.Id, currParticipant.Squad);
+                                currParticipant.Game.Handicap, 
+                                currParticipant.Game.Bonus.Value,
+                                currParticipant.Game.Id,
+                                currParticipant.Squad); 
 
                         topParticipantGameViewModels.Add(currTopScoreViewModel);
                     }
 
-                    //display data in the list boxes
+                    // display data in the list boxes
                     // orders list by highest handicap score game to lowest
                     participantsGameViewModels = participantsGameViewModels
                         .OrderByDescending(t => t.HighScore + t.Handicap + t.Bonus).ToList();
