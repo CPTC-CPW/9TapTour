@@ -799,5 +799,11 @@ namespace NineTapTour.Forms
                 db.SaveChanges();
             }
         }
+
+        private void tbClientInputCount_TextChanged(object sender, EventArgs e)
+        {
+            dgvTournamentResults.Rows.Clear();
+            dgvTournamentResults.Refresh();
+        }
     }
 }
