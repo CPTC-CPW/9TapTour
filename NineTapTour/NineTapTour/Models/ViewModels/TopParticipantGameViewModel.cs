@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NineTapTour.Forms;
+using NineTapTour.Models;
+using NineTapTour.Models.ViewModels;
 
 namespace NineTapTour.Models.ViewModels
 {
@@ -57,12 +60,28 @@ namespace NineTapTour.Models.ViewModels
 
         public void SetScratchTotalToString()
         {
-            this.ScratchTotalToString = $"{this.ScratchTotal,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
+            if (frmMemberScores.selectedTournament.ThreeOutOf4)
+            {
+                this.ScratchTotalToString = $"{this.Top3ScratchScore,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
+            }
+            else
+            {
+                this.ScratchTotalToString = $"{this.ScratchTotal,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
+            }
+            
         }
 
         public void SetHandicapTotalToString()
         {
-            this.HandicapTotalToString = $"{this.HandicapScore, -10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
+            if (frmMemberScores.selectedTournament.ThreeOutOf4)
+            {
+                this.HandicapTotalToString = $"{this.Top3HandiScores,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
+            }
+            else
+            {
+                this.HandicapTotalToString = $"{this.HandicapScore,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
+            }
+                
         }
     }
 }
