@@ -33,7 +33,7 @@ namespace NineTapTour.Forms
         NineTapDb db = new NineTapDb(); // Get access to database
         Tournament tourny = frmMemberScores.selectedTournament; // Get Tournament
         static int totalTournamentEntries;  // Total number of entries for all squads in tournament
-
+        static string clientInput; // how many winners the client wants to see
         // Floor directors get a comp entry into tournament when they help with tournament. 
         // They don't pay the entry fee, but do qualify to cash.
         static int compEntries; 
@@ -66,6 +66,9 @@ namespace NineTapTour.Forms
             List<ExcelMember> cashedWinners = Calculations.Calculations.
                     MakeTopMembersByPlacementList(winners, totalTournamentEntries, compEntries);
 
+
+            // 
+            clientInput = Convert.ToInt32(tbClientInputCount.Text);
             // Create datagridview and populate with cashedWinners list
             CreateDataGridView(cashedWinners);
         }
@@ -804,6 +807,25 @@ namespace NineTapTour.Forms
         {
             dgvTournamentResults.Rows.Clear();
             dgvTournamentResults.Refresh();
+        }
+
+        private void tbClientInputCount_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                this.dgvTournamentResults.DataSource = null;
+                this.dgvTournamentResults.Rows.Clear();
+                this.dgvTournamentResults.Columns.Clear();
+                if (tbClientInputCount.Text == null || tbClientInputCount.Text == "")
+                {
+                    MessageBox.Show("Please Enter Number Of Winners");
+                }
+                else
+                {
+                    tbClientInputCount.Enabled = false;
+                   
+                }
+            }
         }
     }
 }

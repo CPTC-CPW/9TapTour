@@ -94,6 +94,7 @@
             this.tbClientInputCount.Size = new System.Drawing.Size(100, 20);
             this.tbClientInputCount.TabIndex = 4;
             this.tbClientInputCount.TextChanged += new System.EventHandler(this.tbClientInputCount_TextChanged);
+            this.tbClientInputCount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbClientInputCount_KeyDown);
             // 
             // FrmTournamentResults
             // 
