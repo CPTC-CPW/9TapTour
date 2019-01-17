@@ -681,7 +681,8 @@ namespace NineTapTour.Forms
             catch
             {
             // if the workbook does not get opened, display an error message
-            MessageBox.Show("Must choose a file to export to.");
+            MessageBox.Show("Must choose a file to export to. \n" +
+                            " *Must have at least 20 bowlers and 4 money winners* ");
             xlWorkBook.Close(true, misValue, misValue);
             xlApp.Quit();
             }
