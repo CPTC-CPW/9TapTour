@@ -66,9 +66,9 @@ namespace NineTapTour.Calculations
 
             // Gets the amount of entries the member has for the tournament
             int membersGameEntryCount = FinalizeTempDB.GetMembersGameEntryCount(currTournamentId, memNum);
-            List<PlayerHistory> latestGames = PlayerHistoryDB.GetLastQtyGamesBonus(memNum, RegionID, 15);
+            List<PlayerHistory> latestGames = PlayerHistoryDB.GetLastQtyGamesMoneyWon(memNum, RegionID, 15);
 
-            return AddToBonusPins(currentBonusPins, currTournamentDate, latestGames, membersGameEntryCount);
+            return AddToBonusPins(currentBonusPins, latestGames, membersGameEntryCount);
         }
 
         /// <summary>
@@ -80,28 +80,16 @@ namespace NineTapTour.Calculations
         /// <param name="currTournamentDate">The date the tournament took place</param>
         /// <param name="latestGames">The last two distinct tournaments</param>
         /// <returns></returns>
-        public static int AddToBonusPins(int currentBonusPins, DateTime currTournamentDate, List<PlayerHistory> latestGames, int currTourneyEntryCount)
+        public static int AddToBonusPins(int currentBonusPins, List<PlayerHistory> latestGames, int currTourneyEntryCount)
         {
             // if has atleast 3 losses in current tournament
             if (currTourneyEntryCount >= 3)
             {
                 // if has lost 4 entries this tournament and has 2 losses in history not 
                 // yet used for gaining a bonus pin
-                if (currTourneyEntryCount >= 4)
+                if (currTourneyEntryCount == 4 && DoesGetBonusPin(currentBonusPins, latestGames, currTourneyEntryCount, 6))
                 {
-                    // find first index of a tournament with a cashed game
-                    int lastCashedIndex = FindLastCashedTourneyIndex(latestGames);
-
-                    if (lastCashedIndex == -1)
-                    {
-                        // if did not lose any of the latest games with a 3rd loss in a row
-                        if (latestGames.Count + currTourneyEntryCount >= 3 && (latestGames.Count + currTourneyEntryCount) % 3 == 0)
-                        {
-                            return currentBonusPins + 1;
-                        }
-                        return currentBonusPins;
-                    }
-
+                    return currentBonusPins + 2;
                 }
                 return currentBonusPins + 1;
             }
@@ -113,20 +101,7 @@ namespace NineTapTour.Calculations
             }
             /**********************************************************************************/
 
-            // find first index of a tournament with a cashed game
-            int lastCashedTourneyIndex = FindLastCashedTourneyIndex(latestGames);
-
-            if (lastCashedTourneyIndex == -1)
-            {
-                // if did not lose any of the latest games with a 3rd loss in a row
-                if (latestGames.Count + currTourneyEntryCount >= 3 && (latestGames.Count + currTourneyEntryCount) % 3 == 0)
-                {
-                    return currentBonusPins + 1;
-                }
-                return currentBonusPins;
-            }
-
-            if (lastCashedTourneyIndex + currTourneyEntryCount >= 3 && (currTourneyEntryCount + lastCashedTourneyIndex) % 3 == 0)
+            if (DoesGetBonusPin(currentBonusPins, latestGames, currTourneyEntryCount, 3))
             {
                 return currentBonusPins + 1;
             }
@@ -195,6 +170,22 @@ namespace NineTapTour.Calculations
             }
             return currentBonusPins;
             */
+        }
+
+        private static bool DoesGetBonusPin(int currentBonusPins, List<PlayerHistory> latestGames, int currTourneyEntryCount, int minLosses)
+        {
+            // find first index of a tournament with a cashed game
+            int lastCashedTourneyIndex = FindLastCashedTourneyIndex(latestGames);
+
+            if (lastCashedTourneyIndex == -1)
+            {
+                // did not lose any of the latest games with a 3rd loss in a row
+                return latestGames.Count + currTourneyEntryCount >= minLosses && (latestGames.Count + currTourneyEntryCount) % 3 == 0;
+
+            }
+
+            // is the mulitiple of a 3rd loss in a row after a loss
+            return lastCashedTourneyIndex + currTourneyEntryCount >= minLosses && (currTourneyEntryCount + lastCashedTourneyIndex) % 3 == 0;
         }
 
         /// <summary>
