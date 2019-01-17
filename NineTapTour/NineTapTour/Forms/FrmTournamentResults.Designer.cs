@@ -81,15 +81,15 @@
             // lblClientRequestCount
             // 
             this.lblClientRequestCount.AutoSize = true;
-            this.lblClientRequestCount.Location = new System.Drawing.Point(182, 111);
+            this.lblClientRequestCount.Location = new System.Drawing.Point(311, 115);
             this.lblClientRequestCount.Name = "lblClientRequestCount";
-            this.lblClientRequestCount.Size = new System.Drawing.Size(167, 13);
+            this.lblClientRequestCount.Size = new System.Drawing.Size(221, 13);
             this.lblClientRequestCount.TabIndex = 3;
-            this.lblClientRequestCount.Text = "How many entries would you like?";
+            this.lblClientRequestCount.Text = "How many winners would you like places for?";
             // 
             // tbClientInputCount
             // 
-            this.tbClientInputCount.Location = new System.Drawing.Point(356, 111);
+            this.tbClientInputCount.Location = new System.Drawing.Point(538, 112);
             this.tbClientInputCount.Name = "tbClientInputCount";
             this.tbClientInputCount.Size = new System.Drawing.Size(100, 20);
             this.tbClientInputCount.TabIndex = 4;
