@@ -152,11 +152,17 @@ namespace NineTapTour.Forms
                         
             for (int tr = winnersCount; tr < clientInput; tr++)
             {
-                //   double earnings = VariablesForTournamentResults.TempMoneyFinal[countTempMoney];
                 DataRow newRow = dt.NewRow();
                 if (MonEarnCount > 0)
                 {
-                    newRow[EARNINGS_COLUMN_NAME] = TempVariablesForGlobalLevel.MoneyEarnings[tr];
+                    if(tr < MonEarnCount)
+                    {
+                        newRow[EARNINGS_COLUMN_NAME] = TempVariablesForGlobalLevel.MoneyEarnings[tr];
+                    }
+                    if(tr >= MonEarnCount)
+                    {
+                        newRow[EARNINGS_COLUMN_NAME] = earnings;
+                    }
                 }
                 else
                 {
@@ -852,9 +858,8 @@ namespace NineTapTour.Forms
             {
                 Winnings.Add( Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
             }
-            // MessageBox.Show(Convert.ToString(Winnings[0]), Convert.ToString(Winnings[1])); // for testing
             TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
-            // MessageBox.Show(Convert.ToString(TempVariablesForGlobalLevel.MoneyEarnings[0])); // for testing
+            
             // Save all changes made to the dataGridView
             if (cashedWinners.Count() > 0)
             {
