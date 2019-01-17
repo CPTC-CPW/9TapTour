@@ -105,16 +105,34 @@ namespace NineTapTour.Forms
                     // insert the cash data
                 }
             }
+            double earnings = 0.00;
 
+            int itemCount = 0;
+            int MonEarnCount = 0;
+            if (TempVariablesForGlobalLevel.MoneyEarnings != null)
+            {
+                MonEarnCount = TempVariablesForGlobalLevel.MoneyEarnings.Count();
+            }
+            
+            
             // Create rows and populate with each member's data for each row
             foreach (var item in cashedWinners)
             {
+
                 DataRow newRow = dt.NewRow();
+                if (MonEarnCount > 0)
+                {
+                    newRow[EARNINGS_COLUMN_NAME] =  TempVariablesForGlobalLevel.MoneyEarnings[itemCount]; 
+                }
+                else
+                {
+                    newRow[EARNINGS_COLUMN_NAME] = Convert.ToInt32(item.MoneyWon);
+                }
+                
                 newRow[PLACE_STANDING_COLUMN_NAME] = item.PlaceStanding;
                 newRow[FULLNAME_COLUMN_NAME] = item.Name;
                 newRow[HANDICAP_COLUMN_NAME] = item.Handicap;
                 newRow[TOTAL_SCORE_COLUMN_NAME] = item.TotalScore;
-                newRow[EARNINGS_COLUMN_NAME] = item.MoneyWon;
                 newRow[MEMBER_ID_COLUMN_NAME] = item.MemberNumber;
                 newRow[GAME_ID_COLUMN_NAME] = item.GameId;
 
@@ -127,10 +145,11 @@ namespace NineTapTour.Forms
                     newRow[PROGRESSIVEPOT_COLUMN_NAME] = item.SidePot;
                 }
                 dt.Rows.Add(newRow);
+                itemCount++;
             }
 
             int countTempMoney = 0;
-
+                        
             for (int tr = winnersCount; tr < clientInput; tr++)
             {
                 //   double earnings = VariablesForTournamentResults.TempMoneyFinal[countTempMoney];
@@ -140,7 +159,7 @@ namespace NineTapTour.Forms
                 newRow[FULLNAME_COLUMN_NAME] = "";
                 newRow[HANDICAP_COLUMN_NAME] = "";
                 newRow[TOTAL_SCORE_COLUMN_NAME] = "";
-                newRow[EARNINGS_COLUMN_NAME] = ""; // earnings;
+                newRow[EARNINGS_COLUMN_NAME] = earnings; // earnings;
                 newRow[MEMBER_ID_COLUMN_NAME] = "";
                 newRow[GAME_ID_COLUMN_NAME] = tr;
                 newRow[PROGRESSIVEPOT_COLUMN_NAME] = "0.00";
@@ -826,9 +845,9 @@ namespace NineTapTour.Forms
             {
                 Winnings.Add( Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
             }
-
+            // MessageBox.Show(Convert.ToString(Winnings[0]), Convert.ToString(Winnings[1])); // for testing
             TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
-
+            // MessageBox.Show(Convert.ToString(TempVariablesForGlobalLevel.MoneyEarnings[0])); // for testing
             // Save all changes made to the dataGridView
             for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
             {
