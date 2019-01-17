@@ -69,7 +69,7 @@ namespace NineTapTour.Forms
                     MakeTopMembersByPlacementList(winners, totalTournamentEntries, compEntries);
 
 
-
+            ActiveControl = tbClientInputCount;
         }
 
         /// <summary>
