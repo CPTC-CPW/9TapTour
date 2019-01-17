@@ -353,20 +353,19 @@ namespace NineTapTour.Database
         /// <param name="regionId">region the tournament takes place</param>
         /// <param name="gameQty">quantity of games to pull from the database</param>
         /// <returns></returns>
-        public static List<PlayerHistory> GetLastQtyGamesBonus(int memNum, int regionId, int gameQty)
+        public static List<PlayerHistory> GetLastQtyGamesMoneyWon(int memNum, int regionId, int gameQty)
         {
             var queryResult = new NineTapDb().PlayerHistory
                                     .Where(ph => ph.MemberNumber == memNum && ph.regionID == regionId)
                                     .OrderByDescending(ph => ph.TournamentDate)
-                                    .Select(ph => new {ph.TournamentDate, ph.MoneyWon, ph.Bonus})
+                                    .Select(ph => new {ph.TournamentDate, ph.MoneyWon})
                                     .Take(gameQty)
                                     .ToList();
 
             return queryResult.Select(qr => new PlayerHistory()
                             {
                                 TournamentDate = qr.TournamentDate,
-                                MoneyWon = qr.MoneyWon,
-                                Bonus = qr.Bonus
+                                MoneyWon = qr.MoneyWon
                             })
                             .ToList();
         }
