@@ -85,6 +85,24 @@ namespace NineTapTour.Calculations
             // if has atleast 3 losses in current tournament
             if (currTourneyEntryCount >= 3)
             {
+                // if has lost 4 entries this tournament and has 2 losses in history not 
+                // yet used for gaining a bonus pin
+                if (currTourneyEntryCount >= 4)
+                {
+                    // find first index of a tournament with a cashed game
+                    int lastCashedIndex = FindLastCashedTourneyIndex(latestGames);
+
+                    if (lastCashedIndex == -1)
+                    {
+                        // if did not lose any of the latest games with a 3rd loss in a row
+                        if (latestGames.Count + currTourneyEntryCount >= 3 && (latestGames.Count + currTourneyEntryCount) % 3 == 0)
+                        {
+                            return currentBonusPins + 1;
+                        }
+                        return currentBonusPins;
+                    }
+
+                }
                 return currentBonusPins + 1;
             }
 
@@ -98,23 +116,23 @@ namespace NineTapTour.Calculations
             // find first index of a tournament with a cashed game
             int lastCashedTourneyIndex = FindLastCashedTourneyIndex(latestGames);
 
-            if (lastCashedTourneyIndex == -1 && latestGames.Count + currTourneyEntryCount >= 3 
-                    && (latestGames.Count + currTourneyEntryCount) % 3 == 0)
+            if (lastCashedTourneyIndex == -1)
             {
-                return currentBonusPins + 1;
-            }
-
-            if (lastCashedTourneyIndex + currTourneyEntryCount < 3)
-            {
+                // if did not lose any of the latest games with a 3rd loss in a row
+                if (latestGames.Count + currTourneyEntryCount >= 3 && (latestGames.Count + currTourneyEntryCount) % 3 == 0)
+                {
+                    return currentBonusPins + 1;
+                }
                 return currentBonusPins;
             }
 
-            if ((currTourneyEntryCount + lastCashedTourneyIndex) % 3 == 0)
+            if (lastCashedTourneyIndex + currTourneyEntryCount >= 3 && (currTourneyEntryCount + lastCashedTourneyIndex) % 3 == 0)
             {
-
+                return currentBonusPins + 1;
             }
-
+            return currentBonusPins;
             /**********************************************************************************/
+            /*
             #region Check for cashed games and bonus pins as multiple entries and get distinct tournaments by date
 
             PlayerHistory lastTourney = latestGames[0];
@@ -176,19 +194,21 @@ namespace NineTapTour.Calculations
                 return currentBonusPins + 1;
             }
             return currentBonusPins;
+            */
         }
 
         /// <summary>
-        /// Finds the first index of the last tournament where the player cashed
+        /// Finds the first index of the last tournament where the player cashed. Returns -1 if not found.
         /// </summary>
         /// <param name="latestGames">Games to find last cashed tourney in</param>
-        /// <returns>First index of last cashed tourney</returns>
+        /// <returns>First index of last cashed tourney. -1 if not found</returns>
         private static int FindLastCashedTourneyIndex(List<PlayerHistory> latestGames)
         {
             for (int i = 0; i < latestGames.Count; i++)
             {
                 if (PlayerDidCash(latestGames[i]))
                 {
+                    // move to first index of winning tournament with where member cashed
                     while (i - 1 >= 0 && latestGames[i].TournamentDate == latestGames[i - 1].TournamentDate)
                     {
                         i--;
