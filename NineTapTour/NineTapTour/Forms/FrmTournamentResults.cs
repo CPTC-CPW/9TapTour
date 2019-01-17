@@ -856,19 +856,23 @@ namespace NineTapTour.Forms
             TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
             // MessageBox.Show(Convert.ToString(TempVariablesForGlobalLevel.MoneyEarnings[0])); // for testing
             // Save all changes made to the dataGridView
-            for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount - cashedWinners.Count(); currentIndex++)
+            if (cashedWinners.Count() > 0)
             {
-                int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
-                Game g = GameDB.GetGame(gameId);
+                for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount - cashedWinners.Count(); currentIndex++)
+                {
+                    int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
+                    Game g = GameDB.GetGame(gameId);
 
-                g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
-                g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
-                g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
-                g.gameRegionID = tourny.TourneyRegion;
+                    g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
+                    g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
+                    g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
+                    g.gameRegionID = tourny.TourneyRegion;
 
-                db.Entry(g).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
+                    db.Entry(g).State = System.Data.Entity.EntityState.Modified;
+                    db.SaveChanges();
+                }
             }
+            
         }
 
         private void tbClientInputCount_TextChanged(object sender, EventArgs e)
