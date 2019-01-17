@@ -115,21 +115,24 @@ namespace NineTapTour.Calculations.Test
         [TestMethod]                      // Scenarios:
         [DataRow(0, 17, 12, 31, 1, 10, 0)]// - Lost current game with no player history
         [DataRow(0, 17, 12, 31, 1, 0, 1)] // - Did not cash last 3 tournaments
-        [DataRow(5, 17, 12, 31, 1, 8, 5)] // - Max bonus pins should be 5 even while not cashing last 3
-        [DataRow(0, 17, 12, 31, 1, 1, 0)] // - Cashed 2nd tournament ago
-        [DataRow(0, 17, 12, 31, 1, 2, 0)] // - Cashed 3rd tournament ago
-        [DataRow(0, 17, 12, 31, 1, 3, 1)] // - Cashed 4th tournament ago
-        [DataRow(0, 17, 12, 31, 1, 4, 0)] // - Cashed 3rd tournament ago but not last 3 entries (multiple tournament entry)
-        [DataRow(0, 17, 12, 31, 1, 5, 0)] // - Cashed 2nd tournament ago as multiple entry but not the other 2
-        [DataRow(0, 17, 12, 31, 1, 7, 0)] // - Cashed 3rd tournament ago as multiple entry but not the other 2
+        [DataRow(5, 17, 12, 31, 1, 8, 5)] // - Max bonus pins should be 5 even while not cashing last 3 entries
+        [DataRow(0, 17, 12, 31, 1, 1, 0)] // - Cashed 2nd entry ago, 2nd tournament ago
+        [DataRow(0, 17, 12, 31, 1, 2, 0)] // - Cashed 3rd entry ago, 3rd tournament ago
+        [DataRow(0, 17, 12, 31, 1, 3, 1)] // - Cashed 4th entry ago, 4th tournament ago
+        [DataRow(0, 17, 12, 31, 1, 4, 1)] // - Cashed 3rd tournament ago but not last 3 entries (multiple tournament entry)
+        [DataRow(0, 17, 12, 31, 1, 5, 0)] // - Cashed 2nd tournament ago as multiple entry but not current game
+        [DataRow(0, 17, 12, 31, 1, 7, 0)] // - Cashed 3rd tournament ago as multiple entry but not current game
         [DataRow(0, 17, 12, 31, 1, 6, 0)] // - Did not cash last 3 tournaments with a multiple entry
+        [DataRow(0, 17, 12, 31, 4, 0, 2)] // - 6 losses in a row not yet applied
+        [DataRow(0, 17, 12, 31, 4, 6, 1)] // - Has 6 losses in a row with 3 losses applied
+        [DataRow(0, 17, 12, 31, 4, 7, 1)] // - has 6 losses in a row but won 2nd to last tournament that includes one of the wins
         public void AddToBonusPins_ReturnsExpectedBonusPins(int currentBonusPins,int currTournYear, int currTournMonth, int currTournDay, 
                                                             int currTourneyEntryCount, int playerHistoryListNum, int expectedBonusPins)
         {
             DateTime currTournamentDate = new DateTime(currTournYear, currTournMonth, currTournDay);
-            List<PlayerHistory> last2Tournaments = GetPlayerHistoryTestData(playerHistoryListNum);
+            List<PlayerHistory> latestTournaments = GetPlayerHistoryTestData(playerHistoryListNum);
 
-            int resultBonusPins = Calculations.AddToBonusPins(currentBonusPins, currTournamentDate, last2Tournaments, currTourneyEntryCount);
+            int resultBonusPins = Calculations.AddToBonusPins(currentBonusPins, latestTournaments, currTourneyEntryCount);
 
             Assert.AreEqual(expectedBonusPins, resultBonusPins);
         }
