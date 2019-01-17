@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace NineTapTour.Models
 {
-     static public class TempVariablesForGlobalLevel
+    public static class TempVariablesForGlobalLevel
     {
-        static public List<double> MoneyEarnings { get; set; }
+        public static List<double> MoneyEarnings { get; set; }
 
     }
 }

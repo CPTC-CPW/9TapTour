@@ -154,12 +154,19 @@ namespace NineTapTour.Forms
             {
                 //   double earnings = VariablesForTournamentResults.TempMoneyFinal[countTempMoney];
                 DataRow newRow = dt.NewRow();
-
+                if (MonEarnCount > 0)
+                {
+                    newRow[EARNINGS_COLUMN_NAME] = TempVariablesForGlobalLevel.MoneyEarnings[tr];
+                }
+                else
+                {
+                    newRow[EARNINGS_COLUMN_NAME] = earnings;
+                }
                 newRow[PLACE_STANDING_COLUMN_NAME] = tr + 1;
                 newRow[FULLNAME_COLUMN_NAME] = "";
                 newRow[HANDICAP_COLUMN_NAME] = "";
                 newRow[TOTAL_SCORE_COLUMN_NAME] = "";
-                newRow[EARNINGS_COLUMN_NAME] = earnings; // earnings;
+                //newRow[EARNINGS_COLUMN_NAME] = earnings; // earnings;
                 newRow[MEMBER_ID_COLUMN_NAME] = "";
                 newRow[GAME_ID_COLUMN_NAME] = tr;
                 newRow[PROGRESSIVEPOT_COLUMN_NAME] = "0.00";
@@ -849,7 +856,7 @@ namespace NineTapTour.Forms
             TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
             // MessageBox.Show(Convert.ToString(TempVariablesForGlobalLevel.MoneyEarnings[0])); // for testing
             // Save all changes made to the dataGridView
-            for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
+            for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount - cashedWinners.Count(); currentIndex++)
             {
                 int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
                 Game g = GameDB.GetGame(gameId);
@@ -884,12 +891,17 @@ namespace NineTapTour.Forms
                 }
                 else
                 {
-                    clientInput = Convert.ToInt32(tbClientInputCount.Text);
-                    // need try catch or if else to check that the input data can actually become an int
-                    tbClientInputCount.Enabled = false;
-
-                    // Create datagridview and populate with cashedWinners list
-                    CreateDataGridView(cashedWinners, clientInput);
+                    try
+                    {
+                        clientInput = Convert.ToInt32(tbClientInputCount.Text);
+                        tbClientInputCount.Enabled = false;
+                        // Create datagridview and populate with cashedWinners list
+                        CreateDataGridView(cashedWinners, clientInput);
+                    }
+                    catch(FormatException)
+                    {
+                        MessageBox.Show("Please enter a nunmber");
+                    }
 
                 }
             }
