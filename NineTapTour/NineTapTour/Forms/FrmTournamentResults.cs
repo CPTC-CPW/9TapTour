@@ -821,8 +821,13 @@ namespace NineTapTour.Forms
             base.OnFormClosing(e);
 
             if (e.CloseReason == CloseReason.WindowsShutDown) return;
+            List<double> Winnings = new List<double>();
+            for(int winningList = 0; winningList < dgvTournamentResults.RowCount; winningList++)
+            {
+                Winnings.Add( Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
+            }
 
-            
+            TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
 
             // Save all changes made to the dataGridView
             for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
