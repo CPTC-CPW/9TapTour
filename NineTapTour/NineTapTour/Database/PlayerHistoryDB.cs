@@ -33,34 +33,22 @@ namespace NineTapTour.Database
                 throw new PlayerHistoryTableException("Error Number : " + ex.Number + " - " + ex.Message);
             }
         }
-        public static void AddPlayerHistory2(PlayerHistory temp)
+        public static void AddOrUpdatePlayerHistory(PlayerHistory temp)
         {
             try
             {
                 using (var db = new NineTapDb())
                 {
-
-                    if (PlayerHistoryExists(temp) == false && FinalizeTempDB.GameExists(temp) == true)
+                    if (!PlayerHistoryExists(temp) && FinalizeTempDB.GameExists(temp))
                     {
                         db.Entry(temp).State = EntityState.Added;
-                        db.SaveChanges();
-                    }
-                    else if (PlayerHistoryExists(temp) == true && FinalizeTempDB.GameExists(temp) == true)
-                    {
-                        int ID = getHisID(temp);
-                        temp.hisID = ID;
-                        db.Entry(temp).State = EntityState.Modified;
-                        db.SaveChanges();
                     }
                     else
                     {
-                        int ID = getHisID(temp);
-                        temp.hisID = ID;
+                        temp.hisID = getHisID(temp);
                         db.Entry(temp).State = EntityState.Modified;
-                        db.SaveChanges();
                     }
-
-
+                    db.SaveChanges();
                 }
             }
             catch (SqlException ex)
