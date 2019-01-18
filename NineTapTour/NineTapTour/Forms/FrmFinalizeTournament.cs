@@ -1306,23 +1306,16 @@ namespace NineTapTour.Forms
         /// <returns></returns>
         private int CalcThirtyLeagueAverage(int memberNum, List<int> currGameAverages)
         {
-            if (currGameAverages.Count > 0)
-            {
-                List<PlayerHistory> playerHistory = PlayerHistoryDB.getMemberPlayerHistory(memberNum, RegionID);
-                int sumOfAllGameAverages = Convert.ToInt32(LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) + currGameAverages.Sum());
+            List<PlayerHistory> playerHistory = PlayerHistoryDB.getMemberPlayerHistory(memberNum, RegionID);
+            int sumOfAllGameAverages = Convert.ToInt32(LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) + currGameAverages.Sum());
 
-                if (playerHistory.Count >= 30 || (playerHistory.Count + currGameAverages.Count) > 30)
-                {
-                    return sumOfAllGameAverages / 30;
-                }
-                else
-                {
-                    return sumOfAllGameAverages / (playerHistory.Count + currGameAverages.Count);
-                }
+            if (playerHistory.Count >= 30 || (playerHistory.Count + currGameAverages.Count) > 30)
+            {
+                return sumOfAllGameAverages / 30;
             }
             else
             {
-                throw new ArgumentException("currGameAverages.Count was 0. This function calculates the avg from player history and the current games.");
+                return sumOfAllGameAverages / (playerHistory.Count + currGameAverages.Count);
             }
         }
 
