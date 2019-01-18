@@ -40,12 +40,12 @@ namespace NineTapTour.Database
                 using (var db = new NineTapDb())
                 {
 
-                    if (GameExists(temp) == false && FinalizeTempDB.GameExists(temp) == true)
+                    if (PlayerHistoryExists(temp) == false && FinalizeTempDB.GameExists(temp) == true)
                     {
                         db.Entry(temp).State = EntityState.Added;
                         db.SaveChanges();
                     }
-                    else if (GameExists(temp) == true && FinalizeTempDB.GameExists(temp) == true)
+                    else if (PlayerHistoryExists(temp) == true && FinalizeTempDB.GameExists(temp) == true)
                     {
                         int ID = getHisID(temp);
                         temp.hisID = ID;
@@ -123,24 +123,6 @@ namespace NineTapTour.Database
             }
 
             return Return;
-        }
-        public static bool GameExists(PlayerHistory Temp)
-        {
-
-            using (var db = new NineTapDb())
-            {
-
-                if (db.PlayerHistory.Any(m => m.GameID == Temp.GameID))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-
-            }
-
         }
 
         public static int getHisID(PlayerHistory t)
@@ -627,6 +609,11 @@ namespace NineTapTour.Database
         public static bool PlayerHistoryExists(int gameId)
         {
             return new NineTapDb().PlayerHistory.Any(ph => ph.GameID == gameId);
+        }
+
+        public static bool PlayerHistoryExists(PlayerHistory ph)
+        {
+            return PlayerHistoryExists(ph.GameID);
         }
     }
 }
