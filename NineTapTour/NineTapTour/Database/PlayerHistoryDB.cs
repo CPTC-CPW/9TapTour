@@ -33,6 +33,8 @@ namespace NineTapTour.Database
                 throw new PlayerHistoryTableException("Error Number : " + ex.Number + " - " + ex.Message);
             }
         }
+
+
         public static void AddOrUpdatePlayerHistory(PlayerHistory temp)
         {
             try
@@ -55,6 +57,18 @@ namespace NineTapTour.Database
             {
                 throw new PlayerHistoryTableException("Error Number : " + ex.Number + " - " + ex.Message);
             }
+        }
+
+        public static void AddOrUpdatePlayerHistoryList(List<PlayerHistory> playerHistoryList)
+        {
+            var db = new NineTapDb();
+            foreach (PlayerHistory playerHistory in playerHistoryList)
+            {
+                db.Entry(playerHistory).State = db.PlayerHistory.Any(ph => ph.hisID == playerHistory.hisID) ?
+                         EntityState.Modified :
+                         EntityState.Added;
+            }
+            db.SaveChanges();
         }
 
         public static List<PlayerHistory> getTop30FromPlayerHistory(int id)
