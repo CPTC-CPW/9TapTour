@@ -1079,7 +1079,12 @@ namespace NineTapTour.Forms
         {
             // resets the fields when a different tournament is selected
             ResetFields();
-
+            // clear the temp variables for the money earned for tourn results
+            if(TempVariablesForGlobalLevel.MoneyEarnings != null)
+            {
+                TempVariablesForGlobalLevel.MoneyEarnings.Clear();
+            }
+            
             // assigns the selectedTournament variable as the selected Tournament from the comboBox
             selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
 

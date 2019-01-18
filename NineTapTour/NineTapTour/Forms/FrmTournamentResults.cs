@@ -33,6 +33,8 @@ namespace NineTapTour.Forms
         NineTapDb db = new NineTapDb(); // Get access to database
         Tournament tourny = frmMemberScores.selectedTournament; // Get Tournament
         static int totalTournamentEntries;  // Total number of entries for all squads in tournament
+        static int clientInput; // how many winners the client wants to see
+        List<ExcelMember> cashedWinners = new List<ExcelMember>();
 
         // Floor directors get a comp entry into tournament when they help with tournament. 
         // They don't pay the entry fee, but do qualify to cash.
@@ -63,18 +65,17 @@ namespace NineTapTour.Forms
             List<ExcelMember> winners = BuildWinnersList();
 
             // Create list of participants who cash
-            List<ExcelMember> cashedWinners = Calculations.Calculations.
+             cashedWinners = Calculations.Calculations.
                     MakeTopMembersByPlacementList(winners, totalTournamentEntries, compEntries);
 
-            // Create datagridview and populate with cashedWinners list
-            CreateDataGridView(cashedWinners);
+            ActiveControl = tbClientInputCount;
         }
 
         /// <summary>
         /// Creates the DataGridView table and populates it with the list of cashed winners
         /// </summary>
         /// <param name="cashedWinners"></param>
-        private void CreateDataGridView(List<ExcelMember> cashedWinners)
+        private void CreateDataGridView(List<ExcelMember> cashedWinners, int clientInput)
         {
             // Create data table and add columns 
             // Columns with ReadOnly set to False are editable        
@@ -87,15 +88,45 @@ namespace NineTapTour.Forms
             dt.Columns.Add(GAME_ID_COLUMN_NAME).ReadOnly = true;
             dt.Columns.Add(PROGRESSIVEPOT_COLUMN_NAME).ReadOnly = false;
 
+            int winnersCount = 0;
+            if(cashedWinners.Count() > 0)
+            {
+                winnersCount = cashedWinners.Count();
+            }
+                        
+            //if (clientInput > cashedWinners.Count)
+            //{
+            //    for (int z = cashedWinners.Count; z < clientInput; z++)
+            //    {
+            //        // insert the cash data
+            //    }
+            //}
+            double earnings = 0.00;
+
+            int itemCount = 0;
+            int MonEarnCount = 0;
+            if (TempVariablesForGlobalLevel.MoneyEarnings != null)
+            {
+                MonEarnCount = TempVariablesForGlobalLevel.MoneyEarnings.Count();
+            }
+            
             // Create rows and populate with each member's data for each row
             foreach (var item in cashedWinners)
             {
                 DataRow newRow = dt.NewRow();
+                if (MonEarnCount > 0)
+                {
+                    newRow[EARNINGS_COLUMN_NAME] =  TempVariablesForGlobalLevel.MoneyEarnings[itemCount]; 
+                }
+                else
+                {
+                    newRow[EARNINGS_COLUMN_NAME] = Convert.ToInt32(item.MoneyWon);
+                }
+                
                 newRow[PLACE_STANDING_COLUMN_NAME] = item.PlaceStanding;
                 newRow[FULLNAME_COLUMN_NAME] = item.Name;
                 newRow[HANDICAP_COLUMN_NAME] = item.Handicap;
                 newRow[TOTAL_SCORE_COLUMN_NAME] = item.TotalScore;
-                newRow[EARNINGS_COLUMN_NAME] = item.MoneyWon;
                 newRow[MEMBER_ID_COLUMN_NAME] = item.MemberNumber;
                 newRow[GAME_ID_COLUMN_NAME] = item.GameId;
 
@@ -107,6 +138,35 @@ namespace NineTapTour.Forms
                 {
                     newRow[PROGRESSIVEPOT_COLUMN_NAME] = item.SidePot;
                 }
+                dt.Rows.Add(newRow);
+                itemCount++;
+            }
+                       
+            for (int tr = winnersCount; tr < clientInput; tr++)
+            {
+                DataRow newRow = dt.NewRow();
+                if (MonEarnCount > 0)
+                {
+                    if(tr < MonEarnCount)
+                    {
+                        newRow[EARNINGS_COLUMN_NAME] = TempVariablesForGlobalLevel.MoneyEarnings[tr];
+                    }
+                    if(tr >= MonEarnCount)
+                    {
+                        newRow[EARNINGS_COLUMN_NAME] = earnings;
+                    }
+                }
+                else
+                {
+                    newRow[EARNINGS_COLUMN_NAME] = earnings;
+                }
+                newRow[PLACE_STANDING_COLUMN_NAME] = tr + 1;
+                newRow[FULLNAME_COLUMN_NAME] = "";
+                newRow[HANDICAP_COLUMN_NAME] = "";
+                newRow[TOTAL_SCORE_COLUMN_NAME] = "";
+                newRow[MEMBER_ID_COLUMN_NAME] = "";
+                newRow[GAME_ID_COLUMN_NAME] = tr;
+                newRow[PROGRESSIVEPOT_COLUMN_NAME] = "0.00";
                 dt.Rows.Add(newRow);
             }
 
@@ -140,7 +200,6 @@ namespace NineTapTour.Forms
                 SendKeys.Send("{tab}");
             }
         }
-
 
         /// <summary>
         /// Returns a list of tourament winners
@@ -784,20 +843,68 @@ namespace NineTapTour.Forms
             base.OnFormClosing(e);
 
             if (e.CloseReason == CloseReason.WindowsShutDown) return;
-
-            // Save all changes made to the dataGridView
-            for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
+            List<double> Winnings = new List<double>();
+            for(int winningList = 0; winningList < dgvTournamentResults.RowCount; winningList++)
             {
-                int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
-                Game g = GameDB.GetGame(gameId);
+                Winnings.Add( Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
+            }
+            TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
+            
+            // Save all changes made to the dataGridView
+            if (cashedWinners.Count() > 0)
+            {
+                for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount - cashedWinners.Count(); currentIndex++)
+                {
+                    int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
+                    Game g = GameDB.GetGame(gameId);
 
-                g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
-                g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
-                g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
-                g.gameRegionID = tourny.TourneyRegion;
+                    g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
+                    g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
+                    g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
+                    g.gameRegionID = tourny.TourneyRegion;
 
-                db.Entry(g).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
+                    db.Entry(g).State = System.Data.Entity.EntityState.Modified;
+                    db.SaveChanges();
+                }
+            }
+        }
+
+        private void tbClientInputCount_TextChanged(object sender, EventArgs e)
+        {
+         
+        }
+
+        private void tbClientInputCount_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                AcceptClientInputForResults();
+            }
+        }
+
+        private void AcceptClientInputForResults()
+        {
+            this.dgvTournamentResults.DataSource = null;
+            this.dgvTournamentResults.Rows.Clear();
+            this.dgvTournamentResults.Columns.Clear();
+
+            if (tbClientInputCount.Text == null || tbClientInputCount.Text == "")
+            {
+                MessageBox.Show("Please Enter Number Of Winners");
+            }
+            else
+            {
+                try
+                {
+                    clientInput = Convert.ToInt32(tbClientInputCount.Text);
+                    tbClientInputCount.Enabled = false;
+                    // Create datagridview and populate with cashedWinners list
+                    CreateDataGridView(cashedWinners, clientInput);
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("Please enter a nunmber");
+                }
             }
         }
     }
