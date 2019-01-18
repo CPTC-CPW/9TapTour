@@ -316,6 +316,7 @@ namespace NineTapTour.Calculations
             List<FinalizeTemp> removal = new List<FinalizeTemp>();
             for (int i = 0; i < members.Count; i++)
             {
+                bool isCurrIndexRemoved = false;
                 for (int j = i + 1; j < members.Count; j++)
                 {
                     if (members[i].memberNumber == members[j].memberNumber)
@@ -323,13 +324,21 @@ namespace NineTapTour.Calculations
                         if (members[i].HandicapTotal >= members[j].HandicapTotal)
                             removal.Add(members[j]);
                         else
+                        {
                             removal.Add(members[i]);
+                            isCurrIndexRemoved = true;
+                        }
                     }
                 }
 
                 foreach (FinalizeTemp deleteMember in removal)
                 {
                     members.Remove(deleteMember);
+                }
+
+                if (isCurrIndexRemoved)
+                {
+                    i--;
                 }
             }
             return removal;
@@ -384,6 +393,7 @@ namespace NineTapTour.Calculations
             List<MemberScores> removal = new List<MemberScores>();
             for (int i = 0; i < temp.Count; i++)
             {
+                bool isCurrIndexRemoved = false;
                 for (int j = i + 1; j < temp.Count; j++)
                 {
                     if(temp[i].MemberId == temp[j].MemberId)
@@ -391,13 +401,21 @@ namespace NineTapTour.Calculations
                         if (temp[i].Score >= temp[j].Score)
                             removal.Add(temp[j]);
                         else
+                        {
                             removal.Add(temp[i]);
+                            isCurrIndexRemoved = true;
+                        }
                     }
                 }
 
                 foreach (MemberScores deleteMember in removal)
                 {
                     temp.Remove(deleteMember);
+                }
+
+                if (isCurrIndexRemoved)
+                {
+                    i--;
                 }
             }
         }
@@ -412,6 +430,7 @@ namespace NineTapTour.Calculations
             List<ExcelMember> removal = new List<ExcelMember>();
             for (int i = 0; i < members.Count; i++)
             {
+                bool isCurrIndexRemoved = false;
                 for (int j = i + 1; j < members.Count; j++)
                 {
                     if (members[i].MemberNumber == members[j].MemberNumber)
@@ -419,13 +438,22 @@ namespace NineTapTour.Calculations
                         if (members[i].TotalScore >= members[j].TotalScore)
                             removal.Add(members[j]);
                         else
+                        {
                             removal.Add(members[i]);
+                            isCurrIndexRemoved = true;
+                        }
                     }
                 }
 
                 foreach (ExcelMember deleteMember in removal)
                 {
                     members.Remove(deleteMember);
+                }
+
+                // prevents from skipping over current index
+                if (isCurrIndexRemoved)
+                {
+                    i--;
                 }
             }
         }
