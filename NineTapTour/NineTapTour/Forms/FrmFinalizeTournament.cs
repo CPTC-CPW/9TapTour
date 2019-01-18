@@ -1125,6 +1125,12 @@ namespace NineTapTour.Forms
                 // total comp entries for the current tournament
                 int compEntriesQty = FinalizeTempDB.GetCompEntryQtyByTourney(currTournament.Id);
 
+                // To adjust bonus pins for non-best multiple entries 
+                var playerHistoryBonusAdjustmentList = new List<PlayerHistory>();
+
+                // used to reference newly adjusted bonus pins for best games
+                var memberNumBonusPinMap = new Dictionary<int, int>();
+
                 //Multithreaded version of a for loop, spreads processing across all available cores
                 Parallel.For(0, FinalizeTableList.Count, i =>
                 {
@@ -1137,12 +1143,10 @@ namespace NineTapTour.Forms
                     Game currGame = GameDB.GetGame(currGameId);
                     Member currMember = MemberDb.GetMemberByGameId(currGameId);
 
-                    List<PlayerHistory> pl = PlayerHistoryDB.getMemberPlayerHistory(currMember.Number, RegionID);
-
                     ph.TournamentDate = currTournament.Date;
                     ph.MemberNumber = currMember.Number;
 
-                    int currDataGridRowIndex = FindCurrDataGridRowIndex(currGameId);
+                    int currDataGridRowIndex = FindDataGridRowIndex(currGameId);
 
                     if (dataGridView1[GAME_1_VALID_COLUMN, currDataGridRowIndex].Value.ToString() == "True")
                     {
@@ -1211,19 +1215,18 @@ namespace NineTapTour.Forms
                     DataGridViewCell placeCell = dataGridView1[STANDING_COLUMN, currDataGridRowIndex];
                     byte placeStanding = (placeCell.Value == DBNull.Value) ? (byte) 0 : Convert.ToByte(placeCell.Value);
 
-                    // if bowler's highest game in tournament (only lower scoring duplicates get 0s)
+                    // if bowler's highest game in tournament (only multiple entries that aren't the player's best game get 0s)
                     if (placeStanding > 0)
                     {
                         currGame.PlaceStanding = Convert.ToByte(placeStanding);
                         ph.PPHG = placeStanding.ToString();
 
-                        // Adjust bonus pins only if game has not been finalized previously
-                        if (!PlayerHistoryDB.PlayerHistoryExists(currGame.Id))
-                        {
-                            currMember.Bonus = Calculations.Calculations.GetAdjustedBonusPins(placeStanding, FinalizeTableList.Count, compEntriesQty,
-                                                                                        currMember.Bonus, currMember.Number, RegionID, currTournament.Date);
-                            ph.Bonus = currMember.Bonus;
-                        }
+                        AdjustBonusPins(FinalizeTableList.Count, compEntriesQty, ph, currGame, currMember, placeStanding);
+                        memberNumBonusPinMap.Add(currMember.Number, currMember.Bonus);
+                    }
+                    else // multiple entries that aren't the best game will have bonus pins match what is calculated from the best game
+                    {
+                        playerHistoryBonusAdjustmentList.Add(ph);
                     }
 
                     ph.HandiCap = FinalizeTableList[i].Handicap;
@@ -1235,9 +1238,13 @@ namespace NineTapTour.Forms
                     ph.regionID = RegionID;
                     currGame.gameRegionID = RegionID;
 
-                    PlayerHistoryDB.AddPlayerHistory2(ph);
+                    // player history multiple entries (which placestanding == 0) are added after bonus pins are adjusted
+                    if (placeStanding > 0)
+                    {
+                        PlayerHistoryDB.AddOrUpdatePlayerHistory(ph);
+                    }
                     GameDB.AddOrUpdateGame(currGame);
-                    MemberDb.AddMember(currMember);
+                    MemberDb.AddOrUpdateMember(currMember);
 
                     FinalizeTableList[i].FinalizeID = FinalizeTempDB.getFinalizeID(currGame).FinalizeID;
                     FinalizeTableList[i].AdjustedAvg = ph.AVG;
@@ -1245,6 +1252,12 @@ namespace NineTapTour.Forms
 
                     FinalizeTempDB.AddFinalizeTemp(FinalizeTableList[i]);
                 });
+
+                foreach (PlayerHistory currPlayerHistory in playerHistoryBonusAdjustmentList)
+                {
+                    currPlayerHistory.Bonus = memberNumBonusPinMap[currPlayerHistory.MemberNumber];
+                }
+                PlayerHistoryDB.AddOrUpdatePlayerHistoryList(playerHistoryBonusAdjustmentList);
 
                 Close();
             }
@@ -1255,13 +1268,24 @@ namespace NineTapTour.Forms
             Cursor.Current = Cursors.Default;
         }
 
+        private void AdjustBonusPins(int totalEntriesQty, int compEntriesQty, PlayerHistory ph, Game currGame, Member currMember, byte placeStanding)
+        {
+            // Adjust bonus pins only if game has not been finalized previously
+            if (!PlayerHistoryDB.PlayerHistoryExists(currGame.Id))
+            {
+                currMember.Bonus = Calculations.Calculations.GetAdjustedBonusPins(placeStanding, totalEntriesQty, compEntriesQty,
+                                                                            currMember.Bonus, currMember.Number, RegionID, currTournament.Date, currTournament.Id);
+                ph.Bonus = currMember.Bonus;
+            }
+        }
+
         /// <summary>
         /// Gets the row of data grid by the Game Id value stored in that row.
         /// Returns -1 if not found.
         /// </summary>
         /// <param name="currGameId"></param>
         /// <returns>The row index of the Game Id</returns>
-        private int FindCurrDataGridRowIndex(int currGameId)
+        private int FindDataGridRowIndex(int currGameId)
         {
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
