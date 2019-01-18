@@ -662,7 +662,7 @@ namespace NineTapTour.Forms
                    RegionID in PlayerHistory class was being reset to default value of zero. */
                 item.regionID = RegionID;
 
-                PlayerHistoryDB.AddPlayerHistory2(item);
+                PlayerHistoryDB.AddOrUpdatePlayerHistory(item);
             }
             //refresh page
             dataGridView1.DataSource = tableview();

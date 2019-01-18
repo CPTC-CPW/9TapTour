@@ -15,7 +15,7 @@ namespace NineTapTour.Database
 {
     public class MemberDb
     {
-        public static void AddMember(Member temp)
+        public static void AddOrUpdateMember(Member temp)
         {
             try
             {

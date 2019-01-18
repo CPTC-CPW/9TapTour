@@ -613,7 +613,7 @@ namespace NineTapTour.Forms
                     if (DateTime.Now > currentMem.LastBowled || currentMem.LastBowled == null)
                     {
                         currentMem.LastBowled = DateTime.Now;
-                        MemberDb.AddMember(currentMem);
+                        MemberDb.AddOrUpdateMember(currentMem);
                     }
                 }
                 Refresh(false);
@@ -1079,7 +1079,12 @@ namespace NineTapTour.Forms
         {
             // resets the fields when a different tournament is selected
             ResetFields();
-
+            // clear the temp variables for the money earned for tourn results
+            if(TempVariablesForGlobalLevel.MoneyEarnings != null)
+            {
+                TempVariablesForGlobalLevel.MoneyEarnings.Clear();
+            }
+            
             // assigns the selectedTournament variable as the selected Tournament from the comboBox
             selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
 
@@ -1304,20 +1309,27 @@ namespace NineTapTour.Forms
                         var top3Games = TournamentStats.GetTop3OutOf4(top4Games.ToList());
 
                         TopParticipantGameViewModel currTopScoreViewModel =
-                            new TopParticipantGameViewModel(currParticipant.Member.Number, currParticipant.Member.FirstName,
-                                currParticipant.Member.LastName, 0, currParticipant.Game.AllGameScores().Sum().Value,
+                            new TopParticipantGameViewModel(
+                                currParticipant.Member.Number,
+                                currParticipant.Member.FirstName,
+                                currParticipant.Member.LastName,
+                                0, 
+                                currParticipant.Game.AllGameScores().Sum().Value,
                                 top3Games.Sum(),
-                                top3Games.Sum() + (3 * currParticipant.Member.Handicap) +
-                                (3 * currParticipant.Game.Bonus),
-                                currParticipant.Game.Game1, currParticipant.Game.Game2, currParticipant.Game.Game3,
+                                top3Games.Sum() + (3 * currParticipant.Member.Handicap) + (3 * currParticipant.Game.Bonus),
+                                currParticipant.Game.Game1,
+                                currParticipant.Game.Game2,
+                                currParticipant.Game.Game3,
                                 currParticipant.Game.Game4,
-                                currParticipant.Game.Handicap, currParticipant.Game.Bonus.Value,
-                                currParticipant.Game.Id, currParticipant.Squad);
+                                currParticipant.Game.Handicap, 
+                                currParticipant.Game.Bonus.Value,
+                                currParticipant.Game.Id,
+                                currParticipant.Squad); 
 
                         topParticipantGameViewModels.Add(currTopScoreViewModel);
                     }
 
-                    //display data in the list boxes
+                    // display data in the list boxes
                     // orders list by highest handicap score game to lowest
                     participantsGameViewModels = participantsGameViewModels
                         .OrderByDescending(t => t.HighScore + t.Handicap + t.Bonus).ToList();
@@ -1795,7 +1807,7 @@ namespace NineTapTour.Forms
             currentMem.Bonus = temp[0].Bonus;
             currentMem.StartAvg = temp[0].AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
             currentMem.Average = Convert.ToInt32(temp[0].trueAVG);
-            MemberDb.AddMember(currentMem);
+            MemberDb.AddOrUpdateMember(currentMem);
         }
 
         private void btnTournamentResults_Click(object sender, EventArgs e)
