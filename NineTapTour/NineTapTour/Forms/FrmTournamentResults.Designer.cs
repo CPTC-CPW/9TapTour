@@ -33,6 +33,8 @@
             this.lblTournamentName = new System.Windows.Forms.Label();
             this.btnExportToExcel = new System.Windows.Forms.Button();
             this.dgvTournamentResults = new System.Windows.Forms.DataGridView();
+            this.lblClientRequestCount = new System.Windows.Forms.Label();
+            this.tbClientInputCount = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTournamentResults)).BeginInit();
             this.SuspendLayout();
             // 
@@ -76,11 +78,31 @@
             this.dgvTournamentResults.TabIndex = 0;
             this.dgvTournamentResults.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTournamentResults_CellEnter);
             // 
+            // lblClientRequestCount
+            // 
+            this.lblClientRequestCount.AutoSize = true;
+            this.lblClientRequestCount.Location = new System.Drawing.Point(311, 115);
+            this.lblClientRequestCount.Name = "lblClientRequestCount";
+            this.lblClientRequestCount.Size = new System.Drawing.Size(221, 13);
+            this.lblClientRequestCount.TabIndex = 3;
+            this.lblClientRequestCount.Text = "How many winners would you like places for?";
+            // 
+            // tbClientInputCount
+            // 
+            this.tbClientInputCount.Location = new System.Drawing.Point(538, 112);
+            this.tbClientInputCount.Name = "tbClientInputCount";
+            this.tbClientInputCount.Size = new System.Drawing.Size(100, 20);
+            this.tbClientInputCount.TabIndex = 4;
+            this.tbClientInputCount.TextChanged += new System.EventHandler(this.tbClientInputCount_TextChanged);
+            this.tbClientInputCount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbClientInputCount_KeyDown);
+            // 
             // FrmTournamentResults
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(667, 590);
+            this.Controls.Add(this.tbClientInputCount);
+            this.Controls.Add(this.lblClientRequestCount);
             this.Controls.Add(this.dgvTournamentResults);
             this.Controls.Add(this.btnExportToExcel);
             this.Controls.Add(this.lblTournamentName);
@@ -101,5 +123,7 @@
         private System.Windows.Forms.Label lblTournamentName;
         private System.Windows.Forms.Button btnExportToExcel;
         private System.Windows.Forms.DataGridView dgvTournamentResults;
+        private System.Windows.Forms.Label lblClientRequestCount;
+        private System.Windows.Forms.TextBox tbClientInputCount;
     }
 }

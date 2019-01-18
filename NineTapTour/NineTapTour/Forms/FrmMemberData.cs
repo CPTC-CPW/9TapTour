@@ -624,7 +624,7 @@ namespace NineTapTour.Forms
                 // Adds Member to Database
                 try
                 {
-                    MemberDb.AddMember(temp);
+                    MemberDb.AddOrUpdateMember(temp);
 #if DEBUG
                     MessageBox.Show("Member saved");
 #endif
@@ -907,7 +907,7 @@ namespace NineTapTour.Forms
         {
             foreach(var m in temp)
             {
-                MemberDb.AddMember(m); 
+                MemberDb.AddOrUpdateMember(m); 
             }
         }
 
@@ -1150,7 +1150,7 @@ namespace NineTapTour.Forms
 
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
 
-                MemberDb.AddMember(currentMem);
+                MemberDb.AddOrUpdateMember(currentMem);
             }
         }
 

@@ -283,6 +283,11 @@ namespace NineTapTour.Database
             }
         }
 
+        /// <summary>
+        /// Returns the total amount of comp entries for the tournament
+        /// </summary>
+        /// <param name="tourneyId">The id property for the tournament</param>
+        /// <returns>Qty of comp entries</returns>
         public static int GetCompEntryQtyByTourney(int tourneyId)
         {
             var db = new NineTapDb();
@@ -293,17 +298,19 @@ namespace NineTapTour.Database
                         (ft, g) => new { g.IsComp, ft.TournamentID })
                     .Where(ftg => ftg.TournamentID == tourneyId && ftg.IsComp)
                     .Count();
+        }
 
-
-                    //.Include(t => t.Participant.Select(p => p.Game).Where(g => g.IsComp))
-                    //.Where(t => t.Id == tourneyId)
-                    //.Count();
+        /// <summary>
+        /// Gets the entry quantity for a member in a tournament
+        /// </summary>
+        /// <returns>the amount of enties in tournament by a member</returns>
+        public static int GetMembersGameEntryCount(int tourneyId, int memberNum)
+        {
+            var db = new NineTapDb();
+            return db.FinalizeTemp
+                    .Where(ft => ft.TournamentID == tourneyId && ft.memberNumber == memberNum)
+                    .Count();
         }
     }
-
-
-
-
-
 }
 

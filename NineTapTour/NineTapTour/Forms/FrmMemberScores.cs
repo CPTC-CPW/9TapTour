@@ -613,7 +613,7 @@ namespace NineTapTour.Forms
                     if (DateTime.Now > currentMem.LastBowled || currentMem.LastBowled == null)
                     {
                         currentMem.LastBowled = DateTime.Now;
-                        MemberDb.AddMember(currentMem);
+                        MemberDb.AddOrUpdateMember(currentMem);
                     }
                 }
                 Refresh(false);
@@ -1079,7 +1079,12 @@ namespace NineTapTour.Forms
         {
             // resets the fields when a different tournament is selected
             ResetFields();
-
+            // clear the temp variables for the money earned for tourn results
+            if(TempVariablesForGlobalLevel.MoneyEarnings != null)
+            {
+                TempVariablesForGlobalLevel.MoneyEarnings.Clear();
+            }
+            
             // assigns the selectedTournament variable as the selected Tournament from the comboBox
             selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
 
@@ -1802,7 +1807,7 @@ namespace NineTapTour.Forms
             currentMem.Bonus = temp[0].Bonus;
             currentMem.StartAvg = temp[0].AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
             currentMem.Average = Convert.ToInt32(temp[0].trueAVG);
-            MemberDb.AddMember(currentMem);
+            MemberDb.AddOrUpdateMember(currentMem);
         }
 
         private void btnTournamentResults_Click(object sender, EventArgs e)
