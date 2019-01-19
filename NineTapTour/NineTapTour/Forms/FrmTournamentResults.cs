@@ -35,7 +35,8 @@ namespace NineTapTour.Forms
         static int totalTournamentEntries;  // Total number of entries for all squads in tournament
         static int clientInput; // how many winners the client wants to see
         List<ExcelMember> cashedWinners = new List<ExcelMember>();
-
+        List<ExcelMember> clientRequested = new List<ExcelMember>();
+        List<ExcelMember> winners = new List<ExcelMember>();
         // Floor directors get a comp entry into tournament when they help with tournament. 
         // They don't pay the entry fee, but do qualify to cash.
         static int compEntries; 
@@ -62,11 +63,12 @@ namespace NineTapTour.Forms
             }
 
             // Create a List<ExcelMember> and populate it with this tournament's participants
-            List<ExcelMember> winners = BuildWinnersList();
+            winners = BuildWinnersList();
 
             // Create list of participants who cash
              cashedWinners = Calculations.Calculations.
                     MakeTopMembersByPlacementList(winners, totalTournamentEntries, compEntries);
+            
 
             ActiveControl = tbClientInputCount;
         }
@@ -74,8 +76,8 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Creates the DataGridView table and populates it with the list of cashed winners
         /// </summary>
-        /// <param name="cashedWinners"></param>
-        private void CreateDataGridView(List<ExcelMember> cashedWinners, int clientInput)
+        /// <param name="clientRequested"></param>
+        private void CreateDataGridView(List<ExcelMember> clientRequested, int clientInput)
         {
             // Create data table and add columns 
             // Columns with ReadOnly set to False are editable        
@@ -89,18 +91,11 @@ namespace NineTapTour.Forms
             dt.Columns.Add(PROGRESSIVEPOT_COLUMN_NAME).ReadOnly = false;
 
             int winnersCount = 0;
-            if(cashedWinners.Count() > 0)
+            if(clientRequested.Count() > 0)
             {
-                winnersCount = cashedWinners.Count();
+                winnersCount = clientRequested.Count();
             }
-                        
-            //if (clientInput > cashedWinners.Count)
-            //{
-            //    for (int z = cashedWinners.Count; z < clientInput; z++)
-            //    {
-            //        // insert the cash data
-            //    }
-            //}
+            
             double earnings = 0.00;
 
             int itemCount = 0;
@@ -109,49 +104,61 @@ namespace NineTapTour.Forms
             {
                 MonEarnCount = TempVariablesForGlobalLevel.MoneyEarnings.Count();
             }
-            
+
             // Create rows and populate with each member's data for each row
-            foreach (var item in cashedWinners)
+            //foreach (var item in clientRequested)
+            // {
+
+            for (int wc = 0; wc < clientRequested.Count(); wc++)
             {
                 DataRow newRow = dt.NewRow();
                 if (MonEarnCount > 0)
                 {
-                    newRow[EARNINGS_COLUMN_NAME] =  TempVariablesForGlobalLevel.MoneyEarnings[itemCount]; 
+                    if (wc < MonEarnCount)
+                    {
+                        newRow[EARNINGS_COLUMN_NAME] = TempVariablesForGlobalLevel.MoneyEarnings[wc];
+                    }
+                    if (wc >= MonEarnCount)
+                    {
+                        newRow[EARNINGS_COLUMN_NAME] = earnings;
+                    }
+
+                   // newRow[EARNINGS_COLUMN_NAME] =  TempVariablesForGlobalLevel.MoneyEarnings[wc]; 
                 }
                 else
                 {
-                    newRow[EARNINGS_COLUMN_NAME] = Convert.ToInt32(item.MoneyWon);
+                    newRow[EARNINGS_COLUMN_NAME] = Convert.ToInt32(clientRequested[wc].MoneyWon);
                 }
                 
-                newRow[PLACE_STANDING_COLUMN_NAME] = item.PlaceStanding;
-                newRow[FULLNAME_COLUMN_NAME] = item.Name;
-                newRow[HANDICAP_COLUMN_NAME] = item.Handicap;
-                newRow[TOTAL_SCORE_COLUMN_NAME] = item.TotalScore;
-                newRow[MEMBER_ID_COLUMN_NAME] = item.MemberNumber;
-                newRow[GAME_ID_COLUMN_NAME] = item.GameId;
+                newRow[PLACE_STANDING_COLUMN_NAME] = clientRequested[wc].PlaceStanding;
+                newRow[FULLNAME_COLUMN_NAME] = clientRequested[wc].Name;
+                newRow[HANDICAP_COLUMN_NAME] = clientRequested[wc].Handicap;
+                newRow[TOTAL_SCORE_COLUMN_NAME] = clientRequested[wc].TotalScore;
+                newRow[MEMBER_ID_COLUMN_NAME] = clientRequested[wc].MemberNumber;
+                newRow[GAME_ID_COLUMN_NAME] = clientRequested[wc].GameId;
 
-                if (item.SidePot == null)
+                if (clientRequested[wc].SidePot == null)
                 {
                     newRow[PROGRESSIVEPOT_COLUMN_NAME] = "0.00";
                 }
                 else
                 {
-                    newRow[PROGRESSIVEPOT_COLUMN_NAME] = item.SidePot;
+                    newRow[PROGRESSIVEPOT_COLUMN_NAME] = clientRequested[wc].SidePot;
                 }
                 dt.Rows.Add(newRow);
                 itemCount++;
             }
-                       
-            for (int tr = winnersCount; tr < clientInput; tr++)
+
+            for (int tr = clientRequested.Count(); tr < clientInput ; tr++)
             {
                 DataRow newRow = dt.NewRow();
                 if (MonEarnCount > 0)
                 {
-                    if(tr < MonEarnCount)
+                    if (tr < MonEarnCount)
                     {
                         newRow[EARNINGS_COLUMN_NAME] = TempVariablesForGlobalLevel.MoneyEarnings[tr];
                     }
-                    if(tr >= MonEarnCount)
+                    if (tr >= MonEarnCount)
                     {
                         newRow[EARNINGS_COLUMN_NAME] = earnings;
                     }
@@ -851,9 +858,9 @@ namespace NineTapTour.Forms
             TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
             
             // Save all changes made to the dataGridView
-            if (cashedWinners.Count() > 0)
+            if (clientRequested.Count() > 0)
             {
-                for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount - cashedWinners.Count(); currentIndex++)
+                for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
                 {
                     int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
                     Game g = GameDB.GetGame(gameId);
@@ -898,8 +905,10 @@ namespace NineTapTour.Forms
                 {
                     clientInput = Convert.ToInt32(tbClientInputCount.Text);
                     tbClientInputCount.Enabled = false;
+                    // Create list of participants list for client request of how many show up in tournament results
+                    clientRequested = Calculations.Calculations.MakeTopMembersByPlacementList(winners, clientInput);
                     // Create datagridview and populate with cashedWinners list
-                    CreateDataGridView(cashedWinners, clientInput);
+                    CreateDataGridView(clientRequested, clientInput);
                 }
                 catch (FormatException)
                 {

@@ -471,6 +471,23 @@ namespace NineTapTour.Calculations
             return MakeTopMembersByPlacementList(members, GetQtyOfMembersThatCanPlace(totalEntries, compEntries));
         }
 
+
+        // test test test test test test test test test test test test test 
+
+        /// <summary>
+        /// Makes a list of Members ordered by placement
+        /// </summary>
+        /// <param name="members">list of members to copy and process</param>
+        /// <returns>List of ExcelMembers without duplicate ExcelMembers MemberNumbers </returns>
+        public static List<ExcelMember> MakeTopMembersByPlacementList(List<ExcelMember> members)
+        {
+            // returns all members 
+            return CalculatePlaceStandings(members).ToList(); 
+        }
+
+        // test test test test test test test test test test test test test 
+
+
         /// <summary>
         /// Makes a list of Members ordered by placement, keeping only the highest score for each member. Players
         /// below the lowestPlacement (1st is highest) threshold are not included in the new list.
