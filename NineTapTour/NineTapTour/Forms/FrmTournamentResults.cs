@@ -847,7 +847,7 @@ namespace NineTapTour.Forms
             List<double> Winnings = new List<double>();
             for(int winningList = 0; winningList < dgvTournamentResults.RowCount; winningList++)
             {
-                Winnings.Add( Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
+                Winnings.Add(Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
             }
             TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
             
@@ -921,10 +921,24 @@ namespace NineTapTour.Forms
             int row = 0;
             int col = 4;
 
-            for (int i = 0; i < lines.Count(); i++)
+            int pasteAble = Convert.ToInt32(tbClientInputCount.Text);
+            int pasteCount = lines.Count();
+            int paste = 0;
+            if(pasteCount < pasteAble)
             {
+                paste = pasteCount - 1;
+            }
+            else
+            {
+                paste = pasteAble;
+            }
+
+            for (int i = 0; i < paste; i++)
+            {
+               
                 dgvTournamentResults[col, row].Value = lines2[i]; //.Split('\t');
                 row++;
+                              
               
             }
 
