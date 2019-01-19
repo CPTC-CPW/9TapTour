@@ -34,7 +34,6 @@ namespace NineTapTour.Forms
         Tournament tourny = frmMemberScores.selectedTournament; // Get Tournament
         static int totalTournamentEntries;  // Total number of entries for all squads in tournament
         static int clientInput; // how many winners the client wants to see
-        List<ExcelMember> cashedWinners = new List<ExcelMember>();
         List<ExcelMember> clientRequested = new List<ExcelMember>();
         List<ExcelMember> winners = new List<ExcelMember>();
         // Floor directors get a comp entry into tournament when they help with tournament. 
@@ -64,12 +63,7 @@ namespace NineTapTour.Forms
 
             // Create a List<ExcelMember> and populate it with this tournament's participants
             winners = BuildWinnersList();
-
-            // Create list of participants who cash
-             cashedWinners = Calculations.Calculations.
-                    MakeTopMembersByPlacementList(winners, totalTournamentEntries, compEntries);
             
-
             ActiveControl = tbClientInputCount;
         }
 
@@ -106,9 +100,6 @@ namespace NineTapTour.Forms
             }
 
             // Create rows and populate with each member's data for each row
-            //foreach (var item in clientRequested)
-            // {
-
             for (int wc = 0; wc < clientRequested.Count(); wc++)
             {
                 DataRow newRow = dt.NewRow();
@@ -122,8 +113,6 @@ namespace NineTapTour.Forms
                     {
                         newRow[EARNINGS_COLUMN_NAME] = earnings;
                     }
-
-                   // newRow[EARNINGS_COLUMN_NAME] =  TempVariablesForGlobalLevel.MoneyEarnings[wc]; 
                 }
                 else
                 {
