@@ -932,18 +932,16 @@ namespace NineTapTour.Forms
             {
                 paste = pasteAble;
             }
-
+            
             for (int i = 0; i < paste; i++)
             {
-               
-                dgvTournamentResults[col, row].Value = lines2[i]; //.Split('\t');
-                row++;
-                              
-              
+                string check = lines2[i];
+                if (check != "")
+                {
+                    dgvTournamentResults[col, row].Value = lines2[i];
+                    row++;
+                }
             }
-
-
-
         }
     }
 }
