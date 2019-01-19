@@ -46,7 +46,7 @@ namespace NineTapTour.Forms
                 {
                     if (mem.IsActive && (mem.LastBowled <= targetDate || mem.LastBowled.ToString() == ""))
                     {
-                        checkedListBox1.Items.Add(mem);
+                        InactiveListCheckBox.Items.Add(mem);
                     }
                 });
             }
@@ -69,13 +69,13 @@ namespace NineTapTour.Forms
                 try
                 {
                     //PrintToWord.CreateWordDoc("InActive.txt");//copy to word
-                    foreach (Member mem in checkedListBox1.CheckedItems)
+                    foreach (Member mem in InactiveListCheckBox.CheckedItems)
                     {
                         mem.IsActive = false;
                         //PrintToWord.WriteWordDoc("Name" + mem.FirstName + " " + mem.LastName);
                         db.Entry(mem).State = EntityState.Modified;
                         db.SaveChanges();
-                        checkedListBox1.Items.Clear();
+                        InactiveListCheckBox.Items.Clear();
                         UpdateList();
                         //PrintToWord.OpenWordDoc();//Open word doc
                     }
@@ -84,6 +84,14 @@ namespace NineTapTour.Forms
                 {
                     //MessageBox.Show("No Members Selected");
                 }
+            }
+        }
+
+        private void btnCheckInactive_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < InactiveListCheckBox.Items.Count; i++)
+            {
+                InactiveListCheckBox.SetItemChecked(i, true);
             }
         }
     }
