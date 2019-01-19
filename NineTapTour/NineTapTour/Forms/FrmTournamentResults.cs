@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using NineTapTour.Models;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace NineTapTour.Forms
 {
@@ -906,6 +907,29 @@ namespace NineTapTour.Forms
                     MessageBox.Show("Please enter a nunmber");
                 }
             }
+        }
+
+        private void btnPaste_Click(object sender, EventArgs e)
+        {
+            string s = Clipboard.GetText();
+            string[] lines = s.Replace("\n", "").Split('\r');
+            string[] lines2 = new string[lines.Length];
+            for(int t = 0; t < lines.Length; t++)
+            {
+               lines2[t] = lines[t];
+            }
+            int row = 0;
+            int col = 4;
+
+            for (int i = 0; i < lines.Count(); i++)
+            {
+                dgvTournamentResults[col, row].Value = lines2[i]; //.Split('\t');
+                row++;
+              
+            }
+
+
+
         }
     }
 }

@@ -35,6 +35,7 @@
             this.dgvTournamentResults = new System.Windows.Forms.DataGridView();
             this.lblClientRequestCount = new System.Windows.Forms.Label();
             this.tbClientInputCount = new System.Windows.Forms.TextBox();
+            this.btnPaste = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTournamentResults)).BeginInit();
             this.SuspendLayout();
             // 
@@ -96,11 +97,22 @@
             this.tbClientInputCount.TextChanged += new System.EventHandler(this.tbClientInputCount_TextChanged);
             this.tbClientInputCount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbClientInputCount_KeyDown);
             // 
+            // btnPaste
+            // 
+            this.btnPaste.Location = new System.Drawing.Point(191, 112);
+            this.btnPaste.Name = "btnPaste";
+            this.btnPaste.Size = new System.Drawing.Size(103, 23);
+            this.btnPaste.TabIndex = 5;
+            this.btnPaste.Text = "Paste Earnings";
+            this.btnPaste.UseVisualStyleBackColor = true;
+            this.btnPaste.Click += new System.EventHandler(this.btnPaste_Click);
+            // 
             // FrmTournamentResults
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(667, 590);
+            this.Controls.Add(this.btnPaste);
             this.Controls.Add(this.tbClientInputCount);
             this.Controls.Add(this.lblClientRequestCount);
             this.Controls.Add(this.dgvTournamentResults);
@@ -125,5 +137,6 @@
         private System.Windows.Forms.DataGridView dgvTournamentResults;
         private System.Windows.Forms.Label lblClientRequestCount;
         private System.Windows.Forms.TextBox tbClientInputCount;
+        private System.Windows.Forms.Button btnPaste;
     }
 }
