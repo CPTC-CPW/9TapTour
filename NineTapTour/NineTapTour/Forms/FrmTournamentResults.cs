@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using NineTapTour.Models;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace NineTapTour.Forms
 {
@@ -95,7 +96,7 @@ namespace NineTapTour.Forms
             int MonEarnCount = 0;
             if (TempVariablesForGlobalLevel.MoneyEarnings != null)
             {
-                MonEarnCount = TempVariablesForGlobalLevel.MoneyEarnings.Count();
+                MonEarnCount = TempVariablesForGlobalLevel.MoneyEarnings.Count;
             }
 
             // Create rows and populate with each member's data for each row
@@ -833,7 +834,7 @@ namespace NineTapTour.Forms
             List<double> Winnings = new List<double>();
             for(int winningList = 0; winningList < dgvTournamentResults.RowCount; winningList++)
             {
-                Winnings.Add( Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
+                Winnings.Add(Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
             }
             TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
             
@@ -890,6 +891,53 @@ namespace NineTapTour.Forms
                 catch (FormatException)
                 {
                     MessageBox.Show("Please enter a nunmber");
+                }
+            }
+        }
+
+        private void btnPaste_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(tbClientInputCount.Text))
+            {
+                MessageBox.Show("Please enter the number of winners first");
+                return;
+            }
+
+            string s = Clipboard.GetText();
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                MessageBox.Show("Please copy the earnings from Excel first");
+                return;
+            }
+
+            string[] lines = s.Replace("\n", "").Split('\r');
+            string[] lines2 = new string[lines.Length];
+            for(int t = 0; t < lines.Length; t++)
+            {
+               lines2[t] = lines[t];
+            }
+            int row = 0;
+            int col = 4;
+
+            int pasteAble = Convert.ToInt32(tbClientInputCount.Text);
+            int pasteCount = lines.Count();
+            int paste = 0;
+            if(pasteCount < pasteAble)
+            {
+                paste = pasteCount - 1;
+            }
+            else
+            {
+                paste = pasteAble;
+            }
+            
+            for (int i = 0; i < paste; i++)
+            {
+                string check = lines2[i];
+                if (check != "")
+                {
+                    dgvTournamentResults[col, row].Value = lines2[i];
+                    row++;
                 }
             }
         }
