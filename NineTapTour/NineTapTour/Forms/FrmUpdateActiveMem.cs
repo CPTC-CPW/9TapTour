@@ -67,6 +67,7 @@ namespace NineTapTour.Forms
             if (InactiveListCheckBox.CheckedItems.Count == 0)
             {
                 MessageBox.Show("No members checked.");
+                return;
             }
 
             var db = new NineTapDb();
