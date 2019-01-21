@@ -53,6 +53,8 @@ namespace NineTapTour.Forms
                     InactiveListCheckBox.Items.Add(mem);
                 }
             });
+
+            // add a sort feature here for inactive members in better visual order
         }
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
