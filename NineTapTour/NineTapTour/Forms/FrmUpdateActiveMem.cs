@@ -64,28 +64,23 @@ namespace NineTapTour.Forms
         {
             if (InactiveListCheckBox.CheckedItems.Count == 0)
             {
-                MessageBox.Show("");
+                MessageBox.Show("No members checked.");
             }
 
             var db = new NineTapDb();
             if (MessageBox.Show("Update the selected Members to inactive?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
-                try
+              
+                foreach (Member mem in InactiveListCheckBox.CheckedItems)
                 {
-                    foreach (Member mem in InactiveListCheckBox.CheckedItems)
-                    {
-                        mem.IsActive = false;
-                        db.Entry(mem).State = EntityState.Modified;
+                    mem.IsActive = false;
+                    db.Entry(mem).State = EntityState.Modified;
                         
-                    }
-                    db.SaveChanges();
-                    InactiveListCheckBox.Items.Clear();
-                    UpdateList();
                 }
-                catch
-                {
-                    //MessageBox.Show("No Members Selected");
-                }
+                db.SaveChanges();
+                InactiveListCheckBox.Items.Clear();
+                UpdateList();
+              
             }
         }
 
