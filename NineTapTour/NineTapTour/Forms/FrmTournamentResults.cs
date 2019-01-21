@@ -107,14 +107,14 @@ namespace NineTapTour.Forms
             int MonEarnCount = 0;
             if (TempVariablesForGlobalLevel.MoneyEarnings != null)
             {
-                MonEarnCount = TempVariablesForGlobalLevel.MoneyEarnings.Count();
+                MonEarnCount = TempVariablesForGlobalLevel.MoneyEarnings.Count;
             }
             
             // Create rows and populate with each member's data for each row
             foreach (var item in cashedWinners)
             {
                 DataRow newRow = dt.NewRow();
-                if (MonEarnCount > 0)
+                if (MonEarnCount > 0 && itemCount < MonEarnCount)
                 {
                     newRow[EARNINGS_COLUMN_NAME] =  TempVariablesForGlobalLevel.MoneyEarnings[itemCount]; 
                 }
@@ -145,16 +145,9 @@ namespace NineTapTour.Forms
             for (int tr = winnersCount; tr < clientInput; tr++)
             {
                 DataRow newRow = dt.NewRow();
-                if (MonEarnCount > 0)
+                if (MonEarnCount > 0 && tr < MonEarnCount)
                 {
-                    if(tr < MonEarnCount)
-                    {
-                        newRow[EARNINGS_COLUMN_NAME] = TempVariablesForGlobalLevel.MoneyEarnings[tr];
-                    }
-                    if(tr >= MonEarnCount)
-                    {
-                        newRow[EARNINGS_COLUMN_NAME] = earnings;
-                    }
+                    newRow[EARNINGS_COLUMN_NAME] = TempVariablesForGlobalLevel.MoneyEarnings[tr];
                 }
                 else
                 {
