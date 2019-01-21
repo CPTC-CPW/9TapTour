@@ -92,7 +92,6 @@ namespace NineTapTour.Forms
             
             double earnings = 0.00;
 
-            int itemCount = 0;
             int MonEarnCount = 0;
             if (TempVariablesForGlobalLevel.MoneyEarnings != null)
             {
@@ -109,7 +108,7 @@ namespace NineTapTour.Forms
                     {
                         newRow[EARNINGS_COLUMN_NAME] = TempVariablesForGlobalLevel.MoneyEarnings[wc];
                     }
-                    if (wc >= MonEarnCount)
+                    else
                     {
                         newRow[EARNINGS_COLUMN_NAME] = earnings;
                     }
@@ -135,7 +134,6 @@ namespace NineTapTour.Forms
                     newRow[PROGRESSIVEPOT_COLUMN_NAME] = clientRequested[wc].SidePot;
                 }
                 dt.Rows.Add(newRow);
-                itemCount++;
             }
 
             for (int tr = clientRequested.Count(); tr < clientInput ; tr++)
@@ -147,7 +145,7 @@ namespace NineTapTour.Forms
                     {
                         newRow[EARNINGS_COLUMN_NAME] = TempVariablesForGlobalLevel.MoneyEarnings[tr];
                     }
-                    if (tr >= MonEarnCount)
+                    else
                     {
                         newRow[EARNINGS_COLUMN_NAME] = earnings;
                     }
