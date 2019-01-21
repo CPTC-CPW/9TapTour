@@ -40,20 +40,19 @@ namespace NineTapTour.Forms
 
         private void UpdateList()
         {
-            try
+            if (AllMembers == null)
             {
-                AllMembers.ForEach(delegate (Member mem)
+                MessageBox.Show("There are no members within this region in the database");
+                return;
+            }
+
+            AllMembers.ForEach(delegate (Member mem)
+            {
+                if (mem.IsActive && (mem.LastBowled <= targetDate || mem.LastBowled.ToString() == ""))
                 {
-                    if (mem.IsActive && (mem.LastBowled <= targetDate || mem.LastBowled.ToString() == ""))
-                    {
-                        InactiveListCheckBox.Items.Add(mem);
-                    }
-                });
-            }
-            catch
-            {
-                MessageBox.Show("null list");
-            }
+                    InactiveListCheckBox.Items.Add(mem);
+                }
+            });
         }
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
@@ -63,6 +62,11 @@ namespace NineTapTour.Forms
 
         private void btnUpdateActive_Click(object sender, EventArgs e)
         {
+            if (InactiveListCheckBox.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("");
+            }
+
             var db = new NineTapDb();
             if (MessageBox.Show("Update the selected Members to inactive?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
