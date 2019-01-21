@@ -139,16 +139,9 @@ namespace NineTapTour.Forms
             for (int tr = clientRequested.Count(); tr < clientInput ; tr++)
             {
                 DataRow newRow = dt.NewRow();
-                if (MonEarnCount > 0)
+                if (MonEarnCount > 0 && tr < MonEarnCount)
                 {
-                    if (tr < MonEarnCount)
-                    {
-                        newRow[EARNINGS_COLUMN_NAME] = TempVariablesForGlobalLevel.MoneyEarnings[tr];
-                    }
-                    else
-                    {
-                        newRow[EARNINGS_COLUMN_NAME] = earnings;
-                    }
+                    newRow[EARNINGS_COLUMN_NAME] = TempVariablesForGlobalLevel.MoneyEarnings[tr];
                 }
                 else
                 {
