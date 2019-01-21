@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmUpdateActiveMem));
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.btnUpdateActive = new System.Windows.Forms.Button();
-            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
+            this.InactiveListCheckBox = new System.Windows.Forms.CheckedListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnCheckInactive = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -57,13 +57,13 @@
             // 
             // checkedListBox1
             // 
-            this.checkedListBox1.CheckOnClick = true;
-            this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Location = new System.Drawing.Point(12, 77);
-            this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(260, 334);
-            this.checkedListBox1.Sorted = true;
-            this.checkedListBox1.TabIndex = 2;
+            this.InactiveListCheckBox.CheckOnClick = true;
+            this.InactiveListCheckBox.FormattingEnabled = true;
+            this.InactiveListCheckBox.Location = new System.Drawing.Point(12, 77);
+            this.InactiveListCheckBox.Name = "checkedListBox1";
+            this.InactiveListCheckBox.Size = new System.Drawing.Size(260, 334);
+            this.InactiveListCheckBox.Sorted = true;
+            this.InactiveListCheckBox.TabIndex = 2;
             // 
             // label1
             // 
@@ -82,6 +82,7 @@
             this.btnCheckInactive.TabIndex = 4;
             this.btnCheckInactive.Text = "Check All";
             this.btnCheckInactive.UseVisualStyleBackColor = true;
+            this.btnCheckInactive.Click += new System.EventHandler(this.btnCheckInactive_Click);
             // 
             // label2
             // 
@@ -101,7 +102,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btnCheckInactive);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.checkedListBox1);
+            this.Controls.Add(this.InactiveListCheckBox);
             this.Controls.Add(this.btnUpdateActive);
             this.Controls.Add(this.dateTimePicker1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -116,7 +117,7 @@
         
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
         private System.Windows.Forms.Button btnUpdateActive;
-        private System.Windows.Forms.CheckedListBox checkedListBox1;
+        private System.Windows.Forms.CheckedListBox InactiveListCheckBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnCheckInactive;
         private System.Windows.Forms.Label label2;
