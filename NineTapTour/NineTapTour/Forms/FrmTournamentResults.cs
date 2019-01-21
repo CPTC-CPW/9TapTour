@@ -845,21 +845,18 @@ namespace NineTapTour.Forms
             TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
             
             // Save all changes made to the dataGridView
-            if (clientRequested.Count() > 0)
+            for (int currentIndex = 0; currentIndex < clientRequested.Count; currentIndex++)
             {
-                for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
-                {
-                    int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
-                    Game g = GameDB.GetGame(gameId);
+                int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
+                Game g = GameDB.GetGame(gameId);
 
-                    g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
-                    g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
-                    g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
-                    g.gameRegionID = tourny.TourneyRegion;
+                g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
+                g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
+                g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
+                g.gameRegionID = tourny.TourneyRegion;
 
-                    db.Entry(g).State = System.Data.Entity.EntityState.Modified;
-                    db.SaveChanges();
-                }
+                db.Entry(g).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
             }
         }
 
