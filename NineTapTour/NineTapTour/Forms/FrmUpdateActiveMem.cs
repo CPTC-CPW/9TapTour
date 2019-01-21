@@ -68,17 +68,14 @@ namespace NineTapTour.Forms
             {
                 try
                 {
-                    //PrintToWord.CreateWordDoc("InActive.txt");//copy to word
                     foreach (Member mem in InactiveListCheckBox.CheckedItems)
                     {
                         mem.IsActive = false;
-                        //PrintToWord.WriteWordDoc("Name" + mem.FirstName + " " + mem.LastName);
                         db.Entry(mem).State = EntityState.Modified;
                         db.SaveChanges();
-                        InactiveListCheckBox.Items.Clear();
-                        UpdateList();
-                        //PrintToWord.OpenWordDoc();//Open word doc
                     }
+                    InactiveListCheckBox.Items.Clear();
+                    UpdateList();
                 }
                 catch
                 {
