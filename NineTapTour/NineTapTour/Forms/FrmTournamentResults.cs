@@ -846,7 +846,7 @@ namespace NineTapTour.Forms
             // Save all changes made to the dataGridView
             if (cashedWinners.Count() > 0)
             {
-                for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount - cashedWinners.Count(); currentIndex++)
+                for (int currentIndex = 0; currentIndex < cashedWinners.Count(); currentIndex++)
                 {
                     int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
                     Game g = GameDB.GetGame(gameId);
