@@ -471,6 +471,7 @@ namespace NineTapTour.Calculations
             return MakeTopMembersByPlacementList(members, GetQtyOfMembersThatCanPlace(totalEntries, compEntries));
         }
 
+
         /// <summary>
         /// Makes a list of Members ordered by placement, keeping only the highest score for each member. Players
         /// below the lowestPlacement (1st is highest) threshold are not included in the new list.
