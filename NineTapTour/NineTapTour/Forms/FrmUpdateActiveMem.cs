@@ -76,8 +76,9 @@ namespace NineTapTour.Forms
                     {
                         mem.IsActive = false;
                         db.Entry(mem).State = EntityState.Modified;
-                        db.SaveChanges();
+                        
                     }
+                    db.SaveChanges();
                     InactiveListCheckBox.Items.Clear();
                     UpdateList();
                 }
