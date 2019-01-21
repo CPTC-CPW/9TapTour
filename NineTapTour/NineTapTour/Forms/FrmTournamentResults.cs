@@ -904,7 +904,19 @@ namespace NineTapTour.Forms
 
         private void btnPaste_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(tbClientInputCount.Text))
+            {
+                MessageBox.Show("Please enter the number of winners first");
+                return;
+            }
+
             string s = Clipboard.GetText();
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                MessageBox.Show("Please copy the earnings from Excel first");
+                return;
+            }
+
             string[] lines = s.Replace("\n", "").Split('\r');
             string[] lines2 = new string[lines.Length];
             for(int t = 0; t < lines.Length; t++)
