@@ -31,13 +31,6 @@ namespace NineTapTour.Forms
                 nTemp.NineTapRegionName = "Local";
                 NineTapRegionDB.AddRegion(nTemp);
             }
-
-            //set the global int region so it can be used to filter each region throughout the program
-            List <NineTapRegion>  nList = NineTapRegionDB.GetRegionList();
-            cbxRegionSelect.DataSource = nList;
-            cbxRegionSelect.DisplayMember = "NineTapRegionName";
-            this.regionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
-
         }
 
         /// <summary>
@@ -193,10 +186,18 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// Returns the currently selected RegionID or -1 if no region is selected
+        /// </summary>
+        /// <returns></returns>
         public int getRegionID()
         {
-            List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
-            return nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
+            if(cbxRegionSelect.SelectedIndex >= 0)
+            {
+                List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
+                return nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
+            }
+            return -1;
         }
 
         public void refreshRegionlist()
@@ -212,5 +213,14 @@ namespace NineTapTour.Forms
             region.ShowDialog();
             refreshRegionlist();
         }
-	}
+
+        private void MainMenu_Load(object sender, EventArgs e)
+        {
+            //set the global int region so it can be used to filter each region throughout the program
+            List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
+            cbxRegionSelect.DataSource = nList;
+            cbxRegionSelect.DisplayMember = nameof(NineTapRegion.NineTapRegionName);
+            this.regionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
+        }
+    }
 }

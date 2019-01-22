@@ -95,7 +95,7 @@ namespace NineTapTour.Database
             using (var db = new NineTapDb())
             {
                 return (from m in db.Members
-                        orderby m.Number
+                        orderby  m.Number
                         where m.NineTapRegionID == RegionID
                         select m).ToList();
             }
