@@ -86,11 +86,6 @@ namespace Member_Import_Test
         public List<Member> invalidMembers = new List<Member>();//list of invalid members
                                                                 //public List<string> QBSTournamentList = new List<string>(); //list of qualified by squad tournaments
         public List<PlayerHistory> PlayerHistoryList = new List<PlayerHistory>();
-        int GameIdint = 1;
-
-
-
-
 
 
         //Create array of spaces
