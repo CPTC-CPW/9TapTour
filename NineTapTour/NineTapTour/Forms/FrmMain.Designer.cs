@@ -33,12 +33,14 @@
             this.mainMenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.memberToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tournamentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BackupDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RestoreDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateInactiveMembersToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.updateInactiveMembersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.userManualToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menMain.SuspendLayout();
             this.SuspendLayout();
@@ -51,10 +53,11 @@
             this.mainMenuToolStripMenuItem,
             this.memberToolStripMenuItem,
             this.tournamentToolStripMenuItem,
+            this.AboutToolStripMenuItem,
             this.toolsToolStripMenuItem});
             this.menMain.Location = new System.Drawing.Point(0, 0);
             this.menMain.Name = "menMain";
-            this.menMain.Size = new System.Drawing.Size(347, 24);
+            this.menMain.Size = new System.Drawing.Size(360, 24);
             this.menMain.TabIndex = 1;
             this.menMain.Text = "menuStrip1";
             this.menMain.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.menMain_ItemAdded);
@@ -83,6 +86,14 @@
             this.tournamentToolStripMenuItem.Size = new System.Drawing.Size(101, 20);
             this.tournamentToolStripMenuItem.Text = "Member Scores";
             this.tournamentToolStripMenuItem.Click += new System.EventHandler(this.tournamentToolStripMenuItem_Click);
+            // 
+            // AboutToolStripMenuItem
+            // 
+            this.AboutToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
+            this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
+            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.AboutToolStripMenuItem.Text = "About";
+            this.AboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
             // toolsToolStripMenuItem
             // 
@@ -130,6 +141,14 @@
             this.updateInactiveMembersToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.updateInactiveMembersToolStripMenuItem.Text = "Update Inactive Members";
             // 
+            // AboutToolStripMenuItem
+            // 
+            this.AboutToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
+            this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
+            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.AboutToolStripMenuItem.Text = "About";
+            this.AboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
+            // 
             // userManualToolStripMenuItem
             // 
             this.userManualToolStripMenuItem.Name = "userManualToolStripMenuItem";
@@ -143,7 +162,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(347, 196);
+            this.ClientSize = new System.Drawing.Size(360, 196);
             this.Controls.Add(this.menMain);
             this.DoubleBuffered = true;
             this.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -165,13 +184,14 @@
         private System.Windows.Forms.MenuStrip menMain;
         private System.Windows.Forms.ToolStripMenuItem memberToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tournamentToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem mainMenuToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem AboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem updateInactiveMembersToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem updateInactiveMembersToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem BackupDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem RestoreDatabaseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mainMenuToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem userManualToolStripMenuItem;
     }
 }
