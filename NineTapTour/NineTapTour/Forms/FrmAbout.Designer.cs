@@ -32,9 +32,11 @@
             // 
             // rtbFrmAboutText
             // 
+            this.rtbFrmAboutText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.rtbFrmAboutText.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(102)))));
+            this.rtbFrmAboutText.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.rtbFrmAboutText.ForeColor = System.Drawing.Color.White;
-            this.rtbFrmAboutText.Location = new System.Drawing.Point(81, 188);
+            this.rtbFrmAboutText.Location = new System.Drawing.Point(98, 188);
             this.rtbFrmAboutText.Name = "rtbFrmAboutText";
             this.rtbFrmAboutText.ReadOnly = true;
             this.rtbFrmAboutText.Size = new System.Drawing.Size(662, 240);
@@ -43,6 +45,7 @@
             // 
             // pbAboutFormLogo
             // 
+            this.pbAboutFormLogo.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.pbAboutFormLogo.Image = global::NineTapTour.Properties.Resources._9taplogo1;
             this.pbAboutFormLogo.Location = new System.Drawing.Point(297, 12);
             this.pbAboutFormLogo.Name = "pbAboutFormLogo";
