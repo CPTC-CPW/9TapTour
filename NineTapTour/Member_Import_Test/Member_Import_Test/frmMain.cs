@@ -662,7 +662,7 @@ namespace Member_Import_Test
                 playerOrgAVG = Convert.ToInt32((range.Cells[1, 10] as Excel.Range).Value2);
             }
 
-            catch (Exception NotAValidNumber)
+            catch (Exception)
             {
                 string[] aftersplit;
                 string orgstring;
