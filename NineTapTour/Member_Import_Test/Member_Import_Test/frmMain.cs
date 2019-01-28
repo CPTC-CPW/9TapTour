@@ -467,7 +467,7 @@ namespace Member_Import_Test
                                             {
                                                 newMem.DateOfBirth = Convert.ToDateTime(File.Substring(currentIndex, Spaces[i]).Trim());
                                             }
-                                            catch (Exception ex)
+                                            catch (Exception)
                                             {
                                                 newMem.DateOfBirth = DateTime.Today;
                                             }
