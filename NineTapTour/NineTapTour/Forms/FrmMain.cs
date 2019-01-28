@@ -31,8 +31,6 @@ namespace NineTapTour.Forms
         public int RegionID { get; set; }
         public Size MaxWorkAreaScreenSize { get; set; }
 
-        //initializes a bool var for handling if the memberdata form is active so it has proper scope for handling the save data popup showing up on the wrong forms
-        bool memberDataIsActive = false;
 
         /// <summary>
         /// Opens Main form 
@@ -188,8 +186,6 @@ namespace NineTapTour.Forms
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
             OpenOrDisplayForm(ref newfrmMemberData);
             currFrmMemberData = newfrmMemberData;
-            // sets bool var to true so the save data message will show up
-            memberDataIsActive = true;
         }
 
         
