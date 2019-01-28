@@ -30,12 +30,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.pbAboutFormLogo)).BeginInit();
             this.SuspendLayout();
             // 
-            // rtbAboutFormText
+            // rtbFrmAboutText
             // 
             this.rtbFrmAboutText.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(102)))));
             this.rtbFrmAboutText.ForeColor = System.Drawing.Color.White;
             this.rtbFrmAboutText.Location = new System.Drawing.Point(81, 188);
-            this.rtbFrmAboutText.Name = "rtbAboutFormText";
+            this.rtbFrmAboutText.Name = "rtbFrmAboutText";
             this.rtbFrmAboutText.ReadOnly = true;
             this.rtbFrmAboutText.Size = new System.Drawing.Size(662, 240);
             this.rtbFrmAboutText.TabIndex = 0;
@@ -47,6 +47,7 @@
             this.pbAboutFormLogo.Location = new System.Drawing.Point(297, 12);
             this.pbAboutFormLogo.Name = "pbAboutFormLogo";
             this.pbAboutFormLogo.Size = new System.Drawing.Size(266, 159);
+            this.pbAboutFormLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbAboutFormLogo.TabIndex = 1;
             this.pbAboutFormLogo.TabStop = false;
             // 
