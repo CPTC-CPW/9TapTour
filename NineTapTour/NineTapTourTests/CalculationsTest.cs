@@ -112,24 +112,29 @@ namespace NineTapTour.Calculations.Test
             Assert.AreEqual(expectedNumThatCanPlace, resultNumThatCanPlace);
         }
 
-        [TestMethod]                   // Scenarios:
-        [DataRow(0, 17, 12, 31, 0, 1)] // - Did not cash last 3
-        [DataRow(5, 17, 12, 31, 8, 5)] // - Max bonus pins should be 5 even while not cashing last 3
-        [DataRow(0, 17, 12, 31, 1, 0)] // - Cashed 2nd tournament ago
-        [DataRow(0, 17, 12, 31, 2, 0)] // - Cashed 3rd tournament ago
-        [DataRow(0, 17, 12, 31, 3, 1)] // - Cashed 4th tournament ago
-        [DataRow(0, 17, 12, 31, 4, 0)] // - Cashed 3rd tournament ago but not last 3 entries (multiple tournament entry)
-        [DataRow(0, 17, 12, 31, 5, 0)] // - Cashed 2nd tournament ago as multiple entry but not the other 2
-        [DataRow(0, 17, 12, 31, 7, 0)] // - Cashed 3rd tournament ago as multiple entry but not the other 2
-        [DataRow(0, 17, 12, 31, 6, 1)] // - Did not cash last 3 with a multiple entry
-        [DataRow(1, 17, 12, 31, 0, 1)] // - Gained a bonus pin this tournament and did not cash last 3
-        [DataRow(1, 17, 12, 31, 9, 1)] // - Gained a bonus pin 2nd tournament ago and did not cash last 3
-        public void AddToBonusPins_ReturnsExpectedBonusPins(int currentBonusPins,int currTournYear, int currTournMonth, int currTournDay, int playerHistoryListNum, int expectedBonusPins)
+        [TestMethod]                      // Scenarios:
+        [DataRow(0, 1, 10, 0)]// - Lost current game with null player history
+        [DataRow(0, 2, 11, 0)]// - Lost current game with empty list player history
+        [DataRow(0, 1, 0, 1)] // - Did not cash last 3 enties in different tournaments
+        [DataRow(5, 1, 8, 5)] // - Max bonus pins should be 5 even while not cashing last 3 entries
+        [DataRow(0, 1, 1, 0)] // - Cashed 2nd entry ago, 2nd tournament ago
+        [DataRow(0, 1, 2, 0)] // - Cashed 3rd entry ago, 3rd tournament ago
+        [DataRow(0, 1, 3, 1)] // - Cashed 4th entry ago, 4th tournament ago
+        [DataRow(0, 1, 4, 1)] // - Cashed 3rd tournament ago but not last 3 entries (multiple tournament entry)
+        [DataRow(0, 1, 5, 0)] // - Cashed 2nd tournament ago as multiple entry
+        [DataRow(0, 1, 7, 0)] // - Cashed 3rd tournament ago as multiple entry
+        [DataRow(0, 1, 6, 0)] // - Did not cash last 4 entries with a with 3 losses already applied
+        [DataRow(0, 4, 0, 2)] // - 6 losses in a row not yet applied
+        [DataRow(0, 4, 6, 1)] // - Has 6 losses in a row with 3 losses applied
+        [DataRow(0, 4, 7, 1)] // - Has 6 losses in a row but won 2nd to last tournament that includes one of the wins
+        [DataRow(0, 2, 2, 1)] // - Lost twice in current tourney, once in previous, but had cashed game 2 tourneys ago
+        [DataRow(0, 2, 3, 1)] // - Lost twice in current tourney and twice in last two tournaments
+        public void AddToBonusPins_ReturnsExpectedBonusPins(int currentBonusPins, int currTourneyEntryCount, int playerHistoryListNum, 
+                                                            int expectedBonusPins)
         {
-            DateTime currTournamentDate = new DateTime(currTournYear, currTournMonth, currTournDay);
-            List<PlayerHistory> last2Tournaments = GetPlayerHistoryTestData(playerHistoryListNum);
+            List<PlayerHistory> latestTournaments = GetPlayerHistoryTestData(playerHistoryListNum);
 
-            int resultBonusPins = Calculations.AddToBonusPins(currentBonusPins, currTournamentDate, last2Tournaments);
+            int resultBonusPins = Calculations.AddToBonusPins(currentBonusPins, latestTournaments, currTourneyEntryCount);
 
             Assert.AreEqual(expectedBonusPins, resultBonusPins);
         }
@@ -278,6 +283,10 @@ namespace NineTapTour.Calculations.Test
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0, Bonus = 0
                         }
                     };
+                case 10:
+                    return null;
+                case 11:
+                    return new List<PlayerHistory>();
                 default:
                     throw new ArgumentOutOfRangeException();
             }

@@ -42,40 +42,42 @@ namespace NineTapTour.Database
                     $"PLEASE WRITE THIS DOWN OR TAKE A PICTURE AND FIX THE MEMBER EXCEL FILE.");
             }
         }
-        public static void AddPlayerHistory2(PlayerHistory temp)
+
+
+        public static void AddOrUpdatePlayerHistory(PlayerHistory temp)
         {
             try
             {
                 using (var db = new NineTapDb())
                 {
-
-                    if (GameExists(temp) == false && FinalizeTempDB.GameExists(temp) == true)
+                    if (!PlayerHistoryExists(temp) && FinalizeTempDB.GameExists(temp))
                     {
                         db.Entry(temp).State = EntityState.Added;
-                        db.SaveChanges();
-                    }
-                    else if (GameExists(temp) == true && FinalizeTempDB.GameExists(temp) == true)
-                    {
-                        int ID = getHisID(temp);
-                        temp.hisID = ID;
-                        db.Entry(temp).State = EntityState.Modified;
-                        db.SaveChanges();
                     }
                     else
                     {
-                        int ID = getHisID(temp);
-                        temp.hisID = ID;
+                        temp.hisID = getHisID(temp);
                         db.Entry(temp).State = EntityState.Modified;
-                        db.SaveChanges();
                     }
-
-
+                    db.SaveChanges();
                 }
             }
             catch (SqlException ex)
             {
                 throw new PlayerHistoryTableException("Error Number : " + ex.Number + " - " + ex.Message);
             }
+        }
+
+        public static void AddOrUpdatePlayerHistoryList(List<PlayerHistory> playerHistoryList)
+        {
+            var db = new NineTapDb();
+            foreach (PlayerHistory playerHistory in playerHistoryList)
+            {
+                db.Entry(playerHistory).State = db.PlayerHistory.Any(ph => ph.hisID == playerHistory.hisID) ?
+                         EntityState.Modified :
+                         EntityState.Added;
+            }
+            db.SaveChanges();
         }
 
         public static List<PlayerHistory> getTop30FromPlayerHistory(int id)
@@ -132,24 +134,6 @@ namespace NineTapTour.Database
             }
 
             return Return;
-        }
-        public static bool GameExists(PlayerHistory Temp)
-        {
-
-            using (var db = new NineTapDb())
-            {
-
-                if (db.PlayerHistory.Any(m => m.GameID == Temp.GameID))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-
-            }
-
         }
 
         public static int getHisID(PlayerHistory t)
@@ -355,26 +339,26 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Gets the last eight tournaments selecting only the tournament date and bonus pins.
+        /// Gets the last quantity of games selecting only the tournament date and bonus pins.
         /// Used to calculate bonus pins.
         /// </summary>
-        /// <param name="memNum"></param>
-        /// <param name="regionId"></param>
+        /// <param name="memNum"> member number of player</param>
+        /// <param name="regionId">region the tournament takes place</param>
+        /// <param name="gameQty">quantity of games to pull from the database</param>
         /// <returns></returns>
-        public static List<PlayerHistory> GetLastEightTournaments(int memNum, int regionId)
+        public static List<PlayerHistory> GetLastQtyGamesMoneyWon(int memNum, int regionId, int gameQty)
         {
             var queryResult = new NineTapDb().PlayerHistory
                                     .Where(ph => ph.MemberNumber == memNum && ph.regionID == regionId)
                                     .OrderByDescending(ph => ph.TournamentDate)
-                                    .Select(ph => new {ph.TournamentDate, ph.MoneyWon, ph.Bonus})
-                                    .Take(8)
+                                    .Select(ph => new {ph.TournamentDate, ph.MoneyWon})
+                                    .Take(gameQty)
                                     .ToList();
 
             return queryResult.Select(qr => new PlayerHistory()
                             {
                                 TournamentDate = qr.TournamentDate,
-                                MoneyWon = qr.MoneyWon,
-                                Bonus = qr.Bonus
+                                MoneyWon = qr.MoneyWon
                             })
                             .ToList();
         }
@@ -636,6 +620,11 @@ namespace NineTapTour.Database
         public static bool PlayerHistoryExists(int gameId)
         {
             return new NineTapDb().PlayerHistory.Any(ph => ph.GameID == gameId);
+        }
+
+        public static bool PlayerHistoryExists(PlayerHistory ph)
+        {
+            return PlayerHistoryExists(ph.GameID);
         }
     }
 }

@@ -613,7 +613,7 @@ namespace NineTapTour.Forms
                     if (DateTime.Now > currentMem.LastBowled || currentMem.LastBowled == null)
                     {
                         currentMem.LastBowled = DateTime.Now;
-                        MemberDb.AddMember(currentMem);
+                        MemberDb.AddOrUpdateMember(currentMem);
                     }
                 }
                 Refresh(false);
@@ -1080,8 +1080,12 @@ namespace NineTapTour.Forms
             // resets the fields when a different tournament is selected
             ResetFields();
 
+            // Used to find out if user actually clicked a different tournament instead of just Member Scores loading.
+            int prevTourneyId = (selectedTournament == null) ? 0 : selectedTournament.Id;
+            
             // assigns the selectedTournament variable as the selected Tournament from the comboBox
             selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
+            int currTourneyId;
 
             // determines whether the tournament is a double tourney or not, then enables or disables the single and/or double textBox selection option
             if (selectedTournament == null)
@@ -1093,6 +1097,8 @@ namespace NineTapTour.Forms
                 RadioIntialize();
                 rdoHandicapScore.Visible = false;
                 rdoScratchScore.Visible = false;
+
+                currTourneyId = 0;
             }
             else
             {
@@ -1103,6 +1109,8 @@ namespace NineTapTour.Forms
                 btnDelete.Enabled = true;
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
+
+                currTourneyId = selectedTournament.Id;
             }
 
             if (cbxTourneyDropDown.SelectedIndex < 0)
@@ -1123,8 +1131,15 @@ namespace NineTapTour.Forms
                 Refresh(false);
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
+
                 // sets focus to member num becuse that is what a user will need next
                 txtMemberNum.Focus();
+            }
+
+            // clear the temp variables for the money earned for tourn results
+            if (TempVariablesForGlobalLevel.MoneyEarnings != null && prevTourneyId != currTourneyId)
+            {
+                TempVariablesForGlobalLevel.MoneyEarnings.Clear();
             }
         }
 
@@ -1802,7 +1817,7 @@ namespace NineTapTour.Forms
             currentMem.Bonus = temp[0].Bonus;
             currentMem.StartAvg = temp[0].AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
             currentMem.Average = Convert.ToInt32(temp[0].trueAVG);
-            MemberDb.AddMember(currentMem);
+            MemberDb.AddOrUpdateMember(currentMem);
         }
 
         private void btnTournamentResults_Click(object sender, EventArgs e)

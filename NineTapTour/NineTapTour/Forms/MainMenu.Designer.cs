@@ -130,7 +130,7 @@
             // 
             // btnDropDataBase1
             // 
-            this.btnDropDataBase1.Location = new System.Drawing.Point(50, 499);
+            this.btnDropDataBase1.Location = new System.Drawing.Point(50, 503);
             this.btnDropDataBase1.Margin = new System.Windows.Forms.Padding(2);
             this.btnDropDataBase1.Name = "btnDropDataBase1";
             this.btnDropDataBase1.Size = new System.Drawing.Size(121, 23);
@@ -158,6 +158,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainMenu";
             this.Text = "MainMenu";
+            this.Load += new System.EventHandler(this.MainMenu_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.MainMenu_Paint);
             this.ResumeLayout(false);
 

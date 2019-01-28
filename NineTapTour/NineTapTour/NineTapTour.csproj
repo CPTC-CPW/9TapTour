@@ -146,6 +146,7 @@
     <Compile Include="Database\TournamentDb.cs" />
     <Compile Include="Exceptions\MemberTableException.cs" />
     <Compile Include="Models\Participant.cs" />
+    <Compile Include="Models\TempVariablesForGlobalLevel.cs" />
     <Compile Include="Models\TopScores.cs" />
     <Compile Include="Models\Tournament.cs" />
     <Compile Include="Exceptions\PlayerHistoryTableException.cs" />

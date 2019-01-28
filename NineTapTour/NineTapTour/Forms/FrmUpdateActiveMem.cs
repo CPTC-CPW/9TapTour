@@ -40,20 +40,21 @@ namespace NineTapTour.Forms
 
         private void UpdateList()
         {
-            try
+            if (AllMembers == null)
             {
-                AllMembers.ForEach(delegate (Member mem)
+                MessageBox.Show("There are no members within this region in the database");
+                return;
+            }
+
+            AllMembers.ForEach(delegate (Member mem)
+            {
+                if (mem.IsActive && (mem.LastBowled <= targetDate || mem.LastBowled.ToString() == ""))
                 {
-                    if (mem.IsActive && (mem.LastBowled <= targetDate || mem.LastBowled.ToString() == ""))
-                    {
-                        checkedListBox1.Items.Add(mem);
-                    }
-                });
-            }
-            catch
-            {
-                MessageBox.Show("null list");
-            }
+                    InactiveListCheckBox.Items.Add(mem);
+                }
+            });
+
+            // add a sort feature here for inactive members in better visual order
         }
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
@@ -63,27 +64,34 @@ namespace NineTapTour.Forms
 
         private void btnUpdateActive_Click(object sender, EventArgs e)
         {
+            if (InactiveListCheckBox.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("No members checked.");
+                return;
+            }
+
             var db = new NineTapDb();
             if (MessageBox.Show("Update the selected Members to inactive?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
-                try
+              
+                foreach (Member mem in InactiveListCheckBox.CheckedItems)
                 {
-                    //PrintToWord.CreateWordDoc("InActive.txt");//copy to word
-                    foreach (Member mem in checkedListBox1.CheckedItems)
-                    {
-                        mem.IsActive = false;
-                        //PrintToWord.WriteWordDoc("Name" + mem.FirstName + " " + mem.LastName);
-                        db.Entry(mem).State = EntityState.Modified;
-                        db.SaveChanges();
-                        checkedListBox1.Items.Clear();
-                        UpdateList();
-                        //PrintToWord.OpenWordDoc();//Open word doc
-                    }
+                    mem.IsActive = false;
+                    db.Entry(mem).State = EntityState.Modified;
+                        
                 }
-                catch
-                {
-                    //MessageBox.Show("No Members Selected");
-                }
+                db.SaveChanges();
+                InactiveListCheckBox.Items.Clear();
+                UpdateList();
+              
+            }
+        }
+
+        private void btnCheckInactive_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < InactiveListCheckBox.Items.Count; i++)
+            {
+                InactiveListCheckBox.SetItemChecked(i, true);
             }
         }
     }

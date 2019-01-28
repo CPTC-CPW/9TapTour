@@ -15,7 +15,7 @@ namespace NineTapTour.Database
 {
     public class MemberDb
     {
-        public static void AddMember(Member temp)
+        public static void AddOrUpdateMember(Member temp)
         {
             try
             {
@@ -95,7 +95,7 @@ namespace NineTapTour.Database
             using (var db = new NineTapDb())
             {
                 return (from m in db.Members
-                        orderby m.Number
+                        orderby  m.Number
                         where m.NineTapRegionID == RegionID
                         select m).ToList();
             }
