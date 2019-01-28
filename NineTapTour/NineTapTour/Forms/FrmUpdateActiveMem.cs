@@ -45,14 +45,21 @@ namespace NineTapTour.Forms
                 MessageBox.Show("There are no members within this region in the database");
                 return;
             }
+            AllMembers.Sort(new MemberNumComparer());
 
-            AllMembers.ForEach(delegate (Member mem)
-            {
+            InactiveListCheckBox.Sorted = false;
+
+            foreach (var mem in AllMembers)
+            {            
+                // add members to the list
                 if (mem.IsActive && (mem.LastBowled <= targetDate || mem.LastBowled.ToString() == ""))
                 {
                     InactiveListCheckBox.Items.Add(mem);
                 }
-            });
+
+            }
+
+            
 
             // add a sort feature here for inactive members in better visual order
         }
@@ -83,7 +90,6 @@ namespace NineTapTour.Forms
                 db.SaveChanges();
                 InactiveListCheckBox.Items.Clear();
                 UpdateList();
-              
             }
         }
 
@@ -93,6 +99,16 @@ namespace NineTapTour.Forms
             {
                 InactiveListCheckBox.SetItemChecked(i, true);
             }
+        }
+    }
+
+    public class MemberNumComparer : IComparer<Member>
+    {
+        int IComparer<Member>.Compare(Member x, Member y)
+        {
+            int mem1 = x.Number;
+            int mem2 = y.Number;
+            return mem1.CompareTo(mem2);
         }
     }
 }
