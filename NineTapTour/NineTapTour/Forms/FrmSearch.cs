@@ -119,47 +119,12 @@ namespace NineTapTour.Forms
                         FirstName = "There are no users with that information",
                     });
 
-                    disableData();
                     isChecked = true;
                 }
             }
             dtagrdResults.DataSource = memList;
             AdvancedViewCheck();
             btnSelect.Focus();
-        }
-
-        //used when there are no query results and a message needs to be displayed
-        //stating as such
-        private void disableData() {
-            //Disables every column from being displayed besides the First name 
-            dtagrdResults.Columns["Number"].Visible = false;
-            dtagrdResults.Columns["LastName"].Visible = false;
-            dtagrdResults.Columns["Email"].Visible = false;
-            dtagrdResults.Columns["Average"].Visible = false;
-            dtagrdResults.Columns["StartAvg"].Visible = false;
-            dtagrdResults.Columns["Handicap"].Visible = false;
-            dtagrdResults.Columns["Bonus"].Visible = false;
-            dtagrdResults.Columns["MoneyEarned"].Visible = false;
-            dtagrdResults.Columns["NineTapRegionID"].Visible = false;
-            dtagrdResults.Columns["IsActive"].Visible = false;
-            dtagrdResults.Columns["MiddleInitial"].Visible = false;
-            dtagrdResults.Columns["DateOfBirth"].Visible = false;
-            dtagrdResults.Columns["Gender"].Visible = false;
-            dtagrdResults.Columns["Street"].Visible = false;
-            dtagrdResults.Columns["City"].Visible = false;
-            dtagrdResults.Columns["State"].Visible = false;
-            dtagrdResults.Columns["PostalCode"].Visible = false;
-            dtagrdResults.Columns["PrimaryPhone"].Visible = false;
-            dtagrdResults.Columns["SecondaryPhone"].Visible = false;
-            dtagrdResults.Columns["JoinDate"].Visible = false;
-            dtagrdResults.Columns["RejoinDate"].Visible = false;
-            dtagrdResults.Columns["LastBowled"].Visible = false;
-            dtagrdResults.Columns["LastPayment"].Visible = false;
-            dtagrdResults.Columns["IsLifetimeMember"].Visible = false;
-            dtagrdResults.Columns["MoneyEarned"].ValueType = typeof(decimal);
-            dtagrdResults.Columns["Notes"].Visible = false;
-            dtagrdResults.Columns["Referrals"].Visible = false;
-            dtagrdResults.Columns["IsSenior"].Visible = false;
         }
 
         private void chkAdvancedView_CheckStateChanged(object sender, EventArgs e)
