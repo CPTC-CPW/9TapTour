@@ -146,6 +146,19 @@ namespace NineTapTour.Forms
                 }
             }
         }
+
+        /// <summary>
+        /// Opens the 'About' form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void AboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var aboutForm = Application.OpenForms["About"] as FrmAbout;
+
+            OpenOrDisplayForm(ref aboutForm);
+        }
+
         //this method is for the buttons on the main form
         public void menuHighlight(string itemName)
         {
@@ -171,9 +184,9 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
-            OpenOrDisplayForm(ref mainMenu);          
+
+            OpenOrDisplayForm(ref mainMenu);
         }
 
         /// <summary>
@@ -188,8 +201,6 @@ namespace NineTapTour.Forms
             currFrmMemberData = newfrmMemberData;
         }
 
-        
-
         /// <summary>
         /// 
         /// </summary>
@@ -201,7 +212,6 @@ namespace NineTapTour.Forms
             OpenOrDisplayForm(ref newfrmMemberScores);
             currfrmScoresdata = newfrmMemberScores;
         }
-        
 
         /// <summary>
         /// 
