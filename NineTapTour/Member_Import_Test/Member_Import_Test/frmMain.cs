@@ -86,11 +86,6 @@ namespace Member_Import_Test
         public List<Member> invalidMembers = new List<Member>();//list of invalid members
                                                                 //public List<string> QBSTournamentList = new List<string>(); //list of qualified by squad tournaments
         public List<PlayerHistory> PlayerHistoryList = new List<PlayerHistory>();
-        int GameIdint = 1;
-
-
-
-
 
 
         //Create array of spaces
@@ -472,7 +467,7 @@ namespace Member_Import_Test
                                             {
                                                 newMem.DateOfBirth = Convert.ToDateTime(File.Substring(currentIndex, Spaces[i]).Trim());
                                             }
-                                            catch (Exception ex)
+                                            catch (Exception)
                                             {
                                                 newMem.DateOfBirth = DateTime.Today;
                                             }
@@ -667,7 +662,7 @@ namespace Member_Import_Test
                 playerOrgAVG = Convert.ToInt32((range.Cells[1, 10] as Excel.Range).Value2);
             }
 
-            catch (Exception NotAValidNumber)
+            catch (Exception)
             {
                 string[] aftersplit;
                 string orgstring;
@@ -1021,7 +1016,7 @@ namespace Member_Import_Test
         private void ProcessPinFile(string PinFileName)
         {
             Tournament currentTournament = new Tournament();
-            List<Participant> listOfParticipants;
+            //List<Participant> listOfParticipants;
             //GETS DATE OUT OF FILE NAME
             string tournament = Path.GetFileNameWithoutExtension(PinFileName.Trim());
             string[] tournamentAfterSplit = tournament.Split(' ');
