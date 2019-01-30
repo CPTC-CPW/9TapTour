@@ -1016,7 +1016,7 @@ namespace Member_Import_Test
         private void ProcessPinFile(string PinFileName)
         {
             Tournament currentTournament = new Tournament();
-            List<Participant> listOfParticipants;
+            //List<Participant> listOfParticipants;
             //GETS DATE OUT OF FILE NAME
             string tournament = Path.GetFileNameWithoutExtension(PinFileName.Trim());
             string[] tournamentAfterSplit = tournament.Split(' ');
