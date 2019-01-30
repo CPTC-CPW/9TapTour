@@ -40,75 +40,79 @@
             // 
             // btnMemberData
             // 
-            this.btnMemberData.BackgroundImage = global::NineTapTour.Properties.Resources.BowlingPin1;
+            this.btnMemberData.BackColor = System.Drawing.Color.Transparent;
+            this.btnMemberData.BackgroundImage = global::NineTapTour.Properties.Resources.BowlingPin2;
             this.btnMemberData.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnMemberData.FlatAppearance.BorderSize = 0;
             this.btnMemberData.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMemberData.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnMemberData.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnMemberData.Location = new System.Drawing.Point(12, 51);
+            this.btnMemberData.Location = new System.Drawing.Point(-11, 45);
             this.btnMemberData.Name = "btnMemberData";
             this.btnMemberData.Padding = new System.Windows.Forms.Padding(25, 0, 0, 0);
             this.btnMemberData.Size = new System.Drawing.Size(242, 92);
             this.btnMemberData.TabIndex = 0;
             this.btnMemberData.Text = "Member Info";
             this.btnMemberData.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnMemberData.UseVisualStyleBackColor = true;
+            this.btnMemberData.UseVisualStyleBackColor = false;
             this.btnMemberData.Click += new System.EventHandler(this.btnMemberData_Click);
             // 
             // btnMemberScores
             // 
-            this.btnMemberScores.BackgroundImage = global::NineTapTour.Properties.Resources.BowlingPin1;
+            this.btnMemberScores.BackColor = System.Drawing.Color.Transparent;
+            this.btnMemberScores.BackgroundImage = global::NineTapTour.Properties.Resources.BowlingPin2;
             this.btnMemberScores.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnMemberScores.FlatAppearance.BorderSize = 0;
             this.btnMemberScores.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMemberScores.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnMemberScores.Location = new System.Drawing.Point(12, 143);
+            this.btnMemberScores.Location = new System.Drawing.Point(-11, 142);
             this.btnMemberScores.Name = "btnMemberScores";
             this.btnMemberScores.Padding = new System.Windows.Forms.Padding(25, 0, 0, 0);
             this.btnMemberScores.Size = new System.Drawing.Size(242, 97);
             this.btnMemberScores.TabIndex = 0;
             this.btnMemberScores.Text = "Member Scores";
             this.btnMemberScores.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnMemberScores.UseVisualStyleBackColor = true;
+            this.btnMemberScores.UseVisualStyleBackColor = false;
             this.btnMemberScores.Click += new System.EventHandler(this.btnMemberScores_Click);
             // 
             // btnAbout
             // 
-            this.btnAbout.BackgroundImage = global::NineTapTour.Properties.Resources.BowlingPin1;
+            this.btnAbout.BackColor = System.Drawing.Color.Transparent;
+            this.btnAbout.BackgroundImage = global::NineTapTour.Properties.Resources.BowlingPin2;
             this.btnAbout.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnAbout.FlatAppearance.BorderSize = 0;
             this.btnAbout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAbout.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.btnAbout.Location = new System.Drawing.Point(12, 231);
+            this.btnAbout.Location = new System.Drawing.Point(-11, 244);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.Padding = new System.Windows.Forms.Padding(0, 0, 38, 0);
             this.btnAbout.Size = new System.Drawing.Size(242, 92);
             this.btnAbout.TabIndex = 0;
             this.btnAbout.Text = "About";
-            this.btnAbout.UseVisualStyleBackColor = true;
+            this.btnAbout.UseVisualStyleBackColor = false;
             this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
             // 
             // Exit
             // 
-            this.Exit.BackgroundImage = global::NineTapTour.Properties.Resources.BowlingPin1;
+            this.Exit.BackColor = System.Drawing.Color.Transparent;
+            this.Exit.BackgroundImage = global::NineTapTour.Properties.Resources.BowlingPin2;
             this.Exit.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.Exit.FlatAppearance.BorderSize = 0;
             this.Exit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Exit.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.Exit.Location = new System.Drawing.Point(12, 317);
+            this.Exit.Location = new System.Drawing.Point(-11, 341);
             this.Exit.Name = "Exit";
             this.Exit.Padding = new System.Windows.Forms.Padding(0, 0, 38, 0);
             this.Exit.Size = new System.Drawing.Size(242, 99);
             this.Exit.TabIndex = 0;
             this.Exit.Text = "Exit";
-            this.Exit.UseVisualStyleBackColor = true;
+            this.Exit.UseVisualStyleBackColor = false;
             this.Exit.Click += new System.EventHandler(this.Exit_Click);
             // 
             // cbxRegionSelect
             // 
             this.cbxRegionSelect.FormattingEnabled = true;
-            this.cbxRegionSelect.Location = new System.Drawing.Point(50, 440);
+            this.cbxRegionSelect.Location = new System.Drawing.Point(50, 445);
             this.cbxRegionSelect.Name = "cbxRegionSelect";
             this.cbxRegionSelect.Size = new System.Drawing.Size(121, 21);
             this.cbxRegionSelect.TabIndex = 3;
@@ -116,7 +120,7 @@
             // 
             // btnAdd
             // 
-            this.btnAdd.Location = new System.Drawing.Point(50, 467);
+            this.btnAdd.Location = new System.Drawing.Point(50, 471);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(121, 23);
             this.btnAdd.TabIndex = 4;

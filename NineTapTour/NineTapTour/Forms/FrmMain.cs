@@ -31,8 +31,6 @@ namespace NineTapTour.Forms
         public int RegionID { get; set; }
         public Size MaxWorkAreaScreenSize { get; set; }
 
-        //initializes a bool var for handling if the memberdata form is active so it has proper scope for handling the save data popup showing up on the wrong forms
-        bool memberDataIsActive = false;
 
         /// <summary>
         /// Opens Main form 
@@ -148,6 +146,19 @@ namespace NineTapTour.Forms
                 }
             }
         }
+
+        /// <summary>
+        /// Opens the 'About' form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void AboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var aboutForm = Application.OpenForms["About"] as FrmAbout;
+
+            OpenOrDisplayForm(ref aboutForm);
+        }
+
         //this method is for the buttons on the main form
         public void menuHighlight(string itemName)
         {
@@ -173,9 +184,9 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
-            OpenOrDisplayForm(ref mainMenu);          
+
+            OpenOrDisplayForm(ref mainMenu);
         }
 
         /// <summary>
@@ -188,11 +199,7 @@ namespace NineTapTour.Forms
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
             OpenOrDisplayForm(ref newfrmMemberData);
             currFrmMemberData = newfrmMemberData;
-            // sets bool var to true so the save data message will show up
-            memberDataIsActive = true;
         }
-
-        
 
         /// <summary>
         /// 
@@ -205,7 +212,6 @@ namespace NineTapTour.Forms
             OpenOrDisplayForm(ref newfrmMemberScores);
             currfrmScoresdata = newfrmMemberScores;
         }
-        
 
         /// <summary>
         /// 
