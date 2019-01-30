@@ -65,7 +65,7 @@
             this.Controls.Add(this.rtbFrmAboutText);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmAbout";
-            this.Text = "FrmAbout";
+            this.Text = "About";
             ((System.ComponentModel.ISupportInitialize)(this.pbAboutFormLogo)).EndInit();
             this.ResumeLayout(false);
 
