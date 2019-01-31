@@ -1092,6 +1092,9 @@ namespace NineTapTour.Forms
 
         private void BtnFinalize_Click(object sender, EventArgs e)
         {
+            // Disable Finalize button while in operation
+            btnFinalize.Enabled = false;
+
             if (currTournament.FinalizeStatus.Equals(true))
             {
                 DialogResult dialogResult = MessageBox.Show("Are you sure you wish to overwrite previous values?", "Re-Finalize Check", MessageBoxButtons.YesNo);
@@ -1107,7 +1110,10 @@ namespace NineTapTour.Forms
             else if (currTournament.FinalizeStatus.Equals(false))
             {
                 FinalizeTournament();
-            }       
+            }
+
+            // Enable Finalize button after operation
+            btnFinalize.Enabled = true;
         }
 
         private void FinalizeTournament()
