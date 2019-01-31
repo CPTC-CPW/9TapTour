@@ -1099,6 +1099,7 @@ namespace NineTapTour.Forms
                 rdoScratchScore.Visible = false;
 
                 currTourneyId = 0;
+                lblFinalizeStatusMessage.Text = "Select Tournament";
             }
             else
             {
@@ -1111,6 +1112,17 @@ namespace NineTapTour.Forms
                 rdoScratchScore.Visible = true;
 
                 currTourneyId = selectedTournament.Id;
+                if (selectedTournament.FinalizeStatus.Equals(false))
+                {
+                    lblFinalizeStatusMessage.Text = "Needs Finalization";
+                    lblFinalizeStatusMessage.ForeColor = Color.Blue;
+                }
+                else if (selectedTournament.FinalizeStatus.Equals(true))
+                {
+                    lblFinalizeStatusMessage.Text = "Finalized";
+                    lblFinalizeStatusMessage.ForeColor = Color.Red;
+                }
+                
             }
 
             if (cbxTourneyDropDown.SelectedIndex < 0)

@@ -40,6 +40,7 @@
             this.lblMemberNumber = new System.Windows.Forms.Label();
             this.lblName = new System.Windows.Forms.Label();
             this.lblStartAvg = new System.Windows.Forms.Label();
+            this.lblWarningAlreadyFinalized = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.SuspendLayout();
@@ -69,9 +70,10 @@
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle3;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 35);
+            this.dataGridView1.Location = new System.Drawing.Point(16, 43);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(1240, 279);
+            this.dataGridView1.Size = new System.Drawing.Size(1653, 343);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
             this.dataGridView1.CellMouseUp += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_OnCellMouseUp);
@@ -80,13 +82,14 @@
             // 
             // btnFinalize
             // 
-            this.btnFinalize.Location = new System.Drawing.Point(560, 641);
+            this.btnFinalize.Location = new System.Drawing.Point(747, 789);
+            this.btnFinalize.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFinalize.Name = "btnFinalize";
-            this.btnFinalize.Size = new System.Drawing.Size(104, 40);
+            this.btnFinalize.Size = new System.Drawing.Size(139, 49);
             this.btnFinalize.TabIndex = 1;
             this.btnFinalize.Text = "Finalize";
             this.btnFinalize.UseVisualStyleBackColor = true;
-            this.btnFinalize.Click += new System.EventHandler(this.btnFinalize_Click);
+            this.btnFinalize.Click += new System.EventHandler(this.BtnFinalize_Click);
             // 
             // dataGridView2
             // 
@@ -111,19 +114,21 @@
             dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle5;
-            this.dataGridView2.Location = new System.Drawing.Point(12, 356);
+            this.dataGridView2.Location = new System.Drawing.Point(16, 438);
+            this.dataGridView2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.ReadOnly = true;
-            this.dataGridView2.Size = new System.Drawing.Size(1240, 279);
+            this.dataGridView2.Size = new System.Drawing.Size(1653, 343);
             this.dataGridView2.TabIndex = 2;
             // 
             // lblMemberNumber
             // 
             this.lblMemberNumber.AutoSize = true;
             this.lblMemberNumber.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMemberNumber.Location = new System.Drawing.Point(28, 317);
+            this.lblMemberNumber.Location = new System.Drawing.Point(37, 390);
+            this.lblMemberNumber.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblMemberNumber.Name = "lblMemberNumber";
-            this.lblMemberNumber.Size = new System.Drawing.Size(134, 36);
+            this.lblMemberNumber.Size = new System.Drawing.Size(171, 45);
             this.lblMemberNumber.TabIndex = 6;
             this.lblMemberNumber.Text = "Member#";
             // 
@@ -131,9 +136,10 @@
             // 
             this.lblName.AutoSize = true;
             this.lblName.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblName.Location = new System.Drawing.Point(287, 317);
+            this.lblName.Location = new System.Drawing.Point(383, 390);
+            this.lblName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblName.Name = "lblName";
-            this.lblName.Size = new System.Drawing.Size(87, 36);
+            this.lblName.Size = new System.Drawing.Size(111, 45);
             this.lblName.TabIndex = 7;
             this.lblName.Text = "Name";
             // 
@@ -141,19 +147,29 @@
             // 
             this.lblStartAvg.AutoSize = true;
             this.lblStartAvg.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStartAvg.Location = new System.Drawing.Point(838, 317);
+            this.lblStartAvg.Location = new System.Drawing.Point(1117, 390);
+            this.lblStartAvg.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblStartAvg.Name = "lblStartAvg";
-            this.lblStartAvg.Size = new System.Drawing.Size(30, 36);
+            this.lblStartAvg.Size = new System.Drawing.Size(39, 45);
             this.lblStartAvg.TabIndex = 29;
             this.lblStartAvg.Text = "0";
             // 
+            // lblWarningAlreadyFinalized
+            // 
+            this.lblWarningAlreadyFinalized.AutoSize = true;
+            this.lblWarningAlreadyFinalized.Location = new System.Drawing.Point(532, 22);
+            this.lblWarningAlreadyFinalized.Name = "lblWarningAlreadyFinalized";
+            this.lblWarningAlreadyFinalized.Size = new System.Drawing.Size(0, 17);
+            this.lblWarningAlreadyFinalized.TabIndex = 30;
+            // 
             // FrmFinalizeTournament
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1264, 716);
+            this.ClientSize = new System.Drawing.Size(1685, 881);
+            this.Controls.Add(this.lblWarningAlreadyFinalized);
             this.Controls.Add(this.lblStartAvg);
             this.Controls.Add(this.lblName);
             this.Controls.Add(this.lblMemberNumber);
@@ -161,6 +177,7 @@
             this.Controls.Add(this.btnFinalize);
             this.Controls.Add(this.dataGridView1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "FrmFinalizeTournament";
             this.Text = "Finalize Tournament Results";
             this.Load += new System.EventHandler(this.FrmFinalizeTournament_Load);
@@ -179,5 +196,6 @@
         private System.Windows.Forms.Label lblMemberNumber;
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.Label lblStartAvg;
+        private System.Windows.Forms.Label lblWarningAlreadyFinalized;
     }
 }

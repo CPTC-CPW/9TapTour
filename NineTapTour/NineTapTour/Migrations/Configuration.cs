@@ -163,6 +163,7 @@ namespace NineTapTour.Migrations
                     t.Doubles = false;
                     t.ThreeOutOf4 = false;
                     t.TourneyRegion = 1;
+                    t.FinalizeStatus = false;
                 }).Generate(_numberOfCurrentTournamentsToCreate);
 
                 // Creates Members Information

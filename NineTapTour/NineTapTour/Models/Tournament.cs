@@ -27,7 +27,7 @@ namespace NineTapTour.Models
         }
 
         public int TourneyRegion { get; set; }
-        
+        public bool FinalizeStatus { get; set; }
     }
     public class TournamentDTO
     {

@@ -84,6 +84,11 @@ namespace NineTapTour.Forms
 
         private void FrmFinalizeTournament_Load(object sender, EventArgs e)
         {
+            if (currTournament.FinalizeStatus.Equals(true))
+            {
+                lblWarningAlreadyFinalized.Text = "WARNING! Tournament already finalized, finalizing again will overwrite previous values!";
+                lblWarningAlreadyFinalized.ForeColor = Color.Red;
+            }
 #if DEBUG
             CheckBox toggleAllDirectorCheck = new CheckBox();
             toggleAllDirectorCheck.Text = "Dir Check";
@@ -1085,11 +1090,34 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void btnFinalize_Click(object sender, EventArgs e)
+        private void BtnFinalize_Click(object sender, EventArgs e)
+        {
+            if (currTournament.FinalizeStatus.Equals(true))
+            {
+                DialogResult dialogResult = MessageBox.Show("Are you sure you wish to overwrite previous values?", "Re-Finalize Check", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    FinalizeTournament();
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    MessageBox.Show("Operation Canceled");
+                }
+            }
+            else if (currTournament.FinalizeStatus.Equals(false))
+            {
+                FinalizeTournament();
+            }       
+        }
+
+        private void FinalizeTournament()
         {
             Cursor.Current = Cursors.WaitCursor;
-            
-            
+
+            // Set currTournament's finalize status to true after button click
+            currTournament.FinalizeStatus = true;
+            TournamentDb.UpdateTournament(currTournament);
+
             bool isDirectorCheckFinished = true; //int used to make sure all the director check boxes have been filled out
 
             List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
@@ -1213,7 +1241,7 @@ namespace NineTapTour.Forms
                     ph.Game4 = FinalizeTableList[i].Game4;
 
                     DataGridViewCell placeCell = dataGridView1[STANDING_COLUMN, currDataGridRowIndex];
-                    byte placeStanding = (placeCell.Value == DBNull.Value) ? (byte) 0 : Convert.ToByte(placeCell.Value);
+                    byte placeStanding = (placeCell.Value == DBNull.Value) ? (byte)0 : Convert.ToByte(placeCell.Value);
 
                     // if bowler's highest game in tournament (only multiple entries that aren't the player's best game get 0s)
                     if (placeStanding > 0)

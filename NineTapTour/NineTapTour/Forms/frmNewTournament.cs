@@ -51,6 +51,7 @@ namespace NineTapTour.Forms
             NewTournament.Notes = rtxtNotes.Text;
             bool errors = false;
             NewTournament.TourneyRegion = ((FrmMain)MdiParent).RegionID;
+            NewTournament.FinalizeStatus = false;
             int numSquads;
             bool validateSquads = int.TryParse(txtSquads.Text, out numSquads);
 
