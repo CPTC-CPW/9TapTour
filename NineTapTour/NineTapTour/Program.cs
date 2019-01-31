@@ -74,7 +74,7 @@ namespace NineTapTour
             }
             catch (IOException ex)
             {
-                const string msg = "An error was encountered but the program failed to create a text file to save error information.";
+                string msg = $"An error was encountered but the program failed to create a text file to save error information. Error: {ex.Message}";
                 MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

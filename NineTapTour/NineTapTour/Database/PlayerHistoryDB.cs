@@ -39,6 +39,7 @@ namespace NineTapTour.Database
                 MessageBox.Show(
                     $"There was a problem with Member Number: {temp.MemberNumber}, {member?.FirstName} {member?.LastName}.\n" +
                     $"Please verify all tournament dates for that member\n" +
+                    $"Error: {ex.Message}\n" +
                     $"PLEASE WRITE THIS DOWN OR TAKE A PICTURE AND FIX THE MEMBER EXCEL FILE.");
             }
         }
