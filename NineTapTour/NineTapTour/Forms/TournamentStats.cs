@@ -51,8 +51,29 @@ namespace NineTapTour.Forms
                                                p.Game.Handicap,
                                                p.Game.Bonus
                                            }).ToList();
-
-                dgvTournamentStats.DataSource = tournamentStatsList;                               
+                
+                List<TournamentStatsList> statsList = new List<TournamentStatsList>();
+                foreach (var item in tournamentStatsList)
+                {
+                    TournamentStatsList list = new TournamentStatsList
+                    {
+                        Id = item.Number,
+                        FirstName = item.FirstName,
+                        LastName = item.LastName,
+                        Squad = item.Squad,
+                        ScratchTotal = item.ScratchTotal,
+                        Top3Scores = item.ScratchTotal + (item.Handicap * 3) + (item.Bonus * 3),
+                        Game1 = item.Game1,
+                        Game2 = item.Game2,
+                        Game3 = item.Game3,
+                        Game4 = item.Game4,
+                        Handicap = item.Handicap,
+                        Bonus = item.Bonus
+                    };
+                    statsList.Add(list);
+                }
+                statsList.Sort(new TournamentStatsComparer());
+                dgvTournamentStats.DataSource = statsList;                               
             }
             else
             {
@@ -112,6 +133,8 @@ namespace NineTapTour.Forms
 
                         listOfTourney.Add(temp);
                     }                    
+                    
+                    listOfTourney.Sort(new TournamentStatsComparer());
                     dgvTournamentStats.DataSource = listOfTourney;
                 }
                 catch (SqlException)
@@ -160,6 +183,16 @@ namespace NineTapTour.Forms
             Bitmap bm = new Bitmap(this.dgvTournamentStats.Width, this.dgvTournamentStats.Height);
             this.dgvTournamentStats.DrawToBitmap(bm, new Rectangle(0, 0, this.dgvTournamentStats.Width, this.dgvTournamentStats.Height));
             e.Graphics.DrawImage(bm, 0, 0);
+        }
+    }
+
+    public class TournamentStatsComparer : IComparer<TournamentStatsList>
+    {
+        int IComparer<TournamentStatsList>.Compare(TournamentStatsList x, TournamentStatsList y)
+        {
+            int mem1 = x.Id;
+            int mem2 = y.Id;
+            return mem1.CompareTo(mem2);
         }
     }
 
