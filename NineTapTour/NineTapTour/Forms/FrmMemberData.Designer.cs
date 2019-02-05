@@ -1296,7 +1296,6 @@
         private System.Windows.Forms.Label lblLastPaid;
         private System.Windows.Forms.Label lblPaymentInfo;
         private System.Windows.Forms.Button btnImportData;
-        private System.Windows.Forms.OpenFileDialog ofdOpen;
         private System.Windows.Forms.CheckBox chbSocial;
         private System.Windows.Forms.MaskedTextBox txtDOB;
         private System.Windows.Forms.ToolTip toolTip1;
