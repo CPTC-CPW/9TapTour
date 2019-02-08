@@ -32,9 +32,12 @@
             // 
             // rtbFrmAboutText
             // 
+            this.rtbFrmAboutText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.rtbFrmAboutText.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(102)))));
+            this.rtbFrmAboutText.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtbFrmAboutText.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtbFrmAboutText.ForeColor = System.Drawing.Color.White;
-            this.rtbFrmAboutText.Location = new System.Drawing.Point(81, 188);
+            this.rtbFrmAboutText.Location = new System.Drawing.Point(96, 225);
             this.rtbFrmAboutText.Name = "rtbFrmAboutText";
             this.rtbFrmAboutText.ReadOnly = true;
             this.rtbFrmAboutText.Size = new System.Drawing.Size(662, 240);
@@ -43,6 +46,7 @@
             // 
             // pbAboutFormLogo
             // 
+            this.pbAboutFormLogo.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.pbAboutFormLogo.Image = global::NineTapTour.Properties.Resources._9taplogo1;
             this.pbAboutFormLogo.Location = new System.Drawing.Point(297, 12);
             this.pbAboutFormLogo.Name = "pbAboutFormLogo";
@@ -61,7 +65,7 @@
             this.Controls.Add(this.rtbFrmAboutText);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmAbout";
-            this.Text = "FrmAbout";
+            this.Text = "About";
             ((System.ComponentModel.ISupportInitialize)(this.pbAboutFormLogo)).EndInit();
             this.ResumeLayout(false);
 
