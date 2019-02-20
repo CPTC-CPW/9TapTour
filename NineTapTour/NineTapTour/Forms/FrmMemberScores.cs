@@ -1140,7 +1140,7 @@ namespace NineTapTour.Forms
             if (TempVariablesForGlobalLevel.MoneyEarnings != null && prevTourneyId != currTourneyId)
             {
                 TempVariablesForGlobalLevel.MoneyEarnings.Clear();
-            }
+            }  
         }
 
         /// <summary>
@@ -1158,6 +1158,47 @@ namespace NineTapTour.Forms
             btnRightArrow.Enabled = true;
             btnPlaceStandings.Enabled = true;
             btnRecapByPin.Enabled = true;
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////
+            if (selectedTournament != null)
+            {
+                overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
+
+                //////////////////////////////////////////////////////////////////////////////
+                switchingParticipents = true;
+
+                // Disables buttons and breaks function
+                // if already at the last record
+                if (currentIndex >= overallListOfParticipants.Count)
+                {
+                    btnRightArrow.Enabled = false;
+                    btnLastRecord.Enabled = false;
+                    return;
+                }
+
+                // Sets currentIndex to the size of total
+                currentIndex = overallListOfParticipants.Count - 1;
+
+                lblRecord.Text = "Record " + (currentIndex + 1) + " / " + overallListOfParticipants.Count;
+                ReEnableNavigation();
+
+                // Gets the last record from the list
+                txtMemberNum.Text = Convert.ToString(overallListOfParticipants[overallListOfParticipants.Count - 1].Member.Number);
+                int lastMemberSquad = overallListOfParticipants[overallListOfParticipants.Count - 1].Squad;
+                CheckSquadRadioButton(lastMemberSquad);
+
+                FillMember();
+
+                // Disables buttons right and last record buttons 
+                // if there are no more records go to.
+                btnLastRecord.Enabled = false;
+                btnRightArrow.Enabled = false;
+
+
+                switchingParticipents = false;
+            }
+
+
         }
 
         /// <summary>
