@@ -11,6 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NineTapTour.Models;
+using System.Collections;
+using System.Collections.ObjectModel;
 
 namespace NineTapTour.Forms
 {
@@ -72,8 +74,10 @@ namespace NineTapTour.Forms
                     };
                     statsList.Add(list);
                 }
-                statsList.Sort(new TournamentStatsComparer());
-                dgvTournamentStats.DataSource = statsList;                               
+                
+                TournamentStatsBindingList bindingList = new TournamentStatsBindingList(statsList);
+                dgvTournamentStats.DataSource = bindingList;
+                SetSortMode();
             }
             else
             {
@@ -102,7 +106,7 @@ namespace NineTapTour.Forms
 
                     // execute command(query)
                     SqlDataReader reader = gameOrder.ExecuteReader();
-                    List<TournamentStatsList> listOfTourney = new List<TournamentStatsList>();
+                    List<TournamentStatsList> statsList = new List<TournamentStatsList>();
 
                     // view results
                     while (reader.Read())
@@ -131,21 +135,34 @@ namespace NineTapTour.Forms
                         temp.Game3 = Convert.ToInt32(reader["Game3"]);
                         temp.Game4 = Convert.ToInt32(reader["Game4"]);
 
-                        listOfTourney.Add(temp);
+                        statsList.Add(temp);
                     }                    
                     
-                    listOfTourney.Sort(new TournamentStatsComparer());
-                    dgvTournamentStats.DataSource = listOfTourney;
+                    TournamentStatsBindingList bindingList = new TournamentStatsBindingList(statsList);
+                    dgvTournamentStats.DataSource = bindingList;
+                    SetSortMode();
                 }
                 catch (SqlException)
                 {
-
+                    
                 }
                 finally
                 {
                     con.Dispose();
                 }
             }
+        }
+
+        public void SetSortMode()
+        {
+            int count = dgvTournamentStats.Columns.Count;
+            for (int i = 0; i < count; i++)
+            {
+                //dgvTournamentStats.Columns[i].SortMode = DataGridViewColumnSortMode.Automatic;
+                dgvTournamentStats.Sort(dgvTournamentStats.Columns[i], ListSortDirection.Ascending);
+            }
+            //dgvTournamentStats.Sort(new DataGridViewComparer());
+            //dgvTournamentStats.Sort(dgvTournamentStats.Columns["Id"], ListSortDirection.Ascending);
         }
 
         public static List<int> GetTop3OutOf4(List<int?> scores)
@@ -186,13 +203,24 @@ namespace NineTapTour.Forms
         }
     }
 
-    public class TournamentStatsComparer : IComparer<TournamentStatsList>
+    public class DataGridViewComparer : IComparer
     {
-        int IComparer<TournamentStatsList>.Compare(TournamentStatsList x, TournamentStatsList y)
+        public int Compare(object x, object y)
         {
-            int mem1 = x.Id;
-            int mem2 = y.Id;
-            return mem1.CompareTo(mem2);
+            DataGridViewRow row1 = (DataGridViewRow)x;
+            DataGridViewRow row2 = (DataGridViewRow)y;
+
+            int compareResult = string.Compare(
+                (string)row1.Cells[0].Value,
+                (string)row2.Cells[0].Value);
+
+            if (compareResult == 0)
+            {
+                compareResult = ((int)row1.Cells[1].Value)
+                    .CompareTo((int)row2.Cells[1].Value);
+            }
+
+            return compareResult;
         }
     }
 
@@ -210,5 +238,219 @@ namespace NineTapTour.Forms
         public int? Game4 { get; set; }
         public int? Handicap { get; set; }
         public int? Bonus { get; set; }
+    }
+
+    /**
+     * Provides a generic collection that supports data binding and additionally supports sorting.
+     * https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.ibindinglist?view=netframework-4.7.2
+     * TournamentStatsBindingList impliments CollectionBase and IBindingList to allow for DataGridView sorting.
+     * IList -> CollectionBase.List
+     */
+    public class TournamentStatsBindingList : CollectionBase, IBindingList
+    {        
+        private IList _bindingList;
+        
+        private bool _isSorted;
+        private ListSortDirection _sortDirection = ListSortDirection.Ascending;
+        private PropertyDescriptor _sortProperty;
+        
+        private ListChangedEventArgs resetEvent = new ListChangedEventArgs(ListChangedType.Reset, -1);
+        private ListChangedEventHandler onListChanged;
+
+
+        public TournamentStatsBindingList()
+        {
+            _bindingList = new List<TournamentStatsList>();
+            LoadMembers();
+        }
+
+        public TournamentStatsBindingList(List<TournamentStatsList> list)
+        {
+            _bindingList = list;
+            LoadMembers();
+        }        
+
+        public TournamentStatsList this[int index]
+        {
+            get
+            {
+                return (TournamentStatsList)(List[index]);
+            }
+            set
+            {
+                List[index] = value;
+            }
+        }
+        
+        public void LoadMembers()
+        {            
+            ReadList();
+            OnListChanged(resetEvent);
+        }
+
+        private void ReadList()
+        {
+            foreach (var m in _bindingList)
+            {
+                List.Add(m);
+            }
+        }
+
+        public int Add(TournamentStatsList value)
+        {
+            return List.Add(value);
+        }
+
+        public TournamentStatsList AddNew()
+        {
+            return (TournamentStatsList)((IBindingList)this).AddNew();
+        }
+
+        public void Remove(TournamentStatsList value)
+        {
+            List.Remove(value);
+        }
+
+        protected virtual void OnListChanged(ListChangedEventArgs ev)
+        {
+            if (onListChanged != null)
+            {
+                onListChanged(this, ev);
+            }
+        }
+
+        protected override void OnClear()
+        {
+            foreach (TournamentStatsList c in List)
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        protected override void OnClearComplete()
+        {
+            OnListChanged(resetEvent);
+        }
+
+        protected override void OnInsertComplete(int index, object value)
+        {
+            OnListChanged(new ListChangedEventArgs(ListChangedType.ItemAdded, index));
+        }
+
+        protected override void OnRemoveComplete(int index, object value)
+        {
+            OnListChanged(new ListChangedEventArgs(ListChangedType.ItemDeleted, index));
+        }
+
+        protected override void OnSetComplete(int index, object oldValue, object newValue)
+        {
+            if (oldValue != newValue)
+            {
+                OnListChanged(new ListChangedEventArgs(ListChangedType.ItemAdded, index));
+            }
+        }
+
+        internal void TournamentStatsListChanged(List<TournamentStatsList> list)
+        {
+            int index = List.IndexOf(list);
+
+            OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
+        }
+
+        bool IBindingList.AllowEdit
+        {
+            get { return true; }
+        }
+
+        bool IBindingList.AllowNew
+        {
+            get { return true; }
+        }
+
+        bool IBindingList.AllowRemove
+        {
+            get { return true; }
+        }
+
+        bool IBindingList.SupportsChangeNotification
+        {
+            get { return true; }
+        }
+
+        bool IBindingList.SupportsSearching
+        {
+            get { return false; }
+        }
+
+        bool IBindingList.SupportsSorting
+        {
+            get { return true; }
+        }
+
+        bool IBindingList.IsSorted
+        {
+            get { return _isSorted; }
+        }
+
+        ListSortDirection IBindingList.SortDirection
+        {
+            get { return _sortDirection; }
+        }
+
+        PropertyDescriptor IBindingList.SortProperty
+        {
+            get { return _sortProperty; }
+        }
+
+        public event ListChangedEventHandler ListChanged
+        {
+            add
+            {
+                onListChanged += value;
+            }
+            remove
+            {
+                onListChanged -= value;
+            }
+        }
+
+        void IBindingList.ApplySort(PropertyDescriptor property, ListSortDirection direction)
+        {
+            _sortProperty = property;
+            _sortDirection = direction;
+
+            List<TournamentStatsList> list = List as List<TournamentStatsList>;
+            if (list is null) return;
+            _isSorted = true;
+            TournamentStatsListChanged(list);
+            //OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, -1));
+        }
+
+        void IBindingList.RemoveSort()
+        {
+            _sortDirection = ListSortDirection.Ascending;
+            _sortProperty = null;
+            _isSorted = false;
+        }
+
+        void IBindingList.AddIndex(PropertyDescriptor property)
+        {
+            throw new NotSupportedException();
+        }
+
+        int IBindingList.Find(PropertyDescriptor property, object key)
+        {
+            throw new NotSupportedException();
+        }
+
+        void IBindingList.RemoveIndex(PropertyDescriptor property)
+        {
+            throw new NotSupportedException();
+        }
+
+        object IBindingList.AddNew()
+        {
+            throw new NotSupportedException();
+        }
     }
 }
