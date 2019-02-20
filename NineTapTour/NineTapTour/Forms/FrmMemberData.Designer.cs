@@ -1196,9 +1196,10 @@
             // cbHaw
             // 
             this.cbHaw.AutoSize = true;
+            this.cbHaw.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbHaw.Location = new System.Drawing.Point(6, 102);
             this.cbHaw.Name = "cbHaw";
-            this.cbHaw.Size = new System.Drawing.Size(85, 23);
+            this.cbHaw.Size = new System.Drawing.Size(84, 23);
             this.cbHaw.TabIndex = 65;
             this.cbHaw.Text = "Hawaii ?";
             this.cbHaw.UseVisualStyleBackColor = true;
