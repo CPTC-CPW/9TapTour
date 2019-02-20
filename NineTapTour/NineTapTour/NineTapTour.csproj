@@ -129,6 +129,10 @@
     <Compile Include="Migrations\201808302003521_ProgressivePotx.Designer.cs">
       <DependentUpon>201808302003521_ProgressivePotx.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902202054549_setup.cs" />
+    <Compile Include="Migrations\201902202054549_setup.Designer.cs">
+      <DependentUpon>201902202054549_setup.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\ExcelMember.cs" />
     <Compile Include="Database\FormHelper.cs" />
     <Compile Include="Database\NineTapRegionDB.cs" />
@@ -357,6 +361,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201808302003521_ProgressivePotx.resx">
       <DependentUpon>201808302003521_ProgressivePotx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902202054549_setup.resx">
+      <DependentUpon>201902202054549_setup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

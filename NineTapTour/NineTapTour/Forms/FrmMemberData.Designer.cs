@@ -123,6 +123,7 @@
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.cbHaw = new System.Windows.Forms.CheckBox();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -564,6 +565,7 @@
             // 
             // groupRecord
             // 
+            this.groupRecord.Controls.Add(this.cbHaw);
             this.groupRecord.Controls.Add(this.btnImportData);
             this.groupRecord.Controls.Add(this.btnSave);
             this.groupRecord.Controls.Add(this.btnNew);
@@ -571,7 +573,7 @@
             this.groupRecord.Location = new System.Drawing.Point(854, 3);
             this.groupRecord.Margin = new System.Windows.Forms.Padding(3, 3, 20, 3);
             this.groupRecord.Name = "groupRecord";
-            this.groupRecord.Size = new System.Drawing.Size(108, 113);
+            this.groupRecord.Size = new System.Drawing.Size(108, 131);
             this.groupRecord.TabIndex = 60;
             this.groupRecord.TabStop = false;
             this.groupRecord.Text = "Record";
@@ -1191,6 +1193,16 @@
             this.panel2.Size = new System.Drawing.Size(285, 70);
             this.panel2.TabIndex = 74;
             // 
+            // cbHaw
+            // 
+            this.cbHaw.AutoSize = true;
+            this.cbHaw.Location = new System.Drawing.Point(17, 103);
+            this.cbHaw.Name = "cbHaw";
+            this.cbHaw.Size = new System.Drawing.Size(85, 23);
+            this.cbHaw.TabIndex = 65;
+            this.cbHaw.Text = "Hawaii ?";
+            this.cbHaw.UseVisualStyleBackColor = true;
+            // 
             // FrmMemberData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1213,6 +1225,7 @@
             this.grpMemberInfo.ResumeLayout(false);
             this.grpMemberInfo.PerformLayout();
             this.groupRecord.ResumeLayout(false);
+            this.groupRecord.PerformLayout();
             this.grpRecordNumber.ResumeLayout(false);
             this.grpStats.ResumeLayout(false);
             this.grpSearchBy.ResumeLayout(false);
@@ -1332,5 +1345,6 @@
         private System.Windows.Forms.Label lblSSNValidation;
         private System.Windows.Forms.Label lblStateValidation;
         private System.Windows.Forms.Label lblReferralsValidation;
+        private System.Windows.Forms.CheckBox cbHaw;
     }
 }
