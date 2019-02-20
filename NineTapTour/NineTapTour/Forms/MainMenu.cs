@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NineTapTour.Models;
 
+
 namespace NineTapTour.Forms
 {
     public partial class MainMenu : Form
@@ -55,6 +56,8 @@ namespace NineTapTour.Forms
             ((FrmMain)MdiParent).RegionID = regionID; // Retrieving ID from menMain
             ((FrmMain)MdiParent).menuHighlight(btnAbout.Text); // Highlighting corresponding tab; "About"
             ((FrmMain)MdiParent).AboutToolStripMenuItem_Click(sender, e); // Activate the click method for About
+            enableHomeNavigation();
+
         }
 
         /// <summary>
@@ -67,6 +70,17 @@ namespace NineTapTour.Forms
             ((FrmMain)MdiParent).RegionID = regionID;
             ((FrmMain)MdiParent).menuHighlight(btnMemberData.Text); //"Member Info"
             ((FrmMain)MdiParent).memberToolStripMenuItem_Click(sender, e);
+
+            enableHomeNavigation();
+
+        }
+
+        private void enableHomeNavigation()
+        {
+            if (!(FrmMain.ActiveForm is MainMenu))
+            {
+                ((FrmMain)MdiParent).Home.Enabled = true;
+            }
         }
 
         /// <summary>
@@ -79,6 +93,8 @@ namespace NineTapTour.Forms
             ((FrmMain)MdiParent).RegionID = regionID;
             ((FrmMain)MdiParent).menuHighlight(btnMemberScores.Text); // "Member Scores"
             ((FrmMain)MdiParent).tournamentToolStripMenuItem_Click(sender, e);
+            enableHomeNavigation();
+
         }
 
         private void MainMenu_Paint(object sender, PaintEventArgs e)
