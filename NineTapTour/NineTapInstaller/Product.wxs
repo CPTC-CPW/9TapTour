@@ -4,7 +4,7 @@
   <!-- Project References and variables 
       http://wixtoolset.org/documentation/manual/v3/votive/votive_project_references.html 
   -->
-  <Product Id="*" Name="9-Tap Tour" Language="1033" Version="1.7.4" Manufacturer="Clover Park Technical College - Computer Programming" UpgradeCode="386d7054-e2db-458e-bd10-402ce9b04d30">
+  <Product Id="*" Name="9-Tap Tour" Language="1033" Version="1.7.5" Manufacturer="Clover Park Technical College - Computer Programming" UpgradeCode="386d7054-e2db-458e-bd10-402ce9b04d30">
     <Package InstallerVersion="300" Compressed="yes" InstallScope="perMachine" />
     <Media Id="1" Cabinet="NineTapTour.cab" EmbedCab="yes" />
 
