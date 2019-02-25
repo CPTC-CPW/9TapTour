@@ -194,9 +194,9 @@ namespace NineTapTour.Forms
                 rdoScratchScore.Visible = true;
                 txtMemberNum.Focus();
             }
-            /////////////////////////////////////////////////////////////////
+            //Clicks LastMemberButton when frm is activated.
             MoveToLastRecordOfMemberScores();
-            /////////////////////////////////////////////////////////////////////
+            
         }
 
         /// <summary>
@@ -1167,11 +1167,6 @@ namespace NineTapTour.Forms
             btnRightArrow.Enabled = true;
             btnPlaceStandings.Enabled = true;
             btnRecapByPin.Enabled = true;
-
-            //////////////////////////////////////////////////////////////////////////////////////////////////
-            
-
-
         }
 
         /// <summary>
