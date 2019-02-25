@@ -909,7 +909,7 @@ namespace NineTapTour.Forms
                 MessageBox.Show("Please copy the earnings from Excel first");
                 return;
             }
-
+            s = s.Replace("$", "");
             string[] lines = s.Replace("\n", "").Split('\r');
             string[] lines2 = new string[lines.Length];
             for(int t = 0; t < lines.Length; t++)
@@ -948,7 +948,6 @@ namespace NineTapTour.Forms
                             row++;
                         }
                     }
-                    
                 }
             }
         }
