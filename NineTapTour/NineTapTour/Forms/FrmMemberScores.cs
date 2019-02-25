@@ -150,6 +150,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void FrmMemberScores_Activated(object sender, EventArgs e)
         {
+           
             RegionID = ((FrmMain)MdiParent).RegionID;
 
             //added in this line inorder to prevent the reset of the drop down list on memberscores form when switching between forms
@@ -193,6 +194,9 @@ namespace NineTapTour.Forms
                 rdoScratchScore.Visible = true;
                 txtMemberNum.Focus();
             }
+            /////////////////////////////////////////////////////////////////
+            MoveToLastRecordOfMemberScores();
+            /////////////////////////////////////////////////////////////////////
         }
 
         /// <summary>
@@ -1014,6 +1018,11 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
+            MoveToLastRecordOfMemberScores();
+        }
+
+        private void MoveToLastRecordOfMemberScores()
+        {
             switchingParticipents = true;
 
             // Disables buttons and breaks function
@@ -1160,43 +1169,7 @@ namespace NineTapTour.Forms
             btnRecapByPin.Enabled = true;
 
             //////////////////////////////////////////////////////////////////////////////////////////////////
-            if (selectedTournament != null)
-            {
-                overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
-
-                //////////////////////////////////////////////////////////////////////////////
-                switchingParticipents = true;
-
-                // Disables buttons and breaks function
-                // if already at the last record
-                if (currentIndex >= overallListOfParticipants.Count)
-                {
-                    btnRightArrow.Enabled = false;
-                    btnLastRecord.Enabled = false;
-                    return;
-                }
-
-                // Sets currentIndex to the size of total
-                currentIndex = overallListOfParticipants.Count - 1;
-
-                lblRecord.Text = "Record " + (currentIndex + 1) + " / " + overallListOfParticipants.Count;
-                ReEnableNavigation();
-
-                // Gets the last record from the list
-                txtMemberNum.Text = Convert.ToString(overallListOfParticipants[overallListOfParticipants.Count - 1].Member.Number);
-                int lastMemberSquad = overallListOfParticipants[overallListOfParticipants.Count - 1].Squad;
-                CheckSquadRadioButton(lastMemberSquad);
-
-                FillMember();
-
-                // Disables buttons right and last record buttons 
-                // if there are no more records go to.
-                btnLastRecord.Enabled = false;
-                btnRightArrow.Enabled = false;
-
-
-                switchingParticipents = false;
-            }
+            
 
 
         }
@@ -2080,5 +2053,7 @@ namespace NineTapTour.Forms
                 FormHelper.SelectParticipantSquad(participant.Squad, groupBox1);
             }
         }
+
+        
     }
 }
