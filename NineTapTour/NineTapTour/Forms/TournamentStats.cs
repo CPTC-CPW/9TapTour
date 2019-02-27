@@ -76,10 +76,8 @@ namespace NineTapTour.Forms
                 }
                 
                 TournamentStatsBindingList bindingList = new TournamentStatsBindingList(statsList);
-                DataGridView bindingDataGridView = new DataGridView();
-                //SetSortMode(bindingDataGridView);
-                bindingDataGridView.DataSource = bindingList;
-                dgvTournamentStats.DataSource = bindingDataGridView.DataSource;
+                dgvTournamentStats.DataSource = bindingList;
+                dgvTournamentStats.Refresh();
                 
             }
             else
@@ -142,11 +140,8 @@ namespace NineTapTour.Forms
                     }                    
                     
                     TournamentStatsBindingList bindingList = new TournamentStatsBindingList(statsList);
-                    DataGridView bindingDataGridView = new DataGridView();
-                    //SetSortMode(bindingDataGridView);
-                    bindingDataGridView.DataSource = bindingList;
-                    dgvTournamentStats.DataSource = bindingDataGridView.DataSource;
-
+                    dgvTournamentStats.DataSource = bindingList;
+                    dgvTournamentStats.Refresh();
                 }
                 catch (SqlException)
                 {
@@ -169,15 +164,15 @@ namespace NineTapTour.Forms
         //    }
         //}
 
-        public void SetSortMode(DataGridView dataGridView)
-        {
-            int count = dgvTournamentStats.Columns.Count;
-            for (int i = 0; i < count; i++)
-            {
-                dataGridView.Columns[i].SortMode = DataGridViewColumnSortMode.Automatic;
-                //dgvTournamentStats.Sort(dgvTournamentStats.Columns[i], ListSortDirection.Ascending);
-            }
-        }
+        //public void SetSortMode(DataGridView dataGridView)
+        //{
+        //    int count = dgvTournamentStats.Columns.Count;
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        dataGridView.Columns[i].SortMode = DataGridViewColumnSortMode.Automatic;
+        //        //dgvTournamentStats.Sort(dgvTournamentStats.Columns[i], ListSortDirection.Ascending);
+        //    }
+        //}
 
         public static List<int> GetTop3OutOf4(List<int?> scores)
         {            
@@ -215,28 +210,51 @@ namespace NineTapTour.Forms
             this.dgvTournamentStats.DrawToBitmap(bm, new Rectangle(0, 0, this.dgvTournamentStats.Width, this.dgvTournamentStats.Height));
             e.Graphics.DrawImage(bm, 0, 0);
         }
+
+    //    private void dgvTournamentStats_ColumnHeaderMouseClick(object sender,
+    //                       DataGridViewCellMouseEventArgs e)
+    //    {
+    //        List<TournamentStatsBindingList> bindingLists = dgvTournamentStats.DataSource as List<TournamentStatsBindingList>;
+    //        string col = dgvTournamentStats.Columns[e.ColumnIndex].DataPropertyName;
+    //        string order = " ASC";
+    //        if (dgvTournamentStats.Tag != null)
+    //            order = dgvTournamentStats.Tag.ToString().Contains(" ASC") ? " DESC" : " ASC";
+
+    //        dgvTournamentStats.Tag = col + order;
+
+    //        if (order.Contains(" ASC"))
+    //            bindingLists = bindingLists.Sort(new DataGridViewComparer());
+    //        else
+    //            names = names.OrderByDescending(x => col == "first" ? x.first :
+    //                                                 col == "last" ? x.last : x.middle).ToList();
+
+    //        dgvTournamentStats.DataSource = names;
+    //    }
     }
 
-    //public class DataGridViewComparer : IComparer
-    //{
-    //    public int Compare(object x, object y)
-    //    {
-    //        DataGridViewRow row1 = (DataGridViewRow)x;
-    //        DataGridViewRow row2 = (DataGridViewRow)y;
+    // https://docs.microsoft.com/en-us/dotnet/api/system.data.datatable?view=netframework-4.7.2
+    // https://stackoverflow.com/questions/14794470/bind-datatable-data-to-gridview-in-windows-form
 
-    //        int compareResult = string.Compare(
-    //            (string)row1.Cells[0].Value,
-    //            (string)row2.Cells[0].Value);
+    public class DataGridViewComparer : IComparer
+    {
+        public int Compare(object x, object y)
+        {
+            DataGridViewRow row1 = (DataGridViewRow)x;
+            DataGridViewRow row2 = (DataGridViewRow)y;
 
-    //        if (compareResult == 0)
-    //        {
-    //            compareResult = ((int)row1.Cells[1].Value)
-    //                .CompareTo((int)row2.Cells[1].Value);
-    //        }
+            int compareResult = string.Compare(
+                (string)row1.Cells[0].Value,
+                (string)row2.Cells[0].Value);
 
-    //        return compareResult;
-    //    }
-    //}
+            if (compareResult == 0)
+            {
+                compareResult = ((int)row1.Cells[1].Value)
+                    .CompareTo((int)row2.Cells[1].Value);
+            }
+
+            return compareResult;
+        }
+    }
 
     public partial class TournamentStatsList
     {
@@ -256,9 +274,9 @@ namespace NineTapTour.Forms
 
     /**
      * Provides a generic collection that supports data binding and additionally supports sorting.
-     * https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.ibindinglist?view=netframework-4.7.2
      * TournamentStatsBindingList impliments CollectionBase and IBindingList to allow for DataGridView sorting.
      * IList -> CollectionBase.List
+     * https://10tec.com/articles/sort-datagridview.aspx
      */
     public class TournamentStatsBindingList : CollectionBase, IBindingList
     {        
@@ -434,11 +452,48 @@ namespace NineTapTour.Forms
             _sortDirection = direction;
 
             List<TournamentStatsList> list = List.Cast<TournamentStatsList>().ToList();
-            if (list is null) return;            
-
+            if (list is null) return;
+            list.Sort(Compare);
             _isSorted = true;
             TournamentStatsListChanged(list);
             OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, -1));
+        }
+
+        int Compare(TournamentStatsList lhs, TournamentStatsList rhs)
+        {
+            var result = OnComparison(lhs, rhs);
+            //invert if descending
+            if (_sortDirection == ListSortDirection.Descending)
+                result = -result;
+            return result;
+        }
+
+        private int OnComparison(TournamentStatsList lhs, TournamentStatsList rhs)
+        {
+            object lhsValue = lhs == null ? null : _sortProperty.GetValue(lhs);
+            object rhsValue = rhs == null ? null : _sortProperty.GetValue(rhs);
+            if (lhsValue == null)
+            {
+                return (rhsValue == null) ? 0 : -1; //nulls are equal
+            }
+
+            if (rhsValue == null)
+            {
+                return 1; //first has value, second doesn't
+            }
+
+            if (lhsValue is IComparable)
+            {
+                return ((IComparable)lhsValue).CompareTo(rhsValue);
+            }
+
+            if (lhsValue.Equals(rhsValue))
+            {
+                return 0; //both are the same
+            }
+
+            //not comparable, compare ToString
+            return lhsValue.ToString().CompareTo(rhsValue.ToString());
         }
 
         void IBindingList.RemoveSort()
