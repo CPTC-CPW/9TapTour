@@ -216,7 +216,13 @@ namespace NineTapTour.Database
             }
 
             // drawing the header of the data
-            graphic.DrawString("       " + reportType + "     Mem No       Name", font, dBrush, startX + 8, startY + 133);
+            if (printDues)
+            {
+                graphic.DrawString("       " + reportType + "     Mem No       Name        Membership Due", font, dBrush, startX + 8, startY + 133);
+            }
+            else {
+                graphic.DrawString("       " + reportType + "     Mem No       Name", font, dBrush, startX + 8, startY + 133);
+            }
             graphic.DrawString(" ***********************************************************", starFont, dBrush, startX + 1, startY + 152);
 
             for (int i = 0; i < temp.Count - (index * 40) && i < numToPrint; i++)
@@ -231,26 +237,36 @@ namespace NineTapTour.Database
                 graphic.DrawString(temp[i + (index * 40)].MemberId.ToString(), font, dBrush, startX + 120, startY + 173 + (i * 19));
 
                 string unpaid = "";
-                if(!temp[i + (index * 40)].Paid)
+                //if(!temp[i + (index * 40)].Paid)
+                if(printDues && !temp[i + (index * 40)].Paid) //note-will we factor in future due dates? eg, .Paid may be true but next year they have dues. . .
                 {
-                    unpaid = "X";
+                    if (temp[i + (index * 40)].LastPaymentYear.Length == 0)
+                    {
+                        unpaid = "N/A";
+                    }
+                    else {
+                        unpaid = temp[i + (index * 40)].LastPaymentYear;//.Substring(2, 3);
+                    }
+                    
                 }
 
                 //create name string containg lastname, firstname, and last payment
-                string nameString = temp[i + (index * 40)].LastName + ", " + temp[i + (index * 40)].FirstName + "     " + temp[i + (index * 40)].LastPaymentYear + " " + unpaid;
+                //Changed: instead of showing last payment eery time it shows the year as the "unpaid"
+                string nameString = temp[i + (index * 40)].LastName + ", " + temp[i + (index * 40)].FirstName + "     " + /*temp[i + (index * 40)].LastPaymentYear +*/ " " + unpaid;
 
                 //draw name string
                 graphic.DrawString(nameString, font, dBrush, startX + 200, startY + 173 + (i * 19));
             }
         }
 
-        static public void printMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList)
+        static public void printMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList, bool printDues)
         {
             Print.temp = temp;
             Print.selectedTournament = selectedTournament;
             Print.reportTypeNum = reportTypeNum;
             Print.currentSquad = currentSquad;
             Print.squadList = squadList;
+            Print.printDues = printDues;
 
             // Set up compenents for printing
             PrintDialog printDialog = new PrintDialog();
@@ -284,6 +300,7 @@ namespace NineTapTour.Database
         static ReportType reportTypeNum;
         static int currentSquad;
         static List<int> squadList;
+        static bool printDues;
         /************************************************************************/
 
         static List<Member> mems = new List<Member>();
