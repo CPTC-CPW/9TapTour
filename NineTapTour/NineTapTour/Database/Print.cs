@@ -218,12 +218,12 @@ namespace NineTapTour.Database
             // drawing the header of the data
             if (printDues)
             {
-                graphic.DrawString("       " + reportType + "     Mem No       Name        Membership Due", font, dBrush, startX + 8, startY + 133);
+                graphic.DrawString("       " + reportType + "     Mem No       Name                                  Membership Paid Through", font, dBrush, startX + 8, startY + 133);
             }
             else {
                 graphic.DrawString("       " + reportType + "     Mem No       Name", font, dBrush, startX + 8, startY + 133);
             }
-            graphic.DrawString(" ***********************************************************", starFont, dBrush, startX + 1, startY + 152);
+            graphic.DrawString(" **************************************************************************************************", starFont, dBrush, startX + 1, startY + 152);
 
             for (int i = 0; i < temp.Count - (index * 40) && i < numToPrint; i++)
             {
@@ -236,26 +236,22 @@ namespace NineTapTour.Database
                 //draw the member number
                 graphic.DrawString(temp[i + (index * 40)].MemberId.ToString(), font, dBrush, startX + 120, startY + 173 + (i * 19));
 
-                string unpaid = "";
-                //if(!temp[i + (index * 40)].Paid)
-                if(printDues && !temp[i + (index * 40)].Paid) //note-will we factor in future due dates? eg, .Paid may be true but next year they have dues. . .
+                // Decides if the last date the member paid their dues prints on the page
+                string unpaid = string.Empty;
+                if(printDues && Convert.ToInt16(temp[i +(index * 40)].LastPaymentYear) < DateTime.Now.Year)
                 {
-                    if (temp[i + (index * 40)].LastPaymentYear.Length == 0)
-                    {
-                        unpaid = "N/A";
-                    }
-                    else {
-                        unpaid = temp[i + (index * 40)].LastPaymentYear;//.Substring(2, 3);
-                    }
-                    
+                    unpaid = temp[i + (index * 40)].LastPaymentYear;
                 }
 
                 //create name string containg lastname, firstname, and last payment
                 //Changed: instead of showing last payment eery time it shows the year as the "unpaid"
-                string nameString = temp[i + (index * 40)].LastName + ", " + temp[i + (index * 40)].FirstName + "     " + /*temp[i + (index * 40)].LastPaymentYear +*/ " " + unpaid;
+                string nameString = temp[i + (index * 40)].LastName + ", " + temp[i + (index * 40)].FirstName;
 
                 //draw name string
                 graphic.DrawString(nameString, font, dBrush, startX + 200, startY + 173 + (i * 19));
+
+                //draw Membership Paid Through Column
+                graphic.DrawString(unpaid, font, dBrush, startX + 500, startY + 173 + (i * 19));
             }
         }
 
