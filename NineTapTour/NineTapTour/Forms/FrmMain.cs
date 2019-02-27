@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
 using System.Drawing;
-
-
 using System.Data.Entity;
 using NineTapTour.Migrations;
 using NineTapTour.Models;
@@ -16,7 +14,7 @@ namespace NineTapTour.Forms
     {
         public IOrderedEnumerable<Member> _membersList { get; set; }
         public List<Tournament> _tournamentList { get; set; }
-        public ToolStripMenuItem activeItem;
+        public System.Windows.Forms.ToolStripMenuItem activeItem;
         public FrmMemberData currFrmMemberData { get; set; }
 
         public frmMemberScores currfrmScoresdata { get; set; }
@@ -30,6 +28,8 @@ namespace NineTapTour.Forms
         public MainMenu mainmenu { get; set; }
         public int RegionID { get; set; }
         public Size MaxWorkAreaScreenSize { get; set; }
+        /////////////////////////////
+        public System.Windows.Forms.ToolStripMenuItem Home { get; set; }
 
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace NineTapTour.Forms
             mainmenu = mainMenu;
 
             //sets the first item of the menu bar to the active item and highlights it.
-            activeItem = (ToolStripMenuItem)menMain.Items[0];
+            activeItem = (System.Windows.Forms.ToolStripMenuItem)menMain.Items[0];
             activeItem.BackColor = SystemColors.ActiveCaption;
             newfrmStart.Show();
             newfrmStart.WindowState = FormWindowState.Maximized;
@@ -120,7 +120,7 @@ namespace NineTapTour.Forms
                 activeItem.BackColor = SystemColors.Control;
             }
 
-            activeItem = (ToolStripMenuItem)e.ClickedItem;
+            activeItem = (System.Windows.Forms.ToolStripMenuItem)e.ClickedItem;
 
             if (!activeItem.HasDropDownItems)
             {
@@ -171,7 +171,7 @@ namespace NineTapTour.Forms
             {
                 if (itemName == menMain.Items[i].Text)
                 {
-                    activeItem = (ToolStripMenuItem)menMain.Items[i];
+                    activeItem = (System.Windows.Forms.ToolStripMenuItem)menMain.Items[i];
                     break;
                 }
             }
@@ -211,6 +211,7 @@ namespace NineTapTour.Forms
             var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
             OpenOrDisplayForm(ref newfrmMemberScores);
             currfrmScoresdata = newfrmMemberScores;
+            
         }
 
         /// <summary>
@@ -274,6 +275,11 @@ namespace NineTapTour.Forms
         private void userManualToolStripMenuItem_Click(object sender, EventArgs e)
         {   // just need to find out the location that the program will install the manual and update the following line
             System.Diagnostics.Process.Start(@"Resources\9TapUserManual.docx");
+        }
+
+        private void FrmMain_Load(object sender, EventArgs e)
+        {
+            Home = mainMenuToolStripMenuItem;
         }
     }
 }
