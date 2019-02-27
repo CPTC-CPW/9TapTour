@@ -1202,7 +1202,7 @@ namespace NineTapTour.Forms
             }
 
             String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
-            bool isRegionHawaii = (RegionID == 2); // checks to see if RegionID is equal to Hawaii
+            bool isRegionHawaii = (cbHaw.Checked); // checks to see if Region is Hawaii
             
             if(isRegionHawaii) 
             {

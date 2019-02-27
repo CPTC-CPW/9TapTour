@@ -42,6 +42,7 @@
             this.LabelCurrentFileWorkingOn = new System.Windows.Forms.Label();
             this.OverAllProcessingExcel = new System.Windows.Forms.Label();
             this.cbxRegionSelect = new System.Windows.Forms.ComboBox();
+            this.cbHaw = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnOpenFile
@@ -96,7 +97,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(163, 22);
+            this.label3.Location = new System.Drawing.Point(163, 9);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(74, 13);
             this.label3.TabIndex = 6;
@@ -146,11 +147,21 @@
             // cbxRegionSelect
             // 
             this.cbxRegionSelect.FormattingEnabled = true;
-            this.cbxRegionSelect.Location = new System.Drawing.Point(138, 48);
+            this.cbxRegionSelect.Location = new System.Drawing.Point(138, 28);
             this.cbxRegionSelect.Name = "cbxRegionSelect";
             this.cbxRegionSelect.Size = new System.Drawing.Size(121, 21);
             this.cbxRegionSelect.TabIndex = 11;
             this.cbxRegionSelect.SelectedIndexChanged += new System.EventHandler(this.cbxRegionSelect_SelectedIndexChanged);
+            // 
+            // cbHaw
+            // 
+            this.cbHaw.AutoSize = true;
+            this.cbHaw.Location = new System.Drawing.Point(166, 56);
+            this.cbHaw.Name = "cbHaw";
+            this.cbHaw.Size = new System.Drawing.Size(67, 17);
+            this.cbHaw.TabIndex = 12;
+            this.cbHaw.Text = "Hawaii ?";
+            this.cbHaw.UseVisualStyleBackColor = true;
             // 
             // frmMain
             // 
@@ -158,6 +169,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(405, 335);
+            this.Controls.Add(this.cbHaw);
             this.Controls.Add(this.cbxRegionSelect);
             this.Controls.Add(this.OverAllProcessingExcel);
             this.Controls.Add(this.LabelCurrentFileWorkingOn);
@@ -193,6 +205,7 @@
         private System.Windows.Forms.Label LabelCurrentFileWorkingOn;
         private System.Windows.Forms.Label OverAllProcessingExcel;
         private System.Windows.Forms.ComboBox cbxRegionSelect;
+        private System.Windows.Forms.CheckBox cbHaw;
     }
 }
 
