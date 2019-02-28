@@ -19,7 +19,6 @@ namespace Member_Import_Test
         public frmMain()
         {
             InitializeComponent();
-            new NineTapDb();
             List<NineTapRegion> r = NineTapRegionDB.GetRegionList();
             cbxRegionSelect.DataSource = r;
             cbxRegionSelect.DisplayMember = "NineTapRegionName";
@@ -171,67 +170,9 @@ namespace Member_Import_Test
                                 case 3://First Name
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
-
-                                        //newMem.FirstName = (File.Substring(currentIndex, Spaces[i]).Trim());
-
-                                        //Idea #1: Using String.Replace\\
-                                        //Simple method, but would have to account for all possible cases of extra data
-
-                                        //these were just some of the notes that were left in the name (some signify life members, others are just short for the city they are from)
-                                        // dooesnt need to be by the name, taken out on a case by case basis.
-                                        //string[] notapartofname = { "life", "gst", "(Haw.)", "pa", "yk", "hj", "lg", "mv" };
-
-
-                                        //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
-
-                                        //newMem.FirstName = fName;
-
-                                        //for (int d = 0; d < notapartofname.Length; d++)
-                                        //{
-                                        //    if (fName.Contains(notapartofname[d]))
-                                        //    {
-                                        //        newMem.FirstName = fName.Substring(0, fName.IndexOf(notapartofname[d])).Trim();
-                                        //    }
-                                        //}
-
-
-
-                                        //Idea #2 Using String.Split\\
-                                        //Issue if name contains space, would have to check for additional parts of name
-
                                         string fName = File.Substring(currentIndex, Spaces[i]).Trim();
                                         string[] split = fName.Split(' ');
                                         newMem.FirstName = split[0];
-
-                                        //Idea #3 Using String.Substring\\
-                                        //Issue arises if spaces between names.
-
-                                        //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
-                                        //if(fName.Contains(' '))
-                                        //{
-                                        //   fName = fName.Substring(0, fName.LastIndexOf(' ')).Trim();                  
-                                        //}
-                                        //newMem.FirstName = fName;
-
-                                        //Idea #4: Using String.Contains\\
-                                        //Could improve this with an array to check for each indivual possibilty of extra data, to be able
-                                        //then to use the the indexOf whatever data it found.
-
-                                        //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
-                                        //if (fName.ToLower().Contains("life") || fName.ToLower().Contains("gst") || fName.ToLower().Contains("(haw.)"))
-                                        //{
-                                        //    fName = fName.Substring(0, fName.LastIndexOf(' ')).Trim();
-                                        //}
-                                        //newMem.FirstName = fName;
-
-                                        //Idea #5 Using String.EndsWith
-
-                                        //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
-                                        //if(fName.ToLower().EndsWith("life") || fName.ToLower().EndsWith("gst") || fName.ToLower().EndsWith(")"))
-                                        //{
-                                        //    fName = fName.Substring(0, fName.LastIndexOf(' ')).Trim();
-                                        //}
-                                        //newMem.FirstName = fName;
                                     }
                                     else
                                     {
