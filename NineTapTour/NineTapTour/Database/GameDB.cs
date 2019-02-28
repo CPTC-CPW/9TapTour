@@ -39,50 +39,9 @@ namespace NineTapTour.Database
             Game currentGame = new Game();
 
             var db = new NineTapDb();
-            var temp = (
-
-                from g in db.Games
+            var temp = (from g in db.Games
                 where g.Id == gameID
-                select new
-                {
-                    g.Bonus,
-                    g.Game1,
-                    g.Game2,
-                    g.Game3,
-                    g.Game4,
-                    g.Handicap,
-                    g.InputtedAvg,
-                    g.Id,
-                    g.MoneyWon,
-                    g.SidePot,
-                    g.Notes,
-                    g.PlaceStanding,
-                    g.UseGame1,
-                    g.UseGame2,
-                    g.UseGame3,
-                    g.UseGame4
-
-                });
-            foreach (var g in temp)
-            {
-                currentGame.Bonus = g.Bonus;
-                currentGame.Game1 = g.Game1;
-                currentGame.Game2 = g.Game2;
-                currentGame.Game3 = g.Game3;
-                currentGame.Game4 = g.Game4;
-                currentGame.Handicap = g.Handicap;
-                currentGame.InputtedAvg = g.InputtedAvg;
-                currentGame.Id = g.Id;
-                currentGame.MoneyWon = g.MoneyWon;
-                currentGame.SidePot = g.SidePot;
-                currentGame.Notes = g.Notes;
-                currentGame.PlaceStanding = g.PlaceStanding;
-                currentGame.UseGame1 = g.UseGame1;
-                currentGame.UseGame2 = g.UseGame2;
-                currentGame.UseGame3 = g.UseGame3;
-                currentGame.UseGame4 = g.UseGame4;
-
-            }
+                select g).SingleOrDefault();
             return currentGame;
         }
 
