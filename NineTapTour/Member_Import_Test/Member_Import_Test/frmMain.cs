@@ -1232,37 +1232,6 @@ namespace Member_Import_Test
 
         private void btn_FinalizeData_Click(object sender, EventArgs e)
         {
-            ////////////////////////////////////////////////////////////////REALIZED THE IDEA THAT THIS COODE IS IRRELAVANT NOW/////////////////////////////////////////
-            ////////////////////////////////////////////////////DURING TESTING THE DAT FILE MEMBER NUMBER AND EXCEL FILE DID NOT MATCH//////////////////////////////////
-            ///////////////////////////////////////////////////////////////////////////NOW THIS SGHOULD NEVER HAPPEN////////////////////////////////////////////////////
-            //for (int members = 0; members < validMembers.Count; members++)
-            //{
-            //    for (int ExcelFileSlot = 0; ExcelFileSlot < ALLEXCELDATAFROMALLPLAYERS.Count; ExcelFileSlot++)
-
-            //    {
-            //        //if for some reason the member number on the DAT file and the member number on the excel file do not match, set the new permanent member number to that of the DAT file
-            //        if (validMembers[members].FirstName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerFirstName && validMembers[members].LastName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerLastName
-            //           && validMembers[members].Number != ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber)
-            //        {
-            //            ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber = validMembers[members].Number;
-            //            PlayerHistoryList[ExcelFileSlot].MemberNumber = validMembers[members].Number;             
-            //        }
-            //        else if ((validMembers[members].FirstName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerFirstName && validMembers[members].LastName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerLastName
-            //           && validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber))
-            //        {
-            //            PlayerHistoryList[ExcelFileSlot].MemberNumber = validMembers[members].Number;
-            //        }
-
-
-            //        //if Current selected member has an excel file 
-            //        if (validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber)
-            //        {
-            //            validMembers[members].StartAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerOrginalAVG;
-            //        }
-            //    }
-            //}
-
-            
             updatePlayerHistory(PlayerHistoryList);
             GameDB.AddOrUpdateSomeGames(GameImport);
 
