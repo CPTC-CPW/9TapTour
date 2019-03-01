@@ -32,11 +32,12 @@
             this.btnPrint = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.txtNumberOfMembers = new System.Windows.Forms.TextBox();
+            this.cbPrintDues = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnPrint
             // 
-            this.btnPrint.Location = new System.Drawing.Point(102, 144);
+            this.btnPrint.Location = new System.Drawing.Point(102, 183);
             this.btnPrint.Name = "btnPrint";
             this.btnPrint.Size = new System.Drawing.Size(75, 23);
             this.btnPrint.TabIndex = 1;
@@ -61,6 +62,16 @@
             this.txtNumberOfMembers.Size = new System.Drawing.Size(100, 20);
             this.txtNumberOfMembers.TabIndex = 0;
             // 
+            // cbPrintDues
+            // 
+            this.cbPrintDues.AutoSize = true;
+            this.cbPrintDues.Location = new System.Drawing.Point(102, 140);
+            this.cbPrintDues.Name = "checkBox1";
+            this.cbPrintDues.Size = new System.Drawing.Size(75, 17);
+            this.cbPrintDues.TabIndex = 2;
+            this.cbPrintDues.Text = "Print Dues";
+            this.cbPrintDues.UseVisualStyleBackColor = true;
+            // 
             // FrmMemberScoresReports
             // 
             this.AcceptButton = this.btnPrint;
@@ -68,6 +79,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.cbPrintDues);
             this.Controls.Add(this.txtNumberOfMembers);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnPrint);
@@ -85,5 +97,6 @@
         private System.Windows.Forms.Button btnPrint;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtNumberOfMembers;
+        private System.Windows.Forms.CheckBox cbPrintDues;
     }
 }
