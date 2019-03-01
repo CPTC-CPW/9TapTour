@@ -514,6 +514,10 @@ namespace Member_Import_Test
             {
                 GetAndProcessFolderWithExcelFiles();
             }
+
+            //Ensure second progress bar is filled to show completion
+            progressBar2.Value = progressBar2.Maximum;
+            LabelCurrentFileWorkingOn.Text = "Complete";
         }
 
         private void GetAndProcessFolderWithExcelFiles()
