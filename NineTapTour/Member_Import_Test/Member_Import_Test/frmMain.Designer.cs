@@ -43,6 +43,8 @@
             this.OverAllProcessingExcel = new System.Windows.Forms.Label();
             this.cbxRegionSelect = new System.Windows.Forms.ComboBox();
             this.cbHaw = new System.Windows.Forms.CheckBox();
+            this.progressBarFinalize = new System.Windows.Forms.ProgressBar();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnOpenFile
@@ -163,12 +165,30 @@
             this.cbHaw.Text = "Hawaii ?";
             this.cbHaw.UseVisualStyleBackColor = true;
             // 
+            // progressBarFinalize
+            // 
+            this.progressBarFinalize.Location = new System.Drawing.Point(56, 335);
+            this.progressBarFinalize.Name = "progressBarFinalize";
+            this.progressBarFinalize.Size = new System.Drawing.Size(293, 23);
+            this.progressBarFinalize.TabIndex = 13;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(53, 335);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(35, 13);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "label4";
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(405, 335);
+            this.ClientSize = new System.Drawing.Size(405, 370);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.progressBarFinalize);
             this.Controls.Add(this.cbHaw);
             this.Controls.Add(this.cbxRegionSelect);
             this.Controls.Add(this.OverAllProcessingExcel);
@@ -206,6 +226,8 @@
         private System.Windows.Forms.Label OverAllProcessingExcel;
         private System.Windows.Forms.ComboBox cbxRegionSelect;
         private System.Windows.Forms.CheckBox cbHaw;
+        private System.Windows.Forms.ProgressBar progressBarFinalize;
+        private System.Windows.Forms.Label label4;
     }
 }
 

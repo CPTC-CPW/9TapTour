@@ -71,24 +71,16 @@ namespace NineTapTour.Database
 
 
         }
+
+        /// <summary>
+        /// Returns true if the Member is found in the database by comparing Member Number and RegionID
+        /// </summary>
         public static bool MemberExists(Member Temp)
         {
-
-
             using (var db = new NineTapDb())
             {
-
-                if (db.Members.Any(m => m.Number == Temp.Number && m.NineTapRegionID == Temp.NineTapRegionID))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-
+                return db.Members.Any(m => m.Number == Temp.Number && m.NineTapRegionID == Temp.NineTapRegionID);
             }
-
         }
         public static List<Member> GetMemberList(int RegionID)
         {
