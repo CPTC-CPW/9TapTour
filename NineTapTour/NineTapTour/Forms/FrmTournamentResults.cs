@@ -909,7 +909,7 @@ namespace NineTapTour.Forms
                 MessageBox.Show("Please copy the earnings from Excel first");
                 return;
             }
-
+            s = s.Replace("$", "");
             string[] lines = s.Replace("\n", "").Split('\r');
             string[] lines2 = new string[lines.Length];
             for(int t = 0; t < lines.Length; t++)
@@ -936,8 +936,18 @@ namespace NineTapTour.Forms
                 string check = lines2[i];
                 if (check != "")
                 {
-                    dgvTournamentResults[col, row].Value = lines2[i];
-                    row++;
+                    if (i == 1 || i == 3 || i == 5)
+                    {
+                        dgvTournamentResults[col + 3, row].Value = lines2[i];
+                        row++;
+                    }
+                    else
+                    {
+                        dgvTournamentResults[col, row].Value = lines2[i];
+                        if (i > 5) {
+                            row++;
+                        }
+                    }
                 }
             }
         }
