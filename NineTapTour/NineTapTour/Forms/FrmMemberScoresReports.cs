@@ -22,6 +22,7 @@ namespace NineTapTour.Forms
         ReportType reportTypeNum;
         int currentSquad;
         List<int> squadList;
+        bool printDues = false;
 
         public FrmMemberScoresReports(List<MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList)
         {
@@ -47,9 +48,15 @@ namespace NineTapTour.Forms
             // if good to go
             else if (numMembers <= temp.Count)
             {
+
+                //See if they want the date for membership dues to be printed.
+                if (cbPrintDues.Checked) {
+                    printDues = true;
+                }
+
                 temp = Calculations.Calculations.MakeTopMembersByPlacementList(temp, numMembers);
                 // print( go to print class )
-                Database.Print.printMemberReport(temp, selectedTournament, reportTypeNum, currentSquad, squadList);
+                Database.Print.printMemberReport(temp, selectedTournament, reportTypeNum, currentSquad, squadList, printDues);
 
                 this.Close();
             }
