@@ -1236,11 +1236,13 @@ namespace Member_Import_Test
 
         private void btn_FinalizeData_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
+            IncrementFinalizeBar(0, "Step 1: Adding player histories to the database.");
             updatePlayerHistory(PlayerHistoryList);
-            IncrementFinalizeBar(25, "Player histories updated");
+            IncrementFinalizeBar(25, "Step 2: Player histories updated, beginning games import.");
 
             GameDB.AddOrUpdateSomeGames(GameImport);
-            IncrementFinalizeBar(25, "Games updated");
+            IncrementFinalizeBar(25, "Step 3: Games updated. Setting averages and bonus pins.");
 
             for (int i = 0; i < validMembers.Count; i++)
             {
@@ -1252,12 +1254,13 @@ namespace Member_Import_Test
                     validMembers[i].Bonus = list[0].Bonus; //last adjusted bonus pin
                 }
             }
-            IncrementFinalizeBar(25, "Averages and bonus pins set");
+            IncrementFinalizeBar(25, "Step 4: Averages and bonus pins set. Updating all members.");
 
 
             updateMembers(validMembers);
             IncrementFinalizeBar(25, "Members updated");
 
+            Cursor.Current = Cursors.Default;
 
             MessageBox.Show($"{validMembers.Count} members have been imported and all their bowling history has been added to the database");
 
@@ -1267,9 +1270,9 @@ namespace Member_Import_Test
         private void IncrementFinalizeBar(int increment, string msg)
         {
             progressBarFinalize.Increment(increment);
-            label4.Text = msg;
+            lblFinalizeStatus.Text = msg;
             progressBarFinalize.Refresh();
-            label4.Refresh();
+            lblFinalizeStatus.Refresh();
         }
 
         private void updatePlayerHistory(List<PlayerHistory> playerHistory)

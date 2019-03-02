@@ -44,7 +44,7 @@
             this.cbxRegionSelect = new System.Windows.Forms.ComboBox();
             this.cbHaw = new System.Windows.Forms.CheckBox();
             this.progressBarFinalize = new System.Windows.Forms.ProgressBar();
-            this.label4 = new System.Windows.Forms.Label();
+            this.lblFinalizeStatus = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnOpenFile
@@ -172,14 +172,13 @@
             this.progressBarFinalize.Size = new System.Drawing.Size(293, 23);
             this.progressBarFinalize.TabIndex = 13;
             // 
-            // label4
+            // lblFinalizeStatus
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(53, 335);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(35, 13);
-            this.label4.TabIndex = 14;
-            this.label4.Text = "label4";
+            this.lblFinalizeStatus.AutoSize = true;
+            this.lblFinalizeStatus.Location = new System.Drawing.Point(53, 335);
+            this.lblFinalizeStatus.Name = "lblFinalizeStatus";
+            this.lblFinalizeStatus.Size = new System.Drawing.Size(0, 13);
+            this.lblFinalizeStatus.TabIndex = 14;
             // 
             // frmMain
             // 
@@ -187,7 +186,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(405, 370);
-            this.Controls.Add(this.label4);
+            this.Controls.Add(this.lblFinalizeStatus);
             this.Controls.Add(this.progressBarFinalize);
             this.Controls.Add(this.cbHaw);
             this.Controls.Add(this.cbxRegionSelect);
@@ -227,7 +226,7 @@
         private System.Windows.Forms.ComboBox cbxRegionSelect;
         private System.Windows.Forms.CheckBox cbHaw;
         private System.Windows.Forms.ProgressBar progressBarFinalize;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblFinalizeStatus;
     }
 }
 
