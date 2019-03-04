@@ -53,7 +53,7 @@ namespace Member_Import_Test
         static int CBSpace = 5;         // Check Box Spaceing, there are 7 total, only 5 are actually checked for information, repeated 7 times in Spaces array.
         static int DOBSpace = 8;        // Date Of Birth.
 
-        //PIN FILE STATIC INTS
+        // PIN FILE STATIC INTS
         static int PinFileMemNumSpace = 6;
         static int PinFileLastName = 20;
         static int PinFileFirstName = 20;
@@ -71,21 +71,12 @@ namespace Member_Import_Test
         static int PinFileNotes = 207; //notes + spaces to skip to get to the 0's ans 1's that control the squads
         static int morsecodeslot = 5; // all the 0 and 1s at the end of a players pin record. these series of 0s and 1s indicate their active or inactive status, male or female, senior. and bowling squad.
 
-
-
-
-
-
-
         public int RegionID;
         public int allGames;
 
-
         public List<Member> validMembers = new List<Member>(); //list of valid members
         public List<Member> invalidMembers = new List<Member>();//list of invalid members
-                                                                //public List<string> QBSTournamentList = new List<string>(); //list of qualified by squad tournaments
         public List<PlayerHistory> PlayerHistoryList = new List<PlayerHistory>();
-
 
         //Create array of spaces
         int[] Spaces = new int[] { MemNumSpace, DJoinedSpace, LNameSpace, FNameSpace, MISpace, EPhoneSpace, DPhoneSpace, CPhoneSpace,
@@ -109,16 +100,15 @@ namespace Member_Import_Test
             {
                 System.IO.StreamReader sr = new System.IO.StreamReader(ofdOpen.FileName);
                 //MessageBox.Show(sr.ReadToEnd()); //for debug purpose
-                String File = sr.ReadToEnd(); //it's easier to read into a string and work with the file rather than a streamreader, which has no direct position "index" access.
+                String File = sr.ReadToEnd(); // It's easier to read into a string and work with the file rather than a streamreader, which has no direct position "index" access.
                 sr.Close();
-                Member newMem = new Member(); // might not need this here, may move it.
-                int currentIndex = 0; //starting index
+                Member newMem = new Member(); // Might not need this here, may move it.
+                int currentIndex = 0;         // Starting index
                 //List<String> memberInfo = new List<String>(); //for testing
-                int i; //needs to be declared outside for to be used for switch
-                int validCount = 0; //count of valid members added
-                int invalidCount = 0; //count of invalid members added
-                int MemberCount = 1; //number of current member
-
+                int i;                        // Needs to be declared outside for to be used for switch
+                int validCount = 0;           // Count of valid members added
+                int invalidCount = 0;         // Count of invalid members added
+                int MemberCount = 1;          // Number of current member
 
                 while (currentIndex >= 0)
                 {
@@ -137,13 +127,13 @@ namespace Member_Import_Test
                         {
                             switch (i)
                             {
-                                case 0://Member Number
+                                case 0: // Member Number
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         newMem.Number = Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim());
                                     }
                                     break;
-                                case 1://Date Joined
+                                case 1: // Date Joined
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         try
@@ -156,7 +146,7 @@ namespace Member_Import_Test
                                         }
                                     }
                                     break;
-                                case 2://Last Name
+                                case 2: // Last Name
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         newMem.LastName = (File.Substring(currentIndex, Spaces[i]).Trim());
@@ -167,7 +157,7 @@ namespace Member_Import_Test
                                     }
 
                                     break;
-                                case 3://First Name
+                                case 3: // First Name
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         string fName = File.Substring(currentIndex, Spaces[i]).Trim();
@@ -179,10 +169,10 @@ namespace Member_Import_Test
                                         ////validMember = false;
                                     }
                                     break;
-                                case 4://Middle Initial
+                                case 4: // Middle Initial
                                     newMem.MiddleInitial = (File.Substring(currentIndex, Spaces[i]).Trim());
                                     break;
-                                case 5://Primary Phone
+                                case 5: // Primary Phone
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         newMem.PrimaryPhone = (File.Substring(currentIndex, Spaces[i]).Trim());
@@ -195,10 +185,10 @@ namespace Member_Import_Test
                                 //case 6://Secondary Phone
                                 //    newMem.SecondaryPhone = (File.Substring(currentIndex, Spaces[i]).Trim());
                                 //    break;
-                                case 7://Cell Phone
+                                case 7: // Cell Phone
                                     newMem.SecondaryPhone = (File.Substring(currentIndex, Spaces[i]).Trim());
                                     break;
-                                case 8://Street Address
+                                case 8: // Street Address
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         newMem.Street = (File.Substring(currentIndex, Spaces[i]).Trim());
@@ -208,7 +198,7 @@ namespace Member_Import_Test
                                         //validMember = false;
                                     }
                                     break;
-                                case 9://Email Address
+                                case 9: // Email Address
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         newMem.Email = (File.Substring(currentIndex, Spaces[i]).Trim());
@@ -218,7 +208,7 @@ namespace Member_Import_Test
                                         //validMember = false;
                                     }
                                     break;
-                                case 10://City
+                                case 10: // City
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         newMem.City = (File.Substring(currentIndex, Spaces[i]).Trim());
@@ -228,7 +218,7 @@ namespace Member_Import_Test
                                         //validMember = false;
                                     }
                                     break;
-                                case 11://State
+                                case 11: // State
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         newMem.State = (File.Substring(currentIndex, Spaces[i]).Trim());
@@ -238,7 +228,7 @@ namespace Member_Import_Test
                                         //validMember = false;
                                     }
                                     break;
-                                case 12://Zip
+                                case 12: // Zip
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         newMem.PostalCode = (File.Substring(currentIndex, Spaces[i]).Trim());
@@ -248,29 +238,29 @@ namespace Member_Import_Test
                                         //validMember = false;
                                     }
                                     break;
-                                case 13://Notes
+                                case 13: // Notes
                                     newMem.Notes = (File.Substring(currentIndex, Spaces[i]).Trim());
                                     break;
-                                case 14://Average
+                                case 14: // Average
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         newMem.StartAvg = Convert.ToInt32((File.Substring(currentIndex, Spaces[i]).Trim()));
                                         newMem.Average = newMem.StartAvg;
                                     }
                                     break;
-                                case 15://Handicap
+                                case 15: // Handicap
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         newMem.Handicap = Convert.ToInt32((File.Substring(currentIndex, Spaces[i]).Trim()));
                                     }
                                     break;
-                                case 16://Bonus
+                                case 16: // Bonus
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         newMem.Bonus = Convert.ToInt32((File.Substring(currentIndex, Spaces[i]).Trim()));
                                     }
                                     break;
-                                case 17://Date Last Bowled
+                                case 17: // Date Last Bowled
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         newMem.LastBowled = Convert.ToDateTime((File.Substring(currentIndex, Spaces[i]).Trim()));
@@ -278,13 +268,13 @@ namespace Member_Import_Test
                                     break;
                                 /*case 18:
                                     This is the year end tournaments which currently are not stored/not being used*/
-                                case 19://Money Earned
+                                case 19: // Money Earned
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         newMem.MoneyEarned = Convert.ToDecimal((File.Substring(currentIndex, Spaces[i]).Trim()));
                                     }
                                     break;
-                                case 20://Rejoin Date
+                                case 20: // Rejoin Date
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         try
@@ -297,7 +287,7 @@ namespace Member_Import_Test
                                         }
                                     }
                                     break;
-                                case 21://Referrals
+                                case 21: // Referrals
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         Console.WriteLine(File.Substring(currentIndex, Spaces[i]).Trim());
@@ -310,7 +300,6 @@ namespace Member_Import_Test
                                         }
                                         else
                                         {
-
                                             //newMem.Referrals = Convert.ToInt16(File.Substring(currentIndex, Spaces[i]).Trim());
                                             //validMember = false;
                                         }
@@ -321,7 +310,7 @@ namespace Member_Import_Test
                                         newMem.Referrals = null;
                                     }
                                     break;
-                                case 22://Social Security Number
+                                case 22: // Social Security Number
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         newMem.SSN = File.Substring(currentIndex, Spaces[i]).Trim();
@@ -333,7 +322,7 @@ namespace Member_Import_Test
                                     break;
                                 /*case 23:
                                     Unused member for life checkbox*/
-                                case 24://Active Member
+                                case 24: // Active Member
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
@@ -345,7 +334,7 @@ namespace Member_Import_Test
                                     break;
                                 /*case 25:
                                     Unused pre paid checkbox from original form*/
-                                case 26://Inactive Member
+                                case 26: // Inactive Member
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         if (status && Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
@@ -358,9 +347,8 @@ namespace Member_Import_Test
                                             newMem.IsActive = false;
                                         }
                                     }
-
                                     break;
-                                case 27://Senior
+                                case 27: // Senior
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
@@ -369,7 +357,7 @@ namespace Member_Import_Test
                                         }
                                     }
                                     break;
-                                case 28://Gender Female
+                                case 28: // Gender Female
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
@@ -379,7 +367,7 @@ namespace Member_Import_Test
                                         }
                                     }
                                     break;
-                                case 29://Gender Male
+                                case 29: // Gender Male
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         if (genderSelected && Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
@@ -393,7 +381,7 @@ namespace Member_Import_Test
                                         }
                                     }
                                     break;
-                                case 30://Birth Date
+                                case 30: // Birth Date
                                     if (File.Length - currentIndex < 8 || !String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
                                         if (File.Length - currentIndex < 8)
@@ -413,9 +401,6 @@ namespace Member_Import_Test
                                                 newMem.DateOfBirth = DateTime.Today;
                                             }
                                         }
-
-
-
                                     }
                                     else
                                     {
@@ -427,52 +412,44 @@ namespace Member_Import_Test
                         }
                         if (validMember)
                         {
-                            //valid count to show user at end
+                            // Valid count to show user at end
                             validCount++;
-                            //add good members to valid list to add to database once done reading file
+                            // Add good members to valid list to add to database once done reading file
                             validMembers.Add(newMem);
                         }
                         else
                         {
-                            //invalid count to show the user at the end
+                            // Invalid count to show the user at the end
                             invalidCount++;
-                            //add invalid members to invalid list to be edited by user before adding to the database.
+                            // Add invalid members to invalid list to be edited by user before adding to the database.
                             invalidMembers.Add(newMem);
                         }
                         MemberCount++;
                         newMem = new Member();
                     } while (currentIndex <= File.Length);
 
-                    // go through the members on the valid list and add them to the database
+                    // Go through the members on the valid list and add them to the database
                     for (int j = 0; j < validMembers.Count; j++)
                     {
-                        //only add the member after checking if the memeber isn't already in the database.
+                        // Only add the member after checking if the memeber isn't already in the database.
                         if (!NineTapTour.Database.MemberDb.MemberExists(validMembers[j]))
                         {
-
                             if (validMembers[j].DateOfBirth < Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM"))
                             {
                                 validMembers[j].DateOfBirth = Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM");
-
-
                             }
                             if (validMembers[j].JoinDate < Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM"))
                             {
                                 validMembers[j].JoinDate = Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM");
-
-
                             }
                             if (validMembers[j].RejoinDate < Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM"))
                             {
                                 validMembers[j].RejoinDate = Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM");
-
-
                             }
-
                             NineTapTour.Database.MemberDb.AddOrUpdateMember(validMembers[j]);
                         }
                     }
-                    //show the results to the user
+                    // Show the results to the user
                     MessageBox.Show(validCount + " valid members processed, " + invalidCount + " invalid members processed.", "Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     checkSpaces();
                 }
@@ -484,7 +461,6 @@ namespace Member_Import_Test
             if (invalidMembers.Count > 0 || validMembers.Count > 0)
             {
                 btnSelectExcelFolder.Enabled = true;
-                
             }
             if (ALLEXCELDATAFROMALLPLAYERS.Count > 0) //&& TournamentList.Count > 0)
             {
@@ -500,7 +476,7 @@ namespace Member_Import_Test
             }
             else
             {
-                //open the memberdata copied from main project in order to edit the invalid user information
+                // Open the memberdata copied from main project in order to edit the invalid user information
                 var md = new FrmMemberData(invalidMembers, this);
                 md.Show();
                 Hide();
@@ -561,7 +537,6 @@ namespace Member_Import_Test
             return ALLEXCELDATAFROMALLPLAYERS;
         }
 
-
         private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
         {
             progressBar2.Minimum = 0;
@@ -574,10 +549,7 @@ namespace Member_Import_Test
             Excel.Range range = xlWorkSheet.UsedRange;
             List<ExcelRow> returnMe = new List<ExcelRow>();
 
-
-
             char[] splitters = { '/', '-' };
-
             string[] PlayerFinalFirstAndMiddle = { "", "" };
             string[] PlayersFinalLastAndMiddle = { "", "" };
             string playerLastName = "";
@@ -611,7 +583,6 @@ namespace Member_Import_Test
             {
                 string[] aftersplit;
                 string orgstring;
-
                 try
                 {
                     orgstring = ((range.Cells[1, 10] as Excel.Range).Value2);
@@ -640,8 +611,6 @@ namespace Member_Import_Test
                         }
                     }
                 }
-            
-               
             }
           
             String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
@@ -675,7 +644,6 @@ namespace Member_Import_Test
                     }
                 }
             }
-
 
             for (int sheetNum = 1; sheetNum <= xlWorkBook.Worksheets.Count; sheetNum++)
             {
@@ -725,139 +693,138 @@ namespace Member_Import_Test
                     playerH.MemberNumber = temp.PlayerNumber;
                     playerH.regionID = RegionID;
                     //only process file if they have been added as a member first and are active ?
-                        if (MemberDb.GetMember(temp.PlayerNumber, RegionID).IsActive == true)
+                    if (MemberDb.GetMember(temp.PlayerNumber, RegionID).IsActive == true)
+                    {
+                        try
                         {
-                            try
+                            temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
+                            playerH.GamesPlayed = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
+                            DateTime compare = DateTime.FromOADate(Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2));
+                            if (compare == Convert.ToDateTime("12/30/1899 12:00:00 AM"))
                             {
-                                temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
-                                playerH.GamesPlayed = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
-                                DateTime compare = DateTime.FromOADate(Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2));
-                                if (compare == Convert.ToDateTime("12/30/1899 12:00:00 AM"))
-                                {
-                                    break;
-                                }
+                                break;
                             }
-                            catch
-                            {
-                                temp.GameTotal = -1;
-                            }
-                            try
-                            {
-                                temp.Date = DateTime.FromOADate(Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2));
-                                playerH.TournamentDate = temp.Date;
-                            }
-                            catch
-                            {
-                                temp.Date = new DateTime();
-                            }
-                            try
-                            {
-                                temp.Game1 = Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2);
-                                GameHistory.Game1 = temp.Game1;
-                                playerH.Game1 = temp.Game1;
-                            }
-                            catch
-                            {
-                                temp.Game1 = -1;
-                            }
-                            try
-                            {
-                                temp.Game2 = Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2);
-                                GameHistory.Game2 = temp.Game2;
-                                playerH.Game2 = temp.Game2;
-                            }
-                            catch
-                            {
-                                temp.Game2 = -1;
-                            }
-                            try
-                            {
-                                temp.Game3 = Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2);
-                                GameHistory.Game3 = temp.Game3;
-                                playerH.Game3 = temp.Game3;
-                            }
-                            catch
-                            {
-                                temp.Game3 = -1;
-                            }
-                            try
-                            {
-                                temp.Game4 = Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2);
-                                GameHistory.Game4 = temp.Game4;
-                                playerH.Game4 = temp.Game4;
-                            }
-                            catch
-                            {
-                                temp.Game4 = -1;
-                            }
-                            try
-                            {
-                                temp.Total = Convert.ToInt32((range.Cells[row, 7] as Excel.Range).Value2);
-                                GameHistory.TotalScore = temp.Total;
-                                playerH.TotalScore = temp.Total;
-                            }
-                            catch
-                            {
-                                temp.Total = -1;
-                            }
-                            try
-                            {
-                                temp.AverageOfRow = Convert.ToDouble((range.Cells[row, 8] as Excel.Range).Value2);
-                                playerH.AverageForGame = temp.AverageOfRow;
-                            }
-                            catch
-                            {
-                                temp.AverageOfRow = -1;
-                            }
-                            try
-                            {
-                                temp.TrueAverage = Convert.ToDouble((range.Cells[row, 9] as Excel.Range).Value2);
-                                playerH.trueAVG = temp.TrueAverage;
-                            }
-                            catch
-                            {
-                                temp.TrueAverage = -1;
-                            }
-                            try
-                            {
-                                temp.AVG = Convert.ToInt32((range.Cells[row, 10] as Excel.Range).Value2);
-                                playerH.AVG = temp.AVG;
+                        }
+                        catch
+                        {
+                            temp.GameTotal = -1;
+                        }
+                        try
+                        {
+                            temp.Date = DateTime.FromOADate(Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2));
+                            playerH.TournamentDate = temp.Date;
+                        }
+                        catch
+                        {
+                            temp.Date = new DateTime();
+                        }
+                        try
+                        {
+                            temp.Game1 = Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2);
+                            GameHistory.Game1 = temp.Game1;
+                            playerH.Game1 = temp.Game1;
+                        }
+                        catch
+                        {
+                            temp.Game1 = -1;
+                        }
+                        try
+                        {
+                            temp.Game2 = Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2);
+                            GameHistory.Game2 = temp.Game2;
+                            playerH.Game2 = temp.Game2;
+                        }
+                        catch
+                        {
+                            temp.Game2 = -1;
+                        }
+                        try
+                        {
+                            temp.Game3 = Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2);
+                            GameHistory.Game3 = temp.Game3;
+                            playerH.Game3 = temp.Game3;
+                        }
+                        catch
+                        {
+                            temp.Game3 = -1;
+                        }
+                        try
+                        {
+                            temp.Game4 = Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2);
+                            GameHistory.Game4 = temp.Game4;
+                            playerH.Game4 = temp.Game4;
+                        }
+                        catch
+                        {
+                            temp.Game4 = -1;
+                        }
+                        try
+                        {
+                            temp.Total = Convert.ToInt32((range.Cells[row, 7] as Excel.Range).Value2);
+                            GameHistory.TotalScore = temp.Total;
+                            playerH.TotalScore = temp.Total;
+                        }
+                        catch
+                        {
+                            temp.Total = -1;
+                        }
+                        try
+                        {
+                            temp.AverageOfRow = Convert.ToDouble((range.Cells[row, 8] as Excel.Range).Value2);
+                            playerH.AverageForGame = temp.AverageOfRow;
+                        }
+                        catch
+                        {
+                            temp.AverageOfRow = -1;
+                        }
+                        try
+                        {
+                            temp.TrueAverage = Convert.ToDouble((range.Cells[row, 9] as Excel.Range).Value2);
+                            playerH.trueAVG = temp.TrueAverage;
+                        }
+                        catch
+                        {
+                            temp.TrueAverage = -1;
+                        }
+                        try
+                        {
+                            temp.AVG = Convert.ToInt32((range.Cells[row, 10] as Excel.Range).Value2);
+                            playerH.AVG = temp.AVG;
 
-                            }
-                            catch
-                            {
-                                temp.AVG = -1;
-                            }
-                            try
-                            {
-                                temp.HandyCap = Convert.ToInt32((range.Cells[row, 11] as Excel.Range).Value2);
-                                GameHistory.Handicap = temp.HandyCap;
-                                playerH.HandiCap = temp.HandyCap;
-                            }
-                            catch
-                            {
-                                temp.Bonus = -1;
-                            }
-                            try
-                            {
-                                temp.Bonus = Convert.ToInt32((range.Cells[row, 12] as Excel.Range).Value2);
-                                GameHistory.Bonus = temp.Bonus;
-                                playerH.Bonus = temp.Bonus;
-                            }
-                            catch
-                            {
-                                temp.HandyCap = -1000;
-                            }
-                            temp.PotPro = Convert.ToString((range.Cells[row, 13] as Excel.Range).Value2);
-                            playerH.ProPot = temp.PotPro;
-                            temp.FinPPHG = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
-                            playerH.PPHG = temp.FinPPHG;
+                        }
+                        catch
+                        {
+                            temp.AVG = -1;
+                        }
+                        try
+                        {
+                            temp.HandyCap = Convert.ToInt32((range.Cells[row, 11] as Excel.Range).Value2);
+                            GameHistory.Handicap = temp.HandyCap;
+                            playerH.HandiCap = temp.HandyCap;
+                        }
+                        catch
+                        {
+                            temp.Bonus = -1;
+                        }
+                        try
+                        {
+                            temp.Bonus = Convert.ToInt32((range.Cells[row, 12] as Excel.Range).Value2);
+                            GameHistory.Bonus = temp.Bonus;
+                            playerH.Bonus = temp.Bonus;
+                        }
+                        catch
+                        {
+                            temp.HandyCap = -1000;
+                        }
+                        temp.PotPro = Convert.ToString((range.Cells[row, 13] as Excel.Range).Value2);
+                        playerH.ProPot = temp.PotPro;
+                        temp.FinPPHG = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
+                        playerH.PPHG = temp.FinPPHG;
 
-
-                            try
-                            {
-                            //THIS WILL CATCH SUBTOTALS THAT MAY HAVE BEEN ADDED ON LINE 46 OF THE EXCEL FILES
-                            if (temp.FinPPHG.ToString() != "") //only grab the money earned from tournament if they placed in tournament
+                        try
+                        {
+                            // THIS WILL CATCH SUBTOTALS THAT MAY HAVE BEEN ADDED ON LINE 46 OF THE EXCEL FILES
+                            if (temp.FinPPHG.ToString() != "") // Only grab the money earned from tournament if they placed in tournament
                             {
                                 temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
                                 GameHistory.MoneyWon = Convert.ToDecimal(temp.Cash);
@@ -869,39 +836,32 @@ namespace Member_Import_Test
                                 GameHistory.MoneyWon = 0;
                                 playerH.MoneyWon = 0;
                             }
-
-                            
-                            }
-                            catch
-                            {
-                                temp.Cash = 0;
-                            }
-                            playerH.MoneyWon += Convert.ToDecimal(noGameMoneyWon); 
-
-                            temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
-                            GameHistory.Notes = temp.Notes;
-                            playerH.Notes = temp.Notes;
-                            playerH.PPHG = temp.FinPPHG;
-                            GameHistory.Id = allGames + 1;
-                            allGames++;
-                            playerH.GameID = GameHistory.Id;
-                            GameImport.Add(GameHistory);
-                            PlayerHistoryList.Add(playerH);
-                            returnMe.Add(temp);
-                            noGameMoneyWon = 0; 
-                            progressBar2.Increment(1);
-                        
                         }
-                    }
-                  
-            }
+                        catch
+                        {
+                            temp.Cash = 0;
+                        }
+                        playerH.MoneyWon += Convert.ToDecimal(noGameMoneyWon); 
 
+                        temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
+                        GameHistory.Notes = temp.Notes;
+                        playerH.Notes = temp.Notes;
+                        playerH.PPHG = temp.FinPPHG;
+                        GameHistory.Id = allGames + 1;
+                        allGames++;
+                        playerH.GameID = GameHistory.Id;
+                        GameImport.Add(GameHistory);
+                        PlayerHistoryList.Add(playerH);
+                        returnMe.Add(temp);
+                        noGameMoneyWon = 0; 
+                        progressBar2.Increment(1);
+                        
+                    }
+                }
+            }
 
             xlWorkBook.Close(0);
             xlApp.Quit();
-
-
-
 
             Marshal.ReleaseComObject(range);
             Marshal.ReleaseComObject(xlWorkSheet);
@@ -911,24 +871,17 @@ namespace Member_Import_Test
             System.Diagnostics.Process[] process = System.Diagnostics.Process.GetProcessesByName("Excel");
             foreach (System.Diagnostics.Process p in process)
             {
-
                 try
                 {
                     p.Kill();
                 }
                 catch { }
             }
-        
-    
-
-
-
             return returnMe;
         }
 
         private void btnPinFileSelect_Click(object sender, EventArgs e)
         {
-
             using (var fbd = new FolderBrowserDialog())
             {
                 DialogResult result = fbd.ShowDialog();
@@ -950,7 +903,6 @@ namespace Member_Import_Test
                             ProcessPinFile(files[i]);
 
                         }
-
                     }
                 }
                 MessageBox.Show(TournamentList.Count + " tournaments were imported.");
@@ -982,9 +934,6 @@ namespace Member_Import_Test
                                                     @"\d{2}-\d{1}-\d{2}",
                                                     @"\d{1}-\d{2}-\d{2}",
                                                     @"\d{1}-\d{1}-\d{2}",
-
-
-
                                                    };
             string[] CorrectFormat = new string[]
                                                  {
@@ -1002,7 +951,7 @@ namespace Member_Import_Test
                                                      "M-d-yy"    ,
                                                  };
 
-            //for loop to check what date format is being used in the file name.
+            // for loop to check what date format is being used in the file name.
             for (int n = 0; n < regexArray.Length; n++)
             {
                 var regex = new Regex(regexArray[n]);  // sets the regex to a regex in the regexArray list to check if a valid date is in the file name.
@@ -1025,11 +974,9 @@ namespace Member_Import_Test
                         dt = DateTime.Today; //sets defualt dt to the current date
                         break;
                     }
-
                 }
-
             }
-            //Adds everything before the date as part of the tournament name 
+            // Adds everything before the date as part of the tournament name 
             for (int i = 0; i < tournamentAfterSplit.Length; i++)
             {
                 DateTime dt2;
@@ -1059,10 +1006,7 @@ namespace Member_Import_Test
             currentTournament.Id = TournamentList.Count + 1;
             // listOfParticipants =  ReadPinFile(PinFileName, currentTournament); 
             // currentTournament.Participant = listOfParticipants;
-
             TournamentList.Add(currentTournament);
-
-
         }
 
         //USED TO PROCESS PIN FILES INCASE HE WANTS TO ADD OLD TOURNAMENTS
@@ -1076,7 +1020,6 @@ namespace Member_Import_Test
             sr.Close();
             int CurrentIndex = 0;
             int i;
-
 
             while (CurrentIndex >= 0) // for loop with switch that grabs information not stored in the member class (Original Tournament scores and their bowling score)
             {
@@ -1222,17 +1165,10 @@ namespace Member_Import_Test
                     pinFileParticipant.Tournament = currentTournament;
                     pinFileParticipant = new Participant();
                     newGame = new Game();
-
                 }
-
             }
-
             return partList;
         }
-
-
-
-
 
         private void btn_FinalizeData_Click(object sender, EventArgs e)
         {
@@ -1255,15 +1191,10 @@ namespace Member_Import_Test
                 }
             }
             IncrementFinalizeBar(25, "Step 4: Averages and bonus pins set. Updating all members.");
-
-
             updateMembers(validMembers);
             IncrementFinalizeBar(25, "Members updated");
-
             Cursor.Current = Cursors.Default;
-
             MessageBox.Show($"{validMembers.Count} members have been imported and all their bowling history has been added to the database");
-
             this.Close();
         }
 
@@ -1292,7 +1223,6 @@ namespace Member_Import_Test
                     MemberDb.AddOrUpdateMember(members[i]);
                 }
             }
-            
         }
 
         private void cbxRegionSelect_SelectedIndexChanged(object sender, EventArgs e)
@@ -1301,8 +1231,6 @@ namespace Member_Import_Test
             RegionID = r[cbxRegionSelect.SelectedIndex].NineTapRegionID;
         }
     }
-
-
 }
     
 
