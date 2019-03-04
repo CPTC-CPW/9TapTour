@@ -150,7 +150,6 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void FrmMemberScores_Activated(object sender, EventArgs e)
         {
-           
             RegionID = ((FrmMain)MdiParent).RegionID;
 
             //added in this line inorder to prevent the reset of the drop down list on memberscores form when switching between forms
@@ -194,9 +193,6 @@ namespace NineTapTour.Forms
                 rdoScratchScore.Visible = true;
                 txtMemberNum.Focus();
             }
-            //Clicks LastMemberButton when frm is activated.
-            MoveToLastRecordOfMemberScores();
-            
         }
 
         /// <summary>
@@ -639,6 +635,7 @@ namespace NineTapTour.Forms
         }
 
         #endregion
+        #region
         /// <summary>
         /// Checks a string for numeric values
         /// true if all are numeric
@@ -1018,11 +1015,6 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
-            MoveToLastRecordOfMemberScores();
-        }
-
-        private void MoveToLastRecordOfMemberScores()
-        {
             switchingParticipents = true;
 
             // Disables buttons and breaks function
@@ -1149,9 +1141,9 @@ namespace NineTapTour.Forms
             if (TempVariablesForGlobalLevel.MoneyEarnings != null && prevTourneyId != currTourneyId)
             {
                 TempVariablesForGlobalLevel.MoneyEarnings.Clear();
-            }  
+            }
         }
-
+#endregion
         /// <summary>
         /// Enables buttons to select when valid Tournament is selected
         /// </summary>
@@ -2048,7 +2040,5 @@ namespace NineTapTour.Forms
                 FormHelper.SelectParticipantSquad(participant.Squad, groupBox1);
             }
         }
-
-        
     }
 }
