@@ -18,8 +18,6 @@ namespace NineTapTour.Forms
 {
     public partial class TournamentStats : Form
     {
-        Form tempFrm = new TournamentStats();
-
         public TournamentStats()
         {
             InitializeComponent();
@@ -140,9 +138,7 @@ namespace NineTapTour.Forms
                     statsList.Add(temp);
                 }
 
-                // DataTable Method Call
-
-                //dgvTournamentStats.DataSource = //;
+                dgvTournamentStats.DataSource = BuildDataTable(statsList);
                 //dgvTournamentStats.Refresh();
 
             }
@@ -190,6 +186,56 @@ namespace NineTapTour.Forms
             dgvTournamentStats.Rows.Clear();
             dgvTournamentStats.DataSource = tournamentStatsList;
         }
+
+        private DataTable BuildDataTable(List<TournamentStatsList> statsList)
+        {
+            DataTable data = new DataTable("Tournament Stats");
+
+            data.Columns.Add("ID", System.Type.GetType("System.Int32"));
+            data.Columns.Add("First Name", System.Type.GetType("System.String"));
+            data.Columns.Add("Last Name", System.Type.GetType("System.String"));
+            data.Columns.Add("Squad", System.Type.GetType("System.Int32"));
+            data.Columns.Add("Scratch Total", System.Type.GetType("System.Int32"));
+            data.Columns.Add("Top3Scores", System.Type.GetType("System.Int32"));
+            data.Columns.Add("Game 1", System.Type.GetType("System.Int32"));
+            data.Columns.Add("Game 2", System.Type.GetType("System.Int32"));
+            data.Columns.Add("Game 3", System.Type.GetType("System.Int32"));
+            data.Columns.Add("Game 4", System.Type.GetType("System.Int32"));
+            data.Columns.Add("Handicap", System.Type.GetType("System.Int32"));
+            data.Columns.Add("Bonus", System.Type.GetType("System.Int32"));
+
+            // make first four columns required
+            for (int i = 0; i < 4; i++)
+            {
+                data.Columns[i].AllowDBNull = false;
+            }
+
+            // make id unique
+            data.Constraints.Add(new UniqueConstraint(data.Columns["ID"]));
+
+            // add statsList to DataTable
+            foreach (var item in statsList)
+            {
+                data.Rows.Add(new object[]
+                {
+                item.Id,
+                item.FirstName,
+                item.LastName,
+                item.Squad,
+                item.ScratchTotal,
+                item.Top3Scores,
+                item.Game1,
+                item.Game2,
+                item.Game3,
+                item.Game4,
+                item.Handicap,
+                item.Bonus
+                });
+            }
+
+            return data;
+        }
+
     }
 
     public class DataGridViewComparer : IComparer
@@ -229,21 +275,5 @@ namespace NineTapTour.Forms
         public int? Bonus { get; set; }
     }
 
-    private DataTable BuildDataTable(List<TournamentStatsList> statsList)
-    {
-        DataTable data = new DataTable("Tournament Stats");
-
-        data.Columns.Add("ID", System.Type.GetType("System.Int32"));
-        data.Columns.Add("First Name", System.Type.GetType("System.String"));
-        data.Columns.Add("Last Name", System.Type.GetType("System.String"));
-        data.Columns.Add("Squad", System.Type.GetType("System.Int32"));
-        data.Columns.Add("Scratch Total", System.Type.GetType("System.Int32"));
-        data.Columns.Add("Top3Scores", System.Type.GetType("System.Int32"));
-        data.Columns.Add("Game 1", System.Type.GetType("System.Int32"));
-        data.Columns.Add("Game 2", System.Type.GetType("System.Int32"));
-        data.Columns.Add("Game 3", System.Type.GetType("System.Int32"));
-        data.Columns.Add("Game 4", System.Type.GetType("System.Int32"));
-        data.Columns.Add("Handicap", System.Type.GetType("System.Int32"));
-        data.Columns.Add("Bonus", System.Type.GetType("System.Int32"));
-    }
+    
 }
