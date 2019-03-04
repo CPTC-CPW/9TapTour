@@ -25,7 +25,7 @@ namespace Member_Import_Test
             RegionID = r[cbxRegionSelect.SelectedIndex].NineTapRegionID;
             
         }
-
+        #region Member Info Static Ints
         //MEMBER INFO STATIC INTS
         static int MemNumSpace = 6;     // Member Number
         static int DJoinedSpace = 8;    // Date Joined
@@ -52,7 +52,8 @@ namespace Member_Import_Test
         static int SSSpace = 11;        // Social Security
         static int CBSpace = 5;         // Check Box Spaceing, there are 7 total, only 5 are actually checked for information, repeated 7 times in Spaces array.
         static int DOBSpace = 8;        // Date Of Birth.
-
+        #endregion
+        #region PinFile Static Ints
         // PIN FILE STATIC INTS
         static int PinFileMemNumSpace = 6;
         static int PinFileLastName = 20;
@@ -70,6 +71,7 @@ namespace Member_Import_Test
         static int PinFileHandicapScoreTotal = 4;
         static int PinFileNotes = 207; //notes + spaces to skip to get to the 0's ans 1's that control the squads
         static int morsecodeslot = 5; // all the 0 and 1s at the end of a players pin record. these series of 0s and 1s indicate their active or inactive status, male or female, senior. and bowling squad.
+        #endregion
 
         public int RegionID;
         public int allGames;
@@ -855,7 +857,6 @@ namespace Member_Import_Test
                         returnMe.Add(temp);
                         noGameMoneyWon = 0; 
                         progressBar2.Increment(1);
-                        
                     }
                 }
             }
