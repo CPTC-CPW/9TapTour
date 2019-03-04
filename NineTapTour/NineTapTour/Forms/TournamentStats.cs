@@ -18,13 +18,16 @@ namespace NineTapTour.Forms
 {
     public partial class TournamentStats : Form
     {
+        Form tempFrm = new TournamentStats();
+
         public TournamentStats()
         {
             InitializeComponent();
         }
 
-        private void TournamentStats_Load(object sender, EventArgs e)
+        public void TournamentStats_Load(object sender, EventArgs e)
         {
+
             if (!frmMemberScores.selectedTournament.ThreeOutOf4)
             {
                 Tournament selectedTournament = new Tournament();
@@ -53,7 +56,7 @@ namespace NineTapTour.Forms
                                                p.Game.Handicap,
                                                p.Game.Bonus
                                            }).ToList();
-                
+
                 List<TournamentStatsList> statsList = new List<TournamentStatsList>();
                 foreach (var item in tournamentStatsList)
                 {
@@ -74,11 +77,10 @@ namespace NineTapTour.Forms
                     };
                     statsList.Add(list);
                 }
-                
-                TournamentStatsBindingList bindingList = new TournamentStatsBindingList(statsList);
-                dgvTournamentStats.DataSource = bindingList;
-                dgvTournamentStats.Refresh();
-                
+
+                dgvTournamentStats.DataSource = BuildDataTable(statsList);
+                //dgvTournamentStats.Refresh();
+
             }
             else
             {
@@ -86,7 +88,7 @@ namespace NineTapTour.Forms
                 selectedTournament = frmMemberScores.selectedTournament;
                 lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
-                NineTapDb db = new NineTapDb();           
+                NineTapDb db = new NineTapDb();
 
                 SqlConnection con = new SqlConnection(GetConnection());
                 SqlCommand gameOrder = new SqlCommand();
@@ -100,94 +102,66 @@ namespace NineTapTour.Forms
 
                 gameOrder.Parameters.AddWithValue("@TID", selectedTournament.Id);
 
-                try
+                
+                // open connection
+                con.Open();
+
+                // execute command(query)
+                SqlDataReader reader = gameOrder.ExecuteReader();
+                List<TournamentStatsList> statsList = new List<TournamentStatsList>();
+
+                // view results
+                while (reader.Read())
                 {
-                    // open connection
-                    con.Open();
+                    TournamentStatsList temp = new TournamentStatsList();
+                    temp.Handicap = Convert.ToInt32(reader["Handicap"]);
+                    temp.Bonus = Convert.ToInt32(reader["Bonus"]);
+                    List<int?> scores = new List<int?> { Convert.ToInt32(reader["Game1"]), Convert.ToInt32(reader["Game2"]), Convert.ToInt32(reader["Game3"]), Convert.ToInt32(reader["Game4"]) };
 
-                    // execute command(query)
-                    SqlDataReader reader = gameOrder.ExecuteReader();
-                    List<TournamentStatsList> statsList = new List<TournamentStatsList>();
+                    List<int> topScores = GetTop3OutOf4(scores);
+                    int scratchTotal = 0;
 
-                    // view results
-                    while (reader.Read())
+                    for (int i = 0; i < 3; i++)
                     {
-                        TournamentStatsList temp = new TournamentStatsList();
-                        temp.Handicap = Convert.ToInt32(reader["Handicap"]);
-                        temp.Bonus = Convert.ToInt32(reader["Bonus"]);                      
-                        List<int?> scores = new List<int?> { Convert.ToInt32(reader["Game1"]), Convert.ToInt32(reader["Game2"]), Convert.ToInt32(reader["Game3"]), Convert.ToInt32(reader["Game4"]) };
+                        scratchTotal += topScores[i];
+                    }
 
-                        List<int> topScores = GetTop3OutOf4(scores);
-                        int scratchTotal = 0;
+                    temp.ScratchTotal = scratchTotal;
+                    temp.Top3Scores = temp.ScratchTotal + (temp.Handicap * 3) + (temp.Bonus * 3);
+                    temp.Id = Convert.ToInt32(reader["Id"]);
+                    temp.FirstName = reader["FirstName"].ToString();
+                    temp.LastName = reader["LastName"].ToString();
+                    temp.Squad = Convert.ToInt32(reader["SquadNumber"]);
+                    temp.Game1 = Convert.ToInt32(reader["Game1"]);
+                    temp.Game2 = Convert.ToInt32(reader["Game2"]);
+                    temp.Game3 = Convert.ToInt32(reader["Game3"]);
+                    temp.Game4 = Convert.ToInt32(reader["Game4"]);
 
-                        for (int i = 0; i < 3; i++)
-                        {
-                            scratchTotal += topScores[i];
-                        }
-
-                        temp.ScratchTotal = scratchTotal;
-                        temp.Top3Scores = temp.ScratchTotal + (temp.Handicap * 3) + (temp.Bonus * 3);
-                        temp.Id = Convert.ToInt32(reader["Id"]);
-                        temp.FirstName = reader["FirstName"].ToString();
-                        temp.LastName = reader["LastName"].ToString();
-                        temp.Squad = Convert.ToInt32(reader["SquadNumber"]);
-                        temp.Game1 = Convert.ToInt32(reader["Game1"]);
-                        temp.Game2 = Convert.ToInt32(reader["Game2"]);
-                        temp.Game3 = Convert.ToInt32(reader["Game3"]);
-                        temp.Game4 = Convert.ToInt32(reader["Game4"]);
-
-                        statsList.Add(temp);
-                    }                    
-                    
-                    TournamentStatsBindingList bindingList = new TournamentStatsBindingList(statsList);
-                    dgvTournamentStats.DataSource = bindingList;
-                    dgvTournamentStats.Refresh();
+                    statsList.Add(temp);
                 }
-                catch (SqlException)
-                {
-                    
-                }
-                finally
-                {
-                    con.Dispose();
-                }
+
+                // DataTable Method Call
+
+                //dgvTournamentStats.DataSource = //;
+                //dgvTournamentStats.Refresh();
+
             }
-        }
-
-        //public void SetSortMode()
-        //{
-        //    int count = dgvTournamentStats.Columns.Count;
-        //    for (int i = 0; i < count; i++)
-        //    {
-        //        dgvTournamentStats.Columns[i].SortMode = DataGridViewColumnSortMode.Automatic;
-        //        //dgvTournamentStats.Sort(dgvTournamentStats.Columns[i], ListSortDirection.Ascending);
-        //    }
-        //}
-
-        //public void SetSortMode(DataGridView dataGridView)
-        //{
-        //    int count = dgvTournamentStats.Columns.Count;
-        //    for (int i = 0; i < count; i++)
-        //    {
-        //        dataGridView.Columns[i].SortMode = DataGridViewColumnSortMode.Automatic;
-        //        //dgvTournamentStats.Sort(dgvTournamentStats.Columns[i], ListSortDirection.Ascending);
-        //    }
-        //}
+        }        
 
         public static List<int> GetTop3OutOf4(List<int?> scores)
-        {            
+        {
             List<int> listOfValidScores = new List<int>();
-            for(int i = 0; i < scores.Count-1; i++)
+            for (int i = 0; i < scores.Count - 1; i++)
             {
                 if (scores[i].HasValue)
                 {
                     listOfValidScores.Add(scores[i].Value);
-                }                
+                }
             }
 
             listOfValidScores.Sort();
             listOfValidScores.Reverse();
-            return listOfValidScores;            
+            return listOfValidScores;
         }
 
         public static string GetConnection()
@@ -211,29 +185,12 @@ namespace NineTapTour.Forms
             e.Graphics.DrawImage(bm, 0, 0);
         }
 
-    //    private void dgvTournamentStats_ColumnHeaderMouseClick(object sender,
-    //                       DataGridViewCellMouseEventArgs e)
-    //    {
-    //        List<TournamentStatsBindingList> bindingLists = dgvTournamentStats.DataSource as List<TournamentStatsBindingList>;
-    //        string col = dgvTournamentStats.Columns[e.ColumnIndex].DataPropertyName;
-    //        string order = " ASC";
-    //        if (dgvTournamentStats.Tag != null)
-    //            order = dgvTournamentStats.Tag.ToString().Contains(" ASC") ? " DESC" : " ASC";
-
-    //        dgvTournamentStats.Tag = col + order;
-
-    //        if (order.Contains(" ASC"))
-    //            bindingLists = bindingLists.Sort(new DataGridViewComparer());
-    //        else
-    //            names = names.OrderByDescending(x => col == "first" ? x.first :
-    //                                                 col == "last" ? x.last : x.middle).ToList();
-
-    //        dgvTournamentStats.DataSource = names;
-    //    }
+        public void Refresh(List<TournamentStatsList> tournamentStatsList)
+        {
+            dgvTournamentStats.Rows.Clear();
+            dgvTournamentStats.DataSource = tournamentStatsList;
+        }
     }
-
-    // https://docs.microsoft.com/en-us/dotnet/api/system.data.datatable?view=netframework-4.7.2
-    // https://stackoverflow.com/questions/14794470/bind-datatable-data-to-gridview-in-windows-form
 
     public class DataGridViewComparer : IComparer
     {
@@ -272,255 +229,21 @@ namespace NineTapTour.Forms
         public int? Bonus { get; set; }
     }
 
-    /**
-     * Provides a generic collection that supports data binding and additionally supports sorting.
-     * TournamentStatsBindingList impliments CollectionBase and IBindingList to allow for DataGridView sorting.
-     * IList -> CollectionBase.List
-     * https://10tec.com/articles/sort-datagridview.aspx
-     */
-    public class TournamentStatsBindingList : CollectionBase, IBindingList
-    {        
-        private IList _bindingList;
-        
-        private bool _isSorted;
-        private ListSortDirection _sortDirection = ListSortDirection.Ascending;
-        private PropertyDescriptor _sortProperty;
-        
-        private ListChangedEventArgs resetEvent = new ListChangedEventArgs(ListChangedType.Reset, -1);
-        private ListChangedEventHandler onListChanged;
+    private DataTable BuildDataTable(List<TournamentStatsList> statsList)
+    {
+        DataTable data = new DataTable("Tournament Stats");
 
-
-        public TournamentStatsBindingList()
-        {
-            _bindingList = new List<TournamentStatsList>();
-            LoadMembers();
-        }
-
-        public TournamentStatsBindingList(List<TournamentStatsList> list)
-        {
-            _bindingList = list;
-            LoadMembers();
-        }        
-
-        public TournamentStatsList this[int index]
-        {
-            get
-            {
-                return (TournamentStatsList)(List[index]);
-            }
-            set
-            {
-                List[index] = value;
-            }
-        }
-        
-        public void LoadMembers()
-        {            
-            ReadList();
-            OnListChanged(resetEvent);
-        }
-
-        private void ReadList()
-        {
-            foreach (var m in _bindingList)
-            {
-                List.Add(m);
-            }
-        }
-
-        public int Add(TournamentStatsList value)
-        {
-            return List.Add(value);
-        }
-
-        public TournamentStatsList AddNew()
-        {
-            return (TournamentStatsList)((IBindingList)this).AddNew();
-        }
-
-        public void Remove(TournamentStatsList value)
-        {
-            List.Remove(value);
-        }
-
-        protected virtual void OnListChanged(ListChangedEventArgs ev)
-        {
-            if (onListChanged != null)
-            {
-                onListChanged(this, ev);
-            }
-        }
-
-        protected override void OnClear()
-        {
-            foreach (TournamentStatsList c in List)
-            {
-                throw new NotSupportedException();
-            }
-        }
-
-        protected override void OnClearComplete()
-        {
-            OnListChanged(resetEvent);
-        }
-
-        protected override void OnInsertComplete(int index, object value)
-        {
-            OnListChanged(new ListChangedEventArgs(ListChangedType.ItemAdded, index));
-        }
-
-        protected override void OnRemoveComplete(int index, object value)
-        {
-            OnListChanged(new ListChangedEventArgs(ListChangedType.ItemDeleted, index));
-        }
-
-        protected override void OnSetComplete(int index, object oldValue, object newValue)
-        {
-            if (oldValue != newValue)
-            {
-                OnListChanged(new ListChangedEventArgs(ListChangedType.ItemAdded, index));
-            }
-        }
-
-        internal void TournamentStatsListChanged(List<TournamentStatsList> list)
-        {
-            int index = List.IndexOf(list);
-
-            OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
-        }
-
-        bool IBindingList.AllowEdit
-        {
-            get { return true; }
-        }
-
-        bool IBindingList.AllowNew
-        {
-            get { return true; }
-        }
-
-        bool IBindingList.AllowRemove
-        {
-            get { return true; }
-        }
-
-        bool IBindingList.SupportsChangeNotification
-        {
-            get { return true; }
-        }
-
-        bool IBindingList.SupportsSearching
-        {
-            get { return false; }
-        }
-
-        bool IBindingList.SupportsSorting
-        {
-            get { return true; }
-        }
-
-        bool IBindingList.IsSorted
-        {
-            get { return _isSorted; }
-        }
-
-        ListSortDirection IBindingList.SortDirection
-        {
-            get { return _sortDirection; }
-        }
-
-        PropertyDescriptor IBindingList.SortProperty
-        {
-            get { return _sortProperty; }
-        }
-
-        public event ListChangedEventHandler ListChanged
-        {
-            add
-            {
-                onListChanged += value;
-            }
-            remove
-            {
-                onListChanged -= value;
-            }
-        }
-
-        void IBindingList.ApplySort(PropertyDescriptor property, ListSortDirection direction)
-        {
-            _sortProperty = property;
-            _sortDirection = direction;
-
-            List<TournamentStatsList> list = List.Cast<TournamentStatsList>().ToList();
-            if (list is null) return;
-            list.Sort(Compare);
-            _isSorted = true;
-            TournamentStatsListChanged(list);
-            OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, -1));
-        }
-
-        int Compare(TournamentStatsList lhs, TournamentStatsList rhs)
-        {
-            var result = OnComparison(lhs, rhs);
-            //invert if descending
-            if (_sortDirection == ListSortDirection.Descending)
-                result = -result;
-            return result;
-        }
-
-        private int OnComparison(TournamentStatsList lhs, TournamentStatsList rhs)
-        {
-            object lhsValue = lhs == null ? null : _sortProperty.GetValue(lhs);
-            object rhsValue = rhs == null ? null : _sortProperty.GetValue(rhs);
-            if (lhsValue == null)
-            {
-                return (rhsValue == null) ? 0 : -1; //nulls are equal
-            }
-
-            if (rhsValue == null)
-            {
-                return 1; //first has value, second doesn't
-            }
-
-            if (lhsValue is IComparable)
-            {
-                return ((IComparable)lhsValue).CompareTo(rhsValue);
-            }
-
-            if (lhsValue.Equals(rhsValue))
-            {
-                return 0; //both are the same
-            }
-
-            //not comparable, compare ToString
-            return lhsValue.ToString().CompareTo(rhsValue.ToString());
-        }
-
-        void IBindingList.RemoveSort()
-        {
-            _sortDirection = ListSortDirection.Ascending;
-            _sortProperty = null;
-            _isSorted = false;
-        }
-
-        void IBindingList.AddIndex(PropertyDescriptor property)
-        {
-            throw new NotSupportedException();
-        }
-
-        int IBindingList.Find(PropertyDescriptor property, object key)
-        {
-            throw new NotSupportedException();
-        }
-
-        void IBindingList.RemoveIndex(PropertyDescriptor property)
-        {
-            throw new NotSupportedException();
-        }
-
-        object IBindingList.AddNew()
-        {
-            throw new NotSupportedException();
-        }
+        data.Columns.Add("ID", System.Type.GetType("System.Int32"));
+        data.Columns.Add("First Name", System.Type.GetType("System.String"));
+        data.Columns.Add("Last Name", System.Type.GetType("System.String"));
+        data.Columns.Add("Squad", System.Type.GetType("System.Int32"));
+        data.Columns.Add("Scratch Total", System.Type.GetType("System.Int32"));
+        data.Columns.Add("Top3Scores", System.Type.GetType("System.Int32"));
+        data.Columns.Add("Game 1", System.Type.GetType("System.Int32"));
+        data.Columns.Add("Game 2", System.Type.GetType("System.Int32"));
+        data.Columns.Add("Game 3", System.Type.GetType("System.Int32"));
+        data.Columns.Add("Game 4", System.Type.GetType("System.Int32"));
+        data.Columns.Add("Handicap", System.Type.GetType("System.Int32"));
+        data.Columns.Add("Bonus", System.Type.GetType("System.Int32"));
     }
 }

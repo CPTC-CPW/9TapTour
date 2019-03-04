@@ -1,4 +1,6 @@
-﻿namespace NineTapTour.Forms
+﻿using System.Windows.Forms;
+
+namespace NineTapTour.Forms
 {
     partial class TournamentStats
     {
@@ -104,5 +106,7 @@
         private System.Windows.Forms.PrintDialog printDialog1;
         private System.Drawing.Printing.PrintDocument printDocument1;
         private System.Windows.Forms.Button btnPrint;
+
+        public DataGridView DgvTournamentStats { get => dgvTournamentStats; set => dgvTournamentStats = value; }
     }
 }
