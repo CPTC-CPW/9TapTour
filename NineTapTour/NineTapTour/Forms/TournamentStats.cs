@@ -77,7 +77,6 @@ namespace NineTapTour.Forms
                 }
 
                 dgvTournamentStats.DataSource = BuildDataTable(statsList);
-                //dgvTournamentStats.Refresh();
 
             }
             else
@@ -139,7 +138,6 @@ namespace NineTapTour.Forms
                 }
 
                 dgvTournamentStats.DataSource = BuildDataTable(statsList);
-                //dgvTournamentStats.Refresh();
 
             }
         }        
@@ -178,13 +176,7 @@ namespace NineTapTour.Forms
         {
             Bitmap bm = new Bitmap(this.dgvTournamentStats.Width, this.dgvTournamentStats.Height);
             this.dgvTournamentStats.DrawToBitmap(bm, new Rectangle(0, 0, this.dgvTournamentStats.Width, this.dgvTournamentStats.Height));
-            e.Graphics.DrawImage(bm, 0, 0);
-        }
-
-        public void Refresh(List<TournamentStatsList> tournamentStatsList)
-        {
-            dgvTournamentStats.Rows.Clear();
-            dgvTournamentStats.DataSource = tournamentStatsList;
+            e.Graphics.DrawImage(bm, e.MarginBounds);
         }
 
         private DataTable BuildDataTable(List<TournamentStatsList> statsList)
@@ -238,27 +230,6 @@ namespace NineTapTour.Forms
 
     }
 
-    public class DataGridViewComparer : IComparer
-    {
-        public int Compare(object x, object y)
-        {
-            DataGridViewRow row1 = (DataGridViewRow)x;
-            DataGridViewRow row2 = (DataGridViewRow)y;
-
-            int compareResult = string.Compare(
-                (string)row1.Cells[0].Value,
-                (string)row2.Cells[0].Value);
-
-            if (compareResult == 0)
-            {
-                compareResult = ((int)row1.Cells[1].Value)
-                    .CompareTo((int)row2.Cells[1].Value);
-            }
-
-            return compareResult;
-        }
-    }
-
     public partial class TournamentStatsList
     {
         public int Id { get; set; }
@@ -274,6 +245,5 @@ namespace NineTapTour.Forms
         public int? Handicap { get; set; }
         public int? Bonus { get; set; }
     }
-
     
 }
