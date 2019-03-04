@@ -27,31 +27,31 @@ namespace Member_Import_Test
         }
 
         //MEMBER INFO STATIC INTS
-        static int MemNumSpace = 6; //Member Number
-        static int DJoinedSpace = 8; //Date Joined
-        static int LNameSpace = 20; //Last Name
-        static int FNameSpace = 20; //First Name
-        static int MISpace = 2;     //Middle Initial
-        static int EPhoneSpace = 15;//Evening Phone
-        static int DPhoneSpace = 15;//Day Phone
-        static int CPhoneSpace = 15;//Cell Phone
-        static int StreetSpace = 40;//Street Address
-        static int EmailSpace = 40;//Email Address
-        static int CitySpace = 20;//City
-        static int StateSpace = 2;//State
-        static int ZipSpace = 10;//Zip
-        static int NotesSpace = 200;//Notes
-        static int AVGSpace = 3;//Average
-        static int HCSpace = 2;//Handicap
-        static int BSpace = 2;//Bonus
-        static int LastBSpace = 8;//Last Bowled
-        static int YearEndTSpace = 2;//Year End Tournaments
-        static int MoneyESpace = 10;//Money Earned
-        static int RejoinDSpace = 8;//Rejoin Date;
-        static int ReferalSpace = 2;//ReferalSpace;
-        static int SSSpace = 11;//Social Security
-        static int CBSpace = 5; //Check Box Spaceing, there are 7 total, only 5 are actually checked for information, repeated 7 times in Spaces array.
-        static int DOBSpace = 8;// Date Of Birth.
+        static int MemNumSpace = 6;     // Member Number
+        static int DJoinedSpace = 8;    // Date Joined
+        static int LNameSpace = 20;     // Last Name
+        static int FNameSpace = 20;     // First Name
+        static int MISpace = 2;         // Middle Initial
+        static int EPhoneSpace = 15;    // Evening Phone
+        static int DPhoneSpace = 15;    // Day Phone
+        static int CPhoneSpace = 15;    // Cell Phone
+        static int StreetSpace = 40;    // Street Address
+        static int EmailSpace = 40;     // Email Address
+        static int CitySpace = 20;      // City
+        static int StateSpace = 2;      // State
+        static int ZipSpace = 10;       // Zip
+        static int NotesSpace = 200;    // Notes
+        static int AVGSpace = 3;        // Average
+        static int HCSpace = 2;         // Handicap
+        static int BSpace = 2;          // Bonus
+        static int LastBSpace = 8;      // Last Bowled
+        static int YearEndTSpace = 2;   // Year End Tournaments
+        static int MoneyESpace = 10;    // Money Earned
+        static int RejoinDSpace = 8;    // Rejoin Date;
+        static int ReferalSpace = 2;    // ReferalSpace;
+        static int SSSpace = 11;        // Social Security
+        static int CBSpace = 5;         // Check Box Spaceing, there are 7 total, only 5 are actually checked for information, repeated 7 times in Spaces array.
+        static int DOBSpace = 8;        // Date Of Birth.
 
         //PIN FILE STATIC INTS
         static int PinFileMemNumSpace = 6;
