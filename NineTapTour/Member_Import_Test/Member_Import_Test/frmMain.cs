@@ -880,38 +880,6 @@ namespace Member_Import_Test
             return returnMe;
         }
 
-        private void btnPinFileSelect_Click(object sender, EventArgs e)
-        {
-            using (var fbd = new FolderBrowserDialog())
-            {
-                DialogResult result = fbd.ShowDialog();
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                {
-                    string[] files = Directory.GetFiles(fbd.SelectedPath);
-                    for (int i = 0; i < files.Length; i++)
-                    {
-                        if (Path.GetExtension(files[i]) != ".pin")
-                        {
-                            continue;
-                        }
-                        if (files[i].Contains("#"))
-                        {
-                            //QBSTournamentList.Add(files[i]);
-                        }
-                        else
-                        {
-                            ProcessPinFile(files[i]);
-
-                        }
-                    }
-                }
-                MessageBox.Show(TournamentList.Count + " tournaments were imported.");
-            }
-            checkSpaces();
-        }
-
-    
-       
         private void btn_FinalizeData_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
