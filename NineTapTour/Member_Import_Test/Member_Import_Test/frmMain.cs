@@ -461,7 +461,10 @@ namespace Member_Import_Test
                 }
             }
         }
-
+        /// <summary>
+        /// Checks that has members (valid or not) and allows the btnSelectExcel to be enabled
+        /// Checks that has data from excel files then when does allows the finalze data button to become enabled.
+        /// </summary>
         private void checkSpaces()
         {
             if (invalidMembers.Count > 0 || validMembers.Count > 0)
