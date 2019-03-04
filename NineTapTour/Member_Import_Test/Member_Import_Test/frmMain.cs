@@ -19,7 +19,6 @@ namespace Member_Import_Test
         public frmMain()
         {
             InitializeComponent();
-            new NineTapDb();
             List<NineTapRegion> r = NineTapRegionDB.GetRegionList();
             cbxRegionSelect.DataSource = r;
             cbxRegionSelect.DisplayMember = "NineTapRegionName";
@@ -171,67 +170,9 @@ namespace Member_Import_Test
                                 case 3://First Name
                                     if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
                                     {
-
-                                        //newMem.FirstName = (File.Substring(currentIndex, Spaces[i]).Trim());
-
-                                        //Idea #1: Using String.Replace\\
-                                        //Simple method, but would have to account for all possible cases of extra data
-
-                                        //these were just some of the notes that were left in the name (some signify life members, others are just short for the city they are from)
-                                        // dooesnt need to be by the name, taken out on a case by case basis.
-                                        //string[] notapartofname = { "life", "gst", "(Haw.)", "pa", "yk", "hj", "lg", "mv" };
-
-
-                                        //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
-
-                                        //newMem.FirstName = fName;
-
-                                        //for (int d = 0; d < notapartofname.Length; d++)
-                                        //{
-                                        //    if (fName.Contains(notapartofname[d]))
-                                        //    {
-                                        //        newMem.FirstName = fName.Substring(0, fName.IndexOf(notapartofname[d])).Trim();
-                                        //    }
-                                        //}
-
-
-
-                                        //Idea #2 Using String.Split\\
-                                        //Issue if name contains space, would have to check for additional parts of name
-
                                         string fName = File.Substring(currentIndex, Spaces[i]).Trim();
                                         string[] split = fName.Split(' ');
                                         newMem.FirstName = split[0];
-
-                                        //Idea #3 Using String.Substring\\
-                                        //Issue arises if spaces between names.
-
-                                        //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
-                                        //if(fName.Contains(' '))
-                                        //{
-                                        //   fName = fName.Substring(0, fName.LastIndexOf(' ')).Trim();                  
-                                        //}
-                                        //newMem.FirstName = fName;
-
-                                        //Idea #4: Using String.Contains\\
-                                        //Could improve this with an array to check for each indivual possibilty of extra data, to be able
-                                        //then to use the the indexOf whatever data it found.
-
-                                        //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
-                                        //if (fName.ToLower().Contains("life") || fName.ToLower().Contains("gst") || fName.ToLower().Contains("(haw.)"))
-                                        //{
-                                        //    fName = fName.Substring(0, fName.LastIndexOf(' ')).Trim();
-                                        //}
-                                        //newMem.FirstName = fName;
-
-                                        //Idea #5 Using String.EndsWith
-
-                                        //string fName = File.Substring(currentIndex, Spaces[i]).Trim();
-                                        //if(fName.ToLower().EndsWith("life") || fName.ToLower().EndsWith("gst") || fName.ToLower().EndsWith(")"))
-                                        //{
-                                        //    fName = fName.Substring(0, fName.LastIndexOf(' ')).Trim();
-                                        //}
-                                        //newMem.FirstName = fName;
                                     }
                                     else
                                     {
@@ -573,6 +514,10 @@ namespace Member_Import_Test
             {
                 GetAndProcessFolderWithExcelFiles();
             }
+
+            //Ensure second progress bar is filled to show completion
+            progressBar2.Value = progressBar2.Maximum;
+            LabelCurrentFileWorkingOn.Text = "Complete";
         }
 
         private void GetAndProcessFolderWithExcelFiles()
@@ -1291,39 +1236,13 @@ namespace Member_Import_Test
 
         private void btn_FinalizeData_Click(object sender, EventArgs e)
         {
-            ////////////////////////////////////////////////////////////////REALIZED THE IDEA THAT THIS COODE IS IRRELAVANT NOW/////////////////////////////////////////
-            ////////////////////////////////////////////////////DURING TESTING THE DAT FILE MEMBER NUMBER AND EXCEL FILE DID NOT MATCH//////////////////////////////////
-            ///////////////////////////////////////////////////////////////////////////NOW THIS SGHOULD NEVER HAPPEN////////////////////////////////////////////////////
-            //for (int members = 0; members < validMembers.Count; members++)
-            //{
-            //    for (int ExcelFileSlot = 0; ExcelFileSlot < ALLEXCELDATAFROMALLPLAYERS.Count; ExcelFileSlot++)
-
-            //    {
-            //        //if for some reason the member number on the DAT file and the member number on the excel file do not match, set the new permanent member number to that of the DAT file
-            //        if (validMembers[members].FirstName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerFirstName && validMembers[members].LastName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerLastName
-            //           && validMembers[members].Number != ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber)
-            //        {
-            //            ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber = validMembers[members].Number;
-            //            PlayerHistoryList[ExcelFileSlot].MemberNumber = validMembers[members].Number;             
-            //        }
-            //        else if ((validMembers[members].FirstName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerFirstName && validMembers[members].LastName == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerLastName
-            //           && validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber))
-            //        {
-            //            PlayerHistoryList[ExcelFileSlot].MemberNumber = validMembers[members].Number;
-            //        }
-
-
-            //        //if Current selected member has an excel file 
-            //        if (validMembers[members].Number == ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerNumber)
-            //        {
-            //            validMembers[members].StartAvg = ALLEXCELDATAFROMALLPLAYERS[ExcelFileSlot].PlayerOrginalAVG;
-            //        }
-            //    }
-            //}
-
-            
+            Cursor.Current = Cursors.WaitCursor;
+            IncrementFinalizeBar(0, "Step 1: Adding player histories to the database.");
             updatePlayerHistory(PlayerHistoryList);
+            IncrementFinalizeBar(25, "Step 2: Player histories updated, beginning games import.");
+
             GameDB.AddOrUpdateSomeGames(GameImport);
+            IncrementFinalizeBar(25, "Step 3: Games updated. Setting averages and bonus pins.");
 
             for (int i = 0; i < validMembers.Count; i++)
             {
@@ -1335,14 +1254,25 @@ namespace Member_Import_Test
                     validMembers[i].Bonus = list[0].Bonus; //last adjusted bonus pin
                 }
             }
+            IncrementFinalizeBar(25, "Step 4: Averages and bonus pins set. Updating all members.");
 
-           
+
             updateMembers(validMembers);
+            IncrementFinalizeBar(25, "Members updated");
 
+            Cursor.Current = Cursors.Default;
 
             MessageBox.Show($"{validMembers.Count} members have been imported and all their bowling history has been added to the database");
 
             this.Close();
+        }
+
+        private void IncrementFinalizeBar(int increment, string msg)
+        {
+            progressBarFinalize.Increment(increment);
+            lblFinalizeStatus.Text = msg;
+            progressBarFinalize.Refresh();
+            lblFinalizeStatus.Refresh();
         }
 
         private void updatePlayerHistory(List<PlayerHistory> playerHistory)

@@ -355,7 +355,9 @@ namespace NineTapTour.Forms
                 if (currentMem.LastPayment.HasValue)
                 {
                     txtLastPayment.Text = 
-                        currentMem.LastPayment.Value.ToString("MM/dd/yyyy");
+                        currentMem.LastPayment.Value.AddYears(1).ToString("MM/dd/yyyy");
+
+
                     checkPayment();
                 }
                 else
