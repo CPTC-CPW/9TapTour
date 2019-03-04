@@ -703,6 +703,7 @@ namespace NineTapTour.Forms
         /// <param name="playerSquadNumber">Squad number of player to check</param>
         private void CheckSquadRadioButton(int playerSquadNumber)
         {
+            //checks for hard coded squad numbers 1 - 8 and sets the radio button to the correct squad for display
             if (playerSquadNumber == 1)
             {
                 rdoSquadOne.Checked = true;
