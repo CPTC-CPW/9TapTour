@@ -744,7 +744,10 @@ namespace NineTapTour.Forms
         /// <param name="pat"> a list of participant objects </param>
         public void RecordIndexAfterAddUpdate(List<Participant> pat)
         {
+            // sets record index display text to the new record
             lblRecord.Text = "Record " + (pat.Count) + " / " + pat.Count;
+
+            // changes current index
             currentIndex = pat.Count;
         }
 
