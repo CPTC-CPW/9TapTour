@@ -97,6 +97,7 @@ namespace Member_Import_Test
         /// When the user clicks on the open button file it will open a file selection window
         /// allowing the user to select the file they wish to choose for importation
         /// </summary>
+
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
             //Filter to limit the types of files that can be opened with the file open dialog
@@ -461,6 +462,7 @@ namespace Member_Import_Test
                 }
             }
         }
+        
         /// <summary>
         /// Checks that has members (valid or not) and allows the btnSelectExcel to be enabled
         /// Checks that has data from excel files then when does allows the finalze data button to become enabled.
@@ -476,7 +478,10 @@ namespace Member_Import_Test
                 btn_FinalizeData.Enabled = true;
             }
         }
-
+        
+        /// <summary>
+        /// Allows the user to click the button and see any members in the list of invalid members
+        /// </summary>
         private void btnInvalid_Click(object sender, EventArgs e)
         {
             if (invalidMembers.Count <= 0)
