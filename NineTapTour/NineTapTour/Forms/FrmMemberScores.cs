@@ -664,22 +664,35 @@ namespace NineTapTour.Forms
             //sets first index on start up and switching of tournaments
             int temp = 0;
 
+            //checks if index is less then 0
             if (cbxTourneyDropDown.SelectedIndex < 0)
             {
+                //sets record index to 0 if lower then 0
                 lblRecord.Text = "Record " + (temp) + " / " + players.Count;
             }
-            else if (players.Count == 0)
+            else if (players.Count == 0) // if is 0
             {
+                //set record index to 0 as well
                 lblRecord.Text = "Record " + (temp) + " / " + players.Count;
             }
-            else
+            else // if greater then 0
             {
+                //sets current index to 0
                 currentIndex = 0;
+
+                //gets squad number
                 int playerSquadNumber = players[currentIndex].Squad;
+
+                //sets squad radio button to represent the squad the player is in
                 CheckSquadRadioButton(playerSquadNumber);
 
+                //sets the record index text to currecnt index(0) + 1 / total player count, is this even needed?!?!?
                 lblRecord.Text = "Record " + (currentIndex + 1) + " / " + players.Count;
+
+                //gets players member number
                 txtMemberNum.Text = players[currentIndex].Member.Number.ToString();
+
+                //calls method to fill in member
                 FillMember();
             }
         }
