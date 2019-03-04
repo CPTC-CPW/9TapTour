@@ -1,31 +1,37 @@
 ﻿using NineTapTour.Database;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using NineTapTour.Models;
 using System.Collections;
-using System.Collections.ObjectModel;
 
 namespace NineTapTour.Forms
 {
+    /// <summary>
+    /// What does this class do?
+    /// </summary>
     public partial class TournamentStats : Form
     {
+        /// <summary>
+        /// TournamentStats() begins when for is instantiated.
+        /// </summary>
         public TournamentStats()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// TournamentStats_Load() is the main method that populates the form initially.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void TournamentStats_Load(object sender, EventArgs e)
         {
-
             if (!frmMemberScores.selectedTournament.ThreeOutOf4)
             {
                 Tournament selectedTournament = new Tournament();
@@ -77,8 +83,6 @@ namespace NineTapTour.Forms
                 }
 
                 dgvTournamentStats.DataSource = BuildDataTable(statsList);
-                //dgvTournamentStats.Refresh();
-
             }
             else
             {
@@ -101,14 +105,14 @@ namespace NineTapTour.Forms
                 gameOrder.Parameters.AddWithValue("@TID", selectedTournament.Id);
 
                 
-                // open connection
+                // Open connection
                 con.Open();
 
-                // execute command(query)
+                // Execute command(query)
                 SqlDataReader reader = gameOrder.ExecuteReader();
                 List<TournamentStatsList> statsList = new List<TournamentStatsList>();
 
-                // view results
+                // View results
                 while (reader.Read())
                 {
                     TournamentStatsList temp = new TournamentStatsList();
@@ -139,11 +143,14 @@ namespace NineTapTour.Forms
                 }
 
                 dgvTournamentStats.DataSource = BuildDataTable(statsList);
-                //dgvTournamentStats.Refresh();
-
             }
         }        
 
+        /// <summary>
+        /// What does this method do?
+        /// </summary>
+        /// <param name="scores"></param>
+        /// <returns></returns>
         public static List<int> GetTop3OutOf4(List<int?> scores)
         {
             List<int> listOfValidScores = new List<int>();
@@ -160,12 +167,21 @@ namespace NineTapTour.Forms
             return listOfValidScores;
         }
 
+        /// <summary>
+        /// GetConnection() returns a connection string to the database within the quotes.
+        /// </summary>
+        /// <returns>Database ConnectionString</returns>
         public static string GetConnection()
         {
             return ConfigurationManager.ConnectionStrings["NineTapDbConnection"].ConnectionString;
         }
 
-        private void btnPrint_Click(object sender, EventArgs e)
+        /// <summary>
+        /// BtnPrint_Click() is called when Print button is clicked on the tournamentStats form.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnPrint_Click(object sender, EventArgs e)
         {
             printDialog1.Document = printDocument1;
             if (printDialog1.ShowDialog() == DialogResult.OK)
@@ -174,19 +190,24 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        /// <summary>
+        /// PrintDocument1_PrintPage() is called after choosing where to save or print the tournamentStats table.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PrintDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
             Bitmap bm = new Bitmap(this.dgvTournamentStats.Width, this.dgvTournamentStats.Height);
             this.dgvTournamentStats.DrawToBitmap(bm, new Rectangle(0, 0, this.dgvTournamentStats.Width, this.dgvTournamentStats.Height));
             e.Graphics.DrawImage(bm, 0, 0);
         }
 
-        public void Refresh(List<TournamentStatsList> tournamentStatsList)
-        {
-            dgvTournamentStats.Rows.Clear();
-            dgvTournamentStats.DataSource = tournamentStatsList;
-        }
-
+        /// <summary>
+        /// BuildDataTable() Boxes up the tournamentStatsList object into a data table object 
+        /// that the datagridview is willing to accept and sort.
+        /// </summary>
+        /// <param name="statsList"></param>
+        /// <returns>Datatable object</returns>
         private DataTable BuildDataTable(List<TournamentStatsList> statsList)
         {
             DataTable data = new DataTable("Tournament Stats");
@@ -204,16 +225,16 @@ namespace NineTapTour.Forms
             data.Columns.Add("Handicap", System.Type.GetType("System.Int32"));
             data.Columns.Add("Bonus", System.Type.GetType("System.Int32"));
 
-            // make first four columns required
+            // Make first four columns required
             for (int i = 0; i < 4; i++)
             {
                 data.Columns[i].AllowDBNull = false;
             }
 
-            // make id unique
+            // Make id unique
             data.Constraints.Add(new UniqueConstraint(data.Columns["ID"]));
 
-            // add statsList to DataTable
+            // Add statsList to DataTable
             foreach (var item in statsList)
             {
                 data.Rows.Add(new object[]
@@ -233,32 +254,15 @@ namespace NineTapTour.Forms
                 });
             }
 
+            // Return data table object
             return data;
         }
 
     }
 
-    public class DataGridViewComparer : IComparer
-    {
-        public int Compare(object x, object y)
-        {
-            DataGridViewRow row1 = (DataGridViewRow)x;
-            DataGridViewRow row2 = (DataGridViewRow)y;
-
-            int compareResult = string.Compare(
-                (string)row1.Cells[0].Value,
-                (string)row2.Cells[0].Value);
-
-            if (compareResult == 0)
-            {
-                compareResult = ((int)row1.Cells[1].Value)
-                    .CompareTo((int)row2.Cells[1].Value);
-            }
-
-            return compareResult;
-        }
-    }
-
+    /// <summary>
+    /// What does this class do?
+    /// </summary>
     public partial class TournamentStatsList
     {
         public int Id { get; set; }
@@ -273,7 +277,5 @@ namespace NineTapTour.Forms
         public int? Game4 { get; set; }
         public int? Handicap { get; set; }
         public int? Bonus { get; set; }
-    }
-
-    
+    }    
 }
