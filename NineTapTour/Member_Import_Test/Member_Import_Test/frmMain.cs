@@ -93,6 +93,10 @@ namespace Member_Import_Test
         private static List<Tournament> TournamentList = new List<Tournament>();
         private static List<Game> GameImport = new List<Game>();
 
+        /// <summary>
+        /// When the user clicks on the open button file it will open a file selection window
+        /// allowing the user to select the file they wish to choose for importation
+        /// </summary>
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
             //Filter to limit the types of files that can be opened with the file open dialog
