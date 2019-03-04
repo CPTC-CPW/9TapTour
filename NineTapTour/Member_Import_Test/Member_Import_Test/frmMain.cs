@@ -937,6 +937,10 @@ namespace Member_Import_Test
             }
         }
 
+        /// <summary>
+        /// Checks members list if member does not exist it updates the list with adding or updating member
+        /// </summary>
+        /// <param name="members"></param>
         private void updateMembers(List<Member> members)
         {
             for(int i = 0; i < members.Count; i++)
@@ -947,7 +951,10 @@ namespace Member_Import_Test
                 }
             }
         }
-        
+
+        // Removed 3 methods no lomger being used referencing pin files and mult pin files.. 
+        // if this is brought back as a requirement reference github history of file pre 3/4/2019
+
         /// <summary>
         /// Allows user to change region for where they would like to import the member data to.
         /// </summary>
