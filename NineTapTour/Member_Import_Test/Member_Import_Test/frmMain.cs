@@ -76,11 +76,11 @@ namespace Member_Import_Test
         public int RegionID;
         public int allGames;
 
-        public List<Member> validMembers = new List<Member>(); //list of valid members
-        public List<Member> invalidMembers = new List<Member>();//list of invalid members
+        public List<Member> validMembers = new List<Member>();      // Makes list of valid members
+        public List<Member> invalidMembers = new List<Member>();    // Makes list of invalid members
         public List<PlayerHistory> PlayerHistoryList = new List<PlayerHistory>();
 
-        //Create array of spaces
+        // Create array of spaces
         int[] Spaces = new int[] { MemNumSpace, DJoinedSpace, LNameSpace, FNameSpace, MISpace, EPhoneSpace, DPhoneSpace, CPhoneSpace,
                                    StreetSpace, EmailSpace, CitySpace, StateSpace, ZipSpace, NotesSpace, AVGSpace, HCSpace, BSpace,
                                    LastBSpace, YearEndTSpace, MoneyESpace, RejoinDSpace, ReferalSpace, SSSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, DOBSpace};
@@ -464,7 +464,7 @@ namespace Member_Import_Test
             {
                 btnSelectExcelFolder.Enabled = true;
             }
-            if (ALLEXCELDATAFROMALLPLAYERS.Count > 0) //&& TournamentList.Count > 0)
+            if (ALLEXCELDATAFROMALLPLAYERS.Count > 0)
             {
                 btn_FinalizeData.Enabled = true;
             }
@@ -493,7 +493,7 @@ namespace Member_Import_Test
                 GetAndProcessFolderWithExcelFiles();
             }
 
-            //Ensure second progress bar is filled to show completion
+            // Ensure second progress bar is filled to show completion
             progressBar2.Value = progressBar2.Maximum;
             LabelCurrentFileWorkingOn.Text = "Complete";
         }
@@ -935,7 +935,10 @@ namespace Member_Import_Test
                 }
             }
         }
-
+        
+        /// <summary>
+        /// Allows user to change region for where they would like to import the member data to.
+        /// </summary>
         private void cbxRegionSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
             List<NineTapRegion> r = NineTapRegionDB.GetRegionList();
