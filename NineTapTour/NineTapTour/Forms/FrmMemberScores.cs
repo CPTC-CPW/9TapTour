@@ -644,8 +644,14 @@ namespace NineTapTour.Forms
         /// <returns>isNum</returns>
         public bool isNumeric(string str)
         {
+            // This can be refactored into less code 
+            // temp integer for parsing
             int num;
+
+            //stores bool representation of whether str in numberic
             bool isNum = int.TryParse(str, out num);
+
+            //returns bool
             return isNum;
         }
 
