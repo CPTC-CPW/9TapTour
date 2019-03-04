@@ -13,13 +13,11 @@ using System.Collections;
 namespace NineTapTour.Forms
 {
     /// <summary>
-    /// What does this class do?
+    /// This class handles the tournament stats table for frmMemberScores.
     /// </summary>
     public partial class TournamentStats : Form
     {
-        /// <summary>
-        /// TournamentStats() begins when for is instantiated.
-        /// </summary>
+
         public TournamentStats()
         {
             InitializeComponent();
@@ -27,6 +25,11 @@ namespace NineTapTour.Forms
 
         /// <summary>
         /// TournamentStats_Load() is the main method that populates the form initially.
+        /// This queries the database based on whether the tournament is "three out of four"
+        /// and then creates a TournamentStatsList object for each record. Then a 
+        /// List<TournamentStatsList> is sent to a DataTable builder method and populates
+        /// the DataGridView.
+        /// comment author: Nelson_Nyland
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -38,6 +41,7 @@ namespace NineTapTour.Forms
                 selectedTournament = frmMemberScores.selectedTournament;
                 lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
+                // query database
                 NineTapDb db = new NineTapDb();
                 var tournamentStatsList = (from p in db.Participants
                                            join m in db.Members on p.Member.Id equals m.Id
@@ -61,6 +65,7 @@ namespace NineTapTour.Forms
                                                p.Game.Bonus
                                            }).ToList();
 
+                // create list
                 List<TournamentStatsList> statsList = new List<TournamentStatsList>();
                 foreach (var item in tournamentStatsList)
                 {
@@ -81,7 +86,8 @@ namespace NineTapTour.Forms
                     };
                     statsList.Add(list);
                 }
-
+                
+                // send to form
                 dgvTournamentStats.DataSource = BuildDataTable(statsList);
             }
             else
@@ -90,8 +96,8 @@ namespace NineTapTour.Forms
                 selectedTournament = frmMemberScores.selectedTournament;
                 lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
+                // query database
                 NineTapDb db = new NineTapDb();
-
                 SqlConnection con = new SqlConnection(GetConnection());
                 SqlCommand gameOrder = new SqlCommand();
                 gameOrder.Connection = con;
@@ -101,18 +107,12 @@ namespace NineTapTour.Forms
 		                                JOIN Members ON Members.Id = Participants.Member_Id                                        
                                         WHERE Tournament_Id = @TID
                                         ORDER BY Members.LastName";
-
                 gameOrder.Parameters.AddWithValue("@TID", selectedTournament.Id);
-
-                
-                // Open connection
                 con.Open();
-
-                // Execute command(query)
                 SqlDataReader reader = gameOrder.ExecuteReader();
                 List<TournamentStatsList> statsList = new List<TournamentStatsList>();
 
-                // View results
+                // create list
                 while (reader.Read())
                 {
                     TournamentStatsList temp = new TournamentStatsList();
@@ -142,12 +142,13 @@ namespace NineTapTour.Forms
                     statsList.Add(temp);
                 }
 
+                // send to form
                 dgvTournamentStats.DataSource = BuildDataTable(statsList);
             }
         }        
 
         /// <summary>
-        /// What does this method do?
+        /// Filters and sorts scores for topScores list.
         /// </summary>
         /// <param name="scores"></param>
         /// <returns></returns>
@@ -198,7 +199,7 @@ namespace NineTapTour.Forms
         private void PrintDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
             Bitmap bm = new Bitmap(this.dgvTournamentStats.Width, this.dgvTournamentStats.Height);
-            this.dgvTournamentStats.DrawToBitmap(bm, new Rectangle(0, 0, this.dgvTournamentStats.Width, this.dgvTournamentStats.Height));
+            this.dgvTournamentStats.DrawToBitmap(bm, new Rectangle(0, 0, 1582, 621));
             e.Graphics.DrawImage(bm, 0, 0);
         }
 
@@ -261,7 +262,7 @@ namespace NineTapTour.Forms
     }
 
     /// <summary>
-    /// What does this class do?
+    /// Object used to fill DataTable.
     /// </summary>
     public partial class TournamentStatsList
     {
