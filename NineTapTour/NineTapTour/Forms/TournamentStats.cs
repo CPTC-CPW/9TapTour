@@ -141,6 +141,7 @@ namespace NineTapTour.Forms
 
                     statsList.Add(temp);
                 }
+                con.Close();
 
                 // send to form
                 dgvTournamentStats.DataSource = BuildDataTable(statsList);
