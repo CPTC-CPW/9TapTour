@@ -807,36 +807,6 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        public void RankGridView()
-        {
-            int Rank = 1;
-
-            for (int Row = 0; Row < dataGridView1.Rows.Count; Row++)
-            {
-                dataGridView1.Rows[Row].Cells[GAME_ID_COLUMN].Value = Rank;
-                //Here we are updatng placestandings by adjustedAvg. Should we Rank by trueavg?
-                if (Convert.ToInt32(dataGridView1.Rows[Row].Cells[ADJUSTED_AVG_COLUMN].Value) != Convert.ToInt32(dataGridView1.Rows[Row + 1].Cells[ADJUSTED_AVG_COLUMN].Value))
-                {
-                    Rank++;
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// This method will get a list of all tournament participants and return a sort the list by scores.
-        /// </summary>
-        /// <param name="tourn">Tournament needing information from</param>
-        /// <returns>sorted list of gameParticipants for specified tournament</returns>
-        public void SortByScore()
-        {
-            this.dataGridView1.Sort(this.dataGridView1.Columns["True Avg"], ListSortDirection.Descending);
-            RankGridView();
-        }
-
-        /// <summary>
         /// This method takes in a GAME_VALID_COLUMN cell and returns the correct corresponding GAME_COLUMN cell or vis versa.
         /// </summary>
         /// <param name="cell">A DataGridViewCell of either GAME_COLUMN or GAME_VALID_COLUMN type.</param>
