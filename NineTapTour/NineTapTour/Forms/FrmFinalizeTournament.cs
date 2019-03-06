@@ -878,17 +878,21 @@ namespace NineTapTour.Forms
                     cell.Style.BackColor = Color.Orange;
                 }
             }
-            else
+            else // Game cell is not valid
             {
                 cell.Style.BackColor = Color.Red;
             }
         }
         
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="temporary">the list of player histories that come from the tournament table</param>
         private void RefreshMemberView(List<PlayerHistory> temporary)
         {
             DataTable dtGames = new DataTable();
 
+            // Create table columns
             dtGames.Columns.Add("Games").ReadOnly = true;
             dtGames.Columns.Add("Date", typeof(DateTime));
             dtGames.Columns.Add("Game1");
@@ -912,6 +916,7 @@ namespace NineTapTour.Forms
             string moneyWon = "Money Won";
             decimal totalMoneyEarned = 0;
 
+            // Load tournament game data for member into rows
             foreach (var item in temporary)
             {
                 DataRow newRow = dtGames.NewRow();
@@ -961,11 +966,14 @@ namespace NineTapTour.Forms
                 totalMoneyEarned += item.MoneyWon;
             }
 
+            // Displays total money won in the column header "Money Won"
             string moneyWonWithTotal = $"{moneyWon} ({totalMoneyEarned + PlayerHistoryDB.GetTotalMoneyWon(temporary[0].MemberNumber, RegionID)})";
             dtGames.Columns[moneyWon].ColumnName = moneyWonWithTotal;
 
+            // Player histories from the db that are not in the current tournament
             List<PlayerHistory> currentHistory = PlayerHistoryDB.getMemberPlayerHistoryCount(temporary[0].MemberNumber, RegionID);
 
+            // Add player histories from the db to table
             foreach (var item in currentHistory)
             {
 
@@ -1018,6 +1026,7 @@ namespace NineTapTour.Forms
 
             for (int i = 0; i < dataGridView2.RowCount; i++)
             {
+                #region Set background color for member table row to light blue for all games in current tournament
                 for (int t = 0; t < temporary.Count; t++)
                 {
                     if (temporary[i].GameID == Convert.ToInt32(dataGridView2.Rows[i].Cells[17].Value))
@@ -1028,7 +1037,9 @@ namespace NineTapTour.Forms
                         }
                     }
                 }
+                #endregion
 
+                // Set background color for 30 entry average column to GreenYellow
                 for (int j = 0; j < dataGridView2.RowCount; j++)
                 {
                     dataGridView2.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
