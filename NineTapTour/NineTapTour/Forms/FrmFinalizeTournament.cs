@@ -330,13 +330,14 @@ namespace NineTapTour.Forms
                 FinalizeTempDB.AddFinalizeTemp(temp);
             });
 
-            //pulls a list from the finalizetemp table and seeds the dataview with the table info.
+            // Pulls a list from the finalizetemp table and seeds the dataview with the table info
             List<FinalizeTemp> DataViewList = GetListFromTable(tourn);
 
             // Links FinalizeTemp to an integer that is placing information
             Dictionary<FinalizeTemp, int> membersPlacingMap = Calculations.Calculations.CalculatePlaceStandings(DataViewList);
 
-            dataGridView1.DataSource = SetDataView(membersPlacingMap); //By default populates all datagrid with all participant for tournament.
+            // By default populates all datagrid with all participant for tournament
+            dataGridView1.DataSource = SetDataView(membersPlacingMap); 
 
             dataGridView1.Columns[GAME_ID_COLUMN].Visible = false;
 
@@ -424,7 +425,7 @@ namespace NineTapTour.Forms
         }
   
         /// <summary>
-        /// THis method Gets a list of all participant objects for the tournament passed into method.
+        /// This method gets a list of all participant objects for the tournament passed into method.
         /// </summary>
         /// <param name="tourn"> represent the tournament you want list of particpants from</param>
         /// <returns>List of Participants for specific tournament</returns>
@@ -504,11 +505,11 @@ namespace NineTapTour.Forms
                 NewParticipant.Handicap = item.Handicap ?? 0;
                 NewParticipant.Bonus = item.Bonus ?? 0;
 
+                // Process handicap total
                 int hTotal = (item.Game1 != null) ? ((item.Game1 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
                 hTotal += (item.Game2 != null) ? ((item.Game2 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
                 hTotal += (item.Game3 != null) ? ((item.Game3 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
                 hTotal += (item.Game4 != null) ? ((item.Game4 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
-
                 NewParticipant.HandicapTotal = hTotal;
 
                 NewParticipant.memberNumber = item.Number;
@@ -633,7 +634,7 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// Checks the bool state of the check box and updates row based off gameID in FinalizeTempDB
+        /// Checks the bool state of the check box and updates row and FinalizeTemp row in Db based off gameID.
         /// </summary>
         /// <param name="row"></param> row that is being checked
         /// <param name="cell"></param> cell that is being checked
@@ -666,7 +667,10 @@ namespace NineTapTour.Forms
             this.dataGridView1.CellValueChanged += this.dataGridView1_OnCellValueChanged;
         }
 
-        //updates computed average in column 10 when check box is changed.
+        /// <summary>
+        /// Updates computed average in column 10 when check box is changed.
+        /// </summary>
+        /// <param name="row"></param>
         private void UpdateAvg(int row)
         {
             this.dataGridView1.CellValueChanged -= this.dataGridView1_OnCellValueChanged;
@@ -675,7 +679,9 @@ namespace NineTapTour.Forms
             int count = 0;
             int sumWHandicap = 0;
             int HDCPwithBonus = Convert.ToInt32((dataGridView1.Rows[row].Cells[HANDICAP_COLUMN].Value)) + Convert.ToInt32((dataGridView1.Rows[row].Cells[BONUS_COLUMN].Value));
-            if (Convert.ToBoolean(dataGridView1.Rows[row].Cells[GAME_1_VALID_COLUMN].Value) == true)
+
+            // Process sums only if that game is valid
+            if (Convert.ToBoolean(dataGridView1.Rows[row].Cells[GAME_1_VALID_COLUMN].Value))
             {
                 sum += Convert.ToInt32((dataGridView1.Rows[row].Cells[GAME_1_COLUMN].Value));
                 sumAndHand += Convert.ToInt32((dataGridView1.Rows[row].Cells[GAME_1_COLUMN].Value));
@@ -683,7 +689,7 @@ namespace NineTapTour.Forms
                 count++;
             }
 
-            if (Convert.ToBoolean(dataGridView1.Rows[row].Cells[GAME_2_VALID_COLUMN].Value) == true)
+            if (Convert.ToBoolean(dataGridView1.Rows[row].Cells[GAME_2_VALID_COLUMN].Value))
             {
                 sum += Convert.ToInt32((dataGridView1.Rows[row].Cells[GAME_2_COLUMN].Value));
                 sumAndHand += Convert.ToInt32((dataGridView1.Rows[row].Cells[GAME_2_COLUMN].Value));
@@ -691,7 +697,7 @@ namespace NineTapTour.Forms
                 count++;
             }
 
-            if (Convert.ToBoolean(dataGridView1.Rows[row].Cells[GAME_3_VALID_COLUMN].Value) == true)
+            if (Convert.ToBoolean(dataGridView1.Rows[row].Cells[GAME_3_VALID_COLUMN].Value))
             {
                 sum += Convert.ToInt32((dataGridView1.Rows[row].Cells[GAME_3_COLUMN].Value));
                 sumAndHand += Convert.ToInt32((dataGridView1.Rows[row].Cells[GAME_3_COLUMN].Value));
@@ -699,7 +705,7 @@ namespace NineTapTour.Forms
                 count++;
             }
 
-            if (Convert.ToBoolean(dataGridView1.Rows[row].Cells[GAME_4_VALID_COLUMN].Value) == true)
+            if (Convert.ToBoolean(dataGridView1.Rows[row].Cells[GAME_4_VALID_COLUMN].Value))
             {
                 sum += Convert.ToInt32((dataGridView1.Rows[row].Cells[GAME_4_COLUMN].Value));
                 sumAndHand += Convert.ToInt32((dataGridView1.Rows[row].Cells[GAME_4_COLUMN].Value));
@@ -722,7 +728,13 @@ namespace NineTapTour.Forms
             }
         }
 
-        //calculates league average for member based off last 30 games or total games played if less than 30.
+
+        /// <summary>
+        /// Queries the db and calculates league average for member based off last 30 games or 
+        /// total games played if less than 30.
+        /// </summary>
+        /// <param name="memID">The member to the league average of</param>
+        /// <returns>The league average for the member's id passed in</returns>
         public double LeagueAverage(int memID)
         {
             double sum = 0;
@@ -745,6 +757,7 @@ namespace NineTapTour.Forms
                             Average = (g.Game1 + g.Game2 + g.Game3 + g.Game4) / 4
                         }).Take(30).ToList();
 
+            // Calculate league average
             if (temp.Count > 0)
             {
                 foreach (var item in temp)
@@ -756,6 +769,13 @@ namespace NineTapTour.Forms
             return 0;
         }
 
+        /// <summary>
+        /// Queries the PlayerHistory table and calculates the sum of all the averages for the member id passed in
+        /// </summary>
+        /// <param name="mem">The id of the member to calculate League average</param>
+        /// <param name="howmany">The latest amount games from player history to calculate league average from</param>
+        /// <param name="regionid">The region where the member is from</param>
+        /// <returns></returns>
         public double LeagueAvgFromPlayerHistory(int mem, int howmany, int regionid)
         {
             double sum = 0;
@@ -774,9 +794,9 @@ namespace NineTapTour.Forms
                             p.AverageForGame
                         }).Take(howmany).ToList();
 
+            // Calculate sum of the averages
             if (temp.Count > 0)
             {
-
                 foreach (var item in temp)
                 {
                     sum += Convert.ToDouble(item.AverageForGame);
@@ -786,6 +806,9 @@ namespace NineTapTour.Forms
             return 0;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void RankGridView()
         {
             int Rank = 1;
@@ -800,6 +823,7 @@ namespace NineTapTour.Forms
                 }
             }
         }
+
 
         /// <summary>
         /// This method will get a list of all tournament participants and return a sort the list by scores.
