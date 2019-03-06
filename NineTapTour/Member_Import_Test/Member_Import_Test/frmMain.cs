@@ -497,6 +497,11 @@ namespace Member_Import_Test
             }
         }
 
+        /// <summary>
+        /// Verifies if you would like to get more files form a folder to import.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
         {
             GetAndProcessFolderWithExcelFiles();
@@ -509,7 +514,9 @@ namespace Member_Import_Test
             progressBar2.Value = progressBar2.Maximum;
             LabelCurrentFileWorkingOn.Text = "Complete";
         }
-
+        /// <summary>
+        /// This will open the explorer to find all the excel files in the folder to allow user to choose the file they want to import
+        /// </summary>
         private void GetAndProcessFolderWithExcelFiles()
         {
             using (var fbd = new FolderBrowserDialog())
@@ -550,7 +557,11 @@ namespace Member_Import_Test
             progressBar2.Increment(100);
             return ALLEXCELDATAFROMALLPLAYERS;
         }
-
+        /// <summary>
+        /// This will process the actual excel files and impport the info needed from the files to the program
+        /// </summary>
+        /// <param name="PathAndFileName"></param>
+        /// <returns></returns>
         private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
         {
             progressBar2.Minimum = 0;
@@ -574,7 +585,7 @@ namespace Member_Import_Test
                 playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
                 firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
             }
-            // Checks to see if a period instead of a comma was accidentally placed in member name. (Rob's Request)
+            // Checks to see if a period instead of a comma was accidentally placed in member name. (Client's Request)
             else if (playerFullName.Contains("."))
             {
                 playerLastName = playerFullName.Substring(0, playerFullName.IndexOf("."));
@@ -920,7 +931,11 @@ namespace Member_Import_Test
             MessageBox.Show($"{validMembers.Count} members have been imported and all their bowling history has been added to the database");
             this.Close();
         }
-
+        /// <summary>
+        /// progress bar code the status of completion
+        /// </summary>
+        /// <param name="increment"></param>
+        /// <param name="msg"></param>
         private void IncrementFinalizeBar(int increment, string msg)
         {
             progressBarFinalize.Increment(increment);
@@ -928,7 +943,10 @@ namespace Member_Import_Test
             progressBarFinalize.Refresh();
             lblFinalizeStatus.Refresh();
         }
-
+        /// <summary>
+        /// updates player history in the database
+        /// </summary>
+        /// <param name="playerHistory"></param>
         private void updatePlayerHistory(List<PlayerHistory> playerHistory)
         {
             foreach (var ph in playerHistory)
