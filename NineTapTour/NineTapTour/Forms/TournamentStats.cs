@@ -1,27 +1,39 @@
 ﻿using NineTapTour.Database;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using NineTapTour.Models;
+using System.Collections;
 
 namespace NineTapTour.Forms
 {
+    /// <summary>
+    /// This class handles the tournament stats table for frmMemberScores.
+    /// </summary>
     public partial class TournamentStats : Form
     {
+
         public TournamentStats()
         {
             InitializeComponent();
         }
 
-        private void TournamentStats_Load(object sender, EventArgs e)
+        /// <summary>
+        /// TournamentStats_Load() is the main method that populates the form initially.
+        /// This queries the database based on whether the tournament is "three out of four"
+        /// and then creates a TournamentStatsList object for each record. Then a 
+        /// List<TournamentStatsList> is sent to a DataTable builder method and populates
+        /// the DataGridView.
+        /// comment author: Nelson_Nyland
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void TournamentStats_Load(object sender, EventArgs e)
         {
             if (!frmMemberScores.selectedTournament.ThreeOutOf4)
             {
@@ -29,6 +41,7 @@ namespace NineTapTour.Forms
                 selectedTournament = frmMemberScores.selectedTournament;
                 lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
+                // query database
                 NineTapDb db = new NineTapDb();
                 var tournamentStatsList = (from p in db.Participants
                                            join m in db.Members on p.Member.Id equals m.Id
@@ -52,7 +65,30 @@ namespace NineTapTour.Forms
                                                p.Game.Bonus
                                            }).ToList();
 
-                dgvTournamentStats.DataSource = tournamentStatsList;                               
+                // create list
+                List<TournamentStatsList> statsList = new List<TournamentStatsList>();
+                foreach (var item in tournamentStatsList)
+                {
+                    TournamentStatsList list = new TournamentStatsList
+                    {
+                        Id = item.Number,
+                        FirstName = item.FirstName,
+                        LastName = item.LastName,
+                        Squad = item.Squad,
+                        ScratchTotal = item.ScratchTotal,
+                        Top3Scores = item.ScratchTotal + (item.Handicap * 3) + (item.Bonus * 3),
+                        Game1 = item.Game1,
+                        Game2 = item.Game2,
+                        Game3 = item.Game3,
+                        Game4 = item.Game4,
+                        Handicap = item.Handicap,
+                        Bonus = item.Bonus
+                    };
+                    statsList.Add(list);
+                }
+                
+                // send to form
+                dgvTournamentStats.DataSource = BuildDataTable(statsList);
             }
             else
             {
@@ -60,8 +96,8 @@ namespace NineTapTour.Forms
                 selectedTournament = frmMemberScores.selectedTournament;
                 lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
-                NineTapDb db = new NineTapDb();           
-
+                // query database
+                NineTapDb db = new NineTapDb();
                 SqlConnection con = new SqlConnection(GetConnection());
                 SqlCommand gameOrder = new SqlCommand();
                 gameOrder.Connection = con;
@@ -71,82 +107,83 @@ namespace NineTapTour.Forms
 		                                JOIN Members ON Members.Id = Participants.Member_Id                                        
                                         WHERE Tournament_Id = @TID
                                         ORDER BY Members.LastName";
-
                 gameOrder.Parameters.AddWithValue("@TID", selectedTournament.Id);
+                con.Open();
+                SqlDataReader reader = gameOrder.ExecuteReader();
+                List<TournamentStatsList> statsList = new List<TournamentStatsList>();
 
-                try
+                // create list
+                while (reader.Read())
                 {
-                    // open connection
-                    con.Open();
+                    TournamentStatsList temp = new TournamentStatsList();
+                    temp.Handicap = Convert.ToInt32(reader["Handicap"]);
+                    temp.Bonus = Convert.ToInt32(reader["Bonus"]);
+                    List<int?> scores = new List<int?> { Convert.ToInt32(reader["Game1"]), Convert.ToInt32(reader["Game2"]), Convert.ToInt32(reader["Game3"]), Convert.ToInt32(reader["Game4"]) };
 
-                    // execute command(query)
-                    SqlDataReader reader = gameOrder.ExecuteReader();
-                    List<TournamentStatsList> listOfTourney = new List<TournamentStatsList>();
+                    List<int> topScores = GetTop3OutOf4(scores);
+                    int scratchTotal = 0;
 
-                    // view results
-                    while (reader.Read())
+                    for (int i = 0; i < 3; i++)
                     {
-                        TournamentStatsList temp = new TournamentStatsList();
-                        temp.Handicap = Convert.ToInt32(reader["Handicap"]);
-                        temp.Bonus = Convert.ToInt32(reader["Bonus"]);                      
-                        List<int?> scores = new List<int?> { Convert.ToInt32(reader["Game1"]), Convert.ToInt32(reader["Game2"]), Convert.ToInt32(reader["Game3"]), Convert.ToInt32(reader["Game4"]) };
+                        scratchTotal += topScores[i];
+                    }
 
-                        List<int> topScores = GetTop3OutOf4(scores);
-                        int scratchTotal = 0;
+                    temp.ScratchTotal = scratchTotal;
+                    temp.Top3Scores = temp.ScratchTotal + (temp.Handicap * 3) + (temp.Bonus * 3);
+                    temp.Id = Convert.ToInt32(reader["Id"]);
+                    temp.FirstName = reader["FirstName"].ToString();
+                    temp.LastName = reader["LastName"].ToString();
+                    temp.Squad = Convert.ToInt32(reader["SquadNumber"]);
+                    temp.Game1 = Convert.ToInt32(reader["Game1"]);
+                    temp.Game2 = Convert.ToInt32(reader["Game2"]);
+                    temp.Game3 = Convert.ToInt32(reader["Game3"]);
+                    temp.Game4 = Convert.ToInt32(reader["Game4"]);
 
-                        for (int i = 0; i < 3; i++)
-                        {
-                            scratchTotal += topScores[i];
-                        }
-
-                        temp.ScratchTotal = scratchTotal;
-                        temp.Top3Scores = temp.ScratchTotal + (temp.Handicap * 3) + (temp.Bonus * 3);
-                        temp.Id = Convert.ToInt32(reader["Id"]);
-                        temp.FirstName = reader["FirstName"].ToString();
-                        temp.LastName = reader["LastName"].ToString();
-                        temp.Squad = Convert.ToInt32(reader["SquadNumber"]);
-                        temp.Game1 = Convert.ToInt32(reader["Game1"]);
-                        temp.Game2 = Convert.ToInt32(reader["Game2"]);
-                        temp.Game3 = Convert.ToInt32(reader["Game3"]);
-                        temp.Game4 = Convert.ToInt32(reader["Game4"]);
-
-                        listOfTourney.Add(temp);
-                    }                    
-                    dgvTournamentStats.DataSource = listOfTourney;
+                    statsList.Add(temp);
                 }
-                catch (SqlException)
-                {
+                con.Close();
 
-                }
-                finally
-                {
-                    con.Dispose();
-                }
+                // send to form
+                dgvTournamentStats.DataSource = BuildDataTable(statsList);
             }
-        }
+        }        
 
+        /// <summary>
+        /// Filters and sorts scores for topScores list.
+        /// </summary>
+        /// <param name="scores"></param>
+        /// <returns></returns>
         public static List<int> GetTop3OutOf4(List<int?> scores)
-        {            
+        {
             List<int> listOfValidScores = new List<int>();
-            for(int i = 0; i < scores.Count-1; i++)
+            for (int i = 0; i < scores.Count - 1; i++)
             {
                 if (scores[i].HasValue)
                 {
                     listOfValidScores.Add(scores[i].Value);
-                }                
+                }
             }
 
             listOfValidScores.Sort();
             listOfValidScores.Reverse();
-            return listOfValidScores;            
+            return listOfValidScores;
         }
 
+        /// <summary>
+        /// GetConnection() returns a connection string to the database within the quotes.
+        /// </summary>
+        /// <returns>Database ConnectionString</returns>
         public static string GetConnection()
         {
             return ConfigurationManager.ConnectionStrings["NineTapDbConnection"].ConnectionString;
         }
 
-        private void btnPrint_Click(object sender, EventArgs e)
+        /// <summary>
+        /// BtnPrint_Click() is called when Print button is clicked on the tournamentStats form.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnPrint_Click(object sender, EventArgs e)
         {
             printDialog1.Document = printDocument1;
             if (printDialog1.ShowDialog() == DialogResult.OK)
@@ -155,14 +192,79 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        /// <summary>
+        /// PrintDocument1_PrintPage() is called after choosing where to save or print the tournamentStats table.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PrintDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
             Bitmap bm = new Bitmap(this.dgvTournamentStats.Width, this.dgvTournamentStats.Height);
-            this.dgvTournamentStats.DrawToBitmap(bm, new Rectangle(0, 0, this.dgvTournamentStats.Width, this.dgvTournamentStats.Height));
+            this.dgvTournamentStats.DrawToBitmap(bm, new Rectangle(0, 0, 1582, 621));
             e.Graphics.DrawImage(bm, 0, 0);
         }
+
+        /// <summary>
+        /// BuildDataTable() Boxes up the tournamentStatsList object into a data table object 
+        /// that the datagridview is willing to accept and sort.
+        /// </summary>
+        /// <param name="statsList"></param>
+        /// <returns>Datatable object</returns>
+        private DataTable BuildDataTable(List<TournamentStatsList> statsList)
+        {
+            DataTable data = new DataTable("Tournament Stats");
+
+            data.Columns.Add("ID", System.Type.GetType("System.Int32"));
+            data.Columns.Add("First Name", System.Type.GetType("System.String"));
+            data.Columns.Add("Last Name", System.Type.GetType("System.String"));
+            data.Columns.Add("Squad", System.Type.GetType("System.Int32"));
+            data.Columns.Add("Scratch Total", System.Type.GetType("System.Int32"));
+            data.Columns.Add("Top3Scores", System.Type.GetType("System.Int32"));
+            data.Columns.Add("Game 1", System.Type.GetType("System.Int32"));
+            data.Columns.Add("Game 2", System.Type.GetType("System.Int32"));
+            data.Columns.Add("Game 3", System.Type.GetType("System.Int32"));
+            data.Columns.Add("Game 4", System.Type.GetType("System.Int32"));
+            data.Columns.Add("Handicap", System.Type.GetType("System.Int32"));
+            data.Columns.Add("Bonus", System.Type.GetType("System.Int32"));
+
+            // Make first four columns required
+            for (int i = 0; i < 4; i++)
+            {
+                data.Columns[i].AllowDBNull = false;
+            }
+
+            // Make id unique
+            data.Constraints.Add(new UniqueConstraint(data.Columns["ID"]));
+
+            // Add statsList to DataTable
+            foreach (var item in statsList)
+            {
+                data.Rows.Add(new object[]
+                {
+                item.Id,
+                item.FirstName,
+                item.LastName,
+                item.Squad,
+                item.ScratchTotal,
+                item.Top3Scores,
+                item.Game1,
+                item.Game2,
+                item.Game3,
+                item.Game4,
+                item.Handicap,
+                item.Bonus
+                });
+            }
+
+            // Return data table object
+            return data;
+        }
+
     }
 
+    /// <summary>
+    /// Object used to fill DataTable.
+    /// </summary>
     public partial class TournamentStatsList
     {
         public int Id { get; set; }
@@ -177,5 +279,5 @@ namespace NineTapTour.Forms
         public int? Game4 { get; set; }
         public int? Handicap { get; set; }
         public int? Bonus { get; set; }
-    }
+    }    
 }
