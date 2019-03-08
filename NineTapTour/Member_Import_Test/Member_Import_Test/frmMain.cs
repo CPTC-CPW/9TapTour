@@ -689,6 +689,15 @@ namespace Member_Import_Test
                     string game4 = Convert.ToString((range.Cells[row, 6] as Excel.Range).Value2);
                     string testFin = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
 
+                    // handles when legacy excel files have 0 in the games total column
+                    if (!string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 1] as Excel.Range).Value2)))
+                    {
+                        if (Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2) == 0)
+                        {
+                            continue;
+                        }
+                    }
+
                     if ( // if no date or cash then continue to the next line
                         string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 2] as Excel.Range).Value2)) &&
                         string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 15] as Excel.Range).Value2))
