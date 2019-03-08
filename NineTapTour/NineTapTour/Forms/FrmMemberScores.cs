@@ -1144,7 +1144,7 @@ namespace NineTapTour.Forms
                 // sets focus to member num becuse that is what a user will need next
                 txtMemberNum.Focus();
             }
-
+            #region Jake's Section
             // clear the temp variables for the money earned for tourn results
             if (TempVariablesForGlobalLevel.MoneyEarnings != null && prevTourneyId != currTourneyId)
             {
@@ -1187,16 +1187,17 @@ namespace NineTapTour.Forms
         /// <returns>boolean</returns>
         public bool IsValid()
         {
+            //Checks if selected tournament is null
             if (cbxTourneyDropDown.SelectedValue == null)
             {
                 return false;
             }
-
+            //Checks if member number is blank
             if (txtMemberNum.Text == "")
             {
                 return false;
             }
-
+            //Checks all score boxes and asks if you want to enter member without scores
             if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
             {
                 DialogResult result = MessageBox.Show("Are you sure you want to continue with a score missing?", "Are you sure?",
@@ -1231,6 +1232,7 @@ namespace NineTapTour.Forms
                 Console.WriteLine(tour.TourneyNameDate);
             }
 #endif
+            //Populates dropdown box with tournaments
             if (tours.Count > 0)
             {
                 cbxTourneyDropDown.DataSource = tours;
@@ -1250,7 +1252,7 @@ namespace NineTapTour.Forms
             txtScratchTotal.Clear();
             txtHandicapTotal.Clear();
         }
-
+        //Calls refresh method on radiobutton change
         private void rdoScratchScore_CheckedChanged(object sender, EventArgs e)
         {
             Refresh(true);
@@ -1444,6 +1446,7 @@ namespace NineTapTour.Forms
             }
         }
 
+        //Gets nullable scratchscore
         private int? getScratchScore(int? gameScore, int? gameHandicap)
         {
             return gameScore + gameHandicap;
@@ -1454,7 +1457,7 @@ namespace NineTapTour.Forms
             TournamentsByYear listTournaments = new TournamentsByYear(RegionID);
             listTournaments.ShowDialog();
         }
-
+        //Called when stats btn is clicked
         private void btnStats_Click(object sender, EventArgs e)
         {
             TournamentStats tournamentStats = new TournamentStats();
@@ -1528,6 +1531,7 @@ namespace NineTapTour.Forms
         ********************************************************************************/
         private void btnSenior_Click(object sender, EventArgs e)
         {
+            //Checks if tournament is not selected
             if (cbxTourneyDropDown.SelectedIndex < 0)
             {
                 MessageBox.Show("Please Select a Tournament");
@@ -1584,7 +1588,7 @@ namespace NineTapTour.Forms
                 currentsNum = 8;
             return currentsNum;
         }
-
+        //called when report game is clicked
         private void btnGame_Click(object sender, EventArgs e)
         {
             if (cbxTourneyDropDown.SelectedIndex < 0)
@@ -1617,7 +1621,7 @@ namespace NineTapTour.Forms
                 }
             }
         }
-
+        //Called when the report series is clicked
         private void btnSeries_Click(object sender, EventArgs e)
         {
             if (cbxTourneyDropDown.SelectedIndex < 0)
@@ -1635,7 +1639,8 @@ namespace NineTapTour.Forms
                     //Gets information from Filter Series by Squad checkboxes and gets the latest squad to pass when Series is clicked.
                     List<bool> filterSeries = FormHelper.GetFilterSeriesList(GRPQBS1);
                     List<int> squadList = FormHelper.SquadNumList(filterSeries);
-
+                    
+                    #endregion
                     //these 2 regions would recreate data that already exists on trhe page
                     #region PRINTING HANDICAP TOURNAMENT RESULTS
                     if (rdoHandicapScore.Checked)
