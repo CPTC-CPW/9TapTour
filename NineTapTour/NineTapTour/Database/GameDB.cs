@@ -36,13 +36,10 @@ namespace NineTapTour.Database
         /// <returns></returns>
         public static Game GetGame(int gameID)
         {
-            Game currentGame = new Game();
-
             var db = new NineTapDb();
-            var temp = (from g in db.Games
+            return (from g in db.Games
                 where g.Id == gameID
                 select g).SingleOrDefault();
-            return currentGame;
         }
 
 
