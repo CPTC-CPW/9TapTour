@@ -806,6 +806,9 @@ namespace NineTapTour.Forms
             return 0;
         }
 
+        // Removed unusable, unused and incomplete methods RankGridView and SortByScore starting on this line on 3/6/19.
+        // The methods can be viewed in this repo's GitHub history prior to this date if anyone wants to see the details.
+
         /// <summary>
         /// This method takes in a GAME_VALID_COLUMN cell and returns the correct corresponding GAME_COLUMN cell or vis versa.
         /// </summary>
@@ -1054,13 +1057,13 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            //set name, member score and currentr avg based of of what row is selected.
             int gameId = Convert.ToInt32(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[GAME_ID_COLUMN].Value);
             using (var db = new NineTapDb())
             {
-                //set labels to selected index
                 int memberNumber = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Number;
                 Member Cmember = MemberDb.GetMember(memberNumber, RegionID);
+
+                // Sets labels for selected member
                 lblMemberNumber.Text = Cmember.Number.ToString();
                 lblName.Text = Cmember.FirstName + " " + Cmember.LastName;
                 lblStartAvg.Text = Cmember.StartAvg.ToString();
