@@ -657,6 +657,7 @@ namespace NineTapTour.Forms
         }
 
         #endregion
+        #endregion
         #region
         /// <summary>
         /// Checks a string for numeric values
