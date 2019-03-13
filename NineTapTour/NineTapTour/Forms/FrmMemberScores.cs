@@ -870,6 +870,7 @@ namespace NineTapTour.Forms
         /// <param name="selectedTournamentId">the Id of the tourny to return</param>    
         private Tournament GetTournamentById(int selectedTournamentId)
         {
+            //tries to get the tournament
             try
             {
                 Tournament selectedTournament = (from t in TournamentDb.GetTournamentList(RegionID)
@@ -887,16 +888,23 @@ namespace NineTapTour.Forms
         /// gets the scores from games table by joining participants and tourneys by id 
         /// where member id = participant.member ID and selectedtourney id = tourney id
         /// </summary>
-        /// <param name="memberID"></param>
+        /// <param name="memberID">member Id of the member you want scores for</param>
         /// <returns></returns>
-
         public Game GetScoresById(int memberID)
         {
+            //makes db context
             NineTapDb db = new NineTapDb();
+
+            //makes new game
             Game memScores = new Game();
+
+            //sets squaf number to 0
             int squad = 0;
+
+            //gets the current squad number
             squad = GetCurrentSquadNumber();
 
+            //try for getting scores
             try
             {
                 int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
@@ -918,6 +926,7 @@ namespace NineTapTour.Forms
             return memScores;
 
         }
+
         /// <summary>
         /// clears memberNum, txtScratchScores, and High Game textboxes
         /// </summary>
