@@ -751,21 +751,31 @@ namespace NineTapTour.Forms
             currentIndex = pat.Count;
         }
 
+        /// <summary>
+        /// updates the record index on enter
+        /// </summary>
+        /// <param name="part">participant to be switched to</param>
         public void RecordIndexOnEnter(List<Participant> part)
         {
             //on enter, find the first index in which the member occurs in the tournament
             if (selectedTournament.Doubles == false)
             {
+                //checks for blank string and makes sure that it is a diget
                 if (txtMemberNum.Text != "" && txtMemberNum.Text.All(Char.IsDigit))
                 {
+                    //gets the member
                     currentMem = MemberDb.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
 
+                    //gets the current squad number
                     int currentSquadNumber = GetCurrentSquadNumber();
 
+                    //loop for checking if participant is located in the tourny already
                     for (int i = 0; i < part.Count; i++)
                     {
+                        //if it is there
                         if (currentMem.Id == part[i].Member.Id && part[i].Squad == currentSquadNumber)
                         {
+                            //set record index to proper index
                             lblRecord.Text = "Record " + (i + 1) + " / " + part.Count;
                             currentIndex = i;
 
@@ -783,9 +793,10 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Gets the currently selected squad number
         /// </summary>
-        /// <returns></returns>
+        /// <returns>int representation of a squad number</returns>
         private int GetCurrentSquadNumber()
         {
+            //if statements for checking squad numbers
             if (rdoSquadOne.Checked)
                 return 1;
             else if (rdoSquadTwo.Checked)
@@ -805,20 +816,30 @@ namespace NineTapTour.Forms
             throw new Exception("A squad must be checked!");
         }
 
+        /// <summary>
+        /// changes the record index on squad change
+        /// </summary>
         public void RecordIndexOnSquadSwitch()
         {
+            //temp squad variable
             int squad = 0;
 
+            //checks for doubles tourney and if we are switching participants
             if (selectedTournament.Doubles == false && switchingParticipents == false)
             {
+                //makes sure text isn't blank
                 if (txtMemberNum.Text != "")
                 {
+                    //gets the current squad number
                     squad = GetCurrentSquadNumber();
 
+                    //loops through participants
                     for (int i = 0; i < overallListOfParticipants.Count; i++)
                     {
+                        //checks if it matches
                         if (currentMem.Id == overallListOfParticipants[i].Member.Id && overallListOfParticipants[i].Squad == squad)
                         {
+                            //sets record index 
                             lblRecord.Text = "Record " + (i + 1) + " / " + overallListOfParticipants.Count;
                             currentIndex = i;
                             break;
@@ -831,10 +852,11 @@ namespace NineTapTour.Forms
         /// <summary>
         /// check for empty text box
         /// </summary>
-        /// <param name="box"></param>
-        /// <returns></returns>
+        /// <param name="box">box to be checked</param>
+        /// <returns>true is box is empty</returns>
         private bool IsEmpty(TextBox box)
         {
+            //checks box contents
             if (string.IsNullOrEmpty(box.Text.Trim()))
             {
                 return true;
@@ -845,7 +867,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// get a tournament by selected id
         /// </summary>
-        /// <param name="selectedTournamentId"></param>    
+        /// <param name="selectedTournamentId">the Id of the tourny to return</param>    
         private Tournament GetTournamentById(int selectedTournamentId)
         {
             try
