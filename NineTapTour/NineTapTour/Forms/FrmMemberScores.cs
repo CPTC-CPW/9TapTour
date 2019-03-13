@@ -1217,7 +1217,6 @@ namespace NineTapTour.Forms
                 // sets focus to member num becuse that is what a user will need next
                 txtMemberNum.Focus();
             }
-            #region Jake's Section
             // clear the temp variables for the money earned for tourn results
             if (TempVariablesForGlobalLevel.MoneyEarnings != null && prevTourneyId != currTourneyId)
             {
@@ -1225,6 +1224,7 @@ namespace NineTapTour.Forms
             }
         }
 #endregion
+#region Jake's Section
         /// <summary>
         /// Enables buttons to select when valid Tournament is selected
         /// </summary>
