@@ -211,12 +211,7 @@ namespace NineTapTour.Forms
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
                 txtMemberNum.Focus();
-            }
-            //Clicks LastMemberButton when frm is activated.
-            //this will make sure the person entering scores 
-            //does not accedently enter a bowler in the wrong squad.
-            MoveToLastRecordOfMemberScores();
-            
+            }            
         }
 
         /// <summary>
