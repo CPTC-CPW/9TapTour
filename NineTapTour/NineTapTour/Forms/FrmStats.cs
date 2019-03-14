@@ -382,6 +382,15 @@ namespace NineTapTour.Forms
                 newRow["Games"] = item.GamesPlayed;
                 newRow["Date"] = item.TournamentDate.ToShortDateString();
 
+                #region display_fix_till_more_perm_fix_in_importation
+                if (item.GamesPlayed == 0)
+                {
+                    continue;
+                }
+                // some entries in the imported excel files have 0 gamesTotal and no relevant data to be
+                // imported which would cause crash when displaying 
+                #endregion
+
                 if (item.Game1 == 0)
                     newRow["Gm1"] = null;
                 else
