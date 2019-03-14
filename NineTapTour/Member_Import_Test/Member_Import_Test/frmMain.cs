@@ -692,7 +692,7 @@ namespace Member_Import_Test
                     // handles when legacy excel files have 0 in the games total column
                     if (!string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 1] as Excel.Range).Value2)))
                     {
-                        if (Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2) == 0)
+                        if (Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2) == 0 && string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 15] as Excel.Range).Value2)))
                         {
                             continue;
                         }

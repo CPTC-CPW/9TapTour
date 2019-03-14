@@ -121,7 +121,7 @@ namespace NineTapTour.Forms
                 
                 newRow[PLACE_STANDING_COLUMN_NAME] = clientRequested[wc].PlaceStanding;
                 newRow[FULLNAME_COLUMN_NAME] = clientRequested[wc].Name;
-                newRow[HANDICAP_COLUMN_NAME] = clientRequested[wc].Handicap + "/" + clientRequested[wc].Bonus;
+                newRow[HANDICAP_COLUMN_NAME] = (clientRequested[wc].Handicap - clientRequested[wc].Bonus) + " + " + clientRequested[wc].Bonus;
                 newRow[TOTAL_SCORE_COLUMN_NAME] = clientRequested[wc].TotalScore;
                 newRow[MEMBER_ID_COLUMN_NAME] = clientRequested[wc].MemberNumber;
                 newRow[GAME_ID_COLUMN_NAME] = clientRequested[wc].GameId;
