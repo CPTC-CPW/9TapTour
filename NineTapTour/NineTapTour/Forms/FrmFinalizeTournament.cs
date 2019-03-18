@@ -836,7 +836,9 @@ namespace NineTapTour.Forms
 
             dtGames.Columns.Add("Games").ReadOnly = true;
             dtGames.Columns.Add("Date", typeof(DateTime));
+      
             dtGames.Columns.Add("Game1");
+
             dtGames.Columns.Add("Game2");
             dtGames.Columns.Add("Game3");
             dtGames.Columns.Add("Game4");
@@ -851,11 +853,12 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Place").ReadOnly = true;
             dtGames.Columns.Add("Money Won", typeof(Decimal));
             dtGames.Columns.Add("Notes");
-            dtGames.Columns.Add("GameID").ReadOnly = true;
-
+           // dtGames.Columns.Add("GameID").ReadOnly = true;
+            
             // Money Won label string is referenced multiple locations
             string moneyWon = "Money Won";
             decimal totalMoneyEarned = 0;
+
 
             foreach (var item in temporary)
             {
@@ -898,7 +901,7 @@ namespace NineTapTour.Forms
                 newRow[moneyWon] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
-                newRow["GameID"] = item.GameID;
+                //newRow["GameID"] = item.GameID;
 
                 dtGames.Rows.Add(newRow);
 
@@ -953,7 +956,7 @@ namespace NineTapTour.Forms
                 newRow[moneyWonWithTotal] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
-                newRow["GameID"] = item.GameID;
+               // newRow["GameID"] = item.GameID;
 
                 dtGames.Rows.Add(newRow);
             }
