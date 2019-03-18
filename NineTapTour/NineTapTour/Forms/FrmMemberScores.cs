@@ -18,6 +18,11 @@ using static NineTapTour.Database.ReportHelper;
 
 namespace NineTapTour.Forms
 {
+    #region Casey's Comments
+    /// <summary>
+    /// FrmMemberScores class.
+    /// All tournament info and scores are entered here.
+    /// </summary>
     public partial class frmMemberScores : Form
     {
         public int RegionID;
@@ -35,11 +40,17 @@ namespace NineTapTour.Forms
 
         List<int> howManySquadsCanBeFiltered = new List<int>();
 
+        /// <summary>
+        /// instantiates all form buttons.
+        /// </summary>
         public frmMemberScores()
         {
             InitializeComponent();
         }
-
+        /// <summary>
+        /// initializes all the radio buttons on the form and sets them to their correct default status.
+        /// higher squad numbers will be available if the tournament was created for more squads.
+        /// </summary>
         private void RadioIntialize()
         {
             rdoSquadOne.TabStop = false;
@@ -119,6 +130,12 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// The forms onload method. (fired once when the program is loaded)
+        /// Sets variables to there starting state.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FrmMemberScores_Load(object sender, EventArgs e)
         {
             RegionID = ((FrmMain)MdiParent).RegionID;
@@ -144,7 +161,9 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// clears the forms member scores
+        /// Fires when the form gains focus.
+        /// This will set the form to the most recent tournament as well as the most recent bowler entered
+        /// in that tournament.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -195,6 +214,8 @@ namespace NineTapTour.Forms
                 txtMemberNum.Focus();
             }
             //Clicks LastMemberButton when frm is activated.
+            //this will make sure the person entering scores 
+            //does not accedently enter a bowler in the wrong squad.
             MoveToLastRecordOfMemberScores();
             
         }
@@ -222,7 +243,7 @@ namespace NineTapTour.Forms
 
         #region GetMember
 
-        //Get players scores
+        //Get players scores 
         private void GetScores(Game currentGame)
         {
             if (currentGame != null)
@@ -243,6 +264,9 @@ namespace NineTapTour.Forms
             }
         }
         #endregion
+        /// <summary>
+        /// fetches bowlers scores for selected tournament by using their id
+        /// </summary>
         private void FillMember()
         {
             Tournament currTourney = null;
@@ -426,7 +450,7 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// finds the handicap score
+        /// finds the handicap score (adds handicap to score)
         /// </summary>
         /// <param name="id"></param>
         /// <param name="score"></param>
@@ -638,6 +662,7 @@ namespace NineTapTour.Forms
             Clear();
         }
 
+        #endregion
         #endregion
         /// <summary>
         /// Checks a string for numeric values
@@ -1144,7 +1169,7 @@ namespace NineTapTour.Forms
                 // sets focus to member num becuse that is what a user will need next
                 txtMemberNum.Focus();
             }
-
+            #region Jake's Section
             // clear the temp variables for the money earned for tourn results
             if (TempVariablesForGlobalLevel.MoneyEarnings != null && prevTourneyId != currTourneyId)
             {
@@ -1187,16 +1212,17 @@ namespace NineTapTour.Forms
         /// <returns>boolean</returns>
         public bool IsValid()
         {
+            //Checks if selected tournament is null
             if (cbxTourneyDropDown.SelectedValue == null)
             {
                 return false;
             }
-
+            //Checks if member number is blank
             if (txtMemberNum.Text == "")
             {
                 return false;
             }
-
+            //Checks all score boxes and asks if you want to enter member without scores
             if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
             {
                 DialogResult result = MessageBox.Show("Are you sure you want to continue with a score missing?", "Are you sure?",
@@ -1231,6 +1257,7 @@ namespace NineTapTour.Forms
                 Console.WriteLine(tour.TourneyNameDate);
             }
 #endif
+            //Populates dropdown box with tournaments
             if (tours.Count > 0)
             {
                 cbxTourneyDropDown.DataSource = tours;
@@ -1250,7 +1277,7 @@ namespace NineTapTour.Forms
             txtScratchTotal.Clear();
             txtHandicapTotal.Clear();
         }
-
+        //Calls refresh method on radiobutton change
         private void rdoScratchScore_CheckedChanged(object sender, EventArgs e)
         {
             Refresh(true);
@@ -1444,6 +1471,7 @@ namespace NineTapTour.Forms
             }
         }
 
+        //Gets nullable scratchscore
         private int? getScratchScore(int? gameScore, int? gameHandicap)
         {
             return gameScore + gameHandicap;
@@ -1454,7 +1482,7 @@ namespace NineTapTour.Forms
             TournamentsByYear listTournaments = new TournamentsByYear(RegionID);
             listTournaments.ShowDialog();
         }
-
+        //Called when stats btn is clicked
         private void btnStats_Click(object sender, EventArgs e)
         {
             TournamentStats tournamentStats = new TournamentStats();
@@ -1528,6 +1556,7 @@ namespace NineTapTour.Forms
         ********************************************************************************/
         private void btnSenior_Click(object sender, EventArgs e)
         {
+            //Checks if tournament is not selected
             if (cbxTourneyDropDown.SelectedIndex < 0)
             {
                 MessageBox.Show("Please Select a Tournament");
@@ -1584,7 +1613,7 @@ namespace NineTapTour.Forms
                 currentsNum = 8;
             return currentsNum;
         }
-
+        //called when report game is clicked
         private void btnGame_Click(object sender, EventArgs e)
         {
             if (cbxTourneyDropDown.SelectedIndex < 0)
@@ -1617,7 +1646,7 @@ namespace NineTapTour.Forms
                 }
             }
         }
-
+        //Called when the report series is clicked
         private void btnSeries_Click(object sender, EventArgs e)
         {
             if (cbxTourneyDropDown.SelectedIndex < 0)
@@ -1635,7 +1664,8 @@ namespace NineTapTour.Forms
                     //Gets information from Filter Series by Squad checkboxes and gets the latest squad to pass when Series is clicked.
                     List<bool> filterSeries = FormHelper.GetFilterSeriesList(GRPQBS1);
                     List<int> squadList = FormHelper.SquadNumList(filterSeries);
-
+                    
+                    #endregion
                     //these 2 regions would recreate data that already exists on trhe page
                     #region PRINTING HANDICAP TOURNAMENT RESULTS
                     if (rdoHandicapScore.Checked)
