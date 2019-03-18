@@ -982,6 +982,7 @@ namespace NineTapTour.Forms
                     dataGridView2.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
                 }
             }
+            dataGridView2.Columns["Game1"].Width = 40;
         }
 
         /// <summary>
