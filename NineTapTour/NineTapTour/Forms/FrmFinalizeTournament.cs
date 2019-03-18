@@ -183,8 +183,13 @@ namespace NineTapTour.Forms
             dataGridView1.Columns[GAME_ID_COLUMN].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; 
         }
 
+        /// <summary>
+        /// Creates the tables for the FinalizeTournament form.
+        /// </summary>
+        /// <param name="tourn"></param>
         private void createDataGridView(Tournament tourn)
         {
+            // uses FinalizeTempDB to populate from database
             List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetAllInitialParticipantGameList(currTournament);
 
             //Below is a multithreaded version of a foreach loop to spread processing across all available cores
@@ -293,8 +298,13 @@ namespace NineTapTour.Forms
 #endif
         }
 
-        //creates the dataview that will populate the datagridview table on form pulls from the finalizetemp table
-        // CHANGE THESE IN THE ORDER YOU WANT THEM TO BE SEEN ON THE GRID VIEW (0 == far left) AND THEN CHANGE THE STATIC INTS AT THE TOP IN ORDER TO CHANGE THERE ORDER ON THE GRID VIEW WITHOUT HAVING TO TOUNCH ANY OTHER CODE
+        /// <summary>
+        /// creates the dataview that will populate the datagridview table on form pulls from the finalizetemp table
+        /// CHANGE THESE IN THE ORDER YOU WANT THEM TO BE SEEN ON THE GRID VIEW (0 == far left), AND THEN CHANGE THE STATIC
+        /// INTS AT THE TOP IN ORDER TO CHANGE THEIR ORDER ON THE GRIDVIEW WITHOUT HAVING TO TOUCH ANY OTHER CODE.
+        /// </summary>
+        /// <param name="participantsList"></param>
+        /// <returns></returns>
         public DataTable SetDataView(Dictionary<FinalizeTemp,int> participantsList)
         {
             var db = new NineTapDb();

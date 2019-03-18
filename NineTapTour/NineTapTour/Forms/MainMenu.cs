@@ -134,7 +134,7 @@ namespace NineTapTour.Forms
 
                 foreach (var f in fin)
                 {
-                    FinalizeTempDB.DeleteFinilizeTemp(f);
+                    FinalizeTempDB.DeleteFinalizeTemp(f);
                 }
 
                 // Delete Participants where Participant RegionID = regionID

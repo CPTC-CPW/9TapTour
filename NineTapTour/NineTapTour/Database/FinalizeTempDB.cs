@@ -188,23 +188,13 @@ namespace NineTapTour.Database
             return ft;
         }
 
-        public static void DeleteFinilizeTemp (FinalizeTemp ft)
+        public static void DeleteFinalizeTemp(FinalizeTemp ft)
         {
-            try
+            using (var db = new NineTapDb())
             {
-                using (var db = new NineTapDb())
-                {
-                    db.Entry(ft).State = EntityState.Deleted;
-                    db.SaveChanges();
-                }
+                db.Entry(ft).State = EntityState.Deleted;
+                db.SaveChanges();
             }
-            catch
-            {
-
-            }
-
-
-
         }
 
         public static Participant getParticipantbyGameID (int gameID)
