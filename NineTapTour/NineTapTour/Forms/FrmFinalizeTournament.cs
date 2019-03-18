@@ -1036,7 +1036,7 @@ namespace NineTapTour.Forms
             if (isDirectorCheckFinished) //if all the director check boxes are selected
             {
                 // total comp entries for the current tournament
-                int compEntriesQty = FinalizeTempDB.GetCompEntryQtyByTourney(currTournament.Id);
+                int compEntriesQty = FinalizeTempDB.GetCompEntryQtyByTourneyID(currTournament.Id);
 
                 // To adjust bonus pins for non-best multiple entries 
                 var playerHistoryBonusAdjustmentList = new List<PlayerHistory>();

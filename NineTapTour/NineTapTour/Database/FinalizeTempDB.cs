@@ -211,9 +211,9 @@ namespace NineTapTour.Database
                     g.Id,
                     g.Member,
                     g.Squad,
-                    g.Tournament,
-
-                });
+                    g.Tournament
+                }
+            );
             foreach (var g in temp)
             {
                 p.Game = g.Game;
@@ -224,24 +224,15 @@ namespace NineTapTour.Database
 
             }
             return p;
-
         }
 
-        public static void deleteParticipant (Participant p)
+        public static void deleteParticipant(Participant p)
         {
-            try
+            using (var db = new NineTapDb())
             {
-                using (var db = new NineTapDb())
-                {
-                    db.Entry(p).State = EntityState.Deleted;
-                    db.SaveChanges();
-                }
+                db.Entry(p).State = EntityState.Deleted;
+                db.SaveChanges();
             }
-            catch
-            {
-
-            }
-
         }
 
         /// <summary>
@@ -341,7 +332,7 @@ namespace NineTapTour.Database
             return ParticipantList;
         }
 
-        public static List<FinalizeTemp> GetFinalizeList(int RegionID)
+        public static List<FinalizeTemp> GetFinalizeListByRegionID(int RegionID)
         {
             using (var db = new NineTapDb())
             {
@@ -351,7 +342,7 @@ namespace NineTapTour.Database
             }
         }
 
-        public static List<Participant> GetparticpantList(int RegionID)
+        public static List<Participant> GetparticpantListByRegionID(int RegionID)
         {
             using (var db = new NineTapDb())
             {
@@ -361,7 +352,7 @@ namespace NineTapTour.Database
             }
         }
 
-        public static List<Game> GetGameList(int RegionID)
+        public static List<Game> GetGameListByRegionID(int RegionID)
         {
             using (var db = new NineTapDb())
             {
@@ -376,7 +367,7 @@ namespace NineTapTour.Database
         /// </summary>
         /// <param name="tourneyId">The id property for the tournament</param>
         /// <returns>Qty of comp entries</returns>
-        public static int GetCompEntryQtyByTourney(int tourneyId)
+        public static int GetCompEntryQtyByTourneyID(int tourneyId)
         {
             var db = new NineTapDb();
             return db.FinalizeTemp

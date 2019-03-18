@@ -130,7 +130,7 @@ namespace NineTapTour.Forms
                 }
 
                 // Delete FinilizeTemp where FinalizeID = selected regionID
-                List<FinalizeTemp> fin = FinalizeTempDB.GetFinalizeList(regionID);
+                List<FinalizeTemp> fin = FinalizeTempDB.GetFinalizeListByRegionID(regionID);
 
                 foreach (var f in fin)
                 {
@@ -138,7 +138,7 @@ namespace NineTapTour.Forms
                 }
 
                 // Delete Participants where Participant RegionID = regionID
-                List<Participant> par = FinalizeTempDB.GetparticpantList(regionID);
+                List<Participant> par = FinalizeTempDB.GetparticpantListByRegionID(regionID);
 
                 foreach (var p in par)
                 {
@@ -146,7 +146,7 @@ namespace NineTapTour.Forms
                 }
 
                 // Delete Games where GameRegionID = regionID
-                List<Game> gam = FinalizeTempDB.GetGameList(regionID);
+                List<Game> gam = FinalizeTempDB.GetGameListByRegionID(regionID);
 
                 foreach (var g in gam)
                 {
