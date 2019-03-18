@@ -11,6 +11,107 @@ namespace NineTapTour.Database
 {
     class FinalizeTempDB
     {
+        /***************************************************************
+        * LEAGUE AVERAGE
+        ****************************************************************/
+        public static double LeagueAverage(Member mem)
+        {
+            double sum = 0;
+            double average = 0;
+            var db = new NineTapDb();
+            var temp = (
+
+                        from p in db.Participants
+                        join m in db.Members on p.Member.Id equals m.Id
+                        join g in db.Games on p.Game.Id equals g.Id
+                        join t in db.Tournaments on p.Tournament.Id equals t.Id
+                        where mem.Id == m.Id
+                        orderby t.Date descending
+                        select new
+                        {
+                            t.Date,
+                            g.Game1,
+                            g.Game2,
+                            g.Game3,
+                            g.Game4,
+                            Average = (g.Game1 + g.Game2 + g.Game3 + g.Game4) / 4
+
+                        }).Take(30).ToList();
+            if (temp.Count > 0)
+            {
+                foreach (var item in temp)
+                {
+                    sum += Convert.ToDouble(item.Average);
+                }
+                return (average = sum / temp.Count());
+            }
+            return 0;
+        }
+
+        //calculates league average for member based off last 30 games or total games played if less than 30.
+        public static double LeagueAverage(int memID)
+        {
+            double sum = 0;
+            double average = 0;
+            var db = new NineTapDb();
+            var temp = (
+                        from p in db.Participants
+                        join m in db.Members on p.Member.Id equals m.Id
+                        join g in db.Games on p.Game.Id equals g.Id
+                        join t in db.Tournaments on p.Tournament.Id equals t.Id
+                        where memID == m.Id
+                        orderby t.Date descending
+                        select new
+                        {
+                            t.Date,
+                            g.Game1,
+                            g.Game2,
+                            g.Game3,
+                            g.Game4,
+                            Average = (g.Game1 + g.Game2 + g.Game3 + g.Game4) / 4
+                        }).Take(30).ToList();
+
+            if (temp.Count > 0)
+            {
+                foreach (var item in temp)
+                {
+                    sum += Convert.ToDouble(item.Average);
+                }
+                return (average = sum / temp.Count());
+            }
+            return 0;
+        }
+
+        public static double LeagueAvgFromPlayerHistory(int mem, int howmany, int regionid)
+        {
+            double sum = 0;
+            var db = new NineTapDb();
+            var temp = (from p in db.PlayerHistory
+                        where p.MemberNumber == mem && p.regionID == regionid
+                        orderby p.TournamentDate descending
+                        select new
+                        {
+                            p.TournamentDate,
+                            p.Game1,
+                            p.Game2,
+                            p.Game3,
+                            p.Game4,
+                            p.trueAVG,
+                            p.AverageForGame
+                        }).Take(howmany).ToList();
+
+            if (temp.Count > 0)
+            {
+
+                foreach (var item in temp)
+                {
+                    sum += Convert.ToDouble(item.AverageForGame);
+                }
+                return sum;
+            }
+            return 0;
+        }
+
         /***************************************************
          * FINALIZETEMP
          * ************************************************/
@@ -372,45 +473,7 @@ namespace NineTapTour.Database
                     return false;
                 }
             }
-        }
-
-        /***************************************************************
-        calculates the average
-        ***note I saw this method twice now and this is the third one
-        ****************************************************************/
-        public static double LeagueAverage(Member mem)
-        {
-            double sum = 0;
-            double average = 0;
-            var db = new NineTapDb();
-            var temp = (
-
-                        from p in db.Participants
-                        join m in db.Members on p.Member.Id equals m.Id
-                        join g in db.Games on p.Game.Id equals g.Id
-                        join t in db.Tournaments on p.Tournament.Id equals t.Id
-                        where mem.Id == m.Id
-                        orderby t.Date descending
-                        select new
-                        {
-                            t.Date,
-                            g.Game1,
-                            g.Game2,
-                            g.Game3,
-                            g.Game4,
-                            Average = (g.Game1 + g.Game2 + g.Game3 + g.Game4) / 4
-
-                        }).Take(30).ToList();
-            if (temp.Count > 0)
-            {
-                foreach (var item in temp)
-                {
-                    sum += Convert.ToDouble(item.Average);
-                }
-                return (average = sum / temp.Count());
-            }
-            return 0;
-        }
+        }        
     }
 }
 

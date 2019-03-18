@@ -561,70 +561,6 @@ namespace NineTapTour.Forms
             }
         }
 
-        //calculates league average for member based off last 30 games or total games played if less than 30.
-        public double LeagueAverage(int memID)
-        {
-            double sum = 0;
-            double average = 0;
-            var db = new NineTapDb();
-            var temp = (
-                        from p in db.Participants
-                        join m in db.Members on p.Member.Id equals m.Id
-                        join g in db.Games on p.Game.Id equals g.Id
-                        join t in db.Tournaments on p.Tournament.Id equals t.Id
-                        where memID == m.Id
-                        orderby t.Date descending
-                        select new
-                        {
-                            t.Date,
-                            g.Game1,
-                            g.Game2,
-                            g.Game3,
-                            g.Game4,
-                            Average = (g.Game1 + g.Game2 + g.Game3 + g.Game4) / 4
-                        }).Take(30).ToList();
-
-            if (temp.Count > 0)
-            {
-                foreach (var item in temp)
-                {
-                    sum += Convert.ToDouble(item.Average);
-                }
-                return (average = sum / temp.Count());
-            }
-            return 0;
-        }
-
-        public double LeagueAvgFromPlayerHistory(int mem, int howmany, int regionid)
-        {
-            double sum = 0;
-            var db = new NineTapDb();
-            var temp = (from p in db.PlayerHistory
-                        where p.MemberNumber == mem && p.regionID == regionid
-                        orderby p.TournamentDate descending
-                        select new
-                        {
-                            p.TournamentDate,
-                            p.Game1,
-                            p.Game2,
-                            p.Game3,
-                            p.Game4,
-                            p.trueAVG,
-                            p.AverageForGame
-                        }).Take(howmany).ToList();
-
-            if (temp.Count > 0)
-            {
-
-                foreach (var item in temp)
-                {
-                    sum += Convert.ToDouble(item.AverageForGame);
-                }
-                return sum;
-            }
-            return 0;
-        }
-
         public void RankGridView()
         {
             int Rank = 1;
@@ -1207,7 +1143,7 @@ namespace NineTapTour.Forms
         private int CalcThirtyLeagueAverage(int memberNum, List<int> currGameAverages)
         {
             List<PlayerHistory> playerHistory = PlayerHistoryDB.getMemberPlayerHistory(memberNum, RegionID);
-            int sumOfAllGameAverages = Convert.ToInt32(LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) + currGameAverages.Sum());
+            int sumOfAllGameAverages = Convert.ToInt32(FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) + currGameAverages.Sum());
 
             if (playerHistory.Count >= 30 || (playerHistory.Count + currGameAverages.Count) > 30)
             {
@@ -1248,7 +1184,7 @@ namespace NineTapTour.Forms
                 }
             }
 
-            temp.LeagueAverage = Convert.ToInt32(LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg);
+            temp.LeagueAverage = Convert.ToInt32(FinalizeTempDB.LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg);
 
             // // after grabbing the sum, it then must divide by 30
             if (p.Count >= 30)
