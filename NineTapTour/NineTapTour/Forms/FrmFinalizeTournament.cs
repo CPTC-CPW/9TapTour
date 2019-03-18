@@ -104,7 +104,7 @@ namespace NineTapTour.Forms
 #if DEBUG
         private void ToggleDirectorCheck_CheckChanged(object sender, EventArgs e)
         {
-            List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
+            List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetListFromTable(currTournament);
             for (int i = 0; i < FinalizeTableList.Count; i++)
             {
                 //if Toggle is checked, check all Director checks
@@ -122,7 +122,7 @@ namespace NineTapTour.Forms
         private void ToggleAllAdjustedAverages_CheckChanged(object sender, EventArgs e)
         {
             bool resetAdjustedAverages = false;
-            List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
+            List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetListFromTable(currTournament);
             for (int i = 0; i < FinalizeTableList.Count; i++)
             {
                 var adjustedAverage = 
@@ -275,7 +275,7 @@ namespace NineTapTour.Forms
             });
 
             //pulls a list from the finalizetemp table and seeds the dataview with the table info.
-            List<FinalizeTemp> DataViewList = GetListFromTable(tourn);
+            List<FinalizeTemp> DataViewList = FinalizeTempDB.GetListFromTable(tourn);
 
             // Links FinalizeTemp to an integer that is placing information
             Dictionary<FinalizeTemp, int> membersPlacingMap = Calculations.Calculations.CalculatePlaceStandings(DataViewList);
@@ -371,19 +371,6 @@ namespace NineTapTour.Forms
             }
             return dt;
         }
-
-        //makes a list from the finalizetemp table to be used in dataview source
-        public List<FinalizeTemp> GetListFromTable(Tournament tourn)
-        {
-            var db = new NineTapDb();
-            //get list of participants by tournament
-            return db.FinalizeTemp
-                            .Where(p => p.TournamentID == tourn.Id)
-                            .OrderBy(p => p.FirstName)
-                            .ThenBy(p => p.Squad)
-                            .ToList();
-        }
-
 
         /// <summary>
         /// This method handles the changes made when any GAME_VALID or DIRECTOR_CHECK checkboxes are changed, including updating the FinalizeTemp table in the DB.
@@ -1005,7 +992,7 @@ namespace NineTapTour.Forms
             
             bool isDirectorCheckFinished = true; //int used to make sure all the director check boxes have been filled out
 
-            List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
+            List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetListFromTable(currTournament);
             int gamesPlayed = 0;
 
             //checks to make sure all the director had adjusted avgs and checked the box to make sure they did so.

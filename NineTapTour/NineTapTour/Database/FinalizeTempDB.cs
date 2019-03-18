@@ -11,6 +11,10 @@ namespace NineTapTour.Database
 {
     class FinalizeTempDB
     {
+        /***************************************************
+         * FINALIZETEMP
+         * ************************************************/
+
         public static void AddFinalizeTemp(FinalizeTemp temp)
         {
             try
@@ -45,82 +49,6 @@ namespace NineTapTour.Database
             {
                 throw new Exception("Error Number : " + ex.Number + " - " + ex.Message);
             }
-        }
-
-        /***************************************************************
-        calculates the average
-        ***note I saw this method twice now and this is the third one
-        ****************************************************************/
-        public static double LeagueAverage(Member mem)
-        {
-            double sum = 0;
-            double average = 0;
-            var db = new NineTapDb();
-            var temp = (
-
-                        from p in db.Participants
-                        join m in db.Members on p.Member.Id equals m.Id
-                        join g in db.Games on p.Game.Id equals g.Id
-                        join t in db.Tournaments on p.Tournament.Id equals t.Id
-                        where mem.Id == m.Id
-                        orderby t.Date descending
-                        select new
-                        {
-                            t.Date,
-                            g.Game1,
-                            g.Game2,
-                            g.Game3,
-                            g.Game4,
-                            Average = (g.Game1 + g.Game2 + g.Game3 + g.Game4) / 4
-
-                        }).Take(30).ToList();
-            if (temp.Count > 0)
-            {
-                foreach (var item in temp)
-                {
-                    sum += Convert.ToDouble(item.Average);
-                }
-                return (average = sum / temp.Count());
-            }
-            return 0;
-        }
-
-        public static bool GameExists(PlayerHistory Temp)
-        {
-
-            using (var db = new NineTapDb())
-            {
-
-                if (db.FinalizeTemp.Any(m => m.GameId == Temp.GameID))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-
-        public static List<Participant> getGameParticipantList(int id)
-        {
-            List<Participant> p = new List<Participant>();
-            var db = new NineTapDb();
-            var temp = (
-
-                from par in db.Participants
-                where par.Tournament.Id == id
-                select new
-                {
-                    par.Id,
-                    par.Game,
-                    par.Member,
-                    par.Squad,
-                    par.Tournament
-                }).ToList();
-
-
-            return p;
         }
 
         public static FinalizeTemp getFinalizeID(Game currentG)
@@ -186,53 +114,6 @@ namespace NineTapTour.Database
                
             }
             return ft;
-        }
-
-        public static void DeleteFinalizeTemp(FinalizeTemp ft)
-        {
-            using (var db = new NineTapDb())
-            {
-                db.Entry(ft).State = EntityState.Deleted;
-                db.SaveChanges();
-            }
-        }
-
-        public static Participant getParticipantbyGameID (int gameID)
-        {
-            Participant p = new Participant();
-            var db = new NineTapDb();
-            var temp = (
-
-                from g in db.Participants
-                where g.Game.Id == gameID
-                select new
-                {
-                    g.Game,
-                    g.Id,
-                    g.Member,
-                    g.Squad,
-                    g.Tournament
-                }
-            );
-            foreach (var g in temp)
-            {
-                p.Game = g.Game;
-                p.Id = g.Id;
-                p.Member = g.Member;
-                p.Squad = g.Squad;
-                p.Tournament = g.Tournament;
-
-            }
-            return p;
-        }
-
-        public static void deleteParticipant(Participant p)
-        {
-            using (var db = new NineTapDb())
-            {
-                db.Entry(p).State = EntityState.Deleted;
-                db.SaveChanges();
-            }
         }
 
         /// <summary>
@@ -332,6 +213,18 @@ namespace NineTapTour.Database
             return ParticipantList;
         }
 
+        //makes a list from the finalizetemp table to be used in dataview source
+        public static List<FinalizeTemp> GetListFromTable(Tournament tourn)
+        {
+            var db = new NineTapDb();
+            //get list of participants by tournament
+            return db.FinalizeTemp
+                            .Where(p => p.TournamentID == tourn.Id)
+                            .OrderBy(p => p.FirstName)
+                            .ThenBy(p => p.Squad)
+                            .ToList();
+        }
+
         public static List<FinalizeTemp> GetFinalizeListByRegionID(int RegionID)
         {
             using (var db = new NineTapDb())
@@ -342,6 +235,70 @@ namespace NineTapTour.Database
             }
         }
 
+        public static void DeleteFinalizeTemp(FinalizeTemp ft)
+        {
+            using (var db = new NineTapDb())
+            {
+                db.Entry(ft).State = EntityState.Deleted;
+                db.SaveChanges();
+            }
+        }
+
+
+        /**********************************************************
+         * PARTICIPANT
+         * *******************************************************/
+
+        public static List<Participant> getGameParticipantList(int id)
+        {
+            List<Participant> p = new List<Participant>();
+            var db = new NineTapDb();
+            var temp = (
+
+                from par in db.Participants
+                where par.Tournament.Id == id
+                select new
+                {
+                    par.Id,
+                    par.Game,
+                    par.Member,
+                    par.Squad,
+                    par.Tournament
+                }).ToList();
+
+
+            return p;
+        }
+
+        public static Participant getParticipantbyGameID (int gameID)
+        {
+            Participant p = new Participant();
+            var db = new NineTapDb();
+            var temp = (
+
+                from g in db.Participants
+                where g.Game.Id == gameID
+                select new
+                {
+                    g.Game,
+                    g.Id,
+                    g.Member,
+                    g.Squad,
+                    g.Tournament
+                }
+            );
+            foreach (var g in temp)
+            {
+                p.Game = g.Game;
+                p.Id = g.Id;
+                p.Member = g.Member;
+                p.Squad = g.Squad;
+                p.Tournament = g.Tournament;
+
+            }
+            return p;
+        }
+
         public static List<Participant> GetparticpantListByRegionID(int RegionID)
         {
             using (var db = new NineTapDb())
@@ -349,6 +306,15 @@ namespace NineTapTour.Database
                 return (from p in db.Participants
                         where p.ParticipantRegionID == RegionID
                         select p).ToList();
+            }
+        }
+
+        public static void deleteParticipant(Participant p)
+        {
+            using (var db = new NineTapDb())
+            {
+                db.Entry(p).State = EntityState.Deleted;
+                db.SaveChanges();
             }
         }
 
@@ -389,6 +355,61 @@ namespace NineTapTour.Database
             return db.FinalizeTemp
                     .Where(ft => ft.TournamentID == tourneyId && ft.memberNumber == memberNum)
                     .Count();
+        }
+
+        public static bool GameExists(PlayerHistory Temp)
+        {
+
+            using (var db = new NineTapDb())
+            {
+
+                if (db.FinalizeTemp.Any(m => m.GameId == Temp.GameID))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        /***************************************************************
+        calculates the average
+        ***note I saw this method twice now and this is the third one
+        ****************************************************************/
+        public static double LeagueAverage(Member mem)
+        {
+            double sum = 0;
+            double average = 0;
+            var db = new NineTapDb();
+            var temp = (
+
+                        from p in db.Participants
+                        join m in db.Members on p.Member.Id equals m.Id
+                        join g in db.Games on p.Game.Id equals g.Id
+                        join t in db.Tournaments on p.Tournament.Id equals t.Id
+                        where mem.Id == m.Id
+                        orderby t.Date descending
+                        select new
+                        {
+                            t.Date,
+                            g.Game1,
+                            g.Game2,
+                            g.Game3,
+                            g.Game4,
+                            Average = (g.Game1 + g.Game2 + g.Game3 + g.Game4) / 4
+
+                        }).Take(30).ToList();
+            if (temp.Count > 0)
+            {
+                foreach (var item in temp)
+                {
+                    sum += Convert.ToDouble(item.Average);
+                }
+                return (average = sum / temp.Count());
+            }
+            return 0;
         }
     }
 }
