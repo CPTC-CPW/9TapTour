@@ -23,7 +23,7 @@ namespace NineTapTour.Forms
         // Set column names for datagridview
         static string PLACE_STANDING_COLUMN_NAME = "Place";
         static string FULLNAME_COLUMN_NAME = "Full Name";
-        static string HANDICAP_COLUMN_NAME = "Handicap";
+        static string HANDICAP_COLUMN_NAME = "H/B*";
         static string TOTAL_SCORE_COLUMN_NAME = "Total Score";
         static string EARNINGS_COLUMN_NAME = "Earnings";
         static string MEMBER_ID_COLUMN_NAME = "Member ID";
@@ -919,7 +919,7 @@ namespace NineTapTour.Forms
             int row = 0;
             int col = 4;
 
-            int pasteAble = Convert.ToInt32(tbClientInputCount.Text);
+            int pasteAble = Convert.ToInt32(tbClientInputCount.Text) + 3; // +3 for the pro pot entries
             int pasteCount = lines.Count();
             int paste = 0;
             if(pasteCount < pasteAble)
@@ -928,7 +928,7 @@ namespace NineTapTour.Forms
             }
             else
             {
-                paste = pasteAble;
+                paste = pasteAble; 
             }
             
             for (int i = 0; i < paste; i++)
