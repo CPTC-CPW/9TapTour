@@ -521,7 +521,12 @@ namespace NineTapTour.Forms
             return ParticipantList;
         }
 
-        //makes a list from the finalizetemp table to be used in dataview source
+
+        /// <summary>
+        /// makes a list from the finalizetemp table to be used in dataview source
+        /// </summary>
+        /// <param name="tourn"></param>
+        /// <returns></returns>
         public List<FinalizeTemp> GetListFromTable(Tournament tourn)
         {
             var db = new NineTapDb();
@@ -888,7 +893,7 @@ namespace NineTapTour.Forms
         }
         
         /// <summary>
-        /// 
+        /// Show all games for the selected player including the current tournament
         /// </summary>
         /// <param name="temporary">the list of player histories that come from the tournament table</param>
         private void RefreshMemberView(List<PlayerHistory> temporary)
@@ -919,7 +924,7 @@ namespace NineTapTour.Forms
             string moneyWon = "Money Won";
             decimal totalMoneyEarned = 0;
 
-            // Load tournament game data for member into rows
+            // Load current tournament game data for selected member into rows
             foreach (var item in temporary)
             {
                 DataRow newRow = dtGames.NewRow();
@@ -1026,7 +1031,7 @@ namespace NineTapTour.Forms
 
             dataGridView2.DataSource = dtGames;
 
-
+            #region Change background color of cells
             for (int i = 0; i < dataGridView2.RowCount; i++)
             {
                 #region Set background color for member table row to light blue for all games in current tournament
@@ -1048,6 +1053,7 @@ namespace NineTapTour.Forms
                     dataGridView2.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
                 }
             }
+            #endregion
         }
 
         /// <summary>
@@ -1072,6 +1078,7 @@ namespace NineTapTour.Forms
                 {
                     List<PlayerHistory> temporary = new List<PlayerHistory>();
 
+                    #region Collect all games from the tournament table for the selected player to be shown in the player table
                     for (int i = 0; i < dataGridView1.Rows.Count; i++)
                     {
                         int tempMemberNumber = Convert.ToInt32(dataGridView1.Rows[i].Cells[MEMBER_NUMBER_COLUMN].Value);
@@ -1143,6 +1150,7 @@ namespace NineTapTour.Forms
                             temporary.Add(p);
                         }
                     }
+                    #endregion
 
                     temporary.Reverse();
                     RefreshMemberView(temporary);
@@ -1154,10 +1162,14 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// Processes tournament data and then saves it into the database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnFinalize_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-            
             
             bool isDirectorCheckFinished = true; //int used to make sure all the director check boxes have been filled out
 
@@ -1191,16 +1203,18 @@ namespace NineTapTour.Forms
             //START FINALIZATION
             if (isDirectorCheckFinished) //if all the director check boxes are selected
             {
-                // total comp entries for the current tournament
+                // Total comp entries for the current tournament
                 int compEntriesQty = FinalizeTempDB.GetCompEntryQtyByTourney(currTournament.Id);
 
-                // To adjust bonus pins for non-best multiple entries 
+                // To make bonus pins for non-best multiple entries match bonus pins calculated from
+                // a member's highest game
                 var playerHistoryBonusAdjustmentList = new List<PlayerHistory>();
 
-                // used to reference newly adjusted bonus pins for best games
+                // Used to reference newly adjusted bonus pins for best entry of a member
                 var memberNumBonusPinMap = new Dictionary<int, int>();
 
-                //Multithreaded version of a for loop, spreads processing across all available cores
+                #region Create Player Histories from Games, save them, and update all Game and Member data for current tourney
+                // Multithreaded version of a for loop, spreads processing across all available cores
                 Parallel.For(0, FinalizeTableList.Count, i =>
                 {
                     gamesPlayed = 0;
@@ -1217,6 +1231,7 @@ namespace NineTapTour.Forms
 
                     int currDataGridRowIndex = FindDataGridRowIndex(currGameId);
 
+                    #region Record and count games that are played
                     if (dataGridView1[GAME_1_VALID_COLUMN, currDataGridRowIndex].Value.ToString() == "True")
                     {
                         gamesPlayed++;
@@ -1264,18 +1279,14 @@ namespace NineTapTour.Forms
                         currGame.UseGame4 = false;
                         FinalizeTableList[i].UseGame4 = false;
                     }
-
                     ph.GamesPlayed = gamesPlayed;
+                    #endregion
+
                     ph.AverageForGame = FinalizeTableList[i].GameAvg;
                     ph.trueAVG = FinalizeTableList[i].LeagueAverage;
-
-
                     ph.AVG = Convert.ToInt32(dataGridView1[ADJUSTED_AVG_COLUMN, currDataGridRowIndex].Value);
-
                     ph.ProPot = dataGridView1[PRO_POT_COLUMN, currDataGridRowIndex].Value.ToString();
-
                     ph.MoneyWon = Convert.ToDecimal(currGame.MoneyWon);
-
                     ph.Game1 = FinalizeTableList[i].Game1;
                     ph.Game2 = FinalizeTableList[i].Game2;
                     ph.Game3 = FinalizeTableList[i].Game3;
@@ -1284,6 +1295,7 @@ namespace NineTapTour.Forms
                     DataGridViewCell placeCell = dataGridView1[STANDING_COLUMN, currDataGridRowIndex];
                     byte placeStanding = (placeCell.Value == DBNull.Value) ? (byte) 0 : Convert.ToByte(placeCell.Value);
 
+                    #region Adjust Bonus pins for highest game and record PlaceStanding
                     // if bowler's highest game in tournament (only multiple entries that aren't the player's best game get 0s)
                     if (placeStanding > 0)
                     {
@@ -1297,6 +1309,7 @@ namespace NineTapTour.Forms
                     {
                         playerHistoryBonusAdjustmentList.Add(ph);
                     }
+                    #endregion
 
                     ph.HandiCap = FinalizeTableList[i].Handicap;
                     currGame.InputtedAvg = ph.AVG;
@@ -1327,6 +1340,7 @@ namespace NineTapTour.Forms
                     currPlayerHistory.Bonus = memberNumBonusPinMap[currPlayerHistory.MemberNumber];
                 }
                 PlayerHistoryDB.AddOrUpdatePlayerHistoryList(playerHistoryBonusAdjustmentList);
+                #endregion
 
                 Close();
             }
@@ -1337,6 +1351,15 @@ namespace NineTapTour.Forms
             Cursor.Current = Cursors.Default;
         }
 
+        /// <summary>
+        /// Adjusts bonus pins for Member and PlayerHistory parameters if Game is not in PlayerHistory
+        /// </summary>
+        /// <param name="totalEntriesQty">Total entries for the tournament</param>
+        /// <param name="compEntriesQty">Total comp entries for the tournament</param>
+        /// <param name="ph">PlayerHistory to adjust bonus pins</param>
+        /// <param name="currGame">Current Game of tournament</param>
+        /// <param name="currMember">Current Member to adjust bonus pins of</param>
+        /// <param name="placeStanding">Placestanding in tournament for current member's entry</param>
         private void AdjustBonusPins(int totalEntriesQty, int compEntriesQty, PlayerHistory ph, Game currGame, Member currMember, byte placeStanding)
         {
             // Adjust bonus pins only if game has not been finalized previously
@@ -1388,51 +1411,9 @@ namespace NineTapTour.Forms
             }
         }
 
-        public void getLeagueSum(FinalizeTemp temp, List<FinalizeTemp> finalizeTableList)
-        {
-            //RUNNING LEAGUE AVG 
-            int SumFromGamesNotAddedYet = 0;
-
-            //checks to see if they bowled an any squads before the current selected squad, if your on this line then they bowled at leats once
-            temp.memberNumber = MemberDb.GetMemberNumberbyID(temp.MemberId);
-            List<PlayerHistory> p = PlayerHistoryDB.getMemberPlayerHistory(temp.memberNumber, RegionID);
-            int howmanyTimesdidheybowlbeforethissquad = 1;
-
-            for (int f = 0; f < finalizeTableList.Count; f++)
-            {
-                if (temp.MemberId == finalizeTableList[f].MemberId && finalizeTableList[f].Squad < temp.Squad)
-                {
-                    howmanyTimesdidheybowlbeforethissquad++;
-                }
-            }
-
-            if (temp.Squad > 1)
-            {
-                for (int i = 0; i < finalizeTableList.Count; i++)
-                {
-                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < temp.Squad)
-                    {
-                        SumFromGamesNotAddedYet += finalizeTableList[i].GameAvg;
-                    }
-                }
-            }
-
-            temp.LeagueAverage = Convert.ToInt32(LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg);
-
-            // // after grabbing the sum, it then must divide by 30
-            if (p.Count >= 30)
-            {
-                temp.LeagueAverage = temp.LeagueAverage / 30;
-            }
-            else if (p.Count > 0) // divides by as much player history as possible + how ever many times were bowled in current tournament
-            {
-                temp.LeagueAverage = temp.LeagueAverage / (p.Count + howmanyTimesdidheybowlbeforethissquad);
-            }
-            else // if they have no bowling history then divide the sum by the number currently bowled in the tournament
-            {
-                temp.LeagueAverage = temp.LeagueAverage / howmanyTimesdidheybowlbeforethissquad;
-            }
-        }
+        // Removed unused getLeagueSum method which was meant to calculate the League Average on 3/18/19. League Average is
+        // already calculated in the method CreateDataGridView
+        // The methods can be viewed in this repo's GitHub history prior to this date if anyone wants to see the details.
 
         /// <summary>
         /// This method ensures that after the DataGridView is sorted by the user,
@@ -1444,7 +1425,5 @@ namespace NineTapTour.Forms
         {
             InitializeGameCellFormatting();
         }
-
-
     }
 }
