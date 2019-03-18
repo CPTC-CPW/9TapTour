@@ -185,7 +185,7 @@ namespace NineTapTour.Forms
 
         private void createDataGridView(Tournament tourn)
         {
-            List<FinalizeTemp> FinalizeTableList = GetAllInitialParticipantGameList(currTournament);
+            List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetAllInitialParticipantGameList(currTournament);
 
             //Below is a multithreaded version of a foreach loop to spread processing across all available cores
             Parallel.ForEach(FinalizeTableList, item =>
@@ -360,103 +360,6 @@ namespace NineTapTour.Forms
                 dt.Rows.Add(newRow);
             }
             return dt;
-        }
-  
-        /// <summary>
-        /// THis method Gets a list of all participant objects for the tournament passed into method.
-        /// </summary>
-        /// <param name="tourn"> represent the tournament you want list of particpants from</param>
-        /// <returns>List of Participants for specific tournament</returns>
-        public List<FinalizeTemp> GetAllInitialParticipantGameList(Tournament tourn)
-        {
-            var db = new NineTapDb();
-            List<FinalizeTemp> ParticipantList = new List<FinalizeTemp>();
-            var temp = (from p in db.Participants
-                        join m in db.Members on p.Member.Id equals m.Id
-                        join g in db.Games on p.Game.Id equals g.Id
-                        join t in db.Tournaments on p.Tournament.Id equals t.Id
-                        where tourn.Id == p.Tournament.Id
-                        orderby m.FirstName descending
-                        select new
-                        {
-                            g.Id,
-                            m.FirstName,
-                            m.LastName,
-                            MemberId = m.Id,
-                            p.Squad,
-                            g.Game1,
-                            g.Game2,
-                            g.Game3,
-                            g.Game4,
-                            g.UseGame1,
-                            g.UseGame2,
-                            g.UseGame3,
-                            g.UseGame4,
-                            g.Notes,
-                            g.Handicap,
-                            g.Bonus,
-                            m.Number,
-                            t.TourneyRegion
-                        }).ToList();
-            foreach (var item in temp)
-            {
-                int gplayed = 0;
-                FinalizeTemp NewParticipant = new FinalizeTemp();
-                NewParticipant.GameId = item.Id;
-                NewParticipant.MemberId = item.MemberId;
-                NewParticipant.FirstName = item.FirstName;
-                NewParticipant.LastName = item.LastName;
-                NewParticipant.Game1 = item.Game1;
-                NewParticipant.Game2 = item.Game2;
-                NewParticipant.Game3 = item.Game3;
-                NewParticipant.Game4 = item.Game4;
-
-                NewParticipant.UseGame1 = item.UseGame1 ?? item.Game1.HasValue;
-                NewParticipant.UseGame2 = item.UseGame2 ?? item.Game2.HasValue;
-                NewParticipant.UseGame3 = item.UseGame3 ?? item.Game3.HasValue;
-                NewParticipant.UseGame4 = item.UseGame4 ?? item.Game4.HasValue;
-
-                if (item.Game1.HasValue)
-                {
-                    gplayed++;
-                }
-
-                if (item.Game2.HasValue)
-                {
-                    gplayed++;
-                }
-
-                if (item.Game3.HasValue)
-                {
-                    gplayed++;
-                }
-
-                if (item.Game4.HasValue)
-                {
-                    gplayed++;
-                }
-
-                NewParticipant.Notes = item.Notes;
-                NewParticipant.ScratchTotal = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0);
-                NewParticipant.Squad = item.Squad;
-                NewParticipant.GameAvg = ((item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0)) / gplayed;
-                NewParticipant.Handicap = item.Handicap ?? 0;
-                NewParticipant.Bonus = item.Bonus ?? 0;
-
-                int hTotal = (item.Game1 != null) ? ((item.Game1 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
-                hTotal += (item.Game2 != null) ? ((item.Game2 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
-                hTotal += (item.Game3 != null) ? ((item.Game3 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
-                hTotal += (item.Game4 != null) ? ((item.Game4 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
-
-                NewParticipant.HandicapTotal = hTotal;
-
-                NewParticipant.memberNumber = item.Number;
-                NewParticipant.FinalizeRegionID = item.TourneyRegion;
-
-                ParticipantList.Add(NewParticipant);
-            }
-
-            return ParticipantList;
         }
 
         //makes a list from the finalizetemp table to be used in dataview source
