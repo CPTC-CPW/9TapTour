@@ -208,7 +208,7 @@ namespace NineTapTour.Forms
             dataGridView2.Columns["Place"].Width = 45;
             dataGridView2.Columns["Money Won"].Width = 40;
             dataGridView2.Columns["Notes"].Width = 225;
-            dataGridView2.Columns["GameID"].Width = 1;
+            dataGridView2.Columns["GameID"].Width = 0;
             dataGridView2.Columns[GAME_ID_COLUMN].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
         }
 
@@ -878,12 +878,12 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Bonus").ReadOnly = true;
             dtGames.Columns.Add("Pro Pot").ReadOnly = true;
             dtGames.Columns.Add("Place").ReadOnly = true;
-            dtGames.Columns.Add("Earnings", typeof(Decimal));
+            dtGames.Columns.Add("Money Won", typeof(Decimal));
             dtGames.Columns.Add("Notes");
             dtGames.Columns.Add("GameID").ReadOnly = true;
 
             // Money Won label string is referenced multiple locations
-            string moneyWon = "Earnings";
+            string moneyWon = "Money Won";
             decimal totalMoneyEarned = 0;
 
             foreach (var item in temporary)
@@ -912,7 +912,7 @@ namespace NineTapTour.Forms
                     newRow["Game4"] = item.Game4;
 
                 newRow["Scratch Total"] = item.TotalScore;
-                newRow["Game w/HDCP"] = item.TotalScore + ((item.HandiCap + item.Bonus) * item.GamesPlayed);
+                newRow["Total w/HDCP"] = item.TotalScore + ((item.HandiCap + item.Bonus) * item.GamesPlayed);
                 newRow["Entry AVG"] = item.AverageForGame;
                 newRow["30 AVG"] = item.trueAVG;
 
@@ -967,7 +967,7 @@ namespace NineTapTour.Forms
                     newRow["Game4"] = item.Game4;
 
                 newRow["Scratch Total"] = item.TotalScore;
-                newRow["Game w/HDCP"] = item.TotalScore + ((item.HandiCap + item.Bonus) * item.GamesPlayed);
+                newRow["Total w/HDCP"] = item.TotalScore + ((item.HandiCap + item.Bonus) * item.GamesPlayed);
                 newRow["Entry AVG"] = Convert.ToDouble((item.Game1 + item.Game2 + item.Game3 + item.Game4) / item.GamesPlayed);
                 newRow["30 AVG"] = item.trueAVG;
 
