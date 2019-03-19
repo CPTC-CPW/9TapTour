@@ -183,6 +183,35 @@ namespace NineTapTour.Forms
             dataGridView1.Columns[GAME_ID_COLUMN].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; 
         }
 
+        public void sizeFinalizeLowerGridView()
+        {
+            int columnCount = 17;
+            for (int colWidth = 0; colWidth < columnCount; colWidth++)
+            {
+                dataGridView2.Columns[colWidth].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            }
+
+            dataGridView2.Columns["Games"].Width = 50;
+            dataGridView2.Columns["Date"].Width = 75;
+            dataGridView2.Columns["Game1"].Width = 50;
+            dataGridView2.Columns["Game2"].Width = 50;
+            dataGridView2.Columns["Game3"].Width = 50;
+            dataGridView2.Columns["Game4"].Width = 50;
+            dataGridView2.Columns["Scratch Total"].Width = 50;
+            dataGridView2.Columns["Total w/HDCP"].Width = 50;
+            dataGridView2.Columns["Entry AVG"].Width = 50;
+            dataGridView2.Columns["30 AVG"].Width = 50;
+            dataGridView2.Columns["Adjusted AVG"].Width = 50;
+            dataGridView2.Columns["Handicap"].Width = 60;
+            dataGridView2.Columns["Bonus"].Width = 50;
+            dataGridView2.Columns["Pro Pot"].Width = 45;
+            dataGridView2.Columns["Place"].Width = 45;
+            dataGridView2.Columns["Money Won"].Width = 40;
+            dataGridView2.Columns["Notes"].Width = 225;
+            dataGridView2.Columns["GameID"].Width = 1;
+            dataGridView2.Columns[GAME_ID_COLUMN].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+        }
+
         private void createDataGridView(Tournament tourn)
         {
             List<FinalizeTemp> FinalizeTableList = GetAllInitialParticipantGameList(currTournament);
@@ -836,29 +865,26 @@ namespace NineTapTour.Forms
 
             dtGames.Columns.Add("Games").ReadOnly = true;
             dtGames.Columns.Add("Date", typeof(DateTime));
-      
             dtGames.Columns.Add("Game1");
-
             dtGames.Columns.Add("Game2");
             dtGames.Columns.Add("Game3");
             dtGames.Columns.Add("Game4");
             dtGames.Columns.Add("Scratch Total", typeof(Int32)).ReadOnly = true;
-            dtGames.Columns.Add("Game Total w/HDCP", typeof(Int32)).ReadOnly = true;
+            dtGames.Columns.Add("Total w/HDCP", typeof(Int32)).ReadOnly = true;
             dtGames.Columns.Add("Entry AVG", typeof(Int32)).ReadOnly = true;
-            dtGames.Columns.Add("30 Entry AVG", typeof(Int32)).ReadOnly = true;
+            dtGames.Columns.Add("30 AVG", typeof(Int32)).ReadOnly = true;
             dtGames.Columns.Add("Adjusted AVG");
             dtGames.Columns.Add("Handicap").ReadOnly = true;
             dtGames.Columns.Add("Bonus").ReadOnly = true;
             dtGames.Columns.Add("Pro Pot").ReadOnly = true;
             dtGames.Columns.Add("Place").ReadOnly = true;
-            dtGames.Columns.Add("Money Won", typeof(Decimal));
+            dtGames.Columns.Add("Earnings", typeof(Decimal));
             dtGames.Columns.Add("Notes");
-           // dtGames.Columns.Add("GameID").ReadOnly = true;
-            
-            // Money Won label string is referenced multiple locations
-            string moneyWon = "Money Won";
-            decimal totalMoneyEarned = 0;
+            dtGames.Columns.Add("GameID").ReadOnly = true;
 
+            // Money Won label string is referenced multiple locations
+            string moneyWon = "Earnings";
+            decimal totalMoneyEarned = 0;
 
             foreach (var item in temporary)
             {
@@ -886,9 +912,9 @@ namespace NineTapTour.Forms
                     newRow["Game4"] = item.Game4;
 
                 newRow["Scratch Total"] = item.TotalScore;
-                newRow["Game Total w/HDCP"] = item.TotalScore + ((item.HandiCap + item.Bonus) * item.GamesPlayed);
+                newRow["Game w/HDCP"] = item.TotalScore + ((item.HandiCap + item.Bonus) * item.GamesPlayed);
                 newRow["Entry AVG"] = item.AverageForGame;
-                newRow["30 Entry AVG"] = item.trueAVG;
+                newRow["30 AVG"] = item.trueAVG;
 
                 if (item.AVG == 0)
                     newRow["Adjusted AVG"] = null;
@@ -901,7 +927,7 @@ namespace NineTapTour.Forms
                 newRow[moneyWon] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
-                //newRow["GameID"] = item.GameID;
+                newRow["GameID"] = item.GameID;
 
                 dtGames.Rows.Add(newRow);
 
@@ -941,9 +967,9 @@ namespace NineTapTour.Forms
                     newRow["Game4"] = item.Game4;
 
                 newRow["Scratch Total"] = item.TotalScore;
-                newRow["Game Total w/HDCP"] = item.TotalScore + ((item.HandiCap + item.Bonus) * item.GamesPlayed);
+                newRow["Game w/HDCP"] = item.TotalScore + ((item.HandiCap + item.Bonus) * item.GamesPlayed);
                 newRow["Entry AVG"] = Convert.ToDouble((item.Game1 + item.Game2 + item.Game3 + item.Game4) / item.GamesPlayed);
-                newRow["30 Entry AVG"] = item.trueAVG;
+                newRow["30 AVG"] = item.trueAVG;
 
                 if (item.AVG == 0)
                     newRow["Adjusted AVG"] = null;
@@ -956,14 +982,14 @@ namespace NineTapTour.Forms
                 newRow[moneyWonWithTotal] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
-               // newRow["GameID"] = item.GameID;
+                newRow["GameID"] = item.GameID;
 
                 dtGames.Rows.Add(newRow);
             }
 
             dataGridView2.DataSource = dtGames;
 
-
+            sizeFinalizeLowerGridView();
             for (int i = 0; i < dataGridView2.RowCount; i++)
             {
                 for (int t = 0; t < temporary.Count; t++)
@@ -982,7 +1008,7 @@ namespace NineTapTour.Forms
                     dataGridView2.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
                 }
             }
-            dataGridView2.Columns["Game1"].Width = 40;
+            
         }
 
         /// <summary>
