@@ -206,7 +206,7 @@ namespace NineTapTour.Forms
             dataGridView2.Columns["Bonus"].Width = 50;
             dataGridView2.Columns["Pro Pot"].Width = 45;
             dataGridView2.Columns["Place"].Width = 45;
-            dataGridView2.Columns["Money Won"].Width = 40;
+            dataGridView2.Columns["Earnings"].Width = 40;
             dataGridView2.Columns["Notes"].Width = 225;
             dataGridView2.Columns["GameID"].Width = 0;
             dataGridView2.Columns[GAME_ID_COLUMN].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -878,12 +878,12 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Bonus").ReadOnly = true;
             dtGames.Columns.Add("Pro Pot").ReadOnly = true;
             dtGames.Columns.Add("Place").ReadOnly = true;
-            dtGames.Columns.Add("Money Won", typeof(Decimal));
+            dtGames.Columns.Add("Earnings", typeof(Decimal));
             dtGames.Columns.Add("Notes");
             dtGames.Columns.Add("GameID").ReadOnly = true;
 
             // Money Won label string is referenced multiple locations
-            string moneyWon = "Money Won";
+            string moneyWon = "Earnings";
             decimal totalMoneyEarned = 0;
 
             foreach (var item in temporary)
