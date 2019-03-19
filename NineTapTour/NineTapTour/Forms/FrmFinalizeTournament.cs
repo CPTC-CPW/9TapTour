@@ -185,12 +185,13 @@ namespace NineTapTour.Forms
 
         public void sizeFinalizeLowerGridView()
         {
-            int columnCount = 17;
-            for (int colWidth = 0; colWidth < columnCount; colWidth++)
-            {
-                dataGridView2.Columns[colWidth].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            }
-
+            //int columnCount = 17;
+            //for (int colWidth = 0; colWidth < columnCount; colWidth++)
+            //{
+            //    dataGridView2.Columns[colWidth].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            //}
+            dataGridView2.Columns["Notes"].Width = 325;
+           // dataGridView2.Columns["GameID"].Width = 0;
             dataGridView2.Columns["Games"].Width = 50;
             dataGridView2.Columns["Date"].Width = 75;
             dataGridView2.Columns["Game1"].Width = 50;
@@ -206,10 +207,9 @@ namespace NineTapTour.Forms
             dataGridView2.Columns["Bonus"].Width = 50;
             dataGridView2.Columns["Pro Pot"].Width = 45;
             dataGridView2.Columns["Place"].Width = 45;
-            dataGridView2.Columns["Earnings"].Width = 40;
-            dataGridView2.Columns["Notes"].Width = 225;
-            dataGridView2.Columns["GameID"].Width = 0;
-            dataGridView2.Columns[GAME_ID_COLUMN].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView2.Columns["Earnings"].Width = 50;
+
+           // dataGridView2.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
         }
 
         private void createDataGridView(Tournament tourn)
@@ -880,7 +880,7 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Place").ReadOnly = true;
             dtGames.Columns.Add("Earnings", typeof(Decimal));
             dtGames.Columns.Add("Notes");
-            dtGames.Columns.Add("GameID").ReadOnly = true;
+           // dtGames.Columns.Add("GameID").ReadOnly = true;
 
             // Money Won label string is referenced multiple locations
             string moneyWon = "Earnings";
@@ -927,7 +927,7 @@ namespace NineTapTour.Forms
                 newRow[moneyWon] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
-                newRow["GameID"] = item.GameID;
+               // newRow["GameID"] = item.GameID;
 
                 dtGames.Rows.Add(newRow);
 
@@ -982,7 +982,7 @@ namespace NineTapTour.Forms
                 newRow[moneyWonWithTotal] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
-                newRow["GameID"] = item.GameID;
+               // newRow["GameID"] = item.GameID;
 
                 dtGames.Rows.Add(newRow);
             }
