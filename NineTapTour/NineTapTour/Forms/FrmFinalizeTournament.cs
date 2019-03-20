@@ -992,6 +992,7 @@ namespace NineTapTour.Forms
             dataGridView2.DataSource = dtGames;
             dataGridView2.Columns["GameID"].Visible = false;
             sizeFinalizeLowerGridView(moneyWonWithTotal);
+            int thirtyAve = 30;     // how many should be highlighted for 30 game average
             for (int i = 0; i < dataGridView2.RowCount; i++)
             {
                 for (int t = 0; t < temporary.Count; t++)
@@ -1005,7 +1006,7 @@ namespace NineTapTour.Forms
                     }
                 }
 
-                for (int j = 0; j < dataGridView2.RowCount; j++)
+                for (int j = 0; j < thirtyAve; j++)
                 {
                     dataGridView2.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
                 }
