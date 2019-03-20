@@ -183,6 +183,10 @@ namespace NineTapTour.Forms
             dataGridView1.Columns[GAME_ID_COLUMN].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; 
         }
 
+        /// <summary>
+        /// This will resize the lower gridview as per the clients request.
+        /// </summary>
+        /// <param name="moneyWonWithTotal">send this in so it knows the proper column name to resize</param>
         public void sizeFinalizeLowerGridView(string moneyWonWithTotal)
         {
             int columnCount = 18;
@@ -191,7 +195,6 @@ namespace NineTapTour.Forms
                 dataGridView2.Columns[colWidth].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             }
             dataGridView2.Columns["Notes"].Width = 325;
-     
             dataGridView2.Columns["Games"].Width = 50;
             dataGridView2.Columns["Date"].Width = 75;
             dataGridView2.Columns["Game1"].Width = 50;
@@ -208,9 +211,7 @@ namespace NineTapTour.Forms
             dataGridView2.Columns["Pro Pot"].Width = 45;
             dataGridView2.Columns["Place"].Width = 45;
             dataGridView2.Columns[moneyWonWithTotal].Width = 50;
-
             dataGridView2.Columns["GameID"].Width = 25;
-            //  dataGridView1.Columns["GameID"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
         }
 
         private void createDataGridView(Tournament tourn)
@@ -329,35 +330,34 @@ namespace NineTapTour.Forms
         {
             var db = new NineTapDb();
             DataTable dt = new DataTable();
-            dt.Columns.Add(STANDING_COLUMN_NAME, typeof(int)); //0
-            dt.Columns.Add(MEMBER_NUMBER_COLUMN_NAME, typeof(int)).ReadOnly = true; //1
-            dt.Columns.Add(NAME_COLUMN_NAME, typeof(string)).ReadOnly = true; //2
-            dt.Columns.Add(GAME_1_COLUMN_NAME, typeof(string)).ReadOnly = true; //3
-            dt.Columns.Add(GAME_1_VALID_COLUMN_NAME, typeof(bool)); //4
-            dt.Columns.Add(GAME_2_COLUMN_NAME, typeof(string)).ReadOnly = true; //5
-            dt.Columns.Add(GAME_2_VALID_COLUMN_NAME, typeof(bool)); //6
-            dt.Columns.Add(GAME_3_COLUMN_NAME, typeof(string)).ReadOnly = true; //7
-            dt.Columns.Add(GAME_3_VALID_COLUMN_NAME, typeof(bool));//8
-            dt.Columns.Add(GAME_4_COLUMN_NAME, typeof(string)).ReadOnly = true;//9
-            dt.Columns.Add(GAME_4_VALID_COLUMN_NAME, typeof(bool));//10
-            dt.Columns.Add(SCRATCH_TOTAL_COLUMN_NAME, typeof(int));//11
-            dt.Columns.Add(HANDICAP_TOTAL_COLUMN_NAME, typeof(int));//12
-            dt.Columns.Add(ENTRY_AVERAGE_COLUMN_NAME, typeof(int));//13
-            dt.Columns.Add(THIRTY_ENTRY_AVERAGE_COLUMN_NAME, typeof(int));     //14  
-            dt.Columns.Add(ADJUSTED_AVG_COLUMN_NAME, typeof(int)); //15
-            dt.Columns.Add(DIRECTOR_CHECK_COLUMN_NAME, typeof(bool));//16
-            dt.Columns.Add(SQUAD_COLUMN_NAME, typeof(int)).ReadOnly = true;//16
-            dt.Columns.Add(HANDICAP_COLUMN_NAME, typeof(int)).ReadOnly = true;//17
-            dt.Columns.Add(BONUS_COLUMN_NAME, typeof(int)).ReadOnly = true;//18
-            dt.Columns.Add(PRO_POT_COLUMN_NAME, typeof(int));//19
-            dt.Columns.Add(NOTES_COLUMN_NAME, typeof(string));//20
+            dt.Columns.Add(STANDING_COLUMN_NAME, typeof(int));                          // 0
+            dt.Columns.Add(MEMBER_NUMBER_COLUMN_NAME, typeof(int)).ReadOnly = true;     // 1
+            dt.Columns.Add(NAME_COLUMN_NAME, typeof(string)).ReadOnly = true;           // 2
+            dt.Columns.Add(GAME_1_COLUMN_NAME, typeof(string)).ReadOnly = true;         // 3
+            dt.Columns.Add(GAME_1_VALID_COLUMN_NAME, typeof(bool));                     // 4
+            dt.Columns.Add(GAME_2_COLUMN_NAME, typeof(string)).ReadOnly = true;         // 5
+            dt.Columns.Add(GAME_2_VALID_COLUMN_NAME, typeof(bool));                     // 6
+            dt.Columns.Add(GAME_3_COLUMN_NAME, typeof(string)).ReadOnly = true;         // 7
+            dt.Columns.Add(GAME_3_VALID_COLUMN_NAME, typeof(bool));                     // 8
+            dt.Columns.Add(GAME_4_COLUMN_NAME, typeof(string)).ReadOnly = true;         // 9
+            dt.Columns.Add(GAME_4_VALID_COLUMN_NAME, typeof(bool));                     // 10
+            dt.Columns.Add(SCRATCH_TOTAL_COLUMN_NAME, typeof(int));                     // 11
+            dt.Columns.Add(HANDICAP_TOTAL_COLUMN_NAME, typeof(int));                    // 12
+            dt.Columns.Add(ENTRY_AVERAGE_COLUMN_NAME, typeof(int));                     // 13
+            dt.Columns.Add(THIRTY_ENTRY_AVERAGE_COLUMN_NAME, typeof(int));              // 14  
+            dt.Columns.Add(ADJUSTED_AVG_COLUMN_NAME, typeof(int));                      // 15
+            dt.Columns.Add(DIRECTOR_CHECK_COLUMN_NAME, typeof(bool));                   // 16
+            dt.Columns.Add(SQUAD_COLUMN_NAME, typeof(int)).ReadOnly = true;             // 16
+            dt.Columns.Add(HANDICAP_COLUMN_NAME, typeof(int)).ReadOnly = true;          // 17
+            dt.Columns.Add(BONUS_COLUMN_NAME, typeof(int)).ReadOnly = true;             // 18
+            dt.Columns.Add(PRO_POT_COLUMN_NAME, typeof(int));                           // 19
+            dt.Columns.Add(NOTES_COLUMN_NAME, typeof(string));                          // 20
+            dt.Columns.Add(GAME_ID_COLUMN_NAME, typeof(int)).ReadOnly = true;           // 21
 
-            dt.Columns.Add(GAME_ID_COLUMN_NAME, typeof(int)).ReadOnly = true; //21
-
-            //whatever list of participants you pass into method will be populated into grid
+            // whatever list of participants you pass into method will be populated into grid
             List<FinalizeTemp> temp = participantsList.Keys.ToList();
 
-            //loops thru each person's info in tournament and populates the dataview with data from DB.
+            // loops thru each person's info in tournament and populates the dataview with data from DB.
             foreach (var item in temp)
             {
                 DataRow newRow = dt.NewRow();
@@ -489,7 +489,7 @@ namespace NineTapTour.Forms
             return ParticipantList;
         }
 
-        //makes a list from the finalizetemp table to be used in dataview source
+        // makes a list from the finalizetemp table to be used in dataview source
         public List<FinalizeTemp> GetListFromTable(Tournament tourn)
         {
             var db = new NineTapDb();
@@ -635,7 +635,7 @@ namespace NineTapTour.Forms
             this.dataGridView1.CellValueChanged += this.dataGridView1_OnCellValueChanged;
         }
 
-        //updates computed average in column 10 when check box is changed.
+        // updates computed average in column 10 when check box is changed.
         private void UpdateAvg(int row)
         {
             this.dataGridView1.CellValueChanged -= this.dataGridView1_OnCellValueChanged;
@@ -691,7 +691,7 @@ namespace NineTapTour.Forms
             }
         }
 
-        //calculates league average for member based off last 30 games or total games played if less than 30.
+        // calculates league average for member based off last 30 games or total games played if less than 30.
         public double LeagueAverage(int memID)
         {
             double sum = 0;
@@ -863,7 +863,6 @@ namespace NineTapTour.Forms
         private void RefreshMemberView(List<PlayerHistory> temporary)
         {
             DataTable dtGames = new DataTable();
-
             dtGames.Columns.Add("Games").ReadOnly = true;
             dtGames.Columns.Add("Date", typeof(DateTime));
             dtGames.Columns.Add("Game1");
@@ -882,7 +881,6 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Earnings", typeof(Decimal));
             dtGames.Columns.Add("Notes");
             dtGames.Columns.Add("GameID").ReadOnly = true;
-
  
             // Money Won label string is referenced multiple locations
             string moneyWon = "Earnings";
@@ -932,7 +930,6 @@ namespace NineTapTour.Forms
                 newRow["GameID"] = item.GameID;
 
                 dtGames.Rows.Add(newRow);
-
                 // To know total to add to the Money Won heading label
                 totalMoneyEarned += item.MoneyWon;
             }
@@ -944,7 +941,6 @@ namespace NineTapTour.Forms
 
             foreach (var item in currentHistory)
             {
-
                 DataRow newRow = dtGames.NewRow();
                 newRow["Games"] = item.GamesPlayed;
                 newRow["Date"] = item.TournamentDate.ToShortDateString();
@@ -990,8 +986,8 @@ namespace NineTapTour.Forms
             }
 
             dataGridView2.DataSource = dtGames;
-            dataGridView2.Columns["GameID"].Visible = false;
-            sizeFinalizeLowerGridView(moneyWonWithTotal);
+            dataGridView2.Columns["GameID"].Visible = false; // Hides the gameID column
+            sizeFinalizeLowerGridView(moneyWonWithTotal);   // resizes columns in the grid
             int thirtyAve = 30;     // how many should be highlighted for 30 game average
             for (int i = 0; i < dataGridView2.RowCount; i++)
             {
@@ -1112,7 +1108,8 @@ namespace NineTapTour.Forms
                 }
                 catch
                 {
-                    //catches the instance where cells technically do not exist. will not refresh if they dont exist yet.
+                   // makes a null reference exception !!!
+                   //catches the instance where cells technically do not exist. will not refresh if they dont exist yet.
                 }
             }
         }
@@ -1120,7 +1117,6 @@ namespace NineTapTour.Forms
         private void btnFinalize_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-            
             
             bool isDirectorCheckFinished = true; //int used to make sure all the director check boxes have been filled out
 
