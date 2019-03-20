@@ -179,7 +179,8 @@ namespace NineTapTour.Forms
             TournamentEntriesGrid.Columns[HANDICAP_COLUMN].Width = 35; 
             TournamentEntriesGrid.Columns[BONUS_COLUMN].Width = 35;
             TournamentEntriesGrid.Columns[PRO_POT_COLUMN].Width = 40;
-            TournamentEntriesGrid.Columns[NOTES_COLUMN_].Width = 225;
+            TournamentEntriesGrid.Columns[NOTES_COLUMN_].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            
             TournamentEntriesGrid.Columns[GAME_ID_COLUMN].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; 
         }
 
@@ -194,7 +195,7 @@ namespace NineTapTour.Forms
             {
                 playerTournamentHistoryGrid.Columns[colWidth].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             }
-            playerTournamentHistoryGrid.Columns["Notes"].Width = 325;
+            playerTournamentHistoryGrid.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             playerTournamentHistoryGrid.Columns["Games"].Width = 50;
             playerTournamentHistoryGrid.Columns["Date"].Width = 75;
             playerTournamentHistoryGrid.Columns["Game1"].Width = 50;
