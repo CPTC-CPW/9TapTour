@@ -40,6 +40,8 @@
             this.lblMemberNumber = new System.Windows.Forms.Label();
             this.lblName = new System.Windows.Forms.Label();
             this.lblStartAvg = new System.Windows.Forms.Label();
+            this.lblMemNum = new System.Windows.Forms.Label();
+            this.lblAveNum = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.TournamentEntriesGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.playerTournamentHistoryGrid)).BeginInit();
             this.SuspendLayout();
@@ -130,11 +132,11 @@
             // 
             this.lblMemberNumber.AutoSize = true;
             this.lblMemberNumber.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMemberNumber.Location = new System.Drawing.Point(155, 317);
+            this.lblMemberNumber.Location = new System.Drawing.Point(215, 317);
             this.lblMemberNumber.Name = "lblMemberNumber";
-            this.lblMemberNumber.Size = new System.Drawing.Size(134, 36);
+            this.lblMemberNumber.Size = new System.Drawing.Size(99, 36);
             this.lblMemberNumber.TabIndex = 6;
-            this.lblMemberNumber.Text = "Member#";
+            this.lblMemberNumber.Text = "______";
             // 
             // lblName
             // 
@@ -156,6 +158,26 @@
             this.lblStartAvg.TabIndex = 29;
             this.lblStartAvg.Text = "0";
             // 
+            // lblMemNum
+            // 
+            this.lblMemNum.AutoSize = true;
+            this.lblMemNum.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMemNum.Location = new System.Drawing.Point(123, 317);
+            this.lblMemNum.Name = "lblMemNum";
+            this.lblMemNum.Size = new System.Drawing.Size(93, 36);
+            this.lblMemNum.TabIndex = 30;
+            this.lblMemNum.Text = "Mem#";
+            // 
+            // lblAveNum
+            // 
+            this.lblAveNum.AutoSize = true;
+            this.lblAveNum.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAveNum.Location = new System.Drawing.Point(1079, 318);
+            this.lblAveNum.Name = "lblAveNum";
+            this.lblAveNum.Size = new System.Drawing.Size(67, 36);
+            this.lblAveNum.TabIndex = 31;
+            this.lblAveNum.Text = "AVG";
+            // 
             // FrmFinalizeTournament
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -163,6 +185,8 @@
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1264, 716);
+            this.Controls.Add(this.lblAveNum);
+            this.Controls.Add(this.lblMemNum);
             this.Controls.Add(this.lblStartAvg);
             this.Controls.Add(this.lblName);
             this.Controls.Add(this.lblMemberNumber);
@@ -188,5 +212,7 @@
         private System.Windows.Forms.Label lblMemberNumber;
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.Label lblStartAvg;
+        private System.Windows.Forms.Label lblMemNum;
+        private System.Windows.Forms.Label lblAveNum;
     }
 }
