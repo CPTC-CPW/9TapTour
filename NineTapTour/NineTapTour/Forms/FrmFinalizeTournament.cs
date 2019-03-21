@@ -886,13 +886,14 @@ namespace NineTapTour.Forms
             // Money Won label string is referenced multiple locations
             string moneyWon = "Earnings";
             decimal totalMoneyEarned = 0;
-            // removed large chunk of code here 3/21/19 that was causing extra data in lower player history grid if needed later reference github
+            // removed large chunk of code here 3/21/19 that was causing extra data in lower player history grid if needed later reference github 
             string moneyWonWithTotal = $"{moneyWon} ({totalMoneyEarned + PlayerHistoryDB.GetTotalMoneyWon(temporary[0].MemberNumber, RegionID)})";
             dtGames.Columns[moneyWon].ColumnName = moneyWonWithTotal;
 
             List<PlayerHistory> currentHistory = PlayerHistoryDB.getMemberPlayerHistoryCount(temporary[0].MemberNumber, RegionID);
 
-            foreach (var item in currentHistory)
+            var currentPlayerHistory = currentHistory.OrderByDescending(p => p.TournamentDate).ThenByDescending(s => s.MoneyWon);
+            foreach (var item in currentPlayerHistory)
             {
                 DataRow newRow = dtGames.NewRow();
                 newRow["Games"] = item.GamesPlayed;
