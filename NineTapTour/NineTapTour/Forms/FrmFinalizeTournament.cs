@@ -886,7 +886,55 @@ namespace NineTapTour.Forms
             // Money Won label string is referenced multiple locations
             string moneyWon = "Earnings";
             decimal totalMoneyEarned = 0;
-            // removed large chunk of code here 3/21/19 that was causing extra data in lower player history grid if needed later reference github 
+            
+            foreach (var item in temporary)
+            {
+                DataRow newRow = dtGames.NewRow();
+                newRow["Games"] = item.GamesPlayed;
+                newRow["Date"] = item.TournamentDate.ToShortDateString();
+                if (item.Game1 == 0)
+                    newRow["Game1"] = null;
+                else
+                    newRow["Game1"] = item.Game1;
+
+                if (item.Game2 == 0)
+                    newRow["Game2"] = null;
+                else
+
+                    newRow["Game2"] = item.Game2;
+                if (item.Game3 == 0)
+                    newRow["Game3"] = null;
+                else
+
+                    newRow["Game3"] = item.Game3;
+                if (item.Game4 == 0)
+                    newRow["Game4"] = null;
+                else
+                    newRow["Game4"] = item.Game4;
+
+                newRow["Scratch Total"] = item.TotalScore;
+                newRow["Total w/HDCP"] = item.TotalScore + ((item.HandiCap + item.Bonus) * item.GamesPlayed);
+                newRow["Entry AVG"] = item.AverageForGame;
+                newRow["30 AVG"] = item.trueAVG;
+
+                if (item.AVG == 0)
+                    newRow["Adjusted AVG"] = null;
+                else
+                    newRow["Adjusted AVG"] = item.AVG;
+
+                newRow["Handicap"] = item.HandiCap;
+                newRow["Bonus"] = item.Bonus;
+                newRow["Pro Pot"] = item.ProPot;
+                newRow[moneyWon] = item.MoneyWon;
+                newRow["Place"] = item.PPHG;
+                newRow["Notes"] = item.Notes;
+                newRow["GameID"] = item.GameID;
+
+                dtGames.Rows.Add(newRow);
+                // To know total to add to the Money Won heading label
+                totalMoneyEarned += item.MoneyWon;
+            }
+
             string moneyWonWithTotal = $"{moneyWon} ({totalMoneyEarned + PlayerHistoryDB.GetTotalMoneyWon(temporary[0].MemberNumber, RegionID)})";
             dtGames.Columns[moneyWon].ColumnName = moneyWonWithTotal;
 
