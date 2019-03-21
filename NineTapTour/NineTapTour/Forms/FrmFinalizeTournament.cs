@@ -1075,7 +1075,7 @@ namespace NineTapTour.Forms
             bool isDirectorCheckFinished = true; //int used to make sure all the director check boxes have been filled out
 
             List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
-            int gamesPlayed = 0;
+            //int gamesPlayed = 0;
 
             //checks to make sure all the director had adjusted avgs and checked the box to make sure they did so.
             for (int i = 0; i < FinalizeTableList.Count; i++)
@@ -1116,7 +1116,7 @@ namespace NineTapTour.Forms
                 //Multithreaded version of a for loop, spreads processing across all available cores
                 Parallel.For(0, FinalizeTableList.Count, i =>
                 {
-                    gamesPlayed = 0;
+                    int gamesPlayed = 0;
                     int currGameId = FinalizeTableList[i].GameId;
 
                     PlayerHistory ph = new PlayerHistory();
