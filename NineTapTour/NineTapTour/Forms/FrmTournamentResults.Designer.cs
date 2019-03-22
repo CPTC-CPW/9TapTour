@@ -36,6 +36,7 @@
             this.lblClientRequestCount = new System.Windows.Forms.Label();
             this.tbClientInputCount = new System.Windows.Forms.TextBox();
             this.btnPaste = new System.Windows.Forms.Button();
+            this.lblHB = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTournamentResults)).BeginInit();
             this.SuspendLayout();
             // 
@@ -107,11 +108,21 @@
             this.btnPaste.UseVisualStyleBackColor = true;
             this.btnPaste.Click += new System.EventHandler(this.btnPaste_Click);
             // 
+            // lblHB
+            // 
+            this.lblHB.AutoSize = true;
+            this.lblHB.Location = new System.Drawing.Point(503, 568);
+            this.lblHB.Name = "lblHB";
+            this.lblHB.Size = new System.Drawing.Size(134, 13);
+            this.lblHB.TabIndex = 6;
+            this.lblHB.Text = "* H/B = Handicap + Bonus";
+            // 
             // FrmTournamentResults
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(667, 590);
+            this.Controls.Add(this.lblHB);
             this.Controls.Add(this.btnPaste);
             this.Controls.Add(this.tbClientInputCount);
             this.Controls.Add(this.lblClientRequestCount);
@@ -138,5 +149,6 @@
         private System.Windows.Forms.Label lblClientRequestCount;
         private System.Windows.Forms.TextBox tbClientInputCount;
         private System.Windows.Forms.Button btnPaste;
+        private System.Windows.Forms.Label lblHB;
     }
 }

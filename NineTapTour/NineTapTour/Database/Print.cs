@@ -194,15 +194,15 @@ namespace NineTapTour.Database
                 reportType = "Series";
             }
 
-            // drawing the report title
-            if (currentSquad == 0)
-            {
-                graphic.DrawString(header + reportType + " Final Standings", bigFont, dBrush, startX + 10, startY + 27);
-            }
             //If Series button was clicked, should not say final based on qual by squad, rather by Fitler Series by Squad. Still shows qual by squad filters on the listed players.
-            else if (currentSquad == 0 && string.Equals(reportType, "Series"))
+            if (currentSquad == 0 && string.Equals(reportType, "Series"))
             {
                 graphic.DrawString(header + reportType + " Standings", bigFont, dBrush, startX + 10, startY + 27);
+            }
+            // drawing the report title
+            else if (currentSquad == 0)
+            {
+                graphic.DrawString(header + reportType + " Final Standings", bigFont, dBrush, startX + 10, startY + 27);
             }
             else
             {
