@@ -14,12 +14,17 @@ using NineTapTour.Models;
 
 namespace NineTapTour.Forms
 {
-
+    /// <summary>
+    /// This form constructs a table with the current tournament stats for each player's entry. When a 
+    /// player's column is clicked, stats for that player's history is displayed in the table below. 
+    /// When the tournament is finalized the data from the entries and the player's
+    /// stats are updated and stored.
+    /// </summary>
     public partial class FrmFinalizeTournament : Form
     {
         #region Constant Values
 
-        //USE THIS IF YOU NEED TO MOVE AROUND THE ORDER IN WHICH THE COLUMNS ARE DISPLAYED 
+        // The order in which columns are displayed in the DataGridView
         const int STANDING_COLUMN = 0;
         const int MEMBER_NUMBER_COLUMN = 1;
         const int NAME_COLUMN = 2;
@@ -44,7 +49,7 @@ namespace NineTapTour.Forms
         const int NOTES_COLUMN_ = 21;
         const int GAME_ID_COLUMN = 22;
 
-        //USE THIS IF YOU WANT TO CHANGE THE NAME OF EACH COLUMN 
+        // The names for each eolumn in the DataGridView
         //Column names must be unique but the HeaderText can be changed in the DataGridView to change the text that is displayed
         const string STANDING_COLUMN_NAME = "Standing";
         const string MEMBER_NUMBER_COLUMN_NAME = "Member Number";
@@ -72,9 +77,15 @@ namespace NineTapTour.Forms
 
         #endregion
 
+        // Region Id that the current tournament is in
         private int RegionID;
-        private Tournament currTournament; //current tournament
+        private Tournament currTournament;
 
+        /// <summary>
+        /// Constructs the Finalize form with data from the current tournament and region
+        /// </summary>
+        /// <param name="t">The current tournament</param>
+        /// <param name="region">The Id the current tournament is in</param>
         public FrmFinalizeTournament(Tournament t, int region)
         {
             InitializeComponent();
@@ -82,26 +93,48 @@ namespace NineTapTour.Forms
             RegionID = region;
         }
 
+        /// <summary>
+        /// Creates DataGridView table showing each player's entry stats on form load
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FrmFinalizeTournament_Load(object sender, EventArgs e)
         {
+            #region Create automated check boxes for debugging
 #if DEBUG
+            // Creates a checkbox that will toggle all the Director Check checkboxes for debugging
             CheckBox toggleAllDirectorCheck = new CheckBox();
             toggleAllDirectorCheck.Text = "Dir Check";
             toggleAllDirectorCheck.CheckedChanged += new EventHandler(ToggleDirectorCheck_CheckChanged);
             toggleAllDirectorCheck.Location = new Point(10, 0);
             Controls.Add(toggleAllDirectorCheck);
+
+            // Creates a checkbox that will fill in  all the Adjusted Average cells to appropriate values for debugging
             CheckBox toggleAllAdjustedAverages = new CheckBox();
             toggleAllAdjustedAverages.Text = "Adj Avg";
             toggleAllAdjustedAverages.CheckedChanged += new EventHandler(ToggleAllAdjustedAverages_CheckChanged);
             toggleAllAdjustedAverages.Location = new Point(120, 0);
             Controls.Add(toggleAllAdjustedAverages);
 #endif
+            #endregion
+
+            // Creates the table showing all player's entries in the current tournament
             createDataGridView(currTournament);
+
+            // Changes background color of each entry's game according to it's state
             InitializeGameCellFormatting();
-            sizeFinalizeGridView(); // resizes the columns of finalize form
+
+            // Manually adjusts each columns width
+            sizeFinalizeGridView();
         }
 
+        #region Automated checkbox event handlers
 #if DEBUG
+        /// <summary>
+        /// Toggles all Director Check column checkboxes for more efficient debugging
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ToggleDirectorCheck_CheckChanged(object sender, EventArgs e)
         {
             List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
@@ -119,6 +152,11 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// Fills in all Adjusted Average cells to appropriate values for more efficient debugging.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ToggleAllAdjustedAverages_CheckChanged(object sender, EventArgs e)
         {
             bool resetAdjustedAverages = false;
@@ -143,6 +181,10 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// Sets each adjusted average value in the FinalizeTableList parameter to 0
+        /// </summary>
+        /// <param name="FinalizeTableList"></param>
         private void ResetAdjustedAverages(List<FinalizeTemp> FinalizeTableList)
         {
             for (int i = 0; i < FinalizeTableList.Count; i++)
@@ -150,9 +192,15 @@ namespace NineTapTour.Forms
                 TournamentEntriesGrid.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Value = 0;
             }
         }
-#endif      
+#endif
+        #endregion
+
+        /// <summary>
+        /// Manually sets the width for each column
+        /// </summary>
         public void sizeFinalizeGridView() {
             int columnCount = 22;
+            // Turn off auto size mode
             for (int colWidth = 0; colWidth < columnCount; colWidth++)
             {
                 TournamentEntriesGrid.Columns[colWidth].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
@@ -226,6 +274,7 @@ namespace NineTapTour.Forms
                 Game g = GameDB.GetGame(item.GameId);
                 FinalizeTemp temp = FinalizeTempDB.getFinalizeID(g);
 
+                // Create FinalizeTemp if one does not exist
                 if (temp.FinalizeID <= 0)
                 {
                     temp = new FinalizeTemp
@@ -255,11 +304,16 @@ namespace NineTapTour.Forms
                 temp.UseGame3 = item.UseGame3;
                 temp.UseGame4 = item.UseGame4;
                 temp.ScratchTotal = (temp.Game1 ?? 0) + (temp.Game2 ?? 0) + (temp.Game3 ?? 0) + (temp.Game4 ?? 0);
+
+                #region Calculates and sets handicap total
                 int hTotal = (temp.Game1.HasValue) ? ((temp.Game1 ?? 0) + temp.Bonus + temp.Handicap) : 0;
                 hTotal += (temp.Game2.HasValue) ? ((temp.Game2 ?? 0) + temp.Bonus + temp.Handicap) : 0;
                 hTotal += (temp.Game3.HasValue) ? ((temp.Game3 ?? 0) + temp.Bonus + temp.Handicap) : 0;
                 hTotal += (temp.Game4.HasValue) ? ((temp.Game4 ?? 0) + temp.Bonus + temp.Handicap) : 0;
                 temp.HandicapTotal = hTotal;
+                #endregion
+
+                #region Calculates and sets game average
                 if (item.Game1 > 0)
                 {
                     gplayed++;
@@ -277,8 +331,9 @@ namespace NineTapTour.Forms
                     gplayed++;
                 }
                 temp.GameAvg = ((temp.Game1 ?? 0) + (temp.Game2 ?? 0) + (temp.Game3 ?? 0) + (temp.Game4 ?? 0)) / gplayed;
+                #endregion
 
-                //grabs running league average 
+                #region recalculate league average if is new entry
                 List<PlayerHistory> ExistingPlayerHistory = PlayerHistoryDB.getMemberPlayerHistory(item.memberNumber, RegionID);
                 if (ExistingPlayerHistory.Count == 0)
                 {
@@ -298,16 +353,19 @@ namespace NineTapTour.Forms
                         }
                     }
                 }
+                #endregion
+
                 FinalizeTempDB.AddFinalizeTemp(temp);
             });
 
-            //pulls a list from the finalizetemp table and seeds the dataview with the table info.
+            // Pulls a list from the finalizetemp table and seeds the dataview with the table info
             List<FinalizeTemp> DataViewList = GetListFromTable(tourn);
 
             // Links FinalizeTemp to an integer that is placing information
             Dictionary<FinalizeTemp, int> membersPlacingMap = Calculations.Calculations.CalculatePlaceStandings(DataViewList);
 
-            TournamentEntriesGrid.DataSource = SetDataView(membersPlacingMap); //By default populates all datagrid with all participant for tournament.
+            // By default populates all datagrid with all participant for tournament
+            dataGridView1.DataSource = SetDataView(membersPlacingMap); 
 
             TournamentEntriesGrid.Columns[GAME_ID_COLUMN].Visible = false;
 
@@ -394,7 +452,7 @@ namespace NineTapTour.Forms
         }
   
         /// <summary>
-        /// THis method Gets a list of all participant objects for the tournament passed into method.
+        /// This method gets a list of all participant objects for the tournament passed into method.
         /// </summary>
         /// <param name="tourn"> represent the tournament you want list of particpants from</param>
         /// <returns>List of Participants for specific tournament</returns>
@@ -474,11 +532,11 @@ namespace NineTapTour.Forms
                 NewParticipant.Handicap = item.Handicap ?? 0;
                 NewParticipant.Bonus = item.Bonus ?? 0;
 
+                // Process handicap total
                 int hTotal = (item.Game1 != null) ? ((item.Game1 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
                 hTotal += (item.Game2 != null) ? ((item.Game2 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
                 hTotal += (item.Game3 != null) ? ((item.Game3 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
                 hTotal += (item.Game4 != null) ? ((item.Game4 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
-
                 NewParticipant.HandicapTotal = hTotal;
 
                 NewParticipant.memberNumber = item.Number;
@@ -490,7 +548,12 @@ namespace NineTapTour.Forms
             return ParticipantList;
         }
 
-        // makes a list from the finalizetemp table to be used in dataview source
+
+        /// <summary>
+        /// makes a list from the finalizetemp table to be used in dataview source
+        /// </summary>
+        /// <param name="tourn"></param>
+        /// <returns></returns>
         public List<FinalizeTemp> GetListFromTable(Tournament tourn)
         {
             var db = new NineTapDb();
@@ -603,7 +666,7 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// Checks the bool state of the check box and updates row based off gameID in FinalizeTempDB
+        /// Checks the bool state of the check box and updates row and FinalizeTemp row in Db based off gameID.
         /// </summary>
         /// <param name="row"></param> row that is being checked
         /// <param name="cell"></param> cell that is being checked
@@ -636,7 +699,10 @@ namespace NineTapTour.Forms
             this.TournamentEntriesGrid.CellValueChanged += this.dataGridView1_OnCellValueChanged;
         }
 
-        // updates computed average in column 10 when check box is changed.
+        /// <summary>
+        /// Updates computed average in column 10 when check box is changed.
+        /// </summary>
+        /// <param name="row"></param>
         private void UpdateAvg(int row)
         {
             this.TournamentEntriesGrid.CellValueChanged -= this.dataGridView1_OnCellValueChanged;
@@ -692,7 +758,13 @@ namespace NineTapTour.Forms
             }
         }
 
-        // calculates league average for member based off last 30 games or total games played if less than 30.
+
+        /// <summary>
+        /// Queries the db and calculates league average for member based off last 30 games or 
+        /// total games played if less than 30.
+        /// </summary>
+        /// <param name="memID">The member to the league average of</param>
+        /// <returns>The league average for the member's id passed in</returns>
         public double LeagueAverage(int memID)
         {
             double sum = 0;
@@ -715,6 +787,7 @@ namespace NineTapTour.Forms
                             Average = (g.Game1 + g.Game2 + g.Game3 + g.Game4) / 4
                         }).Take(30).ToList();
 
+            // Calculate league average
             if (temp.Count > 0)
             {
                 foreach (var item in temp)
@@ -726,6 +799,13 @@ namespace NineTapTour.Forms
             return 0;
         }
 
+        /// <summary>
+        /// Queries the PlayerHistory table and calculates the sum of all the averages for the member id passed in
+        /// </summary>
+        /// <param name="mem">The id of the member to calculate League average</param>
+        /// <param name="howmany">The latest amount games from player history to calculate league average from</param>
+        /// <param name="regionid">The region where the member is from</param>
+        /// <returns></returns>
         public double LeagueAvgFromPlayerHistory(int mem, int howmany, int regionid)
         {
             double sum = 0;
@@ -744,9 +824,9 @@ namespace NineTapTour.Forms
                             p.AverageForGame
                         }).Take(howmany).ToList();
 
+            // Calculate sum of the averages
             if (temp.Count > 0)
             {
-
                 foreach (var item in temp)
                 {
                     sum += Convert.ToDouble(item.AverageForGame);
@@ -854,16 +934,21 @@ namespace NineTapTour.Forms
                     cell.Style.BackColor = Color.Orange;
                 }
             }
-            else
+            else // Game cell is not valid
             {
                 cell.Style.BackColor = Color.Red;
             }
         }
         
-
+        /// <summary>
+        /// Show all games for the selected player including the current tournament
+        /// </summary>
+        /// <param name="temporary">the list of player histories that come from the tournament table</param>
         private void RefreshMemberView(List<PlayerHistory> temporary)
         {
             DataTable dtGames = new DataTable();
+
+            // Create table columns
             dtGames.Columns.Add("Games").ReadOnly = true;
             dtGames.Columns.Add("Date", typeof(DateTime));
             dtGames.Columns.Add("Game1");
@@ -886,7 +971,8 @@ namespace NineTapTour.Forms
             // Money Won label string is referenced multiple locations
             string moneyWon = "Earnings";
             decimal totalMoneyEarned = 0;
-            
+
+            // Load current tournament game data for selected member into rows
             foreach (var item in temporary)
             {
                 DataRow newRow = dtGames.NewRow();
@@ -935,9 +1021,11 @@ namespace NineTapTour.Forms
                 totalMoneyEarned += item.MoneyWon;
             }
 
+            // Displays total money won in the column header "Money Won"
             string moneyWonWithTotal = $"{moneyWon} ({totalMoneyEarned + PlayerHistoryDB.GetTotalMoneyWon(temporary[0].MemberNumber, RegionID)})";
             dtGames.Columns[moneyWon].ColumnName = moneyWonWithTotal;
 
+            // Player histories from the db that are not in the current tournament
             List<PlayerHistory> currentHistory = PlayerHistoryDB.getMemberPlayerHistoryCount(temporary[0].MemberNumber, RegionID);
 
             var currentPlayerHistory = currentHistory.OrderByDescending(p => p.TournamentDate).ThenByDescending(s => s.MoneyWon);
@@ -993,6 +1081,7 @@ namespace NineTapTour.Forms
             int thirtyAve = 30;     // how many should be highlighted for 30 game average
             for (int i = 0; i < playerTournamentHistoryGrid.RowCount; i++)
             {
+                #region Set background color for member table row to light blue for all games in current tournament
                 for (int t = 0; t < temporary.Count; t++)
                 {
                     if (temporary[i].GameID == Convert.ToInt32(playerTournamentHistoryGrid.Rows[i].Cells[17].Value))
@@ -1003,12 +1092,14 @@ namespace NineTapTour.Forms
                         }
                     }
                 }
+                #endregion
 
                 for (int j = 0; j < thirtyAve; j++)
                 {
                     playerTournamentHistoryGrid.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
                 }
             }
+            #endregion
         }
 
         /// <summary>
@@ -1022,9 +1113,10 @@ namespace NineTapTour.Forms
             int gameId = Convert.ToInt32(TournamentEntriesGrid.Rows[TournamentEntriesGrid.CurrentCell.RowIndex].Cells[GAME_ID_COLUMN].Value);
             using (var db = new NineTapDb())
             {
-                //set labels to selected index
                 int memberNumber = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Number;
                 Member Cmember = MemberDb.GetMember(memberNumber, RegionID);
+
+                // Sets labels for selected member
                 lblMemberNumber.Text = Cmember.Number.ToString();
                 lblName.Text = Cmember.FirstName + " " + Cmember.LastName;
                 lblStartAvg.Text = Cmember.StartAvg.ToString();
@@ -1104,6 +1196,7 @@ namespace NineTapTour.Forms
                             temporary.Add(p);
                         }
                     }
+                    #endregion
 
                     temporary.Reverse();
                     RefreshMemberView(temporary);
@@ -1116,6 +1209,11 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// Processes tournament data and then saves it into the database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnFinalize_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
@@ -1152,16 +1250,18 @@ namespace NineTapTour.Forms
             //START FINALIZATION
             if (isDirectorCheckFinished) //if all the director check boxes are selected
             {
-                // total comp entries for the current tournament
+                // Total comp entries for the current tournament
                 int compEntriesQty = FinalizeTempDB.GetCompEntryQtyByTourney(currTournament.Id);
 
-                // To adjust bonus pins for non-best multiple entries 
+                // To make bonus pins for non-best multiple entries match bonus pins calculated from
+                // a member's highest game
                 var playerHistoryBonusAdjustmentList = new List<PlayerHistory>();
 
-                // used to reference newly adjusted bonus pins for best games
+                // Used to reference newly adjusted bonus pins for best entry of a member
                 var memberNumBonusPinMap = new Dictionary<int, int>();
 
-                //Multithreaded version of a for loop, spreads processing across all available cores
+                #region Create Player Histories from Games, save them, and update all Game and Member data for current tourney
+                // Multithreaded version of a for loop, spreads processing across all available cores
                 Parallel.For(0, FinalizeTableList.Count, i =>
                 {
                     int gamesPlayed = 0;
@@ -1225,8 +1325,9 @@ namespace NineTapTour.Forms
                         currGame.UseGame4 = false;
                         FinalizeTableList[i].UseGame4 = false;
                     }
-
                     ph.GamesPlayed = gamesPlayed;
+                    #endregion
+
                     ph.AverageForGame = FinalizeTableList[i].GameAvg;
                     ph.trueAVG = FinalizeTableList[i].LeagueAverage;
 
@@ -1236,7 +1337,6 @@ namespace NineTapTour.Forms
                     ph.ProPot = TournamentEntriesGrid[PRO_POT_COLUMN, currDataGridRowIndex].Value.ToString();
 
                     ph.MoneyWon = Convert.ToDecimal(currGame.MoneyWon);
-
                     ph.Game1 = FinalizeTableList[i].Game1;
                     ph.Game2 = FinalizeTableList[i].Game2;
                     ph.Game3 = FinalizeTableList[i].Game3;
@@ -1245,6 +1345,7 @@ namespace NineTapTour.Forms
                     DataGridViewCell placeCell = TournamentEntriesGrid[STANDING_COLUMN, currDataGridRowIndex];
                     byte placeStanding = (placeCell.Value == DBNull.Value) ? (byte) 0 : Convert.ToByte(placeCell.Value);
 
+                    #region Adjust Bonus pins for highest game and record PlaceStanding
                     // if bowler's highest game in tournament (only multiple entries that aren't the player's best game get 0s)
                     if (placeStanding > 0)
                     {
@@ -1258,6 +1359,7 @@ namespace NineTapTour.Forms
                     {
                         playerHistoryBonusAdjustmentList.Add(ph);
                     }
+                    #endregion
 
                     ph.HandiCap = FinalizeTableList[i].Handicap;
                     currGame.InputtedAvg = ph.AVG;
@@ -1288,6 +1390,7 @@ namespace NineTapTour.Forms
                     currPlayerHistory.Bonus = memberNumBonusPinMap[currPlayerHistory.MemberNumber];
                 }
                 PlayerHistoryDB.AddOrUpdatePlayerHistoryList(playerHistoryBonusAdjustmentList);
+                #endregion
 
                 Close();
             }
@@ -1298,6 +1401,15 @@ namespace NineTapTour.Forms
             Cursor.Current = Cursors.Default;
         }
 
+        /// <summary>
+        /// Adjusts bonus pins for Member and PlayerHistory parameters if Game is not in PlayerHistory
+        /// </summary>
+        /// <param name="totalEntriesQty">Total entries for the tournament</param>
+        /// <param name="compEntriesQty">Total comp entries for the tournament</param>
+        /// <param name="ph">PlayerHistory to adjust bonus pins</param>
+        /// <param name="currGame">Current Game of tournament</param>
+        /// <param name="currMember">Current Member to adjust bonus pins of</param>
+        /// <param name="placeStanding">Placestanding in tournament for current member's entry</param>
         private void AdjustBonusPins(int totalEntriesQty, int compEntriesQty, PlayerHistory ph, Game currGame, Member currMember, byte placeStanding)
         {
             // Adjust bonus pins only if game has not been finalized previously
@@ -1349,51 +1461,9 @@ namespace NineTapTour.Forms
             }
         }
 
-        public void getLeagueSum(FinalizeTemp temp, List<FinalizeTemp> finalizeTableList)
-        {
-            //RUNNING LEAGUE AVG 
-            int SumFromGamesNotAddedYet = 0;
-
-            //checks to see if they bowled an any squads before the current selected squad, if your on this line then they bowled at leats once
-            temp.memberNumber = MemberDb.GetMemberNumberbyID(temp.MemberId);
-            List<PlayerHistory> p = PlayerHistoryDB.getMemberPlayerHistory(temp.memberNumber, RegionID);
-            int howmanyTimesdidheybowlbeforethissquad = 1;
-
-            for (int f = 0; f < finalizeTableList.Count; f++)
-            {
-                if (temp.MemberId == finalizeTableList[f].MemberId && finalizeTableList[f].Squad < temp.Squad)
-                {
-                    howmanyTimesdidheybowlbeforethissquad++;
-                }
-            }
-
-            if (temp.Squad > 1)
-            {
-                for (int i = 0; i < finalizeTableList.Count; i++)
-                {
-                    if (temp.MemberId == finalizeTableList[i].MemberId && finalizeTableList[i].Squad < temp.Squad)
-                    {
-                        SumFromGamesNotAddedYet += finalizeTableList[i].GameAvg;
-                    }
-                }
-            }
-
-            temp.LeagueAverage = Convert.ToInt32(LeagueAvgFromPlayerHistory(temp.memberNumber, 30 - howmanyTimesdidheybowlbeforethissquad, RegionID) + SumFromGamesNotAddedYet + temp.GameAvg);
-
-            // // after grabbing the sum, it then must divide by 30
-            if (p.Count >= 30)
-            {
-                temp.LeagueAverage = temp.LeagueAverage / 30;
-            }
-            else if (p.Count > 0) // divides by as much player history as possible + how ever many times were bowled in current tournament
-            {
-                temp.LeagueAverage = temp.LeagueAverage / (p.Count + howmanyTimesdidheybowlbeforethissquad);
-            }
-            else // if they have no bowling history then divide the sum by the number currently bowled in the tournament
-            {
-                temp.LeagueAverage = temp.LeagueAverage / howmanyTimesdidheybowlbeforethissquad;
-            }
-        }
+        // Removed unused getLeagueSum method which was meant to calculate the League Average on 3/18/19. League Average is
+        // already calculated in the method CreateDataGridView
+        // The methods can be viewed in this repo's GitHub history prior to this date if anyone wants to see the details.
 
         /// <summary>
         /// This method ensures that after the DataGridView is sorted by the user,
@@ -1405,7 +1475,5 @@ namespace NineTapTour.Forms
         {
             InitializeGameCellFormatting();
         }
-
-
     }
 }
