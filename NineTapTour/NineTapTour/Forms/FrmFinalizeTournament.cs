@@ -365,7 +365,7 @@ namespace NineTapTour.Forms
             Dictionary<FinalizeTemp, int> membersPlacingMap = Calculations.Calculations.CalculatePlaceStandings(DataViewList);
 
             // By default populates all datagrid with all participant for tournament
-            dataGridView1.DataSource = SetDataView(membersPlacingMap); 
+            TournamentEntriesGrid.DataSource = SetDataView(membersPlacingMap); 
 
             TournamentEntriesGrid.Columns[GAME_ID_COLUMN].Visible = false;
 
@@ -1099,9 +1099,9 @@ namespace NineTapTour.Forms
                     playerTournamentHistoryGrid.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
                 }
             }
-            #endregion
+          
         }
-
+        // need to change dataGridView1 to proper name
         /// <summary>
         /// This method populates the second DataGridView with information about the player associated with the cell that triggered the event.
         /// </summary>
@@ -1196,7 +1196,7 @@ namespace NineTapTour.Forms
                             temporary.Add(p);
                         }
                     }
-                    #endregion
+                   
 
                     temporary.Reverse();
                     RefreshMemberView(temporary);
@@ -1390,7 +1390,7 @@ namespace NineTapTour.Forms
                     currPlayerHistory.Bonus = memberNumBonusPinMap[currPlayerHistory.MemberNumber];
                 }
                 PlayerHistoryDB.AddOrUpdatePlayerHistoryList(playerHistoryBonusAdjustmentList);
-                #endregion
+                
 
                 Close();
             }
