@@ -1037,7 +1037,7 @@ namespace NineTapTour.Forms
             
             bool isDirectorCheckFinished = true; //int used to make sure all the director check boxes have been filled out
 
-            List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
+            List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetListFromTable(currTournament);
             //int gamesPlayed = 0;
 
             //checks to make sure all the director had adjusted avgs and checked the box to make sure they did so.
