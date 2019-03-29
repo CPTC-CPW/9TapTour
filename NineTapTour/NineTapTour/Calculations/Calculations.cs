@@ -114,7 +114,7 @@ namespace NineTapTour.Calculations
         /// <param name="currentBonusPins">the bonus pins that are applied in current game</param>
         /// <param name="latestGames">a member's player history</param>
         /// <param name="currTourneyEntryCount">this is the number of losses in the current game</param>
-        /// <param name="minLosses">minimum number of to determine if bonus is earned</param>
+        /// <param name="minLosses">minimum number of losses to determine if bonus is earned</param>
         /// <returns></returns>
         private static bool DoesGetBonus(int currentBonusPins, List<PlayerHistory> latestGames, int currTourneyEntryCount, int minLosses)
         {
@@ -128,7 +128,7 @@ namespace NineTapTour.Calculations
 
             }
 
-            // is the mulitiple of a 3rd loss in a row after a loss
+            // is the mulitiple of a 3rd loss in a row after a win
             return lastCashedTourneyIndex % 3 + currTourneyEntryCount >= minLosses;
         }
 
