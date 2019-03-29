@@ -137,7 +137,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void ToggleDirectorCheck_CheckChanged(object sender, EventArgs e)
         {
-            List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
+            List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetListFromTable(currTournament);
             for (int i = 0; i < FinalizeTableList.Count; i++)
             {
                 //if Toggle is checked, check all Director checks
@@ -160,7 +160,7 @@ namespace NineTapTour.Forms
         private void ToggleAllAdjustedAverages_CheckChanged(object sender, EventArgs e)
         {
             bool resetAdjustedAverages = false;
-            List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
+            List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetListFromTable(currTournament);
             for (int i = 0; i < FinalizeTableList.Count; i++)
             {
                 var adjustedAverage = 
@@ -263,9 +263,14 @@ namespace NineTapTour.Forms
             playerTournamentHistoryGrid.Columns["GameID"].Width = 25;
         }
 
+        /// <summary>
+        /// Creates the tables for the FinalizeTournament form.
+        /// </summary>
+        /// <param name="tourn"></param>
         private void createDataGridView(Tournament tourn)
         {
-            List<FinalizeTemp> FinalizeTableList = GetAllInitialParticipantGameList(currTournament);
+            // uses FinalizeTempDB to populate from database
+            List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetAllInitialParticipantGameList(currTournament);
 
             //Below is a multithreaded version of a foreach loop to spread processing across all available cores
             Parallel.ForEach(FinalizeTableList, item =>
@@ -358,8 +363,8 @@ namespace NineTapTour.Forms
                 FinalizeTempDB.AddFinalizeTemp(temp);
             });
 
-            // Pulls a list from the finalizetemp table and seeds the dataview with the table info
-            List<FinalizeTemp> DataViewList = GetListFromTable(tourn);
+            //pulls a list from the finalizetemp table and seeds the dataview with the table info.
+            List<FinalizeTemp> DataViewList = FinalizeTempDB.GetListFromTable(tourn);
 
             // Links FinalizeTemp to an integer that is placing information
             Dictionary<FinalizeTemp, int> membersPlacingMap = Calculations.Calculations.CalculatePlaceStandings(DataViewList);
@@ -383,8 +388,13 @@ namespace NineTapTour.Forms
 #endif
         }
 
-        //creates the dataview that will populate the datagridview table on form pulls from the finalizetemp table
-        // CHANGE THESE IN THE ORDER YOU WANT THEM TO BE SEEN ON THE GRID VIEW (0 == far left) AND THEN CHANGE THE STATIC INTS AT THE TOP IN ORDER TO CHANGE THERE ORDER ON THE GRID VIEW WITHOUT HAVING TO TOUNCH ANY OTHER CODE
+        /// <summary>
+        /// creates the dataview that will populate the datagridview table on form pulls from the finalizetemp table
+        /// CHANGE THESE IN THE ORDER YOU WANT THEM TO BE SEEN ON THE GRID VIEW (0 == far left), AND THEN CHANGE THE STATIC
+        /// INTS AT THE TOP IN ORDER TO CHANGE THEIR ORDER ON THE GRIDVIEW WITHOUT HAVING TO TOUCH ANY OTHER CODE.
+        /// </summary>
+        /// <param name="participantsList"></param>
+        /// <returns></returns>
         public DataTable SetDataView(Dictionary<FinalizeTemp,int> participantsList)
         {
             var db = new NineTapDb();
@@ -450,121 +460,6 @@ namespace NineTapTour.Forms
             }
             return dt;
         }
-  
-        /// <summary>
-        /// This method gets a list of all participant objects for the tournament passed into method.
-        /// </summary>
-        /// <param name="tourn"> represent the tournament you want list of particpants from</param>
-        /// <returns>List of Participants for specific tournament</returns>
-        public List<FinalizeTemp> GetAllInitialParticipantGameList(Tournament tourn)
-        {
-            var db = new NineTapDb();
-            List<FinalizeTemp> ParticipantList = new List<FinalizeTemp>();
-            var temp = (from p in db.Participants
-                        join m in db.Members on p.Member.Id equals m.Id
-                        join g in db.Games on p.Game.Id equals g.Id
-                        join t in db.Tournaments on p.Tournament.Id equals t.Id
-                        where tourn.Id == p.Tournament.Id
-                        orderby m.FirstName descending
-                        select new
-                        {
-                            g.Id,
-                            m.FirstName,
-                            m.LastName,
-                            MemberId = m.Id,
-                            p.Squad,
-                            g.Game1,
-                            g.Game2,
-                            g.Game3,
-                            g.Game4,
-                            g.UseGame1,
-                            g.UseGame2,
-                            g.UseGame3,
-                            g.UseGame4,
-                            g.Notes,
-                            g.Handicap,
-                            g.Bonus,
-                            m.Number,
-                            t.TourneyRegion
-                        }).ToList();
-            foreach (var item in temp)
-            {
-                int gplayed = 0;
-                FinalizeTemp NewParticipant = new FinalizeTemp();
-                NewParticipant.GameId = item.Id;
-                NewParticipant.MemberId = item.MemberId;
-                NewParticipant.FirstName = item.FirstName;
-                NewParticipant.LastName = item.LastName;
-                NewParticipant.Game1 = item.Game1;
-                NewParticipant.Game2 = item.Game2;
-                NewParticipant.Game3 = item.Game3;
-                NewParticipant.Game4 = item.Game4;
-
-                NewParticipant.UseGame1 = item.UseGame1 ?? item.Game1.HasValue;
-                NewParticipant.UseGame2 = item.UseGame2 ?? item.Game2.HasValue;
-                NewParticipant.UseGame3 = item.UseGame3 ?? item.Game3.HasValue;
-                NewParticipant.UseGame4 = item.UseGame4 ?? item.Game4.HasValue;
-
-                if (item.Game1.HasValue)
-                {
-                    gplayed++;
-                }
-
-                if (item.Game2.HasValue)
-                {
-                    gplayed++;
-                }
-
-                if (item.Game3.HasValue)
-                {
-                    gplayed++;
-                }
-
-                if (item.Game4.HasValue)
-                {
-                    gplayed++;
-                }
-
-                NewParticipant.Notes = item.Notes;
-                NewParticipant.ScratchTotal = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0);
-                NewParticipant.Squad = item.Squad;
-                NewParticipant.GameAvg = ((item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0)) / gplayed;
-                NewParticipant.Handicap = item.Handicap ?? 0;
-                NewParticipant.Bonus = item.Bonus ?? 0;
-
-                // Process handicap total
-                int hTotal = (item.Game1 != null) ? ((item.Game1 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
-                hTotal += (item.Game2 != null) ? ((item.Game2 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
-                hTotal += (item.Game3 != null) ? ((item.Game3 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
-                hTotal += (item.Game4 != null) ? ((item.Game4 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
-                NewParticipant.HandicapTotal = hTotal;
-
-                NewParticipant.memberNumber = item.Number;
-                NewParticipant.FinalizeRegionID = item.TourneyRegion;
-
-                ParticipantList.Add(NewParticipant);
-            }
-
-            return ParticipantList;
-        }
-
-
-        /// <summary>
-        /// makes a list from the finalizetemp table to be used in dataview source
-        /// </summary>
-        /// <param name="tourn"></param>
-        /// <returns></returns>
-        public List<FinalizeTemp> GetListFromTable(Tournament tourn)
-        {
-            var db = new NineTapDb();
-            //get list of participants by tournament
-            return db.FinalizeTemp
-                            .Where(p => p.TournamentID == tourn.Id)
-                            .OrderBy(p => p.FirstName)
-                            .ThenBy(p => p.Squad)
-                            .ToList();
-        }
-
 
         /// <summary>
         /// This method handles the changes made when any GAME_VALID or DIRECTOR_CHECK checkboxes are changed, including updating the FinalizeTemp table in the DB.
@@ -756,84 +651,6 @@ namespace NineTapTour.Forms
                 TournamentEntriesGrid.Rows[row].Cells[SCRATCH_TOTAL_COLUMN].Value = sum;
                 TournamentEntriesGrid.Rows[row].Cells[HANDICAP_TOTAL_COLUMN].Value = sumWHandicap;
             }
-        }
-
-
-        /// <summary>
-        /// Queries the db and calculates league average for member based off last 30 games or 
-        /// total games played if less than 30.
-        /// </summary>
-        /// <param name="memID">The member to the league average of</param>
-        /// <returns>The league average for the member's id passed in</returns>
-        public double LeagueAverage(int memID)
-        {
-            double sum = 0;
-            double average = 0;
-            var db = new NineTapDb();
-            var temp = (
-                        from p in db.Participants
-                        join m in db.Members on p.Member.Id equals m.Id
-                        join g in db.Games on p.Game.Id equals g.Id
-                        join t in db.Tournaments on p.Tournament.Id equals t.Id
-                        where memID == m.Id
-                        orderby t.Date descending
-                        select new
-                        {
-                            t.Date,
-                            g.Game1,
-                            g.Game2,
-                            g.Game3,
-                            g.Game4,
-                            Average = (g.Game1 + g.Game2 + g.Game3 + g.Game4) / 4
-                        }).Take(30).ToList();
-
-            // Calculate league average
-            if (temp.Count > 0)
-            {
-                foreach (var item in temp)
-                {
-                    sum += Convert.ToDouble(item.Average);
-                }
-                return (average = sum / temp.Count());
-            }
-            return 0;
-        }
-
-        /// <summary>
-        /// Queries the PlayerHistory table and calculates the sum of all the averages for the member id passed in
-        /// </summary>
-        /// <param name="mem">The id of the member to calculate League average</param>
-        /// <param name="howmany">The latest amount games from player history to calculate league average from</param>
-        /// <param name="regionid">The region where the member is from</param>
-        /// <returns></returns>
-        public double LeagueAvgFromPlayerHistory(int mem, int howmany, int regionid)
-        {
-            double sum = 0;
-            var db = new NineTapDb();
-            var temp = (from p in db.PlayerHistory
-                        where p.MemberNumber == mem && p.regionID == regionid
-                        orderby p.TournamentDate descending
-                        select new
-                        {
-                            p.TournamentDate,
-                            p.Game1,
-                            p.Game2,
-                            p.Game3,
-                            p.Game4,
-                            p.trueAVG,
-                            p.AverageForGame
-                        }).Take(howmany).ToList();
-
-            // Calculate sum of the averages
-            if (temp.Count > 0)
-            {
-                foreach (var item in temp)
-                {
-                    sum += Convert.ToDouble(item.AverageForGame);
-                }
-                return sum;
-            }
-            return 0;
         }
 
         public void RankGridView()
@@ -1220,7 +1037,7 @@ namespace NineTapTour.Forms
             
             bool isDirectorCheckFinished = true; //int used to make sure all the director check boxes have been filled out
 
-            List<FinalizeTemp> FinalizeTableList = GetListFromTable(currTournament);
+            List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetListFromTable(currTournament);
             //int gamesPlayed = 0;
 
             //checks to make sure all the director had adjusted avgs and checked the box to make sure they did so.
@@ -1250,8 +1067,8 @@ namespace NineTapTour.Forms
             //START FINALIZATION
             if (isDirectorCheckFinished) //if all the director check boxes are selected
             {
-                // Total comp entries for the current tournament
-                int compEntriesQty = FinalizeTempDB.GetCompEntryQtyByTourney(currTournament.Id);
+                // total comp entries for the current tournament
+                int compEntriesQty = FinalizeTempDB.GetCompEntryQtyByTourneyID(currTournament.Id);
 
                 // To make bonus pins for non-best multiple entries match bonus pins calculated from
                 // a member's highest game
@@ -1449,7 +1266,7 @@ namespace NineTapTour.Forms
         private int CalcThirtyLeagueAverage(int memberNum, List<int> currGameAverages)
         {
             List<PlayerHistory> playerHistory = PlayerHistoryDB.getMemberPlayerHistory(memberNum, RegionID);
-            int sumOfAllGameAverages = Convert.ToInt32(LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) + currGameAverages.Sum());
+            int sumOfAllGameAverages = Convert.ToInt32(FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) + currGameAverages.Sum());
 
             if (playerHistory.Count >= 30 || (playerHistory.Count + currGameAverages.Count) > 30)
             {
