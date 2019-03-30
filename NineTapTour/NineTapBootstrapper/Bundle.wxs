@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:bal="http://schemas.microsoft.com/wix/BalExtension"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-	<Bundle Name="NineTapBootstrapper" Version="1.7.9" Manufacturer="Clover Park Technical College - Computer Programming" UpgradeCode="84f76d84-5c1c-457c-bf76-d6e1caae5bd9">
+	<Bundle Name="NineTapBootstrapper" Version="1.7.10" Manufacturer="Clover Park Technical College - Computer Programming" UpgradeCode="84f76d84-5c1c-457c-bf76-d6e1caae5bd9">
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
       <bal:WixStandardBootstrapperApplication LicenseFile="License.rtf" LogoFile="Icon\9Tap.ico" />
     </BootstrapperApplicationRef>
