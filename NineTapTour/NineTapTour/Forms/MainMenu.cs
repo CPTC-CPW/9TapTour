@@ -115,10 +115,8 @@ namespace NineTapTour.Forms
         // at this time. Keeping the code incase it's needed in the future.
         private void btnDropDataBase1_Click_1(object sender, EventArgs e)
         {
-
-            List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
             string name = NineTapRegionDB.getRegionByID(regionID).NineTapRegionName;
-            if (MessageBox.Show($"This button will delete all data stored in the {NineTapRegionDB.getRegionByID(regionID).NineTapRegionName} database, are you sure you want to clear  data?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (MessageBox.Show($"This button will delete all data stored in the {name} database, are you sure you want to clear  data?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 frmPleaseWait pl = new frmPleaseWait();
                 pl.Show();
