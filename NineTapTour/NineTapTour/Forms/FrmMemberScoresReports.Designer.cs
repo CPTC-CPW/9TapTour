@@ -34,11 +34,12 @@
             this.txtNumberOfMembers = new System.Windows.Forms.TextBox();
             this.cbPrintDues = new System.Windows.Forms.CheckBox();
             this.btnSave = new System.Windows.Forms.Button();
+            this.lblSave = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnPrint
             // 
-            this.btnPrint.Location = new System.Drawing.Point(106, 137);
+            this.btnPrint.Location = new System.Drawing.Point(56, 102);
             this.btnPrint.Name = "btnPrint";
             this.btnPrint.Size = new System.Drawing.Size(75, 23);
             this.btnPrint.TabIndex = 1;
@@ -49,7 +50,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(80, 45);
+            this.label1.Location = new System.Drawing.Point(77, 18);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(140, 13);
             this.label1.TabIndex = 1;
@@ -58,7 +59,7 @@
             // txtNumberOfMembers
             // 
             this.txtNumberOfMembers.BackColor = System.Drawing.SystemColors.Control;
-            this.txtNumberOfMembers.Location = new System.Drawing.Point(95, 74);
+            this.txtNumberOfMembers.Location = new System.Drawing.Point(94, 43);
             this.txtNumberOfMembers.Name = "txtNumberOfMembers";
             this.txtNumberOfMembers.Size = new System.Drawing.Size(100, 20);
             this.txtNumberOfMembers.TabIndex = 0;
@@ -66,7 +67,7 @@
             // cbPrintDues
             // 
             this.cbPrintDues.AutoSize = true;
-            this.cbPrintDues.Location = new System.Drawing.Point(106, 114);
+            this.cbPrintDues.Location = new System.Drawing.Point(56, 79);
             this.cbPrintDues.Name = "cbPrintDues";
             this.cbPrintDues.Size = new System.Drawing.Size(75, 17);
             this.cbPrintDues.TabIndex = 2;
@@ -75,12 +76,22 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(106, 217);
+            this.btnSave.Location = new System.Drawing.Point(160, 102);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 3;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // lblSave
+            // 
+            this.lblSave.AutoSize = true;
+            this.lblSave.Location = new System.Drawing.Point(157, 80);
+            this.lblSave.Name = "lblSave";
+            this.lblSave.Size = new System.Drawing.Size(91, 13);
+            this.lblSave.TabIndex = 4;
+            this.lblSave.Text = "Save To Desktop";
             // 
             // FrmMemberScoresReports
             // 
@@ -88,7 +99,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(284, 262);
+            this.ClientSize = new System.Drawing.Size(284, 152);
+            this.Controls.Add(this.lblSave);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.cbPrintDues);
             this.Controls.Add(this.txtNumberOfMembers);
@@ -110,5 +122,6 @@
         private System.Windows.Forms.TextBox txtNumberOfMembers;
         private System.Windows.Forms.CheckBox cbPrintDues;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Label lblSave;
     }
 }

@@ -71,5 +71,31 @@ namespace NineTapTour.Forms
         {
             txtNumberOfMembers.Focus();
         }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            if (!int.TryParse(txtNumberOfMembers.Text, out int numMembers))
+            {
+                MessageBox.Show("Please only input a number");
+            }
+            // if user inputs 0
+            else if (numMembers == 0)
+            {
+                MessageBox.Show("Please do not Input 0.");
+            }
+            // if good to go
+            else if (numMembers <= temp.Count)
+            {
+                // code to save goes here
+               
+
+                this.Close();
+            }
+            // if user inputs a bigger number than the number of members
+            else
+            {
+                MessageBox.Show("There are only " + temp.Count + " participant/s in the tournament selected.");
+            }
+        }
     }
 }
