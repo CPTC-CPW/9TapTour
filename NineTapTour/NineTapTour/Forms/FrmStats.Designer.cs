@@ -61,7 +61,7 @@
             ((System.ComponentModel.ISupportInitialize)(this._NineTapTour_NineTapDbDataSet)).BeginInit();
             this.SuspendLayout();
             // 
-            // dataGridView1
+            // TournamentEntriesGrid
             // 
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;

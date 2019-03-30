@@ -215,10 +215,7 @@ namespace NineTapTour.Database
                     newHistory.Notes = item.Notes;
                     Return.Add(newHistory);
                 }
-
-
             }
-
             return Return;
         }
 
@@ -229,7 +226,8 @@ namespace NineTapTour.Database
             {
                 var temp = (from h in db.PlayerHistory
                             where h.MemberNumber == memnum && h.regionID == RegionId
-                            orderby h.TournamentDate descending
+                            orderby h.TournamentDate descending 
+                            //orderby h.MoneyWon descending
                             select new
                             {
                                 h.hisID,

@@ -103,7 +103,7 @@ namespace NineTapTour.Forms
             Font drawFont = new Font("Arial", 12);
             SolidBrush drawBrush = new SolidBrush(Color.White);
             PointF drawPoint = new PointF(10, 2);
-            g.DrawString("Version: 1.7.9", drawFont, drawBrush, drawPoint);
+            g.DrawString("Version: 1.7.10", drawFont, drawBrush, drawPoint);
 #if DEBUG
             drawBrush.Color = Color.Red;
             drawPoint.Y += 16;
@@ -130,15 +130,15 @@ namespace NineTapTour.Forms
                 }
 
                 // Delete FinilizeTemp where FinalizeID = selected regionID
-                List<FinalizeTemp> fin = FinalizeTempDB.GetFinalizeList(regionID);
+                List<FinalizeTemp> fin = FinalizeTempDB.GetFinalizeListByRegionID(regionID);
 
                 foreach (var f in fin)
                 {
-                    FinalizeTempDB.DeleteFinilizeTemp(f);
+                    FinalizeTempDB.DeleteFinalizeTemp(f);
                 }
 
                 // Delete Participants where Participant RegionID = regionID
-                List<Participant> par = FinalizeTempDB.GetparticpantList(regionID);
+                List<Participant> par = FinalizeTempDB.GetparticpantListByRegionID(regionID);
 
                 foreach (var p in par)
                 {
@@ -146,7 +146,7 @@ namespace NineTapTour.Forms
                 }
 
                 // Delete Games where GameRegionID = regionID
-                List<Game> gam = FinalizeTempDB.GetGameList(regionID);
+                List<Game> gam = FinalizeTempDB.GetGameListByRegionID(regionID);
 
                 foreach (var g in gam)
                 {
