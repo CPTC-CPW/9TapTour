@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -94,7 +95,7 @@ namespace NineTapTour.Forms
                 {
                     frmPleaseWait please = new frmPleaseWait();
                     please.Show();
-                    exportToExcel();
+                    exportToExcel(); //temp, selectedTournament, reportTypeNum, currentSquad, squadList, printDues
                     wait = false;
                     please.Close();
                 }
@@ -125,12 +126,11 @@ namespace NineTapTour.Forms
                 db.SaveChanges();
             }
 
-
             // have program open template file automatically and auto save
             // with a specific naming conventions such as "Pacific 3Of4 1-12-18" 
             // without using open/save file dialogues
             // get the full path to where the tournament results template is located
-            string getFilePath = Path.GetFullPath("Resources/TournamentResultsTemplate.xls");
+            string getFilePath = Path.GetFullPath("Resources/SeriesReportTemplate.xls");
 
             // get the date of the tourney and convert it to a string
             string tourneyDate = tourny.Date.ToString("MM/dd/yyyy");
@@ -155,7 +155,7 @@ namespace NineTapTour.Forms
 
             int i = 0; // used to determine which row to save data into
             int j = 0; // used to determine which column to save the data into
-            bool FormatBool = false;
+            
             int tiePlace = 0;
 
             Microsoft.Office.Interop.Excel.Application xlApp; // used to open the excel application
@@ -197,78 +197,6 @@ namespace NineTapTour.Forms
                         {
                             //store the place of the next player for comparison of ties
                             tempData = dt.Rows[i + 1].ItemArray[j].ToString();
-
-                            // add place standing into the first column of the current row
-                            if (j == 0)
-                            {
-                                //check for first place
-                                if (data == "1")
-                                {
-                                    // check for 1st place tie
-                                    if (i > 0 || data == tempData)
-                                    {
-                                        // add place into 1st column with a "T" for tie
-                                        xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "stT";
-
-                                        // add placement to 2nd column 1 row down
-                                        xlWorkSheet.Cells[(i * 2) + 5, j + 2] = "1st Place";
-
-                                        // add place without "st" into column 11
-                                        xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
-                                    }
-
-                                    else
-                                    {   // no tie
-                                        // add place into 1st column
-                                        xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "st";
-
-                                        // add place without "st" into column 11
-                                        xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
-                                    }
-                                }
-                                else if (data == "2")
-                                {   //check for second place
-                                    // check for second place tie
-                                    if (i > 1 || data == tempData)
-                                    {
-                                        // add place into 1st column with a "T" for tie
-                                        xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "ndT";
-
-                                        // add placement to 2nd column 1 row down
-                                        xlWorkSheet.Cells[(i * 2) + 5, j + 2] = "2nd Place";
-
-                                        // add place without "st" into column 11
-                                        xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
-                                    }
-                                    else
-                                    {   //no tie
-                                        // add place into 1st column
-                                        xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "nd";
-
-                                        // add place without "st" into column 11
-                                        xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
-                                    }
-                                }
-                                else
-                                {   //else its third place
-                                    //check for tie with player below
-                                    if (data == tempData)
-                                    {
-                                        xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "rdT";
-                                        xlWorkSheet.Cells[9, j + 2] = "3rd Place";
-
-                                        // add place without "st" into column 11
-                                        xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
-                                    }
-                                    else
-                                    {
-                                        xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "rd";
-
-                                        // add place without "st" into column 11
-                                        xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
-                                    }
-                                }
-                            }
 
                             // Add the name into the 2nd column of the current row
                             if (j == 1)
@@ -454,18 +382,10 @@ namespace NineTapTour.Forms
                     }
                 }
 
-                if (FormatBool)
-                {
-                    formatBigTie(tempData3, tiePlace, xlWorkSheet, i);
-                }
-
-                //set the Total Payout to the correct number
-                setTotalPayout(xlWorkSheet);
-
                 // saves the excel file with the file name
                 try
                 {
-                    if (fileName != "TournamentResultsTemplate.xls" || !string.IsNullOrEmpty(fileName))
+                    if (fileName != "SeriesReportTemplate.xls" || !string.IsNullOrEmpty(fileName))
                     {
                         SaveFileDialog savefile = new SaveFileDialog();
                         savefile.Filter = "Excel Files (*.xls)|*.xls";
@@ -493,10 +413,32 @@ namespace NineTapTour.Forms
             catch
             {
                 // if the workbook does not get opened, display an error message
-                MessageBox.Show("Must choose a file to export to. \n" +
-                                " *Must have at least 20 bowlers and 4 money winners* ");
+                MessageBox.Show("Must choose a file to export to.");
                 xlWorkBook.Close(true, misValue, misValue);
                 xlApp.Quit();
+            }
+        }
+
+        /// <summary>
+        /// This method is used to clean up the references to the Excel Objects
+        /// so that Excel does not remain running.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void releaseObject(object obj)
+        {
+            try
+            {
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
+                obj = null;
+            }
+            catch (Exception ex)
+            {
+                obj = null;
+                MessageBox.Show("Exception Occured while releasing object " + ex.ToString());
+            }
+            finally
+            {
+                GC.Collect();
             }
         }
 
