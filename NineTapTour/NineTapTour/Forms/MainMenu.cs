@@ -174,7 +174,6 @@ namespace NineTapTour.Forms
                 if (NineTapRegionDB.getNumberOfRegions() == 0) // recreate the local region select again if it nothing exists here anymore
                 {
                     NineTapRegion n = new NineTapRegion();
-                    n.NineTapRegionID = 1;
                     n.NineTapRegionName = "Local";
                     NineTapRegionDB.AddRegion(n);
                 }
