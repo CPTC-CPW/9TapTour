@@ -406,7 +406,7 @@ namespace NineTapTour.Database
             {
                 return (from p in db.Participants
                         where p.ParticipantRegionID == RegionID
-                        select p).ToList();
+                        select p).Include(nameof(Participant.Member)).ToList();
             }
         }
 

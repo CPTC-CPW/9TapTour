@@ -103,7 +103,7 @@ namespace NineTapTour.Forms
             Font drawFont = new Font("Arial", 12);
             SolidBrush drawBrush = new SolidBrush(Color.White);
             PointF drawPoint = new PointF(10, 2);
-            g.DrawString("Version: 1.7.10", drawFont, drawBrush, drawPoint);
+            g.DrawString("Version: 1.7.11", drawFont, drawBrush, drawPoint);
 #if DEBUG
             drawBrush.Color = Color.Red;
             drawPoint.Y += 16;
@@ -115,10 +115,8 @@ namespace NineTapTour.Forms
         // at this time. Keeping the code incase it's needed in the future.
         private void btnDropDataBase1_Click_1(object sender, EventArgs e)
         {
-
-            List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
             string name = NineTapRegionDB.getRegionByID(regionID).NineTapRegionName;
-            if (MessageBox.Show($"This button will delete all data stored in the {NineTapRegionDB.getRegionByID(regionID).NineTapRegionName} database, are you sure you want to clear  data?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (MessageBox.Show($"This button will delete all data stored in the {name} database, are you sure you want to clear  data?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 frmPleaseWait pl = new frmPleaseWait();
                 pl.Show();
@@ -176,7 +174,6 @@ namespace NineTapTour.Forms
                 if (NineTapRegionDB.getNumberOfRegions() == 0) // recreate the local region select again if it nothing exists here anymore
                 {
                     NineTapRegion n = new NineTapRegion();
-                    n.NineTapRegionID = 1;
                     n.NineTapRegionName = "Local";
                     NineTapRegionDB.AddRegion(n);
                 }

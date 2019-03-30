@@ -1048,6 +1048,10 @@ namespace NineTapTour.Forms
 
         private void MoveToLastRecordOfMemberScores()
         {
+            //If there are no participants in the current tournament
+            if (overallListOfParticipants == null)
+                return;
+
             switchingParticipents = true;
 
             // Disables buttons and breaks function
