@@ -396,7 +396,7 @@
     <None Include="Resources\9tapUserManual.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\SeriesReportTemplate.xlsx" />
+    <None Include="Resources\SeriesReportTemplate.xls" />
     <None Include="_NineTapTour_NineTapDbDataSet.xsc">
       <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
     </None>
