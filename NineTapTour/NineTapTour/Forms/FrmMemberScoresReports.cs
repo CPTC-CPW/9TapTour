@@ -143,11 +143,11 @@ namespace NineTapTour.Forms
             int i = 0; // used to determine which row to save data into
             int j = 0; // used to determine which column to save the data into
             
-            int tiePlace = 0;
+    
 
-            Microsoft.Office.Interop.Excel.Application xlApp; // used to open the excel application
-            Microsoft.Office.Interop.Excel.Workbook xlWorkBook; // used to open the worksheet
-            Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet; // this is the sheet of the excel worksheet
+            Excel.Application xlApp; // used to open the excel application
+            Excel.Workbook xlWorkBook; // used to open the worksheet
+            Excel.Worksheet xlWorkSheet; // this is the sheet of the excel worksheet
             object misValue = System.Reflection.Missing.Value;
 
             xlApp = new Microsoft.Office.Interop.Excel.Application(); // open the excel application
@@ -156,6 +156,7 @@ namespace NineTapTour.Forms
             // get and open the excel file:
             try
             {
+                // ********************************************************************************************* need to figure out why does not load
                 // opens the file that will be written to
                 xlWorkBook = xlApp.Workbooks.Open(getFilePath, misValue, misValue, misValue, misValue, misValue,
                                                    misValue, misValue, misValue, misValue, misValue, misValue,
@@ -169,29 +170,15 @@ namespace NineTapTour.Forms
 
                 // adds in the date of the tourney in the cell D3
                 xlWorkSheet.Cells[3, 4] = selectedTournament.Date;
-                int membersToSave = (int.Parse(txtNumberOfMembers.Text));
+
                 //// use these for loops to populate data in each of
                 //// the rows and cells that have data
-                for (i = 3; i < membersToSave; i++)
+                // ********************************************************************************************* need to finish populating the excel file here
+                for (i = 4; i < 5; i++)
                 {
                     for (j = 0; j <= 5 - 1; j++)
                     {
                         data = dt.Rows[i].ItemArray[j].ToString();
-
-                            tempData = dt.Rows[i + 1].ItemArray[j].ToString();
-
-                            // Add the
-                            if (j == 1)
-                            {
-                                xlWorkSheet.Cells[i + (4 + i), j + 1] = data;
-                            }
-
-                            // Add the 
-                            if (j == 2)
-                            {
-                                xlWorkSheet.Cells[i + (4 + i), j + 4] = data;
-                            }
-                        }
 
                         // For rows 3 and higher in the data table
                         if (i >= 3)
@@ -218,9 +205,7 @@ namespace NineTapTour.Forms
                                 r2.MergeCells = true;
                             }
 
-                            // Add the place standing and 
-                            // displays for example: 4th, 5th, 6th,
-                            // 21st, 22nd, 23rd, etc.
+                            // Add the place standing and displays for example: 4th, 5th, 6th, 21st, 22nd, 23rd, etc.
                             if (j == 0)
                             {
                                 //store the place value of the player before the current
@@ -236,27 +221,44 @@ namespace NineTapTour.Forms
                                     tempData2 = tempData;
                                 }
 
+                                // check the place and then add "st", "nd", "rd" or "th"
+                                string place = getPlace(data);
+
+                                if (data == tempData || data == tempData2)
+                                {   //check for a tie with either the player before or after the current player
+                                    //set the finishing place text with a T for tie
+                                    xlWorkSheet.Cells[i + 7, j + 1] = data + place + "T";
+                                    // add place without "st, nd, rd, or th" into column 11
+                                    xlWorkSheet.Cells[i + 7, j + 11] = data;
+                                }
+                                else
+                                {
+                                    //set the finishing place text
+                                    xlWorkSheet.Cells[i + 7, j + 1] = data + place;
+                                    // add place without "st, nd, rd, or th" into column 11
+                                    xlWorkSheet.Cells[i + 7, j + 11] = data;
+                                }
                             }
 
-                            // Add the name into the 2nd column in all the rows 10 - 32 of the excel sheet
+                            // Add the 
                             if (j == 1)
                             {
                                 xlWorkSheet.Cells[i + 7, j + 1] = data;
                             }
 
-                            // Add the handicap in the 6th column in all the rows 10 - 32 of the excel sheet
+                            // Add the
                             if (j == 2)
                             {
                                 xlWorkSheet.Cells[i + 7, j + 4] = data;
                             }
 
-                            // Add the total score in the 7th column in all the rows 10 - 32 of the excel sheet
+                            // Add the 
                             if (j == 3)
                             {
                                 xlWorkSheet.Cells[i + 7, j + 4] = data;
                             }
 
-                            // Add the money won into the 9th column in all the rows 10 - 32 of the excel sheet
+                            // Add the 
                             if (j == 4)
                             {
                                 xlWorkSheet.Cells[i + 7, j + 5] = data;
@@ -273,19 +275,9 @@ namespace NineTapTour.Forms
                                 xlWorkSheet.Cells[i + 7, j + 7] = data;
                             }
                         }
-
-                        // if we are on last row and i is less than 28
-                        if (i == dt.Rows.Count - 1 && i < 27 && j == 5)
-                        {
-                            // grab the extra rows in the excel spreadsheet
-                            Excel.Range range = xlWorkSheet.get_Range("A" + (i + 8), "O" + 34);
-                            // delete the extra rows
-                            range.Delete();
-                            // calculate the total amount of money that was paid out
-                            //xlWorkSheet.Cells[2, 8] = "=SUM(I" + 4 + ":I" + (i + 7) + ")";
-                        }
                     }
                 }
+                // ********************************************************************************************* need to finish populating the excel above file here
 
                 // saves the excel file with the file name
                 try
