@@ -111,8 +111,24 @@ namespace NineTapTour.Forms
 
         private void exportToExcel()
         {
-            //temp, selectedTournament, reportTypeNum, currentSquad, squadList, printDues
-            
+            // this is used in a few places for labeling file name and displayed on the excel sheet
+            string reportTypeToSave = "";
+            string reportLabelToSave = "Game";
+            // if its highseries display series  otherwise will display game
+            // but will chage the save name
+            if (reportTypeNum.ToString() == "HighSeries")
+            {
+                reportLabelToSave = "Series";
+                reportTypeToSave = "Series";
+            }
+            else if (reportTypeNum.ToString() == "HighGameSenior")
+            {
+                reportTypeToSave ="Senior"; 
+            }
+            else
+            {
+                reportTypeToSave = "Final";
+            }
             // have program open template file automatically and auto save
             // with a specific naming conventions such as "Series Pacific 3Of4 1-12-18" 
             // without using open/save file dialogues
@@ -131,7 +147,7 @@ namespace NineTapTour.Forms
 
             // create the name of the file by adding together the location, the event, and the
             // date of the tournament
-            string fileName = "Series" + selectedTournament.Location + " " + selectedTournament.Event + " " + tournamentDate + ".xls";
+            string fileName = reportTypeToSave + selectedTournament.Location + " " + selectedTournament.Event + " " + tournamentDate + ".xls";
 
             // save the file in the documents folder
             string saveFile = @"\Documents\" + fileName;
@@ -161,16 +177,17 @@ namespace NineTapTour.Forms
 
                 // adds in the tourney location in the cell A3
                 xlWorkSheet.Cells[3, 1] = selectedTournament.Location;
+                // adds in the event name 
                 xlWorkSheet.Cells[3, 4] = selectedTournament.Event;
                 // adds in the date of the tourney in the cell 
                 xlWorkSheet.Cells[3, 5] = selectedTournament.Date;
-
+                // adds changes game or series as needed
+                xlWorkSheet.Cells[4, 2] = reportLabelToSave;
                 //// use these for loops to populate data in each of
                 //// the rows and cells that have data
-                // ********************************************************************************************* need to finish populating the excel file here
-                for (i = 5; i <= numMembers; i++)
+                for (i = 5; i <= numMembers + 4; i++)
                 {
-                    for (j = 1; j <= 5; j++)
+                    for (j = 1; j <= 4; j++) // four columns wide 
                     {
                         // first insert a new line into the excel spreadsheet
                         if (i >= 5 && j == 1)
@@ -180,21 +197,8 @@ namespace NineTapTour.Forms
 
                             // insert the new row
                             line.Insert();
-
-                            //// get these cells
-                            //Excel.Range r = xlWorkSheet.get_Range("B" + (i + 7), "E" + (i + 7));
-
-                            //// merge the cells of the excel sheet
-                            //r.MergeCells = true;
-
-                            //// get these cells
-                            //Excel.Range r2 = xlWorkSheet.get_Range("G" + (i + 7), "H" + (i + 7));
-
-                            //// merge the cells
-                            //r2.MergeCells = true;
                         }
-
-                        //temp, selectedTournament, reportTypeNum, currentSquad, squadList, printDues
+                        
                         // Adds the finish place
                         if (j == 1) 
                         {
@@ -204,23 +208,22 @@ namespace NineTapTour.Forms
                         // Add the series or game depending what clicked
                         if (j == 2)
                         {
-                            xlWorkSheet.Cells[i, j] = "Series"; 
+                            xlWorkSheet.Cells[i, j] = temp[i-5].Score; // "Series"; 
                         }
 
                         // Adds the member number
                         if (j == 3)
                         {
-                            xlWorkSheet.Cells[i, j] = "Mem#";  
+                            xlWorkSheet.Cells[i, j] = temp[i-5].MemberId; 
                         }
 
                         // Adds the name
                         if (j == 4)
                         {
-                            xlWorkSheet.Cells[i, j] = "Name"; 
+                            xlWorkSheet.Cells[i, j] = temp[i-5].LastName + ", " + temp[i - 5].FirstName; 
                         }
                     }
                 }
-                // ********************************************************************************************* need to finish populating the excel above file here
 
                 // saves the excel file with the file name
                 try
