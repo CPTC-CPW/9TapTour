@@ -116,9 +116,10 @@ namespace NineTapTour.Forms
             // have program open template file automatically and auto save
             // with a specific naming conventions such as "Series Pacific 3Of4 1-12-18" 
             // without using open/save file dialogues
+
             // get the full path to where the tournament results template is located
             string getFilePath = Path.GetFullPath("Resources/SeriesReportTemplate.xls");
-
+            
             // get the date of the tourney and convert it to a string
             string tourneyDate = selectedTournament.Date.ToString("MM/dd/yyyy");
 
@@ -126,7 +127,7 @@ namespace NineTapTour.Forms
             string tournyDate = tourneyDate.Replace("/", "-");
 
             // remove the time from the end of the date
-            string tournamentDate = tournyDate.Replace(tourneyDate, "");
+            string tournamentDate = tournyDate.Replace(tourneyDate, " ");
 
             // create the name of the file by adding together the location, the event, and the
             // date of the tournament
@@ -135,145 +136,87 @@ namespace NineTapTour.Forms
             // save the file in the documents folder
             string saveFile = @"\Documents\" + fileName;
 
-            string data = null; // the data to be added to the excel spreadsheet cells
-            string tempData = null;
-            string tempData2 = null;
-            string tempData3 = null;
-
             int i = 0; // used to determine which row to save data into
             int j = 0; // used to determine which column to save the data into
-            
-    
-
+         
             Excel.Application xlApp; // used to open the excel application
             Excel.Workbook xlWorkBook; // used to open the worksheet
             Excel.Worksheet xlWorkSheet; // this is the sheet of the excel worksheet
             object misValue = System.Reflection.Missing.Value;
 
-            xlApp = new Microsoft.Office.Interop.Excel.Application(); // open the excel application
+            xlApp = new Excel.Application(); // open the excel application
             xlWorkBook = xlApp.Workbooks.Add(misValue);
-
+            int.TryParse(txtNumberOfMembers.Text, out int numMembers); // how many people to save in the report
             // get and open the excel file:
             try
             {
                 // ********************************************************************************************* need to figure out why does not load
                 // opens the file that will be written to
-                xlWorkBook = xlApp.Workbooks.Open(getFilePath, misValue, misValue, misValue, misValue, misValue,
-                                                   misValue, misValue, misValue, misValue, misValue, misValue,
-                                                   misValue, misValue, misValue);
+                //xlWorkBook = xlApp.Workbooks.Open(getFilePath, misValue, misValue, misValue, misValue, misValue,
+                //                                   misValue, misValue, misValue, misValue, misValue, misValue,
+                //                                   misValue, misValue, misValue);
 
                 // gets the sheet on the excel file that will be written to
                 xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
 
                 // adds in the tourney location in the cell A3
-                xlWorkSheet.Cells[3, 1] = selectedTournament.Location + selectedTournament.Event;
-
-                // adds in the date of the tourney in the cell D3
-                xlWorkSheet.Cells[3, 4] = selectedTournament.Date;
+                xlWorkSheet.Cells[3, 1] = selectedTournament.Location;
+                xlWorkSheet.Cells[3, 4] = selectedTournament.Event;
+                // adds in the date of the tourney in the cell 
+                xlWorkSheet.Cells[3, 5] = selectedTournament.Date;
 
                 //// use these for loops to populate data in each of
                 //// the rows and cells that have data
                 // ********************************************************************************************* need to finish populating the excel file here
-                for (i = 4; i < 5; i++)
+                for (i = 5; i <= numMembers; i++)
                 {
-                    for (j = 0; j <= 5 - 1; j++)
+                    for (j = 1; j <= 5; j++)
                     {
-                        data = dt.Rows[i].ItemArray[j].ToString();
-
-                        // For rows 3 and higher in the data table
-                        if (i >= 3)
+                        // first insert a new line into the excel spreadsheet
+                        if (i >= 5 && j == 1)
                         {
-                            // first insert a new line into the excel spreadsheet
-                            if (i >= 27 && j == 0)
-                            {
-                                // Get the range on where to insert a new row into the spreadsheet
-                                Excel.Range line = (Excel.Range)xlWorkSheet.Rows[i + 7];
+                            // Get the range on where to insert a new row into the spreadsheet
+                            Excel.Range line = (Excel.Range)xlWorkSheet.Rows[i + 7];
 
-                                // insert the new row
-                                line.Insert();
+                            // insert the new row
+                            line.Insert();
 
-                                // get these cells
-                                Excel.Range r = xlWorkSheet.get_Range("B" + (i + 7), "E" + (i + 7));
+                            //// get these cells
+                            //Excel.Range r = xlWorkSheet.get_Range("B" + (i + 7), "E" + (i + 7));
 
-                                // merge the cells of the excel sheet
-                                r.MergeCells = true;
+                            //// merge the cells of the excel sheet
+                            //r.MergeCells = true;
 
-                                // get these cells
-                                Excel.Range r2 = xlWorkSheet.get_Range("G" + (i + 7), "H" + (i + 7));
+                            //// get these cells
+                            //Excel.Range r2 = xlWorkSheet.get_Range("G" + (i + 7), "H" + (i + 7));
 
-                                // merge the cells
-                                r2.MergeCells = true;
-                            }
+                            //// merge the cells
+                            //r2.MergeCells = true;
+                        }
 
-                            // Add the place standing and displays for example: 4th, 5th, 6th, 21st, 22nd, 23rd, etc.
-                            if (j == 0)
-                            {
-                                //store the place value of the player before the current
-                                tempData = dt.Rows[i - 1].ItemArray[j].ToString();
+                        //temp, selectedTournament, reportTypeNum, currentSquad, squadList, printDues
+                        // Adds the finish place
+                        if (j == 1) 
+                        {
+                            xlWorkSheet.Cells[i,j] = (i-4).ToString();
+                        }
 
-                                //if there is a next player, grab their place value aswell
-                                if ((i + 1) < dt.Rows.Count)
-                                {
-                                    tempData2 = dt.Rows[i + 1].ItemArray[j].ToString();
-                                }
-                                else
-                                {
-                                    tempData2 = tempData;
-                                }
+                        // Add the series or game depending what clicked
+                        if (j == 2)
+                        {
+                            xlWorkSheet.Cells[i, j] = "Series"; 
+                        }
 
-                                // check the place and then add "st", "nd", "rd" or "th"
-                                string place = getPlace(data);
+                        // Adds the member number
+                        if (j == 3)
+                        {
+                            xlWorkSheet.Cells[i, j] = "Mem#";  
+                        }
 
-                                if (data == tempData || data == tempData2)
-                                {   //check for a tie with either the player before or after the current player
-                                    //set the finishing place text with a T for tie
-                                    xlWorkSheet.Cells[i + 7, j + 1] = data + place + "T";
-                                    // add place without "st, nd, rd, or th" into column 11
-                                    xlWorkSheet.Cells[i + 7, j + 11] = data;
-                                }
-                                else
-                                {
-                                    //set the finishing place text
-                                    xlWorkSheet.Cells[i + 7, j + 1] = data + place;
-                                    // add place without "st, nd, rd, or th" into column 11
-                                    xlWorkSheet.Cells[i + 7, j + 11] = data;
-                                }
-                            }
-
-                            // Add the 
-                            if (j == 1)
-                            {
-                                xlWorkSheet.Cells[i + 7, j + 1] = data;
-                            }
-
-                            // Add the
-                            if (j == 2)
-                            {
-                                xlWorkSheet.Cells[i + 7, j + 4] = data;
-                            }
-
-                            // Add the 
-                            if (j == 3)
-                            {
-                                xlWorkSheet.Cells[i + 7, j + 4] = data;
-                            }
-
-                            // Add the 
-                            if (j == 4)
-                            {
-                                xlWorkSheet.Cells[i + 7, j + 5] = data;
-
-                                // put equation into column 15 that will display the total
-                                // amount the player earned minus the yearly membership and
-                                // any money adjustments
-                                xlWorkSheet.Cells[i + 7, j + 11] = "=I" + (i + 7) + "-M" + (i + 7) + "-N" + (i + 7);
-                            }
-
-                            // Add the member number into the 12th column in all the rows 10 - 32 of the excel sheet
-                            if (j == 5)
-                            {
-                                xlWorkSheet.Cells[i + 7, j + 7] = data;
-                            }
+                        // Adds the name
+                        if (j == 4)
+                        {
+                            xlWorkSheet.Cells[i, j] = "Name"; 
                         }
                     }
                 }
