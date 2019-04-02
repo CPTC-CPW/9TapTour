@@ -166,36 +166,34 @@ namespace NineTapTour.Forms
             // get and open the excel file:
             try
             {
-                // ********************************************************************************************* need to figure out why does not load
                 // opens the file that will be written to
-                //xlWorkBook = xlApp.Workbooks.Open(getFilePath, misValue, misValue, misValue, misValue, misValue,
-                //                                   misValue, misValue, misValue, misValue, misValue, misValue,
-                //                                   misValue, misValue, misValue);
+                xlWorkBook = xlApp.Workbooks.Open(getFilePath, misValue, misValue, misValue, misValue, misValue,
+                                                   misValue, misValue, misValue, misValue, misValue, misValue,
+                                                   misValue, misValue, misValue);
 
                 // gets the sheet on the excel file that will be written to
                 xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
 
-                // adds in the tourney location in the cell A3
+                // adds in the tourney location 
                 xlWorkSheet.Cells[3, 1] = selectedTournament.Location;
                 // adds in the event name 
                 xlWorkSheet.Cells[3, 4] = selectedTournament.Event;
-                // adds in the date of the tourney in the cell 
+                // adds in the date of the tourney
                 xlWorkSheet.Cells[3, 5] = selectedTournament.Date;
                 // adds changes game or series as needed
                 xlWorkSheet.Cells[4, 2] = reportLabelToSave;
-                //// use these for loops to populate data in each of
-                //// the rows and cells that have data
+                //// use these loops to populate data to be displayed
                 for (i = 5; i <= numMembers + 4; i++)
                 {
                     for (j = 1; j <= 4; j++) // four columns wide 
                     {
                         // first insert a new line into the excel spreadsheet
-                        if (i >= 5 && j == 1)
+                        if (i >= 30 && j == 1)
                         {
                             // Get the range on where to insert a new row into the spreadsheet
-                            Excel.Range line = (Excel.Range)xlWorkSheet.Rows[i + 7];
+                            Excel.Range line = (Excel.Range)xlWorkSheet.Rows[i + (numMembers-30)];
 
-                            // insert the new row
+                            //insert the new row
                             line.Insert();
                         }
                         
