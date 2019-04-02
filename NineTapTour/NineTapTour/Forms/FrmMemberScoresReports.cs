@@ -191,7 +191,7 @@ namespace NineTapTour.Forms
                         if (i >= 30 && j == 1)
                         {
                             // Get the range on where to insert a new row into the spreadsheet
-                            Excel.Range line = (Excel.Range)xlWorkSheet.Rows[i + (numMembers-30)];
+                            Excel.Range line = (Excel.Range)xlWorkSheet.Rows[i];
 
                             //insert the new row
                             line.Insert();
@@ -200,7 +200,7 @@ namespace NineTapTour.Forms
                         // Adds the finish place
                         if (j == 1) 
                         {
-                            xlWorkSheet.Cells[i,j] = (i-4).ToString();
+                            xlWorkSheet.Cells[i,j] = temp[i-5].placing;
                         }
 
                         // Add the series or game depending what clicked
