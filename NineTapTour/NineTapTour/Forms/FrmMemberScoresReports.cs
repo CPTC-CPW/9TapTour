@@ -87,15 +87,14 @@ namespace NineTapTour.Forms
             // if good to go
             else if (numMembers <= temp.Count)
             {
-                // code to save goes here --------------------------------------------------
-                temp = Calculations.Calculations.MakeTopMembersByPlacementList(temp, numMembers);
+                temp = Calculations.Calculations.MakeTopMembersByPlacementList(temp, numMembers); // results of inquiry
                 // loads the loading screen if takes long time
                 bool wait = true;
                 while (wait)
                 {
                     frmPleaseWait please = new frmPleaseWait();
                     please.Show();
-                    exportToExcel(); //temp, selectedTournament, reportTypeNum, currentSquad, squadList, printDues
+                    exportToExcel(); // Exports to excel file
                     wait = false;
                     please.Close();
                 }
@@ -127,9 +126,9 @@ namespace NineTapTour.Forms
             }
             else
             {
-                reportTypeToSave = "Final";
+                reportTypeToSave = "FinalGame";
             }
-            // have program open template file automatically and auto save
+            // Has thr program open template file automatically and auto save
             // with a specific naming conventions such as "Series Pacific 3Of4 1-12-18" 
             // without using open/save file dialogues
 
@@ -145,15 +144,14 @@ namespace NineTapTour.Forms
             // remove the time from the end of the date
             string tournamentDate = tournyDate.Replace(tourneyDate, " ");
 
-            // create the name of the file by adding together the location, the event, and the
-            // date of the tournament
+            // create the name of the file by adding together the type of report, location, the event, and the date of tourn.
             string fileName = reportTypeToSave + selectedTournament.Location + " " + selectedTournament.Event + " " + tournamentDate + ".xls";
 
-            // save the file in the documents folder
-            string saveFile = @"\Documents\" + fileName;
+            // save the file with this name
+            string saveFile =  fileName;
 
-            int i = 0; // used to determine which row to save data into
-            int j = 0; // used to determine which column to save the data into
+            int i = 0; // which row to save data into
+            int j = 0; // which column to save the data into
          
             Excel.Application xlApp; // used to open the excel application
             Excel.Workbook xlWorkBook; // used to open the worksheet
