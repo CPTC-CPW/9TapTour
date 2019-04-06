@@ -16,7 +16,7 @@ namespace NineTapTour.Forms
         public List<Tournament> _tournamentList { get; set; }
         public System.Windows.Forms.ToolStripMenuItem activeItem;
         public FrmMemberData currFrmMemberData { get; set; }
-
+        public FrmLabelPrint currLabelPrint { get; set; }
         public frmMemberScores currfrmScoresdata { get; set; }
 
         /// <summary>
@@ -280,6 +280,13 @@ namespace NineTapTour.Forms
         private void FrmMain_Load(object sender, EventArgs e)
         {
             Home = mainMenuToolStripMenuItem;
+        }
+
+        private void labelPrintToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var newfrmPrintLabel = Application.OpenForms["FrmLabelPrint"] as FrmLabelPrint;
+            OpenOrDisplayForm(ref newfrmPrintLabel);
+            currLabelPrint = newfrmPrintLabel;
         }
     }
 }

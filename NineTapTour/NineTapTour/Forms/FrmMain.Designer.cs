@@ -41,6 +41,7 @@
             this.userManualToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.updateInactiveMembersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.labelPrintToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -100,7 +101,8 @@
             this.BackupDatabaseToolStripMenuItem,
             this.RestoreDatabaseToolStripMenuItem,
             this.updateInactiveMembersToolStripMenuItem1,
-            this.userManualToolStripMenuItem});
+            this.userManualToolStripMenuItem,
+            this.labelPrintToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -147,6 +149,13 @@
             this.updateInactiveMembersToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.updateInactiveMembersToolStripMenuItem.Text = "Update Inactive Members";
             // 
+            // labelPrintToolStripMenuItem
+            // 
+            this.labelPrintToolStripMenuItem.Name = "labelPrintToolStripMenuItem";
+            this.labelPrintToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.labelPrintToolStripMenuItem.Text = "Label Print";
+            this.labelPrintToolStripMenuItem.Click += new System.EventHandler(this.labelPrintToolStripMenuItem_Click);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -185,5 +194,6 @@
         private System.Windows.Forms.ToolStripMenuItem RestoreDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mainMenuToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem userManualToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem labelPrintToolStripMenuItem;
     }
 }
