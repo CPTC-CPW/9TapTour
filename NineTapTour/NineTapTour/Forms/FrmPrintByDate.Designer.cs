@@ -139,7 +139,7 @@
             this.Controls.Add(this.dateTimeStart);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmPrintByDate";
-            this.Text = "FrmPrintByDate";
+            this.Text = "Print By Date";
             this.ResumeLayout(false);
             this.PerformLayout();
 
