@@ -39,9 +39,9 @@
             this.RestoreDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateInactiveMembersToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.userManualToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.labelPrintToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.updateInactiveMembersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.labelPrintToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -135,6 +135,13 @@
             this.userManualToolStripMenuItem.Text = "User Manual";
             this.userManualToolStripMenuItem.Click += new System.EventHandler(this.userManualToolStripMenuItem_Click);
             // 
+            // labelPrintToolStripMenuItem
+            // 
+            this.labelPrintToolStripMenuItem.Name = "labelPrintToolStripMenuItem";
+            this.labelPrintToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.labelPrintToolStripMenuItem.Text = "Print Member Labels";
+            this.labelPrintToolStripMenuItem.Click += new System.EventHandler(this.labelPrintToolStripMenuItem_Click);
+            // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -148,13 +155,6 @@
             this.updateInactiveMembersToolStripMenuItem.Name = "updateInactiveMembersToolStripMenuItem";
             this.updateInactiveMembersToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.updateInactiveMembersToolStripMenuItem.Text = "Update Inactive Members";
-            // 
-            // labelPrintToolStripMenuItem
-            // 
-            this.labelPrintToolStripMenuItem.Name = "labelPrintToolStripMenuItem";
-            this.labelPrintToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.labelPrintToolStripMenuItem.Text = "Label Print";
-            this.labelPrintToolStripMenuItem.Click += new System.EventHandler(this.labelPrintToolStripMenuItem_Click);
             // 
             // FrmMain
             // 
