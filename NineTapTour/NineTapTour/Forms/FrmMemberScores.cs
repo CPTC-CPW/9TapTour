@@ -2083,6 +2083,10 @@ namespace NineTapTour.Forms
             }
         }
 
-        
+        private void lbxTopGameSeries_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }
