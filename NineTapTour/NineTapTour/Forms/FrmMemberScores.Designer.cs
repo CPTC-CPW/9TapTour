@@ -805,7 +805,6 @@
             this.lbxTopGameSeries.Size = new System.Drawing.Size(337, 82);
             this.lbxTopGameSeries.TabIndex = 50;
             this.lbxTopGameSeries.Click += new System.EventHandler(this.lbxGameLeader_Click);
-            this.lbxTopGameSeries.SelectedIndexChanged += new System.EventHandler(this.lbxTopGameSeries_SelectedIndexChanged);
             // 
             // lbxHighGameSC
             // 
@@ -824,7 +823,6 @@
             this.lbxHighGameHC.Size = new System.Drawing.Size(337, 82);
             this.lbxHighGameHC.TabIndex = 48;
             this.lbxHighGameHC.Click += new System.EventHandler(this.lbxGameLeader_Click);
-            //this.lbxHighGameHC.SelectedIndexChanged += new System.EventHandler(this.lbxHighGameHC_SelectedIndexChanged);
             // 
             // QBSBOX
             // 

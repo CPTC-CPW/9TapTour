@@ -2082,11 +2082,5 @@ namespace NineTapTour.Forms
                 FormHelper.SelectParticipantSquad(participant.Squad, groupBox1);
             }
         }
-
-        private void lbxTopGameSeries_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
     }
 }
