@@ -12,7 +12,7 @@ namespace NineTapTour.Forms.Tests
     public class TournamentStatsTests
     {
         [TestMethod()]
-        public void GetTop3OutOf4Test_ListOf4Scores_DropsLowestAndReturns3ScoresInDescendingOrder()
+        public void GetTop3OutOf4_ListOf4Scores_DropsLowestAndReturns3ScoresInDescendingOrder()
         {
             List<int?> testScores = new List<int?>()
             {
@@ -37,7 +37,7 @@ namespace NineTapTour.Forms.Tests
         }
 
         [TestMethod]
-        public void GetTop3OutOf4Test_ListOf3OrLessScores_DoesNotDropLowest()
+        public void GetTop3OutOf4_ListOf3OrLessScores_DoesNotDropLowest()
         {
             List<int?> testScores = new List<int?>()
             {
