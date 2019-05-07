@@ -264,7 +264,7 @@ namespace NineTapTour.Forms
                 // Score Info         
                 /********************************************************************************
                 updates the form's handicap even when the finalize tournament button is clicked
-                -also updates the currentMem's handicap, so when the tournamnent gets it, it is the right handicap
+                -also updates the currentMem's handicap, so when the tournnament gets it, it is the right handicap
                 *********************************************************************************/
                 try
                 {
