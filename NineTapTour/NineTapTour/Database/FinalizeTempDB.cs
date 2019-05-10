@@ -382,7 +382,7 @@ namespace NineTapTour.Database
             var db = new NineTapDb();
             return (from par in db.Participants
                    where par.Game.Id == gameID
-                   select par).SingleOrDefault();
+                   select par).Include(nameof(Member)).SingleOrDefault();
         }
 
         public static List<Participant> GetparticpantListByRegionID(int RegionID)
