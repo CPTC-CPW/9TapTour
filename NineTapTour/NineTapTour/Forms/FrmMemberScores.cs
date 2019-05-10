@@ -15,6 +15,7 @@ using Bogus.Extensions;
 using NineTapTour.Models;
 using NineTapTour.Models.ViewModels;
 using static NineTapTour.Database.ReportHelper;
+using System.Data.Entity.Infrastructure;
 
 namespace NineTapTour.Forms
 {
@@ -1788,6 +1789,7 @@ namespace NineTapTour.Forms
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             //Grabs the tournament from the selected tournament combobox and casts it to selected Tournament
             selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
             //Repopulates list of participants with the current tournament
@@ -1818,6 +1820,10 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show("Current Stats Not added to Tournament yet.");
             }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
             ReEnableNavigation();
         }
 
@@ -1827,7 +1833,6 @@ namespace NineTapTour.Forms
             ResetFields();
             Refresh(false);
             RecordIndex(overallListOfParticipants);
-            cbxTourneyDropDown.DataSource = TournamentDb.GetTournamentList(RegionID);
             overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             cbxTourneyDropDown.ValueMember = "Id";
@@ -1841,9 +1846,17 @@ namespace NineTapTour.Forms
             PlayerHistoryDB.DeletePlayerHistory(p);
             //Delete from FinalizeTemp
             FinalizeTemp ft = FinalizeTempDB.getFinalizeID(GameDB.GetGame(g.Id));
-            FinalizeTempDB.DeleteFinalizeTemp(ft);
+            try
+            {
+                FinalizeTempDB.DeleteFinalizeTemp(ft);
+            }
+            catch (DbUpdateException)
+            {
+                //no finalized record to remove
+            }
+            
             //Delete from Participants list
-            Participant par = FinalizeTempDB.getParticipantbyGameID(g.Id);
+            Participant par = FinalizeTempDB.GetParticipantByGameId(g.Id);
             FinalizeTempDB.deleteParticipant(par);
             overallListOfParticipants.Remove(par);
             if(currentIndex + 1 == overallListOfParticipants.Count)
