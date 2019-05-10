@@ -212,39 +212,42 @@ namespace NineTapTour.Calculations
         /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding. Duplicate entries are removed.
         /// returned list is sorted by highest score
         /// </summary>
-        /// <param name="temp">list of MemberScores sorted by Score with placestanding, without duplicate members</param>
-        public static List<MemberScores> CalculatePlaceStandings(List<MemberScores> temp)
+        /// <param name="tempListOfMemberScores">list of MemberScores sorted by Score with placestanding, without duplicate members</param>
+        /// 
+        //My Change is renaming temp to tempListOfMemberScores
+        public static List<MemberScores> CalculatePlaceStandings(List<MemberScores> tempListOfMemberScores)
         {
-            if (temp.Count == 0)
+            if (tempListOfMemberScores.Count == 0)
             {
-                return temp;
+                return tempListOfMemberScores;
             }
 
             // Makes copy so original list won't be affected
-            temp = temp.ToList();
+            tempListOfMemberScores = tempListOfMemberScores.ToList();
 
             //remove duplicates
-            RemoveDuplicateBowlers(temp);
+            RemoveDuplicateBowlers(tempListOfMemberScores);
 
             //ensure bowlers are sorted by score
-            temp.Sort(new MemberScoresComparer());
+            tempListOfMemberScores.Sort(new MemberScoresComparer());
 
             int place = 1;
-            temp[0].placing = place++;
-            for (int currPosition = 1; currPosition < temp.Count; currPosition++)
+            tempListOfMemberScores[0].placing = place++;
+
+            for (int currPosition = 1; currPosition < tempListOfMemberScores.Count; currPosition++)
             {
-                if (temp[currPosition].Score == temp[currPosition - 1].Score)
+                if (tempListOfMemberScores[currPosition].Score == tempListOfMemberScores[currPosition - 1].Score)
                 {
-                    temp[currPosition].placing = temp[currPosition - 1].placing;
+                    tempListOfMemberScores[currPosition].placing = tempListOfMemberScores[currPosition - 1].placing;
                 }
                 else
                 {
-                    temp[currPosition].placing = place;
+                    tempListOfMemberScores[currPosition].placing = place;
                 }
                 place++;
             }
 
-            return temp;
+            return tempListOfMemberScores;
         }   
 
         /// <summary>

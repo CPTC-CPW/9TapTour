@@ -2082,7 +2082,5 @@ namespace NineTapTour.Forms
                 FormHelper.SelectParticipantSquad(participant.Squad, groupBox1);
             }
         }
-
-        
     }
 }
