@@ -1789,6 +1789,7 @@ namespace NineTapTour.Forms
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             //Grabs the tournament from the selected tournament combobox and casts it to selected Tournament
             selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
             //Repopulates list of participants with the current tournament
@@ -1818,6 +1819,10 @@ namespace NineTapTour.Forms
             catch
             {
                 MessageBox.Show("Current Stats Not added to Tournament yet.");
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
             }
             ReEnableNavigation();
         }
