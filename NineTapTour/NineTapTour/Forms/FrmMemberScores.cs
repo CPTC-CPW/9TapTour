@@ -15,6 +15,7 @@ using Bogus.Extensions;
 using NineTapTour.Models;
 using NineTapTour.Models.ViewModels;
 using static NineTapTour.Database.ReportHelper;
+using System.Data.Entity.Infrastructure;
 
 namespace NineTapTour.Forms
 {
@@ -1840,7 +1841,15 @@ namespace NineTapTour.Forms
             PlayerHistoryDB.DeletePlayerHistory(p);
             //Delete from FinalizeTemp
             FinalizeTemp ft = FinalizeTempDB.getFinalizeID(GameDB.GetGame(g.Id));
-            FinalizeTempDB.DeleteFinalizeTemp(ft);
+            try
+            {
+                FinalizeTempDB.DeleteFinalizeTemp(ft);
+            }
+            catch (DbUpdateException)
+            {
+                //no finalized record to remove
+            }
+            
             //Delete from Participants list
             Participant par = FinalizeTempDB.getParticipantbyGameID(g.Id);
             FinalizeTempDB.deleteParticipant(par);
