@@ -37,13 +37,15 @@
             this.btnPrint = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.cbxShowInactive = new System.Windows.Forms.CheckBox();
+            this.lblMemToPrint = new System.Windows.Forms.Label();
+            this.lblMem = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lbxPrintList
             // 
             this.lbxPrintList.BackColor = System.Drawing.SystemColors.ControlLight;
             this.lbxPrintList.FormattingEnabled = true;
-            this.lbxPrintList.Location = new System.Drawing.Point(60, 33);
+            this.lbxPrintList.Location = new System.Drawing.Point(60, 71);
             this.lbxPrintList.Name = "lbxPrintList";
             this.lbxPrintList.Size = new System.Drawing.Size(180, 264);
             this.lbxPrintList.TabIndex = 0;
@@ -53,7 +55,7 @@
             // 
             this.lbxMemberList.BackColor = System.Drawing.SystemColors.ControlLight;
             this.lbxMemberList.FormattingEnabled = true;
-            this.lbxMemberList.Location = new System.Drawing.Point(360, 33);
+            this.lbxMemberList.Location = new System.Drawing.Point(360, 71);
             this.lbxMemberList.Name = "lbxMemberList";
             this.lbxMemberList.Size = new System.Drawing.Size(180, 264);
             this.lbxMemberList.TabIndex = 1;
@@ -112,7 +114,7 @@
             // cbxShowInactive
             // 
             this.cbxShowInactive.AutoSize = true;
-            this.cbxShowInactive.Location = new System.Drawing.Point(360, 328);
+            this.cbxShowInactive.Location = new System.Drawing.Point(360, 341);
             this.cbxShowInactive.Name = "cbxShowInactive";
             this.cbxShowInactive.Size = new System.Drawing.Size(94, 17);
             this.cbxShowInactive.TabIndex = 7;
@@ -120,12 +122,34 @@
             this.cbxShowInactive.UseVisualStyleBackColor = true;
             this.cbxShowInactive.CheckedChanged += new System.EventHandler(this.cbxShowInactive_CheckedChanged);
             // 
+            // lblMemToPrint
+            // 
+            this.lblMemToPrint.AutoSize = true;
+            this.lblMemToPrint.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMemToPrint.Location = new System.Drawing.Point(58, 32);
+            this.lblMemToPrint.Name = "lblMemToPrint";
+            this.lblMemToPrint.Size = new System.Drawing.Size(182, 25);
+            this.lblMemToPrint.TabIndex = 8;
+            this.lblMemToPrint.Text = "Members To Print";
+            // 
+            // lblMem
+            // 
+            this.lblMem.AutoSize = true;
+            this.lblMem.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMem.Location = new System.Drawing.Point(358, 32);
+            this.lblMem.Name = "lblMem";
+            this.lblMem.Size = new System.Drawing.Size(175, 25);
+            this.lblMem.TabIndex = 9;
+            this.lblMem.Text = "Region Members";
+            // 
             // FrmLabelPrint
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(599, 411);
+            this.Controls.Add(this.lblMem);
+            this.Controls.Add(this.lblMemToPrint);
             this.Controls.Add(this.cbxShowInactive);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnPrint);
@@ -153,5 +177,7 @@
         private System.Windows.Forms.Button btnPrint;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.CheckBox cbxShowInactive;
+        private System.Windows.Forms.Label lblMemToPrint;
+        private System.Windows.Forms.Label lblMem;
     }
 }
