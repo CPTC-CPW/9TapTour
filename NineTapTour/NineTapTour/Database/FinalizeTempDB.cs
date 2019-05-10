@@ -371,33 +371,18 @@ namespace NineTapTour.Database
             return p;
         }
 
-        public static Participant getParticipantbyGameID (int gameID)
+        /// <summary>
+        /// Retrieves a single participant from a tournament based on given gameID.
+        /// Return null if no participant is found
+        /// </summary>
+        /// <param name="gameID"></param>
+        /// <returns></returns>
+        public static Participant GetParticipantByGameId (int gameID)
         {
-            Participant p = new Participant();
             var db = new NineTapDb();
-            var temp = (
-
-                from g in db.Participants
-                where g.Game.Id == gameID
-                select new
-                {
-                    g.Game,
-                    g.Id,
-                    g.Member,
-                    g.Squad,
-                    g.Tournament
-                }
-            );
-            foreach (var g in temp)
-            {
-                p.Game = g.Game;
-                p.Id = g.Id;
-                p.Member = g.Member;
-                p.Squad = g.Squad;
-                p.Tournament = g.Tournament;
-
-            }
-            return p;
+            return (from par in db.Participants
+                   where par.Game.Id == gameID
+                   select par).SingleOrDefault();
         }
 
         public static List<Participant> GetparticpantListByRegionID(int RegionID)

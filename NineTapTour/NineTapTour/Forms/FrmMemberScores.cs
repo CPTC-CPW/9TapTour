@@ -1851,7 +1851,7 @@ namespace NineTapTour.Forms
             }
             
             //Delete from Participants list
-            Participant par = FinalizeTempDB.getParticipantbyGameID(g.Id);
+            Participant par = FinalizeTempDB.GetParticipantByGameId(g.Id);
             FinalizeTempDB.deleteParticipant(par);
             overallListOfParticipants.Remove(par);
             if(currentIndex + 1 == overallListOfParticipants.Count)
