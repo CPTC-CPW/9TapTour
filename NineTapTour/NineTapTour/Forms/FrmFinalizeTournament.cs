@@ -380,9 +380,8 @@ namespace NineTapTour.Forms
             TournamentEntriesGrid.Columns[GAME_3_VALID_COLUMN].HeaderText = string.Empty;
             TournamentEntriesGrid.Columns[GAME_4_VALID_COLUMN].HeaderText = string.Empty;
 
-            ////Sort DataGridView by TrueAverage
-            //this.TournamentEntriesGrid.Sort(this.TournamentEntriesGrid.Columns["True Avg"], ListSortDirection.Descending);
-            // SortByStanding();
+            //Sort DataGridView by Standing
+            SortByStanding();
 #if DEBUG
             // resets the adjusted averages
             ResetAdjustedAverages(FinalizeTableList);
@@ -670,35 +669,35 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// This method is for sorting the TournamentEntriesGrid by either scores or names
+        /// This method is for the radio buttons that sorting the TournamentEntriesGrid by either scores or names
         /// </summary>
         private void rbnStanding_CheckedChanged(object sender, EventArgs e)
         {
             if (rbnStanding.Checked == true)
             {
-                //SortByScore();
+                SortByStanding();
             }
             // if rbnName.Checked == true
             else
             {
-                //SortByName();
+                SortByName();
             }
         }
 
         /// <summary>
-        /// Sorts TournamentEntriesGrid by the scores of the entries
+        /// Sorts TournamentEntriesGrid by the scores of the entries, in descending order
         /// </summary>
         public void SortByStanding()
         {
-            TournamentEntriesGrid.Sort(TournamentEntriesGrid.Columns["True Avg"], ListSortDirection.Descending);
+            TournamentEntriesGrid.Sort(TournamentEntriesGrid.Columns[0], ListSortDirection.Descending);
         }
 
         /// <summary>
-        /// Sorts TournamentEntriesGrid by the names of the entries
+        /// Sorts TournamentEntriesGrid by the names of the entries, in ascending order
         /// </summary>
         private void SortByName()
         {
-            TournamentEntriesGrid.Sort(TournamentEntriesGrid.Columns["True Avg"], ListSortDirection.Descending);
+            TournamentEntriesGrid.Sort(TournamentEntriesGrid.Columns[2], ListSortDirection.Ascending);
         }
 
         /// <summary>
