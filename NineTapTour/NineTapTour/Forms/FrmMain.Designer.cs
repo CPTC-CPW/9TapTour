@@ -39,6 +39,7 @@
             this.RestoreDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateInactiveMembersToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.userManualToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.labelPrintToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.updateInactiveMembersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menMain.SuspendLayout();
@@ -100,7 +101,8 @@
             this.BackupDatabaseToolStripMenuItem,
             this.RestoreDatabaseToolStripMenuItem,
             this.updateInactiveMembersToolStripMenuItem1,
-            this.userManualToolStripMenuItem});
+            this.userManualToolStripMenuItem,
+            this.labelPrintToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -132,6 +134,13 @@
             this.userManualToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.userManualToolStripMenuItem.Text = "User Manual";
             this.userManualToolStripMenuItem.Click += new System.EventHandler(this.userManualToolStripMenuItem_Click);
+            // 
+            // labelPrintToolStripMenuItem
+            // 
+            this.labelPrintToolStripMenuItem.Name = "labelPrintToolStripMenuItem";
+            this.labelPrintToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.labelPrintToolStripMenuItem.Text = "Print Member Labels";
+            this.labelPrintToolStripMenuItem.Click += new System.EventHandler(this.labelPrintToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
@@ -185,5 +194,6 @@
         private System.Windows.Forms.ToolStripMenuItem RestoreDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mainMenuToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem userManualToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem labelPrintToolStripMenuItem;
     }
 }
