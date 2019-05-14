@@ -382,6 +382,7 @@ namespace NineTapTour.Forms
 
             ////Sort DataGridView by TrueAverage
             //this.TournamentEntriesGrid.Sort(this.TournamentEntriesGrid.Columns["True Avg"], ListSortDirection.Descending);
+            //SortByScore();
 #if DEBUG
             // resets the adjusted averages
             ResetAdjustedAverages(FinalizeTableList);
@@ -669,14 +670,37 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// This method will get a list of all tournament participants and return a sort the list by scores.
+        /// This method is for sorting the TournamentEntriesGrid by either scores or names
         /// </summary>
-        /// <param name="tourn">Tournament needing information from</param>
-        /// <returns>sorted list of gameParticipants for specified tournament</returns>
+        private void rbnScore_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbnScore.Checked == true)
+            {
+                //SortByScore();
+            }
+            // rbnName.Checked == true
+            else
+            {
+                //SortByName();
+            }
+        }
+
+        /// <summary>
+        /// Sorts TournamentEntriesGrid by the scores of the entries
+        /// </summary>
         public void SortByScore()
         {
+            throw new NotImplementedException();
             this.TournamentEntriesGrid.Sort(this.TournamentEntriesGrid.Columns["True Avg"], ListSortDirection.Descending);
             RankGridView();
+        }
+
+        /// <summary>
+        /// Sorts TournamentEntriesGrid by the names of the entries
+        /// </summary>
+        private void SortByName()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
