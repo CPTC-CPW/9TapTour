@@ -16,7 +16,7 @@ namespace NineTapTour.Forms
     public partial class FrmLabelPrint : Form
     {
         int RegionID;
-        List<Member> AllMems;       // = MemberDb.GetMemberList();
+        List<Member> AllMems;       // = MemberDb.GetMemberLabelList();
         List<Member> ActiveMems;    // = new List<Member>();
         List<Member> Labels;        // = new List<Member>();
 
@@ -162,8 +162,20 @@ namespace NineTapTour.Forms
             int startY = 55;
             int offsetX = 0;
             int offsetY = 0;
-            for (int i = 0; i < memberLabel.Count; i++)
+
+            int start = 0;
+            if(tbStartWhere.Text != null)
             {
+                start = Convert.ToInt32(tbStartWhere.Text) - 1;
+            }
+            
+            for (int i = 0; i < (memberLabel.Count + start); i++)
+            {
+                if(i < start)
+                {
+                    continue;
+                }
+                
                 if (i % 3 == 0)
                     offsetX = 0;
                 else if (i % 3 == 1)
@@ -172,11 +184,11 @@ namespace NineTapTour.Forms
                     offsetX = 540;
                 offsetY = (i / 3) * 100;
 
-                graphic.DrawString(memberLabel[i].FirstName.ToString() + " " + memberLabel[i].LastName.ToString(), font, dBrush, startX + offsetX, startY + offsetY);
+                graphic.DrawString(memberLabel[i-start].FirstName.ToString() + " " + memberLabel[i - start].LastName.ToString(), font, dBrush, startX + offsetX, startY + offsetY);
                 offsetY += 16;
-                graphic.DrawString(memberLabel[i].Street, font, dBrush, startX + offsetX, startY + offsetY);
+                graphic.DrawString(memberLabel[i - start].Street, font, dBrush, startX + offsetX, startY + offsetY);
                 offsetY += 16;
-                graphic.DrawString(memberLabel[i].City + ", " + memberLabel[i].State + " " + memberLabel[i].PostalCode, font, dBrush, startX + offsetX, startY + offsetY);
+                graphic.DrawString(memberLabel[i - start].City + ", " + memberLabel[i - start].State + " " + memberLabel[i - start].PostalCode, font, dBrush, startX + offsetX, startY + offsetY);
             }
         }
         #endregion
