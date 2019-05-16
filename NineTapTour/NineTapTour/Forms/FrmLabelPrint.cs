@@ -197,5 +197,23 @@ namespace NineTapTour.Forms
             lbxPrintList.DataSource = null;
             lbxPrintList.DataSource = Labels;
         }
+
+        private void lbxMemberList_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            foreach (Member m in lbxMemberList.SelectedItems)
+            {
+                Labels.Add(m);
+            }
+            UpdatePrintListBox();
+        }
+
+        private void lbxPrintList_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            foreach (Member m in lbxPrintList.SelectedItems)
+            {
+                Labels.Remove(m);
+            }
+            UpdatePrintListBox();
+        }
     }
 }
