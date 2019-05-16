@@ -14,6 +14,7 @@ namespace NineTapTour.Database
         /***************************************************************
         * LEAGUE AVERAGE
         ****************************************************************/
+        //calculates league average for member based off last 30 games or total games played if less than 30.
         public static double LeagueAverage(Member mem)
         {
             double sum = 0;
@@ -48,7 +49,8 @@ namespace NineTapTour.Database
             return 0;
         }
 
-        //calculates league average for member based off last 30 games or total games played if less than 30.
+
+        /*
         public static double LeagueAverage(int memID)
         {
             double sum = 0;
@@ -81,6 +83,7 @@ namespace NineTapTour.Database
             }
             return 0;
         }
+        */
 
         public static double LeagueAvgFromPlayerHistory(int mem, int howmany, int regionid)
         {

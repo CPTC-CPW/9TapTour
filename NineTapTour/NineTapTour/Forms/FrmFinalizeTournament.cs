@@ -1254,7 +1254,7 @@ namespace NineTapTour.Forms
             if (!PlayerHistoryDB.PlayerHistoryExists(currGame.Id))
             {
                 currMember.Bonus = Calculations.Calculations.GetAdjustedBonusPins(placeStanding, totalEntriesQty, compEntriesQty,
-                                                                            currMember.Bonus, currMember.Number, RegionID, currTournament.Date, currTournament.Id);
+                                                                            currMember.Bonus, currMember.Number, RegionID, currTournament.Id);
                 ph.Bonus = currMember.Bonus;
             }
         }
