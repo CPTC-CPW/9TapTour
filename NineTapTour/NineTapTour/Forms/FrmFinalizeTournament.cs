@@ -397,7 +397,6 @@ namespace NineTapTour.Forms
         /// <returns></returns>
         public DataTable SetDataView(Dictionary<FinalizeTemp,int> participantsList)
         {
-            var db = new NineTapDb();
             DataTable dt = new DataTable();
             dt.Columns.Add(STANDING_COLUMN_NAME, typeof(int));                          // 0
             dt.Columns.Add(MEMBER_NUMBER_COLUMN_NAME, typeof(int)).ReadOnly = true;     // 1
