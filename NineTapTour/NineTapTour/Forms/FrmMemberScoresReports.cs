@@ -136,13 +136,13 @@ namespace NineTapTour.Forms
             string getFilePath = Path.GetFullPath("Resources/SeriesReportTemplate.xls");
             
             // get the date of the tourney and convert it to a string
-            string tourneyDate = selectedTournament.Date.ToString("MM/mm/yyyy");
+            string tourneyDate = selectedTournament.Date.ToString("MM/dd/yyyy");
 
             // replace the forward slashes with a dash
             string tournyDate = tourneyDate.Replace("/", "-");
 
             // remove the time from the end of the date
-            string tournamentDate = tournyDate;
+            string tournamentDate = tournyDate.Replace(tourneyDate, " ");
 
             // create the name of the file by adding together the type of report, location, the event, and the date of tourn.
             string fileName = reportTypeToSave + selectedTournament.Location + " " + selectedTournament.Event + " " + tournamentDate + ".xls";
