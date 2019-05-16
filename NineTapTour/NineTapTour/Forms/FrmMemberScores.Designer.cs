@@ -1328,7 +1328,7 @@
             this.flpMemberScores.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpMemberScores.Location = new System.Drawing.Point(0, 0);
             this.flpMemberScores.Name = "flpMemberScores";
-            this.flpMemberScores.Size = new System.Drawing.Size(1042, 749);
+            this.flpMemberScores.Size = new System.Drawing.Size(1042, 693);
             this.flpMemberScores.TabIndex = 1;
             this.flpMemberScores.SizeChanged += new System.EventHandler(this.flpMemberScores_SizeChanged);
             // 
@@ -1377,7 +1377,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1042, 749);
+            this.ClientSize = new System.Drawing.Size(1042, 693);
             this.Controls.Add(this.flpMemberScores);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
