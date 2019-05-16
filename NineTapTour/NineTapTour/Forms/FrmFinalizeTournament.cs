@@ -425,6 +425,8 @@ namespace NineTapTour.Forms
             // whatever list of participants you pass into method will be populated into grid
             List<FinalizeTemp> temp = participantsList.Keys.ToList();
 
+            List<FinalizeTemp> secondarySortedTemp = FinalizeWithSecondarySort(participantsList);
+
             // loops thru each person's info in tournament and populates the dataview with data from DB.
             foreach (var item in temp)
             {
@@ -458,6 +460,11 @@ namespace NineTapTour.Forms
                 dt.Rows.Add(newRow);
             }
             return dt;
+        }
+
+        private List<FinalizeTemp> FinalizeWithSecondarySort(Dictionary<FinalizeTemp, int> participantsList)
+        {
+            
         }
 
         /// <summary>
