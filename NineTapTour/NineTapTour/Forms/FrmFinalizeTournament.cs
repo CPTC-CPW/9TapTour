@@ -380,8 +380,8 @@ namespace NineTapTour.Forms
             TournamentEntriesGrid.Columns[GAME_3_VALID_COLUMN].HeaderText = string.Empty;
             TournamentEntriesGrid.Columns[GAME_4_VALID_COLUMN].HeaderText = string.Empty;
 
-            ////Sort DataGridView by TrueAverage
-            //this.TournamentEntriesGrid.Sort(this.TournamentEntriesGrid.Columns["True Avg"], ListSortDirection.Descending);
+            //Sort DataGridView by Standing
+            SortByStanding();
 #if DEBUG
             // resets the adjusted averages
             ResetAdjustedAverages(FinalizeTableList);
@@ -669,14 +669,35 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// This method will get a list of all tournament participants and return a sort the list by scores.
+        /// This method is for the radio buttons that sorting the TournamentEntriesGrid by either scores or names
         /// </summary>
-        /// <param name="tourn">Tournament needing information from</param>
-        /// <returns>sorted list of gameParticipants for specified tournament</returns>
-        public void SortByScore()
+        private void rbnStanding_CheckedChanged(object sender, EventArgs e)
         {
-            this.TournamentEntriesGrid.Sort(this.TournamentEntriesGrid.Columns["True Avg"], ListSortDirection.Descending);
-            RankGridView();
+            if (rbnStanding.Checked == true)
+            {
+                SortByStanding();
+            }
+            // if rbnName.Checked == true
+            else
+            {
+                SortByName();
+            }
+        }
+
+        /// <summary>
+        /// Sorts TournamentEntriesGrid by the scores of the entries, in descending order
+        /// </summary>
+        public void SortByStanding()
+        {
+            TournamentEntriesGrid.Sort(TournamentEntriesGrid.Columns[0], ListSortDirection.Descending);
+        }
+
+        /// <summary>
+        /// Sorts TournamentEntriesGrid by the names of the entries, in ascending order
+        /// </summary>
+        private void SortByName()
+        {
+            TournamentEntriesGrid.Sort(TournamentEntriesGrid.Columns[2], ListSortDirection.Ascending);
         }
 
         /// <summary>
