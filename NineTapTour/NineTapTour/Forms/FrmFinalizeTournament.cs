@@ -425,16 +425,18 @@ namespace NineTapTour.Forms
             // whatever list of participants you pass into method will be populated into grid
             List<FinalizeTemp> temp = participantsList.Keys.ToList();
 
-            List<FinalizeTemp> secondarySortedTemp = FinalizeWithSecondarySort(participantsList);
-
             // loops thru each person's info in tournament and populates the dataview with data from DB.
             foreach (var item in temp)
             {
                 DataRow newRow = dt.NewRow();
 
                 // 0 signifies duplicate entry
+                bool isMemberAlreadyPlaced = true;
                 if (participantsList[item] != 0)
+                {
                     newRow[STANDING_COLUMN_NAME] = participantsList[item];
+                    isMemberAlreadyPlaced = false;
+                }
 
                 newRow[MEMBER_NUMBER_COLUMN_NAME] = item.memberNumber;
                 newRow[NAME_COLUMN_NAME] = item.FirstName + " " + item.LastName;
@@ -457,14 +459,28 @@ namespace NineTapTour.Forms
                 newRow[NOTES_COLUMN_NAME] = item.Notes;
                 newRow[HANDICAP_TOTAL_COLUMN_NAME] = item.HandicapTotal;
                 newRow[GAME_ID_COLUMN_NAME] = item.GameId;
-                dt.Rows.Add(newRow);
+                if (isMemberAlreadyPlaced)
+                {
+                    dt.Rows.InsertAt(newRow, (dt.Rows.IndexOf(GetLastMemberIndex(dt, item.memberNumber))) + 1);
+                }
+                else //if member hasn't placed yet
+                {
+                    dt.Rows.Add(newRow);
+                }
             }
             return dt;
         }
 
-        private List<FinalizeTemp> FinalizeWithSecondarySort(Dictionary<FinalizeTemp, int> participantsList)
+        /// <summary>
+        /// Find the last row an existing memberID appears in the data table
+        /// </summary>
+        /// <param name="dt">The DataTable to search</param>
+        /// <param name="memNum">MemberID to search for</param>
+        private DataRow GetLastMemberIndex(DataTable dt, int memNum)
         {
-            
+            return dt.AsEnumerable()
+                .Where(row => row.Field<int>(MEMBER_NUMBER_COLUMN_NAME) == memNum)
+                .Last();
         }
 
         /// <summary>
