@@ -264,7 +264,7 @@ namespace NineTapTour.Forms
                 // Score Info         
                 /********************************************************************************
                 updates the form's handicap even when the finalize tournament button is clicked
-                -also updates the currentMem's handicap, so when the tournamnent gets it, it is the right handicap
+                -also updates the currentMem's handicap, so when the tournnament gets it, it is the right handicap
                 *********************************************************************************/
                 try
                 {
@@ -886,11 +886,11 @@ namespace NineTapTour.Forms
             Print.printAllMembers();
         }
 
-        private void btnLabels_Click(object sender, EventArgs e)
-        {
-            FrmLabelPrint labels = new FrmLabelPrint(RegionID);
-            labels.ShowDialog();
-        }
+        //private void btnLabels_Click(object sender, EventArgs e)
+        //{
+        //    FrmLabelPrint labels = new FrmLabelPrint(RegionID);
+        //    labels.ShowDialog();
+        //}
         
         /// <summary>
         /// This action event assigns current form as currFrmMemberData in
