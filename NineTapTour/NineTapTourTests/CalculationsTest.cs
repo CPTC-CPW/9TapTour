@@ -91,7 +91,9 @@ namespace NineTapTour.Calculations.Test
         [TestMethod]
         [DataRow(230, -9)]
         [DataRow(220, 0)]
-        [DataRow(270, -45)]
+        [DataRow(207, 11)]
+        [DataRow(227, -6)] // verifies proper truncating
+        [DataRow(270, -45)] // verifies proper truncating
         [DataRow(170, 45)]
         [DataRow(120, 70)] // max handicap should be 70
         public void CalculateHandicapPins_ReturnsExpectedAmount(int avg, int expectedHandicap)
@@ -113,8 +115,8 @@ namespace NineTapTour.Calculations.Test
         }
 
         [TestMethod]                      // Scenarios:
-        [DataRow(0, 1, 10, 0)]// - Lost current game with null player history
-        [DataRow(0, 2, 11, 0)]// - Lost current game with empty list player history
+        [DataRow(0, 1, 10, 0)] // - Lost current game with null player history
+        [DataRow(0, 2, 11, 0)] // - Lost current game with empty list player history
         [DataRow(0, 1, 0, 1)] // - Did not cash last 3 enties in different tournaments
         [DataRow(5, 1, 8, 5)] // - Max bonus pins should be 5 even while not cashing last 3 entries
         [DataRow(0, 1, 1, 0)] // - Cashed 2nd entry ago, 2nd tournament ago
@@ -129,6 +131,11 @@ namespace NineTapTour.Calculations.Test
         [DataRow(0, 4, 7, 1)] // - Has 6 losses in a row but won 2nd to last tournament that includes one of the wins
         [DataRow(0, 2, 2, 1)] // - Lost twice in current tourney, once in previous, but had cashed game 2 tourneys ago
         [DataRow(0, 2, 3, 1)] // - Lost twice in current tourney and twice in last two tournaments
+        [DataRow(1, 4, 0, 3)] // - 6 losses in a row not yet applied, 1 initial
+        [DataRow(2, 4, 0, 4)] // - 6 losses in a row not yet applied, 2 initial
+        [DataRow(3, 4, 0, 5)] // - 6 losses in a row not yet applied, 3 initial
+        [DataRow(4, 4, 0, 5)] // - 6 losses in a row not yet applied, 4 initial
+        [DataRow(5, 4, 0, 5)] // - 6 losses in a row not yet applied, 4 initial
         public void AddToBonusPins_ReturnsExpectedBonusPins(int currentBonusPins, int currTourneyEntryCount, int playerHistoryListNum, 
                                                             int expectedBonusPins)
         {
@@ -291,5 +298,7 @@ namespace NineTapTour.Calculations.Test
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+
     }
 }
