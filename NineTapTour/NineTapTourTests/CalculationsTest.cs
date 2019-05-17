@@ -117,7 +117,7 @@ namespace NineTapTour.Calculations.Test
         [TestMethod]                      // Scenarios:
         [DataRow(0, 1, 10, 0)] // - Lost current game with null player history
         [DataRow(0, 2, 11, 0)] // - Lost current game with empty list player history
-        [DataRow(0, 1, 0, 1)] // - Did not cash last 3 enties in different tournaments
+        [DataRow(0, 1, 0, 1)] // - Did not cash last 3 entries in different tournaments
         [DataRow(5, 1, 8, 5)] // - Max bonus pins should be 5 even while not cashing last 3 entries
         [DataRow(0, 1, 1, 0)] // - Cashed 2nd entry ago, 2nd tournament ago
         [DataRow(0, 1, 2, 0)] // - Cashed 3rd entry ago, 3rd tournament ago
