@@ -36,7 +36,7 @@ namespace NineTapTour.Database
         /// and whether you can see them or not depending on the
         /// pixel width or height of the screen.
         /// </summary>
-        /// <param name="form">The form obejct that calls this method</param>
+        /// <param name="form">The form object that calls this method</param>
         /// <param name="flp">The flowlayoutpanel that is being passed in to have changes made to it.</param>
         /// <param name="width">The width at which horizontal scroll bars are toggled.</param>
         /// <param name="height">The height at which vertical scroll bars are toggled.</param>
@@ -190,10 +190,10 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// This method looks at the squad list and deterine if it doens't 'skip' squads
-        /// eg if the list is 1,2,3 it's true. if 1,2,4 it's false.
+        /// This method looks at the squad list and determine if it doesn't 'skip' squads
+        /// e.g. if the list is 1,2,3 it's true. if 1,2,4 it's false.
         /// </summary>
-        /// <param name="squadList">A list of squads selected in Fitler series</param>
+        /// <param name="squadList">A list of squads selected in Filter series</param>
         /// <returns></returns>
         public static bool IsContinuous(List<int> squadList) {
             for (int i = 1; i < squadList.Count(); i++) {
