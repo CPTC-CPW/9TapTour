@@ -25,7 +25,7 @@ namespace NineTapTour.Database
                           join t in db.Tournaments on p.Tournament.Id equals t.Id
                           where mem.Id == m.Id
                           orderby t.Date descending
-                          select g.Game1 + g.Game2 + g.Game3 + g.Game4).Take(howmany).Average();
+                          select (g.Game1 + g.Game2 + g.Game3 + g.Game4)/4).Take(howmany).Average();
             return avg;
             #region Refactored Code
             /*
