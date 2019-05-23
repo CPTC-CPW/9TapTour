@@ -351,7 +351,7 @@ namespace NineTapTour.Calculations
                 bool isCurrIndexRemoved = false;
                 for (int j = i + 1; j < members.Count; j++)
                 {
-                    if (members[i].memberNumber == members[j].memberNumber)
+                    if (members[i].MemberNumber == members[j].MemberNumber)
                     {
                         if (members[i].HandicapTotal >= members[j].HandicapTotal)
                             removal.Add(members[j]);

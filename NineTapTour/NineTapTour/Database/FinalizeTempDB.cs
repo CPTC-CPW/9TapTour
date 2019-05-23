@@ -217,7 +217,7 @@ namespace NineTapTour.Database
                 // Populates the names and ID's
                 NewParticipant.GameId = item.Id;
                 NewParticipant.MemberId = item.MemberId;
-                NewParticipant.memberNumber = item.Number;
+                NewParticipant.MemberNumber = item.Number;
                 NewParticipant.FirstName = item.FirstName;
                 NewParticipant.LastName = item.LastName;
                 NewParticipant.Squad = item.Squad;
@@ -392,7 +392,7 @@ namespace NineTapTour.Database
         {
             var db = new NineTapDb();
             return db.FinalizeTemp
-                    .Where(ft => ft.TournamentID == tourneyId && ft.memberNumber == memberNum)
+                    .Where(ft => ft.TournamentID == tourneyId && ft.MemberNumber == memberNum)
                     .Count();
         }
 
