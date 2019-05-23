@@ -331,8 +331,6 @@ namespace NineTapTour.Database
         /// Retrieves a single participant from a tournament based on given gameID.
         /// Return null if no participant is found
         /// </summary>
-        /// <param name="gameID"></param>
-        /// <returns></returns>
         public static Participant GetParticipantByGameId (int gameID)
         {
             var db = new NineTapDb();
@@ -341,23 +339,25 @@ namespace NineTapTour.Database
                    select par).Include(nameof(Member)).SingleOrDefault();
         }
 
-        public static List<Participant> GetparticpantListByRegionID(int RegionID)
+        /// <summary>
+        /// Returns a list of Participants with a RegionID the same as the ID given
+        /// </summary>
+        public static List<Participant> GetParticipantListByRegionID(int RegionID)
         {
-            using (var db = new NineTapDb())
-            {
-                return (from p in db.Participants
-                        where p.ParticipantRegionID == RegionID
-                        select p).Include(nameof(Participant.Member)).ToList();
-            }
+            var db = new NineTapDb();
+            return (from p in db.Participants
+                    where p.ParticipantRegionID == RegionID
+                    select p).Include(nameof(Participant.Member)).ToList();
         }
 
-        public static void deleteParticipant(Participant p)
+        /// <summary>
+        /// Deletes the Participant given from the database
+        /// </summary>
+        public static void DeleteParticipant(Participant p)
         {
-            using (var db = new NineTapDb())
-            {
-                db.Entry(p).State = EntityState.Deleted;
-                db.SaveChanges();
-            }
+            var db = new NineTapDb();
+            db.Entry(p).State = EntityState.Deleted;
+            db.SaveChanges();
         }
 
         public static List<Game> GetGameListByRegionID(int RegionID)
