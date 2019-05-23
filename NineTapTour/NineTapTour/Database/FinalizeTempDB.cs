@@ -267,18 +267,23 @@ namespace NineTapTour.Database
             return ParticipantList;
         }
 
-        //makes a list from the finalizetemp table to be used in dataview source
+        /// <summary>
+        /// Makes and returns a list from the FinalizeTemp Table to be used in dataview source
+        /// </summary>
         public static List<FinalizeTemp> GetListFromTable(Tournament tourn)
         {
             var db = new NineTapDb();
-            //get list of participants by tournament
+            // Returns a list of participants with the same TournamentID
             return db.FinalizeTemp
-                            .Where(p => p.TournamentID == tourn.Id)
-                            .OrderBy(p => p.FirstName)
-                            .ThenBy(p => p.Squad)
-                            .ToList();
+                .Where(p => p.TournamentID == tourn.Id)
+                .OrderBy(p => p.FirstName)
+                .ThenBy(p => p.Squad)
+                .ToList();
         }
 
+        /// <summary>
+        /// Gets and returns a list of FinalizeTemp with the same RegionID as the ID given
+        /// </summary>
         public static List<FinalizeTemp> GetFinalizeListByRegionID(int RegionID)
         {
             using (var db = new NineTapDb())
