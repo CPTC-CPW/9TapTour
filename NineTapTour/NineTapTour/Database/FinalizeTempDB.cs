@@ -294,6 +294,9 @@ namespace NineTapTour.Database
             }
         }
 
+        /// <summary>
+        /// Deletes the FinalizeTemp given from the database
+        /// </summary>
         public static void DeleteFinalizeTemp(FinalizeTemp ft)
         {
             using (var db = new NineTapDb())
@@ -303,30 +306,25 @@ namespace NineTapTour.Database
             }
         }
 
-
-        /**********************************************************
-         * PARTICIPANT
-         * *******************************************************/
-
-        public static List<Participant> getGameParticipantList(int id)
+        /// <summary>
+        /// Returns a list of Participants with a TournamentID equal to the ID given
+        /// </summary>
+        public static List<Participant> GetGameParticipantList(int id)
         {
-            List<Participant> p = new List<Participant>();
+            List<Participant> par = new List<Participant>();
             var db = new NineTapDb();
-            var temp = (
-
-                from par in db.Participants
-                where par.Tournament.Id == id
-                select new
-                {
-                    par.Id,
-                    par.Game,
-                    par.Member,
-                    par.Squad,
-                    par.Tournament
-                }).ToList();
-
-
-            return p;
+            var temp = (from p in db.Participants
+                        where p.Tournament.Id == id
+                        select new
+                        {
+                            p.Id,
+                            p.Game,
+                            p.Member,
+                            p.Squad,
+                            p.Tournament
+                        }).ToList();
+            // par is never populated, so this always returns an empty list
+            return par;
         }
 
         /// <summary>
