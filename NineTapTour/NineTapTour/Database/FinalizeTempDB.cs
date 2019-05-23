@@ -122,29 +122,29 @@ namespace NineTapTour.Database
 
         }
 
-        /***************************************************
-         * FINALIZETEMP
-         * ************************************************/
-
+        /// <summary>
+        /// Updates the FinalizeTemp with the same ID if it already exists in the database,
+        /// otherwise adds the FinalizeTemp to the database
+        /// </summary>
         public static void AddFinalizeTemp(FinalizeTemp temp)
         {
             try
             {
                 using (var db = new NineTapDb())
                 {
-                    //checks if tournament is new or already existing in db
+                    // Checks if tournament is new or already existing in the database
                     if (!db.FinalizeTemp.Any(f => f.GameId == temp.GameId))
                     {
                         db.Entry(temp).State = EntityState.Added;
-                        /*************************************************************************
-                        updates the handicap of a member that participated in the tournament in the database 
-                        ***There is a problem in the database's member's average, so it was not 
-                           used, but I believe it should be
-                           -The problem might be when a tournament record is added, it is not 
-                           updating the member's average in the database.
-                        *************************************************************************/
-                        db.Members.First(x => x.Id == temp.MemberId).Handicap = Calculations.Calculations.CalculateHandicapPins(Convert.ToInt16(LeagueAverage(db.Members.First(x => x.Id == temp.MemberId))));
-                        /************************************************************************/
+
+                        /* There is a problem in the database's member's average, so it was not 
+                           used, but I believe it should be. The problem might be when a tournament 
+                           record is added, it is not updating the member's average in the database. */
+                        // Updates the handicap of a member that participated in the tournament in the database
+                        db.Members.First(x => x.Id == temp.MemberId).Handicap = 
+                            Calculations.Calculations.CalculateHandicapPins(
+                                Convert.ToInt16(LeagueAverage(db.Members.First(x => x.Id == temp.MemberId)))
+                            );
                         db.SaveChanges();
                     }
                     else
