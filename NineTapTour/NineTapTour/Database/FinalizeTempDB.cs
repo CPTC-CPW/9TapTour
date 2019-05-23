@@ -152,8 +152,6 @@ namespace NineTapTour.Database
                         db.Entry(temp).State = EntityState.Modified;
                         db.SaveChanges();
                     }
-
-
                 }
             }
             catch (SqlException ex)
@@ -162,23 +160,23 @@ namespace NineTapTour.Database
             }
         }
 
-        public static FinalizeTemp getFinalizeID(Game currentG)
+        /// <summary>
+        /// Finds and returns the FinalizeTemp with the same ID as the GameID given,
+        /// returns an empty FinalizeTemp if none were found
+        /// </summary>
+        public static FinalizeTemp GetFinalizeID(Game currentG)
         {
             var db = new NineTapDb();
-            var finalizeTemp = 
-                (from par in db.FinalizeTemp
-                where par.GameId == currentG.Id
-                select par)
-                    .SingleOrDefault();
+            var finalizeTemp = (from par in db.FinalizeTemp
+                                where par.GameId == currentG.Id
+                                select par).SingleOrDefault();
             //return empty finalize object if none are found to retain original behavior
             return finalizeTemp is null ? new FinalizeTemp() : finalizeTemp;
         }
 
         /// <summary>
-        /// THis method Gets a list of all participant objects for the tournament passed into method.
+        /// Gets and returns a list of all participant objects for the tournament given
         /// </summary>
-        /// <param name="tourn"> represent the tournament you want list of particpants from</param>
-        /// <returns>List of Participants for specific tournament</returns>
         public static List<FinalizeTemp> GetAllInitialParticipantGameList(Tournament tourn)
         {
             var db = new NineTapDb();

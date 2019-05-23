@@ -277,7 +277,7 @@ namespace NineTapTour.Forms
             {
                 int gplayed = 0;
                 Game g = GameDB.GetGame(item.GameId);
-                FinalizeTemp temp = FinalizeTempDB.getFinalizeID(g);
+                FinalizeTemp temp = FinalizeTempDB.GetFinalizeID(g);
 
                 // Create FinalizeTemp if one does not exist
                 if (temp.FinalizeID <= 0)
@@ -1238,7 +1238,7 @@ namespace NineTapTour.Forms
                     GameDB.AddOrUpdateGame(currGame);
                     MemberDb.AddOrUpdateMember(currMember);
 
-                    FinalizeTableList[i].FinalizeID = FinalizeTempDB.getFinalizeID(currGame).FinalizeID;
+                    FinalizeTableList[i].FinalizeID = FinalizeTempDB.GetFinalizeID(currGame).FinalizeID;
                     FinalizeTableList[i].AdjustedAvg = ph.AVG;
                     FinalizeTableList[i].HandicapTotal = Convert.ToInt32(TournamentEntriesGrid[HANDICAP_TOTAL_COLUMN, currDataGridRowIndex].Value);
 
