@@ -130,28 +130,26 @@ namespace NineTapTour.Database
         {
             try
             {
-                using (var db = new NineTapDb())
+                var db = new NineTapDb();
+                // Checks if tournament is new or already existing in the database
+                if (!db.FinalizeTemp.Any(f => f.GameId == temp.GameId))
                 {
-                    // Checks if tournament is new or already existing in the database
-                    if (!db.FinalizeTemp.Any(f => f.GameId == temp.GameId))
-                    {
-                        db.Entry(temp).State = EntityState.Added;
+                    db.Entry(temp).State = EntityState.Added;
 
-                        /* There is a problem in the database's member's average, so it was not 
-                           used, but I believe it should be. The problem might be when a tournament 
-                           record is added, it is not updating the member's average in the database. */
-                        // Updates the handicap of a member that participated in the tournament in the database
-                        db.Members.First(x => x.Id == temp.MemberId).Handicap = 
-                            Calculations.Calculations.CalculateHandicapPins(
-                                Convert.ToInt16(LeagueAverage(db.Members.First(x => x.Id == temp.MemberId)))
-                            );
-                        db.SaveChanges();
-                    }
-                    else
-                    {
-                        db.Entry(temp).State = EntityState.Modified;
-                        db.SaveChanges();
-                    }
+                    /* There is a problem in the database's member's average, so it was not 
+                        used, but I believe it should be. The problem might be when a tournament 
+                        record is added, it is not updating the member's average in the database. */
+                    // Updates the handicap of a member that participated in the tournament in the database
+                    db.Members.First(x => x.Id == temp.MemberId).Handicap = 
+                        Calculations.Calculations.CalculateHandicapPins(
+                            Convert.ToInt16(LeagueAverage(db.Members.First(x => x.Id == temp.MemberId)))
+                        );
+                    db.SaveChanges();
+                }
+                else
+                {
+                    db.Entry(temp).State = EntityState.Modified;
+                    db.SaveChanges();
                 }
             }
             catch (SqlException ex)
@@ -286,12 +284,10 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<FinalizeTemp> GetFinalizeListByRegionID(int RegionID)
         {
-            using (var db = new NineTapDb())
-            {
-                return (from f in db.FinalizeTemp
-                        where f.FinalizeRegionID == RegionID
-                        select f).ToList();
-            }
+            var db = new NineTapDb();
+            return (from f in db.FinalizeTemp
+                    where f.FinalizeRegionID == RegionID
+                    select f).ToList();
         }
 
         /// <summary>
@@ -299,11 +295,9 @@ namespace NineTapTour.Database
         /// </summary>
         public static void DeleteFinalizeTemp(FinalizeTemp ft)
         {
-            using (var db = new NineTapDb())
-            {
-                db.Entry(ft).State = EntityState.Deleted;
-                db.SaveChanges();
-            }
+            var db = new NineTapDb();
+            db.Entry(ft).State = EntityState.Deleted;
+            db.SaveChanges();
         }
 
         /// <summary>
@@ -360,14 +354,15 @@ namespace NineTapTour.Database
             db.SaveChanges();
         }
 
+        /// <summary>
+        /// Returns a list of the Games with the same RegionID as the ID given
+        /// </summary>
         public static List<Game> GetGameListByRegionID(int RegionID)
         {
-            using (var db = new NineTapDb())
-            {
-                return (from g in db.Games
-                        where g.gameRegionID == RegionID
-                        select g).ToList();
-            }
+            var db = new NineTapDb();
+            return (from g in db.Games
+                    where g.gameRegionID == RegionID
+                    select g).ToList();
         }
 
         /// <summary>
@@ -399,20 +394,20 @@ namespace NineTapTour.Database
                     .Count();
         }
 
+        /// <summary>
+        /// Returns true if a Game has the same GameID in the Database 
+        /// as the GameID in the PlayerHistory given, returns false otherwise
+        /// </summary>
         public static bool GameExists(PlayerHistory Temp)
         {
-
-            using (var db = new NineTapDb())
+            var db = new NineTapDb();
+            if (db.FinalizeTemp.Any(m => m.GameId == Temp.GameID))
             {
-
-                if (db.FinalizeTemp.Any(m => m.GameId == Temp.GameID))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }        
     }
