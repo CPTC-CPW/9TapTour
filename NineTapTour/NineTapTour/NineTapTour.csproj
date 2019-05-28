@@ -129,9 +129,9 @@
     <Compile Include="Migrations\201808302003521_ProgressivePotx.Designer.cs">
       <DependentUpon>201808302003521_ProgressivePotx.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201905280410170_AddRegionForeignKey.cs" />
-    <Compile Include="Migrations\201905280410170_AddRegionForeignKey.Designer.cs">
-      <DependentUpon>201905280410170_AddRegionForeignKey.cs</DependentUpon>
+    <Compile Include="Migrations\201905281651441_AddRegionForeignKey.cs" />
+    <Compile Include="Migrations\201905281651441_AddRegionForeignKey.Designer.cs">
+      <DependentUpon>201905281651441_AddRegionForeignKey.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\ExcelMember.cs" />
     <Compile Include="Database\FormHelper.cs" />
@@ -365,8 +365,8 @@
     <EmbeddedResource Include="Migrations\201808302003521_ProgressivePotx.resx">
       <DependentUpon>201808302003521_ProgressivePotx.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201905280410170_AddRegionForeignKey.resx">
-      <DependentUpon>201905280410170_AddRegionForeignKey.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201905281651441_AddRegionForeignKey.resx">
+      <DependentUpon>201905281651441_AddRegionForeignKey.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
