@@ -11,18 +11,27 @@ namespace NineTapTour.Database
 {
     class FinalizeTempDB
     {
-        /***************************************************************
-        * LEAGUE AVERAGE
-        ****************************************************************/
-        //calculates league average for member based off last 30 games or total games played if less than 30.
+        /// <summary>
+        /// Calculates league average for given member based off last 30 games 
+        /// or total games played if less than 30.
+        /// </summary>
         public static double LeagueAverage(Member mem)
         {
+            int howmany = 30;
+            var db = new NineTapDb();
+            double avg = (double)(from p in db.Participants
+                          join m in db.Members on p.Member.Id equals m.Id
+                          join g in db.Games on p.Game.Id equals g.Id
+                          join t in db.Tournaments on p.Tournament.Id equals t.Id
+                          where mem.Id == m.Id
+                          orderby t.Date descending
+                          select (g.Game1 + g.Game2 + g.Game3 + g.Game4)/4).Take(howmany).Average();
+            return avg;
+            #region Refactored Code
+            /*
             double sum = 0;
             double average = 0;
-            var db = new NineTapDb();
-            var temp = (
-
-                        from p in db.Participants
+            var temp = (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
                         join g in db.Games on p.Game.Id equals g.Id
                         join t in db.Tournaments on p.Tournament.Id equals t.Id
@@ -47,9 +56,11 @@ namespace NineTapTour.Database
                 return (average = sum / temp.Count());
             }
             return 0;
+            */
+            #endregion
         }
 
-
+        #region Useless Method
         /*
         public static double LeagueAverage(int memID)
         {
@@ -84,6 +95,7 @@ namespace NineTapTour.Database
             return 0;
         }
         */
+        #endregion
 
         public static double LeagueAvgFromPlayerHistory(int mem, int howmany, int regionid)
         {
@@ -94,6 +106,7 @@ namespace NineTapTour.Database
                           orderby p.TournamentDate descending
                           select p.AverageForGame).Take(howmany).Sum();
             return sum;
+            #region Refactored Code
             /*
             var temp = (from p in db.PlayerHistory
                         where p.MemberNumber == mem && p.regionID == regionid
@@ -119,7 +132,7 @@ namespace NineTapTour.Database
             }
             return 0;
             */
-
+            #endregion
         }
 
         /***************************************************
