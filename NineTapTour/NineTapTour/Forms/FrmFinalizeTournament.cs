@@ -380,8 +380,8 @@ namespace NineTapTour.Forms
             TournamentEntriesGrid.Columns[GAME_3_VALID_COLUMN].HeaderText = string.Empty;
             TournamentEntriesGrid.Columns[GAME_4_VALID_COLUMN].HeaderText = string.Empty;
 
-            ////Sort DataGridView by TrueAverage
-            //this.TournamentEntriesGrid.Sort(this.TournamentEntriesGrid.Columns["True Avg"], ListSortDirection.Descending);
+            //Sort DataGridView by Standing
+            SortByStanding();
 #if DEBUG
             // resets the adjusted averages
             ResetAdjustedAverages(FinalizeTableList);
@@ -397,7 +397,6 @@ namespace NineTapTour.Forms
         /// <returns></returns>
         public DataTable SetDataView(Dictionary<FinalizeTemp,int> participantsList)
         {
-            var db = new NineTapDb();
             DataTable dt = new DataTable();
             dt.Columns.Add(STANDING_COLUMN_NAME, typeof(int));                          // 0
             dt.Columns.Add(MEMBER_NUMBER_COLUMN_NAME, typeof(int)).ReadOnly = true;     // 1
@@ -432,8 +431,12 @@ namespace NineTapTour.Forms
                 DataRow newRow = dt.NewRow();
 
                 // 0 signifies duplicate entry
+                bool isMemberAlreadyPlaced = true;
                 if (participantsList[item] != 0)
+                {
                     newRow[STANDING_COLUMN_NAME] = participantsList[item];
+                    isMemberAlreadyPlaced = false;
+                }
 
                 newRow[MEMBER_NUMBER_COLUMN_NAME] = item.memberNumber;
                 newRow[NAME_COLUMN_NAME] = item.FirstName + " " + item.LastName;
@@ -456,9 +459,28 @@ namespace NineTapTour.Forms
                 newRow[NOTES_COLUMN_NAME] = item.Notes;
                 newRow[HANDICAP_TOTAL_COLUMN_NAME] = item.HandicapTotal;
                 newRow[GAME_ID_COLUMN_NAME] = item.GameId;
-                dt.Rows.Add(newRow);
+                if (isMemberAlreadyPlaced)
+                {
+                    dt.Rows.InsertAt(newRow, (dt.Rows.IndexOf(GetLastMemberIndex(dt, item.memberNumber))) + 1);
+                }
+                else //if member hasn't placed yet
+                {
+                    dt.Rows.Add(newRow);
+                }
             }
             return dt;
+        }
+
+        /// <summary>
+        /// Find the last row an existing memberID appears in the data table
+        /// </summary>
+        /// <param name="dt">The DataTable to search</param>
+        /// <param name="memNum">MemberID to search for</param>
+        private DataRow GetLastMemberIndex(DataTable dt, int memNum)
+        {
+            return dt.AsEnumerable()
+                .Where(row => row.Field<int>(MEMBER_NUMBER_COLUMN_NAME) == memNum)
+                .Last();
         }
 
         /// <summary>
@@ -669,14 +691,35 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// This method will get a list of all tournament participants and return a sort the list by scores.
+        /// This method is for the radio buttons that sorting the TournamentEntriesGrid by either scores or names
         /// </summary>
-        /// <param name="tourn">Tournament needing information from</param>
-        /// <returns>sorted list of gameParticipants for specified tournament</returns>
-        public void SortByScore()
+        private void rbnStanding_CheckedChanged(object sender, EventArgs e)
         {
-            this.TournamentEntriesGrid.Sort(this.TournamentEntriesGrid.Columns["True Avg"], ListSortDirection.Descending);
-            RankGridView();
+            if (rbnStanding.Checked == true)
+            {
+                SortByStanding();
+            }
+            // if rbnName.Checked == true
+            else
+            {
+                SortByName();
+            }
+        }
+
+        /// <summary>
+        /// Sorts TournamentEntriesGrid by the scores of the entries, in descending order
+        /// </summary>
+        public void SortByStanding()
+        {
+            TournamentEntriesGrid.Sort(TournamentEntriesGrid.Columns[0], ListSortDirection.Descending);
+        }
+
+        /// <summary>
+        /// Sorts TournamentEntriesGrid by the names of the entries, in ascending order
+        /// </summary>
+        private void SortByName()
+        {
+            TournamentEntriesGrid.Sort(TournamentEntriesGrid.Columns[2], ListSortDirection.Ascending);
         }
 
         /// <summary>
@@ -1233,7 +1276,7 @@ namespace NineTapTour.Forms
             if (!PlayerHistoryDB.PlayerHistoryExists(currGame.Id))
             {
                 currMember.Bonus = Calculations.Calculations.GetAdjustedBonusPins(placeStanding, totalEntriesQty, compEntriesQty,
-                                                                            currMember.Bonus, currMember.Number, RegionID, currTournament.Date, currTournament.Id);
+                                                                            currMember.Bonus, currMember.Number, RegionID, currTournament.Id);
                 ph.Bonus = currMember.Bonus;
             }
         }

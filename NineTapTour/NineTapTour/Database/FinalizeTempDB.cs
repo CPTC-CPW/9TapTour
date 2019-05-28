@@ -11,17 +11,27 @@ namespace NineTapTour.Database
 {
     class FinalizeTempDB
     {
-        /***************************************************************
-        * LEAGUE AVERAGE
-        ****************************************************************/
+        /// <summary>
+        /// Calculates league average for given member based off last 30 games 
+        /// or total games played if less than 30.
+        /// </summary>
         public static double LeagueAverage(Member mem)
         {
+            int howmany = 30;
+            var db = new NineTapDb();
+            double avg = (double)(from p in db.Participants
+                          join m in db.Members on p.Member.Id equals m.Id
+                          join g in db.Games on p.Game.Id equals g.Id
+                          join t in db.Tournaments on p.Tournament.Id equals t.Id
+                          where mem.Id == m.Id
+                          orderby t.Date descending
+                          select (g.Game1 + g.Game2 + g.Game3 + g.Game4)/4).Take(howmany).Average();
+            return avg;
+            #region Refactored Code
+            /*
             double sum = 0;
             double average = 0;
-            var db = new NineTapDb();
-            var temp = (
-
-                        from p in db.Participants
+            var temp = (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
                         join g in db.Games on p.Game.Id equals g.Id
                         join t in db.Tournaments on p.Tournament.Id equals t.Id
@@ -46,9 +56,12 @@ namespace NineTapTour.Database
                 return (average = sum / temp.Count());
             }
             return 0;
+            */
+            #endregion
         }
 
-        //calculates league average for member based off last 30 games or total games played if less than 30.
+        #region Useless Method
+        /*
         public static double LeagueAverage(int memID)
         {
             double sum = 0;
@@ -81,11 +94,20 @@ namespace NineTapTour.Database
             }
             return 0;
         }
+        */
+        #endregion
 
         public static double LeagueAvgFromPlayerHistory(int mem, int howmany, int regionid)
         {
-            double sum = 0;
             var db = new NineTapDb();
+            // Calculates the Sum as the query instead of grabing all the data
+            double sum = (from p in db.PlayerHistory
+                          where p.MemberNumber == mem && p.regionID == regionid
+                          orderby p.TournamentDate descending
+                          select p.AverageForGame).Take(howmany).Sum();
+            return sum;
+            #region Refactored Code
+            /*
             var temp = (from p in db.PlayerHistory
                         where p.MemberNumber == mem && p.regionID == regionid
                         orderby p.TournamentDate descending
@@ -99,7 +121,6 @@ namespace NineTapTour.Database
                             p.trueAVG,
                             p.AverageForGame
                         }).Take(howmany).ToList();
-
             if (temp.Count > 0)
             {
 
@@ -110,6 +131,8 @@ namespace NineTapTour.Database
                 return sum;
             }
             return 0;
+            */
+            #endregion
         }
 
         /***************************************************
@@ -154,67 +177,14 @@ namespace NineTapTour.Database
 
         public static FinalizeTemp getFinalizeID(Game currentG)
         {
-            FinalizeTemp ft = new FinalizeTemp();
             var db = new NineTapDb();
-            var temp = (
-
-                from par in db.FinalizeTemp
+            var finalizeTemp = 
+                (from par in db.FinalizeTemp
                 where par.GameId == currentG.Id
-                select new
-                {
-
-                    par.AdjustedAvg,
-                    par.Bonus,
-                    par.FinalizeID,
-                    par.FirstName,
-                    par.Game1,
-                    par.Game2,
-                    par.Game3,
-                    par.Game4,
-                    par.GameAvg,
-                    par.GameId,
-                    par.Handicap,
-                    par.KeepAdjustedAvg,
-                    par.LastName,
-                    par.LeagueAverage,
-                    par.MemberId,
-                    par.Notes,
-                    par.ScratchTotal,
-                    par.Squad,
-                    par.TournamentID,
-                    par.UseGame1,
-                    par.UseGame2,
-                    par.UseGame3,
-                    par.UseGame4
-                });
-            foreach (var i in temp)
-            {
-                ft.AdjustedAvg = i.AdjustedAvg;
-                ft.Bonus = i.Bonus;
-                ft.FinalizeID = i.FinalizeID;
-                ft.FirstName = i.FirstName;
-                ft.Game1 = i.Game1;
-                ft.Game2 = i.Game2;
-                ft.Game3 = i.Game3;
-                ft.Game4 = i.Game4;
-                ft.GameAvg = i.GameAvg;
-                ft.GameId = i.GameId;
-                ft.Handicap = i.Handicap;
-                ft.KeepAdjustedAvg = i.KeepAdjustedAvg;
-                ft.LastName = i.LastName;
-                ft.LeagueAverage = i.LeagueAverage;
-                ft.MemberId = i.MemberId;
-                ft.Notes = i.Notes;
-                ft.ScratchTotal = i.ScratchTotal;
-                ft.Squad = i.Squad;
-                ft.TournamentID = i.TournamentID;
-                ft.UseGame1 = i.UseGame1;
-                ft.UseGame2 = i.UseGame2;
-                ft.UseGame3 = i.UseGame3;
-                ft.UseGame4 = i.UseGame4;
-               
-            }
-            return ft;
+                select par)
+                    .SingleOrDefault();
+            //return empty finalize object if none are found to retain original behavior
+            return finalizeTemp is null ? new FinalizeTemp() : finalizeTemp;
         }
 
         /// <summary>

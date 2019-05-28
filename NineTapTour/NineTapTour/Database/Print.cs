@@ -26,7 +26,7 @@ namespace NineTapTour.Database
             //default font to use, should use a mono space font so the spaces line up.
             Font font = new Font("Arial", 16, FontStyle.Bold, GraphicsUnit.Pixel);
 
-            //Sets defult brush to use when printing
+            //Sets default brush to use when printing
             SolidBrush dBrush = new SolidBrush(Color.Black);
 
             int startX = 10;
@@ -46,13 +46,13 @@ namespace NineTapTour.Database
                 {
                     graphic.DrawString(mem.Handicap.ToString(), font, dBrush, startX + 540, startY + 31 + i * offset);
                 }
-                //this prints the total handicap after it prints the handicap 4 seperate times
+                //this prints the total handicap after it prints the handicap 4 separate times
                 if (i == 5)
                 {
                     graphic.DrawString(totalHandicap.ToString(), font, dBrush, startX + 540, (startY + 50 + i * offset) - 1);
                 }
             }
-            //create name string containg lastname, firstname.
+            //create name string containing lastname, firstname.
             string nameString = mem.LastName + ", " + mem.FirstName;
             //draw name string
             graphic.DrawString(nameString, font, dBrush, startX + 5, startY + 80);
@@ -76,7 +76,7 @@ namespace NineTapTour.Database
             Font starFont = new Font("Arial", 16.5f, FontStyle.Bold, GraphicsUnit.Pixel);
             Font bigFont = new Font("Arial", 25, FontStyle.Bold, GraphicsUnit.Pixel);
 
-            //Sets defult brush to use when printing
+            //Sets default brush to use when printing
             SolidBrush dBrush = new SolidBrush(Color.Black);
 
             int startX = 15;
@@ -132,7 +132,7 @@ namespace NineTapTour.Database
                     
                     if(squadList.Count == 1) //if one squad
                     {
-                        if(min == 1) // checks for squad 1 is test for progresson based filter
+                        if(min == 1) // checks for squad 1 is test for progression based filter
                         {
                             graphic.DrawString("Through Squad " + min, bigFont, dBrush, startX + 250, startY + 70);
                         }
@@ -143,7 +143,7 @@ namespace NineTapTour.Database
                     }
                     else //if more then one squad
                     {
-                        //test to see if squads giving are consective
+                        //test to see if squads giving are consecutive
                         for(int i = 1; i < squadList.Count; i++)
                         {
                             if(squadList[i] - squadList[i-1] != 1)
@@ -154,7 +154,7 @@ namespace NineTapTour.Database
 
                         if(squadList.Count == 2) //if filtering two squads
                         {
-                            if(consective) //Calls if bool consective is true
+                            if(consective) //Calls if bool consecutive is true
                             {
                                 if(min == 1)
                                 {
@@ -170,7 +170,7 @@ namespace NineTapTour.Database
                                 graphic.DrawString("Squad " + min + " and " + max, bigFont, dBrush, startX + 250, startY + 70);
                             }
                         }
-                        else // if threee or more squads being filtered
+                        else // if three or more squads being filtered
                         {
                             if(consective)
                             {
@@ -194,7 +194,7 @@ namespace NineTapTour.Database
                 reportType = "Series";
             }
 
-            //If Series button was clicked, should not say final based on qual by squad, rather by Fitler Series by Squad. Still shows qual by squad filters on the listed players.
+            //If Series button was clicked, should not say final based on qual by squad, rather by Filter Series by Squad. Still shows qual by squad filters on the listed players.
             if (currentSquad == 0 && string.Equals(reportType, "Series"))
             {
                 graphic.DrawString(header + reportType + " Standings", bigFont, dBrush, startX + 10, startY + 27);
@@ -249,8 +249,8 @@ namespace NineTapTour.Database
                     unpaid = temp[i + (index * 40)].LastPaymentYear;
                 }
 
-                //create name string containg lastname, firstname, and last payment
-                //Changed: instead of showing last payment eery time it shows the year as the "unpaid"
+                //create name string containing lastname, firstname, and last payment
+                //Changed: instead of showing last payment every time it shows the year as the "unpaid"
                 string nameString = temp[i + (index * 40)].LastName + ", " + temp[i + (index * 40)].FirstName;
 
                 //draw name string
@@ -270,7 +270,7 @@ namespace NineTapTour.Database
             Print.squadList = squadList;
             Print.printDues = printDues;
 
-            // Set up compenents for printing
+            // Set up components for printing
             PrintDialog printDialog = new PrintDialog();
             PrintDocument printDocument = new PrintDocument();
             //add the document to the dialog box
@@ -311,7 +311,7 @@ namespace NineTapTour.Database
         // This is for the printbytourney button
         static public void printByTour(Tournament tour)
         {
-            //Set up compenents for printing
+            //Set up components for printing
             PrintDialog printDialog = new PrintDialog();
             PrintDocument printDocument = new PrintDocument();
             //add the document to the dialog box
@@ -336,7 +336,7 @@ namespace NineTapTour.Database
         /*
         static public void printByTourDate(DateTime start, DateTime end)
         {
-            //Set up compenents for printing
+            //Set up components for printing
             PrintDialog printDialog = new PrintDialog();
             PrintDocument printDocument = new PrintDocument();
             //add the document to the dialog box
@@ -360,7 +360,7 @@ namespace NineTapTour.Database
 
         static public void printAllMembers()
         {
-            // Set up compenents for printing
+            // Set up components for printing
             PrintDialog printDialog = new PrintDialog();
             PrintDocument printDocument = new PrintDocument();
             //add the document to the dialog box
@@ -390,7 +390,7 @@ namespace NineTapTour.Database
 
         static public void printByMemberList(List<Member> members)
         {
-            //Set up compenents for printing
+            //Set up components for printing
             PrintDialog printDialog = new PrintDialog();
             PrintDocument printDocument = new PrintDocument();
             //add the document to the dialog box
