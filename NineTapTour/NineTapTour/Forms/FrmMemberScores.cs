@@ -1845,7 +1845,7 @@ namespace NineTapTour.Forms
             PlayerHistory p = PlayerHistoryDB.getPlayerHistoryByGameID(g.Id);
             PlayerHistoryDB.DeletePlayerHistory(p);
             //Delete from FinalizeTemp
-            FinalizeTemp ft = FinalizeTempDB.getFinalizeID(GameDB.GetGame(g.Id));
+            FinalizeTemp ft = FinalizeTempDB.GetFinalizeID(GameDB.GetGame(g.Id));
             try
             {
                 FinalizeTempDB.DeleteFinalizeTemp(ft);
@@ -1857,7 +1857,7 @@ namespace NineTapTour.Forms
             
             //Delete from Participants list
             Participant par = FinalizeTempDB.GetParticipantByGameId(g.Id);
-            FinalizeTempDB.deleteParticipant(par);
+            FinalizeTempDB.DeleteParticipant(par);
             overallListOfParticipants.Remove(par);
             if(currentIndex + 1 == overallListOfParticipants.Count)
             {
