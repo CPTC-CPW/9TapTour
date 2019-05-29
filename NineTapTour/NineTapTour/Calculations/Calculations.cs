@@ -156,7 +156,7 @@ namespace NineTapTour.Calculations
 
             }
 
-            // is the mulitiple of a 3rd loss in a row after a win
+            // is the multiple of a 3rd loss in a row after a win
             return lastCashedTourneyIndex % 3 + currTourneyEntryCount >= minLosses;
         }
 
@@ -351,7 +351,7 @@ namespace NineTapTour.Calculations
                 bool isCurrIndexRemoved = false;
                 for (int j = i + 1; j < members.Count; j++)
                 {
-                    if (members[i].memberNumber == members[j].memberNumber)
+                    if (members[i].MemberNumber == members[j].MemberNumber)
                     {
                         if (members[i].HandicapTotal >= members[j].HandicapTotal)
                             removal.Add(members[j]);
@@ -496,7 +496,7 @@ namespace NineTapTour.Calculations
         /// </summary>
         /// <param name="members">list of members to copy and process</param>
         /// <param name="totalEntries">total amount of tournament entries</param>
-        /// <param name="compEntries">comp entry amoun in a tournament</param>
+        /// <param name="compEntries">comp entry amount in a tournament</param>
         /// <returns>List of ExcelMembers ordered by placement without duplicate ExcelMembers MemberNumbers to the placement that should cash</returns>
         public static List<ExcelMember> MakeTopMembersByPlacementList(List<ExcelMember> members, int totalEntries, int compEntries)
         {
