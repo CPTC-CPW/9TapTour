@@ -97,8 +97,8 @@ namespace NineTapTour.Database
             //}
             /************************************************************/
 
-            // drawing the location and date
-            graphic.DrawString(selectedTournament.Location + " " + tournamentType + string.Format("{0:d-M-yyyy}", selectedTournament.Date), font, dBrush, startX + 10, startY - 19);
+            // drawing the location and date(Month, Day, Year, e.g. May 13th 2019 = 5-13-2019
+            graphic.DrawString(selectedTournament.Location + " " + tournamentType + string.Format("{0:M-d-yyyy}", selectedTournament.Date), font, dBrush, startX + 10, startY - 19);
 
             string header = "9 Tap Tour High - ";
 
