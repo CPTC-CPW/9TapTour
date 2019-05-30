@@ -120,10 +120,8 @@ namespace NineTapTour.Database
 
         /// <summary>
         /// Validates string input for being a US state.
-        /// Returns 
+        /// Returns true if valid.
         /// </summary>
-        /// <param name="state"></param>
-        /// <returns></returns>
         public static bool IsStateValid(string state)
         {
             string uppercaseState = state.ToUpper().Trim();
@@ -167,7 +165,6 @@ namespace NineTapTour.Database
         /// 0 is all squads
         /// </summary>
         /// <param name="filterSeries">A list of 9 booleans determined by GRPQBS1n on FrmMemberScores</param> 
-        /// <returns></returns>
         public static List<int> SquadNumList(List<bool> filterSeries)
         {
             List<int> squadList = new List<int>();
@@ -186,7 +183,6 @@ namespace NineTapTour.Database
         /// e.g. if the list is 1,2,3 it's true. if 1,2,4 it's false.
         /// </summary>
         /// <param name="squadList">A list of squads selected in Filter series</param>
-        /// <returns></returns>
         public static bool IsContinuous(List<int> squadList) {
             for (int i = 1; i < squadList.Count(); i++) {
                 if (squadList[i] - squadList[i - 1] != 1) {
