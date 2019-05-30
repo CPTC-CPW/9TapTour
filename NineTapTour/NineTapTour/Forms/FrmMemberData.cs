@@ -921,7 +921,7 @@ namespace NineTapTour.Forms
         public Boolean IsSavedData()
         {
             bool isMember = false;
-            foreach (Member mem in MemberDB.GetALLMembersList())
+            foreach (Member mem in MemberDB.GetAllMembersList())
             {
                 if (mem.Id == (currentMem.Id))
                 {

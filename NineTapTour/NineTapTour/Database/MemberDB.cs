@@ -16,7 +16,8 @@ namespace NineTapTour.Database
     public class MemberDB
     {
         /// <summary>
-        /// 
+        /// If the Member given is found in the database, updates that Memeber. 
+        /// Otherwise, adds the new Memeber to the database
         /// </summary>
         public static void AddOrUpdateMember(Member temp)
         {
@@ -84,19 +85,23 @@ namespace NineTapTour.Database
                 return db.Members.Any(m => m.Number == Temp.Number && m.NineTapRegionID == Temp.NineTapRegionID);
             }
         }
-        public static List<Member> GetMemberList(int RegionID)
+
+        /// <summary>
+        /// Returns a list of all of the members with the same regionID as the one given
+        /// </summary>
+        public static List<Member> GetMemberList(int regionID)
         {
             using (var db = new NineTapDb())
             {
                 return (from m in db.Members
                         orderby  m.Number
-                        where m.NineTapRegionID == RegionID
+                        where m.NineTapRegionID == regionID
                         select m).ToList();
             }
         }
 
         /// <summary>
-        /// Get the number of Members in a particular region
+        /// Get the number of Members in the same region as the regionID given
         /// </summary>
         public static int GetMemberListCount(int regionId)
         {
@@ -104,7 +109,10 @@ namespace NineTapTour.Database
             return db.Members.Where(member => member.NineTapRegionID == regionId).Count();
         }
 
-        public static List<Member> GetALLMembersList()
+        /// <summary>
+        /// Returns a list of all Members
+        /// </summary>
+        public static List<Member> GetAllMembersList()
         {
             using (var db = new NineTapDb())
             {
@@ -114,22 +122,28 @@ namespace NineTapTour.Database
             }
         }
 
-        public static void DeleteMember(Member remove)
+        /// <summary>
+        /// Deletes the Member given from the database
+        /// </summary>
+        public static void DeleteMember(Member mem)
         {
             using (var db = new NineTapDb())
             {
-                db.Entry(remove).State = EntityState.Deleted;
+                db.Entry(mem).State = EntityState.Deleted;
                 db.SaveChanges();
             }
         }
 
-        public static Member GetMember(int memNumber, int RegionID)
+        /// <summary>
+        /// Returns a member with the same memberNumber and regionID given
+        /// </summary>
+        public static Member GetMember(int memberNumber, int regionID)
         {
             Member currentMember = new Member();
             using (var db = new NineTapDb())
             {
                 var temp = (from m in db.Members
-                            where m.Number == memNumber && m.NineTapRegionID == RegionID
+                            where m.Number == memberNumber && m.NineTapRegionID == regionID
                             select new
                             {
                                 m.Average,
@@ -203,12 +217,15 @@ namespace NineTapTour.Database
             }
         }
 
-        public static Member GetMemberByGameId(int gameId)
+        /// <summary>
+        /// Returns a member with the same gameID given
+        /// </summary>
+        public static Member GetMemberByGameId(int gameID)
         {
             return new NineTapDb().Participants
                                   .Include(b => b.Game)
                                   .Include(b => b.Member)
-                                  .First(p => p.Game.Id == gameId)
+                                  .First(p => p.Game.Id == gameID)
                                   .Member;
         }
             
@@ -223,33 +240,28 @@ namespace NineTapTour.Database
                     select m.Id).SingleOrDefault();
         }
 
-        public static int GetMemberNumberbyID(int MemberID)
+        /// <summary>
+        /// Returns a Member with the same memberID as the one given
+        /// </summary>
+        public static int GetMemberNumberbyID(int memberID)
         {
             Member currentMember = new Member();
             using (var db = new NineTapDb())
             {
                 var temp = (from m in db.Members
-                            where m.Id == MemberID
+                            where m.Id == memberID
                             select new
                             {
                                 m.Number,
                             });
                 foreach (var c in temp)
                 {
-
                     currentMember.Number = c.Number;
-                    ;
-
                 }
-
-
                 return currentMember.Number;
-
-
             }
         }
 
     }
-
 }
 
