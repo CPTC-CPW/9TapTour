@@ -9,11 +9,9 @@ namespace NineTapTour.Database
 {
     public static class FormHelper
     {
-
-
         /// <summary>
-		    /// Sets the flow direction for the flowlayoutpanel depending
-		    /// on the pixel width or height of the screen.
+		/// Sets the flow direction for the flowlayoutpanel depending
+		/// on the pixel width or height of the screen.
         /// </summary>
         /// <param name="form">The form object that calls this method.</param>
         /// <param name="flp">The flowlayoutpanel that is being passed in to have changes made to it.</param>
@@ -79,10 +77,8 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// 
+        /// Changes all radioButtons in the given groupbox with the given squadNumber to true
         /// </summary>
-        /// <param name="squadNumber"></param>
-        /// <param name="groupBox"></param>
         public static void SelectParticipantSquad(int squadNumber, GroupBox groupBox)
         {
             foreach (Control control in groupBox.Controls)
@@ -99,11 +95,9 @@ namespace NineTapTour.Database
         /// Tests a string input for being an integer
         /// between 1-300. Returns true if valid.
         /// </summary>
-        /// <param name="strAvg">string average</param>
-        /// <returns>bool result</returns>
-        public static bool IsAverageValid(string strAvg)
+        public static bool IsAverageValid(string stringAverage)
         {
-            Int32.TryParse(strAvg, out int test);
+            Int32.TryParse(stringAverage, out int test);
             return test > 0 && test < 300;
         }
 
@@ -111,12 +105,10 @@ namespace NineTapTour.Database
         /// Validates string input for being a date later
         /// than 1900. Returns true if valid.
         /// </summary>
-        /// <param name="box">string date</param>
-        /// <returns>bool result</returns>
-        public static bool IsDateTimeValid(string strDate)
+        public static bool IsDateTimeValid(string stringDate)
         {
             DateTime century = new DateTime(1900, 01, 01);
-            if (DateTime.TryParse(strDate, out DateTime dateTime))
+            if (DateTime.TryParse(stringDate, out DateTime dateTime))
             {
                 if (dateTime >= century)
                 {
