@@ -277,7 +277,7 @@ namespace NineTapTour.Forms
             {
                 int gplayed = 0;
                 Game g = GameDB.GetGame(item.GameId);
-                FinalizeTemp temp = FinalizeTempDB.getFinalizeID(g);
+                FinalizeTemp temp = FinalizeTempDB.GetFinalizeID(g);
 
                 // Create FinalizeTemp if one does not exist
                 if (temp.FinalizeID <= 0)
@@ -294,7 +294,7 @@ namespace NineTapTour.Forms
                 }
 
                 temp.Notes = item.Notes;
-                temp.memberNumber = MemberDb.GetMemberNumberbyID(item.MemberId);
+                temp.MemberNumber = MemberDb.GetMemberNumberbyID(item.MemberId);
                 temp.MemberId = item.MemberId;
                 temp.FirstName = item.FirstName;
                 temp.LastName = item.LastName;
@@ -339,10 +339,10 @@ namespace NineTapTour.Forms
                 #endregion
 
                 #region recalculate league average if is new entry
-                List<PlayerHistory> ExistingPlayerHistory = PlayerHistoryDB.getMemberPlayerHistory(item.memberNumber, RegionID);
+                List<PlayerHistory> ExistingPlayerHistory = PlayerHistoryDB.getMemberPlayerHistory(item.MemberNumber, RegionID);
                 if (ExistingPlayerHistory.Count == 0)
                 {
-                    temp.LeagueAverage = CalcThirtyLeagueAverage(item.memberNumber, FinalizeTableList.Where(f => f.memberNumber == item.memberNumber && f.Squad <= item.Squad && (f.UseGame1 || f.UseGame2 || f.UseGame3 || f.UseGame4)).Select(f => f.GameAvg).ToList());
+                    temp.LeagueAverage = CalcThirtyLeagueAverage(item.MemberNumber, FinalizeTableList.Where(f => f.MemberNumber == item.MemberNumber && f.Squad <= item.Squad && (f.UseGame1 || f.UseGame2 || f.UseGame3 || f.UseGame4)).Select(f => f.GameAvg).ToList());
                 }
                 else
                 {
@@ -354,7 +354,7 @@ namespace NineTapTour.Forms
                         }
                         else if (u == ExistingPlayerHistory.Count - 1) // after looking at all the history, if its not in the playerhistory list, then adjust the league avg
                         {
-                            temp.LeagueAverage = CalcThirtyLeagueAverage(item.memberNumber, FinalizeTableList.Where(f => f.memberNumber == item.memberNumber && f.Squad <= item.Squad && (f.UseGame1 || f.UseGame2 || f.UseGame3 || f.UseGame4)).Select(f => f.GameAvg).ToList());
+                            temp.LeagueAverage = CalcThirtyLeagueAverage(item.MemberNumber, FinalizeTableList.Where(f => f.MemberNumber == item.MemberNumber && f.Squad <= item.Squad && (f.UseGame1 || f.UseGame2 || f.UseGame3 || f.UseGame4)).Select(f => f.GameAvg).ToList());
                         }
                     }
                 }
@@ -380,8 +380,6 @@ namespace NineTapTour.Forms
             TournamentEntriesGrid.Columns[GAME_3_VALID_COLUMN].HeaderText = string.Empty;
             TournamentEntriesGrid.Columns[GAME_4_VALID_COLUMN].HeaderText = string.Empty;
 
-            ////Sort DataGridView by TrueAverage
-            //this.TournamentEntriesGrid.Sort(this.TournamentEntriesGrid.Columns["True Avg"], ListSortDirection.Descending);
 #if DEBUG
             // resets the adjusted averages
             ResetAdjustedAverages(FinalizeTableList);
@@ -397,7 +395,6 @@ namespace NineTapTour.Forms
         /// <returns></returns>
         public DataTable SetDataView(Dictionary<FinalizeTemp,int> participantsList)
         {
-            var db = new NineTapDb();
             DataTable dt = new DataTable();
             dt.Columns.Add(STANDING_COLUMN_NAME, typeof(int));                          // 0
             dt.Columns.Add(MEMBER_NUMBER_COLUMN_NAME, typeof(int)).ReadOnly = true;     // 1
@@ -432,10 +429,14 @@ namespace NineTapTour.Forms
                 DataRow newRow = dt.NewRow();
 
                 // 0 signifies duplicate entry
+                bool isMemberAlreadyPlaced = true;
                 if (participantsList[item] != 0)
+                {
                     newRow[STANDING_COLUMN_NAME] = participantsList[item];
+                    isMemberAlreadyPlaced = false;
+                }
 
-                newRow[MEMBER_NUMBER_COLUMN_NAME] = item.memberNumber;
+                newRow[MEMBER_NUMBER_COLUMN_NAME] = item.MemberNumber;
                 newRow[NAME_COLUMN_NAME] = item.FirstName + " " + item.LastName;
                 newRow[GAME_1_COLUMN_NAME] = item.Game1;
                 newRow[GAME_1_VALID_COLUMN_NAME] = item.UseGame1;
@@ -456,9 +457,28 @@ namespace NineTapTour.Forms
                 newRow[NOTES_COLUMN_NAME] = item.Notes;
                 newRow[HANDICAP_TOTAL_COLUMN_NAME] = item.HandicapTotal;
                 newRow[GAME_ID_COLUMN_NAME] = item.GameId;
-                dt.Rows.Add(newRow);
+                if (isMemberAlreadyPlaced)
+                {
+                    dt.Rows.InsertAt(newRow, (dt.Rows.IndexOf(GetLastMemberIndex(dt, item.MemberNumber))) + 1);
+                }
+                else //if member hasn't placed yet
+                {
+                    dt.Rows.Add(newRow);
+                }
             }
             return dt;
+        }
+
+        /// <summary>
+        /// Find the last row an existing memberID appears in the data table
+        /// </summary>
+        /// <param name="dt">The DataTable to search</param>
+        /// <param name="memNum">MemberID to search for</param>
+        private DataRow GetLastMemberIndex(DataTable dt, int memNum)
+        {
+            return dt.AsEnumerable()
+                .Where(row => row.Field<int>(MEMBER_NUMBER_COLUMN_NAME) == memNum)
+                .Last();
         }
 
         /// <summary>
@@ -666,17 +686,6 @@ namespace NineTapTour.Forms
                     Rank++;
                 }
             }
-        }
-
-        /// <summary>
-        /// This method will get a list of all tournament participants and return a sort the list by scores.
-        /// </summary>
-        /// <param name="tourn">Tournament needing information from</param>
-        /// <returns>sorted list of gameParticipants for specified tournament</returns>
-        public void SortByScore()
-        {
-            this.TournamentEntriesGrid.Sort(this.TournamentEntriesGrid.Columns["True Avg"], ListSortDirection.Descending);
-            RankGridView();
         }
 
         /// <summary>
@@ -1195,7 +1204,7 @@ namespace NineTapTour.Forms
                     GameDB.AddOrUpdateGame(currGame);
                     MemberDb.AddOrUpdateMember(currMember);
 
-                    FinalizeTableList[i].FinalizeID = FinalizeTempDB.getFinalizeID(currGame).FinalizeID;
+                    FinalizeTableList[i].FinalizeID = FinalizeTempDB.GetFinalizeID(currGame).FinalizeID;
                     FinalizeTableList[i].AdjustedAvg = ph.AVG;
                     FinalizeTableList[i].HandicapTotal = Convert.ToInt32(TournamentEntriesGrid[HANDICAP_TOTAL_COLUMN, currDataGridRowIndex].Value);
 
@@ -1233,7 +1242,7 @@ namespace NineTapTour.Forms
             if (!PlayerHistoryDB.PlayerHistoryExists(currGame.Id))
             {
                 currMember.Bonus = Calculations.Calculations.GetAdjustedBonusPins(placeStanding, totalEntriesQty, compEntriesQty,
-                                                                            currMember.Bonus, currMember.Number, RegionID, currTournament.Date, currTournament.Id);
+                                                                            currMember.Bonus, currMember.Number, RegionID, currTournament.Id);
                 ph.Bonus = currMember.Bonus;
             }
         }
