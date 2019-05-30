@@ -1275,7 +1275,7 @@ namespace NineTapTour.Forms
         private int CalcThirtyLeagueAverage(int memberNum, List<int> currGameAverages)
         {
             List<PlayerHistory> playerHistory = PlayerHistoryDB.getMemberPlayerHistory(memberNum, RegionID);
-            int sumOfAllGameAverages = Convert.ToInt32(FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) + currGameAverages.Sum());
+            int sumOfAllGameAverages = Convert.ToInt32(FinalizeTempDB.LeagueSumFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) + currGameAverages.Sum());
 
             if (playerHistory.Count >= 30 || (playerHistory.Count + currGameAverages.Count) > 30)
             {
