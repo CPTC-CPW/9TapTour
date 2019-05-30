@@ -100,14 +100,13 @@ namespace NineTapTour.Database
         public static double LeagueAvgFromPlayerHistory(int mem, int howmany, int regionid)
         {
             var db = new NineTapDb();
+            double sum = 0;
             // Calculates the Sum as the query instead of grabing all the data
-            double sum = (from p in db.PlayerHistory
-                          where p.MemberNumber == mem && p.regionID == regionid
-                          orderby p.TournamentDate descending
-                          select p.AverageForGame).Take(howmany).Sum();
-            return sum;
-            #region Refactored Code
-            /*
+            //double sum = (from p in db.PlayerHistory
+            //              where p.MemberNumber == mem && p.regionID == regionid
+            //              orderby p.TournamentDate descending
+            //              select p.AverageForGame).Take(howmany).Sum();
+            //return sum;
             var temp = (from p in db.PlayerHistory
                         where p.MemberNumber == mem && p.regionID == regionid
                         orderby p.TournamentDate descending
@@ -131,8 +130,7 @@ namespace NineTapTour.Database
                 return sum;
             }
             return 0;
-            */
-            #endregion
+
         }
 
         /// <summary>

@@ -42,9 +42,6 @@
             this.lblStartAvg = new System.Windows.Forms.Label();
             this.lblMemNum = new System.Windows.Forms.Label();
             this.lblAveNum = new System.Windows.Forms.Label();
-            this.rbnStanding = new System.Windows.Forms.RadioButton();
-            this.rbnName = new System.Windows.Forms.RadioButton();
-            this.lblSortBy = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.TournamentEntriesGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.playerTournamentHistoryGrid)).BeginInit();
             this.SuspendLayout();
@@ -181,41 +178,6 @@
             this.lblAveNum.TabIndex = 31;
             this.lblAveNum.Text = "AVG";
             // 
-            // rbnStanding
-            // 
-            this.rbnStanding.AutoSize = true;
-            this.rbnStanding.Checked = true;
-            this.rbnStanding.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbnStanding.Location = new System.Drawing.Point(1104, 9);
-            this.rbnStanding.Name = "rbnStanding";
-            this.rbnStanding.Size = new System.Drawing.Size(79, 20);
-            this.rbnStanding.TabIndex = 0;
-            this.rbnStanding.TabStop = true;
-            this.rbnStanding.Text = "Standing";
-            this.rbnStanding.UseVisualStyleBackColor = true;
-            this.rbnStanding.CheckedChanged += new System.EventHandler(this.rbnStanding_CheckedChanged);
-            // 
-            // rbnName
-            // 
-            this.rbnName.AutoSize = true;
-            this.rbnName.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbnName.Location = new System.Drawing.Point(1189, 9);
-            this.rbnName.Name = "rbnName";
-            this.rbnName.Size = new System.Drawing.Size(63, 20);
-            this.rbnName.TabIndex = 1;
-            this.rbnName.Text = "Name";
-            this.rbnName.UseVisualStyleBackColor = true;
-            // 
-            // lblSortBy
-            // 
-            this.lblSortBy.AutoSize = true;
-            this.lblSortBy.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSortBy.Location = new System.Drawing.Point(1044, 11);
-            this.lblSortBy.Name = "lblSortBy";
-            this.lblSortBy.Size = new System.Drawing.Size(54, 16);
-            this.lblSortBy.TabIndex = 32;
-            this.lblSortBy.Text = "Sort By:";
-            // 
             // FrmFinalizeTournament
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -223,9 +185,6 @@
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1264, 716);
-            this.Controls.Add(this.lblSortBy);
-            this.Controls.Add(this.rbnStanding);
-            this.Controls.Add(this.rbnName);
             this.Controls.Add(this.lblAveNum);
             this.Controls.Add(this.lblMemNum);
             this.Controls.Add(this.lblStartAvg);
@@ -255,8 +214,5 @@
         private System.Windows.Forms.Label lblStartAvg;
         private System.Windows.Forms.Label lblMemNum;
         private System.Windows.Forms.Label lblAveNum;
-        private System.Windows.Forms.RadioButton rbnStanding;
-        private System.Windows.Forms.RadioButton rbnName;
-        private System.Windows.Forms.Label lblSortBy;
     }
 }
