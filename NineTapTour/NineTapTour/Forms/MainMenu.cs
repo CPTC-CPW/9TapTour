@@ -26,7 +26,7 @@ namespace NineTapTour.Forms
             InitializeComponent();
 
             //check to see if any regions exist, if not create a local region(for first time start up)
-            if(NineTapRegionDB.getNumberOfRegions() == 0)
+            if(NineTapRegionDB.GetNumberOfRegions() == 0)
             {
                 NineTapRegion nTemp = new NineTapRegion();
                 nTemp.NineTapRegionName = "Local";
@@ -115,7 +115,7 @@ namespace NineTapTour.Forms
         // at this time. Keeping the code incase it's needed in the future.
         private void btnDropDataBase1_Click_1(object sender, EventArgs e)
         {
-            string name = NineTapRegionDB.getRegionByID(regionID).NineTapRegionName;
+            string name = NineTapRegionDB.GetRegionByID(regionID).NineTapRegionName;
             if (MessageBox.Show($"This button will delete all data stored in the {name} database, are you sure you want to clear  data?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 frmPleaseWait pl = new frmPleaseWait();
@@ -168,10 +168,10 @@ namespace NineTapTour.Forms
                 }
 
                 //delete  the region itself
-                NineTapRegion ntr = NineTapRegionDB.getRegionByID(regionID);
-                NineTapRegionDB.deleteRegion(ntr);
+                NineTapRegion ntr = NineTapRegionDB.GetRegionByID(regionID);
+                NineTapRegionDB.DeleteRegion(ntr);
 
-                if (NineTapRegionDB.getNumberOfRegions() == 0) // recreate the local region select again if it nothing exists here anymore
+                if (NineTapRegionDB.GetNumberOfRegions() == 0) // recreate the local region select again if it nothing exists here anymore
                 {
                     NineTapRegion n = new NineTapRegion();
                     n.NineTapRegionName = "Local";

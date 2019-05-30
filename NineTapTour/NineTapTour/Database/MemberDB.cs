@@ -209,10 +209,7 @@ namespace NineTapTour.Database
                     currentMember.State = c.State;
                     currentMember.Street = c.Street;
                     currentMember.NineTapRegionID = c.NineTapRegionID;
-
                 }
-
-
                 return currentMember;
             }
         }
@@ -261,7 +258,6 @@ namespace NineTapTour.Database
                 return currentMember.Number;
             }
         }
-
     }
 }
 
