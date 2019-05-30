@@ -94,7 +94,9 @@ namespace NineTapTour.Models
             get { return PlayerHistoryDB.GetTotalMoneyWon(Number, NineTapRegionID); }
             set { _moneyEarned = value;  }
         }
+
         public int NineTapRegionID { get; set; }
+        public virtual NineTapRegion NineTapRegion { get; set; }
         #endregion
 
         public override string ToString()

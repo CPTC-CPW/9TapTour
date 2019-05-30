@@ -82,9 +82,11 @@
             this.grpTournamentFile = new System.Windows.Forms.GroupBox();
             this.cbxTourneyDropDown = new System.Windows.Forms.ComboBox();
             this.grpLeaders = new System.Windows.Forms.GroupBox();
-            this.lbxTopGameSeries = new System.Windows.Forms.ListBox();
-            this.lbxHighGameSC = new System.Windows.Forms.ListBox();
-            this.lbxHighGameHC = new System.Windows.Forms.ListBox();
+            this.grpHighSelect = new System.Windows.Forms.GroupBox();
+            this.rdoHighSeries = new System.Windows.Forms.RadioButton();
+            this.rdoGameSC = new System.Windows.Forms.RadioButton();
+            this.rdoGameHC = new System.Windows.Forms.RadioButton();
+            this.lbxHighSelected = new System.Windows.Forms.ListBox();
             this.QBSBOX = new System.Windows.Forms.GroupBox();
             this.rdoSquad8Results = new System.Windows.Forms.RadioButton();
             this.rdoSquad7Results = new System.Windows.Forms.RadioButton();
@@ -98,9 +100,6 @@
             this.grpScoreType = new System.Windows.Forms.GroupBox();
             this.rdoScratchScore = new System.Windows.Forms.RadioButton();
             this.rdoHandicapScore = new System.Windows.Forms.RadioButton();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.GRPQBS1 = new System.Windows.Forms.GroupBox();
             this.cbFilterSquad8 = new System.Windows.Forms.CheckBox();
             this.cbFilterSquad7 = new System.Windows.Forms.CheckBox();
@@ -111,9 +110,7 @@
             this.cbFilterSquad2 = new System.Windows.Forms.CheckBox();
             this.cbFilterSquad1 = new System.Windows.Forms.CheckBox();
             this.cbAllSquads = new System.Windows.Forms.CheckBox();
-            this.lblHighGame = new System.Windows.Forms.Label();
-            this.lblSeries = new System.Windows.Forms.Label();
-            this.lblGameSenior = new System.Windows.Forms.Label();
+            this.lblHighSelected = new System.Windows.Forms.Label();
             this.grpReports = new System.Windows.Forms.GroupBox();
             this.btnSeries = new System.Windows.Forms.Button();
             this.btnGame = new System.Windows.Forms.Button();
@@ -140,6 +137,7 @@
             this.grpStats.SuspendLayout();
             this.grpTournamentFile.SuspendLayout();
             this.grpLeaders.SuspendLayout();
+            this.grpHighSelect.SuspendLayout();
             this.QBSBOX.SuspendLayout();
             this.grpScoreType.SuspendLayout();
             this.GRPQBS1.SuspendLayout();
@@ -778,51 +776,74 @@
             // 
             // grpLeaders
             // 
-            this.grpLeaders.Controls.Add(this.lbxTopGameSeries);
-            this.grpLeaders.Controls.Add(this.lbxHighGameSC);
-            this.grpLeaders.Controls.Add(this.lbxHighGameHC);
+            this.grpLeaders.Controls.Add(this.grpHighSelect);
+            this.grpLeaders.Controls.Add(this.lbxHighSelected);
             this.grpLeaders.Controls.Add(this.QBSBOX);
             this.grpLeaders.Controls.Add(this.grpScoreType);
-            this.grpLeaders.Controls.Add(this.label3);
-            this.grpLeaders.Controls.Add(this.label2);
-            this.grpLeaders.Controls.Add(this.label1);
             this.grpLeaders.Controls.Add(this.GRPQBS1);
-            this.grpLeaders.Controls.Add(this.lblHighGame);
-            this.grpLeaders.Controls.Add(this.lblSeries);
-            this.grpLeaders.Controls.Add(this.lblGameSenior);
+            this.grpLeaders.Controls.Add(this.lblHighSelected);
             this.grpLeaders.Location = new System.Drawing.Point(396, 138);
             this.grpLeaders.Name = "grpLeaders";
-            this.grpLeaders.Size = new System.Drawing.Size(578, 395);
+            this.grpLeaders.Size = new System.Drawing.Size(524, 369);
             this.grpLeaders.TabIndex = 29;
             this.grpLeaders.TabStop = false;
             this.grpLeaders.Text = "Leaders";
             // 
-            // lbxTopGameSeries
+            // grpHighSelect
             // 
-            this.lbxTopGameSeries.FormattingEnabled = true;
-            this.lbxTopGameSeries.Location = new System.Drawing.Point(5, 299);
-            this.lbxTopGameSeries.Name = "lbxTopGameSeries";
-            this.lbxTopGameSeries.Size = new System.Drawing.Size(337, 82);
-            this.lbxTopGameSeries.TabIndex = 50;
-            this.lbxTopGameSeries.Click += new System.EventHandler(this.lbxGameLeader_Click);
+            this.grpHighSelect.Controls.Add(this.rdoHighSeries);
+            this.grpHighSelect.Controls.Add(this.rdoGameSC);
+            this.grpHighSelect.Controls.Add(this.rdoGameHC);
+            this.grpHighSelect.Location = new System.Drawing.Point(18, 19);
+            this.grpHighSelect.Name = "grpHighSelect";
+            this.grpHighSelect.Size = new System.Drawing.Size(269, 40);
+            this.grpHighSelect.TabIndex = 9;
+            this.grpHighSelect.TabStop = false;
+            this.grpHighSelect.Text = "High";
             // 
-            // lbxHighGameSC
+            // rdoHighSeries
             // 
-            this.lbxHighGameSC.FormattingEnabled = true;
-            this.lbxHighGameSC.Location = new System.Drawing.Point(6, 176);
-            this.lbxHighGameSC.Name = "lbxHighGameSC";
-            this.lbxHighGameSC.Size = new System.Drawing.Size(337, 82);
-            this.lbxHighGameSC.TabIndex = 49;
-            this.lbxHighGameSC.Click += new System.EventHandler(this.lbxGameLeader_Click);
+            this.rdoHighSeries.AutoSize = true;
+            this.rdoHighSeries.Location = new System.Drawing.Point(212, 15);
+            this.rdoHighSeries.Name = "rdoHighSeries";
+            this.rdoHighSeries.Size = new System.Drawing.Size(54, 17);
+            this.rdoHighSeries.TabIndex = 2;
+            this.rdoHighSeries.Text = "Series";
+            this.rdoHighSeries.UseVisualStyleBackColor = true;
+            this.rdoHighSeries.CheckedChanged += new System.EventHandler(this.RdoHighSeries_CheckedChanged);
             // 
-            // lbxHighGameHC
+            // rdoGameSC
             // 
-            this.lbxHighGameHC.FormattingEnabled = true;
-            this.lbxHighGameHC.Location = new System.Drawing.Point(6, 51);
-            this.lbxHighGameHC.Name = "lbxHighGameHC";
-            this.lbxHighGameHC.Size = new System.Drawing.Size(337, 82);
-            this.lbxHighGameHC.TabIndex = 48;
-            this.lbxHighGameHC.Click += new System.EventHandler(this.lbxGameLeader_Click);
+            this.rdoGameSC.AutoSize = true;
+            this.rdoGameSC.Location = new System.Drawing.Point(113, 15);
+            this.rdoGameSC.Name = "rdoGameSC";
+            this.rdoGameSC.Size = new System.Drawing.Size(93, 17);
+            this.rdoGameSC.TabIndex = 1;
+            this.rdoGameSC.Text = "Game Scratch";
+            this.rdoGameSC.UseVisualStyleBackColor = true;
+            this.rdoGameSC.CheckedChanged += new System.EventHandler(this.RdoGameSC_CheckedChanged);
+            // 
+            // rdoGameHC
+            // 
+            this.rdoGameHC.AutoSize = true;
+            this.rdoGameHC.Checked = true;
+            this.rdoGameHC.Location = new System.Drawing.Point(6, 15);
+            this.rdoGameHC.Name = "rdoGameHC";
+            this.rdoGameHC.Size = new System.Drawing.Size(102, 17);
+            this.rdoGameHC.TabIndex = 0;
+            this.rdoGameHC.TabStop = true;
+            this.rdoGameHC.Text = "Game Handicap";
+            this.rdoGameHC.UseVisualStyleBackColor = true;
+            this.rdoGameHC.CheckedChanged += new System.EventHandler(this.RdoGameHC_CheckedChanged);
+            // 
+            // lbxHighSelected
+            // 
+            this.lbxHighSelected.FormattingEnabled = true;
+            this.lbxHighSelected.Location = new System.Drawing.Point(18, 78);
+            this.lbxHighSelected.Name = "lbxHighSelected";
+            this.lbxHighSelected.Size = new System.Drawing.Size(293, 277);
+            this.lbxHighSelected.TabIndex = 48;
+            this.lbxHighSelected.Click += new System.EventHandler(this.lbxGameLeader_Click);
             // 
             // QBSBOX
             // 
@@ -835,9 +856,9 @@
             this.QBSBOX.Controls.Add(this.rdoSquad2Results);
             this.QBSBOX.Controls.Add(this.rdoSquad1Results);
             this.QBSBOX.Controls.Add(this.rdoAllResults);
-            this.QBSBOX.Location = new System.Drawing.Point(349, 23);
+            this.QBSBOX.Location = new System.Drawing.Point(332, 23);
             this.QBSBOX.Name = "QBSBOX";
-            this.QBSBOX.Size = new System.Drawing.Size(101, 270);
+            this.QBSBOX.Size = new System.Drawing.Size(86, 248);
             this.QBSBOX.TabIndex = 23;
             this.QBSBOX.TabStop = false;
             this.QBSBOX.Text = "Qualify By Squad";
@@ -845,7 +866,7 @@
             // rdoSquad8Results
             // 
             this.rdoSquad8Results.AutoSize = true;
-            this.rdoSquad8Results.Location = new System.Drawing.Point(4, 230);
+            this.rdoSquad8Results.Location = new System.Drawing.Point(6, 221);
             this.rdoSquad8Results.Name = "rdoSquad8Results";
             this.rdoSquad8Results.Size = new System.Drawing.Size(65, 17);
             this.rdoSquad8Results.TabIndex = 8;
@@ -856,7 +877,7 @@
             // rdoSquad7Results
             // 
             this.rdoSquad7Results.AutoSize = true;
-            this.rdoSquad7Results.Location = new System.Drawing.Point(4, 207);
+            this.rdoSquad7Results.Location = new System.Drawing.Point(6, 198);
             this.rdoSquad7Results.Name = "rdoSquad7Results";
             this.rdoSquad7Results.Size = new System.Drawing.Size(65, 17);
             this.rdoSquad7Results.TabIndex = 7;
@@ -867,7 +888,7 @@
             // rdoSquad6Results
             // 
             this.rdoSquad6Results.AutoSize = true;
-            this.rdoSquad6Results.Location = new System.Drawing.Point(4, 184);
+            this.rdoSquad6Results.Location = new System.Drawing.Point(6, 175);
             this.rdoSquad6Results.Name = "rdoSquad6Results";
             this.rdoSquad6Results.Size = new System.Drawing.Size(65, 17);
             this.rdoSquad6Results.TabIndex = 6;
@@ -878,7 +899,7 @@
             // rdoSquad5Results
             // 
             this.rdoSquad5Results.AutoSize = true;
-            this.rdoSquad5Results.Location = new System.Drawing.Point(4, 161);
+            this.rdoSquad5Results.Location = new System.Drawing.Point(6, 152);
             this.rdoSquad5Results.Name = "rdoSquad5Results";
             this.rdoSquad5Results.Size = new System.Drawing.Size(65, 17);
             this.rdoSquad5Results.TabIndex = 5;
@@ -889,7 +910,7 @@
             // rdoSquad4Results
             // 
             this.rdoSquad4Results.AutoSize = true;
-            this.rdoSquad4Results.Location = new System.Drawing.Point(4, 138);
+            this.rdoSquad4Results.Location = new System.Drawing.Point(6, 129);
             this.rdoSquad4Results.Name = "rdoSquad4Results";
             this.rdoSquad4Results.Size = new System.Drawing.Size(65, 17);
             this.rdoSquad4Results.TabIndex = 4;
@@ -900,7 +921,7 @@
             // rdoSquad3Results
             // 
             this.rdoSquad3Results.AutoSize = true;
-            this.rdoSquad3Results.Location = new System.Drawing.Point(4, 115);
+            this.rdoSquad3Results.Location = new System.Drawing.Point(6, 106);
             this.rdoSquad3Results.Name = "rdoSquad3Results";
             this.rdoSquad3Results.Size = new System.Drawing.Size(65, 17);
             this.rdoSquad3Results.TabIndex = 3;
@@ -911,7 +932,7 @@
             // rdoSquad2Results
             // 
             this.rdoSquad2Results.AutoSize = true;
-            this.rdoSquad2Results.Location = new System.Drawing.Point(4, 92);
+            this.rdoSquad2Results.Location = new System.Drawing.Point(6, 83);
             this.rdoSquad2Results.Name = "rdoSquad2Results";
             this.rdoSquad2Results.Size = new System.Drawing.Size(65, 17);
             this.rdoSquad2Results.TabIndex = 2;
@@ -922,7 +943,7 @@
             // rdoSquad1Results
             // 
             this.rdoSquad1Results.AutoSize = true;
-            this.rdoSquad1Results.Location = new System.Drawing.Point(4, 69);
+            this.rdoSquad1Results.Location = new System.Drawing.Point(6, 60);
             this.rdoSquad1Results.Name = "rdoSquad1Results";
             this.rdoSquad1Results.Size = new System.Drawing.Size(65, 17);
             this.rdoSquad1Results.TabIndex = 1;
@@ -934,7 +955,7 @@
             // 
             this.rdoAllResults.AutoSize = true;
             this.rdoAllResults.Checked = true;
-            this.rdoAllResults.Location = new System.Drawing.Point(4, 46);
+            this.rdoAllResults.Location = new System.Drawing.Point(6, 37);
             this.rdoAllResults.Name = "rdoAllResults";
             this.rdoAllResults.Size = new System.Drawing.Size(75, 17);
             this.rdoAllResults.TabIndex = 0;
@@ -947,9 +968,9 @@
             // 
             this.grpScoreType.Controls.Add(this.rdoScratchScore);
             this.grpScoreType.Controls.Add(this.rdoHandicapScore);
-            this.grpScoreType.Location = new System.Drawing.Point(348, 299);
+            this.grpScoreType.Location = new System.Drawing.Point(332, 277);
             this.grpScoreType.Name = "grpScoreType";
-            this.grpScoreType.Size = new System.Drawing.Size(102, 73);
+            this.grpScoreType.Size = new System.Drawing.Size(86, 73);
             this.grpScoreType.TabIndex = 8;
             this.grpScoreType.TabStop = false;
             this.grpScoreType.Text = "Score Type";
@@ -978,33 +999,6 @@
             this.rdoHandicapScore.UseVisualStyleBackColor = true;
             this.rdoHandicapScore.CheckedChanged += new System.EventHandler(this.rdoHandicapScore_CheckedChanged);
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 283);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(149, 13);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "Series [Member No.] -- (Name)";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(145, 265);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(61, 13);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "High Series";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 158);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(151, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Game [Member No.] --- (Name)";
-            // 
             // GRPQBS1
             // 
             this.GRPQBS1.CausesValidation = false;
@@ -1017,9 +1011,9 @@
             this.GRPQBS1.Controls.Add(this.cbFilterSquad2);
             this.GRPQBS1.Controls.Add(this.cbFilterSquad1);
             this.GRPQBS1.Controls.Add(this.cbAllSquads);
-            this.GRPQBS1.Location = new System.Drawing.Point(456, 31);
+            this.GRPQBS1.Location = new System.Drawing.Point(424, 23);
             this.GRPQBS1.Name = "GRPQBS1";
-            this.GRPQBS1.Size = new System.Drawing.Size(103, 262);
+            this.GRPQBS1.Size = new System.Drawing.Size(83, 248);
             this.GRPQBS1.TabIndex = 47;
             this.GRPQBS1.TabStop = false;
             this.GRPQBS1.Text = "Filter Series by Squad";
@@ -1027,7 +1021,7 @@
             // cbFilterSquad8
             // 
             this.cbFilterSquad8.AutoSize = true;
-            this.cbFilterSquad8.Location = new System.Drawing.Point(6, 230);
+            this.cbFilterSquad8.Location = new System.Drawing.Point(6, 227);
             this.cbFilterSquad8.Name = "cbFilterSquad8";
             this.cbFilterSquad8.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad8.TabIndex = 8;
@@ -1038,7 +1032,7 @@
             // cbFilterSquad7
             // 
             this.cbFilterSquad7.AutoSize = true;
-            this.cbFilterSquad7.Location = new System.Drawing.Point(6, 203);
+            this.cbFilterSquad7.Location = new System.Drawing.Point(6, 202);
             this.cbFilterSquad7.Name = "cbFilterSquad7";
             this.cbFilterSquad7.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad7.TabIndex = 7;
@@ -1049,7 +1043,7 @@
             // cbFilterSquad6
             // 
             this.cbFilterSquad6.AutoSize = true;
-            this.cbFilterSquad6.Location = new System.Drawing.Point(6, 176);
+            this.cbFilterSquad6.Location = new System.Drawing.Point(6, 177);
             this.cbFilterSquad6.Name = "cbFilterSquad6";
             this.cbFilterSquad6.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad6.TabIndex = 6;
@@ -1060,7 +1054,7 @@
             // cbFilterSquad5
             // 
             this.cbFilterSquad5.AutoSize = true;
-            this.cbFilterSquad5.Location = new System.Drawing.Point(6, 149);
+            this.cbFilterSquad5.Location = new System.Drawing.Point(6, 152);
             this.cbFilterSquad5.Name = "cbFilterSquad5";
             this.cbFilterSquad5.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad5.TabIndex = 5;
@@ -1071,7 +1065,7 @@
             // cbFilterSquad4
             // 
             this.cbFilterSquad4.AutoSize = true;
-            this.cbFilterSquad4.Location = new System.Drawing.Point(6, 126);
+            this.cbFilterSquad4.Location = new System.Drawing.Point(6, 127);
             this.cbFilterSquad4.Name = "cbFilterSquad4";
             this.cbFilterSquad4.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad4.TabIndex = 4;
@@ -1082,7 +1076,7 @@
             // cbFilterSquad3
             // 
             this.cbFilterSquad3.AutoSize = true;
-            this.cbFilterSquad3.Location = new System.Drawing.Point(6, 100);
+            this.cbFilterSquad3.Location = new System.Drawing.Point(6, 102);
             this.cbFilterSquad3.Name = "cbFilterSquad3";
             this.cbFilterSquad3.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad3.TabIndex = 3;
@@ -1093,7 +1087,7 @@
             // cbFilterSquad2
             // 
             this.cbFilterSquad2.AutoSize = true;
-            this.cbFilterSquad2.Location = new System.Drawing.Point(6, 73);
+            this.cbFilterSquad2.Location = new System.Drawing.Point(6, 77);
             this.cbFilterSquad2.Name = "cbFilterSquad2";
             this.cbFilterSquad2.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad2.TabIndex = 2;
@@ -1104,7 +1098,7 @@
             // cbFilterSquad1
             // 
             this.cbFilterSquad1.AutoSize = true;
-            this.cbFilterSquad1.Location = new System.Drawing.Point(6, 50);
+            this.cbFilterSquad1.Location = new System.Drawing.Point(6, 52);
             this.cbFilterSquad1.Name = "cbFilterSquad1";
             this.cbFilterSquad1.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad1.TabIndex = 1;
@@ -1123,32 +1117,14 @@
             this.cbAllSquads.UseVisualStyleBackColor = true;
             this.cbAllSquads.CheckedChanged += new System.EventHandler(this.cbAllSquads_CheckedChanged);
             // 
-            // lblHighGame
+            // lblHighSelected
             // 
-            this.lblHighGame.AutoSize = true;
-            this.lblHighGame.Location = new System.Drawing.Point(152, 139);
-            this.lblHighGame.Name = "lblHighGame";
-            this.lblHighGame.Size = new System.Drawing.Size(100, 13);
-            this.lblHighGame.TabIndex = 4;
-            this.lblHighGame.Text = "High Game Scratch";
-            // 
-            // lblSeries
-            // 
-            this.lblSeries.AutoSize = true;
-            this.lblSeries.Location = new System.Drawing.Point(6, 35);
-            this.lblSeries.Name = "lblSeries";
-            this.lblSeries.Size = new System.Drawing.Size(148, 13);
-            this.lblSeries.TabIndex = 1;
-            this.lblSeries.Text = "Game [Member No.] -- (Name)";
-            // 
-            // lblGameSenior
-            // 
-            this.lblGameSenior.AutoSize = true;
-            this.lblGameSenior.Location = new System.Drawing.Point(131, 17);
-            this.lblGameSenior.Name = "lblGameSenior";
-            this.lblGameSenior.Size = new System.Drawing.Size(109, 13);
-            this.lblGameSenior.TabIndex = 0;
-            this.lblGameSenior.Text = "High Game Handicap";
+            this.lblHighSelected.AutoSize = true;
+            this.lblHighSelected.Location = new System.Drawing.Point(15, 62);
+            this.lblHighSelected.Name = "lblHighSelected";
+            this.lblHighSelected.Size = new System.Drawing.Size(148, 13);
+            this.lblHighSelected.TabIndex = 1;
+            this.lblHighSelected.Text = "Game [Member No.] -- (Name)";
             // 
             // grpReports
             // 
@@ -1314,7 +1290,7 @@
             this.panel1.Controls.Add(this.lblMiddleInitial);
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(993, 541);
+            this.panel1.Size = new System.Drawing.Size(929, 541);
             this.panel1.TabIndex = 0;
             // 
             // flpMemberScores
@@ -1397,6 +1373,8 @@
             this.grpTournamentFile.ResumeLayout(false);
             this.grpLeaders.ResumeLayout(false);
             this.grpLeaders.PerformLayout();
+            this.grpHighSelect.ResumeLayout(false);
+            this.grpHighSelect.PerformLayout();
             this.QBSBOX.ResumeLayout(false);
             this.QBSBOX.PerformLayout();
             this.grpScoreType.ResumeLayout(false);
@@ -1462,12 +1440,7 @@
         private System.Windows.Forms.Button btnSeries;
         private System.Windows.Forms.Button btnGame;
         private System.Windows.Forms.Button btnSenior;
-        private System.Windows.Forms.Label lblSeries;
-        private System.Windows.Forms.Label lblGameSenior;
-        private System.Windows.Forms.Label lblHighGame;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblHighSelected;
         private System.Windows.Forms.GroupBox grpComments;
         private System.Windows.Forms.RichTextBox rtxtComments;
         private System.Windows.Forms.Label lblMemberStatus;
@@ -1520,10 +1493,12 @@
         private System.Windows.Forms.CheckBox cbFilterSquad2;
         private System.Windows.Forms.CheckBox cbFilterSquad1;
         private System.Windows.Forms.CheckBox cbAllSquads;
-        private System.Windows.Forms.ListBox lbxTopGameSeries;
-        private System.Windows.Forms.ListBox lbxHighGameSC;
-        private System.Windows.Forms.ListBox lbxHighGameHC;
+        private System.Windows.Forms.ListBox lbxHighSelected;
         private System.Windows.Forms.Button btnLastRecord;
         private System.Windows.Forms.Button btnFirstRecord;
+        private System.Windows.Forms.GroupBox grpHighSelect;
+        private System.Windows.Forms.RadioButton rdoHighSeries;
+        private System.Windows.Forms.RadioButton rdoGameSC;
+        private System.Windows.Forms.RadioButton rdoGameHC;
     }
 }

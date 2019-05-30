@@ -4,6 +4,5 @@
     {
         public int NineTapRegionID {get; set;}
         public string NineTapRegionName { get; set; }
-
     }
 }
