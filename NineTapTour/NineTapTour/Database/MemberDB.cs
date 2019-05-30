@@ -13,8 +13,11 @@ using NineTapTour.Models;
 
 namespace NineTapTour.Database
 {
-    public class MemberDb
+    public class MemberDB
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public static void AddOrUpdateMember(Member temp)
         {
             try
@@ -24,24 +27,25 @@ namespace NineTapTour.Database
                     db.Entry(temp).State = db.Members.Any(m => m.Id == temp.Id) ?
                                             EntityState.Modified :
                                             EntityState.Added;
-                    /********************************************************************************************
-                    the if statement is so that you can update the handicap by changing the league average,
-                        but it won't update if a member participated in a tournament
-                    .value solves the problem where startAvg is nullable but the method is just int not int?
-                    *********************************************************************************************/
+                    /* The if statement is so that you can update the handicap by changing the league average,
+                     but it won't update if a member participated in a tournament, .Value solves the problem 
+                     where startAvg is nullable but the method is just int not int? */
                     if (temp.Average == 0)
                     {
                         temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.StartAvg.Value));
                     }
-                    /********************************************************************************************/
                     if (db.Entry(temp).State == EntityState.Modified)
                     {
                         temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.StartAvg.Value));
-                        //MessageBox.Show("Player Updated");
+#if DEBUG
+                        MessageBox.Show("Player Updated");
+#endif
                     }
                     else
                     {
-                        // MessageBox.Show("Player Saved Successfully");
+#if DEBUG
+                        MessageBox.Show("Player Saved Successfully");
+#endif
                     }
                     db.SaveChanges();
                 }
@@ -68,8 +72,6 @@ namespace NineTapTour.Database
                 Console.WriteLine("Error Number : " + ex.Message);
                 // throw new MemberTableException("Error Number : " + ex.Number + " - " + ex.Message);
             }
-
-
         }
 
         /// <summary>

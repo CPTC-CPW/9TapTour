@@ -289,7 +289,7 @@ namespace NineTapTour.Forms
                 }
 
                 int memberNumber = Convert.ToInt16(txtMemberNum.Text);
-                currentMem = MemberDb.GetMember(memberNumber, RegionID);
+                currentMem = MemberDB.GetMember(memberNumber, RegionID);
                 if (currentMem != null)
                 {
                     if (currentMem.IsActive)
@@ -512,7 +512,7 @@ namespace NineTapTour.Forms
                 int squad = GetCurrentSquadNumber();  
 
                 //get the member from the database using the number from the memnum textbox
-                currentMem = MemberDb.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
+                currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
                 player.Member = currentMem;
 
                 player.Game = new Game();
@@ -642,7 +642,7 @@ namespace NineTapTour.Forms
                     if (DateTime.Now > currentMem.LastBowled || currentMem.LastBowled == null)
                     {
                         currentMem.LastBowled = DateTime.Now;
-                        MemberDb.AddOrUpdateMember(currentMem);
+                        MemberDB.AddOrUpdateMember(currentMem);
                     }
                 }
                 Refresh(false);
@@ -764,7 +764,7 @@ namespace NineTapTour.Forms
             {
                 if (txtMemberNum.Text != "" && txtMemberNum.Text.All(Char.IsDigit))
                 {
-                    currentMem = MemberDb.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
+                    currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
 
                     int currentSquadNumber = GetCurrentSquadNumber();
 
@@ -1873,7 +1873,7 @@ namespace NineTapTour.Forms
             currentMem.Bonus = temp[0].Bonus;
             currentMem.StartAvg = temp[0].AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
             currentMem.Average = Convert.ToInt32(temp[0].trueAVG);
-            MemberDb.AddOrUpdateMember(currentMem);
+            MemberDB.AddOrUpdateMember(currentMem);
         }
 
         private void btnTournamentResults_Click(object sender, EventArgs e)

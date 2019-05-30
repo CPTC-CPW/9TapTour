@@ -34,7 +34,7 @@ namespace NineTapTour.Database
                 //throw new PlayerHistoryTableException("Error Number : " + ex.Number + " - " + ex.Message);
 
                 //Display error to user so it can be fixed
-                Member member = MemberDb.GetMember(temp.MemberNumber, temp.regionID);
+                Member member = MemberDB.GetMember(temp.MemberNumber, temp.regionID);
                 //For more info on "?." see null conditional docs https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-conditional-operators 
                 MessageBox.Show(
                     $"There was a problem with Member Number: {temp.MemberNumber}, {member?.FirstName} {member?.LastName}.\n" +

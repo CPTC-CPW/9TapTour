@@ -294,7 +294,7 @@ namespace NineTapTour.Forms
                 }
 
                 temp.Notes = item.Notes;
-                temp.MemberNumber = MemberDb.GetMemberNumberbyID(item.MemberId);
+                temp.MemberNumber = MemberDB.GetMemberNumberbyID(item.MemberId);
                 temp.MemberId = item.MemberId;
                 temp.FirstName = item.FirstName;
                 temp.LastName = item.LastName;
@@ -940,7 +940,7 @@ namespace NineTapTour.Forms
             using (var db = new NineTapDb())
             {
                 int memberNumber = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Number;
-                Member Cmember = MemberDb.GetMember(memberNumber, RegionID);
+                Member Cmember = MemberDB.GetMember(memberNumber, RegionID);
 
                 // Sets labels for selected member
                 lblMemberNumber.Text = Cmember.Number.ToString();
@@ -1097,7 +1097,7 @@ namespace NineTapTour.Forms
                     ph.GameID = currGameId;
 
                     Game currGame = GameDB.GetGame(currGameId);
-                    Member currMember = MemberDb.GetMemberByGameId(currGameId);
+                    Member currMember = MemberDB.GetMemberByGameId(currGameId);
 
                     ph.TournamentDate = currTournament.Date;
                     ph.MemberNumber = currMember.Number;
@@ -1202,7 +1202,7 @@ namespace NineTapTour.Forms
                         PlayerHistoryDB.AddOrUpdatePlayerHistory(ph);
                     }
                     GameDB.AddOrUpdateGame(currGame);
-                    MemberDb.AddOrUpdateMember(currMember);
+                    MemberDB.AddOrUpdateMember(currMember);
 
                     FinalizeTableList[i].FinalizeID = FinalizeTempDB.GetFinalizeID(currGame).FinalizeID;
                     FinalizeTableList[i].AdjustedAvg = ph.AVG;
