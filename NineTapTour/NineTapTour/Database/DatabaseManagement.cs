@@ -11,12 +11,18 @@ namespace NineTapTour.Database
 {
     public static class DatabaseManagement
     {
-
+        /// <summary>
+        /// Returns the string NineTapDBBackup_ + the current date/time + .bak 
+        /// </summary>
         private static string CreateBackupName()
         {
             return "NineTapDBBackup_" + DateTime.Now.ToString("d-MMM-yyyy-hmmss") + ".bak";
         }
 
+        /// <summary>
+        /// Tryes to backup the NineTap Database with the same path as the one given by CreateBackupName(), 
+        /// returns true if backup was successful
+        /// </summary>
         public static bool BackupDatabase(string backupPath)
         {
             NineTapDb db = new NineTapDb();
@@ -45,6 +51,10 @@ namespace NineTapTour.Database
             return true;
         }
 
+        /// <summary>
+        /// Tryes to restore the NineTap Database with the same path given, 
+        /// returns true if restore was successful
+        /// </summary>
         public static bool RestoreDatabase(string restorePath)
         {
             NineTapDb db = new NineTapDb();

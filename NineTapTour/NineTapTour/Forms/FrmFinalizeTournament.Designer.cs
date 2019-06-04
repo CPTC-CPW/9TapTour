@@ -125,7 +125,7 @@
             this.playerTournamentHistoryGrid.Location = new System.Drawing.Point(12, 356);
             this.playerTournamentHistoryGrid.Name = "playerTournamentHistoryGrid";
             this.playerTournamentHistoryGrid.ReadOnly = true;
-            this.playerTournamentHistoryGrid.Size = new System.Drawing.Size(1240, 348);
+            this.playerTournamentHistoryGrid.Size = new System.Drawing.Size(1240, 325);
             this.playerTournamentHistoryGrid.TabIndex = 2;
             // 
             // lblMemberNumber
@@ -184,7 +184,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1264, 716);
+            this.ClientSize = new System.Drawing.Size(1264, 693);
             this.Controls.Add(this.lblAveNum);
             this.Controls.Add(this.lblMemNum);
             this.Controls.Add(this.lblStartAvg);
