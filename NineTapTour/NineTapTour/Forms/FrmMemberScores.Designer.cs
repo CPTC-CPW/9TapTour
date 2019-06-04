@@ -840,7 +840,7 @@
             this.QBSBOX.Size = new System.Drawing.Size(101, 270);
             this.QBSBOX.TabIndex = 23;
             this.QBSBOX.TabStop = false;
-            this.QBSBOX.Text = "Qualify By Squad";
+            this.QBSBOX.Text = "Sort Squad in Ascending Order";
             // 
             // rdoSquad8Results
             // 
@@ -1022,7 +1022,7 @@
             this.GRPQBS1.Size = new System.Drawing.Size(103, 262);
             this.GRPQBS1.TabIndex = 47;
             this.GRPQBS1.TabStop = false;
-            this.GRPQBS1.Text = "Filter Series by Squad";
+            this.GRPQBS1.Text = "Filter By Current High Series Squad";
             // 
             // cbFilterSquad8
             // 
