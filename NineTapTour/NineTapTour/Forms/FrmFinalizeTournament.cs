@@ -500,12 +500,13 @@ namespace NineTapTour.Forms
                     DataGridViewCell clickedCell = TournamentEntriesGrid.Rows[e.RowIndex].Cells[e.ColumnIndex];
                     bool isCellChecked = Convert.ToBoolean(clickedCell.Value);
                     UpdateAvg(clickedCell.RowIndex);
-                    UpdateLeagueAvg(e.RowIndex);
+                    //UpdateLeagueAvg(e.RowIndex);
                     CheckBoxDBSet(clickedCell.RowIndex, clickedCell.ColumnIndex, isCellChecked);
                     SetGameCellFormatting(GetCorrespondingGameCell(clickedCell), isCellChecked);
-                    dataGridView1_CellClick(null, null);
-                }
 
+                    
+                }
+                
                 // Check if cell changed was a DIRECTOR_CHECK cell
                 // If the DIRECTOR_CHECK cell was clicked, 
                 else if (e.ColumnIndex == DIRECTOR_CHECK_COLUMN)
@@ -533,7 +534,9 @@ namespace NineTapTour.Forms
                         row.SetField(DIRECTOR_CHECK_COLUMN, isCellChecked);
                     }
                 }
+                dataGridView1_CellClick(sender, e);// moved higher in scope to help refresh correctly
             }
+            
         }
 
         /// <summary>
@@ -580,6 +583,7 @@ namespace NineTapTour.Forms
             {
                 TournamentEntriesGrid.EndEdit();
             }
+            
         }
 
         /// <summary>
@@ -969,6 +973,9 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            
+            UpdateLeagueAvg(e.RowIndex);//added to help update more often
+            
             //set name, member score and currentr avg based of of what row is selected.
             int gameId = Convert.ToInt32(TournamentEntriesGrid.Rows[TournamentEntriesGrid.CurrentCell.RowIndex].Cells[GAME_ID_COLUMN].Value);
             using (var db = new NineTapDb())
