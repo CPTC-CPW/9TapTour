@@ -498,12 +498,13 @@ namespace NineTapTour.Forms
                     DataGridViewCell clickedCell = TournamentEntriesGrid.Rows[e.RowIndex].Cells[e.ColumnIndex];
                     bool isCellChecked = Convert.ToBoolean(clickedCell.Value);
                     UpdateAvg(clickedCell.RowIndex);
-                    UpdateLeagueAvg(e.RowIndex);
+                    //UpdateLeagueAvg(e.RowIndex);
                     CheckBoxDBSet(clickedCell.RowIndex, clickedCell.ColumnIndex, isCellChecked);
                     SetGameCellFormatting(GetCorrespondingGameCell(clickedCell), isCellChecked);
-                    dataGridView1_CellClick(null, null);
-                }
 
+                    
+                }
+                
                 // Check if cell changed was a DIRECTOR_CHECK cell
                 // If the DIRECTOR_CHECK cell was clicked, 
                 else if (e.ColumnIndex == DIRECTOR_CHECK_COLUMN)
@@ -531,7 +532,9 @@ namespace NineTapTour.Forms
                         row.SetField(DIRECTOR_CHECK_COLUMN, isCellChecked);
                     }
                 }
+                dataGridView1_CellClick(sender, e);// moved higher in scope to help refresh correctly
             }
+            
         }
 
         /// <summary>
@@ -578,6 +581,7 @@ namespace NineTapTour.Forms
             {
                 TournamentEntriesGrid.EndEdit();
             }
+            
         }
 
         /// <summary>
@@ -935,6 +939,9 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            
+            UpdateLeagueAvg(e.RowIndex);//added to help update more often
+            
             //set name, member score and currentr avg based of of what row is selected.
             int gameId = Convert.ToInt32(TournamentEntriesGrid.Rows[TournamentEntriesGrid.CurrentCell.RowIndex].Cells[GAME_ID_COLUMN].Value);
             using (var db = new NineTapDb())
@@ -1275,16 +1282,21 @@ namespace NineTapTour.Forms
         private int CalcThirtyLeagueAverage(int memberNum, List<int> currGameAverages)
         {
             List<PlayerHistory> playerHistory = PlayerHistoryDB.getMemberPlayerHistory(memberNum, RegionID);
-            int sumOfAllGameAverages = Convert.ToInt32(FinalizeTempDB.LeagueSumFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) + currGameAverages.Sum());
-
+            int avgOfAllGameAverages = 
+                Convert.ToInt32(FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) + currGameAverages.Sum());
+            return avgOfAllGameAverages;
+            #region Refactored Code
+            /*
             if (playerHistory.Count >= 30 || (playerHistory.Count + currGameAverages.Count) > 30)
             {
-                return sumOfAllGameAverages / 30;
+                return avgOfAllGameAverages / 30;
             }
             else
             {
-                return sumOfAllGameAverages / (playerHistory.Count + currGameAverages.Count);
+                return avgOfAllGameAverages / (playerHistory.Count + currGameAverages.Count);
             }
+            */
+            #endregion
         }
 
         // Removed unused getLeagueSum method which was meant to calculate the League Average on 3/18/19. League Average is
