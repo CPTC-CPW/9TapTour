@@ -1011,9 +1011,9 @@
             this.GRPQBS1.Controls.Add(this.cbFilterSquad2);
             this.GRPQBS1.Controls.Add(this.cbFilterSquad1);
             this.GRPQBS1.Controls.Add(this.cbAllSquads);
-            this.GRPQBS1.Location = new System.Drawing.Point(424, 23);
+            this.GRPQBS1.Location = new System.Drawing.Point(424, 26);
             this.GRPQBS1.Name = "GRPQBS1";
-            this.GRPQBS1.Size = new System.Drawing.Size(83, 248);
+            this.GRPQBS1.Size = new System.Drawing.Size(83, 267);
             this.GRPQBS1.TabIndex = 47;
             this.GRPQBS1.TabStop = false;
             this.GRPQBS1.Text = "Filter By Current High Series Squad";
@@ -1021,7 +1021,7 @@
             // cbFilterSquad8
             // 
             this.cbFilterSquad8.AutoSize = true;
-            this.cbFilterSquad8.Location = new System.Drawing.Point(6, 227);
+            this.cbFilterSquad8.Location = new System.Drawing.Point(6, 238);
             this.cbFilterSquad8.Name = "cbFilterSquad8";
             this.cbFilterSquad8.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad8.TabIndex = 8;
@@ -1032,7 +1032,7 @@
             // cbFilterSquad7
             // 
             this.cbFilterSquad7.AutoSize = true;
-            this.cbFilterSquad7.Location = new System.Drawing.Point(6, 202);
+            this.cbFilterSquad7.Location = new System.Drawing.Point(6, 215);
             this.cbFilterSquad7.Name = "cbFilterSquad7";
             this.cbFilterSquad7.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad7.TabIndex = 7;
@@ -1043,7 +1043,7 @@
             // cbFilterSquad6
             // 
             this.cbFilterSquad6.AutoSize = true;
-            this.cbFilterSquad6.Location = new System.Drawing.Point(6, 177);
+            this.cbFilterSquad6.Location = new System.Drawing.Point(6, 192);
             this.cbFilterSquad6.Name = "cbFilterSquad6";
             this.cbFilterSquad6.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad6.TabIndex = 6;
@@ -1054,7 +1054,7 @@
             // cbFilterSquad5
             // 
             this.cbFilterSquad5.AutoSize = true;
-            this.cbFilterSquad5.Location = new System.Drawing.Point(6, 152);
+            this.cbFilterSquad5.Location = new System.Drawing.Point(6, 169);
             this.cbFilterSquad5.Name = "cbFilterSquad5";
             this.cbFilterSquad5.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad5.TabIndex = 5;
@@ -1065,7 +1065,7 @@
             // cbFilterSquad4
             // 
             this.cbFilterSquad4.AutoSize = true;
-            this.cbFilterSquad4.Location = new System.Drawing.Point(6, 127);
+            this.cbFilterSquad4.Location = new System.Drawing.Point(6, 146);
             this.cbFilterSquad4.Name = "cbFilterSquad4";
             this.cbFilterSquad4.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad4.TabIndex = 4;
@@ -1076,7 +1076,7 @@
             // cbFilterSquad3
             // 
             this.cbFilterSquad3.AutoSize = true;
-            this.cbFilterSquad3.Location = new System.Drawing.Point(6, 102);
+            this.cbFilterSquad3.Location = new System.Drawing.Point(6, 120);
             this.cbFilterSquad3.Name = "cbFilterSquad3";
             this.cbFilterSquad3.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad3.TabIndex = 3;
@@ -1087,7 +1087,7 @@
             // cbFilterSquad2
             // 
             this.cbFilterSquad2.AutoSize = true;
-            this.cbFilterSquad2.Location = new System.Drawing.Point(6, 77);
+            this.cbFilterSquad2.Location = new System.Drawing.Point(6, 97);
             this.cbFilterSquad2.Name = "cbFilterSquad2";
             this.cbFilterSquad2.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad2.TabIndex = 2;
@@ -1098,7 +1098,7 @@
             // cbFilterSquad1
             // 
             this.cbFilterSquad1.AutoSize = true;
-            this.cbFilterSquad1.Location = new System.Drawing.Point(6, 52);
+            this.cbFilterSquad1.Location = new System.Drawing.Point(6, 74);
             this.cbFilterSquad1.Name = "cbFilterSquad1";
             this.cbFilterSquad1.Size = new System.Drawing.Size(66, 17);
             this.cbFilterSquad1.TabIndex = 1;
@@ -1109,7 +1109,7 @@
             // cbAllSquads
             // 
             this.cbAllSquads.AutoSize = true;
-            this.cbAllSquads.Location = new System.Drawing.Point(6, 27);
+            this.cbAllSquads.Location = new System.Drawing.Point(6, 51);
             this.cbAllSquads.Name = "cbAllSquads";
             this.cbAllSquads.Size = new System.Drawing.Size(76, 17);
             this.cbAllSquads.TabIndex = 0;
