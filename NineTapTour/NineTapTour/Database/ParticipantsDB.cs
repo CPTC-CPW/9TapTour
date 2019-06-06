@@ -158,7 +158,7 @@ namespace NineTapTour.Database
         /// <summary>
         /// 
         /// </summary>
-        public static List<MemberScores> GetStandingsFor3OutOf4ByHandicap(int selectedTournament)
+        public static List<MemberScores> GetStandingsForThreeOutOf4ByHandicap(int selectedTournament)
         {
             using (NineTapDb db = new NineTapDb())
             {
@@ -184,7 +184,7 @@ namespace NineTapTour.Database
         /// <summary>
         /// 
         /// </summary>
-        public static List<MemberScores> GetStandingsFor3OutOf4ByScratch(int selectedTournament)
+        public static List<MemberScores> GetStandingsForThreeOf4ByScratch(int selectedTournament)
         {
             using (NineTapDb db = new NineTapDb())
             {
@@ -210,7 +210,7 @@ namespace NineTapTour.Database
         /// <summary>
         /// 
         /// </summary>
-        public static List<MemberScores> GetStandingsFor3OutOf4BySquadNumberByHandicap(int qualifyBySquadNumber, int selectedTournament)
+        public static List<MemberScores> GetStandingsForThreeOf4BySquadNumberByHandicap(int qualifyBySquadNumber, int selectedTournament)
         {
             using (NineTapDb db = new NineTapDb())
             {
@@ -236,7 +236,7 @@ namespace NineTapTour.Database
         /// <summary>
         /// 
         /// </summary>
-        public static List<MemberScores> GetStandings3OutOf4BySquadScratch(int qualifyBySquadNumber, int selectedTournament)
+        public static List<MemberScores> GetStandingsThreeOfFourBySquadScratch(int qualifyBySquadNumber, int selectedTournament)
         {
             using (NineTapDb db = new NineTapDb())
             {
@@ -355,14 +355,15 @@ namespace NineTapTour.Database
 
         //Note:When printing, these methods get the desired squads in squadList instead of the qualifyBySquad radio btns
 
-        /* These GetStandings calls will return multiple squads by getting all the members of a squad then appending that list to the returned value.
-         Once all the squads in squadList have been appended to the returnedList it is returned. */
-
         /// <summary>
-        /// 
+        /// These GetStandings calls will return multiple squads by getting all the members of a squad then appending that list to the returned value.
+        /// Once all the squads in squadList have been appended to the returnedList it is returned.
         /// </summary>
+        /// <param name="db"></param>
         /// <param name="squadList">A list of all the selected squads</param>
-        public static List<MemberScores> GetStandingsFor3OutOf4ByFilterSeriesByHandicap(List<int> squadList, int selectedTournament)
+        /// <param name="selectedTournament"></param>
+        /// <returns></returns>
+        public static List<MemberScores> GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(List<int> squadList, int selectedTournament)
         {
             using (NineTapDb db = new NineTapDb())
             {
@@ -372,8 +373,7 @@ namespace NineTapTour.Database
                     returnedList.AddRange(
                         (from g in (db.Participants.Include(b => b.Member)
                              .Include(b => b.Game)
-                             .Where(b => b.Tournament.Id == selectedTournament)
-                             .Where(b => b.Squad == squad))
+                             .Where(b => b.Tournament.Id == selectedTournament).Where(b => b.Squad == squad))
                          orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3 + g.Game.Bonus * 3) - 
                              (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }
                              .Min())) descending
@@ -393,9 +393,8 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Returns a list of MemberScores from all of the Members in a squad, from a Tournament
+        /// 
         /// </summary>
-        /// <param name="squadList">A list of all the selected squads</param>
         public static List<MemberScores> GetStandingsForTournamentByFilterSeriesByHandicap(List<int> squadList, int selectedTournament)
         {
             using (NineTapDb db = new NineTapDb())
@@ -406,8 +405,7 @@ namespace NineTapTour.Database
                     returnedList.AddRange(
                         (from g in (db.Participants.Include(b => b.Member)
                              .Include(b => b.Game)
-                             .Where(b => b.Tournament.Id == selectedTournament)
-                             .Where(b => b.Squad == squad))
+                             .Where(b => b.Tournament.Id == selectedTournament).Where(b => b.Squad == squad))
                          orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + 
                              (g.Game.Handicap * 4 + g.Game.Bonus * 4)) descending
                          select new MemberScores {
@@ -428,8 +426,7 @@ namespace NineTapTour.Database
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="squadList">A list of all the selected squads</param>
-        public static List<MemberScores> GetStandingsFor3OutOf4ByFilterSeriesByScratch(List<int> squadList, int selectedTournament)
+        public static List<MemberScores> GetStandingsForThreeOf4ByFilterSeriesByScratch(List<int> squadList, int selectedTournament)
         {
             using (NineTapDb db = new NineTapDb())
             {
@@ -439,8 +436,7 @@ namespace NineTapTour.Database
                     returnedList.AddRange(
                         (from g in (db.Participants.Include(b => b.Member)
                              .Include(b => b.Game)
-                             .Where(b => b.Tournament.Id == selectedTournament)
-                             .Where(b => b.Squad == squad))
+                             .Where(b => b.Tournament.Id == selectedTournament).Where(b => b.Squad == squad))
                          orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 - 
                              (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }
                              .Min())) descending
@@ -462,7 +458,6 @@ namespace NineTapTour.Database
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="squadList">A list of all the selected squads</param>
         public static List<MemberScores> GetStandingsForTournamentByFilterSeriesByScratch(List<int> squadList, int selectedTournament)
         {
             using (NineTapDb db = new NineTapDb())
@@ -473,8 +468,7 @@ namespace NineTapTour.Database
                     returnedList.AddRange(
                         (from g in (db.Participants.Include(b => b.Member)
                              .Include(b => b.Game)
-                             .Where(b => b.Tournament.Id == selectedTournament)
-                             .Where(b => b.Squad == squad))
+                             .Where(b => b.Tournament.Id == selectedTournament).Where(b => b.Squad == squad))
                          orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4) descending
                          select new MemberScores {
                              MemberId = g.Member.Number,

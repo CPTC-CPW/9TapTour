@@ -261,17 +261,17 @@ namespace NineTapTour.Calculations
             tempListOfMemberScores.Sort(new MemberScoresComparer());
 
             int place = 1;
-            tempListOfMemberScores[0].Placing = place++;
+            tempListOfMemberScores[0].placing = place++;
 
             for (int currPosition = 1; currPosition < tempListOfMemberScores.Count; currPosition++)
             {
                 if (tempListOfMemberScores[currPosition].Score == tempListOfMemberScores[currPosition - 1].Score)
                 {
-                    tempListOfMemberScores[currPosition].Placing = tempListOfMemberScores[currPosition - 1].Placing;
+                    tempListOfMemberScores[currPosition].placing = tempListOfMemberScores[currPosition - 1].placing;
                 }
                 else
                 {
-                    tempListOfMemberScores[currPosition].Placing = place;
+                    tempListOfMemberScores[currPosition].placing = place;
                 }
                 place++;
             }
@@ -531,7 +531,7 @@ namespace NineTapTour.Calculations
             members = CalculatePlaceStandings(members);
 
             // takes only top place members above lowest placement threshold
-            return members.Where(m => m.Placing <= lowestPlacement).ToList();
+            return members.Where(m => m.placing <= lowestPlacement).ToList();
         }
     }
 

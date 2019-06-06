@@ -1696,11 +1696,11 @@ namespace NineTapTour.Forms
                 {
                     if (selectedTournament.ThreeOutOf4 && squadList.Contains(0))
                     {
-                        temp = ParticipantsDB.GetStandingsFor3OutOf4ByHandicap(selectedTournament.Id);
+                        temp = ParticipantsDB.GetStandingsForThreeOutOf4ByHandicap(selectedTournament.Id);
                     }
                     else if (selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
                     {
-                        temp = ParticipantsDB.GetStandingsFor3OutOf4ByFilterSeriesByHandicap(squadList, selectedTournament.Id);
+                        temp = ParticipantsDB.GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(squadList, selectedTournament.Id);
                     }
                     /*
                     if (selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall best standings for 3of4 tournament
@@ -1737,11 +1737,11 @@ namespace NineTapTour.Forms
                     {
                         if (selectedTournament.ThreeOutOf4 && squadList.Contains(0))
                         {
-                            temp = ParticipantsDB.GetStandingsFor3OutOf4ByScratch(selectedTournament.Id);
+                            temp = ParticipantsDB.GetStandingsForThreeOf4ByScratch(selectedTournament.Id);
                         }
                         else if (selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
                         {
-                            temp = ParticipantsDB.GetStandingsFor3OutOf4ByFilterSeriesByScratch(squadList, selectedTournament.Id);
+                            temp = ParticipantsDB.GetStandingsForThreeOf4ByFilterSeriesByScratch(squadList, selectedTournament.Id);
                         }
                         /*
                         if (selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall best standings for 3of4 tournament
