@@ -16,7 +16,7 @@ namespace NineTapTour.Database
         /// </summary>
         private static string CreateBackupName()
         {
-            return "NineTapDBBackup_" + DateTime.Now.ToString("d-MMM-yyyy-hmmss") + ".bak";
+            return "NineTapDBBackup_" + DateTime.Now.ToString("dd-MM-yyyy-hmmss") + ".bak";
         }
 
         /// <summary>
