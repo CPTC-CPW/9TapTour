@@ -109,7 +109,7 @@ namespace NineTapTour.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public int placing { get; set; }
+        public int Placing { get; set; }
         public int? Score { get; set; }
         public int MemberId { get; set; } // Renamed MemberNo to MemberId because that is the actual info being assigned to this property
         public string LastPaymentYear { get; set; }

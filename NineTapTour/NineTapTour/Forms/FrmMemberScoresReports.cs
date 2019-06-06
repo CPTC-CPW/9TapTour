@@ -198,7 +198,7 @@ namespace NineTapTour.Forms
                         // Adds the finish place
                         if (j == 1) 
                         {
-                            xlWorkSheet.Cells[i,j] = temp[i-5].placing;
+                            xlWorkSheet.Cells[i,j] = temp[i-5].Placing;
                         }
 
                         // Add the series or game depending what clicked
