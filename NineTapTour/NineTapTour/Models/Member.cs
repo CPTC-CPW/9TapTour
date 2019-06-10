@@ -99,7 +99,9 @@ namespace NineTapTour.Models
 
         public override string ToString()
         {
-            return "Member ID: " + Number + " Name: " + LastName + ", " + FirstName;
+            // return "Member ID: " + Number + " Name: " + LastName + ", " + FirstName; 
+            // previous line was before modded for the label print option
+            return LastName + ", " + FirstName + " " + Number ; 
         }
     }
 

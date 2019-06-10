@@ -131,31 +131,31 @@ namespace NineTapTour.Forms
         }
         #region Print Labels
 
-        //TODO need to reset current page or refactor and avoid fields
+
         int currPage = 0;
         const int PageSize = 30;
         public void printLabels(object sender, PrintPageEventArgs e)
         {
-            //grab the next 30 members
+            // grab the next 30 members
             List<Member> nextMemberLabels = Labels.Skip((currPage) * PageSize).Take(PageSize).ToList();
 
-            //if more than 30 members remaining another page will be printed
+            // if more than 30 members remaining another page will be printed
             e.HasMorePages = (currPage * PageSize + PageSize >= Labels.Count) ? false : true;
 
-            //print out 1 sheet of members, e.HasMorePages = true will cause print to be triggered again automatically
+            // print out 1 sheet of members, e.HasMorePages = true will cause print to be triggered again automatically
             PrintLabelSheetOf10(nextMemberLabels, e);
             currPage++;
         }
 
         private void PrintLabelSheetOf10(List<Member> memberLabel, PrintPageEventArgs e)
         {
-            //This is what prints the data
+            // This is what prints the data
             Graphics graphic = e.Graphics;
 
-            //default font to use, should use a mono space font so the spaces line up.
+            // default font to use, should use a mono space font so the spaces line up.
             Font font = new Font("Arial", 16, FontStyle.Bold, GraphicsUnit.Pixel);
 
-            //Sets defult brush to use when printing
+            // Sets defult brush to use when printing
             SolidBrush dBrush = new SolidBrush(Color.Black);
 
             int startX = 55;
@@ -164,7 +164,7 @@ namespace NineTapTour.Forms
             int offsetY = 0;
 
             int start = 0;
-            if(tbStartWhere.Text != null)
+            if(tbStartWhere.Text != "")
             {
                 start = Convert.ToInt32(tbStartWhere.Text) - 1;
             }
@@ -227,5 +227,31 @@ namespace NineTapTour.Forms
             }
             UpdatePrintListBox();
         }
+
+
+        private DateTime lastKeyPressed;
+
+        private String searchWho;
+
+        private void lbxMemberList_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            var newDate = DateTime.Now;
+            var diff = newDate - lastKeyPressed;
+            if (diff.TotalSeconds >= 1.5)
+            {
+                searchWho = string.Empty;
+            }
+            searchWho += e.KeyChar;
+
+            var found = lbxMemberList.Items.Cast<object>().Select(t => t.ToString()).Where(item => item.ToLower().StartsWith(searchWho)).FirstOrDefault();
+            if (!String.IsNullOrEmpty(found))
+            {
+                lbxMemberList.SelectedItem = found;
+            }
+
+            lastKeyPressed = newDate;
+            e.Handled = true;
+        }
     }
+
 }
