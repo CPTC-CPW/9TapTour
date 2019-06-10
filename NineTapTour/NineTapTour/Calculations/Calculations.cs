@@ -27,19 +27,36 @@ namespace NineTapTour.Calculations
         const int MAX_PLACEMENT_DEDUCT_2_PINS = 10;
         const int MIN_PLACEMENT_DEDUCT_3_PINS = 2;
         const int MAX_PLACEMENT_DEDUCT_3_PINS = 5;
+        
         const int MAX_HANDICAP_PINS = 70;
-        const int BASE_AVERAGE_HANDICAP_CALCULATOR = 220; //This is a "magic number" used to calculate Bonus.
-        const double PERCENTAGE_TO_CALCULATE_HANDICAP = .9;
+
+        // BASIS_SCORE used to calculate handicap, 
+        // usually slightly higher than bowler with highest average in the league 
+        const int BASIS_SCORE = 220;
+
+        // BASIS_SCORE_PERCENTAGE
+        // used to calculate handicap, amount of difference to be used
+        const int BASIS_SCORE_PERCENTAGE = 90;
+
+       
 
         /// <summary>
-        /// Calculates handicap pins to be 90% of the difference between 220 and a bowler's 9 tap tour average.
-        /// The maximum a handicap can be is 70 pins.
+        /// Calculates handicap pins:
+        /// 90% of the difference between 220 and a bowler's 9 tap tour average. 
+        /// or the maximum of 70 pins, whichever is lowest.
         /// </summary>
         /// <param name="currentAverage"></param>
-        /// <returns></returns>
+        /// <returns>Number of calculated Handicap Pins</returns>
         public static int CalculateHandicapPins(int currentAverage)
         {
-            return Math.Min(MAX_HANDICAP_PINS, (BASE_AVERAGE_HANDICAP_CALCULATOR - currentAverage) * 9 / 10);
+            /// 90% is the current BASIS_SCORE_PERCENTAGE, 220 is BASIS_SCORE
+            /// both available for easy modification
+            // int division ensures any fractional handicap is thrown out
+            int averageBasedHandicapPins= ( (BASIS_SCORE - currentAverage) *  BASIS_SCORE_PERCENTAGE / 100 );
+
+            int lowestHandicap = Math.Min(MAX_HANDICAP_PINS, averageBasedHandicapPins);
+                 
+            return lowestHandicap;
         }
 
         /// <summary>
@@ -52,10 +69,10 @@ namespace NineTapTour.Calculations
         /// <param name="currentBonusPins">Bonus pins the participant had before this tournament</param>
         /// <param name="memNum">Member number that used to identify bowler by user</param>
         /// <param name="RegionID">RegionId from where the tournament is played</param>
-        /// <param name="currTournamentDate">Date when the current tournament is taking place</param>
+        /// <param name="currTournamentId">Id of the current tournament</param>
         /// <returns>Adjusted bonus pins after current tournament</returns>
         public static int GetAdjustedBonusPins(byte memberPlacement, int totalEntries, int compEntries, int currentBonusPins, 
-                                                int memNum, int RegionID, DateTime currTournamentDate, int currTournamentId)
+                                                int memNum, int RegionID, int currTournamentId)
         {
             int lowestPlacementToCash = GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
 
@@ -71,52 +88,63 @@ namespace NineTapTour.Calculations
             return AddToBonusPins(currentBonusPins, latestGames, membersGameEntryCount);
         }
 
+
         /// <summary>
         /// Adds to bonus pins if necessary and returns the new total bonus pins for a member
         /// </summary>
         /// <param name="currentBonusPins">Bonus pins before calculating new bonus pins</param>
-        /// <param name="memberNum">Member number for the member to calculate bonus pins</param>
-        /// <param name="RegionID">Region the current tournament is taking place</param>
-        /// <param name="currTournamentDate">The date the tournament took place</param>
-        /// <param name="latestGames">The last two distinct tournaments</param>
+        /// <param name="latestGames">a member's player history</param>
+        /// <param name="currTourneyEntryCount">this is the number of losses in the current game</param>
         /// <returns></returns>
         public static int AddToBonusPins(int currentBonusPins, List<PlayerHistory> latestGames, int currTourneyEntryCount)
         {
-            // if has atleast 3 losses in current tournament
-            if (currTourneyEntryCount >= 3)
-            {
-                // if has lost 4 entries this tournament and has 2 losses in history not 
-                // yet used for gaining a bonus pin
-                if (currTourneyEntryCount == 4 && DoesGetBonus(currentBonusPins, latestGames, currTourneyEntryCount, 6))
-                {
-                    return currentBonusPins + 2;
-                }
-                return currentBonusPins + 1;
-            }
+            int additionalBonus = 0; 
 
             // if has 2 or less losses and no previous games or bonus pins are maxed out
             if (latestGames == null || currentBonusPins == MAX_BONUS_PINS_ALLOWED)
             {
-                return currentBonusPins;
+                // additionalBonus = 0; but already initialized to 0
             }
 
-            if (DoesGetBonus(currentBonusPins, latestGames, currTourneyEntryCount, 3))
+            // if has lost 4 entries this tournament and has 2 losses in history not 
+            // yet used for gaining a bonus pin
+            else if (currTourneyEntryCount == 4 && DoesGetBonus(latestGames, currTourneyEntryCount, 6))
             {
-                return currentBonusPins + 1;
+                additionalBonus = 2;
             }
-            return currentBonusPins;
+
+            // if has at least 3 losses in latestGames or 3 losses in current tournament
+            else if (DoesGetBonus(latestGames, currTourneyEntryCount, 3) || currTourneyEntryCount >= 3)
+            {
+                additionalBonus = 1;
+            }
+
+            additionalBonus = ValidateAdditionalBonus(currentBonusPins, additionalBonus);
+
+            return currentBonusPins + additionalBonus;
+        }
+
+
+        public static int ValidateAdditionalBonus(int currentBonusPins, int additionalBonus)
+        {
+            // Max bonus pins is 5
+            // Only case would be 4 bonus to start and then 2 to be added
+            if (currentBonusPins + additionalBonus > MAX_BONUS_PINS_ALLOWED)
+            {
+                additionalBonus -= 1;
+            }
+            return additionalBonus; 
         }
 
         /// <summary>
-        /// Determines if a player's game history qualifies to get earn bonus pins when added to 
-        /// current game losses. Used in AddToBonusPins method. 
+        /// Determines if a player's game history when added to current game losses 
+        /// qualifies them to get bonus pins. Used in AddToBonusPins method. 
         /// </summary>
-        /// <param name="currentBonusPins">the bonus pins that are applied in current game</param>
         /// <param name="latestGames">a member's player history</param>
         /// <param name="currTourneyEntryCount">this is the number of losses in the current game</param>
         /// <param name="minLosses">minimum number of losses to determine if bonus is earned</param>
         /// <returns></returns>
-        private static bool DoesGetBonus(int currentBonusPins, List<PlayerHistory> latestGames, int currTourneyEntryCount, int minLosses)
+        private static bool DoesGetBonus(List<PlayerHistory> latestGames, int currTourneyEntryCount, int minLosses)
         {
             // find first index of a tournament with a cashed game
             int lastCashedTourneyIndex = FindLastCashedTourneyIndex(latestGames);
@@ -128,7 +156,7 @@ namespace NineTapTour.Calculations
 
             }
 
-            // is the mulitiple of a 3rd loss in a row after a win
+            // is the multiple of a 3rd loss in a row after a win
             return lastCashedTourneyIndex % 3 + currTourneyEntryCount >= minLosses;
         }
 
@@ -143,7 +171,8 @@ namespace NineTapTour.Calculations
             {
                 if (PlayerDidCash(latestGames[i]))
                 {
-                    // move to first index of winning tournament with where member cashed
+
+                    // move to first index of winning tournament where member cashed
                     while (i - 1 >= 0 && latestGames[i].TournamentDate == latestGames[i - 1].TournamentDate)
                     {
                         i--;
@@ -166,23 +195,23 @@ namespace NineTapTour.Calculations
 
         public static int DeductFromBonusPins(int memberPlaced, int currentBonusPins)
         {
-            int bonusPinsAfterDeduction;
+            int bonusPinsAfterDeduction = currentBonusPins;
 
             if (memberPlaced == FIRST_PLACE)
             {
-                bonusPinsAfterDeduction = currentBonusPins - currentBonusPins;
+                bonusPinsAfterDeduction -= currentBonusPins;
             }
             else if (memberPlaced <= MAX_PLACEMENT_DEDUCT_3_PINS)
             {
-                bonusPinsAfterDeduction = currentBonusPins - DEDUCT_3;
+                bonusPinsAfterDeduction -= DEDUCT_3;
             }
             else if (memberPlaced <= MAX_PLACEMENT_DEDUCT_2_PINS)
             {
-                bonusPinsAfterDeduction = currentBonusPins - DEDUCT_2;
+                bonusPinsAfterDeduction -= DEDUCT_2;
             }
             else
             {
-                bonusPinsAfterDeduction = currentBonusPins - DEDUCT_1;
+                bonusPinsAfterDeduction -= DEDUCT_1;
             }
 
             //ensure that new bonus pins are 0 or greater
@@ -212,39 +241,42 @@ namespace NineTapTour.Calculations
         /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding. Duplicate entries are removed.
         /// returned list is sorted by highest score
         /// </summary>
-        /// <param name="temp">list of MemberScores sorted by Score with placestanding, without duplicate members</param>
-        public static List<MemberScores> CalculatePlaceStandings(List<MemberScores> temp)
+        /// <param name="tempListOfMemberScores">list of MemberScores sorted by Score with placestanding, without duplicate members</param>
+        /// 
+        //My Change is renaming temp to tempListOfMemberScores
+        public static List<MemberScores> CalculatePlaceStandings(List<MemberScores> tempListOfMemberScores)
         {
-            if (temp.Count == 0)
+            if (tempListOfMemberScores.Count == 0)
             {
-                return temp;
+                return tempListOfMemberScores;
             }
 
             // Makes copy so original list won't be affected
-            temp = temp.ToList();
+            tempListOfMemberScores = tempListOfMemberScores.ToList();
 
             //remove duplicates
-            RemoveDuplicateBowlers(temp);
+            RemoveDuplicateBowlers(tempListOfMemberScores);
 
             //ensure bowlers are sorted by score
-            temp.Sort(new MemberScoresComparer());
+            tempListOfMemberScores.Sort(new MemberScoresComparer());
 
             int place = 1;
-            temp[0].placing = place++;
-            for (int currPosition = 1; currPosition < temp.Count; currPosition++)
+            tempListOfMemberScores[0].placing = place++;
+
+            for (int currPosition = 1; currPosition < tempListOfMemberScores.Count; currPosition++)
             {
-                if (temp[currPosition].Score == temp[currPosition - 1].Score)
+                if (tempListOfMemberScores[currPosition].Score == tempListOfMemberScores[currPosition - 1].Score)
                 {
-                    temp[currPosition].placing = temp[currPosition - 1].placing;
+                    tempListOfMemberScores[currPosition].placing = tempListOfMemberScores[currPosition - 1].placing;
                 }
                 else
                 {
-                    temp[currPosition].placing = place;
+                    tempListOfMemberScores[currPosition].placing = place;
                 }
                 place++;
             }
 
-            return temp;
+            return tempListOfMemberScores;
         }   
 
         /// <summary>
@@ -319,7 +351,7 @@ namespace NineTapTour.Calculations
                 bool isCurrIndexRemoved = false;
                 for (int j = i + 1; j < members.Count; j++)
                 {
-                    if (members[i].memberNumber == members[j].memberNumber)
+                    if (members[i].MemberNumber == members[j].MemberNumber)
                     {
                         if (members[i].HandicapTotal >= members[j].HandicapTotal)
                             removal.Add(members[j]);
@@ -464,7 +496,7 @@ namespace NineTapTour.Calculations
         /// </summary>
         /// <param name="members">list of members to copy and process</param>
         /// <param name="totalEntries">total amount of tournament entries</param>
-        /// <param name="compEntries">comp entry amoun in a tournament</param>
+        /// <param name="compEntries">comp entry amount in a tournament</param>
         /// <returns>List of ExcelMembers ordered by placement without duplicate ExcelMembers MemberNumbers to the placement that should cash</returns>
         public static List<ExcelMember> MakeTopMembersByPlacementList(List<ExcelMember> members, int totalEntries, int compEntries)
         {

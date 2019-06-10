@@ -1,19 +1,16 @@
 ﻿using NineTapTour.Database;
+using NineTapTour.Models;
+using NineTapTour.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.Data.Entity;
-using System.Data.SqlClient;
-using System.Configuration;
-using System.Data.Entity.Core.Objects;
-using System.Linq.Dynamic;
-using Bogus.Extensions;
-using NineTapTour.Models;
-using NineTapTour.Models.ViewModels;
 using static NineTapTour.Database.ReportHelper;
 
 namespace NineTapTour.Forms
@@ -1379,47 +1376,64 @@ namespace NineTapTour.Forms
                         topParticipantGameViewModels.Add(currTopScoreViewModel);
                     }
 
-                    // display data in the list boxes
-                    // orders list by highest handicap score game to lowest
-                    participantsGameViewModels = participantsGameViewModels
-                        .OrderByDescending(t => t.HighScore + t.Handicap + t.Bonus).ToList();
-                    // links handicap score listbox to list
-                    lbxHighGameHC.DataSource = participantsGameViewModels;
-                    // displays specific tostring for displaying info dealing with high handicap score game
-                    lbxHighGameHC.DisplayMember = "HandicapScoreToString";
+                    // variable used to update lblHighSelected appropriately
+                    Boolean isGame = true;
 
-                    // orders list by highest scratch score game to lowest
-                    participantsGameViewModels = participantsGameViewModels.OrderByDescending(t => t.HighScore).ToList();
-                    // links scratch score listbox to list
-                    lbxHighGameSC.DataSource = participantsGameViewModels;
-                    // displays specific tostring for displaying info dealing with high scratch score game
-                    lbxHighGameSC.DisplayMember = "ScratchScoreToString";
+                    if (rdoGameHC.Checked)
+                    {
+                        // display data in the list boxes
+                        // orders list by highest handicap score game to lowest
+                        participantsGameViewModels = participantsGameViewModels
+                            .OrderByDescending(t => t.HighScore + t.Handicap + t.Bonus).ToList();
+                        // links handicap score listbox to list
+                        lbxHighSelected.DataSource = participantsGameViewModels;
+                        // displays specific tostring for displaying info dealing with high handicap score game
+                        lbxHighSelected.DisplayMember = "HandicapScoreToString";
+                    }
+
+                    else if (rdoGameSC.Checked)
+                    {
+                        // orders list by highest scratch score game to lowest
+                        participantsGameViewModels = participantsGameViewModels.OrderByDescending(t => t.HighScore).ToList();
+                        // links scratch score listbox to list
+                        lbxHighSelected.DataSource = participantsGameViewModels;
+                        // displays specific tostring for displaying info dealing with high scratch score game
+                        lbxHighSelected.DisplayMember = "ScratchScoreToString";
+
+                    }
 
                     // for high games series listbox (third listbox)
-                    // if scratch score radio button is checked
-                    if (rdoScratchScore.Checked)
+                    else if (rdoHighSeries.Checked)
                     {
-                        // orders list by highest scoring scratch score total to lowest
-                        topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.ScratchTotal).ToList();
+                        isGame = false;
+                        // if scratch score radio button is checked
+                        if (rdoScratchScore.Checked)
+                        {
+                            // orders list by highest scoring scratch score total to lowest
+                            topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.ScratchTotal).ToList();
 
-                        // links game series listbox to list
-                        lbxTopGameSeries.DataSource = topParticipantGameViewModels;
+                            // links game series listbox to list
+                            lbxHighSelected.DataSource = topParticipantGameViewModels;
 
-                        //displays specific tostring for displaying info dealing with scratch score total
-                        lbxTopGameSeries.DisplayMember = "ScratchTotalToString";
+                            //displays specific tostring for displaying info dealing with scratch score total
+                            lbxHighSelected.DisplayMember = "ScratchTotalToString";
+                        }
+                        // if handicap score radio button is checked
+                        else if (rdoHandicapScore.Checked)
+                        {
+                            // orders list by highest scoring handicap score total to lowest
+                            topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.HandicapScore).ToList();
+
+                            // links game series listbox to list
+                            lbxHighSelected.DataSource = topParticipantGameViewModels;
+
+                            // displays specific tostring for displaying info dealing with handicap score total
+                            lbxHighSelected.DisplayMember = "HandicapTotalToString";
+                        }
                     }
-                    // if handicap score radio button is checked
-                    else if (rdoHandicapScore.Checked)
-                    {
-                        // orders list by highest scoring handicap score total to lowest
-                        topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.HandicapScore).ToList();
 
-                        // links game series listbox to list
-                        lbxTopGameSeries.DataSource = topParticipantGameViewModels;
+                    UpdateHighSelectedLabel(isGame);
 
-                        // displays specific tostring for displaying info dealing with handicap score total
-                        lbxTopGameSeries.DisplayMember = "HandicapTotalToString";
-                    }
                 }
                 catch (SqlException)
                 {
@@ -1432,6 +1446,22 @@ namespace NineTapTour.Forms
             {
 
             }
+        }
+
+        /// <summary>
+        /// Used to update label for lbxHighSelected panel, 
+        /// pass in true if HighHC or HighSC, false for High Series
+        /// </summary>
+        /// <param name="isGame"></param>
+        public void UpdateHighSelectedLabel(Boolean isGame)
+        {
+            String firstCol = "Game ";
+            if ( !isGame )
+            {
+                firstCol = "Series ";
+            }
+
+            lblHighSelected.Text = firstCol + "[Member No.] --- (Name)";
         }
 
         /// <summary>
@@ -1788,6 +1818,7 @@ namespace NineTapTour.Forms
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             //Grabs the tournament from the selected tournament combobox and casts it to selected Tournament
             selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
             //Repopulates list of participants with the current tournament
@@ -1818,6 +1849,10 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show("Current Stats Not added to Tournament yet.");
             }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
             ReEnableNavigation();
         }
 
@@ -1827,7 +1862,6 @@ namespace NineTapTour.Forms
             ResetFields();
             Refresh(false);
             RecordIndex(overallListOfParticipants);
-            cbxTourneyDropDown.DataSource = TournamentDb.GetTournamentList(RegionID);
             overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             cbxTourneyDropDown.ValueMember = "Id";
@@ -1840,11 +1874,19 @@ namespace NineTapTour.Forms
             PlayerHistory p = PlayerHistoryDB.getPlayerHistoryByGameID(g.Id);
             PlayerHistoryDB.DeletePlayerHistory(p);
             //Delete from FinalizeTemp
-            FinalizeTemp ft = FinalizeTempDB.getFinalizeID(GameDB.GetGame(g.Id));
-            FinalizeTempDB.DeleteFinalizeTemp(ft);
+            FinalizeTemp ft = FinalizeTempDB.GetFinalizeID(GameDB.GetGame(g.Id));
+            try
+            {
+                FinalizeTempDB.DeleteFinalizeTemp(ft);
+            }
+            catch (DbUpdateException)
+            {
+                //no finalized record to remove
+            }
+            
             //Delete from Participants list
-            Participant par = FinalizeTempDB.getParticipantbyGameID(g.Id);
-            FinalizeTempDB.deleteParticipant(par);
+            Participant par = FinalizeTempDB.GetParticipantByGameId(g.Id);
+            FinalizeTempDB.DeleteParticipant(par);
             overallListOfParticipants.Remove(par);
             if(currentIndex + 1 == overallListOfParticipants.Count)
             {
@@ -2083,6 +2125,19 @@ namespace NineTapTour.Forms
             }
         }
 
-        
+        private void RdoGameSC_CheckedChanged(object sender, EventArgs e)
+        {
+            Refresh(false);
+        }
+
+        private void RdoHighSeries_CheckedChanged(object sender, EventArgs e)
+        {
+            Refresh(false);
+        }
+
+        private void RdoGameHC_CheckedChanged(object sender, EventArgs e)
+        {
+            Refresh(false);
+        }
     }
 }
