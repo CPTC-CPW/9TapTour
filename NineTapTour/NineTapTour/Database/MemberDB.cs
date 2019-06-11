@@ -100,6 +100,17 @@ namespace NineTapTour.Database
             }
         }
 
+        public static List<Member> GetMemberLabelList(int RegionID)
+        {
+            using (var db = new NineTapDb())
+            {
+                return (from m in db.Members
+                        orderby m.LastName
+                        where m.NineTapRegionID == RegionID
+                        select m).ToList();
+            }
+        }
+
         /// <summary>
         /// Get the number of Members in the same region as the regionID given
         /// </summary>

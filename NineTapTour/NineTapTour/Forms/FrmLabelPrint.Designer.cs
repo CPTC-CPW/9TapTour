@@ -39,6 +39,8 @@
             this.cbxShowInactive = new System.Windows.Forms.CheckBox();
             this.lblMemToPrint = new System.Windows.Forms.Label();
             this.lblMem = new System.Windows.Forms.Label();
+            this.lblStartWhere = new System.Windows.Forms.Label();
+            this.tbStartWhere = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // lbxPrintList
@@ -50,6 +52,7 @@
             this.lbxPrintList.Size = new System.Drawing.Size(180, 264);
             this.lbxPrintList.TabIndex = 0;
             this.lbxPrintList.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            this.lbxPrintList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lbxPrintList_MouseDoubleClick);
             // 
             // lbxMemberList
             // 
@@ -57,9 +60,10 @@
             this.lbxMemberList.FormattingEnabled = true;
             this.lbxMemberList.Location = new System.Drawing.Point(360, 71);
             this.lbxMemberList.Name = "lbxMemberList";
-            this.lbxMemberList.Size = new System.Drawing.Size(180, 264);
+            this.lbxMemberList.Size = new System.Drawing.Size(227, 264);
             this.lbxMemberList.TabIndex = 1;
             this.lbxMemberList.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
+            this.lbxMemberList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lbxMemberList_MouseDoubleClick);
             // 
             // btnAdd
             // 
@@ -142,12 +146,30 @@
             this.lblMem.TabIndex = 9;
             this.lblMem.Text = "Region Members";
             // 
+            // lblStartWhere
+            // 
+            this.lblStartWhere.AutoSize = true;
+            this.lblStartWhere.Location = new System.Drawing.Point(60, 350);
+            this.lblStartWhere.Name = "lblStartWhere";
+            this.lblStartWhere.Size = new System.Drawing.Size(128, 13);
+            this.lblStartWhere.TabIndex = 10;
+            this.lblStartWhere.Text = "Start labels at what label?";
+            // 
+            // tbStartWhere
+            // 
+            this.tbStartWhere.Location = new System.Drawing.Point(195, 347);
+            this.tbStartWhere.Name = "tbStartWhere";
+            this.tbStartWhere.Size = new System.Drawing.Size(45, 20);
+            this.tbStartWhere.TabIndex = 11;
+            // 
             // FrmLabelPrint
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(599, 411);
+            this.Controls.Add(this.tbStartWhere);
+            this.Controls.Add(this.lblStartWhere);
             this.Controls.Add(this.lblMem);
             this.Controls.Add(this.lblMemToPrint);
             this.Controls.Add(this.cbxShowInactive);
@@ -179,5 +201,7 @@
         private System.Windows.Forms.CheckBox cbxShowInactive;
         private System.Windows.Forms.Label lblMemToPrint;
         private System.Windows.Forms.Label lblMem;
+        private System.Windows.Forms.Label lblStartWhere;
+        private System.Windows.Forms.TextBox tbStartWhere;
     }
 }
