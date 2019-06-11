@@ -1092,7 +1092,7 @@ namespace NineTapTour.Forms
                 List<ExcelRow> rows = new List<ExcelRow>();
 
                 List<PlayerHistory> AlreadyImportedPH = 
-                    PlayerHistoryDB.getMemberPlayerHistory(currentMem.Number, RegionID);
+                    PlayerHistoryDB.GetMemberPlayerHistory(currentMem.Number, RegionID);
 
                 bool wait = true;
                 string fileName = ofdOpen.FileName;

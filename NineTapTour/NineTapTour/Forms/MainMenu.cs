@@ -121,7 +121,7 @@ namespace NineTapTour.Forms
                 frmPleaseWait pl = new frmPleaseWait();
                 pl.Show();
                 //Delete Player History where HisID = selected regionID
-                List<PlayerHistory> phis = PlayerHistoryDB.getAllPlayerHistory(regionID);
+                List<PlayerHistory> phis = PlayerHistoryDB.GetAllPlayerHistory(regionID);
                 foreach (var p in phis)
                 {
                     PlayerHistoryDB.DeletePlayerHistory(p);

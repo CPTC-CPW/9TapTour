@@ -339,7 +339,7 @@ namespace NineTapTour.Forms
                 #endregion
 
                 #region recalculate league average if is new entry
-                List<PlayerHistory> ExistingPlayerHistory = PlayerHistoryDB.getMemberPlayerHistory(item.MemberNumber, RegionID);
+                List<PlayerHistory> ExistingPlayerHistory = PlayerHistoryDB.GetMemberPlayerHistory(item.MemberNumber, RegionID);
                 if (ExistingPlayerHistory.Count == 0)
                 {
                     temp.LeagueAverage = CalcThirtyLeagueAverage(item.MemberNumber, FinalizeTableList.Where(f => f.MemberNumber == item.MemberNumber && f.Squad <= item.Squad && (f.UseGame1 || f.UseGame2 || f.UseGame3 || f.UseGame4)).Select(f => f.GameAvg).ToList());
@@ -852,7 +852,7 @@ namespace NineTapTour.Forms
             dtGames.Columns[moneyWon].ColumnName = moneyWonWithTotal;
 
             // Player histories from the db that are not in the current tournament
-            List<PlayerHistory> currentHistory = PlayerHistoryDB.getMemberPlayerHistoryCount(temporary[0].MemberNumber, RegionID);
+            List<PlayerHistory> currentHistory = PlayerHistoryDB.GetMemberPlayerHistoryCount(temporary[0].MemberNumber, RegionID);
 
             var currentPlayerHistory = currentHistory.OrderByDescending(p => p.TournamentDate).ThenByDescending(s => s.MoneyWon);
             foreach (var item in currentPlayerHistory)
@@ -1192,7 +1192,7 @@ namespace NineTapTour.Forms
                     currGame.Notes = TournamentEntriesGrid[NOTES_COLUMN_, currDataGridRowIndex].Value.ToString();
                     ph.Notes = currGame.Notes;
                     currMember.StartAvg = ph.AVG;
-                    ph.hisID = PlayerHistoryDB.getHisID(ph);
+                    ph.hisID = PlayerHistoryDB.GetHisID(ph);
                     ph.regionID = RegionID;
                     currGame.gameRegionID = RegionID;
 
@@ -1274,7 +1274,7 @@ namespace NineTapTour.Forms
         /// <returns></returns>
         private int CalcThirtyLeagueAverage(int memberNum, List<int> currGameAverages)
         {
-            List<PlayerHistory> playerHistory = PlayerHistoryDB.getMemberPlayerHistory(memberNum, RegionID);
+            List<PlayerHistory> playerHistory = PlayerHistoryDB.GetMemberPlayerHistory(memberNum, RegionID);
             int avgOfAllGameAverages = 
                 Convert.ToInt32(
                     FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) + currGameAverages.Sum()
