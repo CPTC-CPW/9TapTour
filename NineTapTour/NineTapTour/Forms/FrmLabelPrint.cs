@@ -28,7 +28,7 @@ namespace NineTapTour.Forms
 
         private void FrmLabelPrint_Load(object sender, EventArgs e)
         {         
-            AllMems = MemberDb.GetMemberLabelList(RegionID);
+            AllMems = MemberDB.GetMemberList(RegionID);
             ActiveMems = new List<Member>();
             Labels = new List<Member>();
 

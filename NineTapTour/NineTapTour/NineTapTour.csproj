@@ -146,7 +146,7 @@
     <Compile Include="Database\FinalizeTempDB.cs" />
     <Compile Include="Models\Game.cs" />
     <Compile Include="Models\Member.cs" />
-    <Compile Include="Database\MemberDb.cs" />
+    <Compile Include="Database\MemberDB.cs" />
     <Compile Include="Models\PlayerHistory.cs" />
     <Compile Include="Database\PlayerHistoryDB.cs" />
     <Compile Include="Database\Print.cs" />

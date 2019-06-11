@@ -12,6 +12,9 @@ namespace NineTapTour.Database
 {
    public class NineTapRegionDB
     {
+        /// <summary>
+        /// Returns a lit of all the NineTapRegions in the database
+        /// </summary>
         public static List<NineTapRegion> GetRegionList()
         {
             using (NineTapDb db = new NineTapDb())
@@ -21,9 +24,18 @@ namespace NineTapTour.Database
             }
         }
 
-        public static int getNumberOfRegions()
+        /// <summary>
+        /// Returns the number of NineTapRegions in the database
+        /// </summary>
+        public static int GetNumberOfRegions()
         {
-
+            using (NineTapDb db = new NineTapDb())
+            {
+                return (from t in db.NineTapRegion
+                        select t).Count();
+            }
+            #region Refactored Code
+            /*
             List<NineTapRegion> RegionList = new List<NineTapRegion>();
             NineTapRegion current = new NineTapRegion();
             using (var db = new NineTapDb())
@@ -41,9 +53,13 @@ namespace NineTapTour.Database
                 }
                 return RegionList.Count;
             }
+            */
+            #endregion
         }
 
-
+        /// <summary>
+        /// Adds the NineTapRegion given to the database
+        /// </summary>
         public static void AddRegion(NineTapRegion temp)
         {
             try
@@ -60,24 +76,24 @@ namespace NineTapTour.Database
             }
         }
 
-        public static void deleteRegion(NineTapRegion t)
+        /// <summary>
+        /// Deletes the NineTapRegion given from the database
+        /// </summary>
+        /// <param name="t"></param>
+        public static void DeleteRegion(NineTapRegion t)
         {
-            try
+            // This code was wraped in a try/catch block, but the catch did nothing
+            using (var db = new NineTapDb())
             {
-                using (var db = new NineTapDb())
-                {
-                    db.Entry(t).State = EntityState.Deleted;
-                    db.SaveChanges();
-                }
+                db.Entry(t).State = EntityState.Deleted;
+                db.SaveChanges();
             }
-            catch
-            {
-
-            }
-
         }
 
-        public static NineTapRegion getRegionByID ( int regionID)
+        /// <summary>
+        /// Returns a NineTapRegion with the same regionID as the one given
+        /// </summary>
+        public static NineTapRegion GetRegionByID ( int regionID)
         {
             NineTapRegion NTR = new NineTapRegion();
             using (var db = new NineTapDb())
@@ -92,16 +108,10 @@ namespace NineTapTour.Database
                 {
                     NTR.NineTapRegionName = v.NineTapRegionName;
                     NTR.NineTapRegionID = v.NineTapRegionID;
-  
                 }
 
             }
-            return NTR;
-            
+            return NTR;  
         }
-
-
-
-
     }
 }

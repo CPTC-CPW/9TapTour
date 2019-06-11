@@ -13,8 +13,12 @@ using NineTapTour.Models;
 
 namespace NineTapTour.Database
 {
-    public class MemberDb
+    public class MemberDB
     {
+        /// <summary>
+        /// If the Member given is found in the database, updates that Memeber. 
+        /// Otherwise, adds the new Memeber to the database
+        /// </summary>
         public static void AddOrUpdateMember(Member temp)
         {
             try
@@ -24,24 +28,25 @@ namespace NineTapTour.Database
                     db.Entry(temp).State = db.Members.Any(m => m.Id == temp.Id) ?
                                             EntityState.Modified :
                                             EntityState.Added;
-                    /********************************************************************************************
-                    the if statement is so that you can update the handicap by changing the league average,
-                        but it won't update if a member participated in a tournament
-                    .value solves the problem where startAvg is nullable but the method is just int not int?
-                    *********************************************************************************************/
+                    /* The if statement is so that you can update the handicap by changing the league average,
+                     but it won't update if a member participated in a tournament, .Value solves the problem 
+                     where startAvg is nullable but the method is just int not int? */
                     if (temp.Average == 0)
                     {
                         temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.StartAvg.Value));
                     }
-                    /********************************************************************************************/
                     if (db.Entry(temp).State == EntityState.Modified)
                     {
                         temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.StartAvg.Value));
-                        //MessageBox.Show("Player Updated");
+#if DEBUG
+                        MessageBox.Show("Player Updated");
+#endif
                     }
                     else
                     {
-                        // MessageBox.Show("Player Saved Successfully");
+#if DEBUG
+                        MessageBox.Show("Player Saved Successfully");
+#endif
                     }
                     db.SaveChanges();
                 }
@@ -68,8 +73,6 @@ namespace NineTapTour.Database
                 Console.WriteLine("Error Number : " + ex.Message);
                 // throw new MemberTableException("Error Number : " + ex.Number + " - " + ex.Message);
             }
-
-
         }
 
         /// <summary>
@@ -82,13 +85,17 @@ namespace NineTapTour.Database
                 return db.Members.Any(m => m.Number == Temp.Number && m.NineTapRegionID == Temp.NineTapRegionID);
             }
         }
-        public static List<Member> GetMemberList(int RegionID)
+
+        /// <summary>
+        /// Returns a list of all of the members with the same regionID as the one given
+        /// </summary>
+        public static List<Member> GetMemberList(int regionID)
         {
             using (var db = new NineTapDb())
             {
                 return (from m in db.Members
                         orderby  m.Number
-                        where m.NineTapRegionID == RegionID
+                        where m.NineTapRegionID == regionID
                         select m).ToList();
             }
         }
@@ -105,7 +112,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Get the number of Members in a particular region
+        /// Get the number of Members in the same region as the regionID given
         /// </summary>
         public static int GetMemberListCount(int regionId)
         {
@@ -113,7 +120,10 @@ namespace NineTapTour.Database
             return db.Members.Where(member => member.NineTapRegionID == regionId).Count();
         }
 
-        public static List<Member> GetALLMembersList()
+        /// <summary>
+        /// Returns a list of all Members
+        /// </summary>
+        public static List<Member> GetAllMembersList()
         {
             using (var db = new NineTapDb())
             {
@@ -123,22 +133,28 @@ namespace NineTapTour.Database
             }
         }
 
-        public static void DeleteMember(Member remove)
+        /// <summary>
+        /// Deletes the Member given from the database
+        /// </summary>
+        public static void DeleteMember(Member mem)
         {
             using (var db = new NineTapDb())
             {
-                db.Entry(remove).State = EntityState.Deleted;
+                db.Entry(mem).State = EntityState.Deleted;
                 db.SaveChanges();
             }
         }
 
-        public static Member GetMember(int memNumber, int RegionID)
+        /// <summary>
+        /// Returns a member with the same memberNumber and regionID given
+        /// </summary>
+        public static Member GetMember(int memberNumber, int regionID)
         {
             Member currentMember = new Member();
             using (var db = new NineTapDb())
             {
                 var temp = (from m in db.Members
-                            where m.Number == memNumber && m.NineTapRegionID == RegionID
+                            where m.Number == memberNumber && m.NineTapRegionID == regionID
                             select new
                             {
                                 m.Average,
@@ -204,20 +220,20 @@ namespace NineTapTour.Database
                     currentMember.State = c.State;
                     currentMember.Street = c.Street;
                     currentMember.NineTapRegionID = c.NineTapRegionID;
-
                 }
-
-
                 return currentMember;
             }
         }
 
-        public static Member GetMemberByGameId(int gameId)
+        /// <summary>
+        /// Returns a member with the same gameID given
+        /// </summary>
+        public static Member GetMemberByGameId(int gameID)
         {
             return new NineTapDb().Participants
                                   .Include(b => b.Game)
                                   .Include(b => b.Member)
-                                  .First(p => p.Game.Id == gameId)
+                                  .First(p => p.Game.Id == gameID)
                                   .Member;
         }
             
@@ -232,33 +248,27 @@ namespace NineTapTour.Database
                     select m.Id).SingleOrDefault();
         }
 
-        public static int GetMemberNumberbyID(int MemberID)
+        /// <summary>
+        /// Returns a Member with the same memberID as the one given
+        /// </summary>
+        public static int GetMemberNumberbyID(int memberID)
         {
             Member currentMember = new Member();
             using (var db = new NineTapDb())
             {
                 var temp = (from m in db.Members
-                            where m.Id == MemberID
+                            where m.Id == memberID
                             select new
                             {
                                 m.Number,
                             });
                 foreach (var c in temp)
                 {
-
                     currentMember.Number = c.Number;
-                    ;
-
                 }
-
-
                 return currentMember.Number;
-
-
             }
         }
-
     }
-
 }
 

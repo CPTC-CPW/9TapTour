@@ -47,7 +47,7 @@ namespace NineTapTour.Forms
             NineTapDb db = new NineTapDb();
             System.Data.Entity.Database.SetInitializer<NineTapDb>(new MigrateDatabaseToLatestVersion<NineTapDb, Configuration>());
 
-            _membersList = MemberDb.GetMemberList(RegionID).OrderBy(m => m.Number);
+            _membersList = MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
             _tournamentList = TournamentDb.GetTournamentList(RegionID);
 
             var newfrmStart = new MainMenu {MdiParent = this};

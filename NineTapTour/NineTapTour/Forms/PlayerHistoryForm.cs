@@ -24,7 +24,7 @@ namespace NineTapTour.Database
             InitializeComponent();
             this.id = id;
             
-            Member currentMember = MemberDb.GetMember(id,0 );
+            Member currentMember = MemberDB.GetMember(id,0 );
 
             createDataGridView(id);
 
@@ -42,7 +42,7 @@ namespace NineTapTour.Database
 
         private void createDataGridView(int id)
         {
-            List<PlayerHistory> PlayerHistory = PlayerHistoryDB.getTop30FromPlayerHistory(id);
+            List<PlayerHistory> PlayerHistory = PlayerHistoryDB.GetTop30FromPlayerHistory(id);
             dtvPlayerHistory.DataSource = DataView(id, PlayerHistory);
 
             dtvPlayerHistory.SuspendLayout();
