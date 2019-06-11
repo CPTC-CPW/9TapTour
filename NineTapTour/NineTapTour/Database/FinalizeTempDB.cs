@@ -106,6 +106,7 @@ namespace NineTapTour.Database
         public static double LeagueAvgFromPlayerHistory(int memberNumber, int howmany, int regionid)
         {
             var db = new NineTapDb();
+            double sum = 0;
             // Calculates the Sum as the query instead of grabing all the data
             double avg = (from p in db.PlayerHistory
                           where p.MemberNumber == memberNumber && p.regionID == regionid
