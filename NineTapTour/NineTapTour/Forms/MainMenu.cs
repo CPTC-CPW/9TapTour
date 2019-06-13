@@ -156,7 +156,7 @@ namespace NineTapTour.Forms
 
                 foreach (var t in tourn)
                 {
-                    TournamentDb.deleteTournament(t);
+                    TournamentDb.DeleteTournament(t);
                 }
 
                 //Delete from Member Table where Memmber RegionID is = selected region ID

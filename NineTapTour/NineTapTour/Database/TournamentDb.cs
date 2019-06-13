@@ -227,7 +227,7 @@ namespace NineTapTour.Database
         /// Returns a Tournament from the database with the same TournamentID given,
         /// returns null if one was not found
         /// </summary>
-        public static Tournament getTourneyByID(int tournID)
+        public static Tournament GetTourneyByID(int tournID)
         {
             using (NineTapDb db = new NineTapDb())
             {
@@ -254,7 +254,7 @@ namespace NineTapTour.Database
         /// <summary>
         /// Deletes the given Tournament from the database
         /// </summary>
-        public static void deleteTournament(Tournament tourn)
+        public static void DeleteTournament(Tournament tourn)
         {
             using (var db = new NineTapDb())
             {
