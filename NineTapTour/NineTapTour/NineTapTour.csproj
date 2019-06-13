@@ -151,7 +151,7 @@
     <Compile Include="Database\PlayerHistoryDB.cs" />
     <Compile Include="Database\Print.cs" />
     <Compile Include="Models\Squad.cs" />
-    <Compile Include="Database\TournamentDb.cs" />
+    <Compile Include="Database\TournamentDB.cs" />
     <Compile Include="Exceptions\MemberTableException.cs" />
     <Compile Include="Models\Participant.cs" />
     <Compile Include="Models\TempVariablesForGlobalLevel.cs" />

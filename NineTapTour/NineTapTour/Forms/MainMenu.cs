@@ -152,11 +152,11 @@ namespace NineTapTour.Forms
                 }
 
                 //delete Tournaments where Tournament RegionID = Region ID
-                List<Tournament> tourn = TournamentDb.GetTournamentList(regionID);
+                List<Tournament> tourn = TournamentDB.GetTournamentList(regionID);
 
                 foreach (var t in tourn)
                 {
-                    TournamentDb.DeleteTournament(t);
+                    TournamentDB.DeleteTournament(t);
                 }
 
                 //Delete from Member Table where Memmber RegionID is = selected region ID

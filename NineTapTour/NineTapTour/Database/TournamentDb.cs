@@ -14,7 +14,7 @@ using NineTapTour.Models;
 namespace NineTapTour.Database
 {
     //remove public as soon as import project is merged with 9tap project
-    public class TournamentDb
+    public class TournamentDB
     {
         /// <summary>
         /// Adds the given Tournament into the database
