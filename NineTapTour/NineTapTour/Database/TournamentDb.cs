@@ -16,14 +16,17 @@ namespace NineTapTour.Database
     //remove public as soon as import project is merged with 9tap project
     public class TournamentDb
     {
-        public static void AddTournament(Tournament New)
+        /// <summary>
+        /// Adds the given Tournament into the database
+        /// </summary>
+        public static void AddTournament(Tournament tourn)
         {
             try
             {
                 using (var db = new NineTapDb())
                 {
                     //checks if tournament is new or already existing in db
-                    db.Entry(New).State = db.Tournaments.Any(t => t.Id == New.Id) ?
+                    db.Entry(tourn).State = db.Tournaments.Any(t => t.Id == tourn.Id) ?
                         EntityState.Modified :
                         EntityState.Added;
                     db.SaveChanges();
@@ -36,20 +39,18 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Updates an existing tournament
+        /// Updates the given Tournament in the database
         /// </summary>
-        /// <param name="New"></param> 
-        
-        public static bool UpdateTournament(Tournament newTour)
+        public static bool UpdateTournament(Tournament tourn)
         {
             try
             {
                 using (var db = new NineTapDb())
                 {
-                    var original = db.Tournaments.Find(newTour.Id);
+                    Tournament original = db.Tournaments.Find(tourn.Id);
                     if (original != null)
                     {
-                        db.Entry(original).CurrentValues.SetValues(newTour);
+                        db.Entry(original).CurrentValues.SetValues(tourn);
                         db.SaveChanges();
                     } else
                     {
@@ -65,9 +66,8 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// returns the list of tournaments in descending order by date
+        /// Returns the list of Tournaments ordered by Date descending
         /// </summary>
-        /// <returns></returns>
         public static List<Tournament> GetTournamentList(int regionID)
         {
             using (NineTapDb db = new NineTapDb())
@@ -79,57 +79,66 @@ namespace NineTapTour.Database
             }
         }
 
-        public static List<Participant> GetTournamentMemberList(Tournament currTourney)
+        /// <summary>
+        /// Returns a list of Participants within the given Tournament
+        /// </summary>
+        public static List<Participant> GetTournamentMemberList(Tournament tourn)
         {
-            
             using (NineTapDb db = new NineTapDb())
             {
                 return (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
-                        where p.Tournament.Id == currTourney.Id
+                        where p.Tournament.Id == tourn.Id
                         select p).Include(m =>m.Member).ToList();
             }
         }
 
-        public static List<Participant> GetTournamentMemberListInOrder(Tournament currTourney)
+        /// <summary>
+        /// Returns a list of Participants within the given Tournament
+        /// orders by MemberID
+        /// </summary>
+        public static List<Participant> GetTournamentMemberListInOrder(Tournament tourn)
         {
-
             using (NineTapDb db = new NineTapDb())
             {
                 return (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
                         orderby p.Member.Id
-                        where p.Tournament.Id == currTourney.Id
+                        where p.Tournament.Id == tourn.Id
                         select p).Include(m => m.Member).ToList();
             }
         }
 
         /// <summary>
-        /// Get the total number of participants in the specified tournament
+        /// Get the total number of Participants in the given Tournament
         /// </summary>
-        public static int GetTotalNumberParticipantsInTournament(Tournament currTourney)
+        public static int GetTotalNumberParticipantsInTournament(Tournament tourn)
         {
             NineTapDb db = new NineTapDb();
             return db.Participants
-                .Where(p => p.Tournament.Id == currTourney.Id)
+                .Where(p => p.Tournament.Id == tourn.Id)
                 .Count();
         }
 
-        public static List<Member> GetUniqueTourMembers(Tournament currTourney)
+        /// <summary>
+        /// Returns a list of unique Members in the given Tournament
+        /// </summary>
+        public static List<Member> GetUniqueTourMembers(Tournament tourn)
         {
-
             using (NineTapDb db = new NineTapDb())
             {
                 return (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
-                        where p.Tournament.Id == currTourney.Id
+                        where p.Tournament.Id == tourn.Id
                         select m).Distinct().ToList();
             }
         }
 
+        /// <summary>
+        /// Returns a list of unique Members that were in a Tournament within the given dates inclusively
+        /// </summary>
         public static List<Member> GetUniqueTourMembersByDate(DateTime start, DateTime end)
         {
-
             using (NineTapDb db = new NineTapDb())
             {
                 return (from p in db.Participants
@@ -139,24 +148,25 @@ namespace NineTapTour.Database
             }
         }
 
+        /// <summary>
+        /// Adds the given Participant to the Tournament
+        /// </summary>
         public static void AddMemberToTournament(Participant player)
         {
             try
             {
                 using (var db = new NineTapDb())
                 {
-                    var check = (from p in db.Participants
+                    int check = (from p in db.Participants
                                  where player.Member.Id == p.Member.Id
                                  && player.Tournament.Id == p.Tournament.Id
                                  && player.Squad == p.Squad
                                  select p).Count();
                     if (check == 0)
                     {
-                        
-                        
                         db.Participants.Add(player);
-                        //Uses AddObject because you cannot have object graph where part of objects are connected to context and part of not.
-                        //Changed so that context knows that department already exists.
+                        /* Uses AddObject because you cannot have object graph where part of objects are connected to context and part of not.
+                         Changed so that context knows that department already exists. */
                         var manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
                         manager.ChangeObjectState(player.Tournament, EntityState.Unchanged);
                         manager.ChangeObjectState(player.Member, EntityState.Unchanged);
@@ -195,83 +205,63 @@ namespace NineTapTour.Database
                                     .Select(x => x.ErrorMessage);
 
                             // Join the list to a single string.
-                            var fullErrorMessage = string.Join("; ", errorMessages);
+                            string fullErrorMessage = string.Join("; ", errorMessages);
 
                             // Combine the original exception message with the new one.
-                            var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
+                            string exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
 
                             // Throw a new DbEntityValidationException with the improved exception message.
                             throw new DbEntityValidationException(exceptionMessage, ex.EntityValidationErrors);
                         }
-                        
                     }
                     //Adds player inside NineTapDb
-                    
                 }
             }
             catch (SqlException ex)
             {
-                
                 throw new MemberTableException("Error number : " + ex.Number + " - " + ex.Message);
             }
         }
 
-        public static Tournament getTourneyByID(int TourID)
+        /// <summary>
+        /// Returns a Tournament from the database with the same TournamentID given,
+        /// returns null if one was not found
+        /// </summary>
+        public static Tournament getTourneyByID(int tournID)
         {
-            Tournament t = new Tournament();
-            var db = new NineTapDb();
-            var temp = (
-
-                from g in db.Tournaments
-                where g.Id == TourID
-                select new
-                {
-                    g.Date,
-                    g.Doubles,
-                    g.Event,
-                    g.Id,
-                    g.Location,
-                    g.Notes,
-                    g.Participant,
-                    g.Sponsors,
-                    g.Squads,
-                    g.ThreeOutOf4,             
-                });
-            foreach (var g in temp)
+            using (NineTapDb db = new NineTapDb())
             {
-                t.Date = g.Date;
-                t.Doubles = g.Doubles;
-                t.Event =g.Event;
-                t.Id = g.Id;
-                t.Location = g.Location;
-                t.Notes = g.Notes;
-                t.Participant = g.Participant;
-                t.Sponsors = g.Sponsors;
-                t.Squads = g.Squads;
-                t.ThreeOutOf4 = g.ThreeOutOf4;
+                Tournament tournament =
+                    (from g in db.Tournaments
+                     where g.Id == tournID
+                     select new Tournament
+                     {
+                         Date = g.Date,
+                         Doubles = g.Doubles,
+                         Event = g.Event,
+                         Id = g.Id,
+                         Location = g.Location,
+                         Notes = g.Notes,
+                         Participant = g.Participant,
+                         Sponsors = g.Sponsors,
+                         Squads = g.Squads,
+                         ThreeOutOf4 = g.ThreeOutOf4,
+                     }).SingleOrDefault();
+                return tournament;
             }
-
-
-            return t;
         }
 
-        public static void deleteTournament(Tournament t)
+        /// <summary>
+        /// Deletes the given Tournament from the database
+        /// </summary>
+        public static void deleteTournament(Tournament tourn)
         {
-            try
+            using (var db = new NineTapDb())
             {
-                using (var db = new NineTapDb())
-                {
-                    db.Entry(t).State = EntityState.Deleted;
-                    db.SaveChanges();
-                }
+                db.Entry(tourn).State = EntityState.Deleted;
+                db.SaveChanges();
             }
-            catch
-            {
-
-            }
-
         }
-
     }
-    }
+}
 
