@@ -99,56 +99,36 @@ namespace NineTapTour.Database
         /// <summary>
         /// Returns the top 30 PlayerHistories with the same MemberNumber as the one given
         /// </summary>
-        public static List<PlayerHistory> GetTop30FromPlayerHistory(int memberNumber)
+        public static List<PlayerHistory> GetTop30FromPlayerHistory(int memberNum)
         {
-            List<PlayerHistory> PlayerHistoryList = new List<PlayerHistory>();
             int howmany = 30;
             using (var db = new NineTapDb())
             {
-                var temp = (from h in db.PlayerHistory
-                            where h.MemberNumber == memberNumber
-                            orderby h.TournamentDate descending
-                            select new 
-                            {
-                                h.GamesPlayed,
-                                h.TournamentDate,
-                                h.Game1,
-                                h.Game2,
-                                h.Game3,
-                                h.Game4,
-                                h.AverageForGame,
-                                h.trueAVG,
-                                h.AVG,
-                                h.HandiCap,
-                                h.Bonus,
-                                h.ProPot,
-                                h.MoneyWon,
-                                h.PPHG,
-                                h.Notes,
-                            }).Take(howmany).ToList();
-                foreach (var item in temp)
-                {
-                    PlayerHistory newHistory = new PlayerHistory();
-                    newHistory.GamesPlayed = item.GamesPlayed;
-                    newHistory.TournamentDate = item.TournamentDate;
-                    newHistory.Game1 = item.Game1;
-                    newHistory.Game2 = item.Game2;
-                    newHistory.Game3 = item.Game3;
-                    newHistory.Game4 = item.Game4;
-                    newHistory.TotalScore = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0);
-                    newHistory.AverageForGame = item.AverageForGame;
-                    newHistory.trueAVG = item.trueAVG;
-                    newHistory.AVG = item.AVG;
-                    newHistory.HandiCap = item.HandiCap;
-                    newHistory.Bonus = item.Bonus;
-                    newHistory.ProPot = item.ProPot;
-                    newHistory.PPHG = item.PPHG;
-                    newHistory.MoneyWon = item.MoneyWon;
-                    newHistory.Notes = item.Notes;
-                    PlayerHistoryList.Add(newHistory);
-                }
+                List<PlayerHistory> PlayerHistoryList =
+                    (from h in db.PlayerHistory
+                     where h.MemberNumber == memberNum
+                     orderby h.TournamentDate descending
+                     select new PlayerHistory
+                     {
+                         GamesPlayed = h.GamesPlayed,
+                         TournamentDate = h.TournamentDate,
+                         Game1 = h.Game1,
+                         Game2 = h.Game2,
+                         Game3 = h.Game3,
+                         Game4 = h.Game4,
+                         TotalScore = (h.Game1 ?? 0) + (h.Game2 ?? 0) + (h.Game3 ?? 0) + (h.Game4 ?? 0),
+                         AverageForGame = h.AverageForGame,
+                         trueAVG = h.trueAVG,
+                         AVG = h.AVG,
+                         HandiCap = h.HandiCap,
+                         Bonus = h.Bonus,
+                         ProPot = h.ProPot,
+                         MoneyWon = h.MoneyWon,
+                         PPHG = h.PPHG,
+                         Notes = h.Notes,
+                     }).Take(howmany).ToList();
+                return PlayerHistoryList;
             }
-            return PlayerHistoryList;
         }
 
         /// <summary>
@@ -216,8 +196,7 @@ namespace NineTapTour.Database
                 List<PlayerHistory> PlayerHistoryList = 
                     (from h in db.PlayerHistory
                     where h.MemberNumber == memberNum && h.regionID == regionID
-                    orderby h.TournamentDate descending
-                    //orderby h.MoneyWon descending
+                    orderby h.TournamentDate descending, h.MoneyWon descending
                     select new PlayerHistory
                     {
                         hisID = h.hisID,
@@ -283,10 +262,7 @@ namespace NineTapTour.Database
         /// Gets the last quantity of games selecting only the tournament date and bonus pins.
         /// Used to calculate bonus pins.
         /// </summary>
-        /// <param name="memberNum"> member number of player</param>
-        /// <param name="regionID">region the tournament takes place</param>
-        /// <param name="howmany">quantity of games to pull from the database</param>
-        /// <returns></returns>
+        /// <param name="howmany">number of games to pull from the database</param>
         public static List<PlayerHistory> GetLastQtyGamesMoneyWon(int memberNum, int regionID, int howmany)
         {
             var queryResult = new NineTapDb().PlayerHistory
@@ -304,10 +280,11 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// 
+        /// Returns a list of the last 5 PlayerHistories with the given MemberNumber and RegionID
         /// </summary>
         public static List<PlayerHistory> GetLastFiveTournaments(int memberNum, int regionID)
         {
+            int howmany = 5;
             using (var db = new NineTapDb())
             {
                 /* will only grab the last 5 where the AVG was adjusted, 
@@ -336,213 +313,150 @@ namespace NineTapTour.Database
                         MoneyWon = h.MoneyWon,
                         PPHG = h.PPHG,
                         Notes = h.Notes,
-                    }).Take(5).ToList();
-                    return PlayerHistoryList;
-            }
-        }
-
-
-        public static void DeleteGame(Game game)
-        {
-            try
-            {
-                using (var db = new NineTapDb())
-                {
-                    db.Entry(game).State = EntityState.Deleted;
-                    db.SaveChanges();
-                }
-            }
-            catch
-            {
-
-            }
-
-
-
-
-        }
-        public static void DeletePlayerHistory(PlayerHistory playerhist)
-        {
-            try
-            {
-                using (var db = new NineTapDb())
-                {
-                    db.Entry(playerhist).State = EntityState.Deleted;
-                    db.SaveChanges();
-                }
-            }
-            catch
-            {
-
-            }
-
-
-
-        }
-
-        public static int getNumberOfAllGames()
-        {
-            
-            List<Game> gamesList = new List<Game>();
-            Game current = new Game();
-            using (var db = new NineTapDb())
-            {
-                var temp = (from g in db.Games
-                            select new
-                            {
-                                g.Id
-                            });
-                foreach (var v in temp)
-                {
-                    current.Id = v.Id;
-                    gamesList.Add(current);
-                    
-                }
-                return gamesList.Count;
-            }
-        }
-        public static List<PlayerHistory> getMemberPlayerHistoryByTotal(int memnum, int rID)
-        {
-            List<PlayerHistory> Return = new List<PlayerHistory>();
-            using (var db = new NineTapDb())
-            {
-                var temp = (from h in db.PlayerHistory
-                            where h.MemberNumber == memnum && h.regionID == rID
-                            orderby h.TotalScore descending
-                            select new
-                            {
-                                h.hisID,
-                                h.GameID,
-                                h.GamesPlayed,
-                                h.TournamentDate,
-                                h.MemberNumber,
-                                h.Game1,
-                                h.Game2,
-                                h.Game3,
-                                h.Game4,
-                                h.AverageForGame,
-                                h.trueAVG,
-                                h.AVG,
-                                h.HandiCap,
-                                h.Bonus,
-                                h.ProPot,
-                                h.MoneyWon,
-                                h.Notes,
-                                h.TotalScore,
-                            }).ToList().OrderByDescending(a => (a.TotalScore));
-                foreach (var item in temp)
-                {
-                    PlayerHistory newHistory = new PlayerHistory();
-                    newHistory.MemberNumber = item.MemberNumber;
-                    newHistory.hisID = item.hisID;
-                    newHistory.GameID = item.GameID;
-                    newHistory.GamesPlayed = item.GamesPlayed;
-                    newHistory.TournamentDate = item.TournamentDate;
-                    newHistory.Game1 = item.Game1;
-                    newHistory.Game2 = item.Game2;
-                    newHistory.Game3 = item.Game3;
-                    newHistory.Game4 = item.Game4;
-                    newHistory.TotalScore = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0); ;
-                    newHistory.AverageForGame = item.AverageForGame;
-                    newHistory.trueAVG = item.trueAVG;
-                    newHistory.AVG = item.AVG;
-                    newHistory.HandiCap = item.HandiCap;
-                    newHistory.Bonus = item.Bonus;
-                    newHistory.ProPot = item.ProPot;
-                    newHistory.MoneyWon = item.MoneyWon;
-                    newHistory.Notes = item.Notes;
-                    Return.Add(newHistory);
-                }
-
-
-            }
-
-            return Return;
-        }
-
-        public static PlayerHistory getPlayerHistoryByGameID (int GameID)
-        {
-            PlayerHistory p = new PlayerHistory();
-            using (var db = new NineTapDb())
-            {
-                var temp = (from h in db.PlayerHistory
-                            where h.GameID == GameID
-
-                            select new
-                            {
-                                h.GameID,
-                                h.GamesPlayed,
-                                h.TournamentDate,
-                                h.Game1,
-                                h.Game2,
-                                h.Game3,
-                                h.Game4,
-                                h.AverageForGame,
-                                h.trueAVG,
-                                h.AVG,
-                                h.HandiCap,
-                                h.Bonus,
-                                h.ProPot,
-                                h.MoneyWon,
-                                h.PPHG,
-                                h.Notes,
-                                h.hisID,
-                                h.MemberNumber,
-                                h.TotalScore
-                            });
-
-                foreach(var item in temp)
-                {
-                    p.AverageForGame = item.AverageForGame;
-                    p.AVG = item.AVG;
-                    p.Bonus = item.Bonus;
-                    p.Game1 = item.Game1;
-                    p.Game2 = item.Game2;
-                    p.Game3 = item.Game3;
-                    p.Game4 = item.Game4;
-                    p.GameID = item.GameID;
-                    p.GamesPlayed = item.GamesPlayed;
-                    p.HandiCap = item.HandiCap;
-                    p.hisID = item.hisID;
-                    p.MemberNumber = item.MemberNumber;
-                    p.MoneyWon = item.MoneyWon;
-                    p.Notes = item.Notes;
-                    p.PPHG = item.PPHG;
-                    p.ProPot = item.ProPot;
-                    p.TotalScore = item.TotalScore;
-                    p.TournamentDate = item.TournamentDate;
-                    p.trueAVG = item.trueAVG;
-                }
-                return p;
+                    }).Take(howmany).ToList();
+                return PlayerHistoryList;
             }
         }
 
         /// <summary>
-        /// Returns the total money won throughout a player's history
+        /// Deletes the given Game from the database
         /// </summary>
-        /// <param name="memberNumber">the memberNumber property of the member</param>
-        /// <param name="regionId">the RegionId property indicating where the member is from </param>
-        /// <returns></returns>
-        public static decimal GetTotalMoneyWon(int memberNumber, int regionId)
+        public static void DeleteGame(Game game)
+        {
+            using (var db = new NineTapDb())
+            {
+                db.Entry(game).State = EntityState.Deleted;
+                db.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Deletes the given PlayerHistory from the database
+        /// </summary>
+        public static void DeletePlayerHistory(PlayerHistory playerHistory)
+        {
+            using (var db = new NineTapDb())
+            {
+                db.Entry(playerHistory).State = EntityState.Deleted;
+                db.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of games in the database
+        /// </summary>
+        public static int getNumberOfAllGames()
+        {
+            using (var db = new NineTapDb())
+            {
+                int gameCount = 
+                    (from g in db.Games
+                    select new Game{
+                        Id = g.Id
+                    }).ToList().Count();
+                return gameCount;
+            }
+        }
+
+        /// <summary>
+        /// Returns a list of PlayerHistories ordered by there TotalScore descending
+        /// </summary>
+        public static List<PlayerHistory> getMemberPlayerHistoryByTotal(int memberNum, int regionID)
+        {
+            using (var db = new NineTapDb())
+            {
+                List<PlayerHistory> PlayerHistoryList = 
+                    (from h in db.PlayerHistory
+                    where h.MemberNumber == memberNum && h.regionID == regionID
+                    orderby h.TotalScore descending
+                    select new PlayerHistory
+                    {
+                        hisID = h.hisID,
+                        GameID = h.GameID,
+                        GamesPlayed = h.GamesPlayed,
+                        TournamentDate = h.TournamentDate,
+                        MemberNumber = h.MemberNumber,
+                        Game1 = h.Game1,
+                        Game2 = h.Game2,
+                        Game3 = h.Game3,
+                        Game4 = h.Game4,
+                        AverageForGame = h.AverageForGame,
+                        TotalScore = (h.Game1 ?? 0) + (h.Game2 ?? 0) + (h.Game3 ?? 0) + (h.Game4 ?? 0),
+                        trueAVG = h.trueAVG,
+                        AVG = h.AVG,
+                        HandiCap = h.HandiCap,
+                        Bonus = h.Bonus,
+                        ProPot = h.ProPot,
+                        MoneyWon = h.MoneyWon,
+                        Notes = h.Notes
+                    }).ToList();
+                return PlayerHistoryList;
+            }
+        }
+
+        /// <summary>
+        /// Returns a PlayerHistory with the same GameID given
+        /// </summary>
+        public static PlayerHistory getPlayerHistoryByGameID (int gameID)
+        {
+            using (var db = new NineTapDb())
+            {
+                PlayerHistory playerHistory = 
+                    (from h in db.PlayerHistory
+                    where h.GameID == gameID
+                    select new PlayerHistory
+                    {
+                        hisID = h.hisID,
+                        GameID = h.GameID,
+                        GamesPlayed = h.GamesPlayed,
+                        TournamentDate = h.TournamentDate,
+                        MemberNumber = h.MemberNumber,
+                        Game1 = h.Game1,
+                        Game2 = h.Game2,
+                        Game3 = h.Game3,
+                        Game4 = h.Game4,
+                        AverageForGame = h.AverageForGame,
+                        TotalScore = h.TotalScore,
+                        trueAVG = h.trueAVG,
+                        AVG = h.AVG,
+                        HandiCap = h.HandiCap,
+                        Bonus = h.Bonus,
+                        ProPot = h.ProPot,
+                        MoneyWon = h.MoneyWon,
+                        Notes = h.Notes
+                    }).Single();
+                return playerHistory;
+            }
+        }
+
+        /// <summary>
+        /// Returns the total money won in a PlayerHistory with the same MemberNumber and RegionID
+        /// </summary>
+        public static decimal GetTotalMoneyWon(int memberNum, int regionID)
         {
             //return the sum of all money won or 0 if no entries are present for this bowler in the database
             var db = new NineTapDb();
             return db.PlayerHistory
-                    .Where(p => p.MemberNumber == memberNumber && p.regionID == regionId)
+                    .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
                     .Select(p => (decimal?)p.MoneyWon)
                     .Sum() ?? 0; 
         }
 
         /// <summary>
-        /// Returns true if a PlayerHistory with the same GameId exist in the database
+        /// Returns true if a PlayerHistory with the same GameID given exist in the database
         /// </summary>
-        /// <param name="gameId"></param>
-        /// <returns></returns>
-        public static bool PlayerHistoryExists(int gameId)
+        public static bool PlayerHistoryExists(int gameID)
         {
-            return new NineTapDb().PlayerHistory.Any(ph => ph.GameID == gameId);
+            using (var db = new NineTapDb())
+            {
+                return db.PlayerHistory
+                    .Any(ph => ph.GameID == gameID);
+            }
         }
 
+        /// <summary>
+        /// Returns true if a PlayerHistory with the same GameID as the PlayerHistory given exist in the database
+        /// </summary>
         public static bool PlayerHistoryExists(PlayerHistory ph)
         {
             return PlayerHistoryExists(ph.GameID);
