@@ -1101,7 +1101,7 @@ namespace NineTapTour.Forms
                 {
                     frmPleaseWait please = new frmPleaseWait();
                     please.Show();
-                    AllGames = PlayerHistoryDB.getNumberOfAllGames();
+                    AllGames = PlayerHistoryDB.GetNumberOfAllGames();
 
                     if (AlreadyImportedPH.Count > 0)
                     {
