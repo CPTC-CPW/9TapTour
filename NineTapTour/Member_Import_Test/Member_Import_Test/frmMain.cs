@@ -521,7 +521,7 @@ namespace Member_Import_Test
         {
             using (var fbd = new FolderBrowserDialog())
             {
-                allGames = PlayerHistoryDB.getNumberOfAllGames();
+                allGames = PlayerHistoryDB.GetNumberOfAllGames();
                 DialogResult result = fbd.ShowDialog();
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {

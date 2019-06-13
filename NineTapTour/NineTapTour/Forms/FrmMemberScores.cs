@@ -178,7 +178,7 @@ namespace NineTapTour.Forms
 
             MemberStatus("", Color.Black, SystemColors.Control, true);
 
-            List<Tournament> temp2 = TournamentDb.GetTournamentList(RegionID);
+            List<Tournament> temp2 = TournamentDB.GetTournamentList(RegionID);
 
             ((FrmMain)MdiParent)._tournamentList = temp2;
             cbxTourneyDropDown.DataSource = temp2;
@@ -199,7 +199,7 @@ namespace NineTapTour.Forms
                 // resets the current index to zero when changing the tournament
                 currentIndex = 0;
 
-                overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
+                overallListOfParticipants = TournamentDB.GetTournamentMemberList(selectedTournament);
                 RecordIndex(overallListOfParticipants);
                 
                 btnDelete.Enabled = true;
@@ -246,7 +246,7 @@ namespace NineTapTour.Forms
             if (currentGame != null)
             {
                 Tournament tourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
-                int total = TournamentDb.GetTotalNumberParticipantsInTournament(tourney);
+                int total = TournamentDB.GetTotalNumberParticipantsInTournament(tourney);
               
                 lblRecord.Text = "Record " + (currentIndex + 1) + " / " + total;
 
@@ -502,8 +502,8 @@ namespace NineTapTour.Forms
                 Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
 
                 //get all the current members participating in the current tournament
-                List<Participant> total = TournamentDb.GetTournamentMemberList(currTourney);
-                overallListOfParticipants = TournamentDb.GetTournamentMemberList(currTourney);
+                List<Participant> total = TournamentDB.GetTournamentMemberList(currTourney);
+                overallListOfParticipants = TournamentDB.GetTournamentMemberList(currTourney);
 
                 int squad = GetCurrentSquadNumber();  
 
@@ -615,7 +615,7 @@ namespace NineTapTour.Forms
 
                     try
                     {
-                        TournamentDb.AddMemberToTournament(player);
+                        TournamentDB.AddMemberToTournament(player);
 #if DEBUG
                         MessageBox.Show(@"Bowler Added Successfully to Tournament!");
 #endif
@@ -625,7 +625,7 @@ namespace NineTapTour.Forms
                             //clears score boxes
                             ResetScores();
                         }
-                        overallListOfParticipants = TournamentDb.GetTournamentMemberList(currTourney);
+                        overallListOfParticipants = TournamentDB.GetTournamentMemberList(currTourney);
                         RecordIndexAfterAddUpdate(overallListOfParticipants);
                     }
                     catch (MemberAccessException ex)
@@ -852,7 +852,7 @@ namespace NineTapTour.Forms
         {
             try
             {
-                Tournament selectedTournament = (from t in TournamentDb.GetTournamentList(RegionID)
+                Tournament selectedTournament = (from t in TournamentDB.GetTournamentList(RegionID)
                                                  where t.Id == selectedTournamentId
                                                  select t).Single();
             }
@@ -1161,7 +1161,7 @@ namespace NineTapTour.Forms
                 // resets the current index to zero when changing the tournament
                 currentIndex = 0;
                 // Gets the record for the selected tournament
-                overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
+                overallListOfParticipants = TournamentDB.GetTournamentMemberList(selectedTournament);
                 RecordIndex(overallListOfParticipants);
                 Refresh(false);
                 rdoHandicapScore.Visible = true;
@@ -1537,7 +1537,7 @@ namespace NineTapTour.Forms
         {
             if (e.KeyData == Keys.Enter)
             {
-                List<Participant> total = TournamentDb.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
+                List<Participant> total = TournamentDB.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
                 RecordIndexOnEnter(total);
                 FillMember();
             }
@@ -1548,7 +1548,7 @@ namespace NineTapTour.Forms
         /// </summary>
         public void populateSelectedTournament(Tournament currtourney)
         {
-            List<Tournament> temp2 = TournamentDb.GetTournamentList(RegionID);
+            List<Tournament> temp2 = TournamentDB.GetTournamentList(RegionID);
 
             for (int i = 0; i < temp2.Count; i++)
             {
@@ -1811,7 +1811,7 @@ namespace NineTapTour.Forms
             //Grabs the tournament from the selected tournament combobox and casts it to selected Tournament
             selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
             //Repopulates list of participants with the current tournament
-            overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
+            overallListOfParticipants = TournamentDB.GetTournamentMemberList(selectedTournament);
 
 
             //Checks to make sure the member Id textbox isn't empty
@@ -1851,7 +1851,7 @@ namespace NineTapTour.Forms
             ResetFields();
             Refresh(false);
             RecordIndex(overallListOfParticipants);
-            overallListOfParticipants = TournamentDb.GetTournamentMemberList(selectedTournament);
+            overallListOfParticipants = TournamentDB.GetTournamentMemberList(selectedTournament);
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             cbxTourneyDropDown.ValueMember = "Id";
         }
@@ -1860,7 +1860,7 @@ namespace NineTapTour.Forms
         {
             Game g = GetScoresById(currentMem.Id);
             //Delete from player history
-            PlayerHistory p = PlayerHistoryDB.getPlayerHistoryByGameID(g.Id);
+            PlayerHistory p = PlayerHistoryDB.GetPlayerHistoryByGameID(g.Id);
             PlayerHistoryDB.DeletePlayerHistory(p);
             //Delete from FinalizeTemp
             FinalizeTemp ft = FinalizeTempDB.GetFinalizeID(GameDB.GetGame(g.Id));
