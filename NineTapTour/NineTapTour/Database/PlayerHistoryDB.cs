@@ -345,7 +345,7 @@ namespace NineTapTour.Database
         /// <summary>
         /// Returns the number of games in the database
         /// </summary>
-        public static int getNumberOfAllGames()
+        public static int GetNumberOfAllGames()
         {
             using (var db = new NineTapDb())
             {
@@ -361,7 +361,7 @@ namespace NineTapTour.Database
         /// <summary>
         /// Returns a list of PlayerHistories ordered by there TotalScore descending
         /// </summary>
-        public static List<PlayerHistory> getMemberPlayerHistoryByTotal(int memberNum, int regionID)
+        public static List<PlayerHistory> GetMemberPlayerHistoryByTotal(int memberNum, int regionID)
         {
             using (var db = new NineTapDb())
             {
@@ -397,7 +397,7 @@ namespace NineTapTour.Database
         /// <summary>
         /// Returns a PlayerHistory with the same GameID given
         /// </summary>
-        public static PlayerHistory getPlayerHistoryByGameID (int gameID)
+        public static PlayerHistory GetPlayerHistoryByGameID (int gameID)
         {
             using (var db = new NineTapDb())
             {
