@@ -614,7 +614,8 @@ namespace NineTapTour.Forms
 
                     saveY++;
 
-                    pHist[saveX].TotalScore = (pHist[saveX].Game1 ?? 0) + (pHist[saveX].Game2 ?? 0) + (pHist[saveX].Game3 ?? 0) + (pHist[saveX].Game4 ?? 0);
+                    //TotalScore is now calculated in the class
+                    //pHist[saveX].TotalScore = (pHist[saveX].Game1 ?? 0) + (pHist[saveX].Game2 ?? 0) + (pHist[saveX].Game3 ?? 0) + (pHist[saveX].Game4 ?? 0);
 
                     saveY++;
 
