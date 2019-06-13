@@ -24,7 +24,12 @@ namespace NineTapTour.Models
         public int? Game4 { get; set; }
 
 
-        public int TotalScore { get; set; }
+        public int TotalScore {
+            get
+            {
+                return (Game1 ?? 0) + (Game2 ?? 0) + (Game3 ?? 0) + (Game4 ?? 0);
+            }
+        }
         public int HandiCap { get; set; }
 
         // Indicates Bonus pins to be applied to the next game instead of current
