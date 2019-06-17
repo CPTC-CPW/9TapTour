@@ -100,6 +100,9 @@ namespace NineTapTour.Database
             }
         }
 
+        /// <summary>
+        /// Returns a list of all of the members with the same regionID as the one given
+        /// </summary>
         public static List<Member> GetMemberLabelList(int RegionID)
         {
             using (var db = new NineTapDb())
