@@ -244,7 +244,6 @@ namespace NineTapTour.Migrations
                         ph.Game2 = ph.Game1 - f.Random.Number(-_scoreAdjuster, _scoreAdjuster);
                         ph.Game3 = ph.Game1 - f.Random.Number(-_scoreAdjuster, _scoreAdjuster);
                         ph.Game4 = ph.Game1 - f.Random.Number(-_scoreAdjuster, _scoreAdjuster);
-                        //ph.TotalScore = ph.Game1.Value + ph.Game2.Value + ph.Game3.Value + ph.Game4.Value;
                         ph.HandiCap = handicapList[playerHistoryIndexForLists];                        
                         ph.MoneyWon = f.Random.Decimal(0, 1);
                         ph.MoneyWon *= (playerHistoryIndexForLists % 2) * (rand.Next(0, 1000));
