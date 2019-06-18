@@ -70,6 +70,7 @@
             this.txtAddress = new System.Windows.Forms.TextBox();
             this.txtEmail = new System.Windows.Forms.TextBox();
             this.groupRecord = new System.Windows.Forms.GroupBox();
+            this.cbHaw = new System.Windows.Forms.CheckBox();
             this.btnImportData = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
@@ -123,7 +124,6 @@
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.cbHaw = new System.Windows.Forms.CheckBox();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -577,6 +577,17 @@
             this.groupRecord.TabIndex = 60;
             this.groupRecord.TabStop = false;
             this.groupRecord.Text = "Record";
+            // 
+            // cbHaw
+            // 
+            this.cbHaw.AutoSize = true;
+            this.cbHaw.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbHaw.Location = new System.Drawing.Point(6, 102);
+            this.cbHaw.Name = "cbHaw";
+            this.cbHaw.Size = new System.Drawing.Size(84, 23);
+            this.cbHaw.TabIndex = 65;
+            this.cbHaw.Text = "Hawaii ?";
+            this.cbHaw.UseVisualStyleBackColor = true;
             // 
             // btnImportData
             // 
@@ -1087,15 +1098,14 @@
             // txtBonus
             // 
             this.txtBonus.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtBonus.Enabled = false;
             this.txtBonus.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtBonus.Location = new System.Drawing.Point(340, 41);
             this.txtBonus.MaxLength = 20;
             this.txtBonus.Name = "txtBonus";
-            this.txtBonus.ReadOnly = true;
             this.txtBonus.Size = new System.Drawing.Size(89, 47);
             this.txtBonus.TabIndex = 54;
             this.txtBonus.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtBonus.TextChanged += new System.EventHandler(this.txtBonus_TextChanged);
             // 
             // txtAverage
             // 
@@ -1192,17 +1202,6 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(285, 70);
             this.panel2.TabIndex = 74;
-            // 
-            // cbHaw
-            // 
-            this.cbHaw.AutoSize = true;
-            this.cbHaw.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbHaw.Location = new System.Drawing.Point(6, 102);
-            this.cbHaw.Name = "cbHaw";
-            this.cbHaw.Size = new System.Drawing.Size(84, 23);
-            this.cbHaw.TabIndex = 65;
-            this.cbHaw.Text = "Hawaii ?";
-            this.cbHaw.UseVisualStyleBackColor = true;
             // 
             // FrmMemberData
             // 
