@@ -796,7 +796,6 @@ namespace Member_Import_Test
                         {
                             temp.Total = Convert.ToInt32((range.Cells[row, 7] as Excel.Range).Value2);
                             GameHistory.TotalScore = temp.Total;
-                            playerH.TotalScore = temp.Total;
                         }
                         catch
                         {
