@@ -98,7 +98,7 @@ namespace NineTapTour.Forms
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
 
-            ph = PlayerHistoryDB.getMemberPlayerHistoryByTotal(memNum, RegionID);
+            ph = PlayerHistoryDB.GetMemberPlayerHistoryByTotal(memNum, RegionID);
         }
 
         struct statHolder
@@ -451,7 +451,7 @@ namespace NineTapTour.Forms
                 lblStartAvg.Text = 0.ToString();
             }
 
-            List<PlayerHistory> Last30 = PlayerHistoryDB.getTop30FromPlayerHistory(mem.Number);
+            List<PlayerHistory> Last30 = PlayerHistoryDB.GetTop30FromPlayerHistory(mem.Number);
             int game1AVG = 0;
             int game2AVG = 0;
             int game3AVG = 0;
@@ -573,7 +573,7 @@ namespace NineTapTour.Forms
         private void btnSaveChanges_Click(object sender, EventArgs e)
         {
             //grab untouched playerhistory
-            List<PlayerHistory> pHist = PlayerHistoryDB.getMemberPlayerHistory(mem.Number, RegionID);
+            List<PlayerHistory> pHist = PlayerHistoryDB.GetMemberPlayerHistory(mem.Number, RegionID);
 
             //RESTORE THE DATAGRID BACK TO THE DATE DESCINDING 
             dataGridView1.Sort(dataGridView1.Columns["Date"], System.ComponentModel.ListSortDirection.Descending);

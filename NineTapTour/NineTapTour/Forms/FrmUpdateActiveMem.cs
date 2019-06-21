@@ -33,8 +33,8 @@ namespace NineTapTour.Forms
             RegionID = RID;
             dateTimePicker1.Value = DateTime.Today.AddDays(-180);
             targetDate = dateTimePicker1.Value;
-            InActiveList = MemberDb.GetMemberList(RegionID);
-            AllMembers = MemberDb.GetMemberList(RegionID);
+            InActiveList = MemberDB.GetMemberList(RegionID);
+            AllMembers = MemberDB.GetMemberList(RegionID);
             UpdateList();
         }
 

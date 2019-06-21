@@ -11,7 +11,7 @@ namespace NineTapTour.Models
         public int TournamentID { get; set; }
         public int GameId { get; set; }
         public int MemberId { get; set; }
-        public int memberNumber { get; set; }
+        public int MemberNumber { get; set; }
         public String FirstName { get; set; }
         public String LastName { get; set; }
         public int Squad { get; set; }

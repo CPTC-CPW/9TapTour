@@ -16,7 +16,6 @@ namespace NineTapTour.Forms
         public List<Tournament> _tournamentList { get; set; }
         public System.Windows.Forms.ToolStripMenuItem activeItem;
         public FrmMemberData currFrmMemberData { get; set; }
-
         public frmMemberScores currfrmScoresdata { get; set; }
 
         /// <summary>
@@ -27,6 +26,7 @@ namespace NineTapTour.Forms
 
         public MainMenu mainmenu { get; set; }
         public int RegionID { get; set; }
+
         public Size MaxWorkAreaScreenSize { get; set; }
         /////////////////////////////
         public System.Windows.Forms.ToolStripMenuItem Home { get; set; }
@@ -47,8 +47,8 @@ namespace NineTapTour.Forms
             NineTapDb db = new NineTapDb();
             System.Data.Entity.Database.SetInitializer<NineTapDb>(new MigrateDatabaseToLatestVersion<NineTapDb, Configuration>());
 
-            _membersList = MemberDb.GetMemberList(RegionID).OrderBy(m => m.Number);
-            _tournamentList = TournamentDb.GetTournamentList(RegionID);
+            _membersList = MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
+            _tournamentList = TournamentDB.GetTournamentList(RegionID);
 
             var newfrmStart = new MainMenu {MdiParent = this};
 
@@ -155,7 +155,6 @@ namespace NineTapTour.Forms
         public void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var aboutForm = Application.OpenForms["About"] as FrmAbout;
-
             OpenOrDisplayForm(ref aboutForm);
         }
 
@@ -233,7 +232,6 @@ namespace NineTapTour.Forms
             }
         }
 
-
         private void updateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             //update the regionID
@@ -280,6 +278,20 @@ namespace NineTapTour.Forms
         private void FrmMain_Load(object sender, EventArgs e)
         {
             Home = mainMenuToolStripMenuItem;
+        }
+
+        
+        private void labelPrintToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // next 3 lines were setting up for working the labels within the app parent still not fully functional as they didnt pass RegionID
+            // var newfrmPrintLabel = Application.OpenForms["FrmLabelPrint"] as FrmLabelPrint;
+            // OpenOrDisplayForm(ref newfrmPrintLabel);
+            // currLabelPrint = newfrmPrintLabel;
+
+            // opens new label print form
+            FrmLabelPrint labelsToPrint = new FrmLabelPrint(RegionID);
+            labelsToPrint.ShowDialog();
+
         }
     }
 }

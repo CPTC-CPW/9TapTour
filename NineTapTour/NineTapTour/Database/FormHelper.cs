@@ -9,11 +9,9 @@ namespace NineTapTour.Database
 {
     public static class FormHelper
     {
-
-
         /// <summary>
-		    /// Sets the flow direction for the flowlayoutpanel depending
-		    /// on the pixel width or height of the screen.
+		/// Sets the flow direction for the flowlayoutpanel depending
+		/// on the pixel width or height of the screen.
         /// </summary>
         /// <param name="form">The form object that calls this method.</param>
         /// <param name="flp">The flowlayoutpanel that is being passed in to have changes made to it.</param>
@@ -36,7 +34,7 @@ namespace NineTapTour.Database
         /// and whether you can see them or not depending on the
         /// pixel width or height of the screen.
         /// </summary>
-        /// <param name="form">The form obejct that calls this method</param>
+        /// <param name="form">The form object that calls this method</param>
         /// <param name="flp">The flowlayoutpanel that is being passed in to have changes made to it.</param>
         /// <param name="width">The width at which horizontal scroll bars are toggled.</param>
         /// <param name="height">The height at which vertical scroll bars are toggled.</param>
@@ -79,10 +77,8 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// 
+        /// Changes all radioButtons in the given groupbox with the given squadNumber to true
         /// </summary>
-        /// <param name="squadNumber"></param>
-        /// <param name="groupBox"></param>
         public static void SelectParticipantSquad(int squadNumber, GroupBox groupBox)
         {
             foreach (Control control in groupBox.Controls)
@@ -99,11 +95,9 @@ namespace NineTapTour.Database
         /// Tests a string input for being an integer
         /// between 1-300. Returns true if valid.
         /// </summary>
-        /// <param name="strAvg">string average</param>
-        /// <returns>bool result</returns>
-        public static bool IsAverageValid(string strAvg)
+        public static bool IsAverageValid(string stringAverage)
         {
-            Int32.TryParse(strAvg, out int test);
+            Int32.TryParse(stringAverage, out int test);
             return test > 0 && test < 300;
         }
 
@@ -111,12 +105,10 @@ namespace NineTapTour.Database
         /// Validates string input for being a date later
         /// than 1900. Returns true if valid.
         /// </summary>
-        /// <param name="box">string date</param>
-        /// <returns>bool result</returns>
-        public static bool IsDateTimeValid(string strDate)
+        public static bool IsDateTimeValid(string stringDate)
         {
             DateTime century = new DateTime(1900, 01, 01);
-            if (DateTime.TryParse(strDate, out DateTime dateTime))
+            if (DateTime.TryParse(stringDate, out DateTime dateTime))
             {
                 if (dateTime >= century)
                 {
@@ -128,10 +120,8 @@ namespace NineTapTour.Database
 
         /// <summary>
         /// Validates string input for being a US state.
-        /// Returns 
+        /// Returns true if valid.
         /// </summary>
-        /// <param name="state"></param>
-        /// <returns></returns>
         public static bool IsStateValid(string state)
         {
             string uppercaseState = state.ToUpper().Trim();
@@ -175,7 +165,6 @@ namespace NineTapTour.Database
         /// 0 is all squads
         /// </summary>
         /// <param name="filterSeries">A list of 9 booleans determined by GRPQBS1n on FrmMemberScores</param> 
-        /// <returns></returns>
         public static List<int> SquadNumList(List<bool> filterSeries)
         {
             List<int> squadList = new List<int>();
@@ -190,11 +179,10 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// This method looks at the squad list and deterine if it doens't 'skip' squads
-        /// eg if the list is 1,2,3 it's true. if 1,2,4 it's false.
+        /// This method looks at the squad list and determine if it doesn't 'skip' squads
+        /// e.g. if the list is 1,2,3 it's true. if 1,2,4 it's false.
         /// </summary>
-        /// <param name="squadList">A list of squads selected in Fitler series</param>
-        /// <returns></returns>
+        /// <param name="squadList">A list of squads selected in Filter series</param>
         public static bool IsContinuous(List<int> squadList) {
             for (int i = 1; i < squadList.Count(); i++) {
                 if (squadList[i] - squadList[i - 1] != 1) {

@@ -439,7 +439,7 @@ namespace Member_Import_Test
                     for (int j = 0; j < validMembers.Count; j++)
                     {
                         // Only add the member after checking if the memeber isn't already in the database.
-                        if (!NineTapTour.Database.MemberDb.MemberExists(validMembers[j]))
+                        if (!NineTapTour.Database.MemberDB.MemberExists(validMembers[j]))
                         {
                             if (validMembers[j].DateOfBirth < Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM"))
                             {
@@ -453,7 +453,7 @@ namespace Member_Import_Test
                             {
                                 validMembers[j].RejoinDate = Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM");
                             }
-                            NineTapTour.Database.MemberDb.AddOrUpdateMember(validMembers[j]);
+                            NineTapTour.Database.MemberDB.AddOrUpdateMember(validMembers[j]);
                         }
                     }
                     // Show the results to the user
@@ -521,7 +521,7 @@ namespace Member_Import_Test
         {
             using (var fbd = new FolderBrowserDialog())
             {
-                allGames = PlayerHistoryDB.getNumberOfAllGames();
+                allGames = PlayerHistoryDB.GetNumberOfAllGames();
                 DialogResult result = fbd.ShowDialog();
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
@@ -727,7 +727,7 @@ namespace Member_Import_Test
                     playerH.MemberNumber = temp.PlayerNumber;
                     playerH.regionID = RegionID;
                     //only process file if they have been added as a member first and are active ?
-                    if (MemberDb.GetMember(temp.PlayerNumber, RegionID).IsActive == true)
+                    if (MemberDB.GetMember(temp.PlayerNumber, RegionID).IsActive == true)
                     {
                         try
                         {
@@ -972,9 +972,9 @@ namespace Member_Import_Test
         {
             for(int i = 0; i < members.Count; i++)
             {
-                if (MemberDb.MemberExists(members[i]) == false)
+                if (MemberDB.MemberExists(members[i]) == false)
                 {
-                    MemberDb.AddOrUpdateMember(members[i]);
+                    MemberDB.AddOrUpdateMember(members[i]);
                 }
             }
         }

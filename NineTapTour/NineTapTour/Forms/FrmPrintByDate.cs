@@ -47,7 +47,7 @@ namespace NineTapTour.Forms
                          where t.Date >= dateTimeStart.Value && t.Date <= dateTimeEnd.Value
                          select t).ToList();
             }
-            members = TournamentDb.GetUniqueTourMembersByDate(dateTimeStart.Value, dateTimeEnd.Value);
+            members = TournamentDB.GetUniqueTourMembersByDate(dateTimeStart.Value, dateTimeEnd.Value);
 
             if (tours.Count > 0)
             {

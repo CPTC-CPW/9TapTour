@@ -94,12 +94,16 @@ namespace NineTapTour.Models
             get { return PlayerHistoryDB.GetTotalMoneyWon(Number, NineTapRegionID); }
             set { _moneyEarned = value;  }
         }
+
         public int NineTapRegionID { get; set; }
+        public virtual NineTapRegion NineTapRegion { get; set; }
         #endregion
 
         public override string ToString()
         {
-            return "Member ID: " + Number + " Name: " + LastName + ", " + FirstName;
+            // return "Member ID: " + Number + " Name: " + LastName + ", " + FirstName; 
+            // previous line was before modded for the label print option
+            return LastName + ", " + FirstName + " " + Number ; 
         }
     }
 

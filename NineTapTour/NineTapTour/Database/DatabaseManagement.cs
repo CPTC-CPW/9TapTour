@@ -11,12 +11,18 @@ namespace NineTapTour.Database
 {
     public static class DatabaseManagement
     {
-
+        /// <summary>
+        /// Returns the string NineTapDBBackup_ + the current date/time + .bak 
+        /// </summary>
         private static string CreateBackupName()
         {
-            return "NineTapDBBackup_" + DateTime.Now.ToString("d-MMM-yyyy-hmmss") + ".bak";
+            return "NineTapDBBackup_" + DateTime.Now.ToString("dd-MM-yyyy-hmmss") + ".bak";
         }
 
+        /// <summary>
+        /// Tryes to backup the NineTap Database with the same path as the one given by CreateBackupName(), 
+        /// returns true if backup was successful
+        /// </summary>
         public static bool BackupDatabase(string backupPath)
         {
             NineTapDb db = new NineTapDb();
@@ -45,28 +51,22 @@ namespace NineTapTour.Database
             return true;
         }
 
+        /// <summary>
+        /// Tryes to restore the NineTap Database with the same path given, 
+        /// returns true if restore was successful
+        /// </summary>
         public static bool RestoreDatabase(string restorePath)
         {
             NineTapDb db = new NineTapDb();
             string query = "USE master " +
                            "ALTER DATABASE [NineTapTour.NineTapDb] SET SINGLE_USER WITH ROLLBACK IMMEDIATE " +
                            "RESTORE DATABASE @dbName FROM DISK = @restorePath WITH REPLACE";
-
-            try
-            {
-                db.Database.ExecuteSqlCommand(
-                    TransactionalBehavior.DoNotEnsureTransaction,
-                    query,
-                    new SqlParameter("@dbName", db.Database.Connection.Database),
-                    new SqlParameter("@restorePath", restorePath)
-                    );
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
+            db.Database.ExecuteSqlCommand(
+                TransactionalBehavior.DoNotEnsureTransaction,
+                query,
+                new SqlParameter("@dbName", db.Database.Connection.Database),
+                new SqlParameter("@restorePath", restorePath)
+                );
             return true;
         }
     }
