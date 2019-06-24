@@ -16,12 +16,16 @@ namespace NineTapTour.Forms
     {
         private List<NineTapRegion> nList;
         private int RegionID;
+
+        #region FrmAddRegion
         public FrmAddRegion(int RegionID)
         {
             InitializeComponent();
             this.RegionID = RegionID;     
         }
+        #endregion
 
+        #region Buttons
         private void btnSubmit_Click(object sender, EventArgs e)
         {
            
@@ -36,5 +40,6 @@ namespace NineTapTour.Forms
                 this.Close();         
             }
         }
+        #endregion
     }
 }
