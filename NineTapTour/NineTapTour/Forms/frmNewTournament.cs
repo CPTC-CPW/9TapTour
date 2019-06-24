@@ -124,7 +124,7 @@ namespace NineTapTour.Forms
                 if (!errors)
                 {
                     Tournament currTourney = NewTournament;
-                    clearTournamentForm();
+                    ClearTournamentForm();
 
                     var newFrmMemberScores = Application.OpenForms["FrmMemberScores"] as frmMemberScores;
                     ((FrmMain)MdiParent).OpenOrDisplayForm(ref newFrmMemberScores);
@@ -163,7 +163,7 @@ namespace NineTapTour.Forms
 
         private void btnClear_Click(object sender, EventArgs e)
         {
-            clearTournamentForm();
+            ClearTournamentForm();
         }
         #endregion
 
@@ -178,29 +178,29 @@ namespace NineTapTour.Forms
             {
                 btnSubmit.Enabled = false;
             }
-            checkCleared();
+            CheckCleared();
         }
 
         private void txtEvent_TextChanged(object sender, EventArgs e)
         {
-            checkCleared();
+            CheckCleared();
         }
 
         private void txtSponsors_TextChanged(object sender, EventArgs e)
         {
-            checkCleared();
+            CheckCleared();
         }
 
         private void rtxtNotes_TextChanged(object sender, EventArgs e)
         {
-            checkCleared();
+            CheckCleared();
         }
         #endregion
 
         #region CheckBoxs
         private void ckbxDoubles_CheckedChanged(object sender, EventArgs e)
         {
-            checkCleared();
+            CheckCleared();
             if (ckbx3outOf4.Enabled)
             {
                 ckbx3outOf4.Enabled = false;
@@ -213,7 +213,7 @@ namespace NineTapTour.Forms
 
         private void ckbx3outOf4_CheckedChanged(object sender, EventArgs e)
         {
-            checkCleared();
+            CheckCleared();
             if (ckbxDoubles.Enabled)
             {
                 ckbxDoubles.Enabled = false;
@@ -229,7 +229,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Clears the NewTournament Form
         /// </summary>
-        private void clearTournamentForm()
+        private void ClearTournamentForm()
         {
             btnSubmit.Text = "Create Tournament";
             btnSubmit.Enabled = false;
@@ -249,7 +249,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Checks to see if any TextBox is not empty, or any CheckBox is checked
         /// </summary>
-        private void checkCleared()
+        private void CheckCleared()
         {
             if (
                 !string.IsNullOrWhiteSpace(txtLocation.Text.Trim()) ||
