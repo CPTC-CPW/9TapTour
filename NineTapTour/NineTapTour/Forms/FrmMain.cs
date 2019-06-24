@@ -24,7 +24,7 @@ namespace NineTapTour.Forms
         /// </summary>
         private bool AppMustClose { get; set; }
 
-        public MainMenu mainmenu { get; set; }
+        public MainMenu MainMenu { get; set; }
         public int RegionID { get; set; }
 
         public Size MaxWorkAreaScreenSize { get; set; }
@@ -53,13 +53,13 @@ namespace NineTapTour.Forms
 
             //sets the height and width of the parent form... this can not be resized later... all child forms must 
             //fit in its bounds... the only exception is using a scrollbar on the side or bottom...
-            setHeightAndWidth(MaxWorkAreaScreenSize);
+            SetHeightAndWidth(MaxWorkAreaScreenSize);
             
             //on start up make sure regionID is set 
             var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
             OpenOrDisplayForm(ref mainMenu);
             RegionID = mainMenu.getRegionID();
-            mainmenu = mainMenu;
+            MainMenu = mainMenu;
 
             //sets the first item of the menu bar to the active item and highlights it.
             activeItem = (System.Windows.Forms.ToolStripMenuItem)menMain.Items[0];
@@ -194,7 +194,7 @@ namespace NineTapTour.Forms
         private void updateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             //update the regionID
-            RegionID = mainmenu.getRegionID();
+            RegionID = MainMenu.getRegionID();
             var UpdatefrmActiveMem = new FrmUpdateActiveMem(RegionID);
             UpdatefrmActiveMem.Show();
         }
@@ -242,7 +242,7 @@ namespace NineTapTour.Forms
         /// height and width of the users main moniter
         /// </summary>
         /// <param name="workingArea">The working array of the primary monitor</param>
-        private void setHeightAndWidth(Size workingArea)
+        private void SetHeightAndWidth(Size workingArea)
         {
             this.Size = workingArea;
         }
@@ -251,7 +251,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Sets the item with the same itemName given to the SystemColors.Control
         /// </summary>
-        public void menuHighlight(string itemName)
+        public void MenuHighlight(string itemName)
         {
             if (activeItem != null)
             {

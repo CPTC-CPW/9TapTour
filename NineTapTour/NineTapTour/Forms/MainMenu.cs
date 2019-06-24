@@ -54,7 +54,7 @@ namespace NineTapTour.Forms
         private void btnAbout_Click(object sender, EventArgs e)
         {
             ((FrmMain)MdiParent).RegionID = regionID; // Retrieving ID from menMain
-            ((FrmMain)MdiParent).menuHighlight(btnAbout.Text); // Highlighting corresponding tab; "About"
+            ((FrmMain)MdiParent).MenuHighlight(btnAbout.Text); // Highlighting corresponding tab; "About"
             ((FrmMain)MdiParent).AboutToolStripMenuItem_Click(sender, e); // Activate the click method for About
             enableHomeNavigation();
 
@@ -68,7 +68,7 @@ namespace NineTapTour.Forms
         private void btnMemberData_Click(object sender, EventArgs e)
         {
             ((FrmMain)MdiParent).RegionID = regionID;
-            ((FrmMain)MdiParent).menuHighlight(btnMemberData.Text); //"Member Info"
+            ((FrmMain)MdiParent).MenuHighlight(btnMemberData.Text); //"Member Info"
             ((FrmMain)MdiParent).memberToolStripMenuItem_Click(sender, e);
 
             enableHomeNavigation();
@@ -91,7 +91,7 @@ namespace NineTapTour.Forms
         private void btnMemberScores_Click(object sender, EventArgs e)
         {
             ((FrmMain)MdiParent).RegionID = regionID;
-            ((FrmMain)MdiParent).menuHighlight(btnMemberScores.Text); // "Member Scores"
+            ((FrmMain)MdiParent).MenuHighlight(btnMemberScores.Text); // "Member Scores"
             ((FrmMain)MdiParent).tournamentToolStripMenuItem_Click(sender, e);
             enableHomeNavigation();
 
