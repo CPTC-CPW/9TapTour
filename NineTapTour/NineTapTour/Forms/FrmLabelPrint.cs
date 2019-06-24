@@ -37,7 +37,7 @@ namespace NineTapTour.Forms
             ActiveMems = new List<Member>();
             Labels = new List<Member>();
 
-            LoadLists();
+            UpdateMemberListBox();
         }
         #endregion
 
@@ -74,7 +74,7 @@ namespace NineTapTour.Forms
             //add the document to the dialog box
             printDialog.Document = printDocument;
             //add the event handler that will do the printing
-            printDocument.PrintPage += new PrintPageEventHandler(printLabels);
+            printDocument.PrintPage += new PrintPageEventHandler(PrintLabels);
 
             DialogResult result = printDialog.ShowDialog();
 
@@ -94,7 +94,7 @@ namespace NineTapTour.Forms
         private void cbxShowInactive_CheckedChanged(object sender, EventArgs e)
         {
             ActiveMems.Clear();
-            LoadLists();
+            UpdateMemberListBox();
         }
         #endregion
 
@@ -156,7 +156,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Updates lbxMemberList.DataSource
         /// </summary>
-        public void LoadLists()
+        public void UpdateMemberListBox()
         {
             try
             {
@@ -198,7 +198,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Prints all Members from Labels
         /// </summary>
-        public void printLabels(object sender, PrintPageEventArgs e)
+        public void PrintLabels(object sender, PrintPageEventArgs e)
         {
             // grab the next 30 members
             List<Member> nextMemberLabels = Labels.Skip((currPage) * PageSize).Take(PageSize).ToList();
