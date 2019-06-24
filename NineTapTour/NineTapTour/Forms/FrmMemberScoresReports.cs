@@ -97,7 +97,7 @@ namespace NineTapTour.Forms
                 {
                     frmPleaseWait please = new frmPleaseWait();
                     please.Show();
-                    exportToExcel(); // Exports to excel file
+                    ExportToExcel(); // Exports to excel file
                     wait = false;
                     please.Close();
                 }
@@ -117,7 +117,7 @@ namespace NineTapTour.Forms
         /// This method is used to clean up the references to the Excel Objects
         /// so that Excel does not remain running.
         /// </summary>
-        private void releaseObject(object obj)
+        private void ReleaseObject(object obj)
         {
             try
             {
@@ -138,7 +138,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Sends data into an Excel Spreadsheet
         /// </summary>
-        private void exportToExcel()
+        private void ExportToExcel()
         {
             // this is used in a few places for labeling file name and displayed on the excel sheet
             string reportTypeToSave = "";
@@ -275,9 +275,9 @@ namespace NineTapTour.Forms
                 xlWorkBook.Close(true, misValue, misValue);
                 xlApp.Quit();
 
-                releaseObject(xlWorkSheet);
-                releaseObject(xlWorkBook);
-                releaseObject(xlApp);
+                ReleaseObject(xlWorkSheet);
+                ReleaseObject(xlWorkBook);
+                ReleaseObject(xlApp);
             }
             catch
             {
