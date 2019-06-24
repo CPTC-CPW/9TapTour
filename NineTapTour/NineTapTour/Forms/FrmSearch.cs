@@ -14,6 +14,9 @@ using NineTapTour.Models;
 /*
     Author: Toby Fortuner
     Jun 5, 2016
+
+    Refactored: Trystin St.Louis
+    June 24, 2019
     */
 namespace NineTapTour.Forms
 {
@@ -23,19 +26,17 @@ namespace NineTapTour.Forms
         bool isChecked = false;
         public int searchResult { get; set; }
 
-        /// <summary>
-        /// Opens the "Search" form.
-        /// </summary>
+        #region FrmSearch
         public FrmSearch(int RegionID)
         {
             InitializeComponent();
             this.RegionID = RegionID;
         }
 
-        private void FrmSearch_Load(object sender, EventArgs e)
-        {
-        }
+        private void FrmSearch_Load(object sender, EventArgs e){ }
+        #endregion
 
+        #region Button
         private void btnSearch_Click(object sender, EventArgs e)
         {
             dtagrdResults.DataSource = null;
@@ -127,6 +128,34 @@ namespace NineTapTour.Forms
             btnSelect.Focus();
         }
 
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            txtMemNumber.Clear();
+            txtFirstName.Clear();
+            txtLastName.Clear();
+            rdoActiveEither.Checked = true;
+            txtAverage.Clear();
+            txtHandicap.Clear();
+            txtBonus.Clear();
+            EmptyGrid();
+        }
+
+        private void btnSelect_Click(object sender, EventArgs e)
+        {
+            if (dtagrdResults.Rows.Count > 0)
+            {
+                searchResult = (int)dtagrdResults.SelectedRows[0].Cells[1].Value;
+                this.Close();
+            }
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        #endregion
+
+        #region CheckBox
         private void chkAdvancedView_CheckStateChanged(object sender, EventArgs e)
         {
             if (isChecked == false)
@@ -150,7 +179,13 @@ namespace NineTapTour.Forms
                 dtagrdResults.Columns["IsSenior"].Visible = !dtagrdResults.Columns["IsSenior"].Visible;
             }
         }
+        #endregion
 
+        #region Methods
+        // dtagrdResults needs to be ranamed
+        /// <summary>
+        /// Refreshes dtagrdResults.DataSource
+        /// </summary>
         private void FillGrid()
         {
             dtagrdResults.DataSource = null;
@@ -159,6 +194,9 @@ namespace NineTapTour.Forms
             AdvancedViewCheck();
         }
 
+        /// <summary>
+        /// Empties dtagrdResults.DataSource
+        /// </summary>
         private void EmptyGrid()
         {
             dtagrdResults.DataSource = null;
@@ -169,6 +207,9 @@ namespace NineTapTour.Forms
             AdvancedViewCheck();
         }
 
+        /// <summary>
+        /// Hides most of the collums on dtagrdResults if chkAdvancedView is not checked
+        /// </summary>
         private void AdvancedViewCheck()
         {
             //probably don't want SSN or ID to show up at all.
@@ -199,36 +240,6 @@ namespace NineTapTour.Forms
                 dtagrdResults.Columns["IsSenior"].Visible = false;
             }
         }
-
-        private void btnClear_Click(object sender, EventArgs e)
-        {
-            txtMemNumber.Clear();
-            txtFirstName.Clear();
-            txtLastName.Clear();
-            rdoActiveEither.Checked = true;
-            txtAverage.Clear();
-            txtHandicap.Clear();
-            txtBonus.Clear();
-            EmptyGrid();
-        }
-
-        private void btnSelect_Click(object sender, EventArgs e)
-        {
-            if (dtagrdResults.Rows.Count > 0)
-            {
-                searchResult = (int)dtagrdResults.SelectedRows[0].Cells[1].Value;
-                this.Close();
-            }
-        }
-
-        /// <summary>
-        /// Closes the "Search" form without doing anything.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
+        #endregion 
     }
 }
