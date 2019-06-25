@@ -108,25 +108,7 @@ namespace NineTapTour.Database
                     (from h in db.PlayerHistory
                      where h.MemberNumber == memberNum
                      orderby h.TournamentDate descending
-                     select new PlayerHistory
-                     {
-                         GamesPlayed = h.GamesPlayed,
-                         TournamentDate = h.TournamentDate,
-                         Game1 = h.Game1,
-                         Game2 = h.Game2,
-                         Game3 = h.Game3,
-                         Game4 = h.Game4,
-                         TotalScore = (h.Game1 ?? 0) + (h.Game2 ?? 0) + (h.Game3 ?? 0) + (h.Game4 ?? 0),
-                         AverageForGame = h.AverageForGame,
-                         trueAVG = h.trueAVG,
-                         AVG = h.AVG,
-                         HandiCap = h.HandiCap,
-                         Bonus = h.Bonus,
-                         ProPot = h.ProPot,
-                         MoneyWon = h.MoneyWon,
-                         PPHG = h.PPHG,
-                         Notes = h.Notes,
-                     }).Take(howmany).ToList();
+                     select h).Take(howmany).ToList();
                 return PlayerHistoryList;
             }
         }
@@ -161,27 +143,7 @@ namespace NineTapTour.Database
                     (from h in db.PlayerHistory
                     where h.MemberNumber == memberNum && h.regionID == regionID
                     orderby h.TournamentDate descending
-                    select new PlayerHistory
-                    {
-                        hisID = h.hisID,
-                        GameID = h.GameID,
-                        GamesPlayed = h.GamesPlayed,
-                        TournamentDate = h.TournamentDate,
-                        MemberNumber = h.MemberNumber,
-                        Game1 = h.Game1,
-                        Game2 = h.Game2,
-                        Game3 = h.Game3,
-                        Game4 = h.Game4,
-                        TotalScore = (h.Game1 ?? 0) + (h.Game2 ?? 0) + (h.Game3 ?? 0) + (h.Game4 ?? 0),
-                        AverageForGame = h.AverageForGame,
-                        trueAVG = h.trueAVG,
-                        AVG = h.AVG,
-                        HandiCap = h.HandiCap,
-                        Bonus = h.Bonus,
-                        ProPot = h.ProPot,
-                        MoneyWon = h.MoneyWon,
-                        Notes = h.Notes,
-                    }).ToList();
+                    select h).ToList();
                 return PlayerHistoryList;
             }
         }
@@ -197,27 +159,7 @@ namespace NineTapTour.Database
                     (from h in db.PlayerHistory
                     where h.MemberNumber == memberNum && h.regionID == regionID
                     orderby h.TournamentDate descending, h.MoneyWon descending
-                    select new PlayerHistory
-                    {
-                        hisID = h.hisID,
-                        GameID = h.GameID,
-                        GamesPlayed = h.GamesPlayed,
-                        TournamentDate = h.TournamentDate,
-                        MemberNumber = h.MemberNumber,
-                        Game1 = h.Game1,
-                        Game2 = h.Game2,
-                        Game3 = h.Game3,
-                        Game4 = h.Game4,
-                        TotalScore = (h.Game1 ?? 0) + (h.Game2 ?? 0) + (h.Game3 ?? 0) + (h.Game4 ?? 0),
-                        AverageForGame = h.AverageForGame,
-                        trueAVG = h.trueAVG,
-                        AVG = h.AVG,
-                        HandiCap = h.HandiCap,
-                        Bonus = h.Bonus,
-                        ProPot = h.ProPot,
-                        MoneyWon = h.MoneyWon,
-                        Notes = h.Notes,
-                    }).Take(30).ToList();
+                    select h).Take(30).ToList();
                 return PlayerHistoryList;
             }
         }
@@ -233,27 +175,7 @@ namespace NineTapTour.Database
                 List<PlayerHistory> PlayerHistoryList =
                     (from h in db.PlayerHistory
                     where h.regionID == regionID
-                    select new PlayerHistory
-                    {
-                        hisID = h.hisID,
-                        GameID = h.GameID,
-                        GamesPlayed = h.GamesPlayed,
-                        TournamentDate = h.TournamentDate,
-                        MemberNumber = h.MemberNumber,
-                        Game1 = h.Game1,
-                        Game2 = h.Game2,
-                        Game3 = h.Game3,
-                        Game4 = h.Game4,
-                        TotalScore = (h.Game1 ?? 0) + (h.Game2 ?? 0) + (h.Game3 ?? 0) + (h.Game4 ?? 0),
-                        AverageForGame = h.AverageForGame,
-                        trueAVG = h.trueAVG,
-                        AVG = h.AVG,
-                        HandiCap = h.HandiCap,
-                        Bonus = h.Bonus,
-                        ProPot = h.ProPot,
-                        MoneyWon = h.MoneyWon,
-                        Notes = h.Notes,
-                    }).ToList();
+                    select h).ToList();
                 return PlayerHistoryList;
             }
         }
@@ -295,25 +217,7 @@ namespace NineTapTour.Database
                     /* Only grabs tournaments where average was determined. 
                       that way it doest grab history from a diffrent sqaud */
                     orderby h.TournamentDate descending, h.hisID descending
-                    select new PlayerHistory
-                    {
-                        GamesPlayed = h.GamesPlayed,
-                        TournamentDate = h.TournamentDate,
-                        Game1 = h.Game1,
-                        Game2 = h.Game2,
-                        Game3 = h.Game3,
-                        Game4 = h.Game4,
-                        TotalScore = (h.Game1 ?? 0) + (h.Game2 ?? 0) + (h.Game3 ?? 0) + (h.Game4 ?? 0),
-                        AverageForGame = h.AverageForGame,
-                        trueAVG = h.trueAVG,
-                        AVG = h.AVG,
-                        HandiCap = h.HandiCap,
-                        Bonus = h.Bonus,
-                        ProPot = h.ProPot,
-                        MoneyWon = h.MoneyWon,
-                        PPHG = h.PPHG,
-                        Notes = h.Notes,
-                    }).Take(howmany).ToList();
+                    select h).Take(howmany).ToList();
                 return PlayerHistoryList;
             }
         }
@@ -369,27 +273,7 @@ namespace NineTapTour.Database
                     (from h in db.PlayerHistory
                     where h.MemberNumber == memberNum && h.regionID == regionID
                     orderby h.TotalScore descending
-                    select new PlayerHistory
-                    {
-                        hisID = h.hisID,
-                        GameID = h.GameID,
-                        GamesPlayed = h.GamesPlayed,
-                        TournamentDate = h.TournamentDate,
-                        MemberNumber = h.MemberNumber,
-                        Game1 = h.Game1,
-                        Game2 = h.Game2,
-                        Game3 = h.Game3,
-                        Game4 = h.Game4,
-                        AverageForGame = h.AverageForGame,
-                        TotalScore = (h.Game1 ?? 0) + (h.Game2 ?? 0) + (h.Game3 ?? 0) + (h.Game4 ?? 0),
-                        trueAVG = h.trueAVG,
-                        AVG = h.AVG,
-                        HandiCap = h.HandiCap,
-                        Bonus = h.Bonus,
-                        ProPot = h.ProPot,
-                        MoneyWon = h.MoneyWon,
-                        Notes = h.Notes
-                    }).ToList();
+                    select h).ToList();
                 return PlayerHistoryList;
             }
         }
@@ -404,27 +288,7 @@ namespace NineTapTour.Database
                 PlayerHistory playerHistory = 
                     (from h in db.PlayerHistory
                     where h.GameID == gameID
-                    select new PlayerHistory
-                    {
-                        hisID = h.hisID,
-                        GameID = h.GameID,
-                        GamesPlayed = h.GamesPlayed,
-                        TournamentDate = h.TournamentDate,
-                        MemberNumber = h.MemberNumber,
-                        Game1 = h.Game1,
-                        Game2 = h.Game2,
-                        Game3 = h.Game3,
-                        Game4 = h.Game4,
-                        AverageForGame = h.AverageForGame,
-                        TotalScore = h.TotalScore,
-                        trueAVG = h.trueAVG,
-                        AVG = h.AVG,
-                        HandiCap = h.HandiCap,
-                        Bonus = h.Bonus,
-                        ProPot = h.ProPot,
-                        MoneyWon = h.MoneyWon,
-                        Notes = h.Notes
-                    }).Single();
+                    select h).Single();
                 return playerHistory;
             }
         }
