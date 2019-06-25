@@ -12,6 +12,7 @@ namespace NineTapTour.Forms
 {
     public partial class TournamentPlaceStandings : Form
     {
+        #region TournamentPlaceStandings
         public TournamentPlaceStandings()
         {
             InitializeComponent();
@@ -30,7 +31,9 @@ namespace NineTapTour.Forms
                 lblTournamentName.Text += " (3 OUT OF 4 TOURNAMENT)";
             }
         }
+        #endregion
 
+        #region Buttons
         private void btnPrint_Click(object sender, EventArgs e)
         {
             printDialog1.Document = printDocument1;
@@ -39,13 +42,16 @@ namespace NineTapTour.Forms
             {
                 printDocument1.Print();
             }
-        }      
+        }
+        #endregion
 
+        #region Print
         private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
             Bitmap bm = new Bitmap(this.dgvTournamentStandings.Width, this.dgvTournamentStandings.Height);
             this.dgvTournamentStandings.DrawToBitmap(bm, new Rectangle(0, 0, this.dgvTournamentStandings.Width, this.dgvTournamentStandings.Height));
             e.Graphics.DrawImage(bm, 0, 0);
         }
+        #endregion
     }
 }
