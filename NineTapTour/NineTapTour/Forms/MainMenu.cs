@@ -18,9 +18,7 @@ namespace NineTapTour.Forms
         public FrmMain currMainFrm { get; set; }
         public int regionID { get; set; }
 
-        /// <summary>
-        /// Opens the "Main Menu" form.
-        /// </summary>
+        #region MainMenu
         public MainMenu()
         {
             InitializeComponent();
@@ -32,69 +30,6 @@ namespace NineTapTour.Forms
                 nTemp.NineTapRegionName = "Local";
                 NineTapRegionDB.AddRegion(nTemp);
             }
-        }
-
-        /// <summary>
-        /// Closes the "Main Menu" form when the "Exit" button is clicked.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Exit_Click(object sender, EventArgs e)
-        {
-            this.MdiParent.Close();
-        }
-
-        /// <summary>
-        /// Opens FrmAbout.cs and highlights the corresponding tab on the menMain
-        /// menu strip on FrmMain.cs
-        /// Brings up a separate page for the 'About' information when clicked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnAbout_Click(object sender, EventArgs e)
-        {
-            ((FrmMain)MdiParent).RegionID = regionID; // Retrieving ID from menMain
-            ((FrmMain)MdiParent).MenuHighlight(btnAbout.Text); // Highlighting corresponding tab; "About"
-            ((FrmMain)MdiParent).AboutToolStripMenuItem_Click(sender, e); // Activate the click method for About
-            enableHomeNavigation();
-
-        }
-
-        /// <summary>
-        /// Brings up the "Member Data" form when the "Member Data" button is clicked.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnMemberData_Click(object sender, EventArgs e)
-        {
-            ((FrmMain)MdiParent).RegionID = regionID;
-            ((FrmMain)MdiParent).MenuHighlight(btnMemberData.Text); //"Member Info"
-            ((FrmMain)MdiParent).memberToolStripMenuItem_Click(sender, e);
-
-            enableHomeNavigation();
-
-        }
-
-        private void enableHomeNavigation()
-        {
-            if (!(FrmMain.ActiveForm is MainMenu))
-            {
-                ((FrmMain)MdiParent).Home.Enabled = true;
-            }
-        }
-
-        /// <summary>
-        /// Brings up the "Member Scores" form when the "Member Scores" button is clicked.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnMemberScores_Click(object sender, EventArgs e)
-        {
-            ((FrmMain)MdiParent).RegionID = regionID;
-            ((FrmMain)MdiParent).MenuHighlight(btnMemberScores.Text); // "Member Scores"
-            ((FrmMain)MdiParent).tournamentToolStripMenuItem_Click(sender, e);
-            enableHomeNavigation();
-
         }
 
         private void MainMenu_Paint(object sender, PaintEventArgs e)
@@ -109,6 +44,55 @@ namespace NineTapTour.Forms
             drawPoint.Y += 16;
             g.DrawString("DEVELOPMENT VERSION NOT FOR PRODUCTION", drawFont, drawBrush, drawPoint);
 #endif
+        }
+
+        private void MainMenu_Load(object sender, EventArgs e)
+        {
+            //set the global int region so it can be used to filter each region throughout the program
+            List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
+            cbxRegionSelect.DataSource = nList;
+            cbxRegionSelect.DisplayMember = nameof(NineTapRegion.NineTapRegionName);
+            this.regionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
+        }
+        #endregion
+
+        #region Buttons
+        private void Exit_Click(object sender, EventArgs e)
+        {
+            MdiParent.Close();
+        }
+
+        /// <summary>
+        /// Opens FrmAbout.cs and highlights the corresponding tab on the menMain
+        /// menu strip on FrmMain.cs
+        /// Brings up a separate page for the 'About' information when clicked
+        /// </summary>
+        private void btnAbout_Click(object sender, EventArgs e)
+        {
+            ((FrmMain)MdiParent).RegionID = regionID; // Retrieving ID from menMain
+            ((FrmMain)MdiParent).MenuHighlight(btnAbout.Text); // Highlighting corresponding tab; "About"
+            ((FrmMain)MdiParent).AboutToolStripMenuItem_Click(sender, e); // Activate the click method for About
+            enableHomeNavigation();
+
+        }
+
+        private void btnMemberData_Click(object sender, EventArgs e)
+        {
+            ((FrmMain)MdiParent).RegionID = regionID;
+            ((FrmMain)MdiParent).MenuHighlight(btnMemberData.Text); //"Member Info"
+            ((FrmMain)MdiParent).memberToolStripMenuItem_Click(sender, e);
+
+            enableHomeNavigation();
+
+        }
+
+        private void btnMemberScores_Click(object sender, EventArgs e)
+        {
+            ((FrmMain)MdiParent).RegionID = regionID;
+            ((FrmMain)MdiParent).MenuHighlight(btnMemberScores.Text); // "Member Scores"
+            ((FrmMain)MdiParent).tournamentToolStripMenuItem_Click(sender, e);
+            enableHomeNavigation();
+
         }
 
         // This is the code behind for the delete database button. Per Rob, we don't need this 
@@ -185,6 +169,15 @@ namespace NineTapTour.Forms
             }
         }
 
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            var region = new FrmAddRegion(regionID);
+            region.ShowDialog();
+            refreshRegionlist();
+        }
+        #endregion
+
+        #region CheckBoxes
         private void cbxRegionSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
             List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
@@ -201,14 +194,26 @@ namespace NineTapTour.Forms
 
             }
         }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Sets FrmMain MdiParent.Home to ture if the active form is FrmMain
+        /// </summary>
+        private void enableHomeNavigation()
+        {
+            if (!(FrmMain.ActiveForm is MainMenu))
+            {
+                ((FrmMain)MdiParent).Home.Enabled = true;
+            }
+        }
 
         /// <summary>
         /// Returns the currently selected RegionID or -1 if no region is selected
         /// </summary>
-        /// <returns></returns>
         public int getRegionID()
         {
-            if(cbxRegionSelect.SelectedIndex >= 0)
+            if (cbxRegionSelect.SelectedIndex >= 0)
             {
                 List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
                 return nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
@@ -216,27 +221,15 @@ namespace NineTapTour.Forms
             return -1;
         }
 
+        /// <summary>
+        /// Refreshes the Region list
+        /// </summary>
         public void refreshRegionlist()
         {
             List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
             cbxRegionSelect.DataSource = nList;
             cbxRegionSelect.DisplayMember = "NineTapRegionName";
         }
-
-        private void btnAdd_Click(object sender, EventArgs e)
-        {
-            var region = new FrmAddRegion(regionID);
-            region.ShowDialog();
-            refreshRegionlist();
-        }
-
-        private void MainMenu_Load(object sender, EventArgs e)
-        {
-            //set the global int region so it can be used to filter each region throughout the program
-            List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
-            cbxRegionSelect.DataSource = nList;
-            cbxRegionSelect.DisplayMember = nameof(NineTapRegion.NineTapRegionName);
-            this.regionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
-        }
+        #endregion
     }
 }
