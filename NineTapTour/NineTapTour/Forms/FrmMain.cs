@@ -58,7 +58,7 @@ namespace NineTapTour.Forms
             //on start up make sure regionID is set 
             var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
             OpenOrDisplayForm(ref mainMenu);
-            RegionID = mainMenu.getRegionID();
+            RegionID = mainMenu.GetRegionID();
             MainMenu = mainMenu;
 
             //sets the first item of the menu bar to the active item and highlights it.
@@ -194,7 +194,7 @@ namespace NineTapTour.Forms
         private void updateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             //update the regionID
-            RegionID = MainMenu.getRegionID();
+            RegionID = MainMenu.GetRegionID();
             var UpdatefrmActiveMem = new FrmUpdateActiveMem(RegionID);
             UpdatefrmActiveMem.Show();
         }

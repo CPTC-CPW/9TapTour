@@ -15,8 +15,8 @@ namespace NineTapTour.Forms
 {
     public partial class MainMenu : Form
     {
-        public FrmMain currMainFrm { get; set; }
-        public int regionID { get; set; }
+        public FrmMain CurrentMainFrm { get; set; }
+        public int RegionID { get; set; }
 
         #region MainMenu
         public MainMenu()
@@ -52,7 +52,7 @@ namespace NineTapTour.Forms
             List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
             cbxRegionSelect.DataSource = nList;
             cbxRegionSelect.DisplayMember = nameof(NineTapRegion.NineTapRegionName);
-            this.regionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
+            this.RegionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
         }
         #endregion
 
@@ -69,29 +69,29 @@ namespace NineTapTour.Forms
         /// </summary>
         private void btnAbout_Click(object sender, EventArgs e)
         {
-            ((FrmMain)MdiParent).RegionID = regionID; // Retrieving ID from menMain
+            ((FrmMain)MdiParent).RegionID = RegionID; // Retrieving ID from menMain
             ((FrmMain)MdiParent).MenuHighlight(btnAbout.Text); // Highlighting corresponding tab; "About"
             ((FrmMain)MdiParent).AboutToolStripMenuItem_Click(sender, e); // Activate the click method for About
-            enableHomeNavigation();
+            EnableHomeNavigation();
 
         }
 
         private void btnMemberData_Click(object sender, EventArgs e)
         {
-            ((FrmMain)MdiParent).RegionID = regionID;
+            ((FrmMain)MdiParent).RegionID = RegionID;
             ((FrmMain)MdiParent).MenuHighlight(btnMemberData.Text); //"Member Info"
             ((FrmMain)MdiParent).memberToolStripMenuItem_Click(sender, e);
 
-            enableHomeNavigation();
+            EnableHomeNavigation();
 
         }
 
         private void btnMemberScores_Click(object sender, EventArgs e)
         {
-            ((FrmMain)MdiParent).RegionID = regionID;
+            ((FrmMain)MdiParent).RegionID = RegionID;
             ((FrmMain)MdiParent).MenuHighlight(btnMemberScores.Text); // "Member Scores"
             ((FrmMain)MdiParent).tournamentToolStripMenuItem_Click(sender, e);
-            enableHomeNavigation();
+            EnableHomeNavigation();
 
         }
 
@@ -99,20 +99,20 @@ namespace NineTapTour.Forms
         // at this time. Keeping the code incase it's needed in the future.
         private void btnDropDataBase1_Click_1(object sender, EventArgs e)
         {
-            string name = NineTapRegionDB.GetRegionByID(regionID).NineTapRegionName;
+            string name = NineTapRegionDB.GetRegionByID(RegionID).NineTapRegionName;
             if (MessageBox.Show($"This button will delete all data stored in the {name} database, are you sure you want to clear  data?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 frmPleaseWait pl = new frmPleaseWait();
                 pl.Show();
                 //Delete Player History where HisID = selected regionID
-                List<PlayerHistory> phis = PlayerHistoryDB.GetAllPlayerHistory(regionID);
+                List<PlayerHistory> phis = PlayerHistoryDB.GetAllPlayerHistory(RegionID);
                 foreach (var p in phis)
                 {
                     PlayerHistoryDB.DeletePlayerHistory(p);
                 }
 
                 // Delete FinilizeTemp where FinalizeID = selected regionID
-                List<FinalizeTemp> fin = FinalizeTempDB.GetFinalizeListByRegionID(regionID);
+                List<FinalizeTemp> fin = FinalizeTempDB.GetFinalizeListByRegionID(RegionID);
 
                 foreach (var f in fin)
                 {
@@ -120,7 +120,7 @@ namespace NineTapTour.Forms
                 }
 
                 // Delete Participants where Participant RegionID = regionID
-                List<Participant> par = FinalizeTempDB.GetParticipantListByRegionID(regionID);
+                List<Participant> par = FinalizeTempDB.GetParticipantListByRegionID(RegionID);
 
                 foreach (var p in par)
                 {
@@ -128,7 +128,7 @@ namespace NineTapTour.Forms
                 }
 
                 // Delete Games where GameRegionID = regionID
-                List<Game> gam = FinalizeTempDB.GetGameListByRegionID(regionID);
+                List<Game> gam = FinalizeTempDB.GetGameListByRegionID(RegionID);
 
                 foreach (var g in gam)
                 {
@@ -136,7 +136,7 @@ namespace NineTapTour.Forms
                 }
 
                 //delete Tournaments where Tournament RegionID = Region ID
-                List<Tournament> tourn = TournamentDB.GetTournamentList(regionID);
+                List<Tournament> tourn = TournamentDB.GetTournamentList(RegionID);
 
                 foreach (var t in tourn)
                 {
@@ -144,7 +144,7 @@ namespace NineTapTour.Forms
                 }
 
                 //Delete from Member Table where Memmber RegionID is = selected region ID
-                List<Member> mem = MemberDB.GetMemberList(regionID);
+                List<Member> mem = MemberDB.GetMemberList(RegionID);
 
                 foreach (var m in mem)
                 {
@@ -152,7 +152,7 @@ namespace NineTapTour.Forms
                 }
 
                 //delete  the region itself
-                NineTapRegion ntr = NineTapRegionDB.GetRegionByID(regionID);
+                NineTapRegion ntr = NineTapRegionDB.GetRegionByID(RegionID);
                 NineTapRegionDB.DeleteRegion(ntr);
 
                 if (NineTapRegionDB.GetNumberOfRegions() == 0) // recreate the local region select again if it nothing exists here anymore
@@ -162,7 +162,7 @@ namespace NineTapTour.Forms
                     NineTapRegionDB.AddRegion(n);
                 }
 
-                refreshRegionlist();
+                RefreshRegionlist();
 
                 pl.Close();
                 MessageBox.Show(name + " Database was successfully cleared!");
@@ -171,9 +171,9 @@ namespace NineTapTour.Forms
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            var region = new FrmAddRegion(regionID);
+            var region = new FrmAddRegion(RegionID);
             region.ShowDialog();
-            refreshRegionlist();
+            RefreshRegionlist();
         }
         #endregion
 
@@ -181,13 +181,13 @@ namespace NineTapTour.Forms
         private void cbxRegionSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
             List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
-            this.regionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
+            this.RegionID = nList[cbxRegionSelect.SelectedIndex].NineTapRegionID;
 
             try
             {   // added a try catch block in order to catch the error that occurs at the very first launch of the program.
                 //(the MDi parent is not set yet, so it has to skip over this step on its very first launch or the program wont start)
-                ((FrmMain)MdiParent).RegionID = regionID;
-                ((FrmMain)MdiParent)._membersList = MemberDB.GetMemberList(regionID).OrderBy(m => m.Number);
+                ((FrmMain)MdiParent).RegionID = RegionID;
+                ((FrmMain)MdiParent)._membersList = MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
             }
             catch
             {
@@ -200,7 +200,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Sets FrmMain MdiParent.Home to ture if the active form is FrmMain
         /// </summary>
-        private void enableHomeNavigation()
+        private void EnableHomeNavigation()
         {
             if (!(FrmMain.ActiveForm is MainMenu))
             {
@@ -211,7 +211,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Returns the currently selected RegionID or -1 if no region is selected
         /// </summary>
-        public int getRegionID()
+        public int GetRegionID()
         {
             if (cbxRegionSelect.SelectedIndex >= 0)
             {
@@ -224,7 +224,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Refreshes the Region list
         /// </summary>
-        public void refreshRegionlist()
+        public void RefreshRegionlist()
         {
             List<NineTapRegion> nList = NineTapRegionDB.GetRegionList();
             cbxRegionSelect.DataSource = nList;
