@@ -139,7 +139,7 @@ namespace NineTapTour.Forms
         {
             FrmTourSearch getEdit = new FrmTourSearch(((FrmMain)MdiParent).RegionID);
             getEdit.ShowDialog();
-            tourToEdit = getEdit.getResult();
+            tourToEdit = getEdit.GetResult();
 
             if (tourToEdit != null)
             {

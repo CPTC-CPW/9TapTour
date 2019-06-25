@@ -189,17 +189,17 @@ namespace NineTapTour.Forms
         #region TextBoxs
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            decideCanClear();
+            DecideCanClear();
         }
 
         private void txtEvent_TextChanged(object sender, EventArgs e)
         {
-            decideCanClear();
+            DecideCanClear();
         }
 
         private void txtDate_TextChanged(object sender, EventArgs e)
         {
-            decideCanClear();
+            DecideCanClear();
         }
 
         #endregion
@@ -217,7 +217,7 @@ namespace NineTapTour.Forms
                 dtpFrom.Enabled = false;
                 dtpTo.Enabled = false;
             }
-            decideCanClear();
+            DecideCanClear();
         }
         #endregion
 
@@ -244,7 +244,7 @@ namespace NineTapTour.Forms
         /// Enables Search and Clear buttons if any textbox or checkbox has a value,
         /// Otherwise disables them
         /// </summary>
-        private void decideCanClear()
+        private void DecideCanClear()
         {
             if (string.IsNullOrWhiteSpace(txtSearch.Text.Trim()) && 
                 string.IsNullOrWhiteSpace(txtEvent.Text.Trim()) && 
@@ -266,7 +266,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// If you didn't pass a list, the result of your search will be set here.
         /// </summary>
-        public Tournament getResult()
+        public Tournament GetResult()
         {
             return singleTour;
         }
