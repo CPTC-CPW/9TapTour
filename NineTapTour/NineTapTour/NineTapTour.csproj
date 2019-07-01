@@ -133,6 +133,10 @@
     <Compile Include="Migrations\201905281651441_AddRegionForeignKey.Designer.cs">
       <DependentUpon>201905281651441_AddRegionForeignKey.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201907012236380_migrationtest.cs" />
+    <Compile Include="Migrations\201907012236380_migrationtest.Designer.cs">
+      <DependentUpon>201907012236380_migrationtest.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\ExcelMember.cs" />
     <Compile Include="Database\FormHelper.cs" />
     <Compile Include="Database\NineTapRegionDB.cs" />
@@ -367,6 +371,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201905281651441_AddRegionForeignKey.resx">
       <DependentUpon>201905281651441_AddRegionForeignKey.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907012236380_migrationtest.resx">
+      <DependentUpon>201907012236380_migrationtest.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
