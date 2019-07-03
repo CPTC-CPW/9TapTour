@@ -54,16 +54,6 @@ namespace NineTapTour.Forms
 
             RegionID = ((FrmMain)MdiParent).RegionID;
             List<Member> ListOfMembers = MemberDB.GetMemberList(RegionID);
-            toolTip1.IsBalloon = true;
-            txtDateJoined.MaskInputRejected += new MaskInputRejectedEventHandler(DateMaskTextBoxInput_MaskInputRejected);
-            txtDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDOB_KeyDown);
-            txtRejoinDate.MaskInputRejected += new MaskInputRejectedEventHandler(DateMaskTextBoxInput_MaskInputRejected);
-            txtRejoinDate.KeyDown += new KeyEventHandler(mtxtBoxRejoinDate_KeyDown);
-            txtLastBowled.MaskInputRejected += new MaskInputRejectedEventHandler(DateMaskTextBoxInput_MaskInputRejected);
-            txtLastBowled.KeyDown += new KeyEventHandler(mtxtBoxLastBowled_KeyDown);
-            txtLastPayment.MaskInputRejected += new MaskInputRejectedEventHandler(DateMaskTextBoxInput_MaskInputRejected);
-            txtLastPayment.KeyDown += new KeyEventHandler(MtxtBoxLastPayment_KeyDown);
-            txtDOB.MaskInputRejected += new MaskInputRejectedEventHandler(DateMaskTextBoxInput_MaskInputRejected);
             UpdateMemberInfo();
         }
         
@@ -190,8 +180,6 @@ namespace NineTapTour.Forms
                 txtFirstName.Text = "";
                 txtMiddleInitial.Text = "";
                 txtDOB.Text = "";
-                txtDOB.KeyDown += new KeyEventHandler(mtxtBoxDOB_KeyDown);
-                toolTip1.IsBalloon = true;
                 txtSSN.Text = "";
 
                 // Postal Address
@@ -213,8 +201,6 @@ namespace NineTapTour.Forms
                 // Misc. Info
                 txtDateJoined.Text = "";
                 txtDateJoined.Text = "";
-                txtDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDateJoined_KeyDown);
-                toolTip1.IsBalloon = true;
                 txtMoneyEarned.Text = "";
                 txtNotes.Text = "";
                 txtReferrals.Text = "";        
@@ -1500,55 +1486,7 @@ namespace NineTapTour.Forms
             txtSSN.PasswordChar = chbSocial.Checked ? '\0' : '*';
         }
 
-        private void mtxtBoxDOB_KeyDown(object sender, KeyEventArgs e)
-        {
-            toolTip1.Hide(txtDOB);
-        }
-
-        private void mtxtBoxDateJoined_KeyDown(object sender, KeyEventArgs e)
-        {
-            toolTip1.Hide(txtDateJoined);
-        }
-
-        private void mtxtBoxRejoinDate_KeyDown(object sender, KeyEventArgs e)
-        {
-            toolTip1.Hide(txtDateJoined);
-        }
-
-        private void mtxtBoxLastBowled_KeyDown(object sender, KeyEventArgs e)
-        {
-            toolTip1.Hide(txtLastBowled);
-        }
-
-        private void MtxtBoxLastPayment_KeyDown(object sender, KeyEventArgs e)
-        {
-            toolTip1.Hide(txtLastPayment);
-        }
-
-        private void DateMaskTextBoxInput_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
-        {
-            MaskedTextBox box = sender as MaskedTextBox;
-
-            if (box.MaskFull)
-            {
-                toolTip1.ToolTipTitle = "Input Rejected - Too Much Data";
-                toolTip1.Show("You cannot enter any more data into the date field. " +
-                    "Delete some characters in order to insert more data.", box, 0, -20, 5000);
-            }
-            else if (e.Position == box.Mask.Length)
-            {
-                toolTip1.ToolTipTitle = "Input Rejected - End of Field";
-                toolTip1.Show("You cannot add extra characters to the end " +
-                    "of this date field.", box, 0, -20, 5000);
-            }
-            else
-            {
-                toolTip1.ToolTipTitle = "Input Rejected";
-                toolTip1.Show("You can only add numeric characters (0-9) " +
-                    "into this date field.", box, 0, -20, 5000);
-            }
-        }
-
+        
         /// <summary>
         /// The resize event for the form
         /// </summary>
