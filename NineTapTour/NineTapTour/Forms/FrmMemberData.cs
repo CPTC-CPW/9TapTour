@@ -17,16 +17,15 @@ namespace NineTapTour.Forms
     public partial class FrmMemberData : Form
     {
         int _memberId;
+        public int MemberNum {
+            set { _memberNum = value; }
+        }
         Member currentMem;
         private int _memberNum;
         int RegionID;
         int AllGames;
 
-        public int MemberNum
-        {
-            set { _memberNum = value; }
-        }
-        
+        #region FrmMemberData
         /// <summary>
         /// Opens the "Member Data" Form.
         /// </summary>
@@ -66,587 +65,52 @@ namespace NineTapTour.Forms
             txtDOB.MaskInputRejected += new MaskInputRejectedEventHandler(DateMaskTextBoxInput_MaskInputRejected);
             UpdateMemberInfo();
         }
-        
+
         /// <summary>
-        /// finds all Controls and change BackColor of each control color when the control is on 
-        /// focus and checks if that control has a child and changes the child contol color onFocus
-        /// and changes back to origin back color when LostFocus
-        /// </summary>
-        /// <param name="ctrl"></param>
-        private void ChangeBackColorOnFocus(Control ctrl)
+        /// This action event assigns current form as currFrmMemberData in
+        /// FrmMains' global Variable property when leaving form. This allows 
+        /// the program to later check whether FrmMemberData has 
+        /// been changed without saving.
+        /// /// </summary>
+        /// /// <param name="sender"></param>
+        /// /// <param name="e"></param>
+        private void FrmMemberData_Leave(object sender, EventArgs e)
         {
-            ctrl.GotFocus += Ctrl_GotFocus;
-            ctrl.LostFocus += Ctrl_LostFocus;
-            if (ctrl.HasChildren)
+            ((FrmMain)MdiParent).currFrmMemberData = this;
+        }
+
+        private void updateOnload(List<Member> temp)
+        {
+            foreach (var m in temp)
             {
-                foreach (Control childCtrl in ctrl.Controls)
-                {
-                    ChangeBackColorOnFocus(childCtrl);
-                }
+                MemberDB.AddOrUpdateMember(m);
             }
         }
 
         /// <summary>
-        /// The controller back color is set back to origin color set in the properties
-        /// when LostFocus method is called
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Ctrl_LostFocus(object sender, EventArgs e)
-        {
-            var ctrl = sender as Control;
-            if (ctrl.Tag is Color)
-                ctrl.BackColor = (Color)ctrl.Tag;
-        }
-
-        /// <summary>
-        /// Method to change controller BackColor when GotFocus method is called
+        /// The resize event for the form
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Ctrl_GotFocus(object sender, EventArgs e)
+        private void FrmMemberData_Resize(object sender, EventArgs e)
         {
-            var ctrl = sender as Control;
-            ctrl.Tag = ctrl.BackColor;
-            ctrl.BackColor = Color.Yellow;
+            FormHelper.SetFlowDirection(this, flpMemberData, 1080, 730);
         }
+        #endregion
 
-        /// <summary>
-        /// Finds "Member Number" in the database and populates the "Member Data" form.
-        /// If that "Member Number" is not assigned then display error box.
-        /// </summary>
-        /// <param name="searchMem"></param>
-        public void UpdateMemberInfo(Member searchMem = null)
-        {
-            RegionID = ((FrmMain)MdiParent).RegionID;  
-            
-            //set all member info group control background colors
-            foreach(Control c in grpMemberInfo.Controls)
-            {
-                c.BackColor = Color.White;
-            }
-
-			foreach(Control d in panel5.Controls)
-			{
-				d.BackColor = Color.LightGray;
-			}
-
-            int memberCount = MemberDB.GetMemberListCount(RegionID);
-
-            // set txtMemberNumber.Text back to one if there is no one in the the 
-            // current selected region added yet
-            if (memberCount == 0)
-            {
-                txtMemberNumber.Text = "1";
-            }
-            // if last region selected had more members then current selected 
-            // region, set txtmemberNumber.Text to its highest member count for the selcted region
-            else if(Convert.ToInt16(txtMemberNumber.Text) > memberCount)
-            {
-                txtMemberNumber.Text = memberCount.ToString();
-            }
-
-            _memberNum = Convert.ToInt32(txtMemberNumber.Text);
-
-            if (searchMem == null)
-            {
-                currentMem = MemberDB.GetMember(_memberNum,RegionID);
-                List<PlayerHistory> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
-                if (last5.Count >= 1)
-                {   //whatever the bowler director decides his average to be is right. 
-                    // dont pull from the player hstory page
-                    txtAverage.Text = currentMem.StartAvg.ToString(); 
-                    currentMem.StartAvg = Convert.ToInt16(txtAverage.Text);
-                    txt30GameAvg.Text = Convert.ToInt16(last5[0].trueAVG).ToString();
-                    currentMem.Average = Convert.ToInt32(last5[0].trueAVG);
-                    txtBonus.Text = currentMem.Bonus.ToString();
-                }
-                else
-                {
-                    txtAverage.Text = currentMem.StartAvg.ToString();
-                    txt30GameAvg.Text = 0.ToString();
-                    txtBonus.Text = currentMem.Bonus.ToString();
-                }
-            }
-            else
-            {
-                currentMem = searchMem;
-                _memberNum = currentMem.Number;
-            }
-
-            if (currentMem.Id == 0)
-            {
-                currentMem = new Member
-                {
-                    Number = _memberNum
-                };
-                
-                txtMemberNumber.Text = _memberNum.ToString();
-                _memberId = -1;
-
-                // Personal Info
-                txtMemberNumber.Text = currentMem.Number.ToString();
-                txtLastName.Text = "";
-                txtFirstName.Text = "";
-                txtMiddleInitial.Text = "";
-                txtDOB.Text = "";
-                txtDOB.KeyDown += new KeyEventHandler(mtxtBoxDOB_KeyDown);
-                toolTip1.IsBalloon = true;
-                txtSSN.Text = "";
-
-                // Postal Address
-                txtAddress.Text = "";
-                txtCity.Text = "";
-                txtState.Text = "";
-                txtZip.Text = "";
-
-                // Contact Info
-                txtEmail.Text = "";
-                txtPhone.Text = "";
-                txtPhone2.Text = "";
-
-                // Score Info
-                txtAverage.Text = "";
-                txtHandicap.Text = "";
-                txtBonus.Text = "";
-
-                // Misc. Info
-                txtDateJoined.Text = "";
-                txtDateJoined.Text = "";
-                txtDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDateJoined_KeyDown);
-                toolTip1.IsBalloon = true;
-                txtMoneyEarned.Text = "";
-                txtNotes.Text = "";
-                txtReferrals.Text = "";        
-                
-                foreach (var check in grpStatus.Controls.OfType<RadioButton>())
-                {
-                    check.Checked = false;
-                }
-
-                foreach (var check in grpGender.Controls.OfType<RadioButton>())
-                {
-                    check.Checked = false;
-                }
-
-                chbLifetime.Checked = false;
-                txtLastPayment.Text = "";
-            }
-            else
-            {
-                var db = new NineTapDb();
-
-                // Personal Info
-                _memberId = currentMem.Id;
-                txtMemberNumber.Text = currentMem.Number.ToString();
-                txtLastName.Text = currentMem.LastName;
-                txtFirstName.Text = currentMem.FirstName;
-                txtMiddleInitial.Text = currentMem.MiddleInitial;
-
-                if(currentMem.DateOfBirth != null)
-                {
-                    txtDOB.Text = currentMem.DateOfBirth.Value.ToString("MM/dd/yyyy");
-                }
-
-                txtSSN.Text = currentMem.SSN;
-
-                // Postal Address
-                txtAddress.Text = currentMem.Street;
-                txtCity.Text = currentMem.City;
-                txtState.Text = currentMem.State;
-                txtZip.Text = currentMem.PostalCode;
-
-                // Contact Info
-                txtEmail.Text = currentMem.Email;
-                txtPhone.Text = currentMem.PrimaryPhone;
-                txtPhone2.Text = currentMem.SecondaryPhone;
-
-                // Score Info         
-                /********************************************************************************
-                updates the form's handicap even when the finalize tournament button is clicked
-                -also updates the currentMem's handicap, so when the tournnament gets it, it is the right handicap
-                *********************************************************************************/
-                try
-                {
-                    currentMem.Handicap = Calculations.Calculations.CalculateHandicapPins((currentMem.StartAvg.Value));
-                }
-                catch
-                {
-                    currentMem.Handicap = Calculations.Calculations.CalculateHandicapPins((0));
-                }
-
-                txtHandicap.Text = currentMem.Handicap.ToString(); 
-
-                /********************************************************************************/
-                txtBonus.Text = currentMem.Bonus.ToString();
-
-                // Misc. Info
-                //TODO: Pull datetime from database correctly 
-                if (currentMem.DateOfBirth.HasValue)
-                {
-                    txtDOB.Text = currentMem.DateOfBirth.Value.ToString("MM/dd/yyyy");
-                }
-                else
-                {
-                    txtDOB.Text = "";
-                }
-
-                if (currentMem.JoinDate.HasValue)
-                {
-                    txtDateJoined.Text = currentMem.JoinDate.Value.ToString("MM/dd/yyyy");
-                }
-                else
-                {
-                    txtDateJoined.Text = "";
-                }
-
-                if (currentMem.RejoinDate.HasValue)
-                {
-                    txtRejoinDate.Text = currentMem.RejoinDate.Value.ToString("MM/dd/yyyy");
-                }
-                else
-                {
-                    txtRejoinDate.Text = "";
-                }
-
-                if (currentMem.LastBowled.HasValue)
-                {
-                    txtLastBowled.Text = currentMem.LastBowled.Value.ToString("MM/dd/yyyy");
-                }
-                else
-                {
-                    txtLastBowled.Text = "";
-                }
-
-                txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
-                txtNotes.Text = currentMem.Notes;
-
-                if (currentMem.Referrals == null)
-                {
-                    txtReferrals.Text = "0";
-                }
-                else
-                {
-                    txtReferrals.Text = currentMem.Referrals.ToString();
-                }
-
-                chbSenior.Checked = currentMem.IsSenior;
-
-                if (currentMem.IsActive)
-                {
-                    rdoActive.Checked = true;
-                }
-                else
-                {
-                    rdoInActive.Checked = true;
-                }
-
-                if (currentMem.Gender.ToString() == MemberGenders.Female.ToString())
-                {
-                    rdoFemale.Checked = true;
-                }
-                else
-                {
-                    rdoMale.Checked = true;
-                }
-
-                chbLifetime.Checked = currentMem.IsLifetimeMember;
-
-                if (currentMem.LastPayment.HasValue)
-                {
-                    txtLastPayment.Text = 
-                        currentMem.LastPayment.Value.AddYears(1).ToString("MM/dd/yyyy");
-
-
-                    checkPayment();
-                }
-                else
-                {
-                    txtLastPayment.Text = "";
-                    lblPaymentInfo.Visible = false;
-                }                
-
-                currentMem.MoneyEarned = 
-                    PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number, RegionID);
-
-                txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
-            }
-        }           
-
-        /// <summary>
-		/// This method creates validation for the input boxes on the Member Info page
-        /// by highlighting required fields.
-		/// </summary>
-		/// <returns></returns>
-        public bool IsValidTextboxes()
-        {
-			bool valid = true;
-
-            // validate average textbox for being between 1-300
-            if (!FormHelper.IsAverageValid(txtAverage.Text))
-            {
-                lblAverageValidation.Visible = true;
-                txtAverage.Clear();
-                txtAverage.BackColor = Color.LightPink;
-                valid = false;
-            }
-
-            // validate lastname textbox
-            if (String.IsNullOrWhiteSpace(txtLastName.Text))
-            {
-                lblLastNameValidation.Visible = true;
-                txtLastName.Clear();
-                txtLastName.BackColor = Color.LightPink;
-                valid = false;
-            }
-
-            // validate firstname textbox
-            if (String.IsNullOrWhiteSpace(txtFirstName.Text))
-            {
-                lblFirstNameValidation.Visible = true;
-                txtFirstName.Clear();
-                txtFirstName.BackColor = Color.LightPink;
-                valid = false;
-            }
-
-			// validate dateJoined textbox
-            if (!FormHelper.IsDateTimeValid(txtDateJoined.Text))
-            {
-                lblDateJoinedValidation.Visible = true;
-                txtDateJoined.BackColor = Color.LightPink;
-                valid = false;
-            }
-            return valid;
-        }
-
+        #region Buttons
         /// <summary>
         /// Saves the information entered in the "Member Data" form.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnSave_Click(object sender, EventArgs e)
         {
             SaveMemberData();
-        }
-
-        public void SaveMemberData()
-        {      
-            // checks validation then runs the rest of the 
-            // btnSave_Click and adds a member into the database.
-            if (IsValidTextboxes())
-            {
-                //checks to see if MemberID exists 
-                int memId;
-                Member temp = new Member();
-                temp.Number = Convert.ToInt32(txtMemberNumber.Text);
-                temp.IsActive = rdoActive.Checked;
-
-                if (!String.IsNullOrWhiteSpace(txtDateJoined.Text))
-                {
-                    DateTime date;
-                    if(DateTime.TryParse(txtDateJoined.Text, out date))
-                    {
-                        temp.JoinDate = date;
-                    }
-                }
-                else
-                {
-                    temp.JoinDate = null;
-                }
-
-                // Personal Info
-                temp.LastName = txtLastName.Text;
-                temp.FirstName = txtFirstName.Text;
-                temp.MiddleInitial = txtMiddleInitial.Text;
-
-                if (!String.IsNullOrWhiteSpace(txtDOB.Text))
-                {
-                    DateTime date;
-                    if (DateTime.TryParse(txtDOB.Text, out date))
-                    {
-                        temp.DateOfBirth = date;
-                    }
-                }
-                else
-                {
-                    temp.DateOfBirth = null;
-                }
-
-                DateTime senior = DateTime.Now.AddYears(-50);
-
-                if (senior >= temp.DateOfBirth)
-                {
-                    temp.IsSenior = true;
-                    chbSenior.Checked = true;
-                }
-                else
-                {
-                    temp.IsSenior = false;
-                    chbSenior.Checked = false;
-                }
-
-                temp.SSN = txtSSN.Text;
-                temp.IsSenior = chbSenior.Checked;
-                temp.Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male;
-
-                // Postal Address
-                temp.Street = txtAddress.Text;
-                temp.City = txtCity.Text;
-                temp.State = txtState.Text;
-                temp.PostalCode = txtZip.Text;
-
-                // Contact Info
-                temp.Email = txtEmail.Text;
-                temp.PrimaryPhone = txtPhone.Text;
-                temp.SecondaryPhone = txtPhone2.Text;
-
-                // Score Info
-                /****************************************************************************
-                / This used to say Average = 0; which will make the average in the database 0.
-                / This code block assigns txt30GameAvg.Text to temp.Average.
-                *****************************************************************************/
-                if (Int32.TryParse(txt30GameAvg.Text, out int thirtyGameAverage))
-                {
-                    temp.Average = thirtyGameAverage;
-                }
-                else
-                {
-                    temp.Average = 0;
-                }
-
-                /****************************************************************************/
-                temp.Handicap = 
-                    Calculations.Calculations.CalculateHandicapPins(temp.Average.Value);
-                
-                // Misc. Info
-                if (!String.IsNullOrWhiteSpace(txtRejoinDate.Text))
-                {
-                    DateTime date;
-                    if (DateTime.TryParse(txtRejoinDate.Text, out date))
-                    {
-                        temp.RejoinDate = date;
-                    }
-                }
-                else
-                {
-                    temp.RejoinDate = null;
-                }
-
-                if (!String.IsNullOrWhiteSpace(txtLastBowled.Text))
-                {
-                    DateTime date;
-                    if (DateTime.TryParse(txtLastBowled.Text, out date))
-                    {
-                        temp.LastBowled = date;
-                    }
-                }
-                else
-                {
-                    temp.LastBowled = null;
-                }
-
-                temp.MoneyEarned = currentMem.MoneyEarned;
-                temp.Notes = txtNotes.Text;
-
-                temp.Referrals = (txtReferrals.Text) == string.Empty ? 0 : 
-                    Convert.ToInt16(txtReferrals.Text);
-
-                if (!String.IsNullOrWhiteSpace(txtLastPayment.Text))
-                {
-                    DateTime date;
-                    if (DateTime.TryParse(txtLastPayment.Text, out date))
-                    {
-                        temp.LastPayment = date;
-                    }
-                }
-                else
-                {
-                    temp.LastPayment = null;
-                }
-
-                temp.IsLifetimeMember = chbLifetime.Checked;
-                temp.NineTapRegionID = RegionID;
-
-                // check to see if memberId exists before putting it in 
-                // current selected regions database
-                if(MemberDB.MemberExists(temp))
-                {
-                    memId = MemberDB.GetMemberIdByNumber(temp.Number, RegionID, new NineTapDb());
-                }
-                else
-                {
-                    memId = MemberDB.GetMemberListCount(RegionID) + 1;
-                }
-
-                temp.Id = memId;
-
-                List<PlayerHistory> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
-                if (last5.Count >= 1)
-                {   // sets the average to that of their last adjusted average
-                    if (Convert.ToInt32(txtAverage.Text) == last5[0].AVG)
-                    {
-                        txtAverage.Text = last5[0].AVG.ToString();
-                        temp.StartAvg = last5[0].AVG;
-
-                        txt30GameAvg.Text = last5[0].trueAVG.ToString();
-                        temp.Average = Convert.ToInt16(last5[0].trueAVG);
-
-                        temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : 
-                            Convert.ToInt16(txtBonus.Text);
-                    }
-                    else
-                    {   // catches if director wants to change their average 
-                        // manually regardless of there player history
-                        temp.StartAvg = Convert.ToInt32(txtAverage.Text);
-                        txt30GameAvg.Text = last5[0].trueAVG.ToString();
-                        temp.Average = Convert.ToInt16(last5[0].trueAVG);
-                        temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : 
-                            Convert.ToInt16(txtBonus.Text);
-                    }
-                }
-                else if (txtAverage.Text == "")
-                {
-                    txtAverage.Text = 0.ToString();
-                    txt30GameAvg.Text = 0.ToString();
-                    temp.Average = 0;
-                    temp.StartAvg = 0;
-                    temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : 
-                        Convert.ToInt16(txtBonus.Text);
-                }
-                else
-                {
-                    temp.StartAvg = Convert.ToInt16(txtAverage.Text);
-                    temp.Average = 0;
-                    txtAverage.Text = temp.StartAvg.ToString();
-                    txt30GameAvg.Text = 0.ToString();
-                    temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : 
-                        Convert.ToInt16(txtBonus.Text);
-                }
-
-                // Adds Member to Database
-                try
-                {
-                    MemberDB.AddOrUpdateMember(temp);
-#if DEBUG
-                    MessageBox.Show("Member saved");
-#endif
-                    ((FrmMain)MdiParent)._membersList = 
-                        MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
-                    UpdateMemberInfo();
-                }
-                catch (MemberTableException ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
         }
 
         /// <summary>
         /// Displays the previous "Member Number"'s information when 
         /// the left arrow button is clicked.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnArrowLeft_Click(object sender, EventArgs e)
         {
             //cursor begins when arrow is clicked
@@ -672,8 +136,6 @@ namespace NineTapTour.Forms
         /// Displays the next "Member Number"'s information when the right 
         /// arrow button is clicked.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
             //turns on a loading cursor while new bowler is loaded.
@@ -700,8 +162,6 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Adds a new "Member Number".
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnNew_Click(object sender, EventArgs e)
         {
             SaveMemberData();
@@ -745,8 +205,6 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Brings up the first "Member Number".
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnFirstRecord_Click(object sender, EventArgs e)
         {
             try
@@ -763,28 +221,11 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Brings up the last "Member Number".
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
             txtMemberNumber.Text = MemberDB.GetMemberListCount(RegionID).ToString();
             UpdateMemberInfo();
         }
-        
-        /// <summary>
-        /// Turns textbox pink when text is erased
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void InputRequired(object sender, EventArgs e)
-        {
-            var textBox = sender as TextBox;
-            if (textBox != null)
-            {
-                textBox.BackColor = textBox.Text == string.Empty ? Color.LightPink : Color.White;
-            }
-        }
-            
 
         private void btnMemberSearch_Click(object sender, EventArgs e)
         {
@@ -802,7 +243,7 @@ namespace NineTapTour.Forms
         // top of thew orginal data on the form finalize page
         private void btnStats_Click(object sender, EventArgs e)
         {
-            FrmStats p = new FrmStats(currentMem.Number, currentMem.FirstName + 
+            FrmStats p = new FrmStats(currentMem.Number, currentMem.FirstName +
                 currentMem.LastName + currentMem.MiddleInitial, currentMem, RegionID);
             p.ShowDialog();
         }
@@ -829,17 +270,96 @@ namespace NineTapTour.Forms
             }
         }
 
-        public void singlePrint(object sender, PrintPageEventArgs e) 
+        private void btnRecapByDate_Click(object sender, EventArgs e)
         {
-            NineTapTour.Database.Print.SinglePrint(
-                new MemberPrintObj(Convert.ToInt32(txtHandicap.Text), 
-                    Convert.ToInt32(txtMemberNumber.Text), 
-                    txtCity.Text,
-                    txtFirstName.Text, 
-                    txtLastName.Text, 
-                    txtAverage.Text, 
-                    Convert.ToInt32(txtBonus.Text)), 
-                    e);
+            new FrmPrintByDate().ShowDialog();
+        }
+
+        private void btnAllRecaps_Click(object sender, EventArgs e)
+        {
+            Print.printAllMembers();
+        }
+
+        private void btnImportData_Click(object sender, EventArgs e)
+        {
+            List<ExcelRow> CurrentExcelData = new List<ExcelRow>();
+            OpenFileDialog ofdOpen = new OpenFileDialog();
+            ofdOpen.Filter = "Excel Files (*.xls)|*.xls";
+
+            if (ofdOpen.ShowDialog() == DialogResult.OK)
+            {
+                List<ExcelRow> rows = new List<ExcelRow>();
+
+                List<PlayerHistory> AlreadyImportedPH =
+                    PlayerHistoryDB.GetMemberPlayerHistory(currentMem.Number, RegionID);
+
+                bool wait = true;
+                string fileName = ofdOpen.FileName;
+
+                while (wait == true)
+                {
+                    frmPleaseWait please = new frmPleaseWait();
+                    please.Show();
+                    AllGames = PlayerHistoryDB.GetNumberOfAllGames();
+
+                    if (AlreadyImportedPH.Count > 0)
+                    {
+                        for (int delete = 0; delete < AlreadyImportedPH.Count; delete++)
+                        {
+                            Game game = GameDB.GetGame(AlreadyImportedPH[delete].GameID);
+                            PlayerHistoryDB.DeleteGame(game);
+                            PlayerHistoryDB.DeletePlayerHistory(AlreadyImportedPH[delete]);
+                        }
+                    }
+                    rows = ProcessExcelFile(fileName);
+                    wait = false;
+                    please.Close();
+                }
+                foreach (var r in rows)
+                {
+                    CurrentExcelData.Add(r);
+                }
+
+                List<PlayerHistory> reset = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
+                currentMem.StartAvg = reset[0].AVG;
+                currentMem.Average = Convert.ToInt32(reset[0].trueAVG);
+                currentMem.Handicap = Calculations.Calculations
+                    .CalculateHandicapPins(Convert.ToInt32(currentMem.StartAvg));
+
+                currentMem.Bonus = reset[0].Bonus;
+                txtAverage.Text = currentMem.StartAvg.ToString();
+                txt30GameAvg.Text = currentMem.Average.ToString();
+                txtHandicap.Text = currentMem.Handicap.ToString();
+                txtBonus.Text = currentMem.Bonus.ToString();
+                decimal moneySum = 0;
+                var db = new NineTapDb();
+
+                var result = (from p in db.PlayerHistory
+                              where p.MemberNumber == currentMem.Number && p.regionID == RegionID
+                              orderby p.TournamentDate descending
+                              select new
+                              {
+                                  p.MoneyWon
+                              }).ToArray();
+
+                foreach (var v in result)
+                {
+                    moneySum += v.MoneyWon;
+                }
+
+                currentMem.MoneyEarned += moneySum;
+
+                txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
+
+                MemberDB.AddOrUpdateMember(currentMem);
+            }
+        }
+        #endregion
+
+        #region CheckBoxs
+        private void chbSocial_CheckedChanged(object sender, EventArgs e)
+        {
+            txtSSN.PasswordChar = chbSocial.Checked ? '\0' : '*';
         }
 
         private void chbLifetime_CheckedChanged(object sender, EventArgs e)
@@ -855,13 +375,157 @@ namespace NineTapTour.Forms
                 checkPayment();
             }
         }
+        #endregion
 
-        private void datePaid_ValueChanged(object sender, EventArgs e)
+        #region TextBoxs
+        private void mtxtBoxDOB_KeyDown(object sender, KeyEventArgs e)
         {
-            txtLastPayment.Text = "";
-            checkPayment();
+            toolTip1.Hide(txtDOB);
         }
 
+        private void mtxtBoxDateJoined_KeyDown(object sender, KeyEventArgs e)
+        {
+            toolTip1.Hide(txtDateJoined);
+        }
+
+        private void mtxtBoxRejoinDate_KeyDown(object sender, KeyEventArgs e)
+        {
+            toolTip1.Hide(txtDateJoined);
+        }
+
+        private void mtxtBoxLastBowled_KeyDown(object sender, KeyEventArgs e)
+        {
+            toolTip1.Hide(txtLastBowled);
+        }
+
+        private void MtxtBoxLastPayment_KeyDown(object sender, KeyEventArgs e)
+        {
+            toolTip1.Hide(txtLastPayment);
+        }
+
+        private void mtxtBox_Click(object sender, EventArgs e)
+        {
+            FormHelper.GoToFirstIndexInTextboxIfEmpty(sender as TextBoxBase);
+        }
+        #endregion
+
+        #region Controller
+        /// <summary>
+        /// The controller back color is set back to origin color set in the properties
+        /// when LostFocus method is called
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Ctrl_LostFocus(object sender, EventArgs e)
+        {
+            var ctrl = sender as Control;
+            if (ctrl.Tag is Color)
+                ctrl.BackColor = (Color)ctrl.Tag;
+        }
+
+        /// <summary>
+        /// finds all Controls and change BackColor of each control color when the control is on 
+        /// focus and checks if that control has a child and changes the child contol color onFocus
+        /// and changes back to origin back color when LostFocus
+        /// </summary>
+        /// <param name="ctrl"></param>
+        private void ChangeBackColorOnFocus(Control ctrl)
+        {
+            ctrl.GotFocus += Ctrl_GotFocus;
+            ctrl.LostFocus += Ctrl_LostFocus;
+            if (ctrl.HasChildren)
+            {
+                foreach (Control childCtrl in ctrl.Controls)
+                {
+                    ChangeBackColorOnFocus(childCtrl);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Method to change controller BackColor when GotFocus method is called
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Ctrl_GotFocus(object sender, EventArgs e)
+        {
+            var ctrl = sender as Control;
+            ctrl.Tag = ctrl.BackColor;
+            ctrl.BackColor = Color.Yellow;
+        }
+        #endregion
+
+        #region Database (this does not belong here)
+        public double LeagueAverage(Member mem)
+        {
+            double sum = 0;
+            double average = 0;
+            var db = new NineTapDb();
+
+            var temp = (
+                        from p in db.Participants
+                        join m in db.Members on p.Member.Id equals m.Id
+                        join g in db.Games on p.Game.Id equals g.Id
+                        join t in db.Tournaments on p.Tournament.Id equals t.Id
+                        where mem.Id == m.Id
+                        orderby t.Date descending
+                        select new
+                        {
+                            t.Date,
+                            g.Game1,
+                            g.Game2,
+                            g.Game3,
+                            g.Game4,
+                            Average = (g.Game1 + g.Game2 + g.Game3 + g.Game4) / 4
+                        }).Take(30).ToList();
+
+            if (temp.Count > 0)
+            {
+                foreach (var item in temp)
+                {
+                    sum += Convert.ToDouble(item.Average);
+                }
+                return (average = sum / temp.Count());
+            }
+            return 0;
+        }
+
+        public double LeagueAvgFromPlayerHistory(Member mem)
+        {
+            double sum = 0;
+            double avg = 0;
+            var db = new NineTapDb();
+
+            var temp = (from p in db.PlayerHistory
+                        where p.MemberNumber == mem.Number
+                        orderby p.TournamentDate descending, p.hisID descending
+                        select new
+                        {
+                            p.TournamentDate,
+                            p.Game1,
+                            p.Game2,
+                            p.Game3,
+                            p.Game4,
+                            p.AverageForGame,
+                            p.trueAVG,
+                        }).Take(30).ToList();
+
+            if (temp.Count > 0)
+            {
+                foreach (var item in temp)
+                {
+                    sum += Convert.ToDouble(item.AverageForGame);
+                }
+                return (avg = sum / temp.Count());
+            }
+            return 0;
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Checks to see if lblPaymentInfo should be visable or not
+        /// </summary>
         private void checkPayment()
         {
             /********************************************************************************
@@ -869,21 +533,12 @@ namespace NineTapTour.Forms
             the lblPaymentInfo will not be visible even if their last payment was due before
             *********************************************************************************/
             lblPaymentInfo.Visible = true;
-            if (chbLifetime.Checked || (DateTime.TryParse(txtLastPayment.Text, 
-                out DateTime lastPayment) && lastPayment >= DateTime.Now.AddYears(-1)))
+            if (chbLifetime.Checked || 
+                (DateTime.TryParse(txtLastPayment.Text, out DateTime lastPayment) && 
+                lastPayment >= DateTime.Now.AddYears(-1)))
             {
                 lblPaymentInfo.Visible = false;
             }
-        }
-        
-        private void btnRecapByDate_Click(object sender, EventArgs e)
-        {
-            new FrmPrintByDate().ShowDialog();
-        }
-
-        private void btnAllRecaps_Click(object sender, EventArgs e)
-        {
-            Print.printAllMembers();
         }
 
         //private void btnLabels_Click(object sender, EventArgs e)
@@ -891,27 +546,6 @@ namespace NineTapTour.Forms
         //    FrmLabelPrint labels = new FrmLabelPrint(RegionID);
         //    labels.ShowDialog();
         //}
-        
-        /// <summary>
-        /// This action event assigns current form as currFrmMemberData in
-        /// FrmMains' global Variable property when leaving form. This allows 
-        /// the program to later check whether FrmMemberData has 
-        /// been changed without saving.
-        /// /// </summary>
-        /// /// <param name="sender"></param>
-        /// /// <param name="e"></param>
-        private void FrmMemberData_Leave(object sender, EventArgs e)
-        {
-            ((FrmMain)MdiParent).currFrmMemberData = this;
-        }
-
-        private void updateOnload(List<Member> temp)
-        {
-            foreach(var m in temp)
-            {
-                MemberDB.AddOrUpdateMember(m); 
-            }
-        }
 
         /// <summary>
         /// checks whether form data has been changed and not saved
@@ -929,7 +563,7 @@ namespace NineTapTour.Forms
                 }
             }
 
-            if(currentMem.State == null)
+            if (currentMem.State == null)
             {
                 currentMem.State = "";
             }
@@ -946,7 +580,7 @@ namespace NineTapTour.Forms
 
             if (currentMem.Street == null)
             {
-                currentMem.Street= "";
+                currentMem.Street = "";
             }
 
             if (currentMem.Referrals == null)
@@ -986,7 +620,7 @@ namespace NineTapTour.Forms
 
             if (currentMem.Average == null)
             {
-                txtAverage.Text = null ;
+                txtAverage.Text = null;
             }
 
             if (!isMember ||
@@ -1016,152 +650,12 @@ namespace NineTapTour.Forms
             }
         }
 
-        public double LeagueAverage (Member mem)
-        {
-            double sum = 0;
-            double average = 0;
-            var db = new NineTapDb();
-
-            var temp = (
-                        from p in db.Participants
-                        join m in db.Members on p.Member.Id equals m.Id
-                        join g in db.Games on p.Game.Id equals g.Id
-                        join t in db.Tournaments on p.Tournament.Id equals t.Id
-                        where mem.Id == m.Id
-                        orderby t.Date descending
-                        select new
-                        {
-                            t.Date,
-                            g.Game1,
-                            g.Game2,
-                            g.Game3,
-                            g.Game4,
-                            Average = (g.Game1 + g.Game2 + g.Game3 + g.Game4) / 4
-                        }).Take(30).ToList();
-
-            if(temp.Count > 0)
-            {
-                foreach (var item in temp)
-                {
-                    sum += Convert.ToDouble(item.Average);
-                }
-                return (average = sum / temp.Count());
-            }
-            return 0 ;
-        }
-
-        public double LeagueAvgFromPlayerHistory(Member mem)
-        {
-            double sum = 0;
-            double avg = 0;
-            var db = new NineTapDb();
-
-            var temp = (from p in db.PlayerHistory
-                        where p.MemberNumber == mem.Number
-                        orderby p.TournamentDate descending, p.hisID descending
-                        select new
-                        {
-                            p.TournamentDate,
-                            p.Game1,
-                            p.Game2,
-                            p.Game3,
-                            p.Game4,
-                            p.AverageForGame,
-                            p.trueAVG,
-                        }).Take(30).ToList();
-
-            if (temp.Count > 0)
-            {
-                foreach (var item in temp)
-                {
-                    sum += Convert.ToDouble(item.AverageForGame);
-                }
-                return (avg = sum / temp.Count());
-            }
-            return 0;
-        }
-      
-        private void btnImportData_Click(object sender, EventArgs e)
-        {
-            List<ExcelRow> CurrentExcelData = new List<ExcelRow>();
-            OpenFileDialog ofdOpen = new OpenFileDialog();
-            ofdOpen.Filter = "Excel Files (*.xls)|*.xls";
-
-            if(ofdOpen.ShowDialog() == DialogResult.OK)
-            {
-                List<ExcelRow> rows = new List<ExcelRow>();
-
-                List<PlayerHistory> AlreadyImportedPH = 
-                    PlayerHistoryDB.GetMemberPlayerHistory(currentMem.Number, RegionID);
-
-                bool wait = true;
-                string fileName = ofdOpen.FileName;
-
-                while (wait == true)
-                {
-                    frmPleaseWait please = new frmPleaseWait();
-                    please.Show();
-                    AllGames = PlayerHistoryDB.GetNumberOfAllGames();
-
-                    if (AlreadyImportedPH.Count > 0)
-                    {
-                        for(int delete = 0; delete < AlreadyImportedPH.Count; delete++)
-                        {
-                            Game game = GameDB.GetGame(AlreadyImportedPH[delete].GameID);
-                            PlayerHistoryDB.DeleteGame(game);
-                            PlayerHistoryDB.DeletePlayerHistory(AlreadyImportedPH[delete]);
-                        }
-                    }
-                    rows = ProcessExcelFile(fileName); 
-                    wait = false;
-                    please.Close();
-                }
-                foreach(var r in rows)
-                {
-                    CurrentExcelData.Add(r);
-                }
-
-                List<PlayerHistory> reset = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
-                currentMem.StartAvg = reset[0].AVG;
-                currentMem.Average = Convert.ToInt32(reset[0].trueAVG);
-                currentMem.Handicap = Calculations.Calculations
-                    .CalculateHandicapPins(Convert.ToInt32(currentMem.StartAvg));
-
-                currentMem.Bonus = reset[0].Bonus;
-                txtAverage.Text = currentMem.StartAvg.ToString();
-                txt30GameAvg.Text = currentMem.Average.ToString();
-                txtHandicap.Text = currentMem.Handicap.ToString();
-                txtBonus.Text = currentMem.Bonus.ToString();
-                decimal moneySum = 0;
-                var db = new NineTapDb();
-
-                var result = (from p in db.PlayerHistory
-                              where p.MemberNumber == currentMem.Number && p.regionID == RegionID
-                              orderby p.TournamentDate descending
-                              select new
-                              {
-                                  p.MoneyWon
-                              }).ToArray();
-
-                foreach (var v in result)
-                {
-                    moneySum += v.MoneyWon;
-                }
-
-                currentMem.MoneyEarned += moneySum; 
-
-                txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
-
-                MemberDB.AddOrUpdateMember(currentMem);
-            }
-        }
-
         private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
         {
-            List<ExcelRow> returnMe = new List<ExcelRow>();        
+            List<ExcelRow> returnMe = new List<ExcelRow>();
             Excel.Application xlApp = new Excel.Application();
 
-            Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "", 
+            Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "",
                 true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
 
             Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
@@ -1183,7 +677,7 @@ namespace NineTapTour.Forms
                 playerLastName = playerFullName.Substring(0, playerFullName.IndexOf("."));
                 firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(".") + 2);
             }
-                        
+
             string[] first0middle1 = firstAndMiddle.Split(' ');
             int playerOrgAVG;
 
@@ -1192,7 +686,7 @@ namespace NineTapTour.Forms
                 PlayerFinalFirstAndMiddle[i] = first0middle1[0];
             }
 
-            if ( Int32.TryParse( ( ( range.Cells[1, 10] as Excel.Range ).Value2 ), out int result ) )
+            if (Int32.TryParse(((range.Cells[1, 10] as Excel.Range).Value2), out int result))
             {
                 playerOrgAVG = result;
             }
@@ -1203,8 +697,8 @@ namespace NineTapTour.Forms
 
             String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
             bool isRegionHawaii = (cbHaw.Checked); // checks to see if Region is Hawaii
-            
-            if(isRegionHawaii) 
+
+            if (isRegionHawaii)
             {
                 playerNumber = Regex.Replace(playerNumber, "[^0-9]", "");  // strip the member number to straight number
             }
@@ -1216,12 +710,12 @@ namespace NineTapTour.Forms
             // used regex to remove any non numeric expressions from player number be it a letter or a - 
             if (playerNumberAsInt != 0)
             {
-                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumber, "[^0-9]", "")); 
+                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumber, "[^0-9]", ""));
             }
             else if (playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
             {
                 playerNumberAfterSplit = playerNumber.Split('/');
-                playerNumberAsInt = Convert.ToInt32( Regex.Replace(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1] , "[^0-9]", ""));
+                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1], "[^0-9]", ""));
             }
 
             for (int sheetNum = 1; sheetNum <= xlWorkBook.Worksheets.Count; sheetNum++)
@@ -1230,8 +724,8 @@ namespace NineTapTour.Forms
                 range = xlWorkSheet.UsedRange;
                 double noGameMoneyWon = 0;
                 int rowNum;
-                
-                if(isRegionHawaii)
+
+                if (isRegionHawaii)
                 {
                     rowNum = 4;
                 }
@@ -1261,7 +755,7 @@ namespace NineTapTour.Forms
                             continue;
                         }
                     }
-                    
+
                     if ( // if no date or cash then continue to the next line
                         string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 2] as Excel.Range).Value2)) &&
                         string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 15] as Excel.Range).Value2))
@@ -1270,7 +764,7 @@ namespace NineTapTour.Forms
                         continue;
                     }
 
-                    if( // if the four games have no data AKA no games bowled and there is a finish place then add the cash to moneywon
+                    if ( // if the four games have no data AKA no games bowled and there is a finish place then add the cash to moneywon
                         string.IsNullOrWhiteSpace(game1) &&
                         string.IsNullOrWhiteSpace(game2) &&
                         string.IsNullOrWhiteSpace(game3) &&
@@ -1281,7 +775,7 @@ namespace NineTapTour.Forms
                         noGameMoneyWon += Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
                         continue;
                     }
-               
+
 
                     GameHistory.gameRegionID = RegionID;
                     temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
@@ -1289,10 +783,10 @@ namespace NineTapTour.Forms
                     temp.PlayerLastName = playerLastName;
                     temp.PlayerOrginalAVG = playerOrgAVG;
                     temp.PlayerNumber = currentMem.Number;
-                    
+
                     playerH.MemberNumber = currentMem.Number;
                     playerH.regionID = RegionID;
-                    
+
                     if (currentMem.Number == temp.PlayerNumber)
                     {//only process file if they have been added as a member first 
                         try
@@ -1437,7 +931,7 @@ namespace NineTapTour.Forms
                         {
                             //THIS WILL CATCH SUBTOTALS THAT MAY HAVE BEEN ADDED ON LINE 46 OF THE EXCEL FILES
                             //only grab the money earned from tournament if they placed in tournament
-                            if (temp.FinPPHG.ToString() != "") 
+                            if (temp.FinPPHG.ToString() != "")
                             {
                                 temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
                                 GameHistory.MoneyWon = Convert.ToDecimal(temp.Cash);
@@ -1469,9 +963,9 @@ namespace NineTapTour.Forms
                         returnMe.Add(temp);
                         noGameMoneyWon = 0;
                     }
-                  
+
                 }
-               
+
             }
             xlWorkBook.Close(0);
             xlApp.Quit();
@@ -1493,36 +987,557 @@ namespace NineTapTour.Forms
                 }
             }
             return returnMe;
-        }    
-
-        private void chbSocial_CheckedChanged(object sender, EventArgs e)
-        {
-            txtSSN.PasswordChar = chbSocial.Checked ? '\0' : '*';
         }
 
-        private void mtxtBoxDOB_KeyDown(object sender, KeyEventArgs e)
+        /// <summary>
+        /// Finds "Member Number" in the database and populates the "Member Data" form.
+        /// If that "Member Number" is not assigned then display error box.
+        /// </summary>
+        public void UpdateMemberInfo(Member searchMem = null)
         {
-            toolTip1.Hide(txtDOB);
+            RegionID = ((FrmMain)MdiParent).RegionID;
+
+            //set all member info group control background colors
+            foreach (Control c in grpMemberInfo.Controls)
+            {
+                c.BackColor = Color.White;
+            }
+
+            foreach (Control d in panel5.Controls)
+            {
+                d.BackColor = Color.LightGray;
+            }
+
+            int memberCount = MemberDB.GetMemberListCount(RegionID);
+
+            // set txtMemberNumber.Text back to one if there is no one in the the 
+            // current selected region added yet
+            if (memberCount == 0)
+            {
+                txtMemberNumber.Text = "1";
+            }
+            // if last region selected had more members then current selected 
+            // region, set txtmemberNumber.Text to its highest member count for the selcted region
+            else if (Convert.ToInt16(txtMemberNumber.Text) > memberCount)
+            {
+                txtMemberNumber.Text = memberCount.ToString();
+            }
+
+            _memberNum = Convert.ToInt32(txtMemberNumber.Text);
+
+            if (searchMem == null)
+            {
+                currentMem = MemberDB.GetMember(_memberNum, RegionID);
+                List<PlayerHistory> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
+                if (last5.Count >= 1)
+                {   //whatever the bowler director decides his average to be is right. 
+                    // dont pull from the player hstory page
+                    txtAverage.Text = currentMem.StartAvg.ToString();
+                    currentMem.StartAvg = Convert.ToInt16(txtAverage.Text);
+                    txt30GameAvg.Text = Convert.ToInt16(last5[0].trueAVG).ToString();
+                    currentMem.Average = Convert.ToInt32(last5[0].trueAVG);
+                    txtBonus.Text = currentMem.Bonus.ToString();
+                }
+                else
+                {
+                    txtAverage.Text = currentMem.StartAvg.ToString();
+                    txt30GameAvg.Text = 0.ToString();
+                    txtBonus.Text = currentMem.Bonus.ToString();
+                }
+            }
+            else
+            {
+                currentMem = searchMem;
+                _memberNum = currentMem.Number;
+            }
+
+            if (currentMem.Id == 0)
+            {
+                currentMem = new Member
+                {
+                    Number = _memberNum
+                };
+
+                txtMemberNumber.Text = _memberNum.ToString();
+                _memberId = -1;
+
+                // Personal Info
+                txtMemberNumber.Text = currentMem.Number.ToString();
+                txtLastName.Text = "";
+                txtFirstName.Text = "";
+                txtMiddleInitial.Text = "";
+                txtDOB.Text = "";
+                txtDOB.KeyDown += new KeyEventHandler(mtxtBoxDOB_KeyDown);
+                toolTip1.IsBalloon = true;
+                txtSSN.Text = "";
+
+                // Postal Address
+                txtAddress.Text = "";
+                txtCity.Text = "";
+                txtState.Text = "";
+                txtZip.Text = "";
+
+                // Contact Info
+                txtEmail.Text = "";
+                txtPhone.Text = "";
+                txtPhone2.Text = "";
+
+                // Score Info
+                txtAverage.Text = "";
+                txtHandicap.Text = "";
+                txtBonus.Text = "";
+
+                // Misc. Info
+                txtDateJoined.Text = "";
+                txtDateJoined.Text = "";
+                txtDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDateJoined_KeyDown);
+                toolTip1.IsBalloon = true;
+                txtMoneyEarned.Text = "";
+                txtNotes.Text = "";
+                txtReferrals.Text = "";
+
+                foreach (var check in grpStatus.Controls.OfType<RadioButton>())
+                {
+                    check.Checked = false;
+                }
+
+                foreach (var check in grpGender.Controls.OfType<RadioButton>())
+                {
+                    check.Checked = false;
+                }
+
+                chbLifetime.Checked = false;
+                txtLastPayment.Text = "";
+            }
+            else
+            {
+                var db = new NineTapDb();
+
+                // Personal Info
+                _memberId = currentMem.Id;
+                txtMemberNumber.Text = currentMem.Number.ToString();
+                txtLastName.Text = currentMem.LastName;
+                txtFirstName.Text = currentMem.FirstName;
+                txtMiddleInitial.Text = currentMem.MiddleInitial;
+
+                if (currentMem.DateOfBirth != null)
+                {
+                    txtDOB.Text = currentMem.DateOfBirth.Value.ToString("MM/dd/yyyy");
+                }
+
+                txtSSN.Text = currentMem.SSN;
+
+                // Postal Address
+                txtAddress.Text = currentMem.Street;
+                txtCity.Text = currentMem.City;
+                txtState.Text = currentMem.State;
+                txtZip.Text = currentMem.PostalCode;
+
+                // Contact Info
+                txtEmail.Text = currentMem.Email;
+                txtPhone.Text = currentMem.PrimaryPhone;
+                txtPhone2.Text = currentMem.SecondaryPhone;
+
+                // Score Info         
+                /********************************************************************************
+                updates the form's handicap even when the finalize tournament button is clicked
+                -also updates the currentMem's handicap, so when the tournnament gets it, it is the right handicap
+                *********************************************************************************/
+                try
+                {
+                    currentMem.Handicap = Calculations.Calculations.CalculateHandicapPins((currentMem.StartAvg.Value));
+                }
+                catch
+                {
+                    currentMem.Handicap = Calculations.Calculations.CalculateHandicapPins((0));
+                }
+
+                txtHandicap.Text = currentMem.Handicap.ToString();
+
+                /********************************************************************************/
+                txtBonus.Text = currentMem.Bonus.ToString();
+
+                // Misc. Info
+                //TODO: Pull datetime from database correctly 
+                if (currentMem.DateOfBirth.HasValue)
+                {
+                    txtDOB.Text = currentMem.DateOfBirth.Value.ToString("MM/dd/yyyy");
+                }
+                else
+                {
+                    txtDOB.Text = "";
+                }
+
+                if (currentMem.JoinDate.HasValue)
+                {
+                    txtDateJoined.Text = currentMem.JoinDate.Value.ToString("MM/dd/yyyy");
+                }
+                else
+                {
+                    txtDateJoined.Text = "";
+                }
+
+                if (currentMem.RejoinDate.HasValue)
+                {
+                    txtRejoinDate.Text = currentMem.RejoinDate.Value.ToString("MM/dd/yyyy");
+                }
+                else
+                {
+                    txtRejoinDate.Text = "";
+                }
+
+                if (currentMem.LastBowled.HasValue)
+                {
+                    txtLastBowled.Text = currentMem.LastBowled.Value.ToString("MM/dd/yyyy");
+                }
+                else
+                {
+                    txtLastBowled.Text = "";
+                }
+
+                txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
+                txtNotes.Text = currentMem.Notes;
+
+                if (currentMem.Referrals == null)
+                {
+                    txtReferrals.Text = "0";
+                }
+                else
+                {
+                    txtReferrals.Text = currentMem.Referrals.ToString();
+                }
+
+                chbSenior.Checked = currentMem.IsSenior;
+
+                if (currentMem.IsActive)
+                {
+                    rdoActive.Checked = true;
+                }
+                else
+                {
+                    rdoInActive.Checked = true;
+                }
+
+                if (currentMem.Gender.ToString() == MemberGenders.Female.ToString())
+                {
+                    rdoFemale.Checked = true;
+                }
+                else
+                {
+                    rdoMale.Checked = true;
+                }
+
+                chbLifetime.Checked = currentMem.IsLifetimeMember;
+
+                if (currentMem.LastPayment.HasValue)
+                {
+                    txtLastPayment.Text =
+                        currentMem.LastPayment.Value.AddYears(1).ToString("MM/dd/yyyy");
+
+
+                    checkPayment();
+                }
+                else
+                {
+                    txtLastPayment.Text = "";
+                    lblPaymentInfo.Visible = false;
+                }
+
+                currentMem.MoneyEarned =
+                    PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number, RegionID);
+
+                txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
+            }
         }
 
-        private void mtxtBoxDateJoined_KeyDown(object sender, KeyEventArgs e)
+        /// <summary>
+        /// This method creates validation for the input boxes on the Member Info page
+        /// by highlighting required fields.
+        /// </summary>
+        public bool IsValidTextboxes()
         {
-            toolTip1.Hide(txtDateJoined);
+            bool valid = true;
+
+            // validate average textbox for being between 1-300
+            if (!FormHelper.IsAverageValid(txtAverage.Text))
+            {
+                lblAverageValidation.Visible = true;
+                txtAverage.Clear();
+                txtAverage.BackColor = Color.LightPink;
+                valid = false;
+            }
+
+            // validate lastname textbox
+            if (String.IsNullOrWhiteSpace(txtLastName.Text))
+            {
+                lblLastNameValidation.Visible = true;
+                txtLastName.Clear();
+                txtLastName.BackColor = Color.LightPink;
+                valid = false;
+            }
+
+            // validate firstname textbox
+            if (String.IsNullOrWhiteSpace(txtFirstName.Text))
+            {
+                lblFirstNameValidation.Visible = true;
+                txtFirstName.Clear();
+                txtFirstName.BackColor = Color.LightPink;
+                valid = false;
+            }
+
+            // validate dateJoined textbox
+            if (!FormHelper.IsDateTimeValid(txtDateJoined.Text))
+            {
+                lblDateJoinedValidation.Visible = true;
+                txtDateJoined.BackColor = Color.LightPink;
+                valid = false;
+            }
+            return valid;
         }
 
-        private void mtxtBoxRejoinDate_KeyDown(object sender, KeyEventArgs e)
+        public void SaveMemberData()
         {
-            toolTip1.Hide(txtDateJoined);
-        }
+            // checks validation then runs the rest of the 
+            // btnSave_Click and adds a member into the database.
+            if (IsValidTextboxes())
+            {
+                //checks to see if MemberID exists 
+                int memId;
+                Member temp = new Member();
+                temp.Number = Convert.ToInt32(txtMemberNumber.Text);
+                temp.IsActive = rdoActive.Checked;
 
-        private void mtxtBoxLastBowled_KeyDown(object sender, KeyEventArgs e)
-        {
-            toolTip1.Hide(txtLastBowled);
-        }
+                if (!String.IsNullOrWhiteSpace(txtDateJoined.Text))
+                {
+                    DateTime date;
+                    if (DateTime.TryParse(txtDateJoined.Text, out date))
+                    {
+                        temp.JoinDate = date;
+                    }
+                }
+                else
+                {
+                    temp.JoinDate = null;
+                }
 
-        private void MtxtBoxLastPayment_KeyDown(object sender, KeyEventArgs e)
+                // Personal Info
+                temp.LastName = txtLastName.Text;
+                temp.FirstName = txtFirstName.Text;
+                temp.MiddleInitial = txtMiddleInitial.Text;
+
+                if (!String.IsNullOrWhiteSpace(txtDOB.Text))
+                {
+                    DateTime date;
+                    if (DateTime.TryParse(txtDOB.Text, out date))
+                    {
+                        temp.DateOfBirth = date;
+                    }
+                }
+                else
+                {
+                    temp.DateOfBirth = null;
+                }
+
+                DateTime senior = DateTime.Now.AddYears(-50);
+
+                if (senior >= temp.DateOfBirth)
+                {
+                    temp.IsSenior = true;
+                    chbSenior.Checked = true;
+                }
+                else
+                {
+                    temp.IsSenior = false;
+                    chbSenior.Checked = false;
+                }
+
+                temp.SSN = txtSSN.Text;
+                temp.IsSenior = chbSenior.Checked;
+                temp.Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male;
+
+                // Postal Address
+                temp.Street = txtAddress.Text;
+                temp.City = txtCity.Text;
+                temp.State = txtState.Text;
+                temp.PostalCode = txtZip.Text;
+
+                // Contact Info
+                temp.Email = txtEmail.Text;
+                temp.PrimaryPhone = txtPhone.Text;
+                temp.SecondaryPhone = txtPhone2.Text;
+
+                // Score Info
+                /****************************************************************************
+                / This used to say Average = 0; which will make the average in the database 0.
+                / This code block assigns txt30GameAvg.Text to temp.Average.
+                *****************************************************************************/
+                if (Int32.TryParse(txt30GameAvg.Text, out int thirtyGameAverage))
+                {
+                    temp.Average = thirtyGameAverage;
+                }
+                else
+                {
+                    temp.Average = 0;
+                }
+
+                /****************************************************************************/
+                temp.Handicap =
+                    Calculations.Calculations.CalculateHandicapPins(temp.Average.Value);
+
+                // Misc. Info
+                if (!String.IsNullOrWhiteSpace(txtRejoinDate.Text))
+                {
+                    DateTime date;
+                    if (DateTime.TryParse(txtRejoinDate.Text, out date))
+                    {
+                        temp.RejoinDate = date;
+                    }
+                }
+                else
+                {
+                    temp.RejoinDate = null;
+                }
+
+                if (!String.IsNullOrWhiteSpace(txtLastBowled.Text))
+                {
+                    DateTime date;
+                    if (DateTime.TryParse(txtLastBowled.Text, out date))
+                    {
+                        temp.LastBowled = date;
+                    }
+                }
+                else
+                {
+                    temp.LastBowled = null;
+                }
+
+                temp.MoneyEarned = currentMem.MoneyEarned;
+                temp.Notes = txtNotes.Text;
+
+                temp.Referrals = (txtReferrals.Text) == string.Empty ? 0 :
+                    Convert.ToInt16(txtReferrals.Text);
+
+                if (!String.IsNullOrWhiteSpace(txtLastPayment.Text))
+                {
+                    DateTime date;
+                    if (DateTime.TryParse(txtLastPayment.Text, out date))
+                    {
+                        temp.LastPayment = date;
+                    }
+                }
+                else
+                {
+                    temp.LastPayment = null;
+                }
+
+                temp.IsLifetimeMember = chbLifetime.Checked;
+                temp.NineTapRegionID = RegionID;
+
+                // check to see if memberId exists before putting it in 
+                // current selected regions database
+                if (MemberDB.MemberExists(temp))
+                {
+                    memId = MemberDB.GetMemberIdByNumber(temp.Number, RegionID, new NineTapDb());
+                }
+                else
+                {
+                    memId = MemberDB.GetMemberListCount(RegionID) + 1;
+                }
+
+                temp.Id = memId;
+
+                List<PlayerHistory> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
+                if (last5.Count >= 1)
+                {   // sets the average to that of their last adjusted average
+                    if (Convert.ToInt32(txtAverage.Text) == last5[0].AVG)
+                    {
+                        txtAverage.Text = last5[0].AVG.ToString();
+                        temp.StartAvg = last5[0].AVG;
+
+                        txt30GameAvg.Text = last5[0].trueAVG.ToString();
+                        temp.Average = Convert.ToInt16(last5[0].trueAVG);
+
+                        temp.Bonus = (txtBonus.Text == string.Empty) ? 0 :
+                            Convert.ToInt16(txtBonus.Text);
+                    }
+                    else
+                    {   // catches if director wants to change their average 
+                        // manually regardless of there player history
+                        temp.StartAvg = Convert.ToInt32(txtAverage.Text);
+                        txt30GameAvg.Text = last5[0].trueAVG.ToString();
+                        temp.Average = Convert.ToInt16(last5[0].trueAVG);
+                        temp.Bonus = (txtBonus.Text == string.Empty) ? 0 :
+                            Convert.ToInt16(txtBonus.Text);
+                    }
+                }
+                else if (txtAverage.Text == "")
+                {
+                    txtAverage.Text = 0.ToString();
+                    txt30GameAvg.Text = 0.ToString();
+                    temp.Average = 0;
+                    temp.StartAvg = 0;
+                    temp.Bonus = (txtBonus.Text == string.Empty) ? 0 :
+                        Convert.ToInt16(txtBonus.Text);
+                }
+                else
+                {
+                    temp.StartAvg = Convert.ToInt16(txtAverage.Text);
+                    temp.Average = 0;
+                    txtAverage.Text = temp.StartAvg.ToString();
+                    txt30GameAvg.Text = 0.ToString();
+                    temp.Bonus = (txtBonus.Text == string.Empty) ? 0 :
+                        Convert.ToInt16(txtBonus.Text);
+                }
+
+                // Adds Member to Database
+                try
+                {
+                    MemberDB.AddOrUpdateMember(temp);
+#if DEBUG
+                    MessageBox.Show("Member saved");
+#endif
+                    ((FrmMain)MdiParent)._membersList =
+                        MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
+                    UpdateMemberInfo();
+                }
+                catch (MemberTableException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+        #endregion
+
+        #region Events
+        /// <summary>
+        /// Turns textbox pink when text is erased
+        /// </summary>
+        private void InputRequired(object sender, EventArgs e)
         {
-            toolTip1.Hide(txtLastPayment);
+            var textBox = sender as TextBox;
+            if (textBox != null)
+            {
+                textBox.BackColor = textBox.Text == string.Empty ? Color.LightPink : Color.White;
+            }
+        }
+            
+        public void singlePrint(object sender, PrintPageEventArgs e) 
+        {
+            NineTapTour.Database.Print.SinglePrint(
+                new MemberPrintObj(Convert.ToInt32(txtHandicap.Text), 
+                    Convert.ToInt32(txtMemberNumber.Text), 
+                    txtCity.Text,
+                    txtFirstName.Text, 
+                    txtLastName.Text, 
+                    txtAverage.Text, 
+                    Convert.ToInt32(txtBonus.Text)), 
+                    e);
+        }
+ 
+        private void datePaid_ValueChanged(object sender, EventArgs e)
+        {
+            txtLastPayment.Text = "";
+            checkPayment();
         }
 
         private void DateMaskTextBoxInput_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
@@ -1550,30 +1565,14 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// The resize event for the form
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void FrmMemberData_Resize(object sender, EventArgs e)
-        {
-            FormHelper.SetFlowDirection(this, flpMemberData, 1080, 730);
-        }
-
-        /// <summary>
         /// After the size of the form has been changed, it checks the pixel
         /// width and height to determine whether there needs to be scroll bars
         /// or not.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void flpMemberScores_SizeChanged(object sender, EventArgs e)
         {
             FormHelper.SetFlowControlScrollBars(this, flpMemberData, 1080, 600);
         }
-
-        private void mtxtBox_Click(object sender, EventArgs e)
-        {
-            FormHelper.GoToFirstIndexInTextboxIfEmpty(sender as TextBoxBase);
-        }
+        #endregion
     }
 }
