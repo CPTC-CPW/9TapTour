@@ -126,7 +126,7 @@ namespace NineTapTour.Database
                             select new
                             {
                                 h.hisID
-                            }).FirstOrDefault().hisID;
+                            }).FirstOrDefault()?.hisID; //assign null (default) or actual historyID if there is a value
                 // Returns 0 if hisID is null
                 return hisID ?? 0;
             }
