@@ -1284,7 +1284,7 @@ namespace NineTapTour.Forms
             List<PlayerHistory> playerHistory = PlayerHistoryDB.GetMemberPlayerHistory(memberNum, RegionID);
             int avgOfAllGameAverages = 
                 Convert.ToInt32(
-                    FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) + currGameAverages.Sum()
+                    FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) + (currGameAverages.Sum() / (currGameAverages.Count + 1))
                     );
             return avgOfAllGameAverages;
             /*
