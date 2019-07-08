@@ -1574,5 +1574,20 @@ namespace NineTapTour.Forms
         {
             FormHelper.GoToFirstIndexInTextboxIfEmpty(sender as TextBoxBase);
         }
+
+        /// <summary>
+        /// The Bonus Pins textbox is allowed to be changed in the
+        /// members form
+        /// </summary>
+        /// <return>a new value of bonus pins</return>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtBonus_TextChanged(object sender, EventArgs e)
+        {
+            if (Int32.TryParse(txtBonus.Text, out int newBonusPins))
+            {
+                txtBonus.Text = Convert.ToInt32(newBonusPins).ToString();
+            }
+        }
     }
 }
