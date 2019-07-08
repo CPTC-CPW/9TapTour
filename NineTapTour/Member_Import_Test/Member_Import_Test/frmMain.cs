@@ -805,7 +805,7 @@ namespace Member_Import_Test
                         try
                         {
                             temp.AverageOfRow = Convert.ToDouble((range.Cells[row, 8] as Excel.Range).Value2);
-                            playerH.AverageForGame = temp.AverageOfRow;
+                            playerH.AverageForEntry = temp.AverageOfRow;
                         }
                         catch
                         {

@@ -249,7 +249,7 @@ namespace NineTapTour.Migrations
                         ph.MoneyWon = f.Random.Decimal(0, 1);
                         ph.MoneyWon *= (playerHistoryIndexForLists % 2) * (rand.Next(0, 1000));
                         ph.Notes = null;
-                        ph.AverageForGame = ph.TotalScore / 4;
+                        ph.AverageForEntry = ph.TotalScore / 4;
                         ph.AVG = avgList[playerHistoryIndexForLists];
                         ph.trueAVG = avgList[playerHistoryIndexForLists];
                         ph.Bonus = bonusList[playerHistoryIndexForLists];

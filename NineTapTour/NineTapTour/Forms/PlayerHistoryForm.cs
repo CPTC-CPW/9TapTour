@@ -75,7 +75,7 @@ namespace NineTapTour.Database
                 newRow["Game 3"] = item.Game3;
                 newRow["Game 4"] = item.Game4;
                 newRow["Total"] = item.TotalScore;
-                newRow["Average of Row"] = item.AverageForGame;
+                newRow["Average of Row"] = item.AverageForEntry;
                 newRow["True Average"] = item.trueAVG;
                 newRow["AVG"] = item.AVG;
                 newRow["HandiCap"] = item.HandiCap;

@@ -26,7 +26,7 @@ namespace NineTapTour.Database
                           where mem.Id == m.Id
                           orderby t.Date descending
                           select (g.Game1 + g.Game2 + g.Game3 + g.Game4) / 
-                              ((g.UseGame1??false?1:0) + (g.UseGame2??false?1:0) + (g.UseGame3??false?1:0) + (g.UseGame4??false?1:0))
+                          4-((g.UseGame1??false?0:1) + (g.UseGame2??false?0:1) + (g.UseGame3??false?0:1) + (g.UseGame4??false?0:1))
                           ).Take(howmany).Average();
             return avg;
             #region Refactored Code
@@ -111,7 +111,7 @@ namespace NineTapTour.Database
             double avg = (from p in db.PlayerHistory
                           where p.MemberNumber == memberNumber && p.regionID == regionid
                           orderby p.TournamentDate descending
-                          select p.AverageForGame).Take(howmany).Average();
+                          select p.AverageForEntry).Take(howmany).Average();
             return avg;
             /*
             var temp = (from p in db.PlayerHistory
