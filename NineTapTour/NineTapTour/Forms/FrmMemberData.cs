@@ -443,21 +443,20 @@ namespace NineTapTour.Forms
                 temp.JoinDate = DateTime.Parse(txtDateJoined.Text);
                 temp.DateOfBirth = DateTime.Parse(txtDOB.Text);
                 
+                //if member was born more than 50 years ago, then member is a senior. If member is a senior, check the isSenior checkbox and set temp.IsSenior to true
                 DateTime senior = DateTime.Now.AddYears(-50);
-
                 if (senior >= temp.DateOfBirth)
                 {
-                    temp.IsSenior = true;
                     chbSenior.Checked = true;
                 }
                 else
                 {
-                    temp.IsSenior = false;
                     chbSenior.Checked = false;
                 }
+                temp.IsSenior = chbSenior.Checked;
 
                 temp.SSN = txtSSN.Text;
-                temp.IsSenior = chbSenior.Checked;
+                
                 temp.Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male;
 
                 // Postal Address
