@@ -17,7 +17,7 @@ namespace NineTapTour.Forms
     /// </summary>
     public partial class TournamentStats : Form
     {
-        #region TournamentStats
+
         public TournamentStats()
         {
             InitializeComponent();
@@ -146,25 +146,28 @@ namespace NineTapTour.Forms
                 // send to form
                 dgvTournamentStats.DataSource = BuildDataTable(statsList);
             }
-        }
-        #endregion
+        }        
 
-        #region GetTop3OutOf4
         /// <summary>
         /// Filters and sorts scores for topScores list.
         /// </summary>
-        /* Brett Peterson suggested bug fix starts here
-          Only getting first 3 scores Not top 3 scores */
+        /// <param name="scores"></param>
+        /// <returns></returns>
+        /// 
+        //Brett Peterson suggested bug fix starts here
+        //Only getting first 3 scores Not top 3 scores
         public static List<int> GetTop3OutOf4(List<int?> scores)
         {
             List<int> listOfValidScores = new List<int>();
-            // removed the -1 from scores. Count -1 so I get all scores
+          //I removed the -1 from scores.Count-1 so I get all scores
             for (int i = 0; i < scores.Count; i++)
             {
+              
                 if (scores[i].HasValue)
                 {
                     listOfValidScores.Add(scores[i].Value);
                 }
+                
             }
 
             listOfValidScores.Sort();
@@ -176,9 +179,7 @@ namespace NineTapTour.Forms
             listOfValidScores.Reverse();
             return listOfValidScores;
         }
-        #endregion
 
-        #region Database
         /// <summary>
         /// GetConnection() returns a connection string to the database within the quotes.
         /// </summary>
@@ -187,9 +188,7 @@ namespace NineTapTour.Forms
         {
             return ConfigurationManager.ConnectionStrings["NineTapDbConnection"].ConnectionString;
         }
-        #endregion
 
-        #region Buttons
         /// <summary>
         /// BtnPrint_Click() is called when Print button is clicked on the tournamentStats form.
         /// </summary>
@@ -203,9 +202,7 @@ namespace NineTapTour.Forms
                 printDocument1.Print();
             }
         }
-        #endregion
 
-        #region Print
         /// <summary>
         /// PrintDocument1_PrintPage() is called after choosing where to save or print the tournamentStats table.
         /// </summary>
@@ -217,9 +214,7 @@ namespace NineTapTour.Forms
             this.dgvTournamentStats.DrawToBitmap(bm, new Rectangle(0, 0, 1582, 621));
             e.Graphics.DrawImage(bm, 0, 0);
         }
-        #endregion
 
-        #region DataTable
         /// <summary>
         /// BuildDataTable() Boxes up the tournamentStatsList object into a data table object 
         /// that the datagridview is willing to accept and sort.
@@ -271,14 +266,13 @@ namespace NineTapTour.Forms
                 item.Bonus
                 });
             }
+
             // Return data table object
             return data;
         }
-        #endregion
+
     }
 
-    /* Needs to be moved into its own file, 
-      only 1 class per file -TS */
     /// <summary>
     /// Object used to fill DataTable.
     /// </summary>
@@ -296,5 +290,5 @@ namespace NineTapTour.Forms
         public int? Game4 { get; set; }
         public int? Handicap { get; set; }
         public int? Bonus { get; set; }
-    }
+    }    
 }
