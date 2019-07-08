@@ -8,19 +8,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NineTapTour.Database;
-using NineTapTour.Models;
 
 namespace NineTapTour.Forms
 {
     public partial class TournamentsByYear : Form
     {
-        public int RegionID;
+        public int RID;
 
-        #region TorunamentByYear
         public TournamentsByYear(int RegionID)
         {
             InitializeComponent();
-            this.RegionID = RegionID;
+            this.RID = RegionID;
         }
 
         private void TournamentsByYear_Load(object sender, EventArgs e)
@@ -32,9 +30,7 @@ namespace NineTapTour.Forms
                 cbxYear.Items.Add(y);
             }
         }
-        #endregion
 
-        #region Methods
         /// <summary>
         /// Gets the last 25 years from the current year down
         /// </summary>
@@ -50,21 +46,39 @@ namespace NineTapTour.Forms
             }
             return years;
         }
-        #endregion
 
-        #region CheckBoxs
         private void cbxYear_SelectedIndexChanged(object sender, EventArgs e)
         {
             btnSearch.Enabled = true;
         }
-        #endregion
 
-        #region Buttons
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            dgvAllTournaments.DataSource = 
-                TournamentDB.GetTournamentsByYear(Convert.ToInt32(cbxYear.Text), RegionID);
+            PopulateTournamentsByYear(Convert.ToInt32(cbxYear.Text), RID);
         }
-        #endregion
+
+        /// <summary>
+        /// Gets all the tournaments from a specific year
+        /// </summary>
+        /// <param name="selectedYear">Year selected</param>
+        public void PopulateTournamentsByYear(int selectedYear, int regionID)
+        {
+            NineTapDb db = new NineTapDb();
+            var tournaments = (from t in db.Tournaments
+                               orderby t.Date descending
+                               where t.Date.Year == selectedYear  && t.TourneyRegion == regionID
+                               select new
+                               {
+                                   t.Id,
+                                   t.Date,
+                                   t.Location,
+                                   t.Event,
+                                   t.Doubles,
+                                   t.ThreeOutOf4,
+                                   t.Notes,
+                                   t.Sponsors
+                               }).ToList();
+            dgvAllTournaments.DataSource = tournaments;
+        }
     }
 }

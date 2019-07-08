@@ -196,45 +196,91 @@ namespace NineTapTour.Database
         public static List<FinalizeTemp> GetAllInitialParticipantGameList(Tournament tourn)
         {
             var db = new NineTapDb();
-            List<FinalizeTemp> FinalizeTempList = 
-                (from p in db.Participants
-                join m in db.Members on p.Member.Id equals m.Id
-                join g in db.Games on p.Game.Id equals g.Id
-                join t in db.Tournaments on p.Tournament.Id equals t.Id
-                where tourn.Id == p.Tournament.Id
-                orderby m.FirstName descending
-                select new FinalizeTemp
-                {
-                    GameId = g.Id,
-                    MemberId = m.Id,
-                    MemberNumber = m.Number,
-                    FirstName = m.FirstName,
-                    LastName = m.LastName,
+            var temp = (from p in db.Participants
+                        join m in db.Members on p.Member.Id equals m.Id
+                        join g in db.Games on p.Game.Id equals g.Id
+                        join t in db.Tournaments on p.Tournament.Id equals t.Id
+                        where tourn.Id == p.Tournament.Id
+                        orderby m.FirstName descending
+                        select new
+                        {
+                            g.Id,
+                            m.FirstName,
+                            m.LastName,
+                            MemberId = m.Id,
+                            p.Squad,
+                            g.Game1,
+                            g.Game2,
+                            g.Game3,
+                            g.Game4,
+                            g.UseGame1,
+                            g.UseGame2,
+                            g.UseGame3,
+                            g.UseGame4,
+                            g.Notes,
+                            g.Handicap,
+                            g.Bonus,
+                            m.Number,
+                            t.TourneyRegion
+                        }).ToList();
 
-                    Squad = p.Squad,
-                    Game1 = g.Game1,
-                    Game2 = g.Game2,
-                    Game3 = g.Game3,
-                    Game4 = g.Game4,
-                    UseGame1 = g.UseGame1 ?? g.Game1.HasValue,
-                    UseGame2 = g.UseGame2 ?? g.Game2.HasValue,
-                    UseGame3 = g.UseGame3 ?? g.Game3.HasValue,
-                    UseGame4 = g.UseGame4 ?? g.Game4.HasValue,
-                    Notes = g.Notes,
-                    ScratchTotal = (g.Game1 ?? 0) + (g.Game2 ?? 0) + (g.Game3 ?? 0) + (g.Game4 ?? 0),
+            List<FinalizeTemp> ParticipantList = new List<FinalizeTemp>();
+            // Populates ParticipantList with the data pulled from the database
+            foreach (var item in temp)
+            {
+                FinalizeTemp NewParticipant = new FinalizeTemp();
 
-                    GameAvg = ((g.Game1 ?? 0) + (g.Game2 ?? 0) + (g.Game3 ?? 0) + (g.Game4 ?? 0)) /
-                        ((g.UseGame1 ?? false ? 1 : 0) + (g.UseGame2 ?? false ? 1 : 0) + (g.UseGame3 ?? false ? 1 : 0) + (g.UseGame4 ?? false ? 1 : 0)),
-                    HandicapTotal =
-                        ((g.Game1 != null) ? ((g.Game1 ?? 0) + (g.Handicap ?? 0) + (g.Bonus ?? 0)) : 0) +
-                        ((g.Game2 != null) ? ((g.Game2 ?? 0) + (g.Handicap ?? 0) + (g.Bonus ?? 0)) : 0) +
-                        ((g.Game3 != null) ? ((g.Game3 ?? 0) + (g.Handicap ?? 0) + (g.Bonus ?? 0)) : 0) +
-                        ((g.Game4 != null) ? ((g.Game4 ?? 0) + (g.Handicap ?? 0) + (g.Bonus ?? 0)) : 0),
-                    Handicap = g.Handicap ?? 0,
-                    Bonus = g.Bonus ?? 0,
-                    FinalizeRegionID = t.TourneyRegion
-                }).ToList();
-            return FinalizeTempList;
+                // Populates the names and ID's
+                NewParticipant.GameId = item.Id;
+                NewParticipant.MemberId = item.MemberId;
+                NewParticipant.MemberNumber = item.Number;
+                NewParticipant.FirstName = item.FirstName;
+                NewParticipant.LastName = item.LastName;
+                NewParticipant.Squad = item.Squad;
+                
+                // Populates the Games
+                NewParticipant.Game1 = item.Game1;
+                NewParticipant.Game2 = item.Game2;
+                NewParticipant.Game3 = item.Game3;
+                NewParticipant.Game4 = item.Game4;
+                NewParticipant.UseGame1 = item.UseGame1 ?? item.Game1.HasValue;
+                NewParticipant.UseGame2 = item.UseGame2 ?? item.Game2.HasValue;
+                NewParticipant.UseGame3 = item.UseGame3 ?? item.Game3.HasValue;
+                NewParticipant.UseGame4 = item.UseGame4 ?? item.Game4.HasValue;
+                NewParticipant.Notes = item.Notes;
+                NewParticipant.ScratchTotal = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0);
+
+                // Increases GamesPlayed by 1 for each game1-4 with a value
+                int GamesPlayed = 0;
+                if (item.Game1.HasValue)
+                    GamesPlayed++;
+                if (item.Game2.HasValue)
+                    GamesPlayed++;
+                if (item.Game3.HasValue)
+                    GamesPlayed++;
+                if (item.Game4.HasValue)
+                    GamesPlayed++;
+
+                // Used GamesPlayed to calculate the GameAvg
+                NewParticipant.GameAvg = ((item.Game1 ?? 0) + 
+                    (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0)) / GamesPlayed;
+
+                // Popualtes the handicaps
+                NewParticipant.Handicap = item.Handicap ?? 0;
+                NewParticipant.Bonus = item.Bonus ?? 0;
+
+                // Calcualates the HandicapTotal
+                int HandicapTotal =  (item.Game1 != null) ? ((item.Game1 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
+                    HandicapTotal += (item.Game2 != null) ? ((item.Game2 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
+                    HandicapTotal += (item.Game3 != null) ? ((item.Game3 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
+                    HandicapTotal += (item.Game4 != null) ? ((item.Game4 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
+                NewParticipant.HandicapTotal = HandicapTotal;
+
+                NewParticipant.FinalizeRegionID = item.TourneyRegion;
+
+                ParticipantList.Add(NewParticipant);
+            }
+            return ParticipantList;
         }
 
         /// <summary>

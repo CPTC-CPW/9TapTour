@@ -26,7 +26,6 @@ namespace NineTapTour.Forms
         List<int> squadList;
         bool printDues = false;
 
-        #region FrmMemberScoresReports
         public FrmMemberScoresReports(List<MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList)
         {
             InitializeComponent();
@@ -37,13 +36,6 @@ namespace NineTapTour.Forms
             this.squadList = squadList;
         }
 
-        private void FrmMemberScoresReports_Load(object sender, EventArgs e)
-        {
-            txtNumberOfMembers.Focus();
-        }
-        #endregion
-
-        #region Buttons
         private void btnPrint_Click(object sender, EventArgs e)
         {
             if (!int.TryParse(txtNumberOfMembers.Text, out int numMembers))
@@ -76,6 +68,11 @@ namespace NineTapTour.Forms
             }
         }
 
+        private void FrmMemberScoresReports_Load(object sender, EventArgs e)
+        {
+            txtNumberOfMembers.Focus();
+        }
+
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (!int.TryParse(txtNumberOfMembers.Text, out int numMembers))
@@ -97,7 +94,7 @@ namespace NineTapTour.Forms
                 {
                     frmPleaseWait please = new frmPleaseWait();
                     please.Show();
-                    ExportToExcel(); // Exports to excel file
+                    exportToExcel(); // Exports to excel file
                     wait = false;
                     please.Close();
                 }
@@ -110,35 +107,8 @@ namespace NineTapTour.Forms
                 MessageBox.Show("There are only " + temp.Count + " participants in the tournament selected.");
             }
         }
-        #endregion
 
-        #region Methods
-        /// <summary>
-        /// This method is used to clean up the references to the Excel Objects
-        /// so that Excel does not remain running.
-        /// </summary>
-        private void ReleaseObject(object obj)
-        {
-            try
-            {
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
-                obj = null;
-            }
-            catch (Exception ex)
-            {
-                obj = null;
-                MessageBox.Show("Exception Occured while releasing object " + ex.ToString());
-            }
-            finally
-            {
-                GC.Collect();
-            }
-        }
-
-        /// <summary>
-        /// Sends data into an Excel Spreadsheet
-        /// </summary>
-        private void ExportToExcel()
+        private void exportToExcel()
         {
             // this is used in a few places for labeling file name and displayed on the excel sheet
             string reportTypeToSave = "";
@@ -275,9 +245,9 @@ namespace NineTapTour.Forms
                 xlWorkBook.Close(true, misValue, misValue);
                 xlApp.Quit();
 
-                ReleaseObject(xlWorkSheet);
-                ReleaseObject(xlWorkBook);
-                ReleaseObject(xlApp);
+                releaseObject(xlWorkSheet);
+                releaseObject(xlWorkBook);
+                releaseObject(xlApp);
             }
             catch
             {
@@ -287,6 +257,29 @@ namespace NineTapTour.Forms
                 xlApp.Quit();
             }
         }
-        #endregion
+
+        /// <summary>
+        /// This method is used to clean up the references to the Excel Objects
+        /// so that Excel does not remain running.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void releaseObject(object obj)
+        {
+            try
+            {
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
+                obj = null;
+            }
+            catch (Exception ex)
+            {
+                obj = null;
+                MessageBox.Show("Exception Occured while releasing object " + ex.ToString());
+            }
+            finally
+            {
+                GC.Collect();
+            }
+        }
+
     }
 }
