@@ -421,8 +421,7 @@ namespace NineTapTour.Forms
             // btnSave_Click and adds a member into the database.
             if (IsValidTextboxes())
             {
-                //checks to see if MemberID exists 
-                int memId;
+                //checks to see if MemberID exists
                 Member temp = new Member();
                 temp.Number = Convert.ToInt32(txtMemberNumber.Text);
                 temp.IsActive = rdoActive.Checked;
@@ -555,7 +554,8 @@ namespace NineTapTour.Forms
 
                 // check to see if memberId exists before putting it in 
                 // current selected regions database
-                if(MemberDB.MemberExists(temp))
+                int memId;
+                if (MemberDB.MemberExists(temp))
                 {
                     memId = MemberDB.GetMemberIdByNumber(temp.Number, RegionID, new NineTapDb());
                 }
