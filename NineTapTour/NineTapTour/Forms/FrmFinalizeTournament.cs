@@ -1281,21 +1281,16 @@ namespace NineTapTour.Forms
         private int CalcThirtyLeagueAverage(int memberNum, List<int> currGameAverages)
         {
             List<PlayerHistory> playerHistory = PlayerHistoryDB.GetMemberPlayerHistory(memberNum, RegionID);
-            int avgOfAllGameAverages = 
-                Convert.ToInt32(
-                    FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) + (currGameAverages.Sum() / (currGameAverages.Count + 1))
-                    );
-            return avgOfAllGameAverages;
-            /*
-            if (playerHistory.Count >= 30 || (playerHistory.Count + currGameAverages.Count) > 30)
-            {
-                return avgOfAllGameAverages / 30;
+            if (playerHistory.Count >= 30 || (playerHistory.Count + currGameAverages.Count) >= 30) { 
+                int newAverage = 
+                Convert.ToInt32(FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) /30);
+            return newAverage;         
             }
             else
             {
-                return avgOfAllGameAverages / (playerHistory.Count + currGameAverages.Count);
+                return Convert.ToInt32((FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 29, RegionID) + currGameAverages.Sum())/ (playerHistory.Count + currGameAverages.Count));
             }
-            */
+            
         }
 
         // Removed unused getLeagueSum method which was meant to calculate the League Average on 3/18/19. League Average is
