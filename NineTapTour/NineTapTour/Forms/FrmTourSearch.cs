@@ -20,6 +20,7 @@ namespace NineTapTour.Forms
         bool single;
         int RegionID;
 
+        #region FrmTourSearch
         /// <summary>
         /// This takes a tour list and modifies it. The tour you pass in will
         /// be different when this form has finished running.
@@ -48,6 +49,13 @@ namespace NineTapTour.Forms
        
         }
 
+        private void FrmTourSearch_Load(object sender, EventArgs e)
+        {
+            dtpFrom.Value = dtpTo.Value;
+        }
+        #endregion
+
+        #region Buttons
         private void btnSearch_Click(object sender, EventArgs e)
         {
             listSearch.DataSource = null;
@@ -150,6 +158,19 @@ namespace NineTapTour.Forms
             }
         }
 
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            listSearch.DataSource = null;
+            txtSearch.Text = null;
+            txtEvent.Text = null;
+            chkDate.Checked = false;
+            dtpTo.Value = DateTime.Now;
+            dtpFrom.Value = dtpTo.Value;
+            btnClear.Enabled = false;
+        }
+        #endregion
+
+        #region List
         private void listSearch_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (listSearch.SelectedIndex != -1)
@@ -163,50 +184,27 @@ namespace NineTapTour.Forms
                 listSearch.TabStop = false;
             }
         }
+        #endregion
 
-        private void btnClear_Click(object sender, EventArgs e)
-        {
-            listSearch.DataSource = null;
-            txtSearch.Text = null;
-            txtEvent.Text = null;
-            chkDate.Checked = false;
-            dtpTo.Value = DateTime.Now;
-            dtpFrom.Value = dtpTo.Value;
-            btnClear.Enabled = false;
-        }
-
+        #region TextBoxs
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            decideCanClear();
-        }
-
-        private void decideCanClear()
-        {
-            if (String.IsNullOrWhiteSpace(txtSearch.Text.Trim()) && String.IsNullOrWhiteSpace(txtEvent.Text.Trim()) && !chkDate.Checked)
-            {
-                btnSearch.Enabled = false;
-                if (listSearch.SelectedIndex < 0 && dtpTo.Value == dtpFrom.Value)
-                {
-                    btnClear.Enabled = false;
-                }
-            }
-            else
-            {
-                btnSearch.Enabled = true;
-                btnClear.Enabled = true;
-            }
+            DecideCanClear();
         }
 
         private void txtEvent_TextChanged(object sender, EventArgs e)
         {
-            decideCanClear();
+            DecideCanClear();
         }
 
         private void txtDate_TextChanged(object sender, EventArgs e)
         {
-            decideCanClear();
+            DecideCanClear();
         }
 
+        #endregion
+
+        #region CheckBoxs
         private void chkDate_CheckedChanged(object sender, EventArgs e)
         {
             if (chkDate.Checked)
@@ -219,9 +217,11 @@ namespace NineTapTour.Forms
                 dtpFrom.Enabled = false;
                 dtpTo.Enabled = false;
             }
-            decideCanClear();
+            DecideCanClear();
         }
+        #endregion
 
+        #region DateTime
         private void dtpTo_ValueChanged(object sender, EventArgs e)
         {
             if (dtpTo.Value < dtpFrom.Value)
@@ -237,19 +237,39 @@ namespace NineTapTour.Forms
                 dtpFrom.Value = dtpTo.Value;
             }
         }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Enables Search and Clear buttons if any textbox or checkbox has a value,
+        /// Otherwise disables them
+        /// </summary>
+        private void DecideCanClear()
+        {
+            if (string.IsNullOrWhiteSpace(txtSearch.Text.Trim()) && 
+                string.IsNullOrWhiteSpace(txtEvent.Text.Trim()) && 
+                !chkDate.Checked)
+            {
+                btnSearch.Enabled = false;
+                if (listSearch.SelectedIndex < 0 && dtpTo.Value == dtpFrom.Value)
+                {
+                    btnClear.Enabled = false;
+                }
+            }
+            else
+            {
+                btnSearch.Enabled = true;
+                btnClear.Enabled = true;
+            }
+        }
 
         /// <summary>
         /// If you didn't pass a list, the result of your search will be set here.
         /// </summary>
-        /// <returns></returns>
-        public Tournament getResult()
+        public Tournament GetResult()
         {
             return singleTour;
         }
-
-        private void FrmTourSearch_Load(object sender, EventArgs e)
-        {
-            dtpFrom.Value = dtpTo.Value;
-        }
+        #endregion
     }
 }

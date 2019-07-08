@@ -8,17 +8,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NineTapTour.Database;
+using NineTapTour.Models;
 
 namespace NineTapTour.Forms
 {
     public partial class TournamentsByYear : Form
     {
-        public int RID;
+        public int RegionID;
 
+        #region TorunamentByYear
         public TournamentsByYear(int RegionID)
         {
             InitializeComponent();
-            this.RID = RegionID;
+            this.RegionID = RegionID;
         }
 
         private void TournamentsByYear_Load(object sender, EventArgs e)
@@ -30,7 +32,9 @@ namespace NineTapTour.Forms
                 cbxYear.Items.Add(y);
             }
         }
+        #endregion
 
+        #region Methods
         /// <summary>
         /// Gets the last 25 years from the current year down
         /// </summary>
@@ -46,39 +50,21 @@ namespace NineTapTour.Forms
             }
             return years;
         }
+        #endregion
 
+        #region CheckBoxs
         private void cbxYear_SelectedIndexChanged(object sender, EventArgs e)
         {
             btnSearch.Enabled = true;
         }
+        #endregion
 
+        #region Buttons
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            PopulateTournamentsByYear(Convert.ToInt32(cbxYear.Text), RID);
+            dgvAllTournaments.DataSource = 
+                TournamentDB.GetTournamentsByYear(Convert.ToInt32(cbxYear.Text), RegionID);
         }
-
-        /// <summary>
-        /// Gets all the tournaments from a specific year
-        /// </summary>
-        /// <param name="selectedYear">Year selected</param>
-        public void PopulateTournamentsByYear(int selectedYear, int regionID)
-        {
-            NineTapDb db = new NineTapDb();
-            var tournaments = (from t in db.Tournaments
-                               orderby t.Date descending
-                               where t.Date.Year == selectedYear  && t.TourneyRegion == regionID
-                               select new
-                               {
-                                   t.Id,
-                                   t.Date,
-                                   t.Location,
-                                   t.Event,
-                                   t.Doubles,
-                                   t.ThreeOutOf4,
-                                   t.Notes,
-                                   t.Sponsors
-                               }).ToList();
-            dgvAllTournaments.DataSource = tournaments;
-        }
+        #endregion
     }
 }

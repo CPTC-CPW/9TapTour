@@ -18,7 +18,8 @@ namespace NineTapTour.Database
     public partial class PlayerHistoryForm : Form
     {
         private int id;
-       
+
+        #region PlayerHistoryForm
         public PlayerHistoryForm(int id)
         {
             InitializeComponent();
@@ -26,7 +27,7 @@ namespace NineTapTour.Database
             
             Member currentMember = MemberDB.GetMember(id,0 );
 
-            createDataGridView(id);
+            CreateDataGridView(id);
 
             lblFullName.Text = ($"Name : {currentMember.FirstName} {currentMember.LastName}");
             lblMemberNumber.Text = ($"Member Number: {currentMember.Number}");
@@ -38,25 +39,9 @@ namespace NineTapTour.Database
             // TODO: This line of code loads data into the '_NineTapTour_NineTapDbDataSet.Tournaments' table. You can move, or remove it, as needed.
             this.tournamentsTableAdapter.Fill(this._NineTapTour_NineTapDbDataSet.Tournaments);
         }
+        #endregion
 
-
-        private void createDataGridView(int id)
-        {
-            List<PlayerHistory> PlayerHistory = PlayerHistoryDB.GetTop30FromPlayerHistory(id);
-            dtvPlayerHistory.DataSource = DataView(id, PlayerHistory);
-
-            dtvPlayerHistory.SuspendLayout();
-            var column = dtvPlayerHistory.Columns[1];
-            for(int i = 2; i <= 15;  i++)
-            {
-                column = dtvPlayerHistory.Columns[i];
-                column.Width = 50;
-            }
-            dtvPlayerHistory.ResumeLayout();
-            dtvPlayerHistory.AllowUserToAddRows = false;
-        }
-
-
+        #region Dataview
         private DataTable DataView(int id, List<PlayerHistory> PlayerHistory)
         {
             var db = new NineTapDb();
@@ -104,5 +89,24 @@ namespace NineTapTour.Database
             }
             return dt;
         }
+        #endregion
+
+        #region Methods
+        private void CreateDataGridView(int id)
+        {
+            List<PlayerHistory> PlayerHistory = PlayerHistoryDB.GetTop30FromPlayerHistory(id);
+            dtvPlayerHistory.DataSource = DataView(id, PlayerHistory);
+
+            dtvPlayerHistory.SuspendLayout();
+            var column = dtvPlayerHistory.Columns[1];
+            for (int i = 2; i <= 15; i++)
+            {
+                column = dtvPlayerHistory.Columns[i];
+                column.Width = 50;
+            }
+            dtvPlayerHistory.ResumeLayout();
+            dtvPlayerHistory.AllowUserToAddRows = false;
+        }
+        #endregion
     }
 }

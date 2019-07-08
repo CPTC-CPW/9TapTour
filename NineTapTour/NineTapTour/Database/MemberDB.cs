@@ -100,6 +100,9 @@ namespace NineTapTour.Database
             }
         }
 
+        /// <summary>
+        /// Returns a list of all of the members with the same regionID as the one given
+        /// </summary>
         public static List<Member> GetMemberLabelList(int RegionID)
         {
             using (var db = new NineTapDb())
@@ -150,78 +153,45 @@ namespace NineTapTour.Database
         /// </summary>
         public static Member GetMember(int memberNumber, int regionID)
         {
-            Member currentMember = new Member();
             using (var db = new NineTapDb())
             {
-                var temp = (from m in db.Members
-                            where m.Number == memberNumber && m.NineTapRegionID == regionID
-                            select new
-                            {
-                                m.Average,
-                                m.Bonus,
-                                m.City,
-                                m.DateOfBirth,
-                                m.Email,
-                                m.FirstName,
-                                m.Gender,
-                                m.Handicap,
-                                m.Id,
-                                m.IsActive,
-                                m.IsLifetimeMember,
-                                m.IsSenior,
-                                m.JoinDate,
-                                m.LastBowled,
-                                m.LastName,
-                                m.LastPayment,
-                                m.MiddleInitial,
-                                m.MoneyEarned,
-                                m.Notes,
-                                m.Number,
-                                m.PostalCode,
-                                m.PrimaryPhone,
-                                m.Referrals,
-                                m.RejoinDate,
-                                m.SecondaryPhone,
-                                m.SSN,
-                                m.StartAvg,
-                                m.State,
-                                m.Street,
-                                m.NineTapRegionID
-                            });
-                foreach (var c in temp)
-                {
-                    currentMember.Average = c.Average;
-                    currentMember.Bonus = c.Bonus;
-                    currentMember.City = c.City;
-                    currentMember.DateOfBirth = c.DateOfBirth;
-                    currentMember.Email = c.Email;
-                    currentMember.FirstName = c.FirstName;
-                    currentMember.Gender = c.Gender;
-                    currentMember.Handicap = c.Handicap;
-                    currentMember.Id = c.Id;
-                    currentMember.IsActive = c.IsActive;
-                    currentMember.IsLifetimeMember = c.IsLifetimeMember;
-                    currentMember.IsSenior = c.IsSenior;
-                    currentMember.JoinDate = c.JoinDate;
-                    currentMember.LastBowled = c.LastBowled;
-                    currentMember.LastName = c.LastName;
-                    currentMember.LastPayment = c.LastPayment;
-                    currentMember.MiddleInitial = c.MiddleInitial;
-                    currentMember.MoneyEarned = c.MoneyEarned;
-                    currentMember.Notes = c.Notes;
-                    currentMember.Number = c.Number;
-                    currentMember.PostalCode = c.PostalCode;
-                    currentMember.PrimaryPhone = c.PrimaryPhone;
-                    currentMember.Referrals = c.Referrals;
-                    currentMember.RejoinDate = c.RejoinDate;
-                    currentMember.SecondaryPhone = c.SecondaryPhone;
-                    currentMember.SSN = c.SSN;
-                    currentMember.StartAvg = c.StartAvg;
-                    currentMember.State = c.State;
-                    currentMember.Street = c.Street;
-                    currentMember.NineTapRegionID = c.NineTapRegionID;
-                }
-                return currentMember;
+                Member member = (
+                    from m in db.Members
+                    where m.Number == memberNumber && m.NineTapRegionID == regionID
+                    select new Member
+                    {
+                        Average = m.Average,
+                        Bonus = m.Bonus,
+                        City = m.City,
+                        DateOfBirth = m.DateOfBirth,
+                        Email = m.Email,
+                        FirstName = m.FirstName,
+                        Gender = m.Gender,
+                        Handicap = m.Handicap,
+                        Id = m.Id,
+                        IsActive = m.IsActive,
+                        IsLifetimeMember = m.IsLifetimeMember,
+                        IsSenior = m.IsSenior,
+                        JoinDate = m.JoinDate,
+                        LastBowled = m.LastBowled,
+                        LastName = m.LastName,
+                        LastPayment = m.LastPayment,
+                        MiddleInitial = m.MiddleInitial,
+                        MoneyEarned = m.MoneyEarned,
+                        Notes = m.Notes,
+                        Number = m.Number,
+                        PostalCode = m.PostalCode,
+                        PrimaryPhone = m.PrimaryPhone,
+                        Referrals = m.Referrals,
+                        RejoinDate = m.RejoinDate,
+                        SecondaryPhone = m.SecondaryPhone,
+                        SSN = m.SSN,
+                        StartAvg = m.StartAvg,
+                        State = m.State,
+                        Street = m.Street,
+                        NineTapRegionID = m.NineTapRegionID
+                    }).SingleOrDefault();
+                return member;
             }
         }
 

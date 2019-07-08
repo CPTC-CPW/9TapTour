@@ -24,14 +24,13 @@ namespace NineTapTour.Forms
         /// </summary>
         private bool AppMustClose { get; set; }
 
-        public MainMenu mainmenu { get; set; }
+        public MainMenu MainMenu { get; set; }
         public int RegionID { get; set; }
 
         public Size MaxWorkAreaScreenSize { get; set; }
-        /////////////////////////////
         public System.Windows.Forms.ToolStripMenuItem Home { get; set; }
 
-
+        #region FrmMain
         /// <summary>
         /// Opens Main form 
         /// Retrieves information from the database in order.
@@ -54,13 +53,13 @@ namespace NineTapTour.Forms
 
             //sets the height and width of the parent form... this can not be resized later... all child forms must 
             //fit in its bounds... the only exception is using a scrollbar on the side or bottom...
-            setHeightAndWidth(MaxWorkAreaScreenSize);
+            SetHeightAndWidth(MaxWorkAreaScreenSize);
             
             //on start up make sure regionID is set 
             var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
             OpenOrDisplayForm(ref mainMenu);
-            RegionID = mainMenu.getRegionID();
-            mainmenu = mainMenu;
+            RegionID = mainMenu.GetRegionID();
+            MainMenu = mainMenu;
 
             //sets the first item of the menu bar to the active item and highlights it.
             activeItem = (System.Windows.Forms.ToolStripMenuItem)menMain.Items[0];
@@ -69,48 +68,13 @@ namespace NineTapTour.Forms
             newfrmStart.WindowState = FormWindowState.Maximized;
         }
 
-        /// <summary>
-        ///     this methoud takes in a Size (width and height) and will set the application to that size
-        ///     this size should be set to the working area of the primary monitior...
-        /// </summary>
-        /// <param name="workingArea">The working array of the primary monitor</param>
-        private void setHeightAndWidth(Size workingArea)
+        private void FrmMain_Load(object sender, EventArgs e)
         {
-            this.Size = workingArea;
+            Home = mainMenuToolStripMenuItem;
         }
+        #endregion
 
-        /// <summary>
-        /// Opens/Displays the specified form. Ensures the form is on top when selected.
-        /// </summary>
-        /// <typeparam name="T">forms that have already been opened(?)</typeparam>
-        /// <param name="form">forms that haven't been opened yet(?)</param>
-        public void OpenOrDisplayForm<T>(ref T form) where T : Form, new()
-        {
-            bool isSavedData = true;
-
-            if (isSavedData) //checks to see if you are leaving page without saved data.
-            {
-                if (form != null)
-                {
-                    
-                    form.BringToFront();
-                    form.Activate();
-                    
-                }
-                else
-                {
-                    form = new T
-                    {
-                        MdiParent = this,
-                        Dock = DockStyle.Fill                      
-               
-                    };
-                }
-                form.WindowState = FormWindowState.Maximized;
-                form.Show();
-            }
-        }
-
+        #region MainMenu
         //method to highlight menu item to show user which page they have open
         //also to disable button to current page
         private void menMain_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -147,77 +111,6 @@ namespace NineTapTour.Forms
             }
         }
 
-        /// <summary>
-        /// Opens the 'About' form
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void AboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var aboutForm = Application.OpenForms["About"] as FrmAbout;
-            OpenOrDisplayForm(ref aboutForm);
-        }
-
-        //this method is for the buttons on the main form
-        public void menuHighlight(string itemName)
-        {
-            if (activeItem != null)
-            {
-                activeItem.BackColor = SystemColors.Control;
-            }
-
-            for(int i = 0; i <= menMain.Items.Count; i++)
-            {
-                if (itemName == menMain.Items[i].Text)
-                {
-                    activeItem = (System.Windows.Forms.ToolStripMenuItem)menMain.Items[i];
-                    break;
-                }
-            }
-            activeItem.BackColor = SystemColors.ActiveCaption;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
-
-            OpenOrDisplayForm(ref mainMenu);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void memberToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
-            OpenOrDisplayForm(ref newfrmMemberData);
-            currFrmMemberData = newfrmMemberData;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
-            OpenOrDisplayForm(ref newfrmMemberScores);
-            currfrmScoresdata = newfrmMemberScores;
-            
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void menMain_ItemAdded(object sender, ToolStripItemEventArgs e)
         {
             var s = e.Item.GetType().ToString();
@@ -231,15 +124,84 @@ namespace NineTapTour.Forms
                 e.Item.Visible = false;
             }
         }
+        #endregion
 
+        #region ToolStrips
+        /// <summary>
+        /// Opens the About form
+        /// </summary>
+        public void AboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var aboutForm = Application.OpenForms["About"] as FrmAbout;
+            OpenOrDisplayForm(ref aboutForm);
+        }
+
+        /// <summary>
+        /// Opens the MainMenu form
+        /// </summary>
+        public void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
+            OpenOrDisplayForm(ref mainMenu);
+        }
+
+        /// <summary>
+        /// Opens FrmMemberData
+        /// </summary>
+        public void memberToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
+            OpenOrDisplayForm(ref newfrmMemberData);
+            currFrmMemberData = newfrmMemberData;
+        }
+
+        /// <summary>
+        /// Opens FrmMemberScores
+        /// </summary>
+        public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
+            OpenOrDisplayForm(ref newfrmMemberScores);
+            currfrmScoresdata = newfrmMemberScores;
+        }
+
+        /// <summary>
+        /// Downloads the 9TapUserManual
+        /// </summary>
+        private void userManualToolStripMenuItem_Click(object sender, EventArgs e)
+        {   // just need to find out the location that the program will install the manual and update the following line
+            System.Diagnostics.Process.Start(@"Resources\9TapUserManual.docx");
+        }
+
+        /// <summary>
+        /// Opens FrmLabelPrint
+        /// </summary>
+        private void labelPrintToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // next 3 lines were setting up for working the labels within the app parent still not fully functional as they didnt pass RegionID
+            // var newfrmPrintLabel = Application.OpenForms["FrmLabelPrint"] as FrmLabelPrint;
+            // OpenOrDisplayForm(ref newfrmPrintLabel);
+            // currLabelPrint = newfrmPrintLabel;
+
+            // opens new label print form
+            FrmLabelPrint labelsToPrint = new FrmLabelPrint(RegionID);
+            labelsToPrint.ShowDialog();
+        }
+
+        /// <summary>
+        /// Opens FrmUpdateActiveMem
+        /// </summary>
         private void updateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             //update the regionID
-            RegionID = mainmenu.getRegionID();
-            var UpdatefrmActiveMem = new FrmUpdateActiveMem(RegionID);          
+            RegionID = MainMenu.GetRegionID();
+            var UpdatefrmActiveMem = new FrmUpdateActiveMem(RegionID);
             UpdatefrmActiveMem.Show();
         }
 
+        /// <summary>
+        /// Opens the FolderBrowserDialong form
+        /// </summary>
         private void BackupDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderDialog = new FolderBrowserDialog();
@@ -252,6 +214,9 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// Opens the OpenFileDialog form
+        /// </summary>
         private void RestoreDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
@@ -269,29 +234,69 @@ namespace NineTapTour.Forms
                 }
             }
         }
+        #endregion
 
-        private void userManualToolStripMenuItem_Click(object sender, EventArgs e)
-        {   // just need to find out the location that the program will install the manual and update the following line
-            System.Diagnostics.Process.Start(@"Resources\9TapUserManual.docx");
-        }
-
-        private void FrmMain_Load(object sender, EventArgs e)
+        #region Methods
+        /// <summary>
+        /// Sets this.Size to the Size given, the given Size should be the 
+        /// height and width of the users main moniter
+        /// </summary>
+        /// <param name="workingArea">The working array of the primary monitor</param>
+        private void SetHeightAndWidth(Size workingArea)
         {
-            Home = mainMenuToolStripMenuItem;
+            this.Size = workingArea;
         }
 
-        
-        private void labelPrintToolStripMenuItem_Click(object sender, EventArgs e)
+        //this method is for the buttons on the main form
+        /// <summary>
+        /// Sets the item with the same itemName given to the SystemColors.Control
+        /// </summary>
+        public void MenuHighlight(string itemName)
         {
-            // next 3 lines were setting up for working the labels within the app parent still not fully functional as they didnt pass RegionID
-            // var newfrmPrintLabel = Application.OpenForms["FrmLabelPrint"] as FrmLabelPrint;
-            // OpenOrDisplayForm(ref newfrmPrintLabel);
-            // currLabelPrint = newfrmPrintLabel;
+            if (activeItem != null)
+            {
+                activeItem.BackColor = SystemColors.Control;
+            }
 
-            // opens new label print form
-            FrmLabelPrint labelsToPrint = new FrmLabelPrint(RegionID);
-            labelsToPrint.ShowDialog();
-
+            for (int i = 0; i <= menMain.Items.Count; i++)
+            {
+                if (itemName == menMain.Items[i].Text)
+                {
+                    activeItem = (System.Windows.Forms.ToolStripMenuItem)menMain.Items[i];
+                    break;
+                }
+            }
+            activeItem.BackColor = SystemColors.ActiveCaption;
         }
+
+        /// <summary>
+        /// Opens/Displays the specified form. Ensures the form is on top when selected.
+        /// </summary>
+        /// <typeparam name="T">forms that have already been opened(?)</typeparam>
+        /// <param name="form">forms that haven't been opened yet(?)</param>
+        public void OpenOrDisplayForm<T>(ref T form) where T : Form, new()
+        {
+            bool isSavedData = true;
+
+            if (isSavedData) //checks to see if you are leaving page without saved data.
+            {
+                if (form != null)
+                {
+                    form.BringToFront();
+                    form.Activate();
+                }
+                else
+                {
+                    form = new T
+                    {
+                        MdiParent = this,
+                        Dock = DockStyle.Fill
+                    };
+                }
+                form.WindowState = FormWindowState.Maximized;
+                form.Show();
+            }
+        }
+        #endregion
     }
 }

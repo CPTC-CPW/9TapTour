@@ -110,6 +110,30 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
+        /// Gets all the tournaments from a specific year
+        /// </summary>
+        public static List<Tournament> GetTournamentsByYear(int selectedYear, int regionID)
+        {
+            NineTapDb db = new NineTapDb();
+            List<Tournament> tournamentList =
+                (from t in db.Tournaments
+                 orderby t.Date descending
+                 where t.Date.Year == selectedYear && t.TourneyRegion == regionID
+                 select new Tournament
+                 {
+                     Id = t.Id,
+                     Date = t.Date,
+                     Location = t.Location,
+                     Event = t.Event,
+                     Doubles = t.Doubles,
+                     ThreeOutOf4 = t.ThreeOutOf4,
+                     Notes = t.Notes,
+                     Sponsors = t.Sponsors
+                 }).ToList();
+            return tournamentList;
+        }
+
+        /// <summary>
         /// Get the total number of Participants in the given Tournament
         /// </summary>
         public static int GetTotalNumberParticipantsInTournament(Tournament tourn)
