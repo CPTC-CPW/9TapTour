@@ -421,28 +421,17 @@ namespace NineTapTour.Forms
             // btnSave_Click and adds a member into the database.
             if (IsValidTextboxes())
             {
-                //checks to see if MemberID exists
+                //create temporary member for validation
                 Member temp = new Member();
                 temp.Number = Convert.ToInt32(txtMemberNumber.Text);
                 temp.IsActive = rdoActive.Checked;
-
-                if (!String.IsNullOrWhiteSpace(txtDateJoined.Text))
-                {
-                    DateTime date;
-                    if(DateTime.TryParse(txtDateJoined.Text, out date))
-                    {
-                        temp.JoinDate = date;
-                    }
-                }
-                else
-                {
-                    temp.JoinDate = null;
-                }
 
                 // Personal Info
                 temp.LastName = txtLastName.Text;
                 temp.FirstName = txtFirstName.Text;
                 temp.MiddleInitial = txtMiddleInitial.Text;
+
+                temp.JoinDate = DateTime.Parse(txtDateJoined.Text);
 
                 if (!String.IsNullOrWhiteSpace(txtDOB.Text))
                 {
