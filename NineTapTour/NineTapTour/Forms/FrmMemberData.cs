@@ -402,6 +402,15 @@ namespace NineTapTour.Forms
                 txtDateJoined.BackColor = Color.LightPink;
                 valid = false;
             }
+
+            // validate DOB textbox
+            if (!FormHelper.IsDateTimeValid(txtDOB.Text))
+            {
+                lblDOBValidation.Visible = true;
+                txtDOB.BackColor = Color.LightPink;
+                valid = false;
+            }
+
             return valid;
         }
 
@@ -432,20 +441,8 @@ namespace NineTapTour.Forms
                 temp.MiddleInitial = txtMiddleInitial.Text;
 
                 temp.JoinDate = DateTime.Parse(txtDateJoined.Text);
-
-                if (!String.IsNullOrWhiteSpace(txtDOB.Text))
-                {
-                    DateTime date;
-                    if (DateTime.TryParse(txtDOB.Text, out date))
-                    {
-                        temp.DateOfBirth = date;
-                    }
-                }
-                else
-                {
-                    temp.DateOfBirth = null;
-                }
-
+                temp.DateOfBirth = DateTime.Parse(txtDOB.Text);
+                
                 DateTime senior = DateTime.Now.AddYears(-50);
 
                 if (senior >= temp.DateOfBirth)
