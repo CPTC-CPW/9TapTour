@@ -111,7 +111,7 @@ namespace NineTapTour.Database
             double avg = (from p in db.PlayerHistory
                           where p.MemberNumber == memberNumber && p.regionID == regionid
                           orderby p.TournamentDate descending
-                          select p.AverageForGame).Take(howmany).Average();
+                          select p.AverageForEntry).Take(howmany).Average();
             return avg;
             /*
             var temp = (from p in db.PlayerHistory
