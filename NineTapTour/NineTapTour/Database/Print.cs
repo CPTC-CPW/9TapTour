@@ -239,14 +239,23 @@ namespace NineTapTour.Database
                 // Decides if the last date the member paid their dues prints on the page
                 string unpaid = string.Empty;
 
+                // Gets lastPaymentYear, and adds one year
+                string lastPaymentYear = temp[i + (index * 40)].LastPaymentYear;
+                int year;
+                int.TryParse(lastPaymentYear, out year);
+                year += 1;
+
                 //handle members that don't have payment information
-                if(printDues && string.IsNullOrWhiteSpace(temp[i +(index * 40)].LastPaymentYear))
+                if (printDues && string.IsNullOrWhiteSpace(temp[i +(index * 40)].LastPaymentYear))
                 {
                     unpaid = "N/A";
                 }
-                else if(printDues && Convert.ToInt16(temp[i +(index * 40)].LastPaymentYear) < DateTime.Now.Year)
+                else if(printDues && lastPaymentYear.Equals("life "))
                 {
                     unpaid = temp[i + (index * 40)].LastPaymentYear;
+                } else if(printDues)
+                {
+                    unpaid = Convert.ToString(year);
                 }
 
                 //create name string containing lastname, firstname, and last payment

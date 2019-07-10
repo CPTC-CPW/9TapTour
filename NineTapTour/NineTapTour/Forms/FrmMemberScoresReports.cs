@@ -1,14 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using NineTapTour.Database;
 using NineTapTour.Models;
 using static NineTapTour.Database.ReportHelper;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -186,11 +179,16 @@ namespace NineTapTour.Forms
                 xlWorkSheet.Cells[3, 5] = selectedTournament.Date;
                 // adds changes game or series as needed
                 xlWorkSheet.Cells[4, 2] = reportLabelToSave;
+                
+
+
                 int printDuesOffset = 0;
                 if ( printDues )
                 {
+                    xlWorkSheet.Cells[4, 5] = "Membership Paid To";
                     printDuesOffset = 1;
                 }
+
                 //// use these loops to populate data to be displayed
                 for (i = 5; i <= numMembers + 4; i++)
                 {
@@ -232,8 +230,22 @@ namespace NineTapTour.Forms
 
                         //Add Membership Paid To
                         if (j == 5)
-                        { 
-                            xlWorkSheet.Cells[i, j] = temp[i - 5].LastPaymentYear;
+                        {
+                            String paymentYear = temp[i - 5].LastPaymentYear;
+                            if (paymentYear != "") {
+                                if (paymentYear != "life ")
+                                {
+                                    int year = 0;
+                                    int.TryParse(paymentYear, out year);
+                                    year += 1;
+                                    paymentYear = Convert.ToString(year);
+                                    xlWorkSheet.Cells[i, j] = paymentYear;
+                                } else
+                                {
+                                    
+                                    xlWorkSheet.Cells[i, j] = temp[i - 5].LastPaymentYear;
+                                }
+                            }
                         }
                     }
                 }
@@ -266,10 +278,11 @@ namespace NineTapTour.Forms
                 releaseObject(xlWorkBook);
                 releaseObject(xlApp);
             }
-            catch
+            catch (Exception e)
             {
                 // if the workbook does not get opened, display an error message
                 MessageBox.Show("Must choose a file to export to.");
+                MessageBox.Show(e.StackTrace);
                 xlWorkBook.Close(true, misValue, misValue);
                 xlApp.Quit();
             }
@@ -290,7 +303,7 @@ namespace NineTapTour.Forms
             catch (Exception ex)
             {
                 obj = null;
-                MessageBox.Show("Exception Occured while releasing object " + ex.ToString());
+                MessageBox.Show("Exception Occurred while releasing object " + ex.ToString());
             }
             finally
             {
