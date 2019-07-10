@@ -218,7 +218,7 @@ namespace NineTapTour.Database
             // drawing the header of the data
             if (printDues)
             {
-                graphic.DrawString("       " + reportType + "     Mem No       Name                                  Membership Paid Through", font, dBrush, startX + 8, startY + 133);
+                graphic.DrawString("       " + reportType + "     Mem No       Name                                  Membership Paid To", font, dBrush, startX + 8, startY + 133);
             }
             else {
                 graphic.DrawString("       " + reportType + "     Mem No       Name", font, dBrush, startX + 8, startY + 133);
