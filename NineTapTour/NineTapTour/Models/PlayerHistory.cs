@@ -36,7 +36,7 @@ namespace NineTapTour.Models
 
 
 
-        public double AverageForGame { get; set;}
+        public double AverageForEntry { get; set;}
 
         public double trueAVG { get; set; }
 

@@ -1037,7 +1037,7 @@ namespace NineTapTour.Forms
                             p.Game2,
                             p.Game3,
                             p.Game4,
-                            p.AverageForGame,
+                            p.AverageForEntry,
                             p.trueAVG,
                         }).Take(30).ToList();
 
@@ -1045,7 +1045,7 @@ namespace NineTapTour.Forms
             {
                 foreach (var item in temp)
                 {
-                    sum += Convert.ToDouble(item.AverageForGame);
+                    sum += Convert.ToDouble(item.AverageForEntry);
                 }
                 return (avg = sum / temp.Count());
             }
@@ -1349,7 +1349,7 @@ namespace NineTapTour.Forms
                         try
                         {
                             temp.AverageOfRow = Convert.ToDouble((range.Cells[row, 8] as Excel.Range).Value2);
-                            playerH.AverageForGame = temp.AverageOfRow;
+                            playerH.AverageForEntry = temp.AverageOfRow;
                         }
                         catch
                         {
