@@ -294,7 +294,7 @@ namespace NineTapTour.Forms
                 }
 
                 temp.Notes = item.Notes;
-                temp.MemberNumber = MemberDb.GetMemberNumberbyID(item.MemberId);
+                temp.MemberNumber = MemberDB.GetMemberNumberbyID(item.MemberId);
                 temp.MemberId = item.MemberId;
                 temp.FirstName = item.FirstName;
                 temp.LastName = item.LastName;
@@ -339,7 +339,7 @@ namespace NineTapTour.Forms
                 #endregion
 
                 #region recalculate league average if is new entry
-                List<PlayerHistory> ExistingPlayerHistory = PlayerHistoryDB.getMemberPlayerHistory(item.MemberNumber, RegionID);
+                List<PlayerHistory> ExistingPlayerHistory = PlayerHistoryDB.GetMemberPlayerHistory(item.MemberNumber, RegionID);
                 if (ExistingPlayerHistory.Count == 0)
                 {
                     temp.LeagueAverage = CalcThirtyLeagueAverage(item.MemberNumber, FinalizeTableList.Where(f => f.MemberNumber == item.MemberNumber && f.Squad <= item.Squad && (f.UseGame1 || f.UseGame2 || f.UseGame3 || f.UseGame4)).Select(f => f.GameAvg).ToList());
@@ -830,7 +830,7 @@ namespace NineTapTour.Forms
 
                 newRow["Scratch Total"] = item.TotalScore;
                 newRow["Total w/HDCP"] = item.TotalScore + ((item.HandiCap + item.Bonus) * item.GamesPlayed);
-                newRow["Entry AVG"] = item.AverageForGame;
+                newRow["Entry AVG"] = item.AverageForEntry;
                 newRow["30 AVG"] = item.trueAVG;
 
                 if (item.AVG == 0)
@@ -856,7 +856,7 @@ namespace NineTapTour.Forms
             dtGames.Columns[moneyWon].ColumnName = moneyWonWithTotal;
 
             // Player histories from the db that are not in the current tournament
-            List<PlayerHistory> currentHistory = PlayerHistoryDB.getMemberPlayerHistoryCount(temporary[0].MemberNumber, RegionID);
+            List<PlayerHistory> currentHistory = PlayerHistoryDB.GetMemberPlayerHistoryCount(temporary[0].MemberNumber, RegionID);
 
             var currentPlayerHistory = currentHistory.OrderByDescending(p => p.TournamentDate).ThenByDescending(s => s.MoneyWon);
             foreach (var item in currentPlayerHistory)
@@ -947,7 +947,7 @@ namespace NineTapTour.Forms
             using (var db = new NineTapDb())
             {
                 int memberNumber = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Number;
-                Member Cmember = MemberDb.GetMember(memberNumber, RegionID);
+                Member Cmember = MemberDB.GetMember(memberNumber, RegionID);
 
                 // Sets labels for selected member
                 lblMemberNumber.Text = Cmember.Number.ToString();
@@ -1022,7 +1022,7 @@ namespace NineTapTour.Forms
                             p.PPHG = Convert.ToString(TournamentEntriesGrid.Rows[i].Cells[STANDING_COLUMN].Value);
                             p.ProPot = TournamentEntriesGrid[PRO_POT_COLUMN, i].Value.ToString();
                             p.Notes = TournamentEntriesGrid[NOTES_COLUMN_, i].Value.ToString();
-                            p.AverageForGame = Convert.ToDouble(TournamentEntriesGrid[ENTRY_AVERAGE_COLUMN, i].Value);
+                            p.AverageForEntry = Convert.ToDouble(TournamentEntriesGrid[ENTRY_AVERAGE_COLUMN, i].Value);
                             p.trueAVG = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
                             p.AVG = Convert.ToInt32(TournamentEntriesGrid[ADJUSTED_AVG_COLUMN, i].Value);
 
@@ -1104,7 +1104,7 @@ namespace NineTapTour.Forms
                     ph.GameID = currGameId;
 
                     Game currGame = GameDB.GetGame(currGameId);
-                    Member currMember = MemberDb.GetMemberByGameId(currGameId);
+                    Member currMember = MemberDB.GetMemberByGameId(currGameId);
 
                     ph.TournamentDate = currTournament.Date;
                     ph.MemberNumber = currMember.Number;
@@ -1161,7 +1161,7 @@ namespace NineTapTour.Forms
                     ph.GamesPlayed = gamesPlayed;
                     #endregion
 
-                    ph.AverageForGame = FinalizeTableList[i].GameAvg;
+                    ph.AverageForEntry = FinalizeTableList[i].GameAvg;
                     ph.trueAVG = FinalizeTableList[i].LeagueAverage;
 
 
@@ -1199,7 +1199,7 @@ namespace NineTapTour.Forms
                     currGame.Notes = TournamentEntriesGrid[NOTES_COLUMN_, currDataGridRowIndex].Value.ToString();
                     ph.Notes = currGame.Notes;
                     currMember.StartAvg = ph.AVG;
-                    ph.hisID = PlayerHistoryDB.getHisID(ph);
+                    ph.hisID = PlayerHistoryDB.GetHisID(ph);
                     ph.regionID = RegionID;
                     currGame.gameRegionID = RegionID;
 
@@ -1209,7 +1209,7 @@ namespace NineTapTour.Forms
                         PlayerHistoryDB.AddOrUpdatePlayerHistory(ph);
                     }
                     GameDB.AddOrUpdateGame(currGame);
-                    MemberDb.AddOrUpdateMember(currMember);
+                    MemberDB.AddOrUpdateMember(currMember);
 
                     FinalizeTableList[i].FinalizeID = FinalizeTempDB.GetFinalizeID(currGame).FinalizeID;
                     FinalizeTableList[i].AdjustedAvg = ph.AVG;
@@ -1281,22 +1281,17 @@ namespace NineTapTour.Forms
         /// <returns></returns>
         private int CalcThirtyLeagueAverage(int memberNum, List<int> currGameAverages)
         {
-            List<PlayerHistory> playerHistory = PlayerHistoryDB.getMemberPlayerHistory(memberNum, RegionID);
-            int avgOfAllGameAverages = 
-                Convert.ToInt32(FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) + currGameAverages.Sum());
-            return avgOfAllGameAverages;
-            #region Refactored Code
-            /*
-            if (playerHistory.Count >= 30 || (playerHistory.Count + currGameAverages.Count) > 30)
-            {
-                return avgOfAllGameAverages / 30;
+            List<PlayerHistory> playerHistory = PlayerHistoryDB.GetMemberPlayerHistory(memberNum, RegionID);
+            if (playerHistory.Count >= 30 || (playerHistory.Count + currGameAverages.Count) >= 30) { 
+                int newAverage = 
+                Convert.ToInt32(FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) /30);
+            return newAverage;         
             }
             else
             {
-                return avgOfAllGameAverages / (playerHistory.Count + currGameAverages.Count);
+                return Convert.ToInt32((FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 29, RegionID) + currGameAverages.Sum())/ (playerHistory.Count + currGameAverages.Count));
             }
-            */
-            #endregion
+            
         }
 
         // Removed unused getLeagueSum method which was meant to calculate the League Average on 3/18/19. League Average is

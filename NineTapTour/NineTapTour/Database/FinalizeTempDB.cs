@@ -25,7 +25,9 @@ namespace NineTapTour.Database
                           join t in db.Tournaments on p.Tournament.Id equals t.Id
                           where mem.Id == m.Id
                           orderby t.Date descending
-                          select (g.Game1 + g.Game2 + g.Game3 + g.Game4)/4).Take(howmany).Average();
+                          select (g.Game1 + g.Game2 + g.Game3 + g.Game4) / 
+                          4-((g.UseGame1??false?0:1) + (g.UseGame2??false?0:1) + (g.UseGame3??false?0:1) + (g.UseGame4??false?0:1))
+                          ).Take(howmany).Average();
             return avg;
             #region Refactored Code
             /*
@@ -104,25 +106,14 @@ namespace NineTapTour.Database
         public static double LeagueAvgFromPlayerHistory(int memberNumber, int howmany, int regionid)
         {
             var db = new NineTapDb();
-
-            // Calculates the Sum as the query instead of grabing all the data
-            try
-            {
-                double avg = (from p in db.PlayerHistory
-                               where p.MemberNumber == memberNumber && p.regionID == regionid
-                               orderby p.TournamentDate descending
-                               select p.AverageForGame).Take(howmany).Average();
-                return avg;
-            }
-            catch (InvalidOperationException ioe)
-            {
-                /* The ONLY way for AverageForGame to be null is 
-                 if they have never played a game */
-                return 0;
-            }
-            #region Refactored Code
-            /*
             double sum = 0;
+            // Calculates the Sum as the query instead of grabing all the data
+            double avg = (from p in db.PlayerHistory
+                          where p.MemberNumber == memberNumber && p.regionID == regionid
+                          orderby p.TournamentDate descending
+                          select p.AverageForEntry).Take(howmany).Average();
+            return avg;
+            /*
             var temp = (from p in db.PlayerHistory
                         where p.MemberNumber == memberNumber && p.regionID == regionid
                         orderby p.TournamentDate descending
@@ -147,7 +138,6 @@ namespace NineTapTour.Database
             }
             return 0;
             */
-            #endregion
         }
 
         /// <summary>

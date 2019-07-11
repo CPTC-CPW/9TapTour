@@ -154,7 +154,7 @@ namespace NineTapTour.Forms
         private void FillGrid()
         {
             dtagrdResults.DataSource = null;
-            List<Member> memList = MemberDb.GetMemberList(RegionID);
+            List<Member> memList = MemberDB.GetMemberList(RegionID);
             dtagrdResults.DataSource = memList;
             AdvancedViewCheck();
         }
