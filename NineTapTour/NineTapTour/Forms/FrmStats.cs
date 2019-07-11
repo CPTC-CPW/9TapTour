@@ -344,7 +344,7 @@ namespace NineTapTour.Forms
                             p.Game4,
                             ScratchTotal = p.Game1 + p.Game2 + p.Game3 + p.Game4,
                             TotalScore = (p.Game1 + p.Bonus + p.HandiCap) + (p.Game2 + p.Bonus + p.HandiCap) + (p.Game3 + p.Bonus + p.HandiCap) + (p.Game4 + p.Bonus + p.HandiCap),
-                            p.AverageForGame,
+                            p.AverageForEntry,
                             p.trueAVG,
                             p.AVG,
                             p.HandiCap,
@@ -621,7 +621,7 @@ namespace NineTapTour.Forms
                     //skip total score with handicap. not apart of Playerhistory class
                     saveY++;
 
-                    pHist[saveX].AverageForGame = Convert.ToDouble(pHist[saveX].TotalScore / pHist[saveX].GamesPlayed);
+                    pHist[saveX].AverageForEntry = Convert.ToDouble(pHist[saveX].TotalScore / pHist[saveX].GamesPlayed);
 
                     saveY++;
 
