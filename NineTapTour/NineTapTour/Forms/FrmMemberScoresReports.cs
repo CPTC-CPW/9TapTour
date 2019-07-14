@@ -282,7 +282,7 @@ namespace NineTapTour.Forms
             {
                 // if the workbook does not get opened, display an error message
                 MessageBox.Show("Must choose a file to export to.");
-                MessageBox.Show(e.StackTrace);
+                //MessageBox.Show(e.StackTrace);
                 xlWorkBook.Close(true, misValue, misValue);
                 xlApp.Quit();
             }
