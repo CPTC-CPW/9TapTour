@@ -532,7 +532,6 @@ namespace NineTapTour.Forms
                     }
                 }
             }
-            TournamentEntriesGrid.EndEdit();
         }
 
         /// <summary>
@@ -621,7 +620,7 @@ namespace NineTapTour.Forms
         /// <param name="row"></param>
         private void UpdateAvg(int row)
         {
-            //this.TournamentEntriesGrid.CellValueChanged -= this.dataGridView1_OnCellValueChanged;
+            this.TournamentEntriesGrid.CellValueChanged -= this.dataGridView1_OnCellValueChanged;
             int sum = 0;
             int sumAndHand = 0;
             int count = 0;
@@ -1034,7 +1033,6 @@ namespace NineTapTour.Forms
                    //catches the instance where cells technically do not exist. will not refresh if they dont exist yet.
                 }
             }
-            TournamentEntriesGrid.EndEdit();
         }
 
         /// <summary>
