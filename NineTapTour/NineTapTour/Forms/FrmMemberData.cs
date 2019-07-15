@@ -434,15 +434,16 @@ namespace NineTapTour.Forms
                 Member temp = new Member();
                 temp.Number = Convert.ToInt32(txtMemberNumber.Text);
                 temp.IsActive = rdoActive.Checked;
+                temp.JoinDate = DateTime.Parse(txtDateJoined.Text);
 
                 // Personal Info
                 temp.LastName = txtLastName.Text;
                 temp.FirstName = txtFirstName.Text;
-                temp.MiddleInitial = txtMiddleInitial.Text;
-
-                temp.JoinDate = DateTime.Parse(txtDateJoined.Text);
+                temp.MiddleInitial = txtMiddleInitial.Text;                              
                 temp.DateOfBirth = DateTime.Parse(txtDOB.Text);
-                
+                temp.SSN = txtSSN.Text;
+                temp.Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male;
+
                 //if member was born more than 50 years ago, then member is a senior. If member is a senior, check the isSenior checkbox and set temp.IsSenior to true
                 DateTime senior = DateTime.Now.AddYears(-50);
                 if (senior >= temp.DateOfBirth)
@@ -455,9 +456,7 @@ namespace NineTapTour.Forms
                 }
                 temp.IsSenior = chbSenior.Checked;
 
-                temp.SSN = txtSSN.Text;
-                
-                temp.Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male;
+            
 
                 // Postal Address
                 temp.Street = txtAddress.Text;
