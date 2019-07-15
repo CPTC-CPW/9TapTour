@@ -893,13 +893,7 @@ namespace NineTapTour.Forms
         {
             Print.printAllMembers();
         }
-
-        //private void btnLabels_Click(object sender, EventArgs e)
-        //{
-        //    FrmLabelPrint labels = new FrmLabelPrint(RegionID);
-        //    labels.ShowDialog();
-        //}
-        
+            
         /// <summary>
         /// This action event assigns current form as currFrmMemberData in
         /// FrmMains' global Variable property when leaving form. This allows 
