@@ -905,40 +905,7 @@ namespace NineTapTour.Forms
         private void FrmMemberData_Leave(object sender, EventArgs e)
         {
             ((FrmMain)MdiParent).currFrmMemberData = this;
-        }
-
-     
-  
-        public double LeagueAvgFromPlayerHistory(Member mem)
-        {
-            double sum = 0;
-            double avg = 0;
-            var db = new NineTapDb();
-
-            var temp = (from p in db.PlayerHistory
-                        where p.MemberNumber == mem.Number
-                        orderby p.TournamentDate descending, p.hisID descending
-                        select new
-                        {
-                            p.TournamentDate,
-                            p.Game1,
-                            p.Game2,
-                            p.Game3,
-                            p.Game4,
-                            p.AverageForEntry,
-                            p.trueAVG,
-                        }).Take(30).ToList();
-
-            if (temp.Count > 0)
-            {
-                foreach (var item in temp)
-                {
-                    sum += Convert.ToDouble(item.AverageForEntry);
-                }
-                return (avg = sum / temp.Count());
-            }
-            return 0;
-        }
+        }    
       
         private void btnImportData_Click(object sender, EventArgs e)
         {
