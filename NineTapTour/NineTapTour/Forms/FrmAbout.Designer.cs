@@ -45,9 +45,10 @@
             // 
             this.lblFrmAboutText.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lblFrmAboutText.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFrmAboutText.Location = new System.Drawing.Point(170, 197);
+            this.lblFrmAboutText.ForeColor = System.Drawing.SystemColors.Control;
+            this.lblFrmAboutText.Location = new System.Drawing.Point(130, 197);
             this.lblFrmAboutText.Name = "lblFrmAboutText";
-            this.lblFrmAboutText.Size = new System.Drawing.Size(600, 350);
+            this.lblFrmAboutText.Size = new System.Drawing.Size(670, 350);
             this.lblFrmAboutText.TabIndex = 2;
             this.lblFrmAboutText.Text = resources.GetString("lblFrmAboutText.Text");
             // 
