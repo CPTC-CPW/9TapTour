@@ -117,9 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="rtbFrmAboutText.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="lblFrmAboutText.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="lblFrmAboutText.Text" xml:space="preserve">
+    <value>9 -Tap Tour Inc. is a unique, fun, and professionally run tournament. 
+Members enjoy our "Beat the Board" format, with four games per squad. The fun, big payouts, special pots, and the 9-Tap version of bowling itself, brings new excitement to tournaments. 
+
+Approximately one bowler in every 5 entries will cash out. Other optional ways to cash are: 9-Tap Jackpots, Progressive Pots, High Game Pots, Brackets, Scratch Games, Series Pots, and more; Depending on where and when you bowl, these Side Pots may vary from time to time. 9-Tap Tour also has BIG added tournaments. Each quarterly tournament may have eligibility requirements for members who bowl during that quarter.
+ </value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
