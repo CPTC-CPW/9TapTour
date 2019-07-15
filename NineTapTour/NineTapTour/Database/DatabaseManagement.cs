@@ -16,7 +16,7 @@ namespace NineTapTour.Database
         /// </summary>
         private static string CreateBackupName()
         {
-            return "NineTapDBBackup_" + DateTime.Now.ToString("d-MMM-yyyy-hmmss") + ".bak";
+            return "NineTapDBBackup_" + DateTime.Now.ToString("dd-MM-yyyy-hmmss") + ".bak";
         }
 
         /// <summary>
@@ -61,22 +61,12 @@ namespace NineTapTour.Database
             string query = "USE master " +
                            "ALTER DATABASE [NineTapTour.NineTapDb] SET SINGLE_USER WITH ROLLBACK IMMEDIATE " +
                            "RESTORE DATABASE @dbName FROM DISK = @restorePath WITH REPLACE";
-
-            try
-            {
-                db.Database.ExecuteSqlCommand(
-                    TransactionalBehavior.DoNotEnsureTransaction,
-                    query,
-                    new SqlParameter("@dbName", db.Database.Connection.Database),
-                    new SqlParameter("@restorePath", restorePath)
-                    );
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
+            db.Database.ExecuteSqlCommand(
+                TransactionalBehavior.DoNotEnsureTransaction,
+                query,
+                new SqlParameter("@dbName", db.Database.Connection.Database),
+                new SqlParameter("@restorePath", restorePath)
+                );
             return true;
         }
     }

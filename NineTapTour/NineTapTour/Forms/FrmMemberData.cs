@@ -53,7 +53,7 @@ namespace NineTapTour.Forms
             }
 
             RegionID = ((FrmMain)MdiParent).RegionID;
-            List<Member> ListOfMembers = MemberDb.GetMemberList(RegionID);
+            List<Member> ListOfMembers = MemberDB.GetMemberList(RegionID);
             toolTip1.IsBalloon = true;
             txtDateJoined.MaskInputRejected += new MaskInputRejectedEventHandler(DateMaskTextBoxInput_MaskInputRejected);
             txtDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDOB_KeyDown);
@@ -131,7 +131,7 @@ namespace NineTapTour.Forms
 				d.BackColor = Color.LightGray;
 			}
 
-            int memberCount = MemberDb.GetMemberListCount(RegionID);
+            int memberCount = MemberDB.GetMemberListCount(RegionID);
 
             // set txtMemberNumber.Text back to one if there is no one in the the 
             // current selected region added yet
@@ -150,7 +150,7 @@ namespace NineTapTour.Forms
 
             if (searchMem == null)
             {
-                currentMem = MemberDb.GetMember(_memberNum,RegionID);
+                currentMem = MemberDB.GetMember(_memberNum,RegionID);
                 List<PlayerHistory> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
                 if (last5.Count >= 1)
                 {   //whatever the bowler director decides his average to be is right. 
@@ -569,13 +569,13 @@ namespace NineTapTour.Forms
 
                 // check to see if memberId exists before putting it in 
                 // current selected regions database
-                if(MemberDb.MemberExists(temp))
+                if(MemberDB.MemberExists(temp))
                 {
-                    memId = MemberDb.GetMemberIdByNumber(temp.Number, RegionID, new NineTapDb());
+                    memId = MemberDB.GetMemberIdByNumber(temp.Number, RegionID, new NineTapDb());
                 }
                 else
                 {
-                    memId = MemberDb.GetMemberListCount(RegionID) + 1;
+                    memId = MemberDB.GetMemberListCount(RegionID) + 1;
                 }
 
                 temp.Id = memId;
@@ -626,12 +626,12 @@ namespace NineTapTour.Forms
                 // Adds Member to Database
                 try
                 {
-                    MemberDb.AddOrUpdateMember(temp);
+                    MemberDB.AddOrUpdateMember(temp);
 #if DEBUG
                     MessageBox.Show("Member saved");
 #endif
                     ((FrmMain)MdiParent)._membersList = 
-                        MemberDb.GetMemberList(RegionID).OrderBy(m => m.Number);
+                        MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
                     UpdateMemberInfo();
                 }
                 catch (MemberTableException ex)
@@ -651,7 +651,7 @@ namespace NineTapTour.Forms
         {
             //cursor begins when arrow is clicked
             Cursor.Current = Cursors.WaitCursor;
-            List<Member> m = MemberDb.GetMemberList(RegionID);
+            List<Member> m = MemberDB.GetMemberList(RegionID);
             if (m.Count == 0 || currentMem.Number <= m[0].Number)
             {
                 //turns loading cursor off.
@@ -678,7 +678,7 @@ namespace NineTapTour.Forms
         {
             //turns on a loading cursor while new bowler is loaded.
             Cursor.Current = Cursors.WaitCursor;
-            int memberCount = MemberDb.GetMemberListCount(RegionID);
+            int memberCount = MemberDB.GetMemberListCount(RegionID);
             if (memberCount == 0 ||
                 currentMem.Number >= memberCount)
             {
@@ -728,7 +728,7 @@ namespace NineTapTour.Forms
             _memberId = -1;
 
             //get latest member number, or set to 1 if no members in database
-            int nextMemberNumber = MemberDb.GetMemberListCount(RegionID) + 1;
+            int nextMemberNumber = MemberDB.GetMemberListCount(RegionID) + 1;
             txtMemberNumber.Text = nextMemberNumber.ToString();
 
             currentMem = new Member
@@ -751,7 +751,7 @@ namespace NineTapTour.Forms
         {
             try
             {
-                txtMemberNumber.Text = MemberDb.GetMemberList(RegionID)[0].Number.ToString();
+                txtMemberNumber.Text = MemberDB.GetMemberList(RegionID)[0].Number.ToString();
                 UpdateMemberInfo();
             }
             catch
@@ -767,7 +767,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnLastRecord_Click(object sender, EventArgs e)
         {
-            txtMemberNumber.Text = MemberDb.GetMemberListCount(RegionID).ToString();
+            txtMemberNumber.Text = MemberDB.GetMemberListCount(RegionID).ToString();
             UpdateMemberInfo();
         }
         
@@ -909,7 +909,7 @@ namespace NineTapTour.Forms
         {
             foreach(var m in temp)
             {
-                MemberDb.AddOrUpdateMember(m); 
+                MemberDB.AddOrUpdateMember(m); 
             }
         }
 
@@ -921,7 +921,7 @@ namespace NineTapTour.Forms
         public Boolean IsSavedData()
         {
             bool isMember = false;
-            foreach (Member mem in MemberDb.GetALLMembersList())
+            foreach (Member mem in MemberDB.GetAllMembersList())
             {
                 if (mem.Id == (currentMem.Id))
                 {
@@ -1066,7 +1066,7 @@ namespace NineTapTour.Forms
                             p.Game2,
                             p.Game3,
                             p.Game4,
-                            p.AverageForGame,
+                            p.AverageForEntry,
                             p.trueAVG,
                         }).Take(30).ToList();
 
@@ -1074,7 +1074,7 @@ namespace NineTapTour.Forms
             {
                 foreach (var item in temp)
                 {
-                    sum += Convert.ToDouble(item.AverageForGame);
+                    sum += Convert.ToDouble(item.AverageForEntry);
                 }
                 return (avg = sum / temp.Count());
             }
@@ -1092,7 +1092,7 @@ namespace NineTapTour.Forms
                 List<ExcelRow> rows = new List<ExcelRow>();
 
                 List<PlayerHistory> AlreadyImportedPH = 
-                    PlayerHistoryDB.getMemberPlayerHistory(currentMem.Number, RegionID);
+                    PlayerHistoryDB.GetMemberPlayerHistory(currentMem.Number, RegionID);
 
                 bool wait = true;
                 string fileName = ofdOpen.FileName;
@@ -1101,7 +1101,7 @@ namespace NineTapTour.Forms
                 {
                     frmPleaseWait please = new frmPleaseWait();
                     please.Show();
-                    AllGames = PlayerHistoryDB.getNumberOfAllGames();
+                    AllGames = PlayerHistoryDB.GetNumberOfAllGames();
 
                     if (AlreadyImportedPH.Count > 0)
                     {
@@ -1152,7 +1152,7 @@ namespace NineTapTour.Forms
 
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
 
-                MemberDb.AddOrUpdateMember(currentMem);
+                MemberDB.AddOrUpdateMember(currentMem);
             }
         }
 
@@ -1378,7 +1378,7 @@ namespace NineTapTour.Forms
                         try
                         {
                             temp.AverageOfRow = Convert.ToDouble((range.Cells[row, 8] as Excel.Range).Value2);
-                            playerH.AverageForGame = temp.AverageOfRow;
+                            playerH.AverageForEntry = temp.AverageOfRow;
                         }
                         catch
                         {
@@ -1574,6 +1574,21 @@ namespace NineTapTour.Forms
         private void mtxtBox_Click(object sender, EventArgs e)
         {
             FormHelper.GoToFirstIndexInTextboxIfEmpty(sender as TextBoxBase);
+        }
+
+        /// <summary>
+        /// The Bonus Pins textbox is allowed to be changed in the
+        /// members form
+        /// </summary>
+        /// <return>a new value of bonus pins</return>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtBonus_TextChanged(object sender, EventArgs e)
+        {
+            if (Int32.TryParse(txtBonus.Text, out int newBonusPins))
+            {
+                txtBonus.Text = Convert.ToInt32(newBonusPins).ToString();
+            }
         }
     }
 }

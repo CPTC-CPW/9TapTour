@@ -25,7 +25,9 @@ namespace NineTapTour.Database
                           join t in db.Tournaments on p.Tournament.Id equals t.Id
                           where mem.Id == m.Id
                           orderby t.Date descending
-                          select (g.Game1 + g.Game2 + g.Game3 + g.Game4)/4).Take(howmany).Average();
+                          select (g.Game1 + g.Game2 + g.Game3 + g.Game4) / 
+                          4-((g.UseGame1??false?0:1) + (g.UseGame2??false?0:1) + (g.UseGame3??false?0:1) + (g.UseGame4??false?0:1))
+                          ).Take(howmany).Average();
             return avg;
             #region Refactored Code
             /*
@@ -101,16 +103,17 @@ namespace NineTapTour.Database
         /// Returns a sum of the games from a MemberNumber given
         /// <paramref name="howmany">The number of games taken</paramref>
         /// </summary>
-        public static double LeagueSumFromPlayerHistory(int memberNumber, int howmany, int regionid)
+        public static double LeagueAvgFromPlayerHistory(int memberNumber, int howmany, int regionid)
         {
             var db = new NineTapDb();
             double sum = 0;
             // Calculates the Sum as the query instead of grabing all the data
-            //double sum = (from p in db.PlayerHistory
-            //              where p.MemberNumber == memberNumber && p.regionID == regionid
-            //              orderby p.TournamentDate descending
-            //              select p.AverageForGame).Take(howmany).Sum();
-            //return sum;
+            double avg = (from p in db.PlayerHistory
+                          where p.MemberNumber == memberNumber && p.regionID == regionid
+                          orderby p.TournamentDate descending
+                          select p.AverageForEntry).Take(howmany).Average();
+            return avg;
+            /*
             var temp = (from p in db.PlayerHistory
                         where p.MemberNumber == memberNumber && p.regionID == regionid
                         orderby p.TournamentDate descending
@@ -134,7 +137,7 @@ namespace NineTapTour.Database
                 return sum;
             }
             return 0;
-
+            */
         }
 
         /// <summary>
@@ -318,23 +321,23 @@ namespace NineTapTour.Database
         /// <summary>
         /// Returns a list of Participants with a TournamentID equal to the ID given
         /// </summary>
-        public static List<Participant> GetGameParticipantList(int id)
-        {
-            List<Participant> par = new List<Participant>();
-            var db = new NineTapDb();
-            var temp = (from p in db.Participants
-                        where p.Tournament.Id == id
-                        select new
-                        {
-                            p.Id,
-                            p.Game,
-                            p.Member,
-                            p.Squad,
-                            p.Tournament
-                        }).ToList();
-            // par is never populated, so this always returns an empty list
-            return par;
-        }
+        //public static List<Participant> GetGameParticipantList(int id)
+        //{
+        //    List<Participant> par = new List<Participant>();
+        //    var db = new NineTapDb();
+        //    var temp = (from p in db.Participants
+        //                where p.Tournament.Id == id
+        //                select new
+        //                {
+        //                    p.Id,
+        //                    p.Game,
+        //                    p.Member,
+        //                    p.Squad,
+        //                    p.Tournament
+        //                }).ToList();
+        //    // par is never populated, so this always returns an empty list
+        //    return par;
+        //}
 
         /// <summary>
         /// Retrieves a single participant from a tournament based on given gameID.
