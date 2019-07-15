@@ -550,6 +550,7 @@ namespace NineTapTour.Forms
 
                 temp.Id = memId;
 
+                //Set average for the new member
                 List<PlayerHistory> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
                 if (last5.Count >= 1)
                 {   // sets the average to that of their last adjusted average
@@ -755,7 +756,11 @@ namespace NineTapTour.Forms
             }
         }
             
-
+        /// <summary>
+        /// Opens SearchForm to search members. If member is found, updates Member Form to display that member's info
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnMemberSearch_Click(object sender, EventArgs e)
         {
             FrmSearch SearchForm = new FrmSearch(RegionID);
@@ -777,6 +782,11 @@ namespace NineTapTour.Forms
             p.ShowDialog();
         }
 
+        /// <summary>
+        /// Prints Average, Handicap and Bonus of a single member
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnThisRecap_Click(object sender, EventArgs e)
         {
             if (IsValidTextboxes())
@@ -799,6 +809,11 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// Gets Member data (Name, Member Number, City, Average, Handicap and Bonus) of a single member to print
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void singlePrint(object sender, PrintPageEventArgs e) 
         {
             NineTapTour.Database.Print.SinglePrint(
@@ -812,6 +827,11 @@ namespace NineTapTour.Forms
                     e);
         }
 
+        /// <summary>
+        /// Checks if lifetime member checkbox is checked. If it is, the "year membership will end" fields are hidden. If it's not, show "year membership will end" fields, and check is payment was made more than a year ago
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void chbLifetime_CheckedChanged(object sender, EventArgs e)
         {
             if (chbLifetime.Checked)
@@ -826,12 +846,20 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// If "year membership will end" field is changed, check if payment was made more than a year ago
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void datePaid_ValueChanged(object sender, EventArgs e)
         {
             txtLastPayment.Text = "";
             checkPayment();
         }
 
+        /// <summary>
+        /// Checks if last payment was made more than a year ago. If it was, show warning label that payment is due. 
+        /// </summary>
         private void checkPayment()
         {
             /********************************************************************************
@@ -845,12 +873,22 @@ namespace NineTapTour.Forms
                 lblPaymentInfo.Visible = false;
             }
         }
-        
+
+        /// <summary>
+        /// Opens form to select a tournament date range. Prints Average, Handicap and Bonus of each member in selected tournament date range
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnRecapByDate_Click(object sender, EventArgs e)
         {
             new FrmPrintByDate().ShowDialog();
         }
 
+        /// <summary>
+        /// Prints all members alphabetically (z-a)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnAllRecaps_Click(object sender, EventArgs e)
         {
             Print.printAllMembers();
