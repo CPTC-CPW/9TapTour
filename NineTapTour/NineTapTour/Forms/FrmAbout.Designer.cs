@@ -25,24 +25,10 @@
         /// </summary>
         private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmAbout));
-            this.rtbFrmAboutText = new System.Windows.Forms.RichTextBox();
             this.pbAboutFormLogo = new System.Windows.Forms.PictureBox();
+            this.rtbFrmAboutText = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pbAboutFormLogo)).BeginInit();
             this.SuspendLayout();
-            // 
-            // rtbFrmAboutText
-            // 
-            this.rtbFrmAboutText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.rtbFrmAboutText.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(102)))));
-            this.rtbFrmAboutText.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtbFrmAboutText.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rtbFrmAboutText.ForeColor = System.Drawing.Color.White;
-            this.rtbFrmAboutText.Location = new System.Drawing.Point(96, 225);
-            this.rtbFrmAboutText.Name = "rtbFrmAboutText";
-            this.rtbFrmAboutText.ReadOnly = true;
-            this.rtbFrmAboutText.Size = new System.Drawing.Size(662, 240);
-            this.rtbFrmAboutText.TabIndex = 0;
-            this.rtbFrmAboutText.Text = "";
             // 
             // pbAboutFormLogo
             // 
@@ -54,6 +40,22 @@
             this.pbAboutFormLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbAboutFormLogo.TabIndex = 1;
             this.pbAboutFormLogo.TabStop = false;
+            // 
+            // rtbFrmAboutText
+            // 
+            this.rtbFrmAboutText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.rtbFrmAboutText.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(102)))));
+            this.rtbFrmAboutText.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtbFrmAboutText.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rtbFrmAboutText.ForeColor = System.Drawing.Color.Black;
+            this.rtbFrmAboutText.ImeMode = System.Windows.Forms.ImeMode.Disable;
+            this.rtbFrmAboutText.Location = new System.Drawing.Point(96, 225);
+            this.rtbFrmAboutText.Name = "rtbFrmAboutText";
+            this.rtbFrmAboutText.ShortcutsEnabled = false;
+            this.rtbFrmAboutText.Size = new System.Drawing.Size(662, 240);
+            this.rtbFrmAboutText.TabIndex = 0;
+            this.rtbFrmAboutText.TabStop = false;
+            this.rtbFrmAboutText.Text = "";
             // 
             // FrmAbout
             // 
@@ -72,8 +74,7 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.RichTextBox rtbFrmAboutText;
         private System.Windows.Forms.PictureBox pbAboutFormLogo;
+        private System.Windows.Forms.RichTextBox rtbFrmAboutText;
     }
 }
