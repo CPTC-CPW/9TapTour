@@ -907,14 +907,6 @@ namespace NineTapTour.Forms
             ((FrmMain)MdiParent).currFrmMemberData = this;
         }
 
-        private void updateOnload(List<Member> temp)
-        {
-            foreach(var m in temp)
-            {
-                MemberDB.AddOrUpdateMember(m); 
-            }
-        }
-
         /// <summary>
         /// checks whether form data has been changed and not saved
         /// </summary>
