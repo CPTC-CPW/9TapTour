@@ -793,6 +793,7 @@
             this.rdoFemale.TabStop = true;
             this.rdoFemale.Text = "Female";
             this.rdoFemale.UseVisualStyleBackColor = true;
+            this.rdoFemale.KeyDown += new System.Windows.Forms.KeyEventHandler(this.rdoFemale_KeyDown);
             // 
             // rdoActive
             // 

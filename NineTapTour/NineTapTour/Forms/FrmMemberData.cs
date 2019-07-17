@@ -1395,7 +1395,15 @@ namespace NineTapTour.Forms
             currentCheckBox.Checked = true;
         }
 
-
-
+        /// <summary>
+        /// Checks female radio button if any key is pressed (helps with checking radio buttons when tabbing through form)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rdoFemale_KeyDown(object sender, KeyEventArgs e)
+        {
+            RadioButton currentRadioButton = sender as RadioButton;
+            currentRadioButton.Checked = true;
+        }
     }
 }
