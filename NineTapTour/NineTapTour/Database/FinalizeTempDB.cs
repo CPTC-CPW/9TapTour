@@ -340,7 +340,9 @@ namespace NineTapTour.Database
             var db = new NineTapDb();
             return (from par in db.Participants
                    where par.Game.Id == gameID
-                   select par).Include(nameof(Member)).SingleOrDefault();
+                   // No tracking prevents EF from monitoring changes. This means
+                   // that we will have to manually update/delete entities
+                   select par).Include(nameof(Member)).AsNoTracking().SingleOrDefault();
         }
 
         /// <summary>
