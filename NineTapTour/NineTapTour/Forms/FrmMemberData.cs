@@ -1383,5 +1383,19 @@ namespace NineTapTour.Forms
                 txtBonus.Text = Convert.ToInt32(newBonusPins).ToString();
             }
         }
+
+        /// <summary>
+        /// Checks IsSenior checkbox if any key is pressed (helps with data entry when tabbing through form)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void chbSenior_KeyDown(object sender, KeyEventArgs e)
+        {
+            CheckBox currentCheckBox = sender as CheckBox;
+            currentCheckBox.Checked = true;
+        }
+
+
+
     }
 }

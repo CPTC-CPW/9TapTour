@@ -574,7 +574,7 @@
             this.groupRecord.Margin = new System.Windows.Forms.Padding(3, 3, 20, 3);
             this.groupRecord.Name = "groupRecord";
             this.groupRecord.Size = new System.Drawing.Size(108, 131);
-            this.groupRecord.TabIndex = 60;
+            this.groupRecord.TabIndex = 100;
             this.groupRecord.TabStop = false;
             this.groupRecord.Text = "Record";
             // 
@@ -585,7 +585,8 @@
             this.cbHaw.Location = new System.Drawing.Point(6, 102);
             this.cbHaw.Name = "cbHaw";
             this.cbHaw.Size = new System.Drawing.Size(84, 23);
-            this.cbHaw.TabIndex = 65;
+            this.cbHaw.TabIndex = 106;
+            this.cbHaw.TabStop = false;
             this.cbHaw.Text = "Hawaii ?";
             this.cbHaw.UseVisualStyleBackColor = true;
             // 
@@ -595,7 +596,7 @@
             this.btnImportData.Location = new System.Drawing.Point(19, 72);
             this.btnImportData.Name = "btnImportData";
             this.btnImportData.Size = new System.Drawing.Size(75, 23);
-            this.btnImportData.TabIndex = 64;
+            this.btnImportData.TabIndex = 104;
             this.btnImportData.TabStop = false;
             this.btnImportData.Text = "Import";
             this.btnImportData.UseVisualStyleBackColor = true;
@@ -607,7 +608,7 @@
             this.btnSave.Location = new System.Drawing.Point(17, 45);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 62;
+            this.btnSave.TabIndex = 104;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -618,7 +619,7 @@
             this.btnNew.Location = new System.Drawing.Point(17, 19);
             this.btnNew.Name = "btnNew";
             this.btnNew.Size = new System.Drawing.Size(75, 23);
-            this.btnNew.TabIndex = 61;
+            this.btnNew.TabIndex = 102;
             this.btnNew.Text = "New";
             this.btnNew.UseVisualStyleBackColor = true;
             this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
@@ -789,6 +790,7 @@
             this.rdoFemale.Name = "rdoFemale";
             this.rdoFemale.Size = new System.Drawing.Size(64, 19);
             this.rdoFemale.TabIndex = 52;
+            this.rdoFemale.TabStop = true;
             this.rdoFemale.Text = "Female";
             this.rdoFemale.UseVisualStyleBackColor = true;
             // 
@@ -811,6 +813,7 @@
             this.rdoInActive.Name = "rdoInActive";
             this.rdoInActive.Size = new System.Drawing.Size(68, 19);
             this.rdoInActive.TabIndex = 49;
+            this.rdoInActive.TabStop = true;
             this.rdoInActive.Text = "InActive";
             this.rdoInActive.UseVisualStyleBackColor = true;
             // 
@@ -821,6 +824,7 @@
             this.rdoMale.Name = "rdoMale";
             this.rdoMale.Size = new System.Drawing.Size(53, 19);
             this.rdoMale.TabIndex = 53;
+            this.rdoMale.TabStop = true;
             this.rdoMale.Text = "Male";
             this.rdoMale.UseVisualStyleBackColor = true;
             // 
@@ -856,9 +860,9 @@
             this.chbSenior.Name = "chbSenior";
             this.chbSenior.Size = new System.Drawing.Size(61, 19);
             this.chbSenior.TabIndex = 50;
-            this.chbSenior.TabStop = false;
             this.chbSenior.Text = "Senior";
             this.chbSenior.UseVisualStyleBackColor = true;
+            this.chbSenior.KeyDown += new System.Windows.Forms.KeyEventHandler(this.chbSenior_KeyDown);
             // 
             // chbLifetime
             // 
@@ -867,7 +871,7 @@
             this.chbLifetime.Location = new System.Drawing.Point(3, 3);
             this.chbLifetime.Name = "chbLifetime";
             this.chbLifetime.Size = new System.Drawing.Size(116, 19);
-            this.chbLifetime.TabIndex = 54;
+            this.chbLifetime.TabIndex = 56;
             this.chbLifetime.Text = "Lifetime Member";
             this.chbLifetime.UseVisualStyleBackColor = true;
             this.chbLifetime.CheckedChanged += new System.EventHandler(this.chbLifetime_CheckedChanged);
@@ -900,7 +904,7 @@
             this.txtLastPayment.Mask = "00/00/0000";
             this.txtLastPayment.Name = "txtLastPayment";
             this.txtLastPayment.Size = new System.Drawing.Size(127, 21);
-            this.txtLastPayment.TabIndex = 56;
+            this.txtLastPayment.TabIndex = 58;
             this.txtLastPayment.ValidatingType = typeof(System.DateTime);
             this.txtLastPayment.Click += new System.EventHandler(this.mtxtBox_Click);
             // 
@@ -932,7 +936,7 @@
             this.panel7.Location = new System.Drawing.Point(3, 3);
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(845, 528);
-            this.panel7.TabIndex = 74;
+            this.panel7.TabIndex = 0;
             // 
             // panel5
             // 
@@ -954,7 +958,7 @@
             this.panel5.Location = new System.Drawing.Point(360, 377);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(482, 147);
-            this.panel5.TabIndex = 74;
+            this.panel5.TabIndex = 80;
             // 
             // lblAverageValidation
             // 
@@ -974,7 +978,7 @@
             this.txtLastBowled.Mask = "00/00/0000";
             this.txtLastBowled.Name = "txtLastBowled";
             this.txtLastBowled.Size = new System.Drawing.Size(103, 21);
-            this.txtLastBowled.TabIndex = 60;
+            this.txtLastBowled.TabIndex = 94;
             this.txtLastBowled.ValidatingType = typeof(System.DateTime);
             this.txtLastBowled.Click += new System.EventHandler(this.mtxtBox_Click);
             // 
@@ -998,7 +1002,7 @@
             this.txt30GameAvg.Name = "txt30GameAvg";
             this.txt30GameAvg.ReadOnly = true;
             this.txt30GameAvg.Size = new System.Drawing.Size(89, 47);
-            this.txt30GameAvg.TabIndex = 50;
+            this.txt30GameAvg.TabIndex = 84;
             this.txt30GameAvg.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // lblLastBowled
@@ -1039,7 +1043,7 @@
             this.txtMoneyEarned.Location = new System.Drawing.Point(201, 118);
             this.txtMoneyEarned.Name = "txtMoneyEarned";
             this.txtMoneyEarned.Size = new System.Drawing.Size(100, 23);
-            this.txtMoneyEarned.TabIndex = 58;
+            this.txtMoneyEarned.TabIndex = 92;
             this.txtMoneyEarned.TabStop = false;
             // 
             // txtEligibility
@@ -1050,7 +1054,7 @@
             this.txtEligibility.MaxLength = 20;
             this.txtEligibility.Name = "txtEligibility";
             this.txtEligibility.Size = new System.Drawing.Size(124, 23);
-            this.txtEligibility.TabIndex = 56;
+            this.txtEligibility.TabIndex = 90;
             // 
             // lblBonus
             // 
@@ -1092,7 +1096,7 @@
             this.txtHandicap.Name = "txtHandicap";
             this.txtHandicap.ReadOnly = true;
             this.txtHandicap.Size = new System.Drawing.Size(89, 47);
-            this.txtHandicap.TabIndex = 52;
+            this.txtHandicap.TabIndex = 86;
             this.txtHandicap.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtBonus
@@ -1103,7 +1107,7 @@
             this.txtBonus.MaxLength = 20;
             this.txtBonus.Name = "txtBonus";
             this.txtBonus.Size = new System.Drawing.Size(89, 47);
-            this.txtBonus.TabIndex = 54;
+            this.txtBonus.TabIndex = 88;
             this.txtBonus.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtBonus.TextChanged += new System.EventHandler(this.txtBonus_TextChanged);
             // 
@@ -1115,7 +1119,7 @@
             this.txtAverage.MaxLength = 20;
             this.txtAverage.Name = "txtAverage";
             this.txtAverage.Size = new System.Drawing.Size(99, 47);
-            this.txtAverage.TabIndex = 48;
+            this.txtAverage.TabIndex = 82;
             this.txtAverage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // panel4
@@ -1132,7 +1136,7 @@
             this.panel4.Margin = new System.Windows.Forms.Padding(25, 3, 3, 3);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(610, 72);
-            this.panel4.TabIndex = 74;
+            this.panel4.TabIndex = 0;
             // 
             // lblFirstNameValidation
             // 
@@ -1169,7 +1173,7 @@
             this.panel1.Location = new System.Drawing.Point(12, 110);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(309, 414);
-            this.panel1.TabIndex = 74;
+            this.panel1.TabIndex = 48;
             // 
             // txtNotes
             // 
@@ -1201,7 +1205,7 @@
             this.panel2.Location = new System.Drawing.Point(3, 95);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(285, 70);
-            this.panel2.TabIndex = 74;
+            this.panel2.TabIndex = 55;
             // 
             // FrmMemberData
             // 
