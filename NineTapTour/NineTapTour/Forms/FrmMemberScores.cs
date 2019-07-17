@@ -1575,7 +1575,7 @@ namespace NineTapTour.Forms
                 var newFrmFinalizeTournament = new FrmFinalizeTournament(selectedTournament, RegionID);
                 newFrmFinalizeTournament.Dock = DockStyle.Right;
                 newFrmFinalizeTournament.WindowState = FormWindowState.Normal;
-                newFrmFinalizeTournament.Show();
+                newFrmFinalizeTournament.ShowDialog();
             }
 
             //This sets it back to default arrow after the DGV is finish loading.
@@ -1861,7 +1861,11 @@ namespace NineTapTour.Forms
             Game g = GetScoresById(currentMem.Id);
             //Delete from player history
             PlayerHistory p = PlayerHistoryDB.GetPlayerHistoryByGameID(g.Id);
-            PlayerHistoryDB.DeletePlayerHistory(p);
+            if(p != null)
+            {
+                PlayerHistoryDB.DeletePlayerHistory(p);
+            }
+
             //Delete from FinalizeTemp
             FinalizeTemp ft = FinalizeTempDB.GetFinalizeID(GameDB.GetGame(g.Id));
             try

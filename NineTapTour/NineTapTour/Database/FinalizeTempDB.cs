@@ -107,13 +107,7 @@ namespace NineTapTour.Database
         {
             var db = new NineTapDb();
             double sum = 0;
-            // Calculates the Sum as the query instead of grabing all the data
-            double avg = (from p in db.PlayerHistory
-                          where p.MemberNumber == memberNumber && p.regionID == regionid
-                          orderby p.TournamentDate descending
-                          select p.AverageForEntry).Take(howmany).Average();
-            return avg;
-            /*
+            
             var temp = (from p in db.PlayerHistory
                         where p.MemberNumber == memberNumber && p.regionID == regionid
                         orderby p.TournamentDate descending
@@ -125,19 +119,17 @@ namespace NineTapTour.Database
                             p.Game3,
                             p.Game4,
                             p.trueAVG,
-                            p.AverageForGame
+                            p.AverageForEntry
                         }).Take(howmany).ToList();
             if (temp.Count > 0)
             {
-
                 foreach (var item in temp)
                 {
-                    sum += Convert.ToDouble(item.AverageForGame);
+                    sum += Convert.ToDouble(item.AverageForEntry);
                 }
                 return sum;
             }
             return 0;
-            */
         }
 
         /// <summary>
@@ -348,7 +340,9 @@ namespace NineTapTour.Database
             var db = new NineTapDb();
             return (from par in db.Participants
                    where par.Game.Id == gameID
-                   select par).Include(nameof(Member)).SingleOrDefault();
+                   // No tracking prevents EF from monitoring changes. This means
+                   // that we will have to manually update/delete entities
+                   select par).Include(nameof(Member)).AsNoTracking().SingleOrDefault();
         }
 
         /// <summary>

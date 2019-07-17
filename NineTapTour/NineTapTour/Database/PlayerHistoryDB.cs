@@ -286,7 +286,7 @@ namespace NineTapTour.Database
                 PlayerHistory playerHistory = 
                     (from h in db.PlayerHistory
                     where h.GameID == gameID
-                    select h).Single();
+                    select h).SingleOrDefault();
                 return playerHistory;
             }
         }
