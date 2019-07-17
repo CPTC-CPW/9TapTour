@@ -1861,7 +1861,11 @@ namespace NineTapTour.Forms
             Game g = GetScoresById(currentMem.Id);
             //Delete from player history
             PlayerHistory p = PlayerHistoryDB.GetPlayerHistoryByGameID(g.Id);
-            PlayerHistoryDB.DeletePlayerHistory(p);
+            if(p != null)
+            {
+                PlayerHistoryDB.DeletePlayerHistory(p);
+            }
+
             //Delete from FinalizeTemp
             FinalizeTemp ft = FinalizeTempDB.GetFinalizeID(GameDB.GetGame(g.Id));
             try
