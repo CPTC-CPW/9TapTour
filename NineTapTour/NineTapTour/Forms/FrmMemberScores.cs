@@ -1575,7 +1575,7 @@ namespace NineTapTour.Forms
                 var newFrmFinalizeTournament = new FrmFinalizeTournament(selectedTournament, RegionID);
                 newFrmFinalizeTournament.Dock = DockStyle.Right;
                 newFrmFinalizeTournament.WindowState = FormWindowState.Normal;
-                newFrmFinalizeTournament.Show();
+                newFrmFinalizeTournament.ShowDialog();
             }
 
             //This sets it back to default arrow after the DGV is finish loading.
