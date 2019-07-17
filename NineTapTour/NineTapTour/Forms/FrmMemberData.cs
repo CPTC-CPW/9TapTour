@@ -905,8 +905,13 @@ namespace NineTapTour.Forms
         private void FrmMemberData_Leave(object sender, EventArgs e)
         {
             ((FrmMain)MdiParent).currFrmMemberData = this;
-        }    
-      
+        }
+
+        /// <summary>
+        /// This button imports member data from excel file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnImportData_Click(object sender, EventArgs e)
         {
             List<ExcelRow> CurrentExcelData = new List<ExcelRow>();
@@ -982,6 +987,11 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// Processes excel file for member data import
+        /// </summary>
+        /// <param name="PathAndFileName"></param>
+        /// <returns></returns>
         private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
         {
             List<ExcelRow> returnMe = new List<ExcelRow>();        
@@ -1319,8 +1329,13 @@ namespace NineTapTour.Forms
                 }
             }
             return returnMe;
-        }    
+        }
 
+        /// <summary>
+        /// If SSN checkbox is checked, the social security number is shown, if not the social secuity number is masked with '*'
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void chbSocial_CheckedChanged(object sender, EventArgs e)
         {
             txtSSN.PasswordChar = chbSocial.Checked ? '\0' : '*';
