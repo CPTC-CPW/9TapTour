@@ -255,9 +255,7 @@ namespace NineTapTour.Database
             {
                 int gameCount = 
                     (from g in db.Games
-                    select new Game{
-                        Id = g.Id
-                    }).ToList().Count();
+                    select g).Count();
                 return gameCount;
             }
         }

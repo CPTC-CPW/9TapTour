@@ -107,13 +107,7 @@ namespace NineTapTour.Database
         {
             var db = new NineTapDb();
             double sum = 0;
-            // Calculates the Sum as the query instead of grabing all the data
-            double avg = (from p in db.PlayerHistory
-                          where p.MemberNumber == memberNumber && p.regionID == regionid
-                          orderby p.TournamentDate descending
-                          select p.AverageForEntry).Take(howmany).Average();
-            return avg;
-            /*
+            
             var temp = (from p in db.PlayerHistory
                         where p.MemberNumber == memberNumber && p.regionID == regionid
                         orderby p.TournamentDate descending
@@ -125,19 +119,17 @@ namespace NineTapTour.Database
                             p.Game3,
                             p.Game4,
                             p.trueAVG,
-                            p.AverageForGame
+                            p.AverageForEntry
                         }).Take(howmany).ToList();
             if (temp.Count > 0)
             {
-
                 foreach (var item in temp)
                 {
-                    sum += Convert.ToDouble(item.AverageForGame);
+                    sum += Convert.ToDouble(item.AverageForEntry);
                 }
                 return sum;
             }
             return 0;
-            */
         }
 
         /// <summary>
@@ -321,23 +313,23 @@ namespace NineTapTour.Database
         /// <summary>
         /// Returns a list of Participants with a TournamentID equal to the ID given
         /// </summary>
-        public static List<Participant> GetGameParticipantList(int id)
-        {
-            List<Participant> par = new List<Participant>();
-            var db = new NineTapDb();
-            var temp = (from p in db.Participants
-                        where p.Tournament.Id == id
-                        select new
-                        {
-                            p.Id,
-                            p.Game,
-                            p.Member,
-                            p.Squad,
-                            p.Tournament
-                        }).ToList();
-            // par is never populated, so this always returns an empty list
-            return par;
-        }
+        //public static List<Participant> GetGameParticipantList(int id)
+        //{
+        //    List<Participant> par = new List<Participant>();
+        //    var db = new NineTapDb();
+        //    var temp = (from p in db.Participants
+        //                where p.Tournament.Id == id
+        //                select new
+        //                {
+        //                    p.Id,
+        //                    p.Game,
+        //                    p.Member,
+        //                    p.Squad,
+        //                    p.Tournament
+        //                }).ToList();
+        //    // par is never populated, so this always returns an empty list
+        //    return par;
+        //}
 
         /// <summary>
         /// Retrieves a single participant from a tournament based on given gameID.
