@@ -20,6 +20,7 @@ namespace NineTapTour.Forms
 {
     public partial class FrmTournamentResults : Form
     {
+        #region Values
         // Set column names for datagridview
         static string PLACE_STANDING_COLUMN_NAME = "Place";
         static string FULLNAME_COLUMN_NAME = "Full Name";
@@ -39,8 +40,10 @@ namespace NineTapTour.Forms
         List<ExcelMember> winners = new List<ExcelMember>();
         // Floor directors get a comp entry into tournament when they help with tournament. 
         // They don't pay the entry fee, but do qualify to cash.
-        static int compEntries; 
-                                
+        static int compEntries;
+        #endregion
+
+        #region FrmTournamentResults
         public FrmTournamentResults()
         {
             InitializeComponent();
@@ -68,6 +71,36 @@ namespace NineTapTour.Forms
             ActiveControl = tbClientInputCount;
         }
 
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            if (e.CloseReason == CloseReason.WindowsShutDown) return;
+            List<double> Winnings = new List<double>();
+            for (int winningList = 0; winningList < dgvTournamentResults.RowCount; winningList++)
+            {
+                Winnings.Add(Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
+            }
+            TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
+
+            // Save all changes made to the dataGridView
+            for (int currentIndex = 0; currentIndex < clientRequested.Count; currentIndex++)
+            {
+                int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
+                Game g = GameDB.GetGame(gameId);
+
+                g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
+                g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
+                g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
+                g.gameRegionID = tourny.TourneyRegion;
+
+                db.Entry(g).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+            }
+        }
+        #endregion
+
+        #region DataGridView
         /// <summary>
         /// Creates the DataGridView table and populates it with the list of cashed winners
         /// </summary>
@@ -188,11 +221,12 @@ namespace NineTapTour.Forms
                 SendKeys.Send("{tab}");
             }
         }
+        #endregion
 
+        #region Database (needs to be moved)
         /// <summary>
         /// Returns a list of tourament winners
         /// </summary>
-        /// <returns> List<ExcelMember> </returns>
         private List<ExcelMember> BuildWinnersList()
         {
             List<ExcelMember> tournyBowlers = new List<ExcelMember>();
@@ -263,10 +297,9 @@ namespace NineTapTour.Forms
             }
             return tournyBowlers;
         }
+        #endregion
 
-        /***************************
-              EXPORT TO EXCEL
-         **************************/
+        #region Buttons
         private void btnExportToExcel_Click(object sender, EventArgs e)
         {
             bool wait = true;
@@ -279,7 +312,166 @@ namespace NineTapTour.Forms
                 please.Close();
             }
         }
-        
+
+        private void btnPaste_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(tbClientInputCount.Text))
+            {
+                MessageBox.Show("Please enter the number of winners first");
+                return;
+            }
+
+            string s = Clipboard.GetText();
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                MessageBox.Show("Please copy the earnings from Excel first");
+                return;
+            }
+            s = s.Replace("$", "");
+            string[] lines = s.Replace("\n", "").Split('\r');
+            string[] lines2 = new string[lines.Length];
+            for (int t = 0; t < lines.Length; t++)
+            {
+                lines2[t] = lines[t];
+            }
+            int row = 0;
+            int col = 4;
+
+            int pasteAble = Convert.ToInt32(tbClientInputCount.Text) + 3; // +3 for the pro pot entries
+            int pasteCount = lines.Count();
+            int paste = 0;
+            if (pasteCount < pasteAble)
+            {
+                paste = pasteCount - 1;
+            }
+            else
+            {
+                paste = pasteAble;
+            }
+
+            for (int i = 0; i < paste; i++)
+            {
+                string check = lines2[i];
+                if (check != "")
+                {
+                    if (i == 1 || i == 3 || i == 5)
+                    {
+                        dgvTournamentResults[col + 3, row].Value = lines2[i];
+                        row++;
+                    }
+                    else
+                    {
+                        dgvTournamentResults[col, row].Value = lines2[i];
+                        if (i > 5)
+                        {
+                            row++;
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Excel
+        //gets and sets the total amount of payout for the 
+        //winners in the total payout box of the excel sheet
+        private void setTotalPayout(Excel.Worksheet xlWorkSheet)
+        {
+            double money = 0;
+
+            for(int i = 0; i < dt.Rows.Count; i++)
+            {
+                money += Convert.ToDouble(dt.Rows[i].ItemArray[4]);
+            }
+            xlWorkSheet.Cells[2, 8] = money.ToString();
+        }
+
+        //format and populate 
+        private void formatBigTie(string tempData3, int tiePlace, Excel.Worksheet xlWorkSheet, int i)
+        {
+            for (i = 0; i < tiePlace; i++)
+            {
+                //get range on which to insert extra line
+                Excel.Range line = (Excel.Range)xlWorkSheet.Rows[(i * 2) + 11];
+
+                // insert the new row
+                line.Insert();
+
+                //copy the formatting from row 9, column B
+                Excel.Range R5 = (Excel.Range)xlWorkSheet.Cells[9, 2];
+                R5.Copy(Type.Missing);
+
+                //apply format to the current row, column B
+                Excel.Range R6 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 2];
+                R6.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
+                Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+
+                //copy the formatting from row 9, column F
+                Excel.Range R1 = (Excel.Range)xlWorkSheet.Cells[9, 6];
+                R1.Copy(Type.Missing);
+
+                //apply format to the current row, column F
+                Excel.Range R2 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 6];
+                R2.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
+                Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+
+                //copy the formatting from row 9, column I
+                Excel.Range R3 = (Excel.Range)xlWorkSheet.Cells[9, 9];
+                R3.Copy(Type.Missing);
+
+                //apply format to the current row, column I
+                Excel.Range R4 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 9];
+                R4.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
+                Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+
+                //copy the formatting from row 9, column C
+                Excel.Range R7 = (Excel.Range)xlWorkSheet.Cells[9, 3];
+                R7.Copy(Type.Missing);
+
+                //apply format to the current row, column C
+                Excel.Range R8 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 3];
+                R8.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
+                Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+
+                //get the cells from the current cell: current row ((i * 2) + 11), column C
+                //to the cell: current row, column E
+                Excel.Range r = xlWorkSheet.get_Range("C" + ((i * 2) + 11), "E" + ((i * 2) + 11));
+
+                // merge the selected cells together
+                r.MergeCells = true;
+
+                // get these cells from the current cell: current row, column F
+                //to the cell: current row, column H
+                Excel.Range r2 = xlWorkSheet.get_Range("F" + ((i * 2) + 11), "H" + ((i * 2) + 11));
+
+                // merge the selected cells together
+                r2.MergeCells = true;
+
+                //display the player's placement in red text under their name
+                if (tempData3 == "1")
+                {
+                    xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "st Place";
+                }
+                else if (tempData3 == "2")
+                {
+                    xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "nd Place";
+                }
+                else if (tempData3 == "3")
+                {
+                    xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "rd Place";
+                }
+
+                //set money earned in red text next to place
+                xlWorkSheet.Cells[(i * 2) + 11, 3] = "=SUM(I" + ((i * 2) + 10) + ":I" + ((i * 2) + 11) + ")";
+
+                //label the progressive prize pot
+                xlWorkSheet.Cells[(i * 2) + 11, 6] = "$20 Progressive Pot";
+
+                //Set the Progressive pot earnings
+                xlWorkSheet.Cells[(i * 2) + 11, 9] = dt.Rows[i + 3].ItemArray[7].ToString();
+            }
+        }
+
         private void exportToExcel()
         {
             /// <summary>
@@ -295,12 +487,12 @@ namespace NineTapTour.Forms
                 g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
                 g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
                 g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
-              
+
                 g.gameRegionID = tourny.TourneyRegion;
-                
+
                 db.SaveChanges();
             }
-            
+
 
             // have program open template file automatically and auto save
             // with a specific naming conventions such as "Pacific 3Of4 1-12-18" 
@@ -328,7 +520,7 @@ namespace NineTapTour.Forms
             string tempData = null;
             string tempData2 = null;
             string tempData3 = null;
-            
+
             int i = 0; // used to determine which row to save data into
             int j = 0; // used to determine which column to save the data into
             bool FormatBool = false;
@@ -369,7 +561,7 @@ namespace NineTapTour.Forms
 
                         // runs for the first 3 places in the data table
                         // due to their special formatting
-                        if(i < 3)
+                        if (i < 3)
                         {
                             //store the place of the next player for comparison of ties
                             tempData = dt.Rows[i + 1].ItemArray[j].ToString();
@@ -392,7 +584,7 @@ namespace NineTapTour.Forms
                                         // add place without "st" into column 11
                                         xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
                                     }
-                                    
+
                                     else
                                     {   // no tie
                                         // add place into 1st column
@@ -472,7 +664,7 @@ namespace NineTapTour.Forms
                                 // put equation into column 15 that will display the total
                                 // amount the player earned minus the yearly membership and
                                 // any money adjustments
-                               if(i == 0)
+                                if (i == 0)
                                 {
                                     xlWorkSheet.Cells[i + (4 + i), j + 11] = "=I" + (i + 4) + "+I" + (i + 5) + "-M" + (i + 4) + "-N" + (i + 4);
                                 }
@@ -492,7 +684,7 @@ namespace NineTapTour.Forms
                                 xlWorkSheet.Cells[i + (4 + i), j + 7] = data;
                             }
 
-                            if(j == 6)
+                            if (j == 6)
                             {
                                 xlWorkSheet.Cells[i + (5 + i), 9] = dt.Rows[i].ItemArray[7].ToString();
                             }
@@ -532,7 +724,7 @@ namespace NineTapTour.Forms
                                 tempData = dt.Rows[i - 1].ItemArray[j].ToString();
 
                                 //if there is a next player, grab their place value aswell
-                                if((i + 1) < dt.Rows.Count)
+                                if ((i + 1) < dt.Rows.Count)
                                 {
                                     tempData2 = dt.Rows[i + 1].ItemArray[j].ToString();
                                 }
@@ -545,7 +737,7 @@ namespace NineTapTour.Forms
                                 string place = getPlace(data);
 
                                 //if the player's score is tied for one of the top 3 spots, format sheet accordingly
-                                if(data == "1" || data == "2" || data == "3")
+                                if (data == "1" || data == "2" || data == "3")
                                 {
                                     //set the row with the place and name to bold, with a font size of 16, 
                                     //and set the row's height to 22
@@ -558,7 +750,7 @@ namespace NineTapTour.Forms
                                     tiePlace += 1;
                                     FormatBool = true;
                                     tempData3 = data;
-                                    
+
                                     //Set the finishing place text with a T for tie
                                     xlWorkSheet.Cells[i + 7, j + 1] = data + place + "T";
 
@@ -668,196 +860,17 @@ namespace NineTapTour.Forms
             }
             catch
             {
-            // if the workbook does not get opened, display an error message
-            MessageBox.Show("Must choose a file to export to. \n" +
-                            " *Must have at least 20 bowlers and 4 money winners* ");
-            xlWorkBook.Close(true, misValue, misValue);
-            xlApp.Quit();
+                // if the workbook does not get opened, display an error message
+                MessageBox.Show("Must choose a file to export to. \n" +
+                                " *Must have at least 20 bowlers and 4 money winners* ");
+                xlWorkBook.Close(true, misValue, misValue);
+                xlApp.Quit();
             }
         }
+        #endregion
 
-        //gets and sets the total amount of payout for the 
-        //winners in the total payout box of the excel sheet
-        private void setTotalPayout(Excel.Worksheet xlWorkSheet)
-        {
-            double money = 0;
-
-            for(int i = 0; i < dt.Rows.Count; i++)
-            {
-                money += Convert.ToDouble(dt.Rows[i].ItemArray[4]);
-            }
-            xlWorkSheet.Cells[2, 8] = money.ToString();
-        }
-
-        //format and populate 
-        private void formatBigTie(string tempData3, int tiePlace, Excel.Worksheet xlWorkSheet, int i)
-        {
-            for (i = 0; i < tiePlace; i++)
-            {
-                //get range on which to insert extra line
-                Excel.Range line = (Excel.Range)xlWorkSheet.Rows[(i * 2) + 11];
-
-                // insert the new row
-                line.Insert();
-
-                //copy the formatting from row 9, column B
-                Excel.Range R5 = (Excel.Range)xlWorkSheet.Cells[9, 2];
-                R5.Copy(Type.Missing);
-
-                //apply format to the current row, column B
-                Excel.Range R6 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 2];
-                R6.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
-                Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
-
-                //copy the formatting from row 9, column F
-                Excel.Range R1 = (Excel.Range)xlWorkSheet.Cells[9, 6];
-                R1.Copy(Type.Missing);
-
-                //apply format to the current row, column F
-                Excel.Range R2 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 6];
-                R2.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
-                Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
-
-                //copy the formatting from row 9, column I
-                Excel.Range R3 = (Excel.Range)xlWorkSheet.Cells[9, 9];
-                R3.Copy(Type.Missing);
-
-                //apply format to the current row, column I
-                Excel.Range R4 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 9];
-                R4.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
-                Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
-
-                //copy the formatting from row 9, column C
-                Excel.Range R7 = (Excel.Range)xlWorkSheet.Cells[9, 3];
-                R7.Copy(Type.Missing);
-
-                //apply format to the current row, column C
-                Excel.Range R8 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 3];
-                R8.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
-                Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
-
-                //get the cells from the current cell: current row ((i * 2) + 11), column C
-                //to the cell: current row, column E
-                Excel.Range r = xlWorkSheet.get_Range("C" + ((i * 2) + 11), "E" + ((i * 2) + 11));
-
-                // merge the selected cells together
-                r.MergeCells = true;
-
-                // get these cells from the current cell: current row, column F
-                //to the cell: current row, column H
-                Excel.Range r2 = xlWorkSheet.get_Range("F" + ((i * 2) + 11), "H" + ((i * 2) + 11));
-
-                // merge the selected cells together
-                r2.MergeCells = true;
-
-                //display the player's placement in red text under their name
-                if (tempData3 == "1")
-                {
-                    xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "st Place";
-                }
-                else if (tempData3 == "2")
-                {
-                    xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "nd Place";
-                }
-                else if (tempData3 == "3")
-                {
-                    xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "rd Place";
-                }
-
-                //set money earned in red text next to place
-                xlWorkSheet.Cells[(i * 2) + 11, 3] = "=SUM(I" + ((i * 2) + 10) + ":I" + ((i * 2) + 11) + ")";
-
-                //label the progressive prize pot
-                xlWorkSheet.Cells[(i * 2) + 11, 6] = "$20 Progressive Pot";
-
-                //Set the Progressive pot earnings
-                xlWorkSheet.Cells[(i * 2) + 11, 9] = dt.Rows[i + 3].ItemArray[7].ToString();
-            }
-        }
-
-        /// <summary>
-        /// Checks to see what place the players have placed at 
-        /// and then returns the appropriate ending for the place
-        /// standing to be added onto the number they placed. It 
-        /// will either be "st", "nd", "rd", or "th".
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        private string getPlace(string data)
-        {
-            if (data == "1" || data == "21" || data == "31" || data == "41" || data == "51" || data == "61" || data == "71" || data == "81" || data == "91")
-            {   // if it is the 1st, 21st, 31st, 41st, 51st, 61st, 71st, 81st, or 91st return st
-                return "st";
-            }
-            else if (data == "2" || data == "22" || data == "32" || data == "42" || data == "52" || data == "62" || data == "72" || data == "82" || data == "92")
-            {   // if it is the 2nd, 22nd, 32nd, 42nd, 52nd, 62nd, 72nd, 82nd, or 92nd return nd
-                return "nd";
-            }
-            else if (data == "3" || data == "23" || data == "33" || data == "43" || data == "53" || data == "63" || data == "73" || data == "83" || data == "93")
-            {   // if it is the 3rd, 23rd, 33rd, 43rd, 53rd, 63rd, 73rd, 83rd, or 93rd return rd
-                return "rd";
-            }
-            else
-            {   // if it is any other number than the ones above return th
-                return "th";
-            }
-        }
-
-        /// <summary>
-        /// This method is used to clean up the references to the Excel Objects
-        /// so that Excel does not remain running.
-        /// </summary>
-        /// <param name="obj"></param>
-        private void releaseObject(object obj)
-        {
-            try
-            {
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
-                obj = null;
-            }
-            catch (Exception ex)
-            {
-                obj = null;
-                MessageBox.Show("Exception Occured while releasing object " + ex.ToString());
-            }
-            finally
-            {
-                GC.Collect();
-            }
-        }
-
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            base.OnFormClosing(e);
-
-            if (e.CloseReason == CloseReason.WindowsShutDown) return;
-            List<double> Winnings = new List<double>();
-            for(int winningList = 0; winningList < dgvTournamentResults.RowCount; winningList++)
-            {
-                Winnings.Add(Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
-            }
-            TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
-            
-            // Save all changes made to the dataGridView
-            for (int currentIndex = 0; currentIndex < clientRequested.Count; currentIndex++)
-            {
-                int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
-                Game g = GameDB.GetGame(gameId);
-
-                g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
-                g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
-                g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
-                g.gameRegionID = tourny.TourneyRegion;
-
-                db.Entry(g).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
-            }
-        }
-
-        private void tbClientInputCount_TextChanged(object sender, EventArgs e)
-        {
-         
-        }
+        #region TextBoxes
+        private void tbClientInputCount_TextChanged(object sender, EventArgs e) {}
 
         private void tbClientInputCount_KeyDown(object sender, KeyEventArgs e)
         {
@@ -866,7 +879,9 @@ namespace NineTapTour.Forms
                 AcceptClientInputForResults();
             }
         }
+        #endregion
 
+        #region Methods
         private void AcceptClientInputForResults()
         {
             this.dgvTournamentResults.DataSource = null;
@@ -895,61 +910,53 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void btnPaste_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Checks to see what place the players have placed at 
+        /// and then returns the appropriate ending for the place
+        /// standing to be added onto the number they placed. It 
+        /// will either be "st", "nd", "rd", or "th".
+        /// </summary>
+        private string getPlace(string data)
         {
-            if (string.IsNullOrWhiteSpace(tbClientInputCount.Text))
-            {
-                MessageBox.Show("Please enter the number of winners first");
-                return;
+            if (data == "1" || data == "21" || data == "31" || data == "41" || data == "51" || data == "61" || data == "71" || data == "81" || data == "91")
+            {   // if it is the 1st, 21st, 31st, 41st, 51st, 61st, 71st, 81st, or 91st return st
+                return "st";
             }
-
-            string s = Clipboard.GetText();
-            if (string.IsNullOrWhiteSpace(s))
-            {
-                MessageBox.Show("Please copy the earnings from Excel first");
-                return;
+            else if (data == "2" || data == "22" || data == "32" || data == "42" || data == "52" || data == "62" || data == "72" || data == "82" || data == "92")
+            {   // if it is the 2nd, 22nd, 32nd, 42nd, 52nd, 62nd, 72nd, 82nd, or 92nd return nd
+                return "nd";
             }
-            s = s.Replace("$", "");
-            string[] lines = s.Replace("\n", "").Split('\r');
-            string[] lines2 = new string[lines.Length];
-            for(int t = 0; t < lines.Length; t++)
-            {
-               lines2[t] = lines[t];
-            }
-            int row = 0;
-            int col = 4;
-
-            int pasteAble = Convert.ToInt32(tbClientInputCount.Text) + 3; // +3 for the pro pot entries
-            int pasteCount = lines.Count();
-            int paste = 0;
-            if(pasteCount < pasteAble)
-            {
-                paste = pasteCount - 1;
+            else if (data == "3" || data == "23" || data == "33" || data == "43" || data == "53" || data == "63" || data == "73" || data == "83" || data == "93")
+            {   // if it is the 3rd, 23rd, 33rd, 43rd, 53rd, 63rd, 73rd, 83rd, or 93rd return rd
+                return "rd";
             }
             else
-            {
-                paste = pasteAble; 
-            }
-            
-            for (int i = 0; i < paste; i++)
-            {
-                string check = lines2[i];
-                if (check != "")
-                {
-                    if (i == 1 || i == 3 || i == 5)
-                    {
-                        dgvTournamentResults[col + 3, row].Value = lines2[i];
-                        row++;
-                    }
-                    else
-                    {
-                        dgvTournamentResults[col, row].Value = lines2[i];
-                        if (i > 5) {
-                            row++;
-                        }
-                    }
-                }
+            {   // if it is any other number than the ones above return th
+                return "th";
             }
         }
+
+        /// <summary>
+        /// This method is used to clean up the references to the Excel Objects
+        /// so that Excel does not remain running.
+        /// </summary>
+        private void releaseObject(object obj)
+        {
+            try
+            {
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
+                obj = null;
+            }
+            catch (Exception ex)
+            {
+                obj = null;
+                MessageBox.Show("Exception Occured while releasing object " + ex.ToString());
+            }
+            finally
+            {
+                GC.Collect();
+            }
+        }
+        #endregion
     }
 }
