@@ -307,7 +307,7 @@ namespace NineTapTour.Forms
             {
                 frmPleaseWait please = new frmPleaseWait();
                 please.Show();
-                exportToExcel();
+                ExportToExcel();
                 wait = false;
                 please.Close();
             }
@@ -375,7 +375,7 @@ namespace NineTapTour.Forms
         #region Excel
         //gets and sets the total amount of payout for the 
         //winners in the total payout box of the excel sheet
-        private void setTotalPayout(Excel.Worksheet xlWorkSheet)
+        private void SetTotalPayout(Excel.Worksheet xlWorkSheet)
         {
             double money = 0;
 
@@ -387,7 +387,7 @@ namespace NineTapTour.Forms
         }
 
         //format and populate 
-        private void formatBigTie(string tempData3, int tiePlace, Excel.Worksheet xlWorkSheet, int i)
+        private void FormatBigTie(string tempData3, int tiePlace, Excel.Worksheet xlWorkSheet, int i)
         {
             for (i = 0; i < tiePlace; i++)
             {
@@ -472,7 +472,7 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void exportToExcel()
+        private void ExportToExcel()
         {
             /// <summary>
             /// Saves participants' place standing and earnings won to the database
@@ -734,7 +734,7 @@ namespace NineTapTour.Forms
                                 }
 
                                 // check the place and then add "st", "nd", "rd" or "th"
-                                string place = getPlace(data);
+                                string place = GetPlace(data);
 
                                 //if the player's score is tied for one of the top 3 spots, format sheet accordingly
                                 if (data == "1" || data == "2" || data == "3")
@@ -824,11 +824,11 @@ namespace NineTapTour.Forms
 
                 if (FormatBool)
                 {
-                    formatBigTie(tempData3, tiePlace, xlWorkSheet, i);
+                    FormatBigTie(tempData3, tiePlace, xlWorkSheet, i);
                 }
 
                 //set the Total Payout to the correct number
-                setTotalPayout(xlWorkSheet);
+                SetTotalPayout(xlWorkSheet);
 
                 // saves the excel file with the file name
                 try
@@ -854,9 +854,9 @@ namespace NineTapTour.Forms
                 xlWorkBook.Close(true, misValue, misValue);
                 xlApp.Quit();
 
-                releaseObject(xlWorkSheet);
-                releaseObject(xlWorkBook);
-                releaseObject(xlApp);
+                ReleaseObject(xlWorkSheet);
+                ReleaseObject(xlWorkBook);
+                ReleaseObject(xlApp);
             }
             catch
             {
@@ -916,7 +916,7 @@ namespace NineTapTour.Forms
         /// standing to be added onto the number they placed. It 
         /// will either be "st", "nd", "rd", or "th".
         /// </summary>
-        private string getPlace(string data)
+        private string GetPlace(string data)
         {
             if (data == "1" || data == "21" || data == "31" || data == "41" || data == "51" || data == "61" || data == "71" || data == "81" || data == "91")
             {   // if it is the 1st, 21st, 31st, 41st, 51st, 61st, 71st, 81st, or 91st return st
@@ -940,7 +940,7 @@ namespace NineTapTour.Forms
         /// This method is used to clean up the references to the Excel Objects
         /// so that Excel does not remain running.
         /// </summary>
-        private void releaseObject(object obj)
+        private void ReleaseObject(object obj)
         {
             try
             {
