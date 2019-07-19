@@ -350,10 +350,13 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<Participant> GetParticipantListByRegionID(int RegionID)
         {
-            var db = new NineTapDb();
-            return (from p in db.Participants
-                    where p.ParticipantRegionID == RegionID
-                    select p).Include(nameof(Participant.Member)).ToList();
+            using (var db = new NineTapDb())
+            {
+                return (from p in db.Participants
+                        where p.ParticipantRegionID == RegionID
+                        select p).Include(nameof(Participant.Member)).ToList();
+            }
+                
         }
 
         /// <summary>
