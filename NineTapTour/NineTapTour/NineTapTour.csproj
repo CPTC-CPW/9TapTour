@@ -62,7 +62,7 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icon\9tap.ico</ApplicationIcon>
+    <ApplicationIcon>9tap_white.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper, Version=7.0.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
@@ -405,6 +405,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="Resources\BowlingPin2.png" />
+    <Content Include="9tap_white.ico" />
     <Content Include="Resources\TournamentResultsTemplate.xls">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
