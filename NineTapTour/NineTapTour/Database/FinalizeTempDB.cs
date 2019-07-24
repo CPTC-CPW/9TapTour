@@ -340,7 +340,9 @@ namespace NineTapTour.Database
             var db = new NineTapDb();
             return (from par in db.Participants
                    where par.Game.Id == gameID
-                   select par).Include(nameof(Member)).SingleOrDefault();
+                   // No tracking prevents EF from monitoring changes. This means
+                   // that we will have to manually update/delete entities
+                   select par).Include(nameof(Member)).AsNoTracking().SingleOrDefault();
         }
 
         /// <summary>
@@ -348,10 +350,13 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<Participant> GetParticipantListByRegionID(int RegionID)
         {
-            var db = new NineTapDb();
-            return (from p in db.Participants
-                    where p.ParticipantRegionID == RegionID
-                    select p).Include(nameof(Participant.Member)).ToList();
+            using (var db = new NineTapDb())
+            {
+                return (from p in db.Participants
+                        where p.ParticipantRegionID == RegionID
+                        select p).Include(nameof(Participant.Member)).ToList();
+            }
+                
         }
 
         /// <summary>
