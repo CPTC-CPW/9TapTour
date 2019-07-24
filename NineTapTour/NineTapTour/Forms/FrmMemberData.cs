@@ -101,6 +101,22 @@ namespace NineTapTour.Forms
             ctrl.BackColor = Color.Yellow;
         }
 
+        public void RemovePlaceholderText(object sender, EventArgs e)
+        {
+            if (txtDOB.Text == "MM/DD/YYYY")
+            {
+                txtDOB.Text = "";
+            }
+        }
+
+        public void AddPlaceholderText(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtDOB.Text))
+            {
+                txtDOB.Text = "MM/DD/YYYY";
+            }
+        }
+
         /// <summary>
         /// Finds "Member Number" in the database and populates the "Member Data" form.
         /// If that "Member Number" is not assigned then display error box.
@@ -185,7 +201,7 @@ namespace NineTapTour.Forms
                 txtFirstName.Text = "";
                 txtMiddleInitial.Text = "";
                 //txtDOBMasked.Text = "";
-                txtDOB.Text = "";
+                txtDOB.Text = "MM/DD/YYYY";
                 txtSSN.Text = "";
 
                 // Postal Address
@@ -209,8 +225,9 @@ namespace NineTapTour.Forms
                 txtDateJoined.Text = "";
                 txtMoneyEarned.Text = "";
                 txtNotes.Text = "";
-                txtReferrals.Text = "";        
-                
+                txtReferrals.Text = "";
+
+        
                 foreach (var check in grpStatus.Controls.OfType<RadioButton>())
                 {
                     check.Checked = false;
@@ -283,7 +300,7 @@ namespace NineTapTour.Forms
                 else
                 {
                     //txtDOBMasked.Text = "";
-                    txtDOB.Text = "";
+                    txtDOB.Text = "MM/DD/YYYY";
                 }
 
                 if (currentMem.JoinDate.HasValue)
@@ -705,10 +722,15 @@ namespace NineTapTour.Forms
             txtLastPayment.Text = "";
             txtLastPayment.Mask = "00/00/0000";
             //txtDOBMasked.Text = "";
-            txtDOB.Text = "";
+            txtDOB.Text = "MM/DD/YYYY";
             //txtDOBMasked.Mask = "00/00/0000";
             //txtDOB.Mask = "00/00/0000";
             _memberId = -1;
+
+            //removes placeholder text when DOB textBox is clicked
+            txtDOB.GotFocus += RemovePlaceholderText;
+            //adds placeholder text when DOB textBox is clicked away from with a date
+            txtDOB.LostFocus += AddPlaceholderText;
 
             //get latest member number, or set to 1 if no members in database
             int nextMemberNumber = MemberDB.GetMemberListCount(RegionID) + 1;
