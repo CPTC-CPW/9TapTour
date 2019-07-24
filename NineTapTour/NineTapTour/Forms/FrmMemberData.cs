@@ -200,7 +200,6 @@ namespace NineTapTour.Forms
                 txtLastName.Text = "";
                 txtFirstName.Text = "";
                 txtMiddleInitial.Text = "";
-                //txtDOBMasked.Text = "";
                 txtDOB.Text = "MM/DD/YYYY";
                 txtSSN.Text = "";
 
@@ -254,7 +253,6 @@ namespace NineTapTour.Forms
 
                 if(currentMem.DateOfBirth != null)
                 {
-                    //txtDOBMasked.Text = currentMem.DateOfBirth.Value.ToString("MM/dd/yyyy");
                     txtDOB.Text = currentMem.DateOfBirth.Value.ToString("MM/dd/yyyy");
                 }
 
@@ -294,12 +292,10 @@ namespace NineTapTour.Forms
                 //TODO: Pull datetime from database correctly 
                 if (currentMem.DateOfBirth.HasValue)
                 {
-                    //txtDOBMasked.Text = currentMem.DateOfBirth.Value.ToString("MM/dd/yyyy");
                     txtDOB.Text = currentMem.DateOfBirth.Value.ToString("MM/dd/yyyy");
                 }
                 else
                 {
-                    //txtDOBMasked.Text = "";
                     txtDOB.Text = "MM/DD/YYYY";
                 }
 
@@ -430,11 +426,9 @@ namespace NineTapTour.Forms
             }
 
             // validate DOB textbox
-            //if (!FormHelper.IsDateTimeValid(txtDOBMasked.Text))
             if (!FormHelper.IsDateTimeValid(txtDOB.Text))
                 {
                 lblDOBValidation.Visible = true;
-                //txtDOBMasked.BackColor = Color.LightPink;
                 txtDOB.BackColor = Color.LightPink;
                 valid = false;
             }
@@ -468,7 +462,6 @@ namespace NineTapTour.Forms
                 temp.LastName = txtLastName.Text;
                 temp.FirstName = txtFirstName.Text;
                 temp.MiddleInitial = txtMiddleInitial.Text;                              
-                //temp.DateOfBirth = DateTime.Parse(txtDOBMasked.Text);
                 temp.DateOfBirth = DateTime.Parse(txtDOB.Text);
                 temp.SSN = txtSSN.Text;
                 temp.Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male;
@@ -721,10 +714,7 @@ namespace NineTapTour.Forms
             txtLastBowled.Mask = "00/00/0000";
             txtLastPayment.Text = "";
             txtLastPayment.Mask = "00/00/0000";
-            //txtDOBMasked.Text = "";
             txtDOB.Text = "MM/DD/YYYY";
-            //txtDOBMasked.Mask = "00/00/0000";
-            //txtDOB.Mask = "00/00/0000";
             _memberId = -1;
 
             //removes placeholder text when DOB textBox is clicked

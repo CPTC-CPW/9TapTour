@@ -427,9 +427,9 @@
             this.lblDOB.AutoSize = true;
             this.lblDOB.Location = new System.Drawing.Point(22, 23);
             this.lblDOB.Name = "lblDOB";
-            this.lblDOB.Size = new System.Drawing.Size(119, 15);
+            this.lblDOB.Size = new System.Drawing.Size(76, 15);
             this.lblDOB.TabIndex = 9;
-            this.lblDOB.Text = "D.O.B. (mm/dd/yyyy)";
+            this.lblDOB.Text = "Date of Birth";
             // 
             // lblRefferals
             // 
@@ -1213,7 +1213,7 @@
             // 
             // txtDOB
             // 
-            this.txtDOB.Location = new System.Drawing.Point(157, 15);
+            this.txtDOB.Location = new System.Drawing.Point(25, 41);
             this.txtDOB.Name = "txtDOB";
             this.txtDOB.Size = new System.Drawing.Size(109, 23);
             this.txtDOB.TabIndex = 10;
