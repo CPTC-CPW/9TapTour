@@ -46,7 +46,7 @@
             this.lblDOBValidation = new System.Windows.Forms.Label();
             this.txtRejoinDate = new System.Windows.Forms.MaskedTextBox();
             this.txtDateJoined = new System.Windows.Forms.MaskedTextBox();
-            this.txtDOB = new System.Windows.Forms.MaskedTextBox();
+            this.txtDOBMasked = new System.Windows.Forms.MaskedTextBox();
             this.chbSocial = new System.Windows.Forms.CheckBox();
             this.txtZip = new System.Windows.Forms.MaskedTextBox();
             this.txtSSN = new System.Windows.Forms.MaskedTextBox();
@@ -234,7 +234,7 @@
             this.grpMemberInfo.Controls.Add(this.lblDOBValidation);
             this.grpMemberInfo.Controls.Add(this.txtRejoinDate);
             this.grpMemberInfo.Controls.Add(this.txtDateJoined);
-            this.grpMemberInfo.Controls.Add(this.txtDOB);
+            this.grpMemberInfo.Controls.Add(this.txtDOBMasked);
             this.grpMemberInfo.Controls.Add(this.chbSocial);
             this.grpMemberInfo.Controls.Add(this.txtZip);
             this.grpMemberInfo.Controls.Add(this.txtSSN);
@@ -346,15 +346,15 @@
             this.txtDateJoined.ValidatingType = typeof(System.DateTime);
             this.txtDateJoined.Click += new System.EventHandler(this.mtxtBox_Click);
             // 
-            // txtDOB
+            // txtDOBMasked
             // 
-            this.txtDOB.Location = new System.Drawing.Point(25, 41);
-            this.txtDOB.Mask = "00/00/0000";
-            this.txtDOB.Name = "txtDOB";
-            this.txtDOB.Size = new System.Drawing.Size(109, 23);
-            this.txtDOB.TabIndex = 10;
-            this.txtDOB.ValidatingType = typeof(System.DateTime);
-            this.txtDOB.Click += new System.EventHandler(this.mtxtBox_Click);
+            this.txtDOBMasked.Location = new System.Drawing.Point(25, 41);
+            this.txtDOBMasked.Mask = "00/00/0000";
+            this.txtDOBMasked.Name = "txtDOBMasked";
+            this.txtDOBMasked.Size = new System.Drawing.Size(109, 23);
+            this.txtDOBMasked.TabIndex = 10;
+            this.txtDOBMasked.ValidatingType = typeof(System.DateTime);
+            this.txtDOBMasked.Click += new System.EventHandler(this.mtxtBox_Click);
             // 
             // chbSocial
             // 
@@ -1315,7 +1315,7 @@
         private System.Windows.Forms.Label lblPaymentInfo;
         private System.Windows.Forms.Button btnImportData;
         private System.Windows.Forms.CheckBox chbSocial;
-        private System.Windows.Forms.MaskedTextBox txtDOB;
+        private System.Windows.Forms.MaskedTextBox txtDOBMasked;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.MaskedTextBox txtDateJoined;
         private System.Windows.Forms.MaskedTextBox txtRejoinDate;
