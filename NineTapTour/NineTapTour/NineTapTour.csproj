@@ -62,7 +62,7 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icon\9tap.ico</ApplicationIcon>
+    <ApplicationIcon>9tap_white.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper, Version=7.0.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
@@ -138,6 +138,7 @@
     <Compile Include="Models\ExcelMember.cs" />
     <Compile Include="Database\FormHelper.cs" />
     <Compile Include="Database\NineTapRegionDB.cs" />
+    <Compile Include="Models\MemNumComparer.cs" />
     <Compile Include="Models\NineTapRegion.cs" />
     <Compile Include="Models\ExcelRow.cs" />
     <Compile Include="Models\FinalizeTemp.cs" />
@@ -279,6 +280,7 @@
       <DependentUpon>201803192318264_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\TournamentStatsList.cs" />
     <Compile Include="Models\ViewModels\ParticipantsGameViewModel.cs" />
     <Compile Include="Models\ViewModels\TopParticipantGameViewModel.cs" />
     <Compile Include="Models\ViewModels\TournamentHighScoresViewModel.cs" />
@@ -405,6 +407,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="Resources\BowlingPin2.png" />
+    <Content Include="9tap_white.ico" />
     <Content Include="Database\DBScripts\BonusPinsMemberScript.sql" />
     <Content Include="Resources\TournamentResultsTemplate.xls">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

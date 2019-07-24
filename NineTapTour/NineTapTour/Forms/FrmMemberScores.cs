@@ -59,7 +59,7 @@ namespace NineTapTour.Forms
             rdoSquad7.TabStop = false;
             rdoSquad8.TabStop = false;
             rdoHandicapScore.TabStop = false;
-            rdoAllResults.TabStop = false;
+            cbAllSquads.TabStop = false;
             cbFilterSquad5.Visible = false;
             cbFilterSquad6.Visible = false;
             cbFilterSquad7.Visible = false;
@@ -68,10 +68,10 @@ namespace NineTapTour.Forms
             rdoSquad6.Visible = false;
             rdoSquad7.Visible = false;
             rdoSquad8.Visible = false;
-            rdoSquad5Results.Visible = false;
-            rdoSquad6Results.Visible = false;
-            rdoSquad7Results.Visible = false;
-            rdoSquad8Results.Visible = false;
+            //rdoSquad5Results.Visible = false;
+            //rdoSquad6Results.Visible = false;
+            //rdoSquad7Results.Visible = false;
+            //rdoSquad8Results.Visible = false;
             cbAllSquads.Checked = true;
 
             if (cbxTourneyDropDown.SelectedIndex >= 0)
@@ -79,7 +79,7 @@ namespace NineTapTour.Forms
                 if (selectedTournament.Squads == 5)
                 {
                     rdoSquad5.Visible = true;
-                    rdoSquad5Results.Visible = true;
+                    //rdoSquad5Results.Visible = true;
                     cbFilterSquad5.Visible = true;
 
 
@@ -89,8 +89,8 @@ namespace NineTapTour.Forms
                 {
                     rdoSquad5.Visible = true;
                     rdoSquad6.Visible = true;
-                    rdoSquad5Results.Visible = true;
-                    rdoSquad6Results.Visible = true;
+                    //rdoSquad5Results.Visible = true;
+                    //rdoSquad6Results.Visible = true;
                     cbFilterSquad5.Visible = true;
                     cbFilterSquad6.Visible = true;
                 }
@@ -100,9 +100,9 @@ namespace NineTapTour.Forms
                     rdoSquad5.Visible = true;
                     rdoSquad6.Visible = true;
                     rdoSquad7.Visible = true;
-                    rdoSquad5Results.Visible = true;
-                    rdoSquad6Results.Visible = true;
-                    rdoSquad7Results.Visible = true;
+                    //rdoSquad5Results.Visible = true;
+                    //rdoSquad6Results.Visible = true;
+                    //rdoSquad7Results.Visible = true;
                     cbFilterSquad5.Visible = true;
                     cbFilterSquad6.Visible = true;
                     cbFilterSquad7.Visible = true;
@@ -115,10 +115,10 @@ namespace NineTapTour.Forms
                     rdoSquad6.Visible = true;
                     rdoSquad7.Visible = true;
                     rdoSquad8.Visible = true;
-                    rdoSquad5Results.Visible = true;
-                    rdoSquad6Results.Visible = true;
-                    rdoSquad7Results.Visible = true;
-                    rdoSquad8Results.Visible = true;
+                    //rdoSquad5Results.Visible = true;
+                    //rdoSquad6Results.Visible = true;
+                    //rdoSquad7Results.Visible = true;
+                    //rdoSquad8Results.Visible = true;
                     cbFilterSquad5.Visible = true;
                     cbFilterSquad6.Visible = true;
                     cbFilterSquad7.Visible = true;
@@ -1575,7 +1575,7 @@ namespace NineTapTour.Forms
                 var newFrmFinalizeTournament = new FrmFinalizeTournament(selectedTournament, RegionID);
                 newFrmFinalizeTournament.Dock = DockStyle.Right;
                 newFrmFinalizeTournament.WindowState = FormWindowState.Normal;
-                newFrmFinalizeTournament.Show();
+                newFrmFinalizeTournament.ShowDialog();
             }
 
             //This sets it back to default arrow after the DGV is finish loading.
@@ -1624,21 +1624,21 @@ namespace NineTapTour.Forms
         {
             int currentsNum = 0;
 
-            if (rdoSquad1Results.Checked)
+            if (cbFilterSquad1.Checked)
                 currentsNum = 1;
-            else if (rdoSquad2Results.Checked)
+            else if (cbFilterSquad2.Checked)
                 currentsNum = 2;
-            else if (rdoSquad3Results.Checked)
+            else if (cbFilterSquad3.Checked)
                 currentsNum = 3;
-            else if (rdoSquad4Results.Checked)
+            else if (cbFilterSquad4.Checked)
                 currentsNum = 4;
-            else if (rdoSquad5Results.Checked)
+            else if (cbFilterSquad5.Checked)
                 currentsNum = 5;
-            else if (rdoSquad6Results.Checked)
+            else if (cbFilterSquad6.Checked)
                 currentsNum = 6;
-            else if (rdoSquad7Results.Checked)
+            else if (cbFilterSquad7.Checked)
                 currentsNum = 7;
-            else if (rdoSquad8Results.Checked)
+            else if (cbFilterSquad8.Checked)
                 currentsNum = 8;
             return currentsNum;
         }
@@ -1861,7 +1861,11 @@ namespace NineTapTour.Forms
             Game g = GetScoresById(currentMem.Id);
             //Delete from player history
             PlayerHistory p = PlayerHistoryDB.GetPlayerHistoryByGameID(g.Id);
-            PlayerHistoryDB.DeletePlayerHistory(p);
+            if(p != null)
+            {
+                PlayerHistoryDB.DeletePlayerHistory(p);
+            }
+
             //Delete from FinalizeTemp
             FinalizeTemp ft = FinalizeTempDB.GetFinalizeID(GameDB.GetGame(g.Id));
             try
