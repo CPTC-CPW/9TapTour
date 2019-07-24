@@ -354,7 +354,8 @@
             this.txtDOBMasked.Mask = "00/00/0000";
             this.txtDOBMasked.Name = "txtDOBMasked";
             this.txtDOBMasked.Size = new System.Drawing.Size(109, 23);
-            this.txtDOBMasked.TabIndex = 10;
+            this.txtDOBMasked.TabIndex = 0;
+            this.txtDOBMasked.TabStop = false;
             this.txtDOBMasked.ValidatingType = typeof(System.DateTime);
             this.txtDOBMasked.Click += new System.EventHandler(this.mtxtBox_Click);
             // 
@@ -1215,7 +1216,7 @@
             this.txtDOB.Location = new System.Drawing.Point(157, 15);
             this.txtDOB.Name = "txtDOB";
             this.txtDOB.Size = new System.Drawing.Size(109, 23);
-            this.txtDOB.TabIndex = 84;
+            this.txtDOB.TabIndex = 10;
             // 
             // FrmMemberData
             // 
