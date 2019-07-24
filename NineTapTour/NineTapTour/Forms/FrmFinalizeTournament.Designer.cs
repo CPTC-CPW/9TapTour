@@ -196,7 +196,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmFinalizeTournament";
             this.Text = "Finalize Tournament Results";
-            this.TopMost = true;
             this.Load += new System.EventHandler(this.FrmFinalizeTournament_Load);
             ((System.ComponentModel.ISupportInitialize)(this.TournamentEntriesGrid)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.playerTournamentHistoryGrid)).EndInit();

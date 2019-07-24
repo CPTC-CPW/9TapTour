@@ -8,7 +8,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using NineTapTour.Models;
-using System.Collections;
 
 namespace NineTapTour.Forms
 {
@@ -270,25 +269,5 @@ namespace NineTapTour.Forms
             // Return data table object
             return data;
         }
-
     }
-
-    /// <summary>
-    /// Object used to fill DataTable.
-    /// </summary>
-    public partial class TournamentStatsList
-    {
-        public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public int Squad { get; set; }
-        public int? ScratchTotal { get; set; }
-        public int? Top3Scores { get; set; }
-        public int? Game1 { get; set; }
-        public int? Game2 { get; set; }
-        public int? Game3 { get; set; }
-        public int? Game4 { get; set; }
-        public int? Handicap { get; set; }
-        public int? Bonus { get; set; }
-    }    
 }

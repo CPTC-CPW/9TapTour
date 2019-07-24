@@ -939,6 +939,9 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            // If one of the column headers was clicked, don't update
+            if (e.RowIndex == -1) // -1 indicates the column header row
+                return;
             
             UpdateLeagueAvg(e.RowIndex);//added to help update more often
             

@@ -105,13 +105,18 @@ namespace NineTapTour.Forms
         /// Finds "Member Number" in the database and populates the "Member Data" form.
         /// If that "Member Number" is not assigned then display error box.
         /// </summary>
-        /// <param name="searchMem"></param>
-        public void UpdateMemberInfo(Member searchMem = null)
+        public void UpdateMemberInfo()
         {
-            RegionID = ((FrmMain)MdiParent).RegionID;  
-            
+            RegionID = ((FrmMain)MdiParent).RegionID;
+            Member searchMem = null;
+
+            lblLastNameValidation.Visible = false;
+            lblFirstNameValidation.Visible = false;
+            lblAverageValidation.Visible = false;
+            lblDateJoinedValidation.Visible = false;
+
             //set all member info group control background colors
-            foreach(Control c in grpMemberInfo.Controls)
+            foreach (Control c in grpMemberInfo.Controls)
             {
                 c.BackColor = Color.White;
             }
@@ -598,9 +603,7 @@ namespace NineTapTour.Forms
                 try
                 {
                     MemberDB.AddOrUpdateMember(temp);
-#if DEBUG
-                    MessageBox.Show("Member saved");
-#endif
+
                     ((FrmMain)MdiParent)._membersList = 
                         MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
                     UpdateMemberInfo();
