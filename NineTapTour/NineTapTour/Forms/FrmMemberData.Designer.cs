@@ -124,6 +124,7 @@
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.txtDOB = new System.Windows.Forms.TextBox();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -227,6 +228,7 @@
             // 
             // grpMemberInfo
             // 
+            this.grpMemberInfo.Controls.Add(this.txtDOB);
             this.grpMemberInfo.Controls.Add(this.lblStateValidation);
             this.grpMemberInfo.Controls.Add(this.lblSSNValidation);
             this.grpMemberInfo.Controls.Add(this.lblReferralsValidation);
@@ -1208,6 +1210,13 @@
             this.panel2.Size = new System.Drawing.Size(285, 70);
             this.panel2.TabIndex = 55;
             // 
+            // txtDOB
+            // 
+            this.txtDOB.Location = new System.Drawing.Point(157, 15);
+            this.txtDOB.Name = "txtDOB";
+            this.txtDOB.Size = new System.Drawing.Size(109, 23);
+            this.txtDOB.TabIndex = 84;
+            // 
             // FrmMemberData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1351,5 +1360,6 @@
         private System.Windows.Forms.Label lblStateValidation;
         private System.Windows.Forms.Label lblReferralsValidation;
         private System.Windows.Forms.CheckBox cbHaw;
+        private System.Windows.Forms.TextBox txtDOB;
     }
 }
