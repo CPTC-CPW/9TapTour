@@ -632,7 +632,9 @@ namespace NineTapTour.Forms
                 try
                 {
                     MemberDB.AddOrUpdateMember(temp);
-
+#if DEBUG
+                    MessageBox.Show("Member saved");
+#endif
                     ((FrmMain)MdiParent)._membersList = 
                         MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
                     UpdateMemberInfo();
