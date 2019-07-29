@@ -766,20 +766,7 @@ namespace NineTapTour.Forms
             UpdateMemberInfo();
         }
         
-        /// <summary>
-        /// Turns textbox pink when text is erased
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void InputRequired(object sender, EventArgs e)
-        {
-            var textBox = sender as TextBox;
-            if (textBox != null)
-            {
-                textBox.BackColor = textBox.Text == string.Empty ? Color.LightPink : Color.White;
-            }
-        }
-            
+
         /// <summary>
         /// Opens SearchForm to search members. If member is found, updates Member Form to display that member's info
         /// </summary>
@@ -1428,6 +1415,31 @@ namespace NineTapTour.Forms
         {
             RadioButton currentRadioButton = sender as RadioButton;
             currentRadioButton.Checked = true;
+        }
+
+        private void txtDOB_TextChanged(object sender, EventArgs e)
+        {
+            lblDOBValidation.Visible = false;
+            txtDOB.BackColor = Color.White;
+           
+        }
+
+        private void txtAverage_TextChanged(object sender, EventArgs e)
+        {
+            lblAverageValidation.Visible = false;
+            txtAverage.BackColor = Color.White;
+        }
+
+        private void txtLastName_TextChanged(object sender, EventArgs e)
+        {
+            lblLastNameValidation.Visible = false;
+            txtLastName.BackColor = Color.White;
+        }
+
+        private void txtFirstName_TextChanged(object sender, EventArgs e)
+        {
+            lblFirstNameValidation.Visible = false;
+            txtFirstName.BackColor = Color.White;
         }
     }
 }

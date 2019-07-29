@@ -39,6 +39,7 @@
             this.lblMemberNum = new System.Windows.Forms.Label();
             this.txtMemberNumber = new System.Windows.Forms.TextBox();
             this.grpMemberInfo = new System.Windows.Forms.GroupBox();
+            this.txtDOB = new System.Windows.Forms.TextBox();
             this.lblStateValidation = new System.Windows.Forms.Label();
             this.lblSSNValidation = new System.Windows.Forms.Label();
             this.lblReferralsValidation = new System.Windows.Forms.Label();
@@ -124,7 +125,6 @@
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.txtDOB = new System.Windows.Forms.TextBox();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -150,7 +150,7 @@
             this.txtLastName.Name = "txtLastName";
             this.txtLastName.Size = new System.Drawing.Size(226, 37);
             this.txtLastName.TabIndex = 3;
-            this.txtLastName.TextChanged += new System.EventHandler(this.InputRequired);
+            this.txtLastName.TextChanged += new System.EventHandler(this.txtLastName_TextChanged);
             // 
             // txtFirstName
             // 
@@ -161,7 +161,7 @@
             this.txtFirstName.Name = "txtFirstName";
             this.txtFirstName.Size = new System.Drawing.Size(232, 37);
             this.txtFirstName.TabIndex = 5;
-            this.txtFirstName.TextChanged += new System.EventHandler(this.InputRequired);
+            this.txtFirstName.TextChanged += new System.EventHandler(this.txtFirstName_TextChanged);
             // 
             // txtMiddleInitial
             // 
@@ -267,6 +267,15 @@
             this.grpMemberInfo.TabIndex = 8;
             this.grpMemberInfo.TabStop = false;
             this.grpMemberInfo.Text = "Member Information";
+            // 
+            // txtDOB
+            // 
+            this.txtDOB.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtDOB.Location = new System.Drawing.Point(25, 41);
+            this.txtDOB.Name = "txtDOB";
+            this.txtDOB.Size = new System.Drawing.Size(109, 23);
+            this.txtDOB.TabIndex = 10;
+            this.txtDOB.TextChanged += new System.EventHandler(this.txtDOB_TextChanged);
             // 
             // lblStateValidation
             // 
@@ -1125,6 +1134,7 @@
             this.txtAverage.Size = new System.Drawing.Size(99, 47);
             this.txtAverage.TabIndex = 82;
             this.txtAverage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtAverage.TextChanged += new System.EventHandler(this.txtAverage_TextChanged);
             // 
             // panel4
             // 
@@ -1210,13 +1220,6 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(285, 70);
             this.panel2.TabIndex = 55;
-            // 
-            // txtDOB
-            // 
-            this.txtDOB.Location = new System.Drawing.Point(25, 41);
-            this.txtDOB.Name = "txtDOB";
-            this.txtDOB.Size = new System.Drawing.Size(109, 23);
-            this.txtDOB.TabIndex = 10;
             // 
             // FrmMemberData
             // 
