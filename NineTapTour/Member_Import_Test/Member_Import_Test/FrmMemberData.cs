@@ -337,7 +337,7 @@ namespace Member_Import_Test
                 try
                 {
 
-                    NineTapTour.Database.MemberDb.AddOrUpdateMember(temp);
+                    NineTapTour.Database.MemberDB.AddOrUpdateMember(temp);
                     MessageBox.Show(@"Bowler Added Successfully.");
                     invalidMembers.RemoveAt(listPosition);
                     if(invalidMembers.Count() != 0)

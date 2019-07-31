@@ -6,16 +6,14 @@ using System.Threading.Tasks;
 
 namespace NineTapTour.Models
 {
+    /// <summary>
+    /// This class could populate Filter by Current High Series 
+    /// of the 3rd text box in Series [Member No.] -- (Name)
+    /// 
+    /// Will add more code later to fix the 3rd Label box in FrmMemberScores
+    /// </summary>
     public class TopScores
     {
-        /// <summary>
-        /// Class used to populate 3rd RichTextBox
-        /// </summary>
-        
-            public TopScores()
-            {
-
-            }
             #region Properties
 
             public int memberID { get; set; }
@@ -34,6 +32,7 @@ namespace NineTapTour.Models
             public int Bonus { get; set; }
             public int GameID { get; set; }
             #endregion
+
             public List<int?> allGameScores()
             {
                 var newList = new List<int?>();
@@ -41,7 +40,9 @@ namespace NineTapTour.Models
                 newList.Add(Game2);
                 newList.Add(Game3);
                 newList.Add(Game4);
-                return newList.Where(sc => sc.HasValue).ToList();
+
+            // Renamed sc to agScore for less confusion
+                return newList.Where(agScore => agScore.HasValue).ToList();
             }
         
     }

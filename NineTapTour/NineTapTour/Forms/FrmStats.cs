@@ -98,7 +98,7 @@ namespace NineTapTour.Forms
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
 
-            ph = PlayerHistoryDB.getMemberPlayerHistoryByTotal(memNum, RegionID);
+            ph = PlayerHistoryDB.GetMemberPlayerHistoryByTotal(memNum, RegionID);
         }
 
         struct statHolder
@@ -344,7 +344,7 @@ namespace NineTapTour.Forms
                             p.Game4,
                             ScratchTotal = p.Game1 + p.Game2 + p.Game3 + p.Game4,
                             TotalScore = (p.Game1 + p.Bonus + p.HandiCap) + (p.Game2 + p.Bonus + p.HandiCap) + (p.Game3 + p.Bonus + p.HandiCap) + (p.Game4 + p.Bonus + p.HandiCap),
-                            p.AverageForGame,
+                            p.AverageForEntry,
                             p.trueAVG,
                             p.AVG,
                             p.HandiCap,
@@ -451,7 +451,7 @@ namespace NineTapTour.Forms
                 lblStartAvg.Text = 0.ToString();
             }
 
-            List<PlayerHistory> Last30 = PlayerHistoryDB.getTop30FromPlayerHistory(mem.Number);
+            List<PlayerHistory> Last30 = PlayerHistoryDB.GetTop30FromPlayerHistory(mem.Number);
             int game1AVG = 0;
             int game2AVG = 0;
             int game3AVG = 0;
@@ -573,7 +573,7 @@ namespace NineTapTour.Forms
         private void btnSaveChanges_Click(object sender, EventArgs e)
         {
             //grab untouched playerhistory
-            List<PlayerHistory> pHist = PlayerHistoryDB.getMemberPlayerHistory(mem.Number, RegionID);
+            List<PlayerHistory> pHist = PlayerHistoryDB.GetMemberPlayerHistory(mem.Number, RegionID);
 
             //RESTORE THE DATAGRID BACK TO THE DATE DESCINDING 
             dataGridView1.Sort(dataGridView1.Columns["Date"], System.ComponentModel.ListSortDirection.Descending);
@@ -621,7 +621,7 @@ namespace NineTapTour.Forms
                     //skip total score with handicap. not apart of Playerhistory class
                     saveY++;
 
-                    pHist[saveX].AverageForGame = Convert.ToDouble(pHist[saveX].TotalScore / pHist[saveX].GamesPlayed);
+                    pHist[saveX].AverageForEntry = Convert.ToDouble(pHist[saveX].TotalScore / pHist[saveX].GamesPlayed);
 
                     saveY++;
 

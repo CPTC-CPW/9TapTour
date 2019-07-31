@@ -24,7 +24,7 @@ namespace NineTapTour.Database
             InitializeComponent();
             this.id = id;
             
-            Member currentMember = MemberDb.GetMember(id,0 );
+            Member currentMember = MemberDB.GetMember(id,0 );
 
             createDataGridView(id);
 
@@ -42,7 +42,7 @@ namespace NineTapTour.Database
 
         private void createDataGridView(int id)
         {
-            List<PlayerHistory> PlayerHistory = PlayerHistoryDB.getTop30FromPlayerHistory(id);
+            List<PlayerHistory> PlayerHistory = PlayerHistoryDB.GetTop30FromPlayerHistory(id);
             dtvPlayerHistory.DataSource = DataView(id, PlayerHistory);
 
             dtvPlayerHistory.SuspendLayout();
@@ -90,7 +90,7 @@ namespace NineTapTour.Database
                 newRow["Game 3"] = item.Game3;
                 newRow["Game 4"] = item.Game4;
                 newRow["Total"] = item.TotalScore;
-                newRow["Average of Row"] = item.AverageForGame;
+                newRow["Average of Row"] = item.AverageForEntry;
                 newRow["True Average"] = item.trueAVG;
                 newRow["AVG"] = item.AVG;
                 newRow["HandiCap"] = item.HandiCap;

@@ -328,7 +328,7 @@ namespace NineTapTour.Database
 
             //add the event handler that will do the printing
             printDocument.PrintPage += new PrintPageEventHandler(printTourRecaps);
-            mems = TournamentDb.GetUniqueTourMembers(tour);
+            mems = TournamentDB.GetUniqueTourMembers(tour);
 
             if (mems.Count > 0)
             {

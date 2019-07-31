@@ -1,18 +1,7 @@
 ﻿using NineTapTour.Database;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Globalization;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.ComponentModel.DataAnnotations;
-using static NineTapTour._NineTapTour_NineTapDbDataSet;
-using System.Data.SqlClient;
-using System.Configuration;
 using System.Data.Entity;
 using NineTapTour.Models;
 
@@ -33,8 +22,8 @@ namespace NineTapTour.Forms
             RegionID = RID;
             dateTimePicker1.Value = DateTime.Today.AddDays(-180);
             targetDate = dateTimePicker1.Value;
-            InActiveList = MemberDb.GetMemberList(RegionID);
-            AllMembers = MemberDb.GetMemberList(RegionID);
+            InActiveList = MemberDB.GetMemberList(RegionID);
+            AllMembers = MemberDB.GetMemberList(RegionID);
             UpdateList();
         }
 
@@ -94,16 +83,6 @@ namespace NineTapTour.Forms
             {
                 InactiveListCheckBox.SetItemChecked(i, true);
             }
-        }
-    }
-
-    public class MemberNumComparer : IComparer<Member>
-    {
-        int IComparer<Member>.Compare(Member x, Member y)
-        {
-            int mem1 = x.Number;
-            int mem2 = y.Number;
-            return mem1.CompareTo(mem2);
         }
     }
 }

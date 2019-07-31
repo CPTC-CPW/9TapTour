@@ -26,7 +26,7 @@ namespace NineTapTour.Forms
             InitializeComponent();
 
             //check to see if any regions exist, if not create a local region(for first time start up)
-            if(NineTapRegionDB.getNumberOfRegions() == 0)
+            if(NineTapRegionDB.GetNumberOfRegions() == 0)
             {
                 NineTapRegion nTemp = new NineTapRegion();
                 nTemp.NineTapRegionName = "Local";
@@ -103,7 +103,7 @@ namespace NineTapTour.Forms
             Font drawFont = new Font("Arial", 12);
             SolidBrush drawBrush = new SolidBrush(Color.White);
             PointF drawPoint = new PointF(10, 2);
-            g.DrawString("Version: 1.8.5", drawFont, drawBrush, drawPoint);
+            g.DrawString("Version: 1.8.12", drawFont, drawBrush, drawPoint);
 #if DEBUG
             drawBrush.Color = Color.Red;
             drawPoint.Y += 16;
@@ -115,13 +115,13 @@ namespace NineTapTour.Forms
         // at this time. Keeping the code incase it's needed in the future.
         private void btnDropDataBase1_Click_1(object sender, EventArgs e)
         {
-            string name = NineTapRegionDB.getRegionByID(regionID).NineTapRegionName;
+            string name = NineTapRegionDB.GetRegionByID(regionID).NineTapRegionName;
             if (MessageBox.Show($"This button will delete all data stored in the {name} database, are you sure you want to clear  data?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 frmPleaseWait pl = new frmPleaseWait();
                 pl.Show();
                 //Delete Player History where HisID = selected regionID
-                List<PlayerHistory> phis = PlayerHistoryDB.getAllPlayerHistory(regionID);
+                List<PlayerHistory> phis = PlayerHistoryDB.GetAllPlayerHistory(regionID);
                 foreach (var p in phis)
                 {
                     PlayerHistoryDB.DeletePlayerHistory(p);
@@ -152,26 +152,26 @@ namespace NineTapTour.Forms
                 }
 
                 //delete Tournaments where Tournament RegionID = Region ID
-                List<Tournament> tourn = TournamentDb.GetTournamentList(regionID);
+                List<Tournament> tourn = TournamentDB.GetTournamentList(regionID);
 
                 foreach (var t in tourn)
                 {
-                    TournamentDb.deleteTournament(t);
+                    TournamentDB.DeleteTournament(t);
                 }
 
                 //Delete from Member Table where Memmber RegionID is = selected region ID
-                List<Member> mem = MemberDb.GetMemberList(regionID);
+                List<Member> mem = MemberDB.GetMemberList(regionID);
 
                 foreach (var m in mem)
                 {
-                    MemberDb.DeleteMember(m);
+                    MemberDB.DeleteMember(m);
                 }
 
                 //delete  the region itself
-                NineTapRegion ntr = NineTapRegionDB.getRegionByID(regionID);
-                NineTapRegionDB.deleteRegion(ntr);
+                NineTapRegion ntr = NineTapRegionDB.GetRegionByID(regionID);
+                NineTapRegionDB.DeleteRegion(ntr);
 
-                if (NineTapRegionDB.getNumberOfRegions() == 0) // recreate the local region select again if it nothing exists here anymore
+                if (NineTapRegionDB.GetNumberOfRegions() == 0) // recreate the local region select again if it nothing exists here anymore
                 {
                     NineTapRegion n = new NineTapRegion();
                     n.NineTapRegionName = "Local";
@@ -194,7 +194,7 @@ namespace NineTapTour.Forms
             {   // added a try catch block in order to catch the error that occurs at the very first launch of the program.
                 //(the MDi parent is not set yet, so it has to skip over this step on its very first launch or the program wont start)
                 ((FrmMain)MdiParent).RegionID = regionID;
-                ((FrmMain)MdiParent)._membersList = MemberDb.GetMemberList(regionID).OrderBy(m => m.Number);
+                ((FrmMain)MdiParent)._membersList = MemberDB.GetMemberList(regionID).OrderBy(m => m.Number);
             }
             catch
             {
