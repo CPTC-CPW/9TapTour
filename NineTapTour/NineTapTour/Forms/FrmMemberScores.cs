@@ -1788,7 +1788,7 @@ namespace NineTapTour.Forms
             }
         }
 
-        //these change the value of the QBSnumber, allowing the director to filter the rich text boxes by sqaud, then calls the refresh method to update the rich textboxes information to 
+        //these change the value of the QBSnumber, allowing the director to filter the rich text boxes by squad, then calls the refresh method to update the rich textboxes information to 
         //display the tournament information but based on squad'
         #region changing the sqaud number
         private void checkBoxAllResults_CheckedChanged(object sender, EventArgs e)
@@ -1821,7 +1821,7 @@ namespace NineTapTour.Forms
                 return;
             }
 
-            //needs to delete current member information from datbase in all important places
+            //needs to delete current member information from database in all important places
             if (overallListOfParticipants.Count == 0)
             {
                 var confirm = MessageBox.Show(@"No players currently in tournament", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1847,7 +1847,7 @@ namespace NineTapTour.Forms
 
         private void RefreshMemberScoresForm()
         {
-            //resets all the fields back to what it wouldve looked like without such record existing
+            //resets all the fields back to what it would've looked like without such record existing
             ResetFields();
             Refresh(false);
             RecordIndex(overallListOfParticipants);

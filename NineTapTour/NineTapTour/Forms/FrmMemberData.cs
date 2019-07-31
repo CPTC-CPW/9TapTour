@@ -236,6 +236,7 @@ namespace NineTapTour.Forms
 
                 chbLifetime.Checked = false;
                 txtLastPayment.Text = "";
+                txtPaidTo.Text = "";
             }
             else
             {
@@ -360,14 +361,16 @@ namespace NineTapTour.Forms
                 if (currentMem.LastPayment.HasValue)
                 {
                     txtLastPayment.Text = 
-                        currentMem.LastPayment.Value.AddYears(1).ToString("MM/dd/yyyy");
-
+                        currentMem.LastPayment.Value.ToString("MM/dd/yyyy");
+                    txtPaidTo.Text =
+                        currentMem.LastPayment.Value.AddYears(1).ToString("yyyy");
 
                     checkPayment();
                 }
                 else
                 {
                     txtLastPayment.Text = "";
+                    txtPaidTo.Text = "";
                     lblPaymentInfo.Visible = false;
                 }                
 
@@ -804,7 +807,7 @@ namespace NineTapTour.Forms
         }
 
         // takes a list of no player history, this list would stack on 
-        // top of thew orginal data on the form finalize page
+        // top of thew original data on the form finalize page
         private void btnStats_Click(object sender, EventArgs e)
         {
             FrmStats p = new FrmStats(currentMem.Number, currentMem.FirstName + 
@@ -816,7 +819,7 @@ namespace NineTapTour.Forms
         {
             if (IsValidTextboxes())
             {
-                //Set up compenents for printing
+                //Set up components for printing
                 PrintDialog printDialog = new PrintDialog();
                 PrintDocument printDocument = new PrintDocument();
 
@@ -853,10 +856,14 @@ namespace NineTapTour.Forms
             {
                 lblPaymentInfo.Visible = false;
                 txtLastPayment.Enabled = false;
+                txtPaidTo.Visible = false;
+                lblPaidTo.Visible = false;
             }
             else
             {
                 txtLastPayment.Enabled = true;
+                txtPaidTo.Visible = true;
+                lblPaidTo.Visible = true;
                 checkPayment();
             }
         }
@@ -864,6 +871,7 @@ namespace NineTapTour.Forms
         private void datePaid_ValueChanged(object sender, EventArgs e)
         {
             txtLastPayment.Text = "";
+            txtPaidTo.Text = "";
             checkPayment();
         }
 
