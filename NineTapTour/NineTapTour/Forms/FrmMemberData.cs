@@ -407,7 +407,7 @@ namespace NineTapTour.Forms
             {
                 lblLastNameValidation.Visible = true;
                 txtLastName.Clear();
-                txtLastName.BackColor = Color.LightPink;
+                //txtLastName.BackColor = Color.LightPink;
                 valid = false;
             }
 
