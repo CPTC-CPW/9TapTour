@@ -150,6 +150,7 @@
             this.txtLastName.Name = "txtLastName";
             this.txtLastName.Size = new System.Drawing.Size(226, 37);
             this.txtLastName.TabIndex = 3;
+            this.txtLastName.Tag = "White";
             this.txtLastName.TextChanged += new System.EventHandler(this.txtLastName_TextChanged);
             // 
             // txtFirstName

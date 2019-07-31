@@ -97,7 +97,7 @@ namespace NineTapTour.Forms
         private void Ctrl_GotFocus(object sender, EventArgs e)
         {
             var ctrl = sender as Control;
-            ctrl.Tag = ctrl.BackColor;
+            ctrl.Tag = ctrl.BackColor;            
             ctrl.BackColor = Color.Yellow;
         }
 
@@ -395,7 +395,7 @@ namespace NineTapTour.Forms
             {
                 lblAverageValidation.Visible = true;
                 txtAverage.Clear();
-                txtAverage.BackColor = Color.LightPink;
+                //txtAverage.BackColor = Color.LightPink;
                 valid = false;
             }
 
@@ -413,7 +413,7 @@ namespace NineTapTour.Forms
             {
                 lblFirstNameValidation.Visible = true;
                 txtFirstName.Clear();
-                txtFirstName.BackColor = Color.LightPink;
+                //txtFirstName.BackColor = Color.LightPink;
                 valid = false;
             }
 
@@ -429,7 +429,7 @@ namespace NineTapTour.Forms
             if (!FormHelper.IsDateTimeValid(txtDOB.Text))
                 {
                 lblDOBValidation.Visible = true;
-                txtDOB.BackColor = Color.LightPink;
+                //txtDOB.BackColor = Color.LightPink;
                 valid = false;
             }
 
@@ -1419,27 +1419,22 @@ namespace NineTapTour.Forms
 
         private void txtDOB_TextChanged(object sender, EventArgs e)
         {
-            lblDOBValidation.Visible = false;
-            txtDOB.BackColor = Color.White;
-           
+            lblDOBValidation.Visible = false;                     
         }
 
         private void txtAverage_TextChanged(object sender, EventArgs e)
         {
-            lblAverageValidation.Visible = false;
-            txtAverage.BackColor = Color.White;
+            lblAverageValidation.Visible = false;    
         }
 
         private void txtLastName_TextChanged(object sender, EventArgs e)
         {
-            lblLastNameValidation.Visible = false;
-            txtLastName.BackColor = Color.White;
+            lblLastNameValidation.Visible = false;          
         }
 
         private void txtFirstName_TextChanged(object sender, EventArgs e)
         {
             lblFirstNameValidation.Visible = false;
-            txtFirstName.BackColor = Color.White;
         }
     }
 }
