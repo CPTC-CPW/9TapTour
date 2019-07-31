@@ -125,6 +125,8 @@
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.lblPaidTo = new System.Windows.Forms.Label();
+            this.txtPaidTo = new System.Windows.Forms.TextBox();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -894,18 +896,18 @@
             // 
             this.lblLastPaid.AutoSize = true;
             this.lblLastPaid.Font = new System.Drawing.Font("Calibri", 9.75F);
-            this.lblLastPaid.Location = new System.Drawing.Point(0, 25);
+            this.lblLastPaid.Location = new System.Drawing.Point(6, 28);
             this.lblLastPaid.Name = "lblLastPaid";
-            this.lblLastPaid.Size = new System.Drawing.Size(152, 15);
+            this.lblLastPaid.Size = new System.Drawing.Size(107, 15);
             this.lblLastPaid.TabIndex = 55;
-            this.lblLastPaid.Text = "Year Membership Will End";
+            this.lblLastPaid.Text = "Last Payment Date";
             // 
             // lblPaymentInfo
             // 
             this.lblPaymentInfo.AutoSize = true;
             this.lblPaymentInfo.Font = new System.Drawing.Font("Calibri", 9.75F);
             this.lblPaymentInfo.ForeColor = System.Drawing.Color.Red;
-            this.lblPaymentInfo.Location = new System.Drawing.Point(3, 51);
+            this.lblPaymentInfo.Location = new System.Drawing.Point(125, 6);
             this.lblPaymentInfo.Name = "lblPaymentInfo";
             this.lblPaymentInfo.Size = new System.Drawing.Size(129, 15);
             this.lblPaymentInfo.TabIndex = 57;
@@ -914,7 +916,7 @@
             // 
             // txtLastPayment
             // 
-            this.txtLastPayment.Location = new System.Drawing.Point(158, 24);
+            this.txtLastPayment.Location = new System.Drawing.Point(127, 23);
             this.txtLastPayment.Mask = "00/00/0000";
             this.txtLastPayment.Name = "txtLastPayment";
             this.txtLastPayment.Size = new System.Drawing.Size(127, 21);
@@ -1116,14 +1118,15 @@
             // txtBonus
             // 
             this.txtBonus.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtBonus.Enabled = false;
             this.txtBonus.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtBonus.Location = new System.Drawing.Point(340, 41);
             this.txtBonus.MaxLength = 20;
             this.txtBonus.Name = "txtBonus";
+            this.txtBonus.ReadOnly = true;
             this.txtBonus.Size = new System.Drawing.Size(89, 47);
             this.txtBonus.TabIndex = 88;
             this.txtBonus.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtBonus.TextChanged += new System.EventHandler(this.txtBonus_TextChanged);
             // 
             // txtAverage
             // 
@@ -1213,6 +1216,8 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.txtPaidTo);
+            this.panel2.Controls.Add(this.lblPaidTo);
             this.panel2.Controls.Add(this.chbLifetime);
             this.panel2.Controls.Add(this.lblLastPaid);
             this.panel2.Controls.Add(this.txtLastPayment);
@@ -1221,6 +1226,24 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(285, 70);
             this.panel2.TabIndex = 55;
+            // 
+            // lblPaidTo
+            // 
+            this.lblPaidTo.AutoSize = true;
+            this.lblPaidTo.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblPaidTo.Location = new System.Drawing.Point(6, 48);
+            this.lblPaidTo.Name = "lblPaidTo";
+            this.lblPaidTo.Size = new System.Drawing.Size(118, 15);
+            this.lblPaidTo.TabIndex = 75;
+            this.lblPaidTo.Text = "Membership paid to";
+            // 
+            // txtPaidTo
+            // 
+            this.txtPaidTo.Enabled = false;
+            this.txtPaidTo.Location = new System.Drawing.Point(126, 47);
+            this.txtPaidTo.Name = "txtPaidTo";
+            this.txtPaidTo.Size = new System.Drawing.Size(54, 21);
+            this.txtPaidTo.TabIndex = 75;
             // 
             // FrmMemberData
             // 
@@ -1365,6 +1388,8 @@
         private System.Windows.Forms.Label lblStateValidation;
         private System.Windows.Forms.Label lblReferralsValidation;
         private System.Windows.Forms.CheckBox cbHaw;
+        private System.Windows.Forms.TextBox txtPaidTo;
+        private System.Windows.Forms.Label lblPaidTo;
         private System.Windows.Forms.TextBox txtDOB;
     }
 }
