@@ -39,6 +39,7 @@
             this.lblMemberNum = new System.Windows.Forms.Label();
             this.txtMemberNumber = new System.Windows.Forms.TextBox();
             this.grpMemberInfo = new System.Windows.Forms.GroupBox();
+            this.txtDOB = new System.Windows.Forms.TextBox();
             this.lblStateValidation = new System.Windows.Forms.Label();
             this.lblSSNValidation = new System.Windows.Forms.Label();
             this.lblReferralsValidation = new System.Windows.Forms.Label();
@@ -46,7 +47,7 @@
             this.lblDOBValidation = new System.Windows.Forms.Label();
             this.txtRejoinDate = new System.Windows.Forms.MaskedTextBox();
             this.txtDateJoined = new System.Windows.Forms.MaskedTextBox();
-            this.txtDOB = new System.Windows.Forms.MaskedTextBox();
+            this.txtDOBMasked = new System.Windows.Forms.MaskedTextBox();
             this.chbSocial = new System.Windows.Forms.CheckBox();
             this.txtZip = new System.Windows.Forms.MaskedTextBox();
             this.txtSSN = new System.Windows.Forms.MaskedTextBox();
@@ -151,7 +152,8 @@
             this.txtLastName.Name = "txtLastName";
             this.txtLastName.Size = new System.Drawing.Size(226, 37);
             this.txtLastName.TabIndex = 3;
-            this.txtLastName.TextChanged += new System.EventHandler(this.InputRequired);
+            this.txtLastName.Tag = "White";
+            this.txtLastName.TextChanged += new System.EventHandler(this.txtLastName_TextChanged);
             // 
             // txtFirstName
             // 
@@ -162,7 +164,7 @@
             this.txtFirstName.Name = "txtFirstName";
             this.txtFirstName.Size = new System.Drawing.Size(232, 37);
             this.txtFirstName.TabIndex = 5;
-            this.txtFirstName.TextChanged += new System.EventHandler(this.InputRequired);
+            this.txtFirstName.TextChanged += new System.EventHandler(this.txtFirstName_TextChanged);
             // 
             // txtMiddleInitial
             // 
@@ -229,6 +231,7 @@
             // 
             // grpMemberInfo
             // 
+            this.grpMemberInfo.Controls.Add(this.txtDOB);
             this.grpMemberInfo.Controls.Add(this.lblStateValidation);
             this.grpMemberInfo.Controls.Add(this.lblSSNValidation);
             this.grpMemberInfo.Controls.Add(this.lblReferralsValidation);
@@ -236,7 +239,7 @@
             this.grpMemberInfo.Controls.Add(this.lblDOBValidation);
             this.grpMemberInfo.Controls.Add(this.txtRejoinDate);
             this.grpMemberInfo.Controls.Add(this.txtDateJoined);
-            this.grpMemberInfo.Controls.Add(this.txtDOB);
+            this.grpMemberInfo.Controls.Add(this.txtDOBMasked);
             this.grpMemberInfo.Controls.Add(this.chbSocial);
             this.grpMemberInfo.Controls.Add(this.txtZip);
             this.grpMemberInfo.Controls.Add(this.txtSSN);
@@ -267,6 +270,15 @@
             this.grpMemberInfo.TabIndex = 8;
             this.grpMemberInfo.TabStop = false;
             this.grpMemberInfo.Text = "Member Information";
+            // 
+            // txtDOB
+            // 
+            this.txtDOB.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtDOB.Location = new System.Drawing.Point(25, 41);
+            this.txtDOB.Name = "txtDOB";
+            this.txtDOB.Size = new System.Drawing.Size(109, 23);
+            this.txtDOB.TabIndex = 10;
+            this.txtDOB.TextChanged += new System.EventHandler(this.txtDOB_TextChanged);
             // 
             // lblStateValidation
             // 
@@ -348,15 +360,16 @@
             this.txtDateJoined.ValidatingType = typeof(System.DateTime);
             this.txtDateJoined.Click += new System.EventHandler(this.mtxtBox_Click);
             // 
-            // txtDOB
+            // txtDOBMasked
             // 
-            this.txtDOB.Location = new System.Drawing.Point(25, 41);
-            this.txtDOB.Mask = "00/00/0000";
-            this.txtDOB.Name = "txtDOB";
-            this.txtDOB.Size = new System.Drawing.Size(109, 23);
-            this.txtDOB.TabIndex = 10;
-            this.txtDOB.ValidatingType = typeof(System.DateTime);
-            this.txtDOB.Click += new System.EventHandler(this.mtxtBox_Click);
+            this.txtDOBMasked.Location = new System.Drawing.Point(25, 41);
+            this.txtDOBMasked.Mask = "00/00/0000";
+            this.txtDOBMasked.Name = "txtDOBMasked";
+            this.txtDOBMasked.Size = new System.Drawing.Size(109, 23);
+            this.txtDOBMasked.TabIndex = 0;
+            this.txtDOBMasked.TabStop = false;
+            this.txtDOBMasked.ValidatingType = typeof(System.DateTime);
+            this.txtDOBMasked.Click += new System.EventHandler(this.mtxtBox_Click);
             // 
             // chbSocial
             // 
@@ -426,9 +439,9 @@
             this.lblDOB.AutoSize = true;
             this.lblDOB.Location = new System.Drawing.Point(22, 23);
             this.lblDOB.Name = "lblDOB";
-            this.lblDOB.Size = new System.Drawing.Size(119, 15);
+            this.lblDOB.Size = new System.Drawing.Size(76, 15);
             this.lblDOB.TabIndex = 9;
-            this.lblDOB.Text = "D.O.B. (mm/dd/yyyy)";
+            this.lblDOB.Text = "Date of Birth";
             // 
             // lblRefferals
             // 
@@ -576,7 +589,7 @@
             this.groupRecord.Margin = new System.Windows.Forms.Padding(3, 3, 20, 3);
             this.groupRecord.Name = "groupRecord";
             this.groupRecord.Size = new System.Drawing.Size(108, 131);
-            this.groupRecord.TabIndex = 60;
+            this.groupRecord.TabIndex = 100;
             this.groupRecord.TabStop = false;
             this.groupRecord.Text = "Record";
             // 
@@ -587,7 +600,8 @@
             this.cbHaw.Location = new System.Drawing.Point(6, 102);
             this.cbHaw.Name = "cbHaw";
             this.cbHaw.Size = new System.Drawing.Size(84, 23);
-            this.cbHaw.TabIndex = 65;
+            this.cbHaw.TabIndex = 106;
+            this.cbHaw.TabStop = false;
             this.cbHaw.Text = "Hawaii ?";
             this.cbHaw.UseVisualStyleBackColor = true;
             // 
@@ -597,7 +611,7 @@
             this.btnImportData.Location = new System.Drawing.Point(19, 72);
             this.btnImportData.Name = "btnImportData";
             this.btnImportData.Size = new System.Drawing.Size(75, 23);
-            this.btnImportData.TabIndex = 64;
+            this.btnImportData.TabIndex = 104;
             this.btnImportData.TabStop = false;
             this.btnImportData.Text = "Import";
             this.btnImportData.UseVisualStyleBackColor = true;
@@ -609,7 +623,7 @@
             this.btnSave.Location = new System.Drawing.Point(17, 45);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 62;
+            this.btnSave.TabIndex = 104;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -620,7 +634,7 @@
             this.btnNew.Location = new System.Drawing.Point(17, 19);
             this.btnNew.Name = "btnNew";
             this.btnNew.Size = new System.Drawing.Size(75, 23);
-            this.btnNew.TabIndex = 61;
+            this.btnNew.TabIndex = 102;
             this.btnNew.Text = "New";
             this.btnNew.UseVisualStyleBackColor = true;
             this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
@@ -791,8 +805,10 @@
             this.rdoFemale.Name = "rdoFemale";
             this.rdoFemale.Size = new System.Drawing.Size(64, 19);
             this.rdoFemale.TabIndex = 52;
+            this.rdoFemale.TabStop = true;
             this.rdoFemale.Text = "Female";
             this.rdoFemale.UseVisualStyleBackColor = true;
+            this.rdoFemale.KeyDown += new System.Windows.Forms.KeyEventHandler(this.rdoFemale_KeyDown);
             // 
             // rdoActive
             // 
@@ -813,6 +829,7 @@
             this.rdoInActive.Name = "rdoInActive";
             this.rdoInActive.Size = new System.Drawing.Size(68, 19);
             this.rdoInActive.TabIndex = 49;
+            this.rdoInActive.TabStop = true;
             this.rdoInActive.Text = "InActive";
             this.rdoInActive.UseVisualStyleBackColor = true;
             // 
@@ -823,6 +840,7 @@
             this.rdoMale.Name = "rdoMale";
             this.rdoMale.Size = new System.Drawing.Size(53, 19);
             this.rdoMale.TabIndex = 53;
+            this.rdoMale.TabStop = true;
             this.rdoMale.Text = "Male";
             this.rdoMale.UseVisualStyleBackColor = true;
             // 
@@ -858,9 +876,9 @@
             this.chbSenior.Name = "chbSenior";
             this.chbSenior.Size = new System.Drawing.Size(61, 19);
             this.chbSenior.TabIndex = 50;
-            this.chbSenior.TabStop = false;
             this.chbSenior.Text = "Senior";
             this.chbSenior.UseVisualStyleBackColor = true;
+            this.chbSenior.KeyDown += new System.Windows.Forms.KeyEventHandler(this.chbSenior_KeyDown);
             // 
             // chbLifetime
             // 
@@ -869,7 +887,7 @@
             this.chbLifetime.Location = new System.Drawing.Point(3, 3);
             this.chbLifetime.Name = "chbLifetime";
             this.chbLifetime.Size = new System.Drawing.Size(116, 19);
-            this.chbLifetime.TabIndex = 54;
+            this.chbLifetime.TabIndex = 56;
             this.chbLifetime.Text = "Lifetime Member";
             this.chbLifetime.UseVisualStyleBackColor = true;
             this.chbLifetime.CheckedChanged += new System.EventHandler(this.chbLifetime_CheckedChanged);
@@ -902,7 +920,7 @@
             this.txtLastPayment.Mask = "00/00/0000";
             this.txtLastPayment.Name = "txtLastPayment";
             this.txtLastPayment.Size = new System.Drawing.Size(127, 21);
-            this.txtLastPayment.TabIndex = 56;
+            this.txtLastPayment.TabIndex = 58;
             this.txtLastPayment.ValidatingType = typeof(System.DateTime);
             this.txtLastPayment.Click += new System.EventHandler(this.mtxtBox_Click);
             // 
@@ -934,7 +952,7 @@
             this.panel7.Location = new System.Drawing.Point(3, 3);
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(845, 528);
-            this.panel7.TabIndex = 74;
+            this.panel7.TabIndex = 0;
             // 
             // panel5
             // 
@@ -956,7 +974,7 @@
             this.panel5.Location = new System.Drawing.Point(360, 377);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(482, 147);
-            this.panel5.TabIndex = 74;
+            this.panel5.TabIndex = 80;
             // 
             // lblAverageValidation
             // 
@@ -976,7 +994,7 @@
             this.txtLastBowled.Mask = "00/00/0000";
             this.txtLastBowled.Name = "txtLastBowled";
             this.txtLastBowled.Size = new System.Drawing.Size(103, 21);
-            this.txtLastBowled.TabIndex = 60;
+            this.txtLastBowled.TabIndex = 94;
             this.txtLastBowled.ValidatingType = typeof(System.DateTime);
             this.txtLastBowled.Click += new System.EventHandler(this.mtxtBox_Click);
             // 
@@ -1000,7 +1018,7 @@
             this.txt30GameAvg.Name = "txt30GameAvg";
             this.txt30GameAvg.ReadOnly = true;
             this.txt30GameAvg.Size = new System.Drawing.Size(89, 47);
-            this.txt30GameAvg.TabIndex = 50;
+            this.txt30GameAvg.TabIndex = 84;
             this.txt30GameAvg.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // lblLastBowled
@@ -1041,7 +1059,7 @@
             this.txtMoneyEarned.Location = new System.Drawing.Point(201, 118);
             this.txtMoneyEarned.Name = "txtMoneyEarned";
             this.txtMoneyEarned.Size = new System.Drawing.Size(100, 23);
-            this.txtMoneyEarned.TabIndex = 58;
+            this.txtMoneyEarned.TabIndex = 92;
             this.txtMoneyEarned.TabStop = false;
             // 
             // txtEligibility
@@ -1052,7 +1070,7 @@
             this.txtEligibility.MaxLength = 20;
             this.txtEligibility.Name = "txtEligibility";
             this.txtEligibility.Size = new System.Drawing.Size(124, 23);
-            this.txtEligibility.TabIndex = 56;
+            this.txtEligibility.TabIndex = 90;
             // 
             // lblBonus
             // 
@@ -1094,7 +1112,7 @@
             this.txtHandicap.Name = "txtHandicap";
             this.txtHandicap.ReadOnly = true;
             this.txtHandicap.Size = new System.Drawing.Size(89, 47);
-            this.txtHandicap.TabIndex = 52;
+            this.txtHandicap.TabIndex = 86;
             this.txtHandicap.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtBonus
@@ -1107,7 +1125,7 @@
             this.txtBonus.Name = "txtBonus";
             this.txtBonus.ReadOnly = true;
             this.txtBonus.Size = new System.Drawing.Size(89, 47);
-            this.txtBonus.TabIndex = 54;
+            this.txtBonus.TabIndex = 88;
             this.txtBonus.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtAverage
@@ -1118,8 +1136,9 @@
             this.txtAverage.MaxLength = 20;
             this.txtAverage.Name = "txtAverage";
             this.txtAverage.Size = new System.Drawing.Size(99, 47);
-            this.txtAverage.TabIndex = 48;
+            this.txtAverage.TabIndex = 82;
             this.txtAverage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtAverage.TextChanged += new System.EventHandler(this.txtAverage_TextChanged);
             // 
             // panel4
             // 
@@ -1135,7 +1154,7 @@
             this.panel4.Margin = new System.Windows.Forms.Padding(25, 3, 3, 3);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(610, 72);
-            this.panel4.TabIndex = 74;
+            this.panel4.TabIndex = 0;
             // 
             // lblFirstNameValidation
             // 
@@ -1172,7 +1191,7 @@
             this.panel1.Location = new System.Drawing.Point(12, 110);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(309, 414);
-            this.panel1.TabIndex = 74;
+            this.panel1.TabIndex = 48;
             // 
             // txtNotes
             // 
@@ -1206,7 +1225,7 @@
             this.panel2.Location = new System.Drawing.Point(3, 95);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(285, 70);
-            this.panel2.TabIndex = 74;
+            this.panel2.TabIndex = 55;
             // 
             // lblPaidTo
             // 
@@ -1333,7 +1352,7 @@
         private System.Windows.Forms.Label lblPaymentInfo;
         private System.Windows.Forms.Button btnImportData;
         private System.Windows.Forms.CheckBox chbSocial;
-        private System.Windows.Forms.MaskedTextBox txtDOB;
+        private System.Windows.Forms.MaskedTextBox txtDOBMasked;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.MaskedTextBox txtDateJoined;
         private System.Windows.Forms.MaskedTextBox txtRejoinDate;
@@ -1371,5 +1390,6 @@
         private System.Windows.Forms.CheckBox cbHaw;
         private System.Windows.Forms.TextBox txtPaidTo;
         private System.Windows.Forms.Label lblPaidTo;
+        private System.Windows.Forms.TextBox txtDOB;
     }
 }
