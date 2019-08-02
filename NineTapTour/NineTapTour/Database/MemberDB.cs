@@ -1,13 +1,18 @@
-﻿namespace NineTapTour.Database
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity;
-    using System.Data.Entity.Validation;
-    using System.Linq;
-    using System.Windows.Forms;
-    using NineTapTour.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using NineTapTour.Exceptions;
+using System.Data.SqlClient;
+using System.Data.Entity.Validation;
+using System.Windows.Forms;
+using NineTapTour.Models;
 
+
+namespace NineTapTour.Database
+{
     public class MemberDB
     {
         /// <summary>
@@ -33,12 +38,15 @@
                     if (db.Entry(temp).State == EntityState.Modified)
                     {
                         temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.StartAvg.Value));
-
+#if DEBUG
                         MessageBox.Show("Player Updated");
+#endif
                     }
                     else
                     {
-                        MessageBox.Show("Player Successfully Added");
+#if DEBUG
+                        MessageBox.Show("Player Saved Successfully");
+#endif
                     }
                     db.SaveChanges();
                 }
@@ -86,7 +94,7 @@
             using (var db = new NineTapDb())
             {
                 return (from m in db.Members
-                        orderby m.Number
+                        orderby  m.Number
                         where m.NineTapRegionID == regionID
                         select m).ToList();
             }

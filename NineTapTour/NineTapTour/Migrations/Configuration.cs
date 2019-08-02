@@ -67,10 +67,6 @@ namespace NineTapTour.Migrations
         // will be 1 and so on.
         private readonly int _memberStartingNumber = 1;
 
-        // Currently only 1 region enabled
-        private readonly int _startingRegionId = 1;
-        private readonly int _endingRegionId = 1;
-
         // For initial Game Seed randomization
         private readonly int _lowestBowlScore = 100;
         private readonly int _highestBowlScore = 280;
@@ -132,14 +128,29 @@ namespace NineTapTour.Migrations
                 List<int> bonusList = new List<int>();
                 List<int> avgList = new List<int>();
 
+                int regionId = 0;
+
                 // Create Regions
-                if (!context.NineTapRegion.Any())
+                if (!context.NineTapRegion.Where(region => region.NineTapRegionName == "Washington").Any())
                 {
-                    context.NineTapRegion.AddOrUpdate(r => r.NineTapRegionID,
-                        new NineTapRegion { NineTapRegionID = 1, NineTapRegionName = "Washington" },
-                        new NineTapRegion { NineTapRegionID = 2, NineTapRegionName = "Hawaii" }
-                    );
+                    NineTapRegion nineTapRegion = new NineTapRegion()
+                    {
+                        NineTapRegionName = "Washington"
+                    };
+                    // The RegionID is an identity column. After deleting regions the seed data will run again
+                    context.NineTapRegion.AddOrUpdate(nineTapRegion);
+                    context.SaveChanges();
+                    regionId = nineTapRegion.NineTapRegionID;
                 }
+                else
+                {
+                    //retrieve Washington region id
+                    regionId = context.NineTapRegion
+                        .Where(region => region.NineTapRegionName == "Washington")
+                        .Select(region => region.NineTapRegionID).Single();
+                }
+
+                
 
                 // Create Tournament, this only generates one change generation to allow for more (you 
                 // will have to change participants below and generate them into random tournaments if 
@@ -162,7 +173,7 @@ namespace NineTapTour.Migrations
                     t.Squads = _maxSquads;
                     t.Doubles = false;
                     t.ThreeOutOf4 = false;
-                    t.TourneyRegion = 1;
+                    t.TourneyRegion = regionId;
                 }).Generate(_numberOfCurrentTournamentsToCreate);
 
                 // Creates Members Information
@@ -185,7 +196,7 @@ namespace NineTapTour.Migrations
                     m.JoinDate = f.Date.Past(_joinDatesInYearsAgo, refDate: DateTime.Parse(_lastPossibleJoinDate)); ;
                     m.SSN = f.Person.Ssn();
                     m.PrimaryPhone = f.Person.Phone;
-                    m.NineTapRegionID = f.Random.Number(_startingRegionId, _endingRegionId);
+                    m.NineTapRegionID = regionId;
                     m.Number = f.IndexVariable++ + _memberStartingNumber;
                     m.Bonus = f.Random.Number(_lowestBonusPin, _highestBonusPin);
                     m.Handicap = Calculations.Calculations.CalculateHandicapPins(m.StartAvg.Value);
@@ -206,7 +217,7 @@ namespace NineTapTour.Migrations
                     g.Notes = null;
                     g.Handicap = handicapList[initialSeedIndexForLists];
                     g.TotalScore = g.Game1 + g.Game2 + g.Game3 + g.Game4;
-                    g.gameRegionID = 1;
+                    g.gameRegionID = regionId;
                     g.Bonus = bonusList[initialSeedIndexForLists++];
                     g.InputtedAvg = g.TotalScore / 4;
                     g.MoneyWon = f.Random.Decimal(0, 0);
@@ -220,7 +231,7 @@ namespace NineTapTour.Migrations
                     p.Member = memberSeed;
                     p.Game = gameSeed;
                     p.Squad = f.Random.Number(1, _maxSquads);
-                    p.ParticipantRegionID = 1;
+                    p.ParticipantRegionID = regionId;
                     p.Tournament = tournamentSeed[f.Random.Number(0, (_numberOfCurrentTournamentsToCreate - 1))];
                 })
                 .Generate(_numOfMembersToGenerate);
@@ -255,7 +266,7 @@ namespace NineTapTour.Migrations
                         ph.Bonus = bonusList[playerHistoryIndexForLists];
                         ph.ProPot = null;
                         ph.PPHG = $"{Math.Max(ph.Game1.Value, Math.Max(ph.Game2.Value, Math.Max(ph.Game3.Value, ph.Game4.Value)))}";
-                        ph.regionID = 1;
+                        ph.regionID = regionId;
                         playerHistoryIndexForLists++;
                     });
 
