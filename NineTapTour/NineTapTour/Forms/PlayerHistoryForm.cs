@@ -42,8 +42,8 @@ namespace NineTapTour.Database
 
         private void createDataGridView(int id)
         {
-            List<PlayerHistory> PlayerHistory = PlayerHistoryDB.GetTop30FromPlayerHistory(id);
-            dtvPlayerHistory.DataSource = DataView(id, PlayerHistory);
+            List<PlayerHistory> playerHistory = PlayerHistoryDB.GetTop30FromPlayerHistory(id);
+            dtvPlayerHistory.DataSource = dataView(playerHistory);
 
             dtvPlayerHistory.SuspendLayout();
             var column = dtvPlayerHistory.Columns[1];
@@ -57,7 +57,7 @@ namespace NineTapTour.Database
         }
 
 
-        private DataTable DataView(int id, List<PlayerHistory> PlayerHistory)
+        private DataTable dataView(List<PlayerHistory> playerHistory)
         {
             var db = new NineTapDb();
             DataTable dt = new DataTable();
@@ -78,7 +78,7 @@ namespace NineTapTour.Database
             dt.Columns.Add("Cash").ReadOnly = true;
             dt.Columns.Add("Notes").ReadOnly = true;
 
-            List<PlayerHistory> temp = PlayerHistory;
+            List<PlayerHistory> temp = playerHistory;
 
             foreach (var item in temp)
             {
