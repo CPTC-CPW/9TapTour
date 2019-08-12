@@ -26,7 +26,7 @@ namespace NineTapTour.Database
             
             Member currentMember = MemberDB.GetMember(id,0 );
 
-            createDataGridView(id);
+            createDataGridView();
 
             lblFullName.Text = ($"Name : {currentMember.FirstName} {currentMember.LastName}");
             lblMemberNumber.Text = ($"Member Number: {currentMember.Number}");
@@ -40,7 +40,7 @@ namespace NineTapTour.Database
         }
 
 
-        private void createDataGridView(int id)
+        private void createDataGridView()
         {
             List<PlayerHistory> PlayerHistory = PlayerHistoryDB.GetTop30FromPlayerHistory(id);
             dtvPlayerHistory.DataSource = DataView(id, PlayerHistory);
