@@ -830,7 +830,7 @@ namespace NineTapTour.Forms
 
                 newRow["Scratch Total"] = item.TotalScore;
                 newRow["Total w/HDCP"] = item.TotalScore + ((item.HandiCap + item.Bonus) * item.GamesPlayed);
-                newRow["Entry AVG"] = item.AverageForGame;
+                newRow["Entry AVG"] = item.AverageForEntry;
                 newRow["30 AVG"] = item.trueAVG;
 
                 if (item.AVG == 0)
@@ -939,6 +939,9 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            // If one of the column headers was clicked, don't update
+            if (e.RowIndex == -1) // -1 indicates the column header row
+                return;
             
             UpdateLeagueAvg(e.RowIndex);//added to help update more often
             
@@ -1022,7 +1025,7 @@ namespace NineTapTour.Forms
                             p.PPHG = Convert.ToString(TournamentEntriesGrid.Rows[i].Cells[STANDING_COLUMN].Value);
                             p.ProPot = TournamentEntriesGrid[PRO_POT_COLUMN, i].Value.ToString();
                             p.Notes = TournamentEntriesGrid[NOTES_COLUMN_, i].Value.ToString();
-                            p.AverageForGame = Convert.ToDouble(TournamentEntriesGrid[ENTRY_AVERAGE_COLUMN, i].Value);
+                            p.AverageForEntry = Convert.ToDouble(TournamentEntriesGrid[ENTRY_AVERAGE_COLUMN, i].Value);
                             p.trueAVG = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
                             p.AVG = Convert.ToInt32(TournamentEntriesGrid[ADJUSTED_AVG_COLUMN, i].Value);
 
@@ -1161,7 +1164,7 @@ namespace NineTapTour.Forms
                     ph.GamesPlayed = gamesPlayed;
                     #endregion
 
-                    ph.AverageForGame = FinalizeTableList[i].GameAvg;
+                    ph.AverageForEntry = FinalizeTableList[i].GameAvg;
                     ph.trueAVG = FinalizeTableList[i].LeagueAverage;
 
 
@@ -1282,21 +1285,16 @@ namespace NineTapTour.Forms
         private int CalcThirtyLeagueAverage(int memberNum, List<int> currGameAverages)
         {
             List<PlayerHistory> playerHistory = PlayerHistoryDB.GetMemberPlayerHistory(memberNum, RegionID);
-            int avgOfAllGameAverages = 
-                Convert.ToInt32(
-                    FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) + currGameAverages.Sum()
-                    );
-            return avgOfAllGameAverages;
-            /*
-            if (playerHistory.Count >= 30 || (playerHistory.Count + currGameAverages.Count) > 30)
-            {
-                return avgOfAllGameAverages / 30;
+            if (playerHistory.Count >= 30 || (playerHistory.Count + currGameAverages.Count) >= 30) { 
+                int newAverage = 
+                Convert.ToInt32(FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) /30);
+            return newAverage;         
             }
             else
             {
-                return avgOfAllGameAverages / (playerHistory.Count + currGameAverages.Count);
+                return Convert.ToInt32((FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 29, RegionID) + currGameAverages.Sum())/ (playerHistory.Count + currGameAverages.Count));
             }
-            */
+            
         }
 
         // Removed unused getLeagueSum method which was meant to calculate the League Average on 3/18/19. League Average is

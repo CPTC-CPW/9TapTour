@@ -62,7 +62,7 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icon\9tap.ico</ApplicationIcon>
+    <ApplicationIcon>9tap_white.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper, Version=7.0.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
@@ -73,11 +73,9 @@
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="FluentValidationNA, Version=1.2.16.24816, Culture=neutral, PublicKeyToken=0950390b87309e14, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentValidationNA.1.2.16\lib\net40\FluentValidationNA.dll</HintPath>
@@ -133,13 +131,14 @@
     <Compile Include="Migrations\201905281651441_AddRegionForeignKey.Designer.cs">
       <DependentUpon>201905281651441_AddRegionForeignKey.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201907012236380_migrationtest.cs" />
-    <Compile Include="Migrations\201907012236380_migrationtest.Designer.cs">
-      <DependentUpon>201907012236380_migrationtest.cs</DependentUpon>
+    <Compile Include="Migrations\201907051838053_RenameField.cs" />
+    <Compile Include="Migrations\201907051838053_RenameField.Designer.cs">
+      <DependentUpon>201907051838053_RenameField.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\ExcelMember.cs" />
     <Compile Include="Database\FormHelper.cs" />
     <Compile Include="Database\NineTapRegionDB.cs" />
+    <Compile Include="Models\MemNumComparer.cs" />
     <Compile Include="Models\NineTapRegion.cs" />
     <Compile Include="Models\ExcelRow.cs" />
     <Compile Include="Models\FinalizeTemp.cs" />
@@ -281,6 +280,7 @@
       <DependentUpon>201803192318264_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\TournamentStatsList.cs" />
     <Compile Include="Models\ViewModels\ParticipantsGameViewModel.cs" />
     <Compile Include="Models\ViewModels\TopParticipantGameViewModel.cs" />
     <Compile Include="Models\ViewModels\TournamentHighScoresViewModel.cs" />
@@ -372,8 +372,8 @@
     <EmbeddedResource Include="Migrations\201905281651441_AddRegionForeignKey.resx">
       <DependentUpon>201905281651441_AddRegionForeignKey.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201907012236380_migrationtest.resx">
-      <DependentUpon>201907012236380_migrationtest.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201907051838053_RenameField.resx">
+      <DependentUpon>201907051838053_RenameField.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -407,6 +407,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="Resources\BowlingPin2.png" />
+    <Content Include="9tap_white.ico" />
+    <Content Include="Database\DBScripts\BonusPinsMemberScript.sql" />
     <Content Include="Resources\TournamentResultsTemplate.xls">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -477,6 +479,7 @@
     <Content Include="Resources\BowlingPin1.png" />
     <Content Include="Resources\9taplogo1.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

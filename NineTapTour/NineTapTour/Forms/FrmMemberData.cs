@@ -54,16 +54,6 @@ namespace NineTapTour.Forms
 
             RegionID = ((FrmMain)MdiParent).RegionID;
             List<Member> ListOfMembers = MemberDB.GetMemberList(RegionID);
-            toolTip1.IsBalloon = true;
-            txtDateJoined.MaskInputRejected += new MaskInputRejectedEventHandler(DateMaskTextBoxInput_MaskInputRejected);
-            txtDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDOB_KeyDown);
-            txtRejoinDate.MaskInputRejected += new MaskInputRejectedEventHandler(DateMaskTextBoxInput_MaskInputRejected);
-            txtRejoinDate.KeyDown += new KeyEventHandler(mtxtBoxRejoinDate_KeyDown);
-            txtLastBowled.MaskInputRejected += new MaskInputRejectedEventHandler(DateMaskTextBoxInput_MaskInputRejected);
-            txtLastBowled.KeyDown += new KeyEventHandler(mtxtBoxLastBowled_KeyDown);
-            txtLastPayment.MaskInputRejected += new MaskInputRejectedEventHandler(DateMaskTextBoxInput_MaskInputRejected);
-            txtLastPayment.KeyDown += new KeyEventHandler(MtxtBoxLastPayment_KeyDown);
-            txtDOB.MaskInputRejected += new MaskInputRejectedEventHandler(DateMaskTextBoxInput_MaskInputRejected);
             UpdateMemberInfo();
         }
         
@@ -107,21 +97,42 @@ namespace NineTapTour.Forms
         private void Ctrl_GotFocus(object sender, EventArgs e)
         {
             var ctrl = sender as Control;
-            ctrl.Tag = ctrl.BackColor;
+            ctrl.Tag = ctrl.BackColor;            
             ctrl.BackColor = Color.Yellow;
+        }
+
+        public void RemovePlaceholderText(object sender, EventArgs e)
+        {
+            if (txtDOB.Text == "MM/DD/YYYY")
+            {
+                txtDOB.Text = "";
+            }
+        }
+
+        public void AddPlaceholderText(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtDOB.Text))
+            {
+                txtDOB.Text = "MM/DD/YYYY";
+            }
         }
 
         /// <summary>
         /// Finds "Member Number" in the database and populates the "Member Data" form.
         /// If that "Member Number" is not assigned then display error box.
         /// </summary>
-        /// <param name="searchMem"></param>
-        public void UpdateMemberInfo(Member searchMem = null)
+        public void UpdateMemberInfo()
         {
-            RegionID = ((FrmMain)MdiParent).RegionID;  
-            
+            RegionID = ((FrmMain)MdiParent).RegionID;
+            Member searchMem = null;
+
+            lblLastNameValidation.Visible = false;
+            lblFirstNameValidation.Visible = false;
+            lblAverageValidation.Visible = false;
+            lblDateJoinedValidation.Visible = false;
+
             //set all member info group control background colors
-            foreach(Control c in grpMemberInfo.Controls)
+            foreach (Control c in grpMemberInfo.Controls)
             {
                 c.BackColor = Color.White;
             }
@@ -189,9 +200,7 @@ namespace NineTapTour.Forms
                 txtLastName.Text = "";
                 txtFirstName.Text = "";
                 txtMiddleInitial.Text = "";
-                txtDOB.Text = "";
-                txtDOB.KeyDown += new KeyEventHandler(mtxtBoxDOB_KeyDown);
-                toolTip1.IsBalloon = true;
+                txtDOB.Text = "MM/DD/YYYY";
                 txtSSN.Text = "";
 
                 // Postal Address
@@ -213,12 +222,11 @@ namespace NineTapTour.Forms
                 // Misc. Info
                 txtDateJoined.Text = "";
                 txtDateJoined.Text = "";
-                txtDateJoined.KeyDown += new KeyEventHandler(mtxtBoxDateJoined_KeyDown);
-                toolTip1.IsBalloon = true;
                 txtMoneyEarned.Text = "";
                 txtNotes.Text = "";
-                txtReferrals.Text = "";        
-                
+                txtReferrals.Text = "";
+
+        
                 foreach (var check in grpStatus.Controls.OfType<RadioButton>())
                 {
                     check.Checked = false;
@@ -231,6 +239,7 @@ namespace NineTapTour.Forms
 
                 chbLifetime.Checked = false;
                 txtLastPayment.Text = "";
+                txtPaidTo.Text = "";
             }
             else
             {
@@ -288,7 +297,7 @@ namespace NineTapTour.Forms
                 }
                 else
                 {
-                    txtDOB.Text = "";
+                    txtDOB.Text = "MM/DD/YYYY";
                 }
 
                 if (currentMem.JoinDate.HasValue)
@@ -355,14 +364,16 @@ namespace NineTapTour.Forms
                 if (currentMem.LastPayment.HasValue)
                 {
                     txtLastPayment.Text = 
-                        currentMem.LastPayment.Value.AddYears(1).ToString("MM/dd/yyyy");
-
+                        currentMem.LastPayment.Value.ToString("MM/dd/yyyy");
+                    txtPaidTo.Text =
+                        currentMem.LastPayment.Value.AddYears(1).ToString("yyyy");
 
                     checkPayment();
                 }
                 else
                 {
                     txtLastPayment.Text = "";
+                    txtPaidTo.Text = "";
                     lblPaymentInfo.Visible = false;
                 }                
 
@@ -387,7 +398,7 @@ namespace NineTapTour.Forms
             {
                 lblAverageValidation.Visible = true;
                 txtAverage.Clear();
-                txtAverage.BackColor = Color.LightPink;
+                //txtAverage.BackColor = Color.LightPink;
                 valid = false;
             }
 
@@ -396,7 +407,7 @@ namespace NineTapTour.Forms
             {
                 lblLastNameValidation.Visible = true;
                 txtLastName.Clear();
-                txtLastName.BackColor = Color.LightPink;
+                //txtLastName.BackColor = Color.LightPink;
                 valid = false;
             }
 
@@ -405,7 +416,7 @@ namespace NineTapTour.Forms
             {
                 lblFirstNameValidation.Visible = true;
                 txtFirstName.Clear();
-                txtFirstName.BackColor = Color.LightPink;
+                //txtFirstName.BackColor = Color.LightPink;
                 valid = false;
             }
 
@@ -416,6 +427,15 @@ namespace NineTapTour.Forms
                 txtDateJoined.BackColor = Color.LightPink;
                 valid = false;
             }
+
+            // validate DOB textbox
+            if (!FormHelper.IsDateTimeValid(txtDOB.Text))
+                {
+                lblDOBValidation.Visible = true;
+                //txtDOB.BackColor = Color.LightPink;
+                valid = false;
+            }
+
             return valid;
         }
 
@@ -435,59 +455,33 @@ namespace NineTapTour.Forms
             // btnSave_Click and adds a member into the database.
             if (IsValidTextboxes())
             {
-                //checks to see if MemberID exists 
-                int memId;
+                //create temporary member for validation
                 Member temp = new Member();
                 temp.Number = Convert.ToInt32(txtMemberNumber.Text);
                 temp.IsActive = rdoActive.Checked;
-
-                if (!String.IsNullOrWhiteSpace(txtDateJoined.Text))
-                {
-                    DateTime date;
-                    if(DateTime.TryParse(txtDateJoined.Text, out date))
-                    {
-                        temp.JoinDate = date;
-                    }
-                }
-                else
-                {
-                    temp.JoinDate = null;
-                }
+                temp.JoinDate = DateTime.Parse(txtDateJoined.Text);
 
                 // Personal Info
                 temp.LastName = txtLastName.Text;
                 temp.FirstName = txtFirstName.Text;
-                temp.MiddleInitial = txtMiddleInitial.Text;
+                temp.MiddleInitial = txtMiddleInitial.Text;                              
+                temp.DateOfBirth = DateTime.Parse(txtDOB.Text);
+                temp.SSN = txtSSN.Text;
+                temp.Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male;
 
-                if (!String.IsNullOrWhiteSpace(txtDOB.Text))
-                {
-                    DateTime date;
-                    if (DateTime.TryParse(txtDOB.Text, out date))
-                    {
-                        temp.DateOfBirth = date;
-                    }
-                }
-                else
-                {
-                    temp.DateOfBirth = null;
-                }
-
+                //if member was born more than 50 years ago, then member is a senior. If member is a senior, check the isSenior checkbox and set temp.IsSenior to true
                 DateTime senior = DateTime.Now.AddYears(-50);
-
                 if (senior >= temp.DateOfBirth)
                 {
-                    temp.IsSenior = true;
                     chbSenior.Checked = true;
                 }
                 else
                 {
-                    temp.IsSenior = false;
                     chbSenior.Checked = false;
                 }
-
-                temp.SSN = txtSSN.Text;
                 temp.IsSenior = chbSenior.Checked;
-                temp.Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male;
+
+            
 
                 // Postal Address
                 temp.Street = txtAddress.Text;
@@ -569,7 +563,8 @@ namespace NineTapTour.Forms
 
                 // check to see if memberId exists before putting it in 
                 // current selected regions database
-                if(MemberDB.MemberExists(temp))
+                int memId;
+                if (MemberDB.MemberExists(temp))
                 {
                     memId = MemberDB.GetMemberIdByNumber(temp.Number, RegionID, new NineTapDb());
                 }
@@ -580,6 +575,7 @@ namespace NineTapTour.Forms
 
                 temp.Id = memId;
 
+                //Set average for the new member
                 List<PlayerHistory> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
                 if (last5.Count >= 1)
                 {   // sets the average to that of their last adjusted average
@@ -723,9 +719,13 @@ namespace NineTapTour.Forms
             txtLastBowled.Mask = "00/00/0000";
             txtLastPayment.Text = "";
             txtLastPayment.Mask = "00/00/0000";
-            txtDOB.Text = "";
-            txtDOB.Mask = "00/00/0000";
+            txtDOB.Text = "MM/DD/YYYY";
             _memberId = -1;
+
+            //removes placeholder text when DOB textBox is clicked
+            txtDOB.GotFocus += RemovePlaceholderText;
+            //adds placeholder text when DOB textBox is clicked away from with a date
+            txtDOB.LostFocus += AddPlaceholderText;
 
             //get latest member number, or set to 1 if no members in database
             int nextMemberNumber = MemberDB.GetMemberListCount(RegionID) + 1;
@@ -771,21 +771,12 @@ namespace NineTapTour.Forms
             UpdateMemberInfo();
         }
         
+
         /// <summary>
-        /// Turns textbox pink when text is erased
+        /// Opens SearchForm to search members. If member is found, updates Member Form to display that member's info
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void InputRequired(object sender, EventArgs e)
-        {
-            var textBox = sender as TextBox;
-            if (textBox != null)
-            {
-                textBox.BackColor = textBox.Text == string.Empty ? Color.LightPink : Color.White;
-            }
-        }
-            
-
         private void btnMemberSearch_Click(object sender, EventArgs e)
         {
             FrmSearch SearchForm = new FrmSearch(RegionID);
@@ -799,7 +790,7 @@ namespace NineTapTour.Forms
         }
 
         // takes a list of no player history, this list would stack on 
-        // top of thew orginal data on the form finalize page
+        // top of thew original data on the form finalize page
         private void btnStats_Click(object sender, EventArgs e)
         {
             FrmStats p = new FrmStats(currentMem.Number, currentMem.FirstName + 
@@ -807,11 +798,16 @@ namespace NineTapTour.Forms
             p.ShowDialog();
         }
 
+        /// <summary>
+        /// Prints Average, Handicap and Bonus of a single member
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnThisRecap_Click(object sender, EventArgs e)
         {
             if (IsValidTextboxes())
             {
-                //Set up compenents for printing
+                //Set up components for printing
                 PrintDialog printDialog = new PrintDialog();
                 PrintDocument printDocument = new PrintDocument();
 
@@ -829,6 +825,11 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// Gets Member data (Name, Member Number, City, Average, Handicap and Bonus) of a single member to print
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void singlePrint(object sender, PrintPageEventArgs e) 
         {
             NineTapTour.Database.Print.SinglePrint(
@@ -842,26 +843,44 @@ namespace NineTapTour.Forms
                     e);
         }
 
+        /// <summary>
+        /// Checks if lifetime member checkbox is checked. If it is, the "year membership will end" fields are hidden. If it's not, show "year membership will end" fields, and check is payment was made more than a year ago
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void chbLifetime_CheckedChanged(object sender, EventArgs e)
         {
             if (chbLifetime.Checked)
             {
                 lblPaymentInfo.Visible = false;
                 txtLastPayment.Enabled = false;
+                txtPaidTo.Visible = false;
+                lblPaidTo.Visible = false;
             }
             else
             {
                 txtLastPayment.Enabled = true;
+                txtPaidTo.Visible = true;
+                lblPaidTo.Visible = true;
                 checkPayment();
             }
         }
 
+        /// <summary>
+        /// If "year membership will end" field is changed, check if payment was made more than a year ago
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void datePaid_ValueChanged(object sender, EventArgs e)
         {
             txtLastPayment.Text = "";
+            txtPaidTo.Text = "";
             checkPayment();
         }
 
+        /// <summary>
+        /// Checks if last payment was made more than a year ago. If it was, show warning label that payment is due. 
+        /// </summary>
         private void checkPayment()
         {
             /********************************************************************************
@@ -875,23 +894,27 @@ namespace NineTapTour.Forms
                 lblPaymentInfo.Visible = false;
             }
         }
-        
+
+        /// <summary>
+        /// Opens form to select a tournament date range. Prints Average, Handicap and Bonus of each member in selected tournament date range
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnRecapByDate_Click(object sender, EventArgs e)
         {
             new FrmPrintByDate().ShowDialog();
         }
 
+        /// <summary>
+        /// Prints all members alphabetically (z-a)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnAllRecaps_Click(object sender, EventArgs e)
         {
             Print.printAllMembers();
         }
-
-        //private void btnLabels_Click(object sender, EventArgs e)
-        //{
-        //    FrmLabelPrint labels = new FrmLabelPrint(RegionID);
-        //    labels.ShowDialog();
-        //}
-        
+            
         /// <summary>
         /// This action event assigns current form as currFrmMemberData in
         /// FrmMains' global Variable property when leaving form. This allows 
@@ -905,182 +928,11 @@ namespace NineTapTour.Forms
             ((FrmMain)MdiParent).currFrmMemberData = this;
         }
 
-        private void updateOnload(List<Member> temp)
-        {
-            foreach(var m in temp)
-            {
-                MemberDB.AddOrUpdateMember(m); 
-            }
-        }
-
         /// <summary>
-        /// checks whether form data has been changed and not saved
+        /// This button imports member data from excel file
         /// </summary>
-        /// <returns>true if frmData is saved and false if form data has 
-        /// been changed and not saved. </returns>
-        public Boolean IsSavedData()
-        {
-            bool isMember = false;
-            foreach (Member mem in MemberDB.GetAllMembersList())
-            {
-                if (mem.Id == (currentMem.Id))
-                {
-                    isMember = true;
-                }
-            }
-
-            if(currentMem.State == null)
-            {
-                currentMem.State = "";
-            }
-
-            if (currentMem.City == null)
-            {
-                currentMem.City = "";
-            }
-
-            if (currentMem.Email == null)
-            {
-                currentMem.Email = "";
-            }
-
-            if (currentMem.Street == null)
-            {
-                currentMem.Street= "";
-            }
-
-            if (currentMem.Referrals == null)
-            {
-                txtReferrals.Text = null;
-            }
-
-            if (currentMem.PrimaryPhone == null)
-            {
-                currentMem.PrimaryPhone = "";
-            }
-
-            if (currentMem.PrimaryPhone == null)
-            {
-                currentMem.PrimaryPhone = "";
-            }
-
-            if (currentMem.SecondaryPhone == null)
-            {
-                currentMem.SecondaryPhone = "";
-            }
-
-            if (currentMem.Notes == null)
-            {
-                currentMem.Notes = "";
-            }
-
-            if (currentMem.SSN == null)
-            {
-                currentMem.SSN = " - -";
-            }
-
-            if (currentMem.PostalCode == null)
-            {
-                currentMem.PostalCode = "";
-            }
-
-            if (currentMem.Average == null)
-            {
-                txtAverage.Text = null ;
-            }
-
-            if (!isMember ||
-                txtLastName.Text != currentMem.LastName.ToString() ||
-                txtFirstName.Text != currentMem.FirstName.ToString() ||
-                txtMiddleInitial.Text != currentMem.MiddleInitial.ToString() ||
-                txtNotes.Text != currentMem.Notes.ToString() ||
-                txtState.Text != currentMem.State.ToString() ||
-                txtCity.Text != currentMem.City.ToString() ||
-                txtEmail.Text != currentMem.Email.ToString() ||
-                txtAddress.Text != currentMem.Street.ToString() ||
-                txtReferrals.Text != currentMem.Referrals.ToString() ||
-                txtPhone.Text != currentMem.PrimaryPhone.ToString() ||
-                txtPhone2.Text != currentMem.SecondaryPhone.ToString() ||
-                txtSSN.Text.Trim() != currentMem.SSN.ToString().Trim() ||
-                txtZip.Text != currentMem.PostalCode.ToString() ||
-                txtAverage.Text != currentMem.StartAvg.ToString() ||
-                // checks radio buttons active Member
-                (currentMem.IsActive == true && rdoActive.Checked == false) ||
-                (currentMem.IsActive == false && rdoActive.Checked == true))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        public double LeagueAverage (Member mem)
-        {
-            double sum = 0;
-            double average = 0;
-            var db = new NineTapDb();
-
-            var temp = (
-                        from p in db.Participants
-                        join m in db.Members on p.Member.Id equals m.Id
-                        join g in db.Games on p.Game.Id equals g.Id
-                        join t in db.Tournaments on p.Tournament.Id equals t.Id
-                        where mem.Id == m.Id
-                        orderby t.Date descending
-                        select new
-                        {
-                            t.Date,
-                            g.Game1,
-                            g.Game2,
-                            g.Game3,
-                            g.Game4,
-                            Average = (g.Game1 + g.Game2 + g.Game3 + g.Game4) / 4
-                        }).Take(30).ToList();
-
-            if(temp.Count > 0)
-            {
-                foreach (var item in temp)
-                {
-                    sum += Convert.ToDouble(item.Average);
-                }
-                return (average = sum / temp.Count());
-            }
-            return 0 ;
-        }
-
-        public double LeagueAvgFromPlayerHistory(Member mem)
-        {
-            double sum = 0;
-            double avg = 0;
-            var db = new NineTapDb();
-
-            var temp = (from p in db.PlayerHistory
-                        where p.MemberNumber == mem.Number
-                        orderby p.TournamentDate descending, p.hisID descending
-                        select new
-                        {
-                            p.TournamentDate,
-                            p.Game1,
-                            p.Game2,
-                            p.Game3,
-                            p.Game4,
-                            p.AverageForGame,
-                            p.trueAVG,
-                        }).Take(30).ToList();
-
-            if (temp.Count > 0)
-            {
-                foreach (var item in temp)
-                {
-                    sum += Convert.ToDouble(item.AverageForGame);
-                }
-                return (avg = sum / temp.Count());
-            }
-            return 0;
-        }
-      
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnImportData_Click(object sender, EventArgs e)
         {
             List<ExcelRow> CurrentExcelData = new List<ExcelRow>();
@@ -1156,6 +1008,11 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// Processes excel file for member data import
+        /// </summary>
+        /// <param name="PathAndFileName"></param>
+        /// <returns></returns>
         private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
         {
             List<ExcelRow> returnMe = new List<ExcelRow>();        
@@ -1378,7 +1235,7 @@ namespace NineTapTour.Forms
                         try
                         {
                             temp.AverageOfRow = Convert.ToDouble((range.Cells[row, 8] as Excel.Range).Value2);
-                            playerH.AverageForGame = temp.AverageOfRow;
+                            playerH.AverageForEntry = temp.AverageOfRow;
                         }
                         catch
                         {
@@ -1493,62 +1350,19 @@ namespace NineTapTour.Forms
                 }
             }
             return returnMe;
-        }    
+        }
 
+        /// <summary>
+        /// If SSN checkbox is checked, the social security number is shown, if not the social secuity number is masked with '*'
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void chbSocial_CheckedChanged(object sender, EventArgs e)
         {
             txtSSN.PasswordChar = chbSocial.Checked ? '\0' : '*';
         }
 
-        private void mtxtBoxDOB_KeyDown(object sender, KeyEventArgs e)
-        {
-            toolTip1.Hide(txtDOB);
-        }
-
-        private void mtxtBoxDateJoined_KeyDown(object sender, KeyEventArgs e)
-        {
-            toolTip1.Hide(txtDateJoined);
-        }
-
-        private void mtxtBoxRejoinDate_KeyDown(object sender, KeyEventArgs e)
-        {
-            toolTip1.Hide(txtDateJoined);
-        }
-
-        private void mtxtBoxLastBowled_KeyDown(object sender, KeyEventArgs e)
-        {
-            toolTip1.Hide(txtLastBowled);
-        }
-
-        private void MtxtBoxLastPayment_KeyDown(object sender, KeyEventArgs e)
-        {
-            toolTip1.Hide(txtLastPayment);
-        }
-
-        private void DateMaskTextBoxInput_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
-        {
-            MaskedTextBox box = sender as MaskedTextBox;
-
-            if (box.MaskFull)
-            {
-                toolTip1.ToolTipTitle = "Input Rejected - Too Much Data";
-                toolTip1.Show("You cannot enter any more data into the date field. " +
-                    "Delete some characters in order to insert more data.", box, 0, -20, 5000);
-            }
-            else if (e.Position == box.Mask.Length)
-            {
-                toolTip1.ToolTipTitle = "Input Rejected - End of Field";
-                toolTip1.Show("You cannot add extra characters to the end " +
-                    "of this date field.", box, 0, -20, 5000);
-            }
-            else
-            {
-                toolTip1.ToolTipTitle = "Input Rejected";
-                toolTip1.Show("You can only add numeric characters (0-9) " +
-                    "into this date field.", box, 0, -20, 5000);
-            }
-        }
-
+        
         /// <summary>
         /// The resize event for the form
         /// </summary>
@@ -1589,6 +1403,48 @@ namespace NineTapTour.Forms
             {
                 txtBonus.Text = Convert.ToInt32(newBonusPins).ToString();
             }
+        }
+
+        /// <summary>
+        /// Checks IsSenior checkbox if any key is pressed (helps with data entry when tabbing through form)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void chbSenior_KeyDown(object sender, KeyEventArgs e)
+        {
+            CheckBox currentCheckBox = sender as CheckBox;
+            currentCheckBox.Checked = true;
+        }
+
+        /// <summary>
+        /// Checks female radio button if any key is pressed (helps with checking radio buttons when tabbing through form)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rdoFemale_KeyDown(object sender, KeyEventArgs e)
+        {
+            RadioButton currentRadioButton = sender as RadioButton;
+            currentRadioButton.Checked = true;
+        }
+
+        private void txtDOB_TextChanged(object sender, EventArgs e)
+        {
+            lblDOBValidation.Visible = false;                     
+        }
+
+        private void txtAverage_TextChanged(object sender, EventArgs e)
+        {
+            lblAverageValidation.Visible = false;    
+        }
+
+        private void txtLastName_TextChanged(object sender, EventArgs e)
+        {
+            lblLastNameValidation.Visible = false;          
+        }
+
+        private void txtFirstName_TextChanged(object sender, EventArgs e)
+        {
+            lblFirstNameValidation.Visible = false;
         }
     }
 }

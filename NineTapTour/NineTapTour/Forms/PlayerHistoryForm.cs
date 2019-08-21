@@ -26,7 +26,7 @@ namespace NineTapTour.Database
             
             Member currentMember = MemberDB.GetMember(id,0 );
 
-            createDataGridView(id);
+            createDataGridView();
 
             lblFullName.Text = ($"Name : {currentMember.FirstName} {currentMember.LastName}");
             lblMemberNumber.Text = ($"Member Number: {currentMember.Number}");
@@ -40,10 +40,10 @@ namespace NineTapTour.Database
         }
 
 
-        private void createDataGridView(int id)
+        private void createDataGridView()
         {
-            List<PlayerHistory> PlayerHistory = PlayerHistoryDB.GetTop30FromPlayerHistory(id);
-            dtvPlayerHistory.DataSource = DataView(id, PlayerHistory);
+            List<PlayerHistory> playerHistory = PlayerHistoryDB.GetTop30FromPlayerHistory(id);
+            dtvPlayerHistory.DataSource = dataView(playerHistory);
 
             dtvPlayerHistory.SuspendLayout();
             var column = dtvPlayerHistory.Columns[1];
@@ -57,7 +57,7 @@ namespace NineTapTour.Database
         }
 
 
-        private DataTable DataView(int id, List<PlayerHistory> PlayerHistory)
+        private DataTable dataView(List<PlayerHistory> playerHistory)
         {
             var db = new NineTapDb();
             DataTable dt = new DataTable();
@@ -78,7 +78,7 @@ namespace NineTapTour.Database
             dt.Columns.Add("Cash").ReadOnly = true;
             dt.Columns.Add("Notes").ReadOnly = true;
 
-            List<PlayerHistory> temp = PlayerHistory;
+            List<PlayerHistory> temp = playerHistory;
 
             foreach (var item in temp)
             {
@@ -90,7 +90,7 @@ namespace NineTapTour.Database
                 newRow["Game 3"] = item.Game3;
                 newRow["Game 4"] = item.Game4;
                 newRow["Total"] = item.TotalScore;
-                newRow["Average of Row"] = item.AverageForGame;
+                newRow["Average of Row"] = item.AverageForEntry;
                 newRow["True Average"] = item.trueAVG;
                 newRow["AVG"] = item.AVG;
                 newRow["HandiCap"] = item.HandiCap;
