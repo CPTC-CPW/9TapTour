@@ -126,6 +126,11 @@ namespace NineTapTour.Forms
 
             // Manually adjusts each columns width
             sizeFinalizeGridView();
+
+            if(currTournament.IsTournamentFinalized == true)
+            {
+                btnFinalize.Enabled = false;
+            }
         }
 
         #region Automated checkbox event handlers
@@ -1226,7 +1231,9 @@ namespace NineTapTour.Forms
                     currPlayerHistory.Bonus = memberNumBonusPinMap[currPlayerHistory.MemberNumber];
                 }
                 PlayerHistoryDB.AddOrUpdatePlayerHistoryList(playerHistoryBonusAdjustmentList);
-                
+
+                currTournament.IsTournamentFinalized = true;
+                TournamentDB.UpdateTournament(currTournament);
 
                 Close();
             }
