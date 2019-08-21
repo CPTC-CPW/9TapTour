@@ -27,8 +27,11 @@ namespace NineTapTour.Models
         }
 
         public int TourneyRegion { get; set; }
+
+        public bool IsTournamentFinalized { get; set; }
         
     }
+
     public class TournamentDTO
     {
         public int Id { get; set; }
