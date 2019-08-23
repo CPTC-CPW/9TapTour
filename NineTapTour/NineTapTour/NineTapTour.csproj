@@ -135,6 +135,14 @@
     <Compile Include="Migrations\201907051838053_RenameField.Designer.cs">
       <DependentUpon>201907051838053_RenameField.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201908212026206_IsTournamentFinalizedColumn.cs" />
+    <Compile Include="Migrations\201908212026206_IsTournamentFinalizedColumn.Designer.cs">
+      <DependentUpon>201908212026206_IsTournamentFinalizedColumn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201908212103150_IsTournamentFinalized.cs" />
+    <Compile Include="Migrations\201908212103150_IsTournamentFinalized.Designer.cs">
+      <DependentUpon>201908212103150_IsTournamentFinalized.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\ExcelMember.cs" />
     <Compile Include="Database\FormHelper.cs" />
     <Compile Include="Database\NineTapRegionDB.cs" />
@@ -374,6 +382,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201907051838053_RenameField.resx">
       <DependentUpon>201907051838053_RenameField.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908212026206_IsTournamentFinalizedColumn.resx">
+      <DependentUpon>201908212026206_IsTournamentFinalizedColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908212103150_IsTournamentFinalized.resx">
+      <DependentUpon>201908212103150_IsTournamentFinalized.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
