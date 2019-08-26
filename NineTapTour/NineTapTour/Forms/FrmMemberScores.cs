@@ -1309,7 +1309,10 @@ namespace NineTapTour.Forms
 
                 var topScores = listOfParticipants.GroupBy(p => p.Member.Id).Select(pg => pg.Max()).ToList();
 
-                int qualifyBySquadNumber = GetSquadResultsNumberChecked();
+                int qualifyBy
+                    
+                    
+                    Number = GetSquadResultsNumberChecked();
 
                 //TAKES A TOURNAMENT ID AND SQUAD NUMBER AND FILTERS FOR A LIST OF PARTICIPANTS.
                 if (qualifyBySquadNumber > 0 && qualifyBySquadNumber <= 8)

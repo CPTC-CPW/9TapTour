@@ -157,7 +157,6 @@
     <Compile Include="Models\PlayerHistory.cs" />
     <Compile Include="Database\PlayerHistoryDB.cs" />
     <Compile Include="Database\Print.cs" />
-    <Compile Include="Models\Squad.cs" />
     <Compile Include="Database\TournamentDB.cs" />
     <Compile Include="Exceptions\MemberTableException.cs" />
     <Compile Include="Models\Participant.cs" />
