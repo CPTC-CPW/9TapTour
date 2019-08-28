@@ -148,27 +148,23 @@ namespace NineTapTour.Forms
         }        
 
         /// <summary>
-        /// Filters and sorts scores for topScores list.
+        /// This method sorts scores and removes the lowest if 4 scores are present
+        /// It returns  a list with the 3 highest scores listOfValidScores
         /// </summary>
         /// <param name="scores"></param>
         /// <returns></returns>
         /// 
-        //Brett Peterson suggested bug fix starts here
-        //Only getting first 3 scores Not top 3 scores
+            
         public static List<int> GetTop3OutOf4(List<int?> scores)
         {
-            List<int> listOfValidScores = new List<int>();
-          //I removed the -1 from scores.Count-1 so I get all scores
+            List<int> listOfValidScores = new List<int>(); 
             for (int i = 0; i < scores.Count; i++)
-            {
-              
+            {          
                 if (scores[i].HasValue)
                 {
                     listOfValidScores.Add(scores[i].Value);
-                }
-                
+                }              
             }
-
             listOfValidScores.Sort();
             //after sorting I want to get rid of lowest score  
             if (listOfValidScores.Count == 4)
