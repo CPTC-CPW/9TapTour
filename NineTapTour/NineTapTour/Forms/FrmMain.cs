@@ -82,29 +82,24 @@ namespace NineTapTour.Forms
         /// <param name="form">forms that haven't been opened yet(?)</param>
         public void OpenOrDisplayForm<T>(ref T form) where T : Form, new()
         {
-            bool isSavedData = true;
-
-            if (isSavedData) //checks to see if you are leaving page without saved data.
+            if (form != null)
             {
-                if (form != null)
-                {
                     
-                    form.BringToFront();
-                    form.Activate();
+                form.BringToFront();
+                form.Activate();
                     
-                }
-                else
-                {
-                    form = new T
-                    {
-                        MdiParent = this,
-                        Dock = DockStyle.Fill                      
-               
-                    };
-                }
-                form.WindowState = FormWindowState.Maximized;
-                form.Show();
             }
+            else
+            {
+                form = new T
+                {
+                    MdiParent = this,
+                    Dock = DockStyle.Fill                      
+               
+                };
+            }
+            form.WindowState = FormWindowState.Maximized;
+            form.Show();
         }
 
         //method to highlight menu item to show user which page they have open
