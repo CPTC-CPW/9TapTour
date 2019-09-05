@@ -50,8 +50,6 @@ namespace NineTapTour.Forms
             _membersList = MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
             _tournamentList = TournamentDB.GetTournamentList(RegionID);
 
-            var newfrmStart = new MainMenu {MdiParent = this};
-
             //sets the height and width of the parent form... this can not be resized later... all child forms must 
             //fit in its bounds... the only exception is using a scrollbar on the side or bottom...
             setHeightAndWidth(MaxWorkAreaScreenSize);
@@ -65,8 +63,6 @@ namespace NineTapTour.Forms
             //sets the first item of the menu bar to the active item and highlights it.
             activeItem = (System.Windows.Forms.ToolStripMenuItem)menMain.Items[0];
             activeItem.BackColor = SystemColors.ActiveCaption;
-            newfrmStart.Show();
-            newfrmStart.WindowState = FormWindowState.Maximized;
         }
 
         /// <summary>
@@ -86,29 +82,24 @@ namespace NineTapTour.Forms
         /// <param name="form">forms that haven't been opened yet(?)</param>
         public void OpenOrDisplayForm<T>(ref T form) where T : Form, new()
         {
-            bool isSavedData = true;
-
-            if (isSavedData) //checks to see if you are leaving page without saved data.
+            if (form != null)
             {
-                if (form != null)
-                {
                     
-                    form.BringToFront();
-                    form.Activate();
+                form.BringToFront();
+                form.Activate();
                     
-                }
-                else
-                {
-                    form = new T
-                    {
-                        MdiParent = this,
-                        Dock = DockStyle.Fill                      
-               
-                    };
-                }
-                form.WindowState = FormWindowState.Maximized;
-                form.Show();
             }
+            else
+            {
+                form = new T
+                {
+                    MdiParent = this,
+                    Dock = DockStyle.Fill                      
+               
+                };
+            }
+            form.WindowState = FormWindowState.Maximized;
+            form.Show();
         }
 
         //method to highlight menu item to show user which page they have open
