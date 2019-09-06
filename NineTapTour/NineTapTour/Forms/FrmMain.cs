@@ -44,7 +44,6 @@ namespace NineTapTour.Forms
             MaxWorkAreaScreenSize = new Size( Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height );
 
             //run any pending database migrations on start
-            NineTapDb db = new NineTapDb();
             System.Data.Entity.Database.SetInitializer<NineTapDb>(new MigrateDatabaseToLatestVersion<NineTapDb, Configuration>());
 
             _membersList = MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);

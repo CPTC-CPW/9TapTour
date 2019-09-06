@@ -566,7 +566,7 @@ namespace NineTapTour.Forms
                 int memId;
                 if (MemberDB.MemberExists(temp))
                 {
-                    memId = MemberDB.GetMemberIdByNumber(temp.Number, RegionID, new NineTapDb());
+                    memId = MemberDB.GetMemberIdByNumber(temp.Number, RegionID);
                 }
                 else
                 {

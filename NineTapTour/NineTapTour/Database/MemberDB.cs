@@ -105,8 +105,10 @@ namespace NineTapTour.Database
         /// </summary>
         public static int GetMemberListCount(int regionId)
         {
-            NineTapDb db = new NineTapDb();
-            return db.Members.Where(member => member.NineTapRegionID == regionId).Count();
+            using (NineTapDb db = new NineTapDb())
+            {
+                return db.Members.Where(member => member.NineTapRegionID == regionId).Count();
+            }
         }
 
         /// <summary>
@@ -152,22 +154,30 @@ namespace NineTapTour.Database
         /// </summary>
         public static Member GetMemberByGameId(int gameID)
         {
-            return new NineTapDb().Participants
-                                  .Include(b => b.Game)
-                                  .Include(b => b.Member)
-                                  .First(p => p.Game.Id == gameID)
-                                  .Member;
+            using(NineTapDb db = new NineTapDb())
+            {
+                return db.Participants
+                        .Include(b => b.Game)
+                        .Include(b => b.Member)
+                        .First(p => p.Game.Id == gameID)
+                        .Member;
+            }
+            
         }
             
         /// <summary>
         /// Returns the ID of a member based on their Member Number
         /// </summary>
-        public static int GetMemberIdByNumber(int memberNumber, int regionId, NineTapDb db)
+        public static int GetMemberIdByNumber(int memberNumber, int regionId)
         {
-            return (from m in db.Members
-                    where m.Number == memberNumber &&
-                        m.NineTapRegionID == regionId
-                    select m.Id).SingleOrDefault();
+            using(NineTapDb db = new NineTapDb())
+            {
+                 return (from m in db.Members
+                        where m.Number == memberNumber &&
+                            m.NineTapRegionID == regionId
+                        select m.Id).SingleOrDefault();
+            }
+           
         }
 
         /// <summary>

@@ -121,8 +121,9 @@ namespace NineTapTour.Forms
 
                     isChecked = true;
                 }
+            
+                dtagrdResults.DataSource = memList;
             }
-            dtagrdResults.DataSource = memList;
             AdvancedViewCheck();
             btnSelect.Focus();
         }
