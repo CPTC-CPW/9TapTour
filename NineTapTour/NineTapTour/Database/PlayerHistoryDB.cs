@@ -187,18 +187,21 @@ namespace NineTapTour.Database
         /// <param name="howmany">number of games to pull from the database</param>
         public static List<PlayerHistory> GetLastQtyGamesMoneyWon(int memberNum, int regionID, int howmany)
         {
-            var queryResult = new NineTapDb().PlayerHistory
-                .Where(ph => ph.MemberNumber == memberNum && ph.regionID == regionID)
-                .OrderByDescending(ph => ph.TournamentDate)
-                .Select(ph => new {ph.TournamentDate, ph.MoneyWon})
-                .Take(howmany)
-                .ToList();
-            return queryResult.Select(qr => new PlayerHistory()
+            using(var db = new NineTapDb())
             {
-                TournamentDate = qr.TournamentDate,
-                MoneyWon = qr.MoneyWon
-            })
-            .ToList();
+                var queryResult = db.PlayerHistory
+                    .Where(ph => ph.MemberNumber == memberNum && ph.regionID == regionID)
+                    .OrderByDescending(ph => ph.TournamentDate)
+                    .Select(ph => new {ph.TournamentDate, ph.MoneyWon})
+                    .Take(howmany)
+                    .ToList();
+
+                return queryResult.Select(qr => new PlayerHistory()
+                {
+                    TournamentDate = qr.TournamentDate,
+                    MoneyWon = qr.MoneyWon
+                }).ToList();
+            }
         }
 
         /// <summary>
@@ -297,11 +300,13 @@ namespace NineTapTour.Database
         public static decimal GetTotalMoneyWon(int memberNum, int regionID)
         {
             //return the sum of all money won or 0 if no entries are present for this bowler in the database
-            var db = new NineTapDb();
-            return db.PlayerHistory
-                    .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
-                    .Select(p => (decimal?)p.MoneyWon)
-                    .Sum() ?? 0; 
+            using (var db = new NineTapDb())
+            {
+                return db.PlayerHistory
+                        .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
+                        .Select(p => (decimal?)p.MoneyWon)
+                        .Sum() ?? 0;
+            }
         }
 
         /// <summary>
