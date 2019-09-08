@@ -532,15 +532,6 @@ namespace NineTapTour.Forms
                         p.Id
                     }).ToList();
 
-                if (parID == 0) //if participant doesnt exist yet give them a participantID
-                {
-                    player.Id = parList.Count + 1;
-                }
-                else
-                {
-                    player.Id = parID;
-                }
-
                 player.Game.Id = gameId;
 
                 //selects the ID of the combobox of tournaments and stores the
