@@ -532,6 +532,11 @@ namespace NineTapTour.Forms
                         p.Id
                     }).ToList();
 
+                if (parID != 0)
+                {
+                    player.Id = parID;
+                }
+
                 player.Game.Id = gameId;
 
                 //selects the ID of the combobox of tournaments and stores the
