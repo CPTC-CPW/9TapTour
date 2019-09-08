@@ -537,7 +537,7 @@ namespace NineTapTour.Forms
                 //selects the ID of the combobox of tournaments and stores the
                 //tournament property within the participants class.
                 player.Tournament = currTourney;
-                player.Squad = GetCurrentSquadNumber();
+                player.Squad = squad;
                    
                 //defaults money earned to 0, or enters text box amount
                 if (txtMoney.Text == "" || txtMoney.Text == null)
