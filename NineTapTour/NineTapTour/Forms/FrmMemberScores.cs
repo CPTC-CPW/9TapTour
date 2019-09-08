@@ -357,7 +357,7 @@ namespace NineTapTour.Forms
             int scratchTotal = 0;
             int cScore = 0;
             string id;
-
+                
             foreach (TextBox score in scratchArray)
             {
                 id = Regex.Match(score.Name, @"\d+").Value;
@@ -502,7 +502,6 @@ namespace NineTapTour.Forms
                 Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
 
                 //get all the current members participating in the current tournament
-                List<Participant> total = TournamentDB.GetTournamentMemberList(currTourney);
                 overallListOfParticipants = TournamentDB.GetTournamentMemberList(currTourney);
 
                 int squad = GetCurrentSquadNumber();  
