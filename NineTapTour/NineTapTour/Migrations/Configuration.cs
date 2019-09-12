@@ -9,7 +9,9 @@ namespace NineTapTour.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            // Do not turn on automatic migrations. Leaving auto migrations off is recommended for team environments
+            //https://docs.microsoft.com/en-us/ef/ef6/modeling/code-first/migrations/automatic#recommendation-for-team-environments
+            AutomaticMigrationsEnabled = false;
         }
 
         protected override void Seed(NineTapTour.Database.NineTapDb context)

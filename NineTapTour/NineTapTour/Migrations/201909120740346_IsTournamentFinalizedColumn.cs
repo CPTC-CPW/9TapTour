@@ -12,6 +12,7 @@ namespace NineTapTour.Migrations
         
         public override void Down()
         {
+            DropColumn("dbo.Tournaments", "IsTournamentFinalized");
         }
     }
 }

@@ -13,7 +13,7 @@ namespace NineTapTour.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201908212026206_IsTournamentFinalizedColumn"; }
+            get { return "201909120740346_IsTournamentFinalizedColumn"; }
         }
         
         string IMigrationMetadata.Source
