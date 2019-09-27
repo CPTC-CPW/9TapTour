@@ -83,17 +83,7 @@ namespace NineTapTour.Models
         //[Required]
         public bool IsSenior { get; set; }
 
-        private decimal _moneyEarned;
-
-        /// <summary>
-        /// Setting this property will update the value in the database but
-        /// money earned will be calculated from the PlayerHistory.
-        /// </summary>
-        public decimal MoneyEarned
-        {
-            get { return PlayerHistoryDB.GetTotalMoneyWon(Number, NineTapRegionID); }
-            set { _moneyEarned = value;  }
-        }
+        public decimal MoneyEarned { get; set; }
 
         public int NineTapRegionID { get; set; }
         public virtual NineTapRegion NineTapRegion { get; set; }

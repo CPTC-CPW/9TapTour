@@ -357,7 +357,7 @@ namespace NineTapTour.Forms
             int scratchTotal = 0;
             int cScore = 0;
             string id;
-
+                
             foreach (TextBox score in scratchArray)
             {
                 id = Regex.Match(score.Name, @"\d+").Value;
@@ -502,7 +502,6 @@ namespace NineTapTour.Forms
                 Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
 
                 //get all the current members participating in the current tournament
-                List<Participant> total = TournamentDB.GetTournamentMemberList(currTourney);
                 overallListOfParticipants = TournamentDB.GetTournamentMemberList(currTourney);
 
                 int squad = GetCurrentSquadNumber();  
@@ -533,11 +532,7 @@ namespace NineTapTour.Forms
                         p.Id
                     }).ToList();
 
-                if (parID == 0) //if participant doesnt exist yet give them a participantID
-                {
-                    player.Id = parList.Count + 1;
-                }
-                else
+                if (parID != 0)
                 {
                     player.Id = parID;
                 }
@@ -547,7 +542,7 @@ namespace NineTapTour.Forms
                 //selects the ID of the combobox of tournaments and stores the
                 //tournament property within the participants class.
                 player.Tournament = currTourney;
-                player.Squad = GetCurrentSquadNumber();
+                player.Squad = squad;
                    
                 //defaults money earned to 0, or enters text box amount
                 if (txtMoney.Text == "" || txtMoney.Text == null)
