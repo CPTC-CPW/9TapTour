@@ -6,6 +6,10 @@ This app is the 9-Tap Tour Replacement Application, that keeps track of the 9 Ta
 ## Getting Started
 To get started with this project please review the following and reference the [project Wiki](https://github.com/CPTC-CPW/9TapTour/wiki) for things not listed here.
 
+To get started with using 9TapTour and successfully running the database and getting test data, refer to this youtube video. Please refer to the description when you get to using SQL Server Management Studio
+
+* [9TapTour - Installing Database and Test Data](https://www.youtube.com/watch?v=CgwC94uQqxA)
+
 ### Prerequisites
 The current build is being built on Windows machines through Visual Studio 2017 v.15 or greater.
 
