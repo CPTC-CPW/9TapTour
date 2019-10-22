@@ -822,7 +822,6 @@
             this.rdoGameHC.TabStop = true;
             this.rdoGameHC.Text = "Game Handicap";
             this.rdoGameHC.UseVisualStyleBackColor = true;
-            this.rdoGameHC.CheckedChanged += new System.EventHandler(this.checkBoxGameHC_CheckedChanged);
             // 
             // lbxHighSelected
             // 
@@ -1176,7 +1175,6 @@
             this.flpMemberScores.Size = new System.Drawing.Size(1042, 699);
             this.flpMemberScores.TabIndex = 1;
             this.flpMemberScores.SizeChanged += new System.EventHandler(this.flpMemberScores_SizeChanged);
-            this.flpMemberScores.Paint += new System.Windows.Forms.PaintEventHandler(this.flpMemberScores_Paint);
             // 
             // panel5
             // 

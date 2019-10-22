@@ -2114,14 +2114,6 @@ namespace NineTapTour.Forms
             Refresh(false);
         }
 
-        private void checkBoxGameHC_CheckedChanged(object sender, EventArgs e)
-        {
-            Refresh(false);
-        }
 
-        private void flpMemberScores_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
     }
 }
