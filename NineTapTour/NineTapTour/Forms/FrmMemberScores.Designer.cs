@@ -179,11 +179,11 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Squad Number";
             // 
-            // rdoSquad8
+            // checkSquad8
             // 
             this.checkSquad8.AutoSize = true;
             this.checkSquad8.Location = new System.Drawing.Point(108, 96);
-            this.checkSquad8.Name = "rdoSquad8";
+            this.checkSquad8.Name = "checkSquad8";
             this.checkSquad8.Size = new System.Drawing.Size(65, 17);
             this.checkSquad8.TabIndex = 11;
             this.checkSquad8.TabStop = true;
@@ -191,11 +191,11 @@
             this.checkSquad8.UseVisualStyleBackColor = true;
             this.checkSquad8.CheckedChanged += new System.EventHandler(this.checkBoxSquadNumber_CheckedChanged);
             // 
-            // rdoSquad6
+            // checkSquad6
             // 
             this.checkSquad6.AutoSize = true;
             this.checkSquad6.Location = new System.Drawing.Point(108, 67);
-            this.checkSquad6.Name = "rdoSquad6";
+            this.checkSquad6.Name = "checkSquad6";
             this.checkSquad6.Size = new System.Drawing.Size(65, 17);
             this.checkSquad6.TabIndex = 9;
             this.checkSquad6.TabStop = true;
@@ -203,11 +203,11 @@
             this.checkSquad6.UseVisualStyleBackColor = true;
             this.checkSquad6.CheckedChanged += new System.EventHandler(this.checkBoxSquadNumber_CheckedChanged);
             // 
-            // rdoSquad7
+            // checkSquad7
             // 
             this.checkSquad7.AutoSize = true;
             this.checkSquad7.Location = new System.Drawing.Point(7, 96);
-            this.checkSquad7.Name = "rdoSquad7";
+            this.checkSquad7.Name = "checkSquad7";
             this.checkSquad7.Size = new System.Drawing.Size(65, 17);
             this.checkSquad7.TabIndex = 10;
             this.checkSquad7.TabStop = true;
@@ -215,11 +215,11 @@
             this.checkSquad7.UseVisualStyleBackColor = true;
             this.checkSquad7.CheckedChanged += new System.EventHandler(this.checkBoxSquadNumber_CheckedChanged);
             // 
-            // rdoSquad5
+            // checkSquad5
             // 
             this.checkSquad5.AutoSize = true;
             this.checkSquad5.Location = new System.Drawing.Point(6, 67);
-            this.checkSquad5.Name = "rdoSquad5";
+            this.checkSquad5.Name = "checkSquad5";
             this.checkSquad5.Size = new System.Drawing.Size(65, 17);
             this.checkSquad5.TabIndex = 8;
             this.checkSquad5.TabStop = true;
@@ -227,45 +227,45 @@
             this.checkSquad5.UseVisualStyleBackColor = true;
             this.checkSquad5.CheckedChanged += new System.EventHandler(this.checkBoxSquadNumber_CheckedChanged);
             // 
-            // rdoSquadFour
+            // checkSquadFour
             // 
             this.checkSquadFour.AutoSize = true;
             this.checkSquadFour.Location = new System.Drawing.Point(108, 43);
-            this.checkSquadFour.Name = "rdoSquadFour";
+            this.checkSquadFour.Name = "checkSquadFour";
             this.checkSquadFour.Size = new System.Drawing.Size(65, 17);
             this.checkSquadFour.TabIndex = 7;
             this.checkSquadFour.Text = "Squad 4";
             this.checkSquadFour.UseVisualStyleBackColor = true;
             this.checkSquadFour.CheckedChanged += new System.EventHandler(this.checkBoxSquadNumber_CheckedChanged);
             // 
-            // rdoSquadThree
+            // checkSquadThree
             // 
             this.checkSquadThree.AutoSize = true;
             this.checkSquadThree.Location = new System.Drawing.Point(6, 43);
-            this.checkSquadThree.Name = "rdoSquadThree";
+            this.checkSquadThree.Name = "checkSquadThree";
             this.checkSquadThree.Size = new System.Drawing.Size(65, 17);
             this.checkSquadThree.TabIndex = 6;
             this.checkSquadThree.Text = "Squad 3";
             this.checkSquadThree.UseVisualStyleBackColor = true;
             this.checkSquadThree.CheckedChanged += new System.EventHandler(this.checkBoxSquadNumber_CheckedChanged);
             // 
-            // rdoSquadTwo
+            // checkSquadTwo
             // 
             this.checkSquadTwo.AutoSize = true;
             this.checkSquadTwo.Location = new System.Drawing.Point(108, 20);
-            this.checkSquadTwo.Name = "rdoSquadTwo";
+            this.checkSquadTwo.Name = "checkSquadTwo";
             this.checkSquadTwo.Size = new System.Drawing.Size(65, 17);
             this.checkSquadTwo.TabIndex = 5;
             this.checkSquadTwo.Text = "Squad 2";
             this.checkSquadTwo.UseVisualStyleBackColor = true;
             this.checkSquadTwo.CheckedChanged += new System.EventHandler(this.checkBoxSquadNumber_CheckedChanged);
             // 
-            // rdoSquadOne
+            // checkSquadOne
             // 
             this.checkSquadOne.AutoSize = true;
             this.checkSquadOne.Checked = true;
             this.checkSquadOne.Location = new System.Drawing.Point(6, 20);
-            this.checkSquadOne.Name = "rdoSquadOne";
+            this.checkSquadOne.Name = "checkSquadOne";
             this.checkSquadOne.Size = new System.Drawing.Size(65, 17);
             this.checkSquadOne.TabIndex = 4;
             this.checkSquadOne.TabStop = true;
@@ -844,23 +844,23 @@
             this.grpScoreType.TabStop = false;
             this.grpScoreType.Text = "Score Type";
             // 
-            // rdoScratchScore
+            // checkBoxScratchScore
             // 
             this.checkBoxScratchScore.AutoSize = true;
             this.checkBoxScratchScore.Location = new System.Drawing.Point(7, 44);
-            this.checkBoxScratchScore.Name = "rdoScratchScore";
+            this.checkBoxScratchScore.Name = "checkBoxScratchScore";
             this.checkBoxScratchScore.Size = new System.Drawing.Size(62, 17);
             this.checkBoxScratchScore.TabIndex = 1;
             this.checkBoxScratchScore.Text = "Scratch";
             this.checkBoxScratchScore.UseVisualStyleBackColor = true;
             this.checkBoxScratchScore.CheckedChanged += new System.EventHandler(this.rdoScratchScore_CheckedChanged);
             // 
-            // rdoHandicapScore
+            // checkBoxHandicapScore
             // 
             this.checkBoxHandicapScore.AutoSize = true;
             this.checkBoxHandicapScore.Checked = true;
             this.checkBoxHandicapScore.Location = new System.Drawing.Point(7, 20);
-            this.checkBoxHandicapScore.Name = "rdoHandicapScore";
+            this.checkBoxHandicapScore.Name = "checkBoxHandicapScore";
             this.checkBoxHandicapScore.Size = new System.Drawing.Size(71, 17);
             this.checkBoxHandicapScore.TabIndex = 0;
             this.checkBoxHandicapScore.TabStop = true;
@@ -1176,6 +1176,7 @@
             this.flpMemberScores.Size = new System.Drawing.Size(1042, 699);
             this.flpMemberScores.TabIndex = 1;
             this.flpMemberScores.SizeChanged += new System.EventHandler(this.flpMemberScores_SizeChanged);
+            this.flpMemberScores.Paint += new System.Windows.Forms.PaintEventHandler(this.flpMemberScores_Paint);
             // 
             // panel5
             // 
