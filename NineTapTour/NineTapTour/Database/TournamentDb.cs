@@ -234,19 +234,7 @@ namespace NineTapTour.Database
                 Tournament tournament =
                     (from g in db.Tournaments
                      where g.Id == tournID
-                     select new Tournament
-                     {
-                         Date = g.Date,
-                         Doubles = g.Doubles,
-                         Event = g.Event,
-                         Id = g.Id,
-                         Location = g.Location,
-                         Notes = g.Notes,
-                         Participant = g.Participant,
-                         Sponsors = g.Sponsors,
-                         Squads = g.Squads,
-                         ThreeOutOf4 = g.ThreeOutOf4,
-                     }).SingleOrDefault();
+                     select g).SingleOrDefault();
                 return tournament;
             }
         }
