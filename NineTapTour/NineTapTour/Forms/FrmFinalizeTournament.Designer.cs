@@ -89,7 +89,7 @@
             this.btnFinalize.FlatAppearance.BorderSize = 2;
             this.btnFinalize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnFinalize.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnFinalize.Location = new System.Drawing.Point(221, 1);
+            this.btnFinalize.Location = new System.Drawing.Point(1108, 1);
             this.btnFinalize.Name = "btnFinalize";
             this.btnFinalize.Size = new System.Drawing.Size(100, 28);
             this.btnFinalize.TabIndex = 1;
