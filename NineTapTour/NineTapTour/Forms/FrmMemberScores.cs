@@ -873,7 +873,7 @@ namespace NineTapTour.Forms
                              && memberID == p.Member.Id
                              && selectedTournamentId == t.Id
                              && p.Squad == squad
-                             select p.Game).Single();
+                             select p.Game).SingleOrDefault();
 
             }
             catch (InvalidOperationException ex)
