@@ -39,13 +39,17 @@ namespace NineTapTour.Database
                     {
                         temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.StartAvg.Value));
 #if DEBUG
-                        MessageBox.Show("Player Updated");
+                        // For debugging purposes will send PLAYER UPDATED to the Console
+                        // DO NOT USE Messagebox as it bogs down the program
+                        Console.WriteLine("Player Updated");
 #endif
                     }
                     else
                     {
 #if DEBUG
-                        MessageBox.Show("Player Saved Successfully");
+                        // For debugging purposes will send PLAYER SAVED SUCCESSFULLY to the Console
+                        // DO NOT USE Messagebox as it bogs down the program
+                        Console.WriteLine("Player Saved Successfully");
 #endif
                     }
                     db.SaveChanges();
