@@ -1240,7 +1240,8 @@ namespace NineTapTour.Forms
 
                 currTournament.IsTournamentFinalized = true;
                 TournamentDB.UpdateTournament(currTournament);
-
+                // Letting the director know that the tournament was finalized
+                MessageBox.Show("Tournament Successfully Finalized", "Finalization", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Close();
             }
             else  // if all of the director checkboxes are not checked, then prompt user to check to finalize tournament
