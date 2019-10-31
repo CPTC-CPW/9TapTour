@@ -817,27 +817,40 @@ namespace NineTapTour.Forms
             foreach (var item in temporary)
             {
                 DataRow newRow = dtGames.NewRow();
-                newRow["Games"] = item.GamesPlayed;
                 newRow["Date"] = item.TournamentDate.ToShortDateString();
                 if (item.Game1 == 0)
+                {
                     newRow["Game1"] = null;
+                    item.GamesPlayed -= 1;
+                }
                 else
                     newRow["Game1"] = item.Game1;
 
                 if (item.Game2 == 0)
+                {
                     newRow["Game2"] = null;
+                    item.GamesPlayed -= 1;
+                }
                 else
 
                     newRow["Game2"] = item.Game2;
                 if (item.Game3 == 0)
+                {
                     newRow["Game3"] = null;
+                    item.GamesPlayed -= 1;
+                }
                 else
 
                     newRow["Game3"] = item.Game3;
                 if (item.Game4 == 0)
+                {
                     newRow["Game4"] = null;
+                    item.GamesPlayed -= 1;
+                }
                 else
                     newRow["Game4"] = item.Game4;
+
+                newRow["Games"] = item.GamesPlayed;
 
                 newRow["Scratch Total"] = item.TotalScore;
                 newRow["Total w/HDCP"] = item.TotalScore + ((item.HandiCap + item.Bonus) * item.GamesPlayed);
