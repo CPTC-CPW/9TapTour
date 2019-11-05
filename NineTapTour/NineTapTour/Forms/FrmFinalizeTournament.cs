@@ -954,15 +954,19 @@ namespace NineTapTour.Forms
         /// </summary>
         private void highlightBonusPinCells()
         {
-            const int EARNING_ROW_NUM = 15;
-            const int BONUSPIN_ROW_NUM = 12;
+            // constants only used in current method
+            // refers to indexes of cells in a row
+            const int EARNING_CELL_INDEX = 15;
+            const int BONUSPIN_CELL_INDEX = 12;
 
-            for(int rowNum = 0; rowNum < playerTournamentHistoryGrid.RowCount; rowNum++)
+            for(int rowNumber = 0; rowNumber < playerTournamentHistoryGrid.RowCount; rowNumber++)
             {
-                decimal currentEarning = (decimal) playerTournamentHistoryGrid.Rows[rowNum].Cells[EARNING_ROW_NUM].Value;
+                // check if the the player "cashed out", or has earnings, in the current row
+                decimal currentEarning = (decimal) playerTournamentHistoryGrid.Rows[rowNumber].Cells[EARNING_CELL_INDEX].Value;
                 if (currentEarning > 0.0m)
                 {
-                    playerTournamentHistoryGrid.Rows[rowNum].Cells[BONUSPIN_ROW_NUM].Style.BackColor = Color.Red;
+                    // highlight the bonus pins cell
+                    playerTournamentHistoryGrid.Rows[rowNumber].Cells[BONUSPIN_CELL_INDEX].Style.BackColor = Color.Red;
                 }
             }
         }
