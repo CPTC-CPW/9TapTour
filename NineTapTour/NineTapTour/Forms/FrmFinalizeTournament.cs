@@ -919,6 +919,9 @@ namespace NineTapTour.Forms
             playerTournamentHistoryGrid.DataSource = dtGames;
             playerTournamentHistoryGrid.Columns["GameID"].Visible = false; // Hides the gameID column
             sizeFinalizeLowerGridView(moneyWonWithTotal);   // resizes columns in the grid
+
+            highlightBonusPinCells(); // indicates when a bowler cashes out for end user
+
             int thirtyAve = 30;     // how many should be highlighted for 30 game average
             for (int i = 0; i < playerTournamentHistoryGrid.RowCount; i++)
             {
@@ -940,8 +943,32 @@ namespace NineTapTour.Forms
                     playerTournamentHistoryGrid.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
                 }
             }
+
+            
           
         }
+
+        /// <summary>
+        /// This method will highlight cells in the playerTournamentHistoryGrid, in the Bonus column, where the player "cashed in",
+        /// as a visual indicator that the count for games without cashing out has reset.
+        /// </summary>
+        private void highlightBonusPinCells()
+        {
+            const int EARNING_ROW_NUM = 15;
+            const int BONUSPIN_ROW_NUM = 12;
+
+            for(int rowNum = 0; rowNum < playerTournamentHistoryGrid.RowCount; rowNum++)
+            {
+                decimal currentEarning = (decimal) playerTournamentHistoryGrid.Rows[rowNum].Cells[EARNING_ROW_NUM].Value;
+                if (currentEarning > 0.0m)
+                {
+                    playerTournamentHistoryGrid.Rows[rowNum].Cells[BONUSPIN_ROW_NUM].Style.BackColor = Color.Red;
+                }
+            }
+        }
+
+
+
         // need to change dataGridView1 to proper name
         /// <summary>
         /// This method populates the second DataGridView with information about the player associated with the cell that triggered the event.
