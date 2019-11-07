@@ -919,16 +919,13 @@ namespace NineTapTour.Forms
             playerTournamentHistoryGrid.DataSource = dtGames;
             playerTournamentHistoryGrid.Columns["GameID"].Visible = false; // Hides the gameID column
             sizeFinalizeLowerGridView(moneyWonWithTotal);   // resizes columns in the grid
-
-            highlightBonusPinCells(); // indicates when a bowler cashes out for end user
-
             int thirtyAve = 30;     // how many should be highlighted for 30 game average
             for (int i = 0; i < playerTournamentHistoryGrid.RowCount; i++)
             {
                 #region Set background color for member table row to light blue for all games in current tournament
                 for (int t = 0; t < temporary.Count; t++)
                 {
-                    if (temporary[i].GameID == Convert.ToInt32(playerTournamentHistoryGrid.Rows[i].Cells[17].Value))
+                    if (temporary[t].GameID == Convert.ToInt32(playerTournamentHistoryGrid.Rows[i].Cells[17].Value))
                     {
                         for (int r = 0; r < playerTournamentHistoryGrid.ColumnCount; r++)
                         {
@@ -936,16 +933,17 @@ namespace NineTapTour.Forms
                         }
                     }
                 }
-                #endregion
-
-                for (int j = 0; j < thirtyAve; j++)
-                {
-                    playerTournamentHistoryGrid.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
-                }
+                #endregion              
             }
 
-            
-          
+            for (int j = 0; j < playerTournamentHistoryGrid.RowCount && j < thirtyAve; j++)
+            {
+                playerTournamentHistoryGrid.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
+            }
+
+            highlightBonusPinCells();
+
+
         }
 
         /// <summary>
@@ -959,14 +957,15 @@ namespace NineTapTour.Forms
             const int EARNING_CELL_INDEX = 15;
             const int BONUSPIN_CELL_INDEX = 12;
 
-            for(int rowNumber = 0; rowNumber < playerTournamentHistoryGrid.RowCount; rowNumber++)
-            {
+            for (int rowIndex = 0; rowIndex < playerTournamentHistoryGrid.RowCount; rowIndex++) {
                 // check if the the player "cashed out", or has earnings, in the current row
-                decimal currentEarning = (decimal) playerTournamentHistoryGrid.Rows[rowNumber].Cells[EARNING_CELL_INDEX].Value;
+
+                decimal currentEarning = (decimal)playerTournamentHistoryGrid.Rows[rowIndex].Cells[EARNING_CELL_INDEX].Value;
+
                 if (currentEarning > 0.0m)
                 {
                     // highlight the bonus pins cell
-                    playerTournamentHistoryGrid.Rows[rowNumber].Cells[BONUSPIN_CELL_INDEX].Style.BackColor = Color.Red;
+                    playerTournamentHistoryGrid.Rows[rowIndex].Cells[BONUSPIN_CELL_INDEX].Style.BackColor = Color.Red;
                 }
             }
         }
