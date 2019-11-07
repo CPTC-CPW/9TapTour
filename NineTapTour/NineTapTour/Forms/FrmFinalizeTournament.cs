@@ -821,7 +821,6 @@ namespace NineTapTour.Forms
                 if (item.Game1 == 0)
                 {
                     newRow["Game1"] = null;
-                    item.GamesPlayed -= 1;
                 }
                 else
                     newRow["Game1"] = item.Game1;
@@ -829,7 +828,6 @@ namespace NineTapTour.Forms
                 if (item.Game2 == 0)
                 {
                     newRow["Game2"] = null;
-                    item.GamesPlayed -= 1;
                 }
                 else
 
@@ -837,7 +835,6 @@ namespace NineTapTour.Forms
                 if (item.Game3 == 0)
                 {
                     newRow["Game3"] = null;
-                    item.GamesPlayed -= 1;
                 }
                 else
 
@@ -845,7 +842,6 @@ namespace NineTapTour.Forms
                 if (item.Game4 == 0)
                 {
                     newRow["Game4"] = null;
-                    item.GamesPlayed -= 1;
                 }
                 else
                     newRow["Game4"] = item.Game4;
@@ -997,8 +993,11 @@ namespace NineTapTour.Forms
 
                             if (Convert.ToBoolean(TournamentEntriesGrid[GAME_1_VALID_COLUMN, i].Value))
                             {
-                                tempgameplayed++;
                                 p.Game1 = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[GAME_1_COLUMN].Value);
+                                if(p.Game1 != 0)
+                                {
+                                    tempgameplayed++;
+                                }
                             }
                             else
                             {
@@ -1008,8 +1007,11 @@ namespace NineTapTour.Forms
 
                             if (Convert.ToBoolean(TournamentEntriesGrid[GAME_2_VALID_COLUMN, i].Value))
                             {
-                                tempgameplayed++;
                                 p.Game2 = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[GAME_2_COLUMN].Value);
+                                if (p.Game2 != 0)
+                                {
+                                    tempgameplayed++;
+                                }
 
                             }
                             else
@@ -1019,8 +1021,11 @@ namespace NineTapTour.Forms
 
                             if (Convert.ToBoolean(TournamentEntriesGrid[GAME_3_VALID_COLUMN, i].Value))
                             {
-                                tempgameplayed++;
                                 p.Game3 = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[GAME_3_COLUMN].Value);
+                                if (p.Game3 != 0)
+                                {
+                                    tempgameplayed++;
+                                }
                             }
                             else
                             {
@@ -1030,8 +1035,11 @@ namespace NineTapTour.Forms
 
                             if (Convert.ToBoolean(TournamentEntriesGrid[GAME_4_VALID_COLUMN, i].Value))
                             {
-                                tempgameplayed++;
                                 p.Game4 = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[GAME_4_COLUMN].Value);
+                                if (p.Game4 != 0)
+                                {
+                                    tempgameplayed++;
+                                }
                             }
                             else
                             {
