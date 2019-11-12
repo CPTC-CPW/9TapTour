@@ -852,14 +852,17 @@ namespace NineTapTour.Forms
                 newRow["Handicap"] = item.HandiCap;
                 newRow["Bonus"] = item.Bonus;
                 newRow["Pro Pot"] = item.ProPot;
-                newRow[moneyWon] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
                 newRow["GameID"] = item.GameID;
 
+                if(string.IsNullOrEmpty(item.PPHG))
+                {
+                    item.MoneyWon = Convert.ToDecimal(0);
+                }
+                newRow[moneyWon] = item.MoneyWon;
+
                 dtGames.Rows.Add(newRow);
-                // To know total to add to the Money Won heading label
-                totalMoneyEarned += item.MoneyWon;
             }
 
             // Displays total money won in the column header "Money Won"
@@ -908,12 +911,19 @@ namespace NineTapTour.Forms
                 newRow["Handicap"] = item.HandiCap;
                 newRow["Bonus"] = item.Bonus;
                 newRow["Pro Pot"] = item.ProPot;
-                newRow[moneyWonWithTotal] = item.MoneyWon;
+                
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
                 newRow["GameID"] = item.GameID;
 
+                if (string.IsNullOrEmpty(item.PPHG))
+                {
+                    item.MoneyWon = Convert.ToDecimal(0);
+                }
+                newRow[moneyWonWithTotal] = item.MoneyWon;
+
                 dtGames.Rows.Add(newRow);
+
             }
 
             playerTournamentHistoryGrid.DataSource = dtGames;
@@ -925,7 +935,7 @@ namespace NineTapTour.Forms
                 #region Set background color for member table row to light blue for all games in current tournament
                 for (int t = 0; t < temporary.Count; t++)
                 {
-                    if (temporary[i].GameID == Convert.ToInt32(playerTournamentHistoryGrid.Rows[i].Cells[17].Value))
+                    if (temporary[t].GameID == Convert.ToInt32(playerTournamentHistoryGrid.Rows[i].Cells[17].Value))
                     {
                         for (int r = 0; r < playerTournamentHistoryGrid.ColumnCount; r++)
                         {
@@ -1191,6 +1201,8 @@ namespace NineTapTour.Forms
 
                     DataGridViewCell placeCell = TournamentEntriesGrid[STANDING_COLUMN, currDataGridRowIndex];
                     byte placeStanding = (placeCell.Value == DBNull.Value) ? (byte) 0 : Convert.ToByte(placeCell.Value);
+
+                 
 
                     #region Adjust Bonus pins for highest game and record PlaceStanding
                     // if bowler's highest game in tournament (only multiple entries that aren't the player's best game get 0s)
