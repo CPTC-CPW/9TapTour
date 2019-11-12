@@ -858,7 +858,7 @@ namespace NineTapTour.Forms
 
                 if(string.IsNullOrEmpty(item.PPHG))
                 {
-                    item.MoneyWon = Convert.ToDecimal(0);
+                    item.MoneyWon = 0m;
                 }
                 newRow[moneyWon] = item.MoneyWon;
 
@@ -918,7 +918,7 @@ namespace NineTapTour.Forms
 
                 if (string.IsNullOrEmpty(item.PPHG))
                 {
-                    item.MoneyWon = Convert.ToDecimal(0);
+                    item.MoneyWon = 0m;
                 }
                 newRow[moneyWonWithTotal] = item.MoneyWon;
 
