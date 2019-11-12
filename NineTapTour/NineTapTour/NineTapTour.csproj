@@ -398,6 +398,7 @@
     <None Include="App.Release.config">
       <DependentUpon>App.config</DependentUpon>
     </None>
+    <None Include="Database\DBScripts\README.md" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\NineTapTour.Database.Game.datasource" />
     <None Include="Properties\DataSources\TopScores.datasource" />
@@ -412,7 +413,7 @@
     </Compile>
     <None Include="Resources\BowlingPin2.png" />
     <Content Include="9tap_white.ico" />
-    <Content Include="Database\DBScripts\BonusPinsMemberScript.sql" />
+    <Content Include="Database\DBScripts\multisquadTestData.sql" />
     <Content Include="Resources\TournamentResultsTemplate.xls">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

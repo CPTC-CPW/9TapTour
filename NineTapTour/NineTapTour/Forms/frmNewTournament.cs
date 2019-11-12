@@ -102,6 +102,14 @@ namespace NineTapTour.Forms
                     if (dr == DialogResult.Yes)
                     {
                         NewTournament.Id = tourToEdit.Id;
+                        NewTournament = TournamentDB.GetTourneyByID(tourToEdit.Id);
+                        // Editing Tournament with form data
+                        NewTournament.Date = dtpDate.Value.Date;
+                        NewTournament.Location = txtLocation.Text;
+                        NewTournament.Event = txtEvent.Text;
+                        NewTournament.Sponsors = txtSponsors.Text;
+                        NewTournament.Notes = rtxtNotes.Text;
+
                         if (TournamentDB.UpdateTournament(NewTournament))
                         {
                             MessageBox.Show(@"Tournament modified.");

@@ -943,15 +943,45 @@ namespace NineTapTour.Forms
                         }
                     }
                 }
-                #endregion
+                #endregion              
+            }
 
-                for (int j = 0; j < thirtyAve; j++)
+            for (int j = 0; j < playerTournamentHistoryGrid.RowCount && j < thirtyAve; j++)
+            {
+                playerTournamentHistoryGrid.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
+            }
+
+            highlightBonusPinCells();
+
+
+        }
+
+        /// <summary>
+        /// This method will highlight cells in the playerTournamentHistoryGrid, in the Bonus column, where the player "cashed in",
+        /// as a visual indicator that the count for games without cashing out has reset.
+        /// </summary>
+        private void highlightBonusPinCells()
+        {
+            // constants only used in current method
+            // refers to indexes of cells in a row
+            const int EARNING_CELL_INDEX = 15;
+            const int BONUSPIN_CELL_INDEX = 12;
+
+            for (int rowIndex = 0; rowIndex < playerTournamentHistoryGrid.RowCount; rowIndex++) {
+                // check if the the player "cashed out", or has earnings, in the current row
+
+                decimal currentEarning = (decimal)playerTournamentHistoryGrid.Rows[rowIndex].Cells[EARNING_CELL_INDEX].Value;
+
+                if (currentEarning > 0.0m)
                 {
-                    playerTournamentHistoryGrid.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
+                    // highlight the bonus pins cell
+                    playerTournamentHistoryGrid.Rows[rowIndex].Cells[BONUSPIN_CELL_INDEX].Style.BackColor = Color.Red;
                 }
             }
-          
         }
+
+
+
         // need to change dataGridView1 to proper name
         /// <summary>
         /// This method populates the second DataGridView with information about the player associated with the cell that triggered the event.
@@ -1252,7 +1282,8 @@ namespace NineTapTour.Forms
 
                 currTournament.IsTournamentFinalized = true;
                 TournamentDB.UpdateTournament(currTournament);
-
+                // Letting the director know that the tournament was finalized
+                MessageBox.Show("Tournament Successfully Finalized", "Finalization", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Close();
             }
             else  // if all of the director checkboxes are not checked, then prompt user to check to finalize tournament
