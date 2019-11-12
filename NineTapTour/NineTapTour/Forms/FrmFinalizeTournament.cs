@@ -780,7 +780,7 @@ namespace NineTapTour.Forms
                 cell.Style.BackColor = Color.Red;
             }
         }
-        
+
         /// <summary>
         /// Show all games for the selected player including the current tournament
         /// </summary>
@@ -808,13 +808,23 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Earnings", typeof(Decimal));
             dtGames.Columns.Add("Notes");
             dtGames.Columns.Add("GameID").ReadOnly = true;
- 
+
             // Money Won label string is referenced multiple locations
             string moneyWon = "Earnings";
             decimal totalMoneyEarned = 0;
 
-            // Load current tournament game data for selected member into rows
-            foreach (var item in temporary)
+            // Obtain previous player history
+            List<PlayerHistory> currentPlayerHistory = PlayerHistoryDB.GetMemberPlayerHistory(temporary[0].MemberNumber, RegionID);
+
+            // Determmines if this tournament is finalized, which would mean that all the entries in temporary are already in currentPlayerHistory
+            if (!PlayerHistoryDB.PlayerHistoryExists(temporary.First().GameID))
+            { 
+                // otherwise, add the entries in temporary to currentPlayerHistory
+                currentPlayerHistory.AddRange(temporary);
+            }
+
+            // Populates Data Rows with entries from currentPlayerHistory
+            foreach (var item in currentPlayerHistory)
             {
                 DataRow newRow = dtGames.NewRow();
                 newRow["Games"] = item.GamesPlayed;
@@ -859,62 +869,11 @@ namespace NineTapTour.Forms
 
                 dtGames.Rows.Add(newRow);
                 // To know total to add to the Money Won heading label
-                totalMoneyEarned += item.MoneyWon;
             }
 
             // Displays total money won in the column header "Money Won"
             string moneyWonWithTotal = $"{moneyWon} ({totalMoneyEarned + PlayerHistoryDB.GetTotalMoneyWon(temporary[0].MemberNumber, RegionID)})";
             dtGames.Columns[moneyWon].ColumnName = moneyWonWithTotal;
-
-            // Player histories from the db that are not in the current tournament
-            List<PlayerHistory> currentHistory = PlayerHistoryDB.GetMemberPlayerHistoryCount(temporary[0].MemberNumber, RegionID);
-
-            var currentPlayerHistory = currentHistory.OrderByDescending(p => p.TournamentDate).ThenByDescending(s => s.MoneyWon);
-            foreach (var item in currentPlayerHistory)
-            {
-                DataRow newRow = dtGames.NewRow();
-                newRow["Games"] = item.GamesPlayed;
-                newRow["Date"] = item.TournamentDate.ToShortDateString();
-                if (item.Game1 == 0)
-                    newRow["Game1"] = null;
-                else
-                    newRow["Game1"] = item.Game1;
-
-                if (item.Game2 == 0)
-                    newRow["Game2"] = null;
-                else
-                    newRow["Game2"] = item.Game2;
-
-                if (item.Game3 == 0)
-                    newRow["Game3"] = null;
-                else
-                    newRow["Game3"] = item.Game3;
-
-                if (item.Game4 == 0)
-                    newRow["Game4"] = null;
-                else
-                    newRow["Game4"] = item.Game4;
-
-                newRow["Scratch Total"] = item.TotalScore;
-                newRow["Total w/HDCP"] = item.TotalScore + ((item.HandiCap + item.Bonus) * item.GamesPlayed);
-                newRow["Entry AVG"] = Convert.ToDouble((item.Game1 + item.Game2 + item.Game3 + item.Game4) / item.GamesPlayed);
-                newRow["30 AVG"] = item.trueAVG;
-
-                if (item.AVG == 0)
-                    newRow["Adjusted AVG"] = null;
-                else
-                    newRow["Adjusted AVG"] = item.AVG;
-
-                newRow["Handicap"] = item.HandiCap;
-                newRow["Bonus"] = item.Bonus;
-                newRow["Pro Pot"] = item.ProPot;
-                newRow[moneyWonWithTotal] = item.MoneyWon;
-                newRow["Place"] = item.PPHG;
-                newRow["Notes"] = item.Notes;
-                newRow["GameID"] = item.GameID;
-
-                dtGames.Rows.Add(newRow);
-            }
 
             playerTournamentHistoryGrid.DataSource = dtGames;
             playerTournamentHistoryGrid.Columns["GameID"].Visible = false; // Hides the gameID column
