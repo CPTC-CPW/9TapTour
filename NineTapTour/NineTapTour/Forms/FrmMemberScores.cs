@@ -1509,7 +1509,15 @@ namespace NineTapTour.Forms
 
         private void btnRecapByPin_Click(object sender, EventArgs e)
         {
-            NineTapTour.Database.Print.printByTour((Tournament)cbxTourneyDropDown.SelectedItem);
+            FrmSelection selectTournament = new FrmSelection(RegionID);
+            selectTournament.ShowDialog();
+            DialogResult mboxResult = 
+                MessageBox.Show($"are you sure you want to print {selectTournament.selectedTournament.TourneyNameDate}?",
+                    "Confirm Tournament", MessageBoxButtons.YesNo);
+            if (mboxResult == DialogResult.Yes)
+            {
+                Print.printByTour(selectTournament.selectedTournament);
+            }
         }
 
         private void btnPlaceStandings_Click(object sender, EventArgs e)
