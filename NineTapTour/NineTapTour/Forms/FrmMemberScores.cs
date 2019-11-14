@@ -1511,13 +1511,16 @@ namespace NineTapTour.Forms
         {
             FrmSelection selectTournament = new FrmSelection(RegionID);
             selectTournament.StartPosition = FormStartPosition.CenterParent;
-            selectTournament.ShowDialog();
-            DialogResult mboxResult = 
-                MessageBox.Show($"are you sure you want to print {selectTournament.selectedTournament.TourneyNameDate}?",
-                    "Confirm Tournament", MessageBoxButtons.YesNo);
-            if (mboxResult == DialogResult.Yes)
+            DialogResult t = selectTournament.ShowDialog();
+            if (t != DialogResult.Cancel)
             {
-                Print.printByTour(selectTournament.selectedTournament);
+                DialogResult mboxResult =
+                    MessageBox.Show($"are you sure you want to print {selectTournament.selectedTournament.TourneyNameDate}?",
+                        "Confirm Tournament", MessageBoxButtons.YesNo);
+                if (mboxResult == DialogResult.Yes)
+                {
+                    Print.printByTour(selectTournament.selectedTournament);
+                }
             }
         }
 
