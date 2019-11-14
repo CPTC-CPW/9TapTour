@@ -816,7 +816,7 @@ namespace NineTapTour.Forms
             // Obtain previous player history
             List<PlayerHistory> currentPlayerHistory = PlayerHistoryDB.GetMemberPlayerHistory(temporary[0].MemberNumber, RegionID);
 
-            // Determmines if this tournament is finalized, which would mean that all the entries in temporary are already in currentPlayerHistory
+            // Determines if this tournament is finalized, which would mean that all the entries in temporary are already in currentPlayerHistory
             if (!PlayerHistoryDB.PlayerHistoryExists(temporary.First().GameID))
             { 
                 // otherwise, add the entries in temporary to currentPlayerHistory
