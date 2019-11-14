@@ -821,6 +821,12 @@ namespace NineTapTour.Forms
             { 
                 // otherwise, add the entries in temporary to currentPlayerHistory
                 currentPlayerHistory.AddRange(temporary);
+
+                // also need to get the earnings manually since it isnt known by PlayerHistoryDB
+                foreach (var item in temporary)
+                {
+                    totalMoneyEarned += item.MoneyWon;
+                }
             }
 
             // Order By Total w/HDCP
