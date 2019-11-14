@@ -119,6 +119,12 @@
     <Compile Include="Forms\FrmAbout.Designer.cs">
       <DependentUpon>FrmAbout.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FrmSelection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmSelection.Designer.cs">
+      <DependentUpon>FrmSelection.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\201808162022459_NullableGameScores.cs" />
     <Compile Include="Migrations\201808162022459_NullableGameScores.Designer.cs">
       <DependentUpon>201808162022459_NullableGameScores.cs</DependentUpon>
@@ -306,6 +312,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmAddRegion.resx">
       <DependentUpon>FrmAddRegion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmSelection.resx">
+      <DependentUpon>FrmSelection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmTournamentResults.resx">
       <DependentUpon>FrmTournamentResults.cs</DependentUpon>
