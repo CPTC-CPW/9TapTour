@@ -28,13 +28,12 @@ namespace NineTapTour.Forms
             List<Tournament> allTournaments = TournamentDB.GetTournamentList(_regionId);
             cbxTournaments.DataSource = allTournaments;
             cbxTournaments.DisplayMember = nameof(Tournament.TourneyNameDate);
-            cbxTournaments.SelectedIndex = allTournaments.Count - 1;
         }
 
         private void btnSelectTournament_Click(object sender, EventArgs e)
         {
             selectedTournament = (Tournament)cbxTournaments.SelectedItem;
-            Close();
+            DialogResult = DialogResult.OK;
         }
     }
 }
