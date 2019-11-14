@@ -826,6 +826,14 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
+        /// Will print all members that are marked as active in the database
+        /// </summary>
+        private void btnPrintActive_Click(object sender, EventArgs e)
+        {
+            Print.printByActiveMembers(TournamentDB.GetAllActiveMembers());
+        }
+
+        /// <summary>
         /// Gets Member data (Name, Member Number, City, Average, Handicap and Bonus) of a single member to print
         /// </summary>
         /// <param name="sender"></param>
@@ -893,26 +901,6 @@ namespace NineTapTour.Forms
             {
                 lblPaymentInfo.Visible = false;
             }
-        }
-
-        /// <summary>
-        /// Opens form to select a tournament date range. Prints Average, Handicap and Bonus of each member in selected tournament date range
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnRecapByDate_Click(object sender, EventArgs e)
-        {
-            new FrmPrintByDate().ShowDialog();
-        }
-
-        /// <summary>
-        /// Prints all members alphabetically (z-a)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnAllRecaps_Click(object sender, EventArgs e)
-        {
-            Print.printAllMembers();
         }
             
         /// <summary>

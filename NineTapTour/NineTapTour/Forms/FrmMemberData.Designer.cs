@@ -85,9 +85,7 @@
             this.grpSearchBy = new System.Windows.Forms.GroupBox();
             this.btnMemberSearch = new System.Windows.Forms.Button();
             this.grpPrinter = new System.Windows.Forms.GroupBox();
-            this.btnRecapByDate = new System.Windows.Forms.Button();
             this.btnThisRecap = new System.Windows.Forms.Button();
-            this.btnAllRecaps = new System.Windows.Forms.Button();
             this.rdoFemale = new System.Windows.Forms.RadioButton();
             this.rdoActive = new System.Windows.Forms.RadioButton();
             this.rdoInActive = new System.Windows.Forms.RadioButton();
@@ -125,8 +123,9 @@
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.lblNotes = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.lblPaidTo = new System.Windows.Forms.Label();
             this.txtPaidTo = new System.Windows.Forms.TextBox();
+            this.lblPaidTo = new System.Windows.Forms.Label();
+            this.btnPrintActive = new System.Windows.Forms.Button();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -751,52 +750,27 @@
             // 
             // grpPrinter
             // 
-            this.grpPrinter.Controls.Add(this.btnRecapByDate);
+            this.grpPrinter.Controls.Add(this.btnPrintActive);
             this.grpPrinter.Controls.Add(this.btnThisRecap);
-            this.grpPrinter.Controls.Add(this.btnAllRecaps);
             this.grpPrinter.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.grpPrinter.Location = new System.Drawing.Point(491, 537);
             this.grpPrinter.Name = "grpPrinter";
-            this.grpPrinter.Size = new System.Drawing.Size(229, 85);
+            this.grpPrinter.Size = new System.Drawing.Size(173, 85);
             this.grpPrinter.TabIndex = 73;
             this.grpPrinter.TabStop = false;
             this.grpPrinter.Text = "Print Recaps";
             // 
-            // btnRecapByDate
-            // 
-            this.btnRecapByDate.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRecapByDate.Location = new System.Drawing.Point(105, 23);
-            this.btnRecapByDate.Name = "btnRecapByDate";
-            this.btnRecapByDate.Size = new System.Drawing.Size(102, 23);
-            this.btnRecapByDate.TabIndex = 75;
-            this.btnRecapByDate.TabStop = false;
-            this.btnRecapByDate.Text = "Print By Date";
-            this.btnRecapByDate.UseVisualStyleBackColor = true;
-            this.btnRecapByDate.Click += new System.EventHandler(this.btnRecapByDate_Click);
-            // 
             // btnThisRecap
             // 
             this.btnThisRecap.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnThisRecap.Location = new System.Drawing.Point(18, 23);
+            this.btnThisRecap.Location = new System.Drawing.Point(6, 23);
             this.btnThisRecap.Name = "btnThisRecap";
-            this.btnThisRecap.Size = new System.Drawing.Size(84, 23);
+            this.btnThisRecap.Size = new System.Drawing.Size(161, 23);
             this.btnThisRecap.TabIndex = 74;
             this.btnThisRecap.TabStop = false;
             this.btnThisRecap.Text = "Print Single";
             this.btnThisRecap.UseVisualStyleBackColor = true;
             this.btnThisRecap.Click += new System.EventHandler(this.btnThisRecap_Click);
-            // 
-            // btnAllRecaps
-            // 
-            this.btnAllRecaps.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAllRecaps.Location = new System.Drawing.Point(18, 49);
-            this.btnAllRecaps.Name = "btnAllRecaps";
-            this.btnAllRecaps.Size = new System.Drawing.Size(189, 23);
-            this.btnAllRecaps.TabIndex = 75;
-            this.btnAllRecaps.TabStop = false;
-            this.btnAllRecaps.Text = "Print By Tournament";
-            this.btnAllRecaps.UseVisualStyleBackColor = true;
-            this.btnAllRecaps.Click += new System.EventHandler(this.btnAllRecaps_Click);
             // 
             // rdoFemale
             // 
@@ -1227,6 +1201,14 @@
             this.panel2.Size = new System.Drawing.Size(285, 70);
             this.panel2.TabIndex = 55;
             // 
+            // txtPaidTo
+            // 
+            this.txtPaidTo.Enabled = false;
+            this.txtPaidTo.Location = new System.Drawing.Point(126, 47);
+            this.txtPaidTo.Name = "txtPaidTo";
+            this.txtPaidTo.Size = new System.Drawing.Size(54, 21);
+            this.txtPaidTo.TabIndex = 75;
+            // 
             // lblPaidTo
             // 
             this.lblPaidTo.AutoSize = true;
@@ -1237,13 +1219,17 @@
             this.lblPaidTo.TabIndex = 75;
             this.lblPaidTo.Text = "Membership paid to";
             // 
-            // txtPaidTo
+            // btnPrintActive
             // 
-            this.txtPaidTo.Enabled = false;
-            this.txtPaidTo.Location = new System.Drawing.Point(126, 47);
-            this.txtPaidTo.Name = "txtPaidTo";
-            this.txtPaidTo.Size = new System.Drawing.Size(54, 21);
-            this.txtPaidTo.TabIndex = 75;
+            this.btnPrintActive.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold);
+            this.btnPrintActive.Location = new System.Drawing.Point(6, 53);
+            this.btnPrintActive.Name = "btnPrintActive";
+            this.btnPrintActive.Size = new System.Drawing.Size(161, 23);
+            this.btnPrintActive.TabIndex = 75;
+            this.btnPrintActive.TabStop = false;
+            this.btnPrintActive.Text = "Print Active Members";
+            this.btnPrintActive.UseVisualStyleBackColor = true;
+            this.btnPrintActive.Click += new System.EventHandler(this.btnPrintActive_Click);
             // 
             // FrmMemberData
             // 
@@ -1330,9 +1316,7 @@
         private System.Windows.Forms.Button btnArrowLeft;
         private System.Windows.Forms.Button btnStats;
         private System.Windows.Forms.Button btnMemberSearch;
-        private System.Windows.Forms.Button btnRecapByDate;
         private System.Windows.Forms.Button btnThisRecap;
-        private System.Windows.Forms.Button btnAllRecaps;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Label lblEmail;
         private System.Windows.Forms.RadioButton rdoFemale;
@@ -1391,5 +1375,6 @@
         private System.Windows.Forms.TextBox txtPaidTo;
         private System.Windows.Forms.Label lblPaidTo;
         private System.Windows.Forms.TextBox txtDOB;
+        private System.Windows.Forms.Button btnPrintActive;
     }
 }
