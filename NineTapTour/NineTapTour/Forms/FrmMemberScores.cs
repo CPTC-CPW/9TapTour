@@ -1510,6 +1510,7 @@ namespace NineTapTour.Forms
         private void btnRecapByPin_Click(object sender, EventArgs e)
         {
             FrmSelection selectTournament = new FrmSelection(RegionID);
+            selectTournament.StartPosition = FormStartPosition.CenterParent;
             selectTournament.ShowDialog();
             DialogResult mboxResult = 
                 MessageBox.Show($"are you sure you want to print {selectTournament.selectedTournament.TourneyNameDate}?",
