@@ -823,6 +823,9 @@ namespace NineTapTour.Forms
                 currentPlayerHistory.AddRange(temporary);
             }
 
+            // Order By Total w/HDCP
+            currentPlayerHistory = currentPlayerHistory.OrderByDescending(ph => ph.TournamentDate).ThenByDescending(ph => getTotalWithHandicap(ph)).ToList();
+
             // Populates Data Rows with entries from currentPlayerHistory
             foreach (var item in currentPlayerHistory)
             {
@@ -850,7 +853,7 @@ namespace NineTapTour.Forms
                     newRow["Game4"] = item.Game4;
 
                 newRow["Scratch Total"] = item.TotalScore;
-                newRow["Total w/HDCP"] = item.TotalScore + ((item.HandiCap + item.Bonus) * item.GamesPlayed);
+                newRow["Total w/HDCP"] = getTotalWithHandicap(item);
                 newRow["Entry AVG"] = item.AverageForEntry;
                 newRow["30 AVG"] = item.trueAVG;
 
@@ -927,6 +930,14 @@ namespace NineTapTour.Forms
                     playerTournamentHistoryGrid.Rows[rowIndex].Cells[BONUSPIN_CELL_INDEX].Style.BackColor = Color.Red;
                 }
             }
+        }
+
+        /// <summary>
+        /// This method will calculate the total with handicap for the player history given
+        /// </summary>
+        private int getTotalWithHandicap(PlayerHistory history)
+        {
+            return history.TotalScore + ((history.HandiCap + history.Bonus) * history.GamesPlayed);
         }
 
 
@@ -1113,55 +1124,6 @@ namespace NineTapTour.Forms
                     ph.MemberNumber = currMember.Number;
 
                     int currDataGridRowIndex = FindDataGridRowIndex(currGameId);
-
-                    if (TournamentEntriesGrid[GAME_1_VALID_COLUMN, currDataGridRowIndex].Value.ToString() == "True")
-                    {
-                        gamesPlayed++;
-                        currGame.UseGame1 = true;
-                        FinalizeTableList[i].UseGame1 = true;
-                    }
-                    else
-                    {
-                        currGame.UseGame1 = false;
-                        FinalizeTableList[i].UseGame1 = false;
-                    }
-
-                    if (TournamentEntriesGrid[GAME_2_VALID_COLUMN, currDataGridRowIndex].Value.ToString() == "True")
-                    {
-                        gamesPlayed++;
-                        currGame.UseGame2 = true;
-                        FinalizeTableList[i].UseGame2 = true;
-                    }
-                    else
-                    {
-                        currGame.UseGame2 = false;
-                        FinalizeTableList[i].UseGame2 = false;
-                    }
-
-                    if (TournamentEntriesGrid[GAME_3_VALID_COLUMN, currDataGridRowIndex].Value.ToString() == "True")
-                    {
-                        gamesPlayed++;
-                        currGame.UseGame3 = true;
-                        FinalizeTableList[i].UseGame3 = true;
-                    }
-                    else
-                    {
-                        currGame.UseGame3 = false;
-                        FinalizeTableList[i].UseGame3 = false;
-                    }
-
-                    if (TournamentEntriesGrid[GAME_4_VALID_COLUMN, currDataGridRowIndex].Value.ToString() == "True")
-                    {
-                        gamesPlayed++;
-                        currGame.UseGame4 = true;
-                        FinalizeTableList[i].UseGame4 = true;
-                    }
-                    else
-                    {
-                        currGame.UseGame4 = false;
-                        FinalizeTableList[i].UseGame4 = false;
-                    }
-                    ph.GamesPlayed = gamesPlayed;
                     #endregion
 
                     ph.AverageForEntry = FinalizeTableList[i].GameAvg;
@@ -1177,6 +1139,56 @@ namespace NineTapTour.Forms
                     ph.Game2 = FinalizeTableList[i].Game2;
                     ph.Game3 = FinalizeTableList[i].Game3;
                     ph.Game4 = FinalizeTableList[i].Game4;
+
+                    if (ph.Game1 > 0)
+                    {
+                        gamesPlayed++;
+                        currGame.UseGame1 = true;
+                        FinalizeTableList[i].UseGame1 = true;
+                    }
+                    else
+                    {
+                        currGame.UseGame1 = false;
+                        FinalizeTableList[i].UseGame1 = false;
+                    }
+
+                    if (ph.Game2 > 0)
+                    {
+                        gamesPlayed++;
+                        currGame.UseGame2 = true;
+                        FinalizeTableList[i].UseGame2 = true;
+                    }
+                    else
+                    {
+                        currGame.UseGame2 = false;
+                        FinalizeTableList[i].UseGame2 = false;
+                    }
+
+                    if (ph.Game3 > 0)
+                    {
+                        gamesPlayed++;
+                        currGame.UseGame3 = true;
+                        FinalizeTableList[i].UseGame3 = true;
+                    }
+                    else
+                    {
+                        currGame.UseGame3 = false;
+                        FinalizeTableList[i].UseGame3 = false;
+                    }
+
+                    if (ph.Game4 > 0)
+                    {
+                        gamesPlayed++;
+                        currGame.UseGame4 = true;
+                        FinalizeTableList[i].UseGame4 = true;
+                    }
+                    else
+                    {
+                        currGame.UseGame4 = false;
+                        FinalizeTableList[i].UseGame4 = false;
+                    }
+                    ph.GamesPlayed = gamesPlayed;
+                    ph.TotalScore = FinalizeTableList[i].ScratchTotal;
 
                     DataGridViewCell placeCell = TournamentEntriesGrid[STANDING_COLUMN, currDataGridRowIndex];
                     byte placeStanding = (placeCell.Value == DBNull.Value) ? (byte) 0 : Convert.ToByte(placeCell.Value);
