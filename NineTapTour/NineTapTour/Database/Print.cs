@@ -421,9 +421,42 @@ namespace NineTapTour.Database
             index = 0;
         }
 
+        static public void printByActiveMembers(List<Member> members)
+        {
+            PrintDialog printDialog = new PrintDialog();
+            PrintDocument printDocument = new PrintDocument();
+            printDialog.Document = printDocument;
+
+            printDocument.PrintPage += new PrintPageEventHandler(printActiveRecaps);
+            mems = members;
+
+            if (mems.Count > 0)
+            {
+                DialogResult mboxResult =
+                        MessageBox.Show($"You are about to print {mems.Count} active members! Are you sure you want to continue?",
+                                            "Confirming Prints", MessageBoxButtons.YesNo);
+                if (mboxResult == DialogResult.Yes)
+                {
+                    DialogResult result = printDialog.ShowDialog();
+                    if (result == DialogResult.OK)
+                    {
+                        printDocument.Print();
+                    }
+                }
+            }
+            index = 0;
+        }
+
+        static private void printActiveRecaps(object sender, PrintPageEventArgs e)
+        {
+            SinglePrint(new MemberPrintObj(mems[index]), e);
+            index++;
+            e.HasMorePages = (index < mems.Count);
+        }
+
         static private void printTourRecaps(object sender, PrintPageEventArgs e)
         {
-            NineTapTour.Database.Print.SinglePrint(new MemberPrintObj(mems[index]), e);
+            SinglePrint(new MemberPrintObj(mems[index]), e);
             index++;
             e.HasMorePages = (index < mems.Count);
         }
