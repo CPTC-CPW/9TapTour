@@ -304,17 +304,8 @@ namespace NineTapTour.Forms
 
                     Game currentGame = GetScoresById(currentMem.Id);
 
-                    //set the handicap and bonus pins to their most recent if they were not added to the tournament yet
-                    if (currentGame == null)
-                    {
-                        txtHandicap.Text = currentMem.Handicap.ToString();
-                        txtBonusPins.Text = currentMem.Bonus.ToString();
-                    }
-                    else //sets the right historic bowler handicap and bonus pins during this tournament
-                    {
-                        txtHandicap.Text = currentGame.Handicap.ToString();
-                        txtBonusPins.Text = currentGame.Bonus.ToString();
-                    }
+                    txtHandicap.Text = currentMem.Handicap.ToString();          
+                    txtBonusPins.Text = currentMem.Bonus.ToString();
 
                     GetScores(currentGame);
 
@@ -882,7 +873,7 @@ namespace NineTapTour.Forms
                              && memberID == p.Member.Id
                              && selectedTournamentId == t.Id
                              && p.Squad == squad
-                             select p.Game).Single();
+                             select p.Game).SingleOrDefault();
 
             }
             catch (InvalidOperationException ex)
@@ -1900,7 +1891,7 @@ namespace NineTapTour.Forms
         }
 
         private void checkBoxSquadNumber_CheckedChanged(object sender, EventArgs e)
-        {
+                                        {
             //only run the code the code for the radio button that is checked
             if((sender as RadioButton).Checked)
             {
@@ -2123,9 +2114,6 @@ namespace NineTapTour.Forms
             Refresh(false);
         }
 
-        private void checkBoxGameHC_CheckedChanged(object sender, EventArgs e)
-        {
-            Refresh(false);
-        }
+
     }
 }
