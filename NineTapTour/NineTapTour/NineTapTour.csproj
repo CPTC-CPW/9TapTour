@@ -113,16 +113,16 @@
     <Compile Include="Database\GameDB.cs" />
     <Compile Include="Database\ParticipantsDB.cs" />
     <Compile Include="Database\ReportHelper.cs" />
-    <Compile Include="Forms\Main\FrmAbout.cs">
+    <Compile Include="Forms\FrmAbout.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Main\FrmAbout.Designer.cs">
+    <Compile Include="Forms\FrmAbout.Designer.cs">
       <DependentUpon>FrmAbout.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MemberInfo\FrmSelection.cs">
+    <Compile Include="Forms\FrmSelection.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MemberInfo\FrmSelection.Designer.cs">
+    <Compile Include="Forms\FrmSelection.Designer.cs">
       <DependentUpon>FrmSelection.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201808162022459_NullableGameScores.cs" />
@@ -169,120 +169,120 @@
     <Compile Include="Exceptions\PlayerHistoryTableException.cs" />
     <Compile Include="Exceptions\TournamentTableException.cs" />
     <Compile Include="Forms\DoubleBuffer.cs" />
-    <Compile Include="Forms\Main\FrmAddRegion.cs">
+    <Compile Include="Forms\FrmAddRegion.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Main\FrmAddRegion.Designer.cs">
+    <Compile Include="Forms\FrmAddRegion.Designer.cs">
       <DependentUpon>FrmAddRegion.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MemberScores\FrmTournamentResults.cs">
+    <Compile Include="Forms\FrmTournamentResults.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MemberScores\FrmTournamentResults.Designer.cs">
+    <Compile Include="Forms\FrmTournamentResults.Designer.cs">
       <DependentUpon>FrmTournamentResults.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Main\frmWait.cs">
+    <Compile Include="Forms\frmWait.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Main\frmWait.Designer.cs">
+    <Compile Include="Forms\frmWait.Designer.cs">
       <DependentUpon>frmWait.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MemberScores\FrmFinalizeTournament.cs">
+    <Compile Include="Forms\FrmFinalizeTournament.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MemberScores\FrmFinalizeTournament.Designer.cs">
+    <Compile Include="Forms\FrmFinalizeTournament.Designer.cs">
       <DependentUpon>FrmFinalizeTournament.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ToolsBar\FrmLabelPrint.cs">
+    <Compile Include="Forms\FrmLabelPrint.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ToolsBar\FrmLabelPrint.Designer.cs">
+    <Compile Include="Forms\FrmLabelPrint.Designer.cs">
       <DependentUpon>FrmLabelPrint.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Main\FrmMain.cs">
+    <Compile Include="Forms\FrmMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Main\FrmMain.Designer.cs">
+    <Compile Include="Forms\FrmMain.Designer.cs">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MemberInfo\FrmMemberData.cs">
+    <Compile Include="Forms\FrmMemberData.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MemberInfo\FrmMemberData.Designer.cs">
+    <Compile Include="Forms\FrmMemberData.Designer.cs">
       <DependentUpon>FrmMemberData.cs</DependentUpon>
     </Compile>
     <Compile Include="Database\NineTapDb.cs" />
-    <Compile Include="Forms\MemberScores\FrmMemberScoresReports.cs">
+    <Compile Include="Forms\FrmMemberScoresReports.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MemberScores\FrmMemberScoresReports.Designer.cs">
+    <Compile Include="Forms\FrmMemberScoresReports.Designer.cs">
       <DependentUpon>FrmMemberScoresReports.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MemberScores\frmNewTournament.cs">
+    <Compile Include="Forms\frmNewTournament.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MemberScores\frmNewTournament.Designer.cs">
+    <Compile Include="Forms\frmNewTournament.Designer.cs">
       <DependentUpon>frmNewTournament.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\UnusedForms\FrmPrintByDate.cs">
+    <Compile Include="Forms\FrmPrintByDate.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\UnusedForms\FrmPrintByDate.Designer.cs">
+    <Compile Include="Forms\FrmPrintByDate.Designer.cs">
       <DependentUpon>FrmPrintByDate.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MemberInfo\FrmSearch.cs">
+    <Compile Include="Forms\FrmSearch.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MemberInfo\FrmSearch.Designer.cs">
+    <Compile Include="Forms\FrmSearch.Designer.cs">
       <DependentUpon>FrmSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MemberInfo\FrmStats.cs">
+    <Compile Include="Forms\FrmStats.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MemberInfo\FrmStats.Designer.cs">
+    <Compile Include="Forms\FrmStats.Designer.cs">
       <DependentUpon>FrmStats.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MemberScores\FrmTourSearch.cs">
+    <Compile Include="Forms\FrmTourSearch.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MemberScores\FrmTourSearch.Designer.cs">
+    <Compile Include="Forms\FrmTourSearch.Designer.cs">
       <DependentUpon>FrmTourSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Main\MainMenu.cs">
+    <Compile Include="Forms\MainMenu.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Main\MainMenu.Designer.cs">
+    <Compile Include="Forms\MainMenu.Designer.cs">
       <DependentUpon>MainMenu.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ToolsBar\FrmUpdateActiveMem.cs">
+    <Compile Include="Forms\FrmUpdateActiveMem.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ToolsBar\FrmUpdateActiveMem.Designer.cs">
+    <Compile Include="Forms\FrmUpdateActiveMem.Designer.cs">
       <DependentUpon>FrmUpdateActiveMem.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MemberInfo\PlayerHistoryForm.cs">
+    <Compile Include="Forms\PlayerHistoryForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MemberInfo\PlayerHistoryForm.Designer.cs">
+    <Compile Include="Forms\PlayerHistoryForm.Designer.cs">
       <DependentUpon>PlayerHistoryForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\PrintToWord.cs" />
-    <Compile Include="Forms\MemberScores\TournamentPlaceStandings.cs">
+    <Compile Include="Forms\TournamentPlaceStandings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MemberScores\TournamentPlaceStandings.Designer.cs">
+    <Compile Include="Forms\TournamentPlaceStandings.Designer.cs">
       <DependentUpon>TournamentPlaceStandings.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MemberScores\TournamentsByYear.cs">
+    <Compile Include="Forms\TournamentsByYear.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MemberScores\TournamentsByYear.Designer.cs">
+    <Compile Include="Forms\TournamentsByYear.Designer.cs">
       <DependentUpon>TournamentsByYear.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MemberScores\TournamentStats.cs">
+    <Compile Include="Forms\TournamentStats.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MemberScores\TournamentStats.Designer.cs">
+    <Compile Include="Forms\TournamentStats.Designer.cs">
       <DependentUpon>TournamentStats.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201803192318264_Initial.cs" />
@@ -296,10 +296,10 @@
     <Compile Include="Models\ViewModels\TournamentHighScoresViewModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Forms\MemberScores\FrmMemberScores.cs">
+    <Compile Include="Forms\FrmMemberScores.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MemberScores\FrmMemberScores.Designer.cs">
+    <Compile Include="Forms\FrmMemberScores.Designer.cs">
       <DependentUpon>FrmMemberScores.cs</DependentUpon>
     </Compile>
     <Compile Include="_NineTapTour_NineTapDbDataSet.Designer.cs">
@@ -307,67 +307,67 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Forms\Main\FrmAbout.resx">
+    <EmbeddedResource Include="Forms\FrmAbout.resx">
       <DependentUpon>FrmAbout.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Main\FrmAddRegion.resx">
+    <EmbeddedResource Include="Forms\FrmAddRegion.resx">
       <DependentUpon>FrmAddRegion.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MemberInfo\FrmSelection.resx">
+    <EmbeddedResource Include="Forms\FrmSelection.resx">
       <DependentUpon>FrmSelection.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MemberScores\FrmTournamentResults.resx">
+    <EmbeddedResource Include="Forms\FrmTournamentResults.resx">
       <DependentUpon>FrmTournamentResults.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Main\frmWait.resx">
+    <EmbeddedResource Include="Forms\frmWait.resx">
       <DependentUpon>frmWait.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MemberScores\FrmFinalizeTournament.resx">
+    <EmbeddedResource Include="Forms\FrmFinalizeTournament.resx">
       <DependentUpon>FrmFinalizeTournament.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ToolsBar\FrmLabelPrint.resx">
+    <EmbeddedResource Include="Forms\FrmLabelPrint.resx">
       <DependentUpon>FrmLabelPrint.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Main\FrmMain.resx">
+    <EmbeddedResource Include="Forms\FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MemberInfo\FrmMemberData.resx">
+    <EmbeddedResource Include="Forms\FrmMemberData.resx">
       <DependentUpon>FrmMemberData.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MemberScores\FrmMemberScoresReports.resx">
+    <EmbeddedResource Include="Forms\FrmMemberScoresReports.resx">
       <DependentUpon>FrmMemberScoresReports.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MemberScores\frmNewTournament.resx">
+    <EmbeddedResource Include="Forms\frmNewTournament.resx">
       <DependentUpon>frmNewTournament.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\UnusedForms\FrmPrintByDate.resx">
+    <EmbeddedResource Include="Forms\FrmPrintByDate.resx">
       <DependentUpon>FrmPrintByDate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MemberInfo\FrmSearch.resx">
+    <EmbeddedResource Include="Forms\FrmSearch.resx">
       <DependentUpon>FrmSearch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MemberInfo\FrmStats.resx">
+    <EmbeddedResource Include="Forms\FrmStats.resx">
       <DependentUpon>FrmStats.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MemberScores\FrmTourSearch.resx">
+    <EmbeddedResource Include="Forms\FrmTourSearch.resx">
       <DependentUpon>FrmTourSearch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Main\MainMenu.resx">
+    <EmbeddedResource Include="Forms\MainMenu.resx">
       <DependentUpon>MainMenu.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ToolsBar\FrmUpdateActiveMem.resx">
+    <EmbeddedResource Include="Forms\FrmUpdateActiveMem.resx">
       <DependentUpon>FrmUpdateActiveMem.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MemberInfo\PlayerHistoryForm.resx">
+    <EmbeddedResource Include="Forms\PlayerHistoryForm.resx">
       <DependentUpon>PlayerHistoryForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MemberScores\TournamentPlaceStandings.resx">
+    <EmbeddedResource Include="Forms\TournamentPlaceStandings.resx">
       <DependentUpon>TournamentPlaceStandings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MemberScores\TournamentsByYear.resx">
+    <EmbeddedResource Include="Forms\TournamentsByYear.resx">
       <DependentUpon>TournamentsByYear.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MemberScores\TournamentStats.resx">
+    <EmbeddedResource Include="Forms\TournamentStats.resx">
       <DependentUpon>TournamentStats.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803192318264_Initial.resx">
@@ -398,7 +398,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Forms\MemberScores\FrmMemberScores.resx">
+    <EmbeddedResource Include="Forms\FrmMemberScores.resx">
       <DependentUpon>FrmMemberScores.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.Debug.config">
