@@ -239,6 +239,18 @@ namespace NineTapTour.Database
             }
         }
 
+        public static List<Member> GetAllActiveMembers()
+        {
+            using (NineTapDb db = new NineTapDb())
+            {
+                List<Member> activeMembers =
+                        (from active in db.Members
+                         where active.IsActive == true
+                         select active).ToList();
+                return activeMembers;
+            }
+        }
+
         /// <summary>
         /// Deletes the given Tournament from the database
         /// </summary>
