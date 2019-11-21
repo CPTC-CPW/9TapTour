@@ -266,12 +266,9 @@ namespace NineTapTour.Forms
         /// </summary>
         private void FillMember()
         {
-            Tournament currTourney = null;
-
             if (cbxTourneyDropDown.SelectedValue != null)
             {
-                currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
-
+                Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
                 string searchNumber = txtMemberNum.Text;
 
                 //don't do any further processing if there is no member number
@@ -534,26 +531,18 @@ namespace NineTapTour.Forms
                 //tournament property within the participants class.
                 player.Tournament = currTourney;
                 player.Squad = squad;
-                   
+
                 //defaults money earned to 0, or enters text box amount
                 if (txtMoney.Text == "" || txtMoney.Text == null)
                     player.Game.MoneyWon = 0;
-
                 else
                     player.Game.MoneyWon = Convert.ToDecimal(txtMoney.Text);
 
-                if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text
-                                                                            .Trim())
-                                                                        || string.IsNullOrEmpty(txtScratchScore3.Text
-                                                                            .Trim()) || string.IsNullOrEmpty(
-                                                                            txtScratchScore4.Text.Trim()))
-                {
-                    MessageBox.Show("Please enter all scratch scores", "Blank Scores Not Allowed");
-                    return;
-                }
-                else if (!isNumeric(txtScratchScore1.Text.Trim()) || !isNumeric(txtScratchScore2.Text.Trim())
-                                                                    || !isNumeric(txtScratchScore3.Text.Trim()) ||
-                                                                    !isNumeric(txtScratchScore4.Text.Trim()))
+                
+                if((!isNumeric(txtScratchScore1.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore1.Text))
+                    || (!isNumeric(txtScratchScore2.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore2.Text))
+                    || (!isNumeric(txtScratchScore3.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore3.Text))
+                    || (!isNumeric(txtScratchScore4.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore4.Text)))
                 {
                     MessageBox.Show("Please enter only numbers", "Non-Integer Scores Not Allowed");
                     return;

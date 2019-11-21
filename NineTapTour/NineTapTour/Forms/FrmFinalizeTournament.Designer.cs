@@ -84,15 +84,16 @@
             // 
             // btnFinalize
             // 
-            this.btnFinalize.BackColor = System.Drawing.Color.Silver;
+            this.btnFinalize.BackColor = System.Drawing.Color.White;
             this.btnFinalize.FlatAppearance.BorderColor = System.Drawing.Color.Red;
             this.btnFinalize.FlatAppearance.BorderSize = 2;
             this.btnFinalize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnFinalize.Location = new System.Drawing.Point(13, 318);
+            this.btnFinalize.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnFinalize.Location = new System.Drawing.Point(1029, 1);
             this.btnFinalize.Name = "btnFinalize";
-            this.btnFinalize.Size = new System.Drawing.Size(104, 33);
+            this.btnFinalize.Size = new System.Drawing.Size(179, 28);
             this.btnFinalize.TabIndex = 1;
-            this.btnFinalize.Text = "Finalize";
+            this.btnFinalize.Text = "Finalize Tournament";
             this.btnFinalize.UseVisualStyleBackColor = false;
             this.btnFinalize.Click += new System.EventHandler(this.btnFinalize_Click);
             // 
@@ -185,13 +186,13 @@
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1264, 693);
+            this.Controls.Add(this.btnFinalize);
             this.Controls.Add(this.lblAveNum);
             this.Controls.Add(this.lblMemNum);
             this.Controls.Add(this.lblStartAvg);
             this.Controls.Add(this.lblName);
             this.Controls.Add(this.lblMemberNumber);
             this.Controls.Add(this.playerTournamentHistoryGrid);
-            this.Controls.Add(this.btnFinalize);
             this.Controls.Add(this.TournamentEntriesGrid);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmFinalizeTournament";
