@@ -830,7 +830,7 @@ namespace NineTapTour.Forms
             }
 
             // Order By Total w/HDCP
-            currentPlayerHistory = currentPlayerHistory.OrderByDescending(ph => ph.TournamentDate).ThenByDescending(ph => getTotalWithHandicap(ph)).ToList();
+            currentPlayerHistory = currentPlayerHistory.OrderByDescending(ph => ph.TournamentDate).ThenByDescending(ph => getTotalWithHandicap(ph)).ThenByDescending(ph => ph.MoneyWon).ToList();
 
             // Populates Data Rows with entries from currentPlayerHistory
             foreach (var item in currentPlayerHistory)
@@ -1038,7 +1038,7 @@ namespace NineTapTour.Forms
                             p.TotalScore = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[SCRATCH_TOTAL_COLUMN].Value);
                             p.HandiCap = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[HANDICAP_COLUMN].Value);
                             p.Bonus = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[BONUS_COLUMN].Value);
-                            p.MoneyWon = Convert.ToDecimal(GameDB.GetGame(gameId).MoneyWon);
+                            p.MoneyWon = Convert.ToDecimal(GameDB.GetGame(p.GameID).MoneyWon);
                             p.PPHG = Convert.ToString(TournamentEntriesGrid.Rows[i].Cells[STANDING_COLUMN].Value);
                             p.ProPot = TournamentEntriesGrid[PRO_POT_COLUMN, i].Value.ToString();
                             p.Notes = TournamentEntriesGrid[NOTES_COLUMN_, i].Value.ToString();
