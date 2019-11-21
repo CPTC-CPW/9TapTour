@@ -830,33 +830,42 @@ namespace NineTapTour.Forms
             }
 
             // Order By Total w/HDCP
-            currentPlayerHistory = currentPlayerHistory.OrderByDescending(ph => ph.TournamentDate).ThenByDescending(ph => getTotalWithHandicap(ph)).ToList();
+            currentPlayerHistory = currentPlayerHistory.OrderByDescending(ph => ph.TournamentDate).ThenByDescending(ph => getTotalWithHandicap(ph)).ThenByDescending(ph => ph.MoneyWon).ToList();
 
             // Populates Data Rows with entries from currentPlayerHistory
             foreach (var item in currentPlayerHistory)
             {
                 DataRow newRow = dtGames.NewRow();
-                newRow["Games"] = item.GamesPlayed;
                 newRow["Date"] = item.TournamentDate.ToShortDateString();
                 if (item.Game1 == 0)
+                {
                     newRow["Game1"] = null;
+                }
                 else
                     newRow["Game1"] = item.Game1;
 
                 if (item.Game2 == 0)
+                {
                     newRow["Game2"] = null;
+                }
                 else
 
                     newRow["Game2"] = item.Game2;
                 if (item.Game3 == 0)
+                {
                     newRow["Game3"] = null;
+                }
                 else
 
                     newRow["Game3"] = item.Game3;
                 if (item.Game4 == 0)
+                {
                     newRow["Game4"] = null;
+                }
                 else
                     newRow["Game4"] = item.Game4;
+
+                newRow["Games"] = item.GamesPlayed;
 
                 newRow["Scratch Total"] = item.TotalScore;
                 newRow["Total w/HDCP"] = getTotalWithHandicap(item);
@@ -990,8 +999,11 @@ namespace NineTapTour.Forms
 
                             if (Convert.ToBoolean(TournamentEntriesGrid[GAME_1_VALID_COLUMN, i].Value))
                             {
-                                tempgameplayed++;
                                 p.Game1 = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[GAME_1_COLUMN].Value);
+                                if(p.Game1 != 0)
+                                {
+                                    tempgameplayed++;
+                                }
                             }
                             else
                             {
@@ -1001,8 +1013,11 @@ namespace NineTapTour.Forms
 
                             if (Convert.ToBoolean(TournamentEntriesGrid[GAME_2_VALID_COLUMN, i].Value))
                             {
-                                tempgameplayed++;
                                 p.Game2 = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[GAME_2_COLUMN].Value);
+                                if (p.Game2 != 0)
+                                {
+                                    tempgameplayed++;
+                                }
 
                             }
                             else
@@ -1012,8 +1027,11 @@ namespace NineTapTour.Forms
 
                             if (Convert.ToBoolean(TournamentEntriesGrid[GAME_3_VALID_COLUMN, i].Value))
                             {
-                                tempgameplayed++;
                                 p.Game3 = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[GAME_3_COLUMN].Value);
+                                if (p.Game3 != 0)
+                                {
+                                    tempgameplayed++;
+                                }
                             }
                             else
                             {
@@ -1023,8 +1041,11 @@ namespace NineTapTour.Forms
 
                             if (Convert.ToBoolean(TournamentEntriesGrid[GAME_4_VALID_COLUMN, i].Value))
                             {
-                                tempgameplayed++;
                                 p.Game4 = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[GAME_4_COLUMN].Value);
+                                if (p.Game4 != 0)
+                                {
+                                    tempgameplayed++;
+                                }
                             }
                             else
                             {
@@ -1038,7 +1059,7 @@ namespace NineTapTour.Forms
                             p.TotalScore = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[SCRATCH_TOTAL_COLUMN].Value);
                             p.HandiCap = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[HANDICAP_COLUMN].Value);
                             p.Bonus = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[BONUS_COLUMN].Value);
-                            p.MoneyWon = Convert.ToDecimal(GameDB.GetGame(gameId).MoneyWon);
+                            p.MoneyWon = Convert.ToDecimal(GameDB.GetGame(p.GameID).MoneyWon);
                             p.PPHG = Convert.ToString(TournamentEntriesGrid.Rows[i].Cells[STANDING_COLUMN].Value);
                             p.ProPot = TournamentEntriesGrid[PRO_POT_COLUMN, i].Value.ToString();
                             p.Notes = TournamentEntriesGrid[NOTES_COLUMN_, i].Value.ToString();

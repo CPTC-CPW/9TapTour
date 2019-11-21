@@ -32,6 +32,7 @@ namespace NineTapTour.Models
 
         public int? Handicap { get; set; }
         public int? Bonus { get; set; }
+
         [Column(Expression = "Game1 + Game2 + Game3 + Game4")]
         [System.ComponentModel.DataAnnotations.Schema.NotMapped]
         public int? TotalScore { get; set; }
@@ -49,7 +50,5 @@ namespace NineTapTour.Models
             var newList = new List<int?> {Game1, Game2, Game3, Game4};
             return newList;
         }
-
-        
     }
 }
