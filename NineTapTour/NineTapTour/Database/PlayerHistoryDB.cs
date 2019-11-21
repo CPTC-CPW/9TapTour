@@ -309,6 +309,105 @@ namespace NineTapTour.Database
             }
         }
 
+        //return the sum of all games played or 0 if no entries are present for this bowler in the database
+        public static int GetTotalGamesPlayed(int memberNum, int regionID)
+        {
+            using (var db = new NineTapDb())
+            {
+                return db.PlayerHistory
+                    .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
+                        .Select(p => (int?)p.GamesPlayed)
+                        .Sum() ?? 0;
+            }
+        }
+
+        //return the sum of game 1 total played or 0 if no entries are present for this bowler in the database
+        public static int GetTotalGame1Played(int memberNum, int regionID)
+        {
+            using (var db = new NineTapDb())
+            {
+                return db.PlayerHistory
+                    .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
+                        .Select(p => (int?)p.Game1)
+                        .Sum() ?? 0;
+            }
+        }
+
+        //return the sum of game 2 total played or 0 if no entries are present for this bowler in the database
+        public static int GetTotalGame2Played(int memberNum, int regionID)
+        {
+            using (var db = new NineTapDb())
+            {
+                return db.PlayerHistory
+                    .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
+                        .Select(p => (int?)p.Game2)
+                        .Sum() ?? 0;
+            }
+        }
+
+        //return the sum of game 3 total played or 0 if no entries are present for this bowler in the database
+        public static int GetTotalGame3Played(int memberNum, int regionID)
+        {
+            using (var db = new NineTapDb())
+            {
+                return db.PlayerHistory
+                    .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
+                        .Select(p => (int?)p.Game3)
+                        .Sum() ?? 0;
+            }
+        }
+
+        //return the sum of game 4 total played or 0 if no entries are present for this bowler in the database
+        public static int GetTotalGame4Played(int memberNum, int regionID)
+        {
+            using (var db = new NineTapDb())
+            {
+                return db.PlayerHistory
+                    .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
+                        .Select(p => (int?)p.Game4)
+                        .Sum() ?? 0;
+            }
+        }
+
+        //return the sum of scratch total played or 0 if no entries are present for this bowler in the database
+        public static int GetScratchTotal(int memberNum, int regionID)
+        {
+            using (var db = new NineTapDb())
+            {
+                return db.PlayerHistory
+                    .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
+                        .Select(p => (int?)p.TotalScore)
+                        .Sum() ?? 0;
+            }
+        }
+
+        //return the sum of handiCap total played or 0 if no entries are present for this bowler in the database
+        public static int GetHandiCapTotal(int memberNum, int regionID)
+        {
+            using (var db = new NineTapDb())
+            {
+                return (db.PlayerHistory
+                    .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
+                        .Select(p => (int?)p.HandiCap)
+                        .Sum() ?? 0) + GetScratchTotal(memberNum, regionID);
+            }
+        }
+
+        //return the sum of handiCap total played or 0 if no entries are present for this bowler in the database
+        public static int GetEntryAvgTotal(int memberNum, int regionID, int game1, int game2, int game3, int game4, int games)
+        {
+            using (var db = new NineTapDb())
+            {
+                int game1sum = GetTotalGame1Played(memberNum, regionID);
+                int game2sum = GetTotalGame2Played(memberNum, regionID);
+                int game3sum = GetTotalGame3Played(memberNum, regionID);
+                int game4sum = GetTotalGame4Played(memberNum, regionID);
+                int gametotalsum = GetTotalGamesPlayed(memberNum, regionID);
+                return (game1sum + game2sum + game3sum + game4sum + game1 + game2 + game3 + game4) / (gametotalsum + games);
+             
+            }
+        }
+
         /// <summary>
         /// Returns true if a PlayerHistory with the same GameID given exist in the database
         /// </summary>
