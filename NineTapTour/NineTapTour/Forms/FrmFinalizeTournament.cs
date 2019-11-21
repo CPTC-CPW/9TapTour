@@ -271,7 +271,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Creates the tables for the FinalizeTournament form.
         /// </summary>
-        /// <param name="tourn"></param>
+        /// <param name="tourn">The current tournament with all the game scores and data</param>
         private void createDataGridView(Tournament tourn)
         {
             // uses FinalizeTempDB to populate from database
