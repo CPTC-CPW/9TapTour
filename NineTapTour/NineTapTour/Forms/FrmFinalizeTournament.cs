@@ -955,7 +955,7 @@ namespace NineTapTour.Forms
             dtGames.Columns[ScratchTotal].ColumnName = AllScratchTotal;
 
             //Displays handicap total played in the column header "HandiCap total"
-            string AllHandiCapTotal = $"{TotalWithHandiCap} ({FullHandiCapTotal + FullScratchTotal + PlayerHistoryDB.GetHandiCapTotal(temporary[0].MemberNumber, RegionID)})";
+            string AllHandiCapTotal = $"{TotalWithHandiCap} ({FullHandiCapTotal + PlayerHistoryDB.GetHandiCapTotal(temporary[0].MemberNumber, RegionID) + TotalGame1Played + PlayerHistoryDB.GetTotalGame1Played(temporary[0].MemberNumber, RegionID ) + TotalGame2played + PlayerHistoryDB.GetTotalGame2Played(temporary[0].MemberNumber,RegionID) + TotalGame3played + PlayerHistoryDB.GetTotalGame3Played(temporary[0].MemberNumber, RegionID) + TotalGame4played + PlayerHistoryDB.GetTotalGame4Played(temporary[0].MemberNumber,RegionID) })";
             dtGames.Columns[TotalWithHandiCap].ColumnName = AllHandiCapTotal;
 
             //Displays EntryAvg total played in the column header "Entry Avg total"
