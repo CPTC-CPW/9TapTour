@@ -294,13 +294,6 @@ namespace NineTapTour.Calculations
 
             // original members list won't be affected
             members = members.ToList();
-
-            if (tournament.ThreeOutOf4)
-            {
-                //The variable to tell AlterHandicapTotalAccordingToMinimumGameScore to subtract the lowest scored game from handicaptotal
-                bool isPositive = false;
-                AlterHandicapTotalAccordingToMinimumGameScore(members, isPositive);
-            }
             
 
             // Sort the list by the total score, including handicap, in descending order.
@@ -319,6 +312,13 @@ namespace NineTapTour.Calculations
 
             int place = 1;
             membersPlacingMap[members[0]] = place++;
+
+            if (tournament.ThreeOutOf4)
+            {
+                //The variable to tell AlterHandicapTotalAccordingToMinimumGameScore to subtract the lowest scored game from handicaptotal
+                bool isPositive = false;
+                AlterHandicapTotalAccordingToMinimumGameScore(members, isPositive);
+            }
 
             // Calculate each members placing
             for (int currPosition = 1; currPosition < members.Count; currPosition++)
