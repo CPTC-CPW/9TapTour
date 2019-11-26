@@ -272,7 +272,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Creates the tables for the FinalizeTournament form.
         /// </summary>
-        /// <param name="tourn"></param>
+        /// <param name="tourn">The current tournament with all the game scores and data</param>
         private void createDataGridView(Tournament tourn)
         {
             // uses FinalizeTempDB to populate from database
@@ -373,7 +373,7 @@ namespace NineTapTour.Forms
             List<FinalizeTemp> DataViewList = FinalizeTempDB.GetListFromTable(tourn);
 
             // Links FinalizeTemp to an integer that is placing information
-            Dictionary<FinalizeTemp, int> membersPlacingMap = Calculations.Calculations.CalculatePlaceStandings(DataViewList);
+            Dictionary<FinalizeTemp, int> membersPlacingMap = Calculations.Calculations.CalculatePlaceStandings(DataViewList, tourn);
 
             // By default populates all datagrid with all participant for tournament
             TournamentEntriesGrid.DataSource = SetDataView(membersPlacingMap); 
@@ -436,7 +436,7 @@ namespace NineTapTour.Forms
             List<FinalizeTemp> temp = participantsList.Keys.ToList();
 
             // loops thru each person's info in tournament and populates the dataview with data from DB.
-            foreach (var item in temp)
+            foreach (FinalizeTemp item in temp)
             {
                 DataRow newRow = dt.NewRow();
 
@@ -900,7 +900,7 @@ namespace NineTapTour.Forms
             dtGames.Columns[EntryAvgTotal].ColumnName = AllEntryAvgTotal;
 
             // Order By Total w/HDCP
-            currentPlayerHistory = currentPlayerHistory.OrderByDescending(ph => ph.TournamentDate).ThenByDescending(ph => getTotalWithHandicap(ph)).ToList();
+            currentPlayerHistory = currentPlayerHistory.OrderByDescending(ph => ph.TournamentDate).ThenByDescending(ph => getTotalWithHandicap(ph)).ThenByDescending(ph => ph.MoneyWon).ToList();
 
             // Populates Data Rows with entries from currentPlayerHistory
             foreach (var item in currentPlayerHistory)
@@ -1055,8 +1055,11 @@ namespace NineTapTour.Forms
 
                             if (Convert.ToBoolean(TournamentEntriesGrid[GAME_1_VALID_COLUMN, i].Value))
                             {
-                                tempgameplayed++;
                                 p.Game1 = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[GAME_1_COLUMN].Value);
+                                if(p.Game1 != 0)
+                                {
+                                    tempgameplayed++;
+                                }
                             }
                             else
                             {
@@ -1066,8 +1069,11 @@ namespace NineTapTour.Forms
 
                             if (Convert.ToBoolean(TournamentEntriesGrid[GAME_2_VALID_COLUMN, i].Value))
                             {
-                                tempgameplayed++;
                                 p.Game2 = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[GAME_2_COLUMN].Value);
+                                if (p.Game2 != 0)
+                                {
+                                    tempgameplayed++;
+                                }
 
                             }
                             else
@@ -1077,8 +1083,11 @@ namespace NineTapTour.Forms
 
                             if (Convert.ToBoolean(TournamentEntriesGrid[GAME_3_VALID_COLUMN, i].Value))
                             {
-                                tempgameplayed++;
                                 p.Game3 = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[GAME_3_COLUMN].Value);
+                                if (p.Game3 != 0)
+                                {
+                                    tempgameplayed++;
+                                }
                             }
                             else
                             {
@@ -1088,8 +1097,11 @@ namespace NineTapTour.Forms
 
                             if (Convert.ToBoolean(TournamentEntriesGrid[GAME_4_VALID_COLUMN, i].Value))
                             {
-                                tempgameplayed++;
                                 p.Game4 = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[GAME_4_COLUMN].Value);
+                                if (p.Game4 != 0)
+                                {
+                                    tempgameplayed++;
+                                }
                             }
                             else
                             {
@@ -1103,7 +1115,7 @@ namespace NineTapTour.Forms
                             p.TotalScore = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[SCRATCH_TOTAL_COLUMN].Value);
                             p.HandiCap = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[HANDICAP_COLUMN].Value);
                             p.Bonus = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[BONUS_COLUMN].Value);
-                            p.MoneyWon = Convert.ToDecimal(GameDB.GetGame(gameId).MoneyWon);
+                            p.MoneyWon = Convert.ToDecimal(GameDB.GetGame(p.GameID).MoneyWon);
                             p.PPHG = Convert.ToString(TournamentEntriesGrid.Rows[i].Cells[STANDING_COLUMN].Value);
                             p.ProPot = TournamentEntriesGrid[PRO_POT_COLUMN, i].Value.ToString();
                             p.Notes = TournamentEntriesGrid[NOTES_COLUMN_, i].Value.ToString();
