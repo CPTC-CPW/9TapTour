@@ -285,7 +285,7 @@ namespace NineTapTour.Calculations
         /// </summary>
         /// <param name="members"></param>
         /// <returns>Dictionary of FinalizeTemps and ints where ints are placings. Sorted by highest score with duplicate members last</returns>
-        public static Dictionary<FinalizeTemp, int> CalculatePlaceStandings(List<FinalizeTemp> members)
+        public static Dictionary<FinalizeTemp, int> CalculatePlaceStandings(List<FinalizeTemp> members, Tournament tournament)
         {
             if (members.Count == 0)
             {
@@ -312,6 +312,14 @@ namespace NineTapTour.Calculations
             int place = 1;
             membersPlacingMap[members[0]] = place++;
 
+            if (tournament.ThreeOutOf4)
+            {
+                //The variable to tell AlterHandicapTotalAccordingToMinimumGameScore to subtract the lowest scored game from handicaptotal
+                bool isPositive = false;
+                //subtracts the lowest scored game from handicap total so that the rankings are calculated correctly for a 
+                AlterHandicapTotalAccordingToMinimumGameScore(members, isPositive);
+            }
+
             // Calculate each members placing
             for (int currPosition = 1; currPosition < members.Count; currPosition++)
             {
@@ -330,12 +338,50 @@ namespace NineTapTour.Calculations
             }
 
             // Add duplicate entries to end of list
-            foreach(var member in removals)
+            foreach(FinalizeTemp member in removals)
             {
                 membersPlacingMap.Add(member, 0);
             }
 
+            if (tournament.ThreeOutOf4)
+            {
+                //The variable to tell AlterHandicapTotalAccordingToMinimumGameScore to add the lowest scored game to handicaptotal
+                bool isPositive = true;
+                //adds the lowest scored game back to handicap total so that the handicap total is calculated with all four of the games still.
+                AlterHandicapTotalAccordingToMinimumGameScore(members, isPositive);
+            }
+
             return membersPlacingMap;
+        }
+
+        /// <summary>
+        /// Either substracts or adds to the handicap total by the lowest scored game if the tournament is a three out of four tournament.
+        /// </summary>
+        /// <param name="members">The list of bowlers</param>
+        /// <param name="isPositive">Wether or not to add or substract from handicap total</param>
+        private static void AlterHandicapTotalAccordingToMinimumGameScore(List<FinalizeTemp> members, bool isPositive)
+        {
+            foreach (FinalizeTemp currMember in members)
+            {
+                //puts the four games of the current member into a list so that the minimum value can be found easier.
+                List<int?> games = new List<int?>()
+                {
+                    currMember.Game1,
+                    currMember.Game2,
+                    currMember.Game3,
+                    currMember.Game4
+                };
+                //if positive, the lowest scored game is added to the handicap total. All handicaps and bonuses are accounted for.
+                if (isPositive)
+                {
+                    currMember.HandicapTotal = currMember.HandicapTotal + (games.Min().Value + currMember.Handicap + currMember.Bonus);
+                }
+                //if not positive, the lowest scored game is subtracted from the handicap total. All handicaps and bonuses are accounted for.
+                else
+                {
+                    currMember.HandicapTotal = currMember.HandicapTotal - (games.Min().Value + currMember.Handicap + currMember.Bonus);
+                }
+            }
         }
 
         /// <summary>
