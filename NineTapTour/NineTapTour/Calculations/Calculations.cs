@@ -294,7 +294,6 @@ namespace NineTapTour.Calculations
 
             // original members list won't be affected
             members = members.ToList();
-            
 
             // Sort the list by the total score, including handicap, in descending order.
             members.Sort((a, b) => b.HandicapTotal.CompareTo(a.HandicapTotal));
@@ -317,6 +316,7 @@ namespace NineTapTour.Calculations
             {
                 //The variable to tell AlterHandicapTotalAccordingToMinimumGameScore to subtract the lowest scored game from handicaptotal
                 bool isPositive = false;
+                //subtracts the lowest scored game from handicap total so that the rankings are calculated correctly for a 
                 AlterHandicapTotalAccordingToMinimumGameScore(members, isPositive);
             }
 
@@ -338,7 +338,7 @@ namespace NineTapTour.Calculations
             }
 
             // Add duplicate entries to end of list
-            foreach (var member in removals)
+            foreach(FinalizeTemp member in removals)
             {
                 membersPlacingMap.Add(member, 0);
             }
@@ -347,6 +347,7 @@ namespace NineTapTour.Calculations
             {
                 //The variable to tell AlterHandicapTotalAccordingToMinimumGameScore to add the lowest scored game to handicaptotal
                 bool isPositive = true;
+                //adds the lowest scored game back to handicap total so that the handicap total is calculated with all four of the games still.
                 AlterHandicapTotalAccordingToMinimumGameScore(members, isPositive);
             }
 
@@ -360,22 +361,25 @@ namespace NineTapTour.Calculations
         /// <param name="isPositive">Wether or not to add or substract from handicap total</param>
         private static void AlterHandicapTotalAccordingToMinimumGameScore(List<FinalizeTemp> members, bool isPositive)
         {
-            foreach (FinalizeTemp member in members)
+            foreach (FinalizeTemp currMember in members)
             {
+                //puts the four games of the current member into a list so that the minimum value can be found easier.
                 List<int?> games = new List<int?>()
                 {
-                    member.Game1,
-                    member.Game2,
-                    member.Game3,
-                    member.Game4
+                    currMember.Game1,
+                    currMember.Game2,
+                    currMember.Game3,
+                    currMember.Game4
                 };
+                //if positive, the lowest scored game is added to the handicap total. All handicaps and bonuses are accounted for.
                 if (isPositive)
                 {
-                    member.HandicapTotal = member.HandicapTotal + (games.Min().Value + member.Handicap + member.Bonus);
+                    currMember.HandicapTotal = currMember.HandicapTotal + (games.Min().Value + currMember.Handicap + currMember.Bonus);
                 }
+                //if not positive, the lowest scored game is subtracted from the handicap total. All handicaps and bonuses are accounted for.
                 else
                 {
-                    member.HandicapTotal = member.HandicapTotal - (games.Min().Value + member.Handicap + member.Bonus);
+                    currMember.HandicapTotal = currMember.HandicapTotal - (games.Min().Value + currMember.Handicap + currMember.Bonus);
                 }
             }
         }
