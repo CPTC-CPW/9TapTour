@@ -242,8 +242,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="moneyWonWithTotal">send this in so it knows the proper column name to resize</param>
         public void sizeFinalizeLowerGridView(string moneyWonWithTotal, string gamesTotalPlayed, string game1TotalPlayed,
-            string game2TotalPlayed, string game3TotalPlayed, string game4TotalPlayed, string AllScratchTotal,
-            string AllHandiCapTotal, string AllEntryAvgTotal)
+            string game2TotalPlayed, string game3TotalPlayed, string game4TotalPlayed, string AllScratchTotal, string AllEntryAvgTotal)
         {
             int columnCount = 18;
             for (int colWidth = 0; colWidth < columnCount; colWidth++)
@@ -258,7 +257,7 @@ namespace NineTapTour.Forms
             playerTournamentHistoryGrid.Columns[game3TotalPlayed].Width = 50;
             playerTournamentHistoryGrid.Columns[game4TotalPlayed].Width = 50;
             playerTournamentHistoryGrid.Columns[AllScratchTotal].Width = 50;
-            playerTournamentHistoryGrid.Columns[AllHandiCapTotal].Width = 50;
+            playerTournamentHistoryGrid.Columns["w/HDCP"].Width = 50;
             playerTournamentHistoryGrid.Columns[AllEntryAvgTotal].Width = 50;
             playerTournamentHistoryGrid.Columns["30 AVG"].Width = 50;
             playerTournamentHistoryGrid.Columns["Adjusted AVG"].Width = 50;
@@ -841,7 +840,6 @@ namespace NineTapTour.Forms
 
             //HandiCap total label string is referencing multiple locations
             string TotalWithHandiCap = "w/HDCP";
-            int? FullHandiCapTotal = 0;
 
             //EntryAvg total label string is referencing multiple locations
             string EntryAvgTotal = "Entry";
@@ -865,7 +863,6 @@ namespace NineTapTour.Forms
                     TotalGame3played += item.Game3;
                     TotalGame4played += item.Game4;
                     FullScratchTotal += item.TotalScore;
-                    FullHandiCapTotal += item.HandiCap;
                 }
             }
 
@@ -897,10 +894,6 @@ namespace NineTapTour.Forms
             //Displays scratch total played in the column header "Scratch Total"
             string AllScratchTotal = $"{ScratchTotal} ({FullScratchTotal + PlayerHistoryDB.GetScratchTotal(temporary[0].MemberNumber, RegionID)})";
             dtGames.Columns[ScratchTotal].ColumnName = AllScratchTotal;
-
-            //Displays handicap total played in the column header "HandiCap total"
-            string AllHandiCapTotal = $"{TotalWithHandiCap} ({FullHandiCapTotal + PlayerHistoryDB.GetHandiCapTotal(temporary[0].MemberNumber, RegionID) + TotalGame1Played + PlayerHistoryDB.GetTotalGame1Played(temporary[0].MemberNumber, RegionID) + TotalGame2played + PlayerHistoryDB.GetTotalGame2Played(temporary[0].MemberNumber, RegionID) + TotalGame3played + PlayerHistoryDB.GetTotalGame3Played(temporary[0].MemberNumber, RegionID) + TotalGame4played + PlayerHistoryDB.GetTotalGame4Played(temporary[0].MemberNumber, RegionID) })";
-            dtGames.Columns[TotalWithHandiCap].ColumnName = AllHandiCapTotal;
 
             //Displays EntryAvg total played in the column header "Entry Avg total"
             string AllEntryAvgTotal = $"{EntryAvgTotal} ({PlayerHistoryDB.GetEntryAvgTotal(temporary[0].MemberNumber, RegionID, Convert.ToInt32(TotalGame1Played), Convert.ToInt32(TotalGame2played), Convert.ToInt32(TotalGame3played), Convert.ToInt32(TotalGame4played), TotalGamesPlayed)})";
@@ -936,7 +929,7 @@ namespace NineTapTour.Forms
                     newRow[game4TotalPlayed] = item.Game4;
 
                 newRow[AllScratchTotal] = item.TotalScore;
-                newRow[AllHandiCapTotal] = getTotalWithHandicap(item);
+                newRow[TotalWithHandiCap] = getTotalWithHandicap(item);
                 newRow[AllEntryAvgTotal] = item.AverageForEntry;
                 newRow["30 AVG"] = item.trueAVG;
 
@@ -955,12 +948,10 @@ namespace NineTapTour.Forms
 
                 dtGames.Rows.Add(newRow);
             }
-
             
-
             playerTournamentHistoryGrid.DataSource = dtGames;
             playerTournamentHistoryGrid.Columns["GameID"].Visible = false; // Hides the gameID column
-            sizeFinalizeLowerGridView(moneyWonWithTotal, gamesTotalPlayed, game1TotalPlayed, game2TotalPlayed, game3TotalPlayed, game4TotalPlayed, AllScratchTotal, AllHandiCapTotal, AllEntryAvgTotal);   // resizes columns in the grid
+            sizeFinalizeLowerGridView(moneyWonWithTotal, gamesTotalPlayed, game1TotalPlayed, game2TotalPlayed, game3TotalPlayed, game4TotalPlayed, AllScratchTotal, AllEntryAvgTotal);   // resizes columns in the grid
             int thirtyAve = 30;     // how many should be highlighted for 30 game average
             for (int i = 0; i < playerTournamentHistoryGrid.RowCount; i++)
             {

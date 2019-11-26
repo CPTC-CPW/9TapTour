@@ -381,18 +381,6 @@ namespace NineTapTour.Database
         }
 
         //return the sum of handiCap total played or 0 if no entries are present for this bowler in the database
-        public static int GetHandiCapTotal(int memberNum, int regionID)
-        {
-            using (var db = new NineTapDb())
-            {
-                return (db.PlayerHistory
-                    .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
-                        .Select(p => (int?)p.HandiCap)
-                        .Sum() ?? 0) + GetScratchTotal(memberNum, regionID);
-            }
-        }
-
-        //return the sum of handiCap total played or 0 if no entries are present for this bowler in the database
         public static int GetEntryAvgTotal(int memberNum, int regionID, int game1, int game2, int game3, int game4, int games)
         {
             using (var db = new NineTapDb())
