@@ -271,7 +271,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Creates the tables for the FinalizeTournament form.
         /// </summary>
-        /// <param name="tourn"></param>
+        /// <param name="tourn">The current tournament with all the game scores and data</param>
         private void createDataGridView(Tournament tourn)
         {
             // uses FinalizeTempDB to populate from database
@@ -372,7 +372,7 @@ namespace NineTapTour.Forms
             List<FinalizeTemp> DataViewList = FinalizeTempDB.GetListFromTable(tourn);
 
             // Links FinalizeTemp to an integer that is placing information
-            Dictionary<FinalizeTemp, int> membersPlacingMap = Calculations.Calculations.CalculatePlaceStandings(DataViewList);
+            Dictionary<FinalizeTemp, int> membersPlacingMap = Calculations.Calculations.CalculatePlaceStandings(DataViewList, tourn);
 
             // By default populates all datagrid with all participant for tournament
             TournamentEntriesGrid.DataSource = SetDataView(membersPlacingMap); 
@@ -435,7 +435,7 @@ namespace NineTapTour.Forms
             List<FinalizeTemp> temp = participantsList.Keys.ToList();
 
             // loops thru each person's info in tournament and populates the dataview with data from DB.
-            foreach (var item in temp)
+            foreach (FinalizeTemp item in temp)
             {
                 DataRow newRow = dt.NewRow();
 
