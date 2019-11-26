@@ -65,7 +65,7 @@ namespace NineTapTour.Database
         /************************************************************************
         For Printing the Report Sections
         ************************************************************************/
-        public static void ReportPrint(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, PrintPageEventArgs e)
+        public static void ReportPrint(List<Models.MemberScores> tempMemberList, Tournament selectedTournament, ReportType reportTypeNum, PrintPageEventArgs e)
         {
             int numToPrint = 40;
             //This is what prints the data
@@ -225,34 +225,34 @@ namespace NineTapTour.Database
             }
             graphic.DrawString(" **************************************************************************************************", starFont, dBrush, startX + 1, startY + 152);
 
-            for (int i = 0; i < temp.Count - (index * 40) && i < numToPrint; i++)
+            for (int i = 0; i < tempMemberList.Count - (index * 40) && i < numToPrint; i++)
             {
                 //draw number for what place they are
-                graphic.DrawString((temp[i + (index * 40)].placing).ToString(), font, dBrush, startX + 6, startY + 173 + (i * 19));
+                graphic.DrawString((tempMemberList[i + (index * 40)].placing).ToString(), font, dBrush, startX + 6, startY + 173 + (i * 19));
 
                 //draw Score
-                graphic.DrawString(temp[i + (index * 40)].Score.ToString(), font, dBrush, startX + 48, startY + 173 + (i * 19));
+                graphic.DrawString(tempMemberList[i + (index * 40)].Score.ToString(), font, dBrush, startX + 48, startY + 173 + (i * 19));
 
                 //draw the member number
-                graphic.DrawString(temp[i + (index * 40)].MemberId.ToString(), font, dBrush, startX + 120, startY + 173 + (i * 19));
+                graphic.DrawString(tempMemberList[i + (index * 40)].MemberId.ToString(), font, dBrush, startX + 120, startY + 173 + (i * 19));
 
                 // Decides if the last date the member paid their dues prints on the page
                 string unpaid = string.Empty;
 
                 // Gets lastPaymentYear, and adds one year
-                string lastPaymentYear = temp[i + (index * 40)].LastPaymentYear;
+                string lastPaymentYear = tempMemberList[i + (index * 40)].LastPaymentYear;
                 int year;
                 int.TryParse(lastPaymentYear, out year);
                 year += 1;
 
                 //handle members that don't have payment information
-                if (printDues && string.IsNullOrWhiteSpace(temp[i +(index * 40)].LastPaymentYear))
+                if (printDues && string.IsNullOrWhiteSpace(tempMemberList[i +(index * 40)].LastPaymentYear))
                 {
                     unpaid = "N/A";
                 }
                 else if(printDues && lastPaymentYear.Equals("life "))
                 {
-                    unpaid = temp[i + (index * 40)].LastPaymentYear;
+                    unpaid = tempMemberList[i + (index * 40)].LastPaymentYear;
                 } else if(printDues)
                 {
                     unpaid = Convert.ToString(year);
@@ -260,7 +260,7 @@ namespace NineTapTour.Database
 
                 //create name string containing lastname, firstname, and last payment
                 //Changed: instead of showing last payment every time it shows the year as the "unpaid"
-                string nameString = temp[i + (index * 40)].LastName + ", " + temp[i + (index * 40)].FirstName;
+                string nameString = tempMemberList[i + (index * 40)].LastName + ", " + tempMemberList[i + (index * 40)].FirstName;
 
                 //draw name string
                 graphic.DrawString(nameString, font, dBrush, startX + 200, startY + 173 + (i * 19));
