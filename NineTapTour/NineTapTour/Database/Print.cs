@@ -74,7 +74,15 @@ namespace NineTapTour.Database
 
             int numToPrint = 40;
             // This var is used to draw a line after the rows of money-winning members are printed
-            int winningPlaces = tempMemberList.Count() / 5;
+            int winningPlaces;
+            if (tempMemberList.Count() < 5)
+            {
+                winningPlaces = 1;
+            }
+            else
+            {
+                winningPlaces = tempMemberList.Count() / 5;
+            }
             //This is what prints the data
             Graphics graphic = e.Graphics;
             Pen blackPen = new Pen(Brushes.Black);
