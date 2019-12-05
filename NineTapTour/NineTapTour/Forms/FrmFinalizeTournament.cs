@@ -989,7 +989,8 @@ namespace NineTapTour.Forms
             // refers to indexes of cells in a row
             const int EARNING_CELL_INDEX = 15;
             const int BONUSPIN_CELL_INDEX = 12;
-
+            string colorHex = "#F98B88";
+            Color cellColor = ColorTranslator.FromHtml(colorHex);
             for (int rowIndex = 0; rowIndex < playerTournamentHistoryGrid.RowCount; rowIndex++) {
                 // check if the the player "cashed out", or has earnings, in the current row
 
@@ -998,7 +999,7 @@ namespace NineTapTour.Forms
                 if (currentEarning > 0.0m)
                 {
                     // highlight the bonus pins cell
-                    playerTournamentHistoryGrid.Rows[rowIndex].Cells[BONUSPIN_CELL_INDEX].Style.BackColor = Color.Red;
+                    playerTournamentHistoryGrid.Rows[rowIndex].Cells[BONUSPIN_CELL_INDEX].Style.BackColor = cellColor;
                 }
             }
         }
