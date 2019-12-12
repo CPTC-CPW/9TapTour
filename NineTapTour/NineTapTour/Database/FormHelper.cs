@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -190,6 +191,16 @@ namespace NineTapTour.Database
                 }
             }
             return true;
+        }
+
+        /// <summary>
+        /// This method takes a color hex code such as #000000 and
+        /// returns a color to be used with the forms.
+        /// </summary>
+        /// <param name="hex">The color hex code starting with (#)</param>
+        public static Color GenerateCustomColorFromHex(string hex)
+        {
+            return ColorTranslator.FromHtml(hex);
         }
     }
 }
