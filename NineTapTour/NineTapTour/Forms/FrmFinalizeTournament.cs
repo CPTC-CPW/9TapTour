@@ -1224,7 +1224,7 @@ namespace NineTapTour.Forms
                     ph.Game3 = FinalizeTableList[i].Game3;
                     ph.Game4 = FinalizeTableList[i].Game4;
 
-                    if (ph.Game1 > 0)
+                    if (Convert.ToBoolean(TournamentEntriesGrid.Rows[i].Cells[GAME_1_VALID_COLUMN].Value))
                     {
                         gamesPlayed++;
                         currGame.UseGame1 = true;
@@ -1236,7 +1236,7 @@ namespace NineTapTour.Forms
                         FinalizeTableList[i].UseGame1 = false;
                     }
 
-                    if (ph.Game2 > 0)
+                    if (Convert.ToBoolean(TournamentEntriesGrid.Rows[i].Cells[GAME_2_VALID_COLUMN].Value))
                     {
                         gamesPlayed++;
                         currGame.UseGame2 = true;
@@ -1248,7 +1248,7 @@ namespace NineTapTour.Forms
                         FinalizeTableList[i].UseGame2 = false;
                     }
 
-                    if (ph.Game3 > 0)
+                    if (Convert.ToBoolean(TournamentEntriesGrid.Rows[i].Cells[GAME_3_VALID_COLUMN].Value))
                     {
                         gamesPlayed++;
                         currGame.UseGame3 = true;
@@ -1260,7 +1260,7 @@ namespace NineTapTour.Forms
                         FinalizeTableList[i].UseGame3 = false;
                     }
 
-                    if (ph.Game4 > 0)
+                    if (Convert.ToBoolean(TournamentEntriesGrid.Rows[i].Cells[GAME_4_VALID_COLUMN].Value))
                     {
                         gamesPlayed++;
                         currGame.UseGame4 = true;
