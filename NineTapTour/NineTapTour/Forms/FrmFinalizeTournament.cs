@@ -793,7 +793,7 @@ namespace NineTapTour.Forms
             // Create table columns
             dtGames.Columns.Add("Games", typeof(Int32)).ReadOnly = true;
             dtGames.Columns.Add("Date", typeof(DateTime));
-            dtGames.Columns.Add("Game1", typeof(Int32));
+            dtGames.Columns.Add("Game1");
             dtGames.Columns.Add("Game2");
             dtGames.Columns.Add("Game3");
             dtGames.Columns.Add("Game4");
