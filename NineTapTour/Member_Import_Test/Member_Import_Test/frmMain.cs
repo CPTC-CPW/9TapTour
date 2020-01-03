@@ -653,6 +653,12 @@ namespace Member_Import_Test
             String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
             bool isRegionHawaii = (cbHaw.Checked); // checks to see if Region is Hawaii
 
+            if(playerNumber == null)
+            {
+                MessageBox.Show($"Player number could not be read in excel file {PathAndFileName}. Program is unable to continue.");
+                throw new ArgumentException($"While reading {PathAndFileName} a player number was not found in the file.");
+            }
+
             if (isRegionHawaii)
             {
                 playerNumber = Regex.Replace(playerNumber, "[^0-9]", "");  // strip the member number to straight number
