@@ -1435,7 +1435,7 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// 
+        /// Refreshes the index to the current index
         /// </summary>
         /// <param name="part"></param>
         public void RecordIndexOnEnter(List<Participant> part)
@@ -1493,7 +1493,7 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// 
+        /// Refreshes the index to the current index on squad switch
         /// </summary>
         public void RecordIndexOnSquadSwitch()
         {
@@ -1598,7 +1598,7 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// 
+        /// Displays the last member in the record
         /// </summary>
         private void MoveToLastRecordOfMemberScores()
         {
@@ -1939,11 +1939,8 @@ namespace NineTapTour.Forms
 
         //Gets nullable scratchscore
         /// <summary>
-        /// 
+        /// Returns the gameScore + gameHandicap
         /// </summary>
-        /// <param name="gameScore"></param>
-        /// <param name="gameHandicap"></param>
-        /// <returns></returns>
         private int? getScratchScore(int? gameScore, int? gameHandicap)
         {
             return gameScore + gameHandicap;
@@ -1996,7 +1993,7 @@ namespace NineTapTour.Forms
         //called when report game is clicked
 
         /// <summary>
-        /// 
+        /// Refreshes the member scores form
         /// </summary>
         private void RefreshMemberScoresForm()
         {
@@ -2010,7 +2007,7 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// 
+        /// Removes the current participant from the tournament
         /// </summary>
         private void RemoveParticipantFromTournament()
         {
@@ -2055,67 +2052,47 @@ namespace NineTapTour.Forms
         /// width and height to determine whether there needs to be scroll bars
         /// or not.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void flpMemberScores_SizeChanged(object sender, EventArgs e)
         {
             FormHelper.SetFlowControlScrollBars(this, flpMemberScores, 1300, 750);
         }
         
         /// <summary>
-        /// 
+        /// Returns the number of filter squads checked
         /// </summary>
         public int FilterCheck()
         {
             int check = 0;
 
             if (cbFilterSquad1.Checked)
-            {
                 check++;
-            }
 
             if (cbFilterSquad2.Checked)
-            {
                 check++;
-            }
 
             if (cbFilterSquad3.Checked)
-            {
                 check++;
-            }
 
             if (cbFilterSquad4.Checked)
-            {
                 check++;
-            }
 
             if (cbFilterSquad5.Checked)
-            {
                 check++;
-            }
 
             if (cbFilterSquad6.Checked)
-            {
                 check++;
-            }
 
             if (cbFilterSquad7.Checked)
-            {
                 check++;
-            }
 
             if (cbFilterSquad8.Checked)
-            {
                 check++;
-            }
             return check;
         }
         
         /// <summary>
-        /// 
+        /// Checks if the number of filter squads checked maches the selected tournament
         /// </summary>
-        /// <param name="squadCheckBox"></param>
-        /// <param name="squadNum"></param>
         private void SquadFilter(CheckBox squadCheckBox, byte squadNum)
         {
             if (FilterCheck() == selectedTournament.Squads)
@@ -2127,13 +2104,9 @@ namespace NineTapTour.Forms
             {
                 howManySquadsCanBeFiltered.Remove(squadNum);
                 if (FilterCheck() == 0)
-                {
                     cbAllSquads.Checked = true;
-                }
                 else
-                {
                     Refresh(false);
-                }
             }
             else
             {
@@ -2143,17 +2116,15 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// 
+        /// Calls the method ChangeToSelectedPerson
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void lbxGameLeader_Click(object sender, EventArgs e)
         {
             ChangeToSelectedPerson(sender as ListBox);
         }
 
         /// <summary>
-        /// 
+        /// Switches to the selected person
         /// </summary>
         /// <param name="participantGamesListBox"></param>
         private void ChangeToSelectedPerson(ListBox participantGamesListBox)
