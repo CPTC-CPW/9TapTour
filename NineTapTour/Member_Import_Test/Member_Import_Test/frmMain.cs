@@ -589,7 +589,19 @@ namespace Member_Import_Test
             else if (playerFullName.Contains("."))
             {
                 playerLastName = playerFullName.Substring(0, playerFullName.IndexOf("."));
-                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(".") + 2);
+                try
+                {
+                    firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(".") + 2);
+                }
+                catch(ArgumentOutOfRangeException)
+                {
+                    // Can be thrown if the "." comes at the end. Ex. "John Doe Jr."
+                    // First name will be preserved in these rare cases. For now middle names will
+                    // be ignored in these exceptions due to various name formats
+                    int firstSpaceIndex = playerFullName.IndexOf(" ");
+                    firstAndMiddle = playerFullName.Substring(0, firstSpaceIndex);
+                }
+                
             }
 
             string[] first0middle1 = firstAndMiddle.Split(' ');
@@ -640,6 +652,12 @@ namespace Member_Import_Test
           
             String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
             bool isRegionHawaii = (cbHaw.Checked); // checks to see if Region is Hawaii
+
+            if(playerNumber == null)
+            {
+                MessageBox.Show($"Player number could not be read in excel file {PathAndFileName}. Program is unable to continue.");
+                throw new ArgumentException($"While reading {PathAndFileName} a player number was not found in the file.");
+            }
 
             if (isRegionHawaii)
             {
