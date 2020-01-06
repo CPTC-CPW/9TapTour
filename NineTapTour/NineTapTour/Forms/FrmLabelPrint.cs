@@ -15,11 +15,17 @@ namespace NineTapTour.Forms
 {
     public partial class FrmLabelPrint : Form
     {
+        #region Variables
         int RegionID;
         List<Member> AllMems;       // = MemberDb.GetMemberLabelList();
         List<Member> ActiveMems;    // = new List<Member>();
         List<Member> Labels;        // = new List<Member>();
 
+        private DateTime lastKeyPressed;
+        private String searchWho;
+        #endregion
+
+        #region FrmLabelPrint
         public FrmLabelPrint(int RegionID)
         {
             InitializeComponent();
@@ -34,60 +40,9 @@ namespace NineTapTour.Forms
 
             LoadLists();
         }
-
-        public void LoadLists()
-        {
-            try
-            {
-                if (!cbxShowInactive.Checked)
-                {
-                    foreach (Member m in AllMems)
-                    {
-                        if (m.IsActive)
-                        {
-                            ActiveMems.Add(m);
-                        }
-                    }
-
-                    lbxMemberList.DataSource = ActiveMems;
-                }
-                else
-                {
-                    lbxMemberList.DataSource = AllMems;
-                }
-            }
-            catch (NullReferenceException nex)
-            {
-                Console.WriteLine("Error Number : " + nex.Message);
-                if (!cbxShowInactive.Checked)
-                {
-                    MessageBox.Show("There are no active members to show; check inactive to load all members.");
-                }
-                else
-                {
-                    MessageBox.Show("There are no members to show.");
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error Number : " + ex.Message);
-                MessageBox.Show("An error occured. Please reload the form.");
-            }
-        }
-
-        #region indexchanged
-        private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
         #endregion
 
+        #region Buttons
         private void btnAdd_Click(object sender, EventArgs e)
         {
             foreach (Member m in lbxMemberList.SelectedItems)
@@ -197,19 +152,17 @@ namespace NineTapTour.Forms
         {
             this.Close();
         }
+        #endregion
 
+        #region Checkbox
         private void cbxShowInactive_CheckedChanged(object sender, EventArgs e)
         {
             ActiveMems.Clear();
             LoadLists();
         }
+        #endregion
 
-        public void UpdatePrintListBox()
-        {
-            lbxPrintList.DataSource = null;
-            lbxPrintList.DataSource = Labels;
-        }
-
+        #region ListBox
         private void lbxMemberList_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             foreach (Member m in lbxMemberList.SelectedItems)
@@ -227,11 +180,6 @@ namespace NineTapTour.Forms
             }
             UpdatePrintListBox();
         }
-
-
-        private DateTime lastKeyPressed;
-
-        private String searchWho;
 
         private void lbxMemberList_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -252,6 +200,70 @@ namespace NineTapTour.Forms
             lastKeyPressed = newDate;
             e.Handled = true;
         }
-    }
 
+        private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+        #endregion
+
+        /// <summary>
+        /// Updates lbxPrintList.DataSource
+        /// </summary>
+        public void UpdatePrintListBox()
+        {
+            lbxPrintList.DataSource = null;
+            lbxPrintList.DataSource = Labels;
+        }
+
+        /// <summary>
+        /// Populates the lbxMemberList, and adds 
+        /// inactive members if cbxShowInactive is checked
+        /// </summary>
+        public void LoadLists()
+        {
+            try
+            {
+                if (!cbxShowInactive.Checked)
+                {
+                    foreach (Member m in AllMems)
+                    {
+                        if (m.IsActive)
+                        {
+                            ActiveMems.Add(m);
+                        }
+                    }
+
+                    lbxMemberList.DataSource = ActiveMems;
+                }
+                else
+                {
+                    lbxMemberList.DataSource = AllMems;
+                }
+            }
+            catch (NullReferenceException nex)
+            {
+                Console.WriteLine("Error Number : " + nex.Message);
+                if (!cbxShowInactive.Checked)
+                {
+                    MessageBox.Show("There are no active members to show; check inactive to load all members.");
+                }
+                else
+                {
+                    MessageBox.Show("There are no members to show.");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error Number : " + ex.Message);
+                MessageBox.Show("An error occured. Please reload the form.");
+            }
+        }
+    }
 }
