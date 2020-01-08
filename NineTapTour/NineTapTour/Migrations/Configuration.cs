@@ -5,7 +5,7 @@ namespace NineTapTour.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<NineTapTour.Database.NineTapDb>
+    internal sealed class Configuration : DbMigrationsConfiguration<NineTapTour.Database.NineTapDB>
     {
         public Configuration()
         {
@@ -14,7 +14,7 @@ namespace NineTapTour.Migrations
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(NineTapTour.Database.NineTapDb context)
+        protected override void Seed(NineTapTour.Database.NineTapDB context)
         {
             //  This method will be called after migrating to the latest version.
 

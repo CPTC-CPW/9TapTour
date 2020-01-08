@@ -168,7 +168,7 @@ namespace NineTapTour.Forms
         public void populateStats()
         {
 
-            var db = new NineTapDb();
+            var db = new NineTapDB();
 
             var temp = (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
@@ -328,7 +328,7 @@ namespace NineTapTour.Forms
         public DataTable tableview()
         {
             DataTable dtGames = new DataTable();
-            var db = new NineTapDb();
+            var db = new NineTapDB();
             var temp = (from p in db.PlayerHistory
                         where p.MemberNumber == memNum && p.regionID == RegionID
                         orderby p.TournamentDate descending, p.hisID descending

@@ -65,7 +65,7 @@ namespace NineTapTour.Forms
             List<Tournament> tourList = new List<Tournament>();
             StringBuilder whereClause = new StringBuilder();
 
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 var query = from t in db.Tournaments
                             where t.TourneyRegion == RegionID

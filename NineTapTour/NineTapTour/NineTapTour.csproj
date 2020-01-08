@@ -211,7 +211,7 @@
     <Compile Include="Forms\FrmMemberData.Designer.cs">
       <DependentUpon>FrmMemberData.cs</DependentUpon>
     </Compile>
-    <Compile Include="Database\NineTapDb.cs" />
+    <Compile Include="Database\NineTapDB.cs" />
     <Compile Include="Forms\FrmMemberScoresReports.cs">
       <SubType>Form</SubType>
     </Compile>

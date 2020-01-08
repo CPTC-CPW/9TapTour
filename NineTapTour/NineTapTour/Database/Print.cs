@@ -405,7 +405,7 @@ namespace NineTapTour.Database
             //add the event handler that will do the printing
             printDocument.PrintPage += new PrintPageEventHandler(printTourRecaps);
 
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 mems = (from m in db.Members
                         orderby m.LastName descending

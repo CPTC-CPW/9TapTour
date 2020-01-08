@@ -18,7 +18,7 @@ namespace NineTapTour.Database
         public static double LeagueAverage(Member mem)
         {
             int howmany = 30;
-            using(var db = new NineTapDb())
+            using(var db = new NineTapDB())
             {
                 double avg = (double)(from p in db.Participants
                               join m in db.Members on p.Member.Id equals m.Id
@@ -79,7 +79,7 @@ namespace NineTapTour.Database
         {
             double sum = 0;
 
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 var temp = (from p in db.PlayerHistory
                             where p.MemberNumber == memberNumber && p.regionID == regionid
@@ -112,7 +112,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static void AddFinalizeTemp(FinalizeTemp temp)
         {
-            using(var db = new NineTapDb())
+            using(var db = new NineTapDB())
             {
                 try
                 {
@@ -150,7 +150,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static FinalizeTemp GetFinalizeID(Game currentG)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 var finalizeTemp = (from par in db.FinalizeTemp
                                     where par.GameId == currentG.Id
@@ -165,7 +165,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<FinalizeTemp> GetAllInitialParticipantGameList(Tournament tourn)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 var temp = (from p in db.Participants
                             join m in db.Members on p.Member.Id equals m.Id
@@ -260,7 +260,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<FinalizeTemp> GetListFromTable(Tournament tourn)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 // Returns a list of participants with the same TournamentID
                 return db.FinalizeTemp
@@ -276,7 +276,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<FinalizeTemp> GetFinalizeListByRegionID(int RegionID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 return (from f in db.FinalizeTemp
                         where f.FinalizeRegionID == RegionID
@@ -289,7 +289,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static void DeleteFinalizeTemp(FinalizeTemp ft)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 db.Entry(ft).State = EntityState.Deleted;
                 db.SaveChanges();
@@ -323,7 +323,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static Participant GetParticipantByGameId (int gameID)
         {
-            var db = new NineTapDb();
+            var db = new NineTapDB();
             return (from par in db.Participants
                    where par.Game.Id == gameID
                    // No tracking prevents EF from monitoring changes. This means
@@ -336,7 +336,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<Participant> GetParticipantListByRegionID(int RegionID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 return (from p in db.Participants
                         where p.ParticipantRegionID == RegionID
@@ -350,7 +350,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static void DeleteParticipant(Participant p)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 db.Entry(p).State = EntityState.Deleted;
                 db.SaveChanges();
@@ -362,7 +362,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<Game> GetGameListByRegionID(int RegionID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 return (from g in db.Games
                 where g.gameRegionID == RegionID
@@ -377,7 +377,7 @@ namespace NineTapTour.Database
         /// <returns>Qty of comp entries</returns>
         public static int GetCompEntryQtyByTourneyID(int tourneyId)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 return db.FinalizeTemp
                         .Join(db.Games, ft => ft.GameId, g => g.Id,
@@ -393,7 +393,7 @@ namespace NineTapTour.Database
         /// <returns>the amount of enties in tournament by a member</returns>
         public static int GetMembersGameEntryCount(int tourneyId, int memberNum)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 return db.FinalizeTemp
                         .Where(ft => ft.TournamentID == tourneyId && ft.MemberNumber == memberNum)
@@ -407,7 +407,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static bool GameExists(PlayerHistory Temp)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 if (db.FinalizeTemp.Any(m => m.GameId == Temp.GameID))
                 {

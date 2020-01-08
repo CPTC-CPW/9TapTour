@@ -48,7 +48,7 @@ namespace NineTapTour.Forms
         #region Button
         private void btnCheck_Click(object sender, EventArgs e)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 tours = (from t in db.Tournaments
                          orderby t.Date descending

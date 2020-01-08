@@ -59,7 +59,7 @@ namespace NineTapTour.Database
 
         private DataTable dataView(List<PlayerHistory> playerHistory)
         {
-            var db = new NineTapDb();
+            var db = new NineTapDB();
             DataTable dt = new DataTable();
             dt.Columns.Add("Games Played").ReadOnly = true;
             dt.Columns.Add("Date").ReadOnly = true;

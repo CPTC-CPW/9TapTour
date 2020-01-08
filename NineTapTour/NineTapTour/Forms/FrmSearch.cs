@@ -47,7 +47,7 @@ namespace NineTapTour.Forms
 
             List<Member> memList = new List<Member>();
 
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 var query = from m in db.Members
                             where m.NineTapRegionID == RegionID

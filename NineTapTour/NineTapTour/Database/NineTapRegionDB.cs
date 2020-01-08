@@ -17,7 +17,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<NineTapRegion> GetRegionList()
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 return (from t in db.NineTapRegion
                         select t).ToList();
@@ -29,7 +29,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static int GetNumberOfRegions()
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 return (from t in db.NineTapRegion
                         select t).Count();
@@ -64,7 +64,7 @@ namespace NineTapTour.Database
         {
             try
             {
-                using (var db = new NineTapDb())
+                using (var db = new NineTapDB())
                 {
 					db.NineTapRegion.Add(temp);
                     db.SaveChanges();
@@ -83,7 +83,7 @@ namespace NineTapTour.Database
         public static void DeleteRegion(NineTapRegion t)
         {
             // This code was wraped in a try/catch block, but the catch did nothing
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 db.Entry(t).State = EntityState.Deleted;
                 db.SaveChanges();
@@ -96,7 +96,7 @@ namespace NineTapTour.Database
         public static NineTapRegion GetRegionByID ( int regionID)
         {
             NineTapRegion NTR = new NineTapRegion();
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 var temp = (from g in db.NineTapRegion
                             select new

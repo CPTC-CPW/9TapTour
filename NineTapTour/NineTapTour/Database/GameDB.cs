@@ -18,7 +18,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static void AddOrUpdateGame(Game game)
         {
-            var db = new NineTapDb();
+            var db = new NineTapDB();
             db.Entry(game).State = db.Games.Any(g => g.Id == game.Id) ?
                     EntityState.Modified : EntityState.Added;
 
@@ -31,7 +31,7 @@ namespace NineTapTour.Database
         /// <param name="gameID"></param>
         public static Game GetGame(int gameID)
         {
-            var db = new NineTapDb();
+            var db = new NineTapDB();
             return (from g in db.Games
                     where g.Id == gameID
                     select g).SingleOrDefault();
@@ -44,7 +44,7 @@ namespace NineTapTour.Database
         /// <param name="games">The Games to add or update</param>
         public static void AddOrUpdateSomeGames(List<Game> games)
         {
-            var db = new NineTapDb();
+            var db = new NineTapDB();
             foreach (var currGame in games)
             {
                 db.Entry(currGame).State = db.Games.Any(g => g.Id == currGame.Id) ?

@@ -23,7 +23,7 @@ namespace NineTapTour.Database
         {
             try
             {
-                using (var db = new NineTapDb())
+                using (var db = new NineTapDB())
                 {
                     db.Entry(temp).State = db.Members.Any(m => m.Id == temp.Id) ?
                                             EntityState.Modified :
@@ -84,7 +84,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static bool MemberExists(Member Temp)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 return db.Members.Any(m => m.Number == Temp.Number && m.NineTapRegionID == Temp.NineTapRegionID);
             }
@@ -95,7 +95,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<Member> GetMemberList(int regionID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 return (from m in db.Members
                         orderby  m.Number
@@ -109,7 +109,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static int GetMemberListCount(int regionId)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 return db.Members.Where(member => member.NineTapRegionID == regionId).Count();
             }
@@ -120,7 +120,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<Member> GetAllMembersList()
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 return (from m in db.Members
                         orderby m.Number
@@ -133,7 +133,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static void DeleteMember(Member mem)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 db.Entry(mem).State = EntityState.Deleted;
                 db.SaveChanges();
@@ -145,7 +145,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static Member GetMember(int memberNumber, int regionID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 return (from m in db.Members
                             where m.Number == memberNumber && m.NineTapRegionID == regionID
@@ -158,7 +158,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static Member GetMemberByGameId(int gameID)
         {
-            using(NineTapDb db = new NineTapDb())
+            using(NineTapDB db = new NineTapDB())
             {
                 return db.Participants
                         .Include(b => b.Game)
@@ -174,7 +174,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static int GetMemberIdByNumber(int memberNumber, int regionId)
         {
-            using(NineTapDb db = new NineTapDb())
+            using(NineTapDB db = new NineTapDB())
             {
                  return (from m in db.Members
                         where m.Number == memberNumber &&
@@ -190,7 +190,7 @@ namespace NineTapTour.Database
         public static int GetMemberNumberbyID(int memberID)
         {
             Member currentMember = new Member();
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 var temp = (from m in db.Members
                             where m.Id == memberID

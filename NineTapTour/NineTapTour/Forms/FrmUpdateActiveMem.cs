@@ -41,7 +41,7 @@ namespace NineTapTour.Forms
                 return;
             }
 
-            var db = new NineTapDb();
+            var db = new NineTapDB();
             if (MessageBox.Show("Update the selected Members to inactive?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
 

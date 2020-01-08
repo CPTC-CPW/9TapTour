@@ -243,7 +243,7 @@ namespace NineTapTour.Forms
             }
             else
             {
-                var db = new NineTapDb();
+                var db = new NineTapDB();
 
                 // Personal Info
                 _memberId = currentMem.Id;
@@ -973,7 +973,7 @@ namespace NineTapTour.Forms
                 txtHandicap.Text = currentMem.Handicap.ToString();
                 txtBonus.Text = currentMem.Bonus.ToString();
                 decimal moneySum = 0;
-                var db = new NineTapDb();
+                var db = new NineTapDB();
 
                 var result = (from p in db.PlayerHistory
                               where p.MemberNumber == currentMem.Number && p.regionID == RegionID

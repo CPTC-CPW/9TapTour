@@ -22,7 +22,7 @@ namespace NineTapTour.Database
         {
             try
             {
-                using (var db = new NineTapDb())
+                using (var db = new NineTapDB())
                 {
                     db.Entry(playerHistory).State = db.PlayerHistory.Any(his => his.hisID == playerHistory.hisID) ?
                          EntityState.Modified :
@@ -53,7 +53,7 @@ namespace NineTapTour.Database
         {
             try
             {
-                using (var db = new NineTapDb())
+                using (var db = new NineTapDB())
                 {
                     db.Entry(playerHistory).State = db.PlayerHistory.Any(ph => ph.hisID == playerHistory.hisID) ?
                         EntityState.Modified : EntityState.Added;
@@ -85,7 +85,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static void AddOrUpdatePlayerHistoryList(List<PlayerHistory> playerHistoryList)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 foreach (PlayerHistory playerHistory in playerHistoryList)
                 {
@@ -102,7 +102,7 @@ namespace NineTapTour.Database
         public static List<PlayerHistory> GetTop30FromPlayerHistory(int memberNum)
         {
             int howmany = 30;
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 List<PlayerHistory> PlayerHistoryList =
                     (from h in db.PlayerHistory
@@ -118,7 +118,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static int GetHisID(PlayerHistory playerHistory)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 int? hisID = (from h in db.PlayerHistory
                             join g in db.Games on h.GameID equals g.Id
@@ -137,7 +137,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<PlayerHistory> GetMemberPlayerHistory(int memberNum, int regionID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 List<PlayerHistory> PlayerHistoryList = 
                     (from h in db.PlayerHistory
@@ -153,7 +153,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<PlayerHistory> GetMemberPlayerHistoryCount(int memberNum, int regionID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 List<PlayerHistory> PlayerHistoryList = 
                     (from h in db.PlayerHistory
@@ -170,7 +170,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<PlayerHistory> GetAllPlayerHistory(int regionID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 List<PlayerHistory> PlayerHistoryList =
                     (from h in db.PlayerHistory
@@ -187,7 +187,7 @@ namespace NineTapTour.Database
         /// <param name="howmany">number of games to pull from the database</param>
         public static List<PlayerHistory> GetLastQtyGamesMoneyWon(int memberNum, int regionID, int howmany)
         {
-            using(var db = new NineTapDb())
+            using(var db = new NineTapDB())
             {
                 var queryResult = db.PlayerHistory
                     .Where(ph => ph.MemberNumber == memberNum && ph.regionID == regionID)
@@ -210,7 +210,7 @@ namespace NineTapTour.Database
         public static List<PlayerHistory> GetLastFiveTournaments(int memberNum, int regionID)
         {
             int howmany = 5;
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 /* will only grab the last 5 where the AVG was adjusted, 
                   that way the bonus pins cant be affected by bowling in more then one squad */
@@ -230,7 +230,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static void DeleteGame(Game game)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 db.Entry(game).State = EntityState.Deleted;
                 db.SaveChanges();
@@ -242,7 +242,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static void DeletePlayerHistory(PlayerHistory playerHistory)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 db.Entry(playerHistory).State = EntityState.Deleted;
                 db.SaveChanges();
@@ -254,7 +254,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static int GetNumberOfAllGames()
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 int gameCount = 
                     (from g in db.Games
@@ -268,7 +268,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<PlayerHistory> GetMemberPlayerHistoryByTotal(int memberNum, int regionID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 List<PlayerHistory> PlayerHistoryList = 
                     (from h in db.PlayerHistory
@@ -284,7 +284,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static PlayerHistory GetPlayerHistoryByGameID (int gameID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 PlayerHistory playerHistory = 
                     (from h in db.PlayerHistory
@@ -300,7 +300,7 @@ namespace NineTapTour.Database
         public static decimal GetTotalMoneyWon(int memberNum, int regionID)
         {
             //return the sum of all money won or 0 if no entries are present for this bowler in the database
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 return db.PlayerHistory
                         .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
@@ -311,7 +311,7 @@ namespace NineTapTour.Database
 
         public static int GetTotalGamesPlayed(int memberNum, int regionID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 return db.PlayerHistory
                     .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
@@ -323,7 +323,7 @@ namespace NineTapTour.Database
         //return the sum of game 1 total played or 0 if no entries are present for this bowler in the database
         public static int GetTotalGame1Played(int memberNum, int regionID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 return db.PlayerHistory
                     .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
@@ -335,7 +335,7 @@ namespace NineTapTour.Database
         //return the sum of game 2 total played or 0 if no entries are present for this bowler in the database
         public static int GetTotalGame2Played(int memberNum, int regionID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 return db.PlayerHistory
                     .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
@@ -347,7 +347,7 @@ namespace NineTapTour.Database
         //return the sum of game 3 total played or 0 if no entries are present for this bowler in the database
         public static int GetTotalGame3Played(int memberNum, int regionID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 return db.PlayerHistory
                     .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
@@ -359,7 +359,7 @@ namespace NineTapTour.Database
         //return the sum of game 4 total played or 0 if no entries are present for this bowler in the database
         public static int GetTotalGame4Played(int memberNum, int regionID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 return db.PlayerHistory
                     .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
@@ -371,7 +371,7 @@ namespace NineTapTour.Database
         //return the sum of scratch total played or 0 if no entries are present for this bowler in the database
         public static int GetScratchTotal(int memberNum, int regionID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 return db.PlayerHistory
                     .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
@@ -383,7 +383,7 @@ namespace NineTapTour.Database
         //return the sum of handiCap total played or 0 if no entries are present for this bowler in the database
         public static int GetEntryAvgTotal(int memberNum, int regionID, int game1, int game2, int game3, int game4, int games)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 int game1sum = GetTotalGame1Played(memberNum, regionID);
                 int game2sum = GetTotalGame2Played(memberNum, regionID);
@@ -400,7 +400,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static bool PlayerHistoryExists(int gameID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 return db.PlayerHistory
                     .Any(ph => ph.GameID == gameID);

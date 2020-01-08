@@ -16,7 +16,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<Participant> GetParticipants(int TournamentID)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                return db.Participants.Include("Member").Include("Game").Include("Tournament")
                     .Where(p => p.Tournament.Id == TournamentID)
@@ -30,7 +30,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<MemberScores> GetGameMemberScores(int TournamentID)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 return (from g in (db.Participants.Include(b => b.Member)
                             .Include(b => b.Game)
@@ -91,7 +91,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<MemberScores> GetSeniorMemberScores(int selectedTourneyId)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 List<MemberScores> temp = 
                     (from g in db.Participants.Include(b => b.Member)
@@ -160,7 +160,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<MemberScores> GetStandingsForThreeOutOf4ByHandicap(int selectedTournament)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 return (from g in (db.Participants.Include(b => b.Member)
                             .Include(b => b.Game)
@@ -186,7 +186,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<MemberScores> GetStandingsForThreeOf4ByScratch(int selectedTournament)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 return (from g in (db.Participants.Include(b => b.Member)
                             .Include(b => b.Game)
@@ -212,7 +212,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<MemberScores> GetStandingsForThreeOf4BySquadNumberByHandicap(int qualifyBySquadNumber, int selectedTournament)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 return (from g in (db.Participants.Include(b => b.Member)
                             .Include(b => b.Game)
@@ -238,7 +238,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<MemberScores> GetStandingsThreeOfFourBySquadScratch(int qualifyBySquadNumber, int selectedTournament)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 return (from g in (db.Participants.Include(b => b.Member)
                            .Include(b => b.Game)
@@ -263,7 +263,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<MemberScores> GetStandingsForTournamentByHandicap(int selectedTournament)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 return (from g in (db.Participants.Include(b => b.Member)
                             .Include(b => b.Game)
@@ -288,7 +288,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<MemberScores> GetStandingsForTournamentBySquadByHandicap(int qualifyBySquadNumber, int selectedTournament)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 return (from g in (db.Participants.Include(b => b.Member)
                             .Include(b => b.Game)
@@ -312,7 +312,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<MemberScores> GetStandingsForTournamentBySquadScratch(int qualifyBySquadNumber, int selectedTournament)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 return (from g in (db.Participants.Include(b => b.Member)
                             .Include(b => b.Game)
@@ -335,7 +335,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<MemberScores> GetStandingsForTournamentByScratch(int selectedTournament)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 return (from g in (db.Participants.Include(b => b.Member)
                             .Include(b => b.Game)
@@ -365,7 +365,7 @@ namespace NineTapTour.Database
         /// <returns></returns>
         public static List<MemberScores> GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(List<int> squadList, int selectedTournament)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 List<MemberScores> returnedList = new List<MemberScores>();
                 foreach (int squad in squadList)
@@ -397,7 +397,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<MemberScores> GetStandingsForTournamentByFilterSeriesByHandicap(List<int> squadList, int selectedTournament)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 List<MemberScores> returnedList = new List<MemberScores>();
                 foreach (int squad in squadList)
@@ -428,7 +428,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<MemberScores> GetStandingsForThreeOf4ByFilterSeriesByScratch(List<int> squadList, int selectedTournament)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 List<MemberScores> returnedList = new List<MemberScores>();
                 foreach (int squad in squadList)
@@ -460,7 +460,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<MemberScores> GetStandingsForTournamentByFilterSeriesByScratch(List<int> squadList, int selectedTournament)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 List<MemberScores> returnedList = new List<MemberScores>();
                 foreach (int squad in squadList)

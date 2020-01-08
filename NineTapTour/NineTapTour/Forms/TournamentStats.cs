@@ -41,7 +41,7 @@ namespace NineTapTour.Forms
                 lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
                 // query database
-                NineTapDb db = new NineTapDb();
+                NineTapDB db = new NineTapDB();
                 var tournamentStatsList = (from p in db.Participants
                                            join m in db.Members on p.Member.Id equals m.Id
                                            join g in db.Games on p.Game.Id equals g.Id
@@ -96,7 +96,7 @@ namespace NineTapTour.Forms
                 lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
                 // query database
-                NineTapDb db = new NineTapDb();
+                NineTapDB db = new NineTapDB();
                 SqlConnection con = new SqlConnection(GetConnection());
                 SqlCommand gameOrder = new SqlCommand();
                 gameOrder.Connection = con;

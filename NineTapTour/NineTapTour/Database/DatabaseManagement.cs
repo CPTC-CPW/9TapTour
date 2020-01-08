@@ -25,7 +25,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static bool BackupDatabase(string backupPath)
         {
-            NineTapDb db = new NineTapDb();
+            NineTapDB db = new NineTapDB();
             string query = "BACKUP DATABASE @dbName TO DISK = @backupPath";
 
             try
@@ -57,7 +57,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static bool RestoreDatabase(string restorePath)
         {
-            NineTapDb db = new NineTapDb();
+            NineTapDB db = new NineTapDB();
             string query = "USE master " +
                            "ALTER DATABASE [NineTapTour.NineTapDb] SET SINGLE_USER WITH ROLLBACK IMMEDIATE " +
                            "RESTORE DATABASE @dbName FROM DISK = @restorePath WITH REPLACE";

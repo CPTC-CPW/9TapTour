@@ -507,7 +507,7 @@ namespace NineTapTour.Forms
 
                 player.Game = new Game();
                 player.ParticipantRegionID = RegionID;
-                var db = new NineTapDb();
+                var db = new NineTapDB();
 
                 var gameId = (from p in db.Participants
                     where p.Member.Id == currentMem.Id
@@ -854,7 +854,7 @@ namespace NineTapTour.Forms
 
         public Game GetScoresById(int memberID)
         {
-            NineTapDb db = new NineTapDb();
+            NineTapDB db = new NineTapDB();
             Game memScores = new Game();
             int squad = 0;
             squad = GetCurrentSquadNumber();

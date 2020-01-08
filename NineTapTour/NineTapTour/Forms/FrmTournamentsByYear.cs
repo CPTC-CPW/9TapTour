@@ -69,7 +69,7 @@ namespace NineTapTour.Forms
         /// <param name="selectedYear">Year selected</param>
         public void PopulateTournamentsByYear(int selectedYear, int regionID)
         {
-            NineTapDb db = new NineTapDb();
+            NineTapDB db = new NineTapDB();
             var tournaments = (from t in db.Tournaments
                                orderby t.Date descending
                                where t.Date.Year == selectedYear  && t.TourneyRegion == regionID

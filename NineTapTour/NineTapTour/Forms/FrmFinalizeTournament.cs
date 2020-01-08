@@ -600,7 +600,7 @@ namespace NineTapTour.Forms
         /// <param name="set"></param> setting UseGame bool flag in FinalizeTemp table to true or false
         private void CheckBoxDBSet(int row, int cell, bool set)
         {
-            NineTapDb db = new NineTapDb();
+            NineTapDB db = new NineTapDB();
             FinalizeTemp temp = new FinalizeTemp();
             var GameId = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[GAME_ID_COLUMN].Value);
             temp = db.FinalizeTemp.First(f => f.GameId == GameId);
@@ -1030,7 +1030,7 @@ namespace NineTapTour.Forms
             
             //set name, member score and currentr avg based of of what row is selected.
             int gameId = Convert.ToInt32(TournamentEntriesGrid.Rows[TournamentEntriesGrid.CurrentCell.RowIndex].Cells[GAME_ID_COLUMN].Value);
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 int memberNumber = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Number;
                 Member Cmember = MemberDB.GetMember(memberNumber, RegionID);

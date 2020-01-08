@@ -23,7 +23,7 @@ namespace NineTapTour.Database
         {
             try
             {
-                using (var db = new NineTapDb())
+                using (var db = new NineTapDB())
                 {
                     //checks if tournament is new or already existing in db
                     db.Entry(tourn).State = db.Tournaments.Any(t => t.Id == tourn.Id) ?
@@ -45,7 +45,7 @@ namespace NineTapTour.Database
         {
             try
             {
-                using (var db = new NineTapDb())
+                using (var db = new NineTapDB())
                 {
                     Tournament original = db.Tournaments.Find(tourn.Id);
                     if (original != null)
@@ -70,7 +70,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<Tournament> GetTournamentList(int regionID)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 return (from t in db.Tournaments
                         orderby t.Date descending
@@ -84,7 +84,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<Participant> GetTournamentMemberList(Tournament tourn)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 return (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
@@ -99,7 +99,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<Participant> GetTournamentMemberListInOrder(Tournament tourn)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 return (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
@@ -114,7 +114,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static int GetTotalNumberParticipantsInTournament(Tournament tourn)
         {
-            NineTapDb db = new NineTapDb();
+            NineTapDB db = new NineTapDB();
             return db.Participants
                 .Where(p => p.Tournament.Id == tourn.Id)
                 .Count();
@@ -125,7 +125,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<Member> GetUniqueTourMembers(Tournament tourn)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 return (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
@@ -139,7 +139,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<Member> GetUniqueTourMembersByDate(DateTime start, DateTime end)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 return (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
@@ -155,7 +155,7 @@ namespace NineTapTour.Database
         {
             try
             {
-                using (var db = new NineTapDb())
+                using (var db = new NineTapDB())
                 {
                     int check = (from p in db.Participants
                                  where player.Member.Id == p.Member.Id
@@ -229,7 +229,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static Tournament GetTourneyByID(int tournID)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 Tournament tournament =
                     (from g in db.Tournaments
@@ -241,7 +241,7 @@ namespace NineTapTour.Database
 
         public static List<Member> GetAllActiveMembers()
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDB db = new NineTapDB())
             {
                 List<Member> activeMembers =
                         (from active in db.Members
@@ -256,7 +256,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static void DeleteTournament(Tournament tourn)
         {
-            using (var db = new NineTapDb())
+            using (var db = new NineTapDB())
             {
                 db.Entry(tourn).State = EntityState.Deleted;
                 db.SaveChanges();
