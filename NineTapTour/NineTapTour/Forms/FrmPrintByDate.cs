@@ -15,11 +15,19 @@ namespace NineTapTour.Forms
 {
     public partial class FrmPrintByDate : Form
     {
+        #region Variables
+        List<Tournament> tours;
+        List<Member> members;
+        #endregion
+
+        #region FrmPrintByDate
         public FrmPrintByDate()
         {
             InitializeComponent();
         }
+        #endregion
 
+        #region DateTime
         private void dateTimeStart_ValueChanged(object sender, EventArgs e)
         {
             if (dateTimeStart.Value > dateTimeEnd.Value)
@@ -35,9 +43,9 @@ namespace NineTapTour.Forms
                 dateTimeEnd.Value = dateTimeStart.Value;
             }
         }
+        #endregion
 
-        List<Tournament> tours;
-        List<Member> members;
+        #region Button
         private void btnCheck_Click(object sender, EventArgs e)
         {
             using (NineTapDb db = new NineTapDb())
@@ -68,5 +76,6 @@ namespace NineTapTour.Forms
             //Print.printByTourDate(dateTimeStart.Value, dateTimeEnd.Value);
             Print.printByMemberList(members);
         }
+        #endregion
     }
 }
