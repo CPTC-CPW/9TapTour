@@ -18,7 +18,8 @@ namespace NineTapTour.Database
     public partial class PlayerHistoryForm : Form
     {
         private int id;
-       
+
+        #region PlayerHistoryForm
         public PlayerHistoryForm(int id)
         {
             InitializeComponent();
@@ -38,8 +39,9 @@ namespace NineTapTour.Database
             // TODO: This line of code loads data into the '_NineTapTour_NineTapDbDataSet.Tournaments' table. You can move, or remove it, as needed.
             this.tournamentsTableAdapter.Fill(this._NineTapTour_NineTapDbDataSet.Tournaments);
         }
+        #endregion
 
-
+        #region DataGridView
         private void createDataGridView(int id)
         {
             List<PlayerHistory> PlayerHistory = PlayerHistoryDB.GetTop30FromPlayerHistory(id);
@@ -104,5 +106,6 @@ namespace NineTapTour.Database
             }
             return dt;
         }
+        #endregion
     }
 }
