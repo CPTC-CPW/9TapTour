@@ -108,20 +108,6 @@ namespace NineTapTour.Forms
 
         }
 
-        private void MainMenu_Paint(object sender, PaintEventArgs e)
-        {
-            Graphics g = e.Graphics;
-            Font drawFont = new Font("Arial", 12);
-            SolidBrush drawBrush = new SolidBrush(Color.White);
-            PointF drawPoint = new PointF(10, 2);
-            g.DrawString("Version: 1.9.2", drawFont, drawBrush, drawPoint);
-#if DEBUG
-            drawBrush.Color = Color.Red;
-            drawPoint.Y += 16;
-            g.DrawString("DEVELOPMENT VERSION NOT FOR PRODUCTION", drawFont, drawBrush, drawPoint);
-#endif
-        }
-
         // This is the code behind for the delete database button. Per Rob, we don't need this 
         // at this time. Keeping the code incase it's needed in the future.
         private void btnDropDataBase1_Click_1(object sender, EventArgs e)

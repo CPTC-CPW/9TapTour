@@ -13,12 +13,12 @@ using NineTapTour.Models;
 
 namespace NineTapTour.Forms
 {
-    public partial class frmNewTournament : Form
+    public partial class FrmNewTournament : Form
     {
         // If a new tournament was selected to edit, this will be set to something other than null.
         Tournament tourToEdit;
         
-        public frmNewTournament()
+        public FrmNewTournament()
         {
             InitializeComponent();
             txtSquads.Text = 4.ToString();

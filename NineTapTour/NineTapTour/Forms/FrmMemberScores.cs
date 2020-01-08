@@ -1081,7 +1081,7 @@ namespace NineTapTour.Forms
         /// </summary>
         private void btnNewTournament_Click(object sender, EventArgs e)
         {
-            var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
+            var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as FrmNewTournament;
             ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
             newfrmNewTournament.Dock = DockStyle.None;
             checkSquadOne.Checked = true;
