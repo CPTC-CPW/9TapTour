@@ -13,7 +13,7 @@ using NineTapTour.Models;
 
 namespace NineTapTour.Forms
 {
-    public partial class MainMenu : Form
+    public partial class FrmMainMenu : Form
     {
         public FrmMain currMainFrm { get; set; }
         public int regionID { get; set; }
@@ -22,7 +22,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Opens the "Main Menu" form.
         /// </summary>
-        public MainMenu()
+        public FrmMainMenu()
         {
             InitializeComponent();
 
@@ -214,7 +214,7 @@ namespace NineTapTour.Forms
         /// </summary>
         private void enableHomeNavigation()
         {
-            if (!(FrmMain.ActiveForm is MainMenu))
+            if (!(FrmMain.ActiveForm is FrmMainMenu))
             {
                 ((FrmMain)MdiParent).Home.Enabled = true;
             }
