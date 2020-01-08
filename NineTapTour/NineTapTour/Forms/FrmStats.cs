@@ -16,14 +16,16 @@ namespace NineTapTour.Forms
 {
     public partial class FrmStats : Form
     {
+        #region Variables
         private Member mem;
         private int memId;
         private int memNum;
         private string memName;
         List<PlayerHistory> ph;
         int RegionID;
+        #endregion
 
-
+        #region FrmStats
         public FrmStats(int memberId, string memberName, Member currentMem, int RegionID)
         {
             InitializeComponent();
@@ -101,6 +103,248 @@ namespace NineTapTour.Forms
             ph = PlayerHistoryDB.GetMemberPlayerHistoryByTotal(memNum, RegionID);
         }
 
+        private void FrmStats_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                lblName.Text = mem.FirstName + "    " + mem.LastName;
+            }
+            catch
+            {
+                lblName.Text = mem.FirstName + "   " + mem.LastName;
+            }
+            lblMemberNumber.Text = Convert.ToString(memNum);
+
+            try
+            {
+                lblStartAvg.Text = mem.StartAvg.ToString();
+            }
+            catch
+            {
+                lblStartAvg.Text = 0.ToString();
+            }
+
+            List<PlayerHistory> Last30 = PlayerHistoryDB.GetTop30FromPlayerHistory(mem.Number);
+            int game1AVG = 0;
+            int game2AVG = 0;
+            int game3AVG = 0;
+            int game4AVG = 0;
+            int scratchTotal = 0;
+            int gameTotal = 0;
+
+            if (Last30.Count > 0)
+            {
+                for (int i = 0; i < Last30.Count; i++)
+                {
+
+                    game1AVG += Last30[i].Game1 ?? 0;
+                    game2AVG += Last30[i].Game2 ?? 0;
+                    game3AVG += Last30[i].Game3 ?? 0;
+                    game4AVG += Last30[i].Game4 ?? 0;
+                    scratchTotal += (Last30[i].Game1 ?? 0) + (Last30[i].Game2 ?? 0) + (Last30[i].Game3 ?? 0) + (Last30[i].Game4 ?? 0);
+                    int total = (Last30[i].Game1 != null) ? (Last30[i].Game1 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
+                    total += (Last30[i].Game2 != null) ? (Last30[i].Game2 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
+                    total += (Last30[i].Game3 != null) ? (Last30[i].Game3 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
+                    total += (Last30[i].Game4 != null) ? (Last30[i].Game4 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
+                    gameTotal = total;
+                }
+                game1AVG /= Last30.Count;
+                game2AVG /= Last30.Count;
+                game3AVG /= Last30.Count;
+                game4AVG /= Last30.Count;
+
+                txtGame1.Text = game1AVG.ToString();
+                txtGame2.Text = game2AVG.ToString();
+                txtGame3.Text = game3AVG.ToString();
+                txtGame4.Text = game4AVG.ToString();
+                txtScratchTotal.Text = scratchTotal.ToString();
+                txtGameTotal.Text = gameTotal.ToString();
+            }
+        }
+        #endregion
+
+        #region DataGridView
+        /// <summary>
+        /// Changes the background color for the top thirty cells in the "30 Entry AVG" column
+        /// Changes background color of bonus cells if game was in a tournament that bonus pins reset to 0 (player cashed)
+        /// </summary>
+        private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            dataGridView1.SuspendLayout();
+
+            int currRowCount = e.RowIndex + 1;
+            string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
+
+            // Only first 30 rows should be highlighted
+            const int THIRTY_ENTRIES = 30;
+            DataGridViewCell currCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
+
+            if (columnName == "30 Entry AVG" && currRowCount <= THIRTY_ENTRIES)
+            {
+                currCell.Style.BackColor = Color.GreenYellow;
+            }
+            else if (columnName == "Bonus")
+            {
+                int currBonus = Convert.ToInt32(currCell.Value);
+                const int MONEY_WON_INDEX = 15;
+                double currMoneyWon = Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[MONEY_WON_INDEX].Value);
+                bool currBonusHasReset = false;
+
+                // change current bonus pins cell background color if 0 has reset
+                if (currBonus == 0 && currMoneyWon > 0)
+                {
+                    currCell.Style.BackColor = Color.HotPink;
+                    currBonusHasReset = true;
+                }
+
+                const int DATE_INDEX = 1;
+                DateTime currDate = Convert.ToDateTime(dataGridView1.Rows[e.RowIndex].Cells[DATE_INDEX].Value);
+                int currRowIndex = e.RowIndex - 1;
+
+                // while the same tournament in a different row above
+                while (currRowIndex >= 0 && currDate == Convert.ToDateTime(dataGridView1.Rows[currRowIndex].Cells[DATE_INDEX].Value))
+                {
+                    // if bonus has reset and is the same tournament, then highlight this
+                    if (currBonusHasReset)
+                    {
+                        dataGridView1.Rows[currRowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.HotPink;
+                    }
+                    else // if bonus hasn't reset then check to see if it does reset in a different row in same tournament
+                    {
+                        int nextBonus = Convert.ToInt32(dataGridView1.Rows[currRowIndex].Cells[e.ColumnIndex].Value);
+                        double nextMoneyWon = Convert.ToDouble(dataGridView1.Rows[currRowIndex].Cells[MONEY_WON_INDEX].Value);
+
+                        if (nextBonus == 0 && nextMoneyWon > 0)
+                        {
+                            currCell.Style.BackColor = Color.HotPink;
+                        }
+                    }
+                    currRowIndex--;
+                }
+            }
+            dataGridView1.ResumeLayout();
+        }
+        #endregion
+
+        #region Button
+        private void button1_Click(object sender, EventArgs e)
+        {
+            printDialog1.Document = printDocument1;
+
+            if (printDialog1.ShowDialog() == DialogResult.OK)
+            {
+                printDocument1.Print();
+            }
+        }
+
+        private void btnSaveChanges_Click(object sender, EventArgs e)
+        {
+            //grab untouched playerhistory
+            List<PlayerHistory> pHist = PlayerHistoryDB.GetMemberPlayerHistory(mem.Number, RegionID);
+
+            //RESTORE THE DATAGRID BACK TO THE DATE DESCINDING 
+            dataGridView1.Sort(dataGridView1.Columns["Date"], System.ComponentModel.ListSortDirection.Descending);
+
+            //if valid, store new info from slots in playerhistory
+            for (int saveX = 0; saveX < dataGridView1.RowCount; saveX++)
+            {
+                for (int saveY = 1; saveY < dataGridView1.ColumnCount;) //start loop at 1 to avoid editing "games played" slot
+                {
+                    pHist[saveX].TournamentDate = Convert.ToDateTime(dataGridView1[saveY, saveX].Value);
+                    saveY++;
+                    //Skips null values becuase they cant convert to ints
+                    if (dataGridView1[saveY, saveX].Value.ToString() != "")
+                    {
+                        pHist[saveX].Game1 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
+                    }
+
+                    saveY++;
+
+                    if (dataGridView1[saveY, saveX].Value.ToString() != "")
+                    {
+                        pHist[saveX].Game2 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
+                    }
+
+                    saveY++;
+
+                    if (dataGridView1[saveY, saveX].Value.ToString() != "")
+                    {
+                        pHist[saveX].Game3 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
+                    }
+
+                    saveY++;
+
+                    if (dataGridView1[saveY, saveX].Value.ToString() != "")
+                    {
+                        pHist[saveX].Game4 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
+                    }
+
+                    saveY++;
+
+                    pHist[saveX].TotalScore = (pHist[saveX].Game1 ?? 0) + (pHist[saveX].Game2 ?? 0) + (pHist[saveX].Game3 ?? 0) + (pHist[saveX].Game4 ?? 0);
+
+                    saveY++;
+
+                    //skip total score with handicap. not apart of Playerhistory class
+                    saveY++;
+
+                    pHist[saveX].AverageForGame = Convert.ToDouble(pHist[saveX].TotalScore / pHist[saveX].GamesPlayed);
+
+                    saveY++;
+
+                    //skip 30 game avg. doesnt need to be adjusted here. more complicated, adjust seperately.
+                    saveY++;
+
+                    if (dataGridView1[saveY, saveX].Value.ToString() != "")
+                    {
+                        pHist[saveX].AVG = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
+                    }
+
+                    saveY++;
+
+                    pHist[saveX].HandiCap = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
+
+                    saveY++;
+
+                    pHist[saveX].Bonus = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
+
+                    saveY++;
+
+                    pHist[saveX].ProPot = Convert.ToString(dataGridView1[saveY, saveX].Value);
+
+                    saveY++;
+
+                    pHist[saveX].PPHG = Convert.ToString(dataGridView1[saveY, saveX].Value);
+
+                    saveY++;
+
+                    pHist[saveX].MoneyWon = Convert.ToDecimal(dataGridView1[saveY, saveX].Value);
+
+                    saveY++;
+
+                    pHist[saveX].Notes = Convert.ToString(dataGridView1[saveY, saveX].Value);
+
+                    saveY++;
+
+                    //skip gameID, should never be editted
+                    saveY++;
+                }
+            }
+
+            //update info
+            foreach (var item in pHist)
+            {
+                /* Prevents stats from disappearing from frmStats after Save button is clicked. 
+                   RegionID in PlayerHistory class was being reset to default value of zero. */
+                item.regionID = RegionID;
+
+                PlayerHistoryDB.AddOrUpdatePlayerHistory(item);
+            }
+            //refresh page
+            dataGridView1.DataSource = tableview();
+        }
+        #endregion
+
         struct statHolder
         {
             public statHolder(DateTime Date,
@@ -164,7 +408,6 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Populates the stats page for the member selected
         /// </summary>
-        /// 
         public void populateStats()
         {
 
@@ -325,6 +568,10 @@ namespace NineTapTour.Forms
 
         }
 
+        /// <summary>
+        /// Grabs a member from the database (NEED TO BE MOVED TO DB CLASS) 
+        /// and adds them to the DataGridView1
+        /// </summary>
         public DataTable tableview()
         {
             DataTable dtGames = new DataTable();
@@ -430,251 +677,14 @@ namespace NineTapTour.Forms
             return dtGames;
         }
 
-        private void FrmStats_Load(object sender, EventArgs e)
-        {
-            try
-            {
-                lblName.Text = mem.FirstName + "    " + mem.LastName;
-            }
-            catch
-            {
-                lblName.Text = mem.FirstName + "   " + mem.LastName;
-            }
-            lblMemberNumber.Text = Convert.ToString(memNum);
-
-            try
-            {
-                lblStartAvg.Text = mem.StartAvg.ToString();
-            }
-            catch
-            {
-                lblStartAvg.Text = 0.ToString();
-            }
-
-            List<PlayerHistory> Last30 = PlayerHistoryDB.GetTop30FromPlayerHistory(mem.Number);
-            int game1AVG = 0;
-            int game2AVG = 0;
-            int game3AVG = 0;
-            int game4AVG = 0;
-            int scratchTotal = 0;
-            int gameTotal = 0;
-
-            if (Last30.Count > 0)
-            {
-                for (int i = 0; i < Last30.Count; i++)
-                {
-
-                    game1AVG += Last30[i].Game1 ?? 0;
-                    game2AVG += Last30[i].Game2 ?? 0;
-                    game3AVG += Last30[i].Game3 ?? 0;
-                    game4AVG += Last30[i].Game4 ?? 0;
-                    scratchTotal += (Last30[i].Game1 ?? 0) + (Last30[i].Game2 ?? 0) + (Last30[i].Game3 ?? 0) + (Last30[i].Game4 ?? 0);
-                    int total = (Last30[i].Game1 != null) ? (Last30[i].Game1 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
-                    total += (Last30[i].Game2 != null) ? (Last30[i].Game2 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
-                    total += (Last30[i].Game3 != null) ? (Last30[i].Game3 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
-                    total += (Last30[i].Game4 != null) ? (Last30[i].Game4 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
-                    gameTotal = total;
-                }
-                game1AVG /= Last30.Count;
-                game2AVG /= Last30.Count;
-                game3AVG /= Last30.Count;
-                game4AVG /= Last30.Count;
-
-                txtGame1.Text = game1AVG.ToString();
-                txtGame2.Text = game2AVG.ToString();
-                txtGame3.Text = game3AVG.ToString();
-                txtGame4.Text = game4AVG.ToString();
-                txtScratchTotal.Text = scratchTotal.ToString();
-                txtGameTotal.Text = gameTotal.ToString();
-            }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            printDialog1.Document = printDocument1;
-
-            if (printDialog1.ShowDialog() == DialogResult.OK)
-            {
-                printDocument1.Print();
-            }
-        }
-
+        /// <summary>
+        /// Prints the information thats on the DataGridView1
+        /// </summary>
         private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
             Bitmap bm = new Bitmap(this.dataGridView1.Width, this.dataGridView1.Height);
             this.dataGridView1.DrawToBitmap(bm, new Rectangle(0, 0, this.dataGridView1.Width, this.dataGridView1.Height));
             e.Graphics.DrawImage(bm, 0, 0);
-        }
-
-
-        /// <summary>
-        /// Changes the background color for the top thirty cells in the "30 Entry AVG" column
-        /// Changes background color of bonus cells if game was in a tournament that bonus pins reset to 0 (player cashed)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-        { 
-            dataGridView1.SuspendLayout();
-
-            int currRowCount = e.RowIndex + 1; 
-            string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
-
-            // Only first 30 rows should be highlighted
-            const int THIRTY_ENTRIES = 30;
-            DataGridViewCell currCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
-
-            if (columnName == "30 Entry AVG" && currRowCount <= THIRTY_ENTRIES)
-            {
-                currCell.Style.BackColor = Color.GreenYellow;
-            }
-            else if (columnName == "Bonus")
-            {
-                int currBonus = Convert.ToInt32(currCell.Value);
-                const int MONEY_WON_INDEX = 15;
-                double currMoneyWon = Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[MONEY_WON_INDEX].Value);
-                bool currBonusHasReset = false;
-
-                // change current bonus pins cell background color if 0 has reset
-                if (currBonus == 0 && currMoneyWon > 0)
-                {
-                    currCell.Style.BackColor = Color.HotPink;
-                    currBonusHasReset = true;
-                }
-
-                const int DATE_INDEX = 1;
-                DateTime currDate = Convert.ToDateTime(dataGridView1.Rows[e.RowIndex].Cells[DATE_INDEX].Value);
-                int currRowIndex = e.RowIndex - 1;
-
-                // while the same tournament in a different row above
-                while (currRowIndex >= 0 && currDate == Convert.ToDateTime(dataGridView1.Rows[currRowIndex].Cells[DATE_INDEX].Value))
-                {
-                    // if bonus has reset and is the same tournament, then highlight this
-                    if (currBonusHasReset)
-                    {
-                        dataGridView1.Rows[currRowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.HotPink;
-                    }
-                    else // if bonus hasn't reset then check to see if it does reset in a different row in same tournament
-                    {
-                        int nextBonus = Convert.ToInt32(dataGridView1.Rows[currRowIndex].Cells[e.ColumnIndex].Value);
-                        double nextMoneyWon = Convert.ToDouble(dataGridView1.Rows[currRowIndex].Cells[MONEY_WON_INDEX].Value);
-
-                        if (nextBonus == 0 && nextMoneyWon > 0)
-                        {
-                            currCell.Style.BackColor = Color.HotPink;
-                        }
-                    }
-                    currRowIndex--;
-                }
-            }
-            dataGridView1.ResumeLayout();
-        }
-
-        private void btnSaveChanges_Click(object sender, EventArgs e)
-        {
-            //grab untouched playerhistory
-            List<PlayerHistory> pHist = PlayerHistoryDB.GetMemberPlayerHistory(mem.Number, RegionID);
-
-            //RESTORE THE DATAGRID BACK TO THE DATE DESCINDING 
-            dataGridView1.Sort(dataGridView1.Columns["Date"], System.ComponentModel.ListSortDirection.Descending);
-            
-            //if valid, store new info from slots in playerhistory
-            for(int saveX = 0; saveX < dataGridView1.RowCount; saveX++)
-            {
-                for(int saveY = 1; saveY < dataGridView1.ColumnCount;) //start loop at 1 to avoid editing "games played" slot
-                {
-                    pHist[saveX].TournamentDate = Convert.ToDateTime(dataGridView1[saveY, saveX].Value);
-                    saveY++;
-                    //Skips null values becuase they cant convert to ints
-                    if(dataGridView1[saveY, saveX].Value.ToString() !=  "")
-                    {
-                        pHist[saveX].Game1 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);        
-                    }
-
-                    saveY++;
-
-                    if (dataGridView1[saveY, saveX].Value.ToString() != "")
-                    {
-                        pHist[saveX].Game2 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
-                    }
-
-                    saveY++;
-
-                    if (dataGridView1[saveY, saveX].Value.ToString() != "")
-                    {
-                        pHist[saveX].Game3 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
-                    }
-
-                    saveY++;
-
-                    if (dataGridView1[saveY, saveX].Value.ToString() != "")
-                    {
-                        pHist[saveX].Game4 = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
-                    }
-
-                    saveY++;
-
-                    pHist[saveX].TotalScore = (pHist[saveX].Game1 ?? 0) + (pHist[saveX].Game2 ?? 0) + (pHist[saveX].Game3 ?? 0) + (pHist[saveX].Game4 ?? 0);
-
-                    saveY++;
-
-                    //skip total score with handicap. not apart of Playerhistory class
-                    saveY++;
-
-                    pHist[saveX].AverageForGame = Convert.ToDouble(pHist[saveX].TotalScore / pHist[saveX].GamesPlayed);
-
-                    saveY++;
-
-                    //skip 30 game avg. doesnt need to be adjusted here. more complicated, adjust seperately.
-                    saveY++;
-
-                    if (dataGridView1[saveY, saveX].Value.ToString() != "")
-                    {
-                        pHist[saveX].AVG = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
-                    }                    
-
-                    saveY++; 
-
-                    pHist[saveX].HandiCap = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
-
-                    saveY++;
-
-                    pHist[saveX].Bonus = Convert.ToInt32(dataGridView1[saveY, saveX].Value);
-
-                    saveY++;
-
-                    pHist[saveX].ProPot = Convert.ToString(dataGridView1[saveY, saveX].Value);
-
-                    saveY++;
-
-                    pHist[saveX].PPHG = Convert.ToString(dataGridView1[saveY, saveX].Value);
-
-                    saveY++;
-
-                    pHist[saveX].MoneyWon = Convert.ToDecimal(dataGridView1[saveY, saveX].Value);
-
-                    saveY++;
-
-                    pHist[saveX].Notes = Convert.ToString(dataGridView1[saveY, saveX].Value);
-
-                    saveY++;
-
-                    //skip gameID, should never be editted
-                    saveY++;
-                }
-            }
-
-            //update info
-            foreach(var item in pHist)
-            {
-                /* Prevents stats from disappearing from frmStats after Save button is clicked. 
-                   RegionID in PlayerHistory class was being reset to default value of zero. */
-                item.regionID = RegionID;
-
-                PlayerHistoryDB.AddOrUpdatePlayerHistory(item);
-            }
-            //refresh page
-            dataGridView1.DataSource = tableview();
         }
     }
 }
