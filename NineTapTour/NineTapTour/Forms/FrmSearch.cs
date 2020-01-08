@@ -19,10 +19,13 @@ namespace NineTapTour.Forms
 {
     public partial class FrmSearch : Form
     {
+        #region Variables
         int RegionID;
         bool isChecked = false;
         public int searchResult { get; set; }
+        #endregion
 
+        #region FrmSearch
         /// <summary>
         /// Opens the "Search" form.
         /// </summary>
@@ -35,7 +38,9 @@ namespace NineTapTour.Forms
         private void FrmSearch_Load(object sender, EventArgs e)
         {
         }
+        #endregion
 
+        #region
         private void btnSearch_Click(object sender, EventArgs e)
         {
             dtagrdResults.DataSource = null;
@@ -128,6 +133,34 @@ namespace NineTapTour.Forms
             btnSelect.Focus();
         }
 
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            txtMemNumber.Clear();
+            txtFirstName.Clear();
+            txtLastName.Clear();
+            rdoActiveEither.Checked = true;
+            txtAverage.Clear();
+            txtHandicap.Clear();
+            txtBonus.Clear();
+            EmptyGrid();
+        }
+
+        private void btnSelect_Click(object sender, EventArgs e)
+        {
+            if (dtagrdResults.Rows.Count > 0)
+            {
+                searchResult = (int)dtagrdResults.SelectedRows[0].Cells[1].Value;
+                this.Close();
+            }
+        }
+        #endregion
+
+        #region CheckBox
         private void chkAdvancedView_CheckStateChanged(object sender, EventArgs e)
         {
             if (isChecked == false)
@@ -151,7 +184,11 @@ namespace NineTapTour.Forms
                 dtagrdResults.Columns["IsSenior"].Visible = !dtagrdResults.Columns["IsSenior"].Visible;
             }
         }
+        #endregion
 
+        /// <summary>
+        /// Populates dtagrdResults with members from a region
+        /// </summary>
         private void FillGrid()
         {
             dtagrdResults.DataSource = null;
@@ -160,6 +197,9 @@ namespace NineTapTour.Forms
             AdvancedViewCheck();
         }
 
+        /// <summary>
+        /// Empties dtagrdResults and repopulates with an empty list to keep the same colums
+        /// </summary>
         private void EmptyGrid()
         {
             dtagrdResults.DataSource = null;
@@ -170,6 +210,9 @@ namespace NineTapTour.Forms
             AdvancedViewCheck();
         }
 
+        /// <summary>
+        /// Changes the display of dtagrdResults to show or hide most of the colums
+        /// </summary>
         private void AdvancedViewCheck()
         {
             //probably don't want SSN or ID to show up at all.
@@ -199,37 +242,6 @@ namespace NineTapTour.Forms
                 dtagrdResults.Columns["Referrals"].Visible = false;
                 dtagrdResults.Columns["IsSenior"].Visible = false;
             }
-        }
-
-        private void btnClear_Click(object sender, EventArgs e)
-        {
-            txtMemNumber.Clear();
-            txtFirstName.Clear();
-            txtLastName.Clear();
-            rdoActiveEither.Checked = true;
-            txtAverage.Clear();
-            txtHandicap.Clear();
-            txtBonus.Clear();
-            EmptyGrid();
-        }
-
-        private void btnSelect_Click(object sender, EventArgs e)
-        {
-            if (dtagrdResults.Rows.Count > 0)
-            {
-                searchResult = (int)dtagrdResults.SelectedRows[0].Cells[1].Value;
-                this.Close();
-            }
-        }
-
-        /// <summary>
-        /// Closes the "Search" form without doing anything.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            this.Close();
         }
     }
 }

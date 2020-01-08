@@ -10,6 +10,7 @@ namespace NineTapTour.Forms
 {
     public partial class FrmMemberScoresReports : Form
     {
+        #region Variables
         // the members and their scores
         List<Models.MemberScores> temp;
         // used in the print class to print the date and location
@@ -19,8 +20,11 @@ namespace NineTapTour.Forms
         int currentSquad;
         List<int> squadList;
         bool printDues = false;
+        #endregion
 
-        public FrmMemberScoresReports(List<MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList)
+        #region FrmMemberScoresReport
+        public FrmMemberScoresReports(List<MemberScores> temp, Tournament selectedTournament, 
+            ReportType reportTypeNum, int currentSquad, List<int> squadList)
         {
             InitializeComponent();
             this.temp = temp;
@@ -30,6 +34,13 @@ namespace NineTapTour.Forms
             this.squadList = squadList;
         }
 
+        private void FrmMemberScoresReports_Load(object sender, EventArgs e)
+        {
+            txtNumberOfMembers.Focus();
+        }
+        #endregion
+
+        #region Button
         private void btnPrint_Click(object sender, EventArgs e)
         {
             if (!int.TryParse(txtNumberOfMembers.Text, out int numMembers))
@@ -60,11 +71,6 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show("There are only " + temp.Count + " participants in the tournament selected.");
             }
-        }
-
-        private void FrmMemberScoresReports_Load(object sender, EventArgs e)
-        {
-            txtNumberOfMembers.Focus();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -106,7 +112,11 @@ namespace NineTapTour.Forms
                 MessageBox.Show("There are only " + temp.Count + " participants in the tournament selected.");
             }
         }
+        #endregion
 
+        /// <summary>
+        /// Exports report to excel
+        /// </summary>
         private void exportToExcel()
         {
             // this is used in a few places for labeling file name and displayed on the excel sheet
@@ -292,7 +302,6 @@ namespace NineTapTour.Forms
         /// This method is used to clean up the references to the Excel Objects
         /// so that Excel does not remain running.
         /// </summary>
-        /// <param name="obj"></param>
         private void releaseObject(object obj)
         {
             try
@@ -310,6 +319,5 @@ namespace NineTapTour.Forms
                 GC.Collect();
             }
         }
-
     }
 }

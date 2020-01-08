@@ -24,6 +24,7 @@ namespace NineTapTour.Forms
             txtSquads.Text = 4.ToString();
         }
 
+        #region Button
         /// <summary>
         /// Closes the tournament form.
         /// </summary>
@@ -39,8 +40,6 @@ namespace NineTapTour.Forms
         /// Saves the date, location, event, sponsors, and extra notes.
         /// If all the information fits the criteria then the tournament is saved.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnSubmit_Click(object sender, EventArgs e)
         {
             Tournament NewTournament = new Tournament();
@@ -172,6 +171,65 @@ namespace NineTapTour.Forms
         {
             clearTournamentForm();
         }
+        #endregion
+
+        #region Txt
+        private void txtLocation_TextChanged(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(txtLocation.Text.Trim()))
+            {
+                btnSubmit.Enabled = true;
+            }
+            else
+            {
+                btnSubmit.Enabled = false;
+            }
+            checkCleared();
+        }
+
+        private void txtEvent_TextChanged(object sender, EventArgs e)
+        {
+            checkCleared();
+        }
+
+        private void txtSponsors_TextChanged(object sender, EventArgs e)
+        {
+            checkCleared();
+        }
+
+        private void rtxtNotes_TextChanged(object sender, EventArgs e)
+        {
+            checkCleared();
+        }
+        #endregion
+
+        #region Check Box
+        private void ckbxDoubles_CheckedChanged(object sender, EventArgs e)
+        {
+            checkCleared();
+            if (ckbx3outOf4.Enabled)
+            {
+                ckbx3outOf4.Enabled = false;
+            }
+            else
+            {
+                ckbx3outOf4.Enabled = true;
+            }
+        }
+
+        private void ckbx3outOf4_CheckedChanged(object sender, EventArgs e)
+        {
+            checkCleared();
+            if (ckbxDoubles.Enabled)
+            {
+                ckbxDoubles.Enabled = false;
+            }
+            else
+            {
+                ckbxDoubles.Enabled = true;
+            }
+        }
+        #endregion
 
         /// <summary>
         /// Clears the NewTournament Form
@@ -193,19 +251,9 @@ namespace NineTapTour.Forms
             lblEdit.Text = "";
         }
 
-        private void txtLocation_TextChanged(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrWhiteSpace(txtLocation.Text.Trim()))
-            {
-                btnSubmit.Enabled = true;
-            }
-            else
-            {
-                btnSubmit.Enabled = false;
-            }
-            checkCleared();
-        }
-
+        /// <summary>
+        /// Enables or disables btnClear if other text boxes are empty or not
+        /// </summary>
         private void checkCleared()
         {
             if (
@@ -223,47 +271,6 @@ namespace NineTapTour.Forms
             else
             {
                 btnClear.Enabled = false;
-            }
-        }
-
-        private void txtEvent_TextChanged(object sender, EventArgs e)
-        {
-            checkCleared();
-        }
-
-        private void txtSponsors_TextChanged(object sender, EventArgs e)
-        {
-            checkCleared();
-        }
-
-        private void ckbxDoubles_CheckedChanged(object sender, EventArgs e)
-        {
-            checkCleared();
-            if (ckbx3outOf4.Enabled)
-            {
-                ckbx3outOf4.Enabled = false;
-            }
-            else
-            {
-                ckbx3outOf4.Enabled = true;
-            }
-        }
-
-        private void rtxtNotes_TextChanged(object sender, EventArgs e)
-        {
-            checkCleared();
-        }
-
-        private void ckbx3outOf4_CheckedChanged(object sender, EventArgs e)
-        {
-            checkCleared();
-            if (ckbxDoubles.Enabled)
-            {
-                ckbxDoubles.Enabled = false;
-            }
-            else
-            {
-                ckbxDoubles.Enabled = true;
             }
         }
     }

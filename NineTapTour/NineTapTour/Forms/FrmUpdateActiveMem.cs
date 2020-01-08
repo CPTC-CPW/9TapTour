@@ -12,10 +12,14 @@ namespace NineTapTour.Forms
 {
     public partial class FrmUpdateActiveMem : Form
     {
+        #region Variables
         int RegionID;
         DateTime targetDate;
         List<Member> InActiveList; 
         List<Member> AllMembers;
+        #endregion
+
+        #region FrmUpdateActiveMem
         public FrmUpdateActiveMem(int RID)
         {
             InitializeComponent();
@@ -26,7 +30,52 @@ namespace NineTapTour.Forms
             AllMembers = MemberDB.GetMemberList(RegionID);
             UpdateList();
         }
+        #endregion
 
+        #region Button
+        private void btnUpdateActive_Click(object sender, EventArgs e)
+        {
+            if (InactiveListCheckBox.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("No members checked.");
+                return;
+            }
+
+            var db = new NineTapDb();
+            if (MessageBox.Show("Update the selected Members to inactive?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+
+                foreach (Member mem in InactiveListCheckBox.CheckedItems)
+                {
+                    mem.IsActive = false;
+                    db.Entry(mem).State = EntityState.Modified;
+
+                }
+                db.SaveChanges();
+                InactiveListCheckBox.Items.Clear();
+                UpdateList();
+            }
+        }
+
+        private void btnCheckInactive_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < InactiveListCheckBox.Items.Count; i++)
+            {
+                InactiveListCheckBox.SetItemChecked(i, true);
+            }
+        }
+        #endregion
+
+        #region DateTimePicker
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+            targetDate = dateTimePicker1.Value;
+        }
+        #endregion
+
+        /// <summary>
+        /// Populates the InavtiveListCheckBox with all inactive members from a region
+        /// </summary>
         private void UpdateList()
         {
             if (AllMembers == null)
@@ -45,43 +94,6 @@ namespace NineTapTour.Forms
                 {
                     InactiveListCheckBox.Items.Add(mem);
                 }
-            }
-        }
-
-        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
-        {
-            targetDate = dateTimePicker1.Value;
-        }
-
-        private void btnUpdateActive_Click(object sender, EventArgs e)
-        {
-            if (InactiveListCheckBox.CheckedItems.Count == 0)
-            {
-                MessageBox.Show("No members checked.");
-                return;
-            }
-
-            var db = new NineTapDb();
-            if (MessageBox.Show("Update the selected Members to inactive?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
-            {
-              
-                foreach (Member mem in InactiveListCheckBox.CheckedItems)
-                {
-                    mem.IsActive = false;
-                    db.Entry(mem).State = EntityState.Modified;
-                        
-                }
-                db.SaveChanges();
-                InactiveListCheckBox.Items.Clear();
-                UpdateList();
-            }
-        }
-
-        private void btnCheckInactive_Click(object sender, EventArgs e)
-        {
-            for (int i = 0; i < InactiveListCheckBox.Items.Count; i++)
-            {
-                InactiveListCheckBox.SetItemChecked(i, true);
             }
         }
     }
