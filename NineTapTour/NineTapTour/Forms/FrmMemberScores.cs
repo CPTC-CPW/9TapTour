@@ -1483,7 +1483,7 @@ namespace NineTapTour.Forms
 
         private void btnTournamentsByYear_Click(object sender, EventArgs e)
         {
-            TournamentsByYear listTournaments = new TournamentsByYear(RegionID);
+            FrmTournamentsByYear listTournaments = new FrmTournamentsByYear(RegionID);
             listTournaments.ShowDialog();
         }
         //Called when stats btn is clicked
