@@ -10,10 +10,10 @@ using System.Windows.Forms;
 
 namespace NineTapTour.Forms
 {
-    public partial class TournamentPlaceStandings : Form
+    public partial class FrmTournamentPlaceStandings : Form
     {
         #region TournamentPlaceStandings
-        public TournamentPlaceStandings()
+        public FrmTournamentPlaceStandings()
         {
             InitializeComponent();
         }
