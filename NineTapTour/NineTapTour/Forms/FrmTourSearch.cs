@@ -15,11 +15,14 @@ namespace NineTapTour.Forms
 {
     public partial class FrmTourSearch : Form
     {
+        #region Variables
         List<Tournament> tours;
         Tournament singleTour;
         bool single;
         int RegionID;
+        #endregion
 
+        #region FrmTourSearch
         /// <summary>
         /// This takes a tour list and modifies it. The tour you pass in will
         /// be different when this form has finished running.
@@ -48,6 +51,13 @@ namespace NineTapTour.Forms
        
         }
 
+        private void FrmTourSearch_Load(object sender, EventArgs e)
+        {
+            dtpFrom.Value = dtpTo.Value;
+        }
+        #endregion
+
+        #region Button
         private void btnSearch_Click(object sender, EventArgs e)
         {
             listSearch.DataSource = null;
@@ -150,6 +160,54 @@ namespace NineTapTour.Forms
             }
         }
 
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            listSearch.DataSource = null;
+            txtSearch.Text = null;
+            txtEvent.Text = null;
+            chkDate.Checked = false;
+            dtpTo.Value = DateTime.Now;
+            dtpFrom.Value = dtpTo.Value;
+            btnClear.Enabled = false;
+        }
+        #endregion
+
+        #region DateTimePicker
+        private void dtpTo_ValueChanged(object sender, EventArgs e)
+        {
+            if (dtpTo.Value < dtpFrom.Value)
+            {
+                dtpTo.Value = dtpFrom.Value;
+            }
+        }
+
+        private void dtpFrom_ValueChanged(object sender, EventArgs e)
+        {
+            if (dtpFrom.Value > dtpTo.Value)
+            {
+                dtpFrom.Value = dtpTo.Value;
+            }
+        }
+        #endregion
+
+        #region Txt
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            decideCanClear();
+        }
+
+        private void txtEvent_TextChanged(object sender, EventArgs e)
+        {
+            decideCanClear();
+        }
+
+        private void txtDate_TextChanged(object sender, EventArgs e)
+        {
+            decideCanClear();
+        }
+        #endregion
+
+        #region ListSearch
         private void listSearch_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (listSearch.SelectedIndex != -1)
@@ -163,23 +221,28 @@ namespace NineTapTour.Forms
                 listSearch.TabStop = false;
             }
         }
+        #endregion
 
-        private void btnClear_Click(object sender, EventArgs e)
+        #region CheckBox
+        private void chkDate_CheckedChanged(object sender, EventArgs e)
         {
-            listSearch.DataSource = null;
-            txtSearch.Text = null;
-            txtEvent.Text = null;
-            chkDate.Checked = false;
-            dtpTo.Value = DateTime.Now;
-            dtpFrom.Value = dtpTo.Value;
-            btnClear.Enabled = false;
-        }
-
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
+            if (chkDate.Checked)
+            {
+                dtpFrom.Enabled = true;
+                dtpTo.Enabled = true;
+            }
+            else
+            {
+                dtpFrom.Enabled = false;
+                dtpTo.Enabled = false;
+            }
             decideCanClear();
         }
+        #endregion
 
+        /// <summary>
+        /// Enables or disables the buttons btnClear and btnSearch, depending if the user entered data or not
+        /// </summary>
         private void decideCanClear()
         {
             if (String.IsNullOrWhiteSpace(txtSearch.Text.Trim()) && String.IsNullOrWhiteSpace(txtEvent.Text.Trim()) && !chkDate.Checked)
@@ -197,59 +260,12 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void txtEvent_TextChanged(object sender, EventArgs e)
-        {
-            decideCanClear();
-        }
-
-        private void txtDate_TextChanged(object sender, EventArgs e)
-        {
-            decideCanClear();
-        }
-
-        private void chkDate_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkDate.Checked)
-            {
-                dtpFrom.Enabled = true;
-                dtpTo.Enabled = true;
-            }
-            else
-            {
-                dtpFrom.Enabled = false;
-                dtpTo.Enabled = false;
-            }
-            decideCanClear();
-        }
-
-        private void dtpTo_ValueChanged(object sender, EventArgs e)
-        {
-            if (dtpTo.Value < dtpFrom.Value)
-            {
-                dtpTo.Value = dtpFrom.Value;
-            }
-        }
-
-        private void dtpFrom_ValueChanged(object sender, EventArgs e)
-        {
-            if (dtpFrom.Value > dtpTo.Value)
-            {
-                dtpFrom.Value = dtpTo.Value;
-            }
-        }
-
         /// <summary>
         /// If you didn't pass a list, the result of your search will be set here.
         /// </summary>
-        /// <returns></returns>
         public Tournament getResult()
         {
             return singleTour;
-        }
-
-        private void FrmTourSearch_Load(object sender, EventArgs e)
-        {
-            dtpFrom.Value = dtpTo.Value;
         }
     }
 }
