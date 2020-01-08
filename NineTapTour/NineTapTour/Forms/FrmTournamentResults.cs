@@ -20,6 +20,7 @@ namespace NineTapTour.Forms
 {
     public partial class FrmTournamentResults : Form
     {
+        #region Variables
         // Set column names for datagridview
         static string PLACE_STANDING_COLUMN_NAME = "Place";
         static string FULLNAME_COLUMN_NAME = "Full Name";
@@ -39,8 +40,10 @@ namespace NineTapTour.Forms
         List<ExcelMember> winners = new List<ExcelMember>();
         // Floor directors get a comp entry into tournament when they help with tournament. 
         // They don't pay the entry fee, but do qualify to cash.
-        static int compEntries; 
-                                
+        static int compEntries;
+        #endregion
+
+        #region FrmTournamentResults
         public FrmTournamentResults()
         {
             InitializeComponent();
@@ -67,6 +70,136 @@ namespace NineTapTour.Forms
             
             ActiveControl = tbClientInputCount;
         }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            if (e.CloseReason == CloseReason.WindowsShutDown) return;
+            List<double> Winnings = new List<double>();
+            for (int winningList = 0; winningList < dgvTournamentResults.RowCount; winningList++)
+            {
+                Winnings.Add(Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
+            }
+            TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
+
+            // Save all changes made to the dataGridView
+            for (int currentIndex = 0; currentIndex < clientRequested.Count; currentIndex++)
+            {
+                int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
+                Game g = GameDB.GetGame(gameId);
+
+                g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
+                g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
+                g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
+                g.gameRegionID = tourny.TourneyRegion;
+
+                db.Entry(g).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+            }
+        }
+        #endregion
+
+        #region Button
+        /***************************
+              EXPORT TO EXCEL
+         **************************/
+        private void btnExportToExcel_Click(object sender, EventArgs e)
+        {
+            bool wait = true;
+            while (wait)
+            {
+                frmPleaseWait please = new frmPleaseWait();
+                please.Show();
+                exportToExcel();
+                wait = false;
+                please.Close();
+            }
+        }
+
+        private void btnPaste_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(tbClientInputCount.Text))
+            {
+                MessageBox.Show("Please enter the number of winners first");
+                return;
+            }
+
+            string s = Clipboard.GetText();
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                MessageBox.Show("Please copy the earnings from Excel first");
+                return;
+            }
+            s = s.Replace("$", "");
+            string[] lines = s.Replace("\n", "").Split('\r');
+            string[] lines2 = new string[lines.Length];
+            for (int t = 0; t < lines.Length; t++)
+            {
+                lines2[t] = lines[t];
+            }
+            int row = 0;
+            int col = 4;
+
+            int pasteAble = Convert.ToInt32(tbClientInputCount.Text) + 3; // +3 for the pro pot entries
+            int pasteCount = lines.Count();
+            int paste = 0;
+            if (pasteCount < pasteAble)
+            {
+                paste = pasteCount - 1;
+            }
+            else
+            {
+                paste = pasteAble;
+            }
+
+            for (int i = 0; i < paste; i++)
+            {
+                string check = lines2[i];
+                if (check != "")
+                {
+                    if (i == 1 || i == 3 || i == 5)
+                    {
+                        dgvTournamentResults[col + 3, row].Value = lines2[i];
+                        row++;
+                    }
+                    else
+                    {
+                        dgvTournamentResults[col, row].Value = lines2[i];
+                        if (i > 5)
+                        {
+                            row++;
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region DataGridView
+        private void dgvTournamentResults_CellEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dgvTournamentResults.CurrentRow.Cells[e.ColumnIndex].ReadOnly)
+            {
+                SendKeys.Send("{tab}");
+            }
+        }
+        #endregion
+
+        #region TextBox
+        private void tbClientInputCount_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tbClientInputCount_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                AcceptClientInputForResults();
+            }
+        }
+        #endregion
 
         /// <summary>
         /// Creates the DataGridView table and populates it with the list of cashed winners
@@ -181,14 +314,6 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void dgvTournamentResults_CellEnter(object sender, DataGridViewCellEventArgs e)
-        {
-            if (dgvTournamentResults.CurrentRow.Cells[e.ColumnIndex].ReadOnly)
-            {
-                SendKeys.Send("{tab}");
-            }
-        }
-
         /// <summary>
         /// Returns a list of tourament winners
         /// </summary>
@@ -264,29 +389,11 @@ namespace NineTapTour.Forms
             return tournyBowlers;
         }
 
-        /***************************
-              EXPORT TO EXCEL
-         **************************/
-        private void btnExportToExcel_Click(object sender, EventArgs e)
-        {
-            bool wait = true;
-            while (wait)
-            {
-                frmPleaseWait please = new frmPleaseWait();
-                please.Show();
-                exportToExcel();
-                wait = false;
-                please.Close();
-            }
-        }
-        
+        /// <summary>
+        /// Saves participants' place standing and earnings won to the database
+        /// </summary>
         private void exportToExcel()
         {
-            /// <summary>
-            /// Saves participants' place standing and earnings won to the database
-            /// </summary>
-            /// <param name="sender"></param>
-            /// <param name="e"></param>
             for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
             {
                 int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
@@ -301,7 +408,6 @@ namespace NineTapTour.Forms
                 db.SaveChanges();
             }
             
-
             // have program open template file automatically and auto save
             // with a specific naming conventions such as "Pacific 3Of4 1-12-18" 
             // without using open/save file dialogues
@@ -676,8 +782,10 @@ namespace NineTapTour.Forms
             }
         }
 
-        //gets and sets the total amount of payout for the 
-        //winners in the total payout box of the excel sheet
+        /// <summary>
+        /// Gets and sets the total amount of payout for the 
+        /// winners in the total payout box of the excel sheet
+        /// </summary>
         private void setTotalPayout(Excel.Worksheet xlWorkSheet)
         {
             double money = 0;
@@ -689,7 +797,9 @@ namespace NineTapTour.Forms
             xlWorkSheet.Cells[2, 8] = money.ToString();
         }
 
-        //format and populate 
+        /// <summary>
+        /// Formats and populates an excel file for a tie game
+        /// </summary>
         private void formatBigTie(string tempData3, int tiePlace, Excel.Worksheet xlWorkSheet, int i)
         {
             for (i = 0; i < tiePlace; i++)
@@ -781,8 +891,6 @@ namespace NineTapTour.Forms
         /// standing to be added onto the number they placed. It 
         /// will either be "st", "nd", "rd", or "th".
         /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
         private string getPlace(string data)
         {
             if (data == "1" || data == "21" || data == "31" || data == "41" || data == "51" || data == "61" || data == "71" || data == "81" || data == "91")
@@ -807,7 +915,6 @@ namespace NineTapTour.Forms
         /// This method is used to clean up the references to the Excel Objects
         /// so that Excel does not remain running.
         /// </summary>
-        /// <param name="obj"></param>
         private void releaseObject(object obj)
         {
             try
@@ -826,47 +933,9 @@ namespace NineTapTour.Forms
             }
         }
 
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            base.OnFormClosing(e);
-
-            if (e.CloseReason == CloseReason.WindowsShutDown) return;
-            List<double> Winnings = new List<double>();
-            for(int winningList = 0; winningList < dgvTournamentResults.RowCount; winningList++)
-            {
-                Winnings.Add(Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
-            }
-            TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
-            
-            // Save all changes made to the dataGridView
-            for (int currentIndex = 0; currentIndex < clientRequested.Count; currentIndex++)
-            {
-                int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
-                Game g = GameDB.GetGame(gameId);
-
-                g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
-                g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
-                g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
-                g.gameRegionID = tourny.TourneyRegion;
-
-                db.Entry(g).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
-            }
-        }
-
-        private void tbClientInputCount_TextChanged(object sender, EventArgs e)
-        {
-         
-        }
-
-        private void tbClientInputCount_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                AcceptClientInputForResults();
-            }
-        }
-
+        /// <summary>
+        /// Clears the tournament results and lets the client input new results
+        /// </summary>
         private void AcceptClientInputForResults()
         {
             this.dgvTournamentResults.DataSource = null;
@@ -891,63 +960,6 @@ namespace NineTapTour.Forms
                 catch (FormatException)
                 {
                     MessageBox.Show("Please enter a nunmber");
-                }
-            }
-        }
-
-        private void btnPaste_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(tbClientInputCount.Text))
-            {
-                MessageBox.Show("Please enter the number of winners first");
-                return;
-            }
-
-            string s = Clipboard.GetText();
-            if (string.IsNullOrWhiteSpace(s))
-            {
-                MessageBox.Show("Please copy the earnings from Excel first");
-                return;
-            }
-            s = s.Replace("$", "");
-            string[] lines = s.Replace("\n", "").Split('\r');
-            string[] lines2 = new string[lines.Length];
-            for(int t = 0; t < lines.Length; t++)
-            {
-               lines2[t] = lines[t];
-            }
-            int row = 0;
-            int col = 4;
-
-            int pasteAble = Convert.ToInt32(tbClientInputCount.Text) + 3; // +3 for the pro pot entries
-            int pasteCount = lines.Count();
-            int paste = 0;
-            if(pasteCount < pasteAble)
-            {
-                paste = pasteCount - 1;
-            }
-            else
-            {
-                paste = pasteAble; 
-            }
-            
-            for (int i = 0; i < paste; i++)
-            {
-                string check = lines2[i];
-                if (check != "")
-                {
-                    if (i == 1 || i == 3 || i == 5)
-                    {
-                        dgvTournamentResults[col + 3, row].Value = lines2[i];
-                        row++;
-                    }
-                    else
-                    {
-                        dgvTournamentResults[col, row].Value = lines2[i];
-                        if (i > 5) {
-                            row++;
-                        }
-                    }
                 }
             }
         }
