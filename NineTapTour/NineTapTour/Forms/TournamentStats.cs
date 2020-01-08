@@ -17,7 +17,7 @@ namespace NineTapTour.Forms
     /// </summary>
     public partial class TournamentStats : Form
     {
-
+        #region TournamentStats
         public TournamentStats()
         {
             InitializeComponent();
@@ -146,16 +146,31 @@ namespace NineTapTour.Forms
                 // send to form
                 dgvTournamentStats.DataSource = BuildDataTable(statsList);
             }
-        }        
+        }
+        #endregion
+
+        #region Button
+        /// <summary>
+        /// BtnPrint_Click() is called when Print button is clicked on the tournamentStats form.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnPrint_Click(object sender, EventArgs e)
+        {
+            printDialog1.Document = printDocument1;
+            if (printDialog1.ShowDialog() == DialogResult.OK)
+            {
+                printDocument1.Print();
+            }
+        }
+        #endregion
+
+        //Brett Peterson suggested bug fix starts here
+        //Only getting first 3 scores Not top 3 scores
 
         /// <summary>
         /// Filters and sorts scores for topScores list.
         /// </summary>
-        /// <param name="scores"></param>
-        /// <returns></returns>
-        /// 
-        //Brett Peterson suggested bug fix starts here
-        //Only getting first 3 scores Not top 3 scores
         public static List<int> GetTop3OutOf4(List<int?> scores)
         {
             List<int> listOfValidScores = new List<int>();
@@ -190,24 +205,8 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// BtnPrint_Click() is called when Print button is clicked on the tournamentStats form.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnPrint_Click(object sender, EventArgs e)
-        {
-            printDialog1.Document = printDocument1;
-            if (printDialog1.ShowDialog() == DialogResult.OK)
-            {
-                printDocument1.Print();
-            }
-        }
-
-        /// <summary>
         /// PrintDocument1_PrintPage() is called after choosing where to save or print the tournamentStats table.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void PrintDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
             Bitmap bm = new Bitmap(this.dgvTournamentStats.Width, this.dgvTournamentStats.Height);
@@ -219,7 +218,6 @@ namespace NineTapTour.Forms
         /// BuildDataTable() Boxes up the tournamentStatsList object into a data table object 
         /// that the datagridview is willing to accept and sort.
         /// </summary>
-        /// <param name="statsList"></param>
         /// <returns>Datatable object</returns>
         private DataTable BuildDataTable(List<TournamentStatsList> statsList)
         {
@@ -270,7 +268,6 @@ namespace NineTapTour.Forms
             // Return data table object
             return data;
         }
-
     }
 
     /// <summary>
