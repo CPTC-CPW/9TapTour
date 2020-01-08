@@ -15,6 +15,7 @@ namespace NineTapTour.Forms
     {
         public int RID;
 
+        #region TournamentsByYear
         public TournamentsByYear(int RegionID)
         {
             InitializeComponent();
@@ -30,6 +31,21 @@ namespace NineTapTour.Forms
                 cbxYear.Items.Add(y);
             }
         }
+        #endregion
+
+        #region Button
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            PopulateTournamentsByYear(Convert.ToInt32(cbxYear.Text), RID);
+        }
+        #endregion
+
+        #region Check Box
+        private void cbxYear_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            btnSearch.Enabled = true;
+        }
+        #endregion
 
         /// <summary>
         /// Gets the last 25 years from the current year down
@@ -45,16 +61,6 @@ namespace NineTapTour.Forms
                 years.Add(currentYear--);
             }
             return years;
-        }
-
-        private void cbxYear_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnSearch.Enabled = true;
-        }
-
-        private void btnSearch_Click(object sender, EventArgs e)
-        {
-            PopulateTournamentsByYear(Convert.ToInt32(cbxYear.Text), RID);
         }
 
         /// <summary>
