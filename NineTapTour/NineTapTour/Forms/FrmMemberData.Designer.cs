@@ -85,6 +85,7 @@
             this.grpSearchBy = new System.Windows.Forms.GroupBox();
             this.btnMemberSearch = new System.Windows.Forms.Button();
             this.grpPrinter = new System.Windows.Forms.GroupBox();
+            this.btnPrintActive = new System.Windows.Forms.Button();
             this.btnThisRecap = new System.Windows.Forms.Button();
             this.rdoFemale = new System.Windows.Forms.RadioButton();
             this.rdoActive = new System.Windows.Forms.RadioButton();
@@ -125,7 +126,6 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.txtPaidTo = new System.Windows.Forms.TextBox();
             this.lblPaidTo = new System.Windows.Forms.Label();
-            this.btnPrintActive = new System.Windows.Forms.Button();
             this.grpMemberInfo.SuspendLayout();
             this.groupRecord.SuspendLayout();
             this.grpRecordNumber.SuspendLayout();
@@ -760,6 +760,18 @@
             this.grpPrinter.TabStop = false;
             this.grpPrinter.Text = "Print Recaps";
             // 
+            // btnPrintActive
+            // 
+            this.btnPrintActive.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold);
+            this.btnPrintActive.Location = new System.Drawing.Point(6, 53);
+            this.btnPrintActive.Name = "btnPrintActive";
+            this.btnPrintActive.Size = new System.Drawing.Size(161, 23);
+            this.btnPrintActive.TabIndex = 75;
+            this.btnPrintActive.TabStop = false;
+            this.btnPrintActive.Text = "Print Active Members";
+            this.btnPrintActive.UseVisualStyleBackColor = true;
+            this.btnPrintActive.Click += new System.EventHandler(this.btnPrintActive_Click);
+            // 
             // btnThisRecap
             // 
             this.btnThisRecap.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1092,12 +1104,10 @@
             // txtBonus
             // 
             this.txtBonus.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtBonus.Enabled = false;
             this.txtBonus.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtBonus.Location = new System.Drawing.Point(340, 41);
             this.txtBonus.MaxLength = 20;
             this.txtBonus.Name = "txtBonus";
-            this.txtBonus.ReadOnly = true;
             this.txtBonus.Size = new System.Drawing.Size(89, 47);
             this.txtBonus.TabIndex = 88;
             this.txtBonus.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1218,18 +1228,6 @@
             this.lblPaidTo.Size = new System.Drawing.Size(118, 15);
             this.lblPaidTo.TabIndex = 75;
             this.lblPaidTo.Text = "Membership paid to";
-            // 
-            // btnPrintActive
-            // 
-            this.btnPrintActive.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold);
-            this.btnPrintActive.Location = new System.Drawing.Point(6, 53);
-            this.btnPrintActive.Name = "btnPrintActive";
-            this.btnPrintActive.Size = new System.Drawing.Size(161, 23);
-            this.btnPrintActive.TabIndex = 75;
-            this.btnPrintActive.TabStop = false;
-            this.btnPrintActive.Text = "Print Active Members";
-            this.btnPrintActive.UseVisualStyleBackColor = true;
-            this.btnPrintActive.Click += new System.EventHandler(this.btnPrintActive_Click);
             // 
             // FrmMemberData
             // 
