@@ -280,11 +280,11 @@
     <Compile Include="Forms\FrmTournamentsByYear.Designer.cs">
       <DependentUpon>FrmTournamentsByYear.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\TournamentStats.cs">
+    <Compile Include="Forms\FrmTournamentStats.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\TournamentStats.Designer.cs">
-      <DependentUpon>TournamentStats.cs</DependentUpon>
+    <Compile Include="Forms\FrmTournamentStats.Designer.cs">
+      <DependentUpon>FrmTournamentStats.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201803192318264_Initial.cs" />
     <Compile Include="Migrations\201803192318264_Initial.Designer.cs">
@@ -368,8 +368,8 @@
     <EmbeddedResource Include="Forms\FrmTournamentsByYear.resx">
       <DependentUpon>FrmTournamentsByYear.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TournamentStats.resx">
-      <DependentUpon>TournamentStats.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FrmTournamentStats.resx">
+      <DependentUpon>FrmTournamentStats.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803192318264_Initial.resx">
       <DependentUpon>201803192318264_Initial.cs</DependentUpon>
