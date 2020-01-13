@@ -113,6 +113,7 @@
     <Compile Include="Database\GameDB.cs" />
     <Compile Include="Database\ParticipantsDB.cs" />
     <Compile Include="Database\ReportHelper.cs" />
+    <Compile Include="Exceptions\InvalidMemberImportationException.cs" />
     <Compile Include="Forms\FrmAbout.cs">
       <SubType>Form</SubType>
     </Compile>
