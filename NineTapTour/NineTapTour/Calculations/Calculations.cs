@@ -234,6 +234,13 @@ namespace NineTapTour.Calculations
         /// <returns>the quantity of members that can place in a tournament</returns>
         public static int GetQtyOfMembersThatCanPlace(int totalEntries, int compEntries)
         {
+#if debug
+            return totalEntries;
+#endif
+            if (totalEntries - compEntries <= 4)
+            {
+                return 1;
+            }
             return (totalEntries - compEntries) / 5;
         }
 
