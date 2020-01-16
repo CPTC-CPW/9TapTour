@@ -622,17 +622,33 @@ namespace NineTapTour.Forms
                 // Adds Member to Database
                 try
                 {
+                    int tempBonusPins = Convert.ToInt16(txtBonus.Text);
+                    if (tempBonusPins <= 5)
+                    {
+                        // Left blank because this is simply making sure it is going to import 
+                        // correct data into [dbo].[Members]
+                        temp.Bonus = tempBonusPins;
+                    }
+                    else
+                    {
+                        throw new InvalidMemberImportationException("Maximum allowed bonus pins is 5");
+                    }
                     MemberDB.AddOrUpdateMember(temp);
 #if DEBUG
                     MessageBox.Show("Member saved");
 #endif
-                    ((FrmMain)MdiParent)._membersList = 
+                    ((FrmMain)MdiParent)._membersList =
                         MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
                     UpdateMemberInfo();
                 }
                 catch (MemberTableException ex)
                 {
                     MessageBox.Show(ex.Message);
+                }
+                catch (InvalidMemberImportationException exMember)
+                {
+                    MessageBox.Show(exMember.Message, "Uh-Oh!",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
