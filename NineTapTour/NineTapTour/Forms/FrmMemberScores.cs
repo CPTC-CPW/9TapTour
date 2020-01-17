@@ -15,7 +15,6 @@ using static NineTapTour.Database.ReportHelper;
 
 namespace NineTapTour.Forms
 {
-    #region Casey's Comments
     /// <summary>
     /// FrmMemberScores class.
     /// All tournament info and scores are entered here.
@@ -641,7 +640,6 @@ namespace NineTapTour.Forms
             Clear();
         }
 
-        #endregion
         #endregion
         /// <summary>
         /// Checks a string for numeric values
