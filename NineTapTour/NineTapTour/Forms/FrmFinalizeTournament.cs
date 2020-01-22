@@ -783,6 +783,19 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
+        /// This method should highlight the 30 avg column 
+        /// </summary>
+        private void Highlight30AvgColumn()
+        {
+            // how many should be highlighted for 30 game average
+            int thirtyAve = 30;
+            for (int j = 0; j < playerTournamentHistoryGrid.RowCount && j < thirtyAve; j++)
+            {
+                playerTournamentHistoryGrid.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
+            }
+        }
+
+        /// <summary>
         /// Show all games for the selected player including the current tournament
         /// </summary>
         /// <param name="temporary">the list of player histories that come from the tournament table</param>
@@ -952,7 +965,7 @@ namespace NineTapTour.Forms
             playerTournamentHistoryGrid.DataSource = dtGames;
             playerTournamentHistoryGrid.Columns["GameID"].Visible = false; // Hides the gameID column
             sizeFinalizeLowerGridView(moneyWonWithTotal, gamesTotalPlayed, game1TotalPlayed, game2TotalPlayed, game3TotalPlayed, game4TotalPlayed, AllScratchTotal, AllEntryAvgTotal);   // resizes columns in the grid
-            int thirtyAve = 30;     // how many should be highlighted for 30 game average
+           
             for (int i = 0; i < playerTournamentHistoryGrid.RowCount; i++)
             {
                 #region Set background color for member table row to light blue for all games in current tournament
@@ -969,10 +982,8 @@ namespace NineTapTour.Forms
                 #endregion              
             }
 
-            for (int j = 0; j < playerTournamentHistoryGrid.RowCount && j < thirtyAve; j++)
-            {
-                playerTournamentHistoryGrid.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
-            }
+
+            Highlight30AvgColumn();
 
             highlightBonusPinCells();
 
@@ -1413,7 +1424,8 @@ namespace NineTapTour.Forms
 
         private void dataGridView2_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            
+
+            Highlight30AvgColumn();
             highlightBonusPinCells();
            
             
