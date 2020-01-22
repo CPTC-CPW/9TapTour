@@ -2112,6 +2112,9 @@ namespace NineTapTour.Forms
             Refresh(false);
         }
 
+        private void grpReports_Enter(object sender, EventArgs e)
+        {
 
+        }
     }
 }

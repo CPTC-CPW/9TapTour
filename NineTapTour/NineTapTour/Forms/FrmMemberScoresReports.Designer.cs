@@ -63,6 +63,7 @@
             this.txtNumberOfMembers.Name = "txtNumberOfMembers";
             this.txtNumberOfMembers.Size = new System.Drawing.Size(100, 20);
             this.txtNumberOfMembers.TabIndex = 0;
+            this.txtNumberOfMembers.TextChanged += new System.EventHandler(this.txtNumberOfMembers_TextChanged);
             // 
             // cbPrintDues
             // 
@@ -73,6 +74,7 @@
             this.cbPrintDues.TabIndex = 2;
             this.cbPrintDues.Text = "Print Dues";
             this.cbPrintDues.UseVisualStyleBackColor = true;
+            this.cbPrintDues.CheckedChanged += new System.EventHandler(this.cbPrintDues_CheckedChanged);
             // 
             // btnSave
             // 
@@ -92,6 +94,7 @@
             this.lblSave.Size = new System.Drawing.Size(91, 13);
             this.lblSave.TabIndex = 4;
             this.lblSave.Text = "Save To Desktop";
+            this.lblSave.Click += new System.EventHandler(this.lblSave_Click);
             // 
             // FrmMemberScoresReports
             // 
