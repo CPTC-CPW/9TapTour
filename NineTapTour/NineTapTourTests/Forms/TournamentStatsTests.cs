@@ -20,7 +20,7 @@ namespace NineTapTour.Forms.Tests
             };
             int minScore = testScores.Min().Value;
 
-            List<int> top3Scores = TournamentStats.GetTop3OutOf4(testScores);
+            List<int> top3Scores = FrmTournamentStats.GetTop3OutOf4(testScores);
             //returned scores are sorted in descending order
             List<int> expectedScores = new List<int>() { 200, 175, 150 };
             bool isLowestScorePresent = top3Scores.Any(score => score == minScore);
@@ -44,8 +44,8 @@ namespace NineTapTour.Forms.Tests
                 100, 120, 110
             };
 
-            List<int> result = TournamentStats.GetTop3OutOf4(testScores);
-            List<int> result2 = TournamentStats.GetTop3OutOf4(testScores.GetRange(0, 2));
+            List<int> result = FrmTournamentStats.GetTop3OutOf4(testScores);
+            List<int> result2 = FrmTournamentStats.GetTop3OutOf4(testScores.GetRange(0, 2));
 
             //ensure list of scores with less than 4 games do not drop any
             Assert.AreEqual(result.Count, 3);
