@@ -1410,5 +1410,13 @@ namespace NineTapTour.Forms
         {
             InitializeGameCellFormatting();
         }
+
+        private void dataGridView2_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            
+            highlightBonusPinCells();
+           
+            
+        }
     }
 }
