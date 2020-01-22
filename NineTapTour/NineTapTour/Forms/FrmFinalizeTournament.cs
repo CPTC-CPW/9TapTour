@@ -432,6 +432,7 @@ namespace NineTapTour.Forms
             dt.Columns.Add(NOTES_COLUMN_NAME, typeof(string));                          // 20
             dt.Columns.Add(GAME_ID_COLUMN_NAME, typeof(int)).ReadOnly = true;           // 21
 
+            //dt.ExtendedProperties
             // whatever list of participants you pass into method will be populated into grid
             List<FinalizeTemp> temp = participantsList.Keys.ToList();
 
@@ -513,8 +514,6 @@ namespace NineTapTour.Forms
                     //UpdateLeagueAvg(e.RowIndex);
                     CheckBoxDBSet(clickedCell.RowIndex, clickedCell.ColumnIndex, isCellChecked);
                     SetGameCellFormatting(GetCorrespondingGameCell(clickedCell), isCellChecked);
-
-                    
                 }
                 
                 // Check if cell changed was a DIRECTOR_CHECK cell
@@ -532,7 +531,6 @@ namespace NineTapTour.Forms
                         TournamentEntriesGrid[DIRECTOR_CHECK_COLUMN, e.RowIndex].Style.BackColor = Color.White;
                     }
 
-
                     //this code changes all of that member's games to match the clicked DIRECTOR_CHECK.
                     int memberNum = Convert.ToInt32(TournamentEntriesGrid.Rows[e.RowIndex].Cells[MEMBER_NUMBER_COLUMN].Value);
                     bool isCellChecked = Convert.ToBoolean(TournamentEntriesGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
@@ -546,7 +544,6 @@ namespace NineTapTour.Forms
                 }
                 dataGridView1_CellClick(sender, e);// moved higher in scope to help refresh correctly
             }
-            
         }
 
         /// <summary>
@@ -593,7 +590,6 @@ namespace NineTapTour.Forms
             {
                 TournamentEntriesGrid.EndEdit();
             }
-            
         }
 
         /// <summary>
@@ -642,7 +638,9 @@ namespace NineTapTour.Forms
             int count = 0;
             int sumWHandicap = 0;
             int HDCPwithBonus = Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[HANDICAP_COLUMN].Value)) + Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[BONUS_COLUMN].Value));
-            if (Convert.ToBoolean(TournamentEntriesGrid.Rows[row].Cells[GAME_1_VALID_COLUMN].Value) == true)
+            
+            if (Convert.ToBoolean(TournamentEntriesGrid.Rows[row].Cells[GAME_1_VALID_COLUMN].Value) == true
+                && !String.IsNullOrEmpty(TournamentEntriesGrid.Rows[row].Cells[GAME_1_COLUMN].Value.ToString()))
             {
                 sum += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_1_COLUMN].Value));
                 sumAndHand += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_1_COLUMN].Value));
@@ -650,7 +648,8 @@ namespace NineTapTour.Forms
                 count++;
             }
 
-            if (Convert.ToBoolean(TournamentEntriesGrid.Rows[row].Cells[GAME_2_VALID_COLUMN].Value) == true)
+            if (Convert.ToBoolean(TournamentEntriesGrid.Rows[row].Cells[GAME_2_VALID_COLUMN].Value) == true
+                && !String.IsNullOrEmpty(TournamentEntriesGrid.Rows[row].Cells[GAME_2_COLUMN].Value.ToString()))
             {
                 sum += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_2_COLUMN].Value));
                 sumAndHand += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_2_COLUMN].Value));
@@ -658,15 +657,17 @@ namespace NineTapTour.Forms
                 count++;
             }
 
-            if (Convert.ToBoolean(TournamentEntriesGrid.Rows[row].Cells[GAME_3_VALID_COLUMN].Value) == true)
+            if (Convert.ToBoolean(TournamentEntriesGrid.Rows[row].Cells[GAME_3_VALID_COLUMN].Value) == true
+                && !String.IsNullOrEmpty(TournamentEntriesGrid.Rows[row].Cells[GAME_3_COLUMN].Value.ToString()))
             {
-                sum += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_3_COLUMN].Value));
-                sumAndHand += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_3_COLUMN].Value));
-                sumWHandicap = sumAndHand += HDCPwithBonus;
-                count++;
+                    sum += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_3_COLUMN].Value));
+                    sumAndHand += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_3_COLUMN].Value));
+                    sumWHandicap = sumAndHand += HDCPwithBonus;
+                    count++;        
             }
 
-            if (Convert.ToBoolean(TournamentEntriesGrid.Rows[row].Cells[GAME_4_VALID_COLUMN].Value) == true)
+            if (Convert.ToBoolean(TournamentEntriesGrid.Rows[row].Cells[GAME_4_VALID_COLUMN].Value) == true
+                && !String.IsNullOrEmpty(TournamentEntriesGrid.Rows[row].Cells[GAME_4_COLUMN].Value.ToString()))
             {
                 sum += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_4_COLUMN].Value));
                 sumAndHand += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_4_COLUMN].Value));
@@ -679,7 +680,6 @@ namespace NineTapTour.Forms
                 TournamentEntriesGrid.Rows[row].Cells[ENTRY_AVERAGE_COLUMN].Value = 0;
                 TournamentEntriesGrid.Rows[row].Cells[SCRATCH_TOTAL_COLUMN].Value = 0;
                 TournamentEntriesGrid.Rows[row].Cells[HANDICAP_TOTAL_COLUMN].Value = 0;
-
             }
             else
             {
@@ -1235,7 +1235,7 @@ namespace NineTapTour.Forms
                     ph.Game3 = FinalizeTableList[i].Game3;
                     ph.Game4 = FinalizeTableList[i].Game4;
 
-                    if (ph.Game1 > 0)
+                    if (Convert.ToBoolean(TournamentEntriesGrid.Rows[i].Cells[GAME_1_VALID_COLUMN].Value))
                     {
                         gamesPlayed++;
                         currGame.UseGame1 = true;
@@ -1247,7 +1247,7 @@ namespace NineTapTour.Forms
                         FinalizeTableList[i].UseGame1 = false;
                     }
 
-                    if (ph.Game2 > 0)
+                    if (Convert.ToBoolean(TournamentEntriesGrid.Rows[i].Cells[GAME_2_VALID_COLUMN].Value))
                     {
                         gamesPlayed++;
                         currGame.UseGame2 = true;
@@ -1259,7 +1259,7 @@ namespace NineTapTour.Forms
                         FinalizeTableList[i].UseGame2 = false;
                     }
 
-                    if (ph.Game3 > 0)
+                    if (Convert.ToBoolean(TournamentEntriesGrid.Rows[i].Cells[GAME_3_VALID_COLUMN].Value))
                     {
                         gamesPlayed++;
                         currGame.UseGame3 = true;
@@ -1271,7 +1271,7 @@ namespace NineTapTour.Forms
                         FinalizeTableList[i].UseGame3 = false;
                     }
 
-                    if (ph.Game4 > 0)
+                    if (Convert.ToBoolean(TournamentEntriesGrid.Rows[i].Cells[GAME_4_VALID_COLUMN].Value))
                     {
                         gamesPlayed++;
                         currGame.UseGame4 = true;

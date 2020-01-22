@@ -15,7 +15,6 @@ using static NineTapTour.Database.ReportHelper;
 
 namespace NineTapTour.Forms
 {
-    #region Casey's Comments
     /// <summary>
     /// FrmMemberScores class.
     /// All tournament info and scores are entered here.
@@ -484,7 +483,14 @@ namespace NineTapTour.Forms
         {
             ReEnableNavigation();
 
-            if (IsValid())
+            if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) 
+                && string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) 
+                && string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) 
+                && string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
+            {
+                MessageBox.Show("A player must play at least one game to be added to the tournament.", "Uh-Oh!");
+            }
+            else if (IsValid())
             {
                 //gets the current tournament from the database 
                 Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
@@ -634,7 +640,6 @@ namespace NineTapTour.Forms
             Clear();
         }
 
-        #endregion
         #endregion
         /// <summary>
         /// Checks a string for numeric values
@@ -1190,32 +1195,22 @@ namespace NineTapTour.Forms
         {
             //Checks if selected tournament is null
             if (cbxTourneyDropDown.SelectedValue == null)
-            {
                 return false;
-            }
+
             //Checks if member number is blank
             if (txtMemberNum.Text == "")
-            {
                 return false;
-            }
+
             //Checks all score boxes and asks if you want to enter member without scores
             if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
             {
                 DialogResult result = MessageBox.Show("Are you sure you want to continue with a score missing?", "Are you sure?",
-                                                      MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.No)
-                {
                     return false;
-                }
-                else
-                {
-                    return true;
-                }
             }
             return true;
         }
-
-
 
         /// <summary>
         /// Search for tours by location.
