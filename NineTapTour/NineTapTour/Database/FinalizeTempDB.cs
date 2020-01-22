@@ -20,18 +20,61 @@ namespace NineTapTour.Database
             int howmany = 30;
             using(var db = new NineTapDB())
             {
-                double avg = (double)(from p in db.Participants
-                              join m in db.Members on p.Member.Id equals m.Id
-                              join g in db.Games on p.Game.Id equals g.Id
-                              join t in db.Tournaments on p.Tournament.Id equals t.Id
-                              where mem.Id == m.Id
-                              orderby t.Date descending
-                              select (g.Game1 + g.Game2 + g.Game3 + g.Game4) / 
-                              4-((g.UseGame1??false?0:1) + (g.UseGame2??false?0:1) + (g.UseGame3??false?0:1) + (g.UseGame4??false?0:1))
-                              ).Take(howmany).Average();
+                var getGames = (from p in db.Participants
+                           join m in db.Members on p.Member.Id equals m.Id
+                           join g in db.Games on p.Game.Id equals g.Id
+                           join t in db.Tournaments on p.Tournament.Id equals t.Id
+                           where mem.Id == m.Id
+                           orderby t.Date descending
+                           select new { g.Game1, g.Game2, g.Game3, g.Game4, g.UseGame1, g.UseGame2, g.UseGame3, g.UseGame4 })
+                              .Take(howmany).ToList();
 
-                return avg;
+                List<double> allAverages = new List<double>();
+                foreach (var avg in getGames)
+                {
+                    allAverages.Add(Convert.ToDouble(avg.Game1 + avg.Game2 + avg.Game3 + avg.Game4) / 
+                        LeaugeAverageHelper(avg.UseGame1, avg.UseGame2, avg.UseGame3, avg.UseGame4));
+                }
+
+                return allAverages.Sum() / allAverages.Count;
             }
+        }
+
+        /// <summary>
+        /// This is a helper method for <see cref="LeagueAverage(Member)"/>
+        /// that takes the useGames from the database to see if they are true or null.
+        /// We are saying that null is true, because they are optional booleans in the database.
+        /// (Assuming that during the import process these are not being updated)
+        /// </summary>
+        /// <param name="g1">UseGame1 From GameDB</param>
+        /// <param name="g2">UseGame2 From GameDB</param>
+        /// <param name="g3">UseGame3 From GameDB</param>
+        /// <param name="g4">UseGame4 From GameDB</param>
+        public static int LeaugeAverageHelper(bool? g1, bool? g2, 
+            bool? g3, bool? g4)
+        {
+            // Total games played (Max: 4)
+            int totalGamesPlayed = 0;
+            if (g1 == null || g1.Value)
+            {
+                totalGamesPlayed++;  
+            }
+
+            if (g2 == null || g2.Value)
+            {
+                totalGamesPlayed++;
+            }
+
+            if (g3 == null || g3.Value)
+            {
+                totalGamesPlayed++;
+            }
+
+            if (g4 == null || g4.Value)
+            {
+                totalGamesPlayed++;
+            }
+            return totalGamesPlayed;
         }
 
         #region Useless Method
