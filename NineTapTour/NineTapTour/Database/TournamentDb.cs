@@ -80,7 +80,8 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Returns a list of Participants within the given Tournament
+        /// Returns a list of Participants within the given Tournament. Participants
+        /// are returned in the order they were entered in the tournament (by participant id)
         /// </summary>
         public static List<Participant> GetTournamentMemberList(Tournament tourn)
         {
@@ -88,6 +89,7 @@ namespace NineTapTour.Database
             {
                 return (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
+                        orderby p.Id
                         where p.Tournament.Id == tourn.Id
                         select p).Include(m =>m.Member).ToList();
             }
