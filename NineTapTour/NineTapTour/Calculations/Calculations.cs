@@ -71,7 +71,7 @@ namespace NineTapTour.Calculations
         /// <param name="RegionID">RegionId from where the tournament is played</param>
         /// <param name="currTournamentId">Id of the current tournament</param>
         /// <returns>Adjusted bonus pins after current tournament</returns>
-        public static int GetAdjustedBonusPins(byte memberPlacement, int totalEntries, int compEntries, int currentBonusPins, 
+        public static int GetAdjustedBonusPins(int memberPlacement, int totalEntries, int compEntries, int currentBonusPins, 
                                                 int memNum, int RegionID, int currTournamentId)
         {
             int lowestPlacementToCash = GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
