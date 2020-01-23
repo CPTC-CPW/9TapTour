@@ -146,6 +146,10 @@
     <Compile Include="Migrations\201909120740346_IsTournamentFinalizedColumn.Designer.cs">
       <DependentUpon>201909120740346_IsTournamentFinalizedColumn.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001222259138_UpdateByteToInt.cs" />
+    <Compile Include="Migrations\202001222259138_UpdateByteToInt.Designer.cs">
+      <DependentUpon>202001222259138_UpdateByteToInt.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\ExcelMember.cs" />
     <Compile Include="Database\FormHelper.cs" />
     <Compile Include="Database\NineTapRegionDB.cs" />
@@ -388,6 +392,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201909120740346_IsTournamentFinalizedColumn.resx">
       <DependentUpon>201909120740346_IsTournamentFinalizedColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001222259138_UpdateByteToInt.resx">
+      <DependentUpon>202001222259138_UpdateByteToInt.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

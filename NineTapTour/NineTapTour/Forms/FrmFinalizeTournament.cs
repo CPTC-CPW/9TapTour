@@ -1286,13 +1286,13 @@ namespace NineTapTour.Forms
                     ph.TotalScore = FinalizeTableList[i].ScratchTotal;
 
                     DataGridViewCell placeCell = TournamentEntriesGrid[STANDING_COLUMN, currDataGridRowIndex];
-                    byte placeStanding = (placeCell.Value == DBNull.Value) ? (byte) 0 : Convert.ToByte(placeCell.Value);
+                    int placeStanding = (placeCell.Value == DBNull.Value) ? (int) 0 : Convert.ToByte(placeCell.Value);
 
                     #region Adjust Bonus pins for highest game and record PlaceStanding
                     // if bowler's highest game in tournament (only multiple entries that aren't the player's best game get 0s)
                     if (placeStanding > 0)
                     {
-                        currGame.PlaceStanding = Convert.ToByte(placeStanding);
+                        currGame.PlaceStanding = Convert.ToInt32(placeStanding);
                         ph.PPHG = placeStanding.ToString();
 
                         AdjustBonusPins(FinalizeTableList.Count, compEntriesQty, ph, currGame, currMember, placeStanding);
@@ -1356,7 +1356,7 @@ namespace NineTapTour.Forms
         /// <param name="currGame">Current Game of tournament</param>
         /// <param name="currMember">Current Member to adjust bonus pins of</param>
         /// <param name="placeStanding">Placestanding in tournament for current member's entry</param>
-        private void AdjustBonusPins(int totalEntriesQty, int compEntriesQty, PlayerHistory ph, Game currGame, Member currMember, byte placeStanding)
+        private void AdjustBonusPins(int totalEntriesQty, int compEntriesQty, PlayerHistory ph, Game currGame, Member currMember, int placeStanding)
         {
             // Adjust bonus pins only if game has not been finalized previously
             if (!PlayerHistoryDB.PlayerHistoryExists(currGame.Id))
