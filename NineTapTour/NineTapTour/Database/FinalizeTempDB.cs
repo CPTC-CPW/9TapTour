@@ -33,7 +33,7 @@ namespace NineTapTour.Database
                 foreach (var avg in getGames)
                 {
                     allAverages.Add(Convert.ToDouble(avg.Game1 + avg.Game2 + avg.Game3 + avg.Game4) / 
-                        LeaugeAverageHelper(avg.UseGame1, avg.UseGame2, avg.UseGame3, avg.UseGame4));
+                        LeagueAverageHelper(avg.UseGame1, avg.UseGame2, avg.UseGame3, avg.UseGame4));
                 }
 
                 return allAverages.Sum() / allAverages.Count;
@@ -50,7 +50,7 @@ namespace NineTapTour.Database
         /// <param name="g2">UseGame2 From GameDB</param>
         /// <param name="g3">UseGame3 From GameDB</param>
         /// <param name="g4">UseGame4 From GameDB</param>
-        public static int LeaugeAverageHelper(bool? g1, bool? g2, 
+        public static int LeagueAverageHelper(bool? g1, bool? g2, 
             bool? g3, bool? g4)
         {
             // Total games played (Max: 4)
@@ -115,37 +115,67 @@ namespace NineTapTour.Database
         #endregion
 
         /// <summary>
-        /// Returns a sum of the games from a MemberNumber given
-        /// <paramref name="howmany">The number of games taken</paramref>
+        /// Get's the leauge average based off the formula
+        /// (Total of Scratch Score / Total of games played)
+        /// from the last 30 entries
         /// </summary>
-        public static double LeagueAvgFromPlayerHistory(int memberNumber, int howmany, int regionid)
+        /// <param name="memberNumber">The member number NOT id</param>
+        /// <param name="regionId">The region id</param>
+        /// <param name="tournamentId">The id of the tournament</param>
+        public static int GetLeagueAverage(int memberNumber, int regionId, int tournamentId)
         {
-            double sum = 0;
-
+            int allGamesPlayed = 0;
+            int totalScratchTotal = 0;
             using (var db = new NineTapDb())
             {
-                var temp = (from p in db.PlayerHistory
-                            where p.MemberNumber == memberNumber && p.regionID == regionid
-                            orderby p.TournamentDate descending
-                            select new
-                            {
-                                p.TournamentDate,
-                                p.Game1,
-                                p.Game2,
-                                p.Game3,
-                                p.Game4,
-                                p.trueAVG,
-                                p.AverageForEntry
-                            }).Take(howmany).ToList();
-                if (temp.Count > 0)
+                /*
+                    Going through the database to get all of a player's ScratchTotals and the 4 UseGames
+                    to help with calculating the leauge Average
+                 */
+                var currentHistory = (from f in db.FinalizeTemp
+                                               where f.FinalizeRegionID == regionId && 
+                                                     f.MemberNumber == memberNumber && 
+                                                     f.TournamentID == tournamentId
+                                               select new 
+                                               { 
+                                                   f.ScratchTotal, 
+                                                   f.UseGame1, 
+                                                   f.UseGame2, 
+                                                   f.UseGame3, 
+                                                   f.UseGame4 
+                                               }).ToList();
+                /*
+                    Going through the database to get all of a player's GamePlayed and ScratchTotals Excluding
+                    those from the current game.
+                */
+                var previousHistory = (from p in db.PlayerHistory
+                                       where p.MemberNumber == memberNumber && p.regionID == regionId
+                                       orderby p.TournamentDate descending
+                                       select new 
+                                       { 
+                                           p.TournamentDate, 
+                                           p.GamesPlayed, 
+                                           p.TotalScore
+                                       }).Take(30 - currentHistory.Count).ToList();
+
+                // Looping through the current player history adding up there scratch totals & games played
+                foreach (var c in currentHistory)
                 {
-                    foreach (var item in temp)
-                    {
-                        sum += Convert.ToDouble(item.AverageForEntry);
-                    }
-                    return sum;
+                    allGamesPlayed += LeagueAverageHelper(c.UseGame1, c.UseGame2, c.UseGame3, c.UseGame4);
+                    totalScratchTotal += c.ScratchTotal;
                 }
-                return 0;
+
+                int counter = 0;
+                //Looping through the previous player history adding up there scratch totals & games played
+                foreach (var ph in previousHistory)
+                {
+                    allGamesPlayed += ph.GamesPlayed;
+                    totalScratchTotal += ph.TotalScore;
+                    counter++;
+                }
+
+                // Cast to a double to avoid integer division and then rounding to the nearest whole number
+                return Convert.ToInt32(Math.Round((double)totalScratchTotal / allGamesPlayed, MidpointRounding.AwayFromZero));
             }
         }
 
