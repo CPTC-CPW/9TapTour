@@ -36,7 +36,7 @@ namespace NineTapTour.Models
         public int GameAvg { get; set; }
         public int Handicap { get; set; }
         public int Bonus { get; set; }
-
+        public int ProPotEarnings { get; set; }
         public int HandicapTotal { get; set; }
 
         public int FinalizeRegionID { get; set; }

@@ -314,6 +314,7 @@ namespace NineTapTour.Forms
                 temp.UseGame2 = item.UseGame2;
                 temp.UseGame3 = item.UseGame3;
                 temp.UseGame4 = item.UseGame4;
+                temp.ProPotEarnings = item.ProPotEarnings;
                 temp.ScratchTotal = (temp.Game1 ?? 0) + (temp.Game2 ?? 0) + (temp.Game3 ?? 0) + (temp.Game4 ?? 0);
 
                 #region Calculates and sets handicap total
@@ -470,6 +471,7 @@ namespace NineTapTour.Forms
                 newRow[NOTES_COLUMN_NAME] = item.Notes;
                 newRow[HANDICAP_TOTAL_COLUMN_NAME] = item.HandicapTotal;
                 newRow[GAME_ID_COLUMN_NAME] = item.GameId;
+                newRow[PRO_POT_COLUMN_NAME] = item.ProPotEarnings;
                 if (isMemberAlreadyPlaced)
                 {
                     dt.Rows.InsertAt(newRow, (dt.Rows.IndexOf(GetLastMemberIndex(dt, item.MemberNumber))) + 1);
@@ -1300,7 +1302,7 @@ namespace NineTapTour.Forms
                     currMember.StartAvg = ph.AVG;
                     ph.hisID = PlayerHistoryDB.GetHisID(ph);
                     ph.regionID = RegionID;
-                    currGame.gameRegionID = RegionID;
+                    currGame.GameRegionID = RegionID;
 
                     // player history multiple entries (which placestanding == 0) are added after bonus pins are adjusted
                     if (placeStanding > 0)

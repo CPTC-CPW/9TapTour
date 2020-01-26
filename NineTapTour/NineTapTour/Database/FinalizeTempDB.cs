@@ -191,6 +191,7 @@ namespace NineTapTour.Database
                                 g.Notes,
                                 g.Handicap,
                                 g.Bonus,
+                                g.SidePot,
                                 m.Number,
                                 t.TourneyRegion
                             }).ToList();
@@ -220,6 +221,7 @@ namespace NineTapTour.Database
                     NewParticipant.UseGame4 = item.UseGame4 ?? item.Game4.HasValue;
                     NewParticipant.Notes = item.Notes;
                     NewParticipant.ScratchTotal = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0);
+                    NewParticipant.ProPotEarnings = Convert.ToInt32(item.SidePot);
 
                     // Increases GamesPlayed by 1 for each game1-4 with a value
                     int GamesPlayed = 0;
@@ -365,7 +367,7 @@ namespace NineTapTour.Database
             using (var db = new NineTapDb())
             {
                 return (from g in db.Games
-                where g.gameRegionID == RegionID
+                where g.GameRegionID == RegionID
                 select g).ToList();
             }
         }
