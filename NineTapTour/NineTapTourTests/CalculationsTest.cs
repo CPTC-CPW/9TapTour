@@ -73,19 +73,19 @@ namespace NineTapTour.Calculations.Test
             //check first bowler is A with 1000; lesser score (800) is removed
             Assert.AreEqual(members[0].MemberId, 1);
             Assert.AreEqual(members[0].Score, 1000);
-            Assert.AreEqual(members[0].placing, 1);
+            Assert.AreEqual(members[0].Placing, 1);
 
             //check three way tie (next bowlers all have score of 800)
-            Assert.AreEqual(members[1].placing, 2);
-            Assert.AreEqual(members[2].placing, 2);
-            Assert.AreEqual(members[3].placing, 2);
+            Assert.AreEqual(members[1].Placing, 2);
+            Assert.AreEqual(members[2].Placing, 2);
+            Assert.AreEqual(members[3].Placing, 2);
 
             //next two members tie (next two bowlers tie with 650
-            Assert.AreEqual(members[4].placing, 5);
-            Assert.AreEqual(members[5].placing, 5);
+            Assert.AreEqual(members[4].Placing, 5);
+            Assert.AreEqual(members[5].Placing, 5);
 
             //last member in list (score of 500)
-            Assert.AreEqual(members[6].placing, 7);
+            Assert.AreEqual(members[6].Placing, 7);
         }
 
         [TestMethod]

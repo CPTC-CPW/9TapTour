@@ -1,38 +1,31 @@
 ﻿using NineTapTour.Database;
+using NineTapTour.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.SqlClient;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Linq.Dynamic;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using NineTapTour.Models;
 using Excel = Microsoft.Office.Interop.Excel;
-using System.Collections;
-using System.Text.RegularExpressions;
 
 namespace NineTapTour.Forms
 {
     public partial class FrmTournamentResults : Form
     {
         // Set column names for datagridview
-        static string PLACE_STANDING_COLUMN_NAME = "Place";
-        static string FULLNAME_COLUMN_NAME = "Full Name";
-        static string HANDICAP_COLUMN_NAME = "H/B*";
-        static string TOTAL_SCORE_COLUMN_NAME = "Total Score";
-        static string EARNINGS_COLUMN_NAME = "Earnings";
-        static string MEMBER_ID_COLUMN_NAME = "Member ID";
-        static string GAME_ID_COLUMN_NAME = "Game ID";
-        static string PROGRESSIVEPOT_COLUMN_NAME = "Progressive Pot";
+        static readonly string PLACE_STANDING_COLUMN_NAME = "Place";
+        static readonly string FULLNAME_COLUMN_NAME = "Full Name";
+        static readonly string HANDICAP_COLUMN_NAME = "H/B*";
+        static readonly string TOTAL_SCORE_COLUMN_NAME = "Total Score";
+        static readonly string EARNINGS_COLUMN_NAME = "Earnings";
+        static readonly string MEMBER_ID_COLUMN_NAME = "Member ID";
+        static readonly string GAME_ID_COLUMN_NAME = "Game ID";
+        static readonly string PROGRESSIVEPOT_COLUMN_NAME = "Progressive Pot";
 
         DataTable dt = new DataTable(); // Instantiate Data Table
-        NineTapDb db = new NineTapDb(); // Get access to database
         Tournament tourny = frmMemberScores.selectedTournament; // Get Tournament
+        NineTapDb db = new NineTapDb(); // Get access to database
         static int totalTournamentEntries;  // Total number of entries for all squads in tournament
         static int clientInput; // how many winners the client wants to see
         List<ExcelMember> clientRequested = new List<ExcelMember>();
@@ -65,7 +58,7 @@ namespace NineTapTour.Forms
             // Create a List<ExcelMember> and populate it with this tournament's participants
             winners = BuildWinnersList();
             
-            ActiveControl = tbClientInputCount;
+            ActiveControl = txtClientInputCount;
         }
 
         /// <summary>
@@ -74,6 +67,7 @@ namespace NineTapTour.Forms
         /// <param name="clientRequested"></param>
         private void CreateDataGridView(List<ExcelMember> clientRequested, int clientInput)
         {
+
             // Create data table and add columns 
             // Columns with ReadOnly set to False are editable        
             dt.Columns.Add(PLACE_STANDING_COLUMN_NAME).ReadOnly = true;
@@ -274,13 +268,13 @@ namespace NineTapTour.Forms
             {
                 frmPleaseWait please = new frmPleaseWait();
                 please.Show();
-                exportToExcel();
+                ExportToExcel();
                 wait = false;
                 please.Close();
             }
         }
         
-        private void exportToExcel()
+        private void ExportToExcel()
         {
             /// <summary>
             /// Saves participants' place standing and earnings won to the database
@@ -296,7 +290,7 @@ namespace NineTapTour.Forms
                 g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
                 g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
               
-                g.gameRegionID = tourny.TourneyRegion;
+                g.GameRegionID = tourny.TourneyRegion;
                 
                 db.SaveChanges();
             }
@@ -632,11 +626,11 @@ namespace NineTapTour.Forms
 
                 if (FormatBool)
                 {
-                    formatBigTie(tempData3, tiePlace, xlWorkSheet, i);
+                    FormatBigTie(tempData3, tiePlace, xlWorkSheet, i);
                 }
 
                 //set the Total Payout to the correct number
-                setTotalPayout(xlWorkSheet);
+                SetTotalPayout(xlWorkSheet);
 
                 // saves the excel file with the file name
                 try
@@ -662,9 +656,9 @@ namespace NineTapTour.Forms
                 xlWorkBook.Close(true, misValue, misValue);
                 xlApp.Quit();
 
-                releaseObject(xlWorkSheet);
-                releaseObject(xlWorkBook);
-                releaseObject(xlApp);
+                ReleaseObject(xlWorkSheet);
+                ReleaseObject(xlWorkBook);
+                ReleaseObject(xlApp);
             }
             catch
             {
@@ -678,7 +672,7 @@ namespace NineTapTour.Forms
 
         //gets and sets the total amount of payout for the 
         //winners in the total payout box of the excel sheet
-        private void setTotalPayout(Excel.Worksheet xlWorkSheet)
+        private void SetTotalPayout(Excel.Worksheet xlWorkSheet)
         {
             double money = 0;
 
@@ -690,7 +684,7 @@ namespace NineTapTour.Forms
         }
 
         //format and populate 
-        private void formatBigTie(string tempData3, int tiePlace, Excel.Worksheet xlWorkSheet, int i)
+        private void FormatBigTie(string tempData3, int tiePlace, Excel.Worksheet xlWorkSheet, int i)
         {
             for (i = 0; i < tiePlace; i++)
             {
@@ -808,7 +802,7 @@ namespace NineTapTour.Forms
         /// so that Excel does not remain running.
         /// </summary>
         /// <param name="obj"></param>
-        private void releaseObject(object obj)
+        private void ReleaseObject(object obj)
         {
             try
             {
@@ -834,6 +828,10 @@ namespace NineTapTour.Forms
             List<double> Winnings = new List<double>();
             for(int winningList = 0; winningList < dgvTournamentResults.RowCount; winningList++)
             {
+                //Identify the person getting money from the progressive pot
+                //int memberNum = Convert.ToInt32(dgvTournamentResults[5, winningList].Value);
+                //Member m = MemberDB.GetMemberByGameId(gameId);
+                //Add the money in that cell to their earnings
                 Winnings.Add(Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
             }
             TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
@@ -847,19 +845,14 @@ namespace NineTapTour.Forms
                 g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
                 g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
                 g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
-                g.gameRegionID = tourny.TourneyRegion;
+                g.GameRegionID = tourny.TourneyRegion;
 
                 db.Entry(g).State = System.Data.Entity.EntityState.Modified;
                 db.SaveChanges();
             }
         }
 
-        private void tbClientInputCount_TextChanged(object sender, EventArgs e)
-        {
-         
-        }
-
-        private void tbClientInputCount_KeyDown(object sender, KeyEventArgs e)
+        private void TxtClientInputCount_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
@@ -867,37 +860,38 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// Accepts a number of winners from the user.
+        /// </summary>
         private void AcceptClientInputForResults()
         {
             this.dgvTournamentResults.DataSource = null;
             this.dgvTournamentResults.Rows.Clear();
             this.dgvTournamentResults.Columns.Clear();
 
-            if (tbClientInputCount.Text == null || tbClientInputCount.Text == "")
+            if (Int32.TryParse(txtClientInputCount.Text, out int num))
             {
-                MessageBox.Show("Please Enter Number Of Winners");
+                clientInput = num;
+                txtClientInputCount.Enabled = false;
+                // Create list of participants list for client request of how many show up in tournament results
+                clientRequested = Calculations.Calculations.MakeTopMembersByPlacementList(winners, clientInput);
+                // Create datagridview and populate with cashedWinners list
+                CreateDataGridView(clientRequested, clientInput);
             }
             else
             {
-                try
-                {
-                    clientInput = Convert.ToInt32(tbClientInputCount.Text);
-                    tbClientInputCount.Enabled = false;
-                    // Create list of participants list for client request of how many show up in tournament results
-                    clientRequested = Calculations.Calculations.MakeTopMembersByPlacementList(winners, clientInput);
-                    // Create datagridview and populate with cashedWinners list
-                    CreateDataGridView(clientRequested, clientInput);
-                }
-                catch (FormatException)
-                {
-                    MessageBox.Show("Please enter a nunmber");
-                }
+                MessageBox.Show("Please enter a valid number of winners");
             }
         }
 
+        /// <summary>
+        /// This function will...
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnPaste_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(tbClientInputCount.Text))
+            if (string.IsNullOrWhiteSpace(txtClientInputCount.Text))
             {
                 MessageBox.Show("Please enter the number of winners first");
                 return;
@@ -919,9 +913,9 @@ namespace NineTapTour.Forms
             int row = 0;
             int col = 4;
 
-            int pasteAble = Convert.ToInt32(tbClientInputCount.Text) + 3; // +3 for the pro pot entries
+            int pasteAble = Convert.ToInt32(txtClientInputCount.Text) + 3; // +3 for the pro pot entries
             int pasteCount = lines.Count();
-            int paste = 0;
+            int paste;
             if(pasteCount < pasteAble)
             {
                 paste = pasteCount - 1;

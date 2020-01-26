@@ -34,7 +34,7 @@
             this.btnExportToExcel = new System.Windows.Forms.Button();
             this.dgvTournamentResults = new System.Windows.Forms.DataGridView();
             this.lblClientRequestCount = new System.Windows.Forms.Label();
-            this.tbClientInputCount = new System.Windows.Forms.TextBox();
+            this.txtClientInputCount = new System.Windows.Forms.TextBox();
             this.btnPaste = new System.Windows.Forms.Button();
             this.lblHB = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTournamentResults)).BeginInit();
@@ -44,9 +44,10 @@
             // 
             this.lblTournamentResults.AutoSize = true;
             this.lblTournamentResults.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTournamentResults.Location = new System.Drawing.Point(21, 27);
+            this.lblTournamentResults.Location = new System.Drawing.Point(28, 33);
+            this.lblTournamentResults.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTournamentResults.Name = "lblTournamentResults";
-            this.lblTournamentResults.Size = new System.Drawing.Size(277, 31);
+            this.lblTournamentResults.Size = new System.Drawing.Size(341, 39);
             this.lblTournamentResults.TabIndex = 0;
             this.lblTournamentResults.Text = "Tournament Results";
             // 
@@ -54,17 +55,19 @@
             // 
             this.lblTournamentName.AutoSize = true;
             this.lblTournamentName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTournamentName.Location = new System.Drawing.Point(27, 78);
+            this.lblTournamentName.Location = new System.Drawing.Point(36, 96);
+            this.lblTournamentName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTournamentName.Name = "lblTournamentName";
-            this.lblTournamentName.Size = new System.Drawing.Size(156, 20);
+            this.lblTournamentName.Size = new System.Drawing.Size(190, 25);
             this.lblTournamentName.TabIndex = 1;
             this.lblTournamentName.Text = "Tournament Name";
             // 
             // btnExportToExcel
             // 
-            this.btnExportToExcel.Location = new System.Drawing.Point(506, 24);
+            this.btnExportToExcel.Location = new System.Drawing.Point(675, 30);
+            this.btnExportToExcel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnExportToExcel.Name = "btnExportToExcel";
-            this.btnExportToExcel.Size = new System.Drawing.Size(132, 36);
+            this.btnExportToExcel.Size = new System.Drawing.Size(176, 44);
             this.btnExportToExcel.TabIndex = 2;
             this.btnExportToExcel.Text = "Export to Excel";
             this.btnExportToExcel.UseVisualStyleBackColor = true;
@@ -74,35 +77,39 @@
             // 
             this.dgvTournamentResults.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvTournamentResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvTournamentResults.Location = new System.Drawing.Point(29, 138);
+            this.dgvTournamentResults.Location = new System.Drawing.Point(39, 170);
+            this.dgvTournamentResults.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.dgvTournamentResults.Name = "dgvTournamentResults";
-            this.dgvTournamentResults.Size = new System.Drawing.Size(609, 419);
+            this.dgvTournamentResults.RowHeadersWidth = 51;
+            this.dgvTournamentResults.Size = new System.Drawing.Size(812, 516);
             this.dgvTournamentResults.TabIndex = 0;
             this.dgvTournamentResults.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTournamentResults_CellEnter);
             // 
             // lblClientRequestCount
             // 
             this.lblClientRequestCount.AutoSize = true;
-            this.lblClientRequestCount.Location = new System.Drawing.Point(311, 115);
+            this.lblClientRequestCount.Location = new System.Drawing.Point(415, 142);
+            this.lblClientRequestCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblClientRequestCount.Name = "lblClientRequestCount";
-            this.lblClientRequestCount.Size = new System.Drawing.Size(221, 13);
+            this.lblClientRequestCount.Size = new System.Drawing.Size(291, 17);
             this.lblClientRequestCount.TabIndex = 3;
             this.lblClientRequestCount.Text = "How many winners would you like places for?";
             // 
-            // tbClientInputCount
+            // txtClientInputCount
             // 
-            this.tbClientInputCount.Location = new System.Drawing.Point(538, 112);
-            this.tbClientInputCount.Name = "tbClientInputCount";
-            this.tbClientInputCount.Size = new System.Drawing.Size(100, 20);
-            this.tbClientInputCount.TabIndex = 4;
-            this.tbClientInputCount.TextChanged += new System.EventHandler(this.tbClientInputCount_TextChanged);
-            this.tbClientInputCount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbClientInputCount_KeyDown);
+            this.txtClientInputCount.Location = new System.Drawing.Point(717, 138);
+            this.txtClientInputCount.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtClientInputCount.Name = "txtClientInputCount";
+            this.txtClientInputCount.Size = new System.Drawing.Size(132, 22);
+            this.txtClientInputCount.TabIndex = 4;
+            this.txtClientInputCount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtClientInputCount_KeyDown);
             // 
             // btnPaste
             // 
-            this.btnPaste.Location = new System.Drawing.Point(191, 112);
+            this.btnPaste.Location = new System.Drawing.Point(255, 138);
+            this.btnPaste.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnPaste.Name = "btnPaste";
-            this.btnPaste.Size = new System.Drawing.Size(103, 23);
+            this.btnPaste.Size = new System.Drawing.Size(137, 28);
             this.btnPaste.TabIndex = 5;
             this.btnPaste.Text = "Paste Earnings";
             this.btnPaste.UseVisualStyleBackColor = true;
@@ -111,26 +118,28 @@
             // lblHB
             // 
             this.lblHB.AutoSize = true;
-            this.lblHB.Location = new System.Drawing.Point(503, 568);
+            this.lblHB.Location = new System.Drawing.Point(671, 699);
+            this.lblHB.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblHB.Name = "lblHB";
-            this.lblHB.Size = new System.Drawing.Size(134, 13);
+            this.lblHB.Size = new System.Drawing.Size(172, 17);
             this.lblHB.TabIndex = 6;
             this.lblHB.Text = "* H/B = Handicap + Bonus";
             // 
             // FrmTournamentResults
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(667, 590);
+            this.ClientSize = new System.Drawing.Size(889, 726);
             this.Controls.Add(this.lblHB);
             this.Controls.Add(this.btnPaste);
-            this.Controls.Add(this.tbClientInputCount);
+            this.Controls.Add(this.txtClientInputCount);
             this.Controls.Add(this.lblClientRequestCount);
             this.Controls.Add(this.dgvTournamentResults);
             this.Controls.Add(this.btnExportToExcel);
             this.Controls.Add(this.lblTournamentName);
             this.Controls.Add(this.lblTournamentResults);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "FrmTournamentResults";
             this.Text = "Tournament Results";
             this.Load += new System.EventHandler(this.FrmTournamentResults_Load);
@@ -147,7 +156,7 @@
         private System.Windows.Forms.Button btnExportToExcel;
         private System.Windows.Forms.DataGridView dgvTournamentResults;
         private System.Windows.Forms.Label lblClientRequestCount;
-        private System.Windows.Forms.TextBox tbClientInputCount;
+        private System.Windows.Forms.TextBox txtClientInputCount;
         private System.Windows.Forms.Button btnPaste;
         private System.Windows.Forms.Label lblHB;
     }

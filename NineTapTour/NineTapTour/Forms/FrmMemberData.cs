@@ -1144,7 +1144,7 @@ namespace NineTapTour.Forms
                     }
                
 
-                    GameHistory.gameRegionID = RegionID;
+                    GameHistory.GameRegionID = RegionID;
                     temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
                     temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
                     temp.PlayerLastName = playerLastName;

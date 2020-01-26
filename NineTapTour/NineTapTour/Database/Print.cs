@@ -244,7 +244,7 @@ namespace NineTapTour.Database
             for (int i = 0; i < tempMemberList.Count - (index * 40) && i < numToPrint; i++)
             {
                 //draw number for what place they are
-                graphic.DrawString((tempMemberList[i + (index * 40)].placing).ToString(), font, dBrush, startX + 6, startY + 173 + (i * 19));
+                graphic.DrawString((tempMemberList[i + (index * 40)].Placing).ToString(), font, dBrush, startX + 6, startY + 173 + (i * 19));
 
                 //draw Score
                 graphic.DrawString(tempMemberList[i + (index * 40)].Score.ToString(), font, dBrush, startX + 48, startY + 173 + (i * 19));

@@ -584,7 +584,7 @@ namespace NineTapTour.Forms
                         player.Game.Handicap = currentGame.Handicap;
                     }
 
-                    player.Game.gameRegionID = RegionID;
+                    player.Game.GameRegionID = RegionID;
 
                     // if compEntry checkbox is checked, set IsComp to true in game table
                     if (chbCompEntry.Checked)
@@ -2109,7 +2109,5 @@ namespace NineTapTour.Forms
         {
             Refresh(false);
         }
-
-
     }
 }

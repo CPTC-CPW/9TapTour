@@ -40,11 +40,19 @@ namespace NineTapTour.Models
         public decimal? SidePot { get; set; }
         public byte? PlaceStanding { get; set;}
 
-        public int gameRegionID { get; set; }
+        public int GameRegionID { get; set; }
 
+        /// <summary>
+        /// If true, the player bowls for free. Comp players 
+        /// bowl free of charge for helping with the tournament.
+        /// </summary>
         [DefaultValue(false)]
-        public bool IsComp { get; set; } // comp is someone who bowls for free because they are helping with tournament 
+        public bool IsComp { get; set; } 
 
+        /// <summary>
+        /// Returns a list of all games the bowler has played in the tournament entry.
+        /// </summary>
+        /// <returns></returns>
         public List<int?> AllGameScores()
         {
             var newList = new List<int?> {Game1, Game2, Game3, Game4};
