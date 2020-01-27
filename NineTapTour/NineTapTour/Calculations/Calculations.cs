@@ -180,18 +180,14 @@ namespace NineTapTour.Calculations
         /// <param name="latestGames">a member's player history</param>
         /// <param name="currTourneyEntryCount">this is the number of losses in the current game</param>
         /// <param name="minLosses">minimum number of losses to determine if bonus is earned</param>
-        /// <returns></returns>
         private static bool DoesGetBonus(List<PlayerHistory> latestGames, int currTourneyEntryCount, int minLosses)
         {
             // find first index of a tournament with a cashed game
             int lastCashedTourneyIndex = FindLastCashedTourneyIndex(latestGames);
 
+            // did not lose any of the latest games with a 3rd loss in a row
             if (lastCashedTourneyIndex == -1)
-            {
-                // did not lose any of the latest games with a 3rd loss in a row
                 return latestGames.Count % 3 + currTourneyEntryCount >= minLosses;
-
-            }
 
             // is the multiple of a 3rd loss in a row after a win
             return lastCashedTourneyIndex % 3 + currTourneyEntryCount >= minLosses;
@@ -208,8 +204,7 @@ namespace NineTapTour.Calculations
             {
                 if (PlayerDidCash(latestGames[i]))
                 {
-
-                    // move to first index of winning tournament where member cashed
+                    // Move to first index of winning tournament where member cashed
                     while (i - 1 >= 0 && latestGames[i].TournamentDate == latestGames[i - 1].TournamentDate)
                     {
                         i--;
@@ -221,26 +216,25 @@ namespace NineTapTour.Calculations
         }
 
         /// <summary>
-        /// If a PlayerHistory's MoneyWon is greater than 0 than this method returns true
+        /// Returns true if the player won money, returns false otherwise
         /// </summary>
-        /// <param name="playerHistory"></param>
-        /// <returns>true if MoneyWon is greater than 0</returns>
         private static bool PlayerDidCash(PlayerHistory playerHistory)
         {
             return playerHistory.MoneyWon > 0;
         }
 
-        
-
         /// <summary>
-        /// Number of participants that can place in tournament. Total entries minus comp entries (tournament 
-        /// workers that do not have to pay entry fees) and divides by 5 using integer division. 
+        /// Returns the number of members that can place in the tournament
         /// </summary>
         /// <param name="totalEntries">all tournament participants including comp entries</param>
         /// <param name="compEntries">tournament participants that also work at tournament</param>
-        /// <returns>the quantity of members that can place in a tournament</returns>
+        /// <returns>
+        /// The quantity of members that can place in a tournament, 
+        /// which is also the max placing in the tournament
+        /// </returns>
         public static int GetQtyOfMembersThatCanPlace(int totalEntries, int compEntries)
         {
+            // Only 1/5th of the members can place
             return (totalEntries - compEntries) / 5;
         }
 
