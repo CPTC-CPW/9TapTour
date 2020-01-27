@@ -15,30 +15,38 @@ namespace NineTapTour.Calculations
         /// of tournament and member placement, handicap calculations, and calculating the
         /// number of participants that can place in a tournament.  
         /// </summary>
-       
-        const int MAX_BONUS_PINS_ALLOWED = 5;
-        const int NO_PINS_TO_DEDUCT = 0;
-        const double DEDUCT_HALF = .5;
-        const int DEDUCT_1 = 1;
-        const int DEDUCT_2 = 2;
-        const int DEDUCT_3 = 3;
+
+        /* 
+         * With the current rules posed on 9Tap's website,
+         * If you win money and are in the place standings: 
+         */
+
+        // 1st place: All bonus pins removed
         const int FIRST_PLACE = 1;
-        const int MIN_PLACEMENT_DEDUCT_2_PINS = 6;
-        const int MAX_PLACEMENT_DEDUCT_2_PINS = 10;
-        const int MIN_PLACEMENT_DEDUCT_3_PINS = 2;
+
+        // 2ed-5th place: 3 bonus pins removed
         const int MAX_PLACEMENT_DEDUCT_3_PINS = 5;
-        
+        const int DEDUCT_3 = 3;
+
+        // 6th-10th place: 2 bonus pins removed
+        const int MAX_PLACEMENT_DEDUCT_2_PINS = 10;
+        const int DEDUCT_2 = 2;
+
+        // 11th+ place: 1 bonus pin removed
+        const int DEDUCT_1 = 1;
+
+        // Members may not have more then 5 bonus pins
+        // And no less then 0
+        const int MAX_BONUS_PINS_ALLOWED = 5;
+        const int MIN_BONUS_PINS_ALLOWED = 0;
+
+        // Members may not have more then 70 Handicap pins
         const int MAX_HANDICAP_PINS = 70;
 
-        // BASIS_SCORE used to calculate handicap, 
-        // usually slightly higher than bowler with highest average in the league 
+        // Handicap pins are calculated as
+        // 90% of 220 minus the average
         const int BASIS_SCORE = 220;
-
-        // BASIS_SCORE_PERCENTAGE
-        // used to calculate handicap, amount of difference to be used
         const int BASIS_SCORE_PERCENTAGE = 90;
-
-       
 
         /// <summary>
         /// Calculates handicap pins:
@@ -217,7 +225,7 @@ namespace NineTapTour.Calculations
             //ensure that new bonus pins are 0 or greater
             if (bonusPinsAfterDeduction <= 0)
             {
-                return NO_PINS_TO_DEDUCT;
+                return MIN_BONUS_PINS_ALLOWED;
             }
             else
             {
