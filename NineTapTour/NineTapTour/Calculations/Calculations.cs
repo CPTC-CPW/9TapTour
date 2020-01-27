@@ -382,44 +382,6 @@ namespace NineTapTour.Calculations
         }
 
         /// <summary>
-        /// Removes duplicate members by lowestHandicap based on memberNumber. 
-        /// </summary>
-        /// <param name="members"></param>
-        /// <returns>list of removed FinalizeTemps</returns>
-        private static List<FinalizeTemp> RemoveDuplicateBowlers(List<FinalizeTemp> members)
-        {
-            List<FinalizeTemp> removal = new List<FinalizeTemp>();
-            for (int i = 0; i < members.Count; i++)
-            {
-                bool isCurrIndexRemoved = false;
-                for (int j = i + 1; j < members.Count; j++)
-                {
-                    if (members[i].MemberNumber == members[j].MemberNumber)
-                    {
-                        if (members[i].HandicapTotal >= members[j].HandicapTotal)
-                            removal.Add(members[j]);
-                        else
-                        {
-                            removal.Add(members[i]);
-                            isCurrIndexRemoved = true;
-                        }
-                    }
-                }
-
-                foreach (FinalizeTemp deleteMember in removal)
-                {
-                    members.Remove(deleteMember);
-                }
-
-                if (isCurrIndexRemoved)
-                {
-                    i--;
-                }
-            }
-            return removal;
-        }
-
-        /// <summary>
         /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding
         /// </summary>
         /// <param name="members"></param>
@@ -460,9 +422,46 @@ namespace NineTapTour.Calculations
         }
 
         /// <summary>
-        /// Removes the lower scores of duplicate bowlers by MemberId
+        /// Removes the lower scores of duplicate bowlers in the list
         /// </summary>
-        /// <param name="temp"></param>
+        /// <returns>list of removed FinalizeTemps</returns>
+        private static List<FinalizeTemp> RemoveDuplicateBowlers(List<FinalizeTemp> members)
+        {
+            List<FinalizeTemp> removal = new List<FinalizeTemp>();
+            for (int i = 0; i < members.Count; i++)
+            {
+                bool isCurrIndexRemoved = false;
+                for (int j = i + 1; j < members.Count; j++)
+                {
+                    // If any two members have the same number
+                    if (members[i].MemberNumber == members[j].MemberNumber)
+                    {
+                        // Remove the inferior clone
+                        if (members[i].HandicapTotal >= members[j].HandicapTotal)
+                            removal.Add(members[j]);
+                        else
+                        {
+                            removal.Add(members[i]);
+                            isCurrIndexRemoved = true;
+                        }
+                    }
+                }
+
+                // Removes all members who are in removal list
+                foreach (FinalizeTemp deleteMember in removal)
+                {
+                    members.Remove(deleteMember);
+                }
+
+                if (isCurrIndexRemoved)
+                    i--;
+            }
+            return removal;
+        }
+
+        /// <summary>
+        /// Removes the lower scores of duplicate bowlers in the list
+        /// </summary>
         private static void RemoveDuplicateBowlers(List<MemberScores> temp)
         {
             List<MemberScores> removal = new List<MemberScores>();
@@ -471,8 +470,10 @@ namespace NineTapTour.Calculations
                 bool isCurrIndexRemoved = false;
                 for (int j = i + 1; j < temp.Count; j++)
                 {
-                    if(temp[i].MemberId == temp[j].MemberId)
+                    // If any two members have the same Id
+                    if (temp[i].MemberId == temp[j].MemberId)
                     {
+                        // Removes the inferior clone
                         if (temp[i].Score >= temp[j].Score)
                             removal.Add(temp[j]);
                         else
@@ -483,23 +484,20 @@ namespace NineTapTour.Calculations
                     }
                 }
 
+                // Removes all members that are in the removal list
                 foreach (MemberScores deleteMember in removal)
                 {
                     temp.Remove(deleteMember);
                 }
 
                 if (isCurrIndexRemoved)
-                {
                     i--;
-                }
             }
         }
 
         /// <summary>
-        /// Finds all duplicate bowlers and removes all duplicates that aren't that bowler's
-        /// highest score
+        /// Removes the lower scores of duplicate bowlers in the list
         /// </summary>
-        /// <param name="members"></param>
         private static void RemoveDuplicateBowlers(List<ExcelMember> members)
         {
             List<ExcelMember> removal = new List<ExcelMember>();
@@ -508,8 +506,10 @@ namespace NineTapTour.Calculations
                 bool isCurrIndexRemoved = false;
                 for (int j = i + 1; j < members.Count; j++)
                 {
+                    // If any two members have the same Id
                     if (members[i].MemberNumber == members[j].MemberNumber)
                     {
+                        // Removes the inferior clone
                         if (members[i].TotalScore >= members[j].TotalScore)
                             removal.Add(members[j]);
                         else
@@ -527,9 +527,7 @@ namespace NineTapTour.Calculations
 
                 // prevents from skipping over current index
                 if (isCurrIndexRemoved)
-                {
                     i--;
-                }
             }
         }
 
