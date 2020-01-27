@@ -49,22 +49,19 @@ namespace NineTapTour.Calculations
         const int BASIS_SCORE_PERCENTAGE = 90;
 
         /// <summary>
-        /// Calculates handicap pins:
-        /// 90% of the difference between 220 and a bowler's 9 tap tour average. 
-        /// or the maximum of 70 pins, whichever is lowest.
+        /// Calculates and returns the members handicap pins amount
+        /// based on their average
         /// </summary>
-        /// <param name="currentAverage"></param>
-        /// <returns>Number of calculated Handicap Pins</returns>
         public static int CalculateHandicapPins(int currentAverage)
         {
-            /// 90% is the current BASIS_SCORE_PERCENTAGE, 220 is BASIS_SCORE
-            /// both available for easy modification
-            // int division ensures any fractional handicap is thrown out
-            int averageBasedHandicapPins= ( (BASIS_SCORE - currentAverage) *  BASIS_SCORE_PERCENTAGE / 100 );
+            // Handicap pins are calculated as 90% of 220 minus the average
+            // Int is used for this caluclation to remove all decimal points
+            int averageBasedHandicapPins = (
+                (BASIS_SCORE - currentAverage) *
+                (BASIS_SCORE_PERCENTAGE / 100));
 
-            int lowestHandicap = Math.Min(MAX_HANDICAP_PINS, averageBasedHandicapPins);
-                 
-            return lowestHandicap;
+            // Member cannot have more then 70 handicap pins
+            return Math.Min(MAX_HANDICAP_PINS, averageBasedHandicapPins);
         }
 
         /// <summary>
