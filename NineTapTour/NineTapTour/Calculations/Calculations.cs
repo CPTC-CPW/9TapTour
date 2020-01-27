@@ -388,10 +388,9 @@ namespace NineTapTour.Calculations
         /// <returns>List of ExcelMembers with duplicate members removed ordered by TotalScore with assigned placement</returns>
         public static List<ExcelMember> CalculatePlaceStandings(List<ExcelMember> members)
         {
+            // No members, no place standings
             if (members.Count == 0)
-            {
                 return members;
-            }
 
             // Makes copy so original list won't be affected
             members = members.ToList();
@@ -399,25 +398,24 @@ namespace NineTapTour.Calculations
             //remove duplicates
             RemoveDuplicateBowlers(members);
 
-            //ensure bowlers are sorted by score
-            members.Sort((x, y) => y.TotalScore.CompareTo(x.TotalScore));
-
+            // The first member in the list when sorted by score will be in first place
             int place = 1;
+            members.Sort((x, y) => y.TotalScore.CompareTo(x.TotalScore));
             members[0].PlaceStanding = place++;
 
             for (int currPosition = 1; currPosition < members.Count; currPosition++)
             {
+                // Tied members get the same position
                 if (members[currPosition].TotalScore == members[currPosition - 1].TotalScore)
-                {
                     members[currPosition].PlaceStanding = members[currPosition - 1].PlaceStanding;
-                }
+
+                // Otherwise they get a unique placing
                 else
-                {
                     members[currPosition].PlaceStanding = place;
-                }
+
+                // Placing is still added if members tied
                 place++;
             }
-
             return members;
         }
 
