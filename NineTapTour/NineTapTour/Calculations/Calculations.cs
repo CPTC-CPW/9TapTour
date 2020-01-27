@@ -243,42 +243,41 @@ namespace NineTapTour.Calculations
         /// returned list is sorted by highest score
         /// </summary>
         /// <param name="tempListOfMemberScores">list of MemberScores sorted by Score with placestanding, without duplicate members</param>
-        /// 
-        //My Change is renaming temp to tempListOfMemberScores
         public static List<MemberScores> CalculatePlaceStandings(List<MemberScores> tempListOfMemberScores)
         {
+            // A list of no members needs nothing done to it
             if (tempListOfMemberScores.Count == 0)
-            {
                 return tempListOfMemberScores;
-            }
 
             // Makes copy so original list won't be affected
             tempListOfMemberScores = tempListOfMemberScores.ToList();
 
-            //remove duplicates
+            // Removes duplicate members
             RemoveDuplicateBowlers(tempListOfMemberScores);
 
-            //ensure bowlers are sorted by score
-            tempListOfMemberScores.Sort(new MemberScoresComparer());
-
+            // The first member ordered by score will will always score 1st place
             int place = 1;
+            tempListOfMemberScores.Sort(new MemberScoresComparer());
             tempListOfMemberScores[0].placing = place++;
 
+            // Gives each member a place standing
             for (int currPosition = 1; currPosition < tempListOfMemberScores.Count; currPosition++)
             {
+                // Members with identical scores will tie
                 if (tempListOfMemberScores[currPosition].Score == tempListOfMemberScores[currPosition - 1].Score)
-                {
                     tempListOfMemberScores[currPosition].placing = tempListOfMemberScores[currPosition - 1].placing;
-                }
+
+                // Otherwise, each member gets a unique placing
                 else
-                {
                     tempListOfMemberScores[currPosition].placing = place;
-                }
+
+                // Place is still counted if members tie
                 place++;
             }
 
+            // Returns the edited list of members
             return tempListOfMemberScores;
-        }   
+        }
 
         /// <summary>
         /// Calculates place standings of bowlers and returns a Dictionary of placestandings mapped to
@@ -288,18 +287,17 @@ namespace NineTapTour.Calculations
         /// <returns>Dictionary of FinalizeTemps and ints where ints are placings. Sorted by highest score with duplicate members last</returns>
         public static Dictionary<FinalizeTemp, int> CalculatePlaceStandings(List<FinalizeTemp> members, Tournament tournament)
         {
+            // A list of no members will return an empty list
             if (members.Count == 0)
-            {
                 return new Dictionary<FinalizeTemp, int>();
-            }
 
-            // original members list won't be affected
+            // Makes copy so original list won't be affected
             members = members.ToList();
 
             // Sort the list by the total score, including handicap, in descending order.
             members.Sort((a, b) => b.HandicapTotal.CompareTo(a.HandicapTotal));
 
-            // only non duplicates used for placing
+            // Removes duplicate members
             List<FinalizeTemp> removals = RemoveDuplicateBowlers(members);
 
 
@@ -321,25 +319,25 @@ namespace NineTapTour.Calculations
                 AlterHandicapTotalAccordingToMinimumGameScore(members, isPositive);
             }
 
-            // Calculate each members placing
+            // Calculate each member's placing
             for (int currPosition = 1; currPosition < members.Count; currPosition++)
             {
                 FinalizeTemp currMember = members[currPosition];
                 FinalizeTemp prevMember = members[currPosition - 1];
 
+                // Tied scores will have the same place standing
                 if (currMember.HandicapTotal == prevMember.HandicapTotal)
-                {
                     membersPlacingMap[currMember] = membersPlacingMap[prevMember];
-                }
+
+                // Otherwise members get a unique placing
                 else
-                {
                     membersPlacingMap[currMember] = place;
-                }
+
                 place++;
             }
 
             // Add duplicate entries to end of list
-            foreach(FinalizeTemp member in removals)
+            foreach (FinalizeTemp member in removals)
             {
                 membersPlacingMap.Add(member, 0);
             }
@@ -372,16 +370,14 @@ namespace NineTapTour.Calculations
                     currMember.Game3,
                     currMember.Game4
                 };
-                //if positive, the lowest scored game is added to the handicap total. All handicaps and bonuses are accounted for.
+
+                // If positive, the lowest scored game is added to the handicap total. All handicaps and bonuses are accounted for.
                 if (isPositive)
-                {
                     currMember.HandicapTotal = currMember.HandicapTotal + (games.Min().Value + currMember.Handicap + currMember.Bonus);
-                }
-                //if not positive, the lowest scored game is subtracted from the handicap total. All handicaps and bonuses are accounted for.
+
+                // If not positive, the lowest scored game is subtracted from the handicap total. All handicaps and bonuses are accounted for.
                 else
-                {
                     currMember.HandicapTotal = currMember.HandicapTotal - (games.Min().Value + currMember.Handicap + currMember.Bonus);
-                }
             }
         }
 
