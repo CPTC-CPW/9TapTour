@@ -79,17 +79,18 @@ namespace NineTapTour.Calculations
         public static int GetAdjustedBonusPins(int memberPlacement, int totalEntries, int compEntries, int currentBonusPins, 
                                                 int memNum, int RegionID, int currTournamentId)
         {
+            // Calculates if the member is on the place standing
             int lowestPlacementToCash = GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
 
+            // If player won money and are in the place standing, bonus pins are reduced
             if (memberPlacement <= lowestPlacementToCash)
-            {
-                return  DeductFromBonusPins(memberPlacement, currentBonusPins);
-            }
+                return DeductFromBonusPins(memberPlacement, currentBonusPins);
 
             // Gets the amount of entries the member has for the tournament
             int membersGameEntryCount = FinalizeTempDB.GetMembersGameEntryCount(currTournamentId, memNum);
             List<PlayerHistory> latestGames = PlayerHistoryDB.GetLastQtyGamesMoneyWon(memNum, RegionID, 15);
 
+            // If a player didnt win money, they might gain bonus pins
             return AddToBonusPins(currentBonusPins, latestGames, membersGameEntryCount);
         }
 
@@ -100,45 +101,76 @@ namespace NineTapTour.Calculations
         /// <param name="currentBonusPins">Bonus pins before calculating new bonus pins</param>
         /// <param name="latestGames">a member's player history</param>
         /// <param name="currTourneyEntryCount">this is the number of losses in the current game</param>
-        /// <returns></returns>
         public static int AddToBonusPins(int currentBonusPins, List<PlayerHistory> latestGames, int currTourneyEntryCount)
         {
-            int additionalBonus = 0; 
+            int additionalBonus = 0;
 
-            // if has 2 or less losses and no previous games or bonus pins are maxed out
+            // If a player does not have a latest game,
+            // Or has the max amount of bonus pins already, that player will not gain any more pins
             if (latestGames == null || currentBonusPins == MAX_BONUS_PINS_ALLOWED)
-            {
-                // additionalBonus = 0; but already initialized to 0
-            }
+                return currentBonusPins;
 
             // if has lost 4 entries this tournament and has 2 losses in history not 
             // yet used for gaining a bonus pin
             else if (currTourneyEntryCount == 4 && DoesGetBonus(latestGames, currTourneyEntryCount, 6))
-            {
                 additionalBonus = 2;
-            }
 
             // if has at least 3 losses in latestGames or 3 losses in current tournament
             else if (DoesGetBonus(latestGames, currTourneyEntryCount, 3) || currTourneyEntryCount >= 3)
-            {
                 additionalBonus = 1;
-            }
 
-            additionalBonus = ValidateAdditionalBonus(currentBonusPins, additionalBonus);
-
-            return currentBonusPins + additionalBonus;
+            int newBonusPins = currentBonusPins + additionalBonus;
+            return ValidateBonusPins(newBonusPins);
         }
 
-
-        public static int ValidateAdditionalBonus(int currentBonusPins, int additionalBonus)
+        /// <summary>
+        /// Calculates the amount of bonus pins the member would have after scoring 
+        /// in the place given if they won money
+        /// </summary>
+        /// <param name="memberPlaced">The position the member scored in</param>
+        /// <param name="currentBonusPins">That member's current bonus pins</param>
+        /// <returns>That members new number of bonus pins</returns>
+        public static int DeductFromBonusPins(int memberPlaced, int currentBonusPins)
         {
-            // Max bonus pins is 5
-            // Only case would be 4 bonus to start and then 2 to be added
-            if (currentBonusPins + additionalBonus > MAX_BONUS_PINS_ALLOWED)
-            {
-                additionalBonus -= 1;
-            }
-            return additionalBonus; 
+            int newBonusPinAmount = currentBonusPins;
+
+            // 1st place, All bonus pins removed
+            if (memberPlaced == FIRST_PLACE)
+                newBonusPinAmount = MIN_BONUS_PINS_ALLOWED;
+
+            // 2ed-5th place, 3 bonus pins removed
+            else if (memberPlaced <= MAX_PLACEMENT_DEDUCT_3_PINS)
+                newBonusPinAmount -= DEDUCT_3;
+
+            // 6th-10th place, 2 bonus pins removed
+            else if (memberPlaced <= MAX_PLACEMENT_DEDUCT_2_PINS)
+                newBonusPinAmount -= DEDUCT_2;
+
+            // 11th+ place, 1 bonus pin removed
+            else newBonusPinAmount -= DEDUCT_1;
+
+            // Checks if bonus pins are less then 0 before returning;
+            return ValidateBonusPins(newBonusPinAmount);
+        }
+
+        /// <summary>
+        /// Checks if bonus pins is within the upper and lower limits
+        /// </summary>
+        /// <returns>
+        /// The new amount of bonus pins that is within the bonus pins limits,
+        /// or returns the original bonus pins if nothing is wrong with it
+        /// </returns>
+        public static int ValidateBonusPins(int bonusPins)
+        {
+            // Bonus pins cannot be less then 0
+            if (bonusPins < MIN_BONUS_PINS_ALLOWED)
+                return MIN_BONUS_PINS_ALLOWED;
+
+            // Bonus pins cannot be greater then 5
+            else if (bonusPins > MAX_BONUS_PINS_ALLOWED)
+                return MAX_BONUS_PINS_ALLOWED;
+
+            return bonusPins;
         }
 
         /// <summary>
@@ -198,37 +230,7 @@ namespace NineTapTour.Calculations
             return playerHistory.MoneyWon > 0;
         }
 
-        public static int DeductFromBonusPins(int memberPlaced, int currentBonusPins)
-        {
-            int bonusPinsAfterDeduction = currentBonusPins;
-
-            if (memberPlaced == FIRST_PLACE)
-            {
-                bonusPinsAfterDeduction -= currentBonusPins;
-            }
-            else if (memberPlaced <= MAX_PLACEMENT_DEDUCT_3_PINS)
-            {
-                bonusPinsAfterDeduction -= DEDUCT_3;
-            }
-            else if (memberPlaced <= MAX_PLACEMENT_DEDUCT_2_PINS)
-            {
-                bonusPinsAfterDeduction -= DEDUCT_2;
-            }
-            else
-            {
-                bonusPinsAfterDeduction -= DEDUCT_1;
-            }
-
-            //ensure that new bonus pins are 0 or greater
-            if (bonusPinsAfterDeduction <= 0)
-            {
-                return MIN_BONUS_PINS_ALLOWED;
-            }
-            else
-            {
-                return bonusPinsAfterDeduction;
-            }
-        }
+        
 
         /// <summary>
         /// Number of participants that can place in tournament. Total entries minus comp entries (tournament 
