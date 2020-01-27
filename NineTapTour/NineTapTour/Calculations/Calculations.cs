@@ -58,7 +58,7 @@ namespace NineTapTour.Calculations
             // Int is used for this caluclation to remove all decimal points
             int averageBasedHandicapPins = (
                 (BASIS_SCORE - currentAverage) *
-                (BASIS_SCORE_PERCENTAGE / 100));
+                 BASIS_SCORE_PERCENTAGE / 100);
 
             // Member cannot have more then 70 handicap pins
             return Math.Min(MAX_HANDICAP_PINS, averageBasedHandicapPins);
