@@ -622,7 +622,10 @@ namespace NineTapTour.Forms
                 // Adds Member to Database
                 try
                 {
-                    int tempBonusPins = Convert.ToInt16(txtBonus.Text);
+                    if (!Int32.TryParse(txtBonus.Text, out int tempBonusPins)) {
+                        tempBonusPins = 0;
+                    }
+                    //int tempBonusPins = Convert.ToInt16(txtBonus.Text);
                     if (tempBonusPins <= 5)
                     {
                         // Left blank because this is simply making sure it is going to import 
