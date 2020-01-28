@@ -272,11 +272,11 @@
       <DependentUpon>PlayerHistoryForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\PrintToWord.cs" />
-    <Compile Include="Forms\TournamentPlaceStandings.cs">
+    <Compile Include="Forms\FrmTournamentPlaceStandings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\TournamentPlaceStandings.Designer.cs">
-      <DependentUpon>TournamentPlaceStandings.cs</DependentUpon>
+    <Compile Include="Forms\FrmTournamentPlaceStandings.Designer.cs">
+      <DependentUpon>FrmTournamentPlaceStandings.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\TournamentsByYear.cs">
       <SubType>Form</SubType>
@@ -366,8 +366,8 @@
     <EmbeddedResource Include="Forms\PlayerHistoryForm.resx">
       <DependentUpon>PlayerHistoryForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TournamentPlaceStandings.resx">
-      <DependentUpon>TournamentPlaceStandings.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FrmTournamentPlaceStandings.resx">
+      <DependentUpon>FrmTournamentPlaceStandings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TournamentsByYear.resx">
       <DependentUpon>TournamentsByYear.cs</DependentUpon>
