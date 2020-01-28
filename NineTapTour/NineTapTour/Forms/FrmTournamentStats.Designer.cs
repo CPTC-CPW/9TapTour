@@ -1,4 +1,6 @@
-﻿namespace NineTapTour.Forms
+﻿using System.Windows.Forms;
+
+namespace NineTapTour.Forms
 {
     partial class FrmTournamentStats
     {
@@ -28,60 +30,70 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmTournamentStats));
             this.lblTournamentName = new System.Windows.Forms.Label();
-            this.lblTournamentLocation = new System.Windows.Forms.Label();
-            this.lblTournamentDate = new System.Windows.Forms.Label();
-            this.lbxTopEarnings = new System.Windows.Forms.ListBox();
+            this.dgvTournamentStats = new System.Windows.Forms.DataGridView();
+            this.printDialog1 = new System.Windows.Forms.PrintDialog();
+            this.printDocument1 = new System.Drawing.Printing.PrintDocument();
+            this.btnPrint = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTournamentStats)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTournamentName
             // 
             this.lblTournamentName.AutoSize = true;
-            this.lblTournamentName.Location = new System.Drawing.Point(31, 26);
+            this.lblTournamentName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTournamentName.Location = new System.Drawing.Point(14, 21);
+            this.lblTournamentName.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.lblTournamentName.Name = "lblTournamentName";
-            this.lblTournamentName.Size = new System.Drawing.Size(70, 25);
+            this.lblTournamentName.Size = new System.Drawing.Size(156, 20);
             this.lblTournamentName.TabIndex = 0;
-            this.lblTournamentName.Text = "label1";
+            this.lblTournamentName.Text = "Tournament Name";
             // 
-            // lblTournamentLocation
+            // dgvTournamentStats
             // 
-            this.lblTournamentLocation.AutoSize = true;
-            this.lblTournamentLocation.Location = new System.Drawing.Point(341, 25);
-            this.lblTournamentLocation.Name = "lblTournamentLocation";
-            this.lblTournamentLocation.Size = new System.Drawing.Size(70, 25);
-            this.lblTournamentLocation.TabIndex = 1;
-            this.lblTournamentLocation.Text = "label1";
+            this.dgvTournamentStats.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvTournamentStats.Location = new System.Drawing.Point(10, 101);
+            this.dgvTournamentStats.Margin = new System.Windows.Forms.Padding(1);
+            this.dgvTournamentStats.Name = "dgvTournamentStats";
+            this.dgvTournamentStats.RowTemplate.Height = 37;
+            this.dgvTournamentStats.Size = new System.Drawing.Size(1265, 501);
+            this.dgvTournamentStats.TabIndex = 1;
             // 
-            // lblTournamentDate
+            // printDialog1
             // 
-            this.lblTournamentDate.AutoSize = true;
-            this.lblTournamentDate.Location = new System.Drawing.Point(641, 25);
-            this.lblTournamentDate.Name = "lblTournamentDate";
-            this.lblTournamentDate.Size = new System.Drawing.Size(70, 25);
-            this.lblTournamentDate.TabIndex = 2;
-            this.lblTournamentDate.Text = "label1";
+            this.printDialog1.UseEXDialog = true;
             // 
-            // lbxTopEarnings
+            // printDocument1
             // 
-            this.lbxTopEarnings.FormattingEnabled = true;
-            this.lbxTopEarnings.ItemHeight = 25;
-            this.lbxTopEarnings.Location = new System.Drawing.Point(24, 83);
-            this.lbxTopEarnings.Name = "lbxTopEarnings";
-            this.lbxTopEarnings.Size = new System.Drawing.Size(410, 429);
-            this.lbxTopEarnings.TabIndex = 3;
+            this.printDocument1.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.PrintDocument1_PrintPage);
             // 
-            // FrmTournamentStats
+            // btnPrint
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.btnPrint.Location = new System.Drawing.Point(1162, 613);
+            this.btnPrint.Margin = new System.Windows.Forms.Padding(1);
+            this.btnPrint.Name = "btnPrint";
+            this.btnPrint.Size = new System.Drawing.Size(91, 38);
+            this.btnPrint.TabIndex = 2;
+            this.btnPrint.Text = "Print";
+            this.btnPrint.UseVisualStyleBackColor = true;
+            this.btnPrint.Click += new System.EventHandler(this.BtnPrint_Click);
+            // 
+            // TournamentStats
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1394, 1308);
-            this.Controls.Add(this.lbxTopEarnings);
-            this.Controls.Add(this.lblTournamentDate);
-            this.Controls.Add(this.lblTournamentLocation);
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(1285, 661);
+            this.Controls.Add(this.btnPrint);
+            this.Controls.Add(this.dgvTournamentStats);
             this.Controls.Add(this.lblTournamentName);
-            this.Name = "FrmTournamentStats";
-            this.Text = "FrmTournamentStats";
-            this.Load += new System.EventHandler(this.FrmTournamentStats_Load);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(1);
+            this.Name = "TournamentStats";
+            this.Text = "Tournament Statistics";
+            this.Load += new System.EventHandler(this.TournamentStats_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTournamentStats)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -90,8 +102,11 @@
         #endregion
 
         private System.Windows.Forms.Label lblTournamentName;
-        private System.Windows.Forms.Label lblTournamentLocation;
-        private System.Windows.Forms.Label lblTournamentDate;
-        private System.Windows.Forms.ListBox lbxTopEarnings;
+        private System.Windows.Forms.DataGridView dgvTournamentStats;
+        private System.Windows.Forms.PrintDialog printDialog1;
+        private System.Drawing.Printing.PrintDocument printDocument1;
+        private System.Windows.Forms.Button btnPrint;
+
+        public DataGridView DgvTournamentStats { get => dgvTournamentStats; set => dgvTournamentStats = value; }
     }
 }
