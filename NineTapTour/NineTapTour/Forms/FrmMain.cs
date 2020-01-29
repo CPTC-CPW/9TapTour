@@ -24,7 +24,7 @@ namespace NineTapTour.Forms
         /// </summary>
         private bool AppMustClose { get; set; }
 
-        public MainMenu mainmenu { get; set; }
+        public FrmMainMenu mainmenu { get; set; }
         public int RegionID { get; set; }
 
         public Size MaxWorkAreaScreenSize { get; set; }
@@ -54,7 +54,7 @@ namespace NineTapTour.Forms
             setHeightAndWidth(MaxWorkAreaScreenSize);
             
             //on start up make sure regionID is set 
-            var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
+            var mainMenu = Application.OpenForms["MainMenu"] as FrmMainMenu;
             OpenOrDisplayForm(ref mainMenu);
             RegionID = mainMenu.getRegionID();
             mainmenu = mainMenu;
@@ -173,7 +173,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var mainMenu = Application.OpenForms["MainMenu"] as MainMenu;
+            var mainMenu = Application.OpenForms["MainMenu"] as FrmMainMenu;
 
             OpenOrDisplayForm(ref mainMenu);
         }

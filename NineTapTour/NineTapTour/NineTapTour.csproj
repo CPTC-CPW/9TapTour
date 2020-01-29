@@ -186,11 +186,11 @@
     <Compile Include="Forms\FrmTournamentResults.Designer.cs">
       <DependentUpon>FrmTournamentResults.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmWait.cs">
+    <Compile Include="Forms\FrmWait.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmWait.Designer.cs">
-      <DependentUpon>frmWait.cs</DependentUpon>
+    <Compile Include="Forms\FrmWait.Designer.cs">
+      <DependentUpon>FrmWait.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FrmFinalizeTournament.cs">
       <SubType>Form</SubType>
@@ -223,11 +223,11 @@
     <Compile Include="Forms\FrmMemberScoresReports.Designer.cs">
       <DependentUpon>FrmMemberScoresReports.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmNewTournament.cs">
+    <Compile Include="Forms\FrmNewTournament.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmNewTournament.Designer.cs">
-      <DependentUpon>frmNewTournament.cs</DependentUpon>
+    <Compile Include="Forms\FrmNewTournament.Designer.cs">
+      <DependentUpon>FrmNewTournament.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FrmPrintByDate.cs">
       <SubType>Form</SubType>
@@ -253,11 +253,11 @@
     <Compile Include="Forms\FrmTourSearch.Designer.cs">
       <DependentUpon>FrmTourSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MainMenu.cs">
+    <Compile Include="Forms\FrmMainMenu.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MainMenu.Designer.cs">
-      <DependentUpon>MainMenu.cs</DependentUpon>
+    <Compile Include="Forms\FrmMainMenu.Designer.cs">
+      <DependentUpon>FrmMainMenu.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FrmUpdateActiveMem.cs">
       <SubType>Form</SubType>
@@ -265,18 +265,18 @@
     <Compile Include="Forms\FrmUpdateActiveMem.Designer.cs">
       <DependentUpon>FrmUpdateActiveMem.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\PlayerHistoryForm.cs">
+    <Compile Include="Forms\FrmPlayerHistory.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\PlayerHistoryForm.Designer.cs">
-      <DependentUpon>PlayerHistoryForm.cs</DependentUpon>
+    <Compile Include="Forms\FrmPlayerHistory.Designer.cs">
+      <DependentUpon>FrmPlayerHistory.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\PrintToWord.cs" />
-    <Compile Include="Forms\TournamentPlaceStandings.cs">
+    <Compile Include="Forms\FrmTournamentPlaceStandings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\TournamentPlaceStandings.Designer.cs">
-      <DependentUpon>TournamentPlaceStandings.cs</DependentUpon>
+    <Compile Include="Forms\FrmTournamentPlaceStandings.Designer.cs">
+      <DependentUpon>FrmTournamentPlaceStandings.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FrmTournamentsByYear.cs">
       <SubType>Form</SubType>
@@ -324,8 +324,8 @@
     <EmbeddedResource Include="Forms\FrmTournamentResults.resx">
       <DependentUpon>FrmTournamentResults.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmWait.resx">
-      <DependentUpon>frmWait.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FrmWait.resx">
+      <DependentUpon>FrmWait.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmFinalizeTournament.resx">
       <DependentUpon>FrmFinalizeTournament.cs</DependentUpon>
@@ -342,8 +342,8 @@
     <EmbeddedResource Include="Forms\FrmMemberScoresReports.resx">
       <DependentUpon>FrmMemberScoresReports.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmNewTournament.resx">
-      <DependentUpon>frmNewTournament.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FrmNewTournament.resx">
+      <DependentUpon>FrmNewTournament.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmPrintByDate.resx">
       <DependentUpon>FrmPrintByDate.cs</DependentUpon>
@@ -357,17 +357,17 @@
     <EmbeddedResource Include="Forms\FrmTourSearch.resx">
       <DependentUpon>FrmTourSearch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainMenu.resx">
-      <DependentUpon>MainMenu.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FrmMainMenu.resx">
+      <DependentUpon>FrmMainMenu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmUpdateActiveMem.resx">
       <DependentUpon>FrmUpdateActiveMem.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\PlayerHistoryForm.resx">
-      <DependentUpon>PlayerHistoryForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FrmPlayerHistory.resx">
+      <DependentUpon>FrmPlayerHistory.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TournamentPlaceStandings.resx">
-      <DependentUpon>TournamentPlaceStandings.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FrmTournamentPlaceStandings.resx">
+      <DependentUpon>FrmTournamentPlaceStandings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmTournamentsByYear.resx">
       <DependentUpon>FrmTournamentsByYear.cs</DependentUpon>
