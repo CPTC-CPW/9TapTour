@@ -845,8 +845,25 @@ namespace NineTapTour.Forms
                 Game g = GameDB.GetGame(gameId);
 
                 g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
-                g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
-                g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
+
+                // if user enters something other than a decimal number, set MoneyWon and SidePot to 0.00
+                if ( Decimal.TryParse( Convert.ToString(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value), out decimal result ) ) 
+                {
+                    g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);                 
+                }
+                else
+                {
+                    g.MoneyWon = 0.00m;
+                }
+                if ( Decimal.TryParse( Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value), out decimal a ) )
+                {
+                    g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
+                }
+                else
+                {
+                    g.SidePot = 0.00m;
+                }
+                
                 g.gameRegionID = tourny.TourneyRegion;
 
                 db.Entry(g).State = System.Data.Entity.EntityState.Modified;
