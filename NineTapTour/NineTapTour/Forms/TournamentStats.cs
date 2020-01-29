@@ -54,51 +54,40 @@ namespace NineTapTour.Forms
                 lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
                 // query database
-                NineTapDb db = new NineTapDb();
-                SqlConnection con = new SqlConnection(GetConnection());
-                SqlCommand gameOrder = new SqlCommand();
-                gameOrder.Connection = con;
-                gameOrder.CommandText = @"SELECT Members.Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Handicap, Participants.SquadNumber, Games.Bonus
-                                        FROM Games JOIN Participants ON Games.Id = Participants.Game_Id
-		                                JOIN Tournaments ON Participants.Tournament_Id = Tournaments.Id
-		                                JOIN Members ON Members.Id = Participants.Member_Id                                        
-                                        WHERE Tournament_Id = @TID
-                                        ORDER BY Members.LastName";
-                gameOrder.Parameters.AddWithValue("@TID", selectedTournament.Id);
-                con.Open();
-                SqlDataReader reader = gameOrder.ExecuteReader();
-                List<TournamentStatsList> statsList = new List<TournamentStatsList>();
-
-                // create list
-                while (reader.Read())
+                using (NineTapDb db = new NineTapDb())
                 {
-                    TournamentStatsList temp = new TournamentStatsList();
-                    temp.Handicap = Convert.ToInt32(reader["Handicap"]);
-                    temp.Bonus = Convert.ToInt32(reader["Bonus"]);
-                    List<int?> scores = new List<int?> { Convert.ToInt32(reader["Game1"]), Convert.ToInt32(reader["Game2"]), Convert.ToInt32(reader["Game3"]), Convert.ToInt32(reader["Game4"]) };
-
-                    List<int> topScores = GetTop3OutOf4(scores);
-                    int scratchTotal = 0;
-
-                    for (int i = 0; i < 3; i++)
-                    {
-                        scratchTotal += topScores[i];
-                    }
-
-                    temp.ScratchTotal = scratchTotal;
-                    temp.Top3Scores = temp.ScratchTotal + (temp.Handicap * 3) + (temp.Bonus * 3);
-                    temp.Id = Convert.ToInt32(reader["Id"]);
-                    temp.FirstName = reader["FirstName"].ToString();
-                    temp.LastName = reader["LastName"].ToString();
-                    temp.Squad = Convert.ToInt32(reader["SquadNumber"]);
-                    temp.Game1 = Convert.ToInt32(reader["Game1"]);
-                    temp.Game2 = Convert.ToInt32(reader["Game2"]);
-                    temp.Game3 = Convert.ToInt32(reader["Game3"]);
-                    temp.Game4 = Convert.ToInt32(reader["Game4"]);
-
-                    statsList.Add(temp);
+                    List<TournamentStatsList> statsList = 
+                        (from p in db.Participants
+                            join m in db.Members on p.Member.Id equals m.Id
+                            join g in db.Games on p.Game.Id equals g.Id
+                            join t in db.Tournaments on p.Tournament.Id equals t.Id
+                            where t.Id == selectedTournament.Id
+                            orderby (g.Game1 + g.Game2 + g.Game3 + g.Game4) descending
+                            select new TournamentStatsList
+                            {
+                                Id = p.Member.Number,
+                                FirstName = p.Member.FirstName,
+                                LastName = p.Member.LastName,
+                                Squad = p.Squad,
+                                ScratchTotal = (
+                                    (g.Game1.HasValue ? g.Game1 : 0) +
+                                    (g.Game2.HasValue ? g.Game2 : 0) +
+                                    (g.Game3.HasValue ? g.Game3 : 0) +
+                                    (g.Game4.HasValue ? g.Game4 : 0)
+                                ),
+                                Top3Scores = GetTop3OutOf4(g.Game1, g.Game2, g.Game3, g.Game4).Sum() +
+                                    // Handicap
+                                    (p.Game.Handicap * 3) +
+                                    // Bonus
+                                    (p.Game.Bonus * 3),
+                                Game1 = g.Game1,
+                                Game2 = g.Game2,
+                                Game3 = g.Game3,
+                                Game4 = g.Game4,
+                                Handicap = p.Game.Handicap,
+                                Bonus = p.Game.Bonus,
+                            }).ToList();
                 }
-                con.Close();
 
                 // send to form
                 dgvTournamentStats.DataSource = BuildDataTable(statsList);
@@ -113,8 +102,9 @@ namespace NineTapTour.Forms
         /// <returns></returns>
         /// 
             
-        public static List<int> GetTop3OutOf4(List<int?> scores)
+        public static List<int> GetTop3OutOf4(int? game1, int? game2, int? game3, int? game4)
         {
+            List<int?> scores = new List<int?> { game1, game2, game3, game4 };
             List<int> listOfValidScores = new List<int>(); 
             for (int i = 0; i < scores.Count; i++)
             {          
