@@ -1,6 +1,6 @@
 ﻿namespace NineTapTour.Forms
 {
-    partial class TournamentPlaceStandings
+    partial class FrmTournamentPlaceStandings
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TournamentPlaceStandings));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmTournamentPlaceStandings));
             this.dgvTournamentStandings = new System.Windows.Forms.DataGridView();
             this.lblTournamentPlaceStandings = new System.Windows.Forms.Label();
             this.lblTournamentName = new System.Windows.Forms.Label();
