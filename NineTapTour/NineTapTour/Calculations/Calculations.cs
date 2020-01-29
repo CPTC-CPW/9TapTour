@@ -83,7 +83,8 @@ namespace NineTapTour.Calculations
             int lowestPlacementToCash = GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
 
             // If player won money and are in the place standing, bonus pins are reduced
-            if (memberPlacement <= lowestPlacementToCash) { 
+            if (memberPlacement <= lowestPlacementToCash)
+            { 
                 return DeductFromBonusPins(memberPlacement, currentBonusPins);
             }
 
