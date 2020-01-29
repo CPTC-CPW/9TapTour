@@ -9,6 +9,10 @@ namespace NineTapTour.Database
 {
     class TournamentStatsListDB
     {
+        /// <summary>
+        /// Grabs and returns a list of TournamentStatsList from the database
+        /// </summary>
+        /// <param name="selectedTournament">The Id of the tournament</param>
         public static List<TournamentStatsList> GetTournamentStatsList(int selectedTournament)
         {
             using (NineTapDb db = new NineTapDb())
@@ -84,6 +88,11 @@ namespace NineTapTour.Database
             return listOfValidScores;
         }
 
+        /// <summary>
+        /// Grabs and returns a list of TournamentStatsList from the database,
+        /// sets the Top3Scores to the top 3 out of 4
+        /// </summary>
+        /// <param name="selectedTournament">The Id of the tournament</param>
         internal static List<TournamentStatsList> Get3OutOf4TournamentStatsList(int selectedTournament)
         {
             // query database
