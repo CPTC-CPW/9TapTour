@@ -1510,7 +1510,7 @@ namespace NineTapTour.Forms
 
         private void btnPlaceStandings_Click(object sender, EventArgs e)
         {
-            TournamentPlaceStandings form = new TournamentPlaceStandings();
+            FrmTournamentPlaceStandings form = new FrmTournamentPlaceStandings();
             form.ShowDialog();
         }
 
