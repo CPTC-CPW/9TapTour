@@ -278,11 +278,11 @@
     <Compile Include="Forms\FrmTournamentPlaceStandings.Designer.cs">
       <DependentUpon>FrmTournamentPlaceStandings.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\TournamentsByYear.cs">
+    <Compile Include="Forms\FrmTournamentsByYear.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\TournamentsByYear.Designer.cs">
-      <DependentUpon>TournamentsByYear.cs</DependentUpon>
+    <Compile Include="Forms\FrmTournamentsByYear.Designer.cs">
+      <DependentUpon>FrmTournamentsByYear.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\TournamentStats.cs">
       <SubType>Form</SubType>
@@ -369,8 +369,8 @@
     <EmbeddedResource Include="Forms\FrmTournamentPlaceStandings.resx">
       <DependentUpon>FrmTournamentPlaceStandings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TournamentsByYear.resx">
-      <DependentUpon>TournamentsByYear.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FrmTournamentsByYear.resx">
+      <DependentUpon>FrmTournamentsByYear.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TournamentStats.resx">
       <DependentUpon>TournamentStats.cs</DependentUpon>
