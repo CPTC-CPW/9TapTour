@@ -265,11 +265,11 @@
     <Compile Include="Forms\FrmUpdateActiveMem.Designer.cs">
       <DependentUpon>FrmUpdateActiveMem.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\PlayerHistoryForm.cs">
+    <Compile Include="Forms\FrmPlayerHistory.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\PlayerHistoryForm.Designer.cs">
-      <DependentUpon>PlayerHistoryForm.cs</DependentUpon>
+    <Compile Include="Forms\FrmPlayerHistory.Designer.cs">
+      <DependentUpon>FrmPlayerHistory.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\PrintToWord.cs" />
     <Compile Include="Forms\TournamentPlaceStandings.cs">
@@ -363,8 +363,8 @@
     <EmbeddedResource Include="Forms\FrmUpdateActiveMem.resx">
       <DependentUpon>FrmUpdateActiveMem.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\PlayerHistoryForm.resx">
-      <DependentUpon>PlayerHistoryForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FrmPlayerHistory.resx">
+      <DependentUpon>FrmPlayerHistory.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TournamentPlaceStandings.resx">
       <DependentUpon>TournamentPlaceStandings.cs</DependentUpon>
