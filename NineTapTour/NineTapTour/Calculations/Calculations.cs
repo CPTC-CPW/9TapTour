@@ -76,15 +76,16 @@ namespace NineTapTour.Calculations
         /// <param name="RegionID">RegionId from where the tournament is played</param>
         /// <param name="currTournamentId">Id of the current tournament</param>
         /// <returns>Adjusted bonus pins after current tournament</returns>
-        public static int GetAdjustedBonusPins(int memberPlacement, int totalEntries, int compEntries, int currentBonusPins, 
+        public static int GetAdjustedBonusPins(int memberPlacement, int totalEntries, int compEntries, int currentBonusPins,
                                                 int memNum, int RegionID, int currTournamentId)
         {
             // Calculates if the member is on the place standing
             int lowestPlacementToCash = GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
 
             // If player won money and are in the place standing, bonus pins are reduced
-            if (memberPlacement <= lowestPlacementToCash)
+            if (memberPlacement <= lowestPlacementToCash) { 
                 return DeductFromBonusPins(memberPlacement, currentBonusPins);
+            }
 
             // Gets the amount of entries the member has for the tournament
             int membersGameEntryCount = FinalizeTempDB.GetMembersGameEntryCount(currTournamentId, memNum);
@@ -108,16 +109,22 @@ namespace NineTapTour.Calculations
             // If a player does not have a latest game,
             // Or has the max amount of bonus pins already, that player will not gain any more pins
             if (latestGames == null || currentBonusPins == MAX_BONUS_PINS_ALLOWED)
+            {
                 return currentBonusPins;
+            }
 
             // if has lost 4 entries this tournament and has 2 losses in history not 
             // yet used for gaining a bonus pin
             else if (currTourneyEntryCount == 4 && DoesGetBonus(latestGames, currTourneyEntryCount, 6))
+            {
                 additionalBonus = 2;
+            }
 
             // if has at least 3 losses in latestGames or 3 losses in current tournament
             else if (DoesGetBonus(latestGames, currTourneyEntryCount, 3) || currTourneyEntryCount >= 3)
+            {
                 additionalBonus = 1;
+            }
 
             int newBonusPins = currentBonusPins + additionalBonus;
             return ValidateBonusPins(newBonusPins);
@@ -136,15 +143,21 @@ namespace NineTapTour.Calculations
 
             // 1st place, All bonus pins removed
             if (memberPlaced == FIRST_PLACE)
+            {
                 newBonusPinAmount = MIN_BONUS_PINS_ALLOWED;
+            }
 
             // 2ed-5th place, 3 bonus pins removed
             else if (memberPlaced <= MAX_PLACEMENT_DEDUCT_3_PINS)
+            {
                 newBonusPinAmount -= DEDUCT_3;
+            }
 
             // 6th-10th place, 2 bonus pins removed
             else if (memberPlaced <= MAX_PLACEMENT_DEDUCT_2_PINS)
+            {
                 newBonusPinAmount -= DEDUCT_2;
+            }
 
             // 11th+ place, 1 bonus pin removed
             else newBonusPinAmount -= DEDUCT_1;
@@ -164,11 +177,15 @@ namespace NineTapTour.Calculations
         {
             // Bonus pins cannot be less then 0
             if (bonusPins < MIN_BONUS_PINS_ALLOWED)
+            {
                 return MIN_BONUS_PINS_ALLOWED;
+            }
 
             // Bonus pins cannot be greater then 5
             else if (bonusPins > MAX_BONUS_PINS_ALLOWED)
+            {
                 return MAX_BONUS_PINS_ALLOWED;
+            }
 
             return bonusPins;
         }
@@ -187,7 +204,9 @@ namespace NineTapTour.Calculations
 
             // did not lose any of the latest games with a 3rd loss in a row
             if (lastCashedTourneyIndex == -1)
+            {
                 return latestGames.Count % 3 + currTourneyEntryCount >= minLosses;
+            }
 
             // is the multiple of a 3rd loss in a row after a win
             return lastCashedTourneyIndex % 3 + currTourneyEntryCount >= minLosses;
@@ -247,7 +266,9 @@ namespace NineTapTour.Calculations
         {
             // A list of no members needs nothing done to it
             if (tempListOfMemberScores.Count == 0)
+            {
                 return tempListOfMemberScores;
+            }
 
             // Makes copy so original list won't be affected
             tempListOfMemberScores = tempListOfMemberScores.ToList();
@@ -265,7 +286,9 @@ namespace NineTapTour.Calculations
             {
                 // Members with identical scores will tie
                 if (tempListOfMemberScores[currPosition].Score == tempListOfMemberScores[currPosition - 1].Score)
+                {
                     tempListOfMemberScores[currPosition].placing = tempListOfMemberScores[currPosition - 1].placing;
+                }
 
                 // Otherwise, each member gets a unique placing
                 else
@@ -289,7 +312,9 @@ namespace NineTapTour.Calculations
         {
             // A list of no members will return an empty list
             if (members.Count == 0)
+            {
                 return new Dictionary<FinalizeTemp, int>();
+            }
 
             // Makes copy so original list won't be affected
             members = members.ToList();
@@ -327,7 +352,9 @@ namespace NineTapTour.Calculations
 
                 // Tied scores will have the same place standing
                 if (currMember.HandicapTotal == prevMember.HandicapTotal)
+                {
                     membersPlacingMap[currMember] = membersPlacingMap[prevMember];
+                }
 
                 // Otherwise members get a unique placing
                 else
@@ -373,11 +400,15 @@ namespace NineTapTour.Calculations
 
                 // If positive, the lowest scored game is added to the handicap total. All handicaps and bonuses are accounted for.
                 if (isPositive)
+                {
                     currMember.HandicapTotal = currMember.HandicapTotal + (games.Min().Value + currMember.Handicap + currMember.Bonus);
+                }
 
                 // If not positive, the lowest scored game is subtracted from the handicap total. All handicaps and bonuses are accounted for.
                 else
+                {
                     currMember.HandicapTotal = currMember.HandicapTotal - (games.Min().Value + currMember.Handicap + currMember.Bonus);
+                }
             }
         }
 
@@ -390,7 +421,9 @@ namespace NineTapTour.Calculations
         {
             // No members, no place standings
             if (members.Count == 0)
+            {
                 return members;
+            }
 
             // Makes copy so original list won't be affected
             members = members.ToList();
@@ -407,11 +440,15 @@ namespace NineTapTour.Calculations
             {
                 // Tied members get the same position
                 if (members[currPosition].TotalScore == members[currPosition - 1].TotalScore)
+                {
                     members[currPosition].PlaceStanding = members[currPosition - 1].PlaceStanding;
+                }
 
                 // Otherwise they get a unique placing
                 else
+                {
                     members[currPosition].PlaceStanding = place;
+                }
 
                 // Placing is still added if members tied
                 place++;
@@ -436,7 +473,9 @@ namespace NineTapTour.Calculations
                     {
                         // Remove the inferior clone
                         if (members[i].HandicapTotal >= members[j].HandicapTotal)
+                        {
                             removal.Add(members[j]);
+                        }
                         else
                         {
                             removal.Add(members[i]);
@@ -452,7 +491,9 @@ namespace NineTapTour.Calculations
                 }
 
                 if (isCurrIndexRemoved)
+                {
                     i--;
+                }
             }
             return removal;
         }
@@ -473,7 +514,9 @@ namespace NineTapTour.Calculations
                     {
                         // Removes the inferior clone
                         if (temp[i].Score >= temp[j].Score)
+                        {
                             removal.Add(temp[j]);
+                        }
                         else
                         {
                             removal.Add(temp[i]);
@@ -489,7 +532,9 @@ namespace NineTapTour.Calculations
                 }
 
                 if (isCurrIndexRemoved)
+                {
                     i--;
+                }
             }
         }
 
@@ -509,7 +554,9 @@ namespace NineTapTour.Calculations
                     {
                         // Removes the inferior clone
                         if (members[i].TotalScore >= members[j].TotalScore)
+                        {
                             removal.Add(members[j]);
+                        }
                         else
                         {
                             removal.Add(members[i]);
@@ -525,7 +572,9 @@ namespace NineTapTour.Calculations
 
                 // prevents from skipping over current index
                 if (isCurrIndexRemoved)
+                {
                     i--;
+                }
             }
         }
 
