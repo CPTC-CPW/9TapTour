@@ -1,6 +1,6 @@
 ﻿namespace NineTapTour.Forms
 {
-    partial class MainMenu
+    partial class FrmMainMenu
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMainMenu));
             this.btnMemberData = new System.Windows.Forms.Button();
             this.btnMemberScores = new System.Windows.Forms.Button();
             this.btnAbout = new System.Windows.Forms.Button();

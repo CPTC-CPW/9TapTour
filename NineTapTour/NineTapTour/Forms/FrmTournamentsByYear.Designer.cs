@@ -1,6 +1,6 @@
 ﻿namespace NineTapTour.Forms
 {
-    partial class TournamentsByYear
+    partial class FrmTournamentsByYear
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TournamentsByYear));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmTournamentsByYear));
             this.label1 = new System.Windows.Forms.Label();
             this.dgvAllTournaments = new System.Windows.Forms.DataGridView();
             this.label2 = new System.Windows.Forms.Label();
