@@ -622,7 +622,10 @@ namespace NineTapTour.Forms
                 // Adds Member to Database
                 try
                 {
-                    int tempBonusPins = Convert.ToInt16(txtBonus.Text);
+                    if (!Int32.TryParse(txtBonus.Text, out int tempBonusPins)) {
+                        tempBonusPins = 0;
+                    }
+                    //int tempBonusPins = Convert.ToInt16(txtBonus.Text);
                     if (tempBonusPins <= 5)
                     {
                         // Left blank because this is simply making sure it is going to import 
@@ -988,21 +991,9 @@ namespace NineTapTour.Forms
                 txt30GameAvg.Text = currentMem.Average.ToString();
                 txtHandicap.Text = currentMem.Handicap.ToString();
                 txtBonus.Text = currentMem.Bonus.ToString();
-                decimal moneySum = 0;
-                var db = new NineTapDb();
 
-                var result = (from p in db.PlayerHistory
-                              where p.MemberNumber == currentMem.Number && p.regionID == RegionID
-                              orderby p.TournamentDate descending
-                              select new
-                              {
-                                  p.MoneyWon
-                              }).ToArray();
-
-                foreach (var v in result)
-                {
-                    moneySum += v.MoneyWon;
-                }
+                // Grabs the total money won by the member
+                decimal moneySum = PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number, RegionID);
 
                 currentMem.MoneyEarned += moneySum; 
 

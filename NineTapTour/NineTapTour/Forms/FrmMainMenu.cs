@@ -13,7 +13,7 @@ using NineTapTour.Models;
 
 namespace NineTapTour.Forms
 {
-    public partial class MainMenu : Form
+    public partial class FrmMainMenu : Form
     {
         public FrmMain currMainFrm { get; set; }
         public int regionID { get; set; }
@@ -21,7 +21,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Opens the "Main Menu" form.
         /// </summary>
-        public MainMenu()
+        public FrmMainMenu()
         {
             InitializeComponent();
 
@@ -77,7 +77,7 @@ namespace NineTapTour.Forms
 
         private void enableHomeNavigation()
         {
-            if (!(FrmMain.ActiveForm is MainMenu))
+            if (!(FrmMain.ActiveForm is FrmMainMenu))
             {
                 ((FrmMain)MdiParent).Home.Enabled = true;
             }
@@ -103,7 +103,7 @@ namespace NineTapTour.Forms
             Font drawFont = new Font("Arial", 12);
             SolidBrush drawBrush = new SolidBrush(Color.White);
             PointF drawPoint = new PointF(10, 2);
-            g.DrawString("Version: 1.9.3", drawFont, drawBrush, drawPoint);
+            g.DrawString("Version: 1.9.5", drawFont, drawBrush, drawPoint);
 #if DEBUG
             drawBrush.Color = Color.Red;
             drawPoint.Y += 16;

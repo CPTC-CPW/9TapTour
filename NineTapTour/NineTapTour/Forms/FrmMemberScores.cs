@@ -15,7 +15,6 @@ using static NineTapTour.Database.ReportHelper;
 
 namespace NineTapTour.Forms
 {
-    #region Casey's Comments
     /// <summary>
     /// FrmMemberScores class.
     /// All tournament info and scores are entered here.
@@ -642,7 +641,6 @@ namespace NineTapTour.Forms
         }
 
         #endregion
-        #endregion
         /// <summary>
         /// Checks a string for numeric values
         /// true if all are numeric
@@ -1081,7 +1079,7 @@ namespace NineTapTour.Forms
         /// </summary>
         private void btnNewTournament_Click(object sender, EventArgs e)
         {
-            var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
+            var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as FrmNewTournament;
             ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
             newfrmNewTournament.Dock = DockStyle.None;
             checkSquadOne.Checked = true;
@@ -1483,7 +1481,7 @@ namespace NineTapTour.Forms
 
         private void btnTournamentsByYear_Click(object sender, EventArgs e)
         {
-            TournamentsByYear listTournaments = new TournamentsByYear(RegionID);
+            FrmTournamentsByYear listTournaments = new FrmTournamentsByYear(RegionID);
             listTournaments.ShowDialog();
         }
         //Called when stats btn is clicked
@@ -1512,7 +1510,7 @@ namespace NineTapTour.Forms
 
         private void btnPlaceStandings_Click(object sender, EventArgs e)
         {
-            TournamentPlaceStandings form = new TournamentPlaceStandings();
+            FrmTournamentPlaceStandings form = new FrmTournamentPlaceStandings();
             form.ShowDialog();
         }
 
