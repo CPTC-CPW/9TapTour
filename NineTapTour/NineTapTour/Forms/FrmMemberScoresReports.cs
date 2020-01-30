@@ -311,19 +311,6 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void cbPrintDues_CheckedChanged(object sender, EventArgs e)
-        {
 
-        }
-
-        private void lblSave_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtNumberOfMembers_TextChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }
