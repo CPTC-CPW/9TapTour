@@ -239,9 +239,6 @@ namespace NineTapTour.Forms
                 data.Columns[i].AllowDBNull = false;
             }
 
-            // Make id unique
-            data.Constraints.Add(new UniqueConstraint(data.Columns["ID"]));
-
             // Add statsList to DataTable
             foreach (var item in statsList)
             {
