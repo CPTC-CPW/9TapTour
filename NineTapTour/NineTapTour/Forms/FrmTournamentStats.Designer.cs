@@ -2,7 +2,7 @@
 
 namespace NineTapTour.Forms
 {
-    partial class TournamentStats
+    partial class FrmTournamentStats
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@ namespace NineTapTour.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TournamentStats));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmTournamentStats));
             this.lblTournamentName = new System.Windows.Forms.Label();
             this.dgvTournamentStats = new System.Windows.Forms.DataGridView();
             this.printDialog1 = new System.Windows.Forms.PrintDialog();
