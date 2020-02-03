@@ -1005,7 +1005,6 @@
             this.grpReports.TabIndex = 0;
             this.grpReports.TabStop = false;
             this.grpReports.Text = "Reports";
-            this.grpReports.Enter += new System.EventHandler(this.grpReports_Enter);
             // 
             // btnSeries
             // 
