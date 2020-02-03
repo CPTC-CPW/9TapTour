@@ -302,10 +302,22 @@ namespace NineTapTour.Database
             //return the sum of all money won or 0 if no entries are present for this bowler in the database
             using (var db = new NineTapDb())
             {
-                return db.PlayerHistory
+                // Get all pro pot earnings
+                List<string> AllProPot = db.PlayerHistory
+                                        .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
+                                        .Select(p => p.ProPot)
+                                        .ToList();
+                decimal proEarnings = 0;
+                foreach(string str in AllProPot)
+                {
+                    Decimal.TryParse(str, out decimal num);
+                    proEarnings += num;
+                }
+                return proEarnings + (db.PlayerHistory
                         .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
                         .Select(p => (decimal?)p.MoneyWon)
-                        .Sum() ?? 0;
+                        .Sum() ?? 0);
+                
             }
         }
 

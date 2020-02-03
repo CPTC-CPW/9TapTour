@@ -860,6 +860,8 @@ namespace NineTapTour.Forms
                 {
                     TotalGamesPlayed += item.GamesPlayed;
                     totalMoneyEarned += item.MoneyWon;
+                    if (Decimal.TryParse(item.ProPot, out decimal proPotEarnings))
+                        totalMoneyEarned += proPotEarnings;
                     TotalGame1Played += item.Game1;
                     TotalGame2played += item.Game2;
                     TotalGame3played += item.Game3;
@@ -940,10 +942,14 @@ namespace NineTapTour.Forms
                 else
                     newRow["Adjusted AVG"] = item.AVG;
 
+                if (Decimal.TryParse(item.ProPot, out decimal proPotEarnings))
+                    newRow[moneyWonWithTotal] = item.MoneyWon + proPotEarnings;
+                else
+                    newRow[moneyWonWithTotal] = item.MoneyWon;
+
                 newRow["Handicap"] = item.HandiCap;
                 newRow["Bonus"] = item.Bonus;
                 newRow["Pro Pot"] = item.ProPot;
-                newRow[moneyWonWithTotal] = item.MoneyWon;
                 newRow["Place"] = item.PPHG;
                 newRow["Notes"] = item.Notes;
                 newRow["GameID"] = item.GameID;
@@ -977,8 +983,6 @@ namespace NineTapTour.Forms
             }
 
             highlightBonusPinCells();
-
-
         }
 
         /// <summary>
@@ -1118,7 +1122,7 @@ namespace NineTapTour.Forms
                             p.TotalScore = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[SCRATCH_TOTAL_COLUMN].Value);
                             p.HandiCap = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[HANDICAP_COLUMN].Value);
                             p.Bonus = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[BONUS_COLUMN].Value);
-                            p.MoneyWon = Convert.ToDecimal(GameDB.GetGame(p.GameID).MoneyWon);
+                            p.MoneyWon = Convert.ToDecimal(GameDB.GetGame(p.GameID).MoneyWon + GameDB.GetGame(p.GameID).SidePot);
                             p.PPHG = Convert.ToString(TournamentEntriesGrid.Rows[i].Cells[STANDING_COLUMN].Value);
                             p.ProPot = TournamentEntriesGrid[PRO_POT_COLUMN, i].Value.ToString();
                             p.Notes = TournamentEntriesGrid[NOTES_COLUMN_, i].Value.ToString();
