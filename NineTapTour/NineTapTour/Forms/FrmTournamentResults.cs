@@ -841,14 +841,26 @@ namespace NineTapTour.Forms
             // Save all changes made to the dataGridView
             for (int currentIndex = 0; currentIndex < clientRequested.Count; currentIndex++)
             {
+
+
+
                 int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
                 Game g = GameDB.GetGame(gameId);
 
                 g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
-                g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
-                g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
-                g.gameRegionID = tourny.TourneyRegion;
 
+                // if user enters something other than a decimal number, set SidePot to 0.00 and enter the string into notes
+                if ( Decimal.TryParse( Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value), out decimal a ) )
+                {
+                    g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
+                }
+                else
+                {
+                    g.Notes = $"Progressive Pot was entered as: {Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value)}" ;
+                    g.SidePot = 0.00m;
+                }
+                
+                g.gameRegionID = tourny.TourneyRegion;
                 db.Entry(g).State = System.Data.Entity.EntityState.Modified;
                 db.SaveChanges();
             }
