@@ -14,10 +14,10 @@ namespace NineTapTour.Forms
     /// <summary>
     /// This class handles the tournament stats table for frmMemberScores.
     /// </summary>
-    public partial class TournamentStats : Form
+    public partial class FrmTournamentStats : Form
     {
 
-        public TournamentStats()
+        public FrmTournamentStats()
         {
             InitializeComponent();
         }
