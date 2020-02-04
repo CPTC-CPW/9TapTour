@@ -1122,9 +1122,9 @@ namespace NineTapTour.Forms
                             p.TotalScore = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[SCRATCH_TOTAL_COLUMN].Value);
                             p.HandiCap = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[HANDICAP_COLUMN].Value);
                             p.Bonus = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[BONUS_COLUMN].Value);
-                            p.MoneyWon = Convert.ToDecimal(GameDB.GetGame(p.GameID).MoneyWon);
+                            p.MoneyWon = Convert.ToDecimal(GameDB.GetGame(p.GameID).MoneyWon + GameDB.GetGame(p.GameID).SidePot);
                             p.PPHG = Convert.ToString(TournamentEntriesGrid.Rows[i].Cells[STANDING_COLUMN].Value);
-                            p.ProPot = TournamentEntriesGrid[PRO_POT_COLUMN, i].Value.ToString();
+                            p.ProPot = Convert.ToString(GameDB.GetGame(p.GameID).SidePot);
                             p.Notes = TournamentEntriesGrid[NOTES_COLUMN_, i].Value.ToString();
                             p.AverageForEntry = Convert.ToDouble(TournamentEntriesGrid[ENTRY_AVERAGE_COLUMN, i].Value);
                             p.trueAVG = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
@@ -1222,9 +1222,12 @@ namespace NineTapTour.Forms
 
                     ph.AVG = Convert.ToInt32(TournamentEntriesGrid[ADJUSTED_AVG_COLUMN, currDataGridRowIndex].Value);
 
-                    ph.ProPot = TournamentEntriesGrid[PRO_POT_COLUMN, currDataGridRowIndex].Value.ToString();
 
-                    ph.MoneyWon = Convert.ToDecimal(currGame.MoneyWon);
+
+                    ph.ProPot = Convert.ToString(GameDB.GetGame(ph.GameID).SidePot);
+                    ph.MoneyWon = Convert.ToDecimal(GameDB.GetGame(ph.GameID).MoneyWon + (GameDB.GetGame(ph.GameID).SidePot) );
+
+
                     ph.Game1 = FinalizeTableList[i].Game1;
                     ph.Game2 = FinalizeTableList[i].Game2;
                     ph.Game3 = FinalizeTableList[i].Game3;

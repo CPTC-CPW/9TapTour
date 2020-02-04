@@ -13,18 +13,24 @@ To get started with using 9TapTour and successfully running the database and get
 ## Getting Started With 9TapTour Step-By-Step Insructions
 - **Note** This is for those who have added the project to a computer without an exsisting copy of 9TapTour and/or the database
 - We are using Visual Studio 2019 and SQL Server Management Studio in this Example. This would Work Using Visual Studio 2017
-1. In VS2019 Go to Tools -> NuGet Package Manager -> Package Manager Console
+1. After cloning 9-Tap Tour make sure that you build the solution to get all dependencies from the project
+
+![Building Solution in Visual Studio](9TT-Doc/Building-Solution.PNG)
+2. In VS2019 Go to Tools -> NuGet Package Manager -> Package Manager Console
 ![Opening Package Manager Console](9TT-Doc/PackageMC.PNG)
-2. In the Package Manager Console Enter `Update-Database` and Run it.
+3. In the Package Manager Console Enter `Update-Database` and Run it.
 ![Entering Update-Database in Package Manager Console](9TT-Doc/Update-DB.PNG)
-3. Once you updated your database go to your Solution Explorer - > Database -> DBScripts (Right Click Folder) -> Open Folder in File Explorer. Then open the multisquadTestData.sql file, which will open on SQL Server Management Studio.
+4. Once you updated your database go to your Solution Explorer - > Database -> DBScripts (Right Click Folder) -> Open Folder in File Explorer. Then open the multisquadTestData.sql file, which will open on SQL Server Management Studio.
+* NOTE: Go to Number 7 for executing multisquadTestData.sql using Visual Studio's integrated tool.
 ![Opening Folder in File Explorer](9TT-Doc/OpenFolderinFE.PNG)
-4. In SQL Server Management Studio, It will ask you to Login Make Sure your Settings are as Follows:
+5. In SQL Server Management Studio, It will ask you to Login Make Sure your Settings are as Follows:
     * Server Type: Database Engine
     * Server Name: (localdb)\msSQLlocaldb
     * Authentication: Windows Authentication
 ![Opening SQL Server and Logging In](9TT-Doc/SSMS-Login.PNG)
-5. Then you can connect to SQL Server Management Studio and Execute the script adding Test data to 9TapTour
+6. Then you can connect to SQL Server Management Studio and Execute the script adding Test data to 9TapTour
+7. Open the multisquadTestData.sql file by going to Solution Explorer - > Database -> DBScripts -> multisuqadTestData.sql. Then go to the green play button and click the button to execute the sql file.
+![Executing Script](9TT-Doc/Execute-Script.PNG)
 
 ### Prerequisites
 The current build is being built on Windows machines through Visual Studio 2017 v.15 or greater.

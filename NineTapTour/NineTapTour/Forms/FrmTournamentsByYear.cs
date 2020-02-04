@@ -11,11 +11,11 @@ using NineTapTour.Database;
 
 namespace NineTapTour.Forms
 {
-    public partial class TournamentsByYear : Form
+    public partial class FrmTournamentsByYear : Form
     {
         public int RID;
 
-        public TournamentsByYear(int RegionID)
+        public FrmTournamentsByYear(int RegionID)
         {
             InitializeComponent();
             this.RID = RegionID;
