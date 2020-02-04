@@ -14,10 +14,10 @@ namespace NineTapTour.Forms
     /// <summary>
     /// This class handles the tournament stats table for frmMemberScores.
     /// </summary>
-    public partial class TournamentStats : Form
+    public partial class FrmTournamentStats : Form
     {
 
-        public TournamentStats()
+        public FrmTournamentStats()
         {
             InitializeComponent();
         }
@@ -40,53 +40,11 @@ namespace NineTapTour.Forms
                 selectedTournament = frmMemberScores.selectedTournament;
                 lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
-                // query database
-                NineTapDb db = new NineTapDb();
-                var tournamentStatsList = (from p in db.Participants
-                                           join m in db.Members on p.Member.Id equals m.Id
-                                           join g in db.Games on p.Game.Id equals g.Id
-                                           join t in db.Tournaments on p.Tournament.Id equals t.Id
-                                           where t.Id == selectedTournament.Id
-                                           orderby (g.Game1 + g.Game2 + g.Game3 + g.Game4) descending
-                                           select new
-                                           {
-                                               p.Member.Number,
-                                               p.Member.FirstName,
-                                               p.Member.LastName,
-                                               p.Squad,
-                                               ScratchTotal = ((g.Game1.HasValue ? g.Game1 : 0) + (g.Game2.HasValue ? g.Game2 : 0) + (g.Game3.HasValue ? g.Game3 : 0) + (g.Game4.HasValue ? g.Game4 : 0)),
-                                               GameTotal = (((g.Game1.HasValue ? g.Game1 : 0) + (g.Handicap + g.Bonus)) + ((g.Game2.HasValue ? g.Game2 : 0) + (g.Handicap + g.Bonus)) + ((g.Game3.HasValue ? g.Game3 : 0) + (g.Handicap + g.Bonus)) + ((g.Game4.HasValue ? g.Game4 : 0) + (g.Handicap + g.Bonus))),
-                                               g.Game1,
-                                               g.Game2,
-                                               g.Game3,
-                                               g.Game4,
-                                               p.Game.Handicap,
-                                               p.Game.Bonus
-                                           }).ToList();
-
-                // create list
-                List<TournamentStatsList> statsList = new List<TournamentStatsList>();
-                foreach (var item in tournamentStatsList)
-                {
-                    TournamentStatsList list = new TournamentStatsList
-                    {
-                        Id = item.Number,
-                        FirstName = item.FirstName,
-                        LastName = item.LastName,
-                        Squad = item.Squad,
-                        ScratchTotal = item.ScratchTotal,
-                        Top3Scores = item.ScratchTotal + (item.Handicap * 3) + (item.Bonus * 3),
-                        Game1 = item.Game1,
-                        Game2 = item.Game2,
-                        Game3 = item.Game3,
-                        Game4 = item.Game4,
-                        Handicap = item.Handicap,
-                        Bonus = item.Bonus
-                    };
-                    statsList.Add(list);
-                }
+                // Grabs a list of TournamentStatsList from the database
+                List<TournamentStatsList> statsList = 
+                    TournamentStatsListDB.GetTournamentStatsList(selectedTournament.Id);
                 
-                // send to form
+                // Send to form
                 dgvTournamentStats.DataSource = BuildDataTable(statsList);
             }
             else
@@ -95,82 +53,33 @@ namespace NineTapTour.Forms
                 selectedTournament = frmMemberScores.selectedTournament;
                 lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
-                // query database
-                NineTapDb db = new NineTapDb();
-                SqlConnection con = new SqlConnection(GetConnection());
-                SqlCommand gameOrder = new SqlCommand();
-                gameOrder.Connection = con;
-                gameOrder.CommandText = @"SELECT Members.Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Handicap, Participants.SquadNumber, Games.Bonus
-                                        FROM Games JOIN Participants ON Games.Id = Participants.Game_Id
-		                                JOIN Tournaments ON Participants.Tournament_Id = Tournaments.Id
-		                                JOIN Members ON Members.Id = Participants.Member_Id                                        
-                                        WHERE Tournament_Id = @TID
-                                        ORDER BY Members.LastName";
-                gameOrder.Parameters.AddWithValue("@TID", selectedTournament.Id);
-                con.Open();
-                SqlDataReader reader = gameOrder.ExecuteReader();
-                List<TournamentStatsList> statsList = new List<TournamentStatsList>();
-
-                // create list
-                while (reader.Read())
-                {
-                    TournamentStatsList temp = new TournamentStatsList();
-                    temp.Handicap = Convert.ToInt32(reader["Handicap"]);
-                    temp.Bonus = Convert.ToInt32(reader["Bonus"]);
-                    List<int?> scores = new List<int?> { Convert.ToInt32(reader["Game1"]), Convert.ToInt32(reader["Game2"]), Convert.ToInt32(reader["Game3"]), Convert.ToInt32(reader["Game4"]) };
-
-                    List<int> topScores = GetTop3OutOf4(scores);
-                    int scratchTotal = 0;
-
-                    for (int i = 0; i < 3; i++)
-                    {
-                        scratchTotal += topScores[i];
-                    }
-
-                    temp.ScratchTotal = scratchTotal;
-                    temp.Top3Scores = temp.ScratchTotal + (temp.Handicap * 3) + (temp.Bonus * 3);
-                    temp.Id = Convert.ToInt32(reader["Id"]);
-                    temp.FirstName = reader["FirstName"].ToString();
-                    temp.LastName = reader["LastName"].ToString();
-                    temp.Squad = Convert.ToInt32(reader["SquadNumber"]);
-                    temp.Game1 = Convert.ToInt32(reader["Game1"]);
-                    temp.Game2 = Convert.ToInt32(reader["Game2"]);
-                    temp.Game3 = Convert.ToInt32(reader["Game3"]);
-                    temp.Game4 = Convert.ToInt32(reader["Game4"]);
-
-                    statsList.Add(temp);
-                }
-                con.Close();
+                List<TournamentStatsList> statsList =
+                    TournamentStatsListDB.Get3OutOf4TournamentStatsList(selectedTournament.Id);
 
                 // send to form
                 dgvTournamentStats.DataSource = BuildDataTable(statsList);
             }
-        }        
+        }
 
         /// <summary>
         /// This method sorts scores and removes the lowest if 4 scores are present
         /// It returns  a list with the 3 highest scores listOfValidScores
         /// </summary>
-        /// <param name="scores"></param>
-        /// <returns></returns>
-        /// 
-            
+        /// <param name="scores"></param>  
         public static List<int> GetTop3OutOf4(List<int?> scores)
         {
-            List<int> listOfValidScores = new List<int>(); 
+            List<int> listOfValidScores = new List<int>();
             for (int i = 0; i < scores.Count; i++)
-            {          
-                if (scores[i].HasValue)
-                {
-                    listOfValidScores.Add(scores[i].Value);
-                }              
-            }
-            listOfValidScores.Sort();
-            //after sorting I want to get rid of lowest score  
-            if (listOfValidScores.Count == 4)
             {
-                listOfValidScores.Remove(listOfValidScores[0]);
+                if (scores[i].HasValue)
+                    listOfValidScores.Add(scores[i].Value);
             }
+
+            //after sorting I want to get rid of lowest score  
+            listOfValidScores.Sort();
+            if (listOfValidScores.Count == 4)
+                listOfValidScores.Remove(listOfValidScores[0]);
+
             listOfValidScores.Reverse();
             return listOfValidScores;
         }
