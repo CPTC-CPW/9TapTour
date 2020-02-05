@@ -859,9 +859,6 @@ namespace NineTapTour.Forms
             // Save all changes made to the dataGridView
             for (int currentIndex = 0; currentIndex < clientRequested.Count; currentIndex++)
             {
-
-
-
                 int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
                 Game g = GameDB.GetGame(gameId);
 
@@ -884,11 +881,14 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void tbClientInputCount_TextChanged(object sender, EventArgs e)
-        {
-         
-        }
+        /// <summary>
+        /// This method was made by accident, if deleted will mess up tbClientInputCount
+        /// </summary>
+        private void tbClientInputCount_TextChanged(object sender, EventArgs e) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void tbClientInputCount_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -897,6 +897,9 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void AcceptClientInputForResults()
         {
             this.dgvTournamentResults.DataSource = null;
@@ -925,23 +928,35 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// Populates dgvTournamentResults when clicked on
+        /// </summary>
         private void btnPaste_Click(object sender, EventArgs e)
         {
+            // Stops this method from working if user didnt enter the number of winners
             if (string.IsNullOrWhiteSpace(tbClientInputCount.Text))
             {
                 MessageBox.Show("Please enter the number of winners first");
                 return;
             }
 
-            string s = Clipboard.GetText();
-            if (string.IsNullOrWhiteSpace(s))
+            // Stops this method from working if the user did not copy from Excel first
+            string clipboard = Clipboard.GetText();
+            if (string.IsNullOrWhiteSpace(clipboard))
             {
                 MessageBox.Show("Please copy the earnings from Excel first");
                 return;
             }
-            s = s.Replace("$", "");
-            string[] lines = s.Replace("\n", "").Split('\r');
+
+            // Removes all $ symboles
+            clipboard = clipboard.Replace("$", "");
+
+            // Lines becomes clipboard as an array
+            string[] lines = clipboard.Replace("\n", "").Split('\r');
+            // Lines2 becomes an empty version of lines
             string[] lines2 = new string[lines.Length];
+
+            // Populates lines2 with all values in lines
             for(int t = 0; t < lines.Length; t++)
             {
                lines2[t] = lines[t];
@@ -960,7 +975,8 @@ namespace NineTapTour.Forms
             {
                 paste = pasteAble; 
             }
-            
+
+            // Populates dgvTournamentResults
             for (int i = 0; i < paste; i++)
             {
                 string check = lines2[i];
