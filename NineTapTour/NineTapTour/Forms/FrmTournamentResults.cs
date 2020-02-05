@@ -832,28 +832,28 @@ namespace NineTapTour.Forms
             }
 
             // if data ends in 1, return "st" 
-            // { 1st, 21st, 41st, ets }
+            // { 1st, 21st, 41st, etc. }
             if (dataNum % 10 == 1)
             {
                 return "st";
             }
 
             // if data ends in 2, return "nd"
-            // { 2ed, 32ed, 52ed, ets }
+            // { 2nd, 32nd, 52nd, etc. }
             else if (dataNum % 10 == 2)
             {
                 return "nd";
             }
 
             // if data ends in 3, return "rd"
-            // { 3rd, 43rd, 63rd, ets }
+            // { 3rd, 43rd, 63rd, etc. }
             else if (dataNum % 10 == 3)
             {
                 return "rd";
             }
 
             // if it is any other number than the ones above return th
-            // { 5th, 26th, 48th, ets }
+            // { 5th, 26th, 48th, etc. }
             else
             {
                 return "th";
