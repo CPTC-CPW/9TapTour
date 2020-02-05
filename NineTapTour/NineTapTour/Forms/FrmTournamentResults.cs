@@ -219,6 +219,9 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// Tabs the user though the cells of dgvTournamentResults
+        /// </summary>
         private void dgvTournamentResults_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
             if (dgvTournamentResults.CurrentRow.Cells[e.ColumnIndex].ReadOnly)
