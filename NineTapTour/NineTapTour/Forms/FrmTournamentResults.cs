@@ -859,7 +859,7 @@ namespace NineTapTour.Forms
                     g.Notes = $"Progressive Pot was entered as: {Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value)}" ;
                     g.SidePot = 0.00m;
                 }
-                
+                g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
                 g.gameRegionID = tourny.TourneyRegion;
                 db.Entry(g).State = System.Data.Entity.EntityState.Modified;
                 db.SaveChanges();
