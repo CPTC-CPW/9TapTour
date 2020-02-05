@@ -785,15 +785,17 @@ namespace NineTapTour.Forms
         /// <summary>
         /// This method should highlight the 30 avg column 
         /// </summary>
-        private void Highlight30AvgColumn()
-        {
-            // how many should be highlighted for 30 game average
-            int thirtyAve = 30;
-            for (int j = 0; j < playerTournamentHistoryGrid.RowCount && j < thirtyAve; j++)
-            {
-                playerTournamentHistoryGrid.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
-            }
-        }
+        //private void Highlight30AvgColumn()
+        //{
+
+        //    // how many should be highlighted for 30 game average
+        //    int thirtyAve = 30;
+        //    for (int j = 0; j < playerTournamentHistoryGrid.RowCount && j < thirtyAve; j++)
+        //    {
+        //        playerTournamentHistoryGrid.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
+        //    }
+
+        //}
 
         /// <summary>
         /// Show all games for the selected player including the current tournament
@@ -982,8 +984,9 @@ namespace NineTapTour.Forms
                 #endregion              
             }
 
-
-            Highlight30AvgColumn();
+            // Need to Highlight manually because the last game played isn't added to the database until the tournament is finalized
+            playerTournamentHistoryGrid.Rows[0].Cells[9].Style.BackColor = Color.GreenYellow;
+            highlight30Avg();
 
             highlightBonusPinCells();
 
@@ -1422,10 +1425,53 @@ namespace NineTapTour.Forms
             InitializeGameCellFormatting();
         }
 
+        private void highlight30Avg()
+        {
+            List<PlayerHistory> temporary = new List<PlayerHistory>();
+
+            int gameId = Convert.ToInt32(TournamentEntriesGrid.Rows[TournamentEntriesGrid.CurrentCell.RowIndex].Cells[GAME_ID_COLUMN].Value);
+            using (var db = new NineTapDb())
+            {
+                int memberNumber = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Number;
+
+                temporary = PlayerHistoryDB.GetTop30FromPlayerHistory(memberNumber);
+            }
+            int count = 0;
+
+            for (int i = 0; i < playerTournamentHistoryGrid.RowCount; i++)
+            {
+                if (count != 29)
+                {
+                    DateTime temp = new DateTime(2000, 1, 1);
+                    for (int j = 0; j < temporary.Count - 1; j++)
+                    {
+                        DateTime time = Convert.ToDateTime(playerTournamentHistoryGrid.Rows[i].Cells["Date"].Value); 
+                        if (time == temporary[j].TournamentDate && time != temp)
+                        {
+                            playerTournamentHistoryGrid.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
+                            temp = time;
+                            count++;
+
+                        }
+                        
+                    }
+                    
+                }
+            }
+        }
+
         private void dataGridView2_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-
-            Highlight30AvgColumn();
+            // Need to Highlight manually because the last game played isn't added to the database until the tournament is finalized
+            if (Convert.ToDateTime(playerTournamentHistoryGrid.Rows[0].Cells["Date"].Value) > Convert.ToDateTime(playerTournamentHistoryGrid.Rows[1].Cells["Date"].Value))
+            {
+                playerTournamentHistoryGrid.Rows[0].Cells[9].Style.BackColor = Color.GreenYellow;
+            }
+            else if(Convert.ToDateTime(playerTournamentHistoryGrid.Rows[playerTournamentHistoryGrid.RowCount - 1].Cells["Date"].Value) > Convert.ToDateTime(playerTournamentHistoryGrid.Rows[playerTournamentHistoryGrid.RowCount - 2].Cells["Date"].Value))
+            {
+                playerTournamentHistoryGrid.Rows[playerTournamentHistoryGrid.RowCount - 1].Cells[9].Style.BackColor = Color.GreenYellow;
+            }
+            highlight30Avg();
             highlightBonusPinCells();
            
             
