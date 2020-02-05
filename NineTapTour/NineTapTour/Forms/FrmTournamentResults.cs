@@ -20,7 +20,7 @@ namespace NineTapTour.Forms
 {
     public partial class FrmTournamentResults : Form
     {
-        // Set column names for datagridview
+        // Names of the Colums in the DataGridView
         static string PLACE_STANDING_COLUMN_NAME = "Place";
         static string FULLNAME_COLUMN_NAME = "Full Name";
         static string HANDICAP_COLUMN_NAME = "H/B*";
@@ -37,15 +37,17 @@ namespace NineTapTour.Forms
         static int clientInput; // how many winners the client wants to see
         List<ExcelMember> clientRequested = new List<ExcelMember>();
         List<ExcelMember> winners = new List<ExcelMember>();
-        // Floor directors get a comp entry into tournament when they help with tournament. 
-        // They don't pay the entry fee, but do qualify to cash.
-        static int compEntries; 
-                                
+
+        /* Floor directors get a comp entry into tournament when they help with tournament. 
+         * They don't pay the entry fee, but do qualify to cash.
+         */
+        static int compEntries;
+
+        #region Form Initilizers
         public FrmTournamentResults()
         {
             InitializeComponent();
         }
-    
         private void FrmTournamentResults_Load(object sender, EventArgs e)
         {
             // Set compEntries to 0; increment when building winners list
@@ -67,15 +69,14 @@ namespace NineTapTour.Forms
             
             ActiveControl = tbClientInputCount;
         }
+        #endregion
 
         /// <summary>
         /// Creates the DataGridView table and populates it with the list of cashed winners
         /// </summary>
-        /// <param name="clientRequested"></param>
         private void CreateDataGridView(List<ExcelMember> clientRequested, int clientInput)
         {
-            // Create data table and add columns 
-            // Columns with ReadOnly set to False are editable        
+            // Create data table and add columns, columns with ReadOnly set to False are editable      
             dt.Columns.Add(PLACE_STANDING_COLUMN_NAME).ReadOnly = true;
             dt.Columns.Add(FULLNAME_COLUMN_NAME).ReadOnly = true;
             dt.Columns.Add(HANDICAP_COLUMN_NAME).ReadOnly = true;
@@ -85,6 +86,7 @@ namespace NineTapTour.Forms
             dt.Columns.Add(GAME_ID_COLUMN_NAME).ReadOnly = true;
             dt.Columns.Add(PROGRESSIVEPOT_COLUMN_NAME).ReadOnly = false;
 
+            // Sets winnersCount to clientRequested or 0, whichever is bigger
             int winnersCount = 0;
             if(clientRequested.Count() > 0)
             {
@@ -264,9 +266,7 @@ namespace NineTapTour.Forms
             return tournyBowlers;
         }
 
-        /***************************
-              EXPORT TO EXCEL
-         **************************/
+        #region Export to Excel (code is fragile)
         private void btnExportToExcel_Click(object sender, EventArgs e)
         {
             bool wait = true;
@@ -285,8 +285,6 @@ namespace NineTapTour.Forms
             /// <summary>
             /// Saves participants' place standing and earnings won to the database
             /// </summary>
-            /// <param name="sender"></param>
-            /// <param name="e"></param>
             for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
             {
                 int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
@@ -676,8 +674,10 @@ namespace NineTapTour.Forms
             }
         }
 
-        //gets and sets the total amount of payout for the 
-        //winners in the total payout box of the excel sheet
+        /// <summary>
+        /// Gets and sets the total amount of payout for the 
+        /// winners in the total payout box of the excel sheet
+        /// </summary>
         private void setTotalPayout(Excel.Worksheet xlWorkSheet)
         {
             double money = 0;
@@ -688,7 +688,7 @@ namespace NineTapTour.Forms
             }
             xlWorkSheet.Cells[2, 8] = money.ToString();
         }
-
+        
         //format and populate 
         private void formatBigTie(string tempData3, int tiePlace, Excel.Worksheet xlWorkSheet, int i)
         {
@@ -774,6 +774,7 @@ namespace NineTapTour.Forms
                 xlWorkSheet.Cells[(i * 2) + 11, 9] = dt.Rows[i + 3].ItemArray[7].ToString();
             }
         }
+        #endregion
 
         /// <summary>
         /// Checks to see what place the players have placed at 
@@ -781,24 +782,41 @@ namespace NineTapTour.Forms
         /// standing to be added onto the number they placed. It 
         /// will either be "st", "nd", "rd", or "th".
         /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
         private string getPlace(string data)
         {
-            if (data == "1" || data == "21" || data == "31" || data == "41" || data == "51" || data == "61" || data == "71" || data == "81" || data == "91")
-            {   // if it is the 1st, 21st, 31st, 41st, 51st, 61st, 71st, 81st, or 91st return st
+            // Convert data to an int to easily find its sufix
+            int dataNum = Int32.Parse(data);
+
+            // 11, 12, and 13 are exceptions to the rules bellow, ending in "th"
+            if(dataNum == 11 || dataNum == 12 || dataNum == 13) {
+                return "th";
+            }
+
+            // if data ends in 1, return "st" 
+            // { 1st, 21st, 41st, ets }
+            if (dataNum % 10 == 1)
+            {
                 return "st";
             }
-            else if (data == "2" || data == "22" || data == "32" || data == "42" || data == "52" || data == "62" || data == "72" || data == "82" || data == "92")
-            {   // if it is the 2nd, 22nd, 32nd, 42nd, 52nd, 62nd, 72nd, 82nd, or 92nd return nd
+
+            // if data ends in 2, return "nd"
+            // { 2ed, 32ed, 52ed, ets }
+            else if (dataNum % 10 == 2)
+            {
                 return "nd";
             }
-            else if (data == "3" || data == "23" || data == "33" || data == "43" || data == "53" || data == "63" || data == "73" || data == "83" || data == "93")
-            {   // if it is the 3rd, 23rd, 33rd, 43rd, 53rd, 63rd, 73rd, 83rd, or 93rd return rd
+
+            // if data ends in 3, return "rd"
+            // { 3rd, 43rd, 63rd, ets }
+            else if (dataNum % 10 == 3)
+            {
                 return "rd";
             }
+
+            // if it is any other number than the ones above return th
+            // { 5th, 26th, 48th, ets }
             else
-            {   // if it is any other number than the ones above return th
+            {
                 return "th";
             }
         }
