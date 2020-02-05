@@ -1079,7 +1079,7 @@ namespace NineTapTour.Forms
         /// </summary>
         private void btnNewTournament_Click(object sender, EventArgs e)
         {
-            var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as frmNewTournament;
+            var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as FrmNewTournament;
             ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
             newfrmNewTournament.Dock = DockStyle.None;
             checkSquadOne.Checked = true;
@@ -1321,7 +1321,7 @@ namespace NineTapTour.Forms
                         var top4Games = allScoresWithOutNullGames;
 
                         //Sets a collection of all the games using the 3 out of 4 ruleset
-                        var top3Games = TournamentStats.GetTop3OutOf4(top4Games.ToList());
+                        var top3Games = FrmTournamentStats.GetTop3OutOf4(top4Games.ToList());
 
                         TopParticipantGameViewModel currTopScoreViewModel =
                             new TopParticipantGameViewModel(
@@ -1481,13 +1481,13 @@ namespace NineTapTour.Forms
 
         private void btnTournamentsByYear_Click(object sender, EventArgs e)
         {
-            TournamentsByYear listTournaments = new TournamentsByYear(RegionID);
+            FrmTournamentsByYear listTournaments = new FrmTournamentsByYear(RegionID);
             listTournaments.ShowDialog();
         }
         //Called when stats btn is clicked
         private void btnStats_Click(object sender, EventArgs e)
         {
-            TournamentStats tournamentStats = new TournamentStats();
+            FrmTournamentStats tournamentStats = new FrmTournamentStats();
             tournamentStats.ShowDialog();
         }
 
@@ -1510,7 +1510,7 @@ namespace NineTapTour.Forms
 
         private void btnPlaceStandings_Click(object sender, EventArgs e)
         {
-            TournamentPlaceStandings form = new TournamentPlaceStandings();
+            FrmTournamentPlaceStandings form = new FrmTournamentPlaceStandings();
             form.ShowDialog();
         }
 

@@ -348,7 +348,7 @@ namespace NineTapTour.Forms
                 List<PlayerHistory> ExistingPlayerHistory = PlayerHistoryDB.GetMemberPlayerHistory(item.MemberNumber, RegionID);
                 if (ExistingPlayerHistory.Count == 0)
                 {
-                    temp.LeagueAverage = CalcThirtyLeagueAverage(item.MemberNumber, FinalizeTableList.Where(f => f.MemberNumber == item.MemberNumber && f.Squad <= item.Squad && (f.UseGame1 || f.UseGame2 || f.UseGame3 || f.UseGame4)).Select(f => f.GameAvg).ToList());
+                    temp.LeagueAverage = CalcThirtyLeagueAverage(item.MemberNumber);
                 }
                 else
                 {
@@ -360,7 +360,7 @@ namespace NineTapTour.Forms
                         }
                         else if (u == ExistingPlayerHistory.Count - 1) // after looking at all the history, if its not in the playerhistory list, then adjust the league avg
                         {
-                            temp.LeagueAverage = CalcThirtyLeagueAverage(item.MemberNumber, FinalizeTableList.Where(f => f.MemberNumber == item.MemberNumber && f.Squad <= item.Squad && (f.UseGame1 || f.UseGame2 || f.UseGame3 || f.UseGame4)).Select(f => f.GameAvg).ToList());
+                            temp.LeagueAverage = CalcThirtyLeagueAverage(item.MemberNumber);
                         }
                     }
                 }
@@ -564,12 +564,7 @@ namespace NineTapTour.Forms
                 // If the squad number is equal to or greater than the passed in row's squad number, it needs to be updated.
                 if (squadNum >= initialSquadNum)
                 {
-                    // This list is required by the CalcThirtyLeagueAverage method. It is the Game Averages from the current game, and all the games previous in the current tournament.
-                    List<int> previousGameAverages = rows
-                        .Where(r => r.Field<int>(SQUAD_COLUMN_NAME) <= squadNum && (r.Field<bool>(GAME_1_VALID_COLUMN_NAME) || r.Field<bool>(GAME_2_VALID_COLUMN_NAME) || r.Field<bool>(GAME_3_VALID_COLUMN_NAME) || r.Field<bool>(GAME_4_VALID_COLUMN_NAME)))
-                        .Select(r => r.Field<int>(ENTRY_AVERAGE_COLUMN_NAME))
-                        .ToList();
-                    row.SetField(THIRTY_ENTRY_AVERAGE_COLUMN, CalcThirtyLeagueAverage(memberNum, previousGameAverages));
+                    row.SetField(THIRTY_ENTRY_AVERAGE_COLUMN, CalcThirtyLeagueAverage(memberNum));
                 }
             }
         }
@@ -1130,9 +1125,9 @@ namespace NineTapTour.Forms
                             p.TotalScore = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[SCRATCH_TOTAL_COLUMN].Value);
                             p.HandiCap = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[HANDICAP_COLUMN].Value);
                             p.Bonus = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[BONUS_COLUMN].Value);
-                            p.MoneyWon = Convert.ToDecimal(GameDB.GetGame(p.GameID).MoneyWon);
+                            p.MoneyWon = Convert.ToDecimal(GameDB.GetGame(p.GameID).MoneyWon + GameDB.GetGame(p.GameID).SidePot);
                             p.PPHG = Convert.ToString(TournamentEntriesGrid.Rows[i].Cells[STANDING_COLUMN].Value);
-                            p.ProPot = TournamentEntriesGrid[PRO_POT_COLUMN, i].Value.ToString();
+                            p.ProPot = Convert.ToString(GameDB.GetGame(p.GameID).SidePot);
                             p.Notes = TournamentEntriesGrid[NOTES_COLUMN_, i].Value.ToString();
                             p.AverageForEntry = Convert.ToDouble(TournamentEntriesGrid[ENTRY_AVERAGE_COLUMN, i].Value);
                             p.trueAVG = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
@@ -1230,9 +1225,12 @@ namespace NineTapTour.Forms
 
                     ph.AVG = Convert.ToInt32(TournamentEntriesGrid[ADJUSTED_AVG_COLUMN, currDataGridRowIndex].Value);
 
-                    ph.ProPot = TournamentEntriesGrid[PRO_POT_COLUMN, currDataGridRowIndex].Value.ToString();
 
-                    ph.MoneyWon = Convert.ToDecimal(currGame.MoneyWon);
+
+                    ph.ProPot = Convert.ToString(GameDB.GetGame(ph.GameID).SidePot);
+                    ph.MoneyWon = Convert.ToDecimal(GameDB.GetGame(ph.GameID).MoneyWon + (GameDB.GetGame(ph.GameID).SidePot) );
+
+
                     ph.Game1 = FinalizeTableList[i].Game1;
                     ph.Game2 = FinalizeTableList[i].Game2;
                     ph.Game3 = FinalizeTableList[i].Game3;
@@ -1289,13 +1287,13 @@ namespace NineTapTour.Forms
                     ph.TotalScore = FinalizeTableList[i].ScratchTotal;
 
                     DataGridViewCell placeCell = TournamentEntriesGrid[STANDING_COLUMN, currDataGridRowIndex];
-                    byte placeStanding = (placeCell.Value == DBNull.Value) ? (byte) 0 : Convert.ToByte(placeCell.Value);
+                    int placeStanding = (placeCell.Value == DBNull.Value) ? (int) 0 : Convert.ToByte(placeCell.Value);
 
                     #region Adjust Bonus pins for highest game and record PlaceStanding
                     // if bowler's highest game in tournament (only multiple entries that aren't the player's best game get 0s)
                     if (placeStanding > 0)
                     {
-                        currGame.PlaceStanding = Convert.ToByte(placeStanding);
+                        currGame.PlaceStanding = Convert.ToInt32(placeStanding);
                         ph.PPHG = placeStanding.ToString();
 
                         AdjustBonusPins(FinalizeTableList.Count, compEntriesQty, ph, currGame, currMember, placeStanding);
@@ -1359,7 +1357,7 @@ namespace NineTapTour.Forms
         /// <param name="currGame">Current Game of tournament</param>
         /// <param name="currMember">Current Member to adjust bonus pins of</param>
         /// <param name="placeStanding">Placestanding in tournament for current member's entry</param>
-        private void AdjustBonusPins(int totalEntriesQty, int compEntriesQty, PlayerHistory ph, Game currGame, Member currMember, byte placeStanding)
+        private void AdjustBonusPins(int totalEntriesQty, int compEntriesQty, PlayerHistory ph, Game currGame, Member currMember, int placeStanding)
         {
             // Adjust bonus pins only if game has not been finalized previously
             if (!PlayerHistoryDB.PlayerHistoryExists(currGame.Id))
@@ -1395,19 +1393,9 @@ namespace NineTapTour.Forms
         /// <param name="memberNum">The Member Number of the player whose averages we are calculating.</param>
         /// <param name="currGameAverages">A list of the averages from the current games being finalized.</param>
         /// <returns></returns>
-        private int CalcThirtyLeagueAverage(int memberNum, List<int> currGameAverages)
+        private int CalcThirtyLeagueAverage(int memberNum)
         {
-            List<PlayerHistory> playerHistory = PlayerHistoryDB.GetMemberPlayerHistory(memberNum, RegionID);
-            if (playerHistory.Count >= 30 || (playerHistory.Count + currGameAverages.Count) >= 30) { 
-                int newAverage = 
-                Convert.ToInt32(FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 30 - currGameAverages.Count, RegionID) /30);
-            return newAverage;         
-            }
-            else
-            {
-                return Convert.ToInt32((FinalizeTempDB.LeagueAvgFromPlayerHistory(memberNum, 29, RegionID) + currGameAverages.Sum())/ (playerHistory.Count + currGameAverages.Count));
-            }
-            
+            return FinalizeTempDB.GetLeagueAverage(memberNum, RegionID, currTournament.Id);            
         }
 
         // Removed unused getLeagueSum method which was meant to calculate the League Average on 3/18/19. League Average is
