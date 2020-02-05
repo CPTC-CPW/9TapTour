@@ -43,7 +43,7 @@ namespace NineTapTour.Forms
          */
         static int compEntries;
 
-        #region Form Initilizers
+        #region Form Initilizers and Closers
         public FrmTournamentResults()
         {
             InitializeComponent();
@@ -68,6 +68,42 @@ namespace NineTapTour.Forms
             winners = BuildWinnersList();
             
             ActiveControl = tbClientInputCount;
+        }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            if (e.CloseReason == CloseReason.WindowsShutDown) return;
+            List<double> Winnings = new List<double>();
+            for (int winningList = 0; winningList < dgvTournamentResults.RowCount; winningList++)
+            {
+                Winnings.Add(Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
+            }
+            TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
+
+            // Save all changes made to the dataGridView
+            for (int currentIndex = 0; currentIndex < clientRequested.Count; currentIndex++)
+            {
+                int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
+                Game g = GameDB.GetGame(gameId);
+
+                g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
+
+                // if user enters something other than a decimal number, set SidePot to 0.00 and enter the string into notes
+                if (Decimal.TryParse(Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value), out decimal a))
+                {
+                    g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
+                }
+                else
+                {
+                    g.Notes = $"Progressive Pot was entered as: {Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value)}";
+                    g.SidePot = 0.00m;
+                }
+
+                g.gameRegionID = tourny.TourneyRegion;
+                db.Entry(g).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+            }
         }
         #endregion
 
@@ -844,50 +880,13 @@ namespace NineTapTour.Forms
             }
         }
 
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            base.OnFormClosing(e);
-
-            if (e.CloseReason == CloseReason.WindowsShutDown) return;
-            List<double> Winnings = new List<double>();
-            for(int winningList = 0; winningList < dgvTournamentResults.RowCount; winningList++)
-            {
-                Winnings.Add(Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
-            }
-            TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
-            
-            // Save all changes made to the dataGridView
-            for (int currentIndex = 0; currentIndex < clientRequested.Count; currentIndex++)
-            {
-                int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
-                Game g = GameDB.GetGame(gameId);
-
-                g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
-
-                // if user enters something other than a decimal number, set SidePot to 0.00 and enter the string into notes
-                if ( Decimal.TryParse( Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value), out decimal a ) )
-                {
-                    g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
-                }
-                else
-                {
-                    g.Notes = $"Progressive Pot was entered as: {Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value)}" ;
-                    g.SidePot = 0.00m;
-                }
-                
-                g.gameRegionID = tourny.TourneyRegion;
-                db.Entry(g).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
-            }
-        }
-
         /// <summary>
         /// This method was made by accident, if deleted will mess up tbClientInputCount
         /// </summary>
         private void tbClientInputCount_TextChanged(object sender, EventArgs e) { }
 
         /// <summary>
-        /// 
+        /// Runs AcceptClientInputForResults if the user presses the "Enter" key
         /// </summary>
         private void tbClientInputCount_KeyDown(object sender, KeyEventArgs e)
         {
@@ -898,7 +897,7 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// 
+        /// Clears dgvTournamentResults and repopulates with the winners
         /// </summary>
         private void AcceptClientInputForResults()
         {
@@ -916,8 +915,10 @@ namespace NineTapTour.Forms
                 {
                     clientInput = Convert.ToInt32(tbClientInputCount.Text);
                     tbClientInputCount.Enabled = false;
+
                     // Create list of participants list for client request of how many show up in tournament results
                     clientRequested = Calculations.Calculations.MakeTopMembersByPlacementList(winners, clientInput);
+
                     // Create datagridview and populate with cashedWinners list
                     CreateDataGridView(clientRequested, clientInput);
                 }
