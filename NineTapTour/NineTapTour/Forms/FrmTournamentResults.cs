@@ -88,6 +88,7 @@ namespace NineTapTour.Forms
                 Game g = GameDB.GetGame(gameId);
 
                 g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
+                g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
 
                 // if user enters something other than a decimal number, set SidePot to 0.00 and enter the string into notes
                 if (Decimal.TryParse(Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value), out decimal a))
