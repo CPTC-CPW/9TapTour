@@ -280,7 +280,7 @@ namespace NineTapTour.Forms
                     return;
                 }
 
-                int memberNumber = Convert.ToInt16(txtMemberNum.Text);
+                int memberNumber = Convert.ToInt32(txtMemberNum.Text);
                 currentMem = MemberDB.GetMember(memberNumber, RegionID);
                 if (currentMem != null)
                 {
