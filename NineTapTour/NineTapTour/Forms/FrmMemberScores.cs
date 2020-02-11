@@ -280,7 +280,7 @@ namespace NineTapTour.Forms
                     return;
                 }
 
-                int memberNumber = Convert.ToInt16(txtMemberNum.Text);
+                int memberNumber = Convert.ToInt32(txtMemberNum.Text);
                 currentMem = MemberDB.GetMember(memberNumber, RegionID);
                 if (currentMem != null)
                 {
@@ -1321,7 +1321,7 @@ namespace NineTapTour.Forms
                         var top4Games = allScoresWithOutNullGames;
 
                         //Sets a collection of all the games using the 3 out of 4 ruleset
-                        var top3Games = TournamentStats.GetTop3OutOf4(top4Games.ToList());
+                        var top3Games = FrmTournamentStats.GetTop3OutOf4(top4Games.ToList());
 
                         TopParticipantGameViewModel currTopScoreViewModel =
                             new TopParticipantGameViewModel(
@@ -1487,7 +1487,7 @@ namespace NineTapTour.Forms
         //Called when stats btn is clicked
         private void btnStats_Click(object sender, EventArgs e)
         {
-            TournamentStats tournamentStats = new TournamentStats();
+            FrmTournamentStats tournamentStats = new FrmTournamentStats();
             tournamentStats.ShowDialog();
         }
 

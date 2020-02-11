@@ -348,6 +348,8 @@ namespace NineTapTour.Forms
                 List<PlayerHistory> ExistingPlayerHistory = PlayerHistoryDB.GetMemberPlayerHistory(item.MemberNumber, RegionID);
                 if (ExistingPlayerHistory.Count == 0)
                 {
+                    // We have to push the current history into the finalize temp for CalcThirtyAverage to work properly. 
+                    FinalizeTempDB.AddFinalizeTemp(temp);
                     temp.LeagueAverage = CalcThirtyLeagueAverage(item.MemberNumber);
                 }
                 else

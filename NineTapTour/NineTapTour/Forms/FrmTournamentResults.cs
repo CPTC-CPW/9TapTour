@@ -20,7 +20,7 @@ namespace NineTapTour.Forms
 {
     public partial class FrmTournamentResults : Form
     {
-        // Set column names for datagridview
+        // Names of the Colums in the DataGridView
         static string PLACE_STANDING_COLUMN_NAME = "Place";
         static string FULLNAME_COLUMN_NAME = "Full Name";
         static string HANDICAP_COLUMN_NAME = "H/B*";
@@ -37,15 +37,17 @@ namespace NineTapTour.Forms
         static int clientInput; // how many winners the client wants to see
         List<ExcelMember> clientRequested = new List<ExcelMember>();
         List<ExcelMember> winners = new List<ExcelMember>();
-        // Floor directors get a comp entry into tournament when they help with tournament. 
-        // They don't pay the entry fee, but do qualify to cash.
-        static int compEntries; 
-                                
+
+        /* Floor directors get a comp entry into tournament when they help with tournament. 
+         * They don't pay the entry fee, but do qualify to cash.
+         */
+        static int compEntries;
+
+        #region Form Initilizers and Closers
         public FrmTournamentResults()
         {
             InitializeComponent();
         }
-    
         private void FrmTournamentResults_Load(object sender, EventArgs e)
         {
             // Set compEntries to 0; increment when building winners list
@@ -67,15 +69,51 @@ namespace NineTapTour.Forms
             
             ActiveControl = tbClientInputCount;
         }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            if (e.CloseReason == CloseReason.WindowsShutDown) return;
+            List<double> Winnings = new List<double>();
+            for (int winningList = 0; winningList < dgvTournamentResults.RowCount; winningList++)
+            {
+                Winnings.Add(Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
+            }
+            TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
+
+            // Save all changes made to the dataGridView
+            for (int currentIndex = 0; currentIndex < clientRequested.Count; currentIndex++)
+            {
+                int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
+                Game g = GameDB.GetGame(gameId);
+
+                g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
+                g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
+
+                // if user enters something other than a decimal number, set SidePot to 0.00 and enter the string into notes
+                if (Decimal.TryParse(Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value), out decimal a))
+                {
+                    g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
+                }
+                else
+                {
+                    g.Notes = $"Progressive Pot was entered as: {Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value)}";
+                    g.SidePot = 0.00m;
+                }
+
+                g.gameRegionID = tourny.TourneyRegion;
+                db.Entry(g).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+            }
+        }
+        #endregion
 
         /// <summary>
         /// Creates the DataGridView table and populates it with the list of cashed winners
         /// </summary>
-        /// <param name="clientRequested"></param>
         private void CreateDataGridView(List<ExcelMember> clientRequested, int clientInput)
         {
-            // Create data table and add columns 
-            // Columns with ReadOnly set to False are editable        
+            // Create data table and add columns, columns with ReadOnly set to False are editable      
             dt.Columns.Add(PLACE_STANDING_COLUMN_NAME).ReadOnly = true;
             dt.Columns.Add(FULLNAME_COLUMN_NAME).ReadOnly = true;
             dt.Columns.Add(HANDICAP_COLUMN_NAME).ReadOnly = true;
@@ -85,6 +123,7 @@ namespace NineTapTour.Forms
             dt.Columns.Add(GAME_ID_COLUMN_NAME).ReadOnly = true;
             dt.Columns.Add(PROGRESSIVEPOT_COLUMN_NAME).ReadOnly = false;
 
+            // Sets winnersCount to clientRequested or 0, whichever is bigger
             int winnersCount = 0;
             if(clientRequested.Count() > 0)
             {
@@ -181,6 +220,9 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// Tabs the user though the cells of dgvTournamentResults
+        /// </summary>
         private void dgvTournamentResults_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
             if (dgvTournamentResults.CurrentRow.Cells[e.ColumnIndex].ReadOnly)
@@ -264,9 +306,7 @@ namespace NineTapTour.Forms
             return tournyBowlers;
         }
 
-        /***************************
-              EXPORT TO EXCEL
-         **************************/
+        #region Export to Excel (code is fragile)
         private void btnExportToExcel_Click(object sender, EventArgs e)
         {
             bool wait = true;
@@ -285,8 +325,6 @@ namespace NineTapTour.Forms
             /// <summary>
             /// Saves participants' place standing and earnings won to the database
             /// </summary>
-            /// <param name="sender"></param>
-            /// <param name="e"></param>
             for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
             {
                 int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
@@ -676,8 +714,10 @@ namespace NineTapTour.Forms
             }
         }
 
-        //gets and sets the total amount of payout for the 
-        //winners in the total payout box of the excel sheet
+        /// <summary>
+        /// Gets and sets the total amount of payout for the 
+        /// winners in the total payout box of the excel sheet
+        /// </summary>
         private void setTotalPayout(Excel.Worksheet xlWorkSheet)
         {
             double money = 0;
@@ -688,7 +728,7 @@ namespace NineTapTour.Forms
             }
             xlWorkSheet.Cells[2, 8] = money.ToString();
         }
-
+        
         //format and populate 
         private void formatBigTie(string tempData3, int tiePlace, Excel.Worksheet xlWorkSheet, int i)
         {
@@ -774,6 +814,7 @@ namespace NineTapTour.Forms
                 xlWorkSheet.Cells[(i * 2) + 11, 9] = dt.Rows[i + 3].ItemArray[7].ToString();
             }
         }
+        #endregion
 
         /// <summary>
         /// Checks to see what place the players have placed at 
@@ -781,24 +822,41 @@ namespace NineTapTour.Forms
         /// standing to be added onto the number they placed. It 
         /// will either be "st", "nd", "rd", or "th".
         /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
         private string getPlace(string data)
         {
-            if (data == "1" || data == "21" || data == "31" || data == "41" || data == "51" || data == "61" || data == "71" || data == "81" || data == "91")
-            {   // if it is the 1st, 21st, 31st, 41st, 51st, 61st, 71st, 81st, or 91st return st
+            // Convert data to an int to easily find its sufix
+            int dataNum = Int32.Parse(data);
+
+            // 11, 12, and 13 are exceptions to the rules bellow, ending in "th"
+            if(dataNum == 11 || dataNum == 12 || dataNum == 13) {
+                return "th";
+            }
+
+            // if data ends in 1, return "st" 
+            // { 1st, 21st, 41st, etc. }
+            if (dataNum % 10 == 1)
+            {
                 return "st";
             }
-            else if (data == "2" || data == "22" || data == "32" || data == "42" || data == "52" || data == "62" || data == "72" || data == "82" || data == "92")
-            {   // if it is the 2nd, 22nd, 32nd, 42nd, 52nd, 62nd, 72nd, 82nd, or 92nd return nd
+
+            // if data ends in 2, return "nd"
+            // { 2nd, 32nd, 52nd, etc. }
+            else if (dataNum % 10 == 2)
+            {
                 return "nd";
             }
-            else if (data == "3" || data == "23" || data == "33" || data == "43" || data == "53" || data == "63" || data == "73" || data == "83" || data == "93")
-            {   // if it is the 3rd, 23rd, 33rd, 43rd, 53rd, 63rd, 73rd, 83rd, or 93rd return rd
+
+            // if data ends in 3, return "rd"
+            // { 3rd, 43rd, 63rd, etc. }
+            else if (dataNum % 10 == 3)
+            {
                 return "rd";
             }
+
+            // if it is any other number than the ones above return th
+            // { 5th, 26th, 48th, etc. }
             else
-            {   // if it is any other number than the ones above return th
+            {
                 return "th";
             }
         }
@@ -826,51 +884,14 @@ namespace NineTapTour.Forms
             }
         }
 
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            base.OnFormClosing(e);
+        /// <summary>
+        /// This method was made by accident, if deleted will mess up tbClientInputCount
+        /// </summary>
+        private void tbClientInputCount_TextChanged(object sender, EventArgs e) { }
 
-            if (e.CloseReason == CloseReason.WindowsShutDown) return;
-            List<double> Winnings = new List<double>();
-            for(int winningList = 0; winningList < dgvTournamentResults.RowCount; winningList++)
-            {
-                Winnings.Add(Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
-            }
-            TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
-            
-            // Save all changes made to the dataGridView
-            for (int currentIndex = 0; currentIndex < clientRequested.Count; currentIndex++)
-            {
-
-
-
-                int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
-                Game g = GameDB.GetGame(gameId);
-
-                g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
-
-                // if user enters something other than a decimal number, set SidePot to 0.00 and enter the string into notes
-                if ( Decimal.TryParse( Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value), out decimal a ) )
-                {
-                    g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
-                }
-                else
-                {
-                    g.Notes = $"Progressive Pot was entered as: {Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value)}" ;
-                    g.SidePot = 0.00m;
-                }
-                
-                g.gameRegionID = tourny.TourneyRegion;
-                db.Entry(g).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
-            }
-        }
-
-        private void tbClientInputCount_TextChanged(object sender, EventArgs e)
-        {
-         
-        }
-
+        /// <summary>
+        /// Runs AcceptClientInputForResults if the user presses the "Enter" key
+        /// </summary>
         private void tbClientInputCount_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -879,6 +900,9 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// Clears dgvTournamentResults and repopulates with the winners
+        /// </summary>
         private void AcceptClientInputForResults()
         {
             this.dgvTournamentResults.DataSource = null;
@@ -895,8 +919,10 @@ namespace NineTapTour.Forms
                 {
                     clientInput = Convert.ToInt32(tbClientInputCount.Text);
                     tbClientInputCount.Enabled = false;
+
                     // Create list of participants list for client request of how many show up in tournament results
                     clientRequested = Calculations.Calculations.MakeTopMembersByPlacementList(winners, clientInput);
+
                     // Create datagridview and populate with cashedWinners list
                     CreateDataGridView(clientRequested, clientInput);
                 }
@@ -907,23 +933,35 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// Populates dgvTournamentResults when clicked on
+        /// </summary>
         private void btnPaste_Click(object sender, EventArgs e)
         {
+            // Stops this method from working if user didnt enter the number of winners
             if (string.IsNullOrWhiteSpace(tbClientInputCount.Text))
             {
                 MessageBox.Show("Please enter the number of winners first");
                 return;
             }
 
-            string s = Clipboard.GetText();
-            if (string.IsNullOrWhiteSpace(s))
+            // Stops this method from working if the user did not copy from Excel first
+            string clipboard = Clipboard.GetText();
+            if (string.IsNullOrWhiteSpace(clipboard))
             {
                 MessageBox.Show("Please copy the earnings from Excel first");
                 return;
             }
-            s = s.Replace("$", "");
-            string[] lines = s.Replace("\n", "").Split('\r');
+
+            // Removes all $ symboles
+            clipboard = clipboard.Replace("$", "");
+
+            // Lines becomes clipboard as an array
+            string[] lines = clipboard.Replace("\n", "").Split('\r');
+            // Lines2 becomes an empty version of lines
             string[] lines2 = new string[lines.Length];
+
+            // Populates lines2 with all values in lines
             for(int t = 0; t < lines.Length; t++)
             {
                lines2[t] = lines[t];
@@ -942,7 +980,8 @@ namespace NineTapTour.Forms
             {
                 paste = pasteAble; 
             }
-            
+
+            // Populates dgvTournamentResults
             for (int i = 0; i < paste; i++)
             {
                 string check = lines2[i];
