@@ -2109,7 +2109,5 @@ namespace NineTapTour.Forms
         {
             Refresh(false);
         }
-
-
     }
 }
