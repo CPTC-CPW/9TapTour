@@ -508,23 +508,17 @@ namespace NineTapTour.Forms
                 player.ParticipantRegionID = RegionID;
                 var db = new NineTapDb();
 
-                var gameId = (from p in db.Participants
-                    where p.Member.Id == currentMem.Id
-                            && p.Tournament.Id == currTourney.Id
-                            && p.Squad == squad
-                    select p.Game.Id).FirstOrDefault();
+                int gameId = (from p in db.Participants
+                              where p.Member.Id == currentMem.Id
+                                  && p.Tournament.Id == currTourney.Id
+                                  && p.Squad == squad
+                              select p.Game.Id).FirstOrDefault();
 
-                var parID = (from p in db.Participants
-                    where p.Member.Id == currentMem.Id
-                            && p.Tournament.Id == currTourney.Id
-                            && p.Squad == squad
-                    select p.Id).FirstOrDefault();
-
-                var parList = (from p in db.Participants
-                    select new
-                    {
-                        p.Id
-                    }).ToList();
+                int parID = (from p in db.Participants
+                             where p.Member.Id == currentMem.Id
+                                 && p.Tournament.Id == currTourney.Id
+                                 && p.Squad == squad
+                             select p.Id).FirstOrDefault();
 
                 if (parID != 0)
                 {
