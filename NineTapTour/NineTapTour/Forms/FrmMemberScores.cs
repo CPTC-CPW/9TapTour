@@ -508,17 +508,11 @@ namespace NineTapTour.Forms
                 player.ParticipantRegionID = RegionID;
                 var db = new NineTapDb();
 
-                int gameId = (from p in db.Participants
-                              where p.Member.Id == currentMem.Id
-                                  && p.Tournament.Id == currTourney.Id
-                                  && p.Squad == squad
-                              select p.Game.Id).FirstOrDefault();
+                // Gets the game ID
+                int gameId = ParticipantsDB.GetGameID(db, currentMem.Id, currTourney.Id, squad);
 
-                int parID = (from p in db.Participants
-                             where p.Member.Id == currentMem.Id
-                                 && p.Tournament.Id == currTourney.Id
-                                 && p.Squad == squad
-                             select p.Id).FirstOrDefault();
+                // Gets the participant ID
+                int parID = ParticipantsDB.GetParticipantID(db, currentMem.Id, currTourney.Id, squad);
 
                 if (parID != 0)
                 {
@@ -824,17 +818,7 @@ namespace NineTapTour.Forms
         /// <param name="selectedTournamentId"></param>    
         private Tournament GetTournamentById(int selectedTournamentId)
         {
-            try
-            {
-                Tournament selectedTournament = (from t in TournamentDB.GetTournamentList(RegionID)
-                                                 where t.Id == selectedTournamentId
-                                                 select t).Single();
-            }
-            catch
-            {
-
-            }
-            return selectedTournament;
+            return TournamentDB.GetTourneyByID(selectedTournamentId);
         }
 
         /// <summary>
