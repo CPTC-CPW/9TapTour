@@ -1115,7 +1115,7 @@ namespace NineTapTour.Forms
                             p.Bonus = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[BONUS_COLUMN].Value);
                             p.MoneyWon = Convert.ToDecimal(GameDB.GetGame(p.GameID).MoneyWon + GameDB.GetGame(p.GameID).SidePot);
                             p.PPHG = Convert.ToString(TournamentEntriesGrid.Rows[i].Cells[STANDING_COLUMN].Value);
-                            p.ProPot = Convert.ToString(GameDB.GetGame(p.GameID).SidePot);
+                            p.ProPot = TournamentEntriesGrid[PRO_POT_COLUMN, i].Value.ToString();
                             p.Notes = TournamentEntriesGrid[NOTES_COLUMN_, i].Value.ToString();
                             p.AverageForEntry = Convert.ToDouble(TournamentEntriesGrid[ENTRY_AVERAGE_COLUMN, i].Value);
                             p.trueAVG = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
