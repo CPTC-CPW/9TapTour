@@ -73,12 +73,12 @@ namespace NineTapTour.Forms
                 errors = true;
             }
 
-            if (ckbxDoubles.Checked)
+            if (rdoDoubles.Checked)
             {
                 NewTournament.Doubles = true;
             }
 
-            if (ckbx3outOf4.Checked)
+            if (rdo3OutOf4.Checked)
             {
                 NewTournament.ThreeOutOf4 = true;
             }
@@ -154,8 +154,8 @@ namespace NineTapTour.Forms
                 txtLocation.Text = tourToEdit.Location;
                 txtEvent.Text = tourToEdit.Event;
                 txtSponsors.Text = tourToEdit.Sponsors;
-                ckbxDoubles.Checked = tourToEdit.Doubles ? true : false;
-                ckbx3outOf4.Checked = tourToEdit.ThreeOutOf4 ? true : false;
+                rdoDoubles.Checked = tourToEdit.Doubles ? true : false;
+                rdo3OutOf4.Checked = tourToEdit.ThreeOutOf4 ? true : false;
                 rtxtNotes.Text = tourToEdit.Notes;
                 btnSubmit.Text = "Update Tournament";
                 lblEdit.Text = "Currently Editing " + tourToEdit.TourneyNameDate;
@@ -184,10 +184,10 @@ namespace NineTapTour.Forms
             txtLocation.Clear();
             txtEvent.Clear();
             txtSponsors.Clear();
-            ckbxDoubles.Checked = false;
-            ckbx3outOf4.Checked = false;
-            ckbxDoubles.Enabled = true;
-            ckbx3outOf4.Enabled = true;
+            rdoDoubles.Checked = false;
+            rdo3OutOf4.Checked = false;
+            rdoDoubles.Enabled = true;
+            rdo3OutOf4.Enabled = true;
             rtxtNotes.Clear();
             tourToEdit = null;
             lblEdit.Text = "";
@@ -212,8 +212,8 @@ namespace NineTapTour.Forms
                 !string.IsNullOrWhiteSpace(txtLocation.Text.Trim()) ||
                 !string.IsNullOrWhiteSpace(txtEvent.Text.Trim()) ||
                 !string.IsNullOrWhiteSpace(txtSponsors.Text.Trim()) ||
-                ckbxDoubles.Checked ||
-                ckbx3outOf4.Checked ||
+                rdoDoubles.Checked ||
+                rdo3OutOf4.Checked ||
                 !string.IsNullOrWhiteSpace(rtxtNotes.Text.Trim()) ||
                 tourToEdit != null
                 )
@@ -236,16 +236,16 @@ namespace NineTapTour.Forms
             checkCleared();
         }
 
-        private void ckbxDoubles_CheckedChanged(object sender, EventArgs e)
+        private void rdoDoubles_CheckedChanged(object sender, EventArgs e)
         {
             checkCleared();
-            if (ckbx3outOf4.Enabled)
+            if (rdo3OutOf4.Enabled)
             {
-                ckbx3outOf4.Enabled = false;
+                rdo3OutOf4.Enabled = false;
             }
             else
             {
-                ckbx3outOf4.Enabled = true;
+                rdo3OutOf4.Enabled = true;
             }
         }
 
@@ -254,17 +254,25 @@ namespace NineTapTour.Forms
             checkCleared();
         }
 
-        private void ckbx3outOf4_CheckedChanged(object sender, EventArgs e)
+        private void rdo3OutOf4_CheckedChanged(object sender, EventArgs e)
         {
             checkCleared();
-            if (ckbxDoubles.Enabled)
+            if (rdoDoubles.Enabled)
             {
-                ckbxDoubles.Enabled = false;
+                rdoDoubles.Enabled = false;
             }
             else
             {
-                ckbxDoubles.Enabled = true;
+                rdoDoubles.Enabled = true;
             }
+        }
+
+        private void FrmNewTournament_Load(object sender, EventArgs e)
+        {
+            rdoSingles.Checked = true;
+
+            // False for now while feature is being implemented.
+            rdoDoubles.Enabled = false;
         }
     }
 }

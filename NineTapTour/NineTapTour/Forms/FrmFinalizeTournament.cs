@@ -348,6 +348,8 @@ namespace NineTapTour.Forms
                 List<PlayerHistory> ExistingPlayerHistory = PlayerHistoryDB.GetMemberPlayerHistory(item.MemberNumber, RegionID);
                 if (ExistingPlayerHistory.Count == 0)
                 {
+                    // We have to push the current history into the finalize temp for CalcThirtyAverage to work properly. 
+                    FinalizeTempDB.AddFinalizeTemp(temp);
                     temp.LeagueAverage = CalcThirtyLeagueAverage(item.MemberNumber);
                 }
                 else
@@ -1136,7 +1138,7 @@ namespace NineTapTour.Forms
                             p.Bonus = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[BONUS_COLUMN].Value);
                             p.MoneyWon = Convert.ToDecimal(GameDB.GetGame(p.GameID).MoneyWon + GameDB.GetGame(p.GameID).SidePot);
                             p.PPHG = Convert.ToString(TournamentEntriesGrid.Rows[i].Cells[STANDING_COLUMN].Value);
-                            p.ProPot = Convert.ToString(GameDB.GetGame(p.GameID).SidePot);
+                            p.ProPot = TournamentEntriesGrid[PRO_POT_COLUMN, i].Value.ToString();
                             p.Notes = TournamentEntriesGrid[NOTES_COLUMN_, i].Value.ToString();
                             p.AverageForEntry = Convert.ToDouble(TournamentEntriesGrid[ENTRY_AVERAGE_COLUMN, i].Value);
                             p.trueAVG = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);

@@ -77,7 +77,7 @@ namespace NineTapTour.Database
             int winningPlaces;
             if (tempMemberList.Count() < 5)
             {
-                winningPlaces = 1;
+                winningPlaces = 5;
             }
             else
             {
@@ -85,7 +85,7 @@ namespace NineTapTour.Database
             }
             //This is what prints the data
             Graphics graphic = e.Graphics;
-            Pen blackPen = new Pen(Brushes.Black);
+            Pen blackPen = new Pen(Brushes.Black, 3);
 
             //default font to use, should use a mono space font so the spaces line up.
             Font font = new Font("Arial", 16, FontStyle.Bold, GraphicsUnit.Pixel);
