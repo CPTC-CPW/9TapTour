@@ -242,7 +242,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="moneyWonWithTotal">send this in so it knows the proper column name to resize</param>
         public void sizeFinalizeLowerGridView(string moneyWonWithTotal, string gamesTotalPlayed, string game1TotalPlayed,
-            string game2TotalPlayed, string game3TotalPlayed, string game4TotalPlayed, string AllScratchTotal, string AllEntryAvgTotal)
+            string game2TotalPlayed, string game3TotalPlayed, string game4TotalPlayed, string AllScratchTotal, string AllEntryAvgTotal, string AllThirtyAvgGames)
         {
             int columnCount = 18;
             for (int colWidth = 0; colWidth < columnCount; colWidth++)
@@ -259,7 +259,7 @@ namespace NineTapTour.Forms
             playerTournamentHistoryGrid.Columns[AllScratchTotal].Width = 50;
             playerTournamentHistoryGrid.Columns["w/HDCP"].Width = 50;
             playerTournamentHistoryGrid.Columns[AllEntryAvgTotal].Width = 50;
-            playerTournamentHistoryGrid.Columns["30 AVG"].Width = 50;
+            playerTournamentHistoryGrid.Columns[AllThirtyAvgGames].Width = 50;
             playerTournamentHistoryGrid.Columns["Adjusted AVG"].Width = 50;
             playerTournamentHistoryGrid.Columns["Handicap"].Width = 60;
             playerTournamentHistoryGrid.Columns["Bonus"].Width = 50;
@@ -854,6 +854,10 @@ namespace NineTapTour.Forms
             //EntryAvg total label string is referencing multiple locations
             string EntryAvgTotal = "Entry";
 
+            //30 avg total label string is referencing multiple locations
+            string thirtyavg = "30 AVG";
+            
+
             // Obtain previous player history
             List<PlayerHistory> currentPlayerHistory = PlayerHistoryDB.GetMemberPlayerHistory(temporary[0].MemberNumber, RegionID);
 
@@ -909,6 +913,12 @@ namespace NineTapTour.Forms
             string AllEntryAvgTotal = $"{EntryAvgTotal} ({PlayerHistoryDB.GetEntryAvgTotal(temporary[0].MemberNumber, RegionID, Convert.ToInt32(TotalGame1Played), Convert.ToInt32(TotalGame2played), Convert.ToInt32(TotalGame3played), Convert.ToInt32(TotalGame4played), TotalGamesPlayed)})";
             dtGames.Columns[EntryAvgTotal].ColumnName = AllEntryAvgTotal;
 
+            //Displays 30avg total palyed in the column header "30 Avg"
+            int lastthirtygames = 30;
+            int temp = PlayerHistoryDB.GetThirtyAvgGames(temporary[0].MemberNumber, RegionID);
+            string AllthirtyAvgTotal = $"{thirtyavg} ({(temp + FullScratchTotal) / lastthirtygames})";
+            dtGames.Columns[thirtyavg].ColumnName = AllthirtyAvgTotal;
+
             // Order By Total w/HDCP
             currentPlayerHistory = currentPlayerHistory.OrderByDescending(ph => ph.TournamentDate).ThenByDescending(ph => getTotalWithHandicap(ph)).ThenByDescending(ph => ph.MoneyWon).ToList();
 
@@ -941,7 +951,7 @@ namespace NineTapTour.Forms
                 newRow[AllScratchTotal] = item.TotalScore;
                 newRow[TotalWithHandiCap] = getTotalWithHandicap(item);
                 newRow[AllEntryAvgTotal] = item.AverageForEntry;
-                newRow["30 AVG"] = item.trueAVG;
+                newRow[AllthirtyAvgTotal] = item.trueAVG;
 
                 if (item.AVG == 0)
                     newRow["Adjusted AVG"] = null;
@@ -961,7 +971,7 @@ namespace NineTapTour.Forms
             
             playerTournamentHistoryGrid.DataSource = dtGames;
             playerTournamentHistoryGrid.Columns["GameID"].Visible = false; // Hides the gameID column
-            sizeFinalizeLowerGridView(moneyWonWithTotal, gamesTotalPlayed, game1TotalPlayed, game2TotalPlayed, game3TotalPlayed, game4TotalPlayed, AllScratchTotal, AllEntryAvgTotal);   // resizes columns in the grid
+            sizeFinalizeLowerGridView(moneyWonWithTotal, gamesTotalPlayed, game1TotalPlayed, game2TotalPlayed, game3TotalPlayed, game4TotalPlayed, AllScratchTotal, AllEntryAvgTotal, AllthirtyAvgTotal);   // resizes columns in the grid
            
             for (int i = 0; i < playerTournamentHistoryGrid.RowCount; i++)
             {
@@ -982,7 +992,6 @@ namespace NineTapTour.Forms
             // Need to Highlight manually because the last game played isn't added to the database until the tournament is finalized
             playerTournamentHistoryGrid.Rows[0].Cells[9].Style.BackColor = Color.GreenYellow;
             highlight30Avg();
-
             highlightBonusPinCells();
 
 
