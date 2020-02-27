@@ -290,7 +290,7 @@ namespace NineTapTour.Forms
                 if (tourny.ThreeOutOf4)
                 {
                     List<int> scores = new List<int>
-                        { m.Game1Score, m.Game1Score, m.Game1Score, m.Game1Score };
+                        { m.Game1Score, m.Game2Score, m.Game3Score, m.Game4Score };
 
                     // remove lowest score
                     if (scores.Count() == 4)
