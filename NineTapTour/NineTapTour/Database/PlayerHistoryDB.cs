@@ -395,6 +395,20 @@ namespace NineTapTour.Database
             }
         }
 
+        //return the last 30 games for 30 avg
+        public static int GetThirtyAvgGames(int memberNum, int regionID)
+        {
+            using (var db = new NineTapDb())
+            {
+                return db.PlayerHistory
+                      .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
+                      .OrderByDescending(p => p.TournamentDate)
+                      .Select(p => (int?)p.TotalScore).Take(29)
+                      .Sum() ?? 0;
+            }
+        }
+
+
         /// <summary>
         /// Returns true if a PlayerHistory with the same GameID given exist in the database
         /// </summary>
