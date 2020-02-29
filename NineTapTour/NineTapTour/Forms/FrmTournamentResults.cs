@@ -98,7 +98,6 @@ namespace NineTapTour.Forms
                 else
                 {
                     g.Notes = $"Progressive Pot was entered as: {Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value)}";
-                    g.SidePot = 0.00m;
                 }
 
                 g.gameRegionID = tourny.TourneyRegion;
