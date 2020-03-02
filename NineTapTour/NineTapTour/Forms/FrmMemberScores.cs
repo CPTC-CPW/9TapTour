@@ -508,23 +508,17 @@ namespace NineTapTour.Forms
                 player.ParticipantRegionID = RegionID;
                 var db = new NineTapDb();
 
-                var gameId = (from p in db.Participants
-                    where p.Member.Id == currentMem.Id
-                            && p.Tournament.Id == currTourney.Id
-                            && p.Squad == squad
-                    select p.Game.Id).FirstOrDefault();
+                int gameId = (from p in db.Participants
+                              where p.Member.Id == currentMem.Id
+                                  && p.Tournament.Id == currTourney.Id
+                                  && p.Squad == squad
+                              select p.Game.Id).FirstOrDefault();
 
-                var parID = (from p in db.Participants
-                    where p.Member.Id == currentMem.Id
-                            && p.Tournament.Id == currTourney.Id
-                            && p.Squad == squad
-                    select p.Id).FirstOrDefault();
-
-                var parList = (from p in db.Participants
-                    select new
-                    {
-                        p.Id
-                    }).ToList();
+                int parID = (from p in db.Participants
+                             where p.Member.Id == currentMem.Id
+                                 && p.Tournament.Id == currTourney.Id
+                                 && p.Squad == squad
+                             select p.Id).FirstOrDefault();
 
                 if (parID != 0)
                 {
@@ -1302,8 +1296,15 @@ namespace NineTapTour.Forms
                     {
                         // creates temp variable for PaticipantsGameViewModel to store necessary info for each person 
                         ParticipantsGameViewModel currTopScoreViewModel =
-                            new ParticipantsGameViewModel(currParticipant.Member.Number, currParticipant.Member.FirstName, currParticipant.Member.LastName, currParticipant.Squad,
-                                currParticipant.Game.AllGameScores().Max(), currParticipant.Member.Handicap, currParticipant.Member.Bonus);
+                            new ParticipantsGameViewModel(
+                            /* MemberNo  */ currParticipant.Member.Number,
+                            /* FirstName */ currParticipant.Member.FirstName,
+                            /* LastName  */ currParticipant.Member.LastName,
+                            /* Squad */ currParticipant.Squad,
+                            /* HighScore */ currParticipant.Game.AllGameScores().Max(),
+                            /* Handicap  */ currParticipant.Member.Handicap,
+                            /* Bonus */ currParticipant.Member.Bonus
+                            );
 
                         // adds person to list<ParticipantsGameViewModel>
                         participantsGameViewModels.Add(currTopScoreViewModel);
@@ -1325,21 +1326,24 @@ namespace NineTapTour.Forms
 
                         TopParticipantGameViewModel currTopScoreViewModel =
                             new TopParticipantGameViewModel(
-                                currParticipant.Member.Number,
-                                currParticipant.Member.FirstName,
-                                currParticipant.Member.LastName,
-                                0, 
-                                currParticipant.Game.AllGameScores().Sum().Value,
-                                top3Games.Sum(),
-                                top3Games.Sum() + (3 * currParticipant.Member.Handicap) + (3 * currParticipant.Game.Bonus),
-                                currParticipant.Game.Game1,
-                                currParticipant.Game.Game2,
-                                currParticipant.Game.Game3,
-                                currParticipant.Game.Game4,
-                                currParticipant.Game.Handicap, 
-                                currParticipant.Game.Bonus.Value,
-                                currParticipant.Game.Id,
-                                currParticipant.Squad); 
+                            /* MemberNo  */ currParticipant.Member.Number,
+                            /* FirstName */ currParticipant.Member.FirstName,
+                            /* LastName  */ currParticipant.Member.LastName,
+                            /* Placeing  */ 0,
+                            /* ScratchTotal */ currParticipant.Game.AllGameScores().Sum().Value,
+                            /* top3ScratchScore  */ top3Games.Sum(),
+                            /* top3HandicapScore */ top3Games.Sum() +
+                                                    (3 * currParticipant.Member.Handicap) +
+                                                    (3 * currParticipant.Game.Bonus),
+                            /* Game1 */ currParticipant.Game.Game1,
+                            /* Game2 */ currParticipant.Game.Game2,
+                            /* Game3 */ currParticipant.Game.Game3,
+                            /* Game4 */ currParticipant.Game.Game4,
+                            /* Handicap */ currParticipant.Game.Handicap,
+                            /* Bonus  */ currParticipant.Game.Bonus.Value,
+                            /* gameID */ currParticipant.Game.Id,
+                            /* squad  */ currParticipant.Squad
+                            );
 
                         topParticipantGameViewModels.Add(currTopScoreViewModel);
                     }
@@ -1378,8 +1382,15 @@ namespace NineTapTour.Forms
                         if (checkBoxScratchScore.Checked)
                         {
                             // orders list by highest scoring scratch score total to lowest
-                            topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.ScratchTotal).ToList();
-
+                            if (selectedTournament.ThreeOutOf4)
+                            {
+                                topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.Top3ScratchScore).ToList();
+                            }
+                            else
+                            {
+                                topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.ScratchTotal).ToList();
+                            }
+                            
                             // links game series listbox to list
                             lbxHighSelected.DataSource = topParticipantGameViewModels;
 
@@ -1390,7 +1401,14 @@ namespace NineTapTour.Forms
                         else if (checkBoxHandicapScore.Checked)
                         {
                             // orders list by highest scoring handicap score total to lowest
-                            topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.HandicapScore).ToList();
+                            if (selectedTournament.ThreeOutOf4)
+                            {
+                                topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.Top3HandiScores).ToList();
+                            }
+                            else
+                            {
+                                topParticipantGameViewModels = topParticipantGameViewModels.OrderByDescending(t => t.HandicapScore).ToList();
+                            }
 
                             // links game series listbox to list
                             lbxHighSelected.DataSource = topParticipantGameViewModels;
