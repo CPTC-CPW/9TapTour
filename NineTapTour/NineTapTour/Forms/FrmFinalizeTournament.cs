@@ -242,7 +242,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="moneyWonWithTotal">send this in so it knows the proper column name to resize</param>
         public void sizeFinalizeLowerGridView(string moneyWonWithTotal, string gamesTotalPlayed, string game1TotalPlayed,
-            string game2TotalPlayed, string game3TotalPlayed, string game4TotalPlayed, string AllScratchTotal, string AllEntryAvgTotal)
+            string game2TotalPlayed, string game3TotalPlayed, string game4TotalPlayed, string AllScratchTotal, string AllEntryAvgTotal, string AllThirtyAvgGames)
         {
             int columnCount = 18;
             for (int colWidth = 0; colWidth < columnCount; colWidth++)
@@ -259,7 +259,7 @@ namespace NineTapTour.Forms
             playerTournamentHistoryGrid.Columns[AllScratchTotal].Width = 50;
             playerTournamentHistoryGrid.Columns["w/HDCP"].Width = 50;
             playerTournamentHistoryGrid.Columns[AllEntryAvgTotal].Width = 50;
-            playerTournamentHistoryGrid.Columns["30 AVG"].Width = 50;
+            playerTournamentHistoryGrid.Columns[AllThirtyAvgGames].Width = 50;
             playerTournamentHistoryGrid.Columns["Adjusted AVG"].Width = 50;
             playerTournamentHistoryGrid.Columns["Handicap"].Width = 60;
             playerTournamentHistoryGrid.Columns["Bonus"].Width = 50;
@@ -780,6 +780,21 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
+        /// This method should highlight the 30 avg column 
+        /// </summary>
+        //private void Highlight30AvgColumn()
+        //{
+
+        //    // how many should be highlighted for 30 game average
+        //    int thirtyAve = 30;
+        //    for (int j = 0; j < playerTournamentHistoryGrid.RowCount && j < thirtyAve; j++)
+        //    {
+        //        playerTournamentHistoryGrid.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
+        //    }
+
+        //}
+
+        /// <summary>
         /// Show all games for the selected player including the current tournament
         /// </summary>
         /// <param name="temporary">the list of player histories that come from the tournament table</param>
@@ -841,6 +856,10 @@ namespace NineTapTour.Forms
             //EntryAvg total label string is referencing multiple locations
             string EntryAvgTotal = "Entry";
 
+            //30 avg total label string is referencing multiple locations
+            string thirtyavg = "30 AVG";
+            
+
             // Obtain previous player history
             List<PlayerHistory> currentPlayerHistory = PlayerHistoryDB.GetMemberPlayerHistory(temporary[0].MemberNumber, RegionID);
 
@@ -896,6 +915,12 @@ namespace NineTapTour.Forms
             string AllEntryAvgTotal = $"{EntryAvgTotal} ({PlayerHistoryDB.GetEntryAvgTotal(temporary[0].MemberNumber, RegionID, Convert.ToInt32(TotalGame1Played), Convert.ToInt32(TotalGame2played), Convert.ToInt32(TotalGame3played), Convert.ToInt32(TotalGame4played), TotalGamesPlayed)})";
             dtGames.Columns[EntryAvgTotal].ColumnName = AllEntryAvgTotal;
 
+            //Displays 30avg total palyed in the column header "30 Avg"
+            int lastthirtygames = 30;
+            int temp = PlayerHistoryDB.GetThirtyAvgGames(temporary[0].MemberNumber, RegionID);
+            string AllthirtyAvgTotal = $"{thirtyavg} ({(temp + FullScratchTotal) / lastthirtygames})";
+            dtGames.Columns[thirtyavg].ColumnName = AllthirtyAvgTotal;
+
             // Order By Total w/HDCP
             currentPlayerHistory = currentPlayerHistory.OrderByDescending(ph => ph.TournamentDate).ThenByDescending(ph => getTotalWithHandicap(ph)).ThenByDescending(ph => ph.MoneyWon).ToList();
 
@@ -928,7 +953,7 @@ namespace NineTapTour.Forms
                 newRow[AllScratchTotal] = item.TotalScore;
                 newRow[TotalWithHandiCap] = getTotalWithHandicap(item);
                 newRow[AllEntryAvgTotal] = item.AverageForEntry;
-                newRow["30 AVG"] = item.trueAVG;
+                newRow[AllthirtyAvgTotal] = item.trueAVG;
 
                 if (item.AVG == 0)
                     newRow["Adjusted AVG"] = null;
@@ -948,8 +973,8 @@ namespace NineTapTour.Forms
             
             playerTournamentHistoryGrid.DataSource = dtGames;
             playerTournamentHistoryGrid.Columns["GameID"].Visible = false; // Hides the gameID column
-            sizeFinalizeLowerGridView(moneyWonWithTotal, gamesTotalPlayed, game1TotalPlayed, game2TotalPlayed, game3TotalPlayed, game4TotalPlayed, AllScratchTotal, AllEntryAvgTotal);   // resizes columns in the grid
-            int thirtyAve = 30;     // how many should be highlighted for 30 game average
+            sizeFinalizeLowerGridView(moneyWonWithTotal, gamesTotalPlayed, game1TotalPlayed, game2TotalPlayed, game3TotalPlayed, game4TotalPlayed, AllScratchTotal, AllEntryAvgTotal, AllthirtyAvgTotal);   // resizes columns in the grid
+           
             for (int i = 0; i < playerTournamentHistoryGrid.RowCount; i++)
             {
                 #region Set background color for member table row to light blue for all games in current tournament
@@ -966,11 +991,9 @@ namespace NineTapTour.Forms
                 #endregion              
             }
 
-            for (int j = 0; j < playerTournamentHistoryGrid.RowCount && j < thirtyAve; j++)
-            {
-                playerTournamentHistoryGrid.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
-            }
-
+            // Need to Highlight manually because the last game played isn't added to the database until the tournament is finalized
+            playerTournamentHistoryGrid.Rows[0].Cells[9].Style.BackColor = Color.GreenYellow;
+            highlight30Avg();
             highlightBonusPinCells();
 
 
@@ -1399,6 +1422,58 @@ namespace NineTapTour.Forms
         private void dataGridView1_Sorted(object sender, EventArgs e)
         {
             InitializeGameCellFormatting();
+        }
+
+        private void highlight30Avg()
+        {
+            List<PlayerHistory> temporary = new List<PlayerHistory>();
+
+            int gameId = Convert.ToInt32(TournamentEntriesGrid.Rows[TournamentEntriesGrid.CurrentCell.RowIndex].Cells[GAME_ID_COLUMN].Value);
+            using (var db = new NineTapDb())
+            {
+                int memberNumber = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Number;
+
+                temporary = PlayerHistoryDB.GetTop30FromPlayerHistory(memberNumber);
+            }
+            int count = 0;
+
+            for (int i = 0; i < playerTournamentHistoryGrid.RowCount; i++)
+            {
+                if (count != 29)
+                {
+                    DateTime temp = new DateTime(2000, 1, 1);
+                    for (int j = 0; j < temporary.Count - 1; j++)
+                    {
+                        DateTime time = Convert.ToDateTime(playerTournamentHistoryGrid.Rows[i].Cells["Date"].Value); 
+                        if (time == temporary[j].TournamentDate && time != temp)
+                        {
+                            playerTournamentHistoryGrid.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
+                            temp = time;
+                            count++;
+
+                        }
+                        
+                    }
+                    
+                }
+            }
+        }
+
+        private void dataGridView2_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            // Need to Highlight manually because the last game played isn't added to the database until the tournament is finalized
+            if (Convert.ToDateTime(playerTournamentHistoryGrid.Rows[0].Cells["Date"].Value) > Convert.ToDateTime(playerTournamentHistoryGrid.Rows[1].Cells["Date"].Value))
+            {
+                playerTournamentHistoryGrid.Rows[0].Cells[9].Style.BackColor = Color.GreenYellow;
+            }
+            else if(Convert.ToDateTime(playerTournamentHistoryGrid.Rows[playerTournamentHistoryGrid.RowCount - 1].Cells["Date"].Value) > Convert.ToDateTime(playerTournamentHistoryGrid.Rows[playerTournamentHistoryGrid.RowCount - 2].Cells["Date"].Value))
+            {
+                playerTournamentHistoryGrid.Rows[playerTournamentHistoryGrid.RowCount - 1].Cells[9].Style.BackColor = Color.GreenYellow;
+            }
+            highlight30Avg();
+            highlightBonusPinCells();
+           
+            
         }
     }
 }
