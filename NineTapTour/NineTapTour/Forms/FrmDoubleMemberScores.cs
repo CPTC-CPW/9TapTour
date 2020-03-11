@@ -16,16 +16,5 @@ namespace NineTapTour.Forms
         {
             InitializeComponent();
         }
-
-        #region Empty events
-        private void textBox5_TextChanged(object sender, EventArgs e)
-        {
-            // this was an accident, sorry
-        }
-        private void gbxSquads_Enter(object sender, EventArgs e)
-        {
-            // so was this
-        }
-        #endregion
     }
 }

@@ -213,7 +213,6 @@
             this.gbxSquads.TabIndex = 1;
             this.gbxSquads.TabStop = false;
             this.gbxSquads.Text = "Squad Number";
-            this.gbxSquads.Enter += new System.EventHandler(this.gbxSquads_Enter);
             // 
             // rbnSquad8
             // 
@@ -739,7 +738,6 @@
             this.txtScratchScore1.Name = "txtScratchScore1";
             this.txtScratchScore1.Size = new System.Drawing.Size(57, 37);
             this.txtScratchScore1.TabIndex = 0;
-            this.txtScratchScore1.TextChanged += new System.EventHandler(this.textBox5_TextChanged);
             // 
             // gbxRecord
             // 
