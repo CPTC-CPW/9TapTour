@@ -121,6 +121,12 @@
     <Compile Include="Forms\FrmAbout.Designer.cs">
       <DependentUpon>FrmAbout.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FrmDoubleMemberScores.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmDoubleMemberScores.Designer.cs">
+      <DependentUpon>FrmDoubleMemberScores.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmSelection.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -318,6 +324,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmAddRegion.resx">
       <DependentUpon>FrmAddRegion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmDoubleMemberScores.resx">
+      <DependentUpon>FrmDoubleMemberScores.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmSelection.resx">
       <DependentUpon>FrmSelection.cs</DependentUpon>
