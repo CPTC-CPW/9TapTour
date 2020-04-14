@@ -191,6 +191,10 @@ namespace NineTapTour.Forms
             rtxtNotes.Clear();
             tourToEdit = null;
             lblEdit.Text = "";
+
+            //Disables the double tournament Radio Button
+            //When you enable Double tournament DELETE THIS
+            rdoDoubles.Enabled = false;
         }
 
         private void txtLocation_TextChanged(object sender, EventArgs e)
