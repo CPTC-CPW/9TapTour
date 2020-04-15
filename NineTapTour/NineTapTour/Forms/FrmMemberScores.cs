@@ -509,18 +509,8 @@ namespace NineTapTour.Forms
                 var db = new NineTapDb();
 
                 int gameId = GameDB.GetGameID(db, currentMem.Id, currTourney.Id, squad);
-                //int gameId = (from p in db.Participants
-                //              where p.Member.Id == currentMem.Id
-                //                  && p.Tournament.Id == currTourney.Id
-                //                  && p.Squad == squad
-                //              select p.Game.Id).FirstOrDefault();
 
                 int parID = ParticipantsDB.GetParticipantID(db, currentMem.Id, currTourney.Id, squad);
-                //int parID = (from p in db.Participants
-                //             where p.Member.Id == currentMem.Id
-                //                 && p.Tournament.Id == currTourney.Id
-                //                 && p.Squad == squad
-                //             select p.Id).FirstOrDefault();
 
                 if (parID != 0)
                 {
