@@ -849,13 +849,6 @@ namespace NineTapTour.Forms
                 int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
 
                 memScores = GameDB.GetGameInTournament(memberID, selectedTournamentId, squad);
-                //memScores = (from t in db.Tournaments
-                //             join p in db.Participants on t.Id equals p.Tournament.Id
-                //             where t.Id == p.Tournament.Id
-                //             && memberID == p.Member.Id
-                //             && selectedTournamentId == t.Id
-                //             && p.Squad == squad
-                //             select p.Game).SingleOrDefault();
             }
             catch (InvalidOperationException ex)
             {
