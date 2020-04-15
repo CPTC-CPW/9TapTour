@@ -967,7 +967,10 @@ namespace NineTapTour.Forms
                         for(int delete = 0; delete < AlreadyImportedPH.Count; delete++)
                         {
                             Game game = GameDB.GetGame(AlreadyImportedPH[delete].GameID);
-                            PlayerHistoryDB.DeleteGame(game);
+                            if (game != null)
+                            {
+                                PlayerHistoryDB.DeleteGame(game);
+                            }
                             PlayerHistoryDB.DeletePlayerHistory(AlreadyImportedPH[delete]);
                         }
                     }
