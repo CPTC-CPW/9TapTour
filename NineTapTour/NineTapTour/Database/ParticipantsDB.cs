@@ -483,6 +483,15 @@ namespace NineTapTour.Database
                 return returnedList;
             }
         }
+
+        public static int GetParticipantID(NineTapDb db, int memberId, int tournyId, int squad)
+        {
+            return (from p in db.Participants
+                    where p.Member.Id == memberId
+                        && p.Tournament.Id == tournyId
+                        && p.Squad == squad
+                    select p.Id).FirstOrDefault();
+        }
     }
 }
 
