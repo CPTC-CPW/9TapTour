@@ -187,7 +187,7 @@ namespace NineTapTour.Forms
             rdoDoubles.Checked = false;
             rdo3OutOf4.Checked = false;
             //Disables the double tournament Radio Button
-            //When you enable Double tournament DELETE THIS
+            //To enable Double tournament set rdoDoubles.Enabled to true
             rdoDoubles.Enabled = false;
             rdo3OutOf4.Enabled = true;
             rtxtNotes.Clear();
