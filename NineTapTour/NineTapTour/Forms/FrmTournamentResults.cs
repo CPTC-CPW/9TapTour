@@ -286,19 +286,25 @@ namespace NineTapTour.Forms
                 m.Game2Score = Convert.ToInt32(b.Game2);
                 m.Game3Score = Convert.ToInt32(b.Game3);
                 m.Game4Score = Convert.ToInt32(b.Game4);
-                m.TotalScore = m.Game1Score + m.Game2Score + m.Game3Score
-                        + m.Game4Score + (4 * (m.Handicap + m.Bonus));
 
-                // If tournament is 3 out of 4, then drop lowest score
                 if (tourny.ThreeOutOf4)
                 {
-                    List<int> scores = new List<int>();
-                    scores.Add(m.Game1Score);
-                    scores.Add(m.Game2Score);
-                    scores.Add(m.Game3Score);
-                    scores.Add(m.Game4Score);
-                    int lowScore = scores.Min();
-                    m.TotalScore -= lowScore + m.Handicap + m.Bonus;
+                    List<int> scores = new List<int>
+                        { m.Game1Score, m.Game2Score, m.Game3Score, m.Game4Score };
+
+                    // remove lowest score
+                    if (scores.Count() == 4)
+                    {
+                        scores.Remove(scores.Min());
+                    }
+
+                    m.TotalScore = scores.Sum()
+                        + (scores.Count() * (m.Handicap + m.Bonus));
+                }
+                else
+                {
+                    m.TotalScore = m.Game1Score + m.Game2Score + m.Game3Score
+                        + m.Game4Score + (4 * (m.Handicap + m.Bonus));
                 }
                 tournyBowlers.Add(m);
             }

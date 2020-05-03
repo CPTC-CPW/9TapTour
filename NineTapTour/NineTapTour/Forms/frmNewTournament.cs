@@ -186,11 +186,13 @@ namespace NineTapTour.Forms
             txtSponsors.Clear();
             rdoDoubles.Checked = false;
             rdo3OutOf4.Checked = false;
-            rdoDoubles.Enabled = true;
+            //Disables the double tournament Radio Button
+            //To enable Double tournament set rdoDoubles.Enabled to true
+            rdoDoubles.Enabled = false;
             rdo3OutOf4.Enabled = true;
             rtxtNotes.Clear();
             tourToEdit = null;
-            lblEdit.Text = "";
+            lblEdit.Text = "";         
         }
 
         private void txtLocation_TextChanged(object sender, EventArgs e)

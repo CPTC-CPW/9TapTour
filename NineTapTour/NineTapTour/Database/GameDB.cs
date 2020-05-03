@@ -52,5 +52,28 @@ namespace NineTapTour.Database
             }
             db.SaveChanges();
         }
+
+        public static Game GetGameInTournament(int memberID, int tournamentID, int squad)
+        {
+            using (NineTapDb db = new NineTapDb())
+            {
+                return (from t in db.Tournaments
+                        join p in db.Participants on t.Id equals p.Tournament.Id
+                        where t.Id == p.Tournament.Id
+                        && memberID == p.Member.Id
+                        && t.Id == tournamentID
+                        && p.Squad == squad
+                        select p.Game).SingleOrDefault();
+            }
+        }
+
+        public static int GetGameID(NineTapDb db, int memberId, int tournyId, int squad)
+        {
+            return (from p in db.Participants
+                    where p.Member.Id == memberId
+                        && p.Tournament.Id == tournyId
+                        && p.Squad == squad
+                    select p.Game.Id).FirstOrDefault();
+        }
     }
 }

@@ -121,6 +121,12 @@
     <Compile Include="Forms\FrmAbout.Designer.cs">
       <DependentUpon>FrmAbout.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FrmDoubleMemberScores.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmDoubleMemberScores.Designer.cs">
+      <DependentUpon>FrmDoubleMemberScores.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmSelection.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -319,6 +325,9 @@
     <EmbeddedResource Include="Forms\FrmAddRegion.resx">
       <DependentUpon>FrmAddRegion.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmDoubleMemberScores.resx">
+      <DependentUpon>FrmDoubleMemberScores.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmSelection.resx">
       <DependentUpon>FrmSelection.cs</DependentUpon>
     </EmbeddedResource>
@@ -431,7 +440,7 @@
     </Compile>
     <None Include="Resources\BowlingPin2.png" />
     <Content Include="9tap_white.ico" />
-    <Content Include="Database\DBScripts\multisquadTestData.sql" />
+    <Content Include="Database\DBScripts\NineTapData.sql" />
     <Content Include="Resources\TournamentResultsTemplate.xls">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
