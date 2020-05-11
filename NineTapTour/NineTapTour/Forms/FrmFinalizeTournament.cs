@@ -976,11 +976,10 @@ namespace NineTapTour.Forms
             
             playerTournamentHistoryGrid.DataSource = dtGames;
             playerTournamentHistoryGrid.Columns["GameID"].Visible = false; // Hides the gameID column
-            bool isSized = false;
-            if (!isSized)
+            if (!TempVariablesForGlobalLevel.IsSized)
             {
                 sizeFinalizeLowerGridView(moneyWonWithTotal, gamesTotalPlayed, game1TotalPlayed, game2TotalPlayed, game3TotalPlayed, game4TotalPlayed, AllScratchTotal, AllEntryAvgTotal, AllthirtyAvgTotal);   // resizes columns in the grid
-                isSized = true;
+                TempVariablesForGlobalLevel.IsSized = true;
             }
             for (int i = 0; i < playerTournamentHistoryGrid.RowCount; i++)
             {
