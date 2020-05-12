@@ -20,5 +20,7 @@ namespace NineTapTour.Models
         
         public static List<double> MoneyEarnings { get; set; }
 
+        public static bool IsSized { get; set; }
+
     }
 }
