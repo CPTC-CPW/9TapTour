@@ -924,6 +924,10 @@ namespace NineTapTour.Forms
             string AllthirtyAvgTotal = $"{thirtyavg} ({(temp + FullScratchTotal) / lastthirtygames})";
             dtGames.Columns[thirtyavg].ColumnName = AllthirtyAvgTotal;
 
+            playerTournamentHistoryGrid.DataSource = dtGames;
+            playerTournamentHistoryGrid.Columns["GameID"].Visible = false; // Hides the gameID column
+            sizeFinalizeLowerGridView(moneyWonWithTotal, gamesTotalPlayed, game1TotalPlayed, game2TotalPlayed, game3TotalPlayed, game4TotalPlayed, AllScratchTotal, AllEntryAvgTotal, AllthirtyAvgTotal);   // resizes columns in the grid
+            
             // Order By Total w/HDCP
             currentPlayerHistory = currentPlayerHistory.OrderByDescending(ph => ph.TournamentDate).ThenByDescending(ph => getTotalWithHandicap(ph)).ThenByDescending(ph => ph.MoneyWon).ToList();
 
@@ -974,13 +978,7 @@ namespace NineTapTour.Forms
                 dtGames.Rows.Add(newRow);
             }
             
-            playerTournamentHistoryGrid.DataSource = dtGames;
-            playerTournamentHistoryGrid.Columns["GameID"].Visible = false; // Hides the gameID column
-            if (!TempVariablesForGlobalLevel.IsSized)
-            {
-                sizeFinalizeLowerGridView(moneyWonWithTotal, gamesTotalPlayed, game1TotalPlayed, game2TotalPlayed, game3TotalPlayed, game4TotalPlayed, AllScratchTotal, AllEntryAvgTotal, AllthirtyAvgTotal);   // resizes columns in the grid
-                TempVariablesForGlobalLevel.IsSized = true;
-            }
+            
             for (int i = 0; i < playerTournamentHistoryGrid.RowCount; i++)
             {
                 #region Set background color for member table row to light blue for all games in current tournament
