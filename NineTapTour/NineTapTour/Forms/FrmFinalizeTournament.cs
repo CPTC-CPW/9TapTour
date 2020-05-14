@@ -127,6 +127,10 @@ namespace NineTapTour.Forms
             // Manually adjusts each columns width
             sizeFinalizeGridView();
 
+            // Enable double buffering on both grids
+            TournamentEntriesGrid.DoubleBuffered(true);
+            playerTournamentHistoryGrid.DoubleBuffered(true);
+
             if(currTournament.IsTournamentFinalized == true)
             {
                 btnFinalize.Enabled = false;
