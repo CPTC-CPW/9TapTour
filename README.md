@@ -29,7 +29,7 @@ To get started with using 9TapTour and successfully running the database and get
 1. Once you have updated your database go to your Solution Explorer - > Database -> DBScripts. Then double click the NineTapData.sql file, which opens the script.
 
 2. On the top left hand side of the window (circled in red), is the connect button. This will be used to select which database the script will connect to.
-![SelectScriptConnection](https://user-images.githubusercontent.com/49321258/81968395-31893300-95d1-11ea-9e29-c78b62919de5.png)
+![SelectScriptConnection](9TT-Doc/SelectScriptConnection.png)
 
 3. Once you have clicked the icon, it should bring up a connect window. Before clicking the connect button, click the dropdown for local, select MSSQLLocalDB, and make sure your settings are as follows:
     * Server Name: (localdb)\MSSQLLocalDB
@@ -37,10 +37,10 @@ To get started with using 9TapTour and successfully running the database and get
     * User Name: This field should already be populated
     * Database Name: NineTapTour.NineTapDb
     
-![ConnectToDatabase](https://user-images.githubusercontent.com/49321258/81970815-f38e0e00-95d4-11ea-87fc-95b0c8ba7466.png)
+![ConnectToDatabase](9TT-Doc/ConnectToDatabase.png)
 
 4. Once it's connected, click the green play button at the top left hand side of the screen (circled in red). It should exececute the query. It may take a minute or so to complete. 
-![ExecuteScript](https://user-images.githubusercontent.com/49321258/81971652-461bfa00-95d6-11ea-81e2-355eb18056ca.png)
+![ExecuteScript](9TT-Doc/ExecuteScript.png)
 
 5. Upon completion, your databaase should have all the necessary test data, and you are safe to run the application.
 
