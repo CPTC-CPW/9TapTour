@@ -12,7 +12,7 @@ To get started with using 9TapTour and successfully running the database and get
 
 ## Getting Started With 9TapTour Step-By-Step Instructions
 - **Note** This is for those who have added the project to a computer without an exsisting copy of 9TapTour and/or the database.
-- We are using Visual Studio 2019 and SQL Server Management Studio in this Example. This would Work Using Visual Studio 2017.
+- We are using Visual Studio 2019 and SQL Server Management Studio in this Example. This will also work using Visual Studio 2017.
 
 1. After cloning 9-Tap Tour make sure that you build the solution to get all dependencies from the project.
 ![Building Solution in Visual Studio](9TT-Doc/Building-Solution.PNG)
