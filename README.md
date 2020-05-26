@@ -41,10 +41,8 @@ Please review the following and reference the [project Wiki](https://github.com/
 
 ### Prerequisites
 The current build is being built on Windows machines through Visual Studio 2017 v.15 or greater.
-Using SQL Server Management Studio to run SQL Scripts.
 
 * [Download Visual Studio Here](https://visualstudio.microsoft.com/downloads/)
-* [Download SQL Server Management Studio Here](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-2017)
 
 ### Coding Style Requirements
 Reference the [code style requirements Wiki](https://github.com/CPTC-CPW/9TapTour/wiki/Coding-Style-Requirements) for more information.
