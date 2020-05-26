@@ -440,7 +440,7 @@
     </Compile>
     <None Include="Resources\BowlingPin2.png" />
     <Content Include="9tap_white.ico" />
-    <Content Include="Database\DBScripts\NineTapData.sql" />
+    <Content Include="Database\DBScripts\ninetapdata.sql" />
     <Content Include="Resources\TournamentResultsTemplate.xls">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
