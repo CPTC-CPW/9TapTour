@@ -370,27 +370,6 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Returns a list of Participants with a TournamentID equal to the ID given
-        /// </summary>
-        //public static List<Participant> GetGameParticipantList(int id)
-        //{
-        //    List<Participant> par = new List<Participant>();
-        //    var db = new NineTapDb();
-        //    var temp = (from p in db.Participants
-        //                where p.Tournament.Id == id
-        //                select new
-        //                {
-        //                    p.Id,
-        //                    p.Game,
-        //                    p.Member,
-        //                    p.Squad,
-        //                    p.Tournament
-        //                }).ToList();
-        //    // par is never populated, so this always returns an empty list
-        //    return par;
-        //}
-
-        /// <summary>
         /// Retrieves a single participant from a tournament based on given gameID.
         /// Return null if no participant is found
         /// </summary>
