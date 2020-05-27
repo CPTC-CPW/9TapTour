@@ -1811,10 +1811,10 @@ namespace NineTapTour.Forms
             catch
             {
                 MessageBox.Show("Current Stats Not added to Tournament yet.");
-                RefreshMemberScoresForm();
             }
             finally
             {
+                RefreshMemberScoresForm();
                 Cursor.Current = Cursors.Default;
             }
             ReEnableNavigation();
