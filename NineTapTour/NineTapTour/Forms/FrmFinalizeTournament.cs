@@ -127,6 +127,10 @@ namespace NineTapTour.Forms
             // Manually adjusts each columns width
             sizeFinalizeGridView();
 
+            // Enable double buffering on both grids
+            TournamentEntriesGrid.DoubleBuffered(true);
+            playerTournamentHistoryGrid.DoubleBuffered(true);
+
             if(currTournament.IsTournamentFinalized == true)
             {
                 btnFinalize.Enabled = false;
@@ -252,11 +256,11 @@ namespace NineTapTour.Forms
             playerTournamentHistoryGrid.Columns["Notes"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             playerTournamentHistoryGrid.Columns[gamesTotalPlayed].Width = 50;
             playerTournamentHistoryGrid.Columns["Date"].Width = 75;
-            playerTournamentHistoryGrid.Columns[game1TotalPlayed].Width = 50;
-            playerTournamentHistoryGrid.Columns[game2TotalPlayed].Width = 50;
-            playerTournamentHistoryGrid.Columns[game3TotalPlayed].Width = 50;
-            playerTournamentHistoryGrid.Columns[game4TotalPlayed].Width = 50;
-            playerTournamentHistoryGrid.Columns[AllScratchTotal].Width = 50;
+            playerTournamentHistoryGrid.Columns[game1TotalPlayed].Width = 55;
+            playerTournamentHistoryGrid.Columns[game2TotalPlayed].Width = 55;
+            playerTournamentHistoryGrid.Columns[game3TotalPlayed].Width = 55;
+            playerTournamentHistoryGrid.Columns[game4TotalPlayed].Width = 55;
+            playerTournamentHistoryGrid.Columns[AllScratchTotal].Width = 55;
             playerTournamentHistoryGrid.Columns["w/HDCP"].Width = 50;
             playerTournamentHistoryGrid.Columns[AllEntryAvgTotal].Width = 50;
             playerTournamentHistoryGrid.Columns[AllThirtyAvgGames].Width = 50;
@@ -800,6 +804,9 @@ namespace NineTapTour.Forms
         /// <param name="temporary">the list of player histories that come from the tournament table</param>
         private void RefreshMemberView(List<PlayerHistory> temporary)
         {
+            frmPleaseWait wait = new frmPleaseWait();
+            wait.Show();
+
             DataTable dtGames = new DataTable();
 
             // Create table columns
@@ -921,6 +928,10 @@ namespace NineTapTour.Forms
             string AllthirtyAvgTotal = $"{thirtyavg} ({(temp + FullScratchTotal) / lastthirtygames})";
             dtGames.Columns[thirtyavg].ColumnName = AllthirtyAvgTotal;
 
+            playerTournamentHistoryGrid.DataSource = dtGames;
+            playerTournamentHistoryGrid.Columns["GameID"].Visible = false; // Hides the gameID column
+            sizeFinalizeLowerGridView(moneyWonWithTotal, gamesTotalPlayed, game1TotalPlayed, game2TotalPlayed, game3TotalPlayed, game4TotalPlayed, AllScratchTotal, AllEntryAvgTotal, AllthirtyAvgTotal);   // resizes columns in the grid
+            
             // Order By Total w/HDCP
             currentPlayerHistory = currentPlayerHistory.OrderByDescending(ph => ph.TournamentDate).ThenByDescending(ph => getTotalWithHandicap(ph)).ThenByDescending(ph => ph.MoneyWon).ToList();
 
@@ -971,10 +982,7 @@ namespace NineTapTour.Forms
                 dtGames.Rows.Add(newRow);
             }
             
-            playerTournamentHistoryGrid.DataSource = dtGames;
-            playerTournamentHistoryGrid.Columns["GameID"].Visible = false; // Hides the gameID column
-            sizeFinalizeLowerGridView(moneyWonWithTotal, gamesTotalPlayed, game1TotalPlayed, game2TotalPlayed, game3TotalPlayed, game4TotalPlayed, AllScratchTotal, AllEntryAvgTotal, AllthirtyAvgTotal);   // resizes columns in the grid
-           
+            
             for (int i = 0; i < playerTournamentHistoryGrid.RowCount; i++)
             {
                 #region Set background color for member table row to light blue for all games in current tournament
@@ -995,6 +1003,7 @@ namespace NineTapTour.Forms
             playerTournamentHistoryGrid.Rows[0].Cells[9].Style.BackColor = Color.GreenYellow;
             highlight30Avg();
             highlightBonusPinCells();
+            wait.Close();
 
 
         }
