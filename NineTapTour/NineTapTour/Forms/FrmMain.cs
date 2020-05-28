@@ -16,7 +16,7 @@ namespace NineTapTour.Forms
         public List<Tournament> TournamentList { get; set; }
         public System.Windows.Forms.ToolStripMenuItem ActiveItem;
         public FrmMemberData CurrFrmMemberData { get; set; }
-        public frmMemberScores CurrfrmScoresdata { get; set; }
+        public frmMemberScores CurrfrmScoresData { get; set; }
 
         /// <summary>
         /// If this property is set to true, the application will not prompt the user to cancel a close in progress.
@@ -24,7 +24,7 @@ namespace NineTapTour.Forms
         /// </summary>
         private bool AppMustClose { get; set; }
 
-        public FrmMainMenu Mainmenu { get; set; }
+        public FrmMainMenu MainMenu { get; set; }
         public int RegionID { get; set; }
 
         public Size MaxWorkAreaScreenSize { get; set; }
@@ -57,7 +57,7 @@ namespace NineTapTour.Forms
             var mainMenu = Application.OpenForms["MainMenu"] as FrmMainMenu;
             OpenOrDisplayForm(ref mainMenu);
             RegionID = mainMenu.getRegionID();
-            Mainmenu = mainMenu;
+            MainMenu = mainMenu;
 
             //sets the first item of the menu bar to the active item and highlights it.
             ActiveItem = (System.Windows.Forms.ToolStripMenuItem)menMain.Items[0];
@@ -199,7 +199,7 @@ namespace NineTapTour.Forms
         {
             var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
             OpenOrDisplayForm(ref newfrmMemberScores);
-            CurrfrmScoresdata = newfrmMemberScores;
+            CurrfrmScoresData = newfrmMemberScores;
             
         }
 
@@ -225,7 +225,7 @@ namespace NineTapTour.Forms
         private void updateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             //update the regionID
-            RegionID = Mainmenu.getRegionID();
+            RegionID = MainMenu.getRegionID();
             var UpdatefrmActiveMem = new FrmUpdateActiveMem(RegionID);          
             UpdatefrmActiveMem.Show();
         }
