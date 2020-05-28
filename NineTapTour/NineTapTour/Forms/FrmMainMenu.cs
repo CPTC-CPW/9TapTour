@@ -194,7 +194,7 @@ namespace NineTapTour.Forms
             {   // added a try catch block in order to catch the error that occurs at the very first launch of the program.
                 //(the MDi parent is not set yet, so it has to skip over this step on its very first launch or the program wont start)
                 ((FrmMain)MdiParent).RegionID = regionID;
-                ((FrmMain)MdiParent)._membersList = MemberDB.GetMemberList(regionID).OrderBy(m => m.Number);
+                ((FrmMain)MdiParent).MembersList = MemberDB.GetMemberList(regionID).OrderBy(m => m.Number);
             }
             catch
             {
