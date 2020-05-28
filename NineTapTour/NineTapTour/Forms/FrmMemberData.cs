@@ -640,7 +640,7 @@ namespace NineTapTour.Forms
 #if DEBUG
                     MessageBox.Show("Member saved");
 #endif
-                    ((FrmMain)MdiParent)._membersList =
+                    ((FrmMain)MdiParent).MembersList =
                         MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
                     UpdateMemberInfo();
                 }
@@ -932,7 +932,7 @@ namespace NineTapTour.Forms
         /// /// <param name="e"></param>
         private void FrmMemberData_Leave(object sender, EventArgs e)
         {
-            ((FrmMain)MdiParent).currFrmMemberData = this;
+            ((FrmMain)MdiParent).CurrFrmMemberData = this;
         }
 
         /// <summary>

@@ -179,7 +179,7 @@ namespace NineTapTour.Forms
 
             List<Tournament> temp2 = TournamentDB.GetTournamentList(RegionID);
 
-            ((FrmMain)MdiParent)._tournamentList = temp2;
+            ((FrmMain)MdiParent).TournamentList = temp2;
             cbxTourneyDropDown.DataSource = temp2;
             cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
             cbxTourneyDropDown.ValueMember = "Id";

@@ -92,7 +92,7 @@ namespace NineTapTour.Forms
                     {
                         TournamentDB.AddTournament(NewTournament);
                         MessageBox.Show(@"Tournament Created Successfully.");
-                        ((FrmMain)MdiParent)._tournamentList = TournamentDB.GetTournamentList(NewTournament.TourneyRegion);
+                        ((FrmMain)MdiParent).TournamentList = TournamentDB.GetTournamentList(NewTournament.TourneyRegion);
                     }
                 }
                 else
@@ -113,7 +113,7 @@ namespace NineTapTour.Forms
                         if (TournamentDB.UpdateTournament(NewTournament))
                         {
                             MessageBox.Show(@"Tournament modified.");
-                            ((FrmMain)MdiParent)._tournamentList = TournamentDB.GetTournamentList(NewTournament.TourneyRegion);
+                            ((FrmMain)MdiParent).TournamentList = TournamentDB.GetTournamentList(NewTournament.TourneyRegion);
                         }
                         else
                         {
