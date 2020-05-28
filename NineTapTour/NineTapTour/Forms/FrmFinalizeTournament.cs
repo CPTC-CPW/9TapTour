@@ -784,21 +784,6 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// This method should highlight the 30 avg column 
-        /// </summary>
-        //private void Highlight30AvgColumn()
-        //{
-
-        //    // how many should be highlighted for 30 game average
-        //    int thirtyAve = 30;
-        //    for (int j = 0; j < playerTournamentHistoryGrid.RowCount && j < thirtyAve; j++)
-        //    {
-        //        playerTournamentHistoryGrid.Rows[j].Cells[9].Style.BackColor = Color.GreenYellow;
-        //    }
-
-        //}
-
-        /// <summary>
         /// Show all games for the selected player including the current tournament
         /// </summary>
         /// <param name="temporary">the list of player histories that come from the tournament table</param>
@@ -1361,10 +1346,7 @@ namespace NineTapTour.Forms
                 MessageBox.Show("Tournament Successfully Finalized", "Finalization", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Close();
             }
-            else  // if all of the director checkboxes are not checked, then prompt user to check to finalize tournament
-            {
 
-            }
             Cursor.Current = Cursors.Default;
         }
 
