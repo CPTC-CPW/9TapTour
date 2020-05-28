@@ -200,17 +200,22 @@ namespace NineTapTour.Calculations
         /// <param name="minLosses">minimum number of losses to determine if bonus is earned</param>
         private static bool DoesGetBonus(List<PlayerHistory> latestGames, int currTourneyEntryCount, int minLosses)
         {
+            // Introduce local const variable to represent the multiple of three loses
+            // For if player gets a bonus
+            const int thirdLoss = 3;
+            const int lastIndex = -1;
+
             // find first index of a tournament with a cashed game
             int lastCashedTourneyIndex = FindLastCashedTourneyIndex(latestGames);
 
             // did not lose any of the latest games with a 3rd loss in a row
-            if (lastCashedTourneyIndex == -1)
+            if (lastCashedTourneyIndex == lastIndex)
             {
-                return latestGames.Count % 3 + currTourneyEntryCount >= minLosses;
+                return latestGames.Count % thirdLoss + currTourneyEntryCount >= minLosses;
             }
 
             // is the multiple of a 3rd loss in a row after a win
-            return lastCashedTourneyIndex % 3 + currTourneyEntryCount >= minLosses;
+            return lastCashedTourneyIndex % thirdLoss + currTourneyEntryCount >= minLosses;
         }
 
         /// <summary>
