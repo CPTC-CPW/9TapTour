@@ -18,7 +18,6 @@ namespace NineTapTour.Database
         {
             //get the total handicap to display on the card when printed
             int AmtofTimesHandicapApplied = 4;
-            int offset = 1;
             int totalHandicap = mem.Handicap * AmtofTimesHandicapApplied;
 
 
@@ -49,7 +48,7 @@ namespace NineTapTour.Database
                     graphic.DrawString(mem.Handicap.ToString(), font, dBrush, startX + 540, startY + 31 + i * offset);
                 }
                 //this prints the total handicap after it prints the handicap 4 separate times
-                if (i == AmtofTimesHandicapApplied + offset)
+                if (i == AmtofTimesHandicapApplied + 1)
                 {
                     graphic.DrawString(totalHandicap.ToString(), font, dBrush, startX + 540, (startY + 50 + i * offset) - 1);
                 }
