@@ -1807,8 +1807,6 @@ namespace NineTapTour.Forms
             try
             {
                 RemoveParticipantFromTournament();
-
-                RefreshMemberScoresForm();
             }
             catch
             {
@@ -1816,6 +1814,7 @@ namespace NineTapTour.Forms
             }
             finally
             {
+                RefreshMemberScoresForm();
                 Cursor.Current = Cursors.Default;
             }
             ReEnableNavigation();
@@ -1835,43 +1834,47 @@ namespace NineTapTour.Forms
         private void RemoveParticipantFromTournament()
         {
             Game g = GetScoresById(currentMem.Id);
-            //Delete from player history
-            PlayerHistory p = PlayerHistoryDB.GetPlayerHistoryByGameID(g.Id);
-            if(p != null)
-            {
-                PlayerHistoryDB.DeletePlayerHistory(p);
-            }
 
-            //Delete from FinalizeTemp
-            FinalizeTemp ft = FinalizeTempDB.GetFinalizeID(GameDB.GetGame(g.Id));
-            try
+            if (g != null) 
             {
-                FinalizeTempDB.DeleteFinalizeTemp(ft);
-            }
-            catch (DbUpdateException)
-            {
-                //no finalized record to remove
-            }
+                //Delete from player history
+                PlayerHistory p = PlayerHistoryDB.GetPlayerHistoryByGameID(g.Id);
+                if(p != null)
+                {
+                    PlayerHistoryDB.DeletePlayerHistory(p);
+                }
+
+                //Delete from FinalizeTemp
+                FinalizeTemp ft = FinalizeTempDB.GetFinalizeID(GameDB.GetGame(g.Id));
+                try
+                {
+                    FinalizeTempDB.DeleteFinalizeTemp(ft);
+                }
+                catch (DbUpdateException)
+                {
+                    //no finalized record to remove
+                }
             
-            //Delete from Participants list
-            Participant par = FinalizeTempDB.GetParticipantByGameId(g.Id);
-            FinalizeTempDB.DeleteParticipant(par);
-            overallListOfParticipants.Remove(par);
-            if(currentIndex + 1 == overallListOfParticipants.Count)
-            {
-                currentIndex--;
+                //Delete from Participants list
+                Participant par = FinalizeTempDB.GetParticipantByGameId(g.Id);
+                FinalizeTempDB.DeleteParticipant(par);
+                overallListOfParticipants.Remove(par);
+                if(currentIndex + 1 == overallListOfParticipants.Count)
+                {
+                    currentIndex--;
+                }
+                //Delete the game itself
+                PlayerHistoryDB.DeleteGame(g);
+
+
+                //corrects any changes to the members stats after finalizing to the last accurate data
+                List<PlayerHistory> temp = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
+                currentMem.Handicap = temp[0].HandiCap;
+                currentMem.Bonus = temp[0].Bonus;
+                currentMem.StartAvg = temp[0].AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
+                currentMem.Average = Convert.ToInt32(temp[0].trueAVG);
+                MemberDB.AddOrUpdateMember(currentMem);           
             }
-            //Delete the game itself
-            PlayerHistoryDB.DeleteGame(g);
-
-
-            //corrects any changes to the members stats after finalizing to the last accurate data
-            List<PlayerHistory> temp = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
-            currentMem.Handicap = temp[0].HandiCap;
-            currentMem.Bonus = temp[0].Bonus;
-            currentMem.StartAvg = temp[0].AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
-            currentMem.Average = Convert.ToInt32(temp[0].trueAVG);
-            MemberDB.AddOrUpdateMember(currentMem);
         }
 
         private void btnTournamentResults_Click(object sender, EventArgs e)
