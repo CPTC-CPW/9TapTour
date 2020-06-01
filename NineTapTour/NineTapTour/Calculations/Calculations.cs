@@ -219,7 +219,7 @@ namespace NineTapTour.Calculations
         }
 
         /// <summary>
-        /// Finds the first index of the last tournament where the player cashed. Returns -1 if not found.
+        /// Finds the first index of the last tournament where the player cashed. Returns -1 if not found. 
         /// </summary>
         /// <param name="latestGames">Games to find last cashed tourney in</param>
         /// <returns>First index of last cashed tourney. -1 if not found</returns>
