@@ -370,7 +370,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Retrieves a single participant from a tournament based on given gameID.
+        /// Retrieves a single participant from a tournament based on the given gameID.
         /// Return null if no participant is found
         /// </summary>
         public static Participant GetParticipantByGameId (int gameID)
