@@ -1,4 +1,4 @@
-[![Build Status](https://dev.azure.com/CPTC-Programming/9Tap/_apis/build/status/9Tap-.NET%20Desktop-CI?branchName=master)](https://dev.azure.com/CPTC-Programming/9Tap/_build/latest?definitionId=2&branchName=master)
+![CI](https://github.com/CPTC-CPW/9TapTour/workflows/CI/badge.svg)
 
 # 9-Tap Tour
 This app is the 9-Tap Tour Replacement Application, that keeps track of the 9 Tap Tour. This information includes member data, tournament information, games, monies earned, player stats, etc. The app will replace the current program being used by the client to run future 9-Tap tournaments.
