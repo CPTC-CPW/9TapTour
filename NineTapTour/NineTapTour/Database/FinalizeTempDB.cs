@@ -17,7 +17,8 @@ namespace NineTapTour.Database
         /// </summary>
         public static double LeagueAverage(Member mem)
         {
-            int howmany = 30;
+            // Represents the number of past games for the player
+            int howManyGames = 30;
             using(var db = new NineTapDb())
             {
                 var getGames = (from p in db.Participants
@@ -27,7 +28,7 @@ namespace NineTapTour.Database
                            where mem.Id == m.Id
                            orderby t.Date descending
                            select new { g.Game1, g.Game2, g.Game3, g.Game4, g.UseGame1, g.UseGame2, g.UseGame3, g.UseGame4 })
-                              .Take(howmany).ToList();
+                              .Take(howManyGames).ToList();
 
                 List<double> allAverages = new List<double>();
                 foreach (var avg in getGames)
@@ -368,27 +369,6 @@ namespace NineTapTour.Database
                 db.SaveChanges();
             }
         }
-
-        /// <summary>
-        /// Returns a list of Participants with a TournamentID equal to the ID given
-        /// </summary>
-        //public static List<Participant> GetGameParticipantList(int id)
-        //{
-        //    List<Participant> par = new List<Participant>();
-        //    var db = new NineTapDb();
-        //    var temp = (from p in db.Participants
-        //                where p.Tournament.Id == id
-        //                select new
-        //                {
-        //                    p.Id,
-        //                    p.Game,
-        //                    p.Member,
-        //                    p.Squad,
-        //                    p.Tournament
-        //                }).ToList();
-        //    // par is never populated, so this always returns an empty list
-        //    return par;
-        //}
 
         /// <summary>
         /// Retrieves a single participant from a tournament based on given gameID.
