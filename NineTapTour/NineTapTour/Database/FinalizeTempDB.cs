@@ -17,7 +17,8 @@ namespace NineTapTour.Database
         /// </summary>
         public static double LeagueAverage(Member mem)
         {
-            int howmany = 30;
+            // Represents the number of past games for the player
+            int howManyGames = 30;
             using(var db = new NineTapDb())
             {
                 var getGames = (from p in db.Participants
@@ -27,7 +28,7 @@ namespace NineTapTour.Database
                            where mem.Id == m.Id
                            orderby t.Date descending
                            select new { g.Game1, g.Game2, g.Game3, g.Game4, g.UseGame1, g.UseGame2, g.UseGame3, g.UseGame4 })
-                              .Take(howmany).ToList();
+                              .Take(howManyGames).ToList();
 
                 List<double> allAverages = new List<double>();
                 foreach (var avg in getGames)
