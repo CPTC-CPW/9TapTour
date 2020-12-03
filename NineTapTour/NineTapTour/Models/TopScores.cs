@@ -33,6 +33,6 @@ namespace NineTapTour.Models
             public int GameID { get; set; }
             #endregion
 
-        
+        // NOTE: removed a method called allGameScores because it was never used
     }
 }
