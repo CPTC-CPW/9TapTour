@@ -33,17 +33,6 @@ namespace NineTapTour.Models
             public int GameID { get; set; }
             #endregion
 
-            public List<int?> allGameScores()
-            {
-                var newList = new List<int?>();
-                newList.Add(Game1);
-                newList.Add(Game2);
-                newList.Add(Game3);
-                newList.Add(Game4);
-
-            // Renamed sc to agScore for less confusion
-                return newList.Where(agScore => agScore.HasValue).ToList();
-            }
         
     }
 }
