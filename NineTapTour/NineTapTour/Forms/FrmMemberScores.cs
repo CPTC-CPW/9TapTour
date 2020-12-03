@@ -233,7 +233,7 @@ namespace NineTapTour.Forms
             txtScratchScore3.Clear();
             txtScratchScore4.Clear();
             txtScratchTotal.Clear();
-            listOfTopScore.Clear();
+           // listOfTopScore.Clear();
             txtMoney.Clear();
         }
 
@@ -1229,7 +1229,7 @@ namespace NineTapTour.Forms
             Refresh(true);
         }
 
-        List<TopScores> listOfTopScore = new List<TopScores>();
+        //List<TopScores> listOfTopScore = new List<TopScores>();
         IComparer<MemberScores> scoreComparer = new Calculations.MemberScoresComparer();
 
         /// <summary>
@@ -1239,7 +1239,7 @@ namespace NineTapTour.Forms
         public void Refresh(bool seriesChange)
         {
             var scores = new List<MemberScores>();
-            listOfTopScore.Clear();
+         //   listOfTopScore.Clear();
 
             try
             {
@@ -1400,8 +1400,8 @@ namespace NineTapTour.Forms
                 catch (SqlException)
                 {
                     //what is the 3rd box?
-                    listOfTopScore
-                        .Clear(); //filter out if there is no one on the squad yet so the 3rd box won't get populated
+                   // listOfTopScore
+                     //   .Clear(); //filter out if there is no one on the squad yet so the 3rd box won't get populated
                 }
             }
             catch
