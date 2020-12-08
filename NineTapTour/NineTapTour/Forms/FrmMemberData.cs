@@ -1094,6 +1094,17 @@ namespace NineTapTour.Forms
             return returnMe;
         }
 
+        /// <summary>
+        /// Processes Excel by rows into working data
+        /// </summary>
+        /// <param name="returnMe"></param>
+        /// <param name="xlWorkBook"></param>
+        /// <param name="xlWorkSheet"></param>
+        /// <param name="range"></param>
+        /// <param name="PlayerFinalFirstAndMiddle"></param>
+        /// <param name="playerLastName"></param>
+        /// <param name="playerOrgAVG"></param>
+        /// <param name="isRegionHawaii"></param>
         private void processExcel(List<ExcelRow> returnMe, Excel.Workbook xlWorkBook, ref Excel.Worksheet xlWorkSheet, ref Excel.Range range, string[] PlayerFinalFirstAndMiddle, string playerLastName, int playerOrgAVG, bool isRegionHawaii)
         {
             for (int sheetNum = 1; sheetNum <= xlWorkBook.Worksheets.Count; sheetNum++)
@@ -1347,6 +1358,12 @@ namespace NineTapTour.Forms
             }
         }
 
+        /// <summary>
+        /// Takes the imported excel row for playerFullName and splits it into playerLastName and firstAndMiddle strings
+        /// </summary>
+        /// <param name="playerLastName"></param>
+        /// <param name="firstAndMiddle"></param>
+        /// <param name="playerFullName"></param>
         private static void SplitName(ref string playerLastName, ref string firstAndMiddle, string playerFullName)
         {
             if (playerFullName.Contains(","))
