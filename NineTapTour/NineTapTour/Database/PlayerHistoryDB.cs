@@ -57,19 +57,7 @@ namespace NineTapTour.Database
                 {
                     db.Entry(playerHistory).State = db.PlayerHistory.Any(ph => ph.hisID == playerHistory.hisID) ?
                         EntityState.Modified : EntityState.Added;
-                    #region Refactored Code
-                    /*
-                    if (!PlayerHistoryExists(playerHistory) && FinalizeTempDB.GameExists(playerHistory))
-                    {
-                        db.Entry(playerHistory).State = EntityState.Added;
-                    }
-                    else
-                    {
-                        playerHistory.hisID = getHisID(playerHistory);
-                        db.Entry(playerHistory).State = EntityState.Modified;
-                    }
-                    */
-                    #endregion
+ 
                     db.SaveChanges();
                 }
             }
