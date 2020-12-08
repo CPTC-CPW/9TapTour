@@ -404,8 +404,16 @@ namespace NineTapTour.Forms
 #endif
         }
 
-        private void SetDataColumns(DataTable dt)
+        /// <summary>
+        /// creates the dataview that will populate the datagridview table on form pulls from the finalizetemp table
+        /// CHANGE THESE IN THE ORDER YOU WANT THEM TO BE SEEN ON THE GRID VIEW (0 == far left), AND THEN CHANGE THE STATIC
+        /// INTS AT THE TOP IN ORDER TO CHANGE THEIR ORDER ON THE GRIDVIEW WITHOUT HAVING TO TOUCH ANY OTHER CODE.
+        /// </summary>
+        /// <param name="participantsList"></param>
+        /// <returns></returns>
+        public DataTable SetDataView(Dictionary<FinalizeTemp,int> participantsList)
         {
+            DataTable dt = new DataTable();
             dt.Columns.Add(STANDING_COLUMN_NAME, typeof(int));                          // 0
             dt.Columns.Add(MEMBER_NUMBER_COLUMN_NAME, typeof(int)).ReadOnly = true;     // 1
             dt.Columns.Add(NAME_COLUMN_NAME, typeof(string)).ReadOnly = true;           // 2
@@ -429,19 +437,6 @@ namespace NineTapTour.Forms
             dt.Columns.Add(PRO_POT_COLUMN_NAME, typeof(int));                           // 19
             dt.Columns.Add(NOTES_COLUMN_NAME, typeof(string));                          // 20
             dt.Columns.Add(GAME_ID_COLUMN_NAME, typeof(int)).ReadOnly = true;           // 21
-        }
-
-        /// <summary>
-        /// creates the dataview that will populate the datagridview table on form pulls from the finalizetemp table
-        /// CHANGE THESE IN THE ORDER YOU WANT THEM TO BE SEEN ON THE GRID VIEW (0 == far left), AND THEN CHANGE THE STATIC
-        /// INTS AT THE TOP IN ORDER TO CHANGE THEIR ORDER ON THE GRIDVIEW WITHOUT HAVING TO TOUCH ANY OTHER CODE.
-        /// </summary>
-        /// <param name="participantsList"></param>
-        /// <returns></returns>
-        public DataTable SetDataView(Dictionary<FinalizeTemp,int> participantsList)
-        {
-            DataTable dt = new DataTable();
-            SetDataColumns(dt);
 
             //dt.ExtendedProperties
             // whatever list of participants you pass into method will be populated into grid
