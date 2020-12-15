@@ -6,6 +6,9 @@ namespace NineTapTour.Models
 {
     public class PlayerHistory
     {
+        /// <summary>
+        /// The variable responsible for playerHistory IDs in the Database.
+        /// </summary>
         [Key] public int hisID { get; set; }
 
         //required
