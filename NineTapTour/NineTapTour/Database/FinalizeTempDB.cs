@@ -133,35 +133,16 @@ namespace NineTapTour.Database
                     Going through the database to get all of a player's ScratchTotals and the 4 UseGames
                     to help with calculating the leauge Average
                  */
-                var currentHistory = (from f in db.FinalizeTemp
-                                               where f.FinalizeRegionID == regionId && 
-                                                     f.MemberNumber == memberNumber && 
-                                                     f.TournamentID == tournamentId
-                                               select new 
-                                               { 
-                                                   f.ScratchTotal, 
-                                                   f.UseGame1, 
-                                                   f.UseGame2, 
-                                                   f.UseGame3, 
-                                                   f.UseGame4 
-                                               }).ToList();
+                var currentHistory = GetCurrentHistory(memberNumber,regionId,tournamentId);
                 /*
                     Going through the database to get all of a player's GamePlayed and ScratchTotals Excluding
                     those from the current game.
                 */
-                var previousHistory = (from p in db.PlayerHistory
-                                       where p.MemberNumber == memberNumber && p.regionID == regionId
-                                       orderby p.TournamentDate descending
-                                       select new 
-                                       { 
-                                           p.TournamentDate, 
-                                           p.GamesPlayed, 
-                                           p.TotalScore
-                                       }).Take(30 - currentHistory.Count).ToList();
+                var previousHistory = GetPreviousHistory(memberNumber, regionId, currentHistory);
 
                 // Looping through the current player history adding up there scratch totals & games played
                 foreach (var c in currentHistory)
-                {
+                {       
                     allGamesPlayed += LeagueAverageHelper(c.UseGame1, c.UseGame2, c.UseGame3, c.UseGame4);
                     totalScratchTotal += c.ScratchTotal;
                 }
@@ -454,6 +435,44 @@ namespace NineTapTour.Database
             }
         }
 
+        public static List<CurrentHistory> GetCurrentHistory(int memberNumber, int regionId, int tournamentId) 
+        {
+            using(var db = new NineTapDb()) 
+            {
+                var curHistory = (from f in db.FinalizeTemp
+                        where f.FinalizeRegionID == regionId &&
+                              f.MemberNumber == memberNumber &&
+                              f.TournamentID == tournamentId
+                        select new CurrentHistory
+                        {
+                            ScratchTotal = f.ScratchTotal,
+                            UseGame1 = f.UseGame1,
+                            UseGame2 = f.UseGame2,
+                            UseGame3 = f.UseGame3,
+                            UseGame4 = f.UseGame4
+                        }).ToList();
+
+                return curHistory;
+            }
+           
+        }
+
+        public static List<PreviousHistory> GetPreviousHistory(int memberNumber, int regionId, List<CurrentHistory> curHistory) 
+        {
+            using(var db = new NineTapDb()) 
+            {
+                var prevHistory = (from p in db.PlayerHistory
+                                   where p.MemberNumber == memberNumber && p.regionID == regionId
+                                   orderby p.TournamentDate descending
+                                   select new PreviousHistory
+                                   {
+                                       TournamentDate = p.TournamentDate,
+                                       GamesPlayed = p.GamesPlayed,
+                                       TotalScore = p.TotalScore
+                                   }).Take(30 - curHistory.Count).ToList();
+                return prevHistory;
+            }
+        }
         /// <summary>
         /// Returns true if a Game has the same GameID in the Database 
         /// as the GameID in the PlayerHistory given, returns false otherwise
