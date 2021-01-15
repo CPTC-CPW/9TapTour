@@ -640,44 +640,39 @@ namespace NineTapTour.Forms
         {
             this.TournamentEntriesGrid.CellValueChanged -= this.dataGridView1_OnCellValueChanged;
             int sum = 0;
-            int sumAndHand = 0;
             int count = 0;
             int sumWHandicap = 0;
-            int HDCPwithBonus = Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[HANDICAP_COLUMN].Value)) + Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[BONUS_COLUMN].Value));
+            int HDCPwithBonus = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[HANDICAP_COLUMN].Value) + Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[BONUS_COLUMN].Value);
             
             if (Convert.ToBoolean(TournamentEntriesGrid.Rows[row].Cells[GAME_1_VALID_COLUMN].Value) == true
                 && !String.IsNullOrEmpty(TournamentEntriesGrid.Rows[row].Cells[GAME_1_COLUMN].Value.ToString()))
             {
-                sum += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_1_COLUMN].Value));
-                sumAndHand += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_1_COLUMN].Value));
-                sumWHandicap = sumAndHand += HDCPwithBonus;
+                sum += Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[GAME_1_COLUMN].Value);
+                sumWHandicap += Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[GAME_1_COLUMN].Value) + HDCPwithBonus;
                 count++;
             }
 
             if (Convert.ToBoolean(TournamentEntriesGrid.Rows[row].Cells[GAME_2_VALID_COLUMN].Value) == true
                 && !String.IsNullOrEmpty(TournamentEntriesGrid.Rows[row].Cells[GAME_2_COLUMN].Value.ToString()))
             {
-                sum += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_2_COLUMN].Value));
-                sumAndHand += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_2_COLUMN].Value));
-                sumWHandicap = sumAndHand += HDCPwithBonus;
+                sum += Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[GAME_2_COLUMN].Value);
+                sumWHandicap += Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[GAME_2_COLUMN].Value) + HDCPwithBonus;
                 count++;
             }
 
             if (Convert.ToBoolean(TournamentEntriesGrid.Rows[row].Cells[GAME_3_VALID_COLUMN].Value) == true
                 && !String.IsNullOrEmpty(TournamentEntriesGrid.Rows[row].Cells[GAME_3_COLUMN].Value.ToString()))
             {
-                    sum += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_3_COLUMN].Value));
-                    sumAndHand += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_3_COLUMN].Value));
-                    sumWHandicap = sumAndHand += HDCPwithBonus;
-                    count++;        
+                sum += Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[GAME_3_COLUMN].Value);
+                sumWHandicap += Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[GAME_3_COLUMN].Value) + HDCPwithBonus;
+                count++;        
             }
 
             if (Convert.ToBoolean(TournamentEntriesGrid.Rows[row].Cells[GAME_4_VALID_COLUMN].Value) == true
                 && !String.IsNullOrEmpty(TournamentEntriesGrid.Rows[row].Cells[GAME_4_COLUMN].Value.ToString()))
             {
-                sum += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_4_COLUMN].Value));
-                sumAndHand += Convert.ToInt32((TournamentEntriesGrid.Rows[row].Cells[GAME_4_COLUMN].Value));
-                sumWHandicap = sumAndHand += HDCPwithBonus;
+                sum += Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[GAME_4_COLUMN].Value);
+                sumWHandicap += Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[GAME_4_COLUMN].Value) + HDCPwithBonus;
                 count++;
             }
 
