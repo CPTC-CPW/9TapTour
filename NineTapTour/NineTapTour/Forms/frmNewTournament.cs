@@ -133,11 +133,11 @@ namespace NineTapTour.Forms
                     Tournament currTourney = NewTournament;
                     clearTournamentForm();
 
-                    var newFrmMemberScores = Application.OpenForms["FrmMemberScores"] as frmMemberScores;
+                    var newFrmMemberScores = Application.OpenForms["FrmMemberScores"] as FrmMemberScores;
                     ((FrmMain)MdiParent).OpenOrDisplayForm(ref newFrmMemberScores);
 
                     //populates selected tournament with recently edited or created tournament back in MemberScores.
-                    newFrmMemberScores.populateSelectedTournament(currTourney);
+                    newFrmMemberScores.PopulateSelectedTournament(currTourney);
                 }
             }
         }

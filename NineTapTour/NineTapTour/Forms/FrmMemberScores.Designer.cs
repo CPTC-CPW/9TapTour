@@ -1,6 +1,6 @@
 ﻿namespace NineTapTour.Forms
 {
-    partial class frmMemberScores
+    partial class FrmMemberScores
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMemberScores));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMemberScores));
             this.grpMemberNum = new System.Windows.Forms.GroupBox();
             this.txtMemberNum = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -159,8 +159,8 @@
             this.txtMemberNum.Name = "txtMemberNum";
             this.txtMemberNum.Size = new System.Drawing.Size(112, 20);
             this.txtMemberNum.TabIndex = 1;
-            this.txtMemberNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMemberNum_KeyDown);
-            this.txtMemberNum.Leave += new System.EventHandler(this.txtMemberNum_Leave);
+            this.txtMemberNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtMemberNum_KeyDown);
+            this.txtMemberNum.Leave += new System.EventHandler(this.TxtMemberNum_Leave);
             // 
             // groupBox1
             // 
@@ -189,7 +189,7 @@
             this.checkSquad8.TabStop = true;
             this.checkSquad8.Text = "Squad 8";
             this.checkSquad8.UseVisualStyleBackColor = true;
-            this.checkSquad8.CheckedChanged += new System.EventHandler(this.checkBoxSquadNumber_CheckedChanged);
+            this.checkSquad8.CheckedChanged += new System.EventHandler(this.CheckBoxSquadNumber_CheckedChanged);
             // 
             // checkSquad6
             // 
@@ -201,7 +201,7 @@
             this.checkSquad6.TabStop = true;
             this.checkSquad6.Text = "Squad 6";
             this.checkSquad6.UseVisualStyleBackColor = true;
-            this.checkSquad6.CheckedChanged += new System.EventHandler(this.checkBoxSquadNumber_CheckedChanged);
+            this.checkSquad6.CheckedChanged += new System.EventHandler(this.CheckBoxSquadNumber_CheckedChanged);
             // 
             // checkSquad7
             // 
@@ -213,7 +213,7 @@
             this.checkSquad7.TabStop = true;
             this.checkSquad7.Text = "Squad 7";
             this.checkSquad7.UseVisualStyleBackColor = true;
-            this.checkSquad7.CheckedChanged += new System.EventHandler(this.checkBoxSquadNumber_CheckedChanged);
+            this.checkSquad7.CheckedChanged += new System.EventHandler(this.CheckBoxSquadNumber_CheckedChanged);
             // 
             // checkSquad5
             // 
@@ -225,7 +225,7 @@
             this.checkSquad5.TabStop = true;
             this.checkSquad5.Text = "Squad 5";
             this.checkSquad5.UseVisualStyleBackColor = true;
-            this.checkSquad5.CheckedChanged += new System.EventHandler(this.checkBoxSquadNumber_CheckedChanged);
+            this.checkSquad5.CheckedChanged += new System.EventHandler(this.CheckBoxSquadNumber_CheckedChanged);
             // 
             // checkSquadFour
             // 
@@ -236,7 +236,7 @@
             this.checkSquadFour.TabIndex = 7;
             this.checkSquadFour.Text = "Squad 4";
             this.checkSquadFour.UseVisualStyleBackColor = true;
-            this.checkSquadFour.CheckedChanged += new System.EventHandler(this.checkBoxSquadNumber_CheckedChanged);
+            this.checkSquadFour.CheckedChanged += new System.EventHandler(this.CheckBoxSquadNumber_CheckedChanged);
             // 
             // checkSquadThree
             // 
@@ -247,7 +247,7 @@
             this.checkSquadThree.TabIndex = 6;
             this.checkSquadThree.Text = "Squad 3";
             this.checkSquadThree.UseVisualStyleBackColor = true;
-            this.checkSquadThree.CheckedChanged += new System.EventHandler(this.checkBoxSquadNumber_CheckedChanged);
+            this.checkSquadThree.CheckedChanged += new System.EventHandler(this.CheckBoxSquadNumber_CheckedChanged);
             // 
             // checkSquadTwo
             // 
@@ -258,7 +258,7 @@
             this.checkSquadTwo.TabIndex = 5;
             this.checkSquadTwo.Text = "Squad 2";
             this.checkSquadTwo.UseVisualStyleBackColor = true;
-            this.checkSquadTwo.CheckedChanged += new System.EventHandler(this.checkBoxSquadNumber_CheckedChanged);
+            this.checkSquadTwo.CheckedChanged += new System.EventHandler(this.CheckBoxSquadNumber_CheckedChanged);
             // 
             // checkSquadOne
             // 
@@ -271,7 +271,7 @@
             this.checkSquadOne.TabStop = true;
             this.checkSquadOne.Text = "Squad 1";
             this.checkSquadOne.UseVisualStyleBackColor = true;
-            this.checkSquadOne.CheckedChanged += new System.EventHandler(this.checkBoxSquadNumber_CheckedChanged);
+            this.checkSquadOne.CheckedChanged += new System.EventHandler(this.CheckBoxSquadNumber_CheckedChanged);
             // 
             // txtLastName
             // 
@@ -360,7 +360,7 @@
             this.txtScratchScore1.Name = "txtScratchScore1";
             this.txtScratchScore1.Size = new System.Drawing.Size(57, 37);
             this.txtScratchScore1.TabIndex = 13;
-            this.txtScratchScore1.TextChanged += new System.EventHandler(this.scratchTotal);
+            this.txtScratchScore1.TextChanged += new System.EventHandler(this.ScratchTotal);
             // 
             // txtHandicapScore1
             // 
@@ -385,7 +385,7 @@
             this.txtScratchScore2.Name = "txtScratchScore2";
             this.txtScratchScore2.Size = new System.Drawing.Size(57, 37);
             this.txtScratchScore2.TabIndex = 14;
-            this.txtScratchScore2.TextChanged += new System.EventHandler(this.scratchTotal);
+            this.txtScratchScore2.TextChanged += new System.EventHandler(this.ScratchTotal);
             // 
             // txtHandicapScore2
             // 
@@ -410,7 +410,7 @@
             this.txtScratchScore3.Name = "txtScratchScore3";
             this.txtScratchScore3.Size = new System.Drawing.Size(57, 37);
             this.txtScratchScore3.TabIndex = 15;
-            this.txtScratchScore3.TextChanged += new System.EventHandler(this.scratchTotal);
+            this.txtScratchScore3.TextChanged += new System.EventHandler(this.ScratchTotal);
             // 
             // txtHandicapScore3
             // 
@@ -435,7 +435,7 @@
             this.txtScratchScore4.Name = "txtScratchScore4";
             this.txtScratchScore4.Size = new System.Drawing.Size(57, 37);
             this.txtScratchScore4.TabIndex = 16;
-            this.txtScratchScore4.TextChanged += new System.EventHandler(this.scratchTotal);
+            this.txtScratchScore4.TextChanged += new System.EventHandler(this.ScratchTotal);
             // 
             // txtHandicapScore4
             // 
@@ -504,7 +504,7 @@
             this.btnLastRecord.TabStop = false;
             this.btnLastRecord.Text = "Last Record";
             this.btnLastRecord.UseVisualStyleBackColor = true;
-            this.btnLastRecord.Click += new System.EventHandler(this.btnLastRecord_Click);
+            this.btnLastRecord.Click += new System.EventHandler(this.BtnLastRecord_Click);
             // 
             // btnFirstRecord
             // 
@@ -516,7 +516,7 @@
             this.btnFirstRecord.TabStop = false;
             this.btnFirstRecord.Text = "First Record";
             this.btnFirstRecord.UseVisualStyleBackColor = true;
-            this.btnFirstRecord.Click += new System.EventHandler(this.btnFirstRecord_Click);
+            this.btnFirstRecord.Click += new System.EventHandler(this.BtnFirstRecord_Click);
             // 
             // btnRightArrow
             // 
@@ -527,7 +527,7 @@
             this.btnRightArrow.TabStop = false;
             this.btnRightArrow.Text = ">";
             this.btnRightArrow.UseVisualStyleBackColor = true;
-            this.btnRightArrow.Click += new System.EventHandler(this.btnRightArrow_Click);
+            this.btnRightArrow.Click += new System.EventHandler(this.BtnRightArrow_Click);
             // 
             // lblRecord
             // 
@@ -547,7 +547,7 @@
             this.btnDelete.TabStop = false;
             this.btnDelete.Text = "Delete Member From Tournament";
             this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            this.btnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
             // 
             // btnLeftArrow
             // 
@@ -558,7 +558,7 @@
             this.btnLeftArrow.TabStop = false;
             this.btnLeftArrow.Text = "<";
             this.btnLeftArrow.UseVisualStyleBackColor = true;
-            this.btnLeftArrow.Click += new System.EventHandler(this.btnLeftArrow_Click);
+            this.btnLeftArrow.Click += new System.EventHandler(this.BtnLeftArrow_Click);
             // 
             // btnNew
             // 
@@ -568,7 +568,7 @@
             this.btnNew.TabIndex = 18;
             this.btnNew.Text = "Add New Record";
             this.btnNew.UseVisualStyleBackColor = true;
-            this.btnNew.Click += new System.EventHandler(this.newRecap);
+            this.btnNew.Click += new System.EventHandler(this.NewRecap);
             // 
             // btnRecapByPin
             // 
@@ -581,7 +581,7 @@
             this.btnRecapByPin.TabStop = false;
             this.btnRecapByPin.Text = "Print Recaps By Tournament";
             this.btnRecapByPin.UseVisualStyleBackColor = true;
-            this.btnRecapByPin.Click += new System.EventHandler(this.btnRecapByPin_Click);
+            this.btnRecapByPin.Click += new System.EventHandler(this.BtnRecapByPin_Click);
             // 
             // btnStats
             // 
@@ -593,7 +593,7 @@
             this.btnStats.TabStop = false;
             this.btnStats.Text = "Tournament Stats";
             this.btnStats.UseVisualStyleBackColor = true;
-            this.btnStats.Click += new System.EventHandler(this.btnStats_Click);
+            this.btnStats.Click += new System.EventHandler(this.BtnStats_Click);
             // 
             // lblStratchScores
             // 
@@ -761,7 +761,7 @@
             this.cbxTourneyDropDown.Size = new System.Drawing.Size(189, 21);
             this.cbxTourneyDropDown.TabIndex = 2;
             this.cbxTourneyDropDown.TabStop = false;
-            this.cbxTourneyDropDown.SelectedIndexChanged += new System.EventHandler(this.cbxTourneyDropDown_SelectedIndexChanged);
+            this.cbxTourneyDropDown.SelectedIndexChanged += new System.EventHandler(this.CbxTourneyDropDown_SelectedIndexChanged);
             // 
             // grpLeaders
             // 
@@ -798,7 +798,7 @@
             this.rdoHighSeries.TabIndex = 2;
             this.rdoHighSeries.Text = "Series";
             this.rdoHighSeries.UseVisualStyleBackColor = true;
-            this.rdoHighSeries.CheckedChanged += new System.EventHandler(this.checkBoxHighSeries_CheckedChanged);
+            this.rdoHighSeries.CheckedChanged += new System.EventHandler(this.CheckBoxHighSeries_CheckedChanged);
             // 
             // rdoGameSC
             // 
@@ -809,7 +809,7 @@
             this.rdoGameSC.TabIndex = 1;
             this.rdoGameSC.Text = "Game Scratch";
             this.rdoGameSC.UseVisualStyleBackColor = true;
-            this.rdoGameSC.CheckedChanged += new System.EventHandler(this.checkBoxGameSC_CheckedChanged);
+            this.rdoGameSC.CheckedChanged += new System.EventHandler(this.CheckBoxGameSC_CheckedChanged);
             // 
             // rdoGameHC
             // 
@@ -830,7 +830,7 @@
             this.lbxHighSelected.Name = "lbxHighSelected";
             this.lbxHighSelected.Size = new System.Drawing.Size(293, 277);
             this.lbxHighSelected.TabIndex = 48;
-            this.lbxHighSelected.Click += new System.EventHandler(this.lbxGameLeader_Click);
+            this.lbxHighSelected.Click += new System.EventHandler(this.LbxGameLeader_Click);
             // 
             // grpScoreType
             // 
@@ -852,7 +852,7 @@
             this.checkBoxScratchScore.TabIndex = 1;
             this.checkBoxScratchScore.Text = "Scratch";
             this.checkBoxScratchScore.UseVisualStyleBackColor = true;
-            this.checkBoxScratchScore.CheckedChanged += new System.EventHandler(this.rdoScratchScore_CheckedChanged);
+            this.checkBoxScratchScore.CheckedChanged += new System.EventHandler(this.RdoScratchScore_CheckedChanged);
             // 
             // checkBoxHandicapScore
             // 
@@ -865,7 +865,7 @@
             this.checkBoxHandicapScore.TabStop = true;
             this.checkBoxHandicapScore.Text = "Handicap";
             this.checkBoxHandicapScore.UseVisualStyleBackColor = true;
-            this.checkBoxHandicapScore.CheckedChanged += new System.EventHandler(this.rdoHandicapScore_CheckedChanged);
+            this.checkBoxHandicapScore.CheckedChanged += new System.EventHandler(this.RdoHandicapScore_CheckedChanged);
             // 
             // GRPQBS1
             // 
@@ -895,7 +895,7 @@
             this.cbFilterSquad8.TabIndex = 8;
             this.cbFilterSquad8.Text = "Squad 8";
             this.cbFilterSquad8.UseVisualStyleBackColor = true;
-            this.cbFilterSquad8.CheckedChanged += new System.EventHandler(this.cbFilterSquad8_CheckedChanged);
+            this.cbFilterSquad8.CheckedChanged += new System.EventHandler(this.CbFilterSquad8_CheckedChanged);
             // 
             // cbFilterSquad7
             // 
@@ -906,7 +906,7 @@
             this.cbFilterSquad7.TabIndex = 7;
             this.cbFilterSquad7.Text = "Squad 7";
             this.cbFilterSquad7.UseVisualStyleBackColor = true;
-            this.cbFilterSquad7.CheckedChanged += new System.EventHandler(this.cbFilterSquad7_CheckedChanged);
+            this.cbFilterSquad7.CheckedChanged += new System.EventHandler(this.CbFilterSquad7_CheckedChanged);
             // 
             // cbFilterSquad6
             // 
@@ -917,7 +917,7 @@
             this.cbFilterSquad6.TabIndex = 6;
             this.cbFilterSquad6.Text = "Squad 6";
             this.cbFilterSquad6.UseVisualStyleBackColor = true;
-            this.cbFilterSquad6.CheckedChanged += new System.EventHandler(this.cbFilterSquad6_CheckedChanged);
+            this.cbFilterSquad6.CheckedChanged += new System.EventHandler(this.CbFilterSquad6_CheckedChanged);
             // 
             // cbFilterSquad5
             // 
@@ -928,7 +928,7 @@
             this.cbFilterSquad5.TabIndex = 5;
             this.cbFilterSquad5.Text = "Squad 5";
             this.cbFilterSquad5.UseVisualStyleBackColor = true;
-            this.cbFilterSquad5.CheckedChanged += new System.EventHandler(this.cbFilterSquad5_CheckedChanged);
+            this.cbFilterSquad5.CheckedChanged += new System.EventHandler(this.CbFilterSquad5_CheckedChanged);
             // 
             // cbFilterSquad4
             // 
@@ -939,7 +939,7 @@
             this.cbFilterSquad4.TabIndex = 4;
             this.cbFilterSquad4.Text = "Squad 4";
             this.cbFilterSquad4.UseVisualStyleBackColor = true;
-            this.cbFilterSquad4.CheckedChanged += new System.EventHandler(this.cbFilterSquad4_CheckedChanged);
+            this.cbFilterSquad4.CheckedChanged += new System.EventHandler(this.CbFilterSquad4_CheckedChanged);
             // 
             // cbFilterSquad3
             // 
@@ -950,7 +950,7 @@
             this.cbFilterSquad3.TabIndex = 3;
             this.cbFilterSquad3.Text = "Squad 3";
             this.cbFilterSquad3.UseVisualStyleBackColor = true;
-            this.cbFilterSquad3.CheckedChanged += new System.EventHandler(this.cbFilterSquad3_CheckedChanged);
+            this.cbFilterSquad3.CheckedChanged += new System.EventHandler(this.CbFilterSquad3_CheckedChanged);
             // 
             // cbFilterSquad2
             // 
@@ -961,7 +961,7 @@
             this.cbFilterSquad2.TabIndex = 2;
             this.cbFilterSquad2.Text = "Squad 2";
             this.cbFilterSquad2.UseVisualStyleBackColor = true;
-            this.cbFilterSquad2.CheckedChanged += new System.EventHandler(this.cbFilterSquad2_CheckedChanged);
+            this.cbFilterSquad2.CheckedChanged += new System.EventHandler(this.CbFilterSquad2_CheckedChanged);
             // 
             // cbFilterSquad1
             // 
@@ -972,7 +972,7 @@
             this.cbFilterSquad1.TabIndex = 1;
             this.cbFilterSquad1.Text = "Squad 1";
             this.cbFilterSquad1.UseVisualStyleBackColor = true;
-            this.cbFilterSquad1.CheckedChanged += new System.EventHandler(this.cbFilterSquad1_CheckedChanged);
+            this.cbFilterSquad1.CheckedChanged += new System.EventHandler(this.CbFilterSquad1_CheckedChanged);
             // 
             // cbAllSquads
             // 
@@ -983,7 +983,7 @@
             this.cbAllSquads.TabIndex = 0;
             this.cbAllSquads.Text = "All Squads";
             this.cbAllSquads.UseVisualStyleBackColor = true;
-            this.cbAllSquads.CheckedChanged += new System.EventHandler(this.cbAllSquads_CheckedChanged);
+            this.cbAllSquads.CheckedChanged += new System.EventHandler(this.CbAllSquads_CheckedChanged);
             // 
             // lblHighSelected
             // 
@@ -1015,7 +1015,7 @@
             this.btnSeries.TabStop = false;
             this.btnSeries.Text = "Series";
             this.btnSeries.UseVisualStyleBackColor = true;
-            this.btnSeries.Click += new System.EventHandler(this.btnSeries_Click);
+            this.btnSeries.Click += new System.EventHandler(this.BtnSeries_Click);
             // 
             // btnGame
             // 
@@ -1026,7 +1026,7 @@
             this.btnGame.TabStop = false;
             this.btnGame.Text = "Game";
             this.btnGame.UseVisualStyleBackColor = true;
-            this.btnGame.Click += new System.EventHandler(this.btnGame_Click);
+            this.btnGame.Click += new System.EventHandler(this.BtnGame_Click);
             // 
             // btnSenior
             // 
@@ -1037,7 +1037,7 @@
             this.btnSenior.TabStop = false;
             this.btnSenior.Text = "Senior";
             this.btnSenior.UseVisualStyleBackColor = true;
-            this.btnSenior.Click += new System.EventHandler(this.btnSenior_Click);
+            this.btnSenior.Click += new System.EventHandler(this.BtnSenior_Click);
             // 
             // grpComments
             // 
@@ -1087,7 +1087,7 @@
             this.btnNewTournament.TabStop = false;
             this.btnNewTournament.Text = "Create / Edit Tournament...";
             this.btnNewTournament.UseVisualStyleBackColor = true;
-            this.btnNewTournament.Click += new System.EventHandler(this.btnNewTournament_Click);
+            this.btnNewTournament.Click += new System.EventHandler(this.BtnNewTournament_Click);
             // 
             // btnTourSearch
             // 
@@ -1097,7 +1097,7 @@
             this.btnTourSearch.TabIndex = 33;
             this.btnTourSearch.Text = "Search Tournaments...";
             this.btnTourSearch.UseVisualStyleBackColor = true;
-            this.btnTourSearch.Click += new System.EventHandler(this.btnTourSearch_Click);
+            this.btnTourSearch.Click += new System.EventHandler(this.BtnTourSearch_Click);
             // 
             // btnTournamentsByYear
             // 
@@ -1108,7 +1108,7 @@
             this.btnTournamentsByYear.TabIndex = 34;
             this.btnTournamentsByYear.Text = "List Tournaments By Year";
             this.btnTournamentsByYear.UseVisualStyleBackColor = true;
-            this.btnTournamentsByYear.Click += new System.EventHandler(this.btnTournamentsByYear_Click);
+            this.btnTournamentsByYear.Click += new System.EventHandler(this.BtnTournamentsByYear_Click);
             // 
             // btnPlaceStandings
             // 
@@ -1119,7 +1119,7 @@
             this.btnPlaceStandings.TabIndex = 35;
             this.btnPlaceStandings.Text = "Tournament Place Standings";
             this.btnPlaceStandings.UseVisualStyleBackColor = true;
-            this.btnPlaceStandings.Click += new System.EventHandler(this.btnPlaceStandings_Click);
+            this.btnPlaceStandings.Click += new System.EventHandler(this.BtnPlaceStandings_Click);
             // 
             // btnFinalizeTounament
             // 
@@ -1129,7 +1129,7 @@
             this.btnFinalizeTounament.TabIndex = 42;
             this.btnFinalizeTounament.Text = "Finalize Tournament";
             this.btnFinalizeTounament.UseVisualStyleBackColor = true;
-            this.btnFinalizeTounament.Click += new System.EventHandler(this.btnFinalizeTounament_Click);
+            this.btnFinalizeTounament.Click += new System.EventHandler(this.BtnFinalizeTounament_Click);
             // 
             // btnTournamentResults
             // 
@@ -1140,7 +1140,7 @@
             this.btnTournamentResults.TabIndex = 43;
             this.btnTournamentResults.Text = "Tournament Results";
             this.btnTournamentResults.UseVisualStyleBackColor = true;
-            this.btnTournamentResults.Click += new System.EventHandler(this.btnTournamentResults_Click);
+            this.btnTournamentResults.Click += new System.EventHandler(this.BtnTournamentResults_Click);
             // 
             // panel1
             // 
@@ -1174,7 +1174,7 @@
             this.flpMemberScores.Name = "flpMemberScores";
             this.flpMemberScores.Size = new System.Drawing.Size(1042, 699);
             this.flpMemberScores.TabIndex = 1;
-            this.flpMemberScores.SizeChanged += new System.EventHandler(this.flpMemberScores_SizeChanged);
+            this.flpMemberScores.SizeChanged += new System.EventHandler(this.FlpMemberScores_SizeChanged);
             // 
             // panel5
             // 
@@ -1229,7 +1229,7 @@
             this.Text = "Member Scores";
             this.Activated += new System.EventHandler(this.FrmMemberScores_Activated);
             this.Load += new System.EventHandler(this.FrmMemberScores_Load);
-            this.Resize += new System.EventHandler(this.frmMemberScores_Resize);
+            this.Resize += new System.EventHandler(this.FrmMemberScores_Resize);
             this.grpMemberNum.ResumeLayout(false);
             this.grpMemberNum.PerformLayout();
             this.groupBox1.ResumeLayout(false);

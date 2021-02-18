@@ -19,7 +19,7 @@ namespace NineTapTour.Forms
     /// FrmMemberScores class.
     /// All tournament info and scores are entered here.
     /// </summary>
-    public partial class frmMemberScores : Form
+    public partial class FrmMemberScores : Form
     {
         public int RegionID;
         Member currentMem;
@@ -39,7 +39,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// instantiates all form buttons.
         /// </summary>
-        public frmMemberScores()
+        public FrmMemberScores()
         {
             InitializeComponent();
         }
@@ -340,7 +340,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void scratchTotal(object sender, EventArgs e)
+        public void ScratchTotal(object sender, EventArgs e)
         {
             int scratchTotal = 0;
             int cScore = 0;
@@ -355,7 +355,7 @@ namespace NineTapTour.Forms
                     if (cScore >= 0 && cScore <= 300)
                     {
                         scratchTotal += cScore;
-                        handicapTotal(id, cScore);
+                        HandicapTotal(id, cScore);
                     }
                     else
                     {
@@ -366,7 +366,7 @@ namespace NineTapTour.Forms
                 else
                 {
                     score.Clear();
-                    handicapTotal(id, cScore);
+                    HandicapTotal(id, cScore);
                 }
                 txtScratchTotal.Text = scratchTotal.ToString();
             }
@@ -439,7 +439,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="id"></param>
         /// <param name="score"></param>
-        private void handicapTotal(string id, int score)
+        private void HandicapTotal(string id, int score)
         {
             int totalScore = 0;
 
@@ -471,7 +471,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void newRecap(object sender, EventArgs e)
+        public void NewRecap(object sender, EventArgs e)
         {
             AddNewUpdateRecord();
         }
@@ -532,10 +532,10 @@ namespace NineTapTour.Forms
                     player.Game.MoneyWon = Convert.ToDecimal(txtMoney.Text);
 
                 
-                if((!isNumeric(txtScratchScore1.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore1.Text))
-                    || (!isNumeric(txtScratchScore2.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore2.Text))
-                    || (!isNumeric(txtScratchScore3.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore3.Text))
-                    || (!isNumeric(txtScratchScore4.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore4.Text)))
+                if((!IsNumeric(txtScratchScore1.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore1.Text))
+                    || (!IsNumeric(txtScratchScore2.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore2.Text))
+                    || (!IsNumeric(txtScratchScore3.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore3.Text))
+                    || (!IsNumeric(txtScratchScore4.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore4.Text)))
                 {
                     MessageBox.Show("Please enter only numbers", "Non-Integer Scores Not Allowed");
                     return;
@@ -634,7 +634,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="str"></param>
         /// <returns>isNum</returns>
-        public bool isNumeric(string str)
+        public bool IsNumeric(string str)
         {
             int num;
             bool isNum = int.TryParse(str, out num);
@@ -865,7 +865,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnRightArrow_Click(object sender, EventArgs e)
+        private void BtnRightArrow_Click(object sender, EventArgs e)
         {
             switchingParticipents = true;
             currentIndex++;
@@ -903,7 +903,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// decrements to the previous participant in the tournament
         /// </summary>
-        private void btnLeftArrow_Click(object sender, EventArgs e)
+        private void BtnLeftArrow_Click(object sender, EventArgs e)
         {
             switchingParticipents = true;
 
@@ -944,7 +944,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnFirstRecord_Click(object sender, EventArgs e)
+        private void BtnFirstRecord_Click(object sender, EventArgs e)
         {
 
             switchingParticipents = true;
@@ -989,7 +989,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnLastRecord_Click(object sender, EventArgs e)
+        private void BtnLastRecord_Click(object sender, EventArgs e)
         {
             MoveToLastRecordOfMemberScores();
         }
@@ -1048,7 +1048,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// opens the new tournament form via creating a new from by referencing the form itself
         /// </summary>
-        private void btnNewTournament_Click(object sender, EventArgs e)
+        private void BtnNewTournament_Click(object sender, EventArgs e)
         {
             var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as FrmNewTournament;
             ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
@@ -1061,7 +1061,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void cbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        private void CbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
             // resets the fields when a different tournament is selected
             ResetFields();
@@ -1188,7 +1188,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnTourSearch_Click(object sender, EventArgs e)
+        private void BtnTourSearch_Click(object sender, EventArgs e)
         {
             List<Tournament> tours = new List<Tournament>();
             FrmTourSearch tourSearch = new FrmTourSearch(tours, RegionID);
@@ -1220,12 +1220,12 @@ namespace NineTapTour.Forms
             txtHandicapTotal.Clear();
         }
         //Calls refresh method on radiobutton change
-        private void rdoScratchScore_CheckedChanged(object sender, EventArgs e)
+        private void RdoScratchScore_CheckedChanged(object sender, EventArgs e)
         {
             Refresh(true);
         }
 
-        private void rdoHandicapScore_CheckedChanged(object sender, EventArgs e)
+        private void RdoHandicapScore_CheckedChanged(object sender, EventArgs e)
         {
             Refresh(true);
         }
@@ -1474,24 +1474,24 @@ namespace NineTapTour.Forms
         }
 
         //Gets nullable scratchscore
-        private int? getScratchScore(int? gameScore, int? gameHandicap)
+        private int? GetScratchScore(int? gameScore, int? gameHandicap)
         {
             return gameScore + gameHandicap;
         }
 
-        private void btnTournamentsByYear_Click(object sender, EventArgs e)
+        private void BtnTournamentsByYear_Click(object sender, EventArgs e)
         {
             FrmTournamentsByYear listTournaments = new FrmTournamentsByYear(RegionID);
             listTournaments.ShowDialog();
         }
         //Called when stats btn is clicked
-        private void btnStats_Click(object sender, EventArgs e)
+        private void BtnStats_Click(object sender, EventArgs e)
         {
             FrmTournamentStats tournamentStats = new FrmTournamentStats();
             tournamentStats.ShowDialog();
         }
 
-        private void btnRecapByPin_Click(object sender, EventArgs e)
+        private void BtnRecapByPin_Click(object sender, EventArgs e)
         {
             FrmSelection selectTournament = new FrmSelection(RegionID);
             selectTournament.StartPosition = FormStartPosition.CenterParent;
@@ -1508,14 +1508,14 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void btnPlaceStandings_Click(object sender, EventArgs e)
+        private void BtnPlaceStandings_Click(object sender, EventArgs e)
         {
             FrmTournamentPlaceStandings form = new FrmTournamentPlaceStandings();
             form.ShowDialog();
         }
 
         //runs fill member when enter key is pressed on text box
-        private void txtMemberNum_KeyDown(object sender, KeyEventArgs e)
+        private void TxtMemberNum_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyData == Keys.Enter)
             {
@@ -1528,7 +1528,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Populates Tournament dropdown list to most recently modified tournament;
         /// </summary>
-        public void populateSelectedTournament(Tournament currtourney)
+        public void PopulateSelectedTournament(Tournament currtourney)
         {
             List<Tournament> temp2 = TournamentDB.GetTournamentList(RegionID);
 
@@ -1542,7 +1542,7 @@ namespace NineTapTour.Forms
         }
 
         //opens the FinalizeTourn form, checks to make sure a tourn is selected.
-        private void btnFinalizeTounament_Click(object sender, EventArgs e)
+        private void BtnFinalizeTounament_Click(object sender, EventArgs e)
         {
             if (cbxTourneyDropDown.SelectedIndex < 0)
             {
@@ -1568,7 +1568,7 @@ namespace NineTapTour.Forms
         /*******************************************************************************
         When the report section buttons are clicked, it will take them to the FrmMemberScoresReports to ask for how many they want to take for printing
         ********************************************************************************/
-        private void btnSenior_Click(object sender, EventArgs e)
+        private void BtnSenior_Click(object sender, EventArgs e)
         {
             //Checks if tournament is not selected
             if (cbxTourneyDropDown.SelectedIndex < 0)
@@ -1625,7 +1625,7 @@ namespace NineTapTour.Forms
             return currentsNum;
         }
         //called when report game is clicked
-        private void btnGame_Click(object sender, EventArgs e)
+        private void BtnGame_Click(object sender, EventArgs e)
         {
             if (cbxTourneyDropDown.SelectedIndex < 0)
             {
@@ -1655,7 +1655,7 @@ namespace NineTapTour.Forms
             }
         }
         //Called when the report series is clicked
-        private void btnSeries_Click(object sender, EventArgs e)
+        private void BtnSeries_Click(object sender, EventArgs e)
         {
             if (cbxTourneyDropDown.SelectedIndex < 0)
             {
@@ -1773,12 +1773,12 @@ namespace NineTapTour.Forms
         //these change the value of the QBSnumber, allowing the director to filter the rich text boxes by squad, then calls the refresh method to update the rich textboxes information to 
         //display the tournament information but based on squad'
         #region changing the sqaud number
-        private void checkBoxAllResults_CheckedChanged(object sender, EventArgs e)
+        private void CheckBoxAllResults_CheckedChanged(object sender, EventArgs e)
         {
             Refresh(false);
         }
 
-        private void checkBoxSquadResults_CheckChanged(object sender, EventArgs e)
+        private void CheckBoxSquadResults_CheckChanged(object sender, EventArgs e)
         {
             if (cbxTourneyDropDown.Size != null)
             {
@@ -1787,7 +1787,7 @@ namespace NineTapTour.Forms
         }
         #endregion  
 
-        private void btnDelete_Click(object sender, EventArgs e)
+        private void BtnDelete_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
             //Grabs the tournament from the selected tournament combobox and casts it to selected Tournament
@@ -1883,13 +1883,13 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void btnTournamentResults_Click(object sender, EventArgs e)
+        private void BtnTournamentResults_Click(object sender, EventArgs e)
         {
             FrmTournamentResults form = new FrmTournamentResults();
             form.ShowDialog();
         }
 
-        private void checkBoxSquadNumber_CheckedChanged(object sender, EventArgs e)
+        private void CheckBoxSquadNumber_CheckedChanged(object sender, EventArgs e)
                                         {
             //only run the code the code for the radio button that is checked
             if((sender as RadioButton).Checked)
@@ -1906,7 +1906,7 @@ namespace NineTapTour.Forms
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void frmMemberScores_Resize(object sender, EventArgs e)
+		private void FrmMemberScores_Resize(object sender, EventArgs e)
 		{
 			FormHelper.SetFlowDirection(this, flpMemberScores, 1100, 766);
 		}
@@ -1918,18 +1918,18 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void flpMemberScores_SizeChanged(object sender, EventArgs e)
+        private void FlpMemberScores_SizeChanged(object sender, EventArgs e)
         {
             FormHelper.SetFlowControlScrollBars(this, flpMemberScores, 1300, 750);
         }
 
         //runs fill member when you tab out of text box
-        private void txtMemberNum_Leave(object sender, EventArgs e)
+        private void TxtMemberNum_Leave(object sender, EventArgs e)
         {
             FillMember();
         }
 
-        private void cbAllSquads_CheckedChanged(object sender, EventArgs e)
+        private void CbAllSquads_CheckedChanged(object sender, EventArgs e)
         {
             cbFilterSquad1.Checked = false;
             cbFilterSquad2.Checked = false;
@@ -2014,7 +2014,7 @@ namespace NineTapTour.Forms
             return check;
         }
 
-        private void cbFilterSquad1_CheckedChanged(object sender, EventArgs e)
+        private void CbFilterSquad1_CheckedChanged(object sender, EventArgs e)
         {
             SquadFilter(sender as CheckBox, 1);
         }
@@ -2045,42 +2045,42 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void cbFilterSquad2_CheckedChanged(object sender, EventArgs e)
+        private void CbFilterSquad2_CheckedChanged(object sender, EventArgs e)
         {
             SquadFilter(sender as CheckBox, 2);
         }
 
-        private void cbFilterSquad3_CheckedChanged(object sender, EventArgs e)
+        private void CbFilterSquad3_CheckedChanged(object sender, EventArgs e)
         {
             SquadFilter(sender as CheckBox, 3);
         }
 
-        private void cbFilterSquad4_CheckedChanged(object sender, EventArgs e)
+        private void CbFilterSquad4_CheckedChanged(object sender, EventArgs e)
         {
             SquadFilter(sender as CheckBox, 4);
         }
 
-        private void cbFilterSquad5_CheckedChanged(object sender, EventArgs e)
+        private void CbFilterSquad5_CheckedChanged(object sender, EventArgs e)
         {
             SquadFilter(sender as CheckBox, 5);
         }
 
-        private void cbFilterSquad6_CheckedChanged(object sender, EventArgs e)
+        private void CbFilterSquad6_CheckedChanged(object sender, EventArgs e)
         {
             SquadFilter(sender as CheckBox, 6);
         }
 
-        private void cbFilterSquad7_CheckedChanged(object sender, EventArgs e)
+        private void CbFilterSquad7_CheckedChanged(object sender, EventArgs e)
         {
             SquadFilter(sender as CheckBox, 7);
         }
 
-        private void cbFilterSquad8_CheckedChanged(object sender, EventArgs e)
+        private void CbFilterSquad8_CheckedChanged(object sender, EventArgs e)
         {
             SquadFilter(sender as CheckBox, 8);
         }
 
-        private void lbxGameLeader_Click(object sender, EventArgs e)
+        private void LbxGameLeader_Click(object sender, EventArgs e)
         {
             ChangeToSelectedPerson(sender as ListBox);
         }
@@ -2103,12 +2103,12 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void checkBoxGameSC_CheckedChanged(object sender, EventArgs e)
+        private void CheckBoxGameSC_CheckedChanged(object sender, EventArgs e)
         {
             Refresh(false);
         }
 
-        private void checkBoxHighSeries_CheckedChanged(object sender, EventArgs e)
+        private void CheckBoxHighSeries_CheckedChanged(object sender, EventArgs e)
         {
             Refresh(false);
         }

@@ -32,7 +32,7 @@ namespace NineTapTour.Forms
 
         DataTable dt = new DataTable(); // Instantiate Data Table
         NineTapDb db = new NineTapDb(); // Get access to database
-        Tournament tourny = frmMemberScores.selectedTournament; // Get Tournament
+        Tournament tourny = FrmMemberScores.selectedTournament; // Get Tournament
         static int totalTournamentEntries;  // Total number of entries for all squads in tournament
         static int clientInput; // how many winners the client wants to see
         List<ExcelMember> clientRequested = new List<ExcelMember>();
