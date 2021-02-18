@@ -93,25 +93,14 @@ namespace NineTapTour.Database
         /// <summary>
         /// Returns a NineTapRegion with the same regionID as the one given
         /// </summary>
-        public static NineTapRegion GetRegionByID ( int regionID)
+        public static NineTapRegion GetRegionByID (int regionID)
         {
-            NineTapRegion NTR = new NineTapRegion();
             using (var db = new NineTapDb())
             {
-                var temp = (from g in db.NineTapRegion
-                            select new
-                            {
-                                g.NineTapRegionID,
-                                g.NineTapRegionName
-                            });
-                foreach (var v in temp)
-                {
-                    NTR.NineTapRegionName = v.NineTapRegionName;
-                    NTR.NineTapRegionID = v.NineTapRegionID;
-                }
-
+                return (from region in db.NineTapRegion
+                        where region.NineTapRegionID == regionID
+                        select region).Single();
             }
-            return NTR;  
         }
     }
 }
