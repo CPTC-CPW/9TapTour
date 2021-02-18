@@ -60,7 +60,7 @@ namespace NineTapTour.Models.ViewModels
 
         public void SetScratchTotalToString()
         {
-            if (frmMemberScores.selectedTournament.ThreeOutOf4)
+            if (FrmMemberScores.selectedTournament.ThreeOutOf4)
             {
                 this.ScratchTotalToString = $"{this.Top3ScratchScore,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
             }
@@ -73,7 +73,7 @@ namespace NineTapTour.Models.ViewModels
 
         public void SetHandicapTotalToString()
         {
-            if (frmMemberScores.selectedTournament.ThreeOutOf4)
+            if (FrmMemberScores.selectedTournament.ThreeOutOf4)
             {
                 this.HandicapTotalToString = $"{this.Top3HandiScores,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
             }

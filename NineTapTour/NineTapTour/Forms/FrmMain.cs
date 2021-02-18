@@ -16,7 +16,7 @@ namespace NineTapTour.Forms
         public List<Tournament> TournamentList { get; set; }
         public System.Windows.Forms.ToolStripMenuItem ActiveItem;
         public FrmMemberData CurrFrmMemberData { get; set; }
-        public frmMemberScores CurrfrmScoresData { get; set; }
+        public FrmMemberScores CurrfrmScoresData { get; set; }
 
         /// <summary>
         /// If this property is set to true, the application will not prompt the user to cancel a close in progress.
@@ -197,7 +197,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
+            var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as FrmMemberScores;
             OpenOrDisplayForm(ref newfrmMemberScores);
             CurrfrmScoresData = newfrmMemberScores;
             

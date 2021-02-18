@@ -19,13 +19,13 @@ namespace NineTapTour.Forms
 
         private void TournamentPlaceStandings_Load(object sender, EventArgs e)
         {
-            lblTournamentName.Text = frmMemberScores.selectedTournament.TourneyNameDate;
-            if (frmMemberScores.selectedTournament.Doubles)
+            lblTournamentName.Text = FrmMemberScores.selectedTournament.TourneyNameDate;
+            if (FrmMemberScores.selectedTournament.Doubles)
             {
                 lblTournamentName.Text += " (DOUBLES TOURNAMENT)";                 
             }
 
-            if (frmMemberScores.selectedTournament.ThreeOutOf4)
+            if (FrmMemberScores.selectedTournament.ThreeOutOf4)
             {
                 lblTournamentName.Text += " (3 OUT OF 4 TOURNAMENT)";
             }
