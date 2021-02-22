@@ -297,7 +297,7 @@ namespace NineTapTour.Database
             }
         }
 
-        static public void printMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList, bool printDues)
+        static public void PrintMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList, bool printDues)
         {
             Print.temp = temp;
             Print.selectedTournament = selectedTournament;
@@ -313,7 +313,7 @@ namespace NineTapTour.Database
             printDialog.Document = printDocument;
 
             //add the event handler that will do the printing
-            printDocument.PrintPage += new PrintPageEventHandler(printReport);
+            printDocument.PrintPage += new PrintPageEventHandler(PrintReport);
 
             if (temp.Count > 0)
             {
@@ -326,7 +326,7 @@ namespace NineTapTour.Database
             index = 0;
         }
 
-        static private void printReport(object sender, PrintPageEventArgs e)
+        static private void PrintReport(object sender, PrintPageEventArgs e)
         {
             ReportPrint(temp, selectedTournament, reportTypeNum, e);
             index++;
@@ -345,7 +345,7 @@ namespace NineTapTour.Database
         static int index = 0;
 
         // This is for the printbytourney button
-        static public void printByTour(Tournament tour)
+        static public void PrintByTour(Tournament tour)
         {
             //Set up components for printing
             PrintDialog printDialog = new PrintDialog();
@@ -354,7 +354,7 @@ namespace NineTapTour.Database
             printDialog.Document = printDocument;
 
             //add the event handler that will do the printing
-            printDocument.PrintPage += new PrintPageEventHandler(printTourRecaps);
+            printDocument.PrintPage += new PrintPageEventHandler(PrintTourRecaps);
             mems = TournamentDB.GetUniqueTourMembers(tour);
 
             if (mems.Count > 0)
@@ -394,7 +394,7 @@ namespace NineTapTour.Database
         }
         */
 
-        static public void printAllMembers()
+        static public void PrintAllMembers()
         {
             // Set up components for printing
             PrintDialog printDialog = new PrintDialog();
@@ -403,7 +403,7 @@ namespace NineTapTour.Database
             printDialog.Document = printDocument;
 
             //add the event handler that will do the printing
-            printDocument.PrintPage += new PrintPageEventHandler(printTourRecaps);
+            printDocument.PrintPage += new PrintPageEventHandler(PrintTourRecaps);
 
             using (NineTapDb db = new NineTapDb())
             {
@@ -424,7 +424,7 @@ namespace NineTapTour.Database
             index = 0;
         }
 
-        static public void printByMemberList(List<Member> members)
+        static public void PrintByMemberList(List<Member> members)
         {
             //Set up components for printing
             PrintDialog printDialog = new PrintDialog();
@@ -433,7 +433,7 @@ namespace NineTapTour.Database
             printDialog.Document = printDocument;
 
             //add the event handler that will do the printing
-            printDocument.PrintPage += new PrintPageEventHandler(printTourRecaps);
+            printDocument.PrintPage += new PrintPageEventHandler(PrintTourRecaps);
 
             mems = members;
 
@@ -448,13 +448,13 @@ namespace NineTapTour.Database
             index = 0;
         }
 
-        static public void printByActiveMembers(List<Member> members)
+        static public void PrintByActiveMembers(List<Member> members)
         {
             PrintDialog printDialog = new PrintDialog();
             PrintDocument printDocument = new PrintDocument();
             printDialog.Document = printDocument;
 
-            printDocument.PrintPage += new PrintPageEventHandler(printActiveRecaps);
+            printDocument.PrintPage += new PrintPageEventHandler(PrintActiveRecaps);
             mems = members;
 
             if (mems.Count > 0)
@@ -474,14 +474,14 @@ namespace NineTapTour.Database
             index = 0;
         }
 
-        static private void printActiveRecaps(object sender, PrintPageEventArgs e)
+        static private void PrintActiveRecaps(object sender, PrintPageEventArgs e)
         {
             SinglePrint(new MemberPrintObj(mems[index]), e);
             index++;
             e.HasMorePages = (index < mems.Count);
         }
 
-        static private void printTourRecaps(object sender, PrintPageEventArgs e)
+        static private void PrintTourRecaps(object sender, PrintPageEventArgs e)
         {
             SinglePrint(new MemberPrintObj(mems[index]), e);
             index++;

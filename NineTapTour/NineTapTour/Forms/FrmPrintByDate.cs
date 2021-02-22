@@ -66,7 +66,7 @@ namespace NineTapTour.Forms
         private void btnPrint_Click(object sender, EventArgs e)
         {
             //Print.printByTourDate(dateTimeStart.Value, dateTimeEnd.Value);
-            Print.printByMemberList(members);
+            Print.PrintByMemberList(members);
         }
     }
 }

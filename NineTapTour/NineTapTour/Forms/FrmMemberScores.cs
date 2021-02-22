@@ -1503,7 +1503,7 @@ namespace NineTapTour.Forms
                         "Confirm Tournament", MessageBoxButtons.YesNo);
                 if (mboxResult == DialogResult.Yes)
                 {
-                    Print.printByTour(selectTournament.selectedTournament);
+                    Print.PrintByTour(selectTournament.selectedTournament);
                 }
             }
         }
