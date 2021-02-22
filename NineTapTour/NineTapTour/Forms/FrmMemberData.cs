@@ -849,7 +849,7 @@ namespace NineTapTour.Forms
         /// </summary>
         private void btnPrintActive_Click(object sender, EventArgs e)
         {
-            Print.printByActiveMembers(TournamentDB.GetAllActiveMembers());
+            Print.PrintByActiveMembers(TournamentDB.GetAllActiveMembers());
         }
 
         /// <summary>

@@ -51,7 +51,7 @@ namespace NineTapTour.Forms
 
                 temp = Calculations.Calculations.MakeTopMembersByPlacementList(temp, numMembers);
                 // print( go to print class )
-                Database.Print.printMemberReport(temp, selectedTournament, reportTypeNum, currentSquad, squadList, printDues);
+                Database.Print.PrintMemberReport(temp, selectedTournament, reportTypeNum, currentSquad, squadList, printDues);
 
                 this.Close();
             }
