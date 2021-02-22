@@ -1510,8 +1510,12 @@ namespace NineTapTour.Forms
 
         private void BtnPlaceStandings_Click(object sender, EventArgs e)
         {
-            FrmTournamentPlaceStandings form = new FrmTournamentPlaceStandings();
-            form.ShowDialog();
+            MessageBox.Show("The place standings feature will be implemented in the future",
+                "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // Saved for future use - Client wants this saved
+            //FrmTournamentPlaceStandings form = new FrmTournamentPlaceStandings();
+            //form.ShowDialog();
         }
 
         //runs fill member when enter key is pressed on text box
