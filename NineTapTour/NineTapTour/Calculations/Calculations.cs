@@ -279,7 +279,18 @@ namespace NineTapTour.Calculations
             // Makes copy so original list won't be affected
             tempListOfMemberScores = tempListOfMemberScores.ToList();
 
-            // Removes duplicate members
+            GiveMembersPlaceStandings(tempListOfMemberScores);
+
+            // Returns the edited list of members
+            return tempListOfMemberScores;
+        }
+
+        /// <summary>
+        /// Modifies the original list and gives bowlers their place standings.
+        /// </summary>
+        /// <param name="tempListOfMemberScores"></param>
+        private static void GiveMembersPlaceStandings(List<MemberScores> tempListOfMemberScores)
+        {
             RemoveDuplicateBowlers(tempListOfMemberScores);
 
             // The first member ordered by score will will always score 1st place
@@ -303,9 +314,6 @@ namespace NineTapTour.Calculations
                 // Place is still counted if members tie
                 place++;
             }
-
-            // Returns the edited list of members
-            return tempListOfMemberScores;
         }
 
         /// <summary>
