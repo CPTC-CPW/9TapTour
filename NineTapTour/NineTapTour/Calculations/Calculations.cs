@@ -279,7 +279,6 @@ namespace NineTapTour.Calculations
             // Makes copy so original list won't be affected
             tempListOfMemberScores = tempListOfMemberScores.ToList();
 
-            // Removes duplicate members
             RemoveDuplicateBowlers(tempListOfMemberScores);
             GiveMembersPlaceStandings(tempListOfMemberScores);
 
