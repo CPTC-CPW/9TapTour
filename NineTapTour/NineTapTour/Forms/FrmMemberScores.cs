@@ -1394,7 +1394,7 @@ namespace NineTapTour.Forms
                             lbxHighSelected.DataSource = topParticipantGameViewModels;
 
                             // displays specific tostring for displaying info dealing with handicap score total
-                            lbxHighSelected.DisplayMember = "HandicapTotalToString";
+                            lbxHighSelected.DisplayMember = nameof(TopParticipantGameViewModel.HandicapTotalToString);
                         }
                     }
 
