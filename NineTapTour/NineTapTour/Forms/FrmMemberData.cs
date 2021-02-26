@@ -1070,7 +1070,7 @@ namespace NineTapTour.Forms
                 playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1], "[^0-9]", ""));
             }
 
-            processExcel(returnMe, xlWorkBook, ref xlWorkSheet, ref range, PlayerFinalFirstAndMiddle, playerLastName, playerOrgAVG, isRegionHawaii);
+            ProcessExcel(returnMe, xlWorkBook, ref xlWorkSheet, ref range, PlayerFinalFirstAndMiddle, playerLastName, playerOrgAVG, isRegionHawaii);
             
             xlWorkBook.Close(0);
             xlApp.Quit();
@@ -1105,7 +1105,7 @@ namespace NineTapTour.Forms
         /// <param name="playerLastName"></param>
         /// <param name="playerOrgAVG"></param>
         /// <param name="isRegionHawaii"></param>
-        private void processExcel(List<ExcelRow> returnMe, Excel.Workbook xlWorkBook, ref Excel.Worksheet xlWorkSheet, ref Excel.Range range, string[] PlayerFinalFirstAndMiddle, string playerLastName, int playerOrgAVG, bool isRegionHawaii)
+        private void ProcessExcel(List<ExcelRow> returnMe, Excel.Workbook xlWorkBook, ref Excel.Worksheet xlWorkSheet, ref Excel.Range range, string[] PlayerFinalFirstAndMiddle, string playerLastName, int playerOrgAVG, bool isRegionHawaii)
         {
             for (int sheetNum = 1; sheetNum <= xlWorkBook.Worksheets.Count; sheetNum++)
             {
