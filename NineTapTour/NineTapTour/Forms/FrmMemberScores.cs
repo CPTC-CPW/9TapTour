@@ -1365,7 +1365,7 @@ namespace NineTapTour.Forms
                             lbxHighSelected.DataSource = topParticipantGameViewModels;
 
                             //displays specific tostring for displaying info dealing with scratch score total
-                            lbxHighSelected.DisplayMember = "ScratchTotalToString";
+                            lbxHighSelected.DisplayMember = nameof(TopParticipantGameViewModel.ScratchTotalToString);
                         }
                         // if handicap score radio button is checked
                         else if (checkBoxHandicapScore.Checked)
@@ -1384,7 +1384,7 @@ namespace NineTapTour.Forms
                             lbxHighSelected.DataSource = topParticipantGameViewModels;
 
                             // displays specific tostring for displaying info dealing with handicap score total
-                            lbxHighSelected.DisplayMember = "HandicapTotalToString";
+                            lbxHighSelected.DisplayMember = nameof(TopParticipantGameViewModel.HandicapTotalToString);
                         }
                     }
 
