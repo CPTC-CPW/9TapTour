@@ -245,7 +245,7 @@ namespace NineTapTour.Forms
         {
             if (currentGame != null)
             {
-                Tournament tourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+                Tournament tourney = TournamentDB.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
                 int total = TournamentDB.GetTotalNumberParticipantsInTournament(tourney);
               
                 lblRecord.Text = "Record " + (currentIndex + 1) + " / " + total;
@@ -268,7 +268,7 @@ namespace NineTapTour.Forms
         {
             if (cbxTourneyDropDown.SelectedValue != null)
             {
-                Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+                Tournament currTourney = TournamentDB.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
                 string searchNumber = txtMemberNum.Text;
 
                 //don't do any further processing if there is no member number
@@ -494,7 +494,7 @@ namespace NineTapTour.Forms
             else if (IsValid())
             {
                 //gets the current tournament from the database 
-                Tournament currTourney = GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+                Tournament currTourney = TournamentDB.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
 
                 //get all the current members participating in the current tournament
                 overallListOfParticipants = TournamentDB.GetTournamentMemberList(currTourney);
@@ -809,16 +809,6 @@ namespace NineTapTour.Forms
                 return true;
             }
             return false;
-        }
-
-        /// <summary>
-        /// get a tournament by selected id
-        /// </summary>
-        /// <param name="selectedTournamentId"></param>    
-        private Tournament GetTournamentById(int selectedTournamentId)
-        {
-            Tournament selectedTournament = TournamentDB.GetTourneyByID(selectedTournamentId);
-            return selectedTournament;
         }
 
         /// <summary>
@@ -1523,7 +1513,7 @@ namespace NineTapTour.Forms
         {
             if (e.KeyData == Keys.Enter)
             {
-                List<Participant> total = TournamentDB.GetTournamentMemberList(GetTournamentById(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
+                List<Participant> total = TournamentDB.GetTournamentMemberList(TournamentDB.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
                 RecordIndexOnEnter(total);
                 FillMember();
             }
