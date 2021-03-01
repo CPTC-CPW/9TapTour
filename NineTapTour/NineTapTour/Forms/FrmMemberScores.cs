@@ -2008,9 +2008,10 @@ namespace NineTapTour.Forms
             return check;
         }
 
-        private void CbFilterSquad1_CheckedChanged(object sender, EventArgs e)
+        private void CbFilterSquad_CheckedChanged(object sender, EventArgs e)
         {
-            SquadFilter(sender as CheckBox, 1);
+            object squadNumber = (((CheckBox)sender).Tag);
+            SquadFilter(sender as CheckBox, Convert.ToByte(squadNumber));
         }
 
         private void SquadFilter(CheckBox squadCheckBox, byte squadNum)
@@ -2037,41 +2038,6 @@ namespace NineTapTour.Forms
                 howManySquadsCanBeFiltered.Add(squadNum);
                 Refresh(false);
             }
-        }
-
-        private void CbFilterSquad2_CheckedChanged(object sender, EventArgs e)
-        {
-            SquadFilter(sender as CheckBox, 2);
-        }
-
-        private void CbFilterSquad3_CheckedChanged(object sender, EventArgs e)
-        {
-            SquadFilter(sender as CheckBox, 3);
-        }
-
-        private void CbFilterSquad4_CheckedChanged(object sender, EventArgs e)
-        {
-            SquadFilter(sender as CheckBox, 4);
-        }
-
-        private void CbFilterSquad5_CheckedChanged(object sender, EventArgs e)
-        {
-            SquadFilter(sender as CheckBox, 5);
-        }
-
-        private void CbFilterSquad6_CheckedChanged(object sender, EventArgs e)
-        {
-            SquadFilter(sender as CheckBox, 6);
-        }
-
-        private void CbFilterSquad7_CheckedChanged(object sender, EventArgs e)
-        {
-            SquadFilter(sender as CheckBox, 7);
-        }
-
-        private void CbFilterSquad8_CheckedChanged(object sender, EventArgs e)
-        {
-            SquadFilter(sender as CheckBox, 8);
         }
 
         private void LbxGameLeader_Click(object sender, EventArgs e)
