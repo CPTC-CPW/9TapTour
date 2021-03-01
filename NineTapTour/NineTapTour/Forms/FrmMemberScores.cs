@@ -49,78 +49,57 @@ namespace NineTapTour.Forms
         /// </summary>
         private void RadioIntialize()
         {
-            checkSquadOne.TabStop = false;
-            checkSquadTwo.TabStop = false;
-            checkSquadThree.TabStop = false;
-            checkSquadFour.TabStop = false;
+            checkSquad1.TabStop = false;
+            checkSquad2.TabStop = false;
+            checkSquad3.TabStop = false;
+            checkSquad4.TabStop = false;
             checkSquad5.TabStop = false;
             checkSquad6.TabStop = false;
             checkSquad7.TabStop = false;
             checkSquad8.TabStop = false;
             checkBoxHandicapScore.TabStop = false;
             cbAllSquads.TabStop = false;
+            cbFilterSquad4.Visible = false;
             cbFilterSquad5.Visible = false;
             cbFilterSquad6.Visible = false;
             cbFilterSquad7.Visible = false;
             cbFilterSquad8.Visible = false;
+            checkSquad4.Visible = false;
             checkSquad5.Visible = false;
             checkSquad6.Visible = false;
             checkSquad7.Visible = false;
             checkSquad8.Visible = false;
-            //rdoSquad5Results.Visible = false;
-            //rdoSquad6Results.Visible = false;
-            //rdoSquad7Results.Visible = false;
-            //rdoSquad8Results.Visible = false;
             cbAllSquads.Checked = true;
 
             if (cbxTourneyDropDown.SelectedIndex >= 0)
             {
-                if (selectedTournament.Squads == 5)
+                if(selectedTournament.Squads >= 4)
                 {
-                    checkSquad5.Visible = true;
-                    //rdoSquad5Results.Visible = true;
-                    cbFilterSquad5.Visible = true;
-
-
+                    checkSquad4.Visible = true;
+                    cbFilterSquad4.Visible = true;
                 }
 
-                if (selectedTournament.Squads == 6)
+                if (selectedTournament.Squads >= 5)
                 {
                     checkSquad5.Visible = true;
-                    checkSquad6.Visible = true;
-                    //rdoSquad5Results.Visible = true;
-                    //rdoSquad6Results.Visible = true;
                     cbFilterSquad5.Visible = true;
+                }
+
+                if (selectedTournament.Squads >= 6)
+                {
+                    checkSquad6.Visible = true;
                     cbFilterSquad6.Visible = true;
                 }
 
-                if (selectedTournament.Squads == 7)
+                if (selectedTournament.Squads >= 7)
                 {
-                    checkSquad5.Visible = true;
-                    checkSquad6.Visible = true;
                     checkSquad7.Visible = true;
-                    //rdoSquad5Results.Visible = true;
-                    //rdoSquad6Results.Visible = true;
-                    //rdoSquad7Results.Visible = true;
-                    cbFilterSquad5.Visible = true;
-                    cbFilterSquad6.Visible = true;
                     cbFilterSquad7.Visible = true;
-
                 }
 
                 if (selectedTournament.Squads == 8)
                 {
-                    checkSquad5.Visible = true;
-                    checkSquad6.Visible = true;
-                    checkSquad7.Visible = true;
                     checkSquad8.Visible = true;
-                    //rdoSquad5Results.Visible = true;
-                    //rdoSquad6Results.Visible = true;
-                    //rdoSquad7Results.Visible = true;
-                    //rdoSquad8Results.Visible = true;
-                    cbFilterSquad5.Visible = true;
-                    cbFilterSquad6.Visible = true;
-                    cbFilterSquad7.Visible = true;
                     cbFilterSquad8.Visible = true;
                 }
             }
@@ -678,19 +657,19 @@ namespace NineTapTour.Forms
         {
             if (playerSquadNumber == 1)
             {
-                checkSquadOne.Checked = true;
+                checkSquad1.Checked = true;
             }
             else if (playerSquadNumber == 2)
             {
-                checkSquadTwo.Checked = true;
+                checkSquad2.Checked = true;
             }
             else if (playerSquadNumber == 3)
             {
-                checkSquadThree.Checked = true;
+                checkSquad3.Checked = true;
             }
             else if (playerSquadNumber == 4)
             {
-                checkSquadFour.Checked = true;
+                checkSquad4.Checked = true;
             }
             else if (playerSquadNumber == 5)
             {
@@ -755,13 +734,13 @@ namespace NineTapTour.Forms
         /// <returns></returns>
         private int GetCurrentSquadNumber()
         {
-            if (checkSquadOne.Checked)
+            if (checkSquad1.Checked)
                 return 1;
-            else if (checkSquadTwo.Checked)
+            else if (checkSquad2.Checked)
                 return 2;
-            else if (checkSquadThree.Checked)
+            else if (checkSquad3.Checked)
                 return 3;
-            else if (checkSquadFour.Checked)
+            else if (checkSquad4.Checked)
                 return 4;
             else if (checkSquad5.Checked)
                 return 5;
@@ -1043,7 +1022,7 @@ namespace NineTapTour.Forms
             var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as FrmNewTournament;
             ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
             newfrmNewTournament.Dock = DockStyle.None;
-            checkSquadOne.Checked = true;
+            checkSquad1.Checked = true;
         }
 
         /// <summary>
