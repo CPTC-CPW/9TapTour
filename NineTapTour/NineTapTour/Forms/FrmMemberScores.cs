@@ -59,68 +59,47 @@ namespace NineTapTour.Forms
             checkSquad8.TabStop = false;
             checkBoxHandicapScore.TabStop = false;
             cbAllSquads.TabStop = false;
+            cbFilterSquad4.Visible = false;
             cbFilterSquad5.Visible = false;
             cbFilterSquad6.Visible = false;
             cbFilterSquad7.Visible = false;
             cbFilterSquad8.Visible = false;
+            checkSquadFour.Visible = false;
             checkSquad5.Visible = false;
             checkSquad6.Visible = false;
             checkSquad7.Visible = false;
             checkSquad8.Visible = false;
-            //rdoSquad5Results.Visible = false;
-            //rdoSquad6Results.Visible = false;
-            //rdoSquad7Results.Visible = false;
-            //rdoSquad8Results.Visible = false;
             cbAllSquads.Checked = true;
 
             if (cbxTourneyDropDown.SelectedIndex >= 0)
             {
-                if (selectedTournament.Squads == 5)
+                if(selectedTournament.Squads >= 4)
                 {
-                    checkSquad5.Visible = true;
-                    //rdoSquad5Results.Visible = true;
-                    cbFilterSquad5.Visible = true;
-
-
+                    checkSquadFour.Visible = true;
+                    cbFilterSquad4.Visible = true;
                 }
 
-                if (selectedTournament.Squads == 6)
+                if (selectedTournament.Squads >= 5)
                 {
                     checkSquad5.Visible = true;
-                    checkSquad6.Visible = true;
-                    //rdoSquad5Results.Visible = true;
-                    //rdoSquad6Results.Visible = true;
                     cbFilterSquad5.Visible = true;
+                }
+
+                if (selectedTournament.Squads >= 6)
+                {
+                    checkSquad6.Visible = true;
                     cbFilterSquad6.Visible = true;
                 }
 
-                if (selectedTournament.Squads == 7)
+                if (selectedTournament.Squads >= 7)
                 {
-                    checkSquad5.Visible = true;
-                    checkSquad6.Visible = true;
                     checkSquad7.Visible = true;
-                    //rdoSquad5Results.Visible = true;
-                    //rdoSquad6Results.Visible = true;
-                    //rdoSquad7Results.Visible = true;
-                    cbFilterSquad5.Visible = true;
-                    cbFilterSquad6.Visible = true;
                     cbFilterSquad7.Visible = true;
-
                 }
 
                 if (selectedTournament.Squads == 8)
                 {
-                    checkSquad5.Visible = true;
-                    checkSquad6.Visible = true;
-                    checkSquad7.Visible = true;
                     checkSquad8.Visible = true;
-                    //rdoSquad5Results.Visible = true;
-                    //rdoSquad6Results.Visible = true;
-                    //rdoSquad7Results.Visible = true;
-                    //rdoSquad8Results.Visible = true;
-                    cbFilterSquad5.Visible = true;
-                    cbFilterSquad6.Visible = true;
-                    cbFilterSquad7.Visible = true;
                     cbFilterSquad8.Visible = true;
                 }
             }
