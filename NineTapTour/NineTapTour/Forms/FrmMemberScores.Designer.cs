@@ -36,10 +36,10 @@
             this.checkSquad6 = new System.Windows.Forms.RadioButton();
             this.checkSquad7 = new System.Windows.Forms.RadioButton();
             this.checkSquad5 = new System.Windows.Forms.RadioButton();
-            this.checkSquadFour = new System.Windows.Forms.RadioButton();
-            this.checkSquadThree = new System.Windows.Forms.RadioButton();
-            this.checkSquadTwo = new System.Windows.Forms.RadioButton();
-            this.checkSquadOne = new System.Windows.Forms.RadioButton();
+            this.checkSquad4 = new System.Windows.Forms.RadioButton();
+            this.checkSquad3 = new System.Windows.Forms.RadioButton();
+            this.checkSquad2 = new System.Windows.Forms.RadioButton();
+            this.checkSquad1 = new System.Windows.Forms.RadioButton();
             this.txtLastName = new System.Windows.Forms.TextBox();
             this.txtFirstName = new System.Windows.Forms.TextBox();
             this.txtMiddleInitial = new System.Windows.Forms.TextBox();
@@ -168,10 +168,10 @@
             this.groupBox1.Controls.Add(this.checkSquad6);
             this.groupBox1.Controls.Add(this.checkSquad7);
             this.groupBox1.Controls.Add(this.checkSquad5);
-            this.groupBox1.Controls.Add(this.checkSquadFour);
-            this.groupBox1.Controls.Add(this.checkSquadThree);
-            this.groupBox1.Controls.Add(this.checkSquadTwo);
-            this.groupBox1.Controls.Add(this.checkSquadOne);
+            this.groupBox1.Controls.Add(this.checkSquad4);
+            this.groupBox1.Controls.Add(this.checkSquad3);
+            this.groupBox1.Controls.Add(this.checkSquad2);
+            this.groupBox1.Controls.Add(this.checkSquad1);
             this.groupBox1.Location = new System.Drawing.Point(4, 84);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(179, 122);
@@ -229,49 +229,49 @@
             // 
             // checkSquadFour
             // 
-            this.checkSquadFour.AutoSize = true;
-            this.checkSquadFour.Location = new System.Drawing.Point(108, 43);
-            this.checkSquadFour.Name = "checkSquadFour";
-            this.checkSquadFour.Size = new System.Drawing.Size(65, 17);
-            this.checkSquadFour.TabIndex = 7;
-            this.checkSquadFour.Text = "Squad 4";
-            this.checkSquadFour.UseVisualStyleBackColor = true;
-            this.checkSquadFour.CheckedChanged += new System.EventHandler(this.CheckBoxSquadNumber_CheckedChanged);
+            this.checkSquad4.AutoSize = true;
+            this.checkSquad4.Location = new System.Drawing.Point(108, 43);
+            this.checkSquad4.Name = "checkSquadFour";
+            this.checkSquad4.Size = new System.Drawing.Size(65, 17);
+            this.checkSquad4.TabIndex = 7;
+            this.checkSquad4.Text = "Squad 4";
+            this.checkSquad4.UseVisualStyleBackColor = true;
+            this.checkSquad4.CheckedChanged += new System.EventHandler(this.CheckBoxSquadNumber_CheckedChanged);
             // 
             // checkSquadThree
             // 
-            this.checkSquadThree.AutoSize = true;
-            this.checkSquadThree.Location = new System.Drawing.Point(6, 43);
-            this.checkSquadThree.Name = "checkSquadThree";
-            this.checkSquadThree.Size = new System.Drawing.Size(65, 17);
-            this.checkSquadThree.TabIndex = 6;
-            this.checkSquadThree.Text = "Squad 3";
-            this.checkSquadThree.UseVisualStyleBackColor = true;
-            this.checkSquadThree.CheckedChanged += new System.EventHandler(this.CheckBoxSquadNumber_CheckedChanged);
+            this.checkSquad3.AutoSize = true;
+            this.checkSquad3.Location = new System.Drawing.Point(6, 43);
+            this.checkSquad3.Name = "checkSquadThree";
+            this.checkSquad3.Size = new System.Drawing.Size(65, 17);
+            this.checkSquad3.TabIndex = 6;
+            this.checkSquad3.Text = "Squad 3";
+            this.checkSquad3.UseVisualStyleBackColor = true;
+            this.checkSquad3.CheckedChanged += new System.EventHandler(this.CheckBoxSquadNumber_CheckedChanged);
             // 
             // checkSquadTwo
             // 
-            this.checkSquadTwo.AutoSize = true;
-            this.checkSquadTwo.Location = new System.Drawing.Point(108, 20);
-            this.checkSquadTwo.Name = "checkSquadTwo";
-            this.checkSquadTwo.Size = new System.Drawing.Size(65, 17);
-            this.checkSquadTwo.TabIndex = 5;
-            this.checkSquadTwo.Text = "Squad 2";
-            this.checkSquadTwo.UseVisualStyleBackColor = true;
-            this.checkSquadTwo.CheckedChanged += new System.EventHandler(this.CheckBoxSquadNumber_CheckedChanged);
+            this.checkSquad2.AutoSize = true;
+            this.checkSquad2.Location = new System.Drawing.Point(108, 20);
+            this.checkSquad2.Name = "checkSquadTwo";
+            this.checkSquad2.Size = new System.Drawing.Size(65, 17);
+            this.checkSquad2.TabIndex = 5;
+            this.checkSquad2.Text = "Squad 2";
+            this.checkSquad2.UseVisualStyleBackColor = true;
+            this.checkSquad2.CheckedChanged += new System.EventHandler(this.CheckBoxSquadNumber_CheckedChanged);
             // 
             // checkSquadOne
             // 
-            this.checkSquadOne.AutoSize = true;
-            this.checkSquadOne.Checked = true;
-            this.checkSquadOne.Location = new System.Drawing.Point(6, 20);
-            this.checkSquadOne.Name = "checkSquadOne";
-            this.checkSquadOne.Size = new System.Drawing.Size(65, 17);
-            this.checkSquadOne.TabIndex = 4;
-            this.checkSquadOne.TabStop = true;
-            this.checkSquadOne.Text = "Squad 1";
-            this.checkSquadOne.UseVisualStyleBackColor = true;
-            this.checkSquadOne.CheckedChanged += new System.EventHandler(this.CheckBoxSquadNumber_CheckedChanged);
+            this.checkSquad1.AutoSize = true;
+            this.checkSquad1.Checked = true;
+            this.checkSquad1.Location = new System.Drawing.Point(6, 20);
+            this.checkSquad1.Name = "checkSquadOne";
+            this.checkSquad1.Size = new System.Drawing.Size(65, 17);
+            this.checkSquad1.TabIndex = 4;
+            this.checkSquad1.TabStop = true;
+            this.checkSquad1.Text = "Squad 1";
+            this.checkSquad1.UseVisualStyleBackColor = true;
+            this.checkSquad1.CheckedChanged += new System.EventHandler(this.CheckBoxSquadNumber_CheckedChanged);
             // 
             // txtLastName
             // 
@@ -1275,10 +1275,10 @@
         private System.Windows.Forms.GroupBox grpMemberNum;
         private System.Windows.Forms.TextBox txtMemberNum;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RadioButton checkSquadOne;
-        private System.Windows.Forms.RadioButton checkSquadFour;
-        private System.Windows.Forms.RadioButton checkSquadThree;
-        private System.Windows.Forms.RadioButton checkSquadTwo;
+        private System.Windows.Forms.RadioButton checkSquad1;
+        private System.Windows.Forms.RadioButton checkSquad4;
+        private System.Windows.Forms.RadioButton checkSquad3;
+        private System.Windows.Forms.RadioButton checkSquad2;
         private System.Windows.Forms.TextBox txtLastName;
         private System.Windows.Forms.TextBox txtFirstName;
         private System.Windows.Forms.TextBox txtMiddleInitial;
