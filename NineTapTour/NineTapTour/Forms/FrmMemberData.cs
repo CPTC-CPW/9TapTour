@@ -398,8 +398,12 @@ namespace NineTapTour.Forms
             {
                 lblAverageValidation.Visible = true;
                 txtAverage.Clear();
-                //txtAverage.BackColor = Color.LightPink;
+                txtAverage.BackColor = Color.LightPink;
                 valid = false;
+            }
+            else
+            {
+                txtAverage.BackColor = SystemColors.Control;
             }
 
             // validate lastname textbox
@@ -407,8 +411,12 @@ namespace NineTapTour.Forms
             {
                 lblLastNameValidation.Visible = true;
                 txtLastName.Clear();
-                //txtLastName.BackColor = Color.LightPink;
+                txtLastName.BackColor = Color.LightPink;
                 valid = false;
+            }
+            else
+            {
+                txtLastName.BackColor = SystemColors.Control;
             }
 
             // validate firstname textbox
@@ -416,11 +424,15 @@ namespace NineTapTour.Forms
             {
                 lblFirstNameValidation.Visible = true;
                 txtFirstName.Clear();
-                //txtFirstName.BackColor = Color.LightPink;
+                txtFirstName.BackColor = Color.LightPink;
                 valid = false;
             }
+            else
+            {
+                txtFirstName.BackColor = SystemColors.Control;
+            }
 
-			// validate dateJoined textbox
+            // validate dateJoined textbox
             if (!FormHelper.IsDateTimeValid(txtDateJoined.Text))
             {
                 lblDateJoinedValidation.Visible = true;
@@ -432,8 +444,12 @@ namespace NineTapTour.Forms
             if (!FormHelper.IsDateTimeValid(txtDOB.Text))
                 {
                 lblDOBValidation.Visible = true;
-                //txtDOB.BackColor = Color.LightPink;
+                txtDOB.BackColor = Color.LightPink;
                 valid = false;
+            }
+            else
+            {
+                txtDOB.BackColor = SystemColors.Control;
             }
 
             return valid;
