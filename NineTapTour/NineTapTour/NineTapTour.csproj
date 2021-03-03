@@ -303,6 +303,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\TournamentStatsList.cs" />
+    <Compile Include="Models\ViewModels\WinnerListMemberViewModel.cs" />
     <Compile Include="Models\ViewModels\ParticipantsGameViewModel.cs" />
     <Compile Include="Models\ViewModels\TopParticipantGameViewModel.cs" />
     <Compile Include="Models\ViewModels\TournamentHighScoresViewModel.cs" />
