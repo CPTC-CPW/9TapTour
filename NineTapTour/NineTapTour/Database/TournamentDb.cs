@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity.Validation;
 using NineTapTour.Models;
-
+using NineTapTour.Models.ViewModels;
 
 namespace NineTapTour.Database
 {
@@ -262,6 +262,37 @@ namespace NineTapTour.Database
             {
                 db.Entry(tourn).State = EntityState.Deleted;
                 db.SaveChanges();
+            }
+        }
+
+        public static List<WinnerListMemberViewModel> GetWinnerListMemberData(int tournamentId)
+        {
+            using (var db = new NineTapDb())
+            {
+                // Get participant/member/game info to populate DataTable
+                return (from p in db.Participants
+                        join m in db.Members on p.Member.Id equals m.Id
+                        join g in db.Games on p.Game.Id equals g.Id
+                        join t in db.Tournaments on p.Tournament.Id equals t.Id
+                        let memberNumber = m.Number
+                        let name = m.FirstName + " " + m.LastName
+                        where tournamentId == p.Tournament.Id
+                        select new WinnerListMemberViewModel
+                        {
+                            PlaceStanding = g.PlaceStanding,
+                            MemberNumber = memberNumber,
+                            BowlerName = name,
+                            Handicap = g.Handicap,
+                            Bonus = g.Bonus,
+                            MoneyWon = g.MoneyWon,
+                            SidePot = g.SidePot,
+                            GameId = g.Id,
+                            Game1 = g.Game1,
+                            Game2 = g.Game2,
+                            Game3 = g.Game3,
+                            Game4 = g.Game4,
+                            IsComp = g.IsComp
+                        }).ToList();
             }
         }
     }
