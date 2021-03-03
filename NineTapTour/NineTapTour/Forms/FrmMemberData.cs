@@ -53,7 +53,6 @@ namespace NineTapTour.Forms
             }
 
             RegionID = ((FrmMain)MdiParent).RegionID;
-            List<Member> ListOfMembers = MemberDB.GetMemberList(RegionID);
             UpdateMemberInfo();
         }
         
