@@ -45,7 +45,7 @@ The current build is being built on Windows machines through Visual Studio 2017 
 * [Download Visual Studio Here](https://visualstudio.microsoft.com/downloads/)
 
 ### Coding Style Requirements
-Reference the [code style requirements Wiki](https://github.com/CPTC-CPW/9TapTour/wiki/Coding-Style-Requirements) for more information.
+Reference the [code style requirements](CodingStyle.md) for more information.
 
 ## Built With
 * [Visual Studio](https://visualstudio.microsoft.com/) - Program Used for Design
