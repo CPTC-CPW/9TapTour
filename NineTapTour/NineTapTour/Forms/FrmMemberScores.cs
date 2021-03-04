@@ -1627,7 +1627,10 @@ namespace NineTapTour.Forms
                 }
             }
         }
-        //Called when the report series is clicked
+
+        /// <summary>
+        /// Called when the report series is clicked
+        /// </summary>
         private void BtnSeries_Click(object sender, EventArgs e)
         {
             if (cbxTourneyDropDown.SelectedIndex < 0)
