@@ -1645,7 +1645,7 @@ namespace NineTapTour.Forms
                 List<int> squadList = FormHelper.SquadNumList(filterSeries);
                     
                 #endregion
-                //these 2 regions would recreate data that already exists on trhe page
+                // These 2 regions would recreate data that already exists on the page
                 #region PRINTING HANDICAP TOURNAMENT RESULTS
                 if (checkBoxHandicapScore.Checked)
                 {
