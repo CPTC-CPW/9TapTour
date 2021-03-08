@@ -35,6 +35,8 @@
             this.cbPrintDues = new System.Windows.Forms.CheckBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.lblSave = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.maskedTextBox1 = new System.Windows.Forms.MaskedTextBox();
             this.SuspendLayout();
             // 
             // btnPrint
@@ -93,13 +95,34 @@
             this.lblSave.TabIndex = 4;
             this.lblSave.Text = "Save To Desktop";
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(256, 9);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(233, 26);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "Manual Cutoff Line\r\n(Overrides calculated number of winning places)";
+            // 
+            // maskedTextBox1
+            // 
+            this.maskedTextBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.maskedTextBox1.Location = new System.Drawing.Point(259, 43);
+            this.maskedTextBox1.Mask = "00";
+            this.maskedTextBox1.Name = "maskedTextBox1";
+            this.maskedTextBox1.Size = new System.Drawing.Size(100, 20);
+            this.maskedTextBox1.TabIndex = 7;
+            this.maskedTextBox1.ValidatingType = typeof(int);
+            // 
             // FrmMemberScoresReports
             // 
             this.AcceptButton = this.btnPrint;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(284, 152);
+            this.ClientSize = new System.Drawing.Size(498, 217);
+            this.Controls.Add(this.maskedTextBox1);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.lblSave);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.cbPrintDues);
@@ -123,5 +146,7 @@
         private System.Windows.Forms.CheckBox cbPrintDues;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Label lblSave;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.MaskedTextBox maskedTextBox1;
     }
 }
