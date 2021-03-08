@@ -65,7 +65,7 @@ namespace NineTapTour.Database
         /// <summary>
         /// For Printing the Report Sections
         /// </summary>
-        public static void ReportPrint(List<Models.MemberScores> tempMemberList, Tournament selectedTournament, ReportType reportTypeNum, PrintPageEventArgs e)
+        public static void ReportPrint(List<Models.MemberScores> tempMemberList, Tournament selectedTournament, ReportType reportTypeNum, PrintPageEventArgs e, int? manualCutoff = null)
         {
             int numToPrint = 40;
             // This var is used to draw a line after the rows of money-winning members are printed
@@ -279,7 +279,7 @@ namespace NineTapTour.Database
                 graphic.DrawString(unpaid, font, dBrush, startX + 500, startY + 173 + (i * 19));
 
                 // Print a line after 20 percent of the members have been printed.
-                if (i == winningPlaces)
+                if ((manualCutoff.HasValue && i == manualCutoff) || (!manualCutoff.HasValue && i == winningPlaces))
                 {
                     int x1 = startX;
                     int y1 = startY + 173 + (i * 19);
@@ -292,7 +292,7 @@ namespace NineTapTour.Database
             }
         }
 
-        static public void PrintMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList, bool printDues)
+        static public void PrintMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList, bool printDues, int? manualCutoff)
         {
             Print.temp = temp;
             Print.selectedTournament = selectedTournament;
@@ -300,6 +300,7 @@ namespace NineTapTour.Database
             Print.currentSquad = currentSquad;
             Print.squadList = squadList;
             Print.printDues = printDues;
+            Print.manualCutoff = manualCutoff;
 
             // Set up components for printing
             PrintDialog printDialog = new PrintDialog();
@@ -323,7 +324,7 @@ namespace NineTapTour.Database
 
         static private void PrintReport(object sender, PrintPageEventArgs e)
         {
-            ReportPrint(temp, selectedTournament, reportTypeNum, e);
+            ReportPrint(temp, selectedTournament, reportTypeNum, e, manualCutoff);
             index++;
             e.HasMorePages = ((index * 40) < temp.Count);
         }
@@ -334,6 +335,7 @@ namespace NineTapTour.Database
         static int currentSquad;
         static List<int> squadList;
         static bool printDues;
+        static int? manualCutoff;
         /************************************************************************/
 
         static List<Member> mems = new List<Member>();
