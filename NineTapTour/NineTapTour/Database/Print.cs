@@ -62,9 +62,9 @@ namespace NineTapTour.Database
             graphic.DrawString(mem.Number.ToString(), font, dBrush, startX + 80, startY + 238);
         }
 
-        /************************************************************************
-        For Printing the Report Sections
-        ************************************************************************/
+        /// <summary>
+        /// For Printing the Report Sections
+        /// </summary>
         public static void ReportPrint(List<Models.MemberScores> tempMemberList, Tournament selectedTournament, ReportType reportTypeNum, PrintPageEventArgs e)
         {
             int numToPrint = 40;
@@ -80,7 +80,6 @@ namespace NineTapTour.Database
             }
             //This is what prints the data
             Graphics graphic = e.Graphics;
-            Pen blackPen = new Pen(Brushes.Black, 3);
 
             //default font to use, should use a mono space font so the spaces line up.
             Font font = new Font("Arial", 16, FontStyle.Bold, GraphicsUnit.Pixel);
@@ -279,15 +278,16 @@ namespace NineTapTour.Database
                 //draw Membership Paid Through Column
                 graphic.DrawString(unpaid, font, dBrush, startX + 500, startY + 173 + (i * 19));
 
-                // Print a line of stars after 20 percent of the members have been printed.
+                // Print a line after 20 percent of the members have been printed.
                 if (i == winningPlaces)
                 {
                     int x1 = startX;
                     int y1 = startY + 173 + (i * 19);
                     int x2 = 800;
                     int y2 = y1;
-                    //graphic.DrawString("*********************************", font, dBrush, startX + 6, startY + 173 + (i * 19));
-                    graphic.DrawLine(blackPen, x1, y1, x2, y2);
+                    
+                    Pen redPen = new Pen(Brushes.Red, 3);
+                    graphic.DrawLine(redPen, x1, y1, x2, y2);
                 }
             }
         }
