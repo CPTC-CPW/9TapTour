@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using NineTapTour.Database;
 using NineTapTour.Models;
 using static NineTapTour.Database.ReportHelper;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -52,7 +53,7 @@ namespace NineTapTour.Forms
                 temp = Calculations.Calculations.MakeTopMembersByPlacementList(temp, numMembers);
                 // print( go to print class )
                 int? manualCutoffLine = null;
-                if(int.TryParse(maskedTextBox1.Text, out int result))
+                if(int.TryParse(txtCutoffLine.Text, out int result))
                 {
                     manualCutoffLine = result;
                 }
@@ -320,6 +321,9 @@ namespace NineTapTour.Forms
             }
         }
 
-
+        private void TxtCutoffLine_Click(object sender, EventArgs e)
+        {
+            FormHelper.GoToFirstIndexInTextboxIfEmpty(txtCutoffLine);
+        }
     }
 }

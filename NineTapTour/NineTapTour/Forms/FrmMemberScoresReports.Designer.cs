@@ -36,7 +36,7 @@
             this.btnSave = new System.Windows.Forms.Button();
             this.lblSave = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.maskedTextBox1 = new System.Windows.Forms.MaskedTextBox();
+            this.txtCutoffLine = new System.Windows.Forms.MaskedTextBox();
             this.SuspendLayout();
             // 
             // btnPrint
@@ -106,13 +106,14 @@
             // 
             // maskedTextBox1
             // 
-            this.maskedTextBox1.BackColor = System.Drawing.SystemColors.Control;
-            this.maskedTextBox1.Location = new System.Drawing.Point(259, 43);
-            this.maskedTextBox1.Mask = "00";
-            this.maskedTextBox1.Name = "maskedTextBox1";
-            this.maskedTextBox1.Size = new System.Drawing.Size(100, 20);
-            this.maskedTextBox1.TabIndex = 7;
-            this.maskedTextBox1.ValidatingType = typeof(int);
+            this.txtCutoffLine.BackColor = System.Drawing.SystemColors.Control;
+            this.txtCutoffLine.Location = new System.Drawing.Point(259, 43);
+            this.txtCutoffLine.Mask = "00";
+            this.txtCutoffLine.Name = "maskedTextBox1";
+            this.txtCutoffLine.Size = new System.Drawing.Size(100, 20);
+            this.txtCutoffLine.TabIndex = 7;
+            this.txtCutoffLine.ValidatingType = typeof(int);
+            this.txtCutoffLine.Click += new System.EventHandler(this.TxtCutoffLine_Click);
             // 
             // FrmMemberScoresReports
             // 
@@ -121,7 +122,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(498, 217);
-            this.Controls.Add(this.maskedTextBox1);
+            this.Controls.Add(this.txtCutoffLine);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.lblSave);
             this.Controls.Add(this.btnSave);
@@ -147,6 +148,6 @@
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Label lblSave;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.MaskedTextBox maskedTextBox1;
+        private System.Windows.Forms.MaskedTextBox txtCutoffLine;
     }
 }
