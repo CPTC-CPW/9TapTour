@@ -67,11 +67,6 @@ namespace NineTapTour.Database
         ************************************************************************/
         public static void ReportPrint(List<Models.MemberScores> tempMemberList, Tournament selectedTournament, ReportType reportTypeNum, PrintPageEventArgs e)
         {
-            // TODO: Need to refactor this.
-            // Need to programatically add the 'cutoff line' above the first member with zero earnings
-            // (after the last member that earned money)
-
-
             int numToPrint = 40;
             // This var is used to draw a line after the rows of money-winning members are printed
             int winningPlaces;
