@@ -1627,7 +1627,10 @@ namespace NineTapTour.Forms
                 }
             }
         }
-        //Called when the report series is clicked
+
+        /// <summary>
+        /// Called when the report series is clicked
+        /// </summary>
         private void BtnSeries_Click(object sender, EventArgs e)
         {
             if (cbxTourneyDropDown.SelectedIndex < 0)
@@ -1645,7 +1648,7 @@ namespace NineTapTour.Forms
                 List<int> squadList = FormHelper.SquadNumList(filterSeries);
                     
                 #endregion
-                //these 2 regions would recreate data that already exists on trhe page
+                // These 2 regions would recreate data that already exists on the page
                 #region PRINTING HANDICAP TOURNAMENT RESULTS
                 if (checkBoxHandicapScore.Checked)
                 {
@@ -1657,17 +1660,6 @@ namespace NineTapTour.Forms
                     {
                         temp = ParticipantsDB.GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(squadList, selectedTournament.Id);
                     }
-                    /*
-                    if (selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall best standings for 3of4 tournament
-                    {
-                        temp = ParticipantsDB.GetStandingsForThreeOutOf4ByHandicap(db, selectedTournament.Id);
-                    }
-                    else if (selectedTournament.ThreeOutOf4 && qualifyBySquadNumber > 0) //best standings based on sqaud for  3of4 tournament
-                    {
-                        temp = ParticipantsDB.GetStandingsForThreeOf4BySquadNumberByHandicap(db, qualifyBySquadNumber, selectedTournament.Id);
-
-                    }*/
-
                     else if (!selectedTournament.ThreeOutOf4 && squadList.Contains(0))
                     {
                         temp = ParticipantsDB.GetStandingsForTournamentByHandicap(selectedTournament.Id);
@@ -1676,15 +1668,6 @@ namespace NineTapTour.Forms
                     {
                         temp = ParticipantsDB.GetStandingsForTournamentByFilterSeriesByHandicap(squadList, selectedTournament.Id);
                     }
-
-                        /*if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall standings for a regular tournament
-                        {
-                            temp = ParticipantsDB.GetStandingsForTournamentByHandicap(db, selectedTournament.Id);
-                        }
-                        else if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber > 0) //standings based on squad for a regular tournament
-                        {
-                            temp = ParticipantsDB.GetStandingsForTournamentBySquadByHandicap(db, qualifyBySquadNumber, selectedTournament.Id);
-                        }*/
                     #endregion
 
                     #region PRINTING SCRATCH TOURNAMENT RESULTS
@@ -1698,16 +1681,6 @@ namespace NineTapTour.Forms
                         {
                             temp = ParticipantsDB.GetStandingsForThreeOf4ByFilterSeriesByScratch(squadList, selectedTournament.Id);
                         }
-                        /*
-                        if (selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall best standings for 3of4 tournament
-                        {
-                            temp = ParticipantsDB.GetStandingsForThreeOf4ByScratch(db, selectedTournament.Id);
-                        }
-                        else if (selectedTournament.ThreeOutOf4 && qualifyBySquadNumber > 0) //best standings based on sqaud for  3of4 tournament
-                        {
-                            temp = ParticipantsDB.GetStandingsThreeOfFourBySquadScratch(db, qualifyBySquadNumber, selectedTournament.Id);
-                        }
-                        */
                         else if (!selectedTournament.ThreeOutOf4 && squadList.Contains(0))
                         {
                             temp = ParticipantsDB.GetStandingsForTournamentByScratch(selectedTournament.Id);
@@ -1716,15 +1689,6 @@ namespace NineTapTour.Forms
                         {
                             temp = ParticipantsDB.GetStandingsForTournamentByFilterSeriesByScratch(squadList, selectedTournament.Id);
                         }
-                        /*
-                        if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber == 0) //overall standings for a regular tournament
-                        {
-                            temp = ParticipantsDB.GetStandingsForTournamentByScratch(db, selectedTournament.Id);
-                        }
-                        else if (!selectedTournament.ThreeOutOf4 && qualifyBySquadNumber > 0) //standings based on squad for a regular tournament
-                        {
-                            temp = ParticipantsDB.GetStandingsForTournamentBySquadScratch(db, qualifyBySquadNumber, selectedTournament.Id);
-                        }*/
                     }
                     #endregion
 

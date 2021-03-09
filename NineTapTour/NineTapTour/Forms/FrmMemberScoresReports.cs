@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using NineTapTour.Database;
 using NineTapTour.Models;
 using static NineTapTour.Database.ReportHelper;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -51,7 +52,13 @@ namespace NineTapTour.Forms
 
                 temp = Calculations.Calculations.MakeTopMembersByPlacementList(temp, numMembers);
                 // print( go to print class )
-                Database.Print.PrintMemberReport(temp, selectedTournament, reportTypeNum, currentSquad, squadList, printDues);
+                int? manualCutoffLine = null;
+                if(int.TryParse(txtCutoffLine.Text, out int result))
+                {
+                    manualCutoffLine = result;
+                }
+
+                Database.Print.PrintMemberReport(temp, selectedTournament, reportTypeNum, currentSquad, squadList, printDues, manualCutoffLine);
 
                 this.Close();
             }
@@ -258,17 +265,20 @@ namespace NineTapTour.Forms
                         SaveFileDialog savefile = new SaveFileDialog();
                         savefile.Filter = "Excel Files (*.xls)|*.xls";
                         savefile.FileName = fileName;
-                        savefile.ShowDialog();
+                        DialogResult result = savefile.ShowDialog();
 
-                        fileName = savefile.FileName;
+                        if(result == DialogResult.OK)
+                        {
+                            fileName = savefile.FileName;
 
-                        xlWorkBook.SaveAs(fileName, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
-                        MessageBox.Show("Excel file created , you can find the file at: " + fileName);
+                            xlWorkBook.SaveAs(fileName, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+                            MessageBox.Show("Excel file created , you can find the file at: " + fileName);
+                        }
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Either you cancelled the file save, or the file is already created and was open when you tried to save over it.");
+                    MessageBox.Show("The file is already created and was open when you tried to save over it.");
                 }
 
                 xlWorkBook.Close(true, misValue, misValue);
@@ -311,6 +321,9 @@ namespace NineTapTour.Forms
             }
         }
 
-
+        private void TxtCutoffLine_Click(object sender, EventArgs e)
+        {
+            FormHelper.GoToFirstIndexInTextboxIfEmpty(txtCutoffLine);
+        }
     }
 }
