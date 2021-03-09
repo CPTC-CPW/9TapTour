@@ -277,18 +277,39 @@ namespace NineTapTour.Database
                 //draw Membership Paid Through Column
                 graphic.DrawString(unpaid, font, dBrush, startX + 500, startY + 173 + (i * 19));
 
-                // Print a line after 20 percent of the members have been printed.
-                if ((manualCutoff.HasValue && i == manualCutoff) || (!manualCutoff.HasValue && i == winningPlaces))
-                {
-                    int x1 = startX;
-                    int y1 = startY + 173 + (i * 19);
-                    int x2 = 800;
-                    int y2 = y1;
+                // Calculate boundaries for page
+                int pageBoundaryMin = (index + 1) * numBowlersPerPage - numBowlersPerPage;
+                int pageBoundaryMax = (index + 1) * numBowlersPerPage;
 
-                    Pen redPen = new Pen(Brushes.Red, 3);
-                    graphic.DrawLine(redPen, x1, y1, x2, y2);
+                if (manualCutoff.HasValue && i == manualCutoff)
+                {
+                    // If a manualCutoff line value is provided and needs to be drawn on the current page
+
+                    if (manualCutoff > pageBoundaryMin && manualCutoff < pageBoundaryMax)
+                    {
+                        PrintCutoffLine(graphic, startX, startY, i);
+                    }
+                }
+                // Print a line after 20 percent of the members have been printed.
+                else if (!manualCutoff.HasValue && i == winningPlaces)
+                {
+                    if (winningPlaces > pageBoundaryMin && winningPlaces < pageBoundaryMax)
+                    {
+                        PrintCutoffLine(graphic, startX, startY, i);
+                    }
                 }
             }
+        }
+
+        private static void PrintCutoffLine(Graphics graphic, int startX, int startY, int i)
+        {
+            int x1 = startX;
+            int y1 = startY + 173 + (i * 19);
+            int x2 = 800;
+            int y2 = y1;
+
+            Pen redPen = new Pen(Brushes.Red, 3);
+            graphic.DrawLine(redPen, x1, y1, x2, y2);
         }
 
         static public void PrintMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList, bool printDues, int? manualCutoff)
