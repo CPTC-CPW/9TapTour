@@ -277,15 +277,9 @@ namespace NineTapTour.Database
                 //draw Membership Paid Through Column
                 graphic.DrawString(unpaid, font, dBrush, startX + 500, startY + 173 + (i * 19));
 
-                // Calculate boundaries for page
-                int pageBoundaryMin = (index + 1) * numBowlersPerPage - numBowlersPerPage;
-                int pageBoundaryMax = (index + 1) * numBowlersPerPage;
-
                 if (manualCutoff.HasValue && i == manualCutoff)
                 {
-                    // If a manualCutoff line value is provided and needs to be drawn on the current page
-
-                    if (manualCutoff > pageBoundaryMin && manualCutoff < pageBoundaryMax)
+                    if (IsInRange(index, numBowlersPerPage, manualCutoff.Value))
                     {
                         PrintCutoffLine(graphic, startX, startY, i);
                     }
@@ -293,11 +287,26 @@ namespace NineTapTour.Database
                 // Print a line after 20 percent of the members have been printed.
                 else if (!manualCutoff.HasValue && i == winningPlaces)
                 {
-                    if (winningPlaces > pageBoundaryMin && winningPlaces < pageBoundaryMax)
+                    if (IsInRange(index, numBowlersPerPage, winningPlaces))
                     {
                         PrintCutoffLine(graphic, startX, startY, i);
                     }
                 }
+            }
+
+            // Local function to determine if cutoff/winners line needs to be drawn
+            // on the current page
+            bool IsInRange(int currIndex, int numBowlersPerPage, int placeToDrawLine)
+            {
+                // Calculate boundaries for page
+                int pageBoundaryMin = (currIndex + 1) * numBowlersPerPage - numBowlersPerPage;
+                int pageBoundaryMax = (currIndex + 1) * numBowlersPerPage;
+
+                if (placeToDrawLine > pageBoundaryMin && placeToDrawLine < pageBoundaryMax)
+                {
+                    return true;
+                }
+                return false;
             }
         }
 
