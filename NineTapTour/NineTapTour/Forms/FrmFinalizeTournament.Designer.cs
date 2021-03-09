@@ -78,6 +78,7 @@
             this.TournamentEntriesGrid.Size = new System.Drawing.Size(1240, 279);
             this.TournamentEntriesGrid.TabIndex = 0;
             this.TournamentEntriesGrid.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
+            this.TournamentEntriesGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.TournamentEntriesGrid_CellContentClick);
             this.TournamentEntriesGrid.CellMouseUp += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_OnCellMouseUp);
             this.TournamentEntriesGrid.Sorted += new System.EventHandler(this.dataGridView1_Sorted);
             // 
@@ -126,8 +127,8 @@
             this.playerTournamentHistoryGrid.Name = "playerTournamentHistoryGrid";
             this.playerTournamentHistoryGrid.ReadOnly = true;
             this.playerTournamentHistoryGrid.Size = new System.Drawing.Size(1240, 325);
-            this.playerTournamentHistoryGrid.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView2_ColumnHeaderMouseClick);
             this.playerTournamentHistoryGrid.TabIndex = 2;
+            this.playerTournamentHistoryGrid.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView2_ColumnHeaderMouseClick);
             // 
             // lblMemberNumber
             // 
