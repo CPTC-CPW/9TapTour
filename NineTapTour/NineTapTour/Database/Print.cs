@@ -67,7 +67,6 @@ namespace NineTapTour.Database
         /// </summary>
         public static void ReportPrint(List<Models.MemberScores> tempMemberList, Tournament selectedTournament, ReportType reportTypeNum, PrintPageEventArgs e, int? manualCutoff = null)
         {
-            int numToPrint = 40;
             // This var is used to draw a line after the rows of money-winning members are printed
             int winningPlaces;
             if (tempMemberList.Count() < 5)
@@ -235,34 +234,34 @@ namespace NineTapTour.Database
             }
             graphic.DrawString(" **************************************************************************************************", starFont, dBrush, startX + 1, startY + 152);
 
-            for (int i = 0; i < tempMemberList.Count - (index * 40) && i < numToPrint; i++)
+            for (int i = 0; i < tempMemberList.Count - (index * numBowlersPerPage) && i < numBowlersPerPage; i++)
             {
                 //draw number for what place they are
-                graphic.DrawString((tempMemberList[i + (index * 40)].placing).ToString(), font, dBrush, startX + 6, startY + 173 + (i * 19));
+                graphic.DrawString((tempMemberList[i + (index * numBowlersPerPage)].placing).ToString(), font, dBrush, startX + 6, startY + 173 + (i * 19));
 
                 //draw Score
-                graphic.DrawString(tempMemberList[i + (index * 40)].Score.ToString(), font, dBrush, startX + 48, startY + 173 + (i * 19));
+                graphic.DrawString(tempMemberList[i + (index * numBowlersPerPage)].Score.ToString(), font, dBrush, startX + 48, startY + 173 + (i * 19));
 
                 //draw the member number
-                graphic.DrawString(tempMemberList[i + (index * 40)].MemberId.ToString(), font, dBrush, startX + 120, startY + 173 + (i * 19));
+                graphic.DrawString(tempMemberList[i + (index * numBowlersPerPage)].MemberId.ToString(), font, dBrush, startX + 120, startY + 173 + (i * 19));
 
                 // Decides if the last date the member paid their dues prints on the page
                 string unpaid = string.Empty;
 
                 // Gets lastPaymentYear, and adds one year
-                string lastPaymentYear = tempMemberList[i + (index * 40)].LastPaymentYear;
+                string lastPaymentYear = tempMemberList[i + (index * numBowlersPerPage)].LastPaymentYear;
                 int year;
                 int.TryParse(lastPaymentYear, out year);
                 year += 1;
 
                 //handle members that don't have payment information
-                if (printDues && string.IsNullOrWhiteSpace(tempMemberList[i +(index * 40)].LastPaymentYear))
+                if (printDues && string.IsNullOrWhiteSpace(tempMemberList[i + (index * numBowlersPerPage)].LastPaymentYear))
                 {
                     unpaid = "N/A";
                 }
                 else if(printDues && lastPaymentYear.Equals("life "))
                 {
-                    unpaid = tempMemberList[i + (index * 40)].LastPaymentYear;
+                    unpaid = tempMemberList[i + (index * numBowlersPerPage)].LastPaymentYear;
                 } else if(printDues)
                 {
                     unpaid = Convert.ToString(year);
@@ -270,7 +269,7 @@ namespace NineTapTour.Database
 
                 //create name string containing lastname, firstname, and last payment
                 //Changed: instead of showing last payment every time it shows the year as the "unpaid"
-                string nameString = tempMemberList[i + (index * 40)].LastName + ", " + tempMemberList[i + (index * 40)].FirstName;
+                string nameString = tempMemberList[i + (index * numBowlersPerPage)].LastName + ", " + tempMemberList[i + (index * numBowlersPerPage)].FirstName;
 
                 //draw name string
                 graphic.DrawString(nameString, font, dBrush, startX + 200, startY + 173 + (i * 19));
@@ -285,7 +284,7 @@ namespace NineTapTour.Database
                     int y1 = startY + 173 + (i * 19);
                     int x2 = 800;
                     int y2 = y1;
-                    
+
                     Pen redPen = new Pen(Brushes.Red, 3);
                     graphic.DrawLine(redPen, x1, y1, x2, y2);
                 }
@@ -326,7 +325,7 @@ namespace NineTapTour.Database
         {
             ReportPrint(temp, selectedTournament, reportTypeNum, e, manualCutoff);
             index++;
-            e.HasMorePages = ((index * 40) < temp.Count);
+            e.HasMorePages = ((index * numBowlersPerPage) < temp.Count);
         }
 
         static List<MemberScores> temp = new List<MemberScores>();//for High score
@@ -336,6 +335,7 @@ namespace NineTapTour.Database
         static List<int> squadList;
         static bool printDues;
         static int? manualCutoff;
+        static readonly int numBowlersPerPage = 40;
         /************************************************************************/
 
         static List<Member> mems = new List<Member>();
