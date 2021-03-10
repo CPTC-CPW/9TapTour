@@ -277,7 +277,7 @@ namespace NineTapTour.Database
                 //draw Membership Paid Through Column
                 graphic.DrawString(unpaid, font, dBrush, startX + 500, startY + 173 + (i * 19));
 
-                if (manualCutoff.HasValue && i == manualCutoff)
+                if (manualCutoff.HasValue && i == manualCutoff - ((index + 1) * numBowlersPerPage - numBowlersPerPage))
                 {
                     if (IsInRange(index, numBowlersPerPage, manualCutoff.Value))
                     {
