@@ -1466,5 +1466,10 @@ namespace NineTapTour.Forms
            
             
         }
+
+        private void TournamentEntriesGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            dataGridView1_OnCellValueChanged(sender, e);
+        }
     }
 }
