@@ -285,7 +285,7 @@ namespace NineTapTour.Database
                     }
                 }
                 // Print a line after 20 percent of the members have been printed.
-                else if (!manualCutoff.HasValue && i == winningPlaces - 1) // Subtract 1 to offset for index
+                else if (!manualCutoff.HasValue && i == winningPlaces - 1 - (currPage * numBowlersPerPage - numBowlersPerPage)) // Subtract 1 to offset for index
                 {
                     if (IsInRange(index, numBowlersPerPage, winningPlaces))
                     {
