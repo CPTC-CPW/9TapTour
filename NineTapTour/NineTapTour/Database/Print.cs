@@ -276,8 +276,8 @@ namespace NineTapTour.Database
 
                 //draw Membership Paid Through Column
                 graphic.DrawString(unpaid, font, dBrush, startX + 500, startY + 173 + (i * 19));
-
-                if (manualCutoff.HasValue && i == manualCutoff)
+                int currPage = index + 1;
+                if (manualCutoff.HasValue && i == manualCutoff - 1 - (currPage * numBowlersPerPage - numBowlersPerPage))
                 {
                     if (IsInRange(index, numBowlersPerPage, manualCutoff.Value))
                     {
@@ -285,7 +285,7 @@ namespace NineTapTour.Database
                     }
                 }
                 // Print a line after 20 percent of the members have been printed.
-                else if (!manualCutoff.HasValue && i == winningPlaces)
+                else if (!manualCutoff.HasValue && i == winningPlaces - 1 - (currPage * numBowlersPerPage - numBowlersPerPage)) // Subtract 1 to offset for index
                 {
                     if (IsInRange(index, numBowlersPerPage, winningPlaces))
                     {
@@ -302,7 +302,9 @@ namespace NineTapTour.Database
                 int pageBoundaryMin = (currIndex + 1) * numBowlersPerPage - numBowlersPerPage;
                 int pageBoundaryMax = (currIndex + 1) * numBowlersPerPage;
 
-                if (placeToDrawLine > pageBoundaryMin && placeToDrawLine < pageBoundaryMax)
+                int indexToDrawLine = placeToDrawLine - 1;
+
+                if (indexToDrawLine >= pageBoundaryMin && indexToDrawLine < pageBoundaryMax)
                 {
                     return true;
                 }
@@ -313,7 +315,7 @@ namespace NineTapTour.Database
         private static void PrintCutoffLine(Graphics graphic, int startX, int startY, int i)
         {
             int x1 = startX;
-            int y1 = startY + 173 + (i * 19);
+            int y1 = startY + 173 + ((i + 1) * 19);
             int x2 = 800;
             int y2 = y1;
 
