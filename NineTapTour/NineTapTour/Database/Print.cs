@@ -304,7 +304,7 @@ namespace NineTapTour.Database
 
                 int indexToDrawLine = placeToDrawLine - 1;
 
-                if (indexToDrawLine > pageBoundaryMin && indexToDrawLine < pageBoundaryMax)
+                if (indexToDrawLine >= pageBoundaryMin && indexToDrawLine < pageBoundaryMax)
                 {
                     return true;
                 }
@@ -315,7 +315,7 @@ namespace NineTapTour.Database
         private static void PrintCutoffLine(Graphics graphic, int startX, int startY, int i)
         {
             int x1 = startX;
-            int y1 = startY + 173 + (i * 19);
+            int y1 = startY + 173 + ((i + 1) * 19);
             int x2 = 800;
             int y2 = y1;
 
