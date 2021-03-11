@@ -53,7 +53,6 @@ namespace NineTapTour.Forms
             }
 
             RegionID = ((FrmMain)MdiParent).RegionID;
-            List<Member> ListOfMembers = MemberDB.GetMemberList(RegionID);
             UpdateMemberInfo();
         }
         
@@ -398,8 +397,12 @@ namespace NineTapTour.Forms
             {
                 lblAverageValidation.Visible = true;
                 txtAverage.Clear();
-                //txtAverage.BackColor = Color.LightPink;
+                txtAverage.BackColor = Color.LightPink;
                 valid = false;
+            }
+            else
+            {
+                txtAverage.BackColor = SystemColors.Control;
             }
 
             // validate lastname textbox
@@ -407,8 +410,12 @@ namespace NineTapTour.Forms
             {
                 lblLastNameValidation.Visible = true;
                 txtLastName.Clear();
-                //txtLastName.BackColor = Color.LightPink;
+                txtLastName.BackColor = Color.LightPink;
                 valid = false;
+            }
+            else
+            {
+                txtLastName.BackColor = SystemColors.Control;
             }
 
             // validate firstname textbox
@@ -416,11 +423,15 @@ namespace NineTapTour.Forms
             {
                 lblFirstNameValidation.Visible = true;
                 txtFirstName.Clear();
-                //txtFirstName.BackColor = Color.LightPink;
+                txtFirstName.BackColor = Color.LightPink;
                 valid = false;
             }
+            else
+            {
+                txtFirstName.BackColor = SystemColors.Control;
+            }
 
-			// validate dateJoined textbox
+            // validate dateJoined textbox
             if (!FormHelper.IsDateTimeValid(txtDateJoined.Text))
             {
                 lblDateJoinedValidation.Visible = true;
@@ -432,8 +443,12 @@ namespace NineTapTour.Forms
             if (!FormHelper.IsDateTimeValid(txtDOB.Text))
                 {
                 lblDOBValidation.Visible = true;
-                //txtDOB.BackColor = Color.LightPink;
+                txtDOB.BackColor = Color.LightPink;
                 valid = false;
+            }
+            else
+            {
+                txtDOB.BackColor = SystemColors.Control;
             }
 
             return valid;
@@ -640,7 +655,7 @@ namespace NineTapTour.Forms
 #if DEBUG
                     MessageBox.Show("Member saved");
 #endif
-                    ((FrmMain)MdiParent)._membersList =
+                    ((FrmMain)MdiParent).MembersList =
                         MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
                     UpdateMemberInfo();
                 }
@@ -849,7 +864,7 @@ namespace NineTapTour.Forms
         /// </summary>
         private void btnPrintActive_Click(object sender, EventArgs e)
         {
-            Print.printByActiveMembers(TournamentDB.GetAllActiveMembers());
+            Print.PrintByActiveMembers(TournamentDB.GetAllActiveMembers());
         }
 
         /// <summary>
@@ -932,7 +947,7 @@ namespace NineTapTour.Forms
         /// /// <param name="e"></param>
         private void FrmMemberData_Leave(object sender, EventArgs e)
         {
-            ((FrmMain)MdiParent).currFrmMemberData = this;
+            ((FrmMain)MdiParent).CurrFrmMemberData = this;
         }
 
         /// <summary>
@@ -1013,10 +1028,10 @@ namespace NineTapTour.Forms
         /// <returns></returns>
         private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
         {
-            List<ExcelRow> returnMe = new List<ExcelRow>();        
+            List<ExcelRow> returnMe = new List<ExcelRow>();
             Excel.Application xlApp = new Excel.Application();
 
-            Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "", 
+            Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "",
                 true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
 
             Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
@@ -1027,18 +1042,9 @@ namespace NineTapTour.Forms
             string playerLastName = "";
             string firstAndMiddle = "";
             string playerFullName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
-            if (playerFullName.Contains(","))
-            {
-                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
-                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
-            }
-            // Checks to see if a period instead of a comma was accidentally placed in member name. (Rob's Request)
-            else if (playerFullName.Contains("."))
-            {
-                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf("."));
-                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(".") + 2);
-            }
-                        
+            
+            SplitName(ref playerLastName, ref firstAndMiddle, playerFullName);
+
             string[] first0middle1 = firstAndMiddle.Split(' ');
             int playerOrgAVG;
 
@@ -1047,7 +1053,7 @@ namespace NineTapTour.Forms
                 PlayerFinalFirstAndMiddle[i] = first0middle1[0];
             }
 
-            if ( Int32.TryParse( ( ( range.Cells[1, 10] as Excel.Range ).Value2 ), out int result ) )
+            if (Int32.TryParse(((range.Cells[1, 10] as Excel.Range).Value2), out int result))
             {
                 playerOrgAVG = result;
             }
@@ -1058,8 +1064,8 @@ namespace NineTapTour.Forms
 
             String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
             bool isRegionHawaii = (cbHaw.Checked); // checks to see if Region is Hawaii
-            
-            if(isRegionHawaii) 
+
+            if (isRegionHawaii)
             {
                 playerNumber = Regex.Replace(playerNumber, "[^0-9]", "");  // strip the member number to straight number
             }
@@ -1071,22 +1077,59 @@ namespace NineTapTour.Forms
             // used regex to remove any non numeric expressions from player number be it a letter or a - 
             if (playerNumberAsInt != 0)
             {
-                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumber, "[^0-9]", "")); 
+                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumber, "[^0-9]", ""));
             }
             else if (playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
             {
                 playerNumberAfterSplit = playerNumber.Split('/');
-                playerNumberAsInt = Convert.ToInt32( Regex.Replace(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1] , "[^0-9]", ""));
+                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1], "[^0-9]", ""));
             }
 
+            ProcessExcel(returnMe, xlWorkBook, ref xlWorkSheet, ref range, PlayerFinalFirstAndMiddle, playerLastName, playerOrgAVG, isRegionHawaii);
+            
+            xlWorkBook.Close(0);
+            xlApp.Quit();
+            Marshal.ReleaseComObject(range);
+            Marshal.ReleaseComObject(xlWorkSheet);
+            Marshal.ReleaseComObject(xlWorkBook);
+            Marshal.ReleaseComObject(xlApp);
+            System.Diagnostics.Process[] process = System.Diagnostics.Process.GetProcessesByName("Excel");
+
+            foreach (System.Diagnostics.Process p in process)
+            {
+                try
+                {
+                    p.Kill();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.ToString());
+                }
+            }
+            return returnMe;
+        }
+
+        /// <summary>
+        /// Processes Excel by rows into working data
+        /// </summary>
+        /// <param name="returnMe"></param>
+        /// <param name="xlWorkBook"></param>
+        /// <param name="xlWorkSheet"></param>
+        /// <param name="range"></param>
+        /// <param name="PlayerFinalFirstAndMiddle"></param>
+        /// <param name="playerLastName"></param>
+        /// <param name="playerOrgAVG"></param>
+        /// <param name="isRegionHawaii"></param>
+        private void ProcessExcel(List<ExcelRow> returnMe, Excel.Workbook xlWorkBook, ref Excel.Worksheet xlWorkSheet, ref Excel.Range range, string[] PlayerFinalFirstAndMiddle, string playerLastName, int playerOrgAVG, bool isRegionHawaii)
+        {
             for (int sheetNum = 1; sheetNum <= xlWorkBook.Worksheets.Count; sheetNum++)
             {
                 xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
                 range = xlWorkSheet.UsedRange;
                 double noGameMoneyWon = 0;
                 int rowNum;
-                
-                if(isRegionHawaii)
+
+                if (isRegionHawaii)
                 {
                     rowNum = 4;
                 }
@@ -1116,7 +1159,7 @@ namespace NineTapTour.Forms
                             continue;
                         }
                     }
-                    
+
                     if ( // if no date or cash then continue to the next line
                         string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 2] as Excel.Range).Value2)) &&
                         string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 15] as Excel.Range).Value2))
@@ -1125,7 +1168,7 @@ namespace NineTapTour.Forms
                         continue;
                     }
 
-                    if( // if the four games have no data AKA no games bowled and there is a finish place then add the cash to moneywon
+                    if ( // if the four games have no data AKA no games bowled and there is a finish place then add the cash to moneywon
                         string.IsNullOrWhiteSpace(game1) &&
                         string.IsNullOrWhiteSpace(game2) &&
                         string.IsNullOrWhiteSpace(game3) &&
@@ -1136,7 +1179,7 @@ namespace NineTapTour.Forms
                         noGameMoneyWon += Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
                         continue;
                     }
-               
+
 
                     GameHistory.gameRegionID = RegionID;
                     temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
@@ -1144,10 +1187,10 @@ namespace NineTapTour.Forms
                     temp.PlayerLastName = playerLastName;
                     temp.PlayerOrginalAVG = playerOrgAVG;
                     temp.PlayerNumber = currentMem.Number;
-                    
+
                     playerH.MemberNumber = currentMem.Number;
                     playerH.regionID = RegionID;
-                    
+
                     if (currentMem.Number == temp.PlayerNumber)
                     {//only process file if they have been added as a member first 
                         try
@@ -1292,7 +1335,7 @@ namespace NineTapTour.Forms
                         {
                             //THIS WILL CATCH SUBTOTALS THAT MAY HAVE BEEN ADDED ON LINE 46 OF THE EXCEL FILES
                             //only grab the money earned from tournament if they placed in tournament
-                            if (temp.FinPPHG.ToString() != "") 
+                            if (temp.FinPPHG.ToString() != "")
                             {
                                 temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
                                 GameHistory.MoneyWon = Convert.ToDecimal(temp.Cash);
@@ -1324,30 +1367,31 @@ namespace NineTapTour.Forms
                         returnMe.Add(temp);
                         noGameMoneyWon = 0;
                     }
-                  
-                }
-               
-            }
-            xlWorkBook.Close(0);
-            xlApp.Quit();
-            Marshal.ReleaseComObject(range);
-            Marshal.ReleaseComObject(xlWorkSheet);
-            Marshal.ReleaseComObject(xlWorkBook);
-            Marshal.ReleaseComObject(xlApp);
-            System.Diagnostics.Process[] process = System.Diagnostics.Process.GetProcessesByName("Excel");
 
-            foreach (System.Diagnostics.Process p in process)
-            {
-                try
-                {
-                    p.Kill();
                 }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.ToString());
-                }
+
             }
-            return returnMe;
+        }
+
+        /// <summary>
+        /// Takes the imported excel row for playerFullName and splits it into playerLastName and firstAndMiddle strings
+        /// </summary>
+        /// <param name="playerLastName"></param>
+        /// <param name="firstAndMiddle"></param>
+        /// <param name="playerFullName"></param>
+        private static void SplitName(ref string playerLastName, ref string firstAndMiddle, string playerFullName)
+        {
+            if (playerFullName.Contains(","))
+            {
+                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
+                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
+            }
+            // Checks to see if a period instead of a comma was accidentally placed in member name. (Rob's Request)
+            else if (playerFullName.Contains("."))
+            {
+                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf("."));
+                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(".") + 2);
+            }
         }
 
         /// <summary>

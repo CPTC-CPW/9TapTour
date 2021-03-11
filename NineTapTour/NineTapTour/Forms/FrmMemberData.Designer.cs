@@ -144,7 +144,7 @@
             // 
             // txtLastName
             // 
-            this.txtLastName.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtLastName.BackColor = System.Drawing.SystemColors.Control;
             this.txtLastName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtLastName.Location = new System.Drawing.Point(4, 31);
             this.txtLastName.MaxLength = 50;
@@ -156,7 +156,7 @@
             // 
             // txtFirstName
             // 
-            this.txtFirstName.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtFirstName.BackColor = System.Drawing.SystemColors.Control;
             this.txtFirstName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtFirstName.Location = new System.Drawing.Point(238, 31);
             this.txtFirstName.MaxLength = 50;
@@ -167,7 +167,7 @@
             // 
             // txtMiddleInitial
             // 
-            this.txtMiddleInitial.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtMiddleInitial.BackColor = System.Drawing.SystemColors.Control;
             this.txtMiddleInitial.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMiddleInitial.Location = new System.Drawing.Point(488, 31);
             this.txtMiddleInitial.MaxLength = 10;
@@ -272,7 +272,7 @@
             // 
             // txtDOB
             // 
-            this.txtDOB.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtDOB.BackColor = System.Drawing.SystemColors.Control;
             this.txtDOB.Location = new System.Drawing.Point(25, 41);
             this.txtDOB.Name = "txtDOB";
             this.txtDOB.Size = new System.Drawing.Size(109, 23);
@@ -341,6 +341,7 @@
             // 
             // txtRejoinDate
             // 
+            this.txtRejoinDate.BackColor = System.Drawing.SystemColors.Control;
             this.txtRejoinDate.Location = new System.Drawing.Point(344, 181);
             this.txtRejoinDate.Mask = "00/00/0000";
             this.txtRejoinDate.Name = "txtRejoinDate";
@@ -351,6 +352,7 @@
             // 
             // txtDateJoined
             // 
+            this.txtDateJoined.BackColor = System.Drawing.SystemColors.Control;
             this.txtDateJoined.Location = new System.Drawing.Point(344, 111);
             this.txtDateJoined.Mask = "00/00/0000";
             this.txtDateJoined.Name = "txtDateJoined";
@@ -902,6 +904,7 @@
             // 
             // txtLastPayment
             // 
+            this.txtLastPayment.BackColor = System.Drawing.SystemColors.Control;
             this.txtLastPayment.Location = new System.Drawing.Point(127, 23);
             this.txtLastPayment.Mask = "00/00/0000";
             this.txtLastPayment.Name = "txtLastPayment";
@@ -976,6 +979,7 @@
             // 
             // txtLastBowled
             // 
+            this.txtLastBowled.BackColor = System.Drawing.SystemColors.Control;
             this.txtLastBowled.Location = new System.Drawing.Point(375, 118);
             this.txtLastBowled.Mask = "00/00/0000";
             this.txtLastBowled.Name = "txtLastBowled";
@@ -996,7 +1000,7 @@
             // 
             // txt30GameAvg
             // 
-            this.txt30GameAvg.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txt30GameAvg.BackColor = System.Drawing.SystemColors.Control;
             this.txt30GameAvg.Enabled = false;
             this.txt30GameAvg.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt30GameAvg.Location = new System.Drawing.Point(150, 41);
@@ -1090,7 +1094,7 @@
             // 
             // txtHandicap
             // 
-            this.txtHandicap.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtHandicap.BackColor = System.Drawing.SystemColors.Control;
             this.txtHandicap.Enabled = false;
             this.txtHandicap.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtHandicap.Location = new System.Drawing.Point(245, 41);
@@ -1103,7 +1107,7 @@
             // 
             // txtBonus
             // 
-            this.txtBonus.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtBonus.BackColor = System.Drawing.SystemColors.Control;
             this.txtBonus.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtBonus.Location = new System.Drawing.Point(340, 41);
             this.txtBonus.MaxLength = 20;
@@ -1213,6 +1217,7 @@
             // 
             // txtPaidTo
             // 
+            this.txtPaidTo.BackColor = System.Drawing.SystemColors.Control;
             this.txtPaidTo.Enabled = false;
             this.txtPaidTo.Location = new System.Drawing.Point(126, 47);
             this.txtPaidTo.Name = "txtPaidTo";

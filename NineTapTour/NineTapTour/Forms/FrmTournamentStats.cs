@@ -34,10 +34,10 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void TournamentStats_Load(object sender, EventArgs e)
         {
-            if (!frmMemberScores.selectedTournament.ThreeOutOf4)
+            if (!FrmMemberScores.selectedTournament.ThreeOutOf4)
             {
                 Tournament selectedTournament = new Tournament();
-                selectedTournament = frmMemberScores.selectedTournament;
+                selectedTournament = FrmMemberScores.selectedTournament;
                 lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
                 // Grabs a list of TournamentStatsList from the database
@@ -50,7 +50,7 @@ namespace NineTapTour.Forms
             else
             {
                 Tournament selectedTournament = new Tournament();
-                selectedTournament = frmMemberScores.selectedTournament;
+                selectedTournament = FrmMemberScores.selectedTournament;
                 lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
                 List<TournamentStatsList> statsList =

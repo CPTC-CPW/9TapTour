@@ -200,21 +200,26 @@ namespace NineTapTour.Calculations
         /// <param name="minLosses">minimum number of losses to determine if bonus is earned</param>
         private static bool DoesGetBonus(List<PlayerHistory> latestGames, int currTourneyEntryCount, int minLosses)
         {
+            // Introduce local const variable to represent the multiple of three loses
+            // For if player gets a bonus
+            const int thirdLoss = 3;
+            const int lastIndex = -1;
+
             // find first index of a tournament with a cashed game
             int lastCashedTourneyIndex = FindLastCashedTourneyIndex(latestGames);
 
             // did not lose any of the latest games with a 3rd loss in a row
-            if (lastCashedTourneyIndex == -1)
+            if (lastCashedTourneyIndex == lastIndex)
             {
-                return latestGames.Count % 3 + currTourneyEntryCount >= minLosses;
+                return latestGames.Count % thirdLoss + currTourneyEntryCount >= minLosses;
             }
 
             // is the multiple of a 3rd loss in a row after a win
-            return lastCashedTourneyIndex % 3 + currTourneyEntryCount >= minLosses;
+            return lastCashedTourneyIndex % thirdLoss + currTourneyEntryCount >= minLosses;
         }
 
         /// <summary>
-        /// Finds the first index of the last tournament where the player cashed. Returns -1 if not found.
+        /// Finds the first index of the last tournament where the player cashed. Returns -1 if not found. 
         /// </summary>
         /// <param name="latestGames">Games to find last cashed tourney in</param>
         /// <returns>First index of last cashed tourney. -1 if not found</returns>
@@ -274,7 +279,18 @@ namespace NineTapTour.Calculations
             // Makes copy so original list won't be affected
             tempListOfMemberScores = tempListOfMemberScores.ToList();
 
-            // Removes duplicate members
+            GiveMembersPlaceStandings(tempListOfMemberScores);
+
+            // Returns the edited list of members
+            return tempListOfMemberScores;
+        }
+
+        /// <summary>
+        /// Modifies the original list and gives bowlers their place standings.
+        /// </summary>
+        /// <param name="tempListOfMemberScores"></param>
+        private static void GiveMembersPlaceStandings(List<MemberScores> tempListOfMemberScores)
+        {
             RemoveDuplicateBowlers(tempListOfMemberScores);
 
             // The first member ordered by score will will always score 1st place
@@ -298,9 +314,6 @@ namespace NineTapTour.Calculations
                 // Place is still counted if members tie
                 place++;
             }
-
-            // Returns the edited list of members
-            return tempListOfMemberScores;
         }
 
         /// <summary>

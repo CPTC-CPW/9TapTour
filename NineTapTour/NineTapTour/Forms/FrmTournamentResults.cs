@@ -15,6 +15,7 @@ using NineTapTour.Models;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections;
 using System.Text.RegularExpressions;
+using NineTapTour.Models.ViewModels;
 
 namespace NineTapTour.Forms
 {
@@ -32,7 +33,7 @@ namespace NineTapTour.Forms
 
         DataTable dt = new DataTable(); // Instantiate Data Table
         NineTapDb db = new NineTapDb(); // Get access to database
-        Tournament tourny = frmMemberScores.selectedTournament; // Get Tournament
+        Tournament tourny = FrmMemberScores.selectedTournament; // Get Tournament
         static int totalTournamentEntries;  // Total number of entries for all squads in tournament
         static int clientInput; // how many winners the client wants to see
         List<ExcelMember> clientRequested = new List<ExcelMember>();
@@ -237,36 +238,10 @@ namespace NineTapTour.Forms
         private List<ExcelMember> BuildWinnersList()
         {
             List<ExcelMember> tournyBowlers = new List<ExcelMember>();
-
-            // Get participant/member/game info to populate DataTable
-            var bowlers = (from p in db.Participants
-                           join m in db.Members on p.Member.Id equals m.Id
-                           join g in db.Games on p.Game.Id equals g.Id
-                           join t in db.Tournaments on p.Tournament.Id equals t.Id
-                           let memberNumber = m.Number
-                           let name = m.FirstName + " " + m.LastName
-                           where tourny.Id == p.Tournament.Id
-                           select new
-                           {
-                               g.PlaceStanding,
-                               memberNumber,
-                               name,
-                               g.Handicap,
-                               g.Bonus,
-                               g.MoneyWon,
-                               g.SidePot,
-                               g.Id,
-                               g.Game1,
-                               g.Game2,
-                               g.Game3,
-                               g.Game4,
-                               g.IsComp
-                           }).ToList();
+            List<WinnerListMemberViewModel> bowlers = TournamentDB.GetWinnerListMemberData(tourny.Id);
 
             totalTournamentEntries = bowlers.Count();
 
-            // Use each anonymous type (bowler) to create a new ExcelMember object
-            // and add them to the winners list
             foreach (var b in bowlers)
             {
                 if (b.IsComp)
@@ -275,13 +250,13 @@ namespace NineTapTour.Forms
                 }
 
                 ExcelMember m = new ExcelMember();
-                m.MemberNumber = b.memberNumber;
-                m.Name = b.name;
+                m.MemberNumber = b.MemberNumber;
+                m.Name = b.BowlerName;
                 m.Handicap = Convert.ToInt32(b.Handicap);
                 m.Bonus = Convert.ToInt32(b.Bonus);
                 m.MoneyWon = b.MoneyWon;
                 m.SidePot = b.SidePot;
-                m.GameId = b.Id;
+                m.GameId = b.GameId;
                 m.Game1Score = Convert.ToInt32(b.Game1);
                 m.Game2Score = Convert.ToInt32(b.Game2);
                 m.Game3Score = Convert.ToInt32(b.Game3);

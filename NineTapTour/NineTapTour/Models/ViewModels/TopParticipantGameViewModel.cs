@@ -32,8 +32,6 @@ namespace NineTapTour.Models.ViewModels
             GameID = gameID;
             Squad = squad;
             HandicapScore = this.ScratchTotal + (this.Handicap * 4) + (this.Bonus * 4); //TODO: implement flexibile num on ( 4 )
-            SetHandicapTotalToString();
-            SetScratchTotalToString();
         }
 
         #region Properties
@@ -54,34 +52,35 @@ namespace NineTapTour.Models.ViewModels
         public int Bonus { get; set; }
         public int GameID { get; set; }
         public int Squad { get; set; }
-        public string ScratchTotalToString { get; set; }
-        public string HandicapTotalToString { get; set; }      
+        public string ScratchTotalToString
+        {
+            get
+            {
+                if (FrmMemberScores.selectedTournament.ThreeOutOf4)
+                {
+                    return $"{this.Top3ScratchScore,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
+                }
+                else
+                {
+                    return $"{this.ScratchTotal,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
+                }
+            }
+        }
+
+        public string HandicapTotalToString
+        {
+            get
+            {
+                if (FrmMemberScores.selectedTournament.ThreeOutOf4)
+                {
+                    return $"{this.Top3HandiScores,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
+                }
+                else
+                {
+                    return $"{this.HandicapScore,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
+                }
+            }
+        }      
         #endregion
-
-        public void SetScratchTotalToString()
-        {
-            if (frmMemberScores.selectedTournament.ThreeOutOf4)
-            {
-                this.ScratchTotalToString = $"{this.Top3ScratchScore,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
-            }
-            else
-            {
-                this.ScratchTotalToString = $"{this.ScratchTotal,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
-            }
-            
-        }
-
-        public void SetHandicapTotalToString()
-        {
-            if (frmMemberScores.selectedTournament.ThreeOutOf4)
-            {
-                this.HandicapTotalToString = $"{this.Top3HandiScores,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
-            }
-            else
-            {
-                this.HandicapTotalToString = $"{this.HandicapScore,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
-            }
-                
-        }
     }
 }

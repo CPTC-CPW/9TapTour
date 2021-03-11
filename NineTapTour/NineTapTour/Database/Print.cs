@@ -17,8 +17,8 @@ namespace NineTapTour.Database
         public static void SinglePrint(MemberPrintObj mem, PrintPageEventArgs e)
         {
             //get the total handicap to display on the card when printed
-            int totalHandicap = mem.Handicap * 4;
-
+            int AmtOfTimesHandicapApplied = 4;
+            int totalHandicap = mem.Handicap * AmtOfTimesHandicapApplied; 
 
             //This is what prints the data
             Graphics graphic = e.Graphics;
@@ -42,12 +42,12 @@ namespace NineTapTour.Database
             for (int i = 1; i <= 5; i++)
             {
                 //this prints the handicap 4 times.
-                if (i <= 4)
+                if (i <= AmtOfTimesHandicapApplied)
                 {
                     graphic.DrawString(mem.Handicap.ToString(), font, dBrush, startX + 540, startY + 31 + i * offset);
                 }
                 //this prints the total handicap after it prints the handicap 4 separate times
-                if (i == 5)
+                if (i == AmtOfTimesHandicapApplied + 1)
                 {
                     graphic.DrawString(totalHandicap.ToString(), font, dBrush, startX + 540, (startY + 50 + i * offset) - 1);
                 }
@@ -62,17 +62,11 @@ namespace NineTapTour.Database
             graphic.DrawString(mem.Number.ToString(), font, dBrush, startX + 80, startY + 238);
         }
 
-        /************************************************************************
-        For Printing the Report Sections
-        ************************************************************************/
-        public static void ReportPrint(List<Models.MemberScores> tempMemberList, Tournament selectedTournament, ReportType reportTypeNum, PrintPageEventArgs e)
+        /// <summary>
+        /// For Printing the Report Sections
+        /// </summary>
+        public static void ReportPrint(List<Models.MemberScores> tempMemberList, Tournament selectedTournament, ReportType reportTypeNum, PrintPageEventArgs e, int? manualCutoff = null)
         {
-            // TODO: Need to refactor this.
-            // Need to programatically add the 'cutoff line' above the first member with zero earnings
-            // (after the last member that earned money)
-
-
-            int numToPrint = 40;
             // This var is used to draw a line after the rows of money-winning members are printed
             int winningPlaces;
             if (tempMemberList.Count() < 5)
@@ -85,7 +79,6 @@ namespace NineTapTour.Database
             }
             //This is what prints the data
             Graphics graphic = e.Graphics;
-            Pen blackPen = new Pen(Brushes.Black, 3);
 
             //default font to use, should use a mono space font so the spaces line up.
             Font font = new Font("Arial", 16, FontStyle.Bold, GraphicsUnit.Pixel);
@@ -241,34 +234,34 @@ namespace NineTapTour.Database
             }
             graphic.DrawString(" **************************************************************************************************", starFont, dBrush, startX + 1, startY + 152);
 
-            for (int i = 0; i < tempMemberList.Count - (index * 40) && i < numToPrint; i++)
+            for (int i = 0; i < tempMemberList.Count - (index * numBowlersPerPage) && i < numBowlersPerPage; i++)
             {
                 //draw number for what place they are
-                graphic.DrawString((tempMemberList[i + (index * 40)].placing).ToString(), font, dBrush, startX + 6, startY + 173 + (i * 19));
+                graphic.DrawString((tempMemberList[i + (index * numBowlersPerPage)].placing).ToString(), font, dBrush, startX + 6, startY + 173 + (i * 19));
 
                 //draw Score
-                graphic.DrawString(tempMemberList[i + (index * 40)].Score.ToString(), font, dBrush, startX + 48, startY + 173 + (i * 19));
+                graphic.DrawString(tempMemberList[i + (index * numBowlersPerPage)].Score.ToString(), font, dBrush, startX + 48, startY + 173 + (i * 19));
 
                 //draw the member number
-                graphic.DrawString(tempMemberList[i + (index * 40)].MemberId.ToString(), font, dBrush, startX + 120, startY + 173 + (i * 19));
+                graphic.DrawString(tempMemberList[i + (index * numBowlersPerPage)].MemberId.ToString(), font, dBrush, startX + 120, startY + 173 + (i * 19));
 
                 // Decides if the last date the member paid their dues prints on the page
                 string unpaid = string.Empty;
 
                 // Gets lastPaymentYear, and adds one year
-                string lastPaymentYear = tempMemberList[i + (index * 40)].LastPaymentYear;
+                string lastPaymentYear = tempMemberList[i + (index * numBowlersPerPage)].LastPaymentYear;
                 int year;
                 int.TryParse(lastPaymentYear, out year);
                 year += 1;
 
                 //handle members that don't have payment information
-                if (printDues && string.IsNullOrWhiteSpace(tempMemberList[i +(index * 40)].LastPaymentYear))
+                if (printDues && string.IsNullOrWhiteSpace(tempMemberList[i + (index * numBowlersPerPage)].LastPaymentYear))
                 {
                     unpaid = "N/A";
                 }
                 else if(printDues && lastPaymentYear.Equals("life "))
                 {
-                    unpaid = tempMemberList[i + (index * 40)].LastPaymentYear;
+                    unpaid = tempMemberList[i + (index * numBowlersPerPage)].LastPaymentYear;
                 } else if(printDues)
                 {
                     unpaid = Convert.ToString(year);
@@ -276,28 +269,61 @@ namespace NineTapTour.Database
 
                 //create name string containing lastname, firstname, and last payment
                 //Changed: instead of showing last payment every time it shows the year as the "unpaid"
-                string nameString = tempMemberList[i + (index * 40)].LastName + ", " + tempMemberList[i + (index * 40)].FirstName;
+                string nameString = tempMemberList[i + (index * numBowlersPerPage)].LastName + ", " + tempMemberList[i + (index * numBowlersPerPage)].FirstName;
 
                 //draw name string
                 graphic.DrawString(nameString, font, dBrush, startX + 200, startY + 173 + (i * 19));
 
                 //draw Membership Paid Through Column
                 graphic.DrawString(unpaid, font, dBrush, startX + 500, startY + 173 + (i * 19));
-
-                // Print a line of stars after 20 percent of the members have been printed.
-                if (i == winningPlaces)
+                int currPage = index + 1;
+                if (manualCutoff.HasValue && i == manualCutoff - 1 - (currPage * numBowlersPerPage - numBowlersPerPage))
                 {
-                    int x1 = startX;
-                    int y1 = startY + 173 + (i * 19);
-                    int x2 = 800;
-                    int y2 = y1;
-                    //graphic.DrawString("*********************************", font, dBrush, startX + 6, startY + 173 + (i * 19));
-                    graphic.DrawLine(blackPen, x1, y1, x2, y2);
+                    if (IsInRange(index, numBowlersPerPage, manualCutoff.Value))
+                    {
+                        PrintCutoffLine(graphic, startX, startY, i);
+                    }
                 }
+                // Print a line after 20 percent of the members have been printed.
+                else if (!manualCutoff.HasValue && i == winningPlaces - 1 - (currPage * numBowlersPerPage - numBowlersPerPage)) // Subtract 1 to offset for index
+                {
+                    if (IsInRange(index, numBowlersPerPage, winningPlaces))
+                    {
+                        PrintCutoffLine(graphic, startX, startY, i);
+                    }
+                }
+            }
+
+            // Local function to determine if cutoff/winners line needs to be drawn
+            // on the current page
+            bool IsInRange(int currIndex, int numBowlersPerPage, int placeToDrawLine)
+            {
+                // Calculate boundaries for page
+                int pageBoundaryMin = (currIndex + 1) * numBowlersPerPage - numBowlersPerPage;
+                int pageBoundaryMax = (currIndex + 1) * numBowlersPerPage;
+
+                int indexToDrawLine = placeToDrawLine - 1;
+
+                if (indexToDrawLine >= pageBoundaryMin && indexToDrawLine < pageBoundaryMax)
+                {
+                    return true;
+                }
+                return false;
             }
         }
 
-        static public void printMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList, bool printDues)
+        private static void PrintCutoffLine(Graphics graphic, int startX, int startY, int i)
+        {
+            int x1 = startX;
+            int y1 = startY + 173 + ((i + 1) * 19);
+            int x2 = 800;
+            int y2 = y1;
+
+            Pen redPen = new Pen(Brushes.Red, 3);
+            graphic.DrawLine(redPen, x1, y1, x2, y2);
+        }
+
+        static public void PrintMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList, bool printDues, int? manualCutoff)
         {
             Print.temp = temp;
             Print.selectedTournament = selectedTournament;
@@ -305,6 +331,7 @@ namespace NineTapTour.Database
             Print.currentSquad = currentSquad;
             Print.squadList = squadList;
             Print.printDues = printDues;
+            Print.manualCutoff = manualCutoff;
 
             // Set up components for printing
             PrintDialog printDialog = new PrintDialog();
@@ -313,7 +340,7 @@ namespace NineTapTour.Database
             printDialog.Document = printDocument;
 
             //add the event handler that will do the printing
-            printDocument.PrintPage += new PrintPageEventHandler(printReport);
+            printDocument.PrintPage += new PrintPageEventHandler(PrintReport);
 
             if (temp.Count > 0)
             {
@@ -326,11 +353,11 @@ namespace NineTapTour.Database
             index = 0;
         }
 
-        static private void printReport(object sender, PrintPageEventArgs e)
+        static private void PrintReport(object sender, PrintPageEventArgs e)
         {
-            ReportPrint(temp, selectedTournament, reportTypeNum, e);
+            ReportPrint(temp, selectedTournament, reportTypeNum, e, manualCutoff);
             index++;
-            e.HasMorePages = ((index * 40) < temp.Count);
+            e.HasMorePages = ((index * numBowlersPerPage) < temp.Count);
         }
 
         static List<MemberScores> temp = new List<MemberScores>();//for High score
@@ -339,13 +366,15 @@ namespace NineTapTour.Database
         static int currentSquad;
         static List<int> squadList;
         static bool printDues;
+        static int? manualCutoff;
+        static readonly int numBowlersPerPage = 40;
         /************************************************************************/
 
         static List<Member> mems = new List<Member>();
         static int index = 0;
 
         // This is for the printbytourney button
-        static public void printByTour(Tournament tour)
+        static public void PrintByTour(Tournament tour)
         {
             //Set up components for printing
             PrintDialog printDialog = new PrintDialog();
@@ -354,7 +383,7 @@ namespace NineTapTour.Database
             printDialog.Document = printDocument;
 
             //add the event handler that will do the printing
-            printDocument.PrintPage += new PrintPageEventHandler(printTourRecaps);
+            printDocument.PrintPage += new PrintPageEventHandler(PrintTourRecaps);
             mems = TournamentDB.GetUniqueTourMembers(tour);
 
             if (mems.Count > 0)
@@ -394,7 +423,7 @@ namespace NineTapTour.Database
         }
         */
 
-        static public void printAllMembers()
+        static public void PrintAllMembers()
         {
             // Set up components for printing
             PrintDialog printDialog = new PrintDialog();
@@ -403,7 +432,7 @@ namespace NineTapTour.Database
             printDialog.Document = printDocument;
 
             //add the event handler that will do the printing
-            printDocument.PrintPage += new PrintPageEventHandler(printTourRecaps);
+            printDocument.PrintPage += new PrintPageEventHandler(PrintTourRecaps);
 
             using (NineTapDb db = new NineTapDb())
             {
@@ -424,7 +453,7 @@ namespace NineTapTour.Database
             index = 0;
         }
 
-        static public void printByMemberList(List<Member> members)
+        static public void PrintByMemberList(List<Member> members)
         {
             //Set up components for printing
             PrintDialog printDialog = new PrintDialog();
@@ -433,7 +462,7 @@ namespace NineTapTour.Database
             printDialog.Document = printDocument;
 
             //add the event handler that will do the printing
-            printDocument.PrintPage += new PrintPageEventHandler(printTourRecaps);
+            printDocument.PrintPage += new PrintPageEventHandler(PrintTourRecaps);
 
             mems = members;
 
@@ -448,13 +477,13 @@ namespace NineTapTour.Database
             index = 0;
         }
 
-        static public void printByActiveMembers(List<Member> members)
+        static public void PrintByActiveMembers(List<Member> members)
         {
             PrintDialog printDialog = new PrintDialog();
             PrintDocument printDocument = new PrintDocument();
             printDialog.Document = printDocument;
 
-            printDocument.PrintPage += new PrintPageEventHandler(printActiveRecaps);
+            printDocument.PrintPage += new PrintPageEventHandler(PrintActiveRecaps);
             mems = members;
 
             if (mems.Count > 0)
@@ -474,14 +503,14 @@ namespace NineTapTour.Database
             index = 0;
         }
 
-        static private void printActiveRecaps(object sender, PrintPageEventArgs e)
+        static private void PrintActiveRecaps(object sender, PrintPageEventArgs e)
         {
             SinglePrint(new MemberPrintObj(mems[index]), e);
             index++;
             e.HasMorePages = (index < mems.Count);
         }
 
-        static private void printTourRecaps(object sender, PrintPageEventArgs e)
+        static private void PrintTourRecaps(object sender, PrintPageEventArgs e)
         {
             SinglePrint(new MemberPrintObj(mems[index]), e);
             index++;

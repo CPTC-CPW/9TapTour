@@ -12,11 +12,11 @@ namespace NineTapTour.Forms
 {
     public partial class FrmMain : Form
     {
-        public IOrderedEnumerable<Member> _membersList { get; set; }
-        public List<Tournament> _tournamentList { get; set; }
-        public System.Windows.Forms.ToolStripMenuItem activeItem;
-        public FrmMemberData currFrmMemberData { get; set; }
-        public frmMemberScores currfrmScoresdata { get; set; }
+        public IOrderedEnumerable<Member> MembersList { get; set; }
+        public List<Tournament> TournamentList { get; set; }
+        public System.Windows.Forms.ToolStripMenuItem ActiveItem;
+        public FrmMemberData CurrFrmMemberData { get; set; }
+        public FrmMemberScores CurrfrmScoresData { get; set; }
 
         /// <summary>
         /// If this property is set to true, the application will not prompt the user to cancel a close in progress.
@@ -24,7 +24,7 @@ namespace NineTapTour.Forms
         /// </summary>
         private bool AppMustClose { get; set; }
 
-        public FrmMainMenu mainmenu { get; set; }
+        public FrmMainMenu MainMenu { get; set; }
         public int RegionID { get; set; }
 
         public Size MaxWorkAreaScreenSize { get; set; }
@@ -46,8 +46,8 @@ namespace NineTapTour.Forms
             //run any pending database migrations on start
             System.Data.Entity.Database.SetInitializer<NineTapDb>(new MigrateDatabaseToLatestVersion<NineTapDb, Configuration>());
 
-            _membersList = MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
-            _tournamentList = TournamentDB.GetTournamentList(RegionID);
+            MembersList = MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
+            TournamentList = TournamentDB.GetTournamentList(RegionID);
 
             //sets the height and width of the parent form... this can not be resized later... all child forms must 
             //fit in its bounds... the only exception is using a scrollbar on the side or bottom...
@@ -57,11 +57,11 @@ namespace NineTapTour.Forms
             var mainMenu = Application.OpenForms["MainMenu"] as FrmMainMenu;
             OpenOrDisplayForm(ref mainMenu);
             RegionID = mainMenu.getRegionID();
-            mainmenu = mainMenu;
+            MainMenu = mainMenu;
 
             //sets the first item of the menu bar to the active item and highlights it.
-            activeItem = (System.Windows.Forms.ToolStripMenuItem)menMain.Items[0];
-            activeItem.BackColor = SystemColors.ActiveCaption;
+            ActiveItem = (System.Windows.Forms.ToolStripMenuItem)menMain.Items[0];
+            ActiveItem.BackColor = SystemColors.ActiveCaption;
         }
 
         /// <summary>
@@ -105,16 +105,16 @@ namespace NineTapTour.Forms
         //also to disable button to current page
         private void menMain_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            if (activeItem != null)
+            if (ActiveItem != null)
             {
-                activeItem.BackColor = SystemColors.Control;
+                ActiveItem.BackColor = SystemColors.Control;
             }
 
-            activeItem = (System.Windows.Forms.ToolStripMenuItem)e.ClickedItem;
+            ActiveItem = (System.Windows.Forms.ToolStripMenuItem)e.ClickedItem;
 
-            if (!activeItem.HasDropDownItems)
+            if (!ActiveItem.HasDropDownItems)
             {
-                activeItem.BackColor = SystemColors.ActiveCaption;
+                ActiveItem.BackColor = SystemColors.ActiveCaption;
             }
 
             MenuStrip currentMenu = sender as MenuStrip;
@@ -123,9 +123,9 @@ namespace NineTapTour.Forms
                 // sets enabled to true for all items in currentMenu
                 // unless item is the clickedItem(activeItem)
                 // or clicked item has a drop down list
-                if (!activeItem.HasDropDownItems)
+                if (!ActiveItem.HasDropDownItems)
                 {
-                    if (activeItem == currentMenu.Items[i])
+                    if (ActiveItem == currentMenu.Items[i])
                     {
                         currentMenu.Items[i].Enabled = false;
                     }
@@ -151,20 +151,20 @@ namespace NineTapTour.Forms
         //this method is for the buttons on the main form
         public void menuHighlight(string itemName)
         {
-            if (activeItem != null)
+            if (ActiveItem != null)
             {
-                activeItem.BackColor = SystemColors.Control;
+                ActiveItem.BackColor = SystemColors.Control;
             }
 
             for(int i = 0; i <= menMain.Items.Count; i++)
             {
                 if (itemName == menMain.Items[i].Text)
                 {
-                    activeItem = (System.Windows.Forms.ToolStripMenuItem)menMain.Items[i];
+                    ActiveItem = (System.Windows.Forms.ToolStripMenuItem)menMain.Items[i];
                     break;
                 }
             }
-            activeItem.BackColor = SystemColors.ActiveCaption;
+            ActiveItem.BackColor = SystemColors.ActiveCaption;
         }
         /// <summary>
         /// 
@@ -187,7 +187,7 @@ namespace NineTapTour.Forms
         {
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
             OpenOrDisplayForm(ref newfrmMemberData);
-            currFrmMemberData = newfrmMemberData;
+            CurrFrmMemberData = newfrmMemberData;
         }
 
         /// <summary>
@@ -197,9 +197,9 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as frmMemberScores;
+            var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as FrmMemberScores;
             OpenOrDisplayForm(ref newfrmMemberScores);
-            currfrmScoresdata = newfrmMemberScores;
+            CurrfrmScoresData = newfrmMemberScores;
             
         }
 
@@ -225,7 +225,7 @@ namespace NineTapTour.Forms
         private void updateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             //update the regionID
-            RegionID = mainmenu.getRegionID();
+            RegionID = MainMenu.getRegionID();
             var UpdatefrmActiveMem = new FrmUpdateActiveMem(RegionID);          
             UpdatefrmActiveMem.Show();
         }
