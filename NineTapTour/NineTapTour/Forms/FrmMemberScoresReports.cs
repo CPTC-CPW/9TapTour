@@ -95,15 +95,10 @@ namespace NineTapTour.Forms
                 }
                 temp = Calculations.Calculations.MakeTopMembersByPlacementList(temp, numMembers); // results of inquiry
                 // loads the loading screen if takes long time
-                bool wait = true;
-                while (wait)
-                {
-                    frmPleaseWait please = new frmPleaseWait();
-                    please.Show();
-                    exportToExcel(); // Exports to excel file
-                    wait = false;
-                    please.Close();
-                }
+                frmPleaseWait please = new frmPleaseWait();
+                please.Show();
+                exportToExcel(); // Exports to excel file
+                please.Close();
 
                 this.Close();
             }
