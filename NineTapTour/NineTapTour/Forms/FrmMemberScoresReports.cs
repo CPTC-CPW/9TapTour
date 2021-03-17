@@ -189,10 +189,11 @@ namespace NineTapTour.Forms
                 }
 
                 const int headerRowsOffset = 4;
+                const int numberOfColumns = 4;
                 // use these loops to populate data to be displayed
                 for (int row = 5; row <= numMembers + headerRowsOffset; row++)
                 {
-                    for (int column = 1; column <= (headerRowsOffset + printDuesOffset); column++) // five columns wide 
+                    for (int column = 1; column <= (numberOfColumns + printDuesOffset); column++) // five columns wide 
                     {
                         // first insert a new line into the excel spreadsheet
                         if (row >= 30 && column == 1)
@@ -211,25 +212,25 @@ namespace NineTapTour.Forms
                         }
 
                         // Add the series or game depending what clicked
-                        if (column == 2)
+                        else if (column == 2)
                         {
                             xlWorkSheet.Cells[row, column] = temp[row-5].Score; // "Series"; 
                         }
 
                         // Adds the member number
-                        if (column == 3)
+                        else if (column == 3)
                         {
                             xlWorkSheet.Cells[row, column] = temp[row-5].MemberId; 
                         }
 
                         // Adds the name
-                        if (column == 4)
+                        else if (column == 4)
                         {
                             xlWorkSheet.Cells[row, column] = temp[row-5].LastName + ", " + temp[row - 5].FirstName; 
                         }
 
                         //Add Membership Paid To
-                        if (column == 5)
+                        else if (column == 5)
                         {
                             String paymentYear = temp[row - 5].LastPaymentYear;
                             if (paymentYear != "") {
