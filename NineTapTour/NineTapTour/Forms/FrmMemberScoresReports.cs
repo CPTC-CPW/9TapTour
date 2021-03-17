@@ -190,6 +190,7 @@ namespace NineTapTour.Forms
 
                 const int headerRowsOffset = 4;
                 const int numberOfColumns = 4;
+                numMembers = temp.Count;
                 // use these loops to populate data to be displayed
                 for (int row = 5; row <= numMembers + headerRowsOffset; row++)
                 {
