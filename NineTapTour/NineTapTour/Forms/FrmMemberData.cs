@@ -464,11 +464,17 @@ namespace NineTapTour.Forms
             SaveMemberData();
         }
 
-        public void SaveMemberData()
-        {      
+        /// <summary>
+        /// If data is valid, member is saved to the database.
+        /// If data is invalid, invalid data is highlighted on the form
+        /// </summary>
+        /// <returns>Returns true if all required field are filled out</returns>
+        public bool SaveMemberData()
+        {
+            bool isValid = IsValidTextboxes();
             // checks validation then runs the rest of the 
             // btnSave_Click and adds a member into the database.
-            if (IsValidTextboxes())
+            if (isValid)
             {
                 //create temporary member for validation
                 Member temp = new Member();
@@ -669,6 +675,8 @@ namespace NineTapTour.Forms
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+
+            return isValid;
         }
 
         /// <summary>
@@ -725,51 +733,54 @@ namespace NineTapTour.Forms
             }
         }
 
-        //After the InitializeComponent(); call, the dateRejoin 
-        // Format & dateLastBowled are reused.
         /// <summary>
-        /// Adds a new "Member Number".
+        /// If "New" record button is clicked with invalid data for current member, UI will show error messages
+        /// and form will not be cleared. If data is valid for current member, the form will be cleared
+        /// and the new bowler can be entered
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btnNew_Click(object sender, EventArgs e)
         {
-            SaveMemberData();
-            Controls.Clear();
-            InitializeComponent();
-
-            //finds all Controls and change BackColor of each control color when 
-            //the control is on focus
-            foreach (Control ctrl in this.Controls)
+            if (SaveMemberData())
             {
-                ChangeBackColorOnFocus(ctrl);
+                // Form controls are destroyed and recreated
+                Controls.Clear();
+                InitializeComponent();
+
+                //finds all Controls and change BackColor of each control color when 
+                //the control is on focus
+                foreach (Control ctrl in this.Controls)
+                {
+                    ChangeBackColorOnFocus(ctrl);
+                }
+
+                txtRejoinDate.Text = "";
+                txtDateJoined.Text = DateTime.Now.ToString("MM/dd/yyyy");
+                txtLastBowled.Text = DateTime.Now.ToString("MM/dd/yyyy");
+                txtLastPayment.Text = "";
+                txtDOB.Text = "MM/DD/YYYY";
+                _memberId = -1;
+
+                //removes placeholder text when DOB textBox is clicked
+                txtDOB.GotFocus += RemovePlaceholderText;
+                //adds placeholder text when DOB textBox is clicked away from with a date
+                txtDOB.LostFocus += AddPlaceholderText;
+
+                //get latest member number, or set to 1 if no members in database
+                int nextMemberNumber = MemberDB.GetMemberListCount(RegionID) + 1;
+                txtMemberNumber.Text = nextMemberNumber.ToString();
+
+                currentMem = new Member
+                {
+                    Number = nextMemberNumber
+                };
+
+                // on new player button select this focuses on the last name texbox 
+                // that way user does not have to use the mouse to reclick when 
+                // adding a new player
+                txtLastName.Focus();
             }
-
-            txtRejoinDate.Text = "";
-            txtDateJoined.Text = DateTime.Now.ToString("MM/dd/yyyy");
-            txtLastBowled.Text = DateTime.Now.ToString("MM/dd/yyyy");
-            txtLastPayment.Text = "";
-            txtDOB.Text = "MM/DD/YYYY";
-            _memberId = -1;
-
-            //removes placeholder text when DOB textBox is clicked
-            txtDOB.GotFocus += RemovePlaceholderText;
-            //adds placeholder text when DOB textBox is clicked away from with a date
-            txtDOB.LostFocus += AddPlaceholderText;
-
-            //get latest member number, or set to 1 if no members in database
-            int nextMemberNumber = MemberDB.GetMemberListCount(RegionID) + 1;
-            txtMemberNumber.Text = nextMemberNumber.ToString();
-
-            currentMem = new Member
-            {
-                Number = nextMemberNumber
-            };
-
-            // on new player button select this focuses on the last name texbox 
-            // that way user does not have to use the mouse to reclick when 
-            // adding a new player
-            txtLastName.Focus();
         }
 
         /// <summary>
