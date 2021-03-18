@@ -746,13 +746,9 @@ namespace NineTapTour.Forms
             }
 
             txtRejoinDate.Text = "";
-            txtRejoinDate.Mask = "00/00/0000";
             txtDateJoined.Text = DateTime.Now.ToString("MM/dd/yyyy");
-            txtDateJoined.Mask = "00/00/0000";
             txtLastBowled.Text = DateTime.Now.ToString("MM/dd/yyyy");
-            txtLastBowled.Mask = "00/00/0000";
             txtLastPayment.Text = "";
-            txtLastPayment.Mask = "00/00/0000";
             txtDOB.Text = "MM/DD/YYYY";
             _memberId = -1;
 
