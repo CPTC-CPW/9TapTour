@@ -95,15 +95,10 @@ namespace NineTapTour.Forms
                 }
                 temp = Calculations.Calculations.MakeTopMembersByPlacementList(temp, numMembers); // results of inquiry
                 // loads the loading screen if takes long time
-                bool wait = true;
-                while (wait)
-                {
-                    frmPleaseWait please = new frmPleaseWait();
-                    please.Show();
-                    exportToExcel(); // Exports to excel file
-                    wait = false;
-                    please.Close();
-                }
+                frmPleaseWait please = new frmPleaseWait();
+                please.Show();
+                exportToExcel(); // Exports to excel file
+                please.Close();
 
                 this.Close();
             }
@@ -155,9 +150,6 @@ namespace NineTapTour.Forms
 
             // save the file with this name
             string saveFile =  fileName;
-
-            int i = 0; // which row to save data into
-            int j = 0; // which column to save the data into
          
             Excel.Application xlApp; // used to open the excel application
             Excel.Workbook xlWorkBook; // used to open the worksheet
@@ -196,49 +188,52 @@ namespace NineTapTour.Forms
                     printDuesOffset = 1;
                 }
 
-                //// use these loops to populate data to be displayed
-                for (i = 5; i <= numMembers + 4; i++)
+                const int headerRowsOffset = 4;
+                const int numberOfColumns = 4;
+                numMembers = temp.Count;
+                // use these loops to populate data to be displayed
+                for (int row = 5; row <= numMembers + headerRowsOffset; row++)
                 {
-                    for (j = 1; j <= (4+printDuesOffset); j++) // five columns wide 
+                    for (int column = 1; column <= (numberOfColumns + printDuesOffset); column++) // five columns wide 
                     {
                         // first insert a new line into the excel spreadsheet
-                        if (i >= 30 && j == 1)
+                        if (row >= 30 && column == 1)
                         {
                             // Get the range on where to insert a new row into the spreadsheet
-                            Excel.Range line = (Excel.Range)xlWorkSheet.Rows[i];
+                            Excel.Range line = (Excel.Range)xlWorkSheet.Rows[row];
 
                             //insert the new row
                             line.Insert();
                         }
                         
                         // Adds the finish place
-                        if (j == 1) 
+                        if (column == 1) 
                         {
-                            xlWorkSheet.Cells[i,j] = temp[i-5].placing;
+                            xlWorkSheet.Cells[row,column] = temp[row-5].placing;
                         }
 
                         // Add the series or game depending what clicked
-                        if (j == 2)
+                        else if (column == 2)
                         {
-                            xlWorkSheet.Cells[i, j] = temp[i-5].Score; // "Series"; 
+                            xlWorkSheet.Cells[row, column] = temp[row-5].Score; // "Series"; 
                         }
 
                         // Adds the member number
-                        if (j == 3)
+                        else if (column == 3)
                         {
-                            xlWorkSheet.Cells[i, j] = temp[i-5].MemberId; 
+                            xlWorkSheet.Cells[row, column] = temp[row-5].MemberId; 
                         }
 
                         // Adds the name
-                        if (j == 4)
+                        else if (column == 4)
                         {
-                            xlWorkSheet.Cells[i, j] = temp[i-5].LastName + ", " + temp[i - 5].FirstName; 
+                            xlWorkSheet.Cells[row, column] = temp[row-5].LastName + ", " + temp[row - 5].FirstName; 
                         }
 
                         //Add Membership Paid To
-                        if (j == 5)
+                        else if (column == 5)
                         {
-                            String paymentYear = temp[i - 5].LastPaymentYear;
+                            String paymentYear = temp[row - 5].LastPaymentYear;
                             if (paymentYear != "") {
                                 if (paymentYear != "life ")
                                 {
@@ -246,11 +241,11 @@ namespace NineTapTour.Forms
                                     int.TryParse(paymentYear, out year);
                                     year += 1;
                                     paymentYear = Convert.ToString(year);
-                                    xlWorkSheet.Cells[i, j] = paymentYear;
+                                    xlWorkSheet.Cells[row, column] = paymentYear;
                                 } else
                                 {
                                     
-                                    xlWorkSheet.Cells[i, j] = temp[i - 5].LastPaymentYear;
+                                    xlWorkSheet.Cells[row, column] = temp[row - 5].LastPaymentYear;
                                 }
                             }
                         }
