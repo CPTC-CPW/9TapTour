@@ -41,9 +41,6 @@
     <Reference Include="System.Security" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Member_Import_Data_TemporaryKey.pfx" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\NineTapTour\NineTapTour.csproj" />
   </ItemGroup>
   <ItemGroup>
