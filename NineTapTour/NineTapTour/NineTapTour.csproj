@@ -66,6 +66,13 @@
     <Content Include="Resources\9taplogo1.png" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.2.220602">
       <PrivateAssets>all</PrivateAssets>
@@ -73,7 +80,6 @@
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
@@ -84,18 +90,9 @@
     <Compile Remove="Forms\frmListTournamentsByYear.Designer.cs" />
     <Compile Remove="Forms\FrmTournaments.cs" />
     <Compile Remove="Forms\FrmTournaments.Designer.cs" />
-    <Compile Remove="Migrations\201907012231298_test.cs" />
-    <Compile Remove="Migrations\201907012231298_test.Designer.cs" />
-    <Compile Remove="Migrations\201907012236380_migrationtest.cs" />
-    <Compile Remove="Migrations\201907012236380_migrationtest.Designer.cs" />
-    <Compile Remove="Migrations\201907012244372_add-migration0619.cs" />
-    <Compile Remove="Migrations\201907012244372_add-migration0619.Designer.cs" />
     <EmbeddedResource Remove="Form1.resx" />
     <EmbeddedResource Remove="Forms\frmListTournamentsByYear.resx" />
     <EmbeddedResource Remove="Forms\FrmTournaments.resx" />
-    <EmbeddedResource Remove="Migrations\201907012231298_test.resx" />
-    <EmbeddedResource Remove="Migrations\201907012236380_migrationtest.resx" />
-    <EmbeddedResource Remove="Migrations\201907012244372_add-migration0619.resx" />
   </ItemGroup>
   <UsingTask TaskName="TransformXml" AssemblyFile="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Web\Microsoft.Web.Publishing.Tasks.dll" />
   <Target Name="AfterCompile" Condition="Exists('App.$(Configuration).config')">

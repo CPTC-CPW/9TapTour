@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NineTapTour.Models;
 
 namespace NineTapTour.Database

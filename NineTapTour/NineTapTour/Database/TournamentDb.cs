@@ -1,15 +1,13 @@
 ﻿using NineTapTour.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.Entity.Validation;
 using NineTapTour.Models;
 using NineTapTour.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace NineTapTour.Database
 {
@@ -167,18 +165,15 @@ namespace NineTapTour.Database
                     if (check == 0)
                     {
                         db.Participants.Add(player);
-                        /* Uses AddObject because you cannot have object graph where part of objects are connected to context and part of not.
-                         Changed so that context knows that department already exists. */
-                        var manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
-                        manager.ChangeObjectState(player.Tournament, EntityState.Unchanged);
-                        manager.ChangeObjectState(player.Member, EntityState.Unchanged);
+                        // We only want to add a the current person. Tournament and Member data is not changed here.
+                        db.Entry(player.Tournament).State = Microsoft.EntityFrameworkCore.EntityState.Unchanged;
+                        db.Entry(player.Member).State = Microsoft.EntityFrameworkCore.EntityState.Unchanged;
                         db.SaveChanges();
                     }
                     else
                     {
                         try
                         {
-                            System.Data.Entity.Core.Objects.ObjectStateManager manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
                             Game result = db.Games.SingleOrDefault(g => g.Id == player.Game.Id);
                             Participant squadResult = db.Participants.SingleOrDefault(p => p.Id == player.Id);
                             Participant memberQuery = db.Participants.Include(m => m.Member)

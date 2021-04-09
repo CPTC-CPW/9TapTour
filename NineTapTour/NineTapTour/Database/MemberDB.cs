@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NineTapTour.Exceptions;
 using System.Data.SqlClient;
-using System.Data.Entity.Validation;
 using System.Windows.Forms;
 using NineTapTour.Models;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace NineTapTour.Database
 {
