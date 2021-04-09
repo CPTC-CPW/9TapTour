@@ -622,7 +622,7 @@ namespace Member_Import_Test
                 string orgstring;
                 try
                 {
-                    orgstring = ((range.Cells[1, 10] as Excel.Range).Value2);
+                    orgstring = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
                     aftersplit = orgstring.Split('-');
                     playerOrgAVG = Convert.ToInt32(aftersplit[0]);
                 }
@@ -630,7 +630,7 @@ namespace Member_Import_Test
                 {
                     try
                     {
-                        orgstring = ((range.Cells[1, 10] as Excel.Range).Value2);
+                        orgstring = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
                         aftersplit = orgstring.Split('*');
                         playerOrgAVG = Convert.ToInt32(aftersplit[0]);
                     }
@@ -638,7 +638,7 @@ namespace Member_Import_Test
                     {
                         try
                         {
-                            orgstring = ((range.Cells[1, 10] as Excel.Range).Value2);
+                            orgstring = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
                             aftersplit = orgstring.Split('L');
                             playerOrgAVG = Convert.ToInt32(aftersplit[0]);
                         }
@@ -650,7 +650,7 @@ namespace Member_Import_Test
                 }
             }
           
-            String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
+            String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2.ToString();
             bool isRegionHawaii = (cbHaw.Checked); // checks to see if Region is Hawaii
 
             if(playerNumber == null)

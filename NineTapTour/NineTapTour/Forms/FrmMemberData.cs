@@ -1060,7 +1060,7 @@ namespace NineTapTour.Forms
                 PlayerFinalFirstAndMiddle[i] = first0middle1[0];
             }
 
-            if (Int32.TryParse(((range.Cells[1, 10] as Excel.Range).Value2), out int result))
+            if (Int32.TryParse(((range.Cells[1, 10] as Excel.Range).Value2.ToString()), out int result))
             {
                 playerOrgAVG = result;
             }
@@ -1069,7 +1069,7 @@ namespace NineTapTour.Forms
                 playerOrgAVG = -1;
             }
 
-            String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
+            String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2.ToString();
             bool isRegionHawaii = (cbHaw.Checked); // checks to see if Region is Hawaii
 
             if (isRegionHawaii)
