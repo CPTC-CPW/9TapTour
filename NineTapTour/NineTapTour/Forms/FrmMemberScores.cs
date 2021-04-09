@@ -8,7 +8,6 @@ using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
-using System.Linq.Dynamic;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using static NineTapTour.Database.ReportHelper;
