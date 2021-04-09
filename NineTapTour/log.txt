@@ -1,0 +1,310 @@
+2021-04-08 20:57:41.913 -07:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.201\
+2021-04-08 20:57:41.951 -07:00 [INF] Registered 1 extensions:
+	Default extension
+2021-04-08 20:57:44.658 -07:00 [INF] Initializing upgrade step Select an entrypoint
+2021-04-08 20:57:57.122 -07:00 [INF] Applying upgrade step Select an entrypoint
+2021-04-08 20:58:06.554 -07:00 [INF] Upgrade step Select an entrypoint applied successfully
+2021-04-08 20:58:09.452 -07:00 [INF] Initializing upgrade step Select project to upgrade
+2021-04-08 20:58:09.497 -07:00 [INF] Initializing upgrade step Back up project
+2021-04-08 20:58:18.745 -07:00 [INF] Skipping upgrade step Back up project
+2021-04-08 20:58:18.745 -07:00 [INF] Upgrade step Back up project skipped
+2021-04-08 20:58:21.660 -07:00 [INF] Initializing upgrade step Convert project file to SDK style
+2021-04-08 20:58:26.712 -07:00 [INF] Applying upgrade step Convert project file to SDK style
+2021-04-08 20:58:26.714 -07:00 [INF] Converting project file format with try-convert, version 0.7.217901
+2021-04-08 20:58:27.400 -07:00 [INF] [try-convert] E:\Code\Projects\9TapTour\NineTapTour\NineTapTour\NineTapTour.csproj contains an App.config file. App.config is replaced by appsettings.json in .NET Core. You will need to delete App.config and migrate to appsettings.json if it's applicable to your project.
+2021-04-08 20:58:28.481 -07:00 [INF] [try-convert] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.props
+2021-04-08 20:58:28.482 -07:00 [INF] [try-convert] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.targets
+2021-04-08 20:58:29.410 -07:00 [INF] [try-convert] Conversion complete!
+2021-04-08 20:58:29.727 -07:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2021-04-08 20:58:31.577 -07:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2021-04-08 20:58:39.098 -07:00 [INF] Initializing upgrade step Clean up NuGet package references
+2021-04-08 20:58:39.891 -07:00 [INF] Marking package FluentValidationNA for removal because it appears to be a transitive dependency
+2021-04-08 20:58:39.933 -07:00 [INF] Marking assembly reference System.Configuration for removal based on package mapping configuration System.Configuration
+2021-04-08 20:58:39.936 -07:00 [INF] Adding package System.Configuration.ConfigurationManager based on package mapping configuration System.Configuration
+2021-04-08 20:58:40.416 -07:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.2.220602) needs added
+2021-04-08 20:58:40.421 -07:00 [INF] References to be removed:
+System.Configuration
+2021-04-08 20:58:40.421 -07:00 [INF] Packages to be removed:
+FluentValidationNA, Version=1.2.16
+2021-04-08 20:58:40.422 -07:00 [INF] Packages to be addded:
+System.Configuration.ConfigurationManager, Version=5.0.0
+Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.220602
+2021-04-08 20:58:55.960 -07:00 [INF] Applying upgrade step Clean up NuGet package references
+2021-04-08 20:58:55.963 -07:00 [INF] Removing outdated assembly reference: System.Configuration
+2021-04-08 20:58:55.965 -07:00 [INF] Removing outdated package reference: FluentValidationNA, Version=1.2.16
+2021-04-08 20:58:55.966 -07:00 [INF] Adding package reference: System.Configuration.ConfigurationManager, Version=5.0.0
+2021-04-08 20:58:55.967 -07:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.220602
+2021-04-08 20:58:57.996 -07:00 [WRN] No version of System.Configuration.ConfigurationManager found that supports ["net45"]; leaving unchanged
+2021-04-08 20:58:58.008 -07:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2021-04-08 20:59:11.435 -07:00 [INF] Initializing upgrade step Update TFM
+2021-04-08 20:59:11.439 -07:00 [INF] TFM needs updated to net5.0-windows
+2021-04-08 20:59:35.343 -07:00 [INF] Applying upgrade step Update TFM
+2021-04-08 20:59:40.503 -07:00 [INF] Updated TFM to net5.0-windows
+2021-04-08 20:59:40.504 -07:00 [INF] Upgrade step Update TFM applied successfully
+2021-04-08 20:59:43.658 -07:00 [INF] Initializing upgrade step Update NuGet Packages
+2021-04-08 20:59:44.439 -07:00 [INF] Marking package Microsoft.CSharp for removal because it appears to be a transitive dependency
+2021-04-08 20:59:44.754 -07:00 [WRN] No version of Microsoft.Office.Interop.Excel found that supports ["net5.0-windows"]; leaving unchanged
+2021-04-08 20:59:44.880 -07:00 [WRN] No version of System.Linq.Dynamic.Library found that supports ["net5.0-windows"]; leaving unchanged
+2021-04-08 20:59:45.211 -07:00 [INF] Adding Microsoft.Windows.Compatibility 5.0.2
+2021-04-08 20:59:45.213 -07:00 [INF] Packages to be removed:
+Microsoft.CSharp, Version=4.7.0
+2021-04-08 20:59:45.213 -07:00 [INF] Packages to be addded:
+Microsoft.Windows.Compatibility, Version=5.0.2
+2021-04-08 20:59:54.887 -07:00 [INF] Applying upgrade step Update NuGet Packages
+2021-04-08 20:59:54.888 -07:00 [INF] Removing outdated package reference: Microsoft.CSharp, Version=4.7.0
+2021-04-08 20:59:54.889 -07:00 [INF] Adding package reference: Microsoft.Windows.Compatibility, Version=5.0.2
+2021-04-08 20:59:59.152 -07:00 [INF] Marking package System.Data.DataSetExtensions for removal because it appears to be a transitive dependency
+2021-04-08 20:59:59.155 -07:00 [INF] Marking package System.Configuration.ConfigurationManager for removal because it appears to be a transitive dependency
+2021-04-08 20:59:59.180 -07:00 [WRN] No version of Microsoft.Office.Interop.Excel found that supports ["net5.0-windows"]; leaving unchanged
+2021-04-08 20:59:59.183 -07:00 [WRN] No version of System.Linq.Dynamic.Library found that supports ["net5.0-windows"]; leaving unchanged
+2021-04-08 20:59:59.226 -07:00 [INF] Removing outdated package reference: System.Data.DataSetExtensions, Version=4.5.0
+2021-04-08 20:59:59.227 -07:00 [INF] Removing outdated package reference: System.Configuration.ConfigurationManager, Version=5.0.0
+2021-04-08 21:00:00.497 -07:00 [WRN] No version of Microsoft.Office.Interop.Excel found that supports ["net5.0-windows"]; leaving unchanged
+2021-04-08 21:00:00.500 -07:00 [WRN] No version of System.Linq.Dynamic.Library found that supports ["net5.0-windows"]; leaving unchanged
+2021-04-08 21:00:00.565 -07:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2021-04-08 21:00:02.411 -07:00 [INF] Initializing upgrade step Add template files
+2021-04-08 21:00:02.439 -07:00 [INF] 0 expected template items needed
+2021-04-08 21:00:02.440 -07:00 [INF] Initializing upgrade step Upgrade app config files
+2021-04-08 21:00:02.448 -07:00 [INF] Found 0 app settings for upgrade: 
+2021-04-08 21:00:02.452 -07:00 [INF] 0 web page namespace imports need upgraded: 
+2021-04-08 21:00:02.454 -07:00 [INF] Initializing upgrade step Update C# source
+2021-04-08 21:00:04.435 -07:00 [INF] Initializing upgrade step Move to next project
+2021-04-08 21:00:16.679 -07:00 [INF] Applying upgrade step Move to next project
+2021-04-08 21:00:16.680 -07:00 [INF] Upgrade step Move to next project applied successfully
+2021-04-08 21:00:21.115 -07:00 [INF] Initializing upgrade step Select project to upgrade
+2021-04-08 21:00:21.117 -07:00 [INF] No projects need upgraded for entry point E:\Code\Projects\9TapTour\NineTapTour\NineTapTour\NineTapTour.csproj
+2021-04-08 21:00:21.117 -07:00 [INF] Initializing upgrade step Finalize upgrade
+2021-04-08 21:00:28.607 -07:00 [INF] Applying upgrade step Finalize upgrade
+2021-04-08 21:00:28.608 -07:00 [INF] Upgrade step Finalize upgrade applied successfully
+2021-04-08 21:00:30.489 -07:00 [INF] Upgrade has completed. Please review any changes.
+2021-04-08 21:00:30.492 -07:00 [INF] Saving upgrade progress file at E:\Code\Projects\9TapTour\NineTapTour\.upgrade-assistant
+2021-04-08 21:00:35.984 -07:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.201\
+2021-04-08 21:00:35.999 -07:00 [INF] Registered 1 extensions:
+	Default extension
+2021-04-08 21:00:37.089 -07:00 [INF] Loading upgrade progress file at E:\Code\Projects\9TapTour\NineTapTour\.upgrade-assistant
+2021-04-08 21:00:37.112 -07:00 [INF] Initializing upgrade step Select an entrypoint
+2021-04-08 21:00:41.504 -07:00 [INF] Applying upgrade step Select an entrypoint
+2021-04-08 21:00:47.012 -07:00 [INF] Upgrade step Select an entrypoint applied successfully
+2021-04-08 21:00:49.033 -07:00 [INF] Initializing upgrade step Select project to upgrade
+2021-04-08 21:00:53.383 -07:00 [INF] Applying upgrade step Select project to upgrade
+2021-04-08 21:00:59.527 -07:00 [INF] Upgrade step Select project to upgrade applied successfully
+2021-04-08 21:01:01.554 -07:00 [INF] Initializing upgrade step Back up project
+2021-04-08 21:01:05.167 -07:00 [INF] Skipping upgrade step Back up project
+2021-04-08 21:01:05.168 -07:00 [INF] Upgrade step Back up project skipped
+2021-04-08 21:01:06.464 -07:00 [INF] Initializing upgrade step Convert project file to SDK style
+2021-04-08 21:01:08.983 -07:00 [INF] Applying upgrade step Convert project file to SDK style
+2021-04-08 21:01:08.984 -07:00 [INF] Converting project file format with try-convert, version 0.7.217901
+2021-04-08 21:01:09.339 -07:00 [INF] [try-convert] E:\Code\Projects\9TapTour\NineTapTour\Member_Import_Test\Member_Import_Test\Member_Import_Data.csproj contains an App.config file. App.config is replaced by appsettings.json in .NET Core. You will need to delete App.config and migrate to appsettings.json if it's applicable to your project.
+2021-04-08 21:01:09.843 -07:00 [INF] [try-convert] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.props
+2021-04-08 21:01:09.843 -07:00 [INF] [try-convert] This project has an unrecognized custom import which may need reviewed after conversion: EntityFramework.targets
+2021-04-08 21:01:10.694 -07:00 [INF] [try-convert] Conversion complete!
+2021-04-08 21:01:10.974 -07:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2021-04-08 21:01:11.997 -07:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2021-04-08 21:01:13.106 -07:00 [INF] Initializing upgrade step Clean up NuGet package references
+2021-04-08 21:01:14.095 -07:00 [INF] Marking package FluentValidationNA for removal because it appears to be a transitive dependency
+2021-04-08 21:01:14.116 -07:00 [INF] Marking assembly reference System.Configuration for removal based on package mapping configuration System.Configuration
+2021-04-08 21:01:14.118 -07:00 [INF] Adding package System.Configuration.ConfigurationManager based on package mapping configuration System.Configuration
+2021-04-08 21:01:14.180 -07:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.2.220602) needs added
+2021-04-08 21:01:14.183 -07:00 [INF] References to be removed:
+System.Configuration
+2021-04-08 21:01:14.184 -07:00 [INF] Packages to be removed:
+FluentValidationNA, Version=1.2.16
+2021-04-08 21:01:14.184 -07:00 [INF] Packages to be addded:
+System.Configuration.ConfigurationManager, Version=5.0.0
+Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.220602
+2021-04-08 21:01:19.911 -07:00 [INF] Applying upgrade step Clean up NuGet package references
+2021-04-08 21:01:19.914 -07:00 [INF] Removing outdated assembly reference: System.Configuration
+2021-04-08 21:01:19.915 -07:00 [INF] Removing outdated package reference: FluentValidationNA, Version=1.2.16
+2021-04-08 21:01:19.916 -07:00 [INF] Adding package reference: System.Configuration.ConfigurationManager, Version=5.0.0
+2021-04-08 21:01:19.917 -07:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.220602
+2021-04-08 21:01:21.166 -07:00 [WRN] No version of System.Configuration.ConfigurationManager found that supports ["net452"]; leaving unchanged
+2021-04-08 21:01:21.170 -07:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2021-04-08 21:01:27.690 -07:00 [INF] Initializing upgrade step Update TFM
+2021-04-08 21:01:27.754 -07:00 [INF] TFM needs updated to net5.0-windows
+2021-04-08 21:01:31.175 -07:00 [INF] Applying upgrade step Update TFM
+2021-04-08 21:01:32.547 -07:00 [INF] Updated TFM to net5.0-windows
+2021-04-08 21:01:32.548 -07:00 [INF] Upgrade step Update TFM applied successfully
+2021-04-08 21:01:35.369 -07:00 [INF] Initializing upgrade step Update NuGet Packages
+2021-04-08 21:01:36.302 -07:00 [INF] Marking package EntityFramework for removal because it appears to be a transitive dependency
+2021-04-08 21:01:36.304 -07:00 [INF] Marking package Microsoft.CSharp for removal because it appears to be a transitive dependency
+2021-04-08 21:01:36.306 -07:00 [INF] Marking package Microsoft.Office.Interop.Excel for removal because it appears to be a transitive dependency
+2021-04-08 21:01:36.308 -07:00 [INF] Marking package System.ComponentModel.Annotations for removal because it appears to be a transitive dependency
+2021-04-08 21:01:36.310 -07:00 [INF] Marking package System.Data.DataSetExtensions for removal because it appears to be a transitive dependency
+2021-04-08 21:01:36.312 -07:00 [INF] Marking package System.Linq.Dynamic.Library for removal because it appears to be a transitive dependency
+2021-04-08 21:01:36.313 -07:00 [INF] Marking package System.Configuration.ConfigurationManager for removal because it appears to be a transitive dependency
+2021-04-08 21:01:36.319 -07:00 [INF] Packages to be removed:
+EntityFramework, Version=6.4.4
+Microsoft.CSharp, Version=4.7.0
+Microsoft.Office.Interop.Excel, Version=15.0.4795.1000
+System.ComponentModel.Annotations, Version=5.0.0
+System.Data.DataSetExtensions, Version=4.5.0
+System.Linq.Dynamic.Library, Version=1.1.14
+System.Configuration.ConfigurationManager, Version=5.0.0
+2021-04-08 21:01:41.870 -07:00 [INF] Applying upgrade step Update NuGet Packages
+2021-04-08 21:01:41.871 -07:00 [INF] Removing outdated package reference: EntityFramework, Version=6.4.4
+2021-04-08 21:01:41.872 -07:00 [INF] Removing outdated package reference: Microsoft.CSharp, Version=4.7.0
+2021-04-08 21:01:41.874 -07:00 [INF] Removing outdated package reference: Microsoft.Office.Interop.Excel, Version=15.0.4795.1000
+2021-04-08 21:01:41.874 -07:00 [INF] Removing outdated package reference: System.ComponentModel.Annotations, Version=5.0.0
+2021-04-08 21:01:41.876 -07:00 [INF] Removing outdated package reference: System.Data.DataSetExtensions, Version=4.5.0
+2021-04-08 21:01:41.876 -07:00 [INF] Removing outdated package reference: System.Linq.Dynamic.Library, Version=1.1.14
+2021-04-08 21:01:41.877 -07:00 [INF] Removing outdated package reference: System.Configuration.ConfigurationManager, Version=5.0.0
+2021-04-08 21:01:43.268 -07:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2021-04-08 21:01:45.130 -07:00 [INF] Initializing upgrade step Add template files
+2021-04-08 21:01:45.152 -07:00 [INF] 0 expected template items needed
+2021-04-08 21:01:45.153 -07:00 [INF] Initializing upgrade step Upgrade app config files
+2021-04-08 21:01:45.160 -07:00 [INF] Found 0 app settings for upgrade: 
+2021-04-08 21:01:45.163 -07:00 [INF] 0 web page namespace imports need upgraded: 
+2021-04-08 21:01:45.165 -07:00 [INF] Initializing upgrade step Update C# source
+2021-04-08 21:01:46.408 -07:00 [INF] Initializing upgrade step Move to next project
+2021-04-08 21:01:50.494 -07:00 [INF] Applying upgrade step Move to next project
+2021-04-08 21:01:50.495 -07:00 [INF] Upgrade step Move to next project applied successfully
+2021-04-08 21:01:52.027 -07:00 [INF] Initializing upgrade step Select project to upgrade
+2021-04-08 21:01:52.030 -07:00 [INF] No projects need upgraded for entry point E:\Code\Projects\9TapTour\NineTapTour\Member_Import_Test\Member_Import_Test\Member_Import_Data.csproj
+2021-04-08 21:01:52.031 -07:00 [INF] Initializing upgrade step Finalize upgrade
+2021-04-08 21:01:55.102 -07:00 [INF] Applying upgrade step Finalize upgrade
+2021-04-08 21:01:55.103 -07:00 [INF] Upgrade step Finalize upgrade applied successfully
+2021-04-08 21:01:57.368 -07:00 [INF] Upgrade has completed. Please review any changes.
+2021-04-08 21:01:57.370 -07:00 [INF] Saving upgrade progress file at E:\Code\Projects\9TapTour\NineTapTour\.upgrade-assistant
+2021-04-08 21:01:59.728 -07:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\5.0.201\
+2021-04-08 21:01:59.744 -07:00 [INF] Registered 1 extensions:
+	Default extension
+2021-04-08 21:02:00.894 -07:00 [INF] Loading upgrade progress file at E:\Code\Projects\9TapTour\NineTapTour\.upgrade-assistant
+2021-04-08 21:02:00.916 -07:00 [INF] Initializing upgrade step Select an entrypoint
+2021-04-08 21:02:04.719 -07:00 [INF] Applying upgrade step Select an entrypoint
+2021-04-08 21:02:07.125 -07:00 [INF] Upgrade step Select an entrypoint applied successfully
+2021-04-08 21:02:09.278 -07:00 [INF] Initializing upgrade step Select project to upgrade
+2021-04-08 21:02:11.774 -07:00 [INF] Applying upgrade step Select project to upgrade
+2021-04-08 21:02:13.766 -07:00 [INF] Upgrade step Select project to upgrade applied successfully
+2021-04-08 21:02:14.751 -07:00 [INF] Initializing upgrade step Back up project
+2021-04-08 21:02:17.559 -07:00 [INF] Skipping upgrade step Back up project
+2021-04-08 21:02:17.559 -07:00 [INF] Upgrade step Back up project skipped
+2021-04-08 21:02:19.143 -07:00 [INF] Initializing upgrade step Convert project file to SDK style
+2021-04-08 21:02:20.806 -07:00 [INF] Applying upgrade step Convert project file to SDK style
+2021-04-08 21:02:20.808 -07:00 [INF] Converting project file format with try-convert, version 0.7.217901
+2021-04-08 21:02:22.116 -07:00 [INF] [try-convert] Conversion complete!
+2021-04-08 21:02:22.422 -07:00 [INF] Project file converted successfully! The project may require additional changes to build successfully against the new .NET target.
+2021-04-08 21:02:25.035 -07:00 [INF] Upgrade step Convert project file to SDK style applied successfully
+2021-04-08 21:02:26.346 -07:00 [INF] Initializing upgrade step Clean up NuGet package references
+2021-04-08 21:02:27.439 -07:00 [INF] Marking package Microsoft.NETCore.Platforms for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.454 -07:00 [INF] Marking package Microsoft.TestPlatform.AdapterUtilities for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.458 -07:00 [INF] Marking package NETStandard.Library for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.460 -07:00 [INF] Marking package System.Collections for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.462 -07:00 [INF] Marking package System.Collections.Concurrent for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.464 -07:00 [INF] Marking package System.Diagnostics.Debug for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.465 -07:00 [INF] Marking package System.Diagnostics.Tools for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.467 -07:00 [INF] Marking package System.Diagnostics.Tracing for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.468 -07:00 [INF] Marking package System.Globalization for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.470 -07:00 [INF] Marking package System.IO for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.472 -07:00 [INF] Marking package System.IO.Compression for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.474 -07:00 [INF] Marking package System.Linq for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.476 -07:00 [INF] Marking package System.Linq.Expressions for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.477 -07:00 [INF] Marking package System.Net.Primitives for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.491 -07:00 [INF] Marking package System.ObjectModel for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.502 -07:00 [INF] Marking package System.Reflection for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.504 -07:00 [INF] Marking package System.Reflection.Extensions for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.506 -07:00 [INF] Marking package System.Reflection.Primitives for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.508 -07:00 [INF] Marking package System.Resources.ResourceManager for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.509 -07:00 [INF] Marking package System.Runtime for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.511 -07:00 [INF] Marking package System.Runtime.Extensions for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.513 -07:00 [INF] Marking package System.Runtime.InteropServices for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.514 -07:00 [INF] Marking package System.Runtime.InteropServices.RuntimeInformation for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.516 -07:00 [INF] Marking package System.Runtime.Numerics for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.518 -07:00 [INF] Marking package System.Text.Encoding for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.521 -07:00 [INF] Marking package System.Text.Encoding.Extensions for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.522 -07:00 [INF] Marking package System.Text.RegularExpressions for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.524 -07:00 [INF] Marking package System.Threading for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.525 -07:00 [INF] Marking package System.Threading.Tasks for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.529 -07:00 [INF] Marking package System.Xml.ReaderWriter for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.531 -07:00 [INF] Marking package System.Xml.XDocument for removal because it appears to be a transitive dependency
+2021-04-08 21:02:27.768 -07:00 [INF] Reference to .NET Upgrade Assistant analyzer package (Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, version 0.2.220602) needs added
+2021-04-08 21:02:27.772 -07:00 [INF] Packages to be removed:
+Microsoft.NETCore.Platforms, Version=1.1.0
+Microsoft.TestPlatform.AdapterUtilities, Version=16.9.1
+NETStandard.Library, Version=1.6.1
+System.Collections, Version=4.3.0
+System.Collections.Concurrent, Version=4.3.0
+System.Diagnostics.Debug, Version=4.3.0
+System.Diagnostics.Tools, Version=4.3.0
+System.Diagnostics.Tracing, Version=4.3.0
+System.Globalization, Version=4.3.0
+System.IO, Version=4.3.0
+System.IO.Compression, Version=4.3.0
+System.Linq, Version=4.3.0
+System.Linq.Expressions, Version=4.3.0
+System.Net.Primitives, Version=4.3.0
+System.ObjectModel, Version=4.3.0
+System.Reflection, Version=4.3.0
+System.Reflection.Extensions, Version=4.3.0
+System.Reflection.Primitives, Version=4.3.0
+System.Resources.ResourceManager, Version=4.3.0
+System.Runtime, Version=4.3.0
+System.Runtime.Extensions, Version=4.3.0
+System.Runtime.InteropServices, Version=4.3.0
+System.Runtime.InteropServices.RuntimeInformation, Version=4.3.0
+System.Runtime.Numerics, Version=4.3.0
+System.Text.Encoding, Version=4.3.0
+System.Text.Encoding.Extensions, Version=4.3.0
+System.Text.RegularExpressions, Version=4.3.0
+System.Threading, Version=4.3.0
+System.Threading.Tasks, Version=4.3.0
+System.Xml.ReaderWriter, Version=4.3.0
+System.Xml.XDocument, Version=4.3.0
+2021-04-08 21:02:27.774 -07:00 [INF] Packages to be addded:
+Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.220602
+2021-04-08 21:02:30.870 -07:00 [INF] Applying upgrade step Clean up NuGet package references
+2021-04-08 21:02:30.874 -07:00 [INF] Removing outdated package reference: Microsoft.NETCore.Platforms, Version=1.1.0
+2021-04-08 21:02:30.875 -07:00 [INF] Removing outdated package reference: Microsoft.TestPlatform.AdapterUtilities, Version=16.9.1
+2021-04-08 21:02:30.876 -07:00 [INF] Removing outdated package reference: NETStandard.Library, Version=1.6.1
+2021-04-08 21:02:30.877 -07:00 [INF] Removing outdated package reference: System.Collections, Version=4.3.0
+2021-04-08 21:02:30.877 -07:00 [INF] Removing outdated package reference: System.Collections.Concurrent, Version=4.3.0
+2021-04-08 21:02:30.878 -07:00 [INF] Removing outdated package reference: System.Diagnostics.Debug, Version=4.3.0
+2021-04-08 21:02:30.879 -07:00 [INF] Removing outdated package reference: System.Diagnostics.Tools, Version=4.3.0
+2021-04-08 21:02:30.880 -07:00 [INF] Removing outdated package reference: System.Diagnostics.Tracing, Version=4.3.0
+2021-04-08 21:02:30.881 -07:00 [INF] Removing outdated package reference: System.Globalization, Version=4.3.0
+2021-04-08 21:02:30.882 -07:00 [INF] Removing outdated package reference: System.IO, Version=4.3.0
+2021-04-08 21:02:30.883 -07:00 [INF] Removing outdated package reference: System.IO.Compression, Version=4.3.0
+2021-04-08 21:02:30.883 -07:00 [INF] Removing outdated package reference: System.Linq, Version=4.3.0
+2021-04-08 21:02:30.884 -07:00 [INF] Removing outdated package reference: System.Linq.Expressions, Version=4.3.0
+2021-04-08 21:02:30.885 -07:00 [INF] Removing outdated package reference: System.Net.Primitives, Version=4.3.0
+2021-04-08 21:02:30.886 -07:00 [INF] Removing outdated package reference: System.ObjectModel, Version=4.3.0
+2021-04-08 21:02:30.886 -07:00 [INF] Removing outdated package reference: System.Reflection, Version=4.3.0
+2021-04-08 21:02:30.888 -07:00 [INF] Removing outdated package reference: System.Reflection.Extensions, Version=4.3.0
+2021-04-08 21:02:30.888 -07:00 [INF] Removing outdated package reference: System.Reflection.Primitives, Version=4.3.0
+2021-04-08 21:02:30.889 -07:00 [INF] Removing outdated package reference: System.Resources.ResourceManager, Version=4.3.0
+2021-04-08 21:02:30.890 -07:00 [INF] Removing outdated package reference: System.Runtime, Version=4.3.0
+2021-04-08 21:02:30.891 -07:00 [INF] Removing outdated package reference: System.Runtime.Extensions, Version=4.3.0
+2021-04-08 21:02:30.891 -07:00 [INF] Removing outdated package reference: System.Runtime.InteropServices, Version=4.3.0
+2021-04-08 21:02:30.892 -07:00 [INF] Removing outdated package reference: System.Runtime.InteropServices.RuntimeInformation, Version=4.3.0
+2021-04-08 21:02:30.893 -07:00 [INF] Removing outdated package reference: System.Runtime.Numerics, Version=4.3.0
+2021-04-08 21:02:30.893 -07:00 [INF] Removing outdated package reference: System.Text.Encoding, Version=4.3.0
+2021-04-08 21:02:30.894 -07:00 [INF] Removing outdated package reference: System.Text.Encoding.Extensions, Version=4.3.0
+2021-04-08 21:02:30.895 -07:00 [INF] Removing outdated package reference: System.Text.RegularExpressions, Version=4.3.0
+2021-04-08 21:02:30.895 -07:00 [INF] Removing outdated package reference: System.Threading, Version=4.3.0
+2021-04-08 21:02:30.896 -07:00 [INF] Removing outdated package reference: System.Threading.Tasks, Version=4.3.0
+2021-04-08 21:02:30.899 -07:00 [INF] Removing outdated package reference: System.Xml.ReaderWriter, Version=4.3.0
+2021-04-08 21:02:30.900 -07:00 [INF] Removing outdated package reference: System.Xml.XDocument, Version=4.3.0
+2021-04-08 21:02:30.902 -07:00 [INF] Adding package reference: Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.2.220602
+2021-04-08 21:02:32.280 -07:00 [INF] Upgrade step Clean up NuGet package references applied successfully
+2021-04-08 21:02:33.451 -07:00 [INF] Initializing upgrade step Update TFM
+2021-04-08 21:02:33.494 -07:00 [INF] TFM needs updated to net5.0-windows
+2021-04-08 21:02:36.238 -07:00 [INF] Applying upgrade step Update TFM
+2021-04-08 21:02:39.578 -07:00 [INF] Updated TFM to net5.0-windows
+2021-04-08 21:02:39.578 -07:00 [INF] Upgrade step Update TFM applied successfully
+2021-04-08 21:02:41.113 -07:00 [INF] Initializing upgrade step Update NuGet Packages
+2021-04-08 21:02:42.087 -07:00 [INF] Marking package System.ComponentModel.Composition for removal because it appears to be a transitive dependency
+2021-04-08 21:02:42.134 -07:00 [INF] Packages to be removed:
+System.ComponentModel.Composition, Version=5.0.0
+2021-04-08 21:02:46.198 -07:00 [INF] Applying upgrade step Update NuGet Packages
+2021-04-08 21:02:46.199 -07:00 [INF] Removing outdated package reference: System.ComponentModel.Composition, Version=5.0.0
+2021-04-08 21:02:47.899 -07:00 [INF] Upgrade step Update NuGet Packages applied successfully
+2021-04-08 21:02:49.769 -07:00 [INF] Initializing upgrade step Add template files
+2021-04-08 21:02:49.792 -07:00 [INF] 0 expected template items needed
+2021-04-08 21:02:49.793 -07:00 [INF] Initializing upgrade step Update C# source
+2021-04-08 21:02:51.004 -07:00 [INF] Initializing upgrade step Move to next project
+2021-04-08 21:02:55.326 -07:00 [INF] Applying upgrade step Move to next project
+2021-04-08 21:02:55.327 -07:00 [INF] Upgrade step Move to next project applied successfully
+2021-04-08 21:02:56.399 -07:00 [INF] Initializing upgrade step Finalize upgrade
+2021-04-08 21:02:58.734 -07:00 [INF] Applying upgrade step Finalize upgrade
+2021-04-08 21:02:58.735 -07:00 [INF] Upgrade step Finalize upgrade applied successfully
+2021-04-08 21:02:59.639 -07:00 [INF] Upgrade has completed. Please review any changes.
+2021-04-08 21:02:59.641 -07:00 [INF] Saving upgrade progress file at E:\Code\Projects\9TapTour\NineTapTour\.upgrade-assistant
