@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace NineTapTour.Database
 {
@@ -24,6 +25,17 @@ namespace NineTapTour.Database
         /// </summary>
         public static bool BackupDatabase(string backupPath)
         {
+            // Raw SQL with EF Core
+            // https://www.learnentityframeworkcore.com/raw-sql
+            using (NineTapDb context = new NineTapDb())
+            {
+                using (var backUpCmd = context.Database.GetDbConnection().CreateCommand())
+                {
+                    backUpCmd.CommandText = "BACKUP DATABASE @dbName TO DISK = @backupPath";
+                    context.Database.ExecuteSqlRawAsync($"BACKUP DATABASE {backUpCmd.} TO DISK = {}")
+                }
+            }
+
             NineTapDb db = new NineTapDb();
             string query = "BACKUP DATABASE @dbName TO DISK = @backupPath";
 

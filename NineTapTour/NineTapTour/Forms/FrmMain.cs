@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
 using System.Drawing;
-using System.Data.Entity;
-using NineTapTour.Migrations;
 using NineTapTour.Models;
 
 namespace NineTapTour.Forms
@@ -44,7 +42,7 @@ namespace NineTapTour.Forms
             MaxWorkAreaScreenSize = new Size( Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height );
 
             //run any pending database migrations on start
-            System.Data.Entity.Database.SetInitializer<NineTapDb>(new MigrateDatabaseToLatestVersion<NineTapDb, Configuration>());
+            Database.SetInitializer<NineTapDb>(new MigrateDatabaseToLatestVersion<NineTapDb, Configuration>());
 
             MembersList = MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
             TournamentList = TournamentDB.GetTournamentList(RegionID);
