@@ -21,7 +21,7 @@ namespace Member_Import_Test
             InitializeComponent();
             List<NineTapRegion> r = NineTapRegionDB.GetRegionList();
             cbxRegionSelect.DataSource = r;
-            cbxRegionSelect.DisplayMember = "NineTapRegionName";
+            cbxRegionSelect.DisplayMember = nameof(NineTapRegion.NineTapRegionName);
             RegionID = r[cbxRegionSelect.SelectedIndex].NineTapRegionID;
             
         }
