@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using NineTapTour.Models;
+using Microsoft.EntityFrameworkCore;
 
 /// <summary>
 /// Author Julie Edwards

@@ -15,6 +15,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections;
 using System.Text.RegularExpressions;
 using NineTapTour.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace NineTapTour.Forms
 {
@@ -101,7 +102,7 @@ namespace NineTapTour.Forms
                 }
 
                 g.gameRegionID = tourny.TourneyRegion;
-                db.Entry(g).State = System.Data.Entity.EntityState.Modified;
+                db.Entry(g).State = EntityState.Modified;
                 db.SaveChanges();
             }
         }

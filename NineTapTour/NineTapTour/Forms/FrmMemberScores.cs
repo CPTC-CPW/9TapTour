@@ -1,4 +1,5 @@
-﻿using NineTapTour.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using NineTapTour.Database;
 using NineTapTour.Models;
 using NineTapTour.Models.ViewModels;
 using System;
@@ -1787,14 +1788,8 @@ namespace NineTapTour.Forms
 
                 //Delete from FinalizeTemp
                 FinalizeTemp ft = FinalizeTempDB.GetFinalizeID(GameDB.GetGame(g.Id));
-                try
-                {
-                    FinalizeTempDB.DeleteFinalizeTemp(ft);
-                }
-                catch (DbUpdateException)
-                {
-                    //no finalized record to remove
-                }
+                FinalizeTempDB.DeleteFinalizeTemp(ft);
+
             
                 //Delete from Participants list
                 Participant par = FinalizeTempDB.GetParticipantByGameId(g.Id);

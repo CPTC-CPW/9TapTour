@@ -28,7 +28,6 @@ namespace NineTapTour.Models
         [DataType(DataType.Date)]       
         public DateTime? DateOfBirth { get; set; }
 
-        [Index("IX_MemberSSN")]
         [StringLength(11), Column(TypeName = "char")]
         public string SSN { get; set; }
         //[Required]
