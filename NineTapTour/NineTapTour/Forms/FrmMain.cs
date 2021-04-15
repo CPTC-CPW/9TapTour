@@ -5,6 +5,8 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Drawing;
 using NineTapTour.Models;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NineTapTour.Forms
 {
@@ -41,8 +43,9 @@ namespace NineTapTour.Forms
             //this size is the height and width of the primary screen minus the start bar (if the user has a start bar)
             MaxWorkAreaScreenSize = new Size( Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height );
 
-            //run any pending database migrations on start
-            Database.SetInitializer<NineTapDb>(new MigrateDatabaseToLatestVersion<NineTapDb, Configuration>());
+            // Run migrations on startup
+            var migrator = new NineTapDb().Database.GetService<IMigrator>();
+            migrator.Migrate();
 
             MembersList = MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
             TournamentList = TournamentDB.GetTournamentList(RegionID);
