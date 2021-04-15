@@ -12,6 +12,14 @@ namespace NineTapTour.Database
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            // Modify generated table names to match old EF6 database for script compatibility
+            builder.Entity<FinalizeTemp>().ToTable("FinalizeTemps");
+            builder.Entity<NineTapRegion>().ToTable("NineTapRegions");
+            builder.Entity<PlayerHistory>().ToTable("PlayerHistories");
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
