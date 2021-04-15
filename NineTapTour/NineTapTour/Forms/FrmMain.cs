@@ -230,30 +230,21 @@ namespace NineTapTour.Forms
 
         private void BackupDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
-            if (folderDialog.ShowDialog() == DialogResult.OK)
+            if (DatabaseManagement.BackupDatabase())
             {
-                if (DatabaseManagement.BackupDatabase(folderDialog.SelectedPath))
-                {
-                    MessageBox.Show("Database successfully backed up!");
-                }
+                MessageBox.Show("Database successfully backed up!");
             }
         }
 
         private void RestoreDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "Backup Files (*.bak)|*.bak";
-            if (fileDialog.ShowDialog() == DialogResult.OK)
+            if (MessageBox.Show("Restoring the database will restart the application.", "Warning", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
-                if (MessageBox.Show("Restoring the database will restart the application.", "Warning", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                if (DatabaseManagement.RestoreDatabase())
                 {
-                    if (DatabaseManagement.RestoreDatabase(fileDialog.FileName))
-                    {
-                        MessageBox.Show("Database successfully restored from backup!");
-                        AppMustClose = true;
-                        Application.Restart();
-                    }
+                    MessageBox.Show("Database successfully restored from backup!");
+                    AppMustClose = true;
+                    Application.Restart();
                 }
             }
         }
