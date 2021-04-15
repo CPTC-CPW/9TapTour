@@ -27,38 +27,15 @@ namespace NineTapTour.Database
         {
             // Raw SQL with EF Core
             // https://www.learnentityframeworkcore.com/raw-sql
-            using (NineTapDb context = new NineTapDb())
+            const string dbName = "NineTapTour.NineTapDb";
+            using (NineTapDb context = new())
             {
                 using (var backUpCmd = context.Database.GetDbConnection().CreateCommand())
                 {
                     backUpCmd.CommandText = "BACKUP DATABASE @dbName TO DISK = @backupPath";
-                    context.Database.ExecuteSqlRawAsync($"BACKUP DATABASE {backUpCmd.} TO DISK = {}")
+                    context.Database.ExecuteSqlRawAsync($"BACKUP DATABASE {dbName} TO DISK = {backUpCmd + "\\" + CreateBackupName()}");
                 }
             }
-
-            NineTapDb db = new NineTapDb();
-            string query = "BACKUP DATABASE @dbName TO DISK = @backupPath";
-
-            try
-            {
-                db.Database.ExecuteSqlCommand(
-                        TransactionalBehavior.DoNotEnsureTransaction,
-                        query,
-                        new SqlParameter("@dbName", db.Database.Connection.Database),
-                        new SqlParameter("@backupPath", backupPath + "\\" + CreateBackupName())
-                        );
-            }
-            catch (SqlException sqle)
-            {
-                if (sqle.Message.Contains("Operating system error 5(Access is denied.)"))
-                {
-                    MessageBox.Show("SQL Server does not have permission to access the folder selected.");
-                    return false;
-                }
-
-                throw;
-            }
-
             return true;
         }
 
