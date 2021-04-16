@@ -24,9 +24,7 @@ namespace NineTapTour.Database
         {
             if (!optionsBuilder.IsConfigured)
             {
-#if DEBUG
                 optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;database=NineTapTour.NineTapDb;trusted_connection=true;MultipleActiveResultSets=true");
-#endif
 
 //#if !DEBUG
 //                optionsBuilder.UseSqlServer("Server=.\\SQLExpress;database=NineTapTour.NineTapDb;trusted_connection=true;MultipleActiveResultSets=true");
