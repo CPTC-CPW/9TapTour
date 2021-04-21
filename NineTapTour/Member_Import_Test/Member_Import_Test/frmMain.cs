@@ -876,7 +876,7 @@ namespace Member_Import_Test
                         try
                         {
                             // THIS WILL CATCH SUBTOTALS THAT MAY HAVE BEEN ADDED ON LINE 46 OF THE EXCEL FILES
-                            if (temp.FinPPHG.ToString() != "") // Only grab the money earned from tournament if they placed in tournament
+                            if (temp.FinPPHG?.ToString() != "") // Only grab the money earned from tournament if they placed in tournament
                             {
                                 temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
                                 GameHistory.MoneyWon = Convert.ToDecimal(temp.Cash);
@@ -899,7 +899,7 @@ namespace Member_Import_Test
                         GameHistory.Notes = temp.Notes;
                         playerH.Notes = temp.Notes;
                         playerH.PPHG = temp.FinPPHG;
-                        GameHistory.Id = allGames + 1;
+                        // GameHistory.Id = allGames + 1; // Id is an Identity column and will auto increment
                         allGames++;
                         playerH.GameID = GameHistory.Id;
                         GameImport.Add(GameHistory);
