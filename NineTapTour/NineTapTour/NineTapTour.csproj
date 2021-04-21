@@ -8,12 +8,6 @@
     <ApplicationIcon>9tap_white.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <None Update="App.Debug.config">
-      <DependentUpon>App.config</DependentUpon>
-    </None>
-    <None Update="App.Release.config">
-      <DependentUpon>App.config</DependentUpon>
-    </None>
     <Content Include="9tap_white.ico" />
     <Content Include="Database\DBScripts\ninetapdata.sql" />
     <Content Include="Resources\TournamentResultsTemplate.xls">
