@@ -6,6 +6,8 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>9tap_white.ico</ApplicationIcon>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>ClientLicense.txt</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="9tap_white.ico" />
@@ -29,6 +31,10 @@
     </None>
     <None Update="_NineTapTour_NineTapDbDataSet.xss">
       <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="..\ClientLicense.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -89,13 +95,4 @@
     <EmbeddedResource Remove="Forms\FrmTournaments.resx" />
   </ItemGroup>
   <UsingTask TaskName="TransformXml" AssemblyFile="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Web\Microsoft.Web.Publishing.Tasks.dll" />
-  <Target Name="AfterCompile" Condition="Exists('App.$(Configuration).config')">
-    <TransformXml Source="App.config" Destination="$(IntermediateOutputPath)$(TargetFileName).config" Transform="App.$(Configuration).config" />
-    <ItemGroup>
-      <AppConfigWithTargetPath Remove="App.config" />
-      <AppConfigWithTargetPath Include="$(IntermediateOutputPath)$(TargetFileName).config">
-        <TargetPath>$(TargetFileName).config</TargetPath>
-      </AppConfigWithTargetPath>
-    </ItemGroup>
-  </Target>
 </Project>
