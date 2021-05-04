@@ -23,9 +23,18 @@ namespace NineTapTour.Database
             {
                 using (var db = new NineTapDb())
                 {
-                    db.Entry(temp).State = db.Members.Any(m => m.Id == temp.Id) ?
-                                            EntityState.Modified :
-                                            EntityState.Added;
+                    bool doesMemberExist = db.Members.Any(m => m.Id == temp.Id);
+
+                    if (doesMemberExist)
+                    {
+                        db.Entry(temp).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        temp.Id = 0;
+                        db.Entry(temp).State = EntityState.Added;
+                    }
+
                     /* The if statement is so that you can update the handicap by changing the league average,
                      but it won't update if a member participated in a tournament, .Value solves the problem 
                      where startAvg is nullable but the method is just int not int? */

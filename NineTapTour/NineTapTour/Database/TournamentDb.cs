@@ -164,10 +164,11 @@ namespace NineTapTour.Database
                                  select p).Count();
                     if (check == 0)
                     {
+                        player.Id = 0; // New participants will get an auto generated id
                         db.Participants.Add(player);
                         // We only want to add a the current person. Tournament and Member data is not changed here.
-                        db.Entry(player.Tournament).State = Microsoft.EntityFrameworkCore.EntityState.Unchanged;
-                        db.Entry(player.Member).State = Microsoft.EntityFrameworkCore.EntityState.Unchanged;
+                        db.Entry(player.Tournament).State = EntityState.Unchanged;
+                        db.Entry(player.Member).State = EntityState.Unchanged;
                         db.SaveChanges();
                     }
                     else
