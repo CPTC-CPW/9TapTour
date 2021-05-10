@@ -94,12 +94,12 @@ namespace NineTapTour.Database
 
         /// <summary>
         /// Tests a string input for being an integer
-        /// between 1-300. Returns true if valid.
+        /// between 0-300 inclusive. Returns true if valid.
         /// </summary>
         public static bool IsAverageValid(string stringAverage)
         {
             Int32.TryParse(stringAverage, out int test);
-            return test > 0 && test < 300;
+            return test >= 0 && test <= 300;
         }
 
         /// <summary>
