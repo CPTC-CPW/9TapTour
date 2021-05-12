@@ -208,13 +208,7 @@ namespace NineTapTour.Forms
         /// Manually sets the width for each column
         /// </summary>
         public void sizeFinalizeGridView() {
-            int columnCount = 22;
-            // Turn off auto size mode
-            for (int colWidth = 0; colWidth < columnCount; colWidth++)
-            {
-                TournamentEntriesGrid.Columns[colWidth].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            }
-
+            TournamentEntriesGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             TournamentEntriesGrid.Columns[STANDING_COLUMN].Width = 50;  
             TournamentEntriesGrid.Columns[MEMBER_NUMBER_COLUMN].Width = 50;
             TournamentEntriesGrid.Columns[NAME_COLUMN].Width = 150;

@@ -31,7 +31,7 @@ namespace NineTapTour.Forms
             this.squadList = squadList;
         }
 
-        private void btnPrint_Click(object sender, EventArgs e)
+        private void BtnPrint_Click(object sender, EventArgs e)
         {
             if (!int.TryParse(txtNumberOfMembers.Text, out int numMembers))
             {
@@ -74,7 +74,7 @@ namespace NineTapTour.Forms
             txtNumberOfMembers.Focus();
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private void BtnSave_Click(object sender, EventArgs e)
         {
             if (!int.TryParse(txtNumberOfMembers.Text, out int numMembers))
             {
@@ -97,7 +97,7 @@ namespace NineTapTour.Forms
                 // loads the loading screen if takes long time
                 frmPleaseWait please = new frmPleaseWait();
                 please.Show();
-                exportToExcel(); // Exports to excel file
+                ExportToExcel(); // Exports to excel file
                 please.Close();
 
                 this.Close();
@@ -109,7 +109,7 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void exportToExcel()
+        private void ExportToExcel()
         {
             // this is used in a few places for labeling file name and displayed on the excel sheet
             string reportTypeToSave = "";
@@ -279,9 +279,9 @@ namespace NineTapTour.Forms
                 xlWorkBook.Close(true, misValue, misValue);
                 xlApp.Quit();
 
-                releaseObject(xlWorkSheet);
-                releaseObject(xlWorkBook);
-                releaseObject(xlApp);
+                ReleaseObject(xlWorkSheet);
+                ReleaseObject(xlWorkBook);
+                ReleaseObject(xlApp);
             }
             catch (Exception e)
             {
@@ -298,7 +298,7 @@ namespace NineTapTour.Forms
         /// so that Excel does not remain running.
         /// </summary>
         /// <param name="obj"></param>
-        private void releaseObject(object obj)
+        private void ReleaseObject(object obj)
         {
             try
             {
