@@ -17,6 +17,7 @@ namespace NineTapTour.Database
         /// If the Member given is found in the database, updates that Memeber. 
         /// Otherwise, adds the new Memeber to the database
         /// </summary>
+        /// <exception cref="DbUpdateException"></exception>
         public static void AddOrUpdateMember(Member temp)
         {
             try
