@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -11,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NineTapTour.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace NineTapTour.Forms
 {
@@ -547,7 +547,7 @@ namespace NineTapTour.Forms
                         row.SetField(DIRECTOR_CHECK_COLUMN, isCellChecked);
                     }
                 }
-                dataGridView1_CellClick(sender, e);// moved higher in scope to help refresh correctly
+                TournamentEntriesGrid_CellClick(sender, e);// moved higher in scope to help refresh correctly
             }
         }
 
@@ -1020,18 +1020,19 @@ namespace NineTapTour.Forms
             return history.TotalScore + ((history.HandiCap + history.Bonus) * history.GamesPlayed);
         }
 
-
-
-        // need to change dataGridView1 to proper name
         /// <summary>
         /// This method populates the second DataGridView with information about the player associated with the cell that triggered the event.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void TournamentEntriesGrid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             // If one of the column headers was clicked, don't update
             if (e.RowIndex == -1) // -1 indicates the column header row
+                return;
+
+            // No need to update if director is checking these boxes
+            if (e.RowIndex == DIRECTOR_CHECK_COLUMN || e.RowIndex == ADJUSTED_AVG_COLUMN)
                 return;
             
             UpdateLeagueAvg(e.RowIndex);//added to help update more often

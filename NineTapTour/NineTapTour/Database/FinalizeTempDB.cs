@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NineTapTour.Models;
 
 namespace NineTapTour.Database
@@ -213,6 +213,7 @@ namespace NineTapTour.Database
                     // Checks if tournament is new or already existing in the database
                     if (!db.FinalizeTemp.Any(f => f.GameId == temp.GameId))
                     {
+                        temp.FinalizeID = 0; // Finalize record will get auto generated id
                         db.Entry(temp).State = EntityState.Added;
 
                         /* There is a problem in the database's member's average, so it was not 

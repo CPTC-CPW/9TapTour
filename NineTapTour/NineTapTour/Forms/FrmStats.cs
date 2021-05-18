@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Linq;
 using NineTapTour.Database;
-using System.Data.Entity;
 using NineTapTour.Models;
 
 namespace NineTapTour.Forms

@@ -6,11 +6,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Drawing.Printing;
 using System.Configuration;
-using System.Data.Entity.Core.Objects;
 using NineTapTour.Models;
 
 namespace NineTapTour.Database

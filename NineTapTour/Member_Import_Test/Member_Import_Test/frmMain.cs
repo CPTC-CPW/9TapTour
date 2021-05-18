@@ -21,7 +21,7 @@ namespace Member_Import_Test
             InitializeComponent();
             List<NineTapRegion> r = NineTapRegionDB.GetRegionList();
             cbxRegionSelect.DataSource = r;
-            cbxRegionSelect.DisplayMember = "NineTapRegionName";
+            cbxRegionSelect.DisplayMember = nameof(NineTapRegion.NineTapRegionName);
             RegionID = r[cbxRegionSelect.SelectedIndex].NineTapRegionID;
             
         }
@@ -622,7 +622,7 @@ namespace Member_Import_Test
                 string orgstring;
                 try
                 {
-                    orgstring = ((range.Cells[1, 10] as Excel.Range).Value2);
+                    orgstring = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
                     aftersplit = orgstring.Split('-');
                     playerOrgAVG = Convert.ToInt32(aftersplit[0]);
                 }
@@ -630,7 +630,7 @@ namespace Member_Import_Test
                 {
                     try
                     {
-                        orgstring = ((range.Cells[1, 10] as Excel.Range).Value2);
+                        orgstring = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
                         aftersplit = orgstring.Split('*');
                         playerOrgAVG = Convert.ToInt32(aftersplit[0]);
                     }
@@ -638,7 +638,7 @@ namespace Member_Import_Test
                     {
                         try
                         {
-                            orgstring = ((range.Cells[1, 10] as Excel.Range).Value2);
+                            orgstring = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
                             aftersplit = orgstring.Split('L');
                             playerOrgAVG = Convert.ToInt32(aftersplit[0]);
                         }
@@ -650,7 +650,7 @@ namespace Member_Import_Test
                 }
             }
           
-            String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
+            String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2.ToString();
             bool isRegionHawaii = (cbHaw.Checked); // checks to see if Region is Hawaii
 
             if(playerNumber == null)
@@ -876,7 +876,7 @@ namespace Member_Import_Test
                         try
                         {
                             // THIS WILL CATCH SUBTOTALS THAT MAY HAVE BEEN ADDED ON LINE 46 OF THE EXCEL FILES
-                            if (temp.FinPPHG.ToString() != "") // Only grab the money earned from tournament if they placed in tournament
+                            if (temp.FinPPHG?.ToString() != "") // Only grab the money earned from tournament if they placed in tournament
                             {
                                 temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
                                 GameHistory.MoneyWon = Convert.ToDecimal(temp.Cash);
@@ -899,7 +899,7 @@ namespace Member_Import_Test
                         GameHistory.Notes = temp.Notes;
                         playerH.Notes = temp.Notes;
                         playerH.PPHG = temp.FinPPHG;
-                        GameHistory.Id = allGames + 1;
+                        // GameHistory.Id = allGames + 1; // Id is an Identity column and will auto increment
                         allGames++;
                         playerH.GameID = GameHistory.Id;
                         GameImport.Add(GameHistory);

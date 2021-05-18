@@ -1,15 +1,13 @@
 ﻿using NineTapTour.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.Entity.Validation;
 using NineTapTour.Models;
 using NineTapTour.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace NineTapTour.Database
 {
@@ -166,19 +164,17 @@ namespace NineTapTour.Database
                                  select p).Count();
                     if (check == 0)
                     {
+                        player.Id = 0; // New participants will get an auto generated id
                         db.Participants.Add(player);
-                        /* Uses AddObject because you cannot have object graph where part of objects are connected to context and part of not.
-                         Changed so that context knows that department already exists. */
-                        var manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
-                        manager.ChangeObjectState(player.Tournament, EntityState.Unchanged);
-                        manager.ChangeObjectState(player.Member, EntityState.Unchanged);
+                        // We only want to add a the current person. Tournament and Member data is not changed here.
+                        db.Entry(player.Tournament).State = EntityState.Unchanged;
+                        db.Entry(player.Member).State = EntityState.Unchanged;
                         db.SaveChanges();
                     }
                     else
                     {
                         try
                         {
-                            System.Data.Entity.Core.Objects.ObjectStateManager manager = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager;
                             Game result = db.Games.SingleOrDefault(g => g.Id == player.Game.Id);
                             Participant squadResult = db.Participants.SingleOrDefault(p => p.Id == player.Id);
                             Participant memberQuery = db.Participants.Include(m => m.Member)
@@ -199,21 +195,9 @@ namespace NineTapTour.Database
                             squadResult.Member = memberQuery.Member;
                             db.SaveChanges();
                         }
-                        catch (DbEntityValidationException ex)
+                        catch (DbUpdateException)
                         {
-                            // Retrieve the error messages as a list of strings.
-                            var errorMessages = ex.EntityValidationErrors
-                                    .SelectMany(x => x.ValidationErrors)
-                                    .Select(x => x.ErrorMessage);
-
-                            // Join the list to a single string.
-                            string fullErrorMessage = string.Join("; ", errorMessages);
-
-                            // Combine the original exception message with the new one.
-                            string exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
-
-                            // Throw a new DbEntityValidationException with the improved exception message.
-                            throw new DbEntityValidationException(exceptionMessage, ex.EntityValidationErrors);
+                            throw;
                         }
                     }
                     //Adds player inside NineTapDb

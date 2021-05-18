@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
-using System.Data.Entity;
 using NineTapTour.Models;
 using static NineTapTour.Database.ReportHelper;
 

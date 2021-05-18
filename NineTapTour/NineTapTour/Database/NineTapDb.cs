@@ -1,26 +1,38 @@
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using NineTapTour.Models;
 
 namespace NineTapTour.Database
 {
     public class NineTapDb : DbContext
     {
-        // Your context has been configured to use a 'NineTapDb' connection string from your application's 
-        // configuration file (App.config or Web.config). By default, this connection string targets the 
-        // 'NineTapTour.NineTapDb' database on your LocalDb instance. 
-        // 
-        // If you wish to target a different database and/or database provider, modify the 'NineTapDb' 
-        // connection string in the application configuration file.
-        public NineTapDb()
-            : base("name=NineTapDbConnection")
+        public NineTapDb() { }
+
+        public NineTapDb(DbContextOptions<NineTapDb> options)
+            : base(options)
         {
         }
 
-        // Add a DbSet for each entity type that you want to include in your model. For more information 
-        // on configuring and using a Code First model, see http://go.microsoft.com/fwlink/?LinkId=390109.
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            // Modify generated table names to match old EF6 database for script compatibility
+            builder.Entity<FinalizeTemp>().ToTable("FinalizeTemps");
+            builder.Entity<NineTapRegion>().ToTable("NineTapRegions");
+            builder.Entity<PlayerHistory>().ToTable("PlayerHistories");
+        }
 
-        // public virtual DbSet<MyEntity> MyEntities { get; set; }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;database=NineTapDb2021;trusted_connection=true;MultipleActiveResultSets=true");
 
+//#if !DEBUG
+//                optionsBuilder.UseSqlServer("Server=.\\SQLExpress;database=NineTapTour.NineTapDb;trusted_connection=true;MultipleActiveResultSets=true");
+//#endif
+            }
+        }
+
+        // Add DbSets for each type to store in the database
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<Game> Games { get; set; }
         public virtual DbSet<Tournament> Tournaments { get; set; }
@@ -31,10 +43,4 @@ namespace NineTapTour.Database
         public virtual DbSet<NineTapRegion> NineTapRegion { get; set; }
 
     }
-
-    //public class MyEntity
-    //{
-    //    public int Id { get; set; }
-    //    public string Name { get; set; }
-    //}
 }

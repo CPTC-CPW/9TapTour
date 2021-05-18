@@ -7,7 +7,6 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Linq.Dynamic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,6 +15,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections;
 using System.Text.RegularExpressions;
 using NineTapTour.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace NineTapTour.Forms
 {
@@ -102,7 +102,7 @@ namespace NineTapTour.Forms
                 }
 
                 g.gameRegionID = tourny.TourneyRegion;
-                db.Entry(g).State = System.Data.Entity.EntityState.Modified;
+                db.Entry(g).State = EntityState.Modified;
                 db.SaveChanges();
             }
         }
@@ -267,10 +267,19 @@ namespace NineTapTour.Forms
                     List<int> scores = new List<int>
                         { m.Game1Score, m.Game2Score, m.Game3Score, m.Game4Score };
 
-                    // remove lowest score
+                    // remove lowest score if there are 4 games
                     if (scores.Count() == 4)
                     {
-                        scores.Remove(scores.Min());
+                        int minScore = scores.Min();
+                        scores.Remove(minScore);
+                        if (m.Game1Score == minScore)
+                            m.Game1Score = 0;
+                        else if (m.Game2Score == minScore)
+                            m.Game2Score = 0;
+                        else if (m.Game3Score == minScore)
+                            m.Game3Score = 0;
+                        else if (m.Game4Score == minScore)
+                            m.Game4Score = 0;
                     }
 
                     m.TotalScore = scores.Sum()
@@ -340,7 +349,7 @@ namespace NineTapTour.Forms
             string fileName = tourny.Location + " " + tourny.Event + " " + tournamentDate + ".xls";
 
             // save the file in the documents folder
-            string saveFile = @"\Documents\" + fileName;
+            string saveFile = Path.Combine(Environment.SpecialFolder.MyDocuments.ToString(), fileName);
 
             string data = null; // the data to be added to the excel spreadsheet cells
             string tempData = null;
@@ -664,17 +673,20 @@ namespace NineTapTour.Forms
                         SaveFileDialog savefile = new SaveFileDialog();
                         savefile.Filter = "Excel Files (*.xls)|*.xls";
                         savefile.FileName = fileName;
-                        savefile.ShowDialog();
+                        DialogResult result = savefile.ShowDialog();
 
-                        fileName = savefile.FileName;
+                        if(result == DialogResult.OK)
+                        {
+                            fileName = savefile.FileName;
 
-                        xlWorkBook.SaveAs(fileName, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
-                        MessageBox.Show("Excel file created , you can find the file at: " + fileName);
+                            xlWorkBook.SaveAs(fileName, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+                            MessageBox.Show("Excel file created , you can find the file at: " + fileName);
+                        }
                     }
                 }
                 catch
                 {
-                    MessageBox.Show("Either you cancelled the file save, or the file is already created and was open when you tried to save over it.");
+                    MessageBox.Show("The file may already be created and was open when you tried to save over it.");
                 }
 
                 xlWorkBook.Close(true, misValue, misValue);

@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
 using System.Drawing;
-using System.Data.Entity;
-using NineTapTour.Migrations;
 using NineTapTour.Models;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NineTapTour.Forms
 {
@@ -43,8 +43,9 @@ namespace NineTapTour.Forms
             //this size is the height and width of the primary screen minus the start bar (if the user has a start bar)
             MaxWorkAreaScreenSize = new Size( Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height );
 
-            //run any pending database migrations on start
-            System.Data.Entity.Database.SetInitializer<NineTapDb>(new MigrateDatabaseToLatestVersion<NineTapDb, Configuration>());
+            // Run migrations on startup
+            var migrator = new NineTapDb().Database.GetService<IMigrator>();
+            migrator.Migrate();
 
             MembersList = MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
             TournamentList = TournamentDB.GetTournamentList(RegionID);
@@ -232,30 +233,21 @@ namespace NineTapTour.Forms
 
         private void BackupDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
-            if (folderDialog.ShowDialog() == DialogResult.OK)
+            if (DatabaseManagement.BackupDatabase())
             {
-                if (DatabaseManagement.BackupDatabase(folderDialog.SelectedPath))
-                {
-                    MessageBox.Show("Database successfully backed up!");
-                }
+                MessageBox.Show("Database successfully backed up!");
             }
         }
 
         private void RestoreDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "Backup Files (*.bak)|*.bak";
-            if (fileDialog.ShowDialog() == DialogResult.OK)
+            if (MessageBox.Show("Restoring the database will restart the application.", "Warning", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
-                if (MessageBox.Show("Restoring the database will restart the application.", "Warning", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                if (DatabaseManagement.RestoreDatabase())
                 {
-                    if (DatabaseManagement.RestoreDatabase(fileDialog.FileName))
-                    {
-                        MessageBox.Show("Database successfully restored from backup!");
-                        AppMustClose = true;
-                        Application.Restart();
-                    }
+                    MessageBox.Show("Database successfully restored from backup!");
+                    AppMustClose = true;
+                    Application.Restart();
                 }
             }
         }

@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Versioning;
 
 namespace NineTapTour.Models
 {
@@ -11,8 +13,6 @@ namespace NineTapTour.Models
         /// </summary>
         [Key] public int hisID { get; set; }
 
-        //required
-        [Index("IX_MemberNumber", IsUnique = false)]
         public int MemberNumber { get; set; }
         public int GamesPlayed { get; set; }
 

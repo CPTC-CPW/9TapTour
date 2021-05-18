@@ -1,8 +1,7 @@
-﻿using NineTapTour.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using NineTapTour.Models;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.Entity.Validation;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -44,13 +43,15 @@ namespace NineTapTour.Database
         /// <param name="games">The Games to add or update</param>
         public static void AddOrUpdateSomeGames(List<Game> games)
         {
-            var db = new NineTapDb();
-            foreach (var currGame in games)
+            using (var db = new NineTapDb())
             {
-                db.Entry(currGame).State = db.Games.Any(g => g.Id == currGame.Id) ?
-                        EntityState.Modified : EntityState.Added;
+                foreach (var currGame in games)
+                {
+                    db.Entry(currGame).State = db.Games.Any(g => g.Id == currGame.Id) ?
+                            EntityState.Modified : EntityState.Added;
+                }
+                db.SaveChanges();
             }
-            db.SaveChanges();
         }
 
         public static Game GetGameInTournament(int memberID, int tournamentID, int squad)

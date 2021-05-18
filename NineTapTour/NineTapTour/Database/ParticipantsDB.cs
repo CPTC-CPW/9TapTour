@@ -1,8 +1,8 @@
-﻿using NineTapTour.Calculations;
+﻿using Microsoft.EntityFrameworkCore;
+using NineTapTour.Calculations;
 using NineTapTour.Models;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,7 +42,7 @@ namespace NineTapTour.Database
                             Score = g.Game.Game1.Value,
                             LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                             Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                                (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                         }).Concat(
                             (from g in (db.Participants.Include(b => b.Member)
                                 .Include(b => b.Game)
@@ -55,7 +55,7 @@ namespace NineTapTour.Database
                      Score = g.Game.Game2.Value,
                      LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                      Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                        (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                        (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                  })).Concat(
                      (from g in (db.Participants.Include(b => b.Member)
                           .Include(b => b.Game)
@@ -68,7 +68,7 @@ namespace NineTapTour.Database
                      Score = g.Game.Game3.Value,
                      LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                      Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                        (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                        (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                  })).Concat(
                      (from g in (db.Participants.Include(b => b.Member)
                           .Include(b => b.Game)
@@ -81,7 +81,7 @@ namespace NineTapTour.Database
                      Score = g.Game.Game4.Value,
                      LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                      Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                        (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                        (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                  })).ToList();
             }
         }
@@ -106,7 +106,7 @@ namespace NineTapTour.Database
                     Score = g.Game.Game1.Value,
                     LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                     Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                        (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                        (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                 }).Concat(
                     (from g in (db.Participants.Include(nameof(Participant.Member))
                         .Include(nameof(Participant.Game))
@@ -120,7 +120,7 @@ namespace NineTapTour.Database
                     Score = g.Game.Game2.Value,
                     LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                     Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                        (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                        (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                 })).Concat(
                     (from g in (db.Participants.Include(nameof(Participant.Member))
                         .Include(nameof(Participant.Game))
@@ -134,7 +134,7 @@ namespace NineTapTour.Database
                     Score = g.Game.Game3.Value,
                     LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                     Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                        (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                        (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                 })).Concat(
                     (from g in (db.Participants.Include(nameof(Participant.Member))
                         .Include(nameof(Participant.Game))
@@ -148,7 +148,7 @@ namespace NineTapTour.Database
                     Score = g.Game.Game4.Value,
                     LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                     Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                        (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                        (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                 })).ToList();
                 temp.Sort(new MemberScoresComparer());
                 return temp;
@@ -176,7 +176,7 @@ namespace NineTapTour.Database
                                 (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()),
                             LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                             Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                                (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                         }).ToList();
             }
         }
@@ -202,7 +202,7 @@ namespace NineTapTour.Database
                                 (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()),
                             LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                             Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                                (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                         }).ToList();
             }
         }
@@ -228,7 +228,7 @@ namespace NineTapTour.Database
                                 (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()),
                             LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                             Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                                (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                         }).ToList();
             }
         }
@@ -253,7 +253,7 @@ namespace NineTapTour.Database
                                 (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()),
                             LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                             Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                                (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                         }).ToList();
             }
         }
@@ -278,7 +278,7 @@ namespace NineTapTour.Database
                                 (g.Game.Game3 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game4 + g.Game.Bonus + g.Game.Handicap),
                             LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                             Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                                (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                         }).ToList();
             }
         }
@@ -302,7 +302,7 @@ namespace NineTapTour.Database
                             Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4) +  (g.Game.Bonus * 4),
                             LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                             Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                                (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                         }).ToList();
             }
         }
@@ -325,7 +325,7 @@ namespace NineTapTour.Database
                             Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4,
                             LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                             Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                                (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                         }).ToList();
             }
         }
@@ -348,7 +348,7 @@ namespace NineTapTour.Database
                             Score = (g.Game.Game1) + (g.Game.Game2) + (g.Game.Game3) + (g.Game.Game4),
                             LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                             Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                                (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                         }).ToList();
             }
         }
@@ -385,7 +385,7 @@ namespace NineTapTour.Database
                                  (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()),
                              LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                              Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                                 (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                                 (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                          }).ToList());
                 }
                 return returnedList;
@@ -415,7 +415,7 @@ namespace NineTapTour.Database
                              Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4) + (g.Game.Bonus * 4),
                              LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                              Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                                (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                          }).ToList());
 
                 }
@@ -448,7 +448,7 @@ namespace NineTapTour.Database
                                 (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()),
                              LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                              Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                                (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                          }).ToList());
                 }
                 return returnedList;
@@ -477,7 +477,7 @@ namespace NineTapTour.Database
                              Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4,
                              LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                              Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                             (g.Member.LastPayment.Value <= DbFunctions.AddYears(DateTime.Now, -1))))
+                             (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                          }).ToList());
                 }
                 return returnedList;

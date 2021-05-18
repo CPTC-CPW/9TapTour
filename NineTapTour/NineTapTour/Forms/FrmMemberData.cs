@@ -641,39 +641,34 @@ namespace NineTapTour.Forms
                 }
 
                 // Adds Member to Database
-                try
+                if (!Int32.TryParse(txtBonus.Text, out int tempBonusPins)) {
+                    tempBonusPins = 0;
+                }
+
+                if (tempBonusPins >= 0 && tempBonusPins <= 5)
                 {
-                    if (!Int32.TryParse(txtBonus.Text, out int tempBonusPins)) {
-                        tempBonusPins = 0;
-                    }
-                    //int tempBonusPins = Convert.ToInt16(txtBonus.Text);
-                    if (tempBonusPins <= 5)
-                    {
-                        // Left blank because this is simply making sure it is going to import 
-                        // correct data into [dbo].[Members]
-                        temp.Bonus = tempBonusPins;
-                    }
-                    else
-                    {
-                        throw new InvalidMemberImportationException("Maximum allowed bonus pins is 5");
-                    }
+                    // Left blank because this is simply making sure it is going to import 
+                    // correct data into [dbo].[Members]
+                    temp.Bonus = tempBonusPins;
+                }
+                else
+                {
+                    isValid = false;
+                    MessageBox.Show("Bonus pins is invalid!");
+                    txtBonus.BackColor = Color.LightPink;
+                }
+
+                if (isValid)
+                {
                     MemberDB.AddOrUpdateMember(temp);
-#if DEBUG
+                    #if DEBUG
                     MessageBox.Show("Member saved");
-#endif
+                    #endif
                     ((FrmMain)MdiParent).MembersList =
                         MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
                     UpdateMemberInfo();
                 }
-                catch (MemberTableException ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                catch (InvalidMemberImportationException exMember)
-                {
-                    MessageBox.Show(exMember.Message, "Uh-Oh!",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                
             }
 
             return isValid;
@@ -1060,7 +1055,7 @@ namespace NineTapTour.Forms
                 PlayerFinalFirstAndMiddle[i] = first0middle1[0];
             }
 
-            if (Int32.TryParse(((range.Cells[1, 10] as Excel.Range).Value2), out int result))
+            if (Int32.TryParse(((range.Cells[1, 10] as Excel.Range).Value2.ToString()), out int result))
             {
                 playerOrgAVG = result;
             }
@@ -1069,7 +1064,7 @@ namespace NineTapTour.Forms
                 playerOrgAVG = -1;
             }
 
-            String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2;
+            String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2.ToString();
             bool isRegionHawaii = (cbHaw.Checked); // checks to see if Region is Hawaii
 
             if (isRegionHawaii)
