@@ -326,6 +326,7 @@ namespace NineTapTour.Forms
                 
             foreach (TextBox score in scratchArray)
             {
+                // Get the number of the scratch score textbox. txtScratchScore1 returns 1
                 id = Regex.Match(score.Name, @"\d+").Value;
 
                 if (int.TryParse(score.Text, out cScore))
@@ -462,10 +463,7 @@ namespace NineTapTour.Forms
         {
             ReEnableNavigation();
 
-            if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) 
-                && string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) 
-                && string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) 
-                && string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
+            if (AreAllScratchScoreBoxesEmpty())
             {
                 MessageBox.Show("A player must play at least one game to be added to the tournament.", "Uh-Oh!");
             }
@@ -477,7 +475,7 @@ namespace NineTapTour.Forms
                 //get all the current members participating in the current tournament
                 overallListOfParticipants = TournamentDB.GetTournamentMemberList(currTourney);
 
-                int squad = GetCurrentSquadNumber();  
+                int squad = GetCurrentSquadNumber();
 
                 //get the member from the database using the number from the memnum textbox
                 currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
@@ -509,8 +507,8 @@ namespace NineTapTour.Forms
                 else
                     player.Game.MoneyWon = Convert.ToDecimal(txtMoney.Text);
 
-                
-                if((!IsNumeric(txtScratchScore1.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore1.Text))
+
+                if ((!IsNumeric(txtScratchScore1.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore1.Text))
                     || (!IsNumeric(txtScratchScore2.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore2.Text))
                     || (!IsNumeric(txtScratchScore3.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore3.Text))
                     || (!IsNumeric(txtScratchScore4.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore4.Text)))
@@ -522,19 +520,19 @@ namespace NineTapTour.Forms
                 {
                     player.Game.Game1 = IsEmpty(txtScratchScore1)
                         ? null
-                        : (int?) Convert.ToInt32((scratchArray[0].Text));
+                        : (int?)Convert.ToInt32((scratchArray[0].Text));
 
                     player.Game.Game2 = IsEmpty(txtScratchScore2)
                         ? null
-                        : (int?) Convert.ToInt32((scratchArray[1].Text));
+                        : (int?)Convert.ToInt32((scratchArray[1].Text));
 
                     player.Game.Game3 = IsEmpty(txtScratchScore3)
                         ? null
-                        : (int?) Convert.ToInt32((scratchArray[2].Text));
+                        : (int?)Convert.ToInt32((scratchArray[2].Text));
 
                     player.Game.Game4 = IsEmpty(txtScratchScore4)
                         ? null
-                        : (int?) Convert.ToInt32((scratchArray[3].Text));
+                        : (int?)Convert.ToInt32((scratchArray[3].Text));
 
                     Game currentGame = GetScoresById(currentMem.Id);
 
@@ -593,6 +591,17 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show("Please Fill out the Participants information!");
             }
+        }
+
+        /// <summary>
+        /// Returns true if all of the scratch score boxes are empty or whitespace
+        /// </summary>
+        private bool AreAllScratchScoreBoxesEmpty()
+        {
+            return string.IsNullOrEmpty(txtScratchScore1.Text.Trim())
+                            && string.IsNullOrEmpty(txtScratchScore2.Text.Trim())
+                            && string.IsNullOrEmpty(txtScratchScore3.Text.Trim())
+                            && string.IsNullOrEmpty(txtScratchScore4.Text.Trim());
         }
 
         /// <summary>
