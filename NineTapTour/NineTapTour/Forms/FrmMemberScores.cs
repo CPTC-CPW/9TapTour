@@ -809,8 +809,7 @@ namespace NineTapTour.Forms
         {
             NineTapDb db = new NineTapDb();
             Game memScores = new Game();
-            int squad = 0;
-            squad = GetCurrentSquadNumber();
+            int squad = GetCurrentSquadNumber();
 
             try
             {

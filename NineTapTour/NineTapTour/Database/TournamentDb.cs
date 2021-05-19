@@ -157,12 +157,12 @@ namespace NineTapTour.Database
             {
                 using (var db = new NineTapDb())
                 {
-                    int check = (from p in db.Participants
+                    bool isMemberInTournament = (from p in db.Participants
                                  where player.Member.Id == p.Member.Id
                                  && player.Tournament.Id == p.Tournament.Id
                                  && player.Squad == p.Squad
-                                 select p).Count();
-                    if (check == 0)
+                                 select p).Any();
+                    if (!isMemberInTournament)
                     {
                         player.Id = 0; // New participants will get an auto generated id
                         db.Participants.Add(player);
