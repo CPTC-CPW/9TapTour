@@ -807,22 +807,18 @@ namespace NineTapTour.Forms
 
         public Game GetScoresById(int memberID)
         {
-            Game memScores = new Game();
             int squad = GetCurrentSquadNumber();
 
             try
             {
                 int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
-
-                memScores = GameDB.GetGameInTournament(memberID, selectedTournamentId, squad);
+                return GameDB.GetGameInTournament(memberID, selectedTournamentId, squad);
             }
             catch (InvalidOperationException ex)
             {
                 Console.WriteLine("Error Number : " + ex.Message);
                 return null;
             }
-            return memScores;
-
         }
         /// <summary>
         /// clears memberNum, txtScratchScores, and High Game textboxes
