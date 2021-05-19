@@ -807,7 +807,6 @@ namespace NineTapTour.Forms
 
         public Game GetScoresById(int memberID)
         {
-            NineTapDb db = new NineTapDb();
             Game memScores = new Game();
             int squad = GetCurrentSquadNumber();
 
