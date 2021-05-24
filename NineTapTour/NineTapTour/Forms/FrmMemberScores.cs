@@ -363,8 +363,8 @@ namespace NineTapTour.Forms
 
                 if (selectedTournament.ThreeOutOf4 == true)
                 {
-                    int[] scratchasInt = new int[4];
-                    int[] handicapasInt = new int[4];
+                    int[] scratchAsInt = new int[4];
+                    int[] handicapAsInt = new int[4];
 
                     //put all 4 numbers in an array to find the lowest
                     for (int g = 0; g < scratchArray.Length; g++)
@@ -373,27 +373,27 @@ namespace NineTapTour.Forms
                         {
                             if(int.TryParse(scratchArray[g].Text, out int result))
                             {
-                                scratchasInt[g] = result;
+                                scratchAsInt[g] = result;
                             }
                             else
                             {
-                                scratchasInt[g] = 0;
+                                scratchAsInt[g] = 0;
                             }
 
                             if(int.TryParse(handicappArray[g].Text, out int handicapResult))
                             {
-                                handicapasInt[g] = handicapResult;
+                                handicapAsInt[g] = handicapResult;
                             }
                             else
                             {
-                                handicapasInt[g] = 0;
+                                handicapAsInt[g] = 0;
                             }
                         }
-                        handicapTotal += handicapasInt[g];
+                        handicapTotal += handicapAsInt[g];
                     }
 
-                    scratchTotal -= scratchasInt.Min();
-                    handicapTotal -= handicapasInt.Min();
+                    scratchTotal -= scratchAsInt.Min();
+                    handicapTotal -= handicapAsInt.Min();
 
                     txtScratchTotal.Text = scratchTotal.ToString();
                     txtHandicapTotal.Text = handicapTotal.ToString();
