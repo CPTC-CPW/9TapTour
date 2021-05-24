@@ -371,20 +371,20 @@ namespace NineTapTour.Forms
                     {
                         if (scratchArray[g].Text != "")
                         {
-                            try
+                            if(int.TryParse(scratchArray[g].Text, out int result))
                             {
-                                scratchasInt[g] = Convert.ToInt32(scratchArray[g].Text);
+                                scratchasInt[g] = result;
                             }
-                            catch
+                            else
                             {
                                 scratchasInt[g] = 0;
                             }
 
-                            try
+                            if(int.TryParse(handicappArray[g].Text, out int handicapResult))
                             {
-                                handicapasInt[g] = Convert.ToInt32(handicappArray[g].Text);
+                                handicapasInt[g] = handicapResult;
                             }
-                            catch
+                            else
                             {
                                 handicapasInt[g] = 0;
                             }
