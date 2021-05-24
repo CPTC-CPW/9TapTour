@@ -320,6 +320,12 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void ScratchTotal(object sender, EventArgs e)
         {
+            TextBox currentTextbox = (TextBox)sender;
+            if (currentTextbox.Text.Length != 3)
+            {
+                return;
+            }
+
             int scratchTotal = 0;
             int cScore = 0;
             string id;
@@ -349,8 +355,6 @@ namespace NineTapTour.Forms
                 }
                 txtScratchTotal.Text = scratchTotal.ToString();
             }
-
-            TextBox tx = (TextBox)sender;
 
             //this code will adjust the scratch and handicap total (textboxes) only if its a 3of4 tournament ( taking out the lowest game) 
             if (txtScratchScore1.Text != "" && txtScratchScore2.Text != "" && txtScratchScore3.Text != "" && txtScratchScore4.Text != "")
@@ -396,20 +400,16 @@ namespace NineTapTour.Forms
                 }
             }
 
-            ////auto tab to the next textbox when textbox's length is 3.           
-            if (tx.Text.Length == 3)
+            //if you enter in the last games score it will automatically be recorded with out pressing Add/Update
+            if (txtScratchScore4.Focused == true)
             {
-                //if you enter in the last games score it will automatically be recorded with out pressing Add/Update
-                if (txtScratchScore4.Text.Length == 3 && txtScratchScore4.Focused == true)
-                {
-                    //when last score is entered bowler record will be added
-                    AddNewUpdateRecord();
-                    btnNew.Focus();
-                }
-                else
-                {
-                    SendKeys.Send("{TAB}");
-                }
+                //when last score is entered bowler record will be added
+                AddNewUpdateRecord();
+                btnNew.Focus();
+            }
+            else
+            {
+                SendKeys.Send("{TAB}");
             }
         }
 
