@@ -145,7 +145,7 @@
             // txtLastName
             // 
             this.txtLastName.BackColor = System.Drawing.SystemColors.Control;
-            this.txtLastName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtLastName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtLastName.Location = new System.Drawing.Point(4, 31);
             this.txtLastName.MaxLength = 50;
             this.txtLastName.Name = "txtLastName";
@@ -157,7 +157,7 @@
             // txtFirstName
             // 
             this.txtFirstName.BackColor = System.Drawing.SystemColors.Control;
-            this.txtFirstName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtFirstName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtFirstName.Location = new System.Drawing.Point(238, 31);
             this.txtFirstName.MaxLength = 50;
             this.txtFirstName.Name = "txtFirstName";
@@ -168,7 +168,7 @@
             // txtMiddleInitial
             // 
             this.txtMiddleInitial.BackColor = System.Drawing.SystemColors.Control;
-            this.txtMiddleInitial.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMiddleInitial.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtMiddleInitial.Location = new System.Drawing.Point(488, 31);
             this.txtMiddleInitial.MaxLength = 10;
             this.txtMiddleInitial.Name = "txtMiddleInitial";
@@ -178,7 +178,7 @@
             // lblLastName
             // 
             this.lblLastName.AutoSize = true;
-            this.lblLastName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblLastName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblLastName.Location = new System.Drawing.Point(4, 9);
             this.lblLastName.Name = "lblLastName";
             this.lblLastName.Size = new System.Drawing.Size(80, 19);
@@ -188,7 +188,7 @@
             // lblFirstName
             // 
             this.lblFirstName.AutoSize = true;
-            this.lblFirstName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFirstName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblFirstName.Location = new System.Drawing.Point(242, 9);
             this.lblFirstName.Name = "lblFirstName";
             this.lblFirstName.Size = new System.Drawing.Size(82, 19);
@@ -198,7 +198,7 @@
             // lblMiddleIntial
             // 
             this.lblMiddleIntial.AutoSize = true;
-            this.lblMiddleIntial.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMiddleIntial.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblMiddleIntial.Location = new System.Drawing.Point(490, 9);
             this.lblMiddleIntial.Name = "lblMiddleIntial";
             this.lblMiddleIntial.Size = new System.Drawing.Size(103, 19);
@@ -208,7 +208,7 @@
             // lblMemberNum
             // 
             this.lblMemberNum.AutoSize = true;
-            this.lblMemberNum.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMemberNum.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblMemberNum.Location = new System.Drawing.Point(51, 88);
             this.lblMemberNum.Name = "lblMemberNum";
             this.lblMemberNum.Size = new System.Drawing.Size(127, 19);
@@ -217,7 +217,7 @@
             // 
             // txtMemberNumber
             // 
-            this.txtMemberNumber.Font = new System.Drawing.Font("Calibri", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMemberNumber.Font = new System.Drawing.Font("Calibri", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtMemberNumber.Location = new System.Drawing.Point(21, 9);
             this.txtMemberNumber.Multiline = true;
             this.txtMemberNumber.Name = "txtMemberNumber";
@@ -261,7 +261,7 @@
             this.grpMemberInfo.Controls.Add(this.txtCity);
             this.grpMemberInfo.Controls.Add(this.txtAddress);
             this.grpMemberInfo.Controls.Add(this.txtEmail);
-            this.grpMemberInfo.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.grpMemberInfo.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.grpMemberInfo.Location = new System.Drawing.Point(360, 93);
             this.grpMemberInfo.Margin = new System.Windows.Forms.Padding(16, 3, 3, 3);
             this.grpMemberInfo.Name = "grpMemberInfo";
@@ -282,7 +282,7 @@
             // lblStateValidation
             // 
             this.lblStateValidation.AutoSize = true;
-            this.lblStateValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblStateValidation.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblStateValidation.ForeColor = System.Drawing.Color.Red;
             this.lblStateValidation.Location = new System.Drawing.Point(171, 119);
             this.lblStateValidation.Name = "lblStateValidation";
@@ -294,7 +294,7 @@
             // lblSSNValidation
             // 
             this.lblSSNValidation.AutoSize = true;
-            this.lblSSNValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblSSNValidation.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblSSNValidation.ForeColor = System.Drawing.Color.Red;
             this.lblSSNValidation.Location = new System.Drawing.Point(370, 23);
             this.lblSSNValidation.Name = "lblSSNValidation";
@@ -306,7 +306,7 @@
             // lblReferralsValidation
             // 
             this.lblReferralsValidation.AutoSize = true;
-            this.lblReferralsValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblReferralsValidation.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblReferralsValidation.ForeColor = System.Drawing.Color.Red;
             this.lblReferralsValidation.Location = new System.Drawing.Point(404, 215);
             this.lblReferralsValidation.Name = "lblReferralsValidation";
@@ -318,7 +318,7 @@
             // lblDateJoinedValidation
             // 
             this.lblDateJoinedValidation.AutoSize = true;
-            this.lblDateJoinedValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblDateJoinedValidation.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblDateJoinedValidation.ForeColor = System.Drawing.Color.Red;
             this.lblDateJoinedValidation.Location = new System.Drawing.Point(342, 77);
             this.lblDateJoinedValidation.Name = "lblDateJoinedValidation";
@@ -330,7 +330,7 @@
             // lblDOBValidation
             // 
             this.lblDOBValidation.AutoSize = true;
-            this.lblDOBValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblDOBValidation.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblDOBValidation.ForeColor = System.Drawing.Color.Red;
             this.lblDOBValidation.Location = new System.Drawing.Point(143, 44);
             this.lblDOBValidation.Name = "lblDOBValidation";
@@ -585,7 +585,7 @@
             this.groupRecord.Controls.Add(this.btnImportData);
             this.groupRecord.Controls.Add(this.btnSave);
             this.groupRecord.Controls.Add(this.btnNew);
-            this.groupRecord.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupRecord.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.groupRecord.Location = new System.Drawing.Point(854, 3);
             this.groupRecord.Margin = new System.Windows.Forms.Padding(3, 3, 20, 3);
             this.groupRecord.Name = "groupRecord";
@@ -597,7 +597,7 @@
             // cbHaw
             // 
             this.cbHaw.AutoSize = true;
-            this.cbHaw.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbHaw.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.cbHaw.Location = new System.Drawing.Point(6, 102);
             this.cbHaw.Name = "cbHaw";
             this.cbHaw.Size = new System.Drawing.Size(84, 23);
@@ -608,7 +608,7 @@
             // 
             // btnImportData
             // 
-            this.btnImportData.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnImportData.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnImportData.Location = new System.Drawing.Point(19, 72);
             this.btnImportData.Name = "btnImportData";
             this.btnImportData.Size = new System.Drawing.Size(75, 23);
@@ -620,7 +620,7 @@
             // 
             // btnSave
             // 
-            this.btnSave.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSave.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnSave.Location = new System.Drawing.Point(17, 45);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
@@ -631,7 +631,7 @@
             // 
             // btnNew
             // 
-            this.btnNew.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNew.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnNew.Location = new System.Drawing.Point(17, 19);
             this.btnNew.Name = "btnNew";
             this.btnNew.Size = new System.Drawing.Size(75, 23);
@@ -646,7 +646,7 @@
             this.grpRecordNumber.Controls.Add(this.btnFirstRecord);
             this.grpRecordNumber.Controls.Add(this.btnRightArrow);
             this.grpRecordNumber.Controls.Add(this.btnArrowLeft);
-            this.grpRecordNumber.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.grpRecordNumber.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.grpRecordNumber.Location = new System.Drawing.Point(3, 537);
             this.grpRecordNumber.Margin = new System.Windows.Forms.Padding(3, 3, 30, 3);
             this.grpRecordNumber.Name = "grpRecordNumber";
@@ -657,7 +657,7 @@
             // 
             // btnLastRecord
             // 
-            this.btnLastRecord.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLastRecord.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnLastRecord.Location = new System.Drawing.Point(98, 62);
             this.btnLastRecord.Name = "btnLastRecord";
             this.btnLastRecord.Size = new System.Drawing.Size(89, 25);
@@ -669,7 +669,7 @@
             // 
             // btnFirstRecord
             // 
-            this.btnFirstRecord.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnFirstRecord.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnFirstRecord.Location = new System.Drawing.Point(7, 62);
             this.btnFirstRecord.Name = "btnFirstRecord";
             this.btnFirstRecord.Size = new System.Drawing.Size(89, 25);
@@ -681,7 +681,7 @@
             // 
             // btnRightArrow
             // 
-            this.btnRightArrow.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRightArrow.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnRightArrow.Location = new System.Drawing.Point(115, 25);
             this.btnRightArrow.Name = "btnRightArrow";
             this.btnRightArrow.Size = new System.Drawing.Size(55, 33);
@@ -693,7 +693,7 @@
             // 
             // btnArrowLeft
             // 
-            this.btnArrowLeft.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnArrowLeft.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnArrowLeft.Location = new System.Drawing.Point(24, 25);
             this.btnArrowLeft.Name = "btnArrowLeft";
             this.btnArrowLeft.Size = new System.Drawing.Size(55, 33);
@@ -706,7 +706,7 @@
             // grpStats
             // 
             this.grpStats.Controls.Add(this.btnStats);
-            this.grpStats.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.grpStats.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.grpStats.Location = new System.Drawing.Point(231, 537);
             this.grpStats.Margin = new System.Windows.Forms.Padding(3, 3, 30, 3);
             this.grpStats.Name = "grpStats";
@@ -729,7 +729,7 @@
             // grpSearchBy
             // 
             this.grpSearchBy.Controls.Add(this.btnMemberSearch);
-            this.grpSearchBy.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.grpSearchBy.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.grpSearchBy.Location = new System.Drawing.Point(343, 537);
             this.grpSearchBy.Margin = new System.Windows.Forms.Padding(3, 3, 30, 3);
             this.grpSearchBy.Name = "grpSearchBy";
@@ -740,7 +740,7 @@
             // 
             // btnMemberSearch
             // 
-            this.btnMemberSearch.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnMemberSearch.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnMemberSearch.Location = new System.Drawing.Point(0, 33);
             this.btnMemberSearch.Name = "btnMemberSearch";
             this.btnMemberSearch.Size = new System.Drawing.Size(109, 52);
@@ -754,7 +754,7 @@
             // 
             this.grpPrinter.Controls.Add(this.btnPrintActive);
             this.grpPrinter.Controls.Add(this.btnThisRecap);
-            this.grpPrinter.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.grpPrinter.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.grpPrinter.Location = new System.Drawing.Point(491, 537);
             this.grpPrinter.Name = "grpPrinter";
             this.grpPrinter.Size = new System.Drawing.Size(173, 85);
@@ -764,7 +764,7 @@
             // 
             // btnPrintActive
             // 
-            this.btnPrintActive.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold);
+            this.btnPrintActive.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnPrintActive.Location = new System.Drawing.Point(6, 53);
             this.btnPrintActive.Name = "btnPrintActive";
             this.btnPrintActive.Size = new System.Drawing.Size(161, 23);
@@ -776,7 +776,7 @@
             // 
             // btnThisRecap
             // 
-            this.btnThisRecap.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnThisRecap.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnThisRecap.Location = new System.Drawing.Point(6, 23);
             this.btnThisRecap.Name = "btnThisRecap";
             this.btnThisRecap.Size = new System.Drawing.Size(161, 23);
@@ -836,7 +836,7 @@
             // 
             this.grpGender.Controls.Add(this.rdoFemale);
             this.grpGender.Controls.Add(this.rdoMale);
-            this.grpGender.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.grpGender.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.grpGender.Location = new System.Drawing.Point(172, 15);
             this.grpGender.Name = "grpGender";
             this.grpGender.Size = new System.Drawing.Size(101, 71);
@@ -848,7 +848,7 @@
             // 
             this.grpStatus.Controls.Add(this.rdoInActive);
             this.grpStatus.Controls.Add(this.rdoActive);
-            this.grpStatus.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.grpStatus.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.grpStatus.Location = new System.Drawing.Point(3, 10);
             this.grpStatus.Name = "grpStatus";
             this.grpStatus.Size = new System.Drawing.Size(101, 79);
@@ -859,7 +859,7 @@
             // chbSenior
             // 
             this.chbSenior.AutoSize = true;
-            this.chbSenior.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chbSenior.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.chbSenior.Location = new System.Drawing.Point(114, 44);
             this.chbSenior.Name = "chbSenior";
             this.chbSenior.Size = new System.Drawing.Size(61, 19);
@@ -871,7 +871,7 @@
             // chbLifetime
             // 
             this.chbLifetime.AutoSize = true;
-            this.chbLifetime.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.chbLifetime.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.chbLifetime.Location = new System.Drawing.Point(3, 3);
             this.chbLifetime.Name = "chbLifetime";
             this.chbLifetime.Size = new System.Drawing.Size(116, 19);
@@ -883,7 +883,7 @@
             // lblLastPaid
             // 
             this.lblLastPaid.AutoSize = true;
-            this.lblLastPaid.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblLastPaid.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblLastPaid.Location = new System.Drawing.Point(6, 28);
             this.lblLastPaid.Name = "lblLastPaid";
             this.lblLastPaid.Size = new System.Drawing.Size(107, 15);
@@ -893,7 +893,7 @@
             // lblPaymentInfo
             // 
             this.lblPaymentInfo.AutoSize = true;
-            this.lblPaymentInfo.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblPaymentInfo.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblPaymentInfo.ForeColor = System.Drawing.Color.Red;
             this.lblPaymentInfo.Location = new System.Drawing.Point(125, 6);
             this.lblPaymentInfo.Name = "lblPaymentInfo";
@@ -915,6 +915,7 @@
             // 
             // flpMemberData
             // 
+            this.flpMemberData.AutoScroll = true;
             this.flpMemberData.AutoSize = true;
             this.flpMemberData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpMemberData.Controls.Add(this.panel7);
@@ -968,7 +969,7 @@
             // lblAverageValidation
             // 
             this.lblAverageValidation.AutoSize = true;
-            this.lblAverageValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblAverageValidation.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblAverageValidation.ForeColor = System.Drawing.Color.Red;
             this.lblAverageValidation.Location = new System.Drawing.Point(57, 0);
             this.lblAverageValidation.Name = "lblAverageValidation";
@@ -991,7 +992,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label2.Location = new System.Drawing.Point(145, 23);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(101, 15);
@@ -1002,7 +1003,7 @@
             // 
             this.txt30GameAvg.BackColor = System.Drawing.SystemColors.Control;
             this.txt30GameAvg.Enabled = false;
-            this.txt30GameAvg.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt30GameAvg.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txt30GameAvg.Location = new System.Drawing.Point(150, 41);
             this.txt30GameAvg.MaxLength = 20;
             this.txt30GameAvg.Name = "txt30GameAvg";
@@ -1014,7 +1015,7 @@
             // lblLastBowled
             // 
             this.lblLastBowled.AutoSize = true;
-            this.lblLastBowled.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblLastBowled.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblLastBowled.Location = new System.Drawing.Point(372, 100);
             this.lblLastBowled.Name = "lblLastBowled";
             this.lblLastBowled.Size = new System.Drawing.Size(72, 15);
@@ -1024,7 +1025,7 @@
             // lblMoneyEarned
             // 
             this.lblMoneyEarned.AutoSize = true;
-            this.lblMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblMoneyEarned.Location = new System.Drawing.Point(198, 100);
             this.lblMoneyEarned.Name = "lblMoneyEarned";
             this.lblMoneyEarned.Size = new System.Drawing.Size(85, 15);
@@ -1034,7 +1035,7 @@
             // lblYET
             // 
             this.lblYET.AutoSize = true;
-            this.lblYET.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblYET.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblYET.Location = new System.Drawing.Point(17, 100);
             this.lblYET.Name = "lblYET";
             this.lblYET.Size = new System.Drawing.Size(60, 15);
@@ -1045,7 +1046,7 @@
             // 
             this.txtMoneyEarned.BackColor = System.Drawing.SystemColors.Control;
             this.txtMoneyEarned.Enabled = false;
-            this.txtMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtMoneyEarned.Location = new System.Drawing.Point(201, 118);
             this.txtMoneyEarned.Name = "txtMoneyEarned";
             this.txtMoneyEarned.Size = new System.Drawing.Size(100, 23);
@@ -1055,7 +1056,7 @@
             // txtEligibility
             // 
             this.txtEligibility.BackColor = System.Drawing.SystemColors.Control;
-            this.txtEligibility.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtEligibility.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtEligibility.Location = new System.Drawing.Point(20, 118);
             this.txtEligibility.MaxLength = 20;
             this.txtEligibility.Name = "txtEligibility";
@@ -1065,7 +1066,7 @@
             // lblBonus
             // 
             this.lblBonus.AutoSize = true;
-            this.lblBonus.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblBonus.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblBonus.Location = new System.Drawing.Point(364, 23);
             this.lblBonus.Name = "lblBonus";
             this.lblBonus.Size = new System.Drawing.Size(41, 15);
@@ -1075,7 +1076,7 @@
             // lblTournAvg
             // 
             this.lblTournAvg.AutoSize = true;
-            this.lblTournAvg.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTournAvg.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblTournAvg.Location = new System.Drawing.Point(256, 23);
             this.lblTournAvg.Name = "lblTournAvg";
             this.lblTournAvg.Size = new System.Drawing.Size(60, 15);
@@ -1085,7 +1086,7 @@
             // lblAverage
             // 
             this.lblAverage.AutoSize = true;
-            this.lblAverage.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAverage.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblAverage.Location = new System.Drawing.Point(68, 23);
             this.lblAverage.Name = "lblAverage";
             this.lblAverage.Size = new System.Drawing.Size(50, 15);
@@ -1096,7 +1097,7 @@
             // 
             this.txtHandicap.BackColor = System.Drawing.SystemColors.Control;
             this.txtHandicap.Enabled = false;
-            this.txtHandicap.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtHandicap.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtHandicap.Location = new System.Drawing.Point(245, 41);
             this.txtHandicap.MaxLength = 20;
             this.txtHandicap.Name = "txtHandicap";
@@ -1108,7 +1109,7 @@
             // txtBonus
             // 
             this.txtBonus.BackColor = System.Drawing.SystemColors.Control;
-            this.txtBonus.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtBonus.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtBonus.Location = new System.Drawing.Point(340, 41);
             this.txtBonus.MaxLength = 20;
             this.txtBonus.Name = "txtBonus";
@@ -1119,7 +1120,7 @@
             // txtAverage
             // 
             this.txtAverage.BackColor = System.Drawing.SystemColors.Control;
-            this.txtAverage.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtAverage.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtAverage.Location = new System.Drawing.Point(45, 41);
             this.txtAverage.MaxLength = 20;
             this.txtAverage.Name = "txtAverage";
@@ -1147,7 +1148,7 @@
             // lblFirstNameValidation
             // 
             this.lblFirstNameValidation.AutoSize = true;
-            this.lblFirstNameValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblFirstNameValidation.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblFirstNameValidation.ForeColor = System.Drawing.Color.Red;
             this.lblFirstNameValidation.Location = new System.Drawing.Point(330, 9);
             this.lblFirstNameValidation.Name = "lblFirstNameValidation";
@@ -1159,7 +1160,7 @@
             // lblLastNameValidation
             // 
             this.lblLastNameValidation.AutoSize = true;
-            this.lblLastNameValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblLastNameValidation.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblLastNameValidation.ForeColor = System.Drawing.Color.Red;
             this.lblLastNameValidation.Location = new System.Drawing.Point(86, 9);
             this.lblLastNameValidation.Name = "lblLastNameValidation";
@@ -1195,7 +1196,7 @@
             // lblNotes
             // 
             this.lblNotes.AutoSize = true;
-            this.lblNotes.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNotes.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblNotes.Location = new System.Drawing.Point(5, 168);
             this.lblNotes.Name = "lblNotes";
             this.lblNotes.Size = new System.Drawing.Size(49, 19);
@@ -1227,7 +1228,7 @@
             // lblPaidTo
             // 
             this.lblPaidTo.AutoSize = true;
-            this.lblPaidTo.Font = new System.Drawing.Font("Calibri", 9.75F);
+            this.lblPaidTo.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblPaidTo.Location = new System.Drawing.Point(6, 48);
             this.lblPaidTo.Name = "lblPaidTo";
             this.lblPaidTo.Size = new System.Drawing.Size(118, 15);
@@ -1244,7 +1245,7 @@
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(996, 749);
             this.Controls.Add(this.flpMemberData);
-            this.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
