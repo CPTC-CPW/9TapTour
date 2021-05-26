@@ -320,12 +320,19 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void ScratchTotal(object sender, EventArgs e)
         {
+            TextBox currentTextbox = (TextBox)sender;
+            if (currentTextbox.Text.Length != 3)
+            {
+                return;
+            }
+
             int scratchTotal = 0;
             int cScore = 0;
             string id;
                 
             foreach (TextBox score in scratchArray)
             {
+                // Get the number of the scratch score textbox. txtScratchScore1 returns 1
                 id = Regex.Match(score.Name, @"\d+").Value;
 
                 if (int.TryParse(score.Text, out cScore))
@@ -349,8 +356,6 @@ namespace NineTapTour.Forms
                 txtScratchTotal.Text = scratchTotal.ToString();
             }
 
-            TextBox tx = (TextBox)sender;
-
             //this code will adjust the scratch and handicap total (textboxes) only if its a 3of4 tournament ( taking out the lowest game) 
             if (txtScratchScore1.Text != "" && txtScratchScore2.Text != "" && txtScratchScore3.Text != "" && txtScratchScore4.Text != "")
             {
@@ -358,57 +363,53 @@ namespace NineTapTour.Forms
 
                 if (selectedTournament.ThreeOutOf4 == true)
                 {
-                    int[] scratchasInt = new int[4];
-                    int[] handicapasInt = new int[4];
+                    int[] scratchAsInt = new int[4];
+                    int[] handicapAsInt = new int[4];
 
                     //put all 4 numbers in an array to find the lowest
                     for (int g = 0; g < scratchArray.Length; g++)
                     {
                         if (scratchArray[g].Text != "")
                         {
-                            try
+                            if(int.TryParse(scratchArray[g].Text, out int result))
                             {
-                                scratchasInt[g] = Convert.ToInt32(scratchArray[g].Text);
+                                scratchAsInt[g] = result;
                             }
-                            catch
+                            else
                             {
-                                scratchasInt[g] = 0;
+                                scratchAsInt[g] = 0;
                             }
 
-                            try
+                            if(int.TryParse(handicappArray[g].Text, out int handicapResult))
                             {
-                                handicapasInt[g] = Convert.ToInt32(handicappArray[g].Text);
+                                handicapAsInt[g] = handicapResult;
                             }
-                            catch
+                            else
                             {
-                                handicapasInt[g] = 0;
+                                handicapAsInt[g] = 0;
                             }
                         }
-                        handicapTotal += handicapasInt[g];
+                        handicapTotal += handicapAsInt[g];
                     }
 
-                    scratchTotal -= scratchasInt.Min();
-                    handicapTotal -= handicapasInt.Min();
+                    scratchTotal -= scratchAsInt.Min();
+                    handicapTotal -= handicapAsInt.Min();
 
                     txtScratchTotal.Text = scratchTotal.ToString();
                     txtHandicapTotal.Text = handicapTotal.ToString();
                 }
             }
 
-            ////auto tab to the next textbox when textbox's length is 3.           
-            if (tx.Text.Length == 3)
+            //if you enter in the last games score it will automatically be recorded with out pressing Add/Update
+            if (txtScratchScore4.Focused == true)
             {
-                //if you enter in the last games score it will automatically be recorded with out pressing Add/Update
-                if (txtScratchScore4.Text.Length == 3 && txtScratchScore4.Focused == true)
-                {
-                    //when last score is entered bowler record will be added
-                    AddNewUpdateRecord();
-                    btnNew.Focus();
-                }
-                else
-                {
-                    SendKeys.Send("{TAB}");
-                }
+                //when last score is entered bowler record will be added
+                AddNewUpdateRecord();
+                btnNew.Focus();
+            }
+            else
+            {
+                SendKeys.Send("{TAB}");
             }
         }
 
@@ -462,10 +463,7 @@ namespace NineTapTour.Forms
         {
             ReEnableNavigation();
 
-            if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) 
-                && string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) 
-                && string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) 
-                && string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
+            if (AreAllScratchScoreBoxesEmpty())
             {
                 MessageBox.Show("A player must play at least one game to be added to the tournament.", "Uh-Oh!");
             }
@@ -477,7 +475,7 @@ namespace NineTapTour.Forms
                 //get all the current members participating in the current tournament
                 overallListOfParticipants = TournamentDB.GetTournamentMemberList(currTourney);
 
-                int squad = GetCurrentSquadNumber();  
+                int squad = GetCurrentSquadNumber();
 
                 //get the member from the database using the number from the memnum textbox
                 currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
@@ -509,8 +507,8 @@ namespace NineTapTour.Forms
                 else
                     player.Game.MoneyWon = Convert.ToDecimal(txtMoney.Text);
 
-                
-                if((!IsNumeric(txtScratchScore1.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore1.Text))
+
+                if ((!IsNumeric(txtScratchScore1.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore1.Text))
                     || (!IsNumeric(txtScratchScore2.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore2.Text))
                     || (!IsNumeric(txtScratchScore3.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore3.Text))
                     || (!IsNumeric(txtScratchScore4.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore4.Text)))
@@ -522,19 +520,19 @@ namespace NineTapTour.Forms
                 {
                     player.Game.Game1 = IsEmpty(txtScratchScore1)
                         ? null
-                        : (int?) Convert.ToInt32((scratchArray[0].Text));
+                        : (int?)Convert.ToInt32((scratchArray[0].Text));
 
                     player.Game.Game2 = IsEmpty(txtScratchScore2)
                         ? null
-                        : (int?) Convert.ToInt32((scratchArray[1].Text));
+                        : (int?)Convert.ToInt32((scratchArray[1].Text));
 
                     player.Game.Game3 = IsEmpty(txtScratchScore3)
                         ? null
-                        : (int?) Convert.ToInt32((scratchArray[2].Text));
+                        : (int?)Convert.ToInt32((scratchArray[2].Text));
 
                     player.Game.Game4 = IsEmpty(txtScratchScore4)
                         ? null
-                        : (int?) Convert.ToInt32((scratchArray[3].Text));
+                        : (int?)Convert.ToInt32((scratchArray[3].Text));
 
                     Game currentGame = GetScoresById(currentMem.Id);
 
@@ -593,6 +591,17 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show("Please Fill out the Participants information!");
             }
+        }
+
+        /// <summary>
+        /// Returns true if all of the scratch score boxes are empty or whitespace
+        /// </summary>
+        private bool AreAllScratchScoreBoxesEmpty()
+        {
+            return string.IsNullOrEmpty(txtScratchScore1.Text.Trim())
+                            && string.IsNullOrEmpty(txtScratchScore2.Text.Trim())
+                            && string.IsNullOrEmpty(txtScratchScore3.Text.Trim())
+                            && string.IsNullOrEmpty(txtScratchScore4.Text.Trim());
         }
 
         /// <summary>
@@ -798,24 +807,18 @@ namespace NineTapTour.Forms
 
         public Game GetScoresById(int memberID)
         {
-            NineTapDb db = new NineTapDb();
-            Game memScores = new Game();
-            int squad = 0;
-            squad = GetCurrentSquadNumber();
+            int squad = GetCurrentSquadNumber();
 
             try
             {
                 int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
-
-                memScores = GameDB.GetGameInTournament(memberID, selectedTournamentId, squad);
+                return GameDB.GetGameInTournament(memberID, selectedTournamentId, squad);
             }
             catch (InvalidOperationException ex)
             {
                 Console.WriteLine("Error Number : " + ex.Message);
                 return null;
             }
-            return memScores;
-
         }
         /// <summary>
         /// clears memberNum, txtScratchScores, and High Game textboxes
