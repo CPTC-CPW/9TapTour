@@ -1498,12 +1498,20 @@ namespace NineTapTour.Forms
         {
             if (e.KeyData == Keys.Enter)
             {
-                List<Participant> total = TournamentDB.GetTournamentMemberList(TournamentDB.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-                RecordIndexOnEnter(total);
-                FillMember();
+                UpdateRecordNumberAndRetrieveParticpant();
             }
         }
-        
+
+        /// <summary>
+        /// Updates the tournament record number for the chosen bowler and retrieves and displays the bowler information
+        /// </summary>
+        private void UpdateRecordNumberAndRetrieveParticpant()
+        {
+            List<Participant> total = TournamentDB.GetTournamentMemberList(TournamentDB.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
+            RecordIndexOnEnter(total);
+            FillMember();
+        }
+
         /// <summary>
         /// Populates Tournament dropdown list to most recently modified tournament;
         /// </summary>
@@ -1863,7 +1871,7 @@ namespace NineTapTour.Forms
         //runs fill member when you tab out of text box
         private void TxtMemberNum_Leave(object sender, EventArgs e)
         {
-            FillMember();
+            UpdateRecordNumberAndRetrieveParticpant();
         }
 
         private void CbAllSquads_CheckedChanged(object sender, EventArgs e)
