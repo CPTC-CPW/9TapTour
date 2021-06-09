@@ -711,7 +711,7 @@ namespace NineTapTour.Forms
         /// Find the bowler tournament record number with the currently selected squad
         /// </summary>
         /// <param name="participantList">The list of participants for the current tournament</param>
-        private void RecordIndexOnEnter(List<Participant> participantList)
+        private void UpdateRecordNumber(List<Participant> participantList)
         {
             //on enter, find the first index in which the member occurs in the tournament
             if (!selectedTournament.Doubles)
@@ -1507,8 +1507,9 @@ namespace NineTapTour.Forms
         /// </summary>
         private void UpdateRecordNumberAndRetrieveParticpant()
         {
-            List<Participant> total = TournamentDB.GetTournamentMemberList(TournamentDB.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-            RecordIndexOnEnter(total);
+            Tournament currSelectedTournament = TournamentDB.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+            List<Participant> allParticipantsInCurrTourney = TournamentDB.GetTournamentMemberList(currSelectedTournament);
+            UpdateRecordNumber(allParticipantsInCurrTourney);
             FillMember();
         }
 
