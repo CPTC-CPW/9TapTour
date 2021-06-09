@@ -1914,48 +1914,14 @@ namespace NineTapTour.Forms
 
         public int FilterCheck()
         {
-            int check = 0;
-
-            if (cbFilterSquad1.Checked)
+            CheckBox[] filterSquadCheckBoxes = new CheckBox[]
             {
-                check++;
-            }
+                cbFilterSquad1, cbFilterSquad2, cbFilterSquad3, cbFilterSquad4,
+                cbFilterSquad5, cbFilterSquad6, cbFilterSquad7, cbFilterSquad8
+            };
 
-            if (cbFilterSquad2.Checked)
-            {
-                check++;
-            }
-
-            if (cbFilterSquad3.Checked)
-            {
-                check++;
-            }
-
-            if (cbFilterSquad4.Checked)
-            {
-                check++;
-            }
-
-            if (cbFilterSquad5.Checked)
-            {
-                check++;
-            }
-
-            if (cbFilterSquad6.Checked)
-            {
-                check++;
-            }
-
-            if (cbFilterSquad7.Checked)
-            {
-                check++;
-            }
-
-            if (cbFilterSquad8.Checked)
-            {
-                check++;
-            }
-            return check;
+            return filterSquadCheckBoxes
+                .Where(filterCheckBox => filterCheckBox.Checked).Count();
         }
 
         private void CbFilterSquad_CheckedChanged(object sender, EventArgs e)
