@@ -707,7 +707,7 @@ namespace NineTapTour.Forms
             currentIndex = pat.Count;
         }
 
-        public void RecordIndexOnEnter(List<Participant> part)
+        private void RecordIndexOnEnter(List<Participant> part)
         {
             //on enter, find the first index in which the member occurs in the tournament
             if (selectedTournament.Doubles == false)
