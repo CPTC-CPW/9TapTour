@@ -211,8 +211,6 @@ namespace NineTapTour.Forms
             txtScratchScore3.Clear();
             txtScratchScore4.Clear();
             txtScratchTotal.Clear();
-            // NOTE: This listOfTopScore field doesnt have any purpose
-           // listOfTopScore.Clear();
             txtMoney.Clear();
         }
 
