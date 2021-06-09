@@ -400,12 +400,12 @@ namespace NineTapTour.Forms
                 }
             }
 
-            //if you enter in the last games score it will automatically be recorded with out pressing Add/Update
+            // If you enter in the last games score it will automatically
+            // click the Add/Update record button 
             if (txtScratchScore4.Focused == true)
             {
                 //when last score is entered bowler record will be added
-                AddNewUpdateRecord();
-                btnNew.Focus();
+                btnNew.PerformClick();
             }
             else
             {
