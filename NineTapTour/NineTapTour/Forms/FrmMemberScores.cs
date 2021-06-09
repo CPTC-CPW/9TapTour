@@ -707,10 +707,14 @@ namespace NineTapTour.Forms
             currentIndex = pat.Count;
         }
 
-        private void RecordIndexOnEnter(List<Participant> part)
+        /// <summary>
+        /// Find the bowler tournament record number with the currently selected squad
+        /// </summary>
+        /// <param name="participantList">The list of participants for the current tournament</param>
+        private void RecordIndexOnEnter(List<Participant> participantList)
         {
             //on enter, find the first index in which the member occurs in the tournament
-            if (selectedTournament.Doubles == false)
+            if (!selectedTournament.Doubles)
             {
                 if (txtMemberNum.Text != "" && txtMemberNum.Text.All(Char.IsDigit))
                 {
@@ -718,19 +722,19 @@ namespace NineTapTour.Forms
 
                     int currentSquadNumber = GetCurrentSquadNumber();
 
-                    for (int i = 0; i < part.Count; i++)
+                    for (int i = 0; i < participantList.Count; i++)
                     {
-                        if (currentMem.Id == part[i].Member.Id && part[i].Squad == currentSquadNumber)
+                        if (currentMem.Id == participantList[i].Member.Id && participantList[i].Squad == currentSquadNumber)
                         {
-                            lblRecord.Text = "Record " + (i + 1) + " / " + part.Count;
+                            lblRecord.Text = "Record " + (i + 1) + " / " + participantList.Count;
                             currentIndex = i;
 
                             break;
                         }
 
                         //if no break occurs, set the current index to that of the next potential index
-                        lblRecord.Text = "Record " + (part.Count) + " / " + part.Count;
-                        currentIndex = part.Count;
+                        lblRecord.Text = "Record " + (participantList.Count) + " / " + participantList.Count;
+                        currentIndex = participantList.Count;
                     }
                 }
             }
