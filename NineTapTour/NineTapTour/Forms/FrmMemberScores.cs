@@ -1783,8 +1783,8 @@ namespace NineTapTour.Forms
             Refresh(false);
             RecordIndex(overallListOfParticipants);
             overallListOfParticipants = TournamentDB.GetTournamentMemberList(selectedTournament);
-            cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
-            cbxTourneyDropDown.ValueMember = "Id";
+            cbxTourneyDropDown.DisplayMember = nameof(Tournament.TourneyNameDate);
+            cbxTourneyDropDown.ValueMember = nameof(Tournament.Id);
         }
 
         private void RemoveParticipantFromTournament()
