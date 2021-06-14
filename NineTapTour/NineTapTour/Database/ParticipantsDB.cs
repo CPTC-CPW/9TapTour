@@ -160,6 +160,8 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<MemberScores> GetStandingsForThreeOutOf4ByHandicap(int selectedTournament)
         {
+            // Remove the lists and find the lowest game score
+            // Use Raw SQL?
             using (NineTapDb db = new NineTapDb())
             {
                 return (from g in (db.Participants.Include(b => b.Member)
