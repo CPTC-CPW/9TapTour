@@ -538,13 +538,18 @@ namespace NineTapTour.Forms
 
                     //this code changes all of that member's games to match the clicked DIRECTOR_CHECK.
                     int memberNum = Convert.ToInt32(TournamentEntriesGrid.Rows[e.RowIndex].Cells[MEMBER_NUMBER_COLUMN].Value);
-                    bool isCellChecked = Convert.ToBoolean(TournamentEntriesGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
+                    bool isCellChecked = Convert.ToBoolean(TournamentEntriesGrid.Rows[e.RowIndex].Cells[DIRECTOR_CHECK_COLUMN].Value);
 
                     DataRow[] rows = ((DataTable)TournamentEntriesGrid.DataSource).Select(String.Format("[{0}] = {1}", MEMBER_NUMBER_COLUMN_NAME, memberNum));
 
                     foreach (DataRow row in rows)
                     {
-                        row.SetField(DIRECTOR_CHECK_COLUMN, isCellChecked);
+                        // "isCellChecked" has the current checked state for the director check,
+                        // and has not been updated to reflect the new checked status.
+                        // i.e. If cell is being checked, isCellChecked holds false because that was the current state before method fired.
+                        // To check or uncheck we pass in the opposite of the current state.
+                        // So checked becomes unchecked and vice versa.
+                        row.SetField(DIRECTOR_CHECK_COLUMN, !isCellChecked);
                     }
                 }
                 TournamentEntriesGrid_CellClick(sender, e);// moved higher in scope to help refresh correctly
@@ -1032,7 +1037,7 @@ namespace NineTapTour.Forms
                 return;
 
             // No need to update if director is checking these boxes
-            if (e.RowIndex == DIRECTOR_CHECK_COLUMN || e.RowIndex == ADJUSTED_AVG_COLUMN)
+            if (e.ColumnIndex == DIRECTOR_CHECK_COLUMN || e.ColumnIndex == ADJUSTED_AVG_COLUMN)
                 return;
             
             UpdateLeagueAvg(e.RowIndex);//added to help update more often
