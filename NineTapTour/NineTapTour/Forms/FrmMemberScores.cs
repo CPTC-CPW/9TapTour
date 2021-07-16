@@ -1094,7 +1094,6 @@ namespace NineTapTour.Forms
                 // sets focus to member num becuse that is what a user will need next
                 txtMemberNum.Focus();
             }
-            #region Jake's Section
             // clear the temp variables for the money earned for tourn results
             if (TempVariablesForGlobalLevel.MoneyEarnings != null && prevTourneyId != currTourneyId)
             {
@@ -1650,6 +1649,10 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show("Please Select a Tournament");
             }
+            else if (!GRPQBS1.Controls.OfType<CheckBox>().Any(checkbox => checkbox.Checked))
+            {
+                MessageBox.Show("You must select All Squads or specific squads to filter by");
+            }
             else
             {
                 var temp = new List<MemberScores>();
@@ -1659,8 +1662,7 @@ namespace NineTapTour.Forms
                 //Gets information from Filter Series by Squad checkboxes and gets the latest squad to pass when Series is clicked.
                 List<bool> filterSeries = FormHelper.GetFilterSeriesList(GRPQBS1);
                 List<int> squadList = FormHelper.SquadNumList(filterSeries);
-                    
-                #endregion
+
                 // These 2 regions would recreate data that already exists on the page
                 #region PRINTING HANDICAP TOURNAMENT RESULTS
                 if (rdoHandicapScore.Checked)
@@ -1681,41 +1683,41 @@ namespace NineTapTour.Forms
                     {
                         temp = ParticipantsDB.GetStandingsForTournamentByFilterSeriesByHandicap(squadList, selectedTournament.Id);
                     }
+                }
+                #endregion
+
+                #region PRINTING SCRATCH TOURNAMENT RESULTS
+                else if (rdoScratchScore.Checked)
+                {
+                    if (selectedTournament.ThreeOutOf4 && squadList.Contains(0))
+                    {
+                        temp = ParticipantsDB.GetStandingsForThreeOf4ByScratch(selectedTournament.Id);
+                    }
+                    else if (selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
+                    {
+                        temp = ParticipantsDB.GetStandingsForThreeOf4ByFilterSeriesByScratch(squadList, selectedTournament.Id);
+                    }
+                    else if (!selectedTournament.ThreeOutOf4 && squadList.Contains(0))
+                    {
+                        temp = ParticipantsDB.GetStandingsForTournamentByScratch(selectedTournament.Id);
+                    }
+                    else if (!selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
+                    {
+                        temp = ParticipantsDB.GetStandingsForTournamentByFilterSeriesByScratch(squadList, selectedTournament.Id);
+                    }
+                }
                     #endregion
 
-                    #region PRINTING SCRATCH TOURNAMENT RESULTS
-                    else if (rdoScratchScore.Checked)
-                    {
-                        if (selectedTournament.ThreeOutOf4 && squadList.Contains(0))
-                        {
-                            temp = ParticipantsDB.GetStandingsForThreeOf4ByScratch(selectedTournament.Id);
-                        }
-                        else if (selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
-                        {
-                            temp = ParticipantsDB.GetStandingsForThreeOf4ByFilterSeriesByScratch(squadList, selectedTournament.Id);
-                        }
-                        else if (!selectedTournament.ThreeOutOf4 && squadList.Contains(0))
-                        {
-                            temp = ParticipantsDB.GetStandingsForTournamentByScratch(selectedTournament.Id);
-                        }
-                        else if (!selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
-                        {
-                            temp = ParticipantsDB.GetStandingsForTournamentByFilterSeriesByScratch(squadList, selectedTournament.Id);
-                        }
-                    }
-                    #endregion
+                temp.Sort(scoreComparer);
 
-                    temp.Sort(scoreComparer);
-
-                    if (temp.Count() != 0)
-                    {
-                        FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, ReportType.HighSeries, qualifyBySquadNumber, squadList);
-                        report.Show();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error: No Participants in selected Squad.");
-                    }
+                if (temp.Count() != 0)
+                {
+                    FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, ReportType.HighSeries, qualifyBySquadNumber, squadList);
+                    report.Show();
+                }
+                else
+                {
+                    MessageBox.Show("Error: No Participants in selected Squad.");
                 }
             }
         }
