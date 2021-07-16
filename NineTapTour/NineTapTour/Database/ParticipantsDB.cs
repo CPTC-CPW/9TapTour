@@ -530,11 +530,3 @@ ORDER BY Score DESC";
         }
     }
 }
-
-//@"SELECT Participants.Member_Id, Members.FirstName, Members.LastName, Game1, Game2, Game3, Game4, Games.Id,  Members.Handicap, Members.Bonus, SUM(Game1 + Game2 + Game3 + Game4) AS Total
-//                            FROM Tournaments JOIN Participants ON Tournaments.Id = Participants.Tournament_Id
-//                            JOIN Games ON Games.Id = Participants.Game_Id
-//                            JOIN Members ON Members.Id = Participants.Member_Id 
-//                            WHERE Tournaments.Id = @TID
-//                            GROUP BY Game1, Game2, Game3, Game4, Participants.Member_Id, Tournaments.Location, Participants.SquadNumber, Members.FirstName, Members.LastName, Members.Handicap, Members.Bonus,  Games.Id
-//                            ORDER BY Participants.Member_Id";
