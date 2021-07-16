@@ -1189,6 +1189,10 @@ namespace NineTapTour.Forms
             txtScratchScore3.Clear();
             txtScratchScore4.Clear();
             txtScratchTotal.Clear();
+            txtHandicapScore1.Clear();
+            txtHandicapScore2.Clear();
+            txtHandicapScore3.Clear();
+            txtHandicapScore4.Clear();
             txtHandicapTotal.Clear();
         }
         //Calls refresh method on radiobutton change
