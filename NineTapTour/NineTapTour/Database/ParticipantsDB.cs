@@ -3,6 +3,7 @@ using NineTapTour.Calculations;
 using NineTapTour.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -164,22 +165,55 @@ namespace NineTapTour.Database
             // Use Raw SQL?
             using (NineTapDb db = new NineTapDb())
             {
-                return (from g in (db.Participants.Include(b => b.Member)
-                            .Include(b => b.Game)
-                            .Where(b => b.Tournament.Id == selectedTournament))
-                        orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3 + g.Game.Bonus * 3) - 
-                            (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }
-                            .Min())) descending
-                        select new MemberScores {
-                            MemberId = g.Member.Number,
-                            FirstName = g.Member.FirstName,
-                            LastName = g.Member.LastName,
-                            Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3) + (g.Game.Bonus * 3) - 
-                                (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()),
-                            LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                            Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
-                                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
-                        }).ToList();
+                string con = db.Database.GetDbConnection().ConnectionString;
+                string query = @"SELECT MemberId
+    , FirstName
+    , LastName
+    , (Game1 + Game2 + Game3 + Game4 + Games.Handicap * 3 + Games.Bonus * 3)
+    - (
+        CASE 
+            WHEN Game1 < Game2 AND Game1 < Game3 AND Game1 < Game4 THEN Game1
+            WHEN Game2 < Game1 AND Game2 < Game3 AND Game2 < Game4 THEN Game2
+            WHEN Game3 < Game1 AND Game3 < Game2 AND Game3 < Game4 THEN Game4
+            ELSE Game4
+        END) AS Score
+    , CASE
+        WHEN IsLifetimeMember = 1 THEN 'life'
+        ELSE YEAR(LastPayment)
+    END AS LastPaymentYear
+    , CASE
+        WHEN IsLifetimeMember = 1 THEN 'true'
+        WHEN LastPayment IS NOT NULL AND YEAR(LastPayment) <= @tourneyYear THEN 'true'
+        ELSE 'false'
+    END AS Paid
+FROM Members
+    JOIN Participants ON Members.Id = Participants.MemberId
+    JOIN Games ON Participants.GameId = Games.Id
+WHERE TournamentId = @tourneyId
+ORDER BY Score DESC";
+                using SqlCommand queryCmd = new SqlCommand(query, new SqlConnection(con));
+                queryCmd.Parameters.AddWithValue("@tourneyYear", DateTime.Today.Year - 1);
+                queryCmd.Parameters.AddWithValue("@tourneyId", selectedTournament);
+                queryCmd.Connection.Open();
+                SqlDataReader rdr = queryCmd.ExecuteReader();
+
+                List<MemberScores> memberScores = new();
+                while (rdr.Read())
+                {
+                    memberScores.Add(
+                        new MemberScores()
+                        {
+                            FirstName = rdr["FirstName"].ToString(),
+                            LastName = rdr["LastName"].ToString(),
+                            MemberId = Convert.ToInt32(rdr["MemberId"]),
+                            Score = Convert.ToInt32(rdr["Score"]),
+                            LastPaymentYear = rdr["LastPaymentYear"].ToString(),
+                            Paid = Convert.ToBoolean(rdr["Paid"])
+                        }
+                    );
+                }
+                
+                return memberScores;
             }
         }
 
