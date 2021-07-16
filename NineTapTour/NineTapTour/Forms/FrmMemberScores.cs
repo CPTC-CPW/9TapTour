@@ -1638,6 +1638,10 @@ namespace NineTapTour.Forms
             {
                 MessageBox.Show("Please Select a Tournament");
             }
+            else if (!GRPQBS1.Controls.OfType<CheckBox>().Any(checkbox => checkbox.Checked))
+            {
+                MessageBox.Show("You must select All Squads or specific squads to filter by");
+            }
             else
             {
                 var temp = new List<MemberScores>();
