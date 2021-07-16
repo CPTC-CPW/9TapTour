@@ -277,57 +277,6 @@ ORDER BY Score DESC";
         /// <summary>
         /// 
         /// </summary>
-        public static List<MemberScores> GetStandingsForThreeOf4BySquadNumberByHandicap(int qualifyBySquadNumber, int selectedTournament)
-        {
-            using (NineTapDb db = new NineTapDb())
-            {
-                return (from g in (db.Participants.Include(b => b.Member)
-                            .Include(b => b.Game)
-                            .Where(b => b.Tournament.Id == selectedTournament).Where(b => b.Squad == qualifyBySquadNumber))
-                        orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3 + g.Game.Bonus * 3) - 
-                            (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }
-                            .Min())) descending
-                        select new MemberScores {
-                            MemberId = g.Member.Number,
-                            FirstName = g.Member.FirstName,
-                            LastName = g.Member.LastName,
-                            Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 3) + (g.Game.Bonus * 3) - 
-                                (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()),
-                            LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                            Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
-                        }).ToList();
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public static List<MemberScores> GetStandingsThreeOfFourBySquadScratch(int qualifyBySquadNumber, int selectedTournament)
-        {
-            using (NineTapDb db = new NineTapDb())
-            {
-                return (from g in (db.Participants.Include(b => b.Member)
-                           .Include(b => b.Game)
-                           .Where(b => b.Tournament.Id == selectedTournament).Where(b => b.Squad == qualifyBySquadNumber))
-                        orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 - 
-                            (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }
-                            .Min())) descending
-                        select new MemberScores {
-                            MemberId = g.Member.Number,
-                            FirstName = g.Member.FirstName,
-                            LastName = g.Member.LastName, Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 - 
-                                (new List<int> { g.Game.Game1.Value, g.Game.Game2.Value, g.Game.Game3.Value, g.Game.Game4.Value }.Min()),
-                            LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                            Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
-                        }).ToList();
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public static List<MemberScores> GetStandingsForTournamentByHandicap(int selectedTournament)
         {
             using (NineTapDb db = new NineTapDb())
@@ -343,53 +292,6 @@ ORDER BY Score DESC";
                             LastName = g.Member.LastName,
                             Score = (g.Game.Game1 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game2 + g.Game.Bonus + g.Game.Handicap) + 
                                 (g.Game.Game3 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game4 + g.Game.Bonus + g.Game.Handicap),
-                            LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                            Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
-                        }).ToList();
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public static List<MemberScores> GetStandingsForTournamentBySquadByHandicap(int qualifyBySquadNumber, int selectedTournament)
-        {
-            using (NineTapDb db = new NineTapDb())
-            {
-                return (from g in (db.Participants.Include(b => b.Member)
-                            .Include(b => b.Game)
-                            .Where(b => b.Tournament.Id == selectedTournament).Where(b => b.Squad == qualifyBySquadNumber))
-                        orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + 
-                            (g.Game.Handicap * 4 + g.Game.Bonus * 4)) descending
-                        select new MemberScores {
-                            MemberId = g.Member.Number,
-                            FirstName = g.Member.FirstName,
-                            LastName = g.Member.LastName,
-                            Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4) +  (g.Game.Bonus * 4),
-                            LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                            Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                                (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
-                        }).ToList();
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public static List<MemberScores> GetStandingsForTournamentBySquadScratch(int qualifyBySquadNumber, int selectedTournament)
-        {
-            using (NineTapDb db = new NineTapDb())
-            {
-                return (from g in (db.Participants.Include(b => b.Member)
-                            .Include(b => b.Game)
-                            .Where(b => b.Tournament.Id == selectedTournament).Where(b => b.Squad == qualifyBySquadNumber))
-                        orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4) descending
-                        select new MemberScores {
-                            MemberId = g.Member.Number,
-                            FirstName = g.Member.FirstName,
-                            LastName = g.Member.LastName,
-                            Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4,
                             LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                             Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
                                 (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
