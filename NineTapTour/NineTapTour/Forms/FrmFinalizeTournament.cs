@@ -610,17 +610,23 @@ namespace NineTapTour.Forms
             var GameId = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[GAME_ID_COLUMN].Value);
             temp = db.FinalizeTemp.First(f => f.GameId == GameId);
 
-            if (cell == GAME_1_COLUMN)
+            if (cell == GAME_1_VALID_COLUMN)
+            {
                 temp.UseGame1 = set;
-
-            if (cell == GAME_2_COLUMN)
+            }
+            else if (cell == GAME_2_VALID_COLUMN)
+            {
                 temp.UseGame2 = set;
-
-            if (cell == GAME_3_COLUMN)
+            }
+            else if (cell == GAME_3_VALID_COLUMN)
+            {
                 temp.UseGame3 = set;
-
-            if (cell == GAME_4_COLUMN)
+            }
+            else if (cell == GAME_4_VALID_COLUMN)
+            {
                 temp.UseGame4 = set;
+            }
+                
 
             temp.GameAvg = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[ENTRY_AVERAGE_COLUMN].Value);
             temp.ScratchTotal = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[SCRATCH_TOTAL_COLUMN].Value);
