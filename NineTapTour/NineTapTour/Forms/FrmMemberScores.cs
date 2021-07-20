@@ -211,8 +211,6 @@ namespace NineTapTour.Forms
             txtScratchScore3.Clear();
             txtScratchScore4.Clear();
             txtScratchTotal.Clear();
-            // NOTE: This listOfTopScore field doesnt have any purpose
-           // listOfTopScore.Clear();
             txtMoney.Clear();
         }
 
@@ -400,12 +398,12 @@ namespace NineTapTour.Forms
                 }
             }
 
-            //if you enter in the last games score it will automatically be recorded with out pressing Add/Update
+            // If you enter in the last games score it will automatically
+            // click the Add/Update record button 
             if (txtScratchScore4.Focused == true)
             {
                 //when last score is entered bowler record will be added
-                AddNewUpdateRecord();
-                btnNew.Focus();
+                btnNew.PerformClick();
             }
             else
             {
@@ -707,10 +705,14 @@ namespace NineTapTour.Forms
             currentIndex = pat.Count;
         }
 
-        public void RecordIndexOnEnter(List<Participant> part)
+        /// <summary>
+        /// Find the bowler tournament record number with the currently selected squad
+        /// </summary>
+        /// <param name="participantList">The list of participants for the current tournament</param>
+        private void UpdateRecordNumber(List<Participant> participantList)
         {
             //on enter, find the first index in which the member occurs in the tournament
-            if (selectedTournament.Doubles == false)
+            if (!selectedTournament.Doubles)
             {
                 if (txtMemberNum.Text != "" && txtMemberNum.Text.All(Char.IsDigit))
                 {
@@ -718,19 +720,19 @@ namespace NineTapTour.Forms
 
                     int currentSquadNumber = GetCurrentSquadNumber();
 
-                    for (int i = 0; i < part.Count; i++)
+                    for (int i = 0; i < participantList.Count; i++)
                     {
-                        if (currentMem.Id == part[i].Member.Id && part[i].Squad == currentSquadNumber)
+                        if (currentMem.Id == participantList[i].Member.Id && participantList[i].Squad == currentSquadNumber)
                         {
-                            lblRecord.Text = "Record " + (i + 1) + " / " + part.Count;
+                            lblRecord.Text = "Record " + (i + 1) + " / " + participantList.Count;
                             currentIndex = i;
 
                             break;
                         }
 
                         //if no break occurs, set the current index to that of the next potential index
-                        lblRecord.Text = "Record " + (part.Count) + " / " + part.Count;
-                        currentIndex = part.Count;
+                        lblRecord.Text = "Record " + (participantList.Count) + " / " + participantList.Count;
+                        currentIndex = participantList.Count;
                     }
                 }
             }
@@ -1187,6 +1189,10 @@ namespace NineTapTour.Forms
             txtScratchScore3.Clear();
             txtScratchScore4.Clear();
             txtScratchTotal.Clear();
+            txtHandicapScore1.Clear();
+            txtHandicapScore2.Clear();
+            txtHandicapScore3.Clear();
+            txtHandicapScore4.Clear();
             txtHandicapTotal.Clear();
         }
         //Calls refresh method on radiobutton change
@@ -1493,12 +1499,21 @@ namespace NineTapTour.Forms
         {
             if (e.KeyData == Keys.Enter)
             {
-                List<Participant> total = TournamentDB.GetTournamentMemberList(TournamentDB.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue)));
-                RecordIndexOnEnter(total);
-                FillMember();
+                UpdateRecordNumberAndRetrieveParticpant();
             }
         }
-        
+
+        /// <summary>
+        /// Updates the tournament record number for the chosen bowler and retrieves and displays the bowler information
+        /// </summary>
+        private void UpdateRecordNumberAndRetrieveParticpant()
+        {
+            Tournament currSelectedTournament = TournamentDB.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+            List<Participant> allParticipantsInCurrTourney = TournamentDB.GetTournamentMemberList(currSelectedTournament);
+            UpdateRecordNumber(allParticipantsInCurrTourney);
+            FillMember();
+        }
+
         /// <summary>
         /// Populates Tournament dropdown list to most recently modified tournament;
         /// </summary>
@@ -1774,8 +1789,8 @@ namespace NineTapTour.Forms
             Refresh(false);
             RecordIndex(overallListOfParticipants);
             overallListOfParticipants = TournamentDB.GetTournamentMemberList(selectedTournament);
-            cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
-            cbxTourneyDropDown.ValueMember = "Id";
+            cbxTourneyDropDown.DisplayMember = nameof(Tournament.TourneyNameDate);
+            cbxTourneyDropDown.ValueMember = nameof(Tournament.Id);
         }
 
         private void RemoveParticipantFromTournament()
@@ -1861,7 +1876,7 @@ namespace NineTapTour.Forms
         //runs fill member when you tab out of text box
         private void TxtMemberNum_Leave(object sender, EventArgs e)
         {
-            FillMember();
+            UpdateRecordNumberAndRetrieveParticpant();
         }
 
         private void CbAllSquads_CheckedChanged(object sender, EventArgs e)
@@ -1905,48 +1920,14 @@ namespace NineTapTour.Forms
 
         public int FilterCheck()
         {
-            int check = 0;
-
-            if (cbFilterSquad1.Checked)
+            CheckBox[] filterSquadCheckBoxes = new CheckBox[]
             {
-                check++;
-            }
+                cbFilterSquad1, cbFilterSquad2, cbFilterSquad3, cbFilterSquad4,
+                cbFilterSquad5, cbFilterSquad6, cbFilterSquad7, cbFilterSquad8
+            };
 
-            if (cbFilterSquad2.Checked)
-            {
-                check++;
-            }
-
-            if (cbFilterSquad3.Checked)
-            {
-                check++;
-            }
-
-            if (cbFilterSquad4.Checked)
-            {
-                check++;
-            }
-
-            if (cbFilterSquad5.Checked)
-            {
-                check++;
-            }
-
-            if (cbFilterSquad6.Checked)
-            {
-                check++;
-            }
-
-            if (cbFilterSquad7.Checked)
-            {
-                check++;
-            }
-
-            if (cbFilterSquad8.Checked)
-            {
-                check++;
-            }
-            return check;
+            return filterSquadCheckBoxes
+                .Where(filterCheckBox => filterCheckBox.Checked).Count();
         }
 
         private void CbFilterSquad_CheckedChanged(object sender, EventArgs e)
