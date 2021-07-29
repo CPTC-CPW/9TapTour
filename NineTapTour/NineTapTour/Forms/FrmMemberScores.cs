@@ -211,6 +211,11 @@ namespace NineTapTour.Forms
             txtScratchScore3.Clear();
             txtScratchScore4.Clear();
             txtScratchTotal.Clear();
+            txtHandicapTotal.Clear();
+            txtHandicapScore1.Clear();
+            txtHandicapScore2.Clear();
+            txtHandicapScore3.Clear();
+            txtHandicapScore4.Clear();
             txtMoney.Clear();
         }
 
@@ -309,6 +314,12 @@ namespace NineTapTour.Forms
                 scratch.Clear();
                 scratch.ReadOnly = active;
             }
+            foreach(TextBox handicapBox in handicappArray)
+            {
+                handicapBox.Clear();
+            }
+            txtScratchTotal.Clear();
+            txtHandicapTotal.Clear();
         }
 
         /// <summary>
