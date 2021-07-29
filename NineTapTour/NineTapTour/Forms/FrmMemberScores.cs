@@ -1209,12 +1209,12 @@ namespace NineTapTour.Forms
         //Calls refresh method on radiobutton change
         private void RdoScratchScore_CheckedChanged(object sender, EventArgs e)
         {
-            Refresh(true);
+            Refresh();
         }
 
         private void RdoHandicapScore_CheckedChanged(object sender, EventArgs e)
         {
-            Refresh(true);
+            Refresh();
         }
 
         // NOTE: This listOfTopScore is never populated/ultilized
@@ -1222,15 +1222,12 @@ namespace NineTapTour.Forms
         IComparer<MemberScores> scoreComparer = new Calculations.MemberScoresComparer();
 
         /// <summary>
-        /// pass true if you are changing the radio buttons and only want to refresh the bottom box.
+        /// Refresh game scores displayed in the score listbox
+        /// <see cref="lbxHighSelected"/>
         /// </summary>
-        /// <param name="seriesChange"></param>
-        public void Refresh(bool seriesChange)
+        public new void Refresh()
         {
             var scores = new List<MemberScores>();
-         // NOTE: This listOfTopScore doesn't need to be cleared because there was never 
-         //       anything in it
-         //   listOfTopScore.Clear();
 
             try
             {
@@ -1327,7 +1324,7 @@ namespace NineTapTour.Forms
                         // links handicap score listbox to list
                         lbxHighSelected.DataSource = participantsGameViewModels;
                         // displays specific tostring for displaying info dealing with high handicap score game
-                        lbxHighSelected.DisplayMember = "HandicapScoreToString";
+                        lbxHighSelected.DisplayMember = nameof(ParticipantsGameViewModel.HandicapScoreToString);
                     }
 
                     else if (rdoGameSC.Checked)
@@ -1337,7 +1334,7 @@ namespace NineTapTour.Forms
                         // links scratch score listbox to list
                         lbxHighSelected.DataSource = participantsGameViewModels;
                         // displays specific tostring for displaying info dealing with high scratch score game
-                        lbxHighSelected.DisplayMember = "ScratchScoreToString";
+                        lbxHighSelected.DisplayMember = nameof(ParticipantsGameViewModel.ScratchScoreToString);
 
                     }
 
@@ -1390,11 +1387,7 @@ namespace NineTapTour.Forms
                 }
                 catch (SqlException)
                 {
-                    //what is the 3rd box?
-                    // NOTE: This listOfTopScore doesn't need to be cleared because there was never 
-                    //       anything in it
-                    // listOfTopScore
-                    //   .Clear(); //filter out if there is no one on the squad yet so the 3rd box won't get populated
+
                 }
             }
             catch
