@@ -116,12 +116,12 @@ namespace NineTapTour.Forms
             string reportLabelToSave = "Game";
             // if its highseries display series  otherwise will display game
             // but will chage the save name
-            if (reportTypeNum == ReportType.HighSeries)
+            if (reportTypeNum.ToString() == "HighSeries")
             {
                 reportLabelToSave = "Series";
                 reportTypeToSave = "Series";
             }
-            else if (reportTypeNum == ReportType.HighGameSenior)
+            else if (reportTypeNum.ToString() == "HighGameSenior")
             {
                 reportTypeToSave ="Senior"; 
             }
