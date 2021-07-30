@@ -181,7 +181,7 @@ namespace NineTapTour.Forms
                 
                 btnDelete.Enabled = true;
                
-                Refresh(false);
+                Refresh();
                 // sets focus to member num becuse that is what a user will need next
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
@@ -594,7 +594,7 @@ namespace NineTapTour.Forms
                         MemberDB.AddOrUpdateMember(currentMem);
                     }
                 }
-                Refresh(false);
+                Refresh();
             }
             else
             {
@@ -1098,7 +1098,7 @@ namespace NineTapTour.Forms
                 // Gets the record for the selected tournament
                 overallListOfParticipants = TournamentDB.GetTournamentMemberList(selectedTournament);
                 RecordIndex(overallListOfParticipants);
-                Refresh(false);
+                Refresh();
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
 
@@ -1735,14 +1735,14 @@ namespace NineTapTour.Forms
         #region changing the sqaud number
         private void CheckBoxAllResults_CheckedChanged(object sender, EventArgs e)
         {
-            Refresh(false);
+            Refresh();
         }
 
         private void CheckBoxSquadResults_CheckChanged(object sender, EventArgs e)
         {
             if (cbxTourneyDropDown.Size != null)
             {
-                Refresh(false);
+                Refresh();
             }
         }
         #endregion  
@@ -1790,7 +1790,7 @@ namespace NineTapTour.Forms
         {
             //resets all the fields back to what it would've looked like without such record existing
             ResetFields();
-            Refresh(false);
+            Refresh();
             RecordIndex(overallListOfParticipants);
             overallListOfParticipants = TournamentDB.GetTournamentMemberList(selectedTournament);
             cbxTourneyDropDown.DisplayMember = nameof(Tournament.TourneyNameDate);
@@ -1907,7 +1907,7 @@ namespace NineTapTour.Forms
                 cbFilterSquad8.Enabled = false;
 
                 howManySquadsCanBeFiltered.Clear();
-                Refresh(false);   
+                Refresh();   
             }
             else
             {
@@ -1956,13 +1956,13 @@ namespace NineTapTour.Forms
                 }
                 else
                 {
-                    Refresh(false);
+                    Refresh();
                 }
             }
             else
             {
                 howManySquadsCanBeFiltered.Add(squadNum);
-                Refresh(false);
+                Refresh();
             }
         }
 
@@ -1991,12 +1991,12 @@ namespace NineTapTour.Forms
 
         private void CheckBoxGameSC_CheckedChanged(object sender, EventArgs e)
         {
-            Refresh(false);
+            Refresh();
         }
 
         private void CheckBoxHighSeries_CheckedChanged(object sender, EventArgs e)
         {
-            Refresh(false);
+            Refresh();
         }
     }
 }
