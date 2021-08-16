@@ -1408,58 +1408,12 @@ namespace NineTapTour.Forms
             lblHighSelected.Text = firstCol + "[Member No.] --- (Name)";
         }
 
-        /// <summary>
-        /// Calculates each bowler's place standing. Accounts for ties.
-        /// </summary>
-        /// <param name="winners"></param>
-        private static void CalculatePlaceStanding(List<TopParticipantGameViewModel> winners, bool scoreToOrganizeBy)
-        {
-            int place = 1;
-
-            if (scoreToOrganizeBy == false)
-            {
-                for (int i = 0; i < winners.Count; i++)
-                {
-                    if (i > 0 && winners[i].ScratchTotal == winners[i - 1].ScratchTotal)
-                    {
-                        winners[i].Placing = winners[i - 1].Placing;
-                    }
-                    else
-                    {
-                        winners[i].Placing = place;
-                    }
-                    place++;
-                }
-            }
-
-            if (scoreToOrganizeBy == true)
-            {
-                for (int i = 0; i < winners.Count; i++)
-                {
-                    if (i > 0 && winners[i].HandicapScore == winners[i - 1].HandicapScore)
-                    {
-                        winners[i].Placing = winners[i - 1].Placing;
-                    }
-                    else
-                    {
-                        winners[i].Placing = place;
-                    }
-                    place++;
-                }
-            }
-        }
-
-        //Gets nullable scratchscore
-        private int? GetScratchScore(int? gameScore, int? gameHandicap)
-        {
-            return gameScore + gameHandicap;
-        }
-
         private void BtnTournamentsByYear_Click(object sender, EventArgs e)
         {
             FrmTournamentsByYear listTournaments = new FrmTournamentsByYear(RegionID);
             listTournaments.ShowDialog();
         }
+
         //Called when stats btn is clicked
         private void BtnStats_Click(object sender, EventArgs e)
         {
