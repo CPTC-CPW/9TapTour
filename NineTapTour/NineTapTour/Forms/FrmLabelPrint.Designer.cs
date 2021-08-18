@@ -51,7 +51,6 @@
             this.lbxPrintList.Name = "lbxPrintList";
             this.lbxPrintList.Size = new System.Drawing.Size(180, 264);
             this.lbxPrintList.TabIndex = 0;
-            this.lbxPrintList.SelectedIndexChanged += new System.EventHandler(this.ListBox1_SelectedIndexChanged);
             this.lbxPrintList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.LbxPrintList_MouseDoubleClick);
             // 
             // lbxMemberList
@@ -62,7 +61,6 @@
             this.lbxMemberList.Name = "lbxMemberList";
             this.lbxMemberList.Size = new System.Drawing.Size(227, 264);
             this.lbxMemberList.TabIndex = 1;
-            this.lbxMemberList.SelectedIndexChanged += new System.EventHandler(this.ListBox2_SelectedIndexChanged);
             this.lbxMemberList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.LbxMemberList_MouseDoubleClick);
             // 
             // btnAdd

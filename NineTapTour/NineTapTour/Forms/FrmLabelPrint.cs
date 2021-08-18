@@ -76,18 +76,6 @@ namespace NineTapTour.Forms
             }
         }
 
-        #region indexchanged
-        private void ListBox2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-        #endregion
-
         private void BtnAdd_Click(object sender, EventArgs e)
         {
             foreach (Member m in lbxMemberList.SelectedItems)
