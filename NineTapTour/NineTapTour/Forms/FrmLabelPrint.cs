@@ -77,18 +77,18 @@ namespace NineTapTour.Forms
         }
 
         #region indexchanged
-        private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
         #endregion
 
-        private void btnAdd_Click(object sender, EventArgs e)
+        private void BtnAdd_Click(object sender, EventArgs e)
         {
             foreach (Member m in lbxMemberList.SelectedItems)
             {
@@ -97,7 +97,7 @@ namespace NineTapTour.Forms
             UpdatePrintListBox();
         }
 
-        private void btnRemove_Click(object sender, EventArgs e)
+        private void BtnRemove_Click(object sender, EventArgs e)
         {
             foreach (Member m in lbxPrintList.SelectedItems)
             {
@@ -106,13 +106,13 @@ namespace NineTapTour.Forms
             UpdatePrintListBox();
         }
 
-        private void btnClearAll_Click(object sender, EventArgs e)
+        private void BtnClearAll_Click(object sender, EventArgs e)
         {
             Labels.Clear();
             UpdatePrintListBox();
         }
 
-        private void btnPrint_Click(object sender, EventArgs e)
+        private void BtnPrint_Click(object sender, EventArgs e)
         {
             //Set up compenents for printing
             PrintDialog printDialog = new PrintDialog();
@@ -120,7 +120,7 @@ namespace NineTapTour.Forms
             //add the document to the dialog box
             printDialog.Document = printDocument;
             //add the event handler that will do the printing
-            printDocument.PrintPage += new PrintPageEventHandler(printLabels);
+            printDocument.PrintPage += new PrintPageEventHandler(PrintLabels);
 
             DialogResult result = printDialog.ShowDialog();
 
@@ -134,7 +134,7 @@ namespace NineTapTour.Forms
 
         int currPage = 0;
         const int PageSize = 30;
-        public void printLabels(object sender, PrintPageEventArgs e)
+        public void PrintLabels(object sender, PrintPageEventArgs e)
         {
             // grab the next 30 members
             List<Member> nextMemberLabels = Labels.Skip((currPage) * PageSize).Take(PageSize).ToList();
@@ -193,12 +193,12 @@ namespace NineTapTour.Forms
         }
         #endregion
 
-        private void btnClose_Click(object sender, EventArgs e)
+        private void BtnClose_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        private void cbxShowInactive_CheckedChanged(object sender, EventArgs e)
+        private void CbxShowInactive_CheckedChanged(object sender, EventArgs e)
         {
             ActiveMems.Clear();
             LoadLists();
@@ -210,7 +210,7 @@ namespace NineTapTour.Forms
             lbxPrintList.DataSource = Labels;
         }
 
-        private void lbxMemberList_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void LbxMemberList_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             foreach (Member m in lbxMemberList.SelectedItems)
             {
@@ -219,7 +219,7 @@ namespace NineTapTour.Forms
             UpdatePrintListBox();
         }
 
-        private void lbxPrintList_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void LbxPrintList_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             foreach (Member m in lbxPrintList.SelectedItems)
             {
@@ -233,7 +233,7 @@ namespace NineTapTour.Forms
 
         private String searchWho;
 
-        private void lbxMemberList_KeyPress(object sender, KeyPressEventArgs e)
+        private void LbxMemberList_KeyPress(object sender, KeyPressEventArgs e)
         {
             var newDate = DateTime.Now;
             var diff = newDate - lastKeyPressed;
