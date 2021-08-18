@@ -54,6 +54,3 @@ Reference the [code style requirements](CodingStyle.md) for more information.
 
 ## Authors 
 Reference the list of [contributors](https://github.com/CPTC-CPW/9TapTour/graphs/contributors) who participated in this project.
-
-## License 
-9-Tap Tour's [License Agreement](https://github.com/CPTC-CPW/9TapTour/wiki/License-Agreement) Wiki.
