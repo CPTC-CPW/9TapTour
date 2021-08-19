@@ -113,7 +113,7 @@ namespace NineTapTour.Database
             string reportType = "";
 
             // for drawing the report type using the reportTypeNum
-            if (reportTypeNum == ReportType.HighGameSenior)
+            if (reportTypeNum == ReportType.HighGameHandicapGameSenior)
             {
                 reportType = "Game Senior";
             }
@@ -121,7 +121,7 @@ namespace NineTapTour.Database
             {
                 reportType = "Game";
             }
-            else if(reportTypeNum == ReportType.HighSeries)
+            else if(reportTypeNum == ReportType.HighSeriesScratch)
             {
                 //The 'Through squad x' header is only drawn for Series Reports
                 if (squadList[0] == 0) //'All Squads' is checked
