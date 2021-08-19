@@ -51,8 +51,7 @@
             this.lbxPrintList.Name = "lbxPrintList";
             this.lbxPrintList.Size = new System.Drawing.Size(180, 264);
             this.lbxPrintList.TabIndex = 0;
-            this.lbxPrintList.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
-            this.lbxPrintList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lbxPrintList_MouseDoubleClick);
+            this.lbxPrintList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.LbxPrintList_MouseDoubleClick);
             // 
             // lbxMemberList
             // 
@@ -62,8 +61,7 @@
             this.lbxMemberList.Name = "lbxMemberList";
             this.lbxMemberList.Size = new System.Drawing.Size(227, 264);
             this.lbxMemberList.TabIndex = 1;
-            this.lbxMemberList.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
-            this.lbxMemberList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lbxMemberList_MouseDoubleClick);
+            this.lbxMemberList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.LbxMemberList_MouseDoubleClick);
             // 
             // btnAdd
             // 
@@ -73,7 +71,7 @@
             this.btnAdd.TabIndex = 2;
             this.btnAdd.Text = "<<";
             this.btnAdd.UseVisualStyleBackColor = true;
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            this.btnAdd.Click += new System.EventHandler(this.BtnAdd_Click);
             // 
             // btnRemove
             // 
@@ -83,7 +81,7 @@
             this.btnRemove.TabIndex = 3;
             this.btnRemove.Text = ">>";
             this.btnRemove.UseVisualStyleBackColor = true;
-            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
+            this.btnRemove.Click += new System.EventHandler(this.BtnRemove_Click);
             // 
             // btnClearAll
             // 
@@ -93,7 +91,7 @@
             this.btnClearAll.TabIndex = 4;
             this.btnClearAll.Text = "Clear All";
             this.btnClearAll.UseVisualStyleBackColor = true;
-            this.btnClearAll.Click += new System.EventHandler(this.btnClearAll_Click);
+            this.btnClearAll.Click += new System.EventHandler(this.BtnClearAll_Click);
             // 
             // btnPrint
             // 
@@ -103,7 +101,7 @@
             this.btnPrint.TabIndex = 5;
             this.btnPrint.Text = "Print Labels";
             this.btnPrint.UseVisualStyleBackColor = true;
-            this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
+            this.btnPrint.Click += new System.EventHandler(this.BtnPrint_Click);
             // 
             // btnClose
             // 
@@ -113,7 +111,7 @@
             this.btnClose.TabIndex = 6;
             this.btnClose.Text = "Close";
             this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            this.btnClose.Click += new System.EventHandler(this.BtnClose_Click);
             // 
             // cbxShowInactive
             // 
@@ -124,7 +122,7 @@
             this.cbxShowInactive.TabIndex = 7;
             this.cbxShowInactive.Text = "Show Inactive";
             this.cbxShowInactive.UseVisualStyleBackColor = true;
-            this.cbxShowInactive.CheckedChanged += new System.EventHandler(this.cbxShowInactive_CheckedChanged);
+            this.cbxShowInactive.CheckedChanged += new System.EventHandler(this.CbxShowInactive_CheckedChanged);
             // 
             // lblMemToPrint
             // 

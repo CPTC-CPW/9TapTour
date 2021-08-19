@@ -42,7 +42,7 @@ Please review the following and reference the [project Wiki](https://github.com/
 ### Prerequisites
 The current build is being built on Windows machines through Visual Studio 2019 and .NET 5.
 
-
+* [Download Office 365](https://www.microsoft.com/en-us/education/products/office) Free for students.
 * [Download Visual Studio](https://visualstudio.microsoft.com/downloads/)
 * [.NET 5 SDK](https://dotnet.microsoft.com/download/visual-studio-sdks)
 
@@ -54,6 +54,3 @@ Reference the [code style requirements](CodingStyle.md) for more information.
 
 ## Authors 
 Reference the list of [contributors](https://github.com/CPTC-CPW/9TapTour/graphs/contributors) who participated in this project.
-
-## License 
-9-Tap Tour's [License Agreement](https://github.com/CPTC-CPW/9TapTour/wiki/License-Agreement) Wiki.
