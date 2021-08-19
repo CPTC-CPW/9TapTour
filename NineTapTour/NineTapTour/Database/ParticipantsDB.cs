@@ -172,7 +172,7 @@ namespace NineTapTour.Database
         CASE 
             WHEN Game1 < Game2 AND Game1 < Game3 AND Game1 < Game4 THEN Game1
             WHEN Game2 < Game1 AND Game2 < Game3 AND Game2 < Game4 THEN Game2
-            WHEN Game3 < Game1 AND Game3 < Game2 AND Game3 < Game4 THEN Game4
+            WHEN Game3 < Game1 AND Game3 < Game2 AND Game3 < Game4 THEN Game3
             ELSE Game4
         END) AS Score
     , CASE
@@ -231,7 +231,7 @@ ORDER BY Score DESC";
         CASE 
             WHEN Game1 < Game2 AND Game1 < Game3 AND Game1 < Game4 THEN Game1
             WHEN Game2 < Game1 AND Game2 < Game3 AND Game2 < Game4 THEN Game2
-            WHEN Game3 < Game1 AND Game3 < Game2 AND Game3 < Game4 THEN Game4
+            WHEN Game3 < Game1 AND Game3 < Game2 AND Game3 < Game4 THEN Game3
             ELSE Game4
         END) AS Score
     , CASE
@@ -345,7 +345,7 @@ ORDER BY Score DESC";
         CASE 
             WHEN Game1 < Game2 AND Game1 < Game3 AND Game1 < Game4 THEN Game1
             WHEN Game2 < Game1 AND Game2 < Game3 AND Game2 < Game4 THEN Game2
-            WHEN Game3 < Game1 AND Game3 < Game2 AND Game3 < Game4 THEN Game4
+            WHEN Game3 < Game1 AND Game3 < Game2 AND Game3 < Game4 THEN Game3
             ELSE Game4
         END) AS Score
     , CASE
@@ -435,7 +435,7 @@ ORDER BY Score DESC";
         CASE 
             WHEN Game1 < Game2 AND Game1 < Game3 AND Game1 < Game4 THEN Game1
             WHEN Game2 < Game1 AND Game2 < Game3 AND Game2 < Game4 THEN Game2
-            WHEN Game3 < Game1 AND Game3 < Game2 AND Game3 < Game4 THEN Game4
+            WHEN Game3 < Game1 AND Game3 < Game2 AND Game3 < Game4 THEN Game3
             ELSE Game4
         END) AS Score
     , CASE
