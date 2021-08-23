@@ -140,7 +140,7 @@ namespace NineTapTour.Forms
             // This is what prints the data
             Graphics graphic = e.Graphics;
 
-            // Default font to use for printing labels. Arial font will mono space the digits
+            // Default font to use for printing labels. Arial font will monospace the digits
             Font font = new Font("Arial", 16, FontStyle.Bold, GraphicsUnit.Pixel);
 
             // Sets default brush to use when printing
