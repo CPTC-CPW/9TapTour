@@ -16,9 +16,9 @@ namespace NineTapTour.Forms
     public partial class FrmLabelPrint : Form
     {
         int RegionID;
-        List<Member> AllMems;       // = MemberDb.GetMemberLabelList();
-        List<Member> ActiveMems;    // = new List<Member>();
-        List<Member> Labels;        // = new List<Member>();
+        List<Member> AllMems;
+        List<Member> ActiveMems;
+        List<Member> Labels;
 
         public FrmLabelPrint(int RegionID)
         {
@@ -102,12 +102,12 @@ namespace NineTapTour.Forms
 
         private void BtnPrint_Click(object sender, EventArgs e)
         {
-            //Set up compenents for printing
+            // Set up components for printing
             PrintDialog printDialog = new PrintDialog();
             PrintDocument printDocument = new PrintDocument();
-            //add the document to the dialog box
+            // Add the document to the dialog box
             printDialog.Document = printDocument;
-            //add the event handler that will do the printing
+            // Add the event handler that will do the printing
             printDocument.PrintPage += new PrintPageEventHandler(PrintLabels);
 
             DialogResult result = printDialog.ShowDialog();
@@ -124,13 +124,13 @@ namespace NineTapTour.Forms
         const int PageSize = 30;
         public void PrintLabels(object sender, PrintPageEventArgs e)
         {
-            // grab the next 30 members
+            // Grab the next 30 members
             List<Member> nextMemberLabels = Labels.Skip((currPage) * PageSize).Take(PageSize).ToList();
 
-            // if more than 30 members remaining another page will be printed
+            // If more than 30 members remaining another page will be printed
             e.HasMorePages = (currPage * PageSize + PageSize >= Labels.Count) ? false : true;
 
-            // print out 1 sheet of members, e.HasMorePages = true will cause print to be triggered again automatically
+            // Print out 1 sheet of members, e.HasMorePages = true will cause print to be triggered again automatically
             PrintLabelSheetOf10(nextMemberLabels, e);
             currPage++;
         }
@@ -140,10 +140,10 @@ namespace NineTapTour.Forms
             // This is what prints the data
             Graphics graphic = e.Graphics;
 
-            // default font to use, should use a mono space font so the spaces line up.
+            // Default font to use for printing labels. Arial font will mono space the digits
             Font font = new Font("Arial", 16, FontStyle.Bold, GraphicsUnit.Pixel);
 
-            // Sets defult brush to use when printing
+            // Sets default brush to use when printing
             SolidBrush dBrush = new SolidBrush(Color.Black);
 
             int startX = 55;
