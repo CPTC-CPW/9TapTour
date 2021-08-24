@@ -22,14 +22,14 @@ namespace NineTapTour.Forms
     public partial class FrmTournamentResults : Form
     {
         // Names of the Colums in the DataGridView
-        static string PLACE_STANDING_COLUMN_NAME = "Place";
-        static string FULLNAME_COLUMN_NAME = "Full Name";
-        static string HANDICAP_COLUMN_NAME = "H/B*";
-        static string TOTAL_SCORE_COLUMN_NAME = "Total Score";
-        static string EARNINGS_COLUMN_NAME = "Earnings";
-        static string MEMBER_ID_COLUMN_NAME = "Member ID";
-        static string GAME_ID_COLUMN_NAME = "Game ID";
-        static string PROGRESSIVEPOT_COLUMN_NAME = "Progressive Pot";
+        const string PLACE_STANDING_COLUMN_NAME = "Place";
+        const string FULLNAME_COLUMN_NAME = "Full Name";
+        const string HANDICAP_COLUMN_NAME = "H/B*";
+        const string TOTAL_SCORE_COLUMN_NAME = "Total Score";
+        const string EARNINGS_COLUMN_NAME = "Earnings";
+        const string MEMBER_ID_COLUMN_NAME = "Member ID";
+        const string GAME_ID_COLUMN_NAME = "Game ID";
+        const string PROGRESSIVEPOT_COLUMN_NAME = "Progressive Pot";
 
         DataTable dt = new DataTable(); // Instantiate Data Table
         NineTapDb db = new NineTapDb(); // Get access to database
