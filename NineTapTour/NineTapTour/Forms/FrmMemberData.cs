@@ -440,17 +440,16 @@ namespace NineTapTour.Forms
             }
 
             // validate DOB textbox
-            if (!FormHelper.IsDateTimeValid(txtDOB.Text))
-                {
+            if(String.IsNullOrEmpty(txtDOB.Text) || txtDOB.Text.Contains("MM/DD/YYYY"))
+            {
+                txtDOB.BackColor = SystemColors.Control;
+            }
+            else if(!FormHelper.IsDateTimeValid(txtDOB.Text))
+            {
                 lblDOBValidation.Visible = true;
                 txtDOB.BackColor = Color.LightPink;
                 valid = false;
             }
-            else
-            {
-                txtDOB.BackColor = SystemColors.Control;
-            }
-
             return valid;
         }
 
@@ -485,8 +484,11 @@ namespace NineTapTour.Forms
                 // Personal Info
                 temp.LastName = txtLastName.Text;
                 temp.FirstName = txtFirstName.Text;
-                temp.MiddleInitial = txtMiddleInitial.Text;                              
-                temp.DateOfBirth = DateTime.Parse(txtDOB.Text);
+                temp.MiddleInitial = txtMiddleInitial.Text;
+                if (!String.IsNullOrEmpty(txtDOB.Text) && !txtDOB.Text.Contains("MM/DD/YYYY"))
+                {
+                    temp.DateOfBirth = DateTime.Parse(txtDOB.Text);
+                }
                 temp.SSN = txtSSN.Text;
                 temp.Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male;
 
