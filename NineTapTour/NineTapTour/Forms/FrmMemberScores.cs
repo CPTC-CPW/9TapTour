@@ -1710,18 +1710,18 @@ namespace NineTapTour.Forms
         private void BtnDelete_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-            //Grabs the tournament from the selected tournament combobox and casts it to selected Tournament
-            selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
-            //Repopulates list of participants with the current tournament
-            overallListOfParticipants = TournamentDB.GetTournamentMemberList(selectedTournament);
 
-
-            //Checks to make sure the member Id textbox isn't empty
-            if(txtMemberNum.Text == String.Empty)
+            // Checks to make sure the member Id textbox isn't empty
+            if (string.IsNullOrWhiteSpace(txtMemberNum.Text))
             {
                 MessageBox.Show("You must enter a member number.");
                 return;
             }
+
+            // Grabs the tournament from the selected tournament combobox and casts it to selected Tournament
+            selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
+            // Repopulates list of participants with the current tournament
+            overallListOfParticipants = TournamentDB.GetTournamentMemberList(selectedTournament);
 
             //needs to delete current member information from database in all important places
             if (overallListOfParticipants.Count == 0)
