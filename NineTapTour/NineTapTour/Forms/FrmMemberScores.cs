@@ -1723,10 +1723,10 @@ namespace NineTapTour.Forms
             // Repopulates list of participants with the current tournament
             overallListOfParticipants = TournamentDB.GetTournamentMemberList(selectedTournament);
 
-            //needs to delete current member information from database in all important places
+            // Display error if there are no participants to delete in the current tournament
             if (overallListOfParticipants.Count == 0)
             {
-                var confirm = MessageBox.Show(@"No players currently in tournament", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(@"No players currently in tournament", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
