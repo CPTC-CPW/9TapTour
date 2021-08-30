@@ -1718,11 +1718,6 @@ namespace NineTapTour.Forms
                 return;
             }
 
-            // Grabs the tournament from the selected tournament combobox and casts it to selected Tournament
-            selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
-            // Repopulates list of participants with the current tournament
-            overallListOfParticipants = TournamentDB.GetTournamentMemberList(selectedTournament);
-
             // Display error if there are no participants to delete in the current tournament
             if (overallListOfParticipants.Count == 0)
             {
@@ -1771,7 +1766,7 @@ namespace NineTapTour.Forms
                 }
 
                 //Delete from FinalizeTemp
-                FinalizeTemp ft = FinalizeTempDB.GetFinalizeID(GameDB.GetGame(g.Id));
+                FinalizeTemp ft = FinalizeTempDB.GetFinalizeID(g);
                 FinalizeTempDB.DeleteFinalizeTemp(ft);
 
             
@@ -1786,7 +1781,7 @@ namespace NineTapTour.Forms
                 //Delete the game itself
                 PlayerHistoryDB.DeleteGame(g);
 
-
+                // TODO: Get most recent tournament only
                 //corrects any changes to the members stats after finalizing to the last accurate data
                 List<PlayerHistory> temp = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
                 currentMem.Handicap = temp[0].HandiCap;
