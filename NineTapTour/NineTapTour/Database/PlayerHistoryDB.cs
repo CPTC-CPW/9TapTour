@@ -195,20 +195,37 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<PlayerHistory> GetLastFiveTournaments(int memberNum, int regionID)
         {
-            int howmany = 5;
+            const int HOW_MANY = 5;
             using (var db = new NineTapDb())
             {
-                /* will only grab the last 5 where the AVG was adjusted, 
-                  that way the bonus pins cant be affected by bowling in more then one squad */
+                // Will only grab the last 5 PlayerHistories where the AVG was adjusted, 
+                // that way the bonus pins can't be affected by bowling in more than one squad
                 List<PlayerHistory> PlayerHistoryList = 
                     (from h in db.PlayerHistory
                     where h.MemberNumber == memberNum && h.regionID == regionID && h.AVG > 0 
-                    /* Only grabs tournaments where average was determined. 
-                      that way it doest grab history from a diffrent sqaud */
                     orderby h.TournamentDate descending, h.hisID descending
-                    select h).Take(howmany).ToList();
+                    select h).Take(HOW_MANY).ToList();
                 return PlayerHistoryList;
             }
+        }
+
+        /// <summary>
+        /// Will only grab the most recent PlayerHistory where the AVG was adjusted, 
+        /// that way the bonus pins can't be affected by bowling in more than one squad.
+        /// Returns null if no recent player history is found
+        /// </summary>
+        /// <param name="memberNum">The bowlers MemberNumber</param>
+        /// <param name="regionID">Region of the Tournament</param>
+        /// <returns></returns>
+        public static PlayerHistory GetMostRecentTournament(int memberNum, int regionID)
+        {
+            using var db = new NineTapDb();
+            PlayerHistory mostRecentTournament =
+                (from h in db.PlayerHistory
+                 where h.MemberNumber == memberNum && h.regionID == regionID && h.AVG > 0
+                 orderby h.TournamentDate descending, h.hisID descending
+                 select h).Take(1).SingleOrDefault();
+            return mostRecentTournament;
         }
 
         /// <summary>

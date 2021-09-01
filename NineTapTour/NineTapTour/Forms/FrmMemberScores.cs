@@ -1710,39 +1710,25 @@ namespace NineTapTour.Forms
         private void BtnDelete_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-            //Grabs the tournament from the selected tournament combobox and casts it to selected Tournament
-            selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
-            //Repopulates list of participants with the current tournament
-            overallListOfParticipants = TournamentDB.GetTournamentMemberList(selectedTournament);
 
-
-            //Checks to make sure the member Id textbox isn't empty
-            if(txtMemberNum.Text == String.Empty)
+            // Checks to make sure the member Id textbox isn't empty
+            if (string.IsNullOrWhiteSpace(txtMemberNum.Text))
             {
                 MessageBox.Show("You must enter a member number.");
                 return;
             }
 
-            //needs to delete current member information from database in all important places
+            // Display error if there are no participants to delete in the current tournament
             if (overallListOfParticipants.Count == 0)
             {
-                var confirm = MessageBox.Show(@"No players currently in tournament", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(@"No players currently in tournament", @"Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            try
-            {
-                RemoveParticipantFromTournament();
-            }
-            catch
-            {
-                MessageBox.Show("Current Stats Not added to Tournament yet.");
-            }
-            finally
-            {
-                RefreshMemberScoresForm();
-                Cursor.Current = Cursors.Default;
-            }
+            RemoveParticipantFromTournament();
+            RefreshMemberScoresForm();
+
+            Cursor.Current = Cursors.Default;
             ReEnableNavigation();
         }
 
@@ -1771,9 +1757,11 @@ namespace NineTapTour.Forms
                 }
 
                 //Delete from FinalizeTemp
-                FinalizeTemp ft = FinalizeTempDB.GetFinalizeID(GameDB.GetGame(g.Id));
-                FinalizeTempDB.DeleteFinalizeTemp(ft);
-
+                FinalizeTemp ft = FinalizeTempDB.GetFinalizeID(g);
+                if(ft.FinalizeID != 0) // See if FinalizeTemp was an empty object (not found)
+                {
+                    FinalizeTempDB.DeleteFinalizeTemp(ft);
+                }
             
                 //Delete from Participants list
                 Participant par = FinalizeTempDB.GetParticipantByGameId(g.Id);
@@ -1786,13 +1774,20 @@ namespace NineTapTour.Forms
                 //Delete the game itself
                 PlayerHistoryDB.DeleteGame(g);
 
-
-                //corrects any changes to the members stats after finalizing to the last accurate data
-                List<PlayerHistory> temp = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
-                currentMem.Handicap = temp[0].HandiCap;
-                currentMem.Bonus = temp[0].Bonus;
-                currentMem.StartAvg = temp[0].AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
-                currentMem.Average = Convert.ToInt32(temp[0].trueAVG);
+                // Corrects any changes to the members stats after finalizing to the last accurate data
+                PlayerHistory temp = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number, RegionID);
+                if(temp != null)
+                {
+                    currentMem.Handicap = temp.HandiCap;
+                    currentMem.Bonus = temp.Bonus;
+                    currentMem.StartAvg = temp.AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
+                    currentMem.Average = Convert.ToInt32(temp.trueAVG);
+                }
+                else
+                {
+                    MessageBox.Show("Current Stats Not added to Tournament yet.");
+                }
+                
                 MemberDB.AddOrUpdateMember(currentMem);           
             }
         }

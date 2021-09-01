@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace NineTapTour.Models
 {
-    public class Participant : IComparable<Participant>
+    public class Participant : IComparable<Participant>, IEquatable<Participant>
     {
         [Key]
         public int Id { get; set; }
@@ -34,6 +34,23 @@ namespace NineTapTour.Models
             {
                 return 0;
             }
+        }
+
+        public bool Equals(Participant other)
+        {
+            if(Id == other.Id)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"{Member.LastName}, {Member.FirstName}: Squad {Squad}";
         }
     }
 }
