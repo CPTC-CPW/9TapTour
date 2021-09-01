@@ -195,7 +195,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<PlayerHistory> GetLastFiveTournaments(int memberNum, int regionID)
         {
-            int howmany = 5;
+            const int HOW_MANY = 5;
             using (var db = new NineTapDb())
             {
                 /* will only grab the last 5 where the AVG was adjusted, 
@@ -206,7 +206,7 @@ namespace NineTapTour.Database
                     /* Only grabs tournaments where average was determined. 
                       that way it doest grab history from a diffrent sqaud */
                     orderby h.TournamentDate descending, h.hisID descending
-                    select h).Take(howmany).ToList();
+                    select h).Take(HOW_MANY).ToList();
                 return PlayerHistoryList;
             }
         }
