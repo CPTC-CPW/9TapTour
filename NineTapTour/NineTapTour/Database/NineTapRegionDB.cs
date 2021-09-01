@@ -62,17 +62,10 @@ namespace NineTapTour.Database
         /// </summary>
         public static void AddRegion(NineTapRegion temp)
         {
-            try
+            using (var db = new NineTapDb())
             {
-                using (var db = new NineTapDb())
-                {
-					db.NineTapRegion.Add(temp);
-                    db.SaveChanges();
-                }
-            }
-            catch (SqlException ex)
-            {
-                throw new PlayerHistoryTableException("Error Number : " + ex.Number + " - " + ex.Message);
+				db.NineTapRegion.Add(temp);
+                db.SaveChanges();
             }
         }
 

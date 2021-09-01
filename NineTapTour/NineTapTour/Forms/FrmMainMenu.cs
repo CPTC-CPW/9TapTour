@@ -225,7 +225,7 @@ namespace NineTapTour.Forms
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            var region = new FrmAddRegion(regionID);
+            var region = new FrmAddRegion();
             region.ShowDialog();
             refreshRegionlist();
         }
