@@ -1725,19 +1725,10 @@ namespace NineTapTour.Forms
                 return;
             }
 
-            try
-            {
-                RemoveParticipantFromTournament();
-            }
-            catch
-            {
-                MessageBox.Show("Current Stats Not added to Tournament yet.");
-            }
-            finally
-            {
-                RefreshMemberScoresForm();
-                Cursor.Current = Cursors.Default;
-            }
+            RemoveParticipantFromTournament();
+            RefreshMemberScoresForm();
+
+            Cursor.Current = Cursors.Default;
             ReEnableNavigation();
         }
 
@@ -1767,8 +1758,10 @@ namespace NineTapTour.Forms
 
                 //Delete from FinalizeTemp
                 FinalizeTemp ft = FinalizeTempDB.GetFinalizeID(g);
-                FinalizeTempDB.DeleteFinalizeTemp(ft);
-
+                if(ft.FinalizeID != 0) // See if FinalizeTemp was an empty object (not found)
+                {
+                    FinalizeTempDB.DeleteFinalizeTemp(ft);
+                }
             
                 //Delete from Participants list
                 Participant par = FinalizeTempDB.GetParticipantByGameId(g.Id);
@@ -1789,6 +1782,10 @@ namespace NineTapTour.Forms
                     currentMem.Bonus = temp.Bonus;
                     currentMem.StartAvg = temp.AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
                     currentMem.Average = Convert.ToInt32(temp.trueAVG);
+                }
+                else
+                {
+                    MessageBox.Show("Current Stats Not added to Tournament yet.");
                 }
                 
                 MemberDB.AddOrUpdateMember(currentMem);           
