@@ -14,12 +14,9 @@ namespace NineTapTour.Forms
 {
     public partial class FrmAddRegion : Form
     {
-        private List<NineTapRegion> nList;
-        private int RegionID;
-        public FrmAddRegion(int RegionID)
+        public FrmAddRegion()
         {
-            InitializeComponent();
-            this.RegionID = RegionID;     
+            InitializeComponent();   
         }
 
         private void btnSubmit_Click(object sender, EventArgs e)
@@ -28,10 +25,7 @@ namespace NineTapTour.Forms
             if(tbEntry != null)
             {
                 NineTapRegion n = new NineTapRegion();
-                nList = NineTapRegionDB.GetRegionList();
-                n.NineTapRegionID = nList.Count + 1;
                 n.NineTapRegionName = tbEntry.Text;
-
                 NineTapRegionDB.AddRegion(n);
                 this.Close();         
             }
