@@ -210,6 +210,25 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
+        /// Will only grab the most recent PlayerHistory where the AVG was adjusted, 
+        /// that way the bonus pins can't be affected by bowling in more than one squad.
+        /// Returns null if no recent player history is found
+        /// </summary>
+        /// <param name="memberNum">The bowlers MemberNumber</param>
+        /// <param name="regionID">Region of the Tournament</param>
+        /// <returns></returns>
+        public static PlayerHistory GetMostRecentTournament(int memberNum, int regionID)
+        {
+            using var db = new NineTapDb();
+            PlayerHistory mostRecentTournament =
+                (from h in db.PlayerHistory
+                 where h.MemberNumber == memberNum && h.regionID == regionID && h.AVG > 0
+                 orderby h.TournamentDate descending, h.hisID descending
+                 select h).Take(1).SingleOrDefault();
+            return mostRecentTournament;
+        }
+
+        /// <summary>
         /// Deletes the given Game from the database
         /// </summary>
         public static void DeleteGame(Game game)

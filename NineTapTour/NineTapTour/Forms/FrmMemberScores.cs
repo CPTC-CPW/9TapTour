@@ -1781,13 +1781,16 @@ namespace NineTapTour.Forms
                 //Delete the game itself
                 PlayerHistoryDB.DeleteGame(g);
 
-                // TODO: Get most recent tournament only
-                //corrects any changes to the members stats after finalizing to the last accurate data
-                List<PlayerHistory> temp = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
-                currentMem.Handicap = temp[0].HandiCap;
-                currentMem.Bonus = temp[0].Bonus;
-                currentMem.StartAvg = temp[0].AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
-                currentMem.Average = Convert.ToInt32(temp[0].trueAVG);
+                // Corrects any changes to the members stats after finalizing to the last accurate data
+                PlayerHistory temp = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number, RegionID);
+                if(temp != null)
+                {
+                    currentMem.Handicap = temp.HandiCap;
+                    currentMem.Bonus = temp.Bonus;
+                    currentMem.StartAvg = temp.AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
+                    currentMem.Average = Convert.ToInt32(temp.trueAVG);
+                }
+                
                 MemberDB.AddOrUpdateMember(currentMem);           
             }
         }
