@@ -78,8 +78,8 @@ namespace NineTapTour.Forms
         #endregion
 
         // Region Id that the current tournament is in
-        private int RegionID;
-        private Tournament currTournament;
+        private readonly int RegionID;
+        private readonly Tournament currTournament;
 
         /// <summary>
         /// Constructs the Finalize form with data from the current tournament and region
