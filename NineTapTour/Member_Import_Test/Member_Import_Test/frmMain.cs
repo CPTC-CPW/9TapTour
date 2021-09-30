@@ -535,8 +535,10 @@ namespace Member_Import_Test
             checkSpaces();
         }
 
+        private Excel.Application xlApp;
         private List<ExcelRow> GetAllExcelData(string[] files)
         {
+            xlApp = new Excel.Application();
             OverAllProcessingExcel.Text = "Over All Process:";
             for (int i = 0; i < files.Length; i++)
             {
@@ -555,6 +557,11 @@ namespace Member_Import_Test
             OverAllProcessingExcel.Text = "Complete";
             progressBar1.Increment(100);
             progressBar2.Increment(100);
+
+            // Quit Excel and release resources
+            xlApp.Quit();
+            Marshal.ReleaseComObject(xlApp);
+
             return ALLEXCELDATAFROMALLPLAYERS;
         }
         /// <summary>
@@ -568,7 +575,7 @@ namespace Member_Import_Test
             progressBar2.Maximum = 347;
             progressBar2.Value = 0;
             LabelCurrentFileWorkingOn.Text = "Current File Being Processed:   " + Path.GetFileName(PathAndFileName);
-            Excel.Application xlApp = new Excel.Application();
+            
             Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
             Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
             Excel.Range range = xlWorkSheet.UsedRange;
@@ -912,22 +919,11 @@ namespace Member_Import_Test
             }
 
             xlWorkBook.Close(0);
-            xlApp.Quit();
-
+            
             Marshal.ReleaseComObject(range);
             Marshal.ReleaseComObject(xlWorkSheet);
             Marshal.ReleaseComObject(xlWorkBook);
-            Marshal.ReleaseComObject(xlApp);
-
-            System.Diagnostics.Process[] process = System.Diagnostics.Process.GetProcessesByName("Excel");
-            foreach (System.Diagnostics.Process p in process)
-            {
-                try
-                {
-                    p.Kill();
-                }
-                catch { }
-            }
+            
             return returnMe;
         }
 
