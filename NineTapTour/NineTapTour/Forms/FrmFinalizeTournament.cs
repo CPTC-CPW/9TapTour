@@ -78,8 +78,8 @@ namespace NineTapTour.Forms
         #endregion
 
         // Region Id that the current tournament is in
-        private int RegionID;
-        private Tournament currTournament;
+        private readonly int RegionID;
+        private readonly Tournament currTournament;
 
         /// <summary>
         /// Constructs the Finalize form with data from the current tournament and region
@@ -398,7 +398,7 @@ namespace NineTapTour.Forms
 #endif
         }
 
-        private void SetDataColumns(DataTable dt)
+        private static void SetDataColumns(DataTable dt)
         {
             dt.Columns.Add(STANDING_COLUMN_NAME, typeof(int));                          // 0
             dt.Columns.Add(MEMBER_NUMBER_COLUMN_NAME, typeof(int)).ReadOnly = true;     // 1
@@ -432,7 +432,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="participantsList"></param>
         /// <returns></returns>
-        public DataTable SetDataView(Dictionary<FinalizeTemp,int> participantsList)
+        public static DataTable SetDataView(Dictionary<FinalizeTemp,int> participantsList)
         {
             DataTable dt = new DataTable();
             SetDataColumns(dt);
@@ -492,7 +492,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="dt">The DataTable to search</param>
         /// <param name="memNum">MemberID to search for</param>
-        private DataRow GetLastMemberIndex(DataTable dt, int memNum)
+        private static DataRow GetLastMemberIndex(DataTable dt, int memNum)
         {
             return dt.AsEnumerable()
                 .Where(row => row.Field<int>(MEMBER_NUMBER_COLUMN_NAME) == memNum)
@@ -923,7 +923,7 @@ namespace NineTapTour.Forms
             sizeFinalizeLowerGridView(moneyWonWithTotal, gamesTotalPlayed, game1TotalPlayed, game2TotalPlayed, game3TotalPlayed, game4TotalPlayed, AllScratchTotal, AllEntryAvgTotal, AllthirtyAvgTotal);   // resizes columns in the grid
             
             // Order By Total w/HDCP
-            currentPlayerHistory = currentPlayerHistory.OrderByDescending(ph => ph.TournamentDate).ThenByDescending(ph => getTotalWithHandicap(ph)).ThenByDescending(ph => ph.MoneyWon).ToList();
+            currentPlayerHistory = currentPlayerHistory.OrderByDescending(ph => ph.TournamentDate).ThenByDescending(ph => GetTotalWithHandicap(ph)).ThenByDescending(ph => ph.MoneyWon).ToList();
 
             // Populates Data Rows with entries from currentPlayerHistory
             foreach (var item in currentPlayerHistory)
@@ -952,7 +952,7 @@ namespace NineTapTour.Forms
                     newRow[game4TotalPlayed] = item.Game4;
 
                 newRow[AllScratchTotal] = item.TotalScore;
-                newRow[TotalWithHandiCap] = getTotalWithHandicap(item);
+                newRow[TotalWithHandiCap] = GetTotalWithHandicap(item);
                 newRow[AllEntryAvgTotal] = item.AverageForEntry;
                 newRow[AllthirtyAvgTotal] = item.trueAVG;
 
@@ -1026,7 +1026,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// This method will calculate the total with handicap for the player history given
         /// </summary>
-        private int getTotalWithHandicap(PlayerHistory history)
+        private static int GetTotalWithHandicap(PlayerHistory history)
         {
             return history.TotalScore + ((history.HandiCap + history.Bonus) * history.GamesPlayed);
         }

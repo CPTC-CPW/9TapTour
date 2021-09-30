@@ -271,7 +271,7 @@ namespace NineTapTour.Forms
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     MessageBox.Show("The file is already created and was open when you tried to save over it.");
                 }
@@ -283,7 +283,7 @@ namespace NineTapTour.Forms
                 ReleaseObject(xlWorkBook);
                 ReleaseObject(xlApp);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // if the workbook does not get opened, display an error message
                 MessageBox.Show("Must choose a file to export to.");
@@ -298,7 +298,7 @@ namespace NineTapTour.Forms
         /// so that Excel does not remain running.
         /// </summary>
         /// <param name="obj"></param>
-        private void ReleaseObject(object obj)
+        private static void ReleaseObject(object obj)
         {
             try
             {

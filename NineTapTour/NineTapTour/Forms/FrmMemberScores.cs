@@ -249,14 +249,12 @@ namespace NineTapTour.Forms
         {
             if (cbxTourneyDropDown.SelectedValue != null)
             {
-                Tournament currTourney = TournamentDB.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
                 string searchNumber = txtMemberNum.Text;
 
                 //don't do any further processing if there is no member number
                 if (searchNumber.Trim() == string.Empty)
                     return;
-
-                if (!int.TryParse(searchNumber, out int number))
+                if (!int.TryParse(searchNumber, out _))
                 {
                     MessageBox.Show("Please input numbers only.", "Your attention please.");
                     return;
@@ -628,10 +626,9 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="str"></param>
         /// <returns>isNum</returns>
-        public bool IsNumeric(string str)
+        public static bool IsNumeric(string str)
         {
-            int num;
-            bool isNum = int.TryParse(str, out num);
+            bool isNum = int.TryParse(str, out _);
             return isNum;
         }
 
@@ -800,7 +797,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="box"></param>
         /// <returns></returns>
-        private bool IsEmpty(TextBox box)
+        private static bool IsEmpty(TextBox box)
         {
             if (string.IsNullOrEmpty(box.Text.Trim()))
             {
@@ -1678,7 +1675,7 @@ namespace NineTapTour.Forms
 
                 temp.Sort(scoreComparer);
 
-                if (temp.Count() != 0)
+                if (temp.Count != 0)
                 {
                     FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, ReportType.HighSeriesScratch, qualifyBySquadNumber, squadList);
                     report.Show();
