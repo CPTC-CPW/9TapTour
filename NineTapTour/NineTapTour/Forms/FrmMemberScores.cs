@@ -628,10 +628,9 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="str"></param>
         /// <returns>isNum</returns>
-        public bool IsNumeric(string str)
+        public static bool IsNumeric(string str)
         {
-            int num;
-            bool isNum = int.TryParse(str, out num);
+            bool isNum = int.TryParse(str, out _);
             return isNum;
         }
 
@@ -800,7 +799,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="box"></param>
         /// <returns></returns>
-        private bool IsEmpty(TextBox box)
+        private static bool IsEmpty(TextBox box)
         {
             if (string.IsNullOrEmpty(box.Text.Trim()))
             {
