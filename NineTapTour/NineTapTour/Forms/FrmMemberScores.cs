@@ -1677,7 +1677,7 @@ namespace NineTapTour.Forms
 
                 temp.Sort(scoreComparer);
 
-                if (temp.Count() != 0)
+                if (temp.Count != 0)
                 {
                     FrmMemberScoresReports report = new FrmMemberScoresReports(temp, selectedTournament, ReportType.HighSeriesScratch, qualifyBySquadNumber, squadList);
                     report.Show();
