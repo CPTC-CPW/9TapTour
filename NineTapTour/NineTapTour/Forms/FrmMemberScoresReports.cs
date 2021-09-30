@@ -298,7 +298,7 @@ namespace NineTapTour.Forms
         /// so that Excel does not remain running.
         /// </summary>
         /// <param name="obj"></param>
-        private void ReleaseObject(object obj)
+        private static void ReleaseObject(object obj)
         {
             try
             {
