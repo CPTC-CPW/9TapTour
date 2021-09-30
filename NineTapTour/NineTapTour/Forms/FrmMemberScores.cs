@@ -249,14 +249,12 @@ namespace NineTapTour.Forms
         {
             if (cbxTourneyDropDown.SelectedValue != null)
             {
-                Tournament currTourney = TournamentDB.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
                 string searchNumber = txtMemberNum.Text;
 
                 //don't do any further processing if there is no member number
                 if (searchNumber.Trim() == string.Empty)
                     return;
-
-                if (!int.TryParse(searchNumber, out int number))
+                if (!int.TryParse(searchNumber, out _))
                 {
                     MessageBox.Show("Please input numbers only.", "Your attention please.");
                     return;
