@@ -323,6 +323,18 @@ namespace NineTapTour.Database
             }
         }
 
+        public static int GetTotalGamesPlayedFromHistory(int memberNum, int regionID, int numberOfEntriesToTake)
+        {
+            using NineTapDb db = new();
+            return db.PlayerHistory
+                .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
+                .OrderByDescending(p => p.TournamentDate)
+                .ThenByDescending(p => p.TotalScore)
+                .Select(p => p.GamesPlayed)
+                .Take(numberOfEntriesToTake)
+                .Sum();
+        }
+
         //return the sum of game 1 total played or 0 if no entries are present for this bowler in the database
         public static int GetTotalGame1Played(int memberNum, int regionID)
         {
@@ -371,16 +383,80 @@ namespace NineTapTour.Database
             }
         }
 
-        //return the sum of scratch total played or 0 if no entries are present for this bowler in the database
-        public static int GetScratchTotal(int memberNum, int regionID)
+        /// <summary>
+        /// Returns the total sum of a game score (1,2,3, or 4) for a specific member.
+        /// To return a 30 game total, take 30 games - the number of entries in the current tournament
+        /// </summary>
+        /// <param name="memberNum"></param>
+        /// <param name="regionID"></param>
+        /// <param name="numberOfEntriesToTake">The number of entries from playerhistory to take</param>
+        /// <returns></returns>
+        public static int GetGame1TotalFromHistory(int memberNum, int regionID, int numberOfEntriesToTake)
         {
-            using (var db = new NineTapDb())
-            {
-                return db.PlayerHistory
-                    .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
-                        .Select(p => (int?)p.TotalScore)
-                        .Sum() ?? 0;
-            }
+            using NineTapDb db = new();
+            return db.PlayerHistory
+                .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
+                .OrderByDescending(p => p.TournamentDate)
+                .ThenByDescending(p => p.TotalScore)
+                .Select(p => p.Game1)
+                .Take(numberOfEntriesToTake)
+                .Sum() ?? 0;
+        }
+
+        public static int GetGame2TotalFromHistory(int memberNum, int regionID, int numberOfEntriesToTake)
+        {
+            using NineTapDb db = new();
+            return db.PlayerHistory
+                .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
+                .OrderByDescending(p => p.TournamentDate)
+                .ThenByDescending(p => p.TotalScore)
+                .Select(p => p.Game2)
+                .Take(numberOfEntriesToTake)
+                .Sum() ?? 0;
+        }
+
+        public static int GetGame3TotalFromHistory(int memberNum, int regionID, int numberOfEntriesToTake)
+        {
+            using NineTapDb db = new();
+            return db.PlayerHistory
+                .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
+                .OrderByDescending(p => p.TournamentDate)
+                .ThenByDescending(p => p.TotalScore)
+                .Select(p => p.Game3)
+                .Take(numberOfEntriesToTake)
+                .Sum() ?? 0;
+        }
+
+        public static int GetGame4TotalFromHistory(int memberNum, int regionID, int numberOfEntriesToTake)
+        {
+            using NineTapDb db = new();
+            return db.PlayerHistory
+                .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
+                .OrderByDescending(p => p.TournamentDate)
+                .ThenByDescending(p => p.TotalScore)
+                .Select(p => p.Game4)
+                .Take(numberOfEntriesToTake)
+                .Sum() ?? 0;
+        }
+
+        /// <summary>
+        /// Return the sum of scratch total played from desired number of games.
+        /// </summary>
+        /// <param name="memberNum"></param>
+        /// <param name="regionID"></param>
+        /// <param name="numberOfGamesToTake">Number of games to take from history. If 30 total is needed, 
+        /// subtract the number of entries from the current tournament</param>
+        /// <returns></returns>
+        public static int GetScratchTotalFromHistory(int memberNum, int regionID, int numberOfGamesToTake)
+        {
+            using NineTapDb db = new();
+            return db.PlayerHistory
+                .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
+                .OrderByDescending(p => p.TournamentDate)
+                .ThenByDescending(p => p.TotalScore)
+                .Select(p => p.TotalScore)
+                .Take(numberOfGamesToTake)
+                .Sum();
         }
 
         //return the sum of handiCap total played or 0 if no entries are present for this bowler in the database
@@ -398,17 +474,16 @@ namespace NineTapTour.Database
             }
         }
 
-        //return the last 30 games for 30 avg
-        public static int GetThirtyAvgGames(int memberNum, int regionID)
+        public static int GetGameAvgFromHistory(int memberNum, int regionID, int numberOfEntriesToTake)
         {
-            using (var db = new NineTapDb())
-            {
-                return db.PlayerHistory
-                      .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
-                      .OrderByDescending(p => p.TournamentDate)
-                      .Select(p => (int?)p.TotalScore).Take(29)
-                      .Sum() ?? 0;
-            }
+            using NineTapDb db = new();
+            return db.PlayerHistory
+                .Where(p => p.MemberNumber == memberNum && p.regionID == regionID)
+                .OrderByDescending(p => p.TournamentDate)
+                .ThenBy(p => p.TotalScore)
+                .Select(p => p.TotalScore)
+                .Take(numberOfEntriesToTake)
+                .Sum();
         }
 
 
@@ -430,6 +505,24 @@ namespace NineTapTour.Database
         public static bool PlayerHistoryExists(PlayerHistory ph)
         {
             return PlayerHistoryExists(ph.GameID);
+        }
+
+        internal static int GetTotalNumberOfEntries(int memberNumber, int regionID)
+        {
+            using NineTapDb db = new();
+            return db.PlayerHistory.Where(p => p.MemberNumber == memberNumber && p.regionID == regionID).Count();
+        }
+
+        internal static int GetNumberOfGamesFromHistory(int memberNumber, int regionID, int numberOfEntries)
+        {
+            using NineTapDb db = new();
+            return db.PlayerHistory
+                .Where(p => p.MemberNumber == memberNumber && p.regionID == regionID)
+                .OrderByDescending(p => p.TournamentDate)
+                .ThenBy(p => p.TotalScore)
+                .Select(p => p.GamesPlayed)
+                .Take(numberOfEntries)
+                .Sum();
         }
     }
 }

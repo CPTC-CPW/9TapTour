@@ -825,7 +825,7 @@ namespace NineTapTour.Forms
 
             //Games Played label string is referencing multiple locations
             string GamesTotal = "Games";
-            int TotalGamesPlayed = 0;
+            int TotalGamesPlayedInCurrentTourney = 0;
 
             //Game 1 Total Played label string is referencing multiple locations
             string Game1Total = "Game1";
@@ -869,7 +869,7 @@ namespace NineTapTour.Forms
                 // also need to get the these manually since they aren't known by PlayerHistoryDB
                 foreach (var item in temporary)
                 {
-                    TotalGamesPlayed += item.GamesPlayed;
+                    TotalGamesPlayedInCurrentTourney += item.GamesPlayed;
                     totalMoneyEarned += item.MoneyWon;
                     TotalGame1Played += item.Game1;
                     TotalGame2played += item.Game2;
@@ -883,39 +883,44 @@ namespace NineTapTour.Forms
             string moneyWonWithTotal = $"{moneyWon} ({totalMoneyEarned + PlayerHistoryDB.GetTotalMoneyWon(temporary[0].MemberNumber, RegionID)})";
             dtGames.Columns[moneyWon].ColumnName = moneyWonWithTotal;
 
+            const int ThirtyGames = 30;
+            int numEntriesInCurrentTournament = temporary.Count;
+            int numberOfEntriesFromHistory = ThirtyGames - numEntriesInCurrentTournament;
+
             //Displays total games played in the column header "Games"
-            string gamesTotalPlayed = $"{GamesTotal} \n ({TotalGamesPlayed + PlayerHistoryDB.GetTotalGamesPlayed(temporary[0].MemberNumber, RegionID)})";
+            string gamesTotalPlayed = $"{GamesTotal} \n ({TotalGamesPlayedInCurrentTourney + PlayerHistoryDB.GetTotalGamesPlayedFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory)})";
             dtGames.Columns[GamesTotal].ColumnName = gamesTotalPlayed;
 
             //Displays total game 1 played in the column header "Game 1"
-            string game1TotalPlayed = $"{Game1Total} \n ({TotalGame1Played + PlayerHistoryDB.GetTotalGame1Played(temporary[0].MemberNumber, RegionID)})";
+            string game1TotalPlayed = $"{Game1Total} \n ({TotalGame1Played + PlayerHistoryDB.GetGame1TotalFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory)})";
             dtGames.Columns[Game1Total].ColumnName = game1TotalPlayed;
 
             //Displays total game 2 played in the column header "Game 2"
-            string game2TotalPlayed = $"{Game2Total} \n ({TotalGame2played + PlayerHistoryDB.GetTotalGame2Played(temporary[0].MemberNumber, RegionID)})";
+            string game2TotalPlayed = $"{Game2Total} \n ({TotalGame2played + PlayerHistoryDB.GetGame2TotalFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory)})";
             dtGames.Columns[Game2Total].ColumnName = game2TotalPlayed;
 
             //Displays total game 3 played in the column header "Game 3"
-            string game3TotalPlayed = $"{Game3Total} \n ({TotalGame3played + PlayerHistoryDB.GetTotalGame3Played(temporary[0].MemberNumber, RegionID)})";
+            string game3TotalPlayed = $"{Game3Total} \n ({TotalGame3played + PlayerHistoryDB.GetGame3TotalFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory)})";
             dtGames.Columns[Game3Total].ColumnName = game3TotalPlayed;
 
             //Displays total game 4 played in the column header "Game 4"
-            string game4TotalPlayed = $"{Game4Total} \n ({TotalGame4played + PlayerHistoryDB.GetTotalGame4Played(temporary[0].MemberNumber, RegionID)})";
+            string game4TotalPlayed = $"{Game4Total} \n ({TotalGame4played + PlayerHistoryDB.GetGame4TotalFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory)})";
             dtGames.Columns[Game4Total].ColumnName = game4TotalPlayed;
 
 
             //Displays scratch total played in the column header "Scratch Total"
-            string AllScratchTotal = $"{ScratchTotal} ({FullScratchTotal + PlayerHistoryDB.GetScratchTotal(temporary[0].MemberNumber, RegionID)})";
+            string AllScratchTotal = $"{ScratchTotal} ({FullScratchTotal + PlayerHistoryDB.GetScratchTotalFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory)})";
             dtGames.Columns[ScratchTotal].ColumnName = AllScratchTotal;
 
             //Displays EntryAvg total played in the column header "Entry Avg total"
-            string AllEntryAvgTotal = $"{EntryAvgTotal} ({PlayerHistoryDB.GetEntryAvgTotal(temporary[0].MemberNumber, RegionID, Convert.ToInt32(TotalGame1Played), Convert.ToInt32(TotalGame2played), Convert.ToInt32(TotalGame3played), Convert.ToInt32(TotalGame4played), TotalGamesPlayed)})";
+            string AllEntryAvgTotal = $"{EntryAvgTotal} ({PlayerHistoryDB.GetEntryAvgTotal(temporary[0].MemberNumber, RegionID, Convert.ToInt32(TotalGame1Played), Convert.ToInt32(TotalGame2played), Convert.ToInt32(TotalGame3played), Convert.ToInt32(TotalGame4played), TotalGamesPlayedInCurrentTourney)})";
             dtGames.Columns[EntryAvgTotal].ColumnName = AllEntryAvgTotal;
 
-            //Displays 30avg total palyed in the column header "30 Avg"
-            int lastthirtygames = 30;
-            int temp = PlayerHistoryDB.GetThirtyAvgGames(temporary[0].MemberNumber, RegionID);
-            string AllthirtyAvgTotal = $"{thirtyavg} ({(temp + FullScratchTotal) / lastthirtygames})";
+            // Displays 30avg total played in the column header "30 Avg"
+            int gamesFromHistory = PlayerHistoryDB.GetNumberOfGamesFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory);
+            int totalEntriesInHistory = PlayerHistoryDB.GetTotalNumberOfEntries(temporary[0].MemberNumber, RegionID);
+            int temp = PlayerHistoryDB.GetGameAvgFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory);
+            string AllthirtyAvgTotal = $"{thirtyavg} ({(temp + FullScratchTotal) / (TotalGamesPlayedInCurrentTourney + gamesFromHistory)})";
             dtGames.Columns[thirtyavg].ColumnName = AllthirtyAvgTotal;
 
             playerTournamentHistoryGrid.DataSource = dtGames;
