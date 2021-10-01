@@ -99,6 +99,15 @@ namespace NineTapTour.Database
             }
         }
 
+        public static List<PlayerHistory> GetPlayerHistories(int memberNum, int regionID, int numEntries)
+        {
+            using NineTapDb db = new();
+            return (from p in db.PlayerHistory
+                   where p.MemberNumber == memberNum && regionID == p.regionID
+                   orderby p.TournamentDate descending, p.TotalScore descending
+                   select p).Take(numEntries).ToList();
+        }
+
         /// <summary>
         /// Finds the hisID from the playerHistory given. If no hisID was found, returns 0
         /// </summary>

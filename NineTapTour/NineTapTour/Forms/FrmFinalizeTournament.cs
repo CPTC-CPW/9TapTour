@@ -995,8 +995,12 @@ namespace NineTapTour.Forms
             }
 
             // Need to Highlight manually because the last game played isn't added to the database until the tournament is finalized
-            playerTournamentHistoryGrid.Rows[0].Cells[9].Style.BackColor = Color.GreenYellow;
-            highlight30Avg();
+            for(int i = 0; i < numEntriesInCurrentTournament; i++)
+            {
+                playerTournamentHistoryGrid.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
+            }
+            
+            highlight30Avg(30 - numEntriesInCurrentTournament);
             highlightBonusPinCells();
             wait.Close();
 
@@ -1426,38 +1430,24 @@ namespace NineTapTour.Forms
             InitializeGameCellFormatting();
         }
 
-        private void highlight30Avg()
+        private void highlight30Avg(int numHistoryEntriesToHighlight)
         {
             List<PlayerHistory> temporary = new List<PlayerHistory>();
 
+            const int TournamentHistoryGameIdColumnIndex = 17;
             int gameId = Convert.ToInt32(TournamentEntriesGrid.Rows[TournamentEntriesGrid.CurrentCell.RowIndex].Cells[GAME_ID_COLUMN].Value);
             using (var db = new NineTapDb())
             {
                 int memberNumber = db.Participants.Include(b => b.Game).Include(b => b.Member).First(p => p.Game.Id == gameId).Member.Number;
 
-                temporary = PlayerHistoryDB.GetTop30FromPlayerHistory(memberNumber);
+                temporary = PlayerHistoryDB.GetPlayerHistories(memberNumber, RegionID, numHistoryEntriesToHighlight);
             }
-            int count = 0;
 
             for (int i = 0; i < playerTournamentHistoryGrid.RowCount; i++)
             {
-                if (count != 29)
-                {
-                    DateTime temp = new DateTime(2000, 1, 1);
-                    for (int j = 0; j < temporary.Count - 1; j++)
-                    {
-                        DateTime time = Convert.ToDateTime(playerTournamentHistoryGrid.Rows[i].Cells["Date"].Value); 
-                        if (time == temporary[j].TournamentDate && time != temp)
-                        {
-                            playerTournamentHistoryGrid.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
-                            temp = time;
-                            count++;
-
-                        }
-                        
-                    }
-                    
-                }
+                int currentGameId = Convert.ToInt32(playerTournamentHistoryGrid.Rows[i].Cells[TournamentHistoryGameIdColumnIndex].Value);
+                if(temporary.Where(p => p.GameID == currentGameId).Any())
+                    playerTournamentHistoryGrid.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
             }
         }
 
@@ -1472,7 +1462,7 @@ namespace NineTapTour.Forms
             {
                 playerTournamentHistoryGrid.Rows[playerTournamentHistoryGrid.RowCount - 1].Cells[9].Style.BackColor = Color.GreenYellow;
             }
-            highlight30Avg();
+            // highlight30Avg(); // Removing highlighting after sorting now to get the project to compile
             highlightBonusPinCells();
            
             
