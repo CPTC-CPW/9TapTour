@@ -332,7 +332,7 @@ namespace Member_Import_Test
                     NineTapTour.Database.MemberDB.AddOrUpdateMember(temp);
                     MessageBox.Show(@"Bowler Added Successfully.");
                     invalidMembers.RemoveAt(listPosition);
-                    if(invalidMembers.Count() != 0)
+                    if(invalidMembers.Count != 0)
                     {
                         UpdateMemberInfo();
                     }
@@ -358,7 +358,7 @@ namespace Member_Import_Test
         /// <param name="e"></param>
         private void btnArrowLeft_Click(object sender, EventArgs e)
         {
-            if (invalidMembers.Count() == 0 || currentMem.Number <= invalidMembers.First().Number)
+            if (invalidMembers.Count == 0 || currentMem.Number <= invalidMembers.First().Number)
             {
                 MessageBox.Show(@"Beginning of file.", @"Notice");
             }
@@ -377,7 +377,7 @@ namespace Member_Import_Test
         /// <param name="e"></param>
         private void btnRightArrow_Click(object sender, EventArgs e)
         {
-            if (invalidMembers.Count() == 0 || currentMem.Number >= invalidMembers.Last().Number)
+            if (invalidMembers.Count == 0 || currentMem.Number >= invalidMembers.Last().Number)
             {
                 MessageBox.Show(@"End of file.", @"Notice");
             }
