@@ -367,7 +367,7 @@ namespace NineTapTour.Forms
                     txtPaidTo.Text =
                         currentMem.LastPayment.Value.AddYears(1).ToString("yyyy");
 
-                    checkPayment();
+                    CheckPayment();
                 }
                 else
                 {
@@ -458,7 +458,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnSave_Click(object sender, EventArgs e)
+        private void BtnSave_Click(object sender, EventArgs e)
         {
             SaveMemberData();
         }
@@ -682,7 +682,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnArrowLeft_Click(object sender, EventArgs e)
+        private void BtnArrowLeft_Click(object sender, EventArgs e)
         {
             //cursor begins when arrow is clicked
             Cursor.Current = Cursors.WaitCursor;
@@ -709,7 +709,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnRightArrow_Click(object sender, EventArgs e)
+        private void BtnRightArrow_Click(object sender, EventArgs e)
         {
             //turns on a loading cursor while new bowler is loaded.
             Cursor.Current = Cursors.WaitCursor;
@@ -737,7 +737,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnNew_Click(object sender, EventArgs e)
+        private void BtnNew_Click(object sender, EventArgs e)
         {
             if (SaveMemberData())
             {
@@ -785,7 +785,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnFirstRecord_Click(object sender, EventArgs e)
+        private void BtnFirstRecord_Click(object sender, EventArgs e)
         {
             try
             {
@@ -803,7 +803,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnLastRecord_Click(object sender, EventArgs e)
+        private void BtnLastRecord_Click(object sender, EventArgs e)
         {
             txtMemberNumber.Text = MemberDB.GetMemberListCount(RegionID).ToString();
             UpdateMemberInfo();
@@ -815,7 +815,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnMemberSearch_Click(object sender, EventArgs e)
+        private void BtnMemberSearch_Click(object sender, EventArgs e)
         {
             FrmSearch SearchForm = new FrmSearch(RegionID);
             SearchForm.ShowDialog();
@@ -829,7 +829,7 @@ namespace NineTapTour.Forms
 
         // takes a list of no player history, this list would stack on 
         // top of thew original data on the form finalize page
-        private void btnStats_Click(object sender, EventArgs e)
+        private void BtnStats_Click(object sender, EventArgs e)
         {
             FrmStats p = new FrmStats(currentMem.Number, currentMem.FirstName + 
                 currentMem.LastName + currentMem.MiddleInitial, currentMem, RegionID);
@@ -841,7 +841,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnThisRecap_Click(object sender, EventArgs e)
+        private void BtnThisRecap_Click(object sender, EventArgs e)
         {
             if (IsValidTextboxes())
             {
@@ -853,7 +853,7 @@ namespace NineTapTour.Forms
                 printDialog.Document = printDocument;
 
                 //add the event handler that will do the printing
-                printDocument.PrintPage += new PrintPageEventHandler(singlePrint);
+                printDocument.PrintPage += new PrintPageEventHandler(SinglePrint);
                 DialogResult result = printDialog.ShowDialog();
 
                 if (result == DialogResult.OK)
@@ -866,7 +866,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Will print all members that are marked as active in the database
         /// </summary>
-        private void btnPrintActive_Click(object sender, EventArgs e)
+        private void BtnPrintActive_Click(object sender, EventArgs e)
         {
             Print.PrintByActiveMembers(TournamentDB.GetAllActiveMembers());
         }
@@ -876,7 +876,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void singlePrint(object sender, PrintPageEventArgs e) 
+        public void SinglePrint(object sender, PrintPageEventArgs e) 
         {
             NineTapTour.Database.Print.SinglePrint(
                 new MemberPrintObj(Convert.ToInt32(txtHandicap.Text), 
@@ -894,7 +894,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void chbLifetime_CheckedChanged(object sender, EventArgs e)
+        private void ChbLifetime_CheckedChanged(object sender, EventArgs e)
         {
             if (chbLifetime.Checked)
             {
@@ -908,7 +908,7 @@ namespace NineTapTour.Forms
                 txtLastPayment.Enabled = true;
                 txtPaidTo.Visible = true;
                 lblPaidTo.Visible = true;
-                checkPayment();
+                CheckPayment();
             }
         }
 
@@ -917,17 +917,17 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void datePaid_ValueChanged(object sender, EventArgs e)
+        private void DatePaid_ValueChanged(object sender, EventArgs e)
         {
             txtLastPayment.Text = "";
             txtPaidTo.Text = "";
-            checkPayment();
+            CheckPayment();
         }
 
         /// <summary>
         /// Checks if last payment was made more than a year ago. If it was, show warning label that payment is due. 
         /// </summary>
-        private void checkPayment()
+        private void CheckPayment()
         {
             /********************************************************************************
             added '&& chbLifetime.Checked == false' so when the member is a lifetime member, 
@@ -959,7 +959,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnImportData_Click(object sender, EventArgs e)
+        private void BtnImportData_Click(object sender, EventArgs e)
         {
             List<ExcelRow> CurrentExcelData = new List<ExcelRow>();
             OpenFileDialog ofdOpen = new OpenFileDialog();
@@ -1403,7 +1403,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void chbSocial_CheckedChanged(object sender, EventArgs e)
+        private void ChbSocial_CheckedChanged(object sender, EventArgs e)
         {
             txtSSN.PasswordChar = chbSocial.Checked ? '\0' : '*';
         }
@@ -1426,12 +1426,12 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void flpMemberScores_SizeChanged(object sender, EventArgs e)
+        private void FlpMemberScores_SizeChanged(object sender, EventArgs e)
         {
             FormHelper.SetFlowControlScrollBars(this, flpMemberData, 1080, 600);
         }
 
-        private void mtxtBox_Click(object sender, EventArgs e)
+        private void MtxtBox_Click(object sender, EventArgs e)
         {
             FormHelper.GoToFirstIndexInTextboxIfEmpty(sender as TextBoxBase);
         }
@@ -1443,7 +1443,7 @@ namespace NineTapTour.Forms
         /// <return>a new value of bonus pins</return>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void txtBonus_TextChanged(object sender, EventArgs e)
+        private void TxtBonus_TextChanged(object sender, EventArgs e)
         {
             if (Int32.TryParse(txtBonus.Text, out int newBonusPins))
             {
@@ -1456,7 +1456,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void chbSenior_KeyDown(object sender, KeyEventArgs e)
+        private void ChbSenior_KeyDown(object sender, KeyEventArgs e)
         {
             CheckBox currentCheckBox = sender as CheckBox;
             currentCheckBox.Checked = true;
@@ -1467,28 +1467,28 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void rdoFemale_KeyDown(object sender, KeyEventArgs e)
+        private void RdoFemale_KeyDown(object sender, KeyEventArgs e)
         {
             RadioButton currentRadioButton = sender as RadioButton;
             currentRadioButton.Checked = true;
         }
 
-        private void txtDOB_TextChanged(object sender, EventArgs e)
+        private void TxtDOB_TextChanged(object sender, EventArgs e)
         {
             lblDOBValidation.Visible = false;                     
         }
 
-        private void txtAverage_TextChanged(object sender, EventArgs e)
+        private void TxtAverage_TextChanged(object sender, EventArgs e)
         {
             lblAverageValidation.Visible = false;    
         }
 
-        private void txtLastName_TextChanged(object sender, EventArgs e)
+        private void TxtLastName_TextChanged(object sender, EventArgs e)
         {
             lblLastNameValidation.Visible = false;          
         }
 
-        private void txtFirstName_TextChanged(object sender, EventArgs e)
+        private void TxtFirstName_TextChanged(object sender, EventArgs e)
         {
             lblFirstNameValidation.Visible = false;
         }

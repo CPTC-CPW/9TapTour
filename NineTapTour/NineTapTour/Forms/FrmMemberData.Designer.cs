@@ -152,7 +152,7 @@
             this.txtLastName.Size = new System.Drawing.Size(226, 37);
             this.txtLastName.TabIndex = 3;
             this.txtLastName.Tag = "White";
-            this.txtLastName.TextChanged += new System.EventHandler(this.txtLastName_TextChanged);
+            this.txtLastName.TextChanged += new System.EventHandler(this.TxtLastName_TextChanged);
             // 
             // txtFirstName
             // 
@@ -163,7 +163,7 @@
             this.txtFirstName.Name = "txtFirstName";
             this.txtFirstName.Size = new System.Drawing.Size(232, 37);
             this.txtFirstName.TabIndex = 5;
-            this.txtFirstName.TextChanged += new System.EventHandler(this.txtFirstName_TextChanged);
+            this.txtFirstName.TextChanged += new System.EventHandler(this.TxtFirstName_TextChanged);
             // 
             // txtMiddleInitial
             // 
@@ -277,7 +277,7 @@
             this.txtDOB.Name = "txtDOB";
             this.txtDOB.Size = new System.Drawing.Size(109, 23);
             this.txtDOB.TabIndex = 10;
-            this.txtDOB.TextChanged += new System.EventHandler(this.txtDOB_TextChanged);
+            this.txtDOB.TextChanged += new System.EventHandler(this.TxtDOB_TextChanged);
             // 
             // lblStateValidation
             // 
@@ -348,7 +348,7 @@
             this.txtRejoinDate.Size = new System.Drawing.Size(100, 23);
             this.txtRejoinDate.TabIndex = 30;
             this.txtRejoinDate.ValidatingType = typeof(System.DateTime);
-            this.txtRejoinDate.Click += new System.EventHandler(this.mtxtBox_Click);
+            this.txtRejoinDate.Click += new System.EventHandler(this.MtxtBox_Click);
             // 
             // txtDateJoined
             // 
@@ -359,7 +359,7 @@
             this.txtDateJoined.Size = new System.Drawing.Size(100, 23);
             this.txtDateJoined.TabIndex = 28;
             this.txtDateJoined.ValidatingType = typeof(System.DateTime);
-            this.txtDateJoined.Click += new System.EventHandler(this.mtxtBox_Click);
+            this.txtDateJoined.Click += new System.EventHandler(this.MtxtBox_Click);
             // 
             // txtDOBMasked
             // 
@@ -370,7 +370,7 @@
             this.txtDOBMasked.TabIndex = 0;
             this.txtDOBMasked.TabStop = false;
             this.txtDOBMasked.ValidatingType = typeof(System.DateTime);
-            this.txtDOBMasked.Click += new System.EventHandler(this.mtxtBox_Click);
+            this.txtDOBMasked.Click += new System.EventHandler(this.MtxtBox_Click);
             // 
             // chbSocial
             // 
@@ -380,7 +380,7 @@
             this.chbSocial.Size = new System.Drawing.Size(15, 14);
             this.chbSocial.TabIndex = 33;
             this.chbSocial.UseVisualStyleBackColor = true;
-            this.chbSocial.CheckedChanged += new System.EventHandler(this.chbSocial_CheckedChanged);
+            this.chbSocial.CheckedChanged += new System.EventHandler(this.ChbSocial_CheckedChanged);
             // 
             // txtZip
             // 
@@ -392,7 +392,7 @@
             this.txtZip.ShortcutsEnabled = false;
             this.txtZip.Size = new System.Drawing.Size(70, 23);
             this.txtZip.TabIndex = 20;
-            this.txtZip.Click += new System.EventHandler(this.mtxtBox_Click);
+            this.txtZip.Click += new System.EventHandler(this.MtxtBox_Click);
             // 
             // txtSSN
             // 
@@ -404,7 +404,7 @@
             this.txtSSN.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtSSN.Size = new System.Drawing.Size(100, 23);
             this.txtSSN.TabIndex = 12;
-            this.txtSSN.Click += new System.EventHandler(this.mtxtBox_Click);
+            this.txtSSN.Click += new System.EventHandler(this.MtxtBox_Click);
             // 
             // txtPhone2
             // 
@@ -414,7 +414,7 @@
             this.txtPhone2.Name = "txtPhone2";
             this.txtPhone2.Size = new System.Drawing.Size(100, 23);
             this.txtPhone2.TabIndex = 24;
-            this.txtPhone2.Click += new System.EventHandler(this.mtxtBox_Click);
+            this.txtPhone2.Click += new System.EventHandler(this.MtxtBox_Click);
             // 
             // txtPhone
             // 
@@ -424,7 +424,7 @@
             this.txtPhone.Name = "txtPhone";
             this.txtPhone.Size = new System.Drawing.Size(100, 23);
             this.txtPhone.TabIndex = 22;
-            this.txtPhone.Click += new System.EventHandler(this.mtxtBox_Click);
+            this.txtPhone.Click += new System.EventHandler(this.MtxtBox_Click);
             // 
             // lblEmail
             // 
@@ -616,7 +616,7 @@
             this.btnImportData.TabStop = false;
             this.btnImportData.Text = "Import";
             this.btnImportData.UseVisualStyleBackColor = true;
-            this.btnImportData.Click += new System.EventHandler(this.btnImportData_Click);
+            this.btnImportData.Click += new System.EventHandler(this.BtnImportData_Click);
             // 
             // btnSave
             // 
@@ -627,7 +627,7 @@
             this.btnSave.TabIndex = 104;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
             // 
             // btnNew
             // 
@@ -638,7 +638,7 @@
             this.btnNew.TabIndex = 102;
             this.btnNew.Text = "New";
             this.btnNew.UseVisualStyleBackColor = true;
-            this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
+            this.btnNew.Click += new System.EventHandler(this.BtnNew_Click);
             // 
             // grpRecordNumber
             // 
@@ -665,7 +665,7 @@
             this.btnLastRecord.TabStop = false;
             this.btnLastRecord.Text = "Last Record";
             this.btnLastRecord.UseVisualStyleBackColor = true;
-            this.btnLastRecord.Click += new System.EventHandler(this.btnLastRecord_Click);
+            this.btnLastRecord.Click += new System.EventHandler(this.BtnLastRecord_Click);
             // 
             // btnFirstRecord
             // 
@@ -677,7 +677,7 @@
             this.btnFirstRecord.TabStop = false;
             this.btnFirstRecord.Text = "First Record";
             this.btnFirstRecord.UseVisualStyleBackColor = true;
-            this.btnFirstRecord.Click += new System.EventHandler(this.btnFirstRecord_Click);
+            this.btnFirstRecord.Click += new System.EventHandler(this.BtnFirstRecord_Click);
             // 
             // btnRightArrow
             // 
@@ -689,7 +689,7 @@
             this.btnRightArrow.TabStop = false;
             this.btnRightArrow.Text = ">";
             this.btnRightArrow.UseVisualStyleBackColor = true;
-            this.btnRightArrow.Click += new System.EventHandler(this.btnRightArrow_Click);
+            this.btnRightArrow.Click += new System.EventHandler(this.BtnRightArrow_Click);
             // 
             // btnArrowLeft
             // 
@@ -701,7 +701,7 @@
             this.btnArrowLeft.TabStop = false;
             this.btnArrowLeft.Text = "<";
             this.btnArrowLeft.UseVisualStyleBackColor = true;
-            this.btnArrowLeft.Click += new System.EventHandler(this.btnArrowLeft_Click);
+            this.btnArrowLeft.Click += new System.EventHandler(this.BtnArrowLeft_Click);
             // 
             // grpStats
             // 
@@ -724,7 +724,7 @@
             this.btnStats.TabStop = false;
             this.btnStats.Text = "Stats";
             this.btnStats.UseVisualStyleBackColor = true;
-            this.btnStats.Click += new System.EventHandler(this.btnStats_Click);
+            this.btnStats.Click += new System.EventHandler(this.BtnStats_Click);
             // 
             // grpSearchBy
             // 
@@ -748,7 +748,7 @@
             this.btnMemberSearch.TabStop = false;
             this.btnMemberSearch.Text = "Member Search";
             this.btnMemberSearch.UseVisualStyleBackColor = true;
-            this.btnMemberSearch.Click += new System.EventHandler(this.btnMemberSearch_Click);
+            this.btnMemberSearch.Click += new System.EventHandler(this.BtnMemberSearch_Click);
             // 
             // grpPrinter
             // 
@@ -772,7 +772,7 @@
             this.btnPrintActive.TabStop = false;
             this.btnPrintActive.Text = "Print Active Members";
             this.btnPrintActive.UseVisualStyleBackColor = true;
-            this.btnPrintActive.Click += new System.EventHandler(this.btnPrintActive_Click);
+            this.btnPrintActive.Click += new System.EventHandler(this.BtnPrintActive_Click);
             // 
             // btnThisRecap
             // 
@@ -784,7 +784,7 @@
             this.btnThisRecap.TabStop = false;
             this.btnThisRecap.Text = "Print Single";
             this.btnThisRecap.UseVisualStyleBackColor = true;
-            this.btnThisRecap.Click += new System.EventHandler(this.btnThisRecap_Click);
+            this.btnThisRecap.Click += new System.EventHandler(this.BtnThisRecap_Click);
             // 
             // rdoFemale
             // 
@@ -796,7 +796,7 @@
             this.rdoFemale.TabStop = true;
             this.rdoFemale.Text = "Female";
             this.rdoFemale.UseVisualStyleBackColor = true;
-            this.rdoFemale.KeyDown += new System.Windows.Forms.KeyEventHandler(this.rdoFemale_KeyDown);
+            this.rdoFemale.KeyDown += new System.Windows.Forms.KeyEventHandler(this.RdoFemale_KeyDown);
             // 
             // rdoActive
             // 
@@ -866,7 +866,7 @@
             this.chbSenior.TabIndex = 50;
             this.chbSenior.Text = "Senior";
             this.chbSenior.UseVisualStyleBackColor = true;
-            this.chbSenior.KeyDown += new System.Windows.Forms.KeyEventHandler(this.chbSenior_KeyDown);
+            this.chbSenior.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ChbSenior_KeyDown);
             // 
             // chbLifetime
             // 
@@ -878,7 +878,7 @@
             this.chbLifetime.TabIndex = 56;
             this.chbLifetime.Text = "Lifetime Member";
             this.chbLifetime.UseVisualStyleBackColor = true;
-            this.chbLifetime.CheckedChanged += new System.EventHandler(this.chbLifetime_CheckedChanged);
+            this.chbLifetime.CheckedChanged += new System.EventHandler(this.ChbLifetime_CheckedChanged);
             // 
             // lblLastPaid
             // 
@@ -911,7 +911,7 @@
             this.txtLastPayment.Size = new System.Drawing.Size(127, 21);
             this.txtLastPayment.TabIndex = 58;
             this.txtLastPayment.ValidatingType = typeof(System.DateTime);
-            this.txtLastPayment.Click += new System.EventHandler(this.mtxtBox_Click);
+            this.txtLastPayment.Click += new System.EventHandler(this.MtxtBox_Click);
             // 
             // flpMemberData
             // 
@@ -929,7 +929,7 @@
             this.flpMemberData.Name = "flpMemberData";
             this.flpMemberData.Size = new System.Drawing.Size(996, 749);
             this.flpMemberData.TabIndex = 34;
-            this.flpMemberData.SizeChanged += new System.EventHandler(this.flpMemberScores_SizeChanged);
+            this.flpMemberData.SizeChanged += new System.EventHandler(this.FlpMemberScores_SizeChanged);
             // 
             // panel7
             // 
@@ -987,7 +987,7 @@
             this.txtLastBowled.Size = new System.Drawing.Size(103, 21);
             this.txtLastBowled.TabIndex = 94;
             this.txtLastBowled.ValidatingType = typeof(System.DateTime);
-            this.txtLastBowled.Click += new System.EventHandler(this.mtxtBox_Click);
+            this.txtLastBowled.Click += new System.EventHandler(this.MtxtBox_Click);
             // 
             // label2
             // 
@@ -1127,7 +1127,7 @@
             this.txtAverage.Size = new System.Drawing.Size(99, 47);
             this.txtAverage.TabIndex = 82;
             this.txtAverage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtAverage.TextChanged += new System.EventHandler(this.txtAverage_TextChanged);
+            this.txtAverage.TextChanged += new System.EventHandler(this.TxtAverage_TextChanged);
             // 
             // panel4
             // 
