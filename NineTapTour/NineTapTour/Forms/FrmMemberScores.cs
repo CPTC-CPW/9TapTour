@@ -1687,23 +1687,6 @@ namespace NineTapTour.Forms
             }
         }
 
-        //these change the value of the QBSnumber, allowing the director to filter the rich text boxes by squad, then calls the refresh method to update the rich textboxes information to 
-        //display the tournament information but based on squad'
-        #region changing the sqaud number
-        private void CheckBoxAllResults_CheckedChanged(object sender, EventArgs e)
-        {
-            Refresh();
-        }
-
-        private void CheckBoxSquadResults_CheckChanged(object sender, EventArgs e)
-        {
-            if (cbxTourneyDropDown.Size != null)
-            {
-                Refresh();
-            }
-        }
-        #endregion  
-
         private void BtnDelete_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
