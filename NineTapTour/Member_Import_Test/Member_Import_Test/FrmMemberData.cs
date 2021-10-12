@@ -41,7 +41,7 @@ namespace Member_Import_Test
         /// If that "Member Number" is not assigned then display error box.
         /// </summary>
         /// <param name="searchMem"></param>
-        public void UpdateMemberInfo(Member searchMem = null)
+        public void UpdateMemberInfo()
         {
             currentMem = invalidMembers[listPosition];
 
