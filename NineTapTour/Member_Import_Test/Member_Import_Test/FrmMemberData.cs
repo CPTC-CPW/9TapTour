@@ -13,13 +13,8 @@ namespace Member_Import_Test
 {
     public partial class FrmMemberData : Form
     {
-        int _memberId;
         Member currentMem;
-        private int _memberNum;
-        public int MemberNum
-        {
-            set { _memberNum = value; }
-        }
+
         /// <summary>
         /// Opens the "Member Data" Form.
         /// </summary>
@@ -46,14 +41,11 @@ namespace Member_Import_Test
         /// If that "Member Number" is not assigned then display error box.
         /// </summary>
         /// <param name="searchMem"></param>
-        public void UpdateMemberInfo(Member searchMem = null)
+        public void UpdateMemberInfo()
         {
-            
-            
             currentMem = invalidMembers[listPosition];
 
             #region Personal Info
-            _memberId = currentMem.Id;
             txtMemberNumber.Text = currentMem.Number.ToString();
             txtLastName.Text = currentMem.LastName;
             txtFirstName.Text = currentMem.FirstName;
@@ -122,7 +114,7 @@ namespace Member_Import_Test
 
         // method checks for valid characters. 
         // TODO: add more textfields to validate for the whole form to submit
-        public bool isValid()
+        public bool IsValid()
         {
             DateTime outPut;
             // check if Active radio button is checked
@@ -218,12 +210,12 @@ namespace Member_Import_Test
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnSave_Click(object sender, EventArgs e)
+        private void BtnSave_Click(object sender, EventArgs e)
         {
             //checks to see if firstname,lastname, and zip is valid.
             //Then runs the rest of the btnSave_Click and adds a member into the database.
       
-            if (isValid())
+            if (IsValid())
             {
                 var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (confirm == DialogResult.No)
@@ -340,7 +332,7 @@ namespace Member_Import_Test
                     NineTapTour.Database.MemberDB.AddOrUpdateMember(temp);
                     MessageBox.Show(@"Bowler Added Successfully.");
                     invalidMembers.RemoveAt(listPosition);
-                    if(invalidMembers.Count() != 0)
+                    if(invalidMembers.Count != 0)
                     {
                         UpdateMemberInfo();
                     }
@@ -364,9 +356,9 @@ namespace Member_Import_Test
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnArrowLeft_Click(object sender, EventArgs e)
+        private void BtnArrowLeft_Click(object sender, EventArgs e)
         {
-            if (invalidMembers.Count() == 0 || currentMem.Number <= invalidMembers.First().Number)
+            if (invalidMembers.Count == 0 || currentMem.Number <= invalidMembers.First().Number)
             {
                 MessageBox.Show(@"Beginning of file.", @"Notice");
             }
@@ -383,9 +375,9 @@ namespace Member_Import_Test
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnRightArrow_Click(object sender, EventArgs e)
+        private void BtnRightArrow_Click(object sender, EventArgs e)
         {
-            if (invalidMembers.Count() == 0 || currentMem.Number >= invalidMembers.Last().Number)
+            if (invalidMembers.Count == 0 || currentMem.Number >= invalidMembers.Last().Number)
             {
                 MessageBox.Show(@"End of file.", @"Notice");
             }
@@ -403,7 +395,7 @@ namespace Member_Import_Test
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnFirstRecord_Click(object sender, EventArgs e)
+        private void BtnFirstRecord_Click(object sender, EventArgs e)
         {
             listPosition = 0;
             UpdateMemberInfo();
@@ -414,7 +406,7 @@ namespace Member_Import_Test
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnLastRecord_Click(object sender, EventArgs e)
+        private void BtnLastRecord_Click(object sender, EventArgs e)
         {
             listPosition = invalidMembers.Count - 1;
             UpdateMemberInfo();
@@ -470,11 +462,6 @@ namespace Member_Import_Test
         private void FrmMemberData_FormClosed(object sender, FormClosedEventArgs e)
         {
             home.Show();
-        }
-
-        private void txtNotes_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

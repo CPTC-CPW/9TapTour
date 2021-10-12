@@ -119,13 +119,13 @@ namespace NineTapTour.Forms
             #endregion
 
             // Creates the table showing all player's entries in the current tournament
-            createDataGridView(currTournament);
+            CreateDataGridView(currTournament);
 
             // Changes background color of each entry's game according to it's state
             InitializeGameCellFormatting();
 
             // Manually adjusts each columns width
-            sizeFinalizeGridView();
+            SizeFinalizeGridView();
 
             // Enable double buffering on both grids
             TournamentEntriesGrid.DoubleBuffered(true);
@@ -207,7 +207,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Manually sets the width for each column
         /// </summary>
-        public void sizeFinalizeGridView() {
+        public void SizeFinalizeGridView() {
             TournamentEntriesGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             TournamentEntriesGrid.Columns[STANDING_COLUMN].Width = 50;  
             TournamentEntriesGrid.Columns[MEMBER_NUMBER_COLUMN].Width = 50;
@@ -239,7 +239,7 @@ namespace NineTapTour.Forms
         /// This will resize the lower gridview as per the clients request.
         /// </summary>
         /// <param name="moneyWonWithTotal">send this in so it knows the proper column name to resize</param>
-        public void sizeFinalizeLowerGridView(string moneyWonWithTotal, string gamesTotalPlayed, string game1TotalPlayed,
+        public void SizeFinalizeLowerGridView(string moneyWonWithTotal, string gamesTotalPlayed, string game1TotalPlayed,
             string game2TotalPlayed, string game3TotalPlayed, string game4TotalPlayed, string AllScratchTotal, string AllEntryAvgTotal, string AllThirtyAvgGames)
         {
             int columnCount = 18;
@@ -271,7 +271,7 @@ namespace NineTapTour.Forms
         /// Creates the tables for the FinalizeTournament form.
         /// </summary>
         /// <param name="tourn">The current tournament with all the game scores and data</param>
-        private void createDataGridView(Tournament tourn)
+        private void CreateDataGridView(Tournament tourn)
         {
             // uses FinalizeTempDB to populate from database
             List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetAllInitialParticipantGameList(currTournament);
@@ -503,7 +503,7 @@ namespace NineTapTour.Forms
         /// This method handles the changes made when any GAME_VALID or DIRECTOR_CHECK checkboxes are changed, including updating the FinalizeTemp table in the DB.
         /// The DataGridView.CellValueChanged event occurs when the user-specified value is committed, which typically occurs when focus leaves the cell.
         /// </summary>
-        private void dataGridView1_OnCellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void DataGridView1_OnCellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
@@ -584,7 +584,7 @@ namespace NineTapTour.Forms
         /// If the EndEdit() method isn't called, the data grid view wouldn't see the column as edited until the user click "out" of the cell.
         /// The DataGridView.CellMouseUp event fires when the user releases a mouse button while over a cell.
         /// </summary>
-        private void dataGridView1_OnCellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
+        private void DataGridView1_OnCellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.RowIndex >= 0 &&
                 (e.ColumnIndex == GAME_1_VALID_COLUMN ||
@@ -634,7 +634,7 @@ namespace NineTapTour.Forms
             temp.LeagueAverage = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
             db.Entry(temp).State = EntityState.Modified;
             db.SaveChanges();
-            this.TournamentEntriesGrid.CellValueChanged += this.dataGridView1_OnCellValueChanged;
+            this.TournamentEntriesGrid.CellValueChanged += this.DataGridView1_OnCellValueChanged;
         }
 
         /// <summary>
@@ -643,7 +643,7 @@ namespace NineTapTour.Forms
         /// <param name="row"></param>
         private void UpdateAvg(int row)
         {
-            this.TournamentEntriesGrid.CellValueChanged -= this.dataGridView1_OnCellValueChanged;
+            this.TournamentEntriesGrid.CellValueChanged -= this.DataGridView1_OnCellValueChanged;
             int sum = 0;
             int count = 0;
             int sumWHandicap = 0;
@@ -925,7 +925,7 @@ namespace NineTapTour.Forms
 
             playerTournamentHistoryGrid.DataSource = dtGames;
             playerTournamentHistoryGrid.Columns["GameID"].Visible = false; // Hides the gameID column
-            sizeFinalizeLowerGridView(moneyWonWithTotal, gamesTotalPlayed, game1TotalPlayed, game2TotalPlayed, game3TotalPlayed, game4TotalPlayed, AllScratchTotal, AllEntryAvgTotal, AllthirtyAvgTotal);   // resizes columns in the grid
+            SizeFinalizeLowerGridView(moneyWonWithTotal, gamesTotalPlayed, game1TotalPlayed, game2TotalPlayed, game3TotalPlayed, game4TotalPlayed, AllScratchTotal, AllEntryAvgTotal, AllthirtyAvgTotal);   // resizes columns in the grid
             
             // Order By Total w/HDCP
             currentPlayerHistory = currentPlayerHistory.OrderByDescending(ph => ph.TournamentDate).ThenByDescending(ph => GetTotalWithHandicap(ph)).ThenByDescending(ph => ph.MoneyWon).ToList();
@@ -1000,8 +1000,8 @@ namespace NineTapTour.Forms
                 playerTournamentHistoryGrid.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
             }
             
-            highlight30Avg(30 - numEntriesInCurrentTournament);
-            highlightBonusPinCells();
+            Highlight30Avg(30 - numEntriesInCurrentTournament);
+            HighlightBonusPinCells();
             wait.Close();
 
 
@@ -1011,7 +1011,7 @@ namespace NineTapTour.Forms
         /// This method will highlight cells in the playerTournamentHistoryGrid, in the Bonus column, where the player "cashed in",
         /// as a visual indicator that the count for games without cashing out has reset.
         /// </summary>
-        private void highlightBonusPinCells()
+        private void HighlightBonusPinCells()
         {
             // constants only used in current method
             // refers to indexes of cells in a row
@@ -1174,7 +1174,7 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnFinalize_Click(object sender, EventArgs e)
+        private void BtnFinalize_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
             
@@ -1425,12 +1425,12 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void dataGridView1_Sorted(object sender, EventArgs e)
+        private void DataGridView1_Sorted(object sender, EventArgs e)
         {
             InitializeGameCellFormatting();
         }
 
-        private void highlight30Avg(int numHistoryEntriesToHighlight)
+        private void Highlight30Avg(int numHistoryEntriesToHighlight)
         {
             List<PlayerHistory> temporary = new List<PlayerHistory>();
 
@@ -1451,7 +1451,7 @@ namespace NineTapTour.Forms
             }
         }
 
-        private void dataGridView2_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void DataGridView2_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             // Need to Highlight manually because the last game played isn't added to the database until the tournament is finalized
             if (Convert.ToDateTime(playerTournamentHistoryGrid.Rows[0].Cells["Date"].Value) > Convert.ToDateTime(playerTournamentHistoryGrid.Rows[1].Cells["Date"].Value))
@@ -1463,14 +1463,14 @@ namespace NineTapTour.Forms
                 playerTournamentHistoryGrid.Rows[playerTournamentHistoryGrid.RowCount - 1].Cells[9].Style.BackColor = Color.GreenYellow;
             }
             // highlight30Avg(); // Removing highlighting after sorting now to get the project to compile
-            highlightBonusPinCells();
+            HighlightBonusPinCells();
            
             
         }
 
         private void TournamentEntriesGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            dataGridView1_OnCellValueChanged(sender, e);
+            DataGridView1_OnCellValueChanged(sender, e);
         }
     }
 }

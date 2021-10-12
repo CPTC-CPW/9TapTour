@@ -9,6 +9,9 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>ClientLicense.txt</PackageLicenseFile>
   </PropertyGroup>
+	<ItemGroup>
+		<SupportedPlatform Include="windows" />
+	</ItemGroup>
   <ItemGroup>
     <Content Include="9tap_white.ico" />
     <Content Include="Database\DBScripts\ninetapdata.sql" />

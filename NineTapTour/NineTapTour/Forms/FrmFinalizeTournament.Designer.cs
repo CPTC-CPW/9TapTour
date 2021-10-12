@@ -79,8 +79,8 @@
             this.TournamentEntriesGrid.TabIndex = 0;
             this.TournamentEntriesGrid.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.TournamentEntriesGrid_CellClick);
             this.TournamentEntriesGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.TournamentEntriesGrid_CellContentClick);
-            this.TournamentEntriesGrid.CellMouseUp += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_OnCellMouseUp);
-            this.TournamentEntriesGrid.Sorted += new System.EventHandler(this.dataGridView1_Sorted);
+            this.TournamentEntriesGrid.CellMouseUp += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DataGridView1_OnCellMouseUp);
+            this.TournamentEntriesGrid.Sorted += new System.EventHandler(this.DataGridView1_Sorted);
             // 
             // btnFinalize
             // 
@@ -95,7 +95,7 @@
             this.btnFinalize.TabIndex = 1;
             this.btnFinalize.Text = "Finalize Tournament";
             this.btnFinalize.UseVisualStyleBackColor = false;
-            this.btnFinalize.Click += new System.EventHandler(this.btnFinalize_Click);
+            this.btnFinalize.Click += new System.EventHandler(this.BtnFinalize_Click);
             // 
             // playerTournamentHistoryGrid
             // 
@@ -128,7 +128,7 @@
             this.playerTournamentHistoryGrid.ReadOnly = true;
             this.playerTournamentHistoryGrid.Size = new System.Drawing.Size(1240, 325);
             this.playerTournamentHistoryGrid.TabIndex = 2;
-            this.playerTournamentHistoryGrid.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView2_ColumnHeaderMouseClick);
+            this.playerTournamentHistoryGrid.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DataGridView2_ColumnHeaderMouseClick);
             // 
             // lblMemberNumber
             // 

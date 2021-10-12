@@ -98,7 +98,7 @@ namespace Member_Import_Test
         /// allowing the user to select the file they wish to choose for importation
         /// </summary>
 
-        private void btnOpenFile_Click(object sender, EventArgs e)
+        private void BtnOpenFile_Click(object sender, EventArgs e)
         {
             //Filter to limit the types of files that can be opened with the file open dialog
             ofdOpen.Filter = "Data Files (*.dat)|*.dat|Text Files (*.txt)|*.txt";
@@ -458,7 +458,7 @@ namespace Member_Import_Test
                     }
                     // Show the results to the user
                     MessageBox.Show(validCount + " valid members processed, " + invalidCount + " invalid members processed.", "Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    checkSpaces();
+                    CheckSpaces();
                 }
             }
         }
@@ -467,7 +467,7 @@ namespace Member_Import_Test
         /// Checks that has members (valid or not) and allows the btnSelectExcel to be enabled
         /// Checks that has data from excel files then when does allows the finalze data button to become enabled.
         /// </summary>
-        private void checkSpaces()
+        private void CheckSpaces()
         {
             if (invalidMembers.Count > 0 || validMembers.Count > 0)
             {
@@ -482,7 +482,7 @@ namespace Member_Import_Test
         /// <summary>
         /// Allows the user to click the button and see any members in the list of invalid members
         /// </summary>
-        private void btnInvalid_Click(object sender, EventArgs e)
+        private void BtnInvalid_Click(object sender, EventArgs e)
         {
             if (invalidMembers.Count <= 0)
             {
@@ -502,7 +502,7 @@ namespace Member_Import_Test
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
             GetAndProcessFolderWithExcelFiles();
             while (MessageBox.Show("Do You have more Excel Files to import?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -532,7 +532,7 @@ namespace Member_Import_Test
                     GetAllExcelData(files);
                 }
             }
-            checkSpaces();
+            CheckSpaces();
         }
 
         private Excel.Application xlApp;
@@ -927,11 +927,11 @@ namespace Member_Import_Test
             return returnMe;
         }
 
-        private void btn_FinalizeData_Click(object sender, EventArgs e)
+        private void Btn_FinalizeData_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
             IncrementFinalizeBar(0, "Step 1: Adding player histories to the database.");
-            updatePlayerHistory(PlayerHistoryList);
+            UpdatePlayerHistory(PlayerHistoryList);
             IncrementFinalizeBar(25, "Step 2: Player histories updated, beginning games import.");
 
             GameDB.AddOrUpdateSomeGames(GameImport);
@@ -948,7 +948,7 @@ namespace Member_Import_Test
                 }
             }
             IncrementFinalizeBar(25, "Step 4: Averages and bonus pins set. Updating all members.");
-            updateMembers(validMembers);
+            UpdateMembers(validMembers);
             IncrementFinalizeBar(25, "Members updated");
             Cursor.Current = Cursors.Default;
             MessageBox.Show($"{validMembers.Count} members have been imported and all their bowling history has been added to the database");
@@ -970,7 +970,7 @@ namespace Member_Import_Test
         /// updates player history in the database
         /// </summary>
         /// <param name="playerHistory"></param>
-        private void updatePlayerHistory(List<PlayerHistory> playerHistory)
+        private void UpdatePlayerHistory(List<PlayerHistory> playerHistory)
         {
             foreach (var ph in playerHistory)
             {
@@ -982,7 +982,7 @@ namespace Member_Import_Test
         /// Checks members list if member does not exist it updates the list with adding or updating member
         /// </summary>
         /// <param name="members"></param>
-        private void updateMembers(List<Member> members)
+        private void UpdateMembers(List<Member> members)
         {
             for(int i = 0; i < members.Count; i++)
             {
@@ -999,7 +999,7 @@ namespace Member_Import_Test
         /// <summary>
         /// Allows user to change region for where they would like to import the member data to.
         /// </summary>
-        private void cbxRegionSelect_SelectedIndexChanged(object sender, EventArgs e)
+        private void CbxRegionSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
             List<NineTapRegion> r = NineTapRegionDB.GetRegionList();
             RegionID = r[cbxRegionSelect.SelectedIndex].NineTapRegionID;
