@@ -34,27 +34,6 @@ namespace NineTapTour.Database
                 return (from t in db.NineTapRegion
                         select t).Count();
             }
-            #region Refactored Code
-            /*
-            List<NineTapRegion> RegionList = new List<NineTapRegion>();
-            NineTapRegion current = new NineTapRegion();
-            using (var db = new NineTapDb())
-            {
-                var temp = (from g in db.NineTapRegion
-                            select new
-                            {
-                                g.NineTapRegionID
-                            });
-                foreach (var v in temp)
-                {
-                    current.NineTapRegionID = v.NineTapRegionID;
-                    RegionList.Add(current);
-
-                }
-                return RegionList.Count;
-            }
-            */
-            #endregion
         }
 
         /// <summary>
