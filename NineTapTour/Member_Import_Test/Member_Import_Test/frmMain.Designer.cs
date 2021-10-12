@@ -55,7 +55,7 @@
             this.btnOpenFile.TabIndex = 0;
             this.btnOpenFile.Text = "Open File";
             this.btnOpenFile.UseVisualStyleBackColor = true;
-            this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
+            this.btnOpenFile.Click += new System.EventHandler(this.BtnOpenFile_Click);
             // 
             // btnInvalid
             // 
@@ -65,7 +65,7 @@
             this.btnInvalid.TabIndex = 1;
             this.btnInvalid.Text = "View Invalid List";
             this.btnInvalid.UseVisualStyleBackColor = true;
-            this.btnInvalid.Click += new System.EventHandler(this.btnInvalid_Click);
+            this.btnInvalid.Click += new System.EventHandler(this.BtnInvalid_Click);
             // 
             // label1
             // 
@@ -94,7 +94,7 @@
             this.btnSelectExcelFolder.TabIndex = 3;
             this.btnSelectExcelFolder.Text = "Select .xls Folder";
             this.btnSelectExcelFolder.UseVisualStyleBackColor = true;
-            this.btnSelectExcelFolder.Click += new System.EventHandler(this.button1_Click);
+            this.btnSelectExcelFolder.Click += new System.EventHandler(this.Button1_Click);
             // 
             // label3
             // 
@@ -114,7 +114,7 @@
             this.btn_FinalizeData.TabIndex = 4;
             this.btn_FinalizeData.Text = "Finalize";
             this.btn_FinalizeData.UseVisualStyleBackColor = true;
-            this.btn_FinalizeData.Click += new System.EventHandler(this.btn_FinalizeData_Click);
+            this.btn_FinalizeData.Click += new System.EventHandler(this.Btn_FinalizeData_Click);
             // 
             // progressBar1
             // 
@@ -153,7 +153,7 @@
             this.cbxRegionSelect.Name = "cbxRegionSelect";
             this.cbxRegionSelect.Size = new System.Drawing.Size(121, 21);
             this.cbxRegionSelect.TabIndex = 11;
-            this.cbxRegionSelect.SelectedIndexChanged += new System.EventHandler(this.cbxRegionSelect_SelectedIndexChanged);
+            this.cbxRegionSelect.SelectedIndexChanged += new System.EventHandler(this.CbxRegionSelect_SelectedIndexChanged);
             // 
             // cbHaw
             // 

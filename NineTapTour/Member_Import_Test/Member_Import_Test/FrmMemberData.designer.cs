@@ -246,7 +246,6 @@
             this.txtNotes.Size = new System.Drawing.Size(298, 218);
             this.txtNotes.TabIndex = 22;
             this.txtNotes.TabStop = false;
-            this.txtNotes.TextChanged += new System.EventHandler(this.txtNotes_TextChanged);
             // 
             // txtAverage
             // 
@@ -586,7 +585,7 @@
             this.btnSave.TabIndex = 29;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
             // 
             // grpRecordNumber
             // 
@@ -612,7 +611,7 @@
             this.btnLastRecord.TabStop = false;
             this.btnLastRecord.Text = "Last Record";
             this.btnLastRecord.UseVisualStyleBackColor = true;
-            this.btnLastRecord.Click += new System.EventHandler(this.btnLastRecord_Click);
+            this.btnLastRecord.Click += new System.EventHandler(this.BtnLastRecord_Click);
             // 
             // btnFirstRecord
             // 
@@ -624,7 +623,7 @@
             this.btnFirstRecord.TabStop = false;
             this.btnFirstRecord.Text = "First Record";
             this.btnFirstRecord.UseVisualStyleBackColor = true;
-            this.btnFirstRecord.Click += new System.EventHandler(this.btnFirstRecord_Click);
+            this.btnFirstRecord.Click += new System.EventHandler(this.BtnFirstRecord_Click);
             // 
             // btnRightArrow
             // 
@@ -636,7 +635,7 @@
             this.btnRightArrow.TabStop = false;
             this.btnRightArrow.Text = ">";
             this.btnRightArrow.UseVisualStyleBackColor = true;
-            this.btnRightArrow.Click += new System.EventHandler(this.btnRightArrow_Click);
+            this.btnRightArrow.Click += new System.EventHandler(this.BtnRightArrow_Click);
             // 
             // btnArrowLeft
             // 
@@ -648,7 +647,7 @@
             this.btnArrowLeft.TabStop = false;
             this.btnArrowLeft.Text = "<";
             this.btnArrowLeft.UseVisualStyleBackColor = true;
-            this.btnArrowLeft.Click += new System.EventHandler(this.btnArrowLeft_Click);
+            this.btnArrowLeft.Click += new System.EventHandler(this.BtnArrowLeft_Click);
             // 
             // rdoFemale
             // 
