@@ -13,13 +13,8 @@ namespace Member_Import_Test
 {
     public partial class FrmMemberData : Form
     {
-        int _memberId;
         Member currentMem;
-        private int _memberNum;
-        public int MemberNum
-        {
-            set { _memberNum = value; }
-        }
+
         /// <summary>
         /// Opens the "Member Data" Form.
         /// </summary>
@@ -48,12 +43,9 @@ namespace Member_Import_Test
         /// <param name="searchMem"></param>
         public void UpdateMemberInfo(Member searchMem = null)
         {
-            
-            
             currentMem = invalidMembers[listPosition];
 
             #region Personal Info
-            _memberId = currentMem.Id;
             txtMemberNumber.Text = currentMem.Number.ToString();
             txtLastName.Text = currentMem.LastName;
             txtFirstName.Text = currentMem.FirstName;
