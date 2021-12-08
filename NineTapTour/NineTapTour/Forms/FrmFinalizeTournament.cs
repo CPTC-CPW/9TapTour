@@ -1306,7 +1306,7 @@ namespace NineTapTour.Forms
                     ph.TotalScore = FinalizeTableList[i].ScratchTotal;
 
                     DataGridViewCell placeCell = TournamentEntriesGrid[STANDING_COLUMN, currDataGridRowIndex];
-                    int placeStanding = (placeCell.Value == DBNull.Value) ? (int) 0 : Convert.ToByte(placeCell.Value);
+                    int placeStanding = (placeCell.Value == DBNull.Value || placeCell.Value == null) ? 0 : Convert.ToByte(placeCell.Value);
 
                     #region Adjust Bonus pins for highest game and record PlaceStanding
                     // if bowler's highest game in tournament (only multiple entries that aren't the player's best game get 0s)
