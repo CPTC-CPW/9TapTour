@@ -412,7 +412,7 @@ namespace NineTapTour.Forms
             dt.Columns.Add(DIRECTOR_CHECK_COLUMN_NAME, typeof(bool));                   // 16
             dt.Columns.Add(SQUAD_COLUMN_NAME, typeof(int)).ReadOnly = true;             // 16
             dt.Columns.Add(HANDICAP_COLUMN_NAME, typeof(int)).ReadOnly = true;          // 17
-            dt.Columns.Add(BONUS_COLUMN_NAME, typeof(int)).ReadOnly = true;             // 18
+            dt.Columns.Add(BONUS_COLUMN_NAME, typeof(int));                             // 18
             dt.Columns.Add(PRO_POT_COLUMN_NAME, typeof(int));                           // 19
             dt.Columns.Add(NOTES_COLUMN_NAME, typeof(string));                          // 20
             dt.Columns.Add(GAME_ID_COLUMN_NAME, typeof(int)).ReadOnly = true;           // 21
