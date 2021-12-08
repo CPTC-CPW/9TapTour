@@ -147,17 +147,11 @@ namespace NineTapTour.Forms
         private void ToggleDirectorCheck_CheckChanged(object sender, EventArgs e)
         {
             List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetListFromTable(currTournament);
+            bool directorCheckedState = (sender as CheckBox).Checked;
+
             for (int i = 0; i < FinalizeTableList.Count; i++)
             {
-                //if Toggle is checked, check all Director checks
-                if ((sender as CheckBox).Checked)
-                {
-                    TournamentEntriesGrid.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = true;
-                }
-                else //Toggle is unchecked, uncheck all Director Check Boxes
-                {
-                    TournamentEntriesGrid.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = false;
-                }
+                TournamentEntriesGrid.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = directorCheckedState;
             }
         }
 
@@ -168,26 +162,25 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void ToggleAllAdjustedAverages_CheckChanged(object sender, EventArgs e)
         {
-            bool resetAdjustedAverages = false;
             List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetListFromTable(currTournament);
-            for (int i = 0; i < FinalizeTableList.Count; i++)
+
+            if (((CheckBox)sender).Checked)
             {
-                var adjustedAverage = 
-                    TournamentEntriesGrid.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Value;
-                if (adjustedAverage.Equals(0))
+                for (int i = 0; i < FinalizeTableList.Count; i++)
                 {
-                    TournamentEntriesGrid.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Value =
-                        TournamentEntriesGrid.Rows[i].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value;
+                    var adjustedAverage =
+                        TournamentEntriesGrid.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Value;
+                    if (adjustedAverage.Equals(0))
+                    {
+                        TournamentEntriesGrid.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Value =
+                            TournamentEntriesGrid.Rows[i].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value;
+                    }
                 }
-                else
-                {
-                    resetAdjustedAverages = true;
-                }                
             }
-            if (resetAdjustedAverages)
+            else
             {
                 ResetAdjustedAverages(FinalizeTableList);
-            }
+            }        
         }
 
         /// <summary>
