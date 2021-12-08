@@ -1221,8 +1221,7 @@ namespace NineTapTour.Forms
                 var memberNumBonusPinMap = new Dictionary<int, int>();
 
                 #region Create Player Histories from Games, save them, and update all Game and Member data for current tourney
-                // Multithreaded version of a for loop, spreads processing across all available cores
-                Parallel.For(0, FinalizeTableList.Count, i =>
+                for (int i = 0; i < FinalizeTableList.Count; i++)
                 {
                     int gamesPlayed = 0;
                     int currGameId = FinalizeTableList[i].GameId;
@@ -1347,7 +1346,7 @@ namespace NineTapTour.Forms
                     FinalizeTableList[i].HandicapTotal = Convert.ToInt32(TournamentEntriesGrid[HANDICAP_TOTAL_COLUMN, currDataGridRowIndex].Value);
 
                     FinalizeTempDB.AddFinalizeTemp(FinalizeTableList[i]);
-                });
+                };
 
                 foreach (PlayerHistory currPlayerHistory in playerHistoryBonusAdjustmentList)
                 {
