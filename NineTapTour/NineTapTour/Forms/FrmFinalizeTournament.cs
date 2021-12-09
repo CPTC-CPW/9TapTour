@@ -147,17 +147,11 @@ namespace NineTapTour.Forms
         private void ToggleDirectorCheck_CheckChanged(object sender, EventArgs e)
         {
             List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetListFromTable(currTournament);
+            bool directorCheckedState = (sender as CheckBox).Checked;
+
             for (int i = 0; i < FinalizeTableList.Count; i++)
             {
-                //if Toggle is checked, check all Director checks
-                if ((sender as CheckBox).Checked)
-                {
-                    TournamentEntriesGrid.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = true;
-                }
-                else //Toggle is unchecked, uncheck all Director Check Boxes
-                {
-                    TournamentEntriesGrid.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = false;
-                }
+                TournamentEntriesGrid.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Value = directorCheckedState;
             }
         }
 
@@ -168,26 +162,25 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void ToggleAllAdjustedAverages_CheckChanged(object sender, EventArgs e)
         {
-            bool resetAdjustedAverages = false;
             List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetListFromTable(currTournament);
-            for (int i = 0; i < FinalizeTableList.Count; i++)
+
+            if (((CheckBox)sender).Checked)
             {
-                var adjustedAverage = 
-                    TournamentEntriesGrid.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Value;
-                if (adjustedAverage.Equals(0))
+                for (int i = 0; i < FinalizeTableList.Count; i++)
                 {
-                    TournamentEntriesGrid.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Value =
-                        TournamentEntriesGrid.Rows[i].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value;
+                    var adjustedAverage =
+                        TournamentEntriesGrid.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Value;
+                    if (adjustedAverage.Equals(0))
+                    {
+                        TournamentEntriesGrid.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Value =
+                            TournamentEntriesGrid.Rows[i].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value;
+                    }
                 }
-                else
-                {
-                    resetAdjustedAverages = true;
-                }                
             }
-            if (resetAdjustedAverages)
+            else
             {
                 ResetAdjustedAverages(FinalizeTableList);
-            }
+            }        
         }
 
         /// <summary>
@@ -419,7 +412,7 @@ namespace NineTapTour.Forms
             dt.Columns.Add(DIRECTOR_CHECK_COLUMN_NAME, typeof(bool));                   // 16
             dt.Columns.Add(SQUAD_COLUMN_NAME, typeof(int)).ReadOnly = true;             // 16
             dt.Columns.Add(HANDICAP_COLUMN_NAME, typeof(int)).ReadOnly = true;          // 17
-            dt.Columns.Add(BONUS_COLUMN_NAME, typeof(int)).ReadOnly = true;             // 18
+            dt.Columns.Add(BONUS_COLUMN_NAME, typeof(int));                             // 18
             dt.Columns.Add(PRO_POT_COLUMN_NAME, typeof(int));                           // 19
             dt.Columns.Add(NOTES_COLUMN_NAME, typeof(string));                          // 20
             dt.Columns.Add(GAME_ID_COLUMN_NAME, typeof(int)).ReadOnly = true;           // 21
@@ -1221,8 +1214,7 @@ namespace NineTapTour.Forms
                 var memberNumBonusPinMap = new Dictionary<int, int>();
 
                 #region Create Player Histories from Games, save them, and update all Game and Member data for current tourney
-                // Multithreaded version of a for loop, spreads processing across all available cores
-                Parallel.For(0, FinalizeTableList.Count, i =>
+                for (int i = 0; i < FinalizeTableList.Count; i++)
                 {
                     int gamesPlayed = 0;
                     int currGameId = FinalizeTableList[i].GameId;
@@ -1307,7 +1299,7 @@ namespace NineTapTour.Forms
                     ph.TotalScore = FinalizeTableList[i].ScratchTotal;
 
                     DataGridViewCell placeCell = TournamentEntriesGrid[STANDING_COLUMN, currDataGridRowIndex];
-                    int placeStanding = (placeCell.Value == DBNull.Value) ? (int) 0 : Convert.ToByte(placeCell.Value);
+                    int placeStanding = (placeCell.Value == DBNull.Value || placeCell.Value == null) ? 0 : Convert.ToByte(placeCell.Value);
 
                     #region Adjust Bonus pins for highest game and record PlaceStanding
                     // if bowler's highest game in tournament (only multiple entries that aren't the player's best game get 0s)
@@ -1347,7 +1339,7 @@ namespace NineTapTour.Forms
                     FinalizeTableList[i].HandicapTotal = Convert.ToInt32(TournamentEntriesGrid[HANDICAP_TOTAL_COLUMN, currDataGridRowIndex].Value);
 
                     FinalizeTempDB.AddFinalizeTemp(FinalizeTableList[i]);
-                });
+                };
 
                 foreach (PlayerHistory currPlayerHistory in playerHistoryBonusAdjustmentList)
                 {
