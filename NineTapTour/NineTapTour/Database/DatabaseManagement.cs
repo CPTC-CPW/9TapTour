@@ -51,16 +51,31 @@ namespace NineTapTour.Database
         /// <summary>
         /// Restores NineTap database from backup
         /// </summary>
+        /// <returns>Returns true if database is restored and app must be restarted</returns>
         public static bool RestoreDatabase()
         {
-            using (NineTapDb context = new())
+            using NineTapDb context = new();
+
+            OpenFileDialog openFileDialog = new()
+            {
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Filter = "Backup file |*.bak",
+                DefaultExt = ".bak"
+            };
+
+            DialogResult result = openFileDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
             {
                 using var backUpCmd = context.Database.GetDbConnection().CreateCommand();
-                context.Database.ExecuteSqlRaw("USE master;"
-                    + "ALTER DATABASE [NineTapDb2021] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;"
-                    + "RESTORE DATABASE @dbName FROM DISK = @restorePath WITH REPLACE");
+                context.Database.ExecuteSqlRaw($"USE master;"
+                    + $"ALTER DATABASE [NineTapDb2021] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;"
+                    + $"RESTORE DATABASE [NineTapDb2021] FROM DISK = '{openFileDialog.FileName}' WITH REPLACE");
+                MessageBox.Show("Restore successful");
+                return true;
             }
-            return true;
+
+            return false;
         }
     }
 }

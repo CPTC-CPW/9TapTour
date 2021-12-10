@@ -246,6 +246,7 @@ namespace NineTapTour.Forms
                     AppMustClose = true;
                     Application.Restart();
                 }
+                
             }
         }
 
