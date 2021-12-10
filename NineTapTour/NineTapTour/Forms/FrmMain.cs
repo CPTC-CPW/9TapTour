@@ -233,10 +233,7 @@ namespace NineTapTour.Forms
 
         private void BackupDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (DatabaseManagement.BackupDatabase())
-            {
-                MessageBox.Show("Database successfully backed up!");
-            }
+            DatabaseManagement.BackupDatabase();
         }
 
         private void RestoreDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
