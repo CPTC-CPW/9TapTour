@@ -16,40 +16,66 @@ namespace NineTapTour.Database
         /// </summary>
         private static string CreateBackupName()
         {
-            return "NineTapDBBackup_" + DateTime.Now.ToString("dd-MM-yyyy-hmmss") + ".bak";
+            return "NineTapDb2021_" + DateTime.Now.ToString("dd-MM-yyyy-hmmss") + ".bak";
         }
 
         /// <summary>
-        /// Tryes to backup the NineTap Database with the same path as the one given by CreateBackupName(), 
-        /// returns true if backup was successful
+        /// Backs up the current database with DateTime attached to a backup name
         /// </summary>
-        public static bool BackupDatabase()
+        public static void BackupDatabase()
         {
             // Raw SQL with EF Core
             // https://www.learnentityframeworkcore.com/raw-sql
-            const string dbName = "NineTapTour.NineTapDb";
-            using (NineTapDb context = new())
+            const string dbName = "NineTapDb2021";
+            using NineTapDb context = new();
+
+            SaveFileDialog saveFileDialog = new()
             {
-                using var backUpCmd = context.Database.GetDbConnection().CreateCommand();
-                context.Database.ExecuteSqlRaw($"BACKUP DATABASE {dbName} TO DISK = {backUpCmd + "\\" + CreateBackupName()}");
+                Filter = "Backup file |*.bak",
+                DefaultExt = ".bak",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                FileName = CreateBackupName()
+            };
+            DialogResult result = saveFileDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                string backupName = saveFileDialog.FileName;
+                context.Database.ExecuteSqlInterpolated($"USE master; BACKUP DATABASE {dbName} TO DISK = {backupName}");
+                MessageBox.Show("Backup successful");
             }
-            return true;
+
+            
         }
 
         /// <summary>
-        /// Tryes to restore the NineTap Database with the same path given, 
-        /// returns true if restore was successful
+        /// Restores NineTap database from backup
         /// </summary>
+        /// <returns>Returns true if database is restored and app must be restarted</returns>
         public static bool RestoreDatabase()
         {
-            using (NineTapDb context = new())
+            using NineTapDb context = new();
+
+            OpenFileDialog openFileDialog = new()
+            {
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Filter = "Backup file |*.bak",
+                DefaultExt = ".bak"
+            };
+
+            DialogResult result = openFileDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
             {
                 using var backUpCmd = context.Database.GetDbConnection().CreateCommand();
-                context.Database.ExecuteSqlRaw("USE master;"
-                    + "ALTER DATABASE [NineTapTour.NineTapDb] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;"
-                    + "RESTORE DATABASE @dbName FROM DISK = @restorePath WITH REPLACE");
+                context.Database.ExecuteSqlRaw($"USE master;"
+                    + $"ALTER DATABASE [NineTapDb2021] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;"
+                    + $"RESTORE DATABASE [NineTapDb2021] FROM DISK = '{openFileDialog.FileName}' WITH REPLACE");
+                MessageBox.Show("Restore successful");
+                return true;
             }
-            return true;
+
+            return false;
         }
     }
 }
