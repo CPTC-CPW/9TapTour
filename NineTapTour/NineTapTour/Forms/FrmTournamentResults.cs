@@ -349,7 +349,10 @@ namespace NineTapTour.Forms
             string fileName = tourny.Location + " " + tourny.Event + " " + tournamentDate + ".xls";
 
             // save the file in the documents folder
-            string saveFile = Path.Combine(Environment.SpecialFolder.MyDocuments.ToString(), fileName);
+            string saveFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TournamentResultsCopy.xls");
+
+            // Copy template file to modify
+            File.Copy(getFilePath, saveFile, true);
 
             string data = null; // the data to be added to the excel spreadsheet cells
             string tempData = null;
@@ -373,7 +376,7 @@ namespace NineTapTour.Forms
             try
             {
                 // opens the file that will be written to
-                xlWorkBook = xlApp.Workbooks.Open(getFilePath, misValue, misValue, misValue, misValue, misValue,
+                xlWorkBook = xlApp.Workbooks.Open(saveFile, misValue, misValue, misValue, misValue, misValue,
                                                    misValue, misValue, misValue, misValue, misValue, misValue,
                                                    misValue, misValue, misValue);
 
@@ -668,7 +671,7 @@ namespace NineTapTour.Forms
                 // saves the excel file with the file name
                 try
                 {
-                    if (fileName != "TournamentResultsTemplate.xls" || !string.IsNullOrEmpty(fileName))
+                    if (!(fileName == "TournamentResultsTemplate.xls" && string.IsNullOrEmpty(fileName)))
                     {
                         SaveFileDialog savefile = new SaveFileDialog();
                         savefile.Filter = "Excel Files (*.xls)|*.xls";
