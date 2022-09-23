@@ -702,7 +702,10 @@ namespace Member_Import_Test
 
                 double noGameMoneyWon = 0;
 
-                for (int row = 3; row <= range.Rows.Count; row++)
+                const int GameDataEndRow = 45;
+                const int GameDataStartRow = 3;
+
+                for (int row = GameDataStartRow; row <= GameDataEndRow; row++)
                 {
                     ExcelRow temp = new ExcelRow();
                     PlayerHistory playerH = new PlayerHistory();
@@ -883,7 +886,7 @@ namespace Member_Import_Test
                         try
                         {
                             // THIS WILL CATCH SUBTOTALS THAT MAY HAVE BEEN ADDED ON LINE 46 OF THE EXCEL FILES
-                            if (temp.FinPPHG?.ToString() != "" && row != 46) // Only grab the money earned from tournament if they placed in tournament
+                            if (temp.FinPPHG?.ToString() != string.Empty) // Only grab the money earned from tournament if they placed in tournament
                             {
                                 temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
                                 GameHistory.MoneyWon = Convert.ToDecimal(temp.Cash);
