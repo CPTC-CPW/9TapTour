@@ -1206,13 +1206,6 @@ namespace NineTapTour.Forms
                 // total comp entries for the current tournament
                 int compEntriesQty = FinalizeTempDB.GetCompEntryQtyByTourneyID(currTournament.Id);
 
-                // To make bonus pins for non-best multiple entries match bonus pins calculated from
-                // a member's highest game
-                var playerHistoryBonusAdjustmentList = new List<PlayerHistory>();
-
-                // Used to reference newly adjusted bonus pins for best entry of a member
-                var memberNumBonusPinMap = new Dictionary<int, int>();
-
                 #region Create Player Histories from Games, save them, and update all Game and Member data for current tourney
                 for (int i = 0; i < FinalizeTableList.Count; i++)
                 {
@@ -1296,6 +1289,8 @@ namespace NineTapTour.Forms
                         FinalizeTableList[i].UseGame4 = false;
                     }
                     ph.GamesPlayed = gamesPlayed;
+                    ph.Bonus = Convert.ToInt32(TournamentEntriesGrid[BONUS_COLUMN, currDataGridRowIndex].Value);
+                    currMember.Bonus = ph.Bonus;
                     ph.TotalScore = FinalizeTableList[i].ScratchTotal;
 
                     DataGridViewCell placeCell = TournamentEntriesGrid[STANDING_COLUMN, currDataGridRowIndex];
@@ -1307,13 +1302,6 @@ namespace NineTapTour.Forms
                     {
                         currGame.PlaceStanding = Convert.ToInt32(placeStanding);
                         ph.PPHG = placeStanding.ToString();
-
-                        AdjustBonusPins(FinalizeTableList.Count, compEntriesQty, ph, currGame, currMember, placeStanding);
-                        memberNumBonusPinMap.Add(currMember.Number, currMember.Bonus);
-                    }
-                    else // multiple entries that aren't the best game will have bonus pins match what is calculated from the best game
-                    {
-                        playerHistoryBonusAdjustmentList.Add(ph);
                     }
                     #endregion
 
@@ -1340,12 +1328,6 @@ namespace NineTapTour.Forms
 
                     FinalizeTempDB.AddFinalizeTemp(FinalizeTableList[i]);
                 };
-
-                foreach (PlayerHistory currPlayerHistory in playerHistoryBonusAdjustmentList)
-                {
-                    currPlayerHistory.Bonus = memberNumBonusPinMap[currPlayerHistory.MemberNumber];
-                }
-                PlayerHistoryDB.AddOrUpdatePlayerHistoryList(playerHistoryBonusAdjustmentList);
 
                 currTournament.IsTournamentFinalized = true;
                 TournamentDB.UpdateTournament(currTournament);
