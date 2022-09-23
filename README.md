@@ -40,11 +40,11 @@ Please review the following and reference the [project Wiki](https://github.com/
 5. Upon completion, your database should have all the necessary test data, and you are safe to run the application.
 
 ### Prerequisites
-The current build is being built on Windows machines through Visual Studio 2019 and .NET 5.
+The current build is being built on Windows machines through Visual Studio 2022 and .NET 6.
 
 * [Download Office 365](https://www.microsoft.com/en-us/education/products/office) Free for students.
-* [Download Visual Studio](https://visualstudio.microsoft.com/downloads/)
-* [.NET 5 SDK](https://dotnet.microsoft.com/download/visual-studio-sdks)
+* [Download Visual Studio 2022](https://visualstudio.microsoft.com/downloads/)
+* [.NET 6 SDK](https://dotnet.microsoft.com/download/visual-studio-sdks) - Comes with VS2022
 
 ### Coding Style Requirements
 Reference the [code style requirements](CodingStyle.md) for more information.
