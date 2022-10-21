@@ -802,7 +802,7 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Scratch", typeof(Int32)).ReadOnly = true;
             dtGames.Columns.Add("w/HDCP", typeof(Int32)).ReadOnly = true;
             dtGames.Columns.Add("Entry", typeof(Int32)).ReadOnly = true;
-            dtGames.Columns.Add("30 AVG", typeof(Int32)).ReadOnly = true;
+            dtGames.Columns.Add("30 AVG", typeof(double)).ReadOnly = true;
             dtGames.Columns.Add("Adjusted AVG");
             dtGames.Columns.Add("Handicap").ReadOnly = true;
             dtGames.Columns.Add("Bonus").ReadOnly = true;
@@ -913,8 +913,7 @@ namespace NineTapTour.Forms
             int gamesFromHistory = PlayerHistoryDB.GetNumberOfGamesFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory);
             int totalEntriesInHistory = PlayerHistoryDB.GetTotalNumberOfEntries(temporary[0].MemberNumber, RegionID);
             int temp = PlayerHistoryDB.GetGameAvgFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory);
-            double thirtyAverageValue = (double)(temp + FullScratchTotal.Value) / (TotalGamesPlayedInCurrentTourney + gamesFromHistory);
-            string AllthirtyAvgTotal = $"{thirtyavg} ({thirtyAverageValue:N1})";
+            string AllthirtyAvgTotal = $"{thirtyavg}";
             dtGames.Columns[thirtyavg].ColumnName = AllthirtyAvgTotal;
 
             playerTournamentHistoryGrid.DataSource = dtGames;
@@ -953,7 +952,7 @@ namespace NineTapTour.Forms
                 newRow[AllScratchTotal] = item.TotalScore;
                 newRow[TotalWithHandiCap] = GetTotalWithHandicap(item);
                 newRow[AllEntryAvgTotal] = item.AverageForEntry;
-                newRow[AllthirtyAvgTotal] = item.trueAVG;
+                newRow[AllthirtyAvgTotal] = Math.Round(item.trueAVG, 1);
 
                 if (item.AVG == 0)
                     newRow["Adjusted AVG"] = null;
@@ -970,7 +969,7 @@ namespace NineTapTour.Forms
 
                 dtGames.Rows.Add(newRow);
             }
-            
+
             
             for (int i = 0; i < playerTournamentHistoryGrid.RowCount; i++)
             {
@@ -988,13 +987,21 @@ namespace NineTapTour.Forms
                 #endregion              
             }
 
+            double thirtyAverageTotal = 0;
+            int numEntriesForEntryAverage = numEntriesInCurrentTournament;
+            
             // Need to Highlight manually because the last game played isn't added to the database until the tournament is finalized
-            for(int i = 0; i < numEntriesInCurrentTournament; i++)
+            for (int i = 0; i < numEntriesInCurrentTournament; i++)
             {
                 playerTournamentHistoryGrid.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
+                thirtyAverageTotal += (double)playerTournamentHistoryGrid.Rows[i].Cells[9].Value;
             }
             
-            Highlight30Avg(30 - numEntriesInCurrentTournament);
+            Highlight30Avg(30 - numEntriesInCurrentTournament, ref numEntriesForEntryAverage, ref thirtyAverageTotal);
+            
+            double mainThirtyEntryAvg = thirtyAverageTotal / numEntriesForEntryAverage;
+            playerTournamentHistoryGrid.Columns[9].HeaderText = $"{thirtyavg} ({mainThirtyEntryAvg:N1})";
+
             HighlightBonusPinCells();
             wait.Close();
 
@@ -1405,7 +1412,7 @@ namespace NineTapTour.Forms
             InitializeGameCellFormatting();
         }
 
-        private void Highlight30Avg(int numHistoryEntriesToHighlight)
+        private void Highlight30Avg(int numHistoryEntriesToHighlight, ref int numHighlightedEntries, ref double totalEntryAvgForHighlightedGames)
         {
             List<PlayerHistory> temporary = new List<PlayerHistory>();
 
@@ -1417,12 +1424,17 @@ namespace NineTapTour.Forms
 
                 temporary = PlayerHistoryDB.GetPlayerHistories(memberNumber, RegionID, numHistoryEntriesToHighlight);
             }
-
+            
             for (int i = 0; i < playerTournamentHistoryGrid.RowCount; i++)
             {
                 int currentGameId = Convert.ToInt32(playerTournamentHistoryGrid.Rows[i].Cells[TournamentHistoryGameIdColumnIndex].Value);
                 if(temporary.Where(p => p.GameID == currentGameId).Any())
+                {
                     playerTournamentHistoryGrid.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
+                    numHighlightedEntries++;
+                    totalEntryAvgForHighlightedGames += Math.Round((double)playerTournamentHistoryGrid.Rows[i].Cells[9].Value, 1);
+                }
+                    
             }
         }
 
