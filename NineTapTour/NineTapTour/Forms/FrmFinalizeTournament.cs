@@ -902,7 +902,7 @@ namespace NineTapTour.Forms
 
 
             //Displays scratch total played in the column header "Scratch Total"
-            string AllScratchTotal = $"{ScratchTotal} ({FullScratchTotal + PlayerHistoryDB.GetScratchTotalFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory)})";
+            string AllScratchTotal = $"{ScratchTotal} ({FullScratchTotal.Value + PlayerHistoryDB.GetScratchTotalFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory)})";
             dtGames.Columns[ScratchTotal].ColumnName = AllScratchTotal;
 
             //Displays EntryAvg total played in the column header "Entry Avg total"
@@ -913,7 +913,8 @@ namespace NineTapTour.Forms
             int gamesFromHistory = PlayerHistoryDB.GetNumberOfGamesFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory);
             int totalEntriesInHistory = PlayerHistoryDB.GetTotalNumberOfEntries(temporary[0].MemberNumber, RegionID);
             int temp = PlayerHistoryDB.GetGameAvgFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory);
-            string AllthirtyAvgTotal = $"{thirtyavg} ({(temp + FullScratchTotal) / (TotalGamesPlayedInCurrentTourney + gamesFromHistory)})";
+            double thirtyAverageValue = (double)(temp + FullScratchTotal.Value) / (TotalGamesPlayedInCurrentTourney + gamesFromHistory);
+            string AllthirtyAvgTotal = $"{thirtyavg} ({thirtyAverageValue:N1})";
             dtGames.Columns[thirtyavg].ColumnName = AllthirtyAvgTotal;
 
             playerTournamentHistoryGrid.DataSource = dtGames;
