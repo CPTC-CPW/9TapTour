@@ -813,41 +813,41 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("GameID").ReadOnly = true;
 
             // Money Won label string is referenced multiple locations
-            string moneyWon = "Earnings";
+            const string moneyWon = "Earnings";
             decimal totalMoneyEarned = 0;
 
             //Games Played label string is referencing multiple locations
-            string GamesTotal = "Games";
+            const string GamesTotal = "Games";
             int TotalGamesPlayedInCurrentTourney = 0;
 
             //Game 1 Total Played label string is referencing multiple locations
-            string Game1Total = "Game1";
+            const string Game1Total = "Game1";
             int? TotalGame1Played = 0;
 
             //Game 2 Total Played label string is referencing multiple locations
-            string Game2Total = "Game2";
+            const string Game2Total = "Game2";
             int? TotalGame2played = 0;
 
             //Game 3 Total Played label string is referencing multiple locations
-            string Game3Total = "Game3";
+            const string Game3Total = "Game3";
             int? TotalGame3played = 0;
 
             //Game 4 Total Played label string is referencing multiple locations
-            string Game4Total = "Game4";
+            const string Game4Total = "Game4";
             int? TotalGame4played = 0;
 
             //Scratch Total Played label string is referencing multiple locations
-            string ScratchTotal = "Scratch";
+            const string ScratchTotal = "Scratch";
             int? FullScratchTotal = 0;
 
             //HandiCap total label string is referencing multiple locations
-            string TotalWithHandiCap = "w/HDCP";
+            const string TotalWithHandiCap = "w/HDCP";
 
             //EntryAvg total label string is referencing multiple locations
-            string EntryAvgTotal = "Entry";
+            const string EntryAvgTotal = "Entry";
 
             //30 avg total label string is referencing multiple locations
-            string thirtyavg = "30 AVG";
+            const string thirtyavg = "30 AVG";
             
 
             // Obtain previous player history
