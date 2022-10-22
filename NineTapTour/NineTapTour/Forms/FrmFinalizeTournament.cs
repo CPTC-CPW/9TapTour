@@ -802,7 +802,7 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Scratch", typeof(Int32)).ReadOnly = true;
             dtGames.Columns.Add("w/HDCP", typeof(Int32)).ReadOnly = true;
             dtGames.Columns.Add("Entry", typeof(Int32)).ReadOnly = true;
-            dtGames.Columns.Add("30 AVG", typeof(Int32)).ReadOnly = true;
+            dtGames.Columns.Add("30 AVG", typeof(double)).ReadOnly = true;
             dtGames.Columns.Add("Adjusted AVG");
             dtGames.Columns.Add("Handicap").ReadOnly = true;
             dtGames.Columns.Add("Bonus").ReadOnly = true;
@@ -813,41 +813,41 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("GameID").ReadOnly = true;
 
             // Money Won label string is referenced multiple locations
-            string moneyWon = "Earnings";
+            const string moneyWon = "Earnings";
             decimal totalMoneyEarned = 0;
 
             //Games Played label string is referencing multiple locations
-            string GamesTotal = "Games";
+            const string GamesTotal = "Games";
             int TotalGamesPlayedInCurrentTourney = 0;
 
             //Game 1 Total Played label string is referencing multiple locations
-            string Game1Total = "Game1";
+            const string Game1Total = "Game1";
             int? TotalGame1Played = 0;
 
             //Game 2 Total Played label string is referencing multiple locations
-            string Game2Total = "Game2";
+            const string Game2Total = "Game2";
             int? TotalGame2played = 0;
 
             //Game 3 Total Played label string is referencing multiple locations
-            string Game3Total = "Game3";
+            const string Game3Total = "Game3";
             int? TotalGame3played = 0;
 
             //Game 4 Total Played label string is referencing multiple locations
-            string Game4Total = "Game4";
+            const string Game4Total = "Game4";
             int? TotalGame4played = 0;
 
             //Scratch Total Played label string is referencing multiple locations
-            string ScratchTotal = "Scratch";
+            const string ScratchTotal = "Scratch";
             int? FullScratchTotal = 0;
 
             //HandiCap total label string is referencing multiple locations
-            string TotalWithHandiCap = "w/HDCP";
+            const string TotalWithHandiCap = "w/HDCP";
 
             //EntryAvg total label string is referencing multiple locations
-            string EntryAvgTotal = "Entry";
+            const string EntryAvgTotal = "Entry";
 
             //30 avg total label string is referencing multiple locations
-            string thirtyavg = "30 AVG";
+            const string thirtyavg = "30 AVG";
             
 
             // Obtain previous player history
@@ -902,7 +902,7 @@ namespace NineTapTour.Forms
 
 
             //Displays scratch total played in the column header "Scratch Total"
-            string AllScratchTotal = $"{ScratchTotal} ({FullScratchTotal + PlayerHistoryDB.GetScratchTotalFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory)})";
+            string AllScratchTotal = $"{ScratchTotal} ({FullScratchTotal.Value + PlayerHistoryDB.GetScratchTotalFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory)})";
             dtGames.Columns[ScratchTotal].ColumnName = AllScratchTotal;
 
             //Displays EntryAvg total played in the column header "Entry Avg total"
@@ -913,7 +913,7 @@ namespace NineTapTour.Forms
             int gamesFromHistory = PlayerHistoryDB.GetNumberOfGamesFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory);
             int totalEntriesInHistory = PlayerHistoryDB.GetTotalNumberOfEntries(temporary[0].MemberNumber, RegionID);
             int temp = PlayerHistoryDB.GetGameAvgFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory);
-            string AllthirtyAvgTotal = $"{thirtyavg} ({(temp + FullScratchTotal) / (TotalGamesPlayedInCurrentTourney + gamesFromHistory)})";
+            string AllthirtyAvgTotal = $"{thirtyavg}";
             dtGames.Columns[thirtyavg].ColumnName = AllthirtyAvgTotal;
 
             playerTournamentHistoryGrid.DataSource = dtGames;
@@ -952,7 +952,7 @@ namespace NineTapTour.Forms
                 newRow[AllScratchTotal] = item.TotalScore;
                 newRow[TotalWithHandiCap] = GetTotalWithHandicap(item);
                 newRow[AllEntryAvgTotal] = item.AverageForEntry;
-                newRow[AllthirtyAvgTotal] = item.trueAVG;
+                newRow[AllthirtyAvgTotal] = Math.Round(item.trueAVG, 1);
 
                 if (item.AVG == 0)
                     newRow["Adjusted AVG"] = null;
@@ -969,7 +969,7 @@ namespace NineTapTour.Forms
 
                 dtGames.Rows.Add(newRow);
             }
-            
+
             
             for (int i = 0; i < playerTournamentHistoryGrid.RowCount; i++)
             {
@@ -987,13 +987,21 @@ namespace NineTapTour.Forms
                 #endregion              
             }
 
+            double thirtyAverageTotal = 0;
+            int numEntriesForEntryAverage = numEntriesInCurrentTournament;
+            
             // Need to Highlight manually because the last game played isn't added to the database until the tournament is finalized
-            for(int i = 0; i < numEntriesInCurrentTournament; i++)
+            for (int i = 0; i < numEntriesInCurrentTournament; i++)
             {
                 playerTournamentHistoryGrid.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
+                thirtyAverageTotal += (double)playerTournamentHistoryGrid.Rows[i].Cells[9].Value;
             }
             
-            Highlight30Avg(30 - numEntriesInCurrentTournament);
+            Highlight30Avg(30 - numEntriesInCurrentTournament, ref numEntriesForEntryAverage, ref thirtyAverageTotal);
+            
+            double mainThirtyEntryAvg = thirtyAverageTotal / numEntriesForEntryAverage;
+            playerTournamentHistoryGrid.Columns[9].HeaderText = $"{thirtyavg} ({mainThirtyEntryAvg:N1})";
+
             HighlightBonusPinCells();
             wait.Close();
 
@@ -1404,7 +1412,7 @@ namespace NineTapTour.Forms
             InitializeGameCellFormatting();
         }
 
-        private void Highlight30Avg(int numHistoryEntriesToHighlight)
+        private void Highlight30Avg(int numHistoryEntriesToHighlight, ref int numHighlightedEntries, ref double totalEntryAvgForHighlightedGames)
         {
             List<PlayerHistory> temporary = new List<PlayerHistory>();
 
@@ -1416,12 +1424,17 @@ namespace NineTapTour.Forms
 
                 temporary = PlayerHistoryDB.GetPlayerHistories(memberNumber, RegionID, numHistoryEntriesToHighlight);
             }
-
+            
             for (int i = 0; i < playerTournamentHistoryGrid.RowCount; i++)
             {
                 int currentGameId = Convert.ToInt32(playerTournamentHistoryGrid.Rows[i].Cells[TournamentHistoryGameIdColumnIndex].Value);
                 if(temporary.Where(p => p.GameID == currentGameId).Any())
+                {
                     playerTournamentHistoryGrid.Rows[i].Cells[9].Style.BackColor = Color.GreenYellow;
+                    numHighlightedEntries++;
+                    totalEntryAvgForHighlightedGames += Math.Round((double)playerTournamentHistoryGrid.Rows[i].Cells[9].Value, 1);
+                }
+                    
             }
         }
 
