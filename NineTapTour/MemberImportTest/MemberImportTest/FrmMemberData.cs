@@ -5,11 +5,11 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Member_Import_Test.Classes;
+using MemberImportTest.Classes;
 using NineTapTour.Database;
 using NineTapTour.Models;
 
-namespace Member_Import_Test
+namespace MemberImportTest
 {
     public partial class FrmMemberData : Form
     {

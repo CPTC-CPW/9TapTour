@@ -1,4 +1,4 @@
-﻿namespace Member_Import_Test
+﻿namespace MemberImportTest
 {
     partial class FrmMemberData
     {

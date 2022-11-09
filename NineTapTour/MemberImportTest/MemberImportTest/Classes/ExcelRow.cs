@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Member_Import_Test.Classes
+namespace MemberImportTest.Classes
 {
     class ExcelRow
     {

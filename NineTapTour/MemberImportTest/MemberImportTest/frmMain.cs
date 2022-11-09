@@ -1,4 +1,4 @@
-﻿using Member_Import_Test.Classes;
+﻿using MemberImportTest.Classes;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,7 +11,7 @@ using System.Globalization;
 using NineTapTour.Forms;
 using NineTapTour.Models;
 
-namespace Member_Import_Test
+namespace MemberImportTest
 {
     public partial class frmMain : Form
     {

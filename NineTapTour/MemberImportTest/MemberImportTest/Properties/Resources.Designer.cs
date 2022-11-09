@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Member_Import_Test.Properties
+namespace MemberImportTest.Properties
 {
 
 
