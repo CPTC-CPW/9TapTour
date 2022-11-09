@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NineTapTour.Models
 {
@@ -10,6 +11,10 @@ namespace NineTapTour.Models
         public int FinalizeID { get; set; }
         public int TournamentID { get; set; }
         public int GameId { get; set; }
+
+        [ForeignKey(nameof(GameId))]
+        public Game Game { get; set; }
+        
         public int MemberId { get; set; }
         public int MemberNumber { get; set; }
         public String FirstName { get; set; }
@@ -40,5 +45,8 @@ namespace NineTapTour.Models
         public int HandicapTotal { get; set; }
 
         public int FinalizeRegionID { get; set; }
+
+        [ForeignKey(nameof(FinalizeRegionID))]
+        public NineTapRegion FinalizeRegion { get; set; }
     }
 }

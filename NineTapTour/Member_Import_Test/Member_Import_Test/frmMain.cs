@@ -909,10 +909,10 @@ namespace Member_Import_Test
                         GameHistory.Notes = temp.Notes;
                         playerH.Notes = temp.Notes;
                         playerH.PPHG = temp.FinPPHG;
-                        // GameHistory.Id = allGames + 1; // Id is an Identity column and will auto increment
                         allGames++;
-                        playerH.GameID = GameHistory.Id;
                         GameImport.Add(GameHistory);
+                        playerH.Game = GameHistory;
+                        playerH.regionID = GameHistory.gameRegionID;
                         PlayerHistoryList.Add(playerH);
                         returnMe.Add(temp);
                         noGameMoneyWon = 0; 
@@ -933,11 +933,12 @@ namespace Member_Import_Test
         private void Btn_FinalizeData_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-            IncrementFinalizeBar(0, "Step 1: Adding player histories to the database.");
-            UpdatePlayerHistory(PlayerHistoryList);
-            IncrementFinalizeBar(25, "Step 2: Player histories updated, beginning games import.");
-
+            IncrementFinalizeBar(0, "Step 1: Adding player games to the database.");
             GameDB.AddOrUpdateSomeGames(GameImport);
+           
+            IncrementFinalizeBar(25, "Step 2: Player games updated, beginning history import.");
+            UpdatePlayerHistory(PlayerHistoryList);
+
             IncrementFinalizeBar(25, "Step 3: Games updated. Setting averages and bonus pins.");
 
             for (int i = 0; i < validMembers.Count; i++)

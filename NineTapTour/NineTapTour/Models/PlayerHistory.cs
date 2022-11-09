@@ -20,6 +20,8 @@ namespace NineTapTour.Models
 
         public int GameID {get ; set; }
 
+        [ForeignKey(nameof(GameID))]
+        public Game Game { get; set; }
 
         public int? Game1 { get; set; }
         public int? Game2 { get; set; }
@@ -50,6 +52,9 @@ namespace NineTapTour.Models
         public string PPHG { get; set; }
 
         public int regionID { get; set; }
+
+        [ForeignKey(nameof(regionID))]
+        public NineTapRegion NineTapRegion { get; set; }
 
 
     }

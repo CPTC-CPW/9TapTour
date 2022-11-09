@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NineTapTour.Database;
 
 namespace NineTapTour.Migrations
 {
     [DbContext(typeof(NineTapDb))]
-    partial class NineTapDbModelSnapshot : ModelSnapshot
+    [Migration("20221109050423_FinalizeRelationships")]
+    partial class FinalizeRelationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -390,10 +392,6 @@ namespace NineTapTour.Migrations
 
                     b.HasKey("hisID");
 
-                    b.HasIndex("GameID");
-
-                    b.HasIndex("regionID");
-
                     b.ToTable("PlayerHistories");
                 });
 
@@ -509,25 +507,6 @@ namespace NineTapTour.Migrations
                     b.Navigation("Member");
 
                     b.Navigation("Tournament");
-                });
-
-            modelBuilder.Entity("NineTapTour.Models.PlayerHistory", b =>
-                {
-                    b.HasOne("NineTapTour.Models.Game", "Game")
-                        .WithMany()
-                        .HasForeignKey("GameID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NineTapTour.Models.NineTapRegion", "NineTapRegion")
-                        .WithMany()
-                        .HasForeignKey("regionID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Game");
-
-                    b.Navigation("NineTapRegion");
                 });
 
             modelBuilder.Entity("NineTapTour.Models.Squad", b =>
