@@ -384,6 +384,10 @@ namespace NineTapTour.Database
             //add the event handler that will do the printing
             printDocument.PrintPage += new PrintPageEventHandler(PrintTourRecaps);
             mems = TournamentDB.GetUniqueTourMembers(tour);
+            
+            // Client wants the recaps ordered by last name first
+            mems = mems.OrderBy(member => member.LastName)
+                .ThenBy(member => member.FirstName).ToList();
 
             if (mems.Count > 0)
             {
