@@ -411,13 +411,13 @@ namespace NineTapTour.Forms
             dt.Columns.Add(ADJUSTED_AVG_COLUMN_NAME, typeof(int));                      // 15
             dt.Columns.Add(DIRECTOR_CHECK_COLUMN_NAME, typeof(bool));                   // 16
             dt.Columns.Add(SQUAD_COLUMN_NAME, typeof(int)).ReadOnly = true;             // 16
-            dt.Columns.Add(HANDICAP_COLUMN_NAME, typeof(int)).ReadOnly = true;          // 17
+            dt.Columns.Add(HANDICAP_COLUMN_NAME, typeof(int)).ReadOnly = false;         // 17
             dt.Columns.Add(BONUS_COLUMN_NAME, typeof(int));                             // 18
             dt.Columns.Add(PRO_POT_COLUMN_NAME, typeof(int));                           // 19
             dt.Columns.Add(NOTES_COLUMN_NAME, typeof(string));                          // 20
             dt.Columns.Add(GAME_ID_COLUMN_NAME, typeof(int)).ReadOnly = true;           // 21
         }
-
+        
         /// <summary>
         /// creates the dataview that will populate the datagridview table on form pulls from the finalizetemp table
         /// CHANGE THESE IN THE ORDER YOU WANT THEM TO BE SEEN ON THE GRID VIEW (0 == far left), AND THEN CHANGE THE STATIC
@@ -514,6 +514,16 @@ namespace NineTapTour.Forms
                     SetGameCellFormatting(GetCorrespondingGameCell(clickedCell), isCellChecked);
                 }
                 
+                // If content in adjusted average was changed, update handicap
+                else if (e.ColumnIndex == ADJUSTED_AVG_COLUMN)
+                {
+                    MessageBox.Show("Adjusted Avg modified");
+                    if (int.TryParse(TournamentEntriesGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), out int adjAvg))
+                    {
+                        UpdateHandicap(e.RowIndex, adjAvg);
+                    }
+                }
+
                 // Check if cell changed was a DIRECTOR_CHECK cell
                 // If the DIRECTOR_CHECK cell was clicked, 
                 else if (e.ColumnIndex == DIRECTOR_CHECK_COLUMN)
@@ -547,6 +557,17 @@ namespace NineTapTour.Forms
                 }
                 TournamentEntriesGrid_CellClick(sender, e);// moved higher in scope to help refresh correctly
             }
+        }
+
+        /// <summary>
+        /// Calculate handicap based on adjusted average value and update in the Finalize DataGridView
+        /// </summary>
+        /// <param name="rowIndex">Row that needs to be updated</param>
+        /// <param name="adjAvg">New adjusted average value</param>
+        /// <exception cref="NotImplementedException"></exception>
+        private void UpdateHandicap(int rowIndex, int adjAvg)
+        {
+            TournamentEntriesGrid[HANDICAP_COLUMN, rowIndex].Value = Calculations.Calculations.CalculateHandicapPins(adjAvg);
         }
 
         /// <summary>
