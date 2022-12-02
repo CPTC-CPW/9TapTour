@@ -58,7 +58,7 @@
             this.TournamentEntriesGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -67,19 +67,21 @@
             this.TournamentEntriesGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.TournamentEntriesGrid.DefaultCellStyle = dataGridViewCellStyle3;
-            this.TournamentEntriesGrid.Location = new System.Drawing.Point(12, 35);
+            this.TournamentEntriesGrid.Location = new System.Drawing.Point(14, 40);
+            this.TournamentEntriesGrid.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.TournamentEntriesGrid.Name = "TournamentEntriesGrid";
-            this.TournamentEntriesGrid.Size = new System.Drawing.Size(1240, 279);
+            this.TournamentEntriesGrid.Size = new System.Drawing.Size(1447, 322);
             this.TournamentEntriesGrid.TabIndex = 0;
             this.TournamentEntriesGrid.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.TournamentEntriesGrid_CellClick);
             this.TournamentEntriesGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.TournamentEntriesGrid_CellContentClick);
             this.TournamentEntriesGrid.CellMouseUp += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DataGridView1_OnCellMouseUp);
+            this.TournamentEntriesGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.TournamentEntriesGrid_CellValueChanged);
             this.TournamentEntriesGrid.Sorted += new System.EventHandler(this.DataGridView1_Sorted);
             // 
             // btnFinalize
@@ -88,10 +90,11 @@
             this.btnFinalize.FlatAppearance.BorderColor = System.Drawing.Color.Red;
             this.btnFinalize.FlatAppearance.BorderSize = 2;
             this.btnFinalize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnFinalize.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnFinalize.Location = new System.Drawing.Point(1029, 1);
+            this.btnFinalize.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.btnFinalize.Location = new System.Drawing.Point(1200, 1);
+            this.btnFinalize.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnFinalize.Name = "btnFinalize";
-            this.btnFinalize.Size = new System.Drawing.Size(179, 28);
+            this.btnFinalize.Size = new System.Drawing.Size(209, 32);
             this.btnFinalize.TabIndex = 1;
             this.btnFinalize.Text = "Finalize Tournament";
             this.btnFinalize.UseVisualStyleBackColor = false;
@@ -108,7 +111,7 @@
             this.playerTournamentHistoryGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
             dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -117,24 +120,26 @@
             this.playerTournamentHistoryGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.playerTournamentHistoryGrid.DefaultCellStyle = dataGridViewCellStyle5;
-            this.playerTournamentHistoryGrid.Location = new System.Drawing.Point(12, 356);
+            this.playerTournamentHistoryGrid.Location = new System.Drawing.Point(14, 411);
+            this.playerTournamentHistoryGrid.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.playerTournamentHistoryGrid.Name = "playerTournamentHistoryGrid";
             this.playerTournamentHistoryGrid.ReadOnly = true;
-            this.playerTournamentHistoryGrid.Size = new System.Drawing.Size(1240, 325);
+            this.playerTournamentHistoryGrid.Size = new System.Drawing.Size(1447, 375);
             this.playerTournamentHistoryGrid.TabIndex = 2;
             this.playerTournamentHistoryGrid.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DataGridView2_ColumnHeaderMouseClick);
             // 
             // lblMemberNumber
             // 
             this.lblMemberNumber.AutoSize = true;
-            this.lblMemberNumber.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMemberNumber.Location = new System.Drawing.Point(215, 317);
+            this.lblMemberNumber.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblMemberNumber.Location = new System.Drawing.Point(251, 366);
+            this.lblMemberNumber.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblMemberNumber.Name = "lblMemberNumber";
             this.lblMemberNumber.Size = new System.Drawing.Size(99, 36);
             this.lblMemberNumber.TabIndex = 6;
@@ -143,8 +148,9 @@
             // lblName
             // 
             this.lblName.AutoSize = true;
-            this.lblName.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblName.Location = new System.Drawing.Point(419, 315);
+            this.lblName.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblName.Location = new System.Drawing.Point(489, 363);
+            this.lblName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblName.Name = "lblName";
             this.lblName.Size = new System.Drawing.Size(87, 36);
             this.lblName.TabIndex = 7;
@@ -153,8 +159,9 @@
             // lblStartAvg
             // 
             this.lblStartAvg.AutoSize = true;
-            this.lblStartAvg.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStartAvg.Location = new System.Drawing.Point(1178, 317);
+            this.lblStartAvg.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblStartAvg.Location = new System.Drawing.Point(1374, 366);
+            this.lblStartAvg.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblStartAvg.Name = "lblStartAvg";
             this.lblStartAvg.Size = new System.Drawing.Size(30, 36);
             this.lblStartAvg.TabIndex = 29;
@@ -163,8 +170,9 @@
             // lblMemNum
             // 
             this.lblMemNum.AutoSize = true;
-            this.lblMemNum.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMemNum.Location = new System.Drawing.Point(123, 317);
+            this.lblMemNum.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblMemNum.Location = new System.Drawing.Point(144, 366);
+            this.lblMemNum.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblMemNum.Name = "lblMemNum";
             this.lblMemNum.Size = new System.Drawing.Size(93, 36);
             this.lblMemNum.TabIndex = 30;
@@ -173,8 +181,9 @@
             // lblAveNum
             // 
             this.lblAveNum.AutoSize = true;
-            this.lblAveNum.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAveNum.Location = new System.Drawing.Point(1079, 318);
+            this.lblAveNum.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblAveNum.Location = new System.Drawing.Point(1259, 367);
+            this.lblAveNum.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblAveNum.Name = "lblAveNum";
             this.lblAveNum.Size = new System.Drawing.Size(67, 36);
             this.lblAveNum.TabIndex = 31;
@@ -182,11 +191,11 @@
             // 
             // FrmFinalizeTournament
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1264, 693);
+            this.ClientSize = new System.Drawing.Size(1475, 800);
             this.Controls.Add(this.btnFinalize);
             this.Controls.Add(this.lblAveNum);
             this.Controls.Add(this.lblMemNum);
@@ -196,6 +205,7 @@
             this.Controls.Add(this.playerTournamentHistoryGrid);
             this.Controls.Add(this.TournamentEntriesGrid);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "FrmFinalizeTournament";
             this.Text = "Finalize Tournament Results";
             this.Load += new System.EventHandler(this.FrmFinalizeTournament_Load);
