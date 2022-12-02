@@ -1153,10 +1153,13 @@ namespace NineTapTour.Forms
             //Checks all score boxes and asks if you want to enter member without scores
             if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
             {
-                DialogResult result = MessageBox.Show("Are you sure you want to continue with a score missing?", "Are you sure?",
+                if (!chkIgnoreUnscoredGames.Checked)
+                {
+                    DialogResult result = MessageBox.Show("Are you sure you want to continue with a score missing?", "Are you sure?",
                                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.No)
-                    return false;
+                    if (result == DialogResult.No)
+                        return false;
+                }
             }
             return true;
         }

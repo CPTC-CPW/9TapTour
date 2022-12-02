@@ -121,6 +121,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.chkIgnoreUnscoredGames = new System.Windows.Forms.CheckBox();
             this.grpMemberNum.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grpRecord.SuspendLayout();
@@ -657,6 +658,7 @@
             // 
             // grpStats
             // 
+            this.grpStats.Controls.Add(this.chkIgnoreUnscoredGames);
             this.grpStats.Controls.Add(this.cbCompEntry);
             this.grpStats.Controls.Add(this.lblMoney);
             this.grpStats.Controls.Add(this.txtMoney);
@@ -1324,6 +1326,16 @@
             this.panel4.Size = new System.Drawing.Size(247, 246);
             this.panel4.TabIndex = 46;
             // 
+            // chkIgnoreUnscoredGames
+            // 
+            this.chkIgnoreUnscoredGames.AutoSize = true;
+            this.chkIgnoreUnscoredGames.Location = new System.Drawing.Point(256, 23);
+            this.chkIgnoreUnscoredGames.Name = "chkIgnoreUnscoredGames";
+            this.chkIgnoreUnscoredGames.Size = new System.Drawing.Size(141, 19);
+            this.chkIgnoreUnscoredGames.TabIndex = 26;
+            this.chkIgnoreUnscoredGames.Text = "Ignore Missing Scores";
+            this.chkIgnoreUnscoredGames.UseVisualStyleBackColor = true;
+            // 
             // FrmMemberScores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1466,5 +1478,6 @@
         private System.Windows.Forms.RadioButton rdoHighSeries;
         private System.Windows.Forms.RadioButton rdoGameSC;
         private System.Windows.Forms.RadioButton rdoGameHC;
+        private System.Windows.Forms.CheckBox chkIgnoreUnscoredGames;
     }
 }
