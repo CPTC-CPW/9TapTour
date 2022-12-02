@@ -514,16 +514,6 @@ namespace NineTapTour.Forms
                     SetGameCellFormatting(GetCorrespondingGameCell(clickedCell), isCellChecked);
                 }
                 
-                // If content in adjusted average was changed, update handicap
-                else if (e.ColumnIndex == ADJUSTED_AVG_COLUMN)
-                {
-                    MessageBox.Show("Adjusted Avg modified");
-                    if (int.TryParse(TournamentEntriesGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), out int adjAvg))
-                    {
-                        UpdateHandicap(e.RowIndex, adjAvg);
-                    }
-                }
-
                 // Check if cell changed was a DIRECTOR_CHECK cell
                 // If the DIRECTOR_CHECK cell was clicked, 
                 else if (e.ColumnIndex == DIRECTOR_CHECK_COLUMN)
@@ -1479,6 +1469,18 @@ namespace NineTapTour.Forms
         private void TournamentEntriesGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             DataGridView1_OnCellValueChanged(sender, e);
+        }
+
+        private void TournamentEntriesGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            // If content in adjusted average was changed, update handicap
+            if (e.ColumnIndex == ADJUSTED_AVG_COLUMN)
+            {
+                if (int.TryParse(TournamentEntriesGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), out int adjAvg))
+                {
+                    UpdateHandicap(e.RowIndex, adjAvg);
+                }
+            }
         }
     }
 }
