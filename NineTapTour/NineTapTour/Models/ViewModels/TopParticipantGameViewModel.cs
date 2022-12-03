@@ -31,7 +31,13 @@ namespace NineTapTour.Models.ViewModels
             Bonus = bonus;
             GameID = gameID;
             Squad = squad;
-            HandicapScore = this.ScratchTotal + (this.Handicap * 4) + (this.Bonus * 4); //TODO: implement flexibile num on ( 4 )
+            int numGamesTotal = 0;
+            if (Game1.HasValue) numGamesTotal++;
+            if (Game2.HasValue) numGamesTotal++;
+            if (Game3.HasValue) numGamesTotal++;
+            if (Game4.HasValue) numGamesTotal++;
+
+            HandicapScore = this.ScratchTotal + (this.Handicap * numGamesTotal) + (this.Bonus * numGamesTotal);
         }
 
         #region Properties
