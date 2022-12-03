@@ -328,10 +328,6 @@ namespace NineTapTour.Forms
         public void ScratchTotal(object sender, EventArgs e)
         {
             TextBox currentTextbox = (TextBox)sender;
-            if (currentTextbox.Text.Length != 3)
-            {
-                return;
-            }
 
             int scratchTotal = 0;
             int cScore = 0;
@@ -407,11 +403,13 @@ namespace NineTapTour.Forms
                 }
             }
 
-            SendKeys.Send("{TAB}");
+            // If a 3 digit score is entered, send tab key
+            if (currentTextbox.Text.Length == 3)
+                SendKeys.Send("{TAB}");
 
             // If you enter in the last games score it will automatically
             // click the Add/Update record button 
-            if (txtScratchScore4.Focused == true)
+            if (txtScratchScore4.Focused && currentTextbox.Text.Length == 3)
             {
                 //when last score is entered bowler record will be added
                 btnNew.PerformClick();
@@ -1333,7 +1331,7 @@ namespace NineTapTour.Forms
                 foreach (Participant currParticipant in listOfParticipants)
                 {
                     //Gets all of the game scores that are valid (that have a value)
-                    var allScoresWithOutNullGames = currParticipant.Game.AllGameScores().Where(g => g.HasValue);
+                    var allScoresWithOutNullGames = currParticipant.Game.AllGameScores().Where(g => g.HasValue).ToList();
 
                     //totals all games with out nulls/valid score
                     int? totalScore = allScoresWithOutNullGames.Sum();
@@ -1344,6 +1342,8 @@ namespace NineTapTour.Forms
                     //Sets a collection of all the games using the 3 out of 4 ruleset
                     var top3Games = FrmTournamentStats.GetTop3OutOf4(top4Games.ToList());
 
+                    var numberOfGames = top4Games.Count;
+
                     TopParticipantGameViewModel currTopScoreViewModel =
                         new TopParticipantGameViewModel(
                         /* MemberNo  */ currParticipant.Member.Number,
@@ -1353,8 +1353,8 @@ namespace NineTapTour.Forms
                         /* ScratchTotal */ currParticipant.Game.AllGameScores().Sum().Value,
                         /* top3ScratchScore  */ top3Games.Sum(),
                         /* top3HandicapScore */ top3Games.Sum() +
-                                                (3 * currParticipant.Member.Handicap) +
-                                                (3 * currParticipant.Game.Bonus),
+                                                (Math.Min(3, numberOfGames) * currParticipant.Member.Handicap) +
+                                                (Math.Min(3, numberOfGames) * currParticipant.Game.Bonus),
                         /* Game1 */ currParticipant.Game.Game1,
                         /* Game2 */ currParticipant.Game.Game2,
                         /* Game3 */ currParticipant.Game.Game3,
