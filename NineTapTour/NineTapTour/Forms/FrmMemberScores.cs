@@ -328,10 +328,6 @@ namespace NineTapTour.Forms
         public void ScratchTotal(object sender, EventArgs e)
         {
             TextBox currentTextbox = (TextBox)sender;
-            if (currentTextbox.Text.Length != 3)
-            {
-                return;
-            }
 
             int scratchTotal = 0;
             int cScore = 0;
@@ -407,11 +403,13 @@ namespace NineTapTour.Forms
                 }
             }
 
-            SendKeys.Send("{TAB}");
+            // If a 3 digit score is entered, send tab key
+            if (currentTextbox.Text.Length == 3)
+                SendKeys.Send("{TAB}");
 
             // If you enter in the last games score it will automatically
             // click the Add/Update record button 
-            if (txtScratchScore4.Focused == true)
+            if (txtScratchScore4.Focused && currentTextbox.Text.Length == 3)
             {
                 //when last score is entered bowler record will be added
                 btnNew.PerformClick();
