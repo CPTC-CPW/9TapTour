@@ -543,6 +543,18 @@ namespace NineTapTour.Forms
                         // To check or uncheck we pass in the opposite of the current state.
                         // So checked becomes unchecked and vice versa.
                         row.SetField(DIRECTOR_CHECK_COLUMN, !isCellChecked);
+
+                        // Check if cell checked is false because it is changing to true
+                        if (isCellChecked == false)
+                        {
+                            // Get the adjusted average column for the current member and copy it to the corresponding row in the FinalizeTemp table
+                            if (int.TryParse(TournamentEntriesGrid.Rows[e.RowIndex].Cells[ADJUSTED_AVG_COLUMN].Value.ToString(), out int adjustedAvg))
+                                row.SetField(ADJUSTED_AVG_COLUMN, adjustedAvg);
+
+                            // Get the bonus pin column value for the current member and copy it to the corresponding row in the FinalizeTemp table
+                            if (int.TryParse(TournamentEntriesGrid.Rows[e.RowIndex].Cells[BONUS_COLUMN].Value.ToString(), out int bonus))
+                                row.SetField(BONUS_COLUMN, bonus);
+                        }
                     }
                 }
                 TournamentEntriesGrid_CellClick(sender, e);// moved higher in scope to help refresh correctly
