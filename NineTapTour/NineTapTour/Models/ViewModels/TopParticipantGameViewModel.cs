@@ -46,7 +46,7 @@ namespace NineTapTour.Models.ViewModels
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int Placing { get; set; }
-        public int ScratchTotal { get; set; }
+        public int ScratchTotal { get; private set; }
         public int HandicapScore { get; set; }
         public int? Top3ScratchScore { get; set; }
         public int? Top3HandiScores { get; set; }
