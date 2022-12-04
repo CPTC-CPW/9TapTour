@@ -427,7 +427,7 @@ ORDER BY Score DESC";
         {
             using (NineTapDb db = new NineTapDb())
             {
-                List<MemberScores> returnedList = new List<MemberScores>();
+                List<MemberScoresInterim> returnedList = new List<MemberScoresInterim>();
                 foreach (int squad in squadList)
                 {
                     returnedList.AddRange(
@@ -436,18 +436,50 @@ ORDER BY Score DESC";
                              .Where(b => b.Tournament.Id == selectedTournament).Where(b => b.Squad == squad))
                          orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + 
                              (g.Game.Handicap * 4 + g.Game.Bonus * 4)) descending
-                         select new MemberScores {
+                         select new MemberScoresInterim {
                              MemberId = g.Member.Number,
                              FirstName = g.Member.FirstName,
                              LastName = g.Member.LastName,
-                             Score = g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + (g.Game.Handicap * 4) + (g.Game.Bonus * 4),
+                             Game1Score = g.Game.Game1,
+                             Game2Score = g.Game.Game2,
+                             Game3Score = g.Game.Game3,
+                             Game4Score = g.Game.Game4,
+                             HandicapValue = g.Game.Handicap,
+                             BonusPinValue = g.Game.Bonus,
+                             Score = 0,
                              LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
                              Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
                                 (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                          }).ToList());
 
                 }
-                return returnedList;
+
+                List<MemberScores> memberScores = new();
+                // Use member interim to manually add up the game scores to avoid trying to add null on the database end
+                // and causing the players score to be null
+                foreach (var memberInterim in returnedList)
+                {
+                    if (memberInterim.Game1Score != null)
+                    {
+                        memberInterim.Score += memberInterim.Game1Score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                    }
+                    if (memberInterim.Game2Score != null)
+                    {
+                        memberInterim.Score += memberInterim.Game2Score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                    }
+                    if (memberInterim.Game3Score != null)
+                    {
+                        memberInterim.Score += memberInterim.Game3Score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                    }
+                    if (memberInterim.Game4Score != null)
+                    {
+                        memberInterim.Score += memberInterim.Game4Score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                    }
+
+                    memberScores.Add(memberInterim);
+                }
+
+                return memberScores;
             }
         }
 
