@@ -257,6 +257,7 @@ namespace NineTapTour.Forms
                 m.MoneyWon = b.MoneyWon;
                 m.SidePot = b.SidePot;
                 m.GameId = b.GameId;
+                // If the game scores are null then a 0 will be placed in the the game
                 m.Game1Score = Convert.ToInt32(b.Game1);
                 m.Game2Score = Convert.ToInt32(b.Game2);
                 m.Game3Score = Convert.ToInt32(b.Game3);
@@ -266,6 +267,9 @@ namespace NineTapTour.Forms
                 {
                     List<int> scores = new List<int>
                         { m.Game1Score, m.Game2Score, m.Game3Score, m.Game4Score };
+
+                    // Remove the 0s from the scores list
+                    scores.RemoveAll(x => x == 0);
 
                     // remove lowest score if there are 4 games
                     if (scores.Count() == 4)
@@ -287,8 +291,18 @@ namespace NineTapTour.Forms
                 }
                 else
                 {
+                    int totalValidGames = 0;
+                    if (m.Game1Score > 0)
+                        totalValidGames++;
+                    if (m.Game2Score > 0)
+                        totalValidGames++;
+                    if (m.Game3Score > 0)
+                        totalValidGames++;
+                    if (m.Game4Score > 0)
+                        totalValidGames++;
+                    
                     m.TotalScore = m.Game1Score + m.Game2Score + m.Game3Score
-                        + m.Game4Score + (4 * (m.Handicap + m.Bonus));
+                        + m.Game4Score + (totalValidGames * (m.Handicap + m.Bonus));
                 }
                 tournyBowlers.Add(m);
             }
