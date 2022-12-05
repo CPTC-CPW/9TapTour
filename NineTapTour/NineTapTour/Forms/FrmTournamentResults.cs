@@ -269,7 +269,7 @@ namespace NineTapTour.Forms
                         { m.Game1Score, m.Game2Score, m.Game3Score, m.Game4Score };
 
                     // Remove the 0s from the scores list
-                    scores = scores.RemoveAll(x => x == 0);
+                    scores.RemoveAll(x => x == 0);
 
                     // remove lowest score if there are 4 games
                     if (scores.Count() == 4)
