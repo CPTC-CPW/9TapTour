@@ -407,7 +407,7 @@ namespace NineTapTour.Forms
             dt.Columns.Add(SCRATCH_TOTAL_COLUMN_NAME, typeof(int));                     // 11
             dt.Columns.Add(HANDICAP_TOTAL_COLUMN_NAME, typeof(int));                    // 12
             dt.Columns.Add(ENTRY_AVERAGE_COLUMN_NAME, typeof(int));                     // 13
-            dt.Columns.Add(THIRTY_ENTRY_AVERAGE_COLUMN_NAME, typeof(int));              // 14  
+            dt.Columns.Add(THIRTY_ENTRY_AVERAGE_COLUMN_NAME, typeof(double));           // 14  
             dt.Columns.Add(ADJUSTED_AVG_COLUMN_NAME, typeof(int));                      // 15
             dt.Columns.Add(DIRECTOR_CHECK_COLUMN_NAME, typeof(bool));                   // 16
             dt.Columns.Add(SQUAD_COLUMN_NAME, typeof(int)).ReadOnly = true;             // 16
@@ -590,7 +590,9 @@ namespace NineTapTour.Forms
                 // If the squad number is equal to or greater than the passed in row's squad number, it needs to be updated.
                 if (squadNum >= initialSquadNum)
                 {
-                    row.SetField(THIRTY_ENTRY_AVERAGE_COLUMN, CalcThirtyLeagueAverage(memberNum));
+                    double leagueAverage = CalcThirtyLeagueAverage(memberNum);
+                    row.SetField(THIRTY_ENTRY_AVERAGE_COLUMN, leagueAverage);
+
                 }
             }
         }
@@ -647,7 +649,7 @@ namespace NineTapTour.Forms
             temp.GameAvg = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[ENTRY_AVERAGE_COLUMN].Value);
             temp.ScratchTotal = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[SCRATCH_TOTAL_COLUMN].Value);
             temp.HandicapTotal = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[HANDICAP_TOTAL_COLUMN].Value);
-            temp.LeagueAverage = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
+            temp.LeagueAverage = Convert.ToDouble(TournamentEntriesGrid.Rows[row].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
             db.Entry(temp).State = EntityState.Modified;
             db.SaveChanges();
             this.TournamentEntriesGrid.CellValueChanged += this.DataGridView1_OnCellValueChanged;
@@ -1174,7 +1176,7 @@ namespace NineTapTour.Forms
                             p.ProPot = TournamentEntriesGrid[PRO_POT_COLUMN, i].Value.ToString();
                             p.Notes = TournamentEntriesGrid[NOTES_COLUMN_, i].Value.ToString();
                             p.AverageForEntry = Convert.ToDouble(TournamentEntriesGrid[ENTRY_AVERAGE_COLUMN, i].Value);
-                            p.trueAVG = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
+                            p.trueAVG = Convert.ToDouble(TournamentEntriesGrid.Rows[i].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
                             p.AVG = Convert.ToInt32(TournamentEntriesGrid[ADJUSTED_AVG_COLUMN, i].Value);
 
                             temporary.Add(p);
@@ -1415,7 +1417,7 @@ namespace NineTapTour.Forms
         /// <param name="memberNum">The Member Number of the player whose averages we are calculating.</param>
         /// <param name="currGameAverages">A list of the averages from the current games being finalized.</param>
         /// <returns></returns>
-        private int CalcThirtyLeagueAverage(int memberNum)
+        private double CalcThirtyLeagueAverage(int memberNum)
         {
             return FinalizeTempDB.GetLeagueAverage(memberNum, RegionID, currTournament.Id);            
         }
