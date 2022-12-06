@@ -123,7 +123,7 @@ namespace NineTapTour.Database
         /// <param name="memberNumber">The member number NOT id</param>
         /// <param name="regionId">The region id</param>
         /// <param name="tournamentId">The id of the tournament</param>
-        public static int GetLeagueAverage(int memberNumber, int regionId, int tournamentId)
+        public static double GetLeagueAverage(int memberNumber, int regionId, int tournamentId)
         {
             int allGamesPlayed = 0;
             int totalScratchTotal = 0;
@@ -156,8 +156,8 @@ namespace NineTapTour.Database
                     counter++;
                 }
 
-                // Cast to a double to avoid integer division and then rounding to the nearest whole number
-                return Convert.ToInt32(Math.Round((double)totalScratchTotal / allGamesPlayed, MidpointRounding.AwayFromZero));
+                // Truncate to one decimal place
+                return Math.Truncate(((double)totalScratchTotal / allGamesPlayed) * 10) / 10;
             }
         }
 
