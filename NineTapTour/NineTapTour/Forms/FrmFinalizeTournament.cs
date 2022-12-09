@@ -904,7 +904,8 @@ namespace NineTapTour.Forms
             int numberOfEntriesFromHistory = ThirtyGames - numEntriesInCurrentTournament;
 
             //Displays total games played in the column header "Games"
-            string gamesTotalPlayed = $"{GamesTotal} \n ({TotalGamesPlayedInCurrentTourney + PlayerHistoryDB.GetTotalGamesPlayedFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory)})";
+            int totalGamesFor30EntriesValue = TotalGamesPlayedInCurrentTourney + PlayerHistoryDB.GetTotalGamesPlayedFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory);
+            string gamesTotalPlayed = $"{GamesTotal} \n ({totalGamesFor30EntriesValue})";
             dtGames.Columns[GamesTotal].ColumnName = gamesTotalPlayed;
 
             //Displays total game 1 played in the column header "Game 1"
@@ -925,7 +926,8 @@ namespace NineTapTour.Forms
 
 
             //Displays scratch total played in the column header "Scratch Total"
-            string AllScratchTotal = $"{ScratchTotal} ({FullScratchTotal.Value + PlayerHistoryDB.GetScratchTotalFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory)})";
+            int fullScratchTotalValue = FullScratchTotal.Value + PlayerHistoryDB.GetScratchTotalFromHistory(temporary[0].MemberNumber, RegionID, numberOfEntriesFromHistory);
+            string AllScratchTotal = $"{ScratchTotal} ({fullScratchTotalValue})";
             dtGames.Columns[ScratchTotal].ColumnName = AllScratchTotal;
 
             //Displays EntryAvg total played in the column header "Entry Avg total"
@@ -1022,7 +1024,7 @@ namespace NineTapTour.Forms
             
             Highlight30Avg(30 - numEntriesInCurrentTournament, ref numEntriesForEntryAverage, ref thirtyAverageTotal);
             
-            double mainThirtyEntryAvg = thirtyAverageTotal / numEntriesForEntryAverage;
+            double mainThirtyEntryAvg = Math.Round(((double)fullScratchTotalValue / totalGamesFor30EntriesValue), 1);
             playerTournamentHistoryGrid.Columns[9].HeaderText = $"{thirtyavg} ({mainThirtyEntryAvg:N1})";
 
             HighlightBonusPinCells();
