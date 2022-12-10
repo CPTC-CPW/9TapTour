@@ -1637,11 +1637,11 @@ namespace NineTapTour.Forms
                 {
                     if (selectedTournament.ThreeOutOf4 && squadList.Contains(0))
                     {
-                        temp = ParticipantsDB.GetStandingsForThreeOutOf4ByHandicap(selectedTournament.Id);
+                        temp = ParticipantsDB.GetStandingsForTournamentByHandicap(selectedTournament.Id, true);
                     }
                     else if (selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
                     {
-                        temp = ParticipantsDB.GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(squadList, selectedTournament.Id);
+                        temp = ParticipantsDB.GetStandingsForTournamentByFilterSeriesByHandicap(squadList, selectedTournament.Id, true);
                     }
                     else if (!selectedTournament.ThreeOutOf4 && squadList.Contains(0))
                     {
@@ -1659,11 +1659,11 @@ namespace NineTapTour.Forms
                 {
                     if (selectedTournament.ThreeOutOf4 && squadList.Contains(0))
                     {
-                        temp = ParticipantsDB.GetStandingsForThreeOf4ByScratch(selectedTournament.Id);
+                        temp = ParticipantsDB.GetStandingsForTournamentByScratch(selectedTournament.Id, true);
                     }
                     else if (selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
                     {
-                        temp = ParticipantsDB.GetStandingsForThreeOf4ByFilterSeriesByScratch(squadList, selectedTournament.Id);
+                        temp = ParticipantsDB.GetStandingsForTournamentByFilterSeriesByScratch(squadList, selectedTournament.Id, true);
                     }
                     else if (!selectedTournament.ThreeOutOf4 && squadList.Contains(0))
                     {

@@ -159,65 +159,6 @@ namespace NineTapTour.Database
         /// <summary>
         /// 
         /// </summary>
-        public static List<MemberScores> GetStandingsForThreeOutOf4ByHandicap(int selectedTournament)
-        {
-            using (NineTapDb db = new NineTapDb())
-            {
-                string con = db.Database.GetDbConnection().ConnectionString;
-                string query = @"SELECT MemberId
-    , FirstName
-    , LastName
-    , (Game1 + Game2 + Game3 + Game4 + Games.Handicap * 3 + Games.Bonus * 3)
-    - (
-        CASE 
-            WHEN Game1 < Game2 AND Game1 < Game3 AND Game1 < Game4 THEN Game1
-            WHEN Game2 < Game1 AND Game2 < Game3 AND Game2 < Game4 THEN Game2
-            WHEN Game3 < Game1 AND Game3 < Game2 AND Game3 < Game4 THEN Game3
-            ELSE Game4
-        END) AS Score
-    , CASE
-        WHEN IsLifetimeMember = 1 THEN 'life'
-        ELSE YEAR(LastPayment)
-    END AS LastPaymentYear
-    , CASE
-        WHEN IsLifetimeMember = 1 THEN 'true'
-        WHEN LastPayment IS NOT NULL AND YEAR(LastPayment) <= @tourneyYear THEN 'true'
-        ELSE 'false'
-    END AS Paid
-FROM Members
-    JOIN Participants ON Members.Id = Participants.MemberId
-    JOIN Games ON Participants.GameId = Games.Id
-WHERE TournamentId = @tourneyId
-ORDER BY Score DESC";
-                using SqlCommand queryCmd = new SqlCommand(query, new SqlConnection(con));
-                queryCmd.Parameters.AddWithValue("@tourneyYear", DateTime.Today.Year - 1);
-                queryCmd.Parameters.AddWithValue("@tourneyId", selectedTournament);
-                queryCmd.Connection.Open();
-                SqlDataReader rdr = queryCmd.ExecuteReader();
-
-                List<MemberScores> memberScores = new();
-                while (rdr.Read())
-                {
-                    memberScores.Add(
-                        new MemberScores()
-                        {
-                            FirstName = rdr["FirstName"].ToString(),
-                            LastName = rdr["LastName"].ToString(),
-                            MemberId = Convert.ToInt32(rdr["MemberId"]),
-                            Score = Convert.ToInt32(rdr["Score"]),
-                            LastPaymentYear = rdr["LastPaymentYear"].ToString(),
-                            Paid = Convert.ToBoolean(rdr["Paid"])
-                        }
-                    );
-                }
-                
-                return memberScores;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public static List<MemberScores> GetStandingsForThreeOf4ByScratch(int selectedTournament)
         {
             using (NineTapDb db = new NineTapDb())
@@ -277,7 +218,7 @@ ORDER BY Score DESC";
         /// <summary>
         /// 
         /// </summary>
-        public static List<MemberScores> GetStandingsForTournamentByHandicap(int selectedTournament)
+        public static List<MemberScores> GetStandingsForTournamentByHandicap(int selectedTournament, bool isThreeOfFourTournament = false)
         {
             using (NineTapDb db = new NineTapDb())
             {
@@ -303,25 +244,27 @@ ORDER BY Score DESC";
                         }).ToList();
 
                 List<MemberScores> memberScores = new();
+             
                 // Use member interim to manually add up the game scores to avoid trying to add null on the database end
                 // and causing the players score to be null
                 foreach (var memberInterim in memberInterimScores)
                 {
-                    if (memberInterim.Game1Score != null)
+                    int?[] scores = new[] { memberInterim.Game1Score, memberInterim.Game2Score, memberInterim.Game3Score, memberInterim.Game4Score };
+                    int totalUsableGames = 0;
+                    foreach (int? score in scores)
                     {
-                        memberInterim.Score += memberInterim.Game1Score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                        if(score != null)
+                        {
+                            memberInterim.Score += score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                            totalUsableGames++;
+                        }
                     }
-                    if (memberInterim.Game2Score != null)
+
+                    if (isThreeOfFourTournament && totalUsableGames == 4)
                     {
-                        memberInterim.Score += memberInterim.Game2Score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
-                    }
-                    if (memberInterim.Game3Score != null)
-                    {
-                        memberInterim.Score += memberInterim.Game3Score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
-                    }
-                    if (memberInterim.Game4Score != null)
-                    {
-                        memberInterim.Score += memberInterim.Game4Score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                        // Find lowest score in scores
+                        int lowestScore = scores.Min(s => s.Value);
+                        memberInterim.Score -= lowestScore + memberInterim.HandicapValue + memberInterim.BonusPinValue;
                     }
 
                     memberScores.Add(memberInterim);
@@ -334,7 +277,7 @@ ORDER BY Score DESC";
         /// <summary>
         /// 
         /// </summary>
-        public static List<MemberScores> GetStandingsForTournamentByScratch(int selectedTournament)
+        public static List<MemberScores> GetStandingsForTournamentByScratch(int selectedTournament, bool isThreeOfFourTournament = false)
         {
             using (NineTapDb db = new NineTapDb())
             {
@@ -357,21 +300,22 @@ ORDER BY Score DESC";
                 // and causing the players score to be null
                 foreach (var memberInterim in interimScores)
                 {
-                    if (memberInterim.Game1Score != null)
+                    int?[] scores = new[] { memberInterim.Game1Score, memberInterim.Game2Score, memberInterim.Game3Score, memberInterim.Game4Score };
+                    int totalUsableGames = 0;
+                    foreach (int? score in scores)
                     {
-                        memberInterim.Score += memberInterim.Game1Score;
+                        if (score != null)
+                        {
+                            memberInterim.Score += score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                            totalUsableGames++;
+                        }
                     }
-                    if (memberInterim.Game2Score != null)
+
+                    if (isThreeOfFourTournament && totalUsableGames == 4)
                     {
-                        memberInterim.Score += memberInterim.Game2Score;
-                    }
-                    if (memberInterim.Game3Score != null)
-                    {
-                        memberInterim.Score += memberInterim.Game3Score;
-                    }
-                    if (memberInterim.Game4Score != null)
-                    {
-                        memberInterim.Score += memberInterim.Game4Score;
+                        // Find lowest score in scores
+                        int lowestScore = scores.Min(s => s.Value);
+                        memberInterim.Score -= lowestScore + memberInterim.HandicapValue + memberInterim.BonusPinValue;
                     }
 
                     memberScores.Add(memberInterim);
@@ -450,7 +394,7 @@ ORDER BY Score DESC";
         /// <summary>
         /// 
         /// </summary>
-        public static List<MemberScores> GetStandingsForTournamentByFilterSeriesByHandicap(List<int> squadList, int selectedTournament)
+        public static List<MemberScores> GetStandingsForTournamentByFilterSeriesByHandicap(List<int> squadList, int selectedTournament, bool isThreeOfFourTournament = false)
         {
             using (NineTapDb db = new NineTapDb())
             {
@@ -486,21 +430,22 @@ ORDER BY Score DESC";
                 // and causing the players score to be null
                 foreach (var memberInterim in returnedList)
                 {
-                    if (memberInterim.Game1Score != null)
+                    int?[] scores = new[] { memberInterim.Game1Score, memberInterim.Game2Score, memberInterim.Game3Score, memberInterim.Game4Score };
+                    int totalUsableGames = 0;
+                    foreach (int? score in scores)
                     {
-                        memberInterim.Score += memberInterim.Game1Score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                        if (score != null)
+                        {
+                            memberInterim.Score += score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                            totalUsableGames++;
+                        }
                     }
-                    if (memberInterim.Game2Score != null)
+
+                    if (isThreeOfFourTournament && totalUsableGames == 4)
                     {
-                        memberInterim.Score += memberInterim.Game2Score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
-                    }
-                    if (memberInterim.Game3Score != null)
-                    {
-                        memberInterim.Score += memberInterim.Game3Score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
-                    }
-                    if (memberInterim.Game4Score != null)
-                    {
-                        memberInterim.Score += memberInterim.Game4Score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                        // Find lowest score in scores
+                        int lowestScore = scores.Min(s => s.Value);
+                        memberInterim.Score -= lowestScore + memberInterim.HandicapValue + memberInterim.BonusPinValue;
                     }
 
                     memberScores.Add(memberInterim);
@@ -572,7 +517,7 @@ ORDER BY Score DESC";
         /// <summary>
         /// 
         /// </summary>
-        public static List<MemberScores> GetStandingsForTournamentByFilterSeriesByScratch(List<int> squadList, int selectedTournament)
+        public static List<MemberScores> GetStandingsForTournamentByFilterSeriesByScratch(List<int> squadList, int selectedTournament, bool isThreeOfFourTournament = false)
         {
             using (NineTapDb db = new NineTapDb())
             {
@@ -604,21 +549,22 @@ ORDER BY Score DESC";
                 // and causing the players score to be null
                 foreach (var memberInterim in returnedList)
                 {
-                    if (memberInterim.Game1Score != null)
+                    int?[] scores = new[] { memberInterim.Game1Score, memberInterim.Game2Score, memberInterim.Game3Score, memberInterim.Game4Score };
+                    int totalUsableGames = 0;
+                    foreach (int? score in scores)
                     {
-                        memberInterim.Score += memberInterim.Game1Score;
+                        if (score != null)
+                        {
+                            memberInterim.Score += score + memberInterim.HandicapValue + memberInterim.BonusPinValue;
+                            totalUsableGames++;
+                        }
                     }
-                    if (memberInterim.Game2Score != null)
+
+                    if (isThreeOfFourTournament && totalUsableGames == 4)
                     {
-                        memberInterim.Score += memberInterim.Game2Score;
-                    }
-                    if (memberInterim.Game3Score != null)
-                    {
-                        memberInterim.Score += memberInterim.Game3Score;
-                    }
-                    if (memberInterim.Game4Score != null)
-                    {
-                        memberInterim.Score += memberInterim.Game4Score;
+                        // Find lowest score in scores
+                        int lowestScore = scores.Min(s => s.Value);
+                        memberInterim.Score -= lowestScore + memberInterim.HandicapValue + memberInterim.BonusPinValue;
                     }
 
                     memberScores.Add(memberInterim);
