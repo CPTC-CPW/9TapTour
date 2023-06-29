@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using NineTapTour.Forms;
 using NineTapTour.Models;
+using System.Drawing;
 
 namespace MemberImportTest
 {
@@ -23,7 +24,7 @@ namespace MemberImportTest
             cbxRegionSelect.DataSource = r;
             cbxRegionSelect.DisplayMember = nameof(NineTapRegion.NineTapRegionName);
             RegionID = r[cbxRegionSelect.SelectedIndex].NineTapRegionID;
-            
+
         }
         #region Member Info Static Ints
         //MEMBER INFO STATIC INTS
@@ -462,7 +463,7 @@ namespace MemberImportTest
                 }
             }
         }
-        
+
         /// <summary>
         /// Checks that has members (valid or not) and allows the btnSelectExcel to be enabled
         /// Checks that has data from excel files then when does allows the finalze data button to become enabled.
@@ -478,7 +479,7 @@ namespace MemberImportTest
                 btn_FinalizeData.Enabled = true;
             }
         }
-        
+
         /// <summary>
         /// Allows the user to click the button and see any members in the list of invalid members
         /// </summary>
@@ -546,7 +547,7 @@ namespace MemberImportTest
                 {
                     continue;
                 }
-                
+
                 List<ExcelRow> rows = ProcessExcelFile(files[i]);
                 foreach (ExcelRow r in rows)
                 {
@@ -575,7 +576,7 @@ namespace MemberImportTest
             progressBar2.Maximum = 347;
             progressBar2.Value = 0;
             LabelCurrentFileWorkingOn.Text = "Current File Being Processed:   " + Path.GetFileName(PathAndFileName);
-            
+
             Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
             Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
             Excel.Range range = xlWorkSheet.UsedRange;
@@ -600,7 +601,7 @@ namespace MemberImportTest
                 {
                     firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(".") + 2);
                 }
-                catch(ArgumentOutOfRangeException)
+                catch (ArgumentOutOfRangeException)
                 {
                     // Can be thrown if the "." comes at the end. Ex. "John Doe Jr."
                     // First name will be preserved in these rare cases. For now middle names will
@@ -608,7 +609,7 @@ namespace MemberImportTest
                     int firstSpaceIndex = playerFullName.IndexOf(" ");
                     firstAndMiddle = playerFullName.Substring(0, firstSpaceIndex);
                 }
-                
+
             }
 
             string[] first0middle1 = firstAndMiddle.Split(' ');
@@ -656,11 +657,11 @@ namespace MemberImportTest
                     }
                 }
             }
-          
+
             String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2.ToString();
             bool isRegionHawaii = (cbHaw.Checked); // checks to see if Region is Hawaii
 
-            if(playerNumber == null)
+            if (playerNumber == null)
             {
                 MessageBox.Show($"Player number could not be read in excel file {PathAndFileName}. Program is unable to continue.");
                 throw new ArgumentException($"While reading {PathAndFileName} a player number was not found in the file.");
@@ -688,7 +689,7 @@ namespace MemberImportTest
                         playerNumberAfterSplit = playerNumber.Split(splitters[i]);
                         playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1], "[^0-9]", ""));
                     }
-                    catch 
+                    catch
                     {
 
                     }
@@ -903,7 +904,7 @@ namespace MemberImportTest
                         {
                             temp.Cash = 0;
                         }
-                        playerH.MoneyWon += Convert.ToDecimal(noGameMoneyWon); 
+                        playerH.MoneyWon += Convert.ToDecimal(noGameMoneyWon);
 
                         temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
                         GameHistory.Notes = temp.Notes;
@@ -915,18 +916,18 @@ namespace MemberImportTest
                         playerH.regionID = GameHistory.gameRegionID;
                         PlayerHistoryList.Add(playerH);
                         returnMe.Add(temp);
-                        noGameMoneyWon = 0; 
+                        noGameMoneyWon = 0;
                         progressBar2.Increment(1);
                     }
                 }
             }
 
             xlWorkBook.Close(0);
-            
+
             Marshal.ReleaseComObject(range);
             Marshal.ReleaseComObject(xlWorkSheet);
             Marshal.ReleaseComObject(xlWorkBook);
-            
+
             return returnMe;
         }
 
@@ -935,7 +936,7 @@ namespace MemberImportTest
             Cursor.Current = Cursors.WaitCursor;
             IncrementFinalizeBar(0, "Step 1: Adding player games to the database.");
             GameDB.AddOrUpdateSomeGames(GameImport);
-           
+
             IncrementFinalizeBar(25, "Step 2: Player games updated, beginning history import.");
             UpdatePlayerHistory(PlayerHistoryList);
 
@@ -988,7 +989,7 @@ namespace MemberImportTest
         /// <param name="members"></param>
         private void UpdateMembers(List<Member> members)
         {
-            for(int i = 0; i < members.Count; i++)
+            for (int i = 0; i < members.Count; i++)
             {
                 if (MemberDB.MemberExists(members[i]) == false)
                 {
@@ -1008,9 +1009,23 @@ namespace MemberImportTest
             List<NineTapRegion> r = NineTapRegionDB.GetRegionList();
             RegionID = r[cbxRegionSelect.SelectedIndex].NineTapRegionID;
         }
+
+        private void frmMain_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            Font drawFont = new Font("Arial", 12);
+            SolidBrush drawBrush = new SolidBrush(Color.Black);
+            PointF drawPoint = new PointF(20, 2);
+            g.DrawString("Version: 2.3.0", drawFont, drawBrush, drawPoint);
+#if DEBUG
+            drawBrush.Color = Color.Red;
+            drawPoint.Y += 16;
+            g.DrawString("DEVELOPMENT VERSION NOT FOR PRODUCTION", drawFont, drawBrush, drawPoint);
+#endif
+        }
     }
 }
-    
+
 
 
 

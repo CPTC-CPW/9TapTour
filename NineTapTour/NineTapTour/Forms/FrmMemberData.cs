@@ -20,7 +20,6 @@ namespace NineTapTour.Forms
         Member currentMem;
         private int _memberNum;
         int RegionID;
-        int AllGames;
 
         public int MemberNum
         {
@@ -967,36 +966,23 @@ namespace NineTapTour.Forms
 
             if(ofdOpen.ShowDialog() == DialogResult.OK)
             {
-                List<ExcelRow> rows = new List<ExcelRow>();
-
                 List<PlayerHistory> AlreadyImportedPH = 
                     PlayerHistoryDB.GetMemberPlayerHistory(currentMem.Number, RegionID);
 
-                bool wait = true;
+                if (AlreadyImportedPH.Count > 0)
+                {
+                    MessageBox.Show("Member history has already been imported");
+                    return;
+                }
+
                 string fileName = ofdOpen.FileName;
 
-                while (wait == true)
-                {
-                    frmPleaseWait please = new frmPleaseWait();
-                    please.Show();
-                    AllGames = PlayerHistoryDB.GetNumberOfAllGames();
+                frmPleaseWait please = new frmPleaseWait();
+                please.Show();
 
-                    if (AlreadyImportedPH.Count > 0)
-                    {
-                        for(int delete = 0; delete < AlreadyImportedPH.Count; delete++)
-                        {
-                            Game game = GameDB.GetGame(AlreadyImportedPH[delete].GameID);
-                            if (game != null)
-                            {
-                                PlayerHistoryDB.DeleteGame(game);
-                            }
-                            PlayerHistoryDB.DeletePlayerHistory(AlreadyImportedPH[delete]);
-                        }
-                    }
-                    rows = ProcessExcelFile(fileName); 
-                    wait = false;
-                    please.Close();
-                }
+                List<ExcelRow> rows = ProcessExcelFile(fileName); 
+                please.Close();
+
                 foreach(var r in rows)
                 {
                     CurrentExcelData.Add(r);
@@ -1339,7 +1325,7 @@ namespace NineTapTour.Forms
                         {
                             //THIS WILL CATCH SUBTOTALS THAT MAY HAVE BEEN ADDED ON LINE 46 OF THE EXCEL FILES
                             //only grab the money earned from tournament if they placed in tournament
-                            if (temp.FinPPHG.ToString() != "")
+                            if (temp.FinPPHG?.ToString() != "")
                             {
                                 temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
                                 GameHistory.MoneyWon = Convert.ToDecimal(temp.Cash);
@@ -1362,11 +1348,8 @@ namespace NineTapTour.Forms
                         GameHistory.Notes = temp.Notes;
                         playerH.Notes = temp.Notes;
                         playerH.PPHG = temp.FinPPHG;
-                        GameHistory.Id = AllGames + 1;
-                        AllGames++;
-                        playerH.GameID = GameHistory.Id;
-
                         GameDB.AddOrUpdateGame(GameHistory);
+                        playerH.Game = GameHistory;
                         PlayerHistoryDB.AddPlayerHistory(playerH);
                         returnMe.Add(temp);
                         noGameMoneyWon = 0;
