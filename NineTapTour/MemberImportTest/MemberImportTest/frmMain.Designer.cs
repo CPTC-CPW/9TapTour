@@ -29,184 +29,200 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
-            this.ofdOpen = new System.Windows.Forms.OpenFileDialog();
-            this.btnOpenFile = new System.Windows.Forms.Button();
-            this.btnInvalid = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.btnSelectExcelFolder = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
-            this.btn_FinalizeData = new System.Windows.Forms.Button();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.progressBar2 = new System.Windows.Forms.ProgressBar();
-            this.LabelCurrentFileWorkingOn = new System.Windows.Forms.Label();
-            this.OverAllProcessingExcel = new System.Windows.Forms.Label();
-            this.cbxRegionSelect = new System.Windows.Forms.ComboBox();
-            this.cbHaw = new System.Windows.Forms.CheckBox();
-            this.progressBarFinalize = new System.Windows.Forms.ProgressBar();
-            this.lblFinalizeStatus = new System.Windows.Forms.Label();
-            this.SuspendLayout();
+            ofdOpen = new System.Windows.Forms.OpenFileDialog();
+            btnOpenFile = new System.Windows.Forms.Button();
+            btnInvalid = new System.Windows.Forms.Button();
+            label1 = new System.Windows.Forms.Label();
+            label2 = new System.Windows.Forms.Label();
+            btnSelectExcelFolder = new System.Windows.Forms.Button();
+            label3 = new System.Windows.Forms.Label();
+            btn_FinalizeData = new System.Windows.Forms.Button();
+            progressBar1 = new System.Windows.Forms.ProgressBar();
+            progressBar2 = new System.Windows.Forms.ProgressBar();
+            LabelCurrentFileWorkingOn = new System.Windows.Forms.Label();
+            OverAllProcessingExcel = new System.Windows.Forms.Label();
+            cbxRegionSelect = new System.Windows.Forms.ComboBox();
+            cbHaw = new System.Windows.Forms.CheckBox();
+            progressBarFinalize = new System.Windows.Forms.ProgressBar();
+            lblFinalizeStatus = new System.Windows.Forms.Label();
+            SuspendLayout();
             // 
             // btnOpenFile
             // 
-            this.btnOpenFile.Location = new System.Drawing.Point(150, 100);
-            this.btnOpenFile.Name = "btnOpenFile";
-            this.btnOpenFile.Size = new System.Drawing.Size(97, 23);
-            this.btnOpenFile.TabIndex = 0;
-            this.btnOpenFile.Text = "Open File";
-            this.btnOpenFile.UseVisualStyleBackColor = true;
-            this.btnOpenFile.Click += new System.EventHandler(this.BtnOpenFile_Click);
+            btnOpenFile.Location = new System.Drawing.Point(175, 115);
+            btnOpenFile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnOpenFile.Name = "btnOpenFile";
+            btnOpenFile.Size = new System.Drawing.Size(113, 27);
+            btnOpenFile.TabIndex = 0;
+            btnOpenFile.Text = "Open File";
+            btnOpenFile.UseVisualStyleBackColor = true;
+            btnOpenFile.Click += BtnOpenFile_Click;
             // 
             // btnInvalid
             // 
-            this.btnInvalid.Location = new System.Drawing.Point(150, 129);
-            this.btnInvalid.Name = "btnInvalid";
-            this.btnInvalid.Size = new System.Drawing.Size(97, 23);
-            this.btnInvalid.TabIndex = 1;
-            this.btnInvalid.Text = "View Invalid List";
-            this.btnInvalid.UseVisualStyleBackColor = true;
-            this.btnInvalid.Click += new System.EventHandler(this.BtnInvalid_Click);
+            btnInvalid.Location = new System.Drawing.Point(175, 149);
+            btnInvalid.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnInvalid.Name = "btnInvalid";
+            btnInvalid.Size = new System.Drawing.Size(113, 27);
+            btnInvalid.TabIndex = 1;
+            btnInvalid.Text = "View Invalid List";
+            btnInvalid.UseVisualStyleBackColor = true;
+            btnInvalid.Click += BtnInvalid_Click;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(142, 84);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(114, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Import Member .dat file";
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(166, 97);
+            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(133, 15);
+            label1.TabIndex = 3;
+            label1.Text = "Import Member .dat file";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(135, 173);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(121, 13);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Import Members .xls files";
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(158, 200);
+            label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(140, 15);
+            label2.TabIndex = 4;
+            label2.Text = "Import Members .xls files";
             // 
             // btnSelectExcelFolder
             // 
-            this.btnSelectExcelFolder.Enabled = false;
-            this.btnSelectExcelFolder.Location = new System.Drawing.Point(150, 189);
-            this.btnSelectExcelFolder.Name = "btnSelectExcelFolder";
-            this.btnSelectExcelFolder.Size = new System.Drawing.Size(97, 23);
-            this.btnSelectExcelFolder.TabIndex = 3;
-            this.btnSelectExcelFolder.Text = "Select .xls Folder";
-            this.btnSelectExcelFolder.UseVisualStyleBackColor = true;
-            this.btnSelectExcelFolder.Click += new System.EventHandler(this.Button1_Click);
+            btnSelectExcelFolder.Enabled = false;
+            btnSelectExcelFolder.Location = new System.Drawing.Point(175, 218);
+            btnSelectExcelFolder.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSelectExcelFolder.Name = "btnSelectExcelFolder";
+            btnSelectExcelFolder.Size = new System.Drawing.Size(113, 27);
+            btnSelectExcelFolder.TabIndex = 3;
+            btnSelectExcelFolder.Text = "Select .xls Folder";
+            btnSelectExcelFolder.UseVisualStyleBackColor = true;
+            btnSelectExcelFolder.Click += Button1_Click;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(163, 9);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(74, 13);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Region Select";
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(190, 10);
+            label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(78, 15);
+            label3.TabIndex = 6;
+            label3.Text = "Region Select";
             // 
             // btn_FinalizeData
             // 
-            this.btn_FinalizeData.Enabled = false;
-            this.btn_FinalizeData.Location = new System.Drawing.Point(150, 300);
-            this.btn_FinalizeData.Name = "btn_FinalizeData";
-            this.btn_FinalizeData.Size = new System.Drawing.Size(97, 23);
-            this.btn_FinalizeData.TabIndex = 4;
-            this.btn_FinalizeData.Text = "Finalize";
-            this.btn_FinalizeData.UseVisualStyleBackColor = true;
-            this.btn_FinalizeData.Click += new System.EventHandler(this.Btn_FinalizeData_Click);
+            btn_FinalizeData.Enabled = false;
+            btn_FinalizeData.Location = new System.Drawing.Point(175, 346);
+            btn_FinalizeData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btn_FinalizeData.Name = "btn_FinalizeData";
+            btn_FinalizeData.Size = new System.Drawing.Size(113, 27);
+            btn_FinalizeData.TabIndex = 4;
+            btn_FinalizeData.Text = "Finalize";
+            btn_FinalizeData.UseVisualStyleBackColor = true;
+            btn_FinalizeData.Click += Btn_FinalizeData_Click;
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(56, 220);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(293, 23);
-            this.progressBar1.TabIndex = 7;
+            progressBar1.Location = new System.Drawing.Point(65, 254);
+            progressBar1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            progressBar1.Name = "progressBar1";
+            progressBar1.Size = new System.Drawing.Size(342, 27);
+            progressBar1.TabIndex = 7;
             // 
             // progressBar2
             // 
-            this.progressBar2.Location = new System.Drawing.Point(56, 255);
-            this.progressBar2.Name = "progressBar2";
-            this.progressBar2.Size = new System.Drawing.Size(293, 23);
-            this.progressBar2.TabIndex = 8;
+            progressBar2.Location = new System.Drawing.Point(65, 294);
+            progressBar2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            progressBar2.Name = "progressBar2";
+            progressBar2.Size = new System.Drawing.Size(342, 27);
+            progressBar2.TabIndex = 8;
             // 
             // LabelCurrentFileWorkingOn
             // 
-            this.LabelCurrentFileWorkingOn.AutoSize = true;
-            this.LabelCurrentFileWorkingOn.Location = new System.Drawing.Point(53, 255);
-            this.LabelCurrentFileWorkingOn.Name = "LabelCurrentFileWorkingOn";
-            this.LabelCurrentFileWorkingOn.Size = new System.Drawing.Size(0, 13);
-            this.LabelCurrentFileWorkingOn.TabIndex = 9;
+            LabelCurrentFileWorkingOn.AutoSize = true;
+            LabelCurrentFileWorkingOn.Location = new System.Drawing.Point(62, 294);
+            LabelCurrentFileWorkingOn.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            LabelCurrentFileWorkingOn.Name = "LabelCurrentFileWorkingOn";
+            LabelCurrentFileWorkingOn.Size = new System.Drawing.Size(0, 15);
+            LabelCurrentFileWorkingOn.TabIndex = 9;
             // 
             // OverAllProcessingExcel
             // 
-            this.OverAllProcessingExcel.AutoSize = true;
-            this.OverAllProcessingExcel.Location = new System.Drawing.Point(53, 220);
-            this.OverAllProcessingExcel.Name = "OverAllProcessingExcel";
-            this.OverAllProcessingExcel.Size = new System.Drawing.Size(0, 13);
-            this.OverAllProcessingExcel.TabIndex = 10;
+            OverAllProcessingExcel.AutoSize = true;
+            OverAllProcessingExcel.Location = new System.Drawing.Point(62, 254);
+            OverAllProcessingExcel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            OverAllProcessingExcel.Name = "OverAllProcessingExcel";
+            OverAllProcessingExcel.Size = new System.Drawing.Size(0, 15);
+            OverAllProcessingExcel.TabIndex = 10;
             // 
             // cbxRegionSelect
             // 
-            this.cbxRegionSelect.FormattingEnabled = true;
-            this.cbxRegionSelect.Location = new System.Drawing.Point(138, 28);
-            this.cbxRegionSelect.Name = "cbxRegionSelect";
-            this.cbxRegionSelect.Size = new System.Drawing.Size(121, 21);
-            this.cbxRegionSelect.TabIndex = 11;
-            this.cbxRegionSelect.SelectedIndexChanged += new System.EventHandler(this.CbxRegionSelect_SelectedIndexChanged);
+            cbxRegionSelect.FormattingEnabled = true;
+            cbxRegionSelect.Location = new System.Drawing.Point(161, 32);
+            cbxRegionSelect.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbxRegionSelect.Name = "cbxRegionSelect";
+            cbxRegionSelect.Size = new System.Drawing.Size(140, 23);
+            cbxRegionSelect.TabIndex = 11;
+            cbxRegionSelect.SelectedIndexChanged += CbxRegionSelect_SelectedIndexChanged;
             // 
             // cbHaw
             // 
-            this.cbHaw.AutoSize = true;
-            this.cbHaw.Location = new System.Drawing.Point(166, 56);
-            this.cbHaw.Name = "cbHaw";
-            this.cbHaw.Size = new System.Drawing.Size(67, 17);
-            this.cbHaw.TabIndex = 12;
-            this.cbHaw.Text = "Hawaii ?";
-            this.cbHaw.UseVisualStyleBackColor = true;
+            cbHaw.AutoSize = true;
+            cbHaw.Location = new System.Drawing.Point(194, 65);
+            cbHaw.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbHaw.Name = "cbHaw";
+            cbHaw.Size = new System.Drawing.Size(70, 19);
+            cbHaw.TabIndex = 12;
+            cbHaw.Text = "Hawaii ?";
+            cbHaw.UseVisualStyleBackColor = true;
             // 
             // progressBarFinalize
             // 
-            this.progressBarFinalize.Location = new System.Drawing.Point(56, 335);
-            this.progressBarFinalize.Name = "progressBarFinalize";
-            this.progressBarFinalize.Size = new System.Drawing.Size(293, 23);
-            this.progressBarFinalize.TabIndex = 13;
+            progressBarFinalize.Location = new System.Drawing.Point(65, 387);
+            progressBarFinalize.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            progressBarFinalize.Name = "progressBarFinalize";
+            progressBarFinalize.Size = new System.Drawing.Size(342, 27);
+            progressBarFinalize.TabIndex = 13;
             // 
             // lblFinalizeStatus
             // 
-            this.lblFinalizeStatus.AutoSize = true;
-            this.lblFinalizeStatus.Location = new System.Drawing.Point(53, 335);
-            this.lblFinalizeStatus.Name = "lblFinalizeStatus";
-            this.lblFinalizeStatus.Size = new System.Drawing.Size(0, 13);
-            this.lblFinalizeStatus.TabIndex = 14;
+            lblFinalizeStatus.AutoSize = true;
+            lblFinalizeStatus.Location = new System.Drawing.Point(62, 387);
+            lblFinalizeStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblFinalizeStatus.Name = "lblFinalizeStatus";
+            lblFinalizeStatus.Size = new System.Drawing.Size(0, 15);
+            lblFinalizeStatus.TabIndex = 14;
             // 
             // frmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(405, 370);
-            this.Controls.Add(this.lblFinalizeStatus);
-            this.Controls.Add(this.progressBarFinalize);
-            this.Controls.Add(this.cbHaw);
-            this.Controls.Add(this.cbxRegionSelect);
-            this.Controls.Add(this.OverAllProcessingExcel);
-            this.Controls.Add(this.LabelCurrentFileWorkingOn);
-            this.Controls.Add(this.progressBar2);
-            this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.btn_FinalizeData);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.btnSelectExcelFolder);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.btnInvalid);
-            this.Controls.Add(this.btnOpenFile);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "frmMain";
-            this.Text = "Import Test";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.White;
+            ClientSize = new System.Drawing.Size(472, 427);
+            Controls.Add(lblFinalizeStatus);
+            Controls.Add(progressBarFinalize);
+            Controls.Add(cbHaw);
+            Controls.Add(cbxRegionSelect);
+            Controls.Add(OverAllProcessingExcel);
+            Controls.Add(LabelCurrentFileWorkingOn);
+            Controls.Add(progressBar2);
+            Controls.Add(progressBar1);
+            Controls.Add(btn_FinalizeData);
+            Controls.Add(label3);
+            Controls.Add(btnSelectExcelFolder);
+            Controls.Add(label2);
+            Controls.Add(label1);
+            Controls.Add(btnInvalid);
+            Controls.Add(btnOpenFile);
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "frmMain";
+            Text = "Import Test";
+            Paint += frmMain_Paint;
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
