@@ -70,12 +70,6 @@ namespace NineTapTour.Forms
             rdoSquad8.Visible = false;
             cbAllSquads.Checked = true;
 
-            if (selectedTournament.IsOnlyThreeGames)
-            {
-                txtScratchScore4.Visible = false;
-                txtHandicapScore4.Visible = false;
-            }
-
             if (cbxTourneyDropDown.SelectedIndex >= 0)
             {
                 if(selectedTournament.Squads >= 4)
@@ -1060,6 +1054,18 @@ namespace NineTapTour.Forms
             
             // assigns the selectedTournament variable as the selected Tournament from the comboBox
             selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
+
+            if (selectedTournament.IsOnlyThreeGames)
+            {
+                txtScratchScore4.Visible = false;
+                txtHandicapScore4.Visible = false;
+            }
+            else
+            {
+                txtScratchScore4.Visible = true;
+                txtHandicapScore4.Visible = true;
+            }
+
             int currTourneyId;
 
             // determines whether the tournament is a double tourney or not, then enables or disables the single and/or double textBox selection option
@@ -1160,8 +1166,11 @@ namespace NineTapTour.Forms
             if (txtMemberNum.Text == "")
                 return false;
 
+
             //Checks all score boxes and asks if you want to enter member without scores
-            if (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim()))
+            bool areAnyGamesScoresEmpty = string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim());
+            bool areAnyFirst3BoxesEmptyForThreeGameTournament = selectedTournament.IsOnlyThreeGames && (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()));
+            if ((areAnyGamesScoresEmpty && !selectedTournament.IsOnlyThreeGames) || areAnyFirst3BoxesEmptyForThreeGameTournament)
             {
                 if (!chkIgnoreUnscoredGames.Checked)
                 {
