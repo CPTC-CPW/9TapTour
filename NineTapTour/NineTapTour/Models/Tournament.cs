@@ -21,6 +21,12 @@ namespace NineTapTour.Models
         public bool Doubles { get; set; }
         public bool ThreeOutOf4 {get; set;}
 
+        /// <summary>
+        /// If set to true, this tournament will only use 3 games
+        /// and will skip the 4th game
+        /// </summary>
+        public bool IsOnlyThreeGames { get; set; }
+
         public string  TourneyNameDate
         {
             get { return Location + " " +  Date.ToShortDateString(); }

@@ -70,6 +70,12 @@ namespace NineTapTour.Forms
             rdoSquad8.Visible = false;
             cbAllSquads.Checked = true;
 
+            if (selectedTournament.IsOnlyThreeGames)
+            {
+                txtScratchScore4.Visible = false;
+                txtHandicapScore4.Visible = false;
+            }
+
             if (cbxTourneyDropDown.SelectedIndex >= 0)
             {
                 if(selectedTournament.Squads >= 4)
@@ -412,6 +418,12 @@ namespace NineTapTour.Forms
             if (txtScratchScore4.Focused && currentTextbox.Text.Length == 3)
             {
                 //when last score is entered bowler record will be added
+                btnNew.PerformClick();
+            }
+
+            // If 3 game only tournament, automatically click the Add/Update record button after third game
+            if (txtScratchScore3.Focused && currentTextbox.Text.Length == 3 && selectedTournament.ThreeGameOnly == true)
+            {
                 btnNew.PerformClick();
             }
         }

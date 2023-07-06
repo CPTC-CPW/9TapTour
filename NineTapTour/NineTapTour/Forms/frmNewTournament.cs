@@ -17,7 +17,7 @@ namespace NineTapTour.Forms
     {
         // If a new tournament was selected to edit, this will be set to something other than null.
         Tournament tourToEdit;
-        
+
         public FrmNewTournament()
         {
             InitializeComponent();
@@ -77,11 +77,16 @@ namespace NineTapTour.Forms
             {
                 NewTournament.Doubles = true;
             }
-
-            if (rdo3OutOf4.Checked)
+            else if (rdo3OutOf4.Checked)
             {
                 NewTournament.ThreeOutOf4 = true;
             }
+            else if (rdoThreeGame.Checked)
+            {
+                NewTournament.ThreeOutOf4 = true;
+                NewTournament.IsOnlyThreeGames = true;
+            }
+
 
             try
             {
@@ -192,7 +197,7 @@ namespace NineTapTour.Forms
             rdo3OutOf4.Enabled = true;
             rtxtNotes.Clear();
             tourToEdit = null;
-            lblEdit.Text = "";         
+            lblEdit.Text = "";
         }
 
         private void txtLocation_TextChanged(object sender, EventArgs e)
