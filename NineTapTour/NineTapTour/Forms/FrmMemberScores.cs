@@ -422,7 +422,7 @@ namespace NineTapTour.Forms
             }
 
             // If 3 game only tournament, automatically click the Add/Update record button after third game
-            if (txtScratchScore3.Focused && currentTextbox.Text.Length == 3 && selectedTournament.ThreeGameOnly == true)
+            if (txtScratchScore3.Focused && currentTextbox.Text.Length == 3 && selectedTournament.IsOnlyThreeGames == true)
             {
                 btnNew.PerformClick();
             }
