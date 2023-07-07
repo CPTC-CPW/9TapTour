@@ -233,7 +233,7 @@ namespace NineTapTour.Forms
 
                 cbCompEntry.Checked = currentGame.IsComp ? true : false;
 
-                txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
+                    txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
                 txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
                 txtScratchScore3.Text = Convert.ToString(currentGame.Game3);
                 txtScratchScore4.Text = Convert.ToString(currentGame.Game4);
@@ -412,12 +412,14 @@ namespace NineTapTour.Forms
             if (txtScratchScore4.Focused && currentTextbox.Text.Length == 3)
             {
                 //when last score is entered bowler record will be added
+                btnNew.Focus();
                 btnNew.PerformClick();
             }
 
             // If 3 game only tournament, automatically click the Add/Update record button after third game
             if (txtScratchScore3.Focused && currentTextbox.Text.Length == 3 && selectedTournament.IsOnlyThreeGames == true)
             {
+                btnNew.Focus();
                 btnNew.PerformClick();
             }
         }
