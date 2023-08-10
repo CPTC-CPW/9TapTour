@@ -413,14 +413,12 @@ namespace NineTapTour.Forms
             {
                 //when last score is entered bowler record will be added
                 btnNew.Focus();
-                btnNew.PerformClick();
             }
 
             // If 3 game only tournament, automatically click the Add/Update record button after third game
             if (txtScratchScore3.Focused && currentTextbox.Text.Length == 3 && selectedTournament.IsOnlyThreeGames == true)
             {
                 btnNew.Focus();
-                btnNew.PerformClick();
             }
         }
 
