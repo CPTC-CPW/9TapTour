@@ -332,7 +332,7 @@ namespace NineTapTour.Forms
             int scratchTotal = 0;
             int cScore = 0;
             string id;
-                
+
             foreach (TextBox score in scratchArray)
             {
                 // Get the number of the scratch score textbox. txtScratchScore1 returns 1
@@ -374,7 +374,7 @@ namespace NineTapTour.Forms
                     {
                         if (scratchArray[g].Text != "")
                         {
-                            if(int.TryParse(scratchArray[g].Text, out int result))
+                            if (int.TryParse(scratchArray[g].Text, out int result))
                             {
                                 scratchAsInt[g] = result;
                             }
@@ -383,7 +383,7 @@ namespace NineTapTour.Forms
                                 scratchAsInt[g] = 0;
                             }
 
-                            if(int.TryParse(handicappArray[g].Text, out int handicapResult))
+                            if (int.TryParse(handicappArray[g].Text, out int handicapResult))
                             {
                                 handicapAsInt[g] = handicapResult;
                             }
@@ -403,10 +403,6 @@ namespace NineTapTour.Forms
                 }
             }
 
-            // If a 3 digit score is entered, send tab key
-            if (currentTextbox.Text.Length == 3)
-                SendKeys.Send("{TAB}");
-
             // If you enter in the last games score it will automatically
             // click the Add/Update record button 
             if (txtScratchScore4.Focused && currentTextbox.Text.Length == 3)
@@ -414,11 +410,15 @@ namespace NineTapTour.Forms
                 //when last score is entered bowler record will be added
                 btnNew.Focus();
             }
-
             // If 3 game only tournament, automatically click the Add/Update record button after third game
-            if (txtScratchScore3.Focused && currentTextbox.Text.Length == 3 && selectedTournament.IsOnlyThreeGames == true)
+            else if (txtScratchScore3.Focused && currentTextbox.Text.Length == 3 && selectedTournament.IsOnlyThreeGames == true)
             {
                 btnNew.Focus();
+            }
+            // 3 digits are entered but there are more games to fill out, move to next score box
+            else if (currentTextbox.Text.Length == 3)
+            {
+                SendKeys.Send("{TAB}");
             }
         }
 
