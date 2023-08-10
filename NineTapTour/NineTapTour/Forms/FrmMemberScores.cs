@@ -1736,6 +1736,7 @@ namespace NineTapTour.Forms
 
             Cursor.Current = Cursors.Default;
             ReEnableNavigation();
+            btnLastRecord.PerformClick();
         }
 
         private void RefreshMemberScoresForm()
