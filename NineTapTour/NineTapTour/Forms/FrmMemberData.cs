@@ -962,7 +962,7 @@ namespace NineTapTour.Forms
         {
             List<ExcelRow> CurrentExcelData = new List<ExcelRow>();
             OpenFileDialog ofdOpen = new OpenFileDialog();
-            ofdOpen.Filter = "Excel Files (*.xls)|*.xls";
+            ofdOpen.Filter = FileHelper.GetExcelFilterStringForFileDialogs();
 
             if(ofdOpen.ShowDialog() == DialogResult.OK)
             {

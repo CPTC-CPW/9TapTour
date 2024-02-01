@@ -258,7 +258,7 @@ namespace NineTapTour.Forms
                     if (fileName != "SeriesReportTemplate.xls" || !string.IsNullOrEmpty(fileName))
                     {
                         SaveFileDialog savefile = new SaveFileDialog();
-                        savefile.Filter = "Excel Files (*.xls)|*.xls";
+                        savefile.Filter = FileHelper.GetExcelFilterStringForFileDialogs();
                         savefile.FileName = fileName;
                         DialogResult result = savefile.ShowDialog();
 

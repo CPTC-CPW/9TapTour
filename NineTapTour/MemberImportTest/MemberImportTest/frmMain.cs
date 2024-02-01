@@ -543,7 +543,7 @@ namespace MemberImportTest
             OverAllProcessingExcel.Text = "Over All Process:";
             for (int i = 0; i < files.Length; i++)
             {
-                if (Path.GetExtension(files[i]) != ".xls")
+                if (FileHelper.IsValidExcelExtension(Path.GetExtension(files[i])))
                 {
                     continue;
                 }
