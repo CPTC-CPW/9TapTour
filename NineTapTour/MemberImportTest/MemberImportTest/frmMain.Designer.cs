@@ -85,19 +85,19 @@
             label2.Location = new System.Drawing.Point(158, 200);
             label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(140, 15);
+            label2.Size = new System.Drawing.Size(150, 15);
             label2.TabIndex = 4;
-            label2.Text = "Import Members .xls files";
+            label2.Text = "Import Members Excel files";
             // 
             // btnSelectExcelFolder
             // 
             btnSelectExcelFolder.Enabled = false;
-            btnSelectExcelFolder.Location = new System.Drawing.Point(175, 218);
+            btnSelectExcelFolder.Location = new System.Drawing.Point(138, 218);
             btnSelectExcelFolder.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnSelectExcelFolder.Name = "btnSelectExcelFolder";
-            btnSelectExcelFolder.Size = new System.Drawing.Size(113, 27);
+            btnSelectExcelFolder.Size = new System.Drawing.Size(181, 27);
             btnSelectExcelFolder.TabIndex = 3;
-            btnSelectExcelFolder.Text = "Select .xls Folder";
+            btnSelectExcelFolder.Text = "Select Excel files Folder";
             btnSelectExcelFolder.UseVisualStyleBackColor = true;
             btnSelectExcelFolder.Click += Button1_Click;
             // 
