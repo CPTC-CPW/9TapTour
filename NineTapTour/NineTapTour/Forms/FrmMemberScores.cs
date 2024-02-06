@@ -28,10 +28,11 @@ namespace NineTapTour.Forms
 
         public bool switchingParticipents = false;
         //Count for record counting
-        int currentIndex = 0;         
+        int currentIndex = 0;
         Participant player = new Participant();
         public static Tournament selectedTournament;
         public static List<Participant> overallListOfParticipants;
+        public static bool unsavedBowlerData = false;
 
         List<int> howManySquadsCanBeFiltered = new List<int>();
 
@@ -72,7 +73,7 @@ namespace NineTapTour.Forms
 
             if (cbxTourneyDropDown.SelectedIndex >= 0)
             {
-                if(selectedTournament.Squads >= 4)
+                if (selectedTournament.Squads >= 4)
                 {
                     rdoSquad4.Visible = true;
                     cbFilterSquad4.Visible = true;
@@ -143,7 +144,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void FrmMemberScores_Activated(object sender, EventArgs e)
         {
-           
+
             RegionID = ((FrmMain)MdiParent).RegionID;
 
             //added in this line inorder to prevent the reset of the drop down list on memberscores form when switching between forms
@@ -178,9 +179,9 @@ namespace NineTapTour.Forms
 
                 overallListOfParticipants = TournamentDB.GetTournamentMemberList(selectedTournament);
                 RecordIndex(overallListOfParticipants);
-                
+
                 btnDelete.Enabled = true;
-               
+
                 Refresh();
                 // sets focus to member num becuse that is what a user will need next
                 rdoHandicapScore.Visible = true;
@@ -191,7 +192,7 @@ namespace NineTapTour.Forms
             //this will make sure the person entering scores 
             //does not accedently enter a bowler in the wrong squad.
             MoveToLastRecordOfMemberScores();
-            
+
         }
 
         /// <summary>
@@ -228,12 +229,12 @@ namespace NineTapTour.Forms
             {
                 Tournament tourney = TournamentDB.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
                 int total = TournamentDB.GetTotalNumberParticipantsInTournament(tourney);
-              
+
                 lblRecord.Text = "Record " + (currentIndex + 1) + " / " + total;
 
                 cbCompEntry.Checked = currentGame.IsComp ? true : false;
 
-                    txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
+                txtScratchScore1.Text = Convert.ToString(currentGame.Game1);
                 txtScratchScore2.Text = Convert.ToString(currentGame.Game2);
                 txtScratchScore3.Text = Convert.ToString(currentGame.Game3);
                 txtScratchScore4.Text = Convert.ToString(currentGame.Game4);
@@ -280,7 +281,7 @@ namespace NineTapTour.Forms
 
                     Game currentGame = GetScoresById(currentMem.Id);
 
-                    txtHandicap.Text = currentMem.Handicap.ToString();          
+                    txtHandicap.Text = currentMem.Handicap.ToString();
                     txtBonusPins.Text = currentMem.Bonus.ToString();
 
                     GetScores(currentGame);
@@ -312,7 +313,7 @@ namespace NineTapTour.Forms
                 scratch.Clear();
                 scratch.ReadOnly = active;
             }
-            foreach(TextBox handicapBox in handicappArray)
+            foreach (TextBox handicapBox in handicappArray)
             {
                 handicapBox.Clear();
             }
@@ -471,6 +472,9 @@ namespace NineTapTour.Forms
         private void AddNewUpdateRecord()
         {
             ReEnableNavigation();
+
+            // When the user clicks the Add/Update record button, the scores are added to the database
+            unsavedBowlerData = false;
 
             if (AreAllScratchScoreBoxesEmpty())
             {
@@ -795,7 +799,7 @@ namespace NineTapTour.Forms
                 }
             }
         }
-        
+
         /// <summary>
         /// check for empty text box
         /// </summary>
@@ -940,7 +944,7 @@ namespace NineTapTour.Forms
                 btnFirstRecord.Enabled = false;
                 return;
             }
-            if(overallListOfParticipants.Count > 1)
+            if (overallListOfParticipants.Count > 1)
             {
                 // Sets currentIndex to 1 in order to get the 1st record
                 currentIndex = 0;
@@ -1051,7 +1055,7 @@ namespace NineTapTour.Forms
 
             // Used to find out if user actually clicked a different tournament instead of just Member Scores loading.
             int prevTourneyId = (selectedTournament == null) ? 0 : selectedTournament.Id;
-            
+
             // assigns the selectedTournament variable as the selected Tournament from the comboBox
             selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
 
@@ -1120,7 +1124,7 @@ namespace NineTapTour.Forms
             if (TempVariablesForGlobalLevel.MoneyEarnings != null && prevTourneyId != currTourneyId)
             {
                 TempVariablesForGlobalLevel.MoneyEarnings.Clear();
-            }  
+            }
         }
 
         /// <summary>
@@ -1245,7 +1249,7 @@ namespace NineTapTour.Forms
         public new void Refresh()
         {
             (List<ParticipantsGameViewModel> ParticipantsGameScores, List<TopParticipantGameViewModel> Top3Scores) tourneyResults = GetResultsForCurrentParticipantList();
-            List<ParticipantsGameViewModel>  participantsGameViewModels = tourneyResults.ParticipantsGameScores;
+            List<ParticipantsGameViewModel> participantsGameViewModels = tourneyResults.ParticipantsGameScores;
             List<TopParticipantGameViewModel> topParticipantGameViewModels = tourneyResults.Top3Scores;
 
             // variable used to update lblHighSelected appropriately
@@ -1279,7 +1283,7 @@ namespace NineTapTour.Forms
             UpdateHighSelectedLabel(isGame);
         }
 
-        private (List<ParticipantsGameViewModel> ParticipantsGameScores, List<TopParticipantGameViewModel> Top3Scores) 
+        private (List<ParticipantsGameViewModel> ParticipantsGameScores, List<TopParticipantGameViewModel> Top3Scores)
             GetResultsForCurrentParticipantList()
         {
             var listOfParticipants = ParticipantsDB.GetParticipants(selectedTournament.Id);
@@ -1431,7 +1435,7 @@ namespace NineTapTour.Forms
         public void UpdateHighSelectedLabel(Boolean isGame)
         {
             String firstCol = "Game ";
-            if ( !isGame )
+            if (!isGame)
             {
                 firstCol = "Series ";
             }
@@ -1484,6 +1488,7 @@ namespace NineTapTour.Forms
         {
             if (e.KeyData == Keys.Enter)
             {
+                unsavedBowlerData = false;
                 UpdateRecordNumberAndRetrieveParticpant();
             }
         }
@@ -1695,7 +1700,7 @@ namespace NineTapTour.Forms
                         temp = ParticipantsDB.GetStandingsForTournamentByFilterSeriesByScratch(squadList, selectedTournament.Id);
                     }
                 }
-                    #endregion
+                #endregion
 
                 temp.Sort(scoreComparer);
 
@@ -1752,27 +1757,27 @@ namespace NineTapTour.Forms
         {
             Game g = GetScoresById(currentMem.Id);
 
-            if (g != null) 
+            if (g != null)
             {
                 //Delete from player history
                 PlayerHistory p = PlayerHistoryDB.GetPlayerHistoryByGameID(g.Id);
-                if(p != null)
+                if (p != null)
                 {
                     PlayerHistoryDB.DeletePlayerHistory(p);
                 }
 
                 //Delete from FinalizeTemp
                 FinalizeTemp ft = FinalizeTempDB.GetFinalizeID(g);
-                if(ft.FinalizeID != 0) // See if FinalizeTemp was an empty object (not found)
+                if (ft.FinalizeID != 0) // See if FinalizeTemp was an empty object (not found)
                 {
                     FinalizeTempDB.DeleteFinalizeTemp(ft);
                 }
-            
+
                 //Delete from Participants list
                 Participant par = FinalizeTempDB.GetParticipantByGameId(g.Id);
                 FinalizeTempDB.DeleteParticipant(par);
                 overallListOfParticipants.Remove(par);
-                if(currentIndex + 1 == overallListOfParticipants.Count)
+                if (currentIndex + 1 == overallListOfParticipants.Count)
                 {
                     currentIndex--;
                 }
@@ -1781,7 +1786,7 @@ namespace NineTapTour.Forms
 
                 // Corrects any changes to the members stats after finalizing to the last accurate data
                 PlayerHistory temp = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number, RegionID);
-                if(temp != null)
+                if (temp != null)
                 {
                     currentMem.Handicap = temp.HandiCap;
                     currentMem.Bonus = temp.Bonus;
@@ -1792,8 +1797,8 @@ namespace NineTapTour.Forms
                 {
                     MessageBox.Show("Current Stats Not added to Tournament yet.");
                 }
-                
-                MemberDB.AddOrUpdateMember(currentMem);           
+
+                MemberDB.AddOrUpdateMember(currentMem);
             }
         }
 
@@ -1804,26 +1809,26 @@ namespace NineTapTour.Forms
         }
 
         private void CheckBoxSquadNumber_CheckedChanged(object sender, EventArgs e)
-                                        {
+        {
             //only run the code the code for the radio button that is checked
-            if((sender as RadioButton).Checked)
+            if ((sender as RadioButton).Checked)
             {
                 ScoreAndTotalClear();
                 RecordIndexOnSquadSwitch();
                 FillMember();
             }
-            
+
         }
 
-		/// <summary>
-		/// The resize event for the form
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void FrmMemberScores_Resize(object sender, EventArgs e)
-		{
-			FormHelper.SetFlowDirection(this, flpMemberScores, 1100, 766);
-		}
+        /// <summary>
+        /// The resize event for the form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FrmMemberScores_Resize(object sender, EventArgs e)
+        {
+            FormHelper.SetFlowDirection(this, flpMemberScores, 1100, 766);
+        }
 
         /// <summary>
         /// After the size of the form has been changed, it checks the pixel
@@ -1867,7 +1872,7 @@ namespace NineTapTour.Forms
                 cbFilterSquad8.Enabled = false;
 
                 howManySquadsCanBeFiltered.Clear();
-                Refresh();   
+                Refresh();
             }
             else
             {
@@ -1933,14 +1938,14 @@ namespace NineTapTour.Forms
 
         private void ChangeToSelectedPerson(ListBox participantGamesListBox)
         {
-            if(participantGamesListBox.SelectedItem is ParticipantsGameViewModel)
+            if (participantGamesListBox.SelectedItem is ParticipantsGameViewModel)
             {
                 ParticipantsGameViewModel participant = participantGamesListBox.SelectedItem as ParticipantsGameViewModel;
                 txtMemberNum.Text = participant.MemberNo.ToString();
                 FillMember();
                 FormHelper.SelectParticipantSquad(participant.Squad, groupBox1);
             }
-            else if(participantGamesListBox.SelectedItem is TopParticipantGameViewModel)
+            else if (participantGamesListBox.SelectedItem is TopParticipantGameViewModel)
             {
                 TopParticipantGameViewModel participant = participantGamesListBox.SelectedItem as TopParticipantGameViewModel;
                 txtMemberNum.Text = participant.MemberNo.ToString();
@@ -1957,6 +1962,16 @@ namespace NineTapTour.Forms
         private void CheckBoxHighSeries_CheckedChanged(object sender, EventArgs e)
         {
             Refresh();
+        }
+
+        private void ScratchTextBoxes_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Check if any digits are entered on the keyboard or number pad
+            if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9 ||
+                e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
+            {
+                unsavedBowlerData = true;
+            }
         }
     }
 }

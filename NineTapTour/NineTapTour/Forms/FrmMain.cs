@@ -174,6 +174,16 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (FrmMemberScores.unsavedBowlerData)
+            {
+                DialogResult result = MessageBox.Show("You have unsaved bowler data, are you sure you want to switch screens?", "Unsaved Data", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
+                FrmMemberScores.unsavedBowlerData = false;
+            }
+
             var mainMenu = Application.OpenForms["MainMenu"] as FrmMainMenu;
 
             OpenOrDisplayForm(ref mainMenu);
@@ -186,6 +196,15 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void memberToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (FrmMemberScores.unsavedBowlerData)
+            {
+                DialogResult result = MessageBox.Show("You have unsaved bowler data, are you sure you want to switch screens?", "Unsaved Data", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
+                FrmMemberScores.unsavedBowlerData = false;
+            }
             var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
             OpenOrDisplayForm(ref newfrmMemberData);
             CurrFrmMemberData = newfrmMemberData;
