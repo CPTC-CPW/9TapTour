@@ -1,5 +1,3 @@
-![CI](https://github.com/CPTC-CPW/9TapTour/workflows/CI/badge.svg)
-
 # 9-Tap Tour
 This app is the 9-Tap Tour Replacement Application, that keeps track of the 9 Tap Tour. This information includes member data, tournament information, games, monies earned, player stats, etc. The app will replace the current program being used by the client to run future 9-Tap tournaments.
 
@@ -7,7 +5,7 @@ Please review the following and reference the [project Wiki](https://github.com/
 
 ## Getting Started With 9TapTour Step-By-Step Instructions
 - **Note:** This is for those who have added the project to a computer without an exsisting copy of 9TapTour and/or the database.
-- We are using Visual Studio 2019 and SQL Server Management Studio in this Example. This will also work using Visual Studio 2017.
+- We are using Visual Studio 2019 and SQL Server Management Studio in this Example. This will also work using Visual Studio 2017+.
 
 1. After cloning 9-Tap Tour make sure that you build the solution to get all dependencies from the project.
 ![Building Solution in Visual Studio](9TT-Doc/Building-Solution.PNG)
@@ -40,11 +38,11 @@ Please review the following and reference the [project Wiki](https://github.com/
 5. Upon completion, your database should have all the necessary test data, and you are safe to run the application.
 
 ### Prerequisites
-The current build is being built on Windows machines through Visual Studio 2022 and .NET 6.
+The current build is being built on Windows machines through Visual Studio 2022 and .NET 8.
 
 * [Download Office 365](https://www.microsoft.com/en-us/education/products/office) Free for students.
 * [Download Visual Studio 2022](https://visualstudio.microsoft.com/downloads/)
-* [.NET 6 SDK](https://dotnet.microsoft.com/download/visual-studio-sdks) - Comes with VS2022
+* [.NET 8 SDK](https://dotnet.microsoft.com/download/visual-studio-sdks) - Comes with VS2022
 
 ### Coding Style Requirements
 Reference the [code style requirements](CodingStyle.md) for more information.
