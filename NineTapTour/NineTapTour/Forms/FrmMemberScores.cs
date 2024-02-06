@@ -1970,7 +1970,6 @@ namespace NineTapTour.Forms
             if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9 ||
                 e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
             {
-                MessageBox.Show("Digit press detected");
                 unsavedBowlerData = true;
             }
         }
