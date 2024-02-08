@@ -1059,13 +1059,22 @@ namespace NineTapTour.Forms
             // assigns the selectedTournament variable as the selected Tournament from the comboBox
             selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
 
-            if (selectedTournament.IsOnlyThreeGames)
+            if (selectedTournament.Doubles)
+            {
+                txtScratchScore3.Visible = false;
+                txtScratchScore4.Visible = false;
+                txtHandicapScore3.Visible = false;
+                txtHandicapScore4.Visible = false;
+            }
+            else if (selectedTournament.IsOnlyThreeGames)
             {
                 txtScratchScore4.Visible = false;
                 txtHandicapScore4.Visible = false;
             }
             else
             {
+                txtScratchScore3.Visible = true;
+                txtHandicapScore3.Visible = true;
                 txtScratchScore4.Visible = true;
                 txtHandicapScore4.Visible = true;
             }
