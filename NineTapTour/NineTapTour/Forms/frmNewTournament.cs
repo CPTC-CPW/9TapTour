@@ -277,9 +277,6 @@ namespace NineTapTour.Forms
         private void FrmNewTournament_Load(object sender, EventArgs e)
         {
             rdoSingles.Checked = true;
-
-            // False for now while feature is being implemented.
-            rdoDoubles.Enabled = false;
         }
     }
 }
