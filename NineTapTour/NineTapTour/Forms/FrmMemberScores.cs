@@ -1532,6 +1532,15 @@ namespace NineTapTour.Forms
         //opens the FinalizeTourn form, checks to make sure a tourn is selected.
         private void BtnFinalizeTounament_Click(object sender, EventArgs e)
         {
+            if (unsavedBowlerData)
+            {
+                DialogResult result = MessageBox.Show("You have unsaved bowler data. Are you sure you want to continue?", "Unsaved Data", MessageBoxButtons.YesNo);
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
+            }
+
             if (cbxTourneyDropDown.SelectedIndex < 0)
             {
                 MessageBox.Show("Please Select a Tournament");
@@ -1980,6 +1989,18 @@ namespace NineTapTour.Forms
                 e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
             {
                 unsavedBowlerData = true;
+            }
+        }
+
+        private void FrmMemberScores_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (unsavedBowlerData)
+            {
+                DialogResult result = MessageBox.Show("You have unsaved bowler data. Are you sure you want to continue?", "Unsaved Data", MessageBoxButtons.YesNo);
+                if (result == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
             }
         }
     }
