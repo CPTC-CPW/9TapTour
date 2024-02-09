@@ -1354,6 +1354,7 @@
             Name = "FrmMemberScores";
             Text = "Member Scores";
             Activated += FrmMemberScores_Activated;
+            FormClosing += FrmMemberScores_FormClosing;
             Load += FrmMemberScores_Load;
             Resize += FrmMemberScores_Resize;
             grpMemberNum.ResumeLayout(false);
