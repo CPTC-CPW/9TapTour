@@ -543,7 +543,8 @@ namespace MemberImportTest
             OverAllProcessingExcel.Text = "Over All Process:";
             for (int i = 0; i < files.Length; i++)
             {
-                if (FileHelper.IsValidExcelExtension(Path.GetExtension(files[i])))
+                // If the file is not an excel file, skip it
+                if (!FileHelper.IsValidExcelExtension(Path.GetExtension(files[i])))
                 {
                     continue;
                 }
