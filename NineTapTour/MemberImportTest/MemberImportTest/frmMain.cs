@@ -396,6 +396,11 @@ namespace MemberImportTest
                                         {
                                             Console.WriteLine(File.Substring(currentIndex));
                                             newMem.DateOfBirth = Convert.ToDateTime(File.Substring(currentIndex));
+                                            // if the date is in the future, subtract 100 years to make it a valid date
+                                            if (newMem.DateOfBirth > DateTime.Today)
+                                            {
+                                                newMem.DateOfBirth = newMem.DateOfBirth?.AddYears(-100);
+                                            }
                                         }
                                         else if (File.Length - currentIndex > 8)
                                         {
