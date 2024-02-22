@@ -1027,7 +1027,7 @@ namespace MemberImportTest
             Font drawFont = new Font("Arial", 12);
             SolidBrush drawBrush = new SolidBrush(Color.Black);
             PointF drawPoint = new PointF(20, 2);
-            g.DrawString("Version: 2.4.1", drawFont, drawBrush, drawPoint);
+            g.DrawString("Version: 2.4.2", drawFont, drawBrush, drawPoint);
 #if DEBUG
             drawBrush.Color = Color.Red;
             drawPoint.Y += 16;
