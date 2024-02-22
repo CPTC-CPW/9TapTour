@@ -396,6 +396,11 @@ namespace MemberImportTest
                                         {
                                             Console.WriteLine(File.Substring(currentIndex));
                                             newMem.DateOfBirth = Convert.ToDateTime(File.Substring(currentIndex));
+                                            // if the date is in the future, subtract 100 years to make it a valid date
+                                            if (newMem.DateOfBirth > DateTime.Today)
+                                            {
+                                                newMem.DateOfBirth = newMem.DateOfBirth?.AddYears(-100);
+                                            }
                                         }
                                         else if (File.Length - currentIndex > 8)
                                         {
@@ -403,6 +408,11 @@ namespace MemberImportTest
                                             try
                                             {
                                                 newMem.DateOfBirth = Convert.ToDateTime(File.Substring(currentIndex, Spaces[i]).Trim());
+                                                // if the date is in the future, subtract 100 years to make it a valid date
+                                                if (newMem.DateOfBirth > DateTime.Today)
+                                                {
+                                                    newMem.DateOfBirth = newMem.DateOfBirth?.AddYears(-100);
+                                                }
                                             }
                                             catch (Exception)
                                             {
@@ -1017,7 +1027,7 @@ namespace MemberImportTest
             Font drawFont = new Font("Arial", 12);
             SolidBrush drawBrush = new SolidBrush(Color.Black);
             PointF drawPoint = new PointF(20, 2);
-            g.DrawString("Version: 2.4.1", drawFont, drawBrush, drawPoint);
+            g.DrawString("Version: 2.4.2", drawFont, drawBrush, drawPoint);
 #if DEBUG
             drawBrush.Color = Color.Red;
             drawPoint.Y += 16;
