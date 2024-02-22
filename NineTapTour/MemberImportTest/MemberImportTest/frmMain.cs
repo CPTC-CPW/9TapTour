@@ -403,6 +403,11 @@ namespace MemberImportTest
                                             try
                                             {
                                                 newMem.DateOfBirth = Convert.ToDateTime(File.Substring(currentIndex, Spaces[i]).Trim());
+                                                // if the date is in the future, subtract 100 years to make it a valid date
+                                                if (newMem.DateOfBirth > DateTime.Today)
+                                                {
+                                                    newMem.DateOfBirth = newMem.DateOfBirth?.AddYears(-100);
+                                                }
                                             }
                                             catch (Exception)
                                             {
