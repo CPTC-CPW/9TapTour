@@ -677,7 +677,7 @@ namespace NineTapTour.Forms
 
                 if (FormatBool)
                 {
-                    FormatBigTie(tempData3, tiePlace, xlWorkSheet, i);
+                    FormatBigTie(tempData3, tiePlace, xlWorkSheet);
                 }
 
                 //set the Total Payout to the correct number
@@ -742,9 +742,9 @@ namespace NineTapTour.Forms
         }
         
         //format and populate 
-        private void FormatBigTie(string tempData3, int tiePlace, Excel.Worksheet xlWorkSheet, int i)
+        private void FormatBigTie(string tempData3, int tiePlace, Excel.Worksheet xlWorkSheet)
         {
-            for (i = 0; i < tiePlace; i++)
+            for (int i = 0; i < tiePlace; i++)
             {
                 //get range on which to insert extra line
                 Excel.Range line = (Excel.Range)xlWorkSheet.Rows[(i * 2) + 11];
