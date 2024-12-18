@@ -18,22 +18,19 @@
     <Content Include="Resources\TournamentResultsTemplate.xls">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Update="Resources\9tapUserManual.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Resources\SeriesReportTemplate.xls">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="_NineTapTour_NineTapDbDataSet.xsc">
-      <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
-    </None>
     <None Update="_NineTapTour_NineTapDbDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>_NineTapTour_NineTapDbDataSet.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Update="_NineTapTour_NineTapDbDataSet.xss">
-      <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
     </None>
     <None Include="..\ClientLicense.txt">
       <Pack>True</Pack>
@@ -93,6 +90,18 @@
     <EmbeddedResource Remove="Form1.resx" />
     <EmbeddedResource Remove="Forms\frmListTournamentsByYear.resx" />
     <EmbeddedResource Remove="Forms\FrmTournaments.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Update="_NineTapTour_NineTapDbDataSet.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>_NineTapTour_NineTapDbDataSet.xsd</DependentUpon>
+    </Compile>
   </ItemGroup>
   <UsingTask TaskName="TransformXml" AssemblyFile="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Web\Microsoft.Web.Publishing.Tasks.dll" />
 </Project>
