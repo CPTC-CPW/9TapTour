@@ -14,7 +14,7 @@ namespace NineTapTour.Forms
 {
     public partial class FrmSelection : Form
     {
-        private int _regionId;
+        private readonly int _regionId;
         public Tournament selectedTournament;
         public FrmSelection(int RegionId)
         {

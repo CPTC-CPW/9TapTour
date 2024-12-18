@@ -19,7 +19,7 @@ namespace NineTapTour.Forms
 {
     public partial class FrmSearch : Form
     {
-        int RegionID;
+        readonly int RegionID;
         bool isChecked = false;
         public int searchResult { get; set; }
 
@@ -40,9 +40,9 @@ namespace NineTapTour.Forms
         {
             dtagrdResults.DataSource = null;
 
-            List<Member> memList = new List<Member>();
+            List<Member> memList = [];
 
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDb db = new())
             {
                 var query = from m in db.Members
                             where m.NineTapRegionID == RegionID
@@ -104,7 +104,7 @@ namespace NineTapTour.Forms
                     query = query.Where(m => m.Bonus == temp);
                 }
                 query = query.OrderBy(m => m.Number);              
-                List<Member> results = query.ToList();
+                List<Member> results = [.. query];
 
                 if (results.Count > 0)
                 {
@@ -165,7 +165,7 @@ namespace NineTapTour.Forms
             dtagrdResults.DataSource = null;
 
             //data bind an empty member list so the columns show up
-            List<Member> memList = new List<Member>();
+            List<Member> memList = [];
             dtagrdResults.DataSource = memList;
             AdvancedViewCheck();
         }

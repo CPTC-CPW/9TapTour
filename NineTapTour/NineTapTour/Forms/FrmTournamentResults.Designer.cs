@@ -68,7 +68,7 @@
             this.btnExportToExcel.TabIndex = 2;
             this.btnExportToExcel.Text = "Export to Excel";
             this.btnExportToExcel.UseVisualStyleBackColor = true;
-            this.btnExportToExcel.Click += new System.EventHandler(this.btnExportToExcel_Click);
+            this.btnExportToExcel.Click += new System.EventHandler(this.BtnExportToExcel_Click);
             // 
             // dgvTournamentResults
             // 
@@ -78,7 +78,7 @@
             this.dgvTournamentResults.Name = "dgvTournamentResults";
             this.dgvTournamentResults.Size = new System.Drawing.Size(609, 419);
             this.dgvTournamentResults.TabIndex = 0;
-            this.dgvTournamentResults.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTournamentResults_CellEnter);
+            this.dgvTournamentResults.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvTournamentResults_CellEnter);
             // 
             // lblClientRequestCount
             // 
@@ -95,8 +95,8 @@
             this.tbClientInputCount.Name = "tbClientInputCount";
             this.tbClientInputCount.Size = new System.Drawing.Size(100, 20);
             this.tbClientInputCount.TabIndex = 4;
-            this.tbClientInputCount.TextChanged += new System.EventHandler(this.tbClientInputCount_TextChanged);
-            this.tbClientInputCount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbClientInputCount_KeyDown);
+            this.tbClientInputCount.TextChanged += new System.EventHandler(this.TbClientInputCount_TextChanged);
+            this.tbClientInputCount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TbClientInputCount_KeyDown);
             // 
             // btnPaste
             // 
@@ -106,7 +106,7 @@
             this.btnPaste.TabIndex = 5;
             this.btnPaste.Text = "Paste Earnings";
             this.btnPaste.UseVisualStyleBackColor = true;
-            this.btnPaste.Click += new System.EventHandler(this.btnPaste_Click);
+            this.btnPaste.Click += new System.EventHandler(this.BtnPaste_Click);
             // 
             // lblHB
             // 

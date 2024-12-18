@@ -31,13 +31,13 @@ namespace NineTapTour.Forms
         const string GAME_ID_COLUMN_NAME = "Game ID";
         const string PROGRESSIVEPOT_COLUMN_NAME = "Progressive Pot";
 
-        DataTable dt = new DataTable(); // Instantiate Data Table
-        NineTapDb db = new NineTapDb(); // Get access to database
-        Tournament tourny = FrmMemberScores.selectedTournament; // Get Tournament
+        readonly DataTable dt = new(); // Instantiate Data Table
+        readonly NineTapDb db = new(); // Get access to database
+        readonly Tournament tourny = FrmMemberScoresHelpers.selectedTournament; // Get Tournament
         static int totalTournamentEntries;  // Total number of entries for all squads in tournament
         static int clientInput; // how many winners the client wants to see
-        List<ExcelMember> clientRequested = new List<ExcelMember>();
-        List<ExcelMember> winners = new List<ExcelMember>();
+        List<ExcelMember> clientRequested = [];
+        List<ExcelMember> winners = [];
 
         /* Floor directors get a comp entry into tournament when they help with tournament. 
          * They don't pay the entry fee, but do qualify to cash.
@@ -75,7 +75,7 @@ namespace NineTapTour.Forms
             base.OnFormClosing(e);
 
             if (e.CloseReason == CloseReason.WindowsShutDown) return;
-            List<double> Winnings = new List<double>();
+            List<double> Winnings = [];
             for (int winningList = 0; winningList < dgvTournamentResults.RowCount; winningList++)
             {
                 Winnings.Add(Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
@@ -223,7 +223,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Tabs the user though the cells of dgvTournamentResults
         /// </summary>
-        private void dgvTournamentResults_CellEnter(object sender, DataGridViewCellEventArgs e)
+        private void DgvTournamentResults_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
             if (dgvTournamentResults.CurrentRow.Cells[e.ColumnIndex].ReadOnly)
             {
@@ -237,7 +237,7 @@ namespace NineTapTour.Forms
         /// <returns> List<ExcelMember> </returns>
         private List<ExcelMember> BuildWinnersList()
         {
-            List<ExcelMember> tournyBowlers = new List<ExcelMember>();
+            List<ExcelMember> tournyBowlers = [];
             List<WinnerListMemberViewModel> bowlers = TournamentDB.GetWinnerListMemberData(tourny.Id);
 
             totalTournamentEntries = bowlers.Count();
@@ -249,24 +249,25 @@ namespace NineTapTour.Forms
                     compEntries++;
                 }
 
-                ExcelMember m = new ExcelMember();
-                m.MemberNumber = b.MemberNumber;
-                m.Name = b.BowlerName;
-                m.Handicap = Convert.ToInt32(b.Handicap);
-                m.Bonus = Convert.ToInt32(b.Bonus);
-                m.MoneyWon = b.MoneyWon;
-                m.SidePot = b.SidePot;
-                m.GameId = b.GameId;
-                // If the game scores are null then a 0 will be placed in the the game
-                m.Game1Score = Convert.ToInt32(b.Game1);
-                m.Game2Score = Convert.ToInt32(b.Game2);
-                m.Game3Score = Convert.ToInt32(b.Game3);
-                m.Game4Score = Convert.ToInt32(b.Game4);
+                ExcelMember m = new()
+                {
+                    MemberNumber = b.MemberNumber,
+                    Name = b.BowlerName,
+                    Handicap = Convert.ToInt32(b.Handicap),
+                    Bonus = Convert.ToInt32(b.Bonus),
+                    MoneyWon = b.MoneyWon,
+                    SidePot = b.SidePot,
+                    GameId = b.GameId,
+                    // If the game scores are null then a 0 will be placed in the the game
+                    Game1Score = Convert.ToInt32(b.Game1),
+                    Game2Score = Convert.ToInt32(b.Game2),
+                    Game3Score = Convert.ToInt32(b.Game3),
+                    Game4Score = Convert.ToInt32(b.Game4)
+                };
 
                 if (tourny.ThreeOutOf4)
                 {
-                    List<int> scores = new List<int>
-                        { m.Game1Score, m.Game2Score, m.Game3Score, m.Game4Score };
+                    List<int> scores = [m.Game1Score, m.Game2Score, m.Game3Score, m.Game4Score];
 
                     // Remove the 0s from the scores list
                     scores.RemoveAll(x => x == 0);
@@ -310,20 +311,20 @@ namespace NineTapTour.Forms
         }
 
         #region Export to Excel (code is fragile)
-        private void btnExportToExcel_Click(object sender, EventArgs e)
+        private void BtnExportToExcel_Click(object sender, EventArgs e)
         {
             bool wait = true;
             while (wait)
             {
-                frmPleaseWait please = new frmPleaseWait();
+                frmPleaseWait please = new();
                 please.Show();
-                exportToExcel();
+                ExportToExcel();
                 wait = false;
                 please.Close();
             }
         }
         
-        private void exportToExcel()
+        private void ExportToExcel()
         {
             /// <summary>
             /// Saves participants' place standing and earnings won to the database
@@ -586,7 +587,7 @@ namespace NineTapTour.Forms
                                 }
 
                                 // check the place and then add "st", "nd", "rd" or "th"
-                                string place = getPlace(data);
+                                string place = GetPlace(data);
 
                                 //if the player's score is tied for one of the top 3 spots, format sheet accordingly
                                 if(data == "1" || data == "2" || data == "3")
@@ -676,20 +677,22 @@ namespace NineTapTour.Forms
 
                 if (FormatBool)
                 {
-                    formatBigTie(tempData3, tiePlace, xlWorkSheet, i);
+                    FormatBigTie(tempData3, tiePlace, xlWorkSheet, i);
                 }
 
                 //set the Total Payout to the correct number
-                setTotalPayout(xlWorkSheet);
+                SetTotalPayout(xlWorkSheet);
 
                 // saves the excel file with the file name
                 try
                 {
                     if (!(fileName == "TournamentResultsTemplate.xls" && string.IsNullOrEmpty(fileName)))
                     {
-                        SaveFileDialog savefile = new SaveFileDialog();
-                        savefile.Filter = FileHelper.GetExcelFilterStringForFileDialogs();
-                        savefile.FileName = fileName;
+                        SaveFileDialog savefile = new()
+                        {
+                            Filter = FileHelper.GetExcelFilterStringForFileDialogs(),
+                            FileName = fileName
+                        };
                         DialogResult result = savefile.ShowDialog();
 
                         if(result == DialogResult.OK)
@@ -709,9 +712,9 @@ namespace NineTapTour.Forms
                 xlWorkBook.Close(true, misValue, misValue);
                 xlApp.Quit();
 
-                releaseObject(xlWorkSheet);
-                releaseObject(xlWorkBook);
-                releaseObject(xlApp);
+                ReleaseObject(xlWorkSheet);
+                ReleaseObject(xlWorkBook);
+                ReleaseObject(xlApp);
             }
             catch
             {
@@ -727,7 +730,7 @@ namespace NineTapTour.Forms
         /// Gets and sets the total amount of payout for the 
         /// winners in the total payout box of the excel sheet
         /// </summary>
-        private void setTotalPayout(Excel.Worksheet xlWorkSheet)
+        private void SetTotalPayout(Excel.Worksheet xlWorkSheet)
         {
             double money = 0;
 
@@ -739,7 +742,7 @@ namespace NineTapTour.Forms
         }
         
         //format and populate 
-        private void formatBigTie(string tempData3, int tiePlace, Excel.Worksheet xlWorkSheet, int i)
+        private void FormatBigTie(string tempData3, int tiePlace, Excel.Worksheet xlWorkSheet, int i)
         {
             for (i = 0; i < tiePlace; i++)
             {
@@ -831,9 +834,9 @@ namespace NineTapTour.Forms
         /// standing to be added onto the number they placed. It 
         /// will either be "st", "nd", "rd", or "th".
         /// </summary>
-        private string getPlace(string data)
+        private static string GetPlace(string data)
         {
-            // Convert data to an int to easily find its sufix
+            // Convert data to an int to easily find its suffix
             int dataNum = Int32.Parse(data);
 
             // 11, 12, and 13 are exceptions to the rules bellow, ending in "th"
@@ -875,7 +878,7 @@ namespace NineTapTour.Forms
         /// so that Excel does not remain running.
         /// </summary>
         /// <param name="obj"></param>
-        private void releaseObject(object obj)
+        private static void ReleaseObject(object obj)
         {
             try
             {
@@ -896,12 +899,12 @@ namespace NineTapTour.Forms
         /// <summary>
         /// This method was made by accident, if deleted will mess up tbClientInputCount
         /// </summary>
-        private void tbClientInputCount_TextChanged(object sender, EventArgs e) { }
+        private void TbClientInputCount_TextChanged(object sender, EventArgs e) { }
 
         /// <summary>
         /// Runs AcceptClientInputForResults if the user presses the "Enter" key
         /// </summary>
-        private void tbClientInputCount_KeyDown(object sender, KeyEventArgs e)
+        private void TbClientInputCount_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
@@ -945,7 +948,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Populates dgvTournamentResults when clicked on
         /// </summary>
-        private void btnPaste_Click(object sender, EventArgs e)
+        private void BtnPaste_Click(object sender, EventArgs e)
         {
             // Stops this method from working if user didnt enter the number of winners
             if (string.IsNullOrWhiteSpace(tbClientInputCount.Text))

@@ -277,7 +277,7 @@ namespace NineTapTour.Calculations
             }
 
             // Makes copy so original list won't be affected
-            tempListOfMemberScores = tempListOfMemberScores.ToList();
+            tempListOfMemberScores = [.. tempListOfMemberScores];
 
             GiveMembersPlaceStandings(tempListOfMemberScores);
 
@@ -327,11 +327,11 @@ namespace NineTapTour.Calculations
             // A list of no members will return an empty list
             if (members.Count == 0)
             {
-                return new Dictionary<FinalizeTemp, int>();
+                return [];
             }
 
             // Makes copy so original list won't be affected
-            members = members.ToList();
+            members = [.. members];
 
             // Sort the list by the total score, including handicap, in descending order.
             members.Sort((a, b) => b.HandicapTotal.CompareTo(a.HandicapTotal));
@@ -404,13 +404,13 @@ namespace NineTapTour.Calculations
             foreach (FinalizeTemp currMember in members)
             {
                 //puts the four games of the current member into a list so that the minimum value can be found easier.
-                List<int?> games = new List<int?>()
-                {
+                List<int?> games =
+                [
                     currMember.Game1,
                     currMember.Game2,
                     currMember.Game3,
                     currMember.Game4
-                };
+                ];
 
                 // If positive, the lowest scored game is added to the handicap total. All handicaps and bonuses are accounted for.
                 if (isPositive)
@@ -440,7 +440,7 @@ namespace NineTapTour.Calculations
             }
 
             // Makes copy so original list won't be affected
-            members = members.ToList();
+            members = [.. members];
 
             //remove duplicates
             RemoveDuplicateBowlers(members);
@@ -476,7 +476,7 @@ namespace NineTapTour.Calculations
         /// <returns>list of removed FinalizeTemps</returns>
         private static List<FinalizeTemp> RemoveDuplicateBowlers(List<FinalizeTemp> members)
         {
-            List<FinalizeTemp> removal = new List<FinalizeTemp>();
+            List<FinalizeTemp> removal = [];
             for (int i = 0; i < members.Count; i++)
             {
                 bool isCurrIndexRemoved = false;
@@ -517,7 +517,7 @@ namespace NineTapTour.Calculations
         /// </summary>
         private static void RemoveDuplicateBowlers(List<MemberScores> temp)
         {
-            List<MemberScores> removal = new List<MemberScores>();
+            List<MemberScores> removal = [];
             for (int i = 0; i < temp.Count; i++)
             {
                 bool isCurrIndexRemoved = false;
@@ -557,7 +557,7 @@ namespace NineTapTour.Calculations
         /// </summary>
         private static void RemoveDuplicateBowlers(List<ExcelMember> members)
         {
-            List<ExcelMember> removal = new List<ExcelMember>();
+            List<ExcelMember> removal = [];
             for (int i = 0; i < members.Count; i++)
             {
                 bool isCurrIndexRemoved = false;
@@ -618,7 +618,7 @@ namespace NineTapTour.Calculations
             members = CalculatePlaceStandings(members);
 
             // takes only top place members above or at lowest placement threshold
-            return members.Where(m => m.PlaceStanding <= lowestPlacement).ToList();
+            return [.. members.Where(m => m.PlaceStanding <= lowestPlacement)];
         }
 
         /// <summary>
@@ -633,7 +633,7 @@ namespace NineTapTour.Calculations
             members = CalculatePlaceStandings(members);
 
             // takes only top place members above lowest placement threshold
-            return members.Where(m => m.placing <= lowestPlacement).ToList();
+            return [.. members.Where(m => m.placing <= lowestPlacement)];
         }
     }
 

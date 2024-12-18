@@ -91,10 +91,10 @@ namespace NineTapTour.Database
             using (var db = new NineTapDb())
             {
                 List<PlayerHistory> PlayerHistoryList =
-                    (from h in db.PlayerHistory
+                    [.. (from h in db.PlayerHistory
                      where h.MemberNumber == memberNum
                      orderby h.TournamentDate descending
-                     select h).Take(howmany).ToList();
+                     select h).Take(howmany)];
                 return PlayerHistoryList;
             }
         }
@@ -102,10 +102,10 @@ namespace NineTapTour.Database
         public static List<PlayerHistory> GetPlayerHistories(int memberNum, int regionID, int numEntries)
         {
             using NineTapDb db = new();
-            return (from p in db.PlayerHistory
+            return [.. (from p in db.PlayerHistory
                    where p.MemberNumber == memberNum && regionID == p.regionID
                    orderby p.TournamentDate descending, p.TotalScore descending
-                   select p).Take(numEntries).ToList();
+                   select p).Take(numEntries)];
         }
 
         /// <summary>
@@ -134,11 +134,11 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
-                List<PlayerHistory> PlayerHistoryList = 
-                    (from h in db.PlayerHistory
+                List<PlayerHistory> PlayerHistoryList =
+                    [.. (from h in db.PlayerHistory
                     where h.MemberNumber == memberNum && h.regionID == regionID
                     orderby h.TournamentDate descending
-                    select h).ToList();
+                    select h)];
                 return PlayerHistoryList;
             }
         }
@@ -150,11 +150,11 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
-                List<PlayerHistory> PlayerHistoryList = 
-                    (from h in db.PlayerHistory
+                List<PlayerHistory> PlayerHistoryList =
+                    [.. (from h in db.PlayerHistory
                     where h.MemberNumber == memberNum && h.regionID == regionID
                     orderby h.TournamentDate descending, h.MoneyWon descending
-                    select h).Take(30).ToList();
+                    select h).Take(30)];
                 return PlayerHistoryList;
             }
         }
@@ -168,9 +168,9 @@ namespace NineTapTour.Database
             using (var db = new NineTapDb())
             {
                 List<PlayerHistory> PlayerHistoryList =
-                    (from h in db.PlayerHistory
+                    [.. (from h in db.PlayerHistory
                     where h.regionID == regionID
-                    select h).ToList();
+                    select h)];
                 return PlayerHistoryList;
             }
         }
@@ -191,11 +191,11 @@ namespace NineTapTour.Database
                     .Take(howmany)
                     .ToList();
 
-                return queryResult.Select(qr => new PlayerHistory()
+                return [.. queryResult.Select(qr => new PlayerHistory()
                 {
                     TournamentDate = qr.TournamentDate,
                     MoneyWon = qr.MoneyWon
-                }).ToList();
+                })];
             }
         }
 
@@ -209,11 +209,11 @@ namespace NineTapTour.Database
             {
                 // Will only grab the last 5 PlayerHistories where the AVG was adjusted, 
                 // that way the bonus pins can't be affected by bowling in more than one squad
-                List<PlayerHistory> PlayerHistoryList = 
-                    (from h in db.PlayerHistory
+                List<PlayerHistory> PlayerHistoryList =
+                    [.. (from h in db.PlayerHistory
                     where h.MemberNumber == memberNum && h.regionID == regionID && h.AVG > 0 
                     orderby h.TournamentDate descending, h.hisID descending
-                    select h).Take(HOW_MANY).ToList();
+                    select h).Take(HOW_MANY)];
                 return PlayerHistoryList;
             }
         }
@@ -282,11 +282,11 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
-                List<PlayerHistory> PlayerHistoryList = 
-                    (from h in db.PlayerHistory
+                List<PlayerHistory> PlayerHistoryList =
+                    [.. (from h in db.PlayerHistory
                     where h.MemberNumber == memberNum && h.regionID == regionID
                     orderby h.TotalScore descending
-                    select h).ToList();
+                    select h)];
                 return PlayerHistoryList;
             }
         }

@@ -475,15 +475,17 @@ namespace NineTapTour.Forms
             if (isValid)
             {
                 //create temporary member for validation
-                Member temp = new Member();
-                temp.Number = Convert.ToInt32(txtMemberNumber.Text);
-                temp.IsActive = rdoActive.Checked;
-                temp.JoinDate = DateTime.Parse(txtDateJoined.Text);
+                Member temp = new()
+                {
+                    Number = Convert.ToInt32(txtMemberNumber.Text),
+                    IsActive = rdoActive.Checked,
+                    JoinDate = DateTime.Parse(txtDateJoined.Text),
 
-                // Personal Info
-                temp.LastName = txtLastName.Text;
-                temp.FirstName = txtFirstName.Text;
-                temp.MiddleInitial = txtMiddleInitial.Text;
+                    // Personal Info
+                    LastName = txtLastName.Text,
+                    FirstName = txtFirstName.Text,
+                    MiddleInitial = txtMiddleInitial.Text
+                };
                 if (!String.IsNullOrEmpty(txtDOB.Text) && !txtDOB.Text.Contains("MM/DD/YYYY"))
                 {
                     temp.DateOfBirth = DateTime.Parse(txtDOB.Text);
@@ -816,7 +818,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void BtnMemberSearch_Click(object sender, EventArgs e)
         {
-            FrmSearch SearchForm = new FrmSearch(RegionID);
+            FrmSearch SearchForm = new(RegionID);
             SearchForm.ShowDialog();
 
             if (SearchForm.searchResult > 0)
@@ -830,7 +832,7 @@ namespace NineTapTour.Forms
         // top of thew original data on the form finalize page
         private void BtnStats_Click(object sender, EventArgs e)
         {
-            FrmStats p = new FrmStats(currentMem.Number, currentMem.FirstName + 
+            FrmStats p = new(currentMem.Number, currentMem.FirstName + 
                 currentMem.LastName + currentMem.MiddleInitial, currentMem, RegionID);
             p.ShowDialog();
         }
@@ -845,8 +847,8 @@ namespace NineTapTour.Forms
             if (IsValidTextboxes())
             {
                 //Set up components for printing
-                PrintDialog printDialog = new PrintDialog();
-                PrintDocument printDocument = new PrintDocument();
+                PrintDialog printDialog = new();
+                PrintDocument printDocument = new();
 
                 //add the document to the dialog box
                 printDialog.Document = printDocument;
@@ -960,11 +962,13 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void BtnImportData_Click(object sender, EventArgs e)
         {
-            List<ExcelRow> CurrentExcelData = new List<ExcelRow>();
-            OpenFileDialog ofdOpen = new OpenFileDialog();
-            ofdOpen.Filter = FileHelper.GetExcelFilterStringForFileDialogs();
+            List<ExcelRow> CurrentExcelData = [];
+            OpenFileDialog ofdOpen = new()
+            {
+                Filter = FileHelper.GetExcelFilterStringForFileDialogs()
+            };
 
-            if(ofdOpen.ShowDialog() == DialogResult.OK)
+            if (ofdOpen.ShowDialog() == DialogResult.OK)
             {
                 List<PlayerHistory> AlreadyImportedPH = 
                     PlayerHistoryDB.GetMemberPlayerHistory(currentMem.Number, RegionID);
@@ -977,7 +981,7 @@ namespace NineTapTour.Forms
 
                 string fileName = ofdOpen.FileName;
 
-                frmPleaseWait please = new frmPleaseWait();
+                frmPleaseWait please = new();
                 please.Show();
 
                 List<ExcelRow> rows = ProcessExcelFile(fileName); 
@@ -1018,8 +1022,8 @@ namespace NineTapTour.Forms
         /// <returns></returns>
         private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
         {
-            List<ExcelRow> returnMe = new List<ExcelRow>();
-            Excel.Application xlApp = new Excel.Application();
+            List<ExcelRow> returnMe = [];
+            Excel.Application xlApp = new();
 
             Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "",
                 true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
@@ -1027,8 +1031,8 @@ namespace NineTapTour.Forms
             Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
             Excel.Range range = xlWorkSheet.UsedRange;
 
-            string[] PlayerFinalFirstAndMiddle = { "", "" };
-            string[] PlayersFinalLastAndMiddle = { "", "" };
+            string[] PlayerFinalFirstAndMiddle = ["", ""];
+            string[] PlayersFinalLastAndMiddle = ["", ""];
             string playerLastName = "";
             string firstAndMiddle = "";
             string playerFullName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
@@ -1072,7 +1076,7 @@ namespace NineTapTour.Forms
             else if (playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
             {
                 playerNumberAfterSplit = playerNumber.Split('/');
-                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1], "[^0-9]", ""));
+                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumberAfterSplit[^1], "[^0-9]", string.Empty));
             }
 
             ProcessExcel(returnMe, xlWorkBook, ref xlWorkSheet, ref range, PlayerFinalFirstAndMiddle, playerLastName, playerOrgAVG, isRegionHawaii);
@@ -1131,9 +1135,9 @@ namespace NineTapTour.Forms
                 for (int row = rowNum; row <= range.Rows.Count; row++)
                 {
 
-                    ExcelRow temp = new ExcelRow();
-                    PlayerHistory playerH = new PlayerHistory();
-                    Game GameHistory = new Game();
+                    ExcelRow temp = new();
+                    PlayerHistory playerH = new();
+                    Game GameHistory = new();
 
                     string game1 = Convert.ToString((range.Cells[row, 3] as Excel.Range).Value2);
                     string game2 = Convert.ToString((range.Cells[row, 4] as Excel.Range).Value2);

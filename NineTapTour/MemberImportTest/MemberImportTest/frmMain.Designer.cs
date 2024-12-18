@@ -1,6 +1,6 @@
 ﻿namespace MemberImportTest
 {
-    partial class frmMain
+    partial class FrmMain
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             ofdOpen = new System.Windows.Forms.OpenFileDialog();
             btnOpenFile = new System.Windows.Forms.Button();
             btnInvalid = new System.Windows.Forms.Button();
@@ -220,7 +220,7 @@
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Name = "frmMain";
             Text = "Import Test";
-            Paint += frmMain_Paint;
+            Paint += FrmMain_Paint;
             ResumeLayout(false);
             PerformLayout();
         }

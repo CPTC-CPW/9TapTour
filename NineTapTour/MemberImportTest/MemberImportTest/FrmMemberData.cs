@@ -18,10 +18,10 @@ namespace MemberImportTest
         /// <summary>
         /// Opens the "Member Data" Form.
         /// </summary>
-        List<Member> invalidMembers;
+        readonly List<Member> invalidMembers;
         int listPosition = 0;
-        Form home;
-        public FrmMemberData(List<Member> Invalid, frmMain main)
+        readonly Form home;
+        public FrmMemberData(List<Member> Invalid, FrmMain main)
         {
             InitializeComponent();
             invalidMembers = Invalid;
@@ -77,7 +77,7 @@ namespace MemberImportTest
 
             //need to set up some sort of check if they don't have a join
             Console.WriteLine(currentMem.JoinDate);
-            DateTime nullDate = new DateTime(1/1/0001);
+            DateTime nullDate = new(1/1/0001);
             txtdateJoined.Text = currentMem.JoinDate.ToString();
             txtrejoinDate.Text = currentMem.RejoinDate.ToString();
             txtlastBowled.Text = currentMem.LastBowled.ToString();

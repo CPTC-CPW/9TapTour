@@ -17,10 +17,10 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<NineTapRegion> GetRegionList()
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDb db = new())
             {
-                return (from t in db.NineTapRegion
-                        select t).ToList();
+                return [.. (from t in db.NineTapRegion
+                        select t)];
             }
         }
 
@@ -29,7 +29,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static int GetNumberOfRegions()
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDb db = new())
             {
                 return (from t in db.NineTapRegion
                         select t).Count();

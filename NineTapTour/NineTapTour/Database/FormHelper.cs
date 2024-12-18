@@ -108,7 +108,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static bool IsDateTimeValid(string stringDate)
         {
-            DateTime century = new DateTime(1900, 01, 01);
+            DateTime century = new(1900, 01, 01);
             if (DateTime.TryParse(stringDate, out DateTime dateTime))
             {
                 if (dateTime >= century)
@@ -127,7 +127,7 @@ namespace NineTapTour.Database
         {
             string uppercaseState = state.ToUpper().Trim();
             string[] USstates = 
-                {
+                [
                     "AL","AK","AS","AZ","AR","CA","CO",
                     "CT","DE","DC","FM","FL","GA","GU",
                     "HI","ID","IL","IN","IA","KS","KY",
@@ -137,7 +137,7 @@ namespace NineTapTour.Database
                     "OR","PW","PA","PR","RI","SC","SD",
                     "TN","TX","UT","VT","VI","VA","WA",
                     "WV","WI","WY" 
-                };
+                ];
             return uppercaseState.Length == 2 && 
                 USstates.Contains(uppercaseState);
         }
@@ -150,7 +150,7 @@ namespace NineTapTour.Database
         /// <param name="groupBox">Specifically, the Filter Series box, GRPQBS1n on FrmMemberScores </param>
         public static List<bool> GetFilterSeriesList(GroupBox groupBox)
         {
-            List<bool> filterSeries = new List<bool>();
+            List<bool> filterSeries = [];
             foreach (Control control in groupBox.Controls)
             {
                 CheckBox check = control as CheckBox;
@@ -168,7 +168,7 @@ namespace NineTapTour.Database
         /// <param name="filterSeries">A list of 9 booleans determined by GRPQBS1n on FrmMemberScores</param> 
         public static List<int> SquadNumList(List<bool> filterSeries)
         {
-            List<int> squadList = new List<int>();
+            List<int> squadList = [];
             for (int i = 0; i <= filterSeries.Count - 1; i++)
             {
                 if (filterSeries[i] == true)

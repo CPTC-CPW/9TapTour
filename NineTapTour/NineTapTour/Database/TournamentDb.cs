@@ -68,12 +68,12 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<Tournament> GetTournamentList(int regionID)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDb db = new())
             {
-                return (from t in db.Tournaments
+                return [.. (from t in db.Tournaments
                         orderby t.Date descending
                         where t.TourneyRegion == regionID
-                        select t).ToList();
+                        select t)];
             }
         }
 
@@ -83,13 +83,13 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<Participant> GetTournamentMemberList(Tournament tourn)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDb db = new())
             {
-                return (from p in db.Participants
+                return [.. (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
                         orderby p.Id
                         where p.Tournament.Id == tourn.Id
-                        select p).Include(m =>m.Member).ToList();
+                        select p).Include(m =>m.Member)];
             }
         }
 
@@ -99,13 +99,13 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<Participant> GetTournamentMemberListInOrder(Tournament tourn)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDb db = new())
             {
-                return (from p in db.Participants
+                return [.. (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
                         orderby p.Member.Id
                         where p.Tournament.Id == tourn.Id
-                        select p).Include(m => m.Member).ToList();
+                        select p).Include(m => m.Member)];
             }
         }
 
@@ -114,7 +114,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static int GetTotalNumberParticipantsInTournament(Tournament tourn)
         {
-            NineTapDb db = new NineTapDb();
+            NineTapDb db = new();
             return db.Participants
                 .Where(p => p.Tournament.Id == tourn.Id)
                 .Count();
@@ -125,12 +125,12 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<Member> GetUniqueTourMembers(Tournament tourn)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDb db = new())
             {
-                return (from p in db.Participants
+                return [.. (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
                         where p.Tournament.Id == tourn.Id
-                        select m).Distinct().ToList();
+                        select m).Distinct()];
             }
         }
 
@@ -139,12 +139,12 @@ namespace NineTapTour.Database
         /// </summary>
         public static List<Member> GetUniqueTourMembersByDate(DateTime start, DateTime end)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDb db = new())
             {
-                return (from p in db.Participants
+                return [.. (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
                         where p.Tournament.Date >= start && p.Tournament.Date <= end
-                        select m).Distinct().ToList();
+                        select m).Distinct()];
             }
         }
 
@@ -215,7 +215,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static Tournament GetTourneyByID(int tournID)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDb db = new())
             {
                 Tournament tournament =
                     (from g in db.Tournaments
@@ -227,12 +227,12 @@ namespace NineTapTour.Database
 
         public static List<Member> GetAllActiveMembers()
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDb db = new())
             {
                 List<Member> activeMembers =
-                        (from active in db.Members
+                        [.. (from active in db.Members
                          where active.IsActive == true
-                         select active).ToList();
+                         select active)];
                 return activeMembers;
             }
         }
@@ -254,7 +254,7 @@ namespace NineTapTour.Database
             using (var db = new NineTapDb())
             {
                 // Get participant/member/game info to populate DataTable
-                return (from p in db.Participants
+                return [.. (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
                         join g in db.Games on p.Game.Id equals g.Id
                         join t in db.Tournaments on p.Tournament.Id equals t.Id
@@ -276,7 +276,7 @@ namespace NineTapTour.Database
                             Game3 = g.Game3,
                             Game4 = g.Game4,
                             IsComp = g.IsComp
-                        }).ToList();
+                        })];
             }
         }
     }

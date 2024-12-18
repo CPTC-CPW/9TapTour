@@ -40,12 +40,12 @@ namespace NineTapTour.Forms
         List<Member> members;
         private void btnCheck_Click(object sender, EventArgs e)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDb db = new())
             {
-                tours = (from t in db.Tournaments
+                tours = [.. (from t in db.Tournaments
                          orderby t.Date descending
                          where t.Date >= dateTimeStart.Value && t.Date <= dateTimeEnd.Value
-                         select t).ToList();
+                         select t)];
             }
             members = TournamentDB.GetUniqueTourMembersByDate(dateTimeStart.Value, dateTimeEnd.Value);
 

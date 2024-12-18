@@ -103,14 +103,14 @@ namespace NineTapTour.Forms
             #region Create automated check boxes for debugging
 #if DEBUG
             // Creates a checkbox that will toggle all the Director Check checkboxes for debugging
-            CheckBox toggleAllDirectorCheck = new CheckBox();
+            CheckBox toggleAllDirectorCheck = new();
             toggleAllDirectorCheck.Text = "Dir Check";
             toggleAllDirectorCheck.CheckedChanged += new EventHandler(ToggleDirectorCheck_CheckChanged);
             toggleAllDirectorCheck.Location = new Point(10, 0);
             Controls.Add(toggleAllDirectorCheck);
 
             // Creates a checkbox that will fill in  all the Adjusted Average cells to appropriate values for debugging
-            CheckBox toggleAllAdjustedAverages = new CheckBox();
+            CheckBox toggleAllAdjustedAverages = new();
             toggleAllAdjustedAverages.Text = "Adj Avg";
             toggleAllAdjustedAverages.CheckedChanged += new EventHandler(ToggleAllAdjustedAverages_CheckChanged);
             toggleAllAdjustedAverages.Location = new Point(120, 0);
@@ -427,12 +427,12 @@ namespace NineTapTour.Forms
         /// <returns></returns>
         public static DataTable SetDataView(Dictionary<FinalizeTemp,int> participantsList)
         {
-            DataTable dt = new DataTable();
+            DataTable dt = new();
             SetDataColumns(dt);
 
             //dt.ExtendedProperties
             // whatever list of participants you pass into method will be populated into grid
-            List<FinalizeTemp> temp = participantsList.Keys.ToList();
+            List<FinalizeTemp> temp = [.. participantsList.Keys];
 
             // loops thru each person's info in tournament and populates the dataview with data from DB.
             foreach (FinalizeTemp item in temp)
@@ -623,8 +623,8 @@ namespace NineTapTour.Forms
         /// <param name="set"></param> setting UseGame bool flag in FinalizeTemp table to true or false
         private void CheckBoxDBSet(int row, int cell, bool set)
         {
-            NineTapDb db = new NineTapDb();
-            FinalizeTemp temp = new FinalizeTemp();
+            NineTapDb db = new();
+            FinalizeTemp temp = new();
             var GameId = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[GAME_ID_COLUMN].Value);
             temp = db.FinalizeTemp.First(f => f.GameId == GameId);
 
@@ -812,10 +812,10 @@ namespace NineTapTour.Forms
         /// <param name="temporary">the list of player histories that come from the tournament table</param>
         private void RefreshMemberView(List<PlayerHistory> temporary)
         {
-            frmPleaseWait wait = new frmPleaseWait();
+            frmPleaseWait wait = new();
             wait.Show();
 
-            DataTable dtGames = new DataTable();
+            DataTable dtGames = new();
 
             // Create table columns
             dtGames.Columns.Add("Games", typeof(Int32)).ReadOnly = true;
@@ -948,7 +948,7 @@ namespace NineTapTour.Forms
             SizeFinalizeLowerGridView(moneyWonWithTotal, gamesTotalPlayed, game1TotalPlayed, game2TotalPlayed, game3TotalPlayed, game4TotalPlayed, AllScratchTotal, AllEntryAvgTotal, AllthirtyAvgTotal);   // resizes columns in the grid
             
             // Order By Total w/HDCP
-            currentPlayerHistory = currentPlayerHistory.OrderByDescending(ph => ph.TournamentDate).ThenByDescending(ph => GetTotalWithHandicap(ph)).ThenByDescending(ph => ph.MoneyWon).ToList();
+            currentPlayerHistory = [.. currentPlayerHistory.OrderByDescending(ph => ph.TournamentDate).ThenByDescending(ph => GetTotalWithHandicap(ph)).ThenByDescending(ph => ph.MoneyWon)];
 
             // Populates Data Rows with entries from currentPlayerHistory
             foreach (var item in currentPlayerHistory)
@@ -1099,14 +1099,14 @@ namespace NineTapTour.Forms
 
                 try
                 {
-                    List<PlayerHistory> temporary = new List<PlayerHistory>();
+                    List<PlayerHistory> temporary = [];
 
                     for (int i = 0; i < TournamentEntriesGrid.Rows.Count; i++)
                     {
                         int tempMemberNumber = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[MEMBER_NUMBER_COLUMN].Value);
                         if (tempMemberNumber == memberNumber)
                         {
-                            PlayerHistory p = new PlayerHistory();
+                            PlayerHistory p = new();
 
                             p.MemberNumber = tempMemberNumber;
                             int tempgameplayed = 0;
@@ -1247,7 +1247,7 @@ namespace NineTapTour.Forms
                     int gamesPlayed = 0;
                     int currGameId = FinalizeTableList[i].GameId;
 
-                    PlayerHistory ph = new PlayerHistory();
+                    PlayerHistory ph = new();
                     ph.GameID = currGameId;
 
                     Game currGame = GameDB.GetGame(currGameId);
@@ -1441,7 +1441,7 @@ namespace NineTapTour.Forms
 
         private void Highlight30Avg(int numHistoryEntriesToHighlight, ref int numHighlightedEntries, ref double totalEntryAvgForHighlightedGames)
         {
-            List<PlayerHistory> temporary = new List<PlayerHistory>();
+            List<PlayerHistory> temporary = [];
 
             const int TournamentHistoryGameIdColumnIndex = 17;
             int gameId = Convert.ToInt32(TournamentEntriesGrid.Rows[TournamentEntriesGrid.CurrentCell.RowIndex].Cells[GAME_ID_COLUMN].Value);

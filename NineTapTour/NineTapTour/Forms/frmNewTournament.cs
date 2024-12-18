@@ -43,7 +43,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            Tournament NewTournament = new Tournament();
+            Tournament NewTournament = new();
             NewTournament.Date = dtpDate.Value.Date;
             NewTournament.Location = txtLocation.Text;
             NewTournament.Event = txtEvent.Text;
@@ -149,7 +149,7 @@ namespace NineTapTour.Forms
 
         private void btnEditTour_Click(object sender, EventArgs e)
         {
-            FrmTourSearch getEdit = new FrmTourSearch(((FrmMain)MdiParent).RegionID);
+            FrmTourSearch getEdit = new(((FrmMain)MdiParent).RegionID);
             getEdit.ShowDialog();
             tourToEdit = getEdit.getResult();
 
