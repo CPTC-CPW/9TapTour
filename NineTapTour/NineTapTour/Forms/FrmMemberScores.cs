@@ -327,7 +327,6 @@ namespace NineTapTour.Forms
             TextBox currentTextbox = (TextBox)sender;
 
             int scratchTotal = 0;
-            int cScore = 0;
             string id;
 
             foreach (TextBox score in scratchArray)
@@ -335,6 +334,7 @@ namespace NineTapTour.Forms
                 // Get the number of the scratch score textbox. txtScratchScore1 returns 1
                 id = Regex.Match(score.Name, @"\d+").Value;
 
+                int cScore;
                 if (int.TryParse(score.Text, out cScore))
                 {
                     if (cScore >= 0 && cScore <= 300)
@@ -767,14 +767,11 @@ namespace NineTapTour.Forms
 
         public void RecordIndexOnSquadSwitch()
         {
-            int squad = 0;
-
             if (FrmMemberScoresHelpers.selectedTournament.Doubles == false && switchingParticipents == false)
             {
                 if (txtMemberNum.Text != "")
                 {
-                    squad = GetCurrentSquadNumber();
-
+                    int squad = GetCurrentSquadNumber();
                     for (int i = 0; i < FrmMemberScoresHelpers.overallListOfParticipants.Count; i++)
                     {
                         if (currentMem.Id == FrmMemberScoresHelpers.overallListOfParticipants[i].Member.Id && FrmMemberScoresHelpers.overallListOfParticipants[i].Squad == squad)

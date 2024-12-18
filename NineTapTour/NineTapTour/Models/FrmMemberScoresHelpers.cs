@@ -5,12 +5,9 @@ using System.Windows.Forms;
 namespace NineTapTour.Models;
 public static class FrmMemberScoresHelpers
 {
-
-#pragma warning disable CA2211 // Non-constant fields should not be visible
     public static Tournament selectedTournament;
     public static List<Participant> overallListOfParticipants;
     public static bool unsavedBowlerData = false;
-#pragma warning restore CA2211 // Non-constant fields should not be visible
 
     /// <summary>
     /// Checks a string for numeric values

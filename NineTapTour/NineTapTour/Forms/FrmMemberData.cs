@@ -241,8 +241,6 @@ namespace NineTapTour.Forms
             }
             else
             {
-                var db = new NineTapDb();
-
                 // Personal Info
                 _memberId = currentMem.Id;
                 txtMemberNumber.Text = currentMem.Number.ToString();
@@ -1374,14 +1372,14 @@ namespace NineTapTour.Forms
         {
             if (playerFullName.Contains(","))
             {
-                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
-                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
+                playerLastName = playerFullName[..playerFullName.IndexOf(",")];
+                firstAndMiddle = playerFullName[(playerFullName.IndexOf(",") + 2)..];
             }
             // Checks to see if a period instead of a comma was accidentally placed in member name. (Rob's Request)
             else if (playerFullName.Contains("."))
             {
-                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf("."));
-                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(".") + 2);
+                playerLastName = playerFullName[..playerFullName.IndexOf(".")];
+                firstAndMiddle = playerFullName[(playerFullName.IndexOf(".") + 2)..];
             }
         }
 

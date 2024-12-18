@@ -92,7 +92,7 @@ namespace NineTapTour.Forms
                 g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
 
                 // if user enters something other than a decimal number, set SidePot to 0.00 and enter the string into notes
-                if (Decimal.TryParse(Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value), out decimal a))
+                if (Decimal.TryParse(Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value), out decimal _))
                 {
                     g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
                 }
@@ -122,14 +122,7 @@ namespace NineTapTour.Forms
             dt.Columns.Add(MEMBER_ID_COLUMN_NAME).ReadOnly = true;
             dt.Columns.Add(GAME_ID_COLUMN_NAME).ReadOnly = true;
             dt.Columns.Add(PROGRESSIVEPOT_COLUMN_NAME).ReadOnly = false;
-
-            // Sets winnersCount to clientRequested or 0, whichever is bigger
-            int winnersCount = 0;
-            if(clientRequested.Count() > 0)
-            {
-                winnersCount = clientRequested.Count();
-            }
-            
+          
             double earnings = 0.00;
 
             int MonEarnCount = 0;
@@ -983,8 +976,8 @@ namespace NineTapTour.Forms
 
             int pasteAble = Convert.ToInt32(tbClientInputCount.Text) + 3; // +3 for the pro pot entries
             int pasteCount = lines.Count();
-            int paste = 0;
-            if(pasteCount < pasteAble)
+            int paste;
+            if (pasteCount < pasteAble)
             {
                 paste = pasteCount - 1;
             }

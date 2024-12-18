@@ -300,8 +300,7 @@ namespace MemberImportTest
                                     {
                                         Console.WriteLine(File.Substring(currentIndex, Spaces[i]).Trim());
                                         string str = File.Substring(currentIndex, Spaces[i]).Trim();
-                                        int num;
-                                        bool isNum = int.TryParse(str, out num);
+                                        bool isNum = int.TryParse(str, out _);
                                         if (isNum)
                                         {
                                             newMem.Referrals = Convert.ToInt16(File.Substring(currentIndex, Spaces[i]).Trim());
@@ -394,8 +393,8 @@ namespace MemberImportTest
                                     {
                                         if (File.Length - currentIndex < 8)
                                         {
-                                            Console.WriteLine(File.Substring(currentIndex));
-                                            newMem.DateOfBirth = Convert.ToDateTime(File.Substring(currentIndex));
+                                            Console.WriteLine(File[currentIndex..]);
+                                            newMem.DateOfBirth = Convert.ToDateTime(File[currentIndex..]);
                                             // if the date is in the future, subtract 100 years to make it a valid date
                                             if (newMem.DateOfBirth > DateTime.Today)
                                             {
@@ -595,22 +594,21 @@ namespace MemberImportTest
 
             char[] splitters = ['/', '-'];
             string[] PlayerFinalFirstAndMiddle = ["", ""];
-            string[] PlayersFinalLastAndMiddle = ["", ""];
             string playerLastName = "";
             string firstAndMiddle = "";
             string playerFullName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
             if (playerFullName.Contains(","))
             {
-                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
-                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
+                playerLastName = playerFullName[..playerFullName.IndexOf(",")];
+                firstAndMiddle = playerFullName[(playerFullName.IndexOf(",") + 2)..];
             }
             // Checks to see if a period instead of a comma was accidentally placed in member name. (Client's Request)
             else if (playerFullName.Contains("."))
             {
-                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf("."));
+                playerLastName = playerFullName[..playerFullName.IndexOf(".")];
                 try
                 {
-                    firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(".") + 2);
+                    firstAndMiddle = playerFullName[(playerFullName.IndexOf(".") + 2)..];
                 }
                 catch (ArgumentOutOfRangeException)
                 {
@@ -618,7 +616,7 @@ namespace MemberImportTest
                     // First name will be preserved in these rare cases. For now middle names will
                     // be ignored in these exceptions due to various name formats
                     int firstSpaceIndex = playerFullName.IndexOf(" ");
-                    firstAndMiddle = playerFullName.Substring(0, firstSpaceIndex);
+                    firstAndMiddle = playerFullName[..firstSpaceIndex];
                 }
 
             }
@@ -684,8 +682,7 @@ namespace MemberImportTest
             }
 
             String[] playerNumberAfterSplit;
-            int playerNumberAsInt = 0;
-            int.TryParse(playerNumber, out playerNumberAsInt);
+            int.TryParse(playerNumber, out int playerNumberAsInt);
 
             if (playerNumberAsInt != 0)
             {
