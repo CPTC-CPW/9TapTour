@@ -149,11 +149,10 @@ namespace NineTapTourTests
 
         private static List<PlayerHistory> GetPlayerHistoryTestData(int listNum)
         {
-            switch (listNum)
+            return listNum switch
             {
-                case 0: // Did not cash last 3
-                    return
-                    [
+                // Did not cash last 3
+                0 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0, Bonus = 0
@@ -162,10 +161,9 @@ namespace NineTapTourTests
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0, Bonus = 0
                         }
-                    ];
-                case 1: // Cashed 2nd tournament ago
-                    return
-                    [
+                ],
+                // Cashed 2nd tournament ago
+                1 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 1
@@ -174,10 +172,9 @@ namespace NineTapTourTests
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0
                         }
-                    ];
-                case 2: // Cashed 3rd tournament ago
-                    return
-                    [
+                ],
+                // Cashed 3rd tournament ago
+                2 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
@@ -186,10 +183,9 @@ namespace NineTapTourTests
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 1
                         }
-                    ];
-                case 3: // Cashed 4th tournament ago
-                    return
-                    [
+                ],
+                // Cashed 4th tournament ago
+                3 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
@@ -202,10 +198,9 @@ namespace NineTapTourTests
                         {
                             TournamentDate = new DateTime(17,12,28), MoneyWon = 1
                         }
-                    ];
-                case 4: // Cashed 3rd tournament ago but not last 3 entries (multiple tournament entry)
-                    return
-                    [
+                ],
+                // Cashed 3rd tournament ago but not last 3 entries (multiple tournament entry)
+                4 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
@@ -218,10 +213,9 @@ namespace NineTapTourTests
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 1
                         }
-                    ];
-                case 5: // Cashed 2nd tournament ago as multiple entry but not the other 2
-                    return
-                    [
+                ],
+                // Cashed 2nd tournament ago as multiple entry but not the other 2
+                5 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
@@ -234,10 +228,9 @@ namespace NineTapTourTests
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0
                         }
-                    ];
-                case 6: // Did not cash last 3 with a multiple entry
-                    return
-                    [
+                ],
+                // Did not cash last 3 with a multiple entry
+                6 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
@@ -250,10 +243,9 @@ namespace NineTapTourTests
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0
                         }
-                    ];
-                case 7: // Cashed 3rd tournament ago as multiple entry but not the other 2
-                    return
-                    [
+                ],
+                // Cashed 3rd tournament ago as multiple entry but not the other 2
+                7 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
@@ -266,10 +258,8 @@ namespace NineTapTourTests
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 1
                         }
-                    ];
-                case 8:
-                    return
-                    [
+                ],
+                8 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0, Bonus = 5
@@ -278,10 +268,9 @@ namespace NineTapTourTests
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0, Bonus = 5
                         }
-                    ];
-                case 9: // Gained a bonus pin last tournament
-                    return
-                    [
+                ],
+                // Gained a bonus pin last tournament
+                9 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0, Bonus = 1
@@ -290,14 +279,11 @@ namespace NineTapTourTests
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0, Bonus = 0
                         }
-                    ];
-                case 10:
-                    return null;
-                case 11:
-                    return [];
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+                ],
+                10 => null,
+                11 => [],
+                _ => throw new ArgumentOutOfRangeException(),
+            };
         }
 
 

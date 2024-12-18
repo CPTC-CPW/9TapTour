@@ -597,25 +597,25 @@ namespace MemberImportTest
             string playerLastName = "";
             string firstAndMiddle = "";
             string playerFullName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
-            if (playerFullName.Contains(","))
+            if (playerFullName.Contains(','))
             {
-                playerLastName = playerFullName[..playerFullName.IndexOf(",")];
-                firstAndMiddle = playerFullName[(playerFullName.IndexOf(",") + 2)..];
+                playerLastName = playerFullName[..playerFullName.IndexOf(',')];
+                firstAndMiddle = playerFullName[(playerFullName.IndexOf(',') + 2)..];
             }
             // Checks to see if a period instead of a comma was accidentally placed in member name. (Client's Request)
-            else if (playerFullName.Contains("."))
+            else if (playerFullName.Contains('.'))
             {
-                playerLastName = playerFullName[..playerFullName.IndexOf(".")];
+                playerLastName = playerFullName[..playerFullName.IndexOf('.')];
                 try
                 {
-                    firstAndMiddle = playerFullName[(playerFullName.IndexOf(".") + 2)..];
+                    firstAndMiddle = playerFullName[(playerFullName.IndexOf('.') + 2)..];
                 }
                 catch (ArgumentOutOfRangeException)
                 {
                     // Can be thrown if the "." comes at the end. Ex. "John Doe Jr."
                     // First name will be preserved in these rare cases. For now middle names will
                     // be ignored in these exceptions due to various name formats
-                    int firstSpaceIndex = playerFullName.IndexOf(" ");
+                    int firstSpaceIndex = playerFullName.IndexOf(' ');
                     firstAndMiddle = playerFullName[..firstSpaceIndex];
                 }
 
@@ -635,29 +635,29 @@ namespace MemberImportTest
 
             catch (Exception)
             {
-                string[] aftersplit;
-                string orgstring;
+                string[] afterSplit;
+                string orgString;
                 try
                 {
-                    orgstring = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
-                    aftersplit = orgstring.Split('-');
-                    playerOrgAVG = Convert.ToInt32(aftersplit[0]);
+                    orgString = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
+                    afterSplit = orgString.Split('-');
+                    playerOrgAVG = Convert.ToInt32(afterSplit[0]);
                 }
                 catch
                 {
                     try
                     {
-                        orgstring = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
-                        aftersplit = orgstring.Split('*');
-                        playerOrgAVG = Convert.ToInt32(aftersplit[0]);
+                        orgString = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
+                        afterSplit = orgString.Split('*');
+                        playerOrgAVG = Convert.ToInt32(afterSplit[0]);
                     }
                     catch
                     {
                         try
                         {
-                            orgstring = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
-                            aftersplit = orgstring.Split('L');
-                            playerOrgAVG = Convert.ToInt32(aftersplit[0]);
+                            orgString = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
+                            afterSplit = orgString.Split('L');
+                            playerOrgAVG = Convert.ToInt32(afterSplit[0]);
                         }
                         catch
                         {
@@ -678,7 +678,7 @@ namespace MemberImportTest
 
             if (isRegionHawaii)
             {
-                playerNumber = Regex.Replace(playerNumber, "[^0-9]", "");  // strip the member number to straight number
+                playerNumber = RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty);  // strip the member number to straight number
             }
 
             String[] playerNumberAfterSplit;
@@ -686,7 +686,7 @@ namespace MemberImportTest
 
             if (playerNumberAsInt != 0)
             {
-                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumber, "[^0-9]", ""));
+                playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty));
             }
             else if (playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
             {
@@ -695,7 +695,7 @@ namespace MemberImportTest
                     try
                     {
                         playerNumberAfterSplit = playerNumber.Split(splitters[i]);
-                        playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumberAfterSplit[^1], "[^0-9]", ""));
+                        playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumberAfterSplit[^1], string.Empty));
                     }
                     catch
                     {
@@ -1005,9 +1005,6 @@ namespace MemberImportTest
                 }
             }
         }
-
-        // Removed 3 methods no lomger being used referencing pin files and mult pin files.. 
-        // if this is brought back as a requirement reference github history of file pre 3/4/2019
 
         /// <summary>
         /// Allows user to change region for where they would like to import the member data to.

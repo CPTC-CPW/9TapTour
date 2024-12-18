@@ -21,7 +21,7 @@ namespace NineTapTour.Forms
 {
     public partial class FrmTournamentResults : Form
     {
-        // Names of the Colums in the DataGridView
+        // Names of the Columns in the DataGridView
         const string PLACE_STANDING_COLUMN_NAME = "Place";
         const string FULLNAME_COLUMN_NAME = "Full Name";
         const string HANDICAP_COLUMN_NAME = "H/B*";
@@ -132,7 +132,7 @@ namespace NineTapTour.Forms
             }
 
             // Create rows and populate with each member's data for each row
-            for (int wc = 0; wc < clientRequested.Count(); wc++)
+            for (int wc = 0; wc < clientRequested.Count; wc++)
             {
                 DataRow newRow = dt.NewRow();
                 if (MonEarnCount > 0)
@@ -169,7 +169,7 @@ namespace NineTapTour.Forms
                 dt.Rows.Add(newRow);
             }
 
-            for (int tr = clientRequested.Count(); tr < clientInput ; tr++)
+            for (int tr = clientRequested.Count; tr < clientInput ; tr++)
             {
                 DataRow newRow = dt.NewRow();
                 if (MonEarnCount > 0 && tr < MonEarnCount)
@@ -233,7 +233,7 @@ namespace NineTapTour.Forms
             List<ExcelMember> tournyBowlers = [];
             List<WinnerListMemberViewModel> bowlers = TournamentDB.GetWinnerListMemberData(tourny.Id);
 
-            totalTournamentEntries = bowlers.Count();
+            totalTournamentEntries = bowlers.Count;
 
             foreach (var b in bowlers)
             {
@@ -266,7 +266,7 @@ namespace NineTapTour.Forms
                     scores.RemoveAll(x => x == 0);
 
                     // remove lowest score if there are 4 games
-                    if (scores.Count() == 4)
+                    if (scores.Count == 4)
                     {
                         int minScore = scores.Min();
                         scores.Remove(minScore);
@@ -281,7 +281,7 @@ namespace NineTapTour.Forms
                     }
 
                     m.TotalScore = scores.Sum()
-                        + (scores.Count() * (m.Handicap + m.Bonus));
+                        + (scores.Count * (m.Handicap + m.Bonus));
                 }
                 else
                 {
@@ -569,7 +569,7 @@ namespace NineTapTour.Forms
                                 //store the place value of the player before the current
                                 tempData = dt.Rows[i - 1].ItemArray[j].ToString();
 
-                                //if there is a next player, grab their place value aswell
+                                //if there is a next player, grab their place value as well
                                 if((i + 1) < dt.Rows.Count)
                                 {
                                     tempData2 = dt.Rows[i + 1].ItemArray[j].ToString();
@@ -975,7 +975,7 @@ namespace NineTapTour.Forms
             int col = 4;
 
             int pasteAble = Convert.ToInt32(tbClientInputCount.Text) + 3; // +3 for the pro pot entries
-            int pasteCount = lines.Count();
+            int pasteCount = lines.Length;
             int paste;
             if (pasteCount < pasteAble)
             {

@@ -179,14 +179,14 @@ namespace NineTapTour.Forms
                 btnDelete.Enabled = true;
 
                 Refresh();
-                // sets focus to member num becuse that is what a user will need next
+                // sets focus to member num because that is what a user will need next
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
                 txtMemberNum.Focus();
             }
-            //Clicks LastMemberButton when frm is activated.
-            //this will make sure the person entering scores 
-            //does not accedently enter a bowler in the wrong squad.
+            // Clicks LastMemberButton when frm is activated.
+            // this will make sure the person entering scores 
+            // does not accidently enter a bowler in the wrong squad.
             MoveToLastRecordOfMemberScores();
 
         }
@@ -332,10 +332,9 @@ namespace NineTapTour.Forms
             foreach (TextBox score in scratchArray)
             {
                 // Get the number of the scratch score textbox. txtScratchScore1 returns 1
-                id = Regex.Match(score.Name, @"\d+").Value;
+                id = RegexHelpers.GetDigitsRegex().Match(score.Name).Value;
 
-                int cScore;
-                if (int.TryParse(score.Text, out cScore))
+                if (int.TryParse(score.Text, out int cScore))
                 {
                     if (cScore >= 0 && cScore <= 300)
                     {
@@ -507,7 +506,7 @@ namespace NineTapTour.Forms
 
                 player.Game.Id = gameId;
 
-                //selects the ID of the combobox of tournaments and stores the
+                //selects the ID of the combo box of tournaments and stores the
                 //tournament property within the participants class.
                 player.Tournament = currTourney;
                 player.Squad = squad;
@@ -1230,9 +1229,9 @@ namespace NineTapTour.Forms
         /// </summary>
         public new void Refresh()
         {
-            (List<ParticipantsGameViewModel> ParticipantsGameScores, List<TopParticipantGameViewModel> Top3Scores) tourneyResults = GetResultsForCurrentParticipantList();
-            List<ParticipantsGameViewModel> participantsGameViewModels = tourneyResults.ParticipantsGameScores;
-            List<TopParticipantGameViewModel> topParticipantGameViewModels = tourneyResults.Top3Scores;
+            (List<ParticipantsGameViewModel> ParticipantsGameScores, List<TopParticipantGameViewModel> Top3Scores) = GetResultsForCurrentParticipantList();
+            List<ParticipantsGameViewModel> participantsGameViewModels = ParticipantsGameScores;
+            List<TopParticipantGameViewModel> topParticipantGameViewModels = Top3Scores;
 
             // variable used to update lblHighSelected appropriately
             Boolean isGame = true;
@@ -1490,13 +1489,13 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Populates Tournament dropdown list to most recently modified tournament;
         /// </summary>
-        public void PopulateSelectedTournament(Tournament currtourney)
+        public void PopulateSelectedTournament(Tournament currentTournament)
         {
             List<Tournament> temp2 = TournamentDB.GetTournamentList(RegionID);
 
             for (int i = 0; i < temp2.Count; i++)
             {
-                if (temp2[i].Id == currtourney.Id)
+                if (temp2[i].Id == currentTournament.Id)
                 {
                     cbxTourneyDropDown.SelectedIndex = i;
                 }

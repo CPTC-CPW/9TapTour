@@ -57,7 +57,7 @@ namespace NineTapTour.Forms
         
         /// <summary>
         /// finds all Controls and change BackColor of each control color when the control is on 
-        /// focus and checks if that control has a child and changes the child contol color onFocus
+        /// focus and checks if that control has a child and changes the child control color onFocus
         /// and changes back to origin back color when LostFocus
         /// </summary>
         /// <param name="ctrl"></param>
@@ -83,8 +83,8 @@ namespace NineTapTour.Forms
         private void Ctrl_LostFocus(object sender, EventArgs e)
         {
             var ctrl = sender as Control;
-            if (ctrl.Tag is Color)
-                ctrl.BackColor = (Color)ctrl.Tag;
+            if (ctrl.Tag is Color color)
+                ctrl.BackColor = color;
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace NineTapTour.Forms
                 List<PlayerHistory> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
                 if (last5.Count >= 1)
                 {   //whatever the bowler director decides his average to be is right. 
-                    // dont pull from the player hstory page
+                    // don't pull from the player history page
                     txtAverage.Text = currentMem.StartAvg.ToString(); 
                     currentMem.StartAvg = Convert.ToInt16(txtAverage.Text);
                     txt30GameAvg.Text = Convert.ToInt16(last5[0].trueAVG).ToString();
@@ -415,7 +415,7 @@ namespace NineTapTour.Forms
                 txtLastName.BackColor = SystemColors.Control;
             }
 
-            // validate firstname textbox
+            // validate first name textbox
             if (String.IsNullOrWhiteSpace(txtFirstName.Text))
             {
                 lblFirstNameValidation.Visible = true;
@@ -537,8 +537,7 @@ namespace NineTapTour.Forms
                 // Misc. Info
                 if (!String.IsNullOrWhiteSpace(txtRejoinDate.Text))
                 {
-                    DateTime date;
-                    if (DateTime.TryParse(txtRejoinDate.Text, out date))
+                    if (DateTime.TryParse(txtRejoinDate.Text, out DateTime date))
                     {
                         temp.RejoinDate = date;
                     }
@@ -550,8 +549,7 @@ namespace NineTapTour.Forms
 
                 if (!String.IsNullOrWhiteSpace(txtLastBowled.Text))
                 {
-                    DateTime date;
-                    if (DateTime.TryParse(txtLastBowled.Text, out date))
+                    if (DateTime.TryParse(txtLastBowled.Text, out DateTime date))
                     {
                         temp.LastBowled = date;
                     }
@@ -569,8 +567,7 @@ namespace NineTapTour.Forms
 
                 if (!String.IsNullOrWhiteSpace(txtLastPayment.Text))
                 {
-                    DateTime date;
-                    if (DateTime.TryParse(txtLastPayment.Text, out date))
+                    if (DateTime.TryParse(txtLastPayment.Text, out DateTime date))
                     {
                         temp.LastPayment = date;
                     }
@@ -1059,22 +1056,21 @@ namespace NineTapTour.Forms
 
             if (isRegionHawaii)
             {
-                playerNumber = Regex.Replace(playerNumber, "[^0-9]", "");  // strip the member number to straight number
+                playerNumber = RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty);  // strip the member number to straight number
             }
             String[] playerNumberAfterSplit;
-            int playerNumberAsInt = 0;
-            int.TryParse(playerNumber, out playerNumberAsInt);
+            int.TryParse(playerNumber, out int playerNumberAsInt);
 
-            // hawaii numbers are not 234 they have H  or H- in front need to address that by removing the h 
+            // Hawaii numbers are not 234 they have H  or H- in front need to address that by removing the h 
             // used regex to remove any non numeric expressions from player number be it a letter or a - 
             if (playerNumberAsInt != 0)
             {
-                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumber, "[^0-9]", ""));
+                playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty));
             }
             else if (playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
             {
                 playerNumberAfterSplit = playerNumber.Split('/');
-                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumberAfterSplit[^1], "[^0-9]", string.Empty));
+                playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumberAfterSplit[^1], string.Empty));
             }
 
             ProcessExcel(returnMe, xlWorkBook, ref xlWorkSheet, ref range, PlayerFinalFirstAndMiddle, playerLastName, playerOrgAVG, isRegionHawaii);
@@ -1370,16 +1366,16 @@ namespace NineTapTour.Forms
         /// <param name="playerFullName"></param>
         private static void SplitName(ref string playerLastName, ref string firstAndMiddle, string playerFullName)
         {
-            if (playerFullName.Contains(","))
+            if (playerFullName.Contains(','))
             {
-                playerLastName = playerFullName[..playerFullName.IndexOf(",")];
-                firstAndMiddle = playerFullName[(playerFullName.IndexOf(",") + 2)..];
+                playerLastName = playerFullName[..playerFullName.IndexOf(',')];
+                firstAndMiddle = playerFullName[(playerFullName.IndexOf(',') + 2)..];
             }
             // Checks to see if a period instead of a comma was accidentally placed in member name. (Rob's Request)
-            else if (playerFullName.Contains("."))
+            else if (playerFullName.Contains('.'))
             {
-                playerLastName = playerFullName[..playerFullName.IndexOf(".")];
-                firstAndMiddle = playerFullName[(playerFullName.IndexOf(".") + 2)..];
+                playerLastName = playerFullName[..playerFullName.IndexOf('.')];
+                firstAndMiddle = playerFullName[(playerFullName.IndexOf('.') + 2)..];
             }
         }
 
