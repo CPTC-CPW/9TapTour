@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NineTapTour.Calculations;
 using NineTapTour.Forms;
 using NineTapTour.Models;
 using System;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NineTapTour.Calculations.Test
+namespace NineTapTourTests
 {
     [TestClass()]
     public class CalculationsTest
@@ -69,7 +70,7 @@ namespace NineTapTour.Calculations.Test
         {
             List<MemberScores> members = GetMemberScoreTestData();
             members = Calculations.CalculatePlaceStandings(members);
-            
+
             //check first bowler is A with 1000; lesser score (800) is removed
             Assert.AreEqual(members[0].MemberId, 1);
             Assert.AreEqual(members[0].Score, 1000);
@@ -136,7 +137,7 @@ namespace NineTapTour.Calculations.Test
         [DataRow(3, 4, 0, 5)] // - 6 losses in a row not yet applied, 3 initial
         [DataRow(4, 4, 0, 5)] // - 6 losses in a row not yet applied, 4 initial
         [DataRow(5, 4, 0, 5)] // - 6 losses in a row not yet applied, 4 initial
-        public void AddToBonusPins_ReturnsExpectedBonusPins(int currentBonusPins, int currTourneyEntryCount, int playerHistoryListNum, 
+        public void AddToBonusPins_ReturnsExpectedBonusPins(int currentBonusPins, int currTourneyEntryCount, int playerHistoryListNum,
                                                             int expectedBonusPins)
         {
             List<PlayerHistory> latestTournaments = GetPlayerHistoryTestData(playerHistoryListNum);
