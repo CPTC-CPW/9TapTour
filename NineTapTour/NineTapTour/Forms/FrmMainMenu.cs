@@ -28,7 +28,7 @@ namespace NineTapTour.Forms
             //check to see if any regions exist, if not create a local region(for first time start up)
             if(NineTapRegionDB.GetNumberOfRegions() == 0)
             {
-                NineTapRegion nTemp = new NineTapRegion();
+                NineTapRegion nTemp = new();
                 nTemp.NineTapRegionName = "Local";
                 NineTapRegionDB.AddRegion(nTemp);
             }
@@ -100,9 +100,9 @@ namespace NineTapTour.Forms
         private void MainMenu_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
-            Font drawFont = new Font("Arial", 12);
-            SolidBrush drawBrush = new SolidBrush(Color.White);
-            PointF drawPoint = new PointF(10, 2);
+            Font drawFont = new("Arial", 12);
+            SolidBrush drawBrush = new(Color.White);
+            PointF drawPoint = new(10, 2);
             g.DrawString("Version: 2.4.2", drawFont, drawBrush, drawPoint);
 #if DEBUG
             drawBrush.Color = Color.Red;
@@ -118,7 +118,7 @@ namespace NineTapTour.Forms
             string name = NineTapRegionDB.GetRegionByID(regionID).NineTapRegionName;
             if (MessageBox.Show($"This button will delete all data stored in the {name} database, are you sure you want to clear  data?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                frmPleaseWait pl = new frmPleaseWait();
+                frmPleaseWait pl = new();
                 pl.Show();
                 //Delete Player History where HisID = selected regionID
                 List<PlayerHistory> phis = PlayerHistoryDB.GetAllPlayerHistory(regionID);
@@ -173,7 +173,7 @@ namespace NineTapTour.Forms
 
                 if (NineTapRegionDB.GetNumberOfRegions() == 0) // recreate the local region select again if it nothing exists here anymore
                 {
-                    NineTapRegion n = new NineTapRegion();
+                    NineTapRegion n = new();
                     n.NineTapRegionName = "Local";
                     NineTapRegionDB.AddRegion(n);
                 }

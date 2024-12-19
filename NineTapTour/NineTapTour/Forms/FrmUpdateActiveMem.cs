@@ -12,10 +12,10 @@ namespace NineTapTour.Forms
 {
     public partial class FrmUpdateActiveMem : Form
     {
-        int RegionID;
+        readonly int RegionID;
         DateTime targetDate;
-        List<Member> InActiveList; 
-        List<Member> AllMembers;
+        readonly List<Member> InActiveList;
+        readonly List<Member> AllMembers;
         public FrmUpdateActiveMem(int RID)
         {
             InitializeComponent();

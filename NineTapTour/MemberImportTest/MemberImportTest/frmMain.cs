@@ -14,10 +14,10 @@ using System.Drawing;
 
 namespace MemberImportTest
 {
-    public partial class frmMain : Form
+    public partial class FrmMain : Form
     {
 
-        public frmMain()
+        public FrmMain()
         {
             InitializeComponent();
             List<NineTapRegion> r = NineTapRegionDB.GetRegionList();
@@ -28,71 +28,71 @@ namespace MemberImportTest
         }
         #region Member Info Static Ints
         //MEMBER INFO STATIC INTS
-        static int MemNumSpace = 6;     // Member Number
-        static int DJoinedSpace = 8;    // Date Joined
-        static int LNameSpace = 20;     // Last Name
-        static int FNameSpace = 20;     // First Name
-        static int MISpace = 2;         // Middle Initial
-        static int EPhoneSpace = 15;    // Evening Phone
-        static int DPhoneSpace = 15;    // Day Phone
-        static int CPhoneSpace = 15;    // Cell Phone
-        static int StreetSpace = 40;    // Street Address
-        static int EmailSpace = 40;     // Email Address
-        static int CitySpace = 20;      // City
-        static int StateSpace = 2;      // State
-        static int ZipSpace = 10;       // Zip
-        static int NotesSpace = 200;    // Notes
-        static int AVGSpace = 3;        // Average
-        static int HCSpace = 2;         // Handicap
-        static int BSpace = 2;          // Bonus
-        static int LastBSpace = 8;      // Last Bowled
-        static int YearEndTSpace = 2;   // Year End Tournaments
-        static int MoneyESpace = 10;    // Money Earned
-        static int RejoinDSpace = 8;    // Rejoin Date;
-        static int ReferalSpace = 2;    // ReferalSpace;
-        static int SSSpace = 11;        // Social Security
-        static int CBSpace = 5;         // Check Box Spaceing, there are 7 total, only 5 are actually checked for information, repeated 7 times in Spaces array.
-        static int DOBSpace = 8;        // Date Of Birth.
+        static readonly int MemNumSpace = 6;     // Member Number
+        static readonly int DJoinedSpace = 8;    // Date Joined
+        static readonly int LNameSpace = 20;     // Last Name
+        static readonly int FNameSpace = 20;     // First Name
+        static readonly int MISpace = 2;         // Middle Initial
+        static readonly int EPhoneSpace = 15;    // Evening Phone
+        static readonly int DPhoneSpace = 15;    // Day Phone
+        static readonly int CPhoneSpace = 15;    // Cell Phone
+        static readonly int StreetSpace = 40;    // Street Address
+        static readonly int EmailSpace = 40;     // Email Address
+        static readonly int CitySpace = 20;      // City
+        static readonly int StateSpace = 2;      // State
+        static readonly int ZipSpace = 10;       // Zip
+        static readonly int NotesSpace = 200;    // Notes
+        static readonly int AVGSpace = 3;        // Average
+        static readonly int HCSpace = 2;         // Handicap
+        static readonly int BSpace = 2;          // Bonus
+        static readonly int LastBSpace = 8;      // Last Bowled
+        static readonly int YearEndTSpace = 2;   // Year End Tournaments
+        static readonly int MoneyESpace = 10;    // Money Earned
+        static readonly int RejoinDSpace = 8;    // Rejoin Date;
+        static readonly int ReferalSpace = 2;    // ReferalSpace;
+        static readonly int SSSpace = 11;        // Social Security
+        static readonly int CBSpace = 5;         // Check Box Spaceing, there are 7 total, only 5 are actually checked for information, repeated 7 times in Spaces array.
+        static readonly int DOBSpace = 8;        // Date Of Birth.
         #endregion
         #region PinFile Static Ints
         // PIN FILE STATIC INTS
-        static int PinFileMemNumSpace = 6;
-        static int PinFileLastName = 20;
-        static int PinFileFirstName = 20;
-        static int PinFileMiddleName = 2;
-        static int PinFileScratchScore1 = 3;
-        static int PinFileScratchScore2 = 3;
-        static int PinFileScratchScore3 = 3;
-        static int PinFileScratchScore4 = 3;
-        static int PinFileScratchScoreTotal = 4;
-        static int PinFileHandicapScore1 = 3;
-        static int PinFileHandicapScore2 = 3;
-        static int PinFileHandicapScore3 = 3;
-        static int PinFileHandicapScore4 = 3;
-        static int PinFileHandicapScoreTotal = 4;
-        static int PinFileNotes = 207; //notes + spaces to skip to get to the 0's ans 1's that control the squads
-        static int morsecodeslot = 5; // all the 0 and 1s at the end of a players pin record. these series of 0s and 1s indicate their active or inactive status, male or female, senior. and bowling squad.
+        static readonly int PinFileMemNumSpace = 6;
+        static readonly int PinFileLastName = 20;
+        static readonly int PinFileFirstName = 20;
+        static readonly int PinFileMiddleName = 2;
+        static readonly int PinFileScratchScore1 = 3;
+        static readonly int PinFileScratchScore2 = 3;
+        static readonly int PinFileScratchScore3 = 3;
+        static readonly int PinFileScratchScore4 = 3;
+        static readonly int PinFileScratchScoreTotal = 4;
+        static readonly int PinFileHandicapScore1 = 3;
+        static readonly int PinFileHandicapScore2 = 3;
+        static readonly int PinFileHandicapScore3 = 3;
+        static readonly int PinFileHandicapScore4 = 3;
+        static readonly int PinFileHandicapScoreTotal = 4;
+        static readonly int PinFileNotes = 207; //notes + spaces to skip to get to the 0's ans 1's that control the squads
+        static readonly int morsecodeslot = 5; // all the 0 and 1s at the end of a players pin record. these series of 0s and 1s indicate their active or inactive status, male or female, senior. and bowling squad.
         #endregion
 
         public int RegionID;
         public int allGames;
 
-        public List<Member> validMembers = new List<Member>();      // Makes list of valid members
-        public List<Member> invalidMembers = new List<Member>();    // Makes list of invalid members
-        public List<PlayerHistory> PlayerHistoryList = new List<PlayerHistory>();
+        public List<Member> validMembers = [];      // Makes list of valid members
+        public List<Member> invalidMembers = [];    // Makes list of invalid members
+        public List<PlayerHistory> PlayerHistoryList = [];
 
         // Create array of spaces
-        int[] Spaces = new int[] { MemNumSpace, DJoinedSpace, LNameSpace, FNameSpace, MISpace, EPhoneSpace, DPhoneSpace, CPhoneSpace,
+        readonly int[] Spaces = [ MemNumSpace, DJoinedSpace, LNameSpace, FNameSpace, MISpace, EPhoneSpace, DPhoneSpace, CPhoneSpace,
                                    StreetSpace, EmailSpace, CitySpace, StateSpace, ZipSpace, NotesSpace, AVGSpace, HCSpace, BSpace,
-                                   LastBSpace, YearEndTSpace, MoneyESpace, RejoinDSpace, ReferalSpace, SSSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, DOBSpace};
+                                   LastBSpace, YearEndTSpace, MoneyESpace, RejoinDSpace, ReferalSpace, SSSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, DOBSpace];
 
-        int[] PinSpaces = new int[] {PinFileMemNumSpace, PinFileLastName, PinFileFirstName, PinFileMiddleName, PinFileScratchScore1, PinFileScratchScore2, PinFileScratchScore3, PinFileScratchScore4 , PinFileScratchScoreTotal,
+        readonly int[] PinSpaces = [PinFileMemNumSpace, PinFileLastName, PinFileFirstName, PinFileMiddleName, PinFileScratchScore1, PinFileScratchScore2, PinFileScratchScore3, PinFileScratchScore4 , PinFileScratchScoreTotal,
                                      PinFileHandicapScore1, PinFileHandicapScore2, PinFileHandicapScore3, PinFileHandicapScore4, PinFileHandicapScoreTotal , PinFileNotes, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot
-                                      ,morsecodeslot, morsecodeslot, morsecodeslot , morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot};
+                                      ,morsecodeslot, morsecodeslot, morsecodeslot , morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot];
 
-        private static List<ExcelRow> ALLEXCELDATAFROMALLPLAYERS = new List<ExcelRow>();
-        private static List<Tournament> TournamentList = new List<Tournament>();
-        private static List<Game> GameImport = new List<Game>();
+        private static readonly List<ExcelRow> ALLEXCELDATAFROMALLPLAYERS = [];
+        private static readonly List<Tournament> TournamentList = [];
+        private static readonly List<Game> GameImport = [];
 
         /// <summary>
         /// When the user clicks on the open button file it will open a file selection window
@@ -106,11 +106,11 @@ namespace MemberImportTest
             ofdOpen.Title = "Please Select a member file to open";
             if (ofdOpen.ShowDialog() == DialogResult.OK)
             {
-                System.IO.StreamReader sr = new System.IO.StreamReader(ofdOpen.FileName);
+                System.IO.StreamReader sr = new(ofdOpen.FileName);
                 //MessageBox.Show(sr.ReadToEnd()); //for debug purpose
                 String File = sr.ReadToEnd(); // It's easier to read into a string and work with the file rather than a streamreader, which has no direct position "index" access.
                 sr.Close();
-                Member newMem = new Member(); // Might not need this here, may move it.
+                Member newMem = new(); // Might not need this here, may move it.
                 int currentIndex = 0;         // Starting index
                 //List<String> memberInfo = new List<String>(); //for testing
                 int i;                        // Needs to be declared outside for to be used for switch
@@ -300,8 +300,7 @@ namespace MemberImportTest
                                     {
                                         Console.WriteLine(File.Substring(currentIndex, Spaces[i]).Trim());
                                         string str = File.Substring(currentIndex, Spaces[i]).Trim();
-                                        int num;
-                                        bool isNum = int.TryParse(str, out num);
+                                        bool isNum = int.TryParse(str, out _);
                                         if (isNum)
                                         {
                                             newMem.Referrals = Convert.ToInt16(File.Substring(currentIndex, Spaces[i]).Trim());
@@ -394,8 +393,8 @@ namespace MemberImportTest
                                     {
                                         if (File.Length - currentIndex < 8)
                                         {
-                                            Console.WriteLine(File.Substring(currentIndex));
-                                            newMem.DateOfBirth = Convert.ToDateTime(File.Substring(currentIndex));
+                                            Console.WriteLine(File[currentIndex..]);
+                                            newMem.DateOfBirth = Convert.ToDateTime(File[currentIndex..]);
                                             // if the date is in the future, subtract 100 years to make it a valid date
                                             if (newMem.DateOfBirth > DateTime.Today)
                                             {
@@ -591,34 +590,33 @@ namespace MemberImportTest
             Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
             Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
             Excel.Range range = xlWorkSheet.UsedRange;
-            List<ExcelRow> returnMe = new List<ExcelRow>();
+            List<ExcelRow> returnMe = [];
 
-            char[] splitters = { '/', '-' };
-            string[] PlayerFinalFirstAndMiddle = { "", "" };
-            string[] PlayersFinalLastAndMiddle = { "", "" };
+            char[] splitters = ['/', '-'];
+            string[] PlayerFinalFirstAndMiddle = ["", ""];
             string playerLastName = "";
             string firstAndMiddle = "";
             string playerFullName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
-            if (playerFullName.Contains(","))
+            if (playerFullName.Contains(','))
             {
-                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
-                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
+                playerLastName = playerFullName[..playerFullName.IndexOf(',')];
+                firstAndMiddle = playerFullName[(playerFullName.IndexOf(',') + 2)..];
             }
             // Checks to see if a period instead of a comma was accidentally placed in member name. (Client's Request)
-            else if (playerFullName.Contains("."))
+            else if (playerFullName.Contains('.'))
             {
-                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf("."));
+                playerLastName = playerFullName[..playerFullName.IndexOf('.')];
                 try
                 {
-                    firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(".") + 2);
+                    firstAndMiddle = playerFullName[(playerFullName.IndexOf('.') + 2)..];
                 }
                 catch (ArgumentOutOfRangeException)
                 {
                     // Can be thrown if the "." comes at the end. Ex. "John Doe Jr."
                     // First name will be preserved in these rare cases. For now middle names will
                     // be ignored in these exceptions due to various name formats
-                    int firstSpaceIndex = playerFullName.IndexOf(" ");
-                    firstAndMiddle = playerFullName.Substring(0, firstSpaceIndex);
+                    int firstSpaceIndex = playerFullName.IndexOf(' ');
+                    firstAndMiddle = playerFullName[..firstSpaceIndex];
                 }
 
             }
@@ -637,29 +635,29 @@ namespace MemberImportTest
 
             catch (Exception)
             {
-                string[] aftersplit;
-                string orgstring;
+                string[] afterSplit;
+                string orgString;
                 try
                 {
-                    orgstring = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
-                    aftersplit = orgstring.Split('-');
-                    playerOrgAVG = Convert.ToInt32(aftersplit[0]);
+                    orgString = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
+                    afterSplit = orgString.Split('-');
+                    playerOrgAVG = Convert.ToInt32(afterSplit[0]);
                 }
                 catch
                 {
                     try
                     {
-                        orgstring = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
-                        aftersplit = orgstring.Split('*');
-                        playerOrgAVG = Convert.ToInt32(aftersplit[0]);
+                        orgString = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
+                        afterSplit = orgString.Split('*');
+                        playerOrgAVG = Convert.ToInt32(afterSplit[0]);
                     }
                     catch
                     {
                         try
                         {
-                            orgstring = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
-                            aftersplit = orgstring.Split('L');
-                            playerOrgAVG = Convert.ToInt32(aftersplit[0]);
+                            orgString = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
+                            afterSplit = orgString.Split('L');
+                            playerOrgAVG = Convert.ToInt32(afterSplit[0]);
                         }
                         catch
                         {
@@ -680,16 +678,15 @@ namespace MemberImportTest
 
             if (isRegionHawaii)
             {
-                playerNumber = Regex.Replace(playerNumber, "[^0-9]", "");  // strip the member number to straight number
+                playerNumber = RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty);  // strip the member number to straight number
             }
 
             String[] playerNumberAfterSplit;
-            int playerNumberAsInt = 0;
-            int.TryParse(playerNumber, out playerNumberAsInt);
+            int.TryParse(playerNumber, out int playerNumberAsInt);
 
             if (playerNumberAsInt != 0)
             {
-                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumber, "[^0-9]", ""));
+                playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty));
             }
             else if (playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
             {
@@ -698,7 +695,7 @@ namespace MemberImportTest
                     try
                     {
                         playerNumberAfterSplit = playerNumber.Split(splitters[i]);
-                        playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1], "[^0-9]", ""));
+                        playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumberAfterSplit[^1], string.Empty));
                     }
                     catch
                     {
@@ -719,9 +716,9 @@ namespace MemberImportTest
 
                 for (int row = GameDataStartRow; row <= GameDataEndRow; row++)
                 {
-                    ExcelRow temp = new ExcelRow();
-                    PlayerHistory playerH = new PlayerHistory();
-                    Game GameHistory = new Game();
+                    ExcelRow temp = new();
+                    PlayerHistory playerH = new();
+                    Game GameHistory = new();
 
                     string game1 = Convert.ToString((range.Cells[row, 3] as Excel.Range).Value2);
                     string game2 = Convert.ToString((range.Cells[row, 4] as Excel.Range).Value2);
@@ -986,7 +983,7 @@ namespace MemberImportTest
         /// updates player history in the database
         /// </summary>
         /// <param name="playerHistory"></param>
-        private void UpdatePlayerHistory(List<PlayerHistory> playerHistory)
+        private static void UpdatePlayerHistory(List<PlayerHistory> playerHistory)
         {
             foreach (var ph in playerHistory)
             {
@@ -998,7 +995,7 @@ namespace MemberImportTest
         /// Checks members list if member does not exist it updates the list with adding or updating member
         /// </summary>
         /// <param name="members"></param>
-        private void UpdateMembers(List<Member> members)
+        private static void UpdateMembers(List<Member> members)
         {
             for (int i = 0; i < members.Count; i++)
             {
@@ -1009,9 +1006,6 @@ namespace MemberImportTest
             }
         }
 
-        // Removed 3 methods no lomger being used referencing pin files and mult pin files.. 
-        // if this is brought back as a requirement reference github history of file pre 3/4/2019
-
         /// <summary>
         /// Allows user to change region for where they would like to import the member data to.
         /// </summary>
@@ -1021,12 +1015,12 @@ namespace MemberImportTest
             RegionID = r[cbxRegionSelect.SelectedIndex].NineTapRegionID;
         }
 
-        private void frmMain_Paint(object sender, PaintEventArgs e)
+        private void FrmMain_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
-            Font drawFont = new Font("Arial", 12);
-            SolidBrush drawBrush = new SolidBrush(Color.Black);
-            PointF drawPoint = new PointF(20, 2);
+            Font drawFont = new("Arial", 12);
+            SolidBrush drawBrush = new(Color.Black);
+            PointF drawPoint = new(20, 2);
             g.DrawString("Version: 2.4.2", drawFont, drawBrush, drawPoint);
 #if DEBUG
             drawBrush.Color = Color.Red;

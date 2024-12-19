@@ -15,7 +15,7 @@ namespace NineTapTour.Forms
 {
     public partial class FrmLabelPrint : Form
     {
-        int RegionID;
+        readonly int RegionID;
         List<Member> AllMems;
         List<Member> ActiveMems;
         List<Member> Labels;
@@ -29,8 +29,8 @@ namespace NineTapTour.Forms
         private void FrmLabelPrint_Load(object sender, EventArgs e)
         {         
             AllMems = MemberDB.GetMemberList(RegionID);
-            ActiveMems = new List<Member>();
-            Labels = new List<Member>();
+            ActiveMems = [];
+            Labels = [];
 
             LoadLists();
         }
@@ -103,8 +103,8 @@ namespace NineTapTour.Forms
         private void BtnPrint_Click(object sender, EventArgs e)
         {
             // Set up components for printing
-            PrintDialog printDialog = new PrintDialog();
-            PrintDocument printDocument = new PrintDocument();
+            PrintDialog printDialog = new();
+            PrintDocument printDocument = new();
             // Add the document to the dialog box
             printDialog.Document = printDocument;
             // Add the event handler that will do the printing
@@ -125,7 +125,7 @@ namespace NineTapTour.Forms
         public void PrintLabels(object sender, PrintPageEventArgs e)
         {
             // Grab the next 30 members
-            List<Member> nextMemberLabels = Labels.Skip((currPage) * PageSize).Take(PageSize).ToList();
+            List<Member> nextMemberLabels = [.. Labels.Skip((currPage) * PageSize).Take(PageSize)];
 
             // If more than 30 members remaining another page will be printed
             e.HasMorePages = (currPage * PageSize + PageSize >= Labels.Count) ? false : true;
@@ -141,10 +141,10 @@ namespace NineTapTour.Forms
             Graphics graphic = e.Graphics;
 
             // Default font to use for printing labels. Arial font will monospace the digits
-            Font font = new Font("Arial", 16, FontStyle.Bold, GraphicsUnit.Pixel);
+            Font font = new("Arial", 16, FontStyle.Bold, GraphicsUnit.Pixel);
 
             // Sets default brush to use when printing
-            SolidBrush dBrush = new SolidBrush(Color.Black);
+            SolidBrush dBrush = new(Color.Black);
 
             int startX = 55;
             int startY = 55;

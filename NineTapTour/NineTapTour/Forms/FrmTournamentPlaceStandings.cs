@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NineTapTour.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,19 +20,19 @@ namespace NineTapTour.Forms
 
         private void TournamentPlaceStandings_Load(object sender, EventArgs e)
         {
-            lblTournamentName.Text = FrmMemberScores.selectedTournament.TourneyNameDate;
-            if (FrmMemberScores.selectedTournament.Doubles)
+            lblTournamentName.Text = FrmMemberScoresHelpers.selectedTournament.TourneyNameDate;
+            if (FrmMemberScoresHelpers.selectedTournament.Doubles)
             {
                 lblTournamentName.Text += " (DOUBLES TOURNAMENT)";                 
             }
 
-            if (FrmMemberScores.selectedTournament.ThreeOutOf4)
+            if (FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4)
             {
                 lblTournamentName.Text += " (3 OUT OF 4 TOURNAMENT)";
             }
         }
 
-        private void btnPrint_Click(object sender, EventArgs e)
+        private void BtnPrint_Click(object sender, EventArgs e)
         {
             printDialog1.Document = printDocument1;
 
@@ -41,9 +42,9 @@ namespace NineTapTour.Forms
             }
         }      
 
-        private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        private void PrintDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            Bitmap bm = new Bitmap(this.dgvTournamentStandings.Width, this.dgvTournamentStandings.Height);
+            Bitmap bm = new(this.dgvTournamentStandings.Width, this.dgvTournamentStandings.Height);
             this.dgvTournamentStandings.DrawToBitmap(bm, new Rectangle(0, 0, this.dgvTournamentStandings.Width, this.dgvTournamentStandings.Height));
             e.Graphics.DrawImage(bm, 0, 0);
         }

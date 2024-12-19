@@ -15,12 +15,12 @@ namespace NineTapTour.Forms
 {
     public partial class FrmStats : Form
     {
-        private Member mem;
-        private int memId;
-        private int memNum;
-        private string memName;
-        List<PlayerHistory> ph;
-        int RegionID;
+        private readonly Member mem;
+        private readonly int memId;
+        private readonly int memNum;
+        private readonly string memName;
+        readonly List<PlayerHistory> ph;
+        readonly int RegionID;
 
 
         public FrmStats(int memberId, string memberName, Member currentMem, int RegionID)
@@ -194,7 +194,7 @@ namespace NineTapTour.Forms
                             g.Bonus
                         }).ToList();
 
-            List<statHolder> stats = new List<statHolder>();
+            List<statHolder> stats = [];
 
             for (int i = 0; i < temp.Count; i++)
             {
@@ -326,7 +326,7 @@ namespace NineTapTour.Forms
 
         public DataTable tableview()
         {
-            DataTable dtGames = new DataTable();
+            DataTable dtGames = new();
             var db = new NineTapDb();
             var temp = (from p in db.PlayerHistory
                         where p.MemberNumber == memNum && p.regionID == RegionID
@@ -500,7 +500,7 @@ namespace NineTapTour.Forms
 
         private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            Bitmap bm = new Bitmap(this.dataGridView1.Width, this.dataGridView1.Height);
+            Bitmap bm = new(this.dataGridView1.Width, this.dataGridView1.Height);
             this.dataGridView1.DrawToBitmap(bm, new Rectangle(0, 0, this.dataGridView1.Width, this.dataGridView1.Height));
             e.Graphics.DrawImage(bm, 0, 0);
         }

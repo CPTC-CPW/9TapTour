@@ -23,10 +23,10 @@ namespace NineTapTour.Database
             Graphics graphic = e.Graphics;
 
             //default font to use, should use a mono space font so the spaces line up.
-            Font font = new Font("Arial", 16, FontStyle.Bold, GraphicsUnit.Pixel);
+            Font font = new("Arial", 16, FontStyle.Bold, GraphicsUnit.Pixel);
 
             //Sets default brush to use when printing
-            SolidBrush dBrush = new SolidBrush(Color.Black);
+            SolidBrush dBrush = new(Color.Black);
 
             int startX = 10;
             int startY = 50;
@@ -80,12 +80,12 @@ namespace NineTapTour.Database
             Graphics graphic = e.Graphics;
 
             //default font to use, should use a mono space font so the spaces line up.
-            Font font = new Font("Arial", 16, FontStyle.Bold, GraphicsUnit.Pixel);
-            Font starFont = new Font("Arial", 16.5f, FontStyle.Bold, GraphicsUnit.Pixel);
-            Font bigFont = new Font("Arial", 25, FontStyle.Bold, GraphicsUnit.Pixel);
+            Font font = new("Arial", 16, FontStyle.Bold, GraphicsUnit.Pixel);
+            Font starFont = new("Arial", 16.5f, FontStyle.Bold, GraphicsUnit.Pixel);
+            Font bigFont = new("Arial", 25, FontStyle.Bold, GraphicsUnit.Pixel);
 
             //Sets default brush to use when printing
-            SolidBrush dBrush = new SolidBrush(Color.Black);
+            SolidBrush dBrush = new(Color.Black);
 
             int startX = 15;
             int startY = 50;
@@ -318,7 +318,7 @@ namespace NineTapTour.Database
             int x2 = 800;
             int y2 = y1;
 
-            Pen redPen = new Pen(Brushes.Red, 3);
+            Pen redPen = new(Brushes.Red, 3);
             graphic.DrawLine(redPen, x1, y1, x2, y2);
         }
 
@@ -333,8 +333,8 @@ namespace NineTapTour.Database
             Print.manualCutoff = manualCutoff;
 
             // Set up components for printing
-            PrintDialog printDialog = new PrintDialog();
-            PrintDocument printDocument = new PrintDocument();
+            PrintDialog printDialog = new();
+            PrintDocument printDocument = new();
             //add the document to the dialog box
             printDialog.Document = printDocument;
 
@@ -359,7 +359,7 @@ namespace NineTapTour.Database
             e.HasMorePages = ((index * numBowlersPerPage) < temp.Count);
         }
 
-        static List<MemberScores> temp = new List<MemberScores>();//for High score
+        static List<MemberScores> temp = [];//for High score
         static Tournament selectedTournament;
         static ReportType reportTypeNum;
         static int currentSquad;
@@ -369,15 +369,15 @@ namespace NineTapTour.Database
         static readonly int numBowlersPerPage = 40;
         /************************************************************************/
 
-        static List<Member> mems = new List<Member>();
+        static List<Member> mems = [];
         static int index = 0;
 
         // This is for the printbytourney button
         static public void PrintByTour(Tournament tour)
         {
             //Set up components for printing
-            PrintDialog printDialog = new PrintDialog();
-            PrintDocument printDocument = new PrintDocument();
+            PrintDialog printDialog = new();
+            PrintDocument printDocument = new();
             //add the document to the dialog box
             printDialog.Document = printDocument;
 
@@ -386,8 +386,7 @@ namespace NineTapTour.Database
             mems = TournamentDB.GetUniqueTourMembers(tour);
             
             // Client wants the recaps ordered by last name first
-            mems = mems.OrderBy(member => member.LastName)
-                .ThenBy(member => member.FirstName).ToList();
+            mems = [.. mems.OrderBy(member => member.LastName).ThenBy(member => member.FirstName)];
 
             if (mems.Count > 0)
             {
@@ -429,19 +428,19 @@ namespace NineTapTour.Database
         static public void PrintAllMembers()
         {
             // Set up components for printing
-            PrintDialog printDialog = new PrintDialog();
-            PrintDocument printDocument = new PrintDocument();
+            PrintDialog printDialog = new();
+            PrintDocument printDocument = new();
             //add the document to the dialog box
             printDialog.Document = printDocument;
 
             //add the event handler that will do the printing
             printDocument.PrintPage += new PrintPageEventHandler(PrintTourRecaps);
 
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDb db = new())
             {
-                mems = (from m in db.Members
+                mems = [.. (from m in db.Members
                         orderby m.LastName descending
-                        select m).Take(1).ToList();
+                        select m).Take(1)];
             }
 
             if (mems.Count > 0)
@@ -459,8 +458,8 @@ namespace NineTapTour.Database
         static public void PrintByMemberList(List<Member> members)
         {
             //Set up components for printing
-            PrintDialog printDialog = new PrintDialog();
-            PrintDocument printDocument = new PrintDocument();
+            PrintDialog printDialog = new();
+            PrintDocument printDocument = new();
             //add the document to the dialog box
             printDialog.Document = printDocument;
 
@@ -482,8 +481,8 @@ namespace NineTapTour.Database
 
         static public void PrintByActiveMembers(List<Member> members)
         {
-            PrintDialog printDialog = new PrintDialog();
-            PrintDocument printDocument = new PrintDocument();
+            PrintDialog printDialog = new();
+            PrintDocument printDocument = new();
             printDialog.Document = printDocument;
 
             printDocument.PrintPage += new PrintPageEventHandler(PrintActiveRecaps);

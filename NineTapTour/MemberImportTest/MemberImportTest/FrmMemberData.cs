@@ -18,10 +18,10 @@ namespace MemberImportTest
         /// <summary>
         /// Opens the "Member Data" Form.
         /// </summary>
-        List<Member> invalidMembers;
+        readonly List<Member> invalidMembers;
         int listPosition = 0;
-        Form home;
-        public FrmMemberData(List<Member> Invalid, frmMain main)
+        readonly Form home;
+        public FrmMemberData(List<Member> Invalid, FrmMain main)
         {
             InitializeComponent();
             invalidMembers = Invalid;
@@ -73,11 +73,7 @@ namespace MemberImportTest
             #endregion
 
             #region Misc. Info
-            //TODO: Pull datetime from database correctly
-
-            //need to set up some sort of check if they don't have a join
             Console.WriteLine(currentMem.JoinDate);
-            DateTime nullDate = new DateTime(1/1/0001);
             txtdateJoined.Text = currentMem.JoinDate.ToString();
             txtrejoinDate.Text = currentMem.RejoinDate.ToString();
             txtlastBowled.Text = currentMem.LastBowled.ToString();
@@ -170,19 +166,19 @@ namespace MemberImportTest
                 MessageBox.Show("state field cannot be null");
                 return false;
             }
-            if (mtxtBoxDOB.Text == "01/01/0001" || !DateTime.TryParse(mtxtBoxDOB.Text, out outPut))
+            if (mtxtBoxDOB.Text == "01/01/0001" || !DateTime.TryParse(mtxtBoxDOB.Text, out _))
             {
                 MessageBox.Show("Date Of Birth Must be a valid date.");
                 return false;
             }
-            if(txtdateJoined.Text== "1/1/0001 12:00:00 AM" || !DateTime.TryParse(txtdateJoined.Text, out outPut))
+            if(txtdateJoined.Text== "1/1/0001 12:00:00 AM" || !DateTime.TryParse(txtdateJoined.Text, out _))
             {
                 MessageBox.Show("Join Date must be a valid Date.");
                 return false;
             }
             if(txtrejoinDate.Text != "")
             {
-                if (!DateTime.TryParse(txtrejoinDate.Text, out outPut))
+                if (!DateTime.TryParse(txtrejoinDate.Text, out _))
                 {
                     MessageBox.Show("Rejoin Date must be a valid Date.");
                     return false;
@@ -190,17 +186,16 @@ namespace MemberImportTest
             }
             if (txtlastBowled.Text != "")
             {
-                if (!DateTime.TryParse(txtlastBowled.Text, out outPut))
+                if (!DateTime.TryParse(txtlastBowled.Text, out _))
                 {
                     MessageBox.Show("Last Bowled Date must be a valid Date.");
                     return false;
                 }
             }
-            int num;
-            bool isNum = int.TryParse(txtReferrals.Text, out num);
+            bool isNum = int.TryParse(txtReferrals.Text, out _);
             if (!isNum && txtReferrals.Text != "")
             {
-                MessageBox.Show("Referals Must be a valid number");
+                MessageBox.Show("Referrals Must be a valid number");
                 return false;
             }
             return true;
@@ -212,9 +207,8 @@ namespace MemberImportTest
         /// <param name="e"></param>
         private void BtnSave_Click(object sender, EventArgs e)
         {
-            //checks to see if firstname,lastname, and zip is valid.
+            //checks to see if first name, last name, and zip is valid.
             //Then runs the rest of the btnSave_Click and adds a member into the database.
-      
             if (IsValid())
             {
                 var confirm = MessageBox.Show(@"Are You Sure?", @"Confirm Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -222,57 +216,6 @@ namespace MemberImportTest
                     return;
                 Member temp;
 
-                //if (_memberId != -1)
-                //{
-                //    temp = new Member
-                //    {
-                //        Id = _memberId,
-                //        Number = Convert.ToInt32(txtMemberNumber.Text),
-                //        IsActive = rdoActive.Checked,
-                //        JoinDate = DateTime.Now,
-
-                //        #region Personal Info
-                //        LastName = txtLastName.Text,
-                //        FirstName = txtFirstName.Text,
-                //        MiddleInitial = txtMiddleInitial.Text,
-                //        DateOfBirth = Convert.ToDateTime(mtxtBoxDOB.Text),
-                //        SSN = mtxtBoxSSN.Text,
-                //        IsSenior = chbSenior.Checked,
-                //        Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male,
-                //        #endregion
-
-                //        #region Postal Address
-                //        Street = txtAddress.Text,
-                //        City = txtCity.Text,
-                //        State = txtState.Text,
-                //        PostalCode = mtxtBoxZip.Text,
-                //        #endregion
-
-                //        #region Contact Info
-                //        Email = txtEmail.Text,
-                //        PrimaryPhone = mtxtBoxPhone.Text,
-                //        SecondaryPhone = mtxtBoxPhone2.Text,
-                //        #endregion
-
-                //        #region Score Info
-                //        Average = (txtAverage.Text == string.Empty) ? 0 : Convert.ToInt16(txtAverage.Text),
-                //        Handicap = (txtHandicap.Text == string.Empty) ? 0 : Convert.ToInt16(txtHandicap.Text),
-                //        Bonus = (txtBonus.Text == string.Empty) ? 0 : Convert.ToInt16(txtBonus.Text),
-                //        #endregion
-
-                //        #region Misc. Info
-                //        RejoinDate = Convert.ToDateTime(txtdateJoined.Text),
-                //        LastBowled = Convert.ToDateTime(txtlastBowled.Text),
-                //        MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : decimal.Parse(txtMoneyEarned.Text, NumberStyles.Currency),
-                //        //MoneyEarned = (txtMoneyEarned.Text == string.Empty) ? 0 : Convert.ToDecimal(txtMoneyEarned.Text),
-                //        Notes = txtNotes.Text,
-                //        Referrals = txtReferrals.Text == string.Empty ? 0 : Convert.ToInt16(txtReferrals.Text)
-                //        #endregion
-                //    };
-
-                //}
-                //else
-                //{
                 if (txtReferrals.Text == "")
                 {
                     txtReferrals.Text = "0";
@@ -423,8 +366,7 @@ namespace MemberImportTest
                 }
                 else if (textBox.Name == "txtReferrals")
                 {
-                    int num;
-                    bool isNum = int.TryParse(textBox.Text, out num);
+                    bool isNum = int.TryParse(textBox.Text, out _);
                     textBox.BackColor = isNum || textBox.Text.Trim() == "" ? Color.White : Color.LightPink;
                 }
                 else if(textBox != null && textBox.Name != "txtReferrals")
@@ -434,9 +376,8 @@ namespace MemberImportTest
 
                 if (textBox.Name == "txtlastBowled")
                 {
-                    DateTime date;
-                    bool isDate = DateTime.TryParse(textBox.Text, out date);
-                    textBox.BackColor = !isDate || textBox.Text.Trim() == "" ? Color.LightPink : Color.White;
+                    bool isDate = DateTime.TryParse(textBox.Text, out _);
+                    textBox.BackColor = !isDate || textBox.Text.Trim() == string.Empty ? Color.LightPink : Color.White;
                 }
             }
             else if(sender is MaskedTextBox)

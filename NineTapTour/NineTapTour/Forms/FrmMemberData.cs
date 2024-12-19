@@ -57,7 +57,7 @@ namespace NineTapTour.Forms
         
         /// <summary>
         /// finds all Controls and change BackColor of each control color when the control is on 
-        /// focus and checks if that control has a child and changes the child contol color onFocus
+        /// focus and checks if that control has a child and changes the child control color onFocus
         /// and changes back to origin back color when LostFocus
         /// </summary>
         /// <param name="ctrl"></param>
@@ -83,8 +83,8 @@ namespace NineTapTour.Forms
         private void Ctrl_LostFocus(object sender, EventArgs e)
         {
             var ctrl = sender as Control;
-            if (ctrl.Tag is Color)
-                ctrl.BackColor = (Color)ctrl.Tag;
+            if (ctrl.Tag is Color color)
+                ctrl.BackColor = color;
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace NineTapTour.Forms
                 List<PlayerHistory> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
                 if (last5.Count >= 1)
                 {   //whatever the bowler director decides his average to be is right. 
-                    // dont pull from the player hstory page
+                    // don't pull from the player history page
                     txtAverage.Text = currentMem.StartAvg.ToString(); 
                     currentMem.StartAvg = Convert.ToInt16(txtAverage.Text);
                     txt30GameAvg.Text = Convert.ToInt16(last5[0].trueAVG).ToString();
@@ -241,8 +241,6 @@ namespace NineTapTour.Forms
             }
             else
             {
-                var db = new NineTapDb();
-
                 // Personal Info
                 _memberId = currentMem.Id;
                 txtMemberNumber.Text = currentMem.Number.ToString();
@@ -417,7 +415,7 @@ namespace NineTapTour.Forms
                 txtLastName.BackColor = SystemColors.Control;
             }
 
-            // validate firstname textbox
+            // validate first name textbox
             if (String.IsNullOrWhiteSpace(txtFirstName.Text))
             {
                 lblFirstNameValidation.Visible = true;
@@ -475,15 +473,17 @@ namespace NineTapTour.Forms
             if (isValid)
             {
                 //create temporary member for validation
-                Member temp = new Member();
-                temp.Number = Convert.ToInt32(txtMemberNumber.Text);
-                temp.IsActive = rdoActive.Checked;
-                temp.JoinDate = DateTime.Parse(txtDateJoined.Text);
+                Member temp = new()
+                {
+                    Number = Convert.ToInt32(txtMemberNumber.Text),
+                    IsActive = rdoActive.Checked,
+                    JoinDate = DateTime.Parse(txtDateJoined.Text),
 
-                // Personal Info
-                temp.LastName = txtLastName.Text;
-                temp.FirstName = txtFirstName.Text;
-                temp.MiddleInitial = txtMiddleInitial.Text;
+                    // Personal Info
+                    LastName = txtLastName.Text,
+                    FirstName = txtFirstName.Text,
+                    MiddleInitial = txtMiddleInitial.Text
+                };
                 if (!String.IsNullOrEmpty(txtDOB.Text) && !txtDOB.Text.Contains("MM/DD/YYYY"))
                 {
                     temp.DateOfBirth = DateTime.Parse(txtDOB.Text);
@@ -537,8 +537,7 @@ namespace NineTapTour.Forms
                 // Misc. Info
                 if (!String.IsNullOrWhiteSpace(txtRejoinDate.Text))
                 {
-                    DateTime date;
-                    if (DateTime.TryParse(txtRejoinDate.Text, out date))
+                    if (DateTime.TryParse(txtRejoinDate.Text, out DateTime date))
                     {
                         temp.RejoinDate = date;
                     }
@@ -550,8 +549,7 @@ namespace NineTapTour.Forms
 
                 if (!String.IsNullOrWhiteSpace(txtLastBowled.Text))
                 {
-                    DateTime date;
-                    if (DateTime.TryParse(txtLastBowled.Text, out date))
+                    if (DateTime.TryParse(txtLastBowled.Text, out DateTime date))
                     {
                         temp.LastBowled = date;
                     }
@@ -569,8 +567,7 @@ namespace NineTapTour.Forms
 
                 if (!String.IsNullOrWhiteSpace(txtLastPayment.Text))
                 {
-                    DateTime date;
-                    if (DateTime.TryParse(txtLastPayment.Text, out date))
+                    if (DateTime.TryParse(txtLastPayment.Text, out DateTime date))
                     {
                         temp.LastPayment = date;
                     }
@@ -816,7 +813,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void BtnMemberSearch_Click(object sender, EventArgs e)
         {
-            FrmSearch SearchForm = new FrmSearch(RegionID);
+            FrmSearch SearchForm = new(RegionID);
             SearchForm.ShowDialog();
 
             if (SearchForm.searchResult > 0)
@@ -830,7 +827,7 @@ namespace NineTapTour.Forms
         // top of thew original data on the form finalize page
         private void BtnStats_Click(object sender, EventArgs e)
         {
-            FrmStats p = new FrmStats(currentMem.Number, currentMem.FirstName + 
+            FrmStats p = new(currentMem.Number, currentMem.FirstName + 
                 currentMem.LastName + currentMem.MiddleInitial, currentMem, RegionID);
             p.ShowDialog();
         }
@@ -845,8 +842,8 @@ namespace NineTapTour.Forms
             if (IsValidTextboxes())
             {
                 //Set up components for printing
-                PrintDialog printDialog = new PrintDialog();
-                PrintDocument printDocument = new PrintDocument();
+                PrintDialog printDialog = new();
+                PrintDocument printDocument = new();
 
                 //add the document to the dialog box
                 printDialog.Document = printDocument;
@@ -960,11 +957,13 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void BtnImportData_Click(object sender, EventArgs e)
         {
-            List<ExcelRow> CurrentExcelData = new List<ExcelRow>();
-            OpenFileDialog ofdOpen = new OpenFileDialog();
-            ofdOpen.Filter = FileHelper.GetExcelFilterStringForFileDialogs();
+            List<ExcelRow> CurrentExcelData = [];
+            OpenFileDialog ofdOpen = new()
+            {
+                Filter = FileHelper.GetExcelFilterStringForFileDialogs()
+            };
 
-            if(ofdOpen.ShowDialog() == DialogResult.OK)
+            if (ofdOpen.ShowDialog() == DialogResult.OK)
             {
                 List<PlayerHistory> AlreadyImportedPH = 
                     PlayerHistoryDB.GetMemberPlayerHistory(currentMem.Number, RegionID);
@@ -977,7 +976,7 @@ namespace NineTapTour.Forms
 
                 string fileName = ofdOpen.FileName;
 
-                frmPleaseWait please = new frmPleaseWait();
+                frmPleaseWait please = new();
                 please.Show();
 
                 List<ExcelRow> rows = ProcessExcelFile(fileName); 
@@ -1018,8 +1017,8 @@ namespace NineTapTour.Forms
         /// <returns></returns>
         private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
         {
-            List<ExcelRow> returnMe = new List<ExcelRow>();
-            Excel.Application xlApp = new Excel.Application();
+            List<ExcelRow> returnMe = [];
+            Excel.Application xlApp = new();
 
             Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "",
                 true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
@@ -1027,8 +1026,8 @@ namespace NineTapTour.Forms
             Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
             Excel.Range range = xlWorkSheet.UsedRange;
 
-            string[] PlayerFinalFirstAndMiddle = { "", "" };
-            string[] PlayersFinalLastAndMiddle = { "", "" };
+            string[] PlayerFinalFirstAndMiddle = ["", ""];
+            string[] PlayersFinalLastAndMiddle = ["", ""];
             string playerLastName = "";
             string firstAndMiddle = "";
             string playerFullName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
@@ -1057,22 +1056,21 @@ namespace NineTapTour.Forms
 
             if (isRegionHawaii)
             {
-                playerNumber = Regex.Replace(playerNumber, "[^0-9]", "");  // strip the member number to straight number
+                playerNumber = RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty);  // strip the member number to straight number
             }
             String[] playerNumberAfterSplit;
-            int playerNumberAsInt = 0;
-            int.TryParse(playerNumber, out playerNumberAsInt);
+            int.TryParse(playerNumber, out int playerNumberAsInt);
 
-            // hawaii numbers are not 234 they have H  or H- in front need to address that by removing the h 
+            // Hawaii numbers are not 234 they have H  or H- in front need to address that by removing the h 
             // used regex to remove any non numeric expressions from player number be it a letter or a - 
             if (playerNumberAsInt != 0)
             {
-                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumber, "[^0-9]", ""));
+                playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty));
             }
             else if (playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
             {
                 playerNumberAfterSplit = playerNumber.Split('/');
-                playerNumberAsInt = Convert.ToInt32(Regex.Replace(playerNumberAfterSplit[playerNumberAfterSplit.Length - 1], "[^0-9]", ""));
+                playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumberAfterSplit[^1], string.Empty));
             }
 
             ProcessExcel(returnMe, xlWorkBook, ref xlWorkSheet, ref range, PlayerFinalFirstAndMiddle, playerLastName, playerOrgAVG, isRegionHawaii);
@@ -1131,9 +1129,9 @@ namespace NineTapTour.Forms
                 for (int row = rowNum; row <= range.Rows.Count; row++)
                 {
 
-                    ExcelRow temp = new ExcelRow();
-                    PlayerHistory playerH = new PlayerHistory();
-                    Game GameHistory = new Game();
+                    ExcelRow temp = new();
+                    PlayerHistory playerH = new();
+                    Game GameHistory = new();
 
                     string game1 = Convert.ToString((range.Cells[row, 3] as Excel.Range).Value2);
                     string game2 = Convert.ToString((range.Cells[row, 4] as Excel.Range).Value2);
@@ -1368,16 +1366,16 @@ namespace NineTapTour.Forms
         /// <param name="playerFullName"></param>
         private static void SplitName(ref string playerLastName, ref string firstAndMiddle, string playerFullName)
         {
-            if (playerFullName.Contains(","))
+            if (playerFullName.Contains(','))
             {
-                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf(","));
-                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(",") + 2);
+                playerLastName = playerFullName[..playerFullName.IndexOf(',')];
+                firstAndMiddle = playerFullName[(playerFullName.IndexOf(',') + 2)..];
             }
             // Checks to see if a period instead of a comma was accidentally placed in member name. (Rob's Request)
-            else if (playerFullName.Contains("."))
+            else if (playerFullName.Contains('.'))
             {
-                playerLastName = playerFullName.Substring(0, playerFullName.IndexOf("."));
-                firstAndMiddle = playerFullName.Substring(playerFullName.IndexOf(".") + 2);
+                playerLastName = playerFullName[..playerFullName.IndexOf('.')];
+                firstAndMiddle = playerFullName[(playerFullName.IndexOf('.') + 2)..];
             }
         }
 

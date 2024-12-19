@@ -14,11 +14,11 @@ namespace NineTapTour.Forms
         // the members and their scores
         List<Models.MemberScores> temp;
         // used in the print class to print the date and location
-        Tournament selectedTournament;
-        
-        ReportType reportTypeNum;
-        int currentSquad;
-        List<int> squadList;
+        readonly Tournament selectedTournament;
+
+        readonly ReportType reportTypeNum;
+        readonly int currentSquad;
+        readonly List<int> squadList;
         bool printDues = false;
 
         public FrmMemberScoresReports(List<MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList)
@@ -95,7 +95,7 @@ namespace NineTapTour.Forms
                 }
                 temp = Calculations.Calculations.MakeTopMembersByPlacementList(temp, numMembers); // results of inquiry
                 // loads the loading screen if takes long time
-                frmPleaseWait please = new frmPleaseWait();
+                frmPleaseWait please = new();
                 please.Show();
                 ExportToExcel(); // Exports to excel file
                 please.Close();
@@ -257,7 +257,7 @@ namespace NineTapTour.Forms
                 {
                     if (fileName != "SeriesReportTemplate.xls" || !string.IsNullOrEmpty(fileName))
                     {
-                        SaveFileDialog savefile = new SaveFileDialog();
+                        SaveFileDialog savefile = new();
                         savefile.Filter = FileHelper.GetExcelFilterStringForFileDialogs();
                         savefile.FileName = fileName;
                         DialogResult result = savefile.ShowDialog();

@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NineTapTour.Calculations;
 using NineTapTour.Forms;
 using NineTapTour.Models;
 using System;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NineTapTour.Calculations.Test
+namespace NineTapTourTests
 {
     [TestClass()]
     public class CalculationsTest
@@ -27,8 +28,8 @@ namespace NineTapTour.Calculations.Test
 
         private static List<MemberScores> GetMemberScoreTestData()
         {
-            return new List<MemberScores>()
-            {
+            return
+            [
                 new MemberScores()
                 {
                     FirstName = "A", LastName = "A",  MemberId= 1, Score = 800
@@ -61,7 +62,7 @@ namespace NineTapTour.Calculations.Test
                 {
                     FirstName = "A", LastName = "A",  MemberId= 1, Score = 1000
                 }
-            };
+            ];
         }
 
         [TestMethod]
@@ -69,7 +70,7 @@ namespace NineTapTour.Calculations.Test
         {
             List<MemberScores> members = GetMemberScoreTestData();
             members = Calculations.CalculatePlaceStandings(members);
-            
+
             //check first bowler is A with 1000; lesser score (800) is removed
             Assert.AreEqual(members[0].MemberId, 1);
             Assert.AreEqual(members[0].Score, 1000);
@@ -136,7 +137,7 @@ namespace NineTapTour.Calculations.Test
         [DataRow(3, 4, 0, 5)] // - 6 losses in a row not yet applied, 3 initial
         [DataRow(4, 4, 0, 5)] // - 6 losses in a row not yet applied, 4 initial
         [DataRow(5, 4, 0, 5)] // - 6 losses in a row not yet applied, 4 initial
-        public void AddToBonusPins_ReturnsExpectedBonusPins(int currentBonusPins, int currTourneyEntryCount, int playerHistoryListNum, 
+        public void AddToBonusPins_ReturnsExpectedBonusPins(int currentBonusPins, int currTourneyEntryCount, int playerHistoryListNum,
                                                             int expectedBonusPins)
         {
             List<PlayerHistory> latestTournaments = GetPlayerHistoryTestData(playerHistoryListNum);
@@ -148,11 +149,10 @@ namespace NineTapTour.Calculations.Test
 
         private static List<PlayerHistory> GetPlayerHistoryTestData(int listNum)
         {
-            switch (listNum)
+            return listNum switch
             {
-                case 0: // Did not cash last 3
-                    return new List<PlayerHistory>()
-                    {
+                // Did not cash last 3
+                0 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0, Bonus = 0
@@ -161,10 +161,9 @@ namespace NineTapTour.Calculations.Test
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0, Bonus = 0
                         }
-                    };
-                case 1: // Cashed 2nd tournament ago
-                    return new List<PlayerHistory>()
-                    {
+                ],
+                // Cashed 2nd tournament ago
+                1 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 1
@@ -173,10 +172,9 @@ namespace NineTapTour.Calculations.Test
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0
                         }
-                    };
-                case 2: // Cashed 3rd tournament ago
-                    return new List<PlayerHistory>()
-                    {
+                ],
+                // Cashed 3rd tournament ago
+                2 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
@@ -185,10 +183,9 @@ namespace NineTapTour.Calculations.Test
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 1
                         }
-                    };
-                case 3: // Cashed 4th tournament ago
-                    return new List<PlayerHistory>()
-                    {
+                ],
+                // Cashed 4th tournament ago
+                3 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
@@ -201,10 +198,9 @@ namespace NineTapTour.Calculations.Test
                         {
                             TournamentDate = new DateTime(17,12,28), MoneyWon = 1
                         }
-                    };
-                case 4: // Cashed 3rd tournament ago but not last 3 entries (multiple tournament entry)
-                    return new List<PlayerHistory>()
-                    {
+                ],
+                // Cashed 3rd tournament ago but not last 3 entries (multiple tournament entry)
+                4 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
@@ -217,10 +213,9 @@ namespace NineTapTour.Calculations.Test
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 1
                         }
-                    };
-                case 5: // Cashed 2nd tournament ago as multiple entry but not the other 2
-                    return new List<PlayerHistory>()
-                    {
+                ],
+                // Cashed 2nd tournament ago as multiple entry but not the other 2
+                5 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
@@ -233,10 +228,9 @@ namespace NineTapTour.Calculations.Test
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0
                         }
-                    };
-                case 6: // Did not cash last 3 with a multiple entry
-                    return new List<PlayerHistory>()
-                    {
+                ],
+                // Did not cash last 3 with a multiple entry
+                6 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
@@ -249,10 +243,9 @@ namespace NineTapTour.Calculations.Test
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0
                         }
-                    };
-                case 7: // Cashed 3rd tournament ago as multiple entry but not the other 2
-                    return new List<PlayerHistory>()
-                    {
+                ],
+                // Cashed 3rd tournament ago as multiple entry but not the other 2
+                7 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
@@ -265,10 +258,8 @@ namespace NineTapTour.Calculations.Test
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 1
                         }
-                    };
-                case 8:
-                    return new List<PlayerHistory>()
-                    {
+                ],
+                8 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0, Bonus = 5
@@ -277,10 +268,9 @@ namespace NineTapTour.Calculations.Test
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0, Bonus = 5
                         }
-                    };
-                case 9: // Gained a bonus pin last tournament
-                    return new List<PlayerHistory>()
-                    {
+                ],
+                // Gained a bonus pin last tournament
+                9 => [
                         new PlayerHistory()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0, Bonus = 1
@@ -289,14 +279,11 @@ namespace NineTapTour.Calculations.Test
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0, Bonus = 0
                         }
-                    };
-                case 10:
-                    return null;
-                case 11:
-                    return new List<PlayerHistory>();
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+                ],
+                10 => null,
+                11 => [],
+                _ => throw new ArgumentOutOfRangeException(),
+            };
         }
 
 

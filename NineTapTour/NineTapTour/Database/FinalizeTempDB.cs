@@ -30,7 +30,7 @@ namespace NineTapTour.Database
                            select new { g.Game1, g.Game2, g.Game3, g.Game4, g.UseGame1, g.UseGame2, g.UseGame3, g.UseGame4 })
                               .Take(howManyGames).ToList();
 
-                List<double> allAverages = new List<double>();
+                List<double> allAverages = [];
                 foreach (var avg in getGames)
                 {
                     allAverages.Add(Convert.ToDouble(avg.Game1 + avg.Game2 + avg.Game3 + avg.Game4) / 
@@ -290,11 +290,11 @@ namespace NineTapTour.Database
                                 t.TourneyRegion
                             }).ToList();
 
-                List<FinalizeTemp> ParticipantList = new List<FinalizeTemp>();
+                List<FinalizeTemp> ParticipantList = [];
                 // Populates ParticipantList with the data pulled from the database
                 foreach (var item in temp)
                 {
-                    FinalizeTemp NewParticipant = new FinalizeTemp();
+                    FinalizeTemp NewParticipant = new();
 
                     // Populates the names and ID's
                     NewParticipant.GameId = item.Id;
@@ -358,11 +358,10 @@ namespace NineTapTour.Database
             using (var db = new NineTapDb())
             {
                 // Returns a list of participants with the same TournamentID
-                return db.FinalizeTemp
+                return [.. db.FinalizeTemp
                     .Where(p => p.TournamentID == tourn.Id)
                     .OrderBy(p => p.FirstName)
-                    .ThenBy(p => p.Squad)
-                    .ToList();
+                    .ThenBy(p => p.Squad)];
             }
         }
 
@@ -373,9 +372,9 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
-                return (from f in db.FinalizeTemp
+                return [.. (from f in db.FinalizeTemp
                         where f.FinalizeRegionID == RegionID
-                        select f).ToList();
+                        select f)];
             }
         }
 
@@ -412,9 +411,9 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
-                return (from p in db.Participants
+                return [.. (from p in db.Participants
                         where p.ParticipantRegionID == RegionID
-                        select p).Include(nameof(Participant.Member)).ToList();
+                        select p).Include(nameof(Participant.Member))];
             }
                 
         }
@@ -438,9 +437,9 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
-                return (from g in db.Games
+                return [.. (from g in db.Games
                 where g.gameRegionID == RegionID
-                select g).ToList();
+                select g)];
             }
         }
 

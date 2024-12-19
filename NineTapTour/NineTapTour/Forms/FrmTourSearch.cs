@@ -14,10 +14,10 @@ namespace NineTapTour.Forms
 {
     public partial class FrmTourSearch : Form
     {
-        List<Tournament> tours;
+        readonly List<Tournament> tours;
         Tournament singleTour;
-        bool single;
-        int RegionID;
+        readonly bool single;
+        readonly int RegionID;
 
         /// <summary>
         /// This takes a tour list and modifies it. The tour you pass in will
@@ -51,10 +51,10 @@ namespace NineTapTour.Forms
         {
             listSearch.DataSource = null;
 
-            List<Tournament> tourList = new List<Tournament>();
-            StringBuilder whereClause = new StringBuilder();
+            List<Tournament> tourList = [];
+            StringBuilder whereClause = new();
 
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDb db = new())
             {
                 var query = from t in db.Tournaments
                             where t.TourneyRegion == RegionID
@@ -106,7 +106,7 @@ namespace NineTapTour.Forms
                     Notes = t.Notes
                 }).ToList();
 
-                tourList = results.Select(x=> new Tournament
+                tourList = [.. results.Select(x=> new Tournament
                 {
                     Location = x.Location,
                     Event = x.Event,
@@ -117,7 +117,7 @@ namespace NineTapTour.Forms
                     ThreeOutOf4 = x.Is3OutOf4,
                     Participant = x.Participant,
                     Notes = x.Notes
-                }).ToList();
+                })];
 
                 foreach (Tournament t in tourList)
                 {

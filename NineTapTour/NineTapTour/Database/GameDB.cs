@@ -56,7 +56,7 @@ namespace NineTapTour.Database
 
         public static Game GetGameInTournament(int memberID, int tournamentID, int squad)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDb db = new())
             {
                 return (from t in db.Tournaments
                         join p in db.Participants on t.Id equals p.Tournament.Id

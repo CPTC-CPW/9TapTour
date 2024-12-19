@@ -34,10 +34,10 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void TournamentStats_Load(object sender, EventArgs e)
         {
-            if (!FrmMemberScores.selectedTournament.ThreeOutOf4)
+            if (!FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4)
             {
-                Tournament selectedTournament = new Tournament();
-                selectedTournament = FrmMemberScores.selectedTournament;
+                Tournament selectedTournament = new();
+                selectedTournament = FrmMemberScoresHelpers.selectedTournament;
                 lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
                 // Grabs a list of TournamentStatsList from the database
@@ -49,8 +49,8 @@ namespace NineTapTour.Forms
             }
             else
             {
-                Tournament selectedTournament = new Tournament();
-                selectedTournament = FrmMemberScores.selectedTournament;
+                Tournament selectedTournament = new();
+                selectedTournament = FrmMemberScoresHelpers.selectedTournament;
                 lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
                 List<TournamentStatsList> statsList =
@@ -68,7 +68,7 @@ namespace NineTapTour.Forms
         /// <param name="scores"></param>  
         public static List<int> GetTop3OutOf4(List<int?> scores)
         {
-            List<int> listOfValidScores = new List<int>();
+            List<int> listOfValidScores = [];
             for (int i = 0; i < scores.Count; i++)
             {
                 if (scores[i].HasValue)
@@ -114,7 +114,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void PrintDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            Bitmap bm = new Bitmap(this.dgvTournamentStats.Width, this.dgvTournamentStats.Height);
+            Bitmap bm = new(this.dgvTournamentStats.Width, this.dgvTournamentStats.Height);
             this.dgvTournamentStats.DrawToBitmap(bm, new Rectangle(0, 0, 1582, 621));
             e.Graphics.DrawImage(bm, 0, 0);
         }
@@ -127,7 +127,7 @@ namespace NineTapTour.Forms
         /// <returns>Datatable object</returns>
         private DataTable BuildDataTable(List<TournamentStatsList> statsList)
         {
-            DataTable data = new DataTable("Tournament Stats");
+            DataTable data = new("Tournament Stats");
 
             data.Columns.Add("ID", System.Type.GetType("System.Int32"));
             data.Columns.Add("First Name", System.Type.GetType("System.String"));
@@ -151,8 +151,8 @@ namespace NineTapTour.Forms
             // Add statsList to DataTable
             foreach (var item in statsList)
             {
-                data.Rows.Add(new object[]
-                {
+                data.Rows.Add(
+                [
                 item.Id,
                 item.FirstName,
                 item.LastName,
@@ -165,7 +165,7 @@ namespace NineTapTour.Forms
                 item.Game4,
                 item.Handicap,
                 item.Bonus
-                });
+                ]);
             }
 
             // Return data table object

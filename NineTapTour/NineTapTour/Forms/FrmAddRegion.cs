@@ -24,7 +24,7 @@ namespace NineTapTour.Forms
            
             if(tbEntry != null)
             {
-                NineTapRegion n = new NineTapRegion();
+                NineTapRegion n = new();
                 n.NineTapRegionName = tbEntry.Text;
                 NineTapRegionDB.AddRegion(n);
                 this.Close();         

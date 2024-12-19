@@ -14,15 +14,15 @@ namespace NineTapTour.Forms.Tests
         [TestMethod()]
         public void GetTop3OutOf4_ListOf4Scores_DropsLowestAndReturns3ScoresInDescendingOrder()
         {
-            List<int?> testScores = new List<int?>()
-            {
+            List<int?> testScores =
+            [
                 200, 100, 150, 175
-            };
+            ];
             int minScore = testScores.Min().Value;
 
             List<int> top3Scores = FrmTournamentStats.GetTop3OutOf4(testScores);
             //returned scores are sorted in descending order
-            List<int> expectedScores = new List<int>() { 200, 175, 150 };
+            List<int> expectedScores = [200, 175, 150];
             bool isLowestScorePresent = top3Scores.Any(score => score == minScore);
 
             Assert.AreEqual(expectedScores.Count, top3Scores.Count); //ensure 3 scores are returned when given 4
@@ -39,10 +39,10 @@ namespace NineTapTour.Forms.Tests
         [TestMethod]
         public void GetTop3OutOf4_ListOf3OrLessScores_DoesNotDropLowest()
         {
-            List<int?> testScores = new List<int?>()
-            {
+            List<int?> testScores =
+            [
                 100, 120, 110
-            };
+            ];
 
             List<int> result = FrmTournamentStats.GetTop3OutOf4(testScores);
             List<int> result2 = FrmTournamentStats.GetTop3OutOf4(testScores.GetRange(0, 2));

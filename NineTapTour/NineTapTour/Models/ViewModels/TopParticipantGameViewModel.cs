@@ -62,7 +62,7 @@ namespace NineTapTour.Models.ViewModels
         {
             get
             {
-                if (FrmMemberScores.selectedTournament.ThreeOutOf4)
+                if (FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4)
                 {
                     return $"{this.Top3ScratchScore,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
                 }
@@ -77,7 +77,7 @@ namespace NineTapTour.Models.ViewModels
         {
             get
             {
-                if (FrmMemberScores.selectedTournament.ThreeOutOf4)
+                if (FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4)
                 {
                     return $"{this.Top3HandiScores,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
                 }

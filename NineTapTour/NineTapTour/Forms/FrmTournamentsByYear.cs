@@ -39,7 +39,7 @@ namespace NineTapTour.Forms
         private List<int> Years()
         {
             int currentYear = DateTime.Now.Year + 1;
-            List<int> years = new List<int>();
+            List<int> years = [];
             for (int i = 25; i > 0; i--)
             {
                 years.Add(currentYear--);
@@ -63,7 +63,7 @@ namespace NineTapTour.Forms
         /// <param name="selectedYear">Year selected</param>
         public void PopulateTournamentsByYear(int selectedYear, int regionID)
         {
-            NineTapDb db = new NineTapDb();
+            NineTapDb db = new();
             var tournaments = (from t in db.Tournaments
                                orderby t.Date descending
                                where t.Date.Year == selectedYear  && t.TourneyRegion == regionID

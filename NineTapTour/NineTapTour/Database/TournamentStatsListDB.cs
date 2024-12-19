@@ -15,9 +15,9 @@ namespace NineTapTour.Database
         /// <param name="selectedTournament">The Id of the tournament</param>
         public static List<TournamentStatsList> GetTournamentStatsList(int selectedTournament)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDb db = new())
             {
-                return (from p in db.Participants
+                return [.. (from p in db.Participants
                     join m in db.Members on p.Member.Id equals m.Id
                     join g in db.Games on p.Game.Id equals g.Id
                     join t in db.Tournaments on p.Tournament.Id equals t.Id
@@ -60,7 +60,7 @@ namespace NineTapTour.Database
                         Game4 = g.Game4,
                         Handicap = p.Game.Handicap,
                         Bonus = p.Game.Bonus,
-                    }).ToList();
+                    })];
             }
         }
 
@@ -71,8 +71,8 @@ namespace NineTapTour.Database
         /// <param name="scores"></param>  
         public static List<int> GetTop3OutOf4(int? game1, int? game2, int? game3, int? game4)
         {
-            List<int?> scores = new List<int?> { game1, game2, game3, game4 };
-            List<int> listOfValidScores = new List<int>();
+            List<int?> scores = [game1, game2, game3, game4];
+            List<int> listOfValidScores = [];
             for (int i = 0; i < scores.Count; i++)
             {
                 if (scores[i].HasValue)
@@ -96,9 +96,9 @@ namespace NineTapTour.Database
         internal static List<TournamentStatsList> Get3OutOf4TournamentStatsList(int selectedTournament)
         {
             // query database
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDb db = new())
             {
-                return (from p in db.Participants
+                return [.. (from p in db.Participants
                      join m in db.Members on p.Member.Id equals m.Id
                      join g in db.Games on p.Game.Id equals g.Id
                      join t in db.Tournaments on p.Tournament.Id equals t.Id
@@ -127,7 +127,7 @@ namespace NineTapTour.Database
                          Game4 = g.Game4,
                          Handicap = p.Game.Handicap,
                          Bonus = p.Game.Bonus,
-                     }).ToList();
+                     })];
             }
         }
     }

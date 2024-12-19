@@ -22,7 +22,7 @@ namespace NineTapTour.Models.ViewModels
         //total of all 4 games
         public int? Total()
         {
-            List<int?> test  = new List<int?> { Game1, Game2, Game3, Game4};
+            List<int?> test  = [Game1, Game2, Game3, Game4];
             int score = 0;
             for (int i = 0; i < test.Count; i++)
             {

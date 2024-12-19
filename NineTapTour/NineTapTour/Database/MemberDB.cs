@@ -87,10 +87,10 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
-                return (from m in db.Members
+                return [.. (from m in db.Members
                         orderby  m.Number
                         where m.NineTapRegionID == regionID
-                        select m).ToList();
+                        select m)];
             }
         }
 
@@ -99,7 +99,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static int GetMemberListCount(int regionId)
         {
-            using (NineTapDb db = new NineTapDb())
+            using (NineTapDb db = new())
             {
                 return db.Members.Where(member => member.NineTapRegionID == regionId).Count();
             }
@@ -112,9 +112,9 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
-                return (from m in db.Members
+                return [.. (from m in db.Members
                         orderby m.Number
-                        select m).ToList();
+                        select m)];
             }
         }
 
@@ -148,7 +148,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static Member GetMemberByGameId(int gameID)
         {
-            using(NineTapDb db = new NineTapDb())
+            using(NineTapDb db = new())
             {
                 return db.Participants
                         .Include(b => b.Game)
@@ -164,7 +164,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static int GetMemberIdByNumber(int memberNumber, int regionId)
         {
-            using(NineTapDb db = new NineTapDb())
+            using(NineTapDb db = new())
             {
                  return (from m in db.Members
                         where m.Number == memberNumber &&
@@ -179,7 +179,7 @@ namespace NineTapTour.Database
         /// </summary>
         public static int GetMemberNumberbyID(int memberID)
         {
-            Member currentMember = new Member();
+            Member currentMember = new();
             using (var db = new NineTapDb())
             {
                 var temp = (from m in db.Members
