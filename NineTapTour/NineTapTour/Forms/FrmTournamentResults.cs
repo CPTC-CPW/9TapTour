@@ -332,7 +332,7 @@ namespace NineTapTour.Forms
                 db.SaveChanges();
             }
 
-            string getFilePath = Path.GetFullPath("Resources/TournamentResultsTemplate.xls");
+            string getFilePath = Path.GetFullPath("Resources/TournamentResultsTemplate.xlsx");
             string tourneyDate = tourny.Date.ToString("MM/dd/yyyy");
             string tournyDateDash = tourneyDate.Replace("/", "-");
             string tournamentDate = tournyDateDash; // Already formatted

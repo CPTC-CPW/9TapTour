@@ -15,9 +15,6 @@
   <ItemGroup>
     <Content Include="9tap_white.ico" />
     <Content Include="Database\DBScripts\ninetapdata.sql" />
-    <Content Include="Resources\TournamentResultsTemplate.xls">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -25,7 +22,10 @@
     <None Update="Resources\9tapUserManual.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Resources\SeriesReportTemplate.xls">
+    <None Update="Resources\SeriesReportTemplate.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\TournamentResultsTemplate.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="_NineTapTour_NineTapDbDataSet.xsd">

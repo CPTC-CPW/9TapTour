@@ -127,7 +127,7 @@ namespace NineTapTour.Forms
                 reportTypeToSave = "FinalGame";
             }
 
-            string getFilePath = Path.GetFullPath("Resources/SeriesReportTemplate.xls");
+            string getFilePath = Path.GetFullPath("Resources/SeriesReportTemplate.xlsx");
             string tourneyDate = selectedTournament.Date.ToString("MM/dd/yyyy");
             string tournyDate = tourneyDate.Replace("/", "-");
             string tournamentDate = tournyDate;
