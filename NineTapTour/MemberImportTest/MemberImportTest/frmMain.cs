@@ -2,9 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Excel = Microsoft.Office.Interop.Excel;
+using ClosedXML.Excel;
 using NineTapTour.Database;
 using System.Text.RegularExpressions;
 using System.Globalization;
@@ -545,10 +544,8 @@ namespace MemberImportTest
             CheckSpaces();
         }
 
-        private Excel.Application xlApp;
         private List<ExcelRow> GetAllExcelData(string[] files)
         {
-            xlApp = new Excel.Application();
             OverAllProcessingExcel.Text = "Over All Process:";
             for (int i = 0; i < files.Length; i++)
             {
@@ -568,13 +565,9 @@ namespace MemberImportTest
             OverAllProcessingExcel.Text = "Complete";
             progressBar1.Increment(100);
             progressBar2.Increment(100);
-
-            // Quit Excel and release resources
-            xlApp.Quit();
-            Marshal.ReleaseComObject(xlApp);
-
             return ALLEXCELDATAFROMALLPLAYERS;
         }
+
         /// <summary>
         /// This will process the actual excel files and impport the info needed from the files to the program
         /// </summary>
@@ -587,174 +580,109 @@ namespace MemberImportTest
             progressBar2.Value = 0;
             LabelCurrentFileWorkingOn.Text = "Current File Being Processed:   " + Path.GetFileName(PathAndFileName);
 
-            Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(PathAndFileName, 0, true, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
-            Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-            Excel.Range range = xlWorkSheet.UsedRange;
             List<ExcelRow> returnMe = [];
-
             char[] splitters = ['/', '-'];
             string[] PlayerFinalFirstAndMiddle = ["", ""];
             string playerLastName = "";
             string firstAndMiddle = "";
-            string playerFullName = Convert.ToString((range.Cells[1, 2] as Excel.Range).Value2);
-            if (playerFullName.Contains(','))
+
+            using (var workbook = new XLWorkbook(PathAndFileName))
             {
-                playerLastName = playerFullName[..playerFullName.IndexOf(',')];
-                firstAndMiddle = playerFullName[(playerFullName.IndexOf(',') + 2)..];
-            }
-            // Checks to see if a period instead of a comma was accidentally placed in member name. (Client's Request)
-            else if (playerFullName.Contains('.'))
-            {
-                playerLastName = playerFullName[..playerFullName.IndexOf('.')];
-                try
+                var ws = workbook.Worksheet(1);
+                string playerFullName = ws.Cell(1, 2).GetString();
+                if (playerFullName.Contains(','))
                 {
-                    firstAndMiddle = playerFullName[(playerFullName.IndexOf('.') + 2)..];
+                    playerLastName = playerFullName[..playerFullName.IndexOf(',')];
+                    firstAndMiddle = playerFullName[(playerFullName.IndexOf(',') + 2)..];
                 }
-                catch (ArgumentOutOfRangeException)
+                else if (playerFullName.Contains('.'))
                 {
-                    // Can be thrown if the "." comes at the end. Ex. "John Doe Jr."
-                    // First name will be preserved in these rare cases. For now middle names will
-                    // be ignored in these exceptions due to various name formats
-                    int firstSpaceIndex = playerFullName.IndexOf(' ');
-                    firstAndMiddle = playerFullName[..firstSpaceIndex];
-                }
-
-            }
-
-            string[] first0middle1 = firstAndMiddle.Split(' ');
-            int playerOrgAVG;
-
-            for (int i = 0; i < first0middle1.Length; i++)
-            {
-                PlayerFinalFirstAndMiddle[i] = first0middle1[0];
-            }
-            try
-            {
-                playerOrgAVG = Convert.ToInt32((range.Cells[1, 10] as Excel.Range).Value2);
-            }
-
-            catch (Exception)
-            {
-                string[] afterSplit;
-                string orgString;
-                try
-                {
-                    orgString = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
-                    afterSplit = orgString.Split('-');
-                    playerOrgAVG = Convert.ToInt32(afterSplit[0]);
-                }
-                catch
-                {
+                    playerLastName = playerFullName[..playerFullName.IndexOf('.')];
                     try
                     {
-                        orgString = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
-                        afterSplit = orgString.Split('*');
-                        playerOrgAVG = Convert.ToInt32(afterSplit[0]);
+                        firstAndMiddle = playerFullName[(playerFullName.IndexOf('.') + 2)..];
                     }
-                    catch
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        int firstSpaceIndex = playerFullName.IndexOf(' ');
+                        firstAndMiddle = playerFullName[..firstSpaceIndex];
+                    }
+                }
+                string[] first0middle1 = firstAndMiddle.Split(' ');
+                int playerOrgAVG;
+                for (int i = 0; i < first0middle1.Length; i++)
+                {
+                    PlayerFinalFirstAndMiddle[i] = first0middle1[0];
+                }
+                try
+                {
+                    playerOrgAVG = ws.Cell(1, 10).GetValue<int>();
+                }
+                catch (Exception)
+                {
+                    string orgString = ws.Cell(1, 10).GetString();
+                    string[] afterSplit = orgString.Split('-', '*', 'L');
+                    if (afterSplit.Length > 0 && int.TryParse(afterSplit[0], out int val))
+                        playerOrgAVG = val;
+                    else
+                        playerOrgAVG = -1;
+                }
+                string playerNumber = ws.Cell(1, 14).GetString();
+                bool isRegionHawaii = (cbHaw.Checked);
+                if (playerNumber == null)
+                {
+                    MessageBox.Show($"Player number could not be read in excel file {PathAndFileName}. Program is unable to continue.");
+                    throw new ArgumentException($"While reading {PathAndFileName} a player number was not found in the file.");
+                }
+                if (isRegionHawaii)
+                {
+                    playerNumber = RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty);
+                }
+                String[] playerNumberAfterSplit;
+                int.TryParse(playerNumber, out int playerNumberAsInt);
+                if (playerNumberAsInt != 0)
+                {
+                    playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty));
+                }
+                else if (playerNumberAsInt == 0)
+                {
+                    for (int i = 0; i < splitters.Length; i++)
                     {
                         try
                         {
-                            orgString = ((range.Cells[1, 10] as Excel.Range).Value2.ToString());
-                            afterSplit = orgString.Split('L');
-                            playerOrgAVG = Convert.ToInt32(afterSplit[0]);
+                            playerNumberAfterSplit = playerNumber.Split(splitters[i]);
+                            playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumberAfterSplit[^1], string.Empty));
                         }
-                        catch
-                        {
-                            playerOrgAVG = -1;
-                        }
+                        catch { }
                     }
                 }
-            }
-
-            String playerNumber = (range.Cells[1, 14] as Excel.Range).Value2.ToString();
-            bool isRegionHawaii = (cbHaw.Checked); // checks to see if Region is Hawaii
-
-            if (playerNumber == null)
-            {
-                MessageBox.Show($"Player number could not be read in excel file {PathAndFileName}. Program is unable to continue.");
-                throw new ArgumentException($"While reading {PathAndFileName} a player number was not found in the file.");
-            }
-
-            if (isRegionHawaii)
-            {
-                playerNumber = RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty);  // strip the member number to straight number
-            }
-
-            String[] playerNumberAfterSplit;
-            int.TryParse(playerNumber, out int playerNumberAsInt);
-
-            if (playerNumberAsInt != 0)
-            {
-                playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty));
-            }
-            else if (playerNumberAsInt == 0) // if player has more then one member number, set it to their latest
-            {
-                for (int i = 0; i < splitters.Length; i++)
-                {
-                    try
-                    {
-                        playerNumberAfterSplit = playerNumber.Split(splitters[i]);
-                        playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumberAfterSplit[^1], string.Empty));
-                    }
-                    catch
-                    {
-
-                    }
-                }
-            }
-
-            for (int sheetNum = 1; sheetNum <= xlWorkBook.Worksheets.Count; sheetNum++)
-            {
-                xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
-                range = xlWorkSheet.UsedRange;
-
-                double noGameMoneyWon = 0;
-
-                const int GameDataEndRow = 45;
+                int lastRow = ws.LastRowUsed().RowNumber();
                 const int GameDataStartRow = 3;
-
-                for (int row = GameDataStartRow; row <= GameDataEndRow; row++)
+                for (int row = GameDataStartRow; row <= lastRow; row++)
                 {
                     ExcelRow temp = new();
                     PlayerHistory playerH = new();
                     Game GameHistory = new();
-
-                    string game1 = Convert.ToString((range.Cells[row, 3] as Excel.Range).Value2);
-                    string game2 = Convert.ToString((range.Cells[row, 4] as Excel.Range).Value2);
-                    string game3 = Convert.ToString((range.Cells[row, 5] as Excel.Range).Value2);
-                    string game4 = Convert.ToString((range.Cells[row, 6] as Excel.Range).Value2);
-                    string testFin = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
-
-                    // handles when legacy excel files have 0 in the games total column
-                    if (!string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 1] as Excel.Range).Value2)))
+                    string game1 = ws.Cell(row, 3).GetString();
+                    string game2 = ws.Cell(row, 4).GetString();
+                    string game3 = ws.Cell(row, 5).GetString();
+                    string game4 = ws.Cell(row, 6).GetString();
+                    string testFin = ws.Cell(row, 14).GetString();
+                    if (!string.IsNullOrWhiteSpace(ws.Cell(row, 1).GetString()))
                     {
-                        if (Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2) == 0 && string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 15] as Excel.Range).Value2)))
+                        if (ws.Cell(row, 1).GetValue<int>() == 0 && string.IsNullOrWhiteSpace(ws.Cell(row, 15).GetString()))
                         {
                             continue;
                         }
                     }
-
-                    if ( // if no date or cash then continue to the next line
-                        string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 2] as Excel.Range).Value2)) &&
-                        string.IsNullOrWhiteSpace(Convert.ToString((range.Cells[row, 15] as Excel.Range).Value2))
-                        )
+                    if (string.IsNullOrWhiteSpace(ws.Cell(row, 2).GetString()) && string.IsNullOrWhiteSpace(ws.Cell(row, 15).GetString()))
                     {
                         continue;
                     }
-
-                    if ( // if the four games have no data AKA no games bowled and there is a finish place then add the cash to moneywon
-                        string.IsNullOrWhiteSpace(game1) &&
-                        string.IsNullOrWhiteSpace(game2) &&
-                        string.IsNullOrWhiteSpace(game3) &&
-                        string.IsNullOrWhiteSpace(game4) &&
-                        !string.IsNullOrWhiteSpace(testFin)
-                    )
+                    if (string.IsNullOrWhiteSpace(game1) && string.IsNullOrWhiteSpace(game2) && string.IsNullOrWhiteSpace(game3) && string.IsNullOrWhiteSpace(game4) && !string.IsNullOrWhiteSpace(testFin))
                     {
-                        noGameMoneyWon += Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
                         continue;
                     }
-
                     GameHistory.gameRegionID = RegionID;
                     temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
                     temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
@@ -763,179 +691,34 @@ namespace MemberImportTest
                     temp.PlayerNumber = playerNumberAsInt;
                     playerH.MemberNumber = temp.PlayerNumber;
                     playerH.regionID = RegionID;
-                    //only process file if they have been added as a member first and are active ?
                     if (MemberDB.GetMember(temp.PlayerNumber, RegionID).IsActive == true)
                     {
-                        try
-                        {
-                            temp.GameTotal = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
-                            playerH.GamesPlayed = Convert.ToInt32((range.Cells[row, 1] as Excel.Range).Value2);
-                            DateTime compare = DateTime.FromOADate(Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2));
-                            if (compare == Convert.ToDateTime("12/30/1899 12:00:00 AM"))
-                            {
-                                break;
-                            }
-                        }
-                        catch
-                        {
-                            temp.GameTotal = -1;
-                        }
-                        try
-                        {
-                            temp.Date = DateTime.FromOADate(Convert.ToDouble((range.Cells[row, 2] as Excel.Range).Value2));
-                            playerH.TournamentDate = temp.Date;
-                        }
-                        catch
-                        {
-                            temp.Date = new DateTime();
-                        }
-                        try
-                        {
-                            temp.Game1 = Convert.ToInt32((range.Cells[row, 3] as Excel.Range).Value2);
-                            GameHistory.Game1 = temp.Game1;
-                            playerH.Game1 = temp.Game1;
-                        }
-                        catch
-                        {
-                            temp.Game1 = -1;
-                        }
-                        try
-                        {
-                            temp.Game2 = Convert.ToInt32((range.Cells[row, 4] as Excel.Range).Value2);
-                            GameHistory.Game2 = temp.Game2;
-                            playerH.Game2 = temp.Game2;
-                        }
-                        catch
-                        {
-                            temp.Game2 = -1;
-                        }
-                        try
-                        {
-                            temp.Game3 = Convert.ToInt32((range.Cells[row, 5] as Excel.Range).Value2);
-                            GameHistory.Game3 = temp.Game3;
-                            playerH.Game3 = temp.Game3;
-                        }
-                        catch
-                        {
-                            temp.Game3 = -1;
-                        }
-                        try
-                        {
-                            temp.Game4 = Convert.ToInt32((range.Cells[row, 6] as Excel.Range).Value2);
-                            GameHistory.Game4 = temp.Game4;
-                            playerH.Game4 = temp.Game4;
-                        }
-                        catch
-                        {
-                            temp.Game4 = -1;
-                        }
-                        try
-                        {
-                            temp.Total = Convert.ToInt32((range.Cells[row, 7] as Excel.Range).Value2);
-                            GameHistory.TotalScore = temp.Total;
-                            playerH.TotalScore = temp.Total;
-                        }
-                        catch
-                        {
-                            temp.Total = -1;
-                        }
-                        try
-                        {
-                            temp.AverageOfRow = Convert.ToDouble((range.Cells[row, 8] as Excel.Range).Value2);
-                            playerH.AverageForEntry = temp.AverageOfRow;
-                        }
-                        catch
-                        {
-                            temp.AverageOfRow = -1;
-                        }
-                        try
-                        {
-                            temp.TrueAverage = Convert.ToDouble((range.Cells[row, 9] as Excel.Range).Value2);
-                            playerH.trueAVG = temp.TrueAverage;
-                        }
-                        catch
-                        {
-                            temp.TrueAverage = -1;
-                        }
-                        try
-                        {
-                            temp.AVG = Convert.ToInt32((range.Cells[row, 10] as Excel.Range).Value2);
-                            playerH.AVG = temp.AVG;
-
-                        }
-                        catch
-                        {
-                            temp.AVG = -1;
-                        }
-                        try
-                        {
-                            temp.HandyCap = Convert.ToInt32((range.Cells[row, 11] as Excel.Range).Value2);
-                            GameHistory.Handicap = temp.HandyCap;
-                            playerH.HandiCap = temp.HandyCap;
-                        }
-                        catch
-                        {
-                            temp.Bonus = -1;
-                        }
-                        try
-                        {
-                            temp.Bonus = Convert.ToInt32((range.Cells[row, 12] as Excel.Range).Value2);
-                            GameHistory.Bonus = temp.Bonus;
-                            playerH.Bonus = temp.Bonus;
-                        }
-                        catch
-                        {
-                            temp.HandyCap = -1000;
-                        }
-                        temp.PotPro = Convert.ToString((range.Cells[row, 13] as Excel.Range).Value2);
-                        playerH.ProPot = temp.PotPro;
-                        temp.FinPPHG = Convert.ToString((range.Cells[row, 14] as Excel.Range).Value2);
-                        playerH.PPHG = temp.FinPPHG;
-
-                        try
-                        {
-                            // THIS WILL CATCH SUBTOTALS THAT MAY HAVE BEEN ADDED ON LINE 46 OF THE EXCEL FILES
-                            if (temp.FinPPHG?.ToString() != string.Empty) // Only grab the money earned from tournament if they placed in tournament
-                            {
-                                temp.Cash = Convert.ToDouble((range.Cells[row, 15] as Excel.Range).Value2);
-                                GameHistory.MoneyWon = Convert.ToDecimal(temp.Cash);
-                                playerH.MoneyWon = Convert.ToDecimal(temp.Cash);
-                            }
-                            else
-                            {
-                                temp.Cash = 0;
-                                GameHistory.MoneyWon = 0;
-                                playerH.MoneyWon = 0;
-                            }
-                        }
-                        catch
-                        {
-                            temp.Cash = 0;
-                        }
-                        playerH.MoneyWon += Convert.ToDecimal(noGameMoneyWon);
-
-                        temp.Notes = Convert.ToString((range.Cells[row, 16] as Excel.Range).Value2);
-                        GameHistory.Notes = temp.Notes;
-                        playerH.Notes = temp.Notes;
-                        playerH.PPHG = temp.FinPPHG;
+                        try { temp.GameTotal = ws.Cell(row, 1).GetValue<int>(); playerH.GamesPlayed = temp.GameTotal; } catch { temp.GameTotal = -1; }
+                        try { temp.Date = ws.Cell(row, 2).GetDateTime(); playerH.TournamentDate = temp.Date; } catch { temp.Date = new DateTime(); }
+                        try { temp.Game1 = ws.Cell(row, 3).GetValue<int>(); GameHistory.Game1 = temp.Game1; playerH.Game1 = temp.Game1; } catch { temp.Game1 = -1; }
+                        try { temp.Game2 = ws.Cell(row, 4).GetValue<int>(); GameHistory.Game2 = temp.Game2; playerH.Game2 = temp.Game2; } catch { temp.Game2 = -1; }
+                        try { temp.Game3 = ws.Cell(row, 5).GetValue<int>(); GameHistory.Game3 = temp.Game3; playerH.Game3 = temp.Game3; } catch { temp.Game3 = -1; }
+                        try { temp.Game4 = ws.Cell(row, 6).GetValue<int>(); GameHistory.Game4 = temp.Game4; playerH.Game4 = temp.Game4; } catch { temp.Game4 = -1; }
+                        try { temp.Total = ws.Cell(row, 7).GetValue<int>(); GameHistory.TotalScore = temp.Total; playerH.TotalScore = temp.Total; } catch { temp.Total = -1; }
+                        try { temp.AverageOfRow = ws.Cell(row, 8).GetValue<double>(); playerH.AverageForEntry = temp.AverageOfRow; } catch { temp.AverageOfRow = -1; }
+                        try { temp.TrueAverage = ws.Cell(row, 9).GetValue<double>(); playerH.trueAVG = temp.TrueAverage; } catch { temp.TrueAverage = -1; }
+                        try { temp.AVG = ws.Cell(row, 10).GetValue<int>(); playerH.AVG = temp.AVG; } catch { temp.AVG = -1; }
+                        try { temp.HandyCap = ws.Cell(row, 11).GetValue<int>(); GameHistory.Handicap = temp.HandyCap; playerH.HandiCap = temp.HandyCap; } catch { temp.Bonus = -1; }
+                        try { temp.Bonus = ws.Cell(row, 12).GetValue<int>(); GameHistory.Bonus = temp.Bonus; playerH.Bonus = temp.Bonus; } catch { temp.HandyCap = -1000; }
+                        temp.PotPro = ws.Cell(row, 13).GetString(); playerH.ProPot = temp.PotPro;
+                        temp.FinPPHG = ws.Cell(row, 14).GetString(); playerH.PPHG = temp.FinPPHG;
+                        try { if (!string.IsNullOrEmpty(temp.FinPPHG)) { temp.Cash = ws.Cell(row, 15).GetValue<double>(); GameHistory.MoneyWon = Convert.ToDecimal(temp.Cash); playerH.MoneyWon = Convert.ToDecimal(temp.Cash); } else { temp.Cash = 0; GameHistory.MoneyWon = 0; playerH.MoneyWon = 0; } } catch { temp.Cash = 0; }
+                        temp.Notes = ws.Cell(row, 16).GetString(); GameHistory.Notes = temp.Notes; playerH.Notes = temp.Notes; playerH.PPHG = temp.FinPPHG;
                         allGames++;
                         GameImport.Add(GameHistory);
                         playerH.Game = GameHistory;
                         playerH.regionID = GameHistory.gameRegionID;
                         PlayerHistoryList.Add(playerH);
                         returnMe.Add(temp);
-                        noGameMoneyWon = 0;
                         progressBar2.Increment(1);
                     }
                 }
             }
-
-            xlWorkBook.Close(0);
-
-            Marshal.ReleaseComObject(range);
-            Marshal.ReleaseComObject(xlWorkSheet);
-            Marshal.ReleaseComObject(xlWorkBook);
-
             return returnMe;
         }
 
