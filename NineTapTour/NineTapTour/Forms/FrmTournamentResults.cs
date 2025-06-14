@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NineTapTour.Models;
-using Excel = Microsoft.Office.Interop.Excel;
+using ClosedXML.Excel;
 using System.Collections;
 using System.Text.RegularExpressions;
 using NineTapTour.Models.ViewModels;
@@ -319,9 +319,7 @@ namespace NineTapTour.Forms
         
         private void ExportToExcel()
         {
-            /// <summary>
-            /// Saves participants' place standing and earnings won to the database
-            /// </summary>
+            // Saves participants' place standing and earnings won to the database
             for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
             {
                 int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
@@ -330,564 +328,67 @@ namespace NineTapTour.Forms
                 g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
                 g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
                 g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
-              
                 g.gameRegionID = tourny.TourneyRegion;
-                
                 db.SaveChanges();
             }
-            
 
-            // have program open template file automatically and auto save
-            // with a specific naming conventions such as "Pacific 3Of4 1-12-18" 
-            // without using open/save file dialogues
-            // get the full path to where the tournament results template is located
             string getFilePath = Path.GetFullPath("Resources/TournamentResultsTemplate.xls");
-
-            // get the date of the tourney and convert it to a string
             string tourneyDate = tourny.Date.ToString("MM/dd/yyyy");
-
-            // replace the forward slashes with a dash
-            string tournyDate = tourneyDate.Replace("/", "-");
-
-            // remove the time from the end of the date
-            string tournamentDate = tournyDate.Replace(tourneyDate, "");
-
-            // create the name of the file by adding together the location, the event, and the
-            // date of the tournament
-            string fileName = tourny.Location + " " + tourny.Event + " " + tournamentDate + ".xls";
-
-            // save the file in the documents folder
-            string saveFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TournamentResultsCopy.xls");
-
-            // Copy template file to modify
+            string tournyDateDash = tourneyDate.Replace("/", "-");
+            string tournamentDate = tournyDateDash; // Already formatted
+            string fileName = tourny.Location + " " + tourny.Event + " " + tournamentDate + ".xlsx";
+            string saveFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TournamentResultsCopy.xlsx");
             File.Copy(getFilePath, saveFile, true);
 
-            string data = null; // the data to be added to the excel spreadsheet cells
-            string tempData = null;
-            string tempData2 = null;
-            string tempData3 = null;
-            
-            int i = 0; // used to determine which row to save data into
-            int j = 0; // used to determine which column to save the data into
-            bool FormatBool = false;
-            int tiePlace = 0;
-
-            Excel.Application xlApp; // used to open the excel application
-            Excel.Workbook xlWorkBook; // used to open the worksheet
-            Excel.Worksheet xlWorkSheet; // this is the sheet of the excel worksheet
-            object misValue = System.Reflection.Missing.Value;
-
-            xlApp = new Excel.Application(); // open the excel application
-            xlWorkBook = xlApp.Workbooks.Add(misValue);
-
-            // get and open the excel file:
             try
             {
-                // opens the file that will be written to
-                xlWorkBook = xlApp.Workbooks.Open(saveFile, misValue, misValue, misValue, misValue, misValue,
-                                                   misValue, misValue, misValue, misValue, misValue, misValue,
-                                                   misValue, misValue, misValue);
-
-                // gets the sheet on the excel file that will be written to
-                xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-
-                // adds in the tourney location in the cell A1
-                xlWorkSheet.Cells[1, 1] = tourny.Location + tourny.Event;
-
-                // adds in the date of the tourney in the cell A2
-                xlWorkSheet.Cells[2, 1] = tourny.Date;
-
-                // use these for loops to populate data in each of
-                // the rows and cells that have data
-                for (i = 0; i < dt.Rows.Count; i++)
+                using (var workbook = new XLWorkbook(saveFile))
                 {
-                    for (j = 0; j <= dt.Columns.Count - 1; j++)
+                    var ws = workbook.Worksheet(1);
+                    ws.Cell(1, 1).Value = tourny.Location + tourny.Event;
+                    ws.Cell(2, 1).Value = tourny.Date;
+
+                    int startRow = 4;
+                    int i = 0;
+                    for (; i < dt.Rows.Count; i++)
                     {
-                        data = dt.Rows[i].ItemArray[j].ToString();
+                        var row = dt.Rows[i];
+                        int excelRow = startRow + i;
+                        ws.Cell(excelRow, 1).Value = row[PLACE_STANDING_COLUMN_NAME]?.ToString();
+                        ws.Cell(excelRow, 2).Value = row[FULLNAME_COLUMN_NAME]?.ToString();
+                        ws.Cell(excelRow, 5).Value = row[HANDICAP_COLUMN_NAME]?.ToString();
+                        ws.Cell(excelRow, 6).Value = row[TOTAL_SCORE_COLUMN_NAME]?.ToString();
+                        ws.Cell(excelRow, 9).Value = row[EARNINGS_COLUMN_NAME]?.ToString();
+                        ws.Cell(excelRow, 12).Value = row[MEMBER_ID_COLUMN_NAME]?.ToString();
+                        ws.Cell(excelRow, 15).FormulaA1 = $"=I{excelRow}-M{excelRow}-N{excelRow}";
+                        ws.Cell(excelRow, 8).Value = row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString();
+                    }
+                    // Set total payout
+                    double money = 0;
+                    for (int k = 0; k < dt.Rows.Count; k++)
+                        money += Convert.ToDouble(dt.Rows[k][EARNINGS_COLUMN_NAME]);
+                    ws.Cell(2, 8).Value = money;
 
-                        // runs for the first 3 places in the data table
-                        // due to their special formatting
-                        if(i < 3)
-                        {
-                            //store the place of the next player for comparison of ties
-                            tempData = dt.Rows[i + 1].ItemArray[j].ToString();
-
-                            // add place standing into the first column of the current row
-                            if (j == 0)
-                            {
-                                //check for first place
-                                if (data == "1")
-                                {
-                                    // check for 1st place tie
-                                    if (i > 0 || data == tempData)
-                                    {
-                                        // add place into 1st column with a "T" for tie
-                                        xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "stT";
-
-                                        // add placement to 2nd column 1 row down
-                                        xlWorkSheet.Cells[(i * 2) + 5, j + 2] = "1st Place";
-
-                                        // add place without "st" into column 11
-                                        xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
-                                    }
-                                    
-                                    else
-                                    {   // no tie
-                                        // add place into 1st column
-                                        xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "st";
-
-                                        // add place without "st" into column 11
-                                        xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
-                                    }
-                                }
-                                else if (data == "2")
-                                {   //check for second place
-                                    // check for second place tie
-                                    if (i > 1 || data == tempData)
-                                    {
-                                        // add place into 1st column with a "T" for tie
-                                        xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "ndT";
-
-                                        // add placement to 2nd column 1 row down
-                                        xlWorkSheet.Cells[(i * 2) + 5, j + 2] = "2nd Place";
-
-                                        // add place without "st" into column 11
-                                        xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
-                                    }
-                                    else
-                                    {   //no tie
-                                        // add place into 1st column
-                                        xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "nd";
-
-                                        // add place without "st" into column 11
-                                        xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
-                                    }
-                                }
-                                else
-                                {   //else its third place
-                                    //check for tie with player below
-                                    if (data == tempData)
-                                    {
-                                        xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "rdT";
-                                        xlWorkSheet.Cells[9, j + 2] = "3rd Place";
-
-                                        // add place without "st" into column 11
-                                        xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
-                                    }
-                                    else
-                                    {
-                                        xlWorkSheet.Cells[i + (i + 4), j + 1] = data + "rd";
-
-                                        // add place without "st" into column 11
-                                        xlWorkSheet.Cells[i + (i + 4), j + 11] = data;
-                                    }
-                                }
-                            }
-
-                            // Add the name into the 2nd column of the current row
-                            if (j == 1)
-                            {
-                                xlWorkSheet.Cells[i + (4 + i), j + 1] = data;
-                            }
-
-                            // Add the handicap into the 6th column of the current
-                            if (j == 2)
-                            {
-                                xlWorkSheet.Cells[i + (4 + i), j + 4] = data;
-                            }
-
-                            // Add the total score into the 7th column of the current row
-                            if (j == 3)
-                            {
-                                xlWorkSheet.Cells[i + (4 + i), j + 4] = data;
-                            }
-
-                            // Add the money won into the 9th column of the current row
-                            if (j == 4)
-                            {
-                                xlWorkSheet.Cells[i + (4 + i), j + 5] = data;
-
-                                // put equation into column 15 that will display the total
-                                // amount the player earned minus the yearly membership and
-                                // any money adjustments
-                               if(i == 0)
-                                {
-                                    xlWorkSheet.Cells[i + (4 + i), j + 11] = "=I" + (i + 4) + "+I" + (i + 5) + "-M" + (i + 4) + "-N" + (i + 4);
-                                }
-                                else if (i == 1)
-                                {
-                                    xlWorkSheet.Cells[i + (4 + i), j + 11] = "=I" + (i + 5) + "+I" + (i + 6) + "-M" + (i + 5) + "-N" + (i + 5);
-                                }
-                                else
-                                {
-                                    xlWorkSheet.Cells[i + (4 + i), j + 11] = "=I" + (i + 6) + "+I" + (i + 7) + "-M" + (i + 6) + "-N" + (i + 6);
-                                }
-                            }
-
-                            // Add the member number into the 12th column of the 4th row
-                            if (j == 5)
-                            {
-                                xlWorkSheet.Cells[i + (4 + i), j + 7] = data;
-                            }
-
-                            if(j == 6)
-                            {
-                                xlWorkSheet.Cells[i + (5 + i), 9] = dt.Rows[i].ItemArray[7].ToString();
-                            }
-                        }
-
-                        // For rows 3 and higher in the data table
-                        if (i >= 3)
-                        {
-                            // first insert a new line into the excel spreadsheet
-                            if (i >= 27 && j == 0)
-                            {
-                                // Get the range on where to insert a new row into the spreadsheet
-                                Excel.Range line = (Excel.Range)xlWorkSheet.Rows[i + 7];
-
-                                // insert the new row
-                                line.Insert();
-
-                                // get these cells
-                                Excel.Range r = xlWorkSheet.get_Range("B" + (i + 7), "E" + (i + 7));
-
-                                // merge the cells of the excel sheet
-                                r.MergeCells = true;
-
-                                // get these cells
-                                Excel.Range r2 = xlWorkSheet.get_Range("G" + (i + 7), "H" + (i + 7));
-
-                                // merge the cells
-                                r2.MergeCells = true;
-                            }
-
-                            // Add the place standing and 
-                            // displays for example: 4th, 5th, 6th,
-                            // 21st, 22nd, 23rd, etc.
-                            if (j == 0)
-                            {
-                                //store the place value of the player before the current
-                                tempData = dt.Rows[i - 1].ItemArray[j].ToString();
-
-                                //if there is a next player, grab their place value as well
-                                if((i + 1) < dt.Rows.Count)
-                                {
-                                    tempData2 = dt.Rows[i + 1].ItemArray[j].ToString();
-                                }
-                                else
-                                {
-                                    tempData2 = tempData;
-                                }
-
-                                // check the place and then add "st", "nd", "rd" or "th"
-                                string place = GetPlace(data);
-
-                                //if the player's score is tied for one of the top 3 spots, format sheet accordingly
-                                if(data == "1" || data == "2" || data == "3")
-                                {
-                                    //set the row with the place and name to bold, with a font size of 16, 
-                                    //and set the row's height to 22
-                                    xlWorkSheet.Cells[i + 7, 1].EntireRow.Font.Bold = true;
-                                    xlWorkSheet.get_Range("B" + (i + 7), "B" + (i + 7)).Cells.Font.Size = 16;
-                                    xlWorkSheet.Cells[i + 7, 1].EntireRow.RowHeight = 22;
-
-                                    //set variables used to format the second line
-                                    //added that shows placement and money earned i.e. the red text 
-                                    tiePlace += 1;
-                                    FormatBool = true;
-                                    tempData3 = data;
-                                    
-                                    //Set the finishing place text with a T for tie
-                                    xlWorkSheet.Cells[i + 7, j + 1] = data + place + "T";
-
-                                    // add place without "st, nd, rd, or th" into column 11
-                                    xlWorkSheet.Cells[i + 7, j + 11] = data;
-                                }
-                                else if (data == tempData || data == tempData2)
-                                {   //check for a tie with either the player before or after the current player
-                                    //set the finishing place text with a T for tie
-                                    xlWorkSheet.Cells[i + 7, j + 1] = data + place + "T";
-                                    // add place without "st, nd, rd, or th" into column 11
-                                    xlWorkSheet.Cells[i + 7, j + 11] = data;
-                                }
-                                else
-                                {
-                                    //set the finishing place text
-                                    xlWorkSheet.Cells[i + 7, j + 1] = data + place;
-                                    // add place without "st, nd, rd, or th" into column 11
-                                    xlWorkSheet.Cells[i + 7, j + 11] = data;
-                                }
-                            }
-
-                            // Add the name into the 2nd column in all the rows 10 - 32 of the excel sheet
-                            if (j == 1)
-                            {
-                                xlWorkSheet.Cells[i + 7, j + 1] = data;
-                            }
-
-                            // Add the handicap in the 6th column in all the rows 10 - 32 of the excel sheet
-                            if (j == 2)
-                            {
-                                xlWorkSheet.Cells[i + 7, j + 4] = data;
-                            }
-
-                            // Add the total score in the 7th column in all the rows 10 - 32 of the excel sheet
-                            if (j == 3)
-                            {
-                                xlWorkSheet.Cells[i + 7, j + 4] = data;
-                            }
-
-                            // Add the money won into the 9th column in all the rows 10 - 32 of the excel sheet
-                            if (j == 4)
-                            {
-                                xlWorkSheet.Cells[i + 7, j + 5] = data;
-
-                                // put equation into column 15 that will display the total
-                                // amount the player earned minus the yearly membership and
-                                // any money adjustments
-                                xlWorkSheet.Cells[i + 7, j + 11] = "=I" + (i + 7) + "-M" + (i + 7) + "-N" + (i + 7);
-                            }
-
-                            // Add the member number into the 12th column in all the rows 10 - 32 of the excel sheet
-                            if (j == 5)
-                            {
-                                xlWorkSheet.Cells[i + 7, j + 7] = data;
-                            }
-                        }
-
-                        // if we are on last row and i is less than 28
-                        if (i == dt.Rows.Count - 1 && i < 27 && j == 5)
-                        {
-                            // grab the extra rows in the excel spreadsheet
-                            Excel.Range range = xlWorkSheet.get_Range("A" + (i + 8), "O" + 34);
-                            // delete the extra rows
-                            range.Delete();
-                            // calculate the total amount of money that was paid out
-                            //xlWorkSheet.Cells[2, 8] = "=SUM(I" + 4 + ":I" + (i + 7) + ")";
-                        }
+                    // Save dialog
+                    SaveFileDialog savefile = new()
+                    {
+                        Filter = FileHelper.GetExcelFilterStringForFileDialogs(),
+                        FileName = fileName
+                    };
+                    DialogResult result = savefile.ShowDialog();
+                    if (result == DialogResult.OK)
+                    {
+                        workbook.SaveAs(savefile.FileName);
+                        MessageBox.Show("Excel file created , you can find the file at: " + savefile.FileName);
                     }
                 }
-
-                if (FormatBool)
-                {
-                    FormatBigTie(tempData3, tiePlace, xlWorkSheet);
-                }
-
-                //set the Total Payout to the correct number
-                SetTotalPayout(xlWorkSheet);
-
-                // saves the excel file with the file name
-                try
-                {
-                    if (!(fileName == "TournamentResultsTemplate.xls" && string.IsNullOrEmpty(fileName)))
-                    {
-                        SaveFileDialog savefile = new()
-                        {
-                            Filter = FileHelper.GetExcelFilterStringForFileDialogs(),
-                            FileName = fileName
-                        };
-                        DialogResult result = savefile.ShowDialog();
-
-                        if(result == DialogResult.OK)
-                        {
-                            fileName = savefile.FileName;
-
-                            xlWorkBook.SaveAs(fileName, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
-                            MessageBox.Show("Excel file created , you can find the file at: " + fileName);
-                        }
-                    }
-                }
-                catch
-                {
-                    MessageBox.Show("The file may already be created and was open when you tried to save over it.");
-                }
-
-                xlWorkBook.Close(true, misValue, misValue);
-                xlApp.Quit();
-
-                ReleaseObject(xlWorkSheet);
-                ReleaseObject(xlWorkBook);
-                ReleaseObject(xlApp);
-            }
-            catch
-            {
-            // if the workbook does not get opened, display an error message
-            MessageBox.Show("Must choose a file to export to. \n" +
-                            " *Must have at least 20 bowlers and 4 money winners* ");
-            xlWorkBook.Close(true, misValue, misValue);
-            xlApp.Quit();
-            }
-        }
-
-        /// <summary>
-        /// Gets and sets the total amount of payout for the 
-        /// winners in the total payout box of the excel sheet
-        /// </summary>
-        private void SetTotalPayout(Excel.Worksheet xlWorkSheet)
-        {
-            double money = 0;
-
-            for(int i = 0; i < dt.Rows.Count; i++)
-            {
-                money += Convert.ToDouble(dt.Rows[i].ItemArray[4]);
-            }
-            xlWorkSheet.Cells[2, 8] = money.ToString();
-        }
-        
-        //format and populate 
-        private void FormatBigTie(string tempData3, int tiePlace, Excel.Worksheet xlWorkSheet)
-        {
-            for (int i = 0; i < tiePlace; i++)
-            {
-                //get range on which to insert extra line
-                Excel.Range line = (Excel.Range)xlWorkSheet.Rows[(i * 2) + 11];
-
-                // insert the new row
-                line.Insert();
-
-                //copy the formatting from row 9, column B
-                Excel.Range R5 = (Excel.Range)xlWorkSheet.Cells[9, 2];
-                R5.Copy(Type.Missing);
-
-                //apply format to the current row, column B
-                Excel.Range R6 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 2];
-                R6.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
-                Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
-
-                //copy the formatting from row 9, column F
-                Excel.Range R1 = (Excel.Range)xlWorkSheet.Cells[9, 6];
-                R1.Copy(Type.Missing);
-
-                //apply format to the current row, column F
-                Excel.Range R2 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 6];
-                R2.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
-                Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
-
-                //copy the formatting from row 9, column I
-                Excel.Range R3 = (Excel.Range)xlWorkSheet.Cells[9, 9];
-                R3.Copy(Type.Missing);
-
-                //apply format to the current row, column I
-                Excel.Range R4 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 9];
-                R4.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
-                Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
-
-                //copy the formatting from row 9, column C
-                Excel.Range R7 = (Excel.Range)xlWorkSheet.Cells[9, 3];
-                R7.Copy(Type.Missing);
-
-                //apply format to the current row, column C
-                Excel.Range R8 = (Excel.Range)xlWorkSheet.Cells[(i * 2) + 11, 3];
-                R8.PasteSpecial(Excel.XlPasteType.xlPasteFormats,
-                Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
-
-                //get the cells from the current cell: current row ((i * 2) + 11), column C
-                //to the cell: current row, column E
-                Excel.Range r = xlWorkSheet.get_Range("C" + ((i * 2) + 11), "E" + ((i * 2) + 11));
-
-                // merge the selected cells together
-                r.MergeCells = true;
-
-                // get these cells from the current cell: current row, column F
-                //to the cell: current row, column H
-                Excel.Range r2 = xlWorkSheet.get_Range("F" + ((i * 2) + 11), "H" + ((i * 2) + 11));
-
-                // merge the selected cells together
-                r2.MergeCells = true;
-
-                //display the player's placement in red text under their name
-                if (tempData3 == "1")
-                {
-                    xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "st Place";
-                }
-                else if (tempData3 == "2")
-                {
-                    xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "nd Place";
-                }
-                else if (tempData3 == "3")
-                {
-                    xlWorkSheet.Cells[(i * 2) + 11, 2] = tempData3 + "rd Place";
-                }
-
-                //set money earned in red text next to place
-                xlWorkSheet.Cells[(i * 2) + 11, 3] = "=SUM(I" + ((i * 2) + 10) + ":I" + ((i * 2) + 11) + ")";
-
-                //label the progressive prize pot
-                xlWorkSheet.Cells[(i * 2) + 11, 6] = "$20 Progressive Pot";
-
-                //Set the Progressive pot earnings
-                xlWorkSheet.Cells[(i * 2) + 11, 9] = dt.Rows[i + 3].ItemArray[7].ToString();
-            }
-        }
-        #endregion
-
-        /// <summary>
-        /// Checks to see what place the players have placed at 
-        /// and then returns the appropriate ending for the place
-        /// standing to be added onto the number they placed. It 
-        /// will either be "st", "nd", "rd", or "th".
-        /// </summary>
-        private static string GetPlace(string data)
-        {
-            // Convert data to an int to easily find its suffix
-            int dataNum = Int32.Parse(data);
-
-            // 11, 12, and 13 are exceptions to the rules bellow, ending in "th"
-            if(dataNum == 11 || dataNum == 12 || dataNum == 13) {
-                return "th";
-            }
-
-            // if data ends in 1, return "st" 
-            // { 1st, 21st, 41st, etc. }
-            if (dataNum % 10 == 1)
-            {
-                return "st";
-            }
-
-            // if data ends in 2, return "nd"
-            // { 2nd, 32nd, 52nd, etc. }
-            else if (dataNum % 10 == 2)
-            {
-                return "nd";
-            }
-
-            // if data ends in 3, return "rd"
-            // { 3rd, 43rd, 63rd, etc. }
-            else if (dataNum % 10 == 3)
-            {
-                return "rd";
-            }
-
-            // if it is any other number than the ones above return th
-            // { 5th, 26th, 48th, etc. }
-            else
-            {
-                return "th";
-            }
-        }
-
-        /// <summary>
-        /// This method is used to clean up the references to the Excel Objects
-        /// so that Excel does not remain running.
-        /// </summary>
-        /// <param name="obj"></param>
-        private static void ReleaseObject(object obj)
-        {
-            try
-            {
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
-                obj = null;
             }
             catch (Exception ex)
             {
-                obj = null;
-                MessageBox.Show("Exception Occured while releasing object " + ex.ToString());
-            }
-            finally
-            {
-                GC.Collect();
+                MessageBox.Show("Must choose a file to export to.\n *Must have at least 20 bowlers and 4 money winners*\n" + ex.Message);
             }
         }
+        #endregion
 
         /// <summary>
         /// This method was made by accident, if deleted will mess up tbClientInputCount
