@@ -541,16 +541,16 @@ namespace MemberImportTest
         /// <param name="e"></param>
         private void Button1_Click(object sender, EventArgs e)
         {
+            txtProgress.Clear();
             GetAndProcessFolderWithExcelFiles();
             while (MessageBox.Show("Do You have more Excel Files to import?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 GetAndProcessFolderWithExcelFiles();
             }
-
-            // Ensure second progress bar is filled to show completion
-            progressBar2.Value = progressBar2.Maximum;
-            LabelCurrentFileWorkingOn.Text = "Complete";
+            // Show completion
+            txtProgress.AppendText("Complete\r\n");
         }
+
         /// <summary>
         /// This will open the explorer to find all the excel files in the folder to allow user to choose the file they want to import
         /// </summary>
@@ -563,9 +563,6 @@ namespace MemberImportTest
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
                     string[] files = Directory.GetFiles(fbd.SelectedPath);
-                    progressBar1.Minimum = 0;
-                    progressBar1.Maximum = files.Length;
-                    progressBar1.Value = 0;
                     GetAllExcelData(files);
                 }
             }
@@ -574,7 +571,6 @@ namespace MemberImportTest
 
         private List<ExcelRow> GetAllExcelData(string[] files)
         {
-            OverAllProcessingExcel.Text = "Over All Process:";
             for (int i = 0; i < files.Length; i++)
             {
                 // If the file is not an excel file, skip it
@@ -582,17 +578,14 @@ namespace MemberImportTest
                 {
                     continue;
                 }
-
+                txtProgress.AppendText($"Processing: {Path.GetFileName(files[i])}\r\n");
                 List<ExcelRow> rows = ProcessExcelFile(files[i]);
                 foreach (ExcelRow r in rows)
                 {
                     ALLEXCELDATAFROMALLPLAYERS.Add(r);
                 }
-                progressBar1.Increment(1);
             }
-            OverAllProcessingExcel.Text = "Complete";
-            progressBar1.Increment(100);
-            progressBar2.Increment(100);
+            txtProgress.AppendText("Complete\r\n");
             return ALLEXCELDATAFROMALLPLAYERS;
         }
 
@@ -603,10 +596,7 @@ namespace MemberImportTest
         /// <returns></returns>
         private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
         {
-            progressBar2.Minimum = 0;
-            progressBar2.Maximum = 347;
-            progressBar2.Value = 0;
-            LabelCurrentFileWorkingOn.Text = "Current File Being Processed:   " + Path.GetFileName(PathAndFileName);
+            txtProgress.AppendText($"Current File Being Processed: {Path.GetFileName(PathAndFileName)}\r\n");
 
             List<ExcelRow> returnMe = [];
             char[] splitters = ['/', '-'];
@@ -743,7 +733,6 @@ namespace MemberImportTest
                         playerH.regionID = GameHistory.gameRegionID;
                         PlayerHistoryList.Add(playerH);
                         returnMe.Add(temp);
-                        progressBar2.Increment(1);
                     }
                 }
             }
