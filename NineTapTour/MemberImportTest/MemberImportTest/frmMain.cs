@@ -10,21 +10,49 @@ using System.Globalization;
 using NineTapTour.Forms;
 using NineTapTour.Models;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace MemberImportTest
 {
     public partial class FrmMain : Form
     {
+        private Button btnConvertXls;
+        private TextBox txtStatus;
 
         public FrmMain()
         {
             InitializeComponent();
+            InitializeConvertXlsControls();
             List<NineTapRegion> r = NineTapRegionDB.GetRegionList();
             cbxRegionSelect.DataSource = r;
             cbxRegionSelect.DisplayMember = nameof(NineTapRegion.NineTapRegionName);
             RegionID = r[cbxRegionSelect.SelectedIndex].NineTapRegionID;
-
         }
+
+        private void InitializeConvertXlsControls()
+        {
+            // Button
+            btnConvertXls = new Button();
+            btnConvertXls.Text = "Convert .xls to .xlsx (only need to do this once)";
+            btnConvertXls.Width = 150;
+            btnConvertXls.Height = 60;
+            btnConvertXls.Top = 75;
+            btnConvertXls.Left = 10;
+            btnConvertXls.Click += btnConvertXls_Click;
+            this.Controls.Add(btnConvertXls);
+
+            // TextBox
+            txtStatus = new TextBox();
+            txtStatus.Multiline = true;
+            txtStatus.ReadOnly = true;
+            txtStatus.ScrollBars = ScrollBars.Vertical;
+            txtStatus.Width = 500;
+            txtStatus.Height = 200;
+            txtStatus.Top = btnConvertXls.Bottom + 10;
+            txtStatus.Left = 10;
+            this.Controls.Add(txtStatus);
+        }
+
         #region Member Info Static Ints
         //MEMBER INFO STATIC INTS
         static readonly int MemNumSpace = 6;     // Member Number
@@ -810,6 +838,51 @@ namespace MemberImportTest
             drawPoint.Y += 16;
             g.DrawString("DEVELOPMENT VERSION NOT FOR PRODUCTION", drawFont, drawBrush, drawPoint);
 #endif
+        }
+
+        private async void btnConvertXls_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                fbd.Description = "Select the folder containing .xls files to convert. This will create a copy in the .xlsx format. Your old files will not be deleted. You only need to do this one time";
+                if (fbd.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    txtStatus.Clear();
+                    btnConvertXls.Enabled = false;
+                    string folderPath = fbd.SelectedPath;
+                    await Task.Run(() => RunPowerShellScript(folderPath));
+                    btnConvertXls.Enabled = true;
+                }
+            }
+        }
+
+        private void RunPowerShellScript(string folderPath)
+        {
+            var psi = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                Arguments = $"-ExecutionPolicy Bypass -File \"Convert-XlsToXlsx.ps1\" -folder \"{folderPath}\"",
+                WorkingDirectory = Application.StartupPath,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using (var process = System.Diagnostics.Process.Start(psi))
+            {
+                while (!process.StandardOutput.EndOfStream)
+                {
+                    string line = process.StandardOutput.ReadLine();
+                    this.Invoke(new Action(() => txtStatus.AppendText(line + Environment.NewLine)));
+                }
+                while (!process.StandardError.EndOfStream)
+                {
+                    string line = process.StandardError.ReadLine();
+                    this.Invoke(new Action(() => txtStatus.AppendText("ERROR: " + line + Environment.NewLine)));
+                }
+                process.WaitForExit();
+            }
         }
     }
 }

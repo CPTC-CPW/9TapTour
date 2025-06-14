@@ -24,5 +24,8 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+    <None Include="Convert-XlsToXlsx.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
