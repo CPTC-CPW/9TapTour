@@ -49,7 +49,7 @@
             // 
             // btnOpenFile
             // 
-            btnOpenFile.Location = new System.Drawing.Point(175, 115);
+            btnOpenFile.Location = new System.Drawing.Point(680, 50);
             btnOpenFile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnOpenFile.Name = "btnOpenFile";
             btnOpenFile.Size = new System.Drawing.Size(113, 27);
@@ -60,7 +60,7 @@
             // 
             // btnInvalid
             // 
-            btnInvalid.Location = new System.Drawing.Point(175, 149);
+            btnInvalid.Location = new System.Drawing.Point(680, 84);
             btnInvalid.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnInvalid.Name = "btnInvalid";
             btnInvalid.Size = new System.Drawing.Size(113, 27);
@@ -72,7 +72,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(166, 97);
+            label1.Location = new System.Drawing.Point(671, 32);
             label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(133, 15);
@@ -82,17 +82,17 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(158, 200);
+            label2.Location = new System.Drawing.Point(663, 135);
             label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(150, 15);
+            label2.Size = new System.Drawing.Size(149, 15);
             label2.TabIndex = 4;
             label2.Text = "Import Members Excel files";
             // 
             // btnSelectExcelFolder
             // 
             btnSelectExcelFolder.Enabled = false;
-            btnSelectExcelFolder.Location = new System.Drawing.Point(138, 218);
+            btnSelectExcelFolder.Location = new System.Drawing.Point(643, 153);
             btnSelectExcelFolder.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnSelectExcelFolder.Name = "btnSelectExcelFolder";
             btnSelectExcelFolder.Size = new System.Drawing.Size(181, 27);
@@ -114,7 +114,7 @@
             // btn_FinalizeData
             // 
             btn_FinalizeData.Enabled = false;
-            btn_FinalizeData.Location = new System.Drawing.Point(175, 346);
+            btn_FinalizeData.Location = new System.Drawing.Point(680, 281);
             btn_FinalizeData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btn_FinalizeData.Name = "btn_FinalizeData";
             btn_FinalizeData.Size = new System.Drawing.Size(113, 27);
@@ -125,7 +125,7 @@
             // 
             // progressBar1
             // 
-            progressBar1.Location = new System.Drawing.Point(65, 254);
+            progressBar1.Location = new System.Drawing.Point(570, 189);
             progressBar1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             progressBar1.Name = "progressBar1";
             progressBar1.Size = new System.Drawing.Size(342, 27);
@@ -133,7 +133,7 @@
             // 
             // progressBar2
             // 
-            progressBar2.Location = new System.Drawing.Point(65, 294);
+            progressBar2.Location = new System.Drawing.Point(570, 229);
             progressBar2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             progressBar2.Name = "progressBar2";
             progressBar2.Size = new System.Drawing.Size(342, 27);
@@ -180,7 +180,7 @@
             // 
             // progressBarFinalize
             // 
-            progressBarFinalize.Location = new System.Drawing.Point(65, 387);
+            progressBarFinalize.Location = new System.Drawing.Point(570, 322);
             progressBarFinalize.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             progressBarFinalize.Name = "progressBarFinalize";
             progressBarFinalize.Size = new System.Drawing.Size(342, 27);
@@ -189,18 +189,18 @@
             // lblFinalizeStatus
             // 
             lblFinalizeStatus.AutoSize = true;
-            lblFinalizeStatus.Location = new System.Drawing.Point(62, 387);
+            lblFinalizeStatus.Location = new System.Drawing.Point(570, 374);
             lblFinalizeStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             lblFinalizeStatus.Name = "lblFinalizeStatus";
             lblFinalizeStatus.Size = new System.Drawing.Size(0, 15);
             lblFinalizeStatus.TabIndex = 14;
             // 
-            // frmMain
+            // FrmMain
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             BackColor = System.Drawing.Color.White;
-            ClientSize = new System.Drawing.Size(472, 427);
+            ClientSize = new System.Drawing.Size(917, 427);
             Controls.Add(lblFinalizeStatus);
             Controls.Add(progressBarFinalize);
             Controls.Add(cbHaw);
@@ -218,7 +218,7 @@
             Controls.Add(btnOpenFile);
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            Name = "frmMain";
+            Name = "FrmMain";
             Text = "Import Test";
             Paint += FrmMain_Paint;
             ResumeLayout(false);
