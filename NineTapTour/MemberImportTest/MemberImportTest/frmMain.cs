@@ -541,6 +541,13 @@ namespace MemberImportTest
         /// <param name="e"></param>
         private void Button1_Click(object sender, EventArgs e)
         {
+            DialogResult proceed = MessageBox.Show("Are you ready to import your Excel files? We will only convert the newer .xlsx files, not the older .xls files.\r\n" +
+                "If you have not converted yet, please do so using the button on the left side", "Import Excel Files", MessageBoxButtons.YesNo);
+            if (proceed == DialogResult.No)
+            {
+                return;
+            }
+
             txtProgress.Clear();
             GetAndProcessFolderWithExcelFiles();
             while (MessageBox.Show("Do You have more Excel Files to import?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -821,7 +828,7 @@ namespace MemberImportTest
             Font drawFont = new("Arial", 12);
             SolidBrush drawBrush = new(Color.Black);
             PointF drawPoint = new(20, 2);
-            g.DrawString("Version: 2.4.2", drawFont, drawBrush, drawPoint);
+            g.DrawString("Version: 2.5.0", drawFont, drawBrush, drawPoint);
 #if DEBUG
             drawBrush.Color = Color.Red;
             drawPoint.Y += 16;
@@ -831,17 +838,23 @@ namespace MemberImportTest
 
         private async void btnConvertXls_Click(object sender, EventArgs e)
         {
-            using (var fbd = new FolderBrowserDialog())
+            DialogResult accept = MessageBox.Show("Do you want to convert your old .xls files into the newer .xlsx format? This will create a copy and your original files will not be deleted. You only need to do this one time." +
+                "The computer you run this on must have Excel installed on it.", "Convert to new Excel format", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+
+            if (accept == DialogResult.No)
             {
-                fbd.Description = "Select the folder containing .xls files to convert. This will create a copy in the .xlsx format. Your old files will not be deleted. You only need to do this one time";
-                if (fbd.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                {
-                    txtStatus.Clear();
-                    btnConvertXls.Enabled = false;
-                    string folderPath = fbd.SelectedPath;
-                    await Task.Run(() => RunPowerShellScript(folderPath));
-                    btnConvertXls.Enabled = true;
-                }
+                return;
+            }
+
+            using var fbd = new FolderBrowserDialog();
+            fbd.Description = "Select the folder containing .xls files to convert. This will create a copy in the .xlsx format. Your old files will not be deleted. You only need to do this one time";
+            if (fbd.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+            {
+                txtStatus.Clear();
+                btnConvertXls.Enabled = false;
+                string folderPath = fbd.SelectedPath;
+                await Task.Run(() => RunPowerShellScript(folderPath));
+                btnConvertXls.Enabled = true;
             }
         }
 
@@ -875,9 +888,3 @@ namespace MemberImportTest
         }
     }
 }
-
-
-
-
-
-
