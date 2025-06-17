@@ -15,8 +15,7 @@ namespace NineTapTour.Forms
 {
     public partial class FrmMainMenu : Form
     {
-        public FrmMain currMainFrm { get; set; }
-        public int regionID { get; set; }
+        private int regionID { get; set; }
 
         /// <summary>
         /// Opens the "Main Menu" form.

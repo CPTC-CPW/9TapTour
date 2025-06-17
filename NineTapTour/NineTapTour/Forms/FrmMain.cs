@@ -7,16 +7,23 @@ using System.Drawing;
 using NineTapTour.Models;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+using System.ComponentModel;
 
 namespace NineTapTour.Forms
 {
     public partial class FrmMain : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IOrderedEnumerable<Member> MembersList { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Tournament> TournamentList { get; set; }
         public System.Windows.Forms.ToolStripMenuItem ActiveItem;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public FrmMemberData CurrFrmMemberData { get; set; }
-        public FrmMemberScores CurrfrmScoresData { get; set; }
+
+        private FrmMemberScores CurrfrmScoresData { get; set; }
 
         /// <summary>
         /// If this property is set to true, the application will not prompt the user to cancel a close in progress.
@@ -24,11 +31,14 @@ namespace NineTapTour.Forms
         /// </summary>
         private bool AppMustClose { get; set; }
 
-        public FrmMainMenu MainMenu { get; set; }
+        private FrmMainMenu MainMenu { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int RegionID { get; set; }
 
-        public Size MaxWorkAreaScreenSize { get; set; }
-        /////////////////////////////
+        private Size MaxWorkAreaScreenSize { get; set; }
+        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public System.Windows.Forms.ToolStripMenuItem Home { get; set; }
 
 

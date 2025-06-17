@@ -16,15 +16,13 @@ namespace NineTapTour.Forms
 {
     public partial class FrmMemberData : Form
     {
-        int _memberId;
-        Member currentMem;
-        private int _memberNum;
-        int RegionID;
+        private int _memberId;
 
-        public int MemberNum
-        {
-            set { _memberNum = value; }
-        }
+        private Member currentMem;
+
+        private int _memberNum;
+
+        private int RegionID;
         
         /// <summary>
         /// Opens the "Member Data" Form.
