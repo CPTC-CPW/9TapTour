@@ -16,13 +16,13 @@ jobs:
 
    steps:
    - uses: actions/checkout@v4
-    - name: Setup .NET
+   - name: Setup .NET
      uses: actions/setup-dotnet@v4
-      with:
+     with:
        dotnet-version: 9.0.x
    - name: Restore dependencies
-    run: dotnet restore NineTapTour/NineTapTour.sln
+     run: dotnet restore NineTapTour/NineTapTour.sln
    - name: Build
      run: dotnet build NineTapTour/NineTapTour.sln --no-restore
    - name: Test
-     run: dotnet test --no-build --verbosity normal
+     run: dotnet test NineTapTour/NineTapTour.sln --no-build --verbosity normal
