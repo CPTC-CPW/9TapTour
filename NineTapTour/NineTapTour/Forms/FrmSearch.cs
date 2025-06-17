@@ -21,6 +21,8 @@ namespace NineTapTour.Forms
     {
         readonly int RegionID;
         bool isChecked = false;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int searchResult { get; set; }
 
         /// <summary>

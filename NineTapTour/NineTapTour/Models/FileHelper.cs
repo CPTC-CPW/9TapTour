@@ -25,7 +25,7 @@ namespace NineTapTour.Models
         /// <returns></returns>
         public static bool IsValidExcelExtension(string extension)
         {
-            return extension == ".xls" || extension == ".xlsx";
+            return extension == ".xlsx";
         }
     }
 }

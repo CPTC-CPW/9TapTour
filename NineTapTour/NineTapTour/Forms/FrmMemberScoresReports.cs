@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using NineTapTour.Database;
 using NineTapTour.Models;
 using static NineTapTour.Database.ReportHelper;
-using Excel = Microsoft.Office.Interop.Excel;
+using ClosedXML.Excel;
 
 namespace NineTapTour.Forms
 {
@@ -111,11 +111,8 @@ namespace NineTapTour.Forms
 
         private void ExportToExcel()
         {
-            // this is used in a few places for labeling file name and displayed on the excel sheet
             string reportTypeToSave = "";
             string reportLabelToSave = "Game";
-            // if its highseries display series  otherwise will display game
-            // but will chage the save name
             if (reportTypeNum == ReportType.HighSeriesScratch)
             {
                 reportLabelToSave = "Series";
@@ -123,196 +120,86 @@ namespace NineTapTour.Forms
             }
             else if (reportTypeNum == ReportType.HighGameHandicapGameSenior)
             {
-                reportTypeToSave ="Senior"; 
+                reportTypeToSave = "Senior";
             }
             else
             {
                 reportTypeToSave = "FinalGame";
             }
-            // Has thr program open template file automatically and auto save
-            // with a specific naming conventions such as "Series Pacific 3Of4 1-12-18" 
-            // without using open/save file dialogues
 
-            // get the full path to where the tournament results template is located
-            string getFilePath = Path.GetFullPath("Resources/SeriesReportTemplate.xls");
-            
-            // get the date of the tourney and convert it to a string
+            string getFilePath = Path.GetFullPath("Resources/SeriesReportTemplate.xlsx");
             string tourneyDate = selectedTournament.Date.ToString("MM/dd/yyyy");
-
-            // replace the forward slashes with a dash
             string tournyDate = tourneyDate.Replace("/", "-");
+            string tournamentDate = tournyDate;
+            string fileName = reportTypeToSave + selectedTournament.Location + " " + selectedTournament.Event + " " + tournamentDate + ".xlsx";
+            string saveFile = fileName;
 
-            // remove the time from the end of the date
-            string tournamentDate = tournyDate.Replace(tourneyDate, " ");
-
-            // create the name of the file by adding together the type of report, location, the event, and the date of tourn.
-            string fileName = reportTypeToSave + selectedTournament.Location + " " + selectedTournament.Event + " " + tournamentDate + ".xls";
-
-            // save the file with this name
-            string saveFile =  fileName;
-         
-            Excel.Application xlApp; // used to open the excel application
-            Excel.Workbook xlWorkBook; // used to open the worksheet
-            Excel.Worksheet xlWorkSheet; // this is the sheet of the excel worksheet
-            object misValue = System.Reflection.Missing.Value;
-
-            xlApp = new Excel.Application(); // open the excel application
-            xlWorkBook = xlApp.Workbooks.Add(misValue);
-            int.TryParse(txtNumberOfMembers.Text, out int numMembers); // how many people to save in the report
-            // get and open the excel file:
             try
             {
-                // opens the file that will be written to
-                xlWorkBook = xlApp.Workbooks.Open(getFilePath, misValue, misValue, misValue, misValue, misValue,
-                                                   misValue, misValue, misValue, misValue, misValue, misValue,
-                                                   misValue, misValue, misValue);
-
-                // gets the sheet on the excel file that will be written to
-                xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-
-                // adds in the tourney location 
-                xlWorkSheet.Cells[3, 1] = selectedTournament.Location;
-                // adds in the event name 
-                xlWorkSheet.Cells[3, 4] = selectedTournament.Event;
-                // adds in the date of the tourney
-                xlWorkSheet.Cells[3, 5] = selectedTournament.Date;
-                // adds changes game or series as needed
-                xlWorkSheet.Cells[4, 2] = reportLabelToSave;
-                
-
-
-                int printDuesOffset = 0;
-                if ( printDues )
+                File.Copy(getFilePath, saveFile, true);
+                using (var workbook = new XLWorkbook(saveFile))
                 {
-                    xlWorkSheet.Cells[4, 5] = "Membership Paid To";
-                    printDuesOffset = 1;
-                }
+                    var ws = workbook.Worksheet(1);
+                    ws.Cell(3, 1).Value = selectedTournament.Location;
+                    ws.Cell(3, 4).Value = selectedTournament.Event;
+                    ws.Cell(3, 5).Value = selectedTournament.Date;
+                    ws.Cell(4, 2).Value = reportLabelToSave;
 
-                const int headerRowsOffset = 4;
-                const int numberOfColumns = 4;
-                numMembers = temp.Count;
-                // use these loops to populate data to be displayed
-                for (int row = 5; row <= numMembers + headerRowsOffset; row++)
-                {
-                    for (int column = 1; column <= (numberOfColumns + printDuesOffset); column++) // five columns wide 
+                    int printDuesOffset = 0;
+                    if (printDues)
                     {
-                        // first insert a new line into the excel spreadsheet
-                        if (row >= 30 && column == 1)
-                        {
-                            // Get the range on where to insert a new row into the spreadsheet
-                            Excel.Range line = (Excel.Range)xlWorkSheet.Rows[row];
+                        ws.Cell(4, 5).Value = "Membership Paid To";
+                        printDuesOffset = 1;
+                    }
 
-                            //insert the new row
-                            line.Insert();
-                        }
-                        
-                        // Adds the finish place
-                        if (column == 1) 
+                    const int headerRowsOffset = 4;
+                    const int numberOfColumns = 4;
+                    int numMembers = temp.Count;
+                    for (int row = 5; row <= numMembers + headerRowsOffset; row++)
+                    {
+                        int idx = row - 5;
+                        ws.Cell(row, 1).Value = temp[idx].placing;
+                        ws.Cell(row, 2).Value = temp[idx].Score;
+                        ws.Cell(row, 3).Value = temp[idx].MemberId;
+                        ws.Cell(row, 4).Value = temp[idx].LastName + ", " + temp[idx].FirstName;
+                        if (printDuesOffset == 1)
                         {
-                            xlWorkSheet.Cells[row,column] = temp[row-5].placing;
-                        }
-
-                        // Add the series or game depending what clicked
-                        else if (column == 2)
-                        {
-                            xlWorkSheet.Cells[row, column] = temp[row-5].Score; // "Series"; 
-                        }
-
-                        // Adds the member number
-                        else if (column == 3)
-                        {
-                            xlWorkSheet.Cells[row, column] = temp[row-5].MemberId; 
-                        }
-
-                        // Adds the name
-                        else if (column == 4)
-                        {
-                            xlWorkSheet.Cells[row, column] = temp[row-5].LastName + ", " + temp[row - 5].FirstName; 
-                        }
-
-                        //Add Membership Paid To
-                        else if (column == 5)
-                        {
-                            String paymentYear = temp[row - 5].LastPaymentYear;
-                            if (paymentYear != "") {
+                            string paymentYear = temp[idx].LastPaymentYear;
+                            if (!string.IsNullOrEmpty(paymentYear))
+                            {
                                 if (paymentYear != "life ")
                                 {
-                                    int year = 0;
-                                    int.TryParse(paymentYear, out year);
-                                    year += 1;
-                                    paymentYear = Convert.ToString(year);
-                                    xlWorkSheet.Cells[row, column] = paymentYear;
-                                } else
+                                    if (int.TryParse(paymentYear, out int year))
+                                    {
+                                        year += 1;
+                                        paymentYear = year.ToString();
+                                    }
+                                    ws.Cell(row, 5).Value = paymentYear;
+                                }
+                                else
                                 {
-                                    
-                                    xlWorkSheet.Cells[row, column] = temp[row - 5].LastPaymentYear;
+                                    ws.Cell(row, 5).Value = temp[idx].LastPaymentYear;
                                 }
                             }
                         }
                     }
-                }
 
-                // saves the excel file with the file name
-                try
-                {
-                    if (fileName != "SeriesReportTemplate.xls" || !string.IsNullOrEmpty(fileName))
+                    SaveFileDialog savefile = new()
                     {
-                        SaveFileDialog savefile = new();
-                        savefile.Filter = FileHelper.GetExcelFilterStringForFileDialogs();
-                        savefile.FileName = fileName;
-                        DialogResult result = savefile.ShowDialog();
-
-                        if(result == DialogResult.OK)
-                        {
-                            fileName = savefile.FileName;
-
-                            xlWorkBook.SaveAs(fileName, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
-                            MessageBox.Show("Excel file created , you can find the file at: " + fileName);
-                        }
+                        Filter = FileHelper.GetExcelFilterStringForFileDialogs(),
+                        FileName = fileName
+                    };
+                    DialogResult result = savefile.ShowDialog();
+                    if (result == DialogResult.OK)
+                    {
+                        workbook.SaveAs(savefile.FileName);
+                        MessageBox.Show("Excel file created , you can find the file at: " + savefile.FileName);
                     }
                 }
-                catch (Exception)
-                {
-                    MessageBox.Show("The file is already created and was open when you tried to save over it.");
-                }
-
-                xlWorkBook.Close(true, misValue, misValue);
-                xlApp.Quit();
-
-                ReleaseObject(xlWorkSheet);
-                ReleaseObject(xlWorkBook);
-                ReleaseObject(xlApp);
-            }
-            catch (Exception)
-            {
-                // if the workbook does not get opened, display an error message
-                MessageBox.Show("Must choose a file to export to.");
-                //MessageBox.Show(e.StackTrace);
-                xlWorkBook.Close(true, misValue, misValue);
-                xlApp.Quit();
-            }
-        }
-
-        /// <summary>
-        /// This method is used to clean up the references to the Excel Objects
-        /// so that Excel does not remain running.
-        /// </summary>
-        /// <param name="obj"></param>
-        private static void ReleaseObject(object obj)
-        {
-            try
-            {
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
-                obj = null;
             }
             catch (Exception ex)
             {
-                obj = null;
-                MessageBox.Show("Exception Occurred while releasing object " + ex.ToString());
-            }
-            finally
-            {
-                GC.Collect();
+                MessageBox.Show("An error occurred during the export process:\n" + ex.Message, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

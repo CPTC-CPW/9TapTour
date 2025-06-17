@@ -15,8 +15,7 @@ namespace NineTapTour.Forms
 {
     public partial class FrmMainMenu : Form
     {
-        public FrmMain currMainFrm { get; set; }
-        public int regionID { get; set; }
+        private int regionID { get; set; }
 
         /// <summary>
         /// Opens the "Main Menu" form.
@@ -103,7 +102,7 @@ namespace NineTapTour.Forms
             Font drawFont = new("Arial", 12);
             SolidBrush drawBrush = new(Color.White);
             PointF drawPoint = new(10, 2);
-            g.DrawString("Version: 2.4.2", drawFont, drawBrush, drawPoint);
+            g.DrawString("Version: 2.5.0", drawFont, drawBrush, drawPoint);
 #if DEBUG
             drawBrush.Color = Color.Red;
             drawPoint.Y += 16;
