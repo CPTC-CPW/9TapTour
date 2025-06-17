@@ -199,7 +199,7 @@ namespace NineTapTour.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Must choose a file to export to.\n" + ex.Message);
+                MessageBox.Show("An error occurred during the export process:\n" + ex.Message, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
