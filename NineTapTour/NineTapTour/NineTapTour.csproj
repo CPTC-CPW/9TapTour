@@ -9,23 +9,27 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>ClientLicense.txt</PackageLicenseFile>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Resources\SeriesReportTemplate.xlsx" />
+    <None Remove="Resources\TournamentResultsTemplate.xlsx" />
+  </ItemGroup>
 	<ItemGroup>
 		<SupportedPlatform Include="windows" />
 	</ItemGroup>
   <ItemGroup>
     <Content Include="9tap_white.ico" />
     <Content Include="Database\DBScripts\ninetapdata.sql" />
+    <Content Include="Resources\SeriesReportTemplate.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\TournamentResultsTemplate.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Update="Resources\9tapUserManual.docx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\SeriesReportTemplate.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\TournamentResultsTemplate.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="_NineTapTour_NineTapDbDataSet.xsd">
