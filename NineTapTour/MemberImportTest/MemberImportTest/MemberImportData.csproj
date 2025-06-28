@@ -29,8 +29,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="frmMain.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
+    <Compile Update="frmMain.cs" />
   </ItemGroup>
 </Project>
