@@ -95,7 +95,6 @@
             this.tbClientInputCount.Name = "tbClientInputCount";
             this.tbClientInputCount.Size = new System.Drawing.Size(100, 20);
             this.tbClientInputCount.TabIndex = 4;
-            this.tbClientInputCount.TextChanged += new System.EventHandler(this.TbClientInputCount_TextChanged);
             this.tbClientInputCount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TbClientInputCount_KeyDown);
             // 
             // btnPaste

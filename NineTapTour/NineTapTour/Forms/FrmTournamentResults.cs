@@ -391,11 +391,6 @@ namespace NineTapTour.Forms
         #endregion
 
         /// <summary>
-        /// This method was made by accident, if deleted will mess up tbClientInputCount
-        /// </summary>
-        private void TbClientInputCount_TextChanged(object sender, EventArgs e) { }
-
-        /// <summary>
         /// Runs AcceptClientInputForResults if the user presses the "Enter" key
         /// </summary>
         private void TbClientInputCount_KeyDown(object sender, KeyEventArgs e)
