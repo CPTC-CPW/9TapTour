@@ -127,10 +127,6 @@ namespace NineTapTour.Forms
                     }
                 }
             }
-            catch (TournamentTableException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
             finally
             {
                 if (!errors)
