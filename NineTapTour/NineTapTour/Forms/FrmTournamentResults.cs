@@ -358,7 +358,14 @@ namespace NineTapTour.Forms
                         ws.Cell(excelRow, 2).Value = row[FULLNAME_COLUMN_NAME]?.ToString();
                         ws.Cell(excelRow, 5).Value = row[HANDICAP_COLUMN_NAME]?.ToString();
                         ws.Cell(excelRow, 6).Value = row[TOTAL_SCORE_COLUMN_NAME]?.ToString();
-                        ws.Cell(excelRow, 9).Value = row[EARNINGS_COLUMN_NAME]?.ToString();
+                        
+                        // Format Earnings as currency with 0 decimal places
+                        ws.Cell(excelRow, 9).Value = row[EARNINGS_COLUMN_NAME] != null
+                            ? double.TryParse(row[EARNINGS_COLUMN_NAME].ToString(), out var val)
+                                ? val.ToString("C0")
+                                : row[EARNINGS_COLUMN_NAME]?.ToString()
+                            : "$0";
+
                         ws.Cell(excelRow, 12).Value = row[MEMBER_ID_COLUMN_NAME]?.ToString();
                         ws.Cell(excelRow, 15).FormulaA1 = $"=I{excelRow}-M{excelRow}-N{excelRow}";
                         ws.Cell(excelRow, 8).Value = row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString();
