@@ -1,7 +1,5 @@
-﻿using NineTapTour.Exceptions;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,48 +17,32 @@ namespace NineTapTour.Database
         /// </summary>
         public static void AddTournament(Tournament tourn)
         {
-            try
-            {
-                using (var db = new NineTapDb())
-                {
-                    //checks if tournament is new or already existing in db
-                    db.Entry(tourn).State = db.Tournaments.Any(t => t.Id == tourn.Id) ?
-                        EntityState.Modified :
-                        EntityState.Added;
-                    db.SaveChanges();
-                }
-            }
-            catch (SqlException ex)
-            {
-                throw new TournamentTableException("Error Number : " + ex.Number + " - " + ex.Message);
-            }
+            using var db = new NineTapDb();
+            //checks if tournament is new or already existing in db
+            db.Entry(tourn).State = db.Tournaments.Any(t => t.Id == tourn.Id) ?
+                EntityState.Modified :
+                EntityState.Added;
+            db.SaveChanges();
         }
 
         /// <summary>
         /// Updates the given Tournament in the database
         /// </summary>
+        /// <exception cref="ArgumentException">Thrown if tournament argument not found in database</exception>
         public static bool UpdateTournament(Tournament tourn)
         {
-            try
+            using var db = new NineTapDb();
+            Tournament original = db.Tournaments.Find(tourn.Id);
+            if (original != null)
             {
-                using (var db = new NineTapDb())
-                {
-                    Tournament original = db.Tournaments.Find(tourn.Id);
-                    if (original != null)
-                    {
-                        db.Entry(original).CurrentValues.SetValues(tourn);
-                        db.SaveChanges();
-                    } else
-                    {
-                        throw new TournamentTableException("The original data could not be found.");
-                    }
-                }
-                return true;
+                db.Entry(original).CurrentValues.SetValues(tourn);
+                db.SaveChanges();
             }
-            catch (SqlException ex)
+            else
             {
-                throw new TournamentTableException("Error Number : " + ex.Number + " - " + ex.Message);
+                throw new ArgumentException("The original data could not be found.");
             }
+            return true;
         }
 
         /// <summary>
@@ -153,59 +135,41 @@ namespace NineTapTour.Database
         /// </summary>
         public static void AddMemberToTournament(Participant player)
         {
-            try
+            using var db = new NineTapDb();
+            bool isMemberInTournament = (from p in db.Participants
+                                            where player.Member.Id == p.Member.Id
+                                            && player.Tournament.Id == p.Tournament.Id
+                                            && player.Squad == p.Squad
+                                            select p).Any();
+            if (!isMemberInTournament)
             {
-                using (var db = new NineTapDb())
-                {
-                    bool isMemberInTournament = (from p in db.Participants
-                                 where player.Member.Id == p.Member.Id
-                                 && player.Tournament.Id == p.Tournament.Id
-                                 && player.Squad == p.Squad
-                                 select p).Any();
-                    if (!isMemberInTournament)
-                    {
-                        player.Id = 0; // New participants will get an auto generated id
-                        db.Participants.Add(player);
-                        // We only want to add a the current person. Tournament and Member data is not changed here.
-                        db.Entry(player.Tournament).State = EntityState.Unchanged;
-                        db.Entry(player.Member).State = EntityState.Unchanged;
-                        db.SaveChanges();
-                    }
-                    else
-                    {
-                        try
-                        {
-                            Game result = db.Games.SingleOrDefault(g => g.Id == player.Game.Id);
-                            Participant squadResult = db.Participants.SingleOrDefault(p => p.Id == player.Id);
-                            Participant memberQuery = db.Participants.Include(m => m.Member)
-                                .Where(m => m.Member.Id == player.Member.Id).FirstOrDefault();
-                            result.Game1 = player.Game.Game1;
-                            result.Game2 = player.Game.Game2;
-                            result.Game3 = player.Game.Game3;
-                            result.Game4 = player.Game.Game4;
-                            result.MoneyWon = player.Game.MoneyWon;
-                            result.IsComp = player.Game.IsComp;
-
-                            if (squadResult == null)
-                            {
-                                squadResult = new Participant();
-                                Console.WriteLine("No squad");
-                            }
-                            squadResult.Squad = player.Squad;
-                            squadResult.Member = memberQuery.Member;
-                            db.SaveChanges();
-                        }
-                        catch (DbUpdateException)
-                        {
-                            throw;
-                        }
-                    }
-                    //Adds player inside NineTapDb
-                }
+                player.Id = 0; // New participants will get an auto generated id
+                db.Participants.Add(player);
+                // We only want to add a the current person. Tournament and Member data is not changed here.
+                db.Entry(player.Tournament).State = EntityState.Unchanged;
+                db.Entry(player.Member).State = EntityState.Unchanged;
+                db.SaveChanges();
             }
-            catch (SqlException ex)
+            else
             {
-                throw new MemberTableException("Error number : " + ex.Number + " - " + ex.Message);
+                Game result = db.Games.SingleOrDefault(g => g.Id == player.Game.Id);
+                Participant squadResult = db.Participants.SingleOrDefault(p => p.Id == player.Id);
+                Participant memberQuery = db.Participants.Include(m => m.Member)
+                    .Where(m => m.Member.Id == player.Member.Id).FirstOrDefault();
+                result.Game1 = player.Game.Game1;
+                result.Game2 = player.Game.Game2;
+                result.Game3 = player.Game.Game3;
+                result.Game4 = player.Game.Game4;
+                result.MoneyWon = player.Game.MoneyWon;
+                result.IsComp = player.Game.IsComp;
+
+                if (squadResult == null)
+                {
+                    squadResult = new Participant();
+                }
+                squadResult.Squad = player.Squad;
+                squadResult.Member = memberQuery.Member;
+                db.SaveChanges();
             }
         }
 

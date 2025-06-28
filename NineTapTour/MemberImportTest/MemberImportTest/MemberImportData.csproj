@@ -24,8 +24,11 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-    <None Include="Convert-XlsToXlsx.ps1">
+    <Content Include="Convert-XlsToXlsx.ps1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="frmMain.cs" />
   </ItemGroup>
 </Project>

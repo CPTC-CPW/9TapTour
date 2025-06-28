@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NineTapTour.Database;
-using NineTapTour.Exceptions;
 using NineTapTour.Models;
 
 namespace NineTapTour.Forms
@@ -126,10 +125,6 @@ namespace NineTapTour.Forms
                         }
                     }
                 }
-            }
-            catch (TournamentTableException ex)
-            {
-                MessageBox.Show(ex.Message);
             }
             finally
             {

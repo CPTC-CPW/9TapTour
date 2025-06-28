@@ -1,7 +1,5 @@
-﻿using NineTapTour.Exceptions;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,20 +47,11 @@ namespace NineTapTour.Database
         /// </summary>
         public static void AddOrUpdatePlayerHistory(PlayerHistory playerHistory)
         {
-            try
-            {
-                using (var db = new NineTapDb())
-                {
-                    db.Entry(playerHistory).State = db.PlayerHistory.Any(ph => ph.hisID == playerHistory.hisID) ?
-                        EntityState.Modified : EntityState.Added;
- 
-                    db.SaveChanges();
-                }
-            }
-            catch (SqlException ex)
-            {
-                throw new PlayerHistoryTableException("Error Number : " + ex.Number + " - " + ex.Message);
-            }
+            using var db = new NineTapDb();
+            db.Entry(playerHistory).State = db.PlayerHistory.Any(ph => ph.hisID == playerHistory.hisID) ?
+                EntityState.Modified : EntityState.Added;
+
+            db.SaveChanges();
         }
 
         /// <summary>
