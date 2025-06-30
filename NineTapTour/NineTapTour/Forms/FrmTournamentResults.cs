@@ -356,8 +356,8 @@ namespace NineTapTour.Forms
                         int excelRow = startRow + i;
                         ws.Cell(excelRow, 1).Value = row[PLACE_STANDING_COLUMN_NAME]?.ToString();
                         ws.Cell(excelRow, 2).Value = row[FULLNAME_COLUMN_NAME]?.ToString();
-                        ws.Cell(excelRow, 5).Value = row[HANDICAP_COLUMN_NAME]?.ToString();
-                        ws.Cell(excelRow, 6).Value = row[TOTAL_SCORE_COLUMN_NAME]?.ToString();
+                        ws.Cell(excelRow, 6).Value = row[HANDICAP_COLUMN_NAME]?.ToString();
+                        ws.Cell(excelRow, 7).Value = row[TOTAL_SCORE_COLUMN_NAME]?.ToString();
                         
                         // Format Earnings as currency with 0 decimal places
                         ws.Cell(excelRow, 9).Value = row[EARNINGS_COLUMN_NAME] != null
