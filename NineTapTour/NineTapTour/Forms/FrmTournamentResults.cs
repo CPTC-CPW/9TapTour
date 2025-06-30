@@ -350,10 +350,20 @@ namespace NineTapTour.Forms
 
                     int startRow = 4;
                     int i = 0;
+                    int currentParticipant = 0;
                     for (; i < dt.Rows.Count; i++)
                     {
                         var row = dt.Rows[i];
                         int excelRow = startRow + i;
+
+                        // Progressive pot rows require special output
+                        if (excelRow == 9 || excelRow == 7 || excelRow == 5)
+                        {
+                            // Display Progressive Pot earnings for bowler, use value from the datatable
+                            ws.Cell(excelRow, 9).Value = clientRequested[currentParticipant - 1].SidePot;
+                            continue;
+                        }
+
                         ws.Cell(excelRow, 1).Value = row[PLACE_STANDING_COLUMN_NAME]?.ToString();
                         ws.Cell(excelRow, 2).Value = row[FULLNAME_COLUMN_NAME]?.ToString();
                         ws.Cell(excelRow, 6).Value = row[HANDICAP_COLUMN_NAME]?.ToString();
@@ -370,7 +380,10 @@ namespace NineTapTour.Forms
                         ws.Cell(excelRow, 12).Value = row[MEMBER_ID_COLUMN_NAME]?.ToString();
                         ws.Cell(excelRow, 15).FormulaA1 = $"=I{excelRow}-M{excelRow}-N{excelRow}";
                         ws.Cell(excelRow, 8).Value = row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString();
+
+                        currentParticipant++;
                     }
+
                     // Set total payout
                     double money = 0;
                     for (int k = 0; k < dt.Rows.Count; k++)
