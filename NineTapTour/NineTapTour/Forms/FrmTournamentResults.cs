@@ -351,10 +351,21 @@ namespace NineTapTour.Forms
                     int startRow = 4;
                     int i = 0;
                     int currentParticipant = 0;
+
+
+
                     for (; i < dt.Rows.Count; i++)
                     {
                         var row = dt.Rows[i];
                         int excelRow = startRow + i;
+
+                        // If we have too many results we need to insert a row in the template file
+                        if (excelRow >= 35)
+                        {
+                            ws.Row(excelRow).InsertRowsAbove(1);
+                            // Merge columns G and H in the new row
+                            ws.Range($"G{excelRow}:H{excelRow}").Merge();
+                        }
 
                         // Progressive pot rows require special output
                         if (excelRow == 9 || excelRow == 7 || excelRow == 5)
