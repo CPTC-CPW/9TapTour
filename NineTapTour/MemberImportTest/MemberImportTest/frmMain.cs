@@ -105,7 +105,6 @@ namespace MemberImportTest
         public int allGames;
 
         public List<Member> validMembers = [];      // Makes list of valid members
-        public List<Member> invalidMembers = [];    // Makes list of invalid members
         public List<PlayerHistory> PlayerHistoryList = [];
 
         // Create array of spaces
@@ -463,10 +462,7 @@ namespace MemberImportTest
                         }
                         else
                         {
-                            // Invalid count to show the user at the end
-                            invalidCount++;
-                            // Add invalid members to invalid list to be edited by user before adding to the database.
-                            invalidMembers.Add(newMem);
+                            MessageBox.Show($"Record {newMem.FirstName} {newMem.LastName} has some invalid data, please check the file");
                         }
                         MemberCount++;
                         newMem = new Member();
@@ -506,31 +502,13 @@ namespace MemberImportTest
         /// </summary>
         private void CheckSpaces()
         {
-            if (invalidMembers.Count > 0 || validMembers.Count > 0)
+            if (validMembers.Count > 0)
             {
                 btnSelectExcelFolder.Enabled = true;
             }
             if (ALLEXCELDATAFROMALLPLAYERS.Count > 0)
             {
                 btn_FinalizeData.Enabled = true;
-            }
-        }
-
-        /// <summary>
-        /// Allows the user to click the button and see any members in the list of invalid members
-        /// </summary>
-        private void BtnInvalid_Click(object sender, EventArgs e)
-        {
-            if (invalidMembers.Count <= 0)
-            {
-                MessageBox.Show("No invalid members processed.");
-            }
-            else
-            {
-                // Open the memberdata copied from main project in order to edit the invalid user information
-                var md = new FrmMemberData(invalidMembers, this);
-                md.Show();
-                Hide();
             }
         }
 

@@ -55,17 +55,6 @@
             btnOpenFile.UseVisualStyleBackColor = true;
             btnOpenFile.Click += BtnOpenFile_Click;
             // 
-            // btnInvalid
-            // 
-            btnInvalid.Location = new System.Drawing.Point(680, 84);
-            btnInvalid.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            btnInvalid.Name = "btnInvalid";
-            btnInvalid.Size = new System.Drawing.Size(113, 27);
-            btnInvalid.TabIndex = 1;
-            btnInvalid.Text = "View Invalid List";
-            btnInvalid.UseVisualStyleBackColor = true;
-            btnInvalid.Click += BtnInvalid_Click;
-            // 
             // label1
             // 
             label1.AutoSize = true;
