@@ -361,15 +361,6 @@ namespace NineTapTour.Forms
                             ws.Range($"G{startRow}:H{startRow}").Merge();
                         }
 
-                        // Progressive pot rows require special output
-                        if (startRow == 5 || startRow == 7 || startRow == 9)
-                        {
-                            // Only print progressive pot info, do not advance i or currentParticipant
-                            ws.Cell(startRow, 9).Value = clientRequested[currentParticipant].SidePot;
-                            startRow++;
-                            continue;
-                        }
-
                         var row = dt.Rows[i];
                         ws.Cell(startRow, 1).Value = row[PLACE_STANDING_COLUMN_NAME]?.ToString();
                         ws.Cell(startRow, 2).Value = row[FULLNAME_COLUMN_NAME]?.ToString();
@@ -385,8 +376,15 @@ namespace NineTapTour.Forms
                         ws.Cell(startRow, 15).FormulaA1 = $"=I{startRow}-M{startRow}-N{startRow}";
                         ws.Cell(startRow, 8).Value = row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString();
 
+                        // After printing bowler, check if the next row is a progressive pot row
+                        if (startRow + 1 == 5 || startRow + 1 == 7 || startRow + 1 == 9)
+                        {
+                            int sidePotIndex = i; // Use the same bowler's sidepot
+                            ws.Cell(startRow + 1, 9).Value = clientRequested[sidePotIndex].SidePot;
+                            startRow++;
+                        }
+
                         i++;
-                        currentParticipant++;
                         startRow++;
                     }
 
