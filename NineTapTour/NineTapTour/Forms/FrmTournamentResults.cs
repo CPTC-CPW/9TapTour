@@ -317,6 +317,31 @@ namespace NineTapTour.Forms
             }
         }
         
+        /// <summary>
+        /// Returns the ordinal representation of a given place, optionally appending a tie indicator.
+        /// </summary>
+        /// <param name="place">The numeric position to convert to an ordinal string. Must be a positive integer.</param>
+        /// <param name="isTie">A boolean indicating whether to append a tie indicator. If <see langword="true"/>, "T" is appended to the
+        /// result.</param>
+        /// <returns>A string representing the ordinal form of the specified place, with an optional tie indicator.</returns>
+        private static string GetOrdinalWithTie(int place, bool isTie)
+        {
+            string suffix;
+            int ones = place % 10;
+            int tens = (place % 100) / 10;
+            if (tens == 1)
+                suffix = "th";
+            else if (ones == 1)
+                suffix = "st";
+            else if (ones == 2)
+                suffix = "nd";
+            else if (ones == 3)
+                suffix = "rd";
+            else
+                suffix = "th";
+            return $"{place}{suffix}{(isTie ? "T" : "" )}";
+        }
+
         private void ExportToExcel()
         {
             // Saves participants' place standing and earnings won to the database
@@ -352,7 +377,6 @@ namespace NineTapTour.Forms
                     int i = 0;
                     while (i < dt.Rows.Count)
                     {
-                        // If we have too many results we need to insert a row in the template file
                         if (excelRow >= 35)
                         {
                             ws.Row(excelRow).InsertRowsAbove(1);
@@ -360,10 +384,27 @@ namespace NineTapTour.Forms
                         }
 
                         var row = dt.Rows[i];
+                        int currentPlace = 0;
+                        int.TryParse(row[PLACE_STANDING_COLUMN_NAME]?.ToString(), out currentPlace);
+                        // Check for tie: if previous or next row has the same place
+                        bool isTie = false;
+                        if (i > 0)
+                        {
+                            int prevPlace = 0;
+                            int.TryParse(dt.Rows[i - 1][PLACE_STANDING_COLUMN_NAME]?.ToString(), out prevPlace);
+                            if (prevPlace == currentPlace) isTie = true;
+                        }
+                        if (i < dt.Rows.Count - 1)
+                        {
+                            int nextPlace = 0;
+                            int.TryParse(dt.Rows[i + 1][PLACE_STANDING_COLUMN_NAME]?.ToString(), out nextPlace);
+                            if (nextPlace == currentPlace) isTie = true;
+                        }
                         string sidePotValue = "0";
                         if (decimal.TryParse(row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString(), out var spVal))
                             sidePotValue = spVal.ToString();
-                        ws.Cell(excelRow, 1).Value = row[PLACE_STANDING_COLUMN_NAME]?.ToString();
+                        // Use ordinal with tie for place standing
+                        ws.Cell(excelRow, 1).Value = GetOrdinalWithTie(currentPlace, isTie);
                         ws.Cell(excelRow, 2).Value = row[FULLNAME_COLUMN_NAME]?.ToString();
                         ws.Cell(excelRow, 6).Value = row[HANDICAP_COLUMN_NAME]?.ToString();
                         ws.Cell(excelRow, 7).Value = row[TOTAL_SCORE_COLUMN_NAME]?.ToString();
