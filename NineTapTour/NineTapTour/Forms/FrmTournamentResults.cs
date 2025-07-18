@@ -348,44 +348,45 @@ namespace NineTapTour.Forms
                     ws.Cell(1, 1).Value = tourny.Location + tourny.Event;
                     ws.Cell(2, 1).Value = tourny.Date;
 
-                    int startRow = 4;
+                    int excelRow = 4;
                     int i = 0;
-                    int currentParticipant = 0;
                     while (i < dt.Rows.Count)
                     {
                         // If we have too many results we need to insert a row in the template file
-                        if (startRow >= 35)
+                        if (excelRow >= 35)
                         {
-                            ws.Row(startRow).InsertRowsAbove(1);
-                            // Merge columns G and H in the new row
-                            ws.Range($"G{startRow}:H{startRow}").Merge();
+                            ws.Row(excelRow).InsertRowsAbove(1);
+                            ws.Range($"G{excelRow}:H{excelRow}").Merge();
                         }
 
                         var row = dt.Rows[i];
-                        ws.Cell(startRow, 1).Value = row[PLACE_STANDING_COLUMN_NAME]?.ToString();
-                        ws.Cell(startRow, 2).Value = row[FULLNAME_COLUMN_NAME]?.ToString();
-                        ws.Cell(startRow, 6).Value = row[HANDICAP_COLUMN_NAME]?.ToString();
-                        ws.Cell(startRow, 7).Value = row[TOTAL_SCORE_COLUMN_NAME]?.ToString();
-                        ws.Cell(startRow, 9).Value = row[EARNINGS_COLUMN_NAME] != null
+                        string sidePotValue = "0";
+                        if (decimal.TryParse(row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString(), out var spVal))
+                            sidePotValue = spVal.ToString();
+                        ws.Cell(excelRow, 1).Value = row[PLACE_STANDING_COLUMN_NAME]?.ToString();
+                        ws.Cell(excelRow, 2).Value = row[FULLNAME_COLUMN_NAME]?.ToString();
+                        ws.Cell(excelRow, 6).Value = row[HANDICAP_COLUMN_NAME]?.ToString();
+                        ws.Cell(excelRow, 7).Value = row[TOTAL_SCORE_COLUMN_NAME]?.ToString();
+                        ws.Cell(excelRow, 9).Value = row[EARNINGS_COLUMN_NAME] != null
                             ? double.TryParse(row[EARNINGS_COLUMN_NAME].ToString(), out var val)
                                 ? val.ToString("C0")
                                 : row[EARNINGS_COLUMN_NAME]?.ToString()
                             : "$0";
-                        ws.Cell(startRow, 11).Value = row[PLACE_STANDING_COLUMN_NAME]?.ToString();
-                        ws.Cell(startRow, 12).Value = row[MEMBER_ID_COLUMN_NAME]?.ToString();
-                        ws.Cell(startRow, 15).FormulaA1 = $"=I{startRow}-M{startRow}-N{startRow}";
-                        ws.Cell(startRow, 8).Value = row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString();
+                        ws.Cell(excelRow, 11).Value = row[PLACE_STANDING_COLUMN_NAME]?.ToString();
+                        ws.Cell(excelRow, 12).Value = row[MEMBER_ID_COLUMN_NAME]?.ToString();
+                        ws.Cell(excelRow, 15).FormulaA1 = $"=I{excelRow}-M{excelRow}-N{excelRow}+{sidePotValue}";
+                        ws.Cell(excelRow, 8).Value = row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString();
 
                         // After printing bowler, check if the next row is a progressive pot row
-                        if (startRow + 1 == 5 || startRow + 1 == 7 || startRow + 1 == 9)
+                        if (excelRow + 1 == 5 || excelRow + 1 == 7 || excelRow + 1 == 9)
                         {
                             int sidePotIndex = i; // Use the same bowler's sidepot
-                            ws.Cell(startRow + 1, 9).Value = clientRequested[sidePotIndex].SidePot;
-                            startRow++;
+                            ws.Cell(excelRow + 1, 9).Value = clientRequested[sidePotIndex].SidePot;
+                            excelRow++;
                         }
 
                         i++;
-                        startRow++;
+                        excelRow++;
                     }
 
                     // Set total payout
