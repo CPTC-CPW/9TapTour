@@ -351,48 +351,43 @@ namespace NineTapTour.Forms
                     int startRow = 4;
                     int i = 0;
                     int currentParticipant = 0;
-
-
-
-                    for (; i < dt.Rows.Count; i++)
+                    while (i < dt.Rows.Count)
                     {
-                        var row = dt.Rows[i];
-                        int excelRow = startRow + i;
-
                         // If we have too many results we need to insert a row in the template file
-                        if (excelRow >= 35)
+                        if (startRow >= 35)
                         {
-                            ws.Row(excelRow).InsertRowsAbove(1);
+                            ws.Row(startRow).InsertRowsAbove(1);
                             // Merge columns G and H in the new row
-                            ws.Range($"G{excelRow}:H{excelRow}").Merge();
+                            ws.Range($"G{startRow}:H{startRow}").Merge();
                         }
 
                         // Progressive pot rows require special output
-                        if (excelRow == 9 || excelRow == 7 || excelRow == 5)
+                        if (startRow == 5 || startRow == 7 || startRow == 9)
                         {
-                            // Display Progressive Pot earnings for bowler, use value from the datatable
-                            ws.Cell(excelRow, 9).Value = clientRequested[currentParticipant - 1].SidePot;
+                            // Only print progressive pot info, do not advance i or currentParticipant
+                            ws.Cell(startRow, 9).Value = clientRequested[currentParticipant].SidePot;
+                            startRow++;
                             continue;
                         }
 
-                        ws.Cell(excelRow, 1).Value = row[PLACE_STANDING_COLUMN_NAME]?.ToString();
-                        ws.Cell(excelRow, 2).Value = row[FULLNAME_COLUMN_NAME]?.ToString();
-                        ws.Cell(excelRow, 6).Value = row[HANDICAP_COLUMN_NAME]?.ToString();
-                        ws.Cell(excelRow, 7).Value = row[TOTAL_SCORE_COLUMN_NAME]?.ToString();
-                        
-                        // Format Earnings as currency with 0 decimal places
-                        ws.Cell(excelRow, 9).Value = row[EARNINGS_COLUMN_NAME] != null
+                        var row = dt.Rows[i];
+                        ws.Cell(startRow, 1).Value = row[PLACE_STANDING_COLUMN_NAME]?.ToString();
+                        ws.Cell(startRow, 2).Value = row[FULLNAME_COLUMN_NAME]?.ToString();
+                        ws.Cell(startRow, 6).Value = row[HANDICAP_COLUMN_NAME]?.ToString();
+                        ws.Cell(startRow, 7).Value = row[TOTAL_SCORE_COLUMN_NAME]?.ToString();
+                        ws.Cell(startRow, 9).Value = row[EARNINGS_COLUMN_NAME] != null
                             ? double.TryParse(row[EARNINGS_COLUMN_NAME].ToString(), out var val)
                                 ? val.ToString("C0")
                                 : row[EARNINGS_COLUMN_NAME]?.ToString()
                             : "$0";
+                        ws.Cell(startRow, 11).Value = row[PLACE_STANDING_COLUMN_NAME]?.ToString();
+                        ws.Cell(startRow, 12).Value = row[MEMBER_ID_COLUMN_NAME]?.ToString();
+                        ws.Cell(startRow, 15).FormulaA1 = $"=I{startRow}-M{startRow}-N{startRow}";
+                        ws.Cell(startRow, 8).Value = row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString();
 
-                        ws.Cell(excelRow, 11).Value = row[PLACE_STANDING_COLUMN_NAME]?.ToString();
-                        ws.Cell(excelRow, 12).Value = row[MEMBER_ID_COLUMN_NAME]?.ToString();
-                        ws.Cell(excelRow, 15).FormulaA1 = $"=I{excelRow}-M{excelRow}-N{excelRow}";
-                        ws.Cell(excelRow, 8).Value = row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString();
-
+                        i++;
                         currentParticipant++;
+                        startRow++;
                     }
 
                     // Set total payout
