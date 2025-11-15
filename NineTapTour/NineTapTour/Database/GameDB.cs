@@ -76,5 +76,51 @@ namespace NineTapTour.Database
                         && p.Squad == squad
                     select p.Game.Id).FirstOrDefault();
         }
+
+        /// <summary>
+        /// Gets all finalized games for a tournament (Phase 2 refactoring).
+        /// </summary>
+        /// <param name="tournamentId">The tournament ID</param>
+        /// <returns>List of finalized games</returns>
+        public static List<Game> GetFinalizedGamesByTournament(int tournamentId)
+        {
+            using (var db = new NineTapDb())
+            {
+                return (from g in db.Games
+                        where g.TournamentID == tournamentId && g.IsFinalized
+                        select g).ToList();
+            }
+        }
+
+        /// <summary>
+        /// Gets all finalized games for a member in a specific region (Phase 2 refactoring).
+        /// </summary>
+        /// <param name="memberNumber">The member number</param>
+        /// <param name="regionId">The region ID</param>
+        /// <returns>List of finalized games</returns>
+        public static List<Game> GetFinalizedGamesByMember(int memberNumber, int regionId)
+        {
+            using (var db = new NineTapDb())
+            {
+                return (from p in db.Participants
+                        join m in db.Members on p.Member.Id equals m.Id
+                        join g in db.Games on p.Game.Id equals g.Id
+                        where m.Number == memberNumber && g.gameRegionID == regionId && g.IsFinalized
+                        select g).ToList();
+            }
+        }
+
+        /// <summary>
+        /// Checks if a game is finalized (Phase 2 refactoring).
+        /// </summary>
+        /// <param name="gameId">The game ID</param>
+        /// <returns>True if game is finalized, false otherwise</returns>
+        public static bool IsGameFinalized(int gameId)
+        {
+            using (var db = new NineTapDb())
+            {
+                return db.Games.Any(g => g.Id == gameId && g.IsFinalized);
+            }
+        }
     }
 }
