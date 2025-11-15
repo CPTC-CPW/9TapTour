@@ -382,7 +382,6 @@ namespace NineTapTour.Database
                            orderby m.FirstName, p.Squad
                            select new GameViewModel
                            {
-                               FinalizeID = g.Id, // Use Game ID as FinalizeID
                                TournamentID = g.TournamentID ?? tourn.Id,
                                GameId = g.Id,
                                MemberId = m.Id,
@@ -410,17 +409,6 @@ namespace NineTapTour.Database
                                FinalizeRegionID = g.gameRegionID
                            })];
             }
-        }
-
-        /// <summary>
-        /// [DEPRECATED - Phase 3] Deletes the FinalizeTemp given from the database.
-        /// FinalizeTemp is deprecated - data is now in Games table.
-        /// </summary>
-        [Obsolete("This method is deprecated. FinalizeTemp table is being phased out.")]
-        public static void DeleteFinalizeTemp(GameViewModel ft)
-        {
-            // Phase 3: No-op - FinalizeTemp deletion no longer needed
-            // Data is in Games table which should not be deleted this way
         }
 
         /// <summary>

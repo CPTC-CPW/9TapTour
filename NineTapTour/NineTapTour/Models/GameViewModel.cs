@@ -10,8 +10,6 @@ namespace NineTapTour.Models
     /// </summary>
     public class GameViewModel
     {
-        // Identifiers
-        public int FinalizeID { get; set; } // Maps to GameId for compatibility
         public int GameId { get; set; }
         public int TournamentID { get; set; }
         public int MemberId { get; set; }
