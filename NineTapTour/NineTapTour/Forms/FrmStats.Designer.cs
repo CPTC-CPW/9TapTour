@@ -53,10 +53,8 @@
             this.txtBonus = new System.Windows.Forms.TextBox();
             this.txtHandicap = new System.Windows.Forms.TextBox();
             this.txtAveragePerGame = new System.Windows.Forms.TextBox();
-            this.nineTapTourNineTapDbDataSetBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.btnSaveChanges = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nineTapTourNineTapDbDataSetBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // TournamentEntriesGrid
@@ -270,13 +268,6 @@
             this.txtAveragePerGame.Size = new System.Drawing.Size(99, 20);
             this.txtAveragePerGame.TabIndex = 12;
             // 
-            // nineTapTourNineTapDbDataSetBindingSource
-            // 
-            this.nineTapTourNineTapDbDataSetBindingSource.Position = 0;
-            // 
-            // _NineTapTour_NineTapDbDataSet
-            // 
-            // 
             // btnSaveChanges
             // 
             this.btnSaveChanges.Location = new System.Drawing.Point(83, 561);
@@ -321,8 +312,6 @@
             this.Text = "Member Stats";
             this.Load += new System.EventHandler(this.FrmStats_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nineTapTourNineTapDbDataSetBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this._NineTapTour_NineTapDbDataSet)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -330,7 +319,6 @@
 
         #endregion
 
-        private System.Windows.Forms.BindingSource nineTapTourNineTapDbDataSetBindingSource;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.Label lblMemberNumber;

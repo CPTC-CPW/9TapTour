@@ -420,7 +420,7 @@ namespace NineTapTour.Forms
         
         /// <summary>
         /// creates the dataview that will populate the datagridview table on form pulls from the finalizetemp table
-        /// CHANGE THESE IN THE ORDER YOU WANT THEM TO BE SEEN ON THE GRID VIEW (0 == far left), AND THEN CHANGE THE STATIC
+        /// CHANGE THESE IN THE ORDER YOU WANT THEM TO BE SEEN ON THE GRID VIEW (0 == FAR LEFT), AND THEN CHANGE THE STATIC
         /// INTS AT THE TOP IN ORDER TO CHANGE THEIR ORDER ON THE GRIDVIEW WITHOUT HAVING TO TOUCH ANY OTHER CODE.
         /// </summary>
         /// <param name="participantsList"></param>
@@ -623,35 +623,44 @@ namespace NineTapTour.Forms
         /// <param name="set"></param> setting UseGame bool flag in FinalizeTemp table to true or false
         private void CheckBoxDBSet(int row, int cell, bool set)
         {
-            NineTapDb db = new();
-            FinalizeTemp temp = new();
-            var GameId = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[GAME_ID_COLUMN].Value);
-            temp = db.FinalizeTemp.First(f => f.GameId == GameId);
-
-            if (cell == GAME_1_VALID_COLUMN)
+            using (NineTapDb db = new())
             {
-                temp.UseGame1 = set;
-            }
-            else if (cell == GAME_2_VALID_COLUMN)
-            {
-                temp.UseGame2 = set;
-            }
-            else if (cell == GAME_3_VALID_COLUMN)
-            {
-                temp.UseGame3 = set;
-            }
-            else if (cell == GAME_4_VALID_COLUMN)
-            {
-                temp.UseGame4 = set;
-            }
+                var gameId = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[GAME_ID_COLUMN].Value);
                 
+                // Phase 4: Write directly to Games table only
+                Game game = db.Games.FirstOrDefault(g => g.Id == gameId);
+                
+                if (game == null)
+                {
+                    throw new InvalidOperationException($"Game with ID {gameId} not found");
+                }
 
-            temp.GameAvg = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[ENTRY_AVERAGE_COLUMN].Value);
-            temp.ScratchTotal = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[SCRATCH_TOTAL_COLUMN].Value);
-            temp.HandicapTotal = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[HANDICAP_TOTAL_COLUMN].Value);
-            temp.LeagueAverage = Convert.ToDouble(TournamentEntriesGrid.Rows[row].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
-            db.Entry(temp).State = EntityState.Modified;
-            db.SaveChanges();
+                // Update the appropriate UseGame flag
+                if (cell == GAME_1_VALID_COLUMN)
+                {
+                    game.UseGame1 = set;
+                }
+                else if (cell == GAME_2_VALID_COLUMN)
+                {
+                    game.UseGame2 = set;
+                }
+                else if (cell == GAME_3_VALID_COLUMN)
+                {
+                    game.UseGame3 = set;
+                }
+                else if (cell == GAME_4_VALID_COLUMN)
+                {
+                    game.UseGame4 = set;
+                }
+
+                // Update calculated values on Game entity
+                game.GameAvg = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[ENTRY_AVERAGE_COLUMN].Value);
+                game.HandicapTotal = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[HANDICAP_TOTAL_COLUMN].Value);
+                game.LeagueAverage = Convert.ToDouble(TournamentEntriesGrid.Rows[row].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
+                
+                db.SaveChanges();
+            }
+            
             this.TournamentEntriesGrid.CellValueChanged += this.DataGridView1_OnCellValueChanged;
         }
 
@@ -1170,7 +1179,6 @@ namespace NineTapTour.Forms
                             p.TournamentDate = currTournament.Date;
                             p.GameID = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[GAME_ID_COLUMN].Value);
 
-                            p.TotalScore = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[SCRATCH_TOTAL_COLUMN].Value);
                             p.HandiCap = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[HANDICAP_COLUMN].Value);
                             p.Bonus = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[BONUS_COLUMN].Value);
                             p.MoneyWon = Convert.ToDecimal(GameDB.GetGame(p.GameID).MoneyWon + GameDB.GetGame(p.GameID).SidePot);
@@ -1226,7 +1234,7 @@ namespace NineTapTour.Forms
                 //if director checkbox is checked set to white and continue
                 if (Convert.ToBoolean(TournamentEntriesGrid[DIRECTOR_CHECK_COLUMN, i].Value))
                 {
-                    TournamentEntriesGrid.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Style.BackColor = (i % 2 == 0) ? Color.White : Color.LightGray;
+                    TournamentEntriesGrid.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Style.BackColor = Color.White;
                 }
                 else
                 {

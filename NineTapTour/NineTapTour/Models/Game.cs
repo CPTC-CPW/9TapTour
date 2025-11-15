@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NineTapTour.Models
 {
@@ -32,8 +33,63 @@ namespace NineTapTour.Models
         public int? Handicap { get; set; }
         public int? Bonus { get; set; }
 
-        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        [NotMapped]
         public int? TotalScore { get; set; }
+        
+        /// <summary>
+        /// Calculated property: Sum of all games that are marked as "used".
+        /// If UseGame flags are null, defaults to true (includes the game).
+        /// </summary>
+        [NotMapped]
+        public int ScratchTotal
+        {
+            get
+            {
+                int total = 0;
+                
+                if ((UseGame1 ?? true) && Game1.HasValue)
+                    total += Game1.Value;
+                    
+                if ((UseGame2 ?? true) && Game2.HasValue)
+                    total += Game2.Value;
+                    
+                if ((UseGame3 ?? true) && Game3.HasValue)
+                    total += Game3.Value;
+                    
+                if ((UseGame4 ?? true) && Game4.HasValue)
+                    total += Game4.Value;
+                
+                return total;
+            }
+        }
+        
+        /// <summary>
+        /// Calculated property: Count of games that are marked as "used" and have values.
+        /// If UseGame flags are null, defaults to true (includes the game).
+        /// </summary>
+        [NotMapped]
+        public int GamesPlayed
+        {
+            get
+            {
+                int count = 0;
+                
+                if ((UseGame1 ?? true) && Game1.HasValue)
+                    count++;
+                    
+                if ((UseGame2 ?? true) && Game2.HasValue)
+                    count++;
+                    
+                if ((UseGame3 ?? true) && Game3.HasValue)
+                    count++;
+                    
+                if ((UseGame4 ?? true) && Game4.HasValue)
+                    count++;
+                
+                return count;
+            }
+        }
+        
         public decimal? MoneyWon { get; set; }
         public decimal? SidePot { get; set; }
         public int? PlaceStanding { get; set;}
