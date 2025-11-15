@@ -43,6 +43,23 @@ namespace NineTapTour.Models
         [DefaultValue(false)]
         public bool IsComp { get; set; } // comp is someone who bowls for free because they are helping with tournament 
 
+        // Properties migrated from FinalizeTemp
+        [DefaultValue(false)]
+        public bool IsFinalized { get; set; }
+        
+        public int? TournamentID { get; set; }
+        
+        public double LeagueAverage { get; set; }
+        
+        public int AdjustedAvg { get; set; }
+        
+        [DefaultValue(false)]
+        public bool KeepAdjustedAvg { get; set; }
+        
+        public int GameAvg { get; set; }
+        
+        public int HandicapTotal { get; set; }
+
         public List<int?> AllGameScores()
         {
             var newList = new List<int?> {Game1, Game2, Game3, Game4};

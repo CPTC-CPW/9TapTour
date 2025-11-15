@@ -202,7 +202,8 @@ namespace NineTapTour.Database
 
         /// <summary>
         /// Updates the FinalizeTemp with the same ID if it already exists in the database,
-        /// otherwise adds the FinalizeTemp to the database
+        /// otherwise adds the FinalizeTemp to the database.
+        /// Also syncs finalization properties to the Game entity.
         /// </summary>
         public static void AddFinalizeTemp(FinalizeTemp temp)
         {
@@ -229,6 +230,20 @@ namespace NineTapTour.Database
                     else
                     {
                         db.Entry(temp).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                    
+                    // Sync finalization properties to the Game entity
+                    Game game = db.Games.FirstOrDefault(g => g.Id == temp.GameId);
+                    if (game != null)
+                    {
+                        game.TournamentID = temp.TournamentID;
+                        game.LeagueAverage = temp.LeagueAverage;
+                        game.AdjustedAvg = temp.AdjustedAvg;
+                        game.KeepAdjustedAvg = temp.KeepAdjustedAvg;
+                        game.GameAvg = temp.GameAvg;
+                        game.HandicapTotal = temp.HandicapTotal;
+                        db.Entry(game).State = EntityState.Modified;
                         db.SaveChanges();
                     }
                 }
