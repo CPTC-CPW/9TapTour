@@ -117,12 +117,7 @@ namespace NineTapTour.Models
         public int HandicapTotal { get; set; }
 
         // Navigation property for EF Core (Phase 2: Added for PlayerHistory refactoring)
-        // This allows querying from Games → Participant → Member/Tournament
-        /// <summary>
-        /// Navigation property to Participant (inverse navigation).
-        /// EF Core will automatically populate this when using Include().
-        /// One Game belongs to one Participant.
-        /// </summary>
+        // One Game belongs to one Participant (inverse navigation)
         public virtual Participant Participant { get; set; }
 
         public List<int?> AllGameScores()

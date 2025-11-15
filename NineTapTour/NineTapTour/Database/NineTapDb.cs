@@ -15,10 +15,22 @@ namespace NineTapTour.Database
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // Modify generated table names to match old EF6 database for script compatibility
-            // Phase 5: FinalizeTemp table removed - no longer needed
+            
+            // Phase 5: FinalizeTemps table removed - no longer needed
             // builder.Entity<FinalizeTemp>().ToTable("FinalizeTemps");
+            
             builder.Entity<NineTapRegion>().ToTable("NineTapRegions");
-            builder.Entity<PlayerHistory>().ToTable("PlayerHistories");
+            
+            // Phase 3: PlayerHistories table removed - all data now in Games table
+            // builder.Entity<PlayerHistory>().ToTable("PlayerHistories");
+            
+            // Configure one-to-one relationship between Participant and Game
+            // Participant is the owner (has foreign key), Game is the dependent
+            builder.Entity<Participant>()
+                .HasOne(p => p.Game)
+                .WithOne(g => g.Participant)
+                .HasForeignKey<Participant>("GameId") // Shadow property for foreign key
+                .IsRequired(false); // Game can exist without Participant during creation
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -43,7 +55,11 @@ namespace NineTapTour.Database
         // Phase 5: FinalizeTemp DbSet removed - data now in Games table
         // public virtual DbSet<FinalizeTemp> FinalizeTemp { get; set; }
         
-        public virtual DbSet<PlayerHistory> PlayerHistory { get; set; }
+        // Phase 3: PlayerHistory DbSet removed - all data now in Games table
+        // All queries now use Games table as single source of truth
+        // PlayerHistory class remains as ViewModel for backward compatibility
+        // public virtual DbSet<PlayerHistory> PlayerHistory { get; set; }
+        
         public virtual DbSet<NineTapRegion> NineTapRegion { get; set; }
 
     }

@@ -12,64 +12,40 @@ namespace NineTapTour.Database
     public class PlayerHistoryDB
     {
         /// <summary>
-        /// [DEPRECATED - Phase 2] Adds the PlayerHistory given to the database.
-        /// Note: PlayerHistory writes are deprecated. Data is now stored directly in Game entity during finalization.
-        /// This method is kept for backward compatibility during transition.
+        /// [REMOVED - Phase 3] Adds the PlayerHistory given to the database.
+        /// Note: PlayerHistory table has been removed. All data is now stored in Game entity during finalization.
+        /// This method is kept as a no-op for backward compatibility.
         /// </summary>
+        [Obsolete("PlayerHistory table has been removed. Data is stored in Game entity. This method does nothing.")]
         public static void AddPlayerHistory(PlayerHistory playerHistory)
         {
-            try
-            {
-                using (var db = new NineTapDb())
-                {
-                    db.Entry(playerHistory).State = db.PlayerHistory.Any(his => his.hisID == playerHistory.hisID) ?
-                         EntityState.Modified :
-                         EntityState.Added;
-                    db.SaveChanges();
-                }
-            }
-            catch (DbUpdateException ex)
-            {
-                //Display error to user so it can be fixed
-                Member member = MemberDB.GetMember(playerHistory.MemberNumber, playerHistory.regionID);
-                MessageBox.Show(
-                    $"There was a problem with Member Number: {playerHistory.MemberNumber}, {member?.FirstName} {member?.LastName}.\n" +
-                    $"Please verify all tournament dates for that member\n" +
-                    $"Error: {ex.Message}\n" +
-                    $"PLEASE WRITE THIS DOWN OR TAKE A PICTURE AND FIX THE MEMBER EXCEL FILE.");
-            }
+            // No-op: PlayerHistory table has been removed in Phase 3
+            // All player history data is now stored directly in the Game entity
+            // during tournament finalization (see FrmFinalizeTournament.BtnFinalize_Click)
         }
 
         /// <summary>
-        /// [DEPRECATED - Phase 2] Updates the PlayerHistory in the database if it exists.
-        /// Note: PlayerHistory writes are deprecated. Data is now stored directly in Game entity.
-        /// This method is kept for backward compatibility during transition.
+        /// [REMOVED - Phase 3] Updates the PlayerHistory in the database if it exists.
+        /// Note: PlayerHistory table has been removed. All data is now stored in Game entity.
+        /// This method is kept as a no-op for backward compatibility.
         /// </summary>
+        [Obsolete("PlayerHistory table has been removed. Data is stored in Game entity. This method does nothing.")]
         public static void AddOrUpdatePlayerHistory(PlayerHistory playerHistory)
         {
-            using var db = new NineTapDb();
-            db.Entry(playerHistory).State = db.PlayerHistory.Any(ph => ph.hisID == playerHistory.hisID) ?
-                EntityState.Modified : EntityState.Added;
-
-            db.SaveChanges();
+            // No-op: PlayerHistory table has been removed in Phase 3
+            // All player history data is now stored directly in the Game entity
         }
 
         /// <summary>
-        /// [DEPRECATED - Phase 2] Adds all PlayerHistories in the list given to the database.
-        /// Note: PlayerHistory writes are deprecated. Data is now stored directly in Game entity.
-        /// This method is kept for backward compatibility during transition.
+        /// [REMOVED - Phase 3] Adds all PlayerHistories in the list given to the database.
+        /// Note: PlayerHistory table has been removed. All data is now stored in Game entity.
+        /// This method is kept as a no-op for backward compatibility.
         /// </summary>
+        [Obsolete("PlayerHistory table has been removed. Data is stored in Game entity. This method does nothing.")]
         public static void AddOrUpdatePlayerHistoryList(List<PlayerHistory> playerHistoryList)
         {
-            using (var db = new NineTapDb())
-            {
-                foreach (PlayerHistory playerHistory in playerHistoryList)
-                {
-                    db.Entry(playerHistory).State = db.PlayerHistory.Any(ph => ph.hisID == playerHistory.hisID) ?
-                        EntityState.Modified : EntityState.Added;
-                }
-                db.SaveChanges();
-            }
+            // No-op: PlayerHistory table has been removed in Phase 3
+            // All player history data is now stored directly in the Game entity
         }
 
         /// <summary>
@@ -328,16 +304,14 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [DEPRECATED - Phase 2] Deletes the given PlayerHistory from the database.
-        /// Note: This method is kept for backward compatibility during transition.
+        /// [REMOVED - Phase 3] Deletes the given PlayerHistory from the database.
+        /// Note: PlayerHistory table has been removed. This method is kept as a no-op for backward compatibility.
         /// </summary>
+        [Obsolete("PlayerHistory table has been removed. This method does nothing.")]
         public static void DeletePlayerHistory(PlayerHistory playerHistory)
         {
-            using (var db = new NineTapDb())
-            {
-                db.Entry(playerHistory).State = EntityState.Deleted;
-                db.SaveChanges();
-            }
+            // No-op: PlayerHistory table has been removed in Phase 3
+            // Player history data is part of Game entity lifecycle
         }
 
         /// <summary>

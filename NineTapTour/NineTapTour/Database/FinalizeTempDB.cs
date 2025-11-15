@@ -190,15 +190,21 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
-                var prevHistory = (from p in db.PlayerHistory
-                                   where p.MemberNumber == memberNumber && p.regionID == regionId
-                                   orderby p.TournamentDate descending
-                                   select new PreviousHistory
-                                   {
-                                       TournamentDate = p.TournamentDate,
-                                       GamesPlayed = p.GamesPlayed,
-                                       TotalScore = p.TotalScore
-                                   }).Take(30 - curHistory.Count).ToList();
+                // Phase 3: Query from Games table instead of PlayerHistory
+                var prevHistory = (from p in db.Participants
+                                  join m in db.Members on p.Member.Id equals m.Id
+                                  join g in db.Games on p.Game.Id equals g.Id
+                                  join t in db.Tournaments on p.Tournament.Id equals t.Id
+                                  where m.Number == memberNumber 
+                                     && g.gameRegionID == regionId
+                                     && g.IsFinalized // Only finalized games
+                                  orderby t.Date descending
+                                  select new PreviousHistory
+                                  {
+                                      TournamentDate = t.Date,
+                                      GamesPlayed = g.GamesPlayed,
+                                      TotalScore = g.ScratchTotal
+                                  }).Take(30 - curHistory.Count).ToList();
                 return prevHistory;
             }
         }

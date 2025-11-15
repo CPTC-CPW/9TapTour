@@ -328,31 +328,38 @@ namespace NineTapTour.Forms
         {
             DataTable dtGames = new();
             var db = new NineTapDb();
-            var temp = (from p in db.PlayerHistory
-                        where p.MemberNumber == memNum && p.regionID == RegionID
-                        orderby p.TournamentDate descending, p.hisID descending
+            
+            // Phase 3: Query from Games table instead of PlayerHistory
+            var temp = (from p in db.Participants
+                        join m in db.Members on p.Member.Id equals m.Id
+                        join g in db.Games on p.Game.Id equals g.Id
+                        join t in db.Tournaments on p.Tournament.Id equals t.Id
+                        where m.Number == memNum 
+                           && g.gameRegionID == RegionID
+                           && g.IsFinalized // Only finalized games
+                        orderby t.Date descending, g.Id descending
                         select new
                         {
-                            p.hisID,
-                            p.GameID,
-                            p.GamesPlayed,
-                            p.TournamentDate,
-                            p.Game1,
-                            p.Game2,
-                            p.Game3,
-                            p.Game4,
-                            ScratchTotal = p.Game1 + p.Game2 + p.Game3 + p.Game4,
-                            TotalScore = (p.Game1 + p.Bonus + p.HandiCap) + (p.Game2 + p.Bonus + p.HandiCap) + (p.Game3 + p.Bonus + p.HandiCap) + (p.Game4 + p.Bonus + p.HandiCap),
-                            p.AverageForEntry,
-                            p.trueAVG,
-                            p.AVG,
-                            p.HandiCap,
-                            p.Bonus,
-                            p.ProPot,
-                            p.MoneyWon,
-                            p.PPHG,
-                            p.Notes
-                        });
+                            hisID = g.Id,
+                            GameID = g.Id,
+                            GamesPlayed = g.GamesPlayed,
+                            TournamentDate = t.Date,
+                            Game1 = g.Game1 ?? 0,
+                            Game2 = g.Game2 ?? 0,
+                            Game3 = g.Game3 ?? 0,
+                            Game4 = g.Game4 ?? 0,
+                            ScratchTotal = g.ScratchTotal,
+                            TotalScore = g.HandicapTotal,
+                            AverageForEntry = g.GameAvg,
+                            trueAVG = g.LeagueAverage,
+                            AVG = g.AdjustedAvg,
+                            HandiCap = g.Handicap ?? 0,
+                            Bonus = g.Bonus ?? 0,
+                            ProPot = g.SidePot,  // Don't ToString() in LINQ expression
+                            MoneyWon = g.MoneyWon ?? 0,
+                            PPHG = g.PlaceStanding,  // Don't ToString() in LINQ expression
+                            Notes = g.Notes
+                        }).ToList(); // Materialize first, then transform
 
             dtGames.Columns.Add("Games").ReadOnly = true;
             dtGames.Columns.Add("Date", typeof(DateTime));
@@ -409,7 +416,7 @@ namespace NineTapTour.Forms
                     newRow["Gm4"] = item.Game4;
                 newRow["Scratch Total"] = item.ScratchTotal;
                 newRow["Game Total w/HDCP"] = item.TotalScore;
-                newRow["Entry AVG"] = Convert.ToDouble((item.Game1 + item.Game2 + item.Game3 + item.Game4) / item.GamesPlayed);
+                newRow["Entry AVG"] = item.AverageForEntry;
                 newRow["30 Entry AVG"] = item.trueAVG;
 
                 if (item.AVG == 0)
@@ -418,9 +425,9 @@ namespace NineTapTour.Forms
                     newRow["Adj. AVG"] = item.AVG;
                 newRow["HDCP"] = item.HandiCap;
                 newRow["Bonus"] = item.Bonus;
-                newRow["Pro Pot"] = item.ProPot;
+                newRow["Pro Pot"] = item.ProPot?.ToString() ?? "0"; // Convert after materializing
                 newRow[moneyWonWithTotal] = item.MoneyWon;
-                newRow["Place"] = item.PPHG;
+                newRow["Place"] = item.PPHG?.ToString() ?? ""; // Convert after materializing
                 newRow["Notes"] = item.Notes;
                 newRow["GmID"] = item.GameID;
 
