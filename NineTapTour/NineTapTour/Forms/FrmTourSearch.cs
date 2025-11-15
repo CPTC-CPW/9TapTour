@@ -56,8 +56,9 @@ namespace NineTapTour.Forms
 
             using (NineTapDb db = new())
             {
+                // Phase 6: Use Tournament.TourneyRegion.NineTapRegionID for proper FK relationship
                 var query = from t in db.Tournaments
-                            where t.TourneyRegion == RegionID
+                            where t.TourneyRegion.NineTapRegionID == RegionID
                             select t;
                 
                 // Location?

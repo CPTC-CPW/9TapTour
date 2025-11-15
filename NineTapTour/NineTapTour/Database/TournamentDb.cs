@@ -46,15 +46,16 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Returns the list of Tournaments ordered by Date descending
+        /// Returns the list of Tournaments ordered by Date descending (Phase 6: uses TourneyRegion FK)
         /// </summary>
         public static List<Tournament> GetTournamentList(int regionID)
         {
             using (NineTapDb db = new())
             {
+                // Phase 6: Use Tournament.TourneyRegion.NineTapRegionID for proper FK relationship
                 return [.. (from t in db.Tournaments
                         orderby t.Date descending
-                        where t.TourneyRegion == regionID
+                        where t.TourneyRegion.NineTapRegionID == regionID
                         select t)];
             }
         }

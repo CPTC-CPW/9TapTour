@@ -58,15 +58,16 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// Gets all the tournaments from a specific year
+        /// Gets all the tournaments from a specific year (Phase 6: uses TourneyRegion FK)
         /// </summary>
         /// <param name="selectedYear">Year selected</param>
         public void PopulateTournamentsByYear(int selectedYear, int regionID)
         {
             NineTapDb db = new();
+            // Phase 6: Use Tournament.TourneyRegion.NineTapRegionID for proper FK relationship
             var tournaments = (from t in db.Tournaments
                                orderby t.Date descending
-                               where t.Date.Year == selectedYear  && t.TourneyRegion == regionID
+                               where t.Date.Year == selectedYear && t.TourneyRegion.NineTapRegionID == regionID
                                select new
                                {
                                    t.Id,

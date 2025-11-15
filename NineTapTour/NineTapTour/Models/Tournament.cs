@@ -32,7 +32,8 @@ namespace NineTapTour.Models
             get { return Location + " " +  Date.ToShortDateString(); }
         }
 
-        public int TourneyRegion { get; set; }
+        // Phase 6: Convert int to proper foreign key relationship
+        public NineTapRegion TourneyRegion { get; set; }
 
         public bool IsTournamentFinalized { get; set; }
         

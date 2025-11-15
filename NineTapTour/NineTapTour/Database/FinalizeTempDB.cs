@@ -165,13 +165,13 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
-                // Phase 3: Read directly from Games table (no FinalizeTemp fallback)
+                // Phase 6: Use Tournament.TourneyRegion.NineTapRegionID for proper FK relationship
                 var curHistory = (from p in db.Participants
                                   join m in db.Members on p.Member.Id equals m.Id
                                   join g in db.Games on p.Game.Id equals g.Id
                                   join t in db.Tournaments on p.Tournament.Id equals t.Id
                                   where m.Number == memberNumber &&
-                                        t.TourneyRegion == regionId &&
+                                        t.TourneyRegion.NineTapRegionID == regionId && // Phase 6: Use navigation property
                                         t.Id == tournamentId
                                   select new CurrentHistory
                                   {
