@@ -207,7 +207,7 @@ namespace NineTapTour.Database
         /// [Phase 3 REFACTORED] Updates Game entity with finalization properties.
         /// FinalizeTemp writes are deprecated - only Games table is updated.
         /// </summary>
-        public static void AddFinalizeTemp(FinalizeTemp temp)
+        public static void AddFinalizeTemp(GameViewModel temp)
         {
             using(var db = new NineTapDb())
             {
@@ -249,19 +249,19 @@ namespace NineTapTour.Database
         /// Use GameDB.GetGame() instead.
         /// </summary>
         [Obsolete("This method is deprecated. Use GameDB.GetGame() to get game data directly.")]
-        public static FinalizeTemp GetFinalizeID(Game currentG)
+        public static GameViewModel GetFinalizeID(Game currentG)
         {
             using (var db = new NineTapDb())
             {
                 // Return empty object for backward compatibility during transition
-                return new FinalizeTemp { GameId = currentG.Id };
+                return new GameViewModel { GameId = currentG.Id };
             }
         }
 
         /// <summary>
         /// Gets and returns a list of all participant objects for the tournament given
         /// </summary>
-        public static List<FinalizeTemp> GetAllInitialParticipantGameList(Tournament tourn)
+        public static List<GameViewModel> GetAllInitialParticipantGameList(Tournament tourn)
         {
             using (var db = new NineTapDb())
             {
@@ -298,11 +298,11 @@ namespace NineTapTour.Database
                                 g.HandicapTotal
                             }).ToList();
 
-                List<FinalizeTemp> ParticipantList = [];
+                List<GameViewModel> ParticipantList = [];
                 // Populates ParticipantList with the data pulled from the database
                 foreach (var item in temp)
                 {
-                    FinalizeTemp NewParticipant = new();
+                    GameViewModel NewParticipant = new();
 
                     // Populates the names and ID's
                     NewParticipant.GameId = item.Id;
@@ -370,7 +370,7 @@ namespace NineTapTour.Database
         /// Gets finalization data for a tournament from Games table (Phase 3: FinalizeTemp deprecated).
         /// Returns data in FinalizeTemp format for UI compatibility.
         /// </summary>
-        public static List<FinalizeTemp> GetListFromTable(Tournament tourn)
+        public static List<GameViewModel> GetListFromTable(Tournament tourn)
         {
             using (var db = new NineTapDb())
             {
@@ -380,7 +380,7 @@ namespace NineTapTour.Database
                            join g in db.Games on p.Game.Id equals g.Id
                            where p.Tournament.Id == tourn.Id
                            orderby m.FirstName, p.Squad
-                           select new FinalizeTemp
+                           select new GameViewModel
                            {
                                FinalizeID = g.Id, // Use Game ID as FinalizeID
                                TournamentID = g.TournamentID ?? tourn.Id,
@@ -413,25 +413,11 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [DEPRECATED - Phase 3] Gets and returns a list of FinalizeTemp with the same RegionID as the ID given.
-        /// Use GameDB methods to query games by region instead.
-        /// </summary>
-        [Obsolete("This method is deprecated. Query Games table directly using GameDB methods.")]
-        public static List<FinalizeTemp> GetFinalizeListByRegionID(int RegionID)
-        {
-            using (var db = new NineTapDb())
-            {
-                // Phase 3: Return empty list - this method should not be used
-                return [];
-            }
-        }
-
-        /// <summary>
         /// [DEPRECATED - Phase 3] Deletes the FinalizeTemp given from the database.
         /// FinalizeTemp is deprecated - data is now in Games table.
         /// </summary>
         [Obsolete("This method is deprecated. FinalizeTemp table is being phased out.")]
-        public static void DeleteFinalizeTemp(FinalizeTemp ft)
+        public static void DeleteFinalizeTemp(GameViewModel ft)
         {
             // Phase 3: No-op - FinalizeTemp deletion no longer needed
             // Data is in Games table which should not be deleted this way

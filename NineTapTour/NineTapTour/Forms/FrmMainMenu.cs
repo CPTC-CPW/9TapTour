@@ -126,14 +126,6 @@ namespace NineTapTour.Forms
                     PlayerHistoryDB.DeletePlayerHistory(p);
                 }
 
-                // Delete FinilizeTemp where FinalizeID = selected regionID
-                List<FinalizeTemp> fin = FinalizeTempDB.GetFinalizeListByRegionID(regionID);
-
-                foreach (var f in fin)
-                {
-                    FinalizeTempDB.DeleteFinalizeTemp(f);
-                }
-
                 // Delete Participants where Participant RegionID = regionID
                 List<Participant> par = FinalizeTempDB.GetParticipantListByRegionID(regionID);
 

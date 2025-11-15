@@ -146,7 +146,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void ToggleDirectorCheck_CheckChanged(object sender, EventArgs e)
         {
-            List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetListFromTable(currTournament);
+            List<GameViewModel> FinalizeTableList = FinalizeTempDB.GetListFromTable(currTournament);
             bool directorCheckedState = (sender as CheckBox).Checked;
 
             for (int i = 0; i < FinalizeTableList.Count; i++)
@@ -162,7 +162,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void ToggleAllAdjustedAverages_CheckChanged(object sender, EventArgs e)
         {
-            List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetListFromTable(currTournament);
+            List<GameViewModel> FinalizeTableList = FinalizeTempDB.GetListFromTable(currTournament);
 
             if (((CheckBox)sender).Checked)
             {
@@ -187,7 +187,7 @@ namespace NineTapTour.Forms
         /// Sets each adjusted average value in the FinalizeTableList parameter to 0
         /// </summary>
         /// <param name="FinalizeTableList"></param>
-        private void ResetAdjustedAverages(List<FinalizeTemp> FinalizeTableList)
+        private void ResetAdjustedAverages(List<GameViewModel> FinalizeTableList)
         {
             for (int i = 0; i < FinalizeTableList.Count; i++)
             {
@@ -267,19 +267,19 @@ namespace NineTapTour.Forms
         private void CreateDataGridView(Tournament tourn)
         {
             // uses FinalizeTempDB to populate from database
-            List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetAllInitialParticipantGameList(currTournament);
+            List<GameViewModel> FinalizeTableList = FinalizeTempDB.GetAllInitialParticipantGameList(currTournament);
 
             //Below is a multithreaded version of a foreach loop to spread processing across all available cores
             Parallel.ForEach(FinalizeTableList, item =>
             {
                 int gplayed = 0;
                 Game g = GameDB.GetGame(item.GameId);
-                FinalizeTemp temp = FinalizeTempDB.GetFinalizeID(g);
+                GameViewModel temp = FinalizeTempDB.GetFinalizeID(g);
 
                 // Create FinalizeTemp if one does not exist
                 if (temp.FinalizeID <= 0)
                 {
-                    temp = new FinalizeTemp
+                    temp = new GameViewModel
                     {
                         FinalizeRegionID = RegionID,
                         FinalizeID = FinalizeTableList.Count,
@@ -363,10 +363,10 @@ namespace NineTapTour.Forms
             });
 
             //pulls a list from the finalizetemp table and seeds the dataview with the table info.
-            List<FinalizeTemp> DataViewList = FinalizeTempDB.GetListFromTable(tourn);
+            List<GameViewModel> DataViewList = FinalizeTempDB.GetListFromTable(tourn);
 
             // Links FinalizeTemp to an integer that is placing information
-            Dictionary<FinalizeTemp, int> membersPlacingMap = Calculations.Calculations.CalculatePlaceStandings(DataViewList, tourn);
+            Dictionary<GameViewModel, int> membersPlacingMap = Calculations.Calculations.CalculatePlaceStandings(DataViewList, tourn);
 
             // By default populates all datagrid with all participant for tournament
             TournamentEntriesGrid.DataSource = SetDataView(membersPlacingMap); 
@@ -425,17 +425,17 @@ namespace NineTapTour.Forms
         /// </summary>
         /// <param name="participantsList"></param>
         /// <returns></returns>
-        public static DataTable SetDataView(Dictionary<FinalizeTemp,int> participantsList)
+        public static DataTable SetDataView(Dictionary<GameViewModel,int> participantsList)
         {
             DataTable dt = new();
             SetDataColumns(dt);
 
             //dt.ExtendedProperties
             // whatever list of participants you pass into method will be populated into grid
-            List<FinalizeTemp> temp = [.. participantsList.Keys];
+            List<GameViewModel> temp = [.. participantsList.Keys];
 
             // loops thru each person's info in tournament and populates the dataview with data from DB.
-            foreach (FinalizeTemp item in temp)
+            foreach (GameViewModel item in temp)
             {
                 DataRow newRow = dt.NewRow();
 
@@ -1216,7 +1216,7 @@ namespace NineTapTour.Forms
             
             bool isDirectorCheckFinished = true; //int used to make sure all the director check boxes have been filled out
 
-            List<FinalizeTemp> FinalizeTableList = FinalizeTempDB.GetListFromTable(currTournament);
+            List<GameViewModel> FinalizeTableList = FinalizeTempDB.GetListFromTable(currTournament);
             //int gamesPlayed = 0;
 
             //checks to make sure all the director had adjusted avgs and checked the box to make sure they did so.
@@ -1459,6 +1459,35 @@ namespace NineTapTour.Forms
                     UpdateHandicap(e.RowIndex, adjAvg);
                 }
             }
+        }
+
+        /// <summary>
+        /// This function takes the averages from the current games being finalized, grabs the appropriate amount of player history, and calculates the 30 game average for the player.
+        /// </summary>
+        /// <param name="memberNum">The Member Number of the player whose averages we are calculating.</param>
+        /// <returns></returns>
+        private double CalcThirtyLeagueAverage(int memberNum)
+        {
+            return FinalizeTempDB.GetLeagueAverage(memberNum, RegionID, currTournament.Id);
+        }
+
+        /// <summary>
+        /// Gets the row of data grid by the Game Id value stored in that row.
+        /// Returns -1 if not found.
+        /// </summary>
+        /// <param name="currGameId"></param>
+        /// <returns>The row index of the Game Id</returns>
+        private int FindDataGridRowIndex(int currGameId)
+        {
+            foreach (DataGridViewRow row in TournamentEntriesGrid.Rows)
+            {
+                DataGridViewCell gameIdCell = row.Cells[GAME_ID_COLUMN];
+                if (Convert.ToInt32(gameIdCell.Value) == currGameId)
+                {
+                    return gameIdCell.RowIndex;
+                }
+            }
+            return -1;
         }
     }
 }

@@ -322,7 +322,7 @@ namespace NineTapTour.Calculations
         /// </summary>
         /// <param name="members"></param>
         /// <returns>Dictionary of FinalizeTemps and ints where ints are placings. Sorted by highest score with duplicate members last</returns>
-        public static Dictionary<FinalizeTemp, int> CalculatePlaceStandings(List<FinalizeTemp> members, Tournament tournament)
+        public static Dictionary<GameViewModel, int> CalculatePlaceStandings(List<GameViewModel> members, Tournament tournament)
         {
             // A list of no members will return an empty list
             if (members.Count == 0)
@@ -337,11 +337,11 @@ namespace NineTapTour.Calculations
             members.Sort((a, b) => b.HandicapTotal.CompareTo(a.HandicapTotal));
 
             // Removes duplicate members
-            List<FinalizeTemp> removals = RemoveDuplicateBowlers(members);
+            List<GameViewModel> removals = RemoveDuplicateBowlers(members);
 
 
             // links FinalizeTemp to an integer used for placing
-            var membersPlacingMap = new Dictionary<FinalizeTemp, int>();
+            var membersPlacingMap = new Dictionary<GameViewModel, int>();
             foreach (var member in members)
             {
                 membersPlacingMap.Add(member, 0);
@@ -361,8 +361,8 @@ namespace NineTapTour.Calculations
             // Calculate each member's placing
             for (int currPosition = 1; currPosition < members.Count; currPosition++)
             {
-                FinalizeTemp currMember = members[currPosition];
-                FinalizeTemp prevMember = members[currPosition - 1];
+                GameViewModel currMember = members[currPosition];
+                GameViewModel prevMember = members[currPosition - 1];
 
                 // Tied scores will have the same place standing
                 if (currMember.HandicapTotal == prevMember.HandicapTotal)
@@ -378,7 +378,7 @@ namespace NineTapTour.Calculations
             }
 
             // Add duplicate entries to end of list
-            foreach (FinalizeTemp member in removals)
+            foreach (GameViewModel member in removals)
             {
                 membersPlacingMap.Add(member, 0);
             }
@@ -399,9 +399,9 @@ namespace NineTapTour.Calculations
         /// </summary>
         /// <param name="members">The list of bowlers</param>
         /// <param name="isPositive">Wether or not to add or substract from handicap total</param>
-        private static void AlterHandicapTotalAccordingToMinimumGameScore(List<FinalizeTemp> members, bool isPositive)
+        private static void AlterHandicapTotalAccordingToMinimumGameScore(List<GameViewModel> members, bool isPositive)
         {
-            foreach (FinalizeTemp currMember in members)
+            foreach (GameViewModel currMember in members)
             {
                 //puts the four games of the current member into a list so that the minimum value can be found easier.
                 List<int?> games =
@@ -474,9 +474,9 @@ namespace NineTapTour.Calculations
         /// Removes the lower scores of duplicate bowlers in the list
         /// </summary>
         /// <returns>list of removed FinalizeTemps</returns>
-        private static List<FinalizeTemp> RemoveDuplicateBowlers(List<FinalizeTemp> members)
+        private static List<GameViewModel> RemoveDuplicateBowlers(List<GameViewModel> members)
         {
-            List<FinalizeTemp> removal = [];
+            List<GameViewModel> removal = [];
             for (int i = 0; i < members.Count; i++)
             {
                 bool isCurrIndexRemoved = false;
@@ -499,7 +499,7 @@ namespace NineTapTour.Calculations
                 }
 
                 // Removes all members who are in removal list
-                foreach (FinalizeTemp deleteMember in removal)
+                foreach (GameViewModel deleteMember in removal)
                 {
                     members.Remove(deleteMember);
                 }

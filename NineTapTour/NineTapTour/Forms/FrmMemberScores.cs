@@ -1759,13 +1759,6 @@ namespace NineTapTour.Forms
                     PlayerHistoryDB.DeletePlayerHistory(p);
                 }
 
-                //Delete from FinalizeTemp
-                FinalizeTemp ft = FinalizeTempDB.GetFinalizeID(g);
-                if (ft.FinalizeID != 0) // See if FinalizeTemp was an empty object (not found)
-                {
-                    FinalizeTempDB.DeleteFinalizeTemp(ft);
-                }
-
                 //Delete from Participants list
                 Participant par = FinalizeTempDB.GetParticipantByGameId(g.Id);
                 FinalizeTempDB.DeleteParticipant(par);
