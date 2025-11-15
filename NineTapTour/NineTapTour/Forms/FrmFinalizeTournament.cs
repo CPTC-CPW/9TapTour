@@ -1358,11 +1358,12 @@ namespace NineTapTour.Forms
                     currMember.StartAvg = ph.AVG;
                     ph.hisID = PlayerHistoryDB.GetHisID(ph);
                     ph.regionID = RegionID;
-                    currGame.gameRegionID = RegionID;
+                    
+                    // Phase 4: Removed currGame.gameRegionID and currGame.TournamentID 
+                    // These values are stored in Participant entity
                     
                     // Sync finalization properties to Game entity (Phase 1 refactoring)
                     currGame.IsFinalized = true;
-                    currGame.TournamentID = currTournament.Id;
                     currGame.LeagueAverage = FinalizeTableList[i].LeagueAverage;
                     currGame.AdjustedAvg = ph.AVG;
                     currGame.KeepAdjustedAvg = FinalizeTableList[i].KeepAdjustedAvg;

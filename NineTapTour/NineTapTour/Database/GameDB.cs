@@ -78,7 +78,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Gets all finalized games for a tournament (Phase 2 refactoring).
+        /// Gets all finalized games for a tournament (Phase 4: uses Participant.Tournament).
         /// </summary>
         /// <param name="tournamentId">The tournament ID</param>
         /// <returns>List of finalized games</returns>
@@ -86,14 +86,16 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
-                return (from g in db.Games
-                        where g.TournamentID == tournamentId && g.IsFinalized
+                // Phase 4: Query via Participant instead of Game.TournamentID
+                return (from p in db.Participants
+                        join g in db.Games on p.Game.Id equals g.Id
+                        where p.Tournament.Id == tournamentId && g.IsFinalized
                         select g).ToList();
             }
         }
 
         /// <summary>
-        /// Gets all finalized games for a member in a specific region (Phase 2 refactoring).
+        /// Gets all finalized games for a member in a specific region (Phase 4: uses Participant.ParticipantRegionID).
         /// </summary>
         /// <param name="memberNumber">The member number</param>
         /// <param name="regionId">The region ID</param>
@@ -102,10 +104,11 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
+                // Phase 4: Use Participant.ParticipantRegionID instead of Game.gameRegionID
                 return (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
                         join g in db.Games on p.Game.Id equals g.Id
-                        where m.Number == memberNumber && g.gameRegionID == regionId && g.IsFinalized
+                        where m.Number == memberNumber && p.ParticipantRegionID == regionId && g.IsFinalized
                         select g).ToList();
             }
         }

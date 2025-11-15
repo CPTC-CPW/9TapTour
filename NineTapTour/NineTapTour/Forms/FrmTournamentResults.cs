@@ -101,7 +101,7 @@ namespace NineTapTour.Forms
                     g.Notes = $"Progressive Pot was entered as: {Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value)}";
                 }
 
-                g.gameRegionID = tourny.TourneyRegion;
+                // Phase 4: Removed g.gameRegionID assignment - stored in Participant entity
                 db.Entry(g).State = EntityState.Modified;
                 db.SaveChanges();
             }
@@ -353,7 +353,8 @@ namespace NineTapTour.Forms
                 g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
                 g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
                 g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
-                g.gameRegionID = tourny.TourneyRegion;
+                
+                // Phase 4: Removed g.gameRegionID assignment - stored in Participant entity
                 db.SaveChanges();
             }
 

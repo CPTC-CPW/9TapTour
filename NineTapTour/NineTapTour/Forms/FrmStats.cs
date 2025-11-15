@@ -330,12 +330,13 @@ namespace NineTapTour.Forms
             var db = new NineTapDb();
             
             // Phase 3: Query from Games table instead of PlayerHistory
+            // Phase 4: Query from Games table via Participant (use ParticipantRegionID)
             var temp = (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
                         join g in db.Games on p.Game.Id equals g.Id
                         join t in db.Tournaments on p.Tournament.Id equals t.Id
                         where m.Number == memNum 
-                           && g.gameRegionID == RegionID
+                           && p.ParticipantRegionID == RegionID // Phase 4: Use Participant.ParticipantRegionID
                            && g.IsFinalized // Only finalized games
                         orderby t.Date descending, g.Id descending
                         select new

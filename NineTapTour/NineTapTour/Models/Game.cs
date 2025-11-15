@@ -94,16 +94,12 @@ namespace NineTapTour.Models
         public decimal? SidePot { get; set; }
         public int? PlaceStanding { get; set;}
 
-        public int gameRegionID { get; set; }
-
         [DefaultValue(false)]
         public bool IsComp { get; set; } // comp is someone who bowls for free because they are helping with tournament 
 
         // Properties migrated from FinalizeTemp
         [DefaultValue(false)]
         public bool IsFinalized { get; set; }
-        
-        public int? TournamentID { get; set; }
         
         public double LeagueAverage { get; set; }
         
