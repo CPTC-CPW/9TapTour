@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NineTapTour.Models
 {
-    class CurrentHistory
+    public class CurrentHistory
     {
         public int ScratchTotal { get; set; }
 
@@ -20,7 +20,7 @@ namespace NineTapTour.Models
 
     }
 
-    class PreviousHistory
+    public class PreviousHistory
     {
         public DateTime TournamentDate { get; set; }
 

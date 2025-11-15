@@ -54,11 +54,9 @@
             this.txtHandicap = new System.Windows.Forms.TextBox();
             this.txtAveragePerGame = new System.Windows.Forms.TextBox();
             this.nineTapTourNineTapDbDataSetBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this._NineTapTour_NineTapDbDataSet = new NineTapTour._NineTapTour_NineTapDbDataSet();
             this.btnSaveChanges = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nineTapTourNineTapDbDataSetBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this._NineTapTour_NineTapDbDataSet)).BeginInit();
             this.SuspendLayout();
             // 
             // TournamentEntriesGrid
@@ -274,13 +272,10 @@
             // 
             // nineTapTourNineTapDbDataSetBindingSource
             // 
-            this.nineTapTourNineTapDbDataSetBindingSource.DataSource = this._NineTapTour_NineTapDbDataSet;
             this.nineTapTourNineTapDbDataSetBindingSource.Position = 0;
             // 
             // _NineTapTour_NineTapDbDataSet
             // 
-            this._NineTapTour_NineTapDbDataSet.DataSetName = "_NineTapTour_NineTapDbDataSet";
-            this._NineTapTour_NineTapDbDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // btnSaveChanges
             // 
@@ -336,7 +331,6 @@
         #endregion
 
         private System.Windows.Forms.BindingSource nineTapTourNineTapDbDataSetBindingSource;
-        private _NineTapTour_NineTapDbDataSet _NineTapTour_NineTapDbDataSet;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.Label lblMemberNumber;

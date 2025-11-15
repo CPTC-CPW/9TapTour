@@ -9,7 +9,7 @@ using NineTapTour.Models;
 
 namespace NineTapTour.Database
 {
-    class FinalizeTempDB
+    public class FinalizeTempDB
     {
         /// <summary>
         /// Calculates league average for given member based off last 30 games 
@@ -364,6 +364,52 @@ namespace NineTapTour.Database
             if (item.Game3 != null) handicapTotal += (item.Game3 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0);
             if (item.Game4 != null) handicapTotal += (item.Game4 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0);
             return handicapTotal;
+        }
+
+        /// <summary>
+        /// Gets finalization data for a tournament from Games table (Phase 3: FinalizeTemp deprecated).
+        /// Returns data in FinalizeTemp format for UI compatibility.
+        /// </summary>
+        public static List<FinalizeTemp> GetListFromTable(Tournament tourn)
+        {
+            using (var db = new NineTapDb())
+            {
+                // Phase 3: Always read from Games table
+                return [.. (from p in db.Participants
+                           join m in db.Members on p.Member.Id equals m.Id
+                           join g in db.Games on p.Game.Id equals g.Id
+                           where p.Tournament.Id == tourn.Id
+                           orderby m.FirstName, p.Squad
+                           select new FinalizeTemp
+                           {
+                               FinalizeID = g.Id, // Use Game ID as FinalizeID
+                               TournamentID = g.TournamentID ?? tourn.Id,
+                               GameId = g.Id,
+                               MemberId = m.Id,
+                               MemberNumber = m.Number,
+                               FirstName = m.FirstName,
+                               LastName = m.LastName,
+                               Squad = p.Squad,
+                               Game1 = g.Game1,
+                               Game2 = g.Game2,
+                               Game3 = g.Game3,
+                               Game4 = g.Game4,
+                               UseGame1 = g.UseGame1 ?? true,
+                               UseGame2 = g.UseGame2 ?? true,
+                               UseGame3 = g.UseGame3 ?? true,
+                               UseGame4 = g.UseGame4 ?? true,
+                               LeagueAverage = g.LeagueAverage,
+                               AdjustedAvg = g.AdjustedAvg,
+                               KeepAdjustedAvg = g.KeepAdjustedAvg,
+                               GameAvg = g.GameAvg,
+                               HandicapTotal = g.HandicapTotal,
+                               ScratchTotal = (g.Game1 ?? 0) + (g.Game2 ?? 0) + (g.Game3 ?? 0) + (g.Game4 ?? 0),
+                               Handicap = g.Handicap ?? 0,
+                               Bonus = g.Bonus ?? 0,
+                               Notes = g.Notes,
+                               FinalizeRegionID = g.gameRegionID
+                           })];
+            }
         }
 
         /// <summary>
