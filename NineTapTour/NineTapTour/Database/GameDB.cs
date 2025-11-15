@@ -95,7 +95,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Gets all finalized games for a member in a specific region (Phase 4: uses Participant.ParticipantRegionID).
+        /// Gets all finalized games for a member in a specific region (Phase 5: uses Member.NineTapRegionID).
         /// </summary>
         /// <param name="memberNumber">The member number</param>
         /// <param name="regionId">The region ID</param>
@@ -104,11 +104,11 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
-                // Phase 4: Use Participant.ParticipantRegionID instead of Game.gameRegionID
+                // Phase 5: Use Member.NineTapRegionID instead of Participant.ParticipantRegionID
                 return (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
                         join g in db.Games on p.Game.Id equals g.Id
-                        where m.Number == memberNumber && p.ParticipantRegionID == regionId && g.IsFinalized
+                        where m.Number == memberNumber && m.NineTapRegionID == regionId && g.IsFinalized
                         select g).ToList();
             }
         }

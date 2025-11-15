@@ -71,7 +71,7 @@ namespace NineTapTour.Database
                     g,
                     memberNum,
                     g.Participant.Tournament.Date,
-                    g.Participant.ParticipantRegionID
+                    g.Participant.Member.NineTapRegionID
                 )).ToList();
             }
         }
@@ -90,7 +90,7 @@ namespace NineTapTour.Database
                     .ThenInclude(p => p.Member)
                 .Include(g => g.Participant.Tournament)
                 .Where(g => g.Participant.Member.Number == memberNum 
-                         && g.Participant.ParticipantRegionID == regionID
+                         && g.Participant.Member.NineTapRegionID == regionID
                          && g.IsFinalized) // Only finalized games
                 .OrderByDescending(g => g.Participant.Tournament.Date)
                 .ThenByDescending(g => g.ScratchTotal)
@@ -130,7 +130,7 @@ namespace NineTapTour.Database
                         .ThenInclude(p => p.Member)
                     .Include(g => g.Participant.Tournament)
                     .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.Participant.ParticipantRegionID == regionID
+                             && g.Participant.Member.NineTapRegionID == regionID
                              && g.IsFinalized) // Only finalized games
                     .OrderByDescending(g => g.Participant.Tournament.Date)
                     .ToList();
@@ -158,7 +158,7 @@ namespace NineTapTour.Database
                         .ThenInclude(p => p.Member)
                     .Include(g => g.Participant.Tournament)
                     .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.Participant.ParticipantRegionID == regionID
+                             && g.Participant.Member.NineTapRegionID == regionID
                              && g.IsFinalized) // Only finalized games
                     .OrderByDescending(g => g.Participant.Tournament.Date)
                     .ThenByDescending(g => g.MoneyWon)
@@ -186,7 +186,7 @@ namespace NineTapTour.Database
                     .Include(g => g.Participant)
                         .ThenInclude(p => p.Member)
                     .Include(g => g.Participant.Tournament)
-                    .Where(g => g.Participant.ParticipantRegionID == regionID && g.IsFinalized)
+                    .Where(g => g.Participant.Member.NineTapRegionID == regionID && g.IsFinalized)
                     .OrderByDescending(g => g.Participant.Tournament.Date)
                     .ToList();
 
@@ -212,7 +212,7 @@ namespace NineTapTour.Database
                         .ThenInclude(p => p.Member)
                     .Include(g => g.Participant.Tournament)
                     .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.Participant.ParticipantRegionID == regionID
+                             && g.Participant.Member.NineTapRegionID == regionID
                              && g.IsFinalized)
                     .OrderByDescending(g => g.Participant.Tournament.Date)
                     .Take(howmany)
@@ -244,7 +244,7 @@ namespace NineTapTour.Database
                         .ThenInclude(p => p.Member)
                     .Include(g => g.Participant.Tournament)
                     .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.Participant.ParticipantRegionID == regionID 
+                             && g.Participant.Member.NineTapRegionID == regionID 
                              && g.IsFinalized
                              && g.AdjustedAvg > 0) // Only games where AVG was adjusted
                     .OrderByDescending(g => g.Participant.Tournament.Date)
@@ -276,7 +276,7 @@ namespace NineTapTour.Database
                     .ThenInclude(p => p.Member)
                 .Include(g => g.Participant.Tournament)
                 .Where(g => g.Participant.Member.Number == memberNum 
-                         && g.Participant.ParticipantRegionID == regionID 
+                         && g.Participant.Member.NineTapRegionID == regionID 
                          && g.IsFinalized
                          && g.AdjustedAvg > 0) // Only games where AVG was adjusted
                 .OrderByDescending(g => g.Participant.Tournament.Date)
@@ -341,7 +341,7 @@ namespace NineTapTour.Database
                         .ThenInclude(p => p.Member)
                     .Include(g => g.Participant.Tournament)
                     .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.Participant.ParticipantRegionID == regionID
+                             && g.Participant.Member.NineTapRegionID == regionID
                              && g.IsFinalized)
                     .OrderByDescending(g => g.ScratchTotal)
                     .ToList();
@@ -377,7 +377,7 @@ namespace NineTapTour.Database
                     game,
                     game.Participant.Member.Number,
                     game.Participant.Tournament.Date,
-                    game.Participant.ParticipantRegionID // Phase 4: Use Participant.ParticipantRegionID
+                    game.Participant.Member.NineTapRegionID // Phase 5: Use Member.NineTapRegionID
                 );
             }
         }
@@ -395,7 +395,7 @@ namespace NineTapTour.Database
                     .Include(g => g.Participant)
                         .ThenInclude(p => p.Member)
                     .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.Participant.ParticipantRegionID == regionID
+                             && g.Participant.Member.NineTapRegionID == regionID
                              && g.IsFinalized) // Only finalized games
                     .Select(g => (decimal?)(g.MoneyWon ?? 0))
                     .Sum() ?? 0;
@@ -414,7 +414,7 @@ namespace NineTapTour.Database
                     .Include(g => g.Participant)
                         .ThenInclude(p => p.Member)
                     .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.Participant.ParticipantRegionID == regionID
+                             && g.Participant.Member.NineTapRegionID == regionID
                              && g.IsFinalized)
                     .Select(g => g.GamesPlayed)
                     .Sum();
@@ -435,7 +435,7 @@ namespace NineTapTour.Database
                     .ThenInclude(p => p.Member)
                 .Include(g => g.Participant.Tournament)
                 .Where(g => g.Participant.Member.Number == memberNum 
-                         && g.Participant.ParticipantRegionID == regionID
+                         && g.Participant.Member.NineTapRegionID == regionID
                          && g.IsFinalized) // Only finalized games
                 .OrderByDescending(g => g.Participant.Tournament.Date)
                 .ThenByDescending(g => g.ScratchTotal)
@@ -456,7 +456,7 @@ namespace NineTapTour.Database
                     .Include(g => g.Participant)
                         .ThenInclude(p => p.Member)
                     .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.Participant.ParticipantRegionID == regionID
+                             && g.Participant.Member.NineTapRegionID == regionID
                              && g.IsFinalized)
                     .Select(g => g.Game1)
                     .Sum() ?? 0;
@@ -475,7 +475,7 @@ namespace NineTapTour.Database
                     .Include(g => g.Participant)
                         .ThenInclude(p => p.Member)
                     .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.Participant.ParticipantRegionID == regionID
+                             && g.Participant.Member.NineTapRegionID == regionID
                              && g.IsFinalized)
                     .Select(g => g.Game2)
                     .Sum() ?? 0;
@@ -494,7 +494,7 @@ namespace NineTapTour.Database
                     .Include(g => g.Participant)
                         .ThenInclude(p => p.Member)
                     .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.Participant.ParticipantRegionID == regionID
+                             && g.Participant.Member.NineTapRegionID == regionID
                              && g.IsFinalized)
                     .Select(g => g.Game3)
                     .Sum() ?? 0;
@@ -513,7 +513,7 @@ namespace NineTapTour.Database
                     .Include(g => g.Participant)
                         .ThenInclude(p => p.Member)
                     .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.Participant.ParticipantRegionID == regionID
+                             && g.Participant.Member.NineTapRegionID == regionID
                              && g.IsFinalized)
                     .Select(g => g.Game4)
                     .Sum() ?? 0;
@@ -533,7 +533,7 @@ namespace NineTapTour.Database
                     .ThenInclude(p => p.Member)
                 .Include(g => g.Participant.Tournament)
                 .Where(g => g.Participant.Member.Number == memberNum 
-                         && g.Participant.ParticipantRegionID == regionID
+                         && g.Participant.Member.NineTapRegionID == regionID
                          && g.IsFinalized)
                 .OrderByDescending(g => g.Participant.Tournament.Date)
                 .ThenByDescending(g => g.ScratchTotal)
@@ -554,7 +554,7 @@ namespace NineTapTour.Database
                     .ThenInclude(p => p.Member)
                 .Include(g => g.Participant.Tournament)
                 .Where(g => g.Participant.Member.Number == memberNum 
-                         && g.Participant.ParticipantRegionID == regionID
+                         && g.Participant.Member.NineTapRegionID == regionID
                          && g.IsFinalized)
                 .OrderByDescending(g => g.Participant.Tournament.Date)
                 .ThenByDescending(g => g.ScratchTotal)
@@ -575,7 +575,7 @@ namespace NineTapTour.Database
                     .ThenInclude(p => p.Member)
                 .Include(g => g.Participant.Tournament)
                 .Where(g => g.Participant.Member.Number == memberNum 
-                         && g.Participant.ParticipantRegionID == regionID
+                         && g.Participant.Member.NineTapRegionID == regionID
                          && g.IsFinalized)
                 .OrderByDescending(g => g.Participant.Tournament.Date)
                 .ThenByDescending(g => g.ScratchTotal)
@@ -596,7 +596,7 @@ namespace NineTapTour.Database
                     .ThenInclude(p => p.Member)
                 .Include(g => g.Participant.Tournament)
                 .Where(g => g.Participant.Member.Number == memberNum 
-                         && g.Participant.ParticipantRegionID == regionID
+                         && g.Participant.Member.NineTapRegionID == regionID
                          && g.IsFinalized)
                 .OrderByDescending(g => g.Participant.Tournament.Date)
                 .ThenByDescending(g => g.ScratchTotal)
@@ -618,7 +618,7 @@ namespace NineTapTour.Database
                     .ThenInclude(p => p.Member)
                 .Include(g => g.Participant.Tournament)
                 .Where(g => g.Participant.Member.Number == memberNum 
-                         && g.Participant.ParticipantRegionID == regionID
+                         && g.Participant.Member.NineTapRegionID == regionID
                          && g.IsFinalized)
                 .OrderByDescending(g => g.Participant.Tournament.Date)
                 .ThenByDescending(g => g.ScratchTotal)
@@ -656,7 +656,7 @@ namespace NineTapTour.Database
                     .ThenInclude(p => p.Member)
                 .Include(g => g.Participant.Tournament)
                 .Where(g => g.Participant.Member.Number == memberNum 
-                         && g.Participant.ParticipantRegionID == regionID
+                         && g.Participant.Member.NineTapRegionID == regionID
                          && g.IsFinalized)
                 .OrderByDescending(g => g.Participant.Tournament.Date)
                 .ThenBy(g => g.ScratchTotal)
@@ -697,7 +697,7 @@ namespace NineTapTour.Database
                 .Include(g => g.Participant)
                     .ThenInclude(p => p.Member)
                 .Where(g => g.Participant.Member.Number == memberNumber 
-                         && g.Participant.ParticipantRegionID == regionID
+                         && g.Participant.Member.NineTapRegionID == regionID
                          && g.IsFinalized)
                 .Count();
         }
@@ -714,7 +714,7 @@ namespace NineTapTour.Database
                     .ThenInclude(p => p.Member)
                 .Include(g => g.Participant.Tournament)
                 .Where(g => g.Participant.Member.Number == memberNumber 
-                         && g.Participant.ParticipantRegionID == regionID
+                         && g.Participant.Member.NineTapRegionID == regionID
                          && g.IsFinalized)
                 .OrderByDescending(g => g.Participant.Tournament.Date)
                 .ThenBy(g => g.ScratchTotal)

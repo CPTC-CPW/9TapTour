@@ -190,13 +190,13 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
-                // Phase 4: Use Participant.ParticipantRegionID instead of Game.gameRegionID
+                // Phase 5: Use Member.NineTapRegionID instead of Participant.ParticipantRegionID
                 var prevHistory = (from p in db.Participants
                                   join m in db.Members on p.Member.Id equals m.Id
                                   join g in db.Games on p.Game.Id equals g.Id
                                   join t in db.Tournaments on p.Tournament.Id equals t.Id
                                   where m.Number == memberNumber 
-                                     && p.ParticipantRegionID == regionId // Changed from g.gameRegionID
+                                     && m.NineTapRegionID == regionId // Changed from p.ParticipantRegionID
                                      && g.IsFinalized // Only finalized games
                                   orderby t.Date descending
                                   select new PreviousHistory
@@ -266,7 +266,7 @@ namespace NineTapTour.Database
 
         /// <summary>
         /// Gets and returns a list of all participant objects for the tournament given
-        /// (Phase 4: Optimized with direct projection and uses Participant.ParticipantRegionID)
+        /// (Phase 5: Optimized with direct projection and uses Member.NineTapRegionID)
         /// </summary>
         public static List<GameViewModel> GetAllInitialParticipantGameList(Tournament tourn)
         {
@@ -328,21 +328,21 @@ namespace NineTapTour.Database
                                Handicap = g.Handicap ?? 0,
                                Bonus = g.Bonus ?? 0,
                                
-                               // Phase 4: Use Participant.ParticipantRegionID instead of Tournament.TourneyRegion
-                               FinalizeRegionID = p.ParticipantRegionID
+                               // Phase 5: Use Member.NineTapRegionID instead of Participant.ParticipantRegionID
+                               FinalizeRegionID = m.NineTapRegionID
                            }).ToList()];
             }
         }
 
         /// <summary>
-        /// Gets finalization data for a tournament from Games table (Phase 4: Uses Participant relationships).
+        /// Gets finalization data for a tournament from Games table (Phase 5: Uses Member relationships).
         /// Returns data in FinalizeTemp format for UI compatibility.
         /// </summary>
         public static List<GameViewModel> GetListFromTable(Tournament tourn)
         {
             using (var db = new NineTapDb())
             {
-                // Phase 4: Use Participant for TournamentID and RegionID
+                // Phase 5: Use Member.NineTapRegionID instead of Participant.ParticipantRegionID
                 return [.. (from p in db.Participants
                            join m in db.Members on p.Member.Id equals m.Id
                            join g in db.Games on p.Game.Id equals g.Id
@@ -374,7 +374,7 @@ namespace NineTapTour.Database
                                Handicap = g.Handicap ?? 0,
                                Bonus = g.Bonus ?? 0,
                                Notes = g.Notes,
-                               FinalizeRegionID = p.ParticipantRegionID // Use Participant RegionID
+                               FinalizeRegionID = m.NineTapRegionID // Phase 5: Use Member RegionID
                            })];
             }
         }
@@ -394,14 +394,16 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Returns a list of Participants with a RegionID the same as the ID given
+        /// Returns a list of Participants with a RegionID the same as the ID given (Phase 5: queries via Member)
         /// </summary>
         public static List<Participant> GetParticipantListByRegionID(int RegionID)
         {
             using (var db = new NineTapDb())
             {
+                // Phase 5: Query via Member.NineTapRegionID instead of Participant.ParticipantRegionID
                 return [.. (from p in db.Participants
-                        where p.ParticipantRegionID == RegionID
+                        join m in db.Members on p.Member.Id equals m.Id
+                        where m.NineTapRegionID == RegionID
                         select p).Include(nameof(Participant.Member))];
             }
                 
@@ -420,16 +422,17 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Returns a list of the Games with the same RegionID as the ID given (Phase 4: queries via Participant).
+        /// Returns a list of the Games with the same RegionID as the ID given (Phase 5: queries via Member).
         /// </summary>
         public static List<Game> GetGameListByRegionID(int RegionID)
         {
             using (var db = new NineTapDb())
             {
-                // Phase 4: Query Games via Participant to use ParticipantRegionID
+                // Phase 5: Query Games via Member.NineTapRegionID
                 return [.. (from p in db.Participants
+                           join m in db.Members on p.Member.Id equals m.Id
                            join g in db.Games on p.Game.Id equals g.Id
-                           where p.ParticipantRegionID == RegionID
+                           where m.NineTapRegionID == RegionID
                            select g)];
             }
         }

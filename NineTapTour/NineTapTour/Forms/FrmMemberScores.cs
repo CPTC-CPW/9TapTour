@@ -492,7 +492,8 @@ namespace NineTapTour.Forms
                 player.Member = currentMem;
 
                 player.Game = new Game();
-                player.ParticipantRegionID = RegionID;
+                // Phase 5: Removed player.ParticipantRegionID = RegionID; 
+                // Region is already stored in player.Member.NineTapRegionID
                 var db = new NineTapDb();
 
                 int gameId = GameDB.GetGameID(db, currentMem.Id, currTourney.Id, squad);

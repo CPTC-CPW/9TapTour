@@ -18,9 +18,6 @@ namespace NineTapTour.Models
 
         public Game Game { get; set; }
         public Tournament Tournament { get; set; }
-
-
-        public int ParticipantRegionID { get; set; }
         #endregion
 
 
