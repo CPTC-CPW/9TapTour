@@ -1,61 +1,46 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.Versioning;
 
 namespace NineTapTour.Models
 {
-    public class PlayerHistory
+    /// <summary>
+    /// [DEPRECATED] This class has been refactored to use PlayerHistoryViewModel.
+    /// Use PlayerHistoryViewModel instead. This class exists for backward compatibility only.
+    /// 
+    /// Historical Note: PlayerHistory was a duplicate storage of Game data.
+    /// All data now lives in the Game entity, and this ViewModel provides a compatible interface.
+    /// </summary>
+    [Obsolete("PlayerHistory entity is deprecated. All data is stored in Game entity. Use PlayerHistoryViewModel for read operations.")]
+    public class PlayerHistory : PlayerHistoryViewModel
     {
+        // Navigation properties (kept for EF Core compatibility during transition)
+        
         /// <summary>
-        /// The variable responsible for playerHistory IDs in the Database.
+        /// Navigation property to Game (EF Core relationship)
         /// </summary>
-        [Key] public int hisID { get; set; }
-
-        public int MemberNumber { get; set; }
-        public int GamesPlayed { get; set; }
-
-        public DateTime TournamentDate { get; set; }
-
-        public int GameID {get ; set; }
-
         [ForeignKey(nameof(GameID))]
         public Game Game { get; set; }
 
-        public int? Game1 { get; set; }
-        public int? Game2 { get; set; }
-        public int? Game3 { get; set; }
-        public int? Game4 { get; set; }
-
-
-        public int TotalScore { get; set; }
-        public int HandiCap { get; set; }
-
-        // Indicates Bonus pins to be applied to the next game instead of current
-        public int Bonus { get; set; }
-
-        public decimal MoneyWon { get; set; }
-
-        public string Notes { get; set; }
-
-
-
-        public double AverageForEntry { get; set;}
-
-        public double trueAVG { get; set; }
-
-        public int AVG { get; set; }
-
-        public string ProPot { get; set; }
-
-        public string PPHG { get; set; }
-
-        public int regionID { get; set; }
-
+        /// <summary>
+        /// Navigation property to NineTapRegion (EF Core relationship)
+        /// </summary>
         [ForeignKey(nameof(regionID))]
         public NineTapRegion NineTapRegion { get; set; }
 
+        /// <summary>
+        /// Default constructor for backward compatibility
+        /// </summary>
+        public PlayerHistory() : base()
+        {
+        }
 
+        /// <summary>
+        /// Constructor from Game entity
+        /// </summary>
+        public PlayerHistory(Game game, int memberNumber, DateTime tournamentDate, int regionId)
+            : base(game, memberNumber, tournamentDate, regionId)
+        {
+        }
     }
 }
