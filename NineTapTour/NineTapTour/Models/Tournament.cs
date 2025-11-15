@@ -33,6 +33,7 @@ namespace NineTapTour.Models
         }
 
         // Phase 6: Convert int to proper foreign key relationship
+        [Required]
         public NineTapRegion TourneyRegion { get; set; }
 
         public bool IsTournamentFinalized { get; set; }

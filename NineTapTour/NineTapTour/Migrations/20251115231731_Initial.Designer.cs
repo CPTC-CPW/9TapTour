@@ -12,8 +12,8 @@ using NineTapTour.Database;
 namespace NineTapTour.Migrations
 {
     [DbContext(typeof(NineTapDb))]
-    [Migration("20251115225017_Phase5_RemoveRedundantParticipantRegionID")]
-    partial class Phase5_RemoveRedundantParticipantRegionID
+    [Migration("20251115231731_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -296,10 +296,12 @@ namespace NineTapTour.Migrations
                     b.Property<bool>("ThreeOutOf4")
                         .HasColumnType("bit");
 
-                    b.Property<int>("TourneyRegion")
+                    b.Property<int?>("TourneyRegionNineTapRegionID")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TourneyRegionNineTapRegionID");
 
                     b.ToTable("Tournaments");
                 });
@@ -336,6 +338,15 @@ namespace NineTapTour.Migrations
                     b.Navigation("Member");
 
                     b.Navigation("Tournament");
+                });
+
+            modelBuilder.Entity("NineTapTour.Models.Tournament", b =>
+                {
+                    b.HasOne("NineTapTour.Models.NineTapRegion", "TourneyRegion")
+                        .WithMany()
+                        .HasForeignKey("TourneyRegionNineTapRegionID");
+
+                    b.Navigation("TourneyRegion");
                 });
 
             modelBuilder.Entity("NineTapTour.Models.Game", b =>

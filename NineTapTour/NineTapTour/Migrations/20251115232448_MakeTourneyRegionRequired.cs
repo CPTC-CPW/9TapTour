@@ -5,32 +5,32 @@
 namespace NineTapTour.Migrations
 {
     /// <inheritdoc />
-    public partial class Phase6_ConvertTourneyRegionToForeignKey : Migration
+    public partial class MakeTourneyRegionRequired : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "TourneyRegion",
+            migrationBuilder.DropForeignKey(
+                name: "FK_Tournaments_NineTapRegions_TourneyRegionNineTapRegionID",
                 table: "Tournaments");
 
-            migrationBuilder.AddColumn<int>(
+            migrationBuilder.AlterColumn<int>(
                 name: "TourneyRegionNineTapRegionID",
                 table: "Tournaments",
                 type: "int",
-                nullable: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tournaments_TourneyRegionNineTapRegionID",
-                table: "Tournaments",
-                column: "TourneyRegionNineTapRegionID");
+                nullable: false,
+                defaultValue: 0,
+                oldClrType: typeof(int),
+                oldType: "int",
+                oldNullable: true);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Tournaments_NineTapRegions_TourneyRegionNineTapRegionID",
                 table: "Tournaments",
                 column: "TourneyRegionNineTapRegionID",
                 principalTable: "NineTapRegions",
-                principalColumn: "NineTapRegionID");
+                principalColumn: "NineTapRegionID",
+                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
@@ -40,20 +40,20 @@ namespace NineTapTour.Migrations
                 name: "FK_Tournaments_NineTapRegions_TourneyRegionNineTapRegionID",
                 table: "Tournaments");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Tournaments_TourneyRegionNineTapRegionID",
-                table: "Tournaments");
-
-            migrationBuilder.DropColumn(
+            migrationBuilder.AlterColumn<int>(
                 name: "TourneyRegionNineTapRegionID",
-                table: "Tournaments");
-
-            migrationBuilder.AddColumn<int>(
-                name: "TourneyRegion",
                 table: "Tournaments",
                 type: "int",
-                nullable: false,
-                defaultValue: 0);
+                nullable: true,
+                oldClrType: typeof(int),
+                oldType: "int");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Tournaments_NineTapRegions_TourneyRegionNineTapRegionID",
+                table: "Tournaments",
+                column: "TourneyRegionNineTapRegionID",
+                principalTable: "NineTapRegions",
+                principalColumn: "NineTapRegionID");
         }
     }
 }

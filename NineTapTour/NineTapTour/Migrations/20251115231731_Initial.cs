@@ -1,49 +1,16 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+#nullable disable
+
 namespace NineTapTour.Migrations
 {
+    /// <inheritdoc />
     public partial class Initial : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "FinalizeTemps",
-                columns: table => new
-                {
-                    FinalizeID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TournamentID = table.Column<int>(type: "int", nullable: false),
-                    GameId = table.Column<int>(type: "int", nullable: false),
-                    MemberId = table.Column<int>(type: "int", nullable: false),
-                    MemberNumber = table.Column<int>(type: "int", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Squad = table.Column<int>(type: "int", nullable: false),
-                    Game1 = table.Column<int>(type: "int", nullable: true),
-                    Game2 = table.Column<int>(type: "int", nullable: true),
-                    Game3 = table.Column<int>(type: "int", nullable: true),
-                    Game4 = table.Column<int>(type: "int", nullable: true),
-                    UseGame1 = table.Column<bool>(type: "bit", nullable: false),
-                    UseGame2 = table.Column<bool>(type: "bit", nullable: false),
-                    UseGame3 = table.Column<bool>(type: "bit", nullable: false),
-                    UseGame4 = table.Column<bool>(type: "bit", nullable: false),
-                    LeagueAverage = table.Column<int>(type: "int", nullable: false),
-                    AdjustedAvg = table.Column<int>(type: "int", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ScratchTotal = table.Column<int>(type: "int", nullable: false),
-                    KeepAdjustedAvg = table.Column<bool>(type: "bit", nullable: false),
-                    GameAvg = table.Column<int>(type: "int", nullable: false),
-                    Handicap = table.Column<int>(type: "int", nullable: false),
-                    Bonus = table.Column<int>(type: "int", nullable: false),
-                    HandicapTotal = table.Column<int>(type: "int", nullable: false),
-                    FinalizeRegionID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FinalizeTemps", x => x.FinalizeID);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Games",
                 columns: table => new
@@ -65,8 +32,13 @@ namespace NineTapTour.Migrations
                     MoneyWon = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     SidePot = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     PlaceStanding = table.Column<int>(type: "int", nullable: true),
-                    gameRegionID = table.Column<int>(type: "int", nullable: false),
-                    IsComp = table.Column<bool>(type: "bit", nullable: false)
+                    IsComp = table.Column<bool>(type: "bit", nullable: false),
+                    IsFinalized = table.Column<bool>(type: "bit", nullable: false),
+                    LeagueAverage = table.Column<double>(type: "float", nullable: false),
+                    AdjustedAvg = table.Column<int>(type: "int", nullable: false),
+                    KeepAdjustedAvg = table.Column<bool>(type: "bit", nullable: false),
+                    GameAvg = table.Column<int>(type: "int", nullable: false),
+                    HandicapTotal = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -84,79 +56,6 @@ namespace NineTapTour.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_NineTapRegions", x => x.NineTapRegionID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PlayerHistories",
-                columns: table => new
-                {
-                    hisID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MemberNumber = table.Column<int>(type: "int", nullable: false),
-                    GamesPlayed = table.Column<int>(type: "int", nullable: false),
-                    TournamentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    GameID = table.Column<int>(type: "int", nullable: false),
-                    Game1 = table.Column<int>(type: "int", nullable: true),
-                    Game2 = table.Column<int>(type: "int", nullable: true),
-                    Game3 = table.Column<int>(type: "int", nullable: true),
-                    Game4 = table.Column<int>(type: "int", nullable: true),
-                    TotalScore = table.Column<int>(type: "int", nullable: false),
-                    HandiCap = table.Column<int>(type: "int", nullable: false),
-                    Bonus = table.Column<int>(type: "int", nullable: false),
-                    MoneyWon = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AverageForEntry = table.Column<double>(type: "float", nullable: false),
-                    trueAVG = table.Column<double>(type: "float", nullable: false),
-                    AVG = table.Column<int>(type: "int", nullable: false),
-                    ProPot = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PPHG = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    regionID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PlayerHistories", x => x.hisID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tournaments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Event = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Sponsors = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Squads = table.Column<int>(type: "int", nullable: false),
-                    Doubles = table.Column<bool>(type: "bit", nullable: false),
-                    ThreeOutOf4 = table.Column<bool>(type: "bit", nullable: false),
-                    TourneyRegion = table.Column<int>(type: "int", nullable: false),
-                    IsTournamentFinalized = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tournaments", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Squads",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    GameId = table.Column<int>(type: "int", nullable: true),
-                    Number = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Squads", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Squads_Games_GameId",
-                        column: x => x.GameId,
-                        principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -207,16 +106,43 @@ namespace NineTapTour.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tournaments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Event = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Sponsors = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Squads = table.Column<int>(type: "int", nullable: false),
+                    Doubles = table.Column<bool>(type: "bit", nullable: false),
+                    ThreeOutOf4 = table.Column<bool>(type: "bit", nullable: false),
+                    IsOnlyThreeGames = table.Column<bool>(type: "bit", nullable: false),
+                    TourneyRegionNineTapRegionID = table.Column<int>(type: "int", nullable: true),
+                    IsTournamentFinalized = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tournaments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tournaments_NineTapRegions_TourneyRegionNineTapRegionID",
+                        column: x => x.TourneyRegionNineTapRegionID,
+                        principalTable: "NineTapRegions",
+                        principalColumn: "NineTapRegionID");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Participants",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SquadNumber = table.Column<int>(type: "int", nullable: false),
-                    MemberId = table.Column<int>(type: "int", nullable: true),
+                    MemberId = table.Column<int>(type: "int", nullable: false),
                     GameId = table.Column<int>(type: "int", nullable: true),
-                    TournamentId = table.Column<int>(type: "int", nullable: true),
-                    ParticipantRegionID = table.Column<int>(type: "int", nullable: false)
+                    TournamentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -225,20 +151,18 @@ namespace NineTapTour.Migrations
                         name: "FK_Participants_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Participants_Members_MemberId",
                         column: x => x.MemberId,
                         principalTable: "Members",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Participants_Tournaments_TournamentId",
                         column: x => x.TournamentId,
                         principalTable: "Tournaments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -249,7 +173,9 @@ namespace NineTapTour.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Participants_GameId",
                 table: "Participants",
-                column: "GameId");
+                column: "GameId",
+                unique: true,
+                filter: "[GameId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Participants_MemberId",
@@ -262,33 +188,25 @@ namespace NineTapTour.Migrations
                 column: "TournamentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Squads_GameId",
-                table: "Squads",
-                column: "GameId");
+                name: "IX_Tournaments_TourneyRegionNineTapRegionID",
+                table: "Tournaments",
+                column: "TourneyRegionNineTapRegionID");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "FinalizeTemps");
-
             migrationBuilder.DropTable(
                 name: "Participants");
 
             migrationBuilder.DropTable(
-                name: "PlayerHistories");
-
-            migrationBuilder.DropTable(
-                name: "Squads");
+                name: "Games");
 
             migrationBuilder.DropTable(
                 name: "Members");
 
             migrationBuilder.DropTable(
                 name: "Tournaments");
-
-            migrationBuilder.DropTable(
-                name: "Games");
 
             migrationBuilder.DropTable(
                 name: "NineTapRegions");

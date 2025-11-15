@@ -293,7 +293,7 @@ namespace NineTapTour.Migrations
                     b.Property<bool>("ThreeOutOf4")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("TourneyRegionNineTapRegionID")
+                    b.Property<int>("TourneyRegionNineTapRegionID")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -341,7 +341,9 @@ namespace NineTapTour.Migrations
                 {
                     b.HasOne("NineTapTour.Models.NineTapRegion", "TourneyRegion")
                         .WithMany()
-                        .HasForeignKey("TourneyRegionNineTapRegionID");
+                        .HasForeignKey("TourneyRegionNineTapRegionID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("TourneyRegion");
                 });
