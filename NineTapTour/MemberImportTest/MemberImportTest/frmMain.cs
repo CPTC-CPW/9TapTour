@@ -11,6 +11,7 @@ using NineTapTour.Forms;
 using NineTapTour.Models;
 using System.Drawing;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace MemberImportTest;
 
@@ -24,6 +25,18 @@ public partial class FrmMain : Form
         InitializeComponent();
         InitializeConvertXlsControls();
         List<NineTapRegion> r = NineTapRegionDB.GetRegionList();
+
+        // Create a default local region if there are no regions in the database
+        if (r.Count == 0)
+        {
+            NineTapRegion defaultRegion = new()
+            {
+                NineTapRegionName = "Local",
+            };
+
+            NineTapRegionDB.AddRegion(defaultRegion);
+            r.Add(defaultRegion);
+        }
         cbxRegionSelect.DataSource = r;
         cbxRegionSelect.DisplayMember = nameof(NineTapRegion.NineTapRegionName);
         RegionID = r[cbxRegionSelect.SelectedIndex].NineTapRegionID;
