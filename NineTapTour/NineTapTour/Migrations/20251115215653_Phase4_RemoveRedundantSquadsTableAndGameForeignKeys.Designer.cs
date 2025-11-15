@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NineTapTour.Database;
 
@@ -11,9 +12,11 @@ using NineTapTour.Database;
 namespace NineTapTour.Migrations
 {
     [DbContext(typeof(NineTapDb))]
-    partial class NineTapDbModelSnapshot : ModelSnapshot
+    [Migration("20251115215653_Phase4_RemoveRedundantSquadsTableAndGameForeignKeys")]
+    partial class Phase4_RemoveRedundantSquadsTableAndGameForeignKeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,7 +101,7 @@ namespace NineTapTour.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Games", (string)null);
+                    b.ToTable("Games");
                 });
 
             modelBuilder.Entity("NineTapTour.Models.Member", b =>
@@ -201,7 +204,7 @@ namespace NineTapTour.Migrations
 
                     b.HasIndex("NineTapRegionID");
 
-                    b.ToTable("Members", (string)null);
+                    b.ToTable("Members");
                 });
 
             modelBuilder.Entity("NineTapTour.Models.NineTapRegion", b =>
@@ -254,7 +257,7 @@ namespace NineTapTour.Migrations
 
                     b.HasIndex("TournamentId");
 
-                    b.ToTable("Participants", (string)null);
+                    b.ToTable("Participants");
                 });
 
             modelBuilder.Entity("NineTapTour.Models.Tournament", b =>
@@ -301,7 +304,7 @@ namespace NineTapTour.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tournaments", (string)null);
+                    b.ToTable("Tournaments");
                 });
 
             modelBuilder.Entity("NineTapTour.Models.Member", b =>
