@@ -18,7 +18,6 @@
 	</ItemGroup>
   <ItemGroup>
     <Content Include="9tap_white.ico" />
-    <Content Include="Database\DBScripts\ninetapdata.sql" />
     <Content Include="Resources\SeriesReportTemplate.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
