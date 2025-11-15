@@ -535,66 +535,6 @@ namespace NineTapTour.Database
                 return db.Games.Any(g => g.Id == Temp.GameID);
             }
         }
-
-        /// <summary>
-        /// Deletes all FinalizeTemp records for a finalized tournament (Phase 2 cleanup).
-        /// This should only be called after verifying all data has been migrated to Games table.
-        /// </summary>
-        /// <param name="tournamentId">The tournament ID</param>
-        /// <returns>Number of records deleted</returns>
-        public static int CleanupFinalizedTournament(int tournamentId)
-        {
-            using (var db = new NineTapDb())
-            {
-                var tournament = db.Tournaments.Find(tournamentId);
-                if (tournament?.IsTournamentFinalized != true)
-                {
-                    throw new InvalidOperationException("Cannot cleanup FinalizeTemp for non-finalized tournament");
-                }
-
-                var recordsToDelete = db.FinalizeTemp.Where(ft => ft.TournamentID == tournamentId).ToList();
-                int count = recordsToDelete.Count;
-                
-                db.FinalizeTemp.RemoveRange(recordsToDelete);
-                db.SaveChanges();
-                
-                return count;
-            }
-        }
-
-        /// <summary>
-        /// Validates that all FinalizeTemp data has been properly migrated to Games table for a tournament (Phase 2 validation).
-        /// </summary>
-        /// <param name="tournamentId">The tournament ID</param>
-        /// <returns>True if data is consistent, false otherwise</returns>
-        public static bool ValidateDataMigration(int tournamentId)
-        {
-            using (var db = new NineTapDb())
-            {
-                var finalizeRecords = db.FinalizeTemp.Where(ft => ft.TournamentID == tournamentId).ToList();
-                
-                foreach (var ft in finalizeRecords)
-                {
-                    var game = db.Games.Find(ft.GameId);
-                    if (game == null || !game.IsFinalized)
-                    {
-                        return false;
-                    }
-                    
-                    // Validate key properties match
-                    if (game.TournamentID != ft.TournamentID ||
-                        Math.Abs(game.LeagueAverage - ft.LeagueAverage) > 0.1 ||
-                        game.AdjustedAvg != ft.AdjustedAvg ||
-                        game.GameAvg != ft.GameAvg ||
-                        game.HandicapTotal != ft.HandicapTotal)
-                    {
-                        return false;
-                    }
-                }
-                
-                return true;
-            }
-        }
     }
 }
 

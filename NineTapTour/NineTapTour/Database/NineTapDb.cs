@@ -15,7 +15,8 @@ namespace NineTapTour.Database
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // Modify generated table names to match old EF6 database for script compatibility
-            builder.Entity<FinalizeTemp>().ToTable("FinalizeTemps");
+            // Phase 5: FinalizeTemp table removed - no longer needed
+            // builder.Entity<FinalizeTemp>().ToTable("FinalizeTemps");
             builder.Entity<NineTapRegion>().ToTable("NineTapRegions");
             builder.Entity<PlayerHistory>().ToTable("PlayerHistories");
         }
@@ -38,7 +39,10 @@ namespace NineTapTour.Database
         public virtual DbSet<Tournament> Tournaments { get; set; }
         public virtual DbSet<Participant> Participants { get; set; }
         public virtual DbSet<Squad> Squads { get; set; }
-        public virtual DbSet<FinalizeTemp> FinalizeTemp { get; set; }
+        
+        // Phase 5: FinalizeTemp DbSet removed - data now in Games table
+        // public virtual DbSet<FinalizeTemp> FinalizeTemp { get; set; }
+        
         public virtual DbSet<PlayerHistory> PlayerHistory { get; set; }
         public virtual DbSet<NineTapRegion> NineTapRegion { get; set; }
 
