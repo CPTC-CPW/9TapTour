@@ -140,374 +140,197 @@ public partial class FrmMain : Form
 
     private void BtnOpenFile_Click(object sender, EventArgs e)
     {
-        //Filter to limit the types of files that can be opened with the file open dialog
+        // Configure OpenFileDialog
         ofdOpen.Filter = "Data Files (*.dat)|*.dat|Text Files (*.txt)|*.txt";
         ofdOpen.Title = "Please Select a member file to open";
-        if (ofdOpen.ShowDialog() == DialogResult.OK)
+        if (ofdOpen.ShowDialog() != DialogResult.OK)
+            return;
+
+        // Read full file into memory (legacy format; file sizes here are expected to be small)
+        string file;
+        try
         {
-            System.IO.StreamReader sr = new(ofdOpen.FileName);
-            //MessageBox.Show(sr.ReadToEnd()); //for debug purpose
-            String File = sr.ReadToEnd(); // It's easier to read into a string and work with the file rather than a streamreader, which has no direct position "index" access.
-            sr.Close();
-            Member newMem = new(); // Might not need this here, may move it.
-            int currentIndex = 0;         // Starting index
-            //List<String> memberInfo = new List<String>(); //for testing
-            int i;                        // Needs to be declared outside for to be used for switch
-            int validCount = 0;           // Count of valid members added
-            int invalidCount = 0;         // Count of invalid members added
-            int MemberCount = 1;          // Number of current member
+            file = System.IO.File.ReadAllText(ofdOpen.FileName);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Failed to read file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
 
-            while (currentIndex >= 0)
+        // Prepare parsing
+        int currentIndex = 0;
+        int memberCount = 1;
+        int addedMembers = 0;
+        int recordLength = Spaces.Sum();
+
+        // Defensive: if Spaces is invalid, abort
+        if (recordLength <= 0)
+        {
+            MessageBox.Show("Import configuration is invalid (record length <= 0).", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+
+        // Parse records by searching for the next member marker (memberCount)
+        while (true)
+        {
+            string marker = memberCount.ToString();
+            int idx = file.IndexOf(marker, currentIndex, StringComparison.Ordinal);
+
+            // No more records
+            if (idx == -1)
+                break;
+
+            // Ensure enough characters remain; if not, stop
+            if (idx + recordLength > file.Length)
+                break;
+
+            var m = new Member { NineTapRegionID = RegionID };
+
+            int pos = idx;
+            for (int s = 0; s < Spaces.Length; s++)
             {
-                do  // A do while to substring from the main string
+                int len = Spaces[s];
+
+                // If the segment would run past EOF, clamp to available chars
+                if (pos + len > file.Length)
+                    len = Math.Max(0, file.Length - pos);
+
+                string seg = len > 0 ? file.Substring(pos, len).Trim() : string.Empty;
+                pos += len;
+
+                // Map fixed-width segment to Member fields (trimmed)
+                switch (s)
                 {
-                    bool validMember = true; // to determin if goes on seperate list
-                    bool genderSelected = false; //check if gender has been selected 
-                    bool status = false; // check if status has been selected
-                    newMem.NineTapRegionID = RegionID; //sets the region id to the current selected region
-                    currentIndex = File.IndexOf(Convert.ToString(MemberCount), currentIndex);
-                    if (currentIndex == -1)
-                    {
+                    case 0: // Member Number
+                        if (int.TryParse(seg, out var num)) m.Number = num;
                         break;
-                    }
-                    for (i = 0; i < Spaces.Length; i++)
-                    {
-                        switch (i)
+                    case 1: // Date Joined
+                        if (DateTime.TryParse(seg, out var jd)) m.JoinDate = jd;
+                        break;
+                    case 2: // Last Name
+                        if (!string.IsNullOrWhiteSpace(seg)) m.LastName = seg;
+                        break;
+                    case 3: // First Name
+                        if (!string.IsNullOrWhiteSpace(seg))
                         {
-                            case 0: // Member Number
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.Number = Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim());
-                                }
-                                break;
-                            case 1: // Date Joined
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    try
-                                    {
-                                        newMem.JoinDate = Convert.ToDateTime(File.Substring(currentIndex, Spaces[i]).Trim());
-                                    }
-                                    catch
-                                    {
-                                        newMem.JoinDate = DateTime.Today;
-                                    }
-                                }
-                                break;
-                            case 2: // Last Name
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.LastName = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                }
-                                else
-                                {
-                                    //validMember = false;
-                                }
-
-                                break;
-                            case 3: // First Name
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    string fName = File.Substring(currentIndex, Spaces[i]).Trim();
-                                    string[] split = fName.Split(' ');
-                                    newMem.FirstName = split[0];
-                                }
-                                else
-                                {
-                                    ////validMember = false;
-                                }
-                                break;
-                            case 4: // Middle Initial
-                                newMem.MiddleInitial = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                break;
-                            case 5: // Primary Phone
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.PrimaryPhone = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                }
-                                else
-                                {
-                                    ////validMember = false;
-                                }
-                                break;
-                            //case 6://Secondary Phone
-                            //    newMem.SecondaryPhone = (File.Substring(currentIndex, Spaces[i]).Trim());
-                            //    break;
-                            case 7: // Cell Phone
-                                newMem.SecondaryPhone = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                break;
-                            case 8: // Street Address
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.Street = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                }
-                                else
-                                {
-                                    //validMember = false;
-                                }
-                                break;
-                            case 9: // Email Address
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.Email = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                }
-                                else
-                                {
-                                    //validMember = false;
-                                }
-                                break;
-                            case 10: // City
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.City = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                }
-                                else
-                                {
-                                    //validMember = false;
-                                }
-                                break;
-                            case 11: // State
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.State = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                }
-                                else
-                                {
-                                    //validMember = false;
-                                }
-                                break;
-                            case 12: // Zip
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.PostalCode = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                }
-                                else
-                                {
-                                    //validMember = false;
-                                }
-                                break;
-                            case 13: // Notes
-                                newMem.Notes = (File.Substring(currentIndex, Spaces[i]).Trim());
-                                break;
-                            case 14: // Average
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.StartAvg = Convert.ToInt32((File.Substring(currentIndex, Spaces[i]).Trim()));
-                                    newMem.Average = newMem.StartAvg;
-                                }
-                                break;
-                            case 15: // Handicap
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.Handicap = Convert.ToInt32((File.Substring(currentIndex, Spaces[i]).Trim()));
-                                }
-                                break;
-                            case 16: // Bonus
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.Bonus = Convert.ToInt32((File.Substring(currentIndex, Spaces[i]).Trim()));
-                                }
-                                break;
-                            case 17: // Date Last Bowled
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.LastBowled = Convert.ToDateTime((File.Substring(currentIndex, Spaces[i]).Trim()));
-                                }
-                                break;
-                            /*case 18:
-                                This is the year end tournaments which currently are not stored/not being used*/
-                            case 19: // Money Earned
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.MoneyEarned = Convert.ToDecimal((File.Substring(currentIndex, Spaces[i]).Trim()));
-                                }
-                                break;
-                            case 20: // Rejoin Date
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    try
-                                    {
-                                        newMem.RejoinDate = Convert.ToDateTime((File.Substring(currentIndex, Spaces[i]).Trim()));
-                                    }
-                                    catch
-                                    {
-                                        newMem.RejoinDate = null;
-                                    }
-                                }
-                                break;
-                            case 21: // Referrals
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    Console.WriteLine(File.Substring(currentIndex, Spaces[i]).Trim());
-                                    string str = File.Substring(currentIndex, Spaces[i]).Trim();
-                                    bool isNum = int.TryParse(str, out _);
-                                    if (isNum)
-                                    {
-                                        newMem.Referrals = Convert.ToInt16(File.Substring(currentIndex, Spaces[i]).Trim());
-                                    }
-                                    else
-                                    {
-                                        //newMem.Referrals = Convert.ToInt16(File.Substring(currentIndex, Spaces[i]).Trim());
-                                        //validMember = false;
-                                    }
-
-                                }
-                                else
-                                {
-                                    newMem.Referrals = null;
-                                }
-                                break;
-                            case 22: // Social Security Number
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    newMem.SSN = File.Substring(currentIndex, Spaces[i]).Trim();
-                                }
-                                else
-                                {
-                                    //validMember = false;
-                                }
-                                break;
-                            /*case 23:
-                                Unused member for life checkbox*/
-                            case 24: // Active Member
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
-                                    {
-                                        newMem.IsActive = true;
-                                        status = true;
-                                    }
-                                }
-                                break;
-                            /*case 25:
-                                Unused pre paid checkbox from original form*/
-                            case 26: // Inactive Member
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    if (status && Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
-                                    {
-                                        //validMember = false;
-                                        break;
-                                    }
-                                    if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
-                                    {
-                                        newMem.IsActive = false;
-                                    }
-                                }
-                                break;
-                            case 27: // Senior
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
-                                    {
-                                        newMem.IsSenior = true;
-                                    }
-                                }
-                                break;
-                            case 28: // Gender Female
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
-                                    {
-                                        newMem.Gender = MemberGenders.Female;
-                                        genderSelected = true;
-                                    }
-                                }
-                                break;
-                            case 29: // Gender Male
-                                if (!String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    if (genderSelected && Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
-                                    {
-                                        //validMember = false;
-                                        break;
-                                    }
-                                    if (Convert.ToInt32(File.Substring(currentIndex, Spaces[i]).Trim()) == 1)
-                                    {
-                                        newMem.Gender = MemberGenders.Male;
-                                    }
-                                }
-                                break;
-                            case 30: // Birth Date
-                                if (File.Length - currentIndex < 8 || !String.IsNullOrWhiteSpace(File.Substring(currentIndex, Spaces[i]).Trim()))
-                                {
-                                    if (File.Length - currentIndex < 8)
-                                    {
-                                        Console.WriteLine(File[currentIndex..]);
-                                        newMem.DateOfBirth = Convert.ToDateTime(File[currentIndex..]);
-                                        // if the date is in the future, subtract 100 years to make it a valid date
-                                        if (newMem.DateOfBirth > DateTime.Today)
-                                        {
-                                            newMem.DateOfBirth = newMem.DateOfBirth?.AddYears(-100);
-                                        }
-                                    }
-                                    else if (File.Length - currentIndex > 8)
-                                    {
-                                        Console.WriteLine(File.Substring(currentIndex, Spaces[i]).Trim());
-                                        try
-                                        {
-                                            newMem.DateOfBirth = Convert.ToDateTime(File.Substring(currentIndex, Spaces[i]).Trim());
-                                            // if the date is in the future, subtract 100 years to make it a valid date
-                                            if (newMem.DateOfBirth > DateTime.Today)
-                                            {
-                                                newMem.DateOfBirth = newMem.DateOfBirth?.AddYears(-100);
-                                            }
-                                        }
-                                        catch (Exception)
-                                        {
-                                            newMem.DateOfBirth = DateTime.Today;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    //validMember = false;
-                                }
-                                break;
+                            var split = seg.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                            if (split.Length > 0) m.FirstName = split[0];
                         }
-                        currentIndex += Spaces[i];
-                    }
-                    if (validMember)
-                    {
-                        // Valid count to show user at end
-                        validCount++;
-                        // Add good members to valid list to add to database once done reading file
-                        validMembers.Add(newMem);
-                    }
-                    else
-                    {
-                        MessageBox.Show($"Record {newMem.FirstName} {newMem.LastName} has some invalid data, please check the file");
-                    }
-                    MemberCount++;
-                    newMem = new Member();
-                } while (currentIndex <= File.Length);
-
-                // Go through the members on the valid list and add them to the database
-                for (int j = 0; j < validMembers.Count; j++)
-                {
-                    // Only add the member after checking if the memeber isn't already in the database.
-                    if (!NineTapTour.Database.MemberDB.MemberExists(validMembers[j]))
-                    {
-                        if (validMembers[j].DateOfBirth < Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM"))
+                        break;
+                    case 4: // Middle Initial
+                        if (!string.IsNullOrWhiteSpace(seg)) m.MiddleInitial = seg;
+                        break;
+                    case 5: // Primary Phone
+                        if (!string.IsNullOrWhiteSpace(seg)) m.PrimaryPhone = seg;
+                        break;
+                    case 7: // Cell Phone
+                        if (!string.IsNullOrWhiteSpace(seg)) m.SecondaryPhone = seg;
+                        break;
+                    case 8: // Street
+                        if (!string.IsNullOrWhiteSpace(seg)) m.Street = seg;
+                        break;
+                    case 9: // Email
+                        if (!string.IsNullOrWhiteSpace(seg)) m.Email = seg;
+                        break;
+                    case 10: // City
+                        if (!string.IsNullOrWhiteSpace(seg)) m.City = seg;
+                        break;
+                    case 11: // State
+                        if (!string.IsNullOrWhiteSpace(seg)) m.State = seg;
+                        break;
+                    case 12: // Zip
+                        if (!string.IsNullOrWhiteSpace(seg)) m.PostalCode = seg;
+                        break;
+                    case 13: // Notes
+                        if (!string.IsNullOrWhiteSpace(seg)) m.Notes = seg;
+                        break;
+                    case 14: // Average
+                        if (int.TryParse(seg, out var avg)) { m.StartAvg = avg; m.Average = avg; }
+                        break;
+                    case 15: // Handicap
+                        if (int.TryParse(seg, out var hc)) m.Handicap = hc;
+                        break;
+                    case 16: // Bonus
+                        if (int.TryParse(seg, out var b)) m.Bonus = b;
+                        break;
+                    case 17: // Last Bowled
+                        if (DateTime.TryParse(seg, out var lb)) m.LastBowled = lb;
+                        break;
+                    case 19: // Money Earned
+                        if (decimal.TryParse(seg, out var me)) m.MoneyEarned = me;
+                        break;
+                    case 20: // Rejoin Date
+                        if (DateTime.TryParse(seg, out var rj)) m.RejoinDate = rj;
+                        break;
+                    case 21: // Referrals
+                        if (short.TryParse(seg, out var rf)) m.Referrals = rf;
+                        break;
+                    case 22: // SSN
+                        if (!string.IsNullOrWhiteSpace(seg)) m.SSN = seg;
+                        break;
+                    case 24: // Active flag
+                        if (int.TryParse(seg, out var act) && act == 1) m.IsActive = true;
+                        break;
+                    case 26: // Inactive flag
+                        if (int.TryParse(seg, out var inact) && inact == 1) m.IsActive = false;
+                        break;
+                    case 27: // Senior
+                        if (int.TryParse(seg, out var sr) && sr == 1) m.IsSenior = true;
+                        break;
+                    case 28: // Female
+                        if (int.TryParse(seg, out var gf) && gf == 1) m.Gender = MemberGenders.Female;
+                        break;
+                    case 29: // Male
+                        if (int.TryParse(seg, out var gm) && gm == 1) m.Gender = MemberGenders.Male;
+                        break;
+                    case 30: // Birth Date
+                        if (DateTime.TryParse(seg, out var dob))
                         {
-                            validMembers[j].DateOfBirth = Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM");
+                            // If date appears to be in the future, adjust by -100 years (legacy data quirk)
+                            if (dob > DateTime.Today) dob = dob.AddYears(-100);
+                            m.DateOfBirth = dob;
                         }
-                        if (validMembers[j].JoinDate < Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM"))
-                        {
-                            validMembers[j].JoinDate = Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM");
-                        }
-                        if (validMembers[j].RejoinDate < Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM"))
-                        {
-                            validMembers[j].RejoinDate = Convert.ToDateTime("1 / 1 / 1753 12:00:00 AM");
-                        }
-                        NineTapTour.Database.MemberDB.AddOrUpdateMember(validMembers[j]);
-                    }
+                        break;
+                    default:
+                        // intentionally ignore other indices
+                        break;
                 }
-                // Show the results to the user
-                MessageBox.Show(validCount + " valid members processed, " + invalidCount + " invalid members processed.", "Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                CheckSpaces();
-            }
+        } // end segments loop
+
+        // Basic validation: require numeric member number and last name
+        if (m.Number > 0 && !string.IsNullOrWhiteSpace(m.LastName))
+        {
+            // Normalize dates within SQL safe range
+            if (m.DateOfBirth.HasValue && m.DateOfBirth.Value < new DateTime(1753, 1, 1))
+                m.DateOfBirth = new DateTime(1753, 1, 1);
+
+            if (m.JoinDate < new DateTime(1753, 1, 1))
+                m.JoinDate = new DateTime(1753, 1, 1);
+
+            validMembers.Add(m);
+            addedMembers++;
+        }
+
+        // Advance to next candidate record
+        memberCount++;
+        currentIndex = idx + recordLength;
+    } // end while
+
+    // Persist parsed members (skip ones that already exist)
+    int persisted = 0;
+    for (int j = 0; j < validMembers.Count; j++)
+    {
+        if (!NineTapTour.Database.MemberDB.MemberExists(validMembers[j]))
+        {
+            NineTapTour.Database.MemberDB.AddOrUpdateMember(validMembers[j]);
+            persisted++;
         }
     }
+
+    MessageBox.Show($"{persisted} new members added. {validMembers.Count - persisted} were already present.", "Import Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+    CheckSpaces();
+}
 
     /// <summary>
     /// Checks that has members (valid or not) and allows the btnSelectExcel to be enabled
