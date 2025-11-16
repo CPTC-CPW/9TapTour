@@ -472,13 +472,13 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Returns true if a Game exists in the database (Phase 3: checks Games table only).
+        /// Returns true if a Game exists in the database (checks Games table only).
         /// </summary>
-        public static bool GameExists(PlayerHistory Temp)
+        public static bool GameExists(PlayerHistoryViewModel Temp)
         {
             using (var db = new NineTapDb())
             {
-                // Phase 3: Check Games table instead of FinalizeTemp
+                // Check Games table instead of FinalizeTemp
                 return db.Games.Any(g => g.Id == Temp.GameID);
             }
         }

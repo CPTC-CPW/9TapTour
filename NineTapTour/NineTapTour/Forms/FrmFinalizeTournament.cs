@@ -339,7 +339,7 @@ namespace NineTapTour.Forms
                 #endregion
 
                 #region recalculate league average if is new entry
-                List<PlayerHistory> ExistingPlayerHistory = PlayerHistoryDB.GetMemberPlayerHistory(item.MemberNumber, RegionID);
+                List<PlayerHistoryViewModel> ExistingPlayerHistory = PlayerHistoryDB.GetMemberPlayerHistory(item.MemberNumber, RegionID);
                 if (ExistingPlayerHistory.Count == 0)
                 {
                     // We have to push the current history into the finalize temp for CalcThirtyAverage to work properly. 
@@ -822,7 +822,7 @@ namespace NineTapTour.Forms
         /// Show all games for the selected player including the current tournament
         /// </summary>
         /// <param name="temporary">the list of player histories that come from the tournament table</param>
-        private void RefreshMemberView(List<PlayerHistory> temporary)
+        private void RefreshMemberView(List<PlayerHistoryViewModel> temporary)
         {
             frmPleaseWait wait = new();
             wait.Show();
@@ -888,10 +888,10 @@ namespace NineTapTour.Forms
             
 
             // Obtain previous player history
-            List<PlayerHistory> currentPlayerHistory = PlayerHistoryDB.GetMemberPlayerHistory(temporary[0].MemberNumber, RegionID);
+            List<PlayerHistoryViewModel> currentPlayerHistory = PlayerHistoryDB.GetMemberPlayerHistory(temporary[0].MemberNumber, RegionID);
 
             // Determines if this tournament is finalized, which would mean that all the entries in temporary are already in currentPlayerHistory
-            if (!PlayerHistoryDB.PlayerHistoryExists(temporary.First().GameID))
+            if (!PlayerHistoryDB.GameExists(temporary.First().GameID))
             { 
                 // otherwise, add the entries in temporary to currentPlayerHistory
                 currentPlayerHistory.AddRange(temporary);
@@ -1075,7 +1075,7 @@ namespace NineTapTour.Forms
         /// <summary>
         /// This method will calculate the total with handicap for the player history given
         /// </summary>
-        private static int GetTotalWithHandicap(PlayerHistory history)
+        private static int GetTotalWithHandicap(PlayerHistoryViewModel history)
         {
             return history.TotalScore + ((history.HandiCap + history.Bonus) * history.GamesPlayed);
         }
@@ -1111,14 +1111,14 @@ namespace NineTapTour.Forms
 
                 try
                 {
-                    List<PlayerHistory> temporary = [];
+                    List<PlayerHistoryViewModel> temporary = [];
 
                     for (int i = 0; i < TournamentEntriesGrid.Rows.Count; i++)
                     {
                         int tempMemberNumber = Convert.ToInt32(TournamentEntriesGrid.Rows[i].Cells[MEMBER_NUMBER_COLUMN].Value);
                         if (tempMemberNumber == memberNumber)
                         {
-                            PlayerHistory p = new();
+                            PlayerHistoryViewModel p = new();
 
                             p.MemberNumber = tempMemberNumber;
                             int tempgameplayed = 0;
@@ -1202,7 +1202,6 @@ namespace NineTapTour.Forms
                 }
                 catch
                 {
-                   // makes a null reference exception !!!
                    //catches the instance where cells technically do not exist. will not refresh if they dont exist yet.
                 }
             }
@@ -1238,6 +1237,7 @@ namespace NineTapTour.Forms
                 if (Convert.ToBoolean(TournamentEntriesGrid[DIRECTOR_CHECK_COLUMN, i].Value))
                 {
                     TournamentEntriesGrid.Rows[i].Cells[DIRECTOR_CHECK_COLUMN].Style.BackColor = Color.White;
+                    TournamentEntriesGrid.Rows[i].Cells[ADJUSTED_AVG_COLUMN].Style.BackColor = Color.White;
                 }
                 else
                 {
@@ -1252,40 +1252,27 @@ namespace NineTapTour.Forms
                 // total comp entries for the current tournament
                 int compEntriesQty = FinalizeTempDB.GetCompEntryQtyByTourneyID(currTournament.Id);
 
-                #region Create Player Histories from Games, save them, and update all Game and Member data for current tourney
+                #region Update Game and Member data for current tourney
                 for (int i = 0; i < FinalizeTableList.Count; i++)
                 {
                     int gamesPlayed = 0;
                     int currGameId = FinalizeTableList[i].GameId;
 
-                    PlayerHistory ph = new();
-                    ph.GameID = currGameId;
-
+                    // NOTE: PlayerHistory entity is deprecated. All data is stored in Game entity.
+                    // We no longer create PlayerHistory objects - data is directly on Game.
+                    
                     Game currGame = GameDB.GetGame(currGameId);
                     Member currMember = MemberDB.GetMemberByGameId(currGameId);
-
-                    ph.TournamentDate = currTournament.Date;
-                    ph.MemberNumber = currMember.Number;
 
                     int currDataGridRowIndex = FindDataGridRowIndex(currGameId);
                     #endregion
 
-                    ph.AverageForEntry = FinalizeTableList[i].GameAvg;
-                    ph.trueAVG = FinalizeTableList[i].LeagueAverage;
-
-
-                    ph.AVG = Convert.ToInt32(TournamentEntriesGrid[ADJUSTED_AVG_COLUMN, currDataGridRowIndex].Value);
-
-
-
-                    ph.ProPot = Convert.ToString(GameDB.GetGame(ph.GameID).SidePot);
-                    ph.MoneyWon = Convert.ToDecimal(GameDB.GetGame(ph.GameID).MoneyWon + (GameDB.GetGame(ph.GameID).SidePot) );
-
-
-                    ph.Game1 = FinalizeTableList[i].Game1;
-                    ph.Game2 = FinalizeTableList[i].Game2;
-                    ph.Game3 = FinalizeTableList[i].Game3;
-                    ph.Game4 = FinalizeTableList[i].Game4;
+                    // Update Game entity with finalized data
+                    currGame.GameAvg = FinalizeTableList[i].GameAvg;
+                    currGame.LeagueAverage = FinalizeTableList[i].LeagueAverage;
+                    currGame.AdjustedAvg = Convert.ToInt32(TournamentEntriesGrid[ADJUSTED_AVG_COLUMN, currDataGridRowIndex].Value);
+                    currGame.SidePot = GameDB.GetGame(currGameId).SidePot;
+                    currGame.MoneyWon = GameDB.GetGame(currGameId).MoneyWon;
 
                     if (Convert.ToBoolean(TournamentEntriesGrid.Rows[i].Cells[GAME_1_VALID_COLUMN].Value))
                     {
@@ -1334,10 +1321,10 @@ namespace NineTapTour.Forms
                         currGame.UseGame4 = false;
                         FinalizeTableList[i].UseGame4 = false;
                     }
-                    ph.GamesPlayed = gamesPlayed;
-                    ph.Bonus = Convert.ToInt32(TournamentEntriesGrid[BONUS_COLUMN, currDataGridRowIndex].Value);
-                    currMember.Bonus = ph.Bonus;
-                    ph.TotalScore = FinalizeTableList[i].ScratchTotal;
+                    
+                    int bonus = Convert.ToInt32(TournamentEntriesGrid[BONUS_COLUMN, currDataGridRowIndex].Value);
+                    currGame.Bonus = bonus;
+                    currMember.Bonus = bonus;
 
                     DataGridViewCell placeCell = TournamentEntriesGrid[STANDING_COLUMN, currDataGridRowIndex];
                     int placeStanding = (placeCell.Value == DBNull.Value || placeCell.Value == null) ? 0 : Convert.ToByte(placeCell.Value);
@@ -1347,39 +1334,28 @@ namespace NineTapTour.Forms
                     if (placeStanding > 0)
                     {
                         currGame.PlaceStanding = Convert.ToInt32(placeStanding);
-                        ph.PPHG = placeStanding.ToString();
                     }
                     #endregion
 
-                    ph.HandiCap = FinalizeTableList[i].Handicap;
-                    currGame.InputtedAvg = ph.AVG;
+                    currGame.Handicap = FinalizeTableList[i].Handicap;
+                    currGame.InputtedAvg = currGame.AdjustedAvg;
                     currGame.Notes = TournamentEntriesGrid[NOTES_COLUMN_, currDataGridRowIndex].Value.ToString();
-                    ph.Notes = currGame.Notes;
-                    currMember.StartAvg = ph.AVG;
-                    ph.hisID = PlayerHistoryDB.GetHisID(ph);
-                    ph.regionID = RegionID;
+                    currMember.StartAvg = currGame.AdjustedAvg;
                     
                     // Phase 4: Removed currGame.gameRegionID and currGame.TournamentID 
                     // These values are stored in Participant entity
                     
                     // Sync finalization properties to Game entity (Phase 1 refactoring)
                     currGame.IsFinalized = true;
-                    currGame.LeagueAverage = FinalizeTableList[i].LeagueAverage;
-                    currGame.AdjustedAvg = ph.AVG;
                     currGame.KeepAdjustedAvg = FinalizeTableList[i].KeepAdjustedAvg;
-                    currGame.GameAvg = FinalizeTableList[i].GameAvg;
                     currGame.HandicapTotal = FinalizeTableList[i].HandicapTotal;
 
-                    // player history multiple entries (which placestanding == 0) are added after bonus pins are adjusted
-                    if (placeStanding > 0)
-                    {
-                        PlayerHistoryDB.AddOrUpdatePlayerHistory(ph);
-                    }
+                    // Save Game and Member entities (no separate PlayerHistory needed)
                     GameDB.AddOrUpdateGame(currGame);
                     MemberDB.AddOrUpdateMember(currMember);
 
                     FinalizeTableList[i].GameId = currGame.Id;
-                    FinalizeTableList[i].AdjustedAvg = ph.AVG;
+                    FinalizeTableList[i].AdjustedAvg = currGame.AdjustedAvg;
                     FinalizeTableList[i].HandicapTotal = Convert.ToInt32(TournamentEntriesGrid[HANDICAP_TOTAL_COLUMN, currDataGridRowIndex].Value);
 
                     FinalizeTempDB.AddFinalizeTemp(FinalizeTableList[i]);
@@ -1407,7 +1383,7 @@ namespace NineTapTour.Forms
 
         private void Highlight30Avg(int numHistoryEntriesToHighlight, ref int numHighlightedEntries, ref double totalEntryAvgForHighlightedGames)
         {
-            List<PlayerHistory> temporary = [];
+            List<PlayerHistoryViewModel> temporary = [];
 
             const int TournamentHistoryGameIdColumnIndex = 17;
             int gameId = Convert.ToInt32(TournamentEntriesGrid.Rows[TournamentEntriesGrid.CurrentCell.RowIndex].Cells[GAME_ID_COLUMN].Value);

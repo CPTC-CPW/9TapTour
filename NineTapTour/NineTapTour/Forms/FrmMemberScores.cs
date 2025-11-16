@@ -1751,13 +1751,9 @@ namespace NineTapTour.Forms
 
             if (g != null)
             {
-                //Delete from player history
-                PlayerHistory p = PlayerHistoryDB.GetPlayerHistoryByGameID(g.Id);
-                if (p != null)
-                {
-                    PlayerHistoryDB.DeletePlayerHistory(p);
-                }
-
+                // NOTE: Player history data is stored in the Game entity
+                // No separate PlayerHistory deletion needed - it will be handled by Game entity cascade
+                
                 //Delete from Participants list
                 Participant par = FinalizeTempDB.GetParticipantByGameId(g.Id);
                 FinalizeTempDB.DeleteParticipant(par);
@@ -1770,7 +1766,7 @@ namespace NineTapTour.Forms
                 PlayerHistoryDB.DeleteGame(g);
 
                 // Corrects any changes to the members stats after finalizing to the last accurate data
-                PlayerHistory temp = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number, RegionID);
+                PlayerHistoryViewModel temp = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number, RegionID);
                 if (temp != null)
                 {
                     currentMem.Handicap = temp.HandiCap;

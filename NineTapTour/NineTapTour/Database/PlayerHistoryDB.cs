@@ -12,47 +12,10 @@ namespace NineTapTour.Database
     public class PlayerHistoryDB
     {
         /// <summary>
-        /// [REMOVED - Phase 3] Adds the PlayerHistory given to the database.
-        /// Note: PlayerHistory table has been removed. All data is now stored in Game entity during finalization.
-        /// This method is kept as a no-op for backward compatibility.
-        /// </summary>
-        [Obsolete("PlayerHistory table has been removed. Data is stored in Game entity. This method does nothing.")]
-        public static void AddPlayerHistory(PlayerHistory playerHistory)
-        {
-            // No-op: PlayerHistory table has been removed in Phase 3
-            // All player history data is now stored directly in the Game entity
-            // during tournament finalization (see FrmFinalizeTournament.BtnFinalize_Click)
-        }
-
-        /// <summary>
-        /// [REMOVED - Phase 3] Updates the PlayerHistory in the database if it exists.
-        /// Note: PlayerHistory table has been removed. All data is now stored in Game entity.
-        /// This method is kept as a no-op for backward compatibility.
-        /// </summary>
-        [Obsolete("PlayerHistory table has been removed. Data is stored in Game entity. This method does nothing.")]
-        public static void AddOrUpdatePlayerHistory(PlayerHistory playerHistory)
-        {
-            // No-op: PlayerHistory table has been removed in Phase 3
-            // All player history data is now stored directly in the Game entity
-        }
-
-        /// <summary>
-        /// [REMOVED - Phase 3] Adds all PlayerHistories in the list given to the database.
-        /// Note: PlayerHistory table has been removed. All data is now stored in Game entity.
-        /// This method is kept as a no-op for backward compatibility.
-        /// </summary>
-        [Obsolete("PlayerHistory table has been removed. Data is stored in Game entity. This method does nothing.")]
-        public static void AddOrUpdatePlayerHistoryList(List<PlayerHistory> playerHistoryList)
-        {
-            // No-op: PlayerHistory table has been removed in Phase 3
-            // All player history data is now stored directly in the Game entity
-        }
-
-        /// <summary>
-        /// [REFACTORED - Phase 2] Returns the top 30 PlayerHistories with the same MemberNumber as the one given.
+        /// Returns the top 30 player histories with the same MemberNumber as the one given.
         /// Queries from Games table (single source of truth).
         /// </summary>
-        public static List<PlayerHistory> GetTop30FromPlayerHistory(int memberNum)
+        public static List<PlayerHistoryViewModel> GetTop30FromPlayerHistory(int memberNum)
         {
             const int howmany = 30;
             using (var db = new NineTapDb())
@@ -67,7 +30,7 @@ namespace NineTapTour.Database
                     .Take(howmany)
                     .ToList();
 
-                return games.Select(g => new PlayerHistory(
+                return games.Select(g => new PlayerHistoryViewModel(
                     g,
                     memberNum,
                     g.Participant.Tournament.Date,
@@ -77,10 +40,10 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns player histories from Games table (single source of truth).
+        /// Returns player histories from Games table (single source of truth).
         /// Gets the specified number of most recent finalized games for a member.
         /// </summary>
-        public static List<PlayerHistory> GetPlayerHistories(int memberNum, int regionID, int numEntries)
+        public static List<PlayerHistoryViewModel> GetPlayerHistories(int memberNum, int regionID, int numEntries)
         {
             using NineTapDb db = new();
             
@@ -97,8 +60,8 @@ namespace NineTapTour.Database
                 .Take(numEntries)
                 .ToList();
 
-            // Convert Game entities to PlayerHistory ViewModels
-            return games.Select(g => new PlayerHistory(
+            // Convert Game entities to PlayerHistoryViewModel
+            return games.Select(g => new PlayerHistoryViewModel(
                 g,
                 memberNum,
                 g.Participant.Tournament.Date,
@@ -107,20 +70,20 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [DEPRECATED - Phase 2] Finds the hisID from the playerHistory given.
-        /// Note: This method is kept for backward compatibility. Returns GameID as hisID.
+        /// Finds the hisID from the player history view model given.
+        /// Returns GameID as hisID (they are the same in the refactored model).
         /// </summary>
-        public static int GetHisID(PlayerHistory playerHistory)
+        public static int GetHisID(PlayerHistoryViewModel playerHistory)
         {
             // In the refactored model, hisID = GameID
             return playerHistory.GameID;
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns a list of all PlayerHistories with the given memberNumber and regionID.
+        /// Returns a list of all player histories with the given memberNumber and regionID.
         /// Queries from Games table (single source of truth).
         /// </summary>
-        public static List<PlayerHistory> GetMemberPlayerHistory(int memberNum, int regionID)
+        public static List<PlayerHistoryViewModel> GetMemberPlayerHistory(int memberNum, int regionID)
         {
             using (var db = new NineTapDb())
             {
@@ -135,8 +98,8 @@ namespace NineTapTour.Database
                     .OrderByDescending(g => g.Participant.Tournament.Date)
                     .ToList();
 
-                // Convert Game entities to PlayerHistory ViewModels
-                return games.Select(g => new PlayerHistory(
+                // Convert Game entities to PlayerHistoryViewModel
+                return games.Select(g => new PlayerHistoryViewModel(
                     g,
                     memberNum,
                     g.Participant.Tournament.Date,
@@ -146,10 +109,10 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns a list of the last 30 PlayerHistories with the given memberNumber and regionID.
+        /// Returns a list of the last 30 player histories with the given memberNumber and regionID.
         /// Queries from Games table (single source of truth).
         /// </summary>
-        public static List<PlayerHistory> GetMemberPlayerHistoryCount(int memberNum, int regionID)
+        public static List<PlayerHistoryViewModel> GetMemberPlayerHistoryCount(int memberNum, int regionID)
         {
             using (var db = new NineTapDb())
             {
@@ -165,7 +128,7 @@ namespace NineTapTour.Database
                     .Take(30)
                     .ToList();
 
-                return games.Select(g => new PlayerHistory(
+                return games.Select(g => new PlayerHistoryViewModel(
                     g,
                     memberNum,
                     g.Participant.Tournament.Date,
@@ -175,10 +138,10 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns a list of all PlayerHistories with the given regionID.
+        /// Returns a list of all player histories with the given regionID.
         /// Queries from Games table (single source of truth).
         /// </summary>
-        public static List<PlayerHistory> GetAllPlayerHistory(int regionID)
+        public static List<PlayerHistoryViewModel> GetAllPlayerHistory(int regionID)
         {
             using (var db = new NineTapDb())
             {
@@ -190,7 +153,7 @@ namespace NineTapTour.Database
                     .OrderByDescending(g => g.Participant.Tournament.Date)
                     .ToList();
 
-                return games.Select(g => new PlayerHistory(
+                return games.Select(g => new PlayerHistoryViewModel(
                     g,
                     g.Participant.Member.Number,
                     g.Participant.Tournament.Date,
@@ -200,10 +163,10 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Gets the last quantity of games selecting only the tournament date and money won.
+        /// Gets the last quantity of games selecting only the tournament date and money won.
         /// Used to calculate bonus pins. Queries from Games table (single source of truth).
         /// </summary>
-        public static List<PlayerHistory> GetLastQtyGamesMoneyWon(int memberNum, int regionID, int howmany)
+        public static List<PlayerHistoryViewModel> GetLastQtyGamesMoneyWon(int memberNum, int regionID, int howmany)
         {
             using(var db = new NineTapDb())
             {
@@ -218,7 +181,7 @@ namespace NineTapTour.Database
                     .Take(howmany)
                     .ToList();
 
-                return games.Select(g => new PlayerHistory
+                return games.Select(g => new PlayerHistoryViewModel
                 {
                     TournamentDate = g.Participant.Tournament.Date,
                     MoneyWon = g.MoneyWon ?? 0,
@@ -230,11 +193,11 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns a list of the last 5 finalized games where AVG was adjusted.
+        /// Returns a list of the last 5 finalized games where AVG was adjusted.
         /// Only grabs games where AVG was adjusted so bonus pins aren't affected by bowling in multiple squads.
         /// Queries from Games table (single source of truth).
         /// </summary>
-        public static List<PlayerHistory> GetLastFiveTournaments(int memberNum, int regionID)
+        public static List<PlayerHistoryViewModel> GetLastFiveTournaments(int memberNum, int regionID)
         {
             const int HOW_MANY = 5;
             using (var db = new NineTapDb())
@@ -252,7 +215,7 @@ namespace NineTapTour.Database
                     .Take(HOW_MANY)
                     .ToList();
 
-                return games.Select(g => new PlayerHistory(
+                return games.Select(g => new PlayerHistoryViewModel(
                     g,
                     memberNum,
                     g.Participant.Tournament.Date,
@@ -262,12 +225,12 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns the most recent finalized game where AVG was adjusted.
+        /// Returns the most recent finalized game where AVG was adjusted.
         /// Only grabs games where AVG was adjusted so bonus pins aren't affected by bowling in multiple squads.
         /// Returns null if no recent player history is found.
         /// Queries from Games table (single source of truth).
         /// </summary>
-        public static PlayerHistory GetMostRecentTournament(int memberNum, int regionID)
+        public static PlayerHistoryViewModel GetMostRecentTournament(int memberNum, int regionID)
         {
             using var db = new NineTapDb();
             
@@ -283,7 +246,7 @@ namespace NineTapTour.Database
                 .ThenByDescending(g => g.Id)
                 .FirstOrDefault();
 
-            return game == null ? null : new PlayerHistory(
+            return game == null ? null : new PlayerHistoryViewModel(
                 game,
                 memberNum,
                 game.Participant.Tournament.Date,
@@ -304,17 +267,6 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REMOVED - Phase 3] Deletes the given PlayerHistory from the database.
-        /// Note: PlayerHistory table has been removed. This method is kept as a no-op for backward compatibility.
-        /// </summary>
-        [Obsolete("PlayerHistory table has been removed. This method does nothing.")]
-        public static void DeletePlayerHistory(PlayerHistory playerHistory)
-        {
-            // No-op: PlayerHistory table has been removed in Phase 3
-            // Player history data is part of Game entity lifecycle
-        }
-
-        /// <summary>
         /// Returns the number of games in the database
         /// </summary>
         public static int GetNumberOfAllGames()
@@ -329,10 +281,10 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns a list of PlayerHistories ordered by TotalScore descending.
+        /// Returns a list of player histories ordered by TotalScore descending.
         /// Queries from Games table (single source of truth).
         /// </summary>
-        public static List<PlayerHistory> GetMemberPlayerHistoryByTotal(int memberNum, int regionID)
+        public static List<PlayerHistoryViewModel> GetMemberPlayerHistoryByTotal(int memberNum, int regionID)
         {
             using (var db = new NineTapDb())
             {
@@ -346,7 +298,7 @@ namespace NineTapTour.Database
                     .OrderByDescending(g => g.ScratchTotal)
                     .ToList();
 
-                return games.Select(g => new PlayerHistory(
+                return games.Select(g => new PlayerHistoryViewModel(
                     g,
                     memberNum,
                     g.Participant.Tournament.Date,
@@ -356,10 +308,10 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns a PlayerHistory with the same GameID given.
+        /// Returns a player history view model with the same GameID given.
         /// Queries from Games table (single source of truth).
         /// </summary>
-        public static PlayerHistory GetPlayerHistoryByGameID(int gameID)
+        public static PlayerHistoryViewModel GetPlayerHistoryByGameID(int gameID)
         {
             using (var db = new NineTapDb())
             {
@@ -373,17 +325,17 @@ namespace NineTapTour.Database
                 if (game == null)
                     return null;
 
-                return new PlayerHistory(
+                return new PlayerHistoryViewModel(
                     game,
                     game.Participant.Member.Number,
                     game.Participant.Tournament.Date,
-                    game.Participant.Member.NineTapRegionID // Phase 5: Use Member.NineTapRegionID
+                    game.Participant.Member.NineTapRegionID
                 );
             }
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns the total money won by a member in a region.
+        /// Returns the total money won by a member in a region.
         /// Queries from Games table (single source of truth).
         /// </summary>
         public static decimal GetTotalMoneyWon(int memberNum, int regionID)
@@ -403,7 +355,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns total games played by a member in a region.
+        /// Returns total games played by a member in a region.
         /// Queries from Games table (single source of truth).
         /// </summary>
         public static int GetTotalGamesPlayed(int memberNum, int regionID)
@@ -422,7 +374,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Gets total games played from history (last N entries).
+        /// Gets total games played from history (last N entries).
         /// Queries from Games table (single source of truth).
         /// </summary>
         public static int GetTotalGamesPlayedFromHistory(int memberNum, int regionID, int numberOfEntriesToTake)
@@ -445,7 +397,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns the sum of game 1 total played.
+        /// Returns the sum of game 1 total played.
         /// Queries from Games table (single source of truth).
         /// </summary>
         public static int GetTotalGame1Played(int memberNum, int regionID)
@@ -464,7 +416,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns the sum of game 2 total played.
+        /// Returns the sum of game 2 total played.
         /// Queries from Games table (single source of truth).
         /// </summary>
         public static int GetTotalGame2Played(int memberNum, int regionID)
@@ -483,7 +435,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns the sum of game 3 total played.
+        /// Returns the sum of game 3 total played.
         /// Queries from Games table (single source of truth).
         /// </summary>
         public static int GetTotalGame3Played(int memberNum, int regionID)
@@ -502,7 +454,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns the sum of game 4 total played.
+        /// Returns the sum of game 4 total played.
         /// Queries from Games table (single source of truth).
         /// </summary>
         public static int GetTotalGame4Played(int memberNum, int regionID)
@@ -521,7 +473,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns the total sum of Game1 scores from history.
+        /// Returns the total sum of Game1 scores from history.
         /// Queries from Games table (single source of truth).
         /// </summary>
         public static int GetGame1TotalFromHistory(int memberNum, int regionID, int numberOfEntriesToTake)
@@ -543,7 +495,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns the total sum of Game2 scores from history.
+        /// Returns the total sum of Game2 scores from history.
         /// </summary>
         public static int GetGame2TotalFromHistory(int memberNum, int regionID, int numberOfEntriesToTake)
         {
@@ -564,7 +516,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns the total sum of Game3 scores from history.
+        /// Returns the total sum of Game3 scores from history.
         /// </summary>
         public static int GetGame3TotalFromHistory(int memberNum, int regionID, int numberOfEntriesToTake)
         {
@@ -585,7 +537,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns the total sum of Game4 scores from history.
+        /// Returns the total sum of Game4 scores from history.
         /// </summary>
         public static int GetGame4TotalFromHistory(int memberNum, int regionID, int numberOfEntriesToTake)
         {
@@ -606,7 +558,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns the sum of scratch totals from history.
+        /// Returns the sum of scratch totals from history.
         /// Queries from Games table (single source of truth).
         /// </summary>
         public static int GetScratchTotalFromHistory(int memberNum, int regionID, int numberOfGamesToTake)
@@ -644,7 +596,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns the sum of game averages from history.
+        /// Returns the sum of game averages from history.
         /// Queries from Games table (single source of truth).
         /// </summary>
         public static int GetGameAvgFromHistory(int memberNum, int regionID, int numberOfEntriesToTake)
@@ -666,28 +618,28 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns true if a Game with the given GameID exists and is finalized.
+        /// Returns true if a Game with the given GameID exists and is finalized.
         /// Queries from Games table (single source of truth).
         /// </summary>
-        public static bool PlayerHistoryExists(int gameID)
+        public static bool GameExists(int gameID)
         {
             using (var db = new NineTapDb())
             {
-                // Check Games table instead of PlayerHistory
+                // Check Games table
                 return db.Games.Any(g => g.Id == gameID && g.IsFinalized);
             }
         }
 
         /// <summary>
-        /// Returns true if a PlayerHistory with the same GameID as the PlayerHistory given exist in the database
+        /// Returns true if a player history view model with the same GameID exists in the database
         /// </summary>
-        public static bool PlayerHistoryExists(PlayerHistory ph)
+        public static bool GameExists(PlayerHistoryViewModel ph)
         {
-            return PlayerHistoryExists(ph.GameID);
+            return GameExists(ph.GameID);
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns the total number of finalized game entries for a member.
+        /// Returns the total number of finalized game entries for a member.
         /// </summary>
         internal static int GetTotalNumberOfEntries(int memberNumber, int regionID)
         {
@@ -703,7 +655,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// [REFACTORED - Phase 2] Returns the total number of games played from history entries.
+        /// Returns the total number of games played from history entries.
         /// </summary>
         internal static int GetNumberOfGamesFromHistory(int memberNumber, int regionID, int numberOfEntries)
         {

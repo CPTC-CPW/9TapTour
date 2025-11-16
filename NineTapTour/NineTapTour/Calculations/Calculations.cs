@@ -1,10 +1,10 @@
-﻿﻿using NineTapTour.Database;
+﻿using NineTapTour.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
- using NineTapTour.Models;
+using NineTapTour.Models;
 
 namespace NineTapTour.Calculations
 {
@@ -90,7 +90,7 @@ namespace NineTapTour.Calculations
 
             // Gets the amount of entries the member has for the tournament
             int membersGameEntryCount = FinalizeTempDB.GetMembersGameEntryCount(currTournamentId, memNum);
-            List<PlayerHistory> latestGames = PlayerHistoryDB.GetLastQtyGamesMoneyWon(memNum, RegionID, 15);
+            List<PlayerHistoryViewModel> latestGames = PlayerHistoryDB.GetLastQtyGamesMoneyWon(memNum, RegionID, 15);
 
             // If a player didnt win money, they might gain bonus pins
             return AddToBonusPins(currentBonusPins, latestGames, membersGameEntryCount);
@@ -103,7 +103,7 @@ namespace NineTapTour.Calculations
         /// <param name="currentBonusPins">Bonus pins before calculating new bonus pins</param>
         /// <param name="latestGames">a member's player history</param>
         /// <param name="currTourneyEntryCount">this is the number of losses in the current game</param>
-        public static int AddToBonusPins(int currentBonusPins, List<PlayerHistory> latestGames, int currTourneyEntryCount)
+        public static int AddToBonusPins(int currentBonusPins, List<PlayerHistoryViewModel> latestGames, int currTourneyEntryCount)
         {
             int additionalBonus = 0;
 
@@ -198,7 +198,7 @@ namespace NineTapTour.Calculations
         /// <param name="latestGames">a member's player history</param>
         /// <param name="currTourneyEntryCount">this is the number of losses in the current game</param>
         /// <param name="minLosses">minimum number of losses to determine if bonus is earned</param>
-        private static bool DoesGetBonus(List<PlayerHistory> latestGames, int currTourneyEntryCount, int minLosses)
+        private static bool DoesGetBonus(List<PlayerHistoryViewModel> latestGames, int currTourneyEntryCount, int minLosses)
         {
             // Introduce local const variable to represent the multiple of three loses
             // For if player gets a bonus
@@ -223,7 +223,7 @@ namespace NineTapTour.Calculations
         /// </summary>
         /// <param name="latestGames">Games to find last cashed tourney in</param>
         /// <returns>First index of last cashed tourney. -1 if not found</returns>
-        private static int FindLastCashedTourneyIndex(List<PlayerHistory> latestGames)
+        private static int FindLastCashedTourneyIndex(List<PlayerHistoryViewModel> latestGames)
         {
             for (int i = 0; i < latestGames.Count; i++)
             {
@@ -243,7 +243,7 @@ namespace NineTapTour.Calculations
         /// <summary>
         /// Returns true if the player won money, returns false otherwise
         /// </summary>
-        private static bool PlayerDidCash(PlayerHistory playerHistory)
+        private static bool PlayerDidCash(PlayerHistoryViewModel playerHistory)
         {
             return playerHistory.MoneyWon > 0;
         }

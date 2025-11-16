@@ -156,7 +156,7 @@ namespace NineTapTour.Forms
             if (searchMem == null)
             {
                 currentMem = MemberDB.GetMember(_memberNum,RegionID);
-                List<PlayerHistory> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
+                List<PlayerHistoryViewModel> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
                 if (last5.Count >= 1)
                 {   //whatever the bowler director decides his average to be is right. 
                     // don't pull from the player history page
@@ -591,7 +591,7 @@ namespace NineTapTour.Forms
                 temp.Id = memId;
 
                 //Set average for the new member
-                List<PlayerHistory> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
+                List<PlayerHistoryViewModel> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
                 if (last5.Count >= 1)
                 {   // sets the average to that of their last adjusted average
                     if (Convert.ToInt32(txtAverage.Text) == last5[0].AVG)
@@ -961,7 +961,7 @@ namespace NineTapTour.Forms
 
             if (ofdOpen.ShowDialog() == DialogResult.OK)
             {
-                List<PlayerHistory> AlreadyImportedPH = 
+                List<PlayerHistoryViewModel> AlreadyImportedPH = 
                     PlayerHistoryDB.GetMemberPlayerHistory(currentMem.Number, RegionID);
 
                 if (AlreadyImportedPH.Count > 0)
@@ -975,7 +975,9 @@ namespace NineTapTour.Forms
                 frmPleaseWait please = new();
                 please.Show();
 
+                // Process the Excel file and create tournaments/participants
                 List<ExcelRow> rows = ProcessExcelFile(fileName); 
+                
                 please.Close();
 
                 foreach(var r in rows)
@@ -983,17 +985,21 @@ namespace NineTapTour.Forms
                     CurrentExcelData.Add(r);
                 }
 
-                List<PlayerHistory> reset = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
-                currentMem.StartAvg = reset[0].AVG;
-                currentMem.Average = Convert.ToInt32(reset[0].trueAVG);
-                currentMem.Handicap = Calculations.Calculations
-                    .CalculateHandicapPins(Convert.ToInt32(currentMem.StartAvg));
+                // Update member's averages after import
+                List<PlayerHistoryViewModel> reset = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
+                if (reset.Count > 0)
+                {
+                    currentMem.StartAvg = reset[0].AVG;
+                    currentMem.Average = Convert.ToInt32(reset[0].trueAVG);
+                    currentMem.Handicap = Calculations.Calculations
+                        .CalculateHandicapPins(Convert.ToInt32(currentMem.StartAvg));
 
-                currentMem.Bonus = reset[0].Bonus;
-                txtAverage.Text = currentMem.StartAvg.ToString();
-                txt30GameAvg.Text = currentMem.Average.ToString();
-                txtHandicap.Text = currentMem.Handicap.ToString();
-                txtBonus.Text = currentMem.Bonus.ToString();
+                    currentMem.Bonus = reset[0].Bonus;
+                    txtAverage.Text = currentMem.StartAvg.ToString();
+                    txt30GameAvg.Text = currentMem.Average.ToString();
+                    txtHandicap.Text = currentMem.Handicap.ToString();
+                    txtBonus.Text = currentMem.Bonus.ToString();
+                }
 
                 // Grabs the total money won by the member
                 decimal moneySum = PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number, RegionID);
@@ -1003,17 +1009,23 @@ namespace NineTapTour.Forms
                 txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
 
                 MemberDB.AddOrUpdateMember(currentMem);
+                
+                MessageBox.Show($"Import completed. {rows.Count} games imported across multiple tournaments.");
             }
         }
 
         /// <summary>
         /// Processes excel file for member data import
+        /// Creates tournaments for each unique date and links games to member through participants
         /// </summary>
         /// <param name="PathAndFileName"></param>
         /// <returns></returns>
         private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
         {
             List<ExcelRow> returnMe = [];
+            // Dictionary to track tournaments by date
+            Dictionary<DateTime, Tournament> tournamentsCache = new();
+            
             using (var workbook = new XLWorkbook(PathAndFileName))
             {
                 var ws = workbook.Worksheet(1);
@@ -1040,9 +1052,14 @@ namespace NineTapTour.Forms
                     var playerNumberAfterSplit = playerNumber.Split('/');
                     playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumberAfterSplit[^1], string.Empty));
                 }
+                
+                // Get the region for tournament creation
+                NineTapRegion region = NineTapRegionDB.GetRegionByID(RegionID);
+                
                 // Data rows start at row 3 (or 4 for Hawaii)
                 int rowNum = isRegionHawaii ? 4 : 3;
                 int lastRow = ws.LastRowUsed().RowNumber();
+                
                 for (int row = rowNum; row <= lastRow; row++)
                 {
                     ExcelRow temp = new();
@@ -1067,6 +1084,82 @@ namespace NineTapTour.Forms
                     temp.FinPPHG = ws.Cell(row, 14).GetString();
                     temp.Cash = ws.Cell(row, 15).GetValue<double?>() ?? 0;
                     temp.Notes = ws.Cell(row, 16).GetString();
+                    
+                    // Create or get tournament for this date
+                    Tournament tournament;
+                    DateTime tournamentDate = temp.Date.Date; // Normalize to date only
+                    
+                    if (!tournamentsCache.ContainsKey(tournamentDate))
+                    {
+                        // Check if tournament already exists in database
+                        List<Tournament> existingTournaments = TournamentDB.GetTournamentList(RegionID)
+                            .Where(t => t.Date.Date == tournamentDate).ToList();
+                        
+                        if (existingTournaments.Count > 0)
+                        {
+                            tournament = existingTournaments[0];
+                        }
+                        else
+                        {
+                            // Create new tournament for this date
+                            tournament = new Tournament
+                            {
+                                Date = tournamentDate,
+                                Location = $"Imported - {tournamentDate:yyyy-MM-dd}",
+                                Event = "Legacy Data Import",
+                                Notes = "Tournament created from legacy data import",
+                                Squads = 1,
+                                Doubles = false,
+                                ThreeOutOf4 = false,
+                                IsOnlyThreeGames = false,
+                                TourneyRegion = region,
+                                IsTournamentFinalized = false
+                            };
+                            
+                            // Add tournament to database
+                            TournamentDB.AddTournament(tournament);
+                        }
+                        
+                        tournamentsCache[tournamentDate] = tournament;
+                    }
+                    else
+                    {
+                        tournament = tournamentsCache[tournamentDate];
+                    }
+                    
+                    // Create Game entity
+                    Game game = new Game
+                    {
+                        Game1 = temp.Game1 >= 0 ? temp.Game1 : null,
+                        Game2 = temp.Game2 >= 0 ? temp.Game2 : null,
+                        Game3 = temp.Game3 >= 0 ? temp.Game3 : null,
+                        Game4 = temp.Game4 >= 0 ? temp.Game4 : null,
+                        Handicap = temp.HandyCap >= 0 ? temp.HandyCap : null,
+                        Bonus = temp.Bonus >= 0 ? temp.Bonus : null,
+                        MoneyWon = temp.Cash > 0 ? Convert.ToDecimal(temp.Cash) : null,
+                        Notes = temp.Notes,
+                        IsFinalized = true, // Mark as finalized since it's legacy data
+                        AdjustedAvg = temp.AVG,
+                        LeagueAverage = temp.TrueAverage,
+                        GameAvg = Convert.ToInt32(temp.AverageOfRow),
+                        UseGame1 = temp.Game1 >= 0,
+                        UseGame2 = temp.Game2 >= 0,
+                        UseGame3 = temp.Game3 >= 0,
+                        UseGame4 = temp.Game4 >= 0
+                    };
+                    
+                    // Create Participant linking member, game, and tournament
+                    Participant participant = new Participant
+                    {
+                        Member = currentMem,
+                        Game = game,
+                        Tournament = tournament,
+                        Squad = 1 // Default squad for imported data
+                    };
+                    
+                    // Add participant (which will also save the game)
+                    TournamentDB.AddMemberToTournament(participant);
+                    
                     returnMe.Add(temp);
                 }
             }

@@ -118,12 +118,12 @@ public partial class FrmMain : Form
     public int allGames;
 
     public List<Member> validMembers = [];      // Makes list of valid members
-    public List<PlayerHistory> PlayerHistoryList = [];
+    public List<PlayerHistoryViewModel> PlayerHistoryList = [];
 
     // Create array of spaces
     readonly int[] Spaces = [ MemNumSpace, DJoinedSpace, LNameSpace, FNameSpace, MISpace, EPhoneSpace, DPhoneSpace, CPhoneSpace,
                                StreetSpace, EmailSpace, CitySpace, StateSpace, ZipSpace, NotesSpace, AVGSpace, HCSpace, BSpace,
-                               LastBSpace, YearEndTSpace, MoneyESpace, RejoinDSpace, ReferalSpace, SSSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, DOBSpace];
+                               LastBSpace, YearEndTSpace, MoneyESpace, RejoinDSpace, ReferalSpace, SSSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, DOBSpace];
 
     readonly int[] PinSpaces = [PinFileMemNumSpace, PinFileLastName, PinFileFirstName, PinFileMiddleName, PinFileScratchScore1, PinFileScratchScore2, PinFileScratchScore3, PinFileScratchScore4 , PinFileScratchScoreTotal,
                                  PinFileHandicapScore1, PinFileHandicapScore2, PinFileHandicapScore3, PinFileHandicapScore4, PinFileHandicapScoreTotal , PinFileNotes, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot
@@ -589,6 +589,7 @@ public partial class FrmMain : Form
 
     /// <summary>
     /// This will process the actual excel files and impport the info needed from the files to the program
+    /// /// NOTE: This is currently set up for the old format. New format has not yet been implemented.
     /// </summary>
     /// <param name="PathAndFileName"></param>
     /// <returns></returns>
@@ -677,8 +678,11 @@ public partial class FrmMain : Form
             for (int row = GameDataStartRow; row <= lastRow; row++)
             {
                 ExcelRow temp = new();
-                PlayerHistory playerH = new();
+                // NOTE: PlayerHistory entity is deprecated - use PlayerHistoryViewModel for read-only operations
+                // Player data should be stored via Game/Participant/Tournament relationships
+                PlayerHistoryViewModel playerH = new();
                 Game GameHistory = new();
+
                 string game1 = ws.Cell(row, 3).GetString();
                 string game2 = ws.Cell(row, 4).GetString();
                 string game3 = ws.Cell(row, 5).GetString();
@@ -726,7 +730,6 @@ public partial class FrmMain : Form
                     temp.Notes = ws.Cell(row, 16).GetString(); GameHistory.Notes = temp.Notes; playerH.Notes = temp.Notes; playerH.PPHG = temp.FinPPHG;
                     allGames++;
                     GameImport.Add(GameHistory);
-                    playerH.Game = GameHistory;
                     playerH.regionID = RegionID; // Phase 4: playerH.regionID is kept, GameHistory.gameRegionID removed
                     PlayerHistoryList.Add(playerH);
                     returnMe.Add(temp);
@@ -749,7 +752,7 @@ public partial class FrmMain : Form
 
         for (int i = 0; i < validMembers.Count; i++)
         {
-            List<PlayerHistory> list = PlayerHistoryDB.GetLastFiveTournaments(validMembers[i].Number, RegionID);
+            List<PlayerHistoryViewModel> list = PlayerHistoryDB.GetLastFiveTournaments(validMembers[i].Number, RegionID);
             if (list.Count > 0)
             {
                 validMembers[i].StartAvg = list[0].AVG; //set new avg to last bowled adjusted avg
@@ -780,12 +783,17 @@ public partial class FrmMain : Form
     /// updates player history in the database
     /// </summary>
     /// <param name="playerHistory"></param>
-    private static void UpdatePlayerHistory(List<PlayerHistory> playerHistory)
+    private static void UpdatePlayerHistory(List<PlayerHistoryViewModel> playerHistory)
     {
-        foreach (var ph in playerHistory)
-        {
-            PlayerHistoryDB.AddPlayerHistory(ph);
-        }
+        // NOTE: PlayerHistory entity is deprecated. This method needs refactoring to work with Game entities.
+        // PlayerHistoryDB.AddPlayerHistory no longer exists.
+        // Data should be added via Game entities through Participant/Tournament relationships.
+        
+        MessageBox.Show("Player history import is deprecated. Please use the import functionality in FrmMemberData instead, " +
+                      "which properly creates tournaments and links games through participants.",
+                      "Import Method Deprecated", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        
+        // TODO: Refactor this to use the new import mechanism that creates tournaments and participants
     }
 
     /// <summary>

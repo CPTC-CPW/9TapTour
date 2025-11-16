@@ -19,7 +19,7 @@ namespace NineTapTour.Forms
         private readonly int memId;
         private readonly int memNum;
         private readonly string memName;
-        readonly List<PlayerHistory> ph;
+        readonly List<PlayerHistoryViewModel> ph;
         readonly int RegionID;
 
 
@@ -458,7 +458,7 @@ namespace NineTapTour.Forms
                 lblStartAvg.Text = 0.ToString();
             }
 
-            List<PlayerHistory> Last30 = PlayerHistoryDB.GetTop30FromPlayerHistory(mem.Number);
+            List<PlayerHistoryViewModel> Last30 = PlayerHistoryDB.GetTop30FromPlayerHistory(mem.Number);
             int game1AVG = 0;
             int game2AVG = 0;
             int game3AVG = 0;
@@ -579,13 +579,20 @@ namespace NineTapTour.Forms
 
         private void btnSaveChanges_Click(object sender, EventArgs e)
         {
-            //grab untouched playerhistory
-            List<PlayerHistory> pHist = PlayerHistoryDB.GetMemberPlayerHistory(mem.Number, RegionID);
+            //grab untouched player history view models
+            List<PlayerHistoryViewModel> pHist = PlayerHistoryDB.GetMemberPlayerHistory(mem.Number, RegionID);
 
             //RESTORE THE DATAGRID BACK TO THE DATE DESCINDING 
             dataGridView1.Sort(dataGridView1.Columns["Date"], System.ComponentModel.ListSortDirection.Descending);
             
-            //if valid, store new info from slots in playerhistory
+            // NOTE: PlayerHistoryViewModel is read-only. Updates should be made through Game entities.
+            // This section needs refactoring to update Game entities directly via GameDB
+            MessageBox.Show("Save functionality needs to be updated to work with the new data model. " +
+                          "Please use the Finalize Tournament form to make adjustments to game data.",
+                          "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            
+            /* TODO: Refactor this to update Game entities instead of PlayerHistory
+            //if valid, store new info from slots in player history view model
             for(int saveX = 0; saveX < dataGridView1.RowCount; saveX++)
             {
                 for(int saveY = 1; saveY < dataGridView1.ColumnCount;) //start loop at 1 to avoid editing "games played" slot
@@ -625,7 +632,7 @@ namespace NineTapTour.Forms
 
                     saveY++;
 
-                    //skip total score with handicap. not apart of Playerhistory class
+                    //skip total score with handicap. not apart of player history view model
                     saveY++;
 
                     pHist[saveX].AverageForEntry = Convert.ToDouble(pHist[saveX].TotalScore / pHist[saveX].GamesPlayed);
@@ -670,16 +677,8 @@ namespace NineTapTour.Forms
                     saveY++;
                 }
             }
+            */
 
-            //update info
-            foreach(var item in pHist)
-            {
-                /* Prevents stats from disappearing from frmStats after Save button is clicked. 
-                   RegionID in PlayerHistory class was being reset to default value of zero. */
-                item.regionID = RegionID;
-
-                PlayerHistoryDB.AddOrUpdatePlayerHistory(item);
-            }
             //refresh page
             dataGridView1.DataSource = tableview();
         }

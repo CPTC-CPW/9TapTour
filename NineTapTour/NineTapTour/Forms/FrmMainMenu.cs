@@ -119,12 +119,9 @@ namespace NineTapTour.Forms
             {
                 frmPleaseWait pl = new();
                 pl.Show();
-                //Delete Player History where HisID = selected regionID
-                List<PlayerHistory> phis = PlayerHistoryDB.GetAllPlayerHistory(regionID);
-                foreach (var p in phis)
-                {
-                    PlayerHistoryDB.DeletePlayerHistory(p);
-                }
+
+                // NOTE: Player history is stored in Game entity and will be deleted with games
+                // No separate PlayerHistory deletion needed
 
                 // Delete Participants where Participant RegionID = regionID
                 List<Participant> par = FinalizeTempDB.GetParticipantListByRegionID(regionID);
