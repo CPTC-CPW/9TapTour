@@ -125,10 +125,6 @@ public partial class FrmMain : Form
                                StreetSpace, EmailSpace, CitySpace, StateSpace, ZipSpace, NotesSpace, AVGSpace, HCSpace, BSpace,
                                LastBSpace, YearEndTSpace, MoneyESpace, RejoinDSpace, ReferalSpace, SSSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, DOBSpace];
 
-    readonly int[] PinSpaces = [PinFileMemNumSpace, PinFileLastName, PinFileFirstName, PinFileMiddleName, PinFileScratchScore1, PinFileScratchScore2, PinFileScratchScore3, PinFileScratchScore4 , PinFileScratchScoreTotal,
-                                 PinFileHandicapScore1, PinFileHandicapScore2, PinFileHandicapScore3, PinFileHandicapScore4, PinFileHandicapScoreTotal , PinFileNotes, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot
-                                  ,morsecodeslot, morsecodeslot, morsecodeslot , morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot, morsecodeslot];
-
     private static readonly List<ExcelRow> ALLEXCELDATAFROMALLPLAYERS = [];
     private static readonly List<Tournament> TournamentList = [];
     private static readonly List<Game> GameImport = [];
@@ -468,16 +464,15 @@ public partial class FrmMain : Form
                     playerOrgAVG = -1;
             }
             string playerNumber = ws.Cell(1, 14).GetString();
-            bool isRegionHawaii = (cbHaw.Checked);
             if (playerNumber == null)
             {
                 MessageBox.Show($"Player number could not be read in excel file {PathAndFileName}. Program is unable to continue.");
                 throw new ArgumentException($"While reading {PathAndFileName} a player number was not found in the file.");
             }
-            if (isRegionHawaii)
-            {
-                playerNumber = RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty);
-            }
+
+            // Some regions have letters in their player numbers, so strip non-numeric characters
+            playerNumber = RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty);
+
             String[] playerNumberAfterSplit;
             int.TryParse(playerNumber, out int playerNumberAsInt);
             if (playerNumberAsInt != 0)

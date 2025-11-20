@@ -31,14 +31,12 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             ofdOpen = new System.Windows.Forms.OpenFileDialog();
             btnOpenFile = new System.Windows.Forms.Button();
-            btnInvalid = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             btnSelectExcelFolder = new System.Windows.Forms.Button();
             label3 = new System.Windows.Forms.Label();
             btn_FinalizeData = new System.Windows.Forms.Button();
             cbxRegionSelect = new System.Windows.Forms.ComboBox();
-            cbHaw = new System.Windows.Forms.CheckBox();
             progressBarFinalize = new System.Windows.Forms.ProgressBar();
             lblFinalizeStatus = new System.Windows.Forms.Label();
             txtProgress = new System.Windows.Forms.TextBox();
@@ -119,17 +117,6 @@
             cbxRegionSelect.TabIndex = 11;
             cbxRegionSelect.SelectedIndexChanged += CbxRegionSelect_SelectedIndexChanged;
             // 
-            // cbHaw
-            // 
-            cbHaw.AutoSize = true;
-            cbHaw.Location = new System.Drawing.Point(194, 65);
-            cbHaw.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            cbHaw.Name = "cbHaw";
-            cbHaw.Size = new System.Drawing.Size(70, 19);
-            cbHaw.TabIndex = 12;
-            cbHaw.Text = "Hawaii ?";
-            cbHaw.UseVisualStyleBackColor = true;
-            // 
             // progressBarFinalize
             // 
             progressBarFinalize.Location = new System.Drawing.Point(570, 336);
@@ -165,7 +152,6 @@
             ClientSize = new System.Drawing.Size(917, 427);
             Controls.Add(lblFinalizeStatus);
             Controls.Add(progressBarFinalize);
-            Controls.Add(cbHaw);
             Controls.Add(cbxRegionSelect);
             Controls.Add(txtProgress);
             Controls.Add(btn_FinalizeData);
@@ -173,7 +159,6 @@
             Controls.Add(btnSelectExcelFolder);
             Controls.Add(label2);
             Controls.Add(label1);
-            Controls.Add(btnInvalid);
             Controls.Add(btnOpenFile);
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -188,14 +173,12 @@
 
         private System.Windows.Forms.OpenFileDialog ofdOpen;
         private System.Windows.Forms.Button btnOpenFile;
-        private System.Windows.Forms.Button btnInvalid;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnSelectExcelFolder;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btn_FinalizeData;
         private System.Windows.Forms.ComboBox cbxRegionSelect;
-        private System.Windows.Forms.CheckBox cbHaw;
         private System.Windows.Forms.ProgressBar progressBarFinalize;
         private System.Windows.Forms.Label lblFinalizeStatus;
         private System.Windows.Forms.TextBox txtProgress;
