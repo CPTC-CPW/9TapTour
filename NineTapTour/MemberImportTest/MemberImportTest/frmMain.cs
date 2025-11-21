@@ -417,7 +417,7 @@ public partial class FrmMain : Form
         txtProgress.AppendText($"Current File Being Processed: {Path.GetFileName(PathAndFileName)}\r\n");
 
         List<ExcelRow> returnMe = new List<ExcelRow>();
-        char[] splitters = new[] {'/', '-'};
+        char[] splitters = new[] { '/', '-' };
         string[] PlayerFinalFirstAndMiddle = new[] { "", "" };
         string playerLastName = "";
         string firstAndMiddle = "";
@@ -502,38 +502,8 @@ public partial class FrmMain : Form
             int lastRow = ws.LastRowUsed().RowNumber();
             const int GameDataStartRow = 3;
 
-            // Create a Tournament entity for this file using the first data row's date if available.
-            DateTime tournDate = DateTime.Now.Date;
-            for (int row = GameDataStartRow; row <= lastRow; row++)
-            {
-                if (!string.IsNullOrWhiteSpace(ws.Cell(row, 2).GetString()))
-                {
-                    try { tournDate = ws.Cell(row, 2).GetDateTime().Date; } catch { }
-                    break;
-                }
-            }
-
-            Tournament tourn = new()
-            {
-                Date = tournDate,
-                Location = "Imported",
-                Event = $"Imported Tourney - {tournDate}",
-                Notes = string.Empty,
-                Sponsors = string.Empty,
-                Squads = 1,
-                Doubles = false,
-                ThreeOutOf4 = false,
-                IsOnlyThreeGames = false
-            };
-
-            // Load NineTapRegion entity and attach to tournament
-            using (var db = new NineTapDb())
-            {
-                tourn.TourneyRegion = db.NineTapRegion.Find(RegionID);
-            }
-
-            // Persist tournament so it has an Id
-            TournamentDB.AddTournament(tourn);
+            // Load existing tournaments for this region to reuse by date
+            List<Tournament> existingTournaments = TournamentDB.GetTournamentList(RegionID);
 
             for (int row = GameDataStartRow; row <= lastRow; row++)
             {
@@ -593,6 +563,40 @@ public partial class FrmMain : Form
                 try { if (!string.IsNullOrEmpty(temp.FinPPHG)) { temp.Cash = ws.Cell(row, 15).GetValue<double>(); } else { temp.Cash = 0; } } catch { temp.Cash = 0; }
                 temp.Notes = ws.Cell(row, 16).GetString();
 
+                // Determine tournament for this row by date; create if it doesn't exist
+                DateTime rowDate = temp.Date != default(DateTime) ? temp.Date.Date : DateTime.Now.Date;
+                Tournament tourn = existingTournaments.FirstOrDefault(t => t.Date.Date == rowDate);
+                if (tourn == null)
+                {
+                    tourn = new Tournament()
+                    {
+                        Date = rowDate,
+                        Location = "Imported",
+                        Event = $"Imported Tourney - {rowDate}",
+                        Notes = string.Empty,
+                        Sponsors = string.Empty,
+                        Squads = 1,
+                        Doubles = false,
+                        ThreeOutOf4 = false,
+                        IsOnlyThreeGames = false,
+                    };
+
+                    // Ensure region is set for new or existing tournament records
+                    using (var db = new NineTapDb())
+                    {
+                        tourn.TourneyRegion = db.NineTapRegion.Find(RegionID);
+                    }
+
+                    TournamentDB.AddTournament(tourn);
+                    existingTournaments.Add(tourn);
+                }
+
+                // Ensure region is set for new or existing tournament records
+                using (var db = new NineTapDb())
+                {
+                    tourn.TourneyRegion = db.NineTapRegion.Find(RegionID);
+                }
+
                 // Build Game entity
                 Game game = new Game()
                 {
@@ -635,9 +639,9 @@ public partial class FrmMain : Form
                 PlayerHistoryList.Add(playerH);
                 returnMe.Add(temp);
             }
-        }
 
-        return returnMe;
+            return returnMe;
+        }
     }
 
     private void Btn_FinalizeData_Click(object sender, EventArgs e)
