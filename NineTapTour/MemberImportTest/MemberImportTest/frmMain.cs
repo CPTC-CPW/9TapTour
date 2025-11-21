@@ -380,7 +380,7 @@ public partial class FrmMain : Form
             if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
             {
                 string[] files = Directory.GetFiles(fbd.SelectedPath);
-                GetAllExcelData(files);
+                List<ExcelRow> participantHistory = GetAllExcelData(files);
             }
         }
         CheckSpaces();
@@ -416,40 +416,46 @@ public partial class FrmMain : Form
     {
         txtProgress.AppendText($"Current File Being Processed: {Path.GetFileName(PathAndFileName)}\r\n");
 
-        List<ExcelRow> returnMe = [];
-        char[] splitters = ['/', '-'];
-        string[] PlayerFinalFirstAndMiddle = ["", ""];
+        List<ExcelRow> returnMe = new List<ExcelRow>();
+        char[] splitters = new[] {'/', '-'};
+        string[] PlayerFinalFirstAndMiddle = new[] { "", "" };
         string playerLastName = "";
         string firstAndMiddle = "";
 
         using (var workbook = new XLWorkbook(PathAndFileName))
         {
             var ws = workbook.Worksheet(1);
+            // Parse header for player name
             string playerFullName = ws.Cell(1, 2).GetString();
-            if (playerFullName.Contains(','))
+            if (!string.IsNullOrWhiteSpace(playerFullName))
             {
-                playerLastName = playerFullName[..playerFullName.IndexOf(',')];
-                firstAndMiddle = playerFullName[(playerFullName.IndexOf(',') + 2)..];
+                if (playerFullName.Contains(','))
+                {
+                    playerLastName = playerFullName[..playerFullName.IndexOf(',')];
+                    firstAndMiddle = playerFullName[(playerFullName.IndexOf(',') + 2)..];
+                }
+                else if (playerFullName.Contains('.'))
+                {
+                    playerLastName = playerFullName[..playerFullName.IndexOf('.')];
+                    try
+                    {
+                        firstAndMiddle = playerFullName[(playerFullName.IndexOf('.') + 2)..];
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        int firstSpaceIndex = playerFullName.IndexOf(' ');
+                        firstAndMiddle = firstSpaceIndex > -1 ? playerFullName[..firstSpaceIndex] : playerFullName;
+                    }
+                }
             }
-            else if (playerFullName.Contains('.'))
+
+            string[] first0middle1 = firstAndMiddle.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < Math.Min(first0middle1.Length, PlayerFinalFirstAndMiddle.Length); i++)
             {
-                playerLastName = playerFullName[..playerFullName.IndexOf('.')];
-                try
-                {
-                    firstAndMiddle = playerFullName[(playerFullName.IndexOf('.') + 2)..];
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    int firstSpaceIndex = playerFullName.IndexOf(' ');
-                    firstAndMiddle = playerFullName[..firstSpaceIndex];
-                }
+                PlayerFinalFirstAndMiddle[i] = first0middle1[i];
             }
-            string[] first0middle1 = firstAndMiddle.Split(' ');
+
             int playerOrgAVG;
-            for (int i = 0; i < first0middle1.Length; i++)
-            {
-                PlayerFinalFirstAndMiddle[i] = first0middle1[0];
-            }
             try
             {
                 playerOrgAVG = ws.Cell(1, 10).GetValue<int>();
@@ -463,6 +469,7 @@ public partial class FrmMain : Form
                 else
                     playerOrgAVG = -1;
             }
+
             string playerNumber = ws.Cell(1, 14).GetString();
             if (playerNumber == null)
             {
@@ -473,7 +480,7 @@ public partial class FrmMain : Form
             // Some regions have letters in their player numbers, so strip non-numeric characters
             playerNumber = RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty);
 
-            String[] playerNumberAfterSplit;
+            string[] playerNumberAfterSplit;
             int.TryParse(playerNumber, out int playerNumberAsInt);
             if (playerNumberAsInt != 0)
             {
@@ -491,21 +498,53 @@ public partial class FrmMain : Form
                     catch { }
                 }
             }
+
             int lastRow = ws.LastRowUsed().RowNumber();
             const int GameDataStartRow = 3;
+
+            // Create a Tournament entity for this file using the first data row's date if available.
+            DateTime tournDate = DateTime.Now.Date;
             for (int row = GameDataStartRow; row <= lastRow; row++)
             {
-                ExcelRow temp = new();
-                // NOTE: PlayerHistory entity is deprecated - use PlayerHistoryViewModel for read-only operations
-                // Player data should be stored via Game/Participant/Tournament relationships
-                PlayerHistoryViewModel playerH = new();
-                Game GameHistory = new();
+                if (!string.IsNullOrWhiteSpace(ws.Cell(row, 2).GetString()))
+                {
+                    try { tournDate = ws.Cell(row, 2).GetDateTime().Date; } catch { }
+                    break;
+                }
+            }
+
+            Tournament tourn = new()
+            {
+                Date = tournDate,
+                Location = "Imported",
+                Event = $"Imported Tourney - {tournDate}",
+                Notes = string.Empty,
+                Sponsors = string.Empty,
+                Squads = 1,
+                Doubles = false,
+                ThreeOutOf4 = false,
+                IsOnlyThreeGames = false
+            };
+
+            // Load NineTapRegion entity and attach to tournament
+            using (var db = new NineTapDb())
+            {
+                tourn.TourneyRegion = db.NineTapRegion.Find(RegionID);
+            }
+
+            // Persist tournament so it has an Id
+            TournamentDB.AddTournament(tourn);
+
+            for (int row = GameDataStartRow; row <= lastRow; row++)
+            {
+                ExcelRow temp = new ExcelRow();
 
                 string game1 = ws.Cell(row, 3).GetString();
                 string game2 = ws.Cell(row, 4).GetString();
                 string game3 = ws.Cell(row, 5).GetString();
                 string game4 = ws.Cell(row, 6).GetString();
                 string testFin = ws.Cell(row, 14).GetString();
+
                 if (!string.IsNullOrWhiteSpace(ws.Cell(row, 1).GetString()))
                 {
                     if (ws.Cell(row, 1).GetValue<int>() == 0 && string.IsNullOrWhiteSpace(ws.Cell(row, 15).GetString()))
@@ -513,47 +552,91 @@ public partial class FrmMain : Form
                         continue;
                     }
                 }
+
                 if (string.IsNullOrWhiteSpace(ws.Cell(row, 2).GetString()) && string.IsNullOrWhiteSpace(ws.Cell(row, 15).GetString()))
                 {
                     continue;
                 }
+
                 if (string.IsNullOrWhiteSpace(game1) && string.IsNullOrWhiteSpace(game2) && string.IsNullOrWhiteSpace(game3) && string.IsNullOrWhiteSpace(game4) && !string.IsNullOrWhiteSpace(testFin))
                 {
                     continue;
                 }
+
+                // Populate excel row and game data
                 temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
                 temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
                 temp.PlayerLastName = playerLastName;
                 temp.PlayerOrginalAVG = playerOrgAVG;
                 temp.PlayerNumber = playerNumberAsInt;
-                playerH.MemberNumber = temp.PlayerNumber;
-                playerH.regionID = RegionID;
-                if (MemberDB.GetMember(temp.PlayerNumber, RegionID).IsActive == true)
+
+                var member = MemberDB.GetMember(temp.PlayerNumber, RegionID);
+                if (member == null || member.IsActive != true)
+                    continue;
+
+                PlayerHistoryViewModel playerH = new PlayerHistoryViewModel();
+
+                try { temp.GameTotal = ws.Cell(row, 1).GetValue<int>(); playerH.GamesPlayed = temp.GameTotal; } catch { temp.GameTotal = -1; }
+                try { temp.Date = ws.Cell(row, 2).GetDateTime(); playerH.TournamentDate = temp.Date; } catch { temp.Date = new DateTime(); }
+                try { temp.Game1 = ws.Cell(row, 3).GetValue<int>(); } catch { temp.Game1 = -1; }
+                try { temp.Game2 = ws.Cell(row, 4).GetValue<int>(); } catch { temp.Game2 = -1; }
+                try { temp.Game3 = ws.Cell(row, 5).GetValue<int>(); } catch { temp.Game3 = -1; }
+                try { temp.Game4 = ws.Cell(row, 6).GetValue<int>(); } catch { temp.Game4 = -1; }
+                try { temp.Total = ws.Cell(row, 7).GetValue<int>(); } catch { temp.Total = -1; }
+                try { temp.AverageOfRow = ws.Cell(row, 8).GetValue<double>(); } catch { temp.AverageOfRow = -1; }
+                try { temp.TrueAverage = ws.Cell(row, 9).GetValue<double>(); } catch { temp.TrueAverage = -1; }
+                try { temp.AVG = ws.Cell(row, 10).GetValue<int>(); } catch { temp.AVG = -1; }
+                try { temp.HandyCap = ws.Cell(row, 11).GetValue<int>(); } catch { temp.HandyCap = -1; }
+                try { temp.Bonus = ws.Cell(row, 12).GetValue<int>(); } catch { temp.Bonus = -1; }
+                temp.PotPro = ws.Cell(row, 13).GetString();
+                temp.FinPPHG = ws.Cell(row, 14).GetString();
+                try { if (!string.IsNullOrEmpty(temp.FinPPHG)) { temp.Cash = ws.Cell(row, 15).GetValue<double>(); } else { temp.Cash = 0; } } catch { temp.Cash = 0; }
+                temp.Notes = ws.Cell(row, 16).GetString();
+
+                // Build Game entity
+                Game game = new Game()
                 {
-                    try { temp.GameTotal = ws.Cell(row, 1).GetValue<int>(); playerH.GamesPlayed = temp.GameTotal; } catch { temp.GameTotal = -1; }
-                    try { temp.Date = ws.Cell(row, 2).GetDateTime(); playerH.TournamentDate = temp.Date; } catch { temp.Date = new DateTime(); }
-                    try { temp.Game1 = ws.Cell(row, 3).GetValue<int>(); GameHistory.Game1 = temp.Game1; playerH.Game1 = temp.Game1; } catch { temp.Game1 = -1; }
-                    try { temp.Game2 = ws.Cell(row, 4).GetValue<int>(); GameHistory.Game2 = temp.Game2; playerH.Game2 = temp.Game2; } catch { temp.Game2 = -1; }
-                    try { temp.Game3 = ws.Cell(row, 5).GetValue<int>(); GameHistory.Game3 = temp.Game3; playerH.Game3 = temp.Game3; } catch { temp.Game3 = -1; }
-                    try { temp.Game4 = ws.Cell(row, 6).GetValue<int>(); GameHistory.Game4 = temp.Game4; playerH.Game4 = temp.Game4; } catch { temp.Game4 = -1; }
-                    try { temp.Total = ws.Cell(row, 7).GetValue<int>(); GameHistory.TotalScore = temp.Total; playerH.TotalScore = temp.Total; } catch { temp.Total = -1; }
-                    try { temp.AverageOfRow = ws.Cell(row, 8).GetValue<double>(); playerH.AverageForEntry = temp.AverageOfRow; } catch { temp.AverageOfRow = -1; }
-                    try { temp.TrueAverage = ws.Cell(row, 9).GetValue<double>(); playerH.trueAVG = temp.TrueAverage; } catch { temp.TrueAverage = -1; }
-                    try { temp.AVG = ws.Cell(row, 10).GetValue<int>(); playerH.AVG = temp.AVG; } catch { temp.AVG = -1; }
-                    try { temp.HandyCap = ws.Cell(row, 11).GetValue<int>(); GameHistory.Handicap = temp.HandyCap; playerH.HandiCap = temp.HandyCap; } catch { temp.Bonus = -1; }
-                    try { temp.Bonus = ws.Cell(row, 12).GetValue<int>(); GameHistory.Bonus = temp.Bonus; playerH.Bonus = temp.Bonus; } catch { temp.HandyCap = -1000; }
-                    temp.PotPro = ws.Cell(row, 13).GetString(); playerH.ProPot = temp.PotPro;
-                    temp.FinPPHG = ws.Cell(row, 14).GetString(); playerH.PPHG = temp.FinPPHG;
-                    try { if (!string.IsNullOrEmpty(temp.FinPPHG)) { temp.Cash = ws.Cell(row, 15).GetValue<double>(); GameHistory.MoneyWon = Convert.ToDecimal(temp.Cash); playerH.MoneyWon = Convert.ToDecimal(temp.Cash); } else { temp.Cash = 0; GameHistory.MoneyWon = 0; playerH.MoneyWon = 0; } } catch { temp.Cash = 0; }
-                    temp.Notes = ws.Cell(row, 16).GetString(); GameHistory.Notes = temp.Notes; playerH.Notes = temp.Notes; playerH.PPHG = temp.FinPPHG;
-                    allGames++;
-                    GameImport.Add(GameHistory);
-                    playerH.regionID = RegionID; // Phase 4: playerH.regionID is kept, GameHistory.gameRegionID removed
-                    PlayerHistoryList.Add(playerH);
-                    returnMe.Add(temp);
-                }
+                    Game1 = temp.Game1 > -1 ? temp.Game1 : null,
+                    Game2 = temp.Game2 > -1 ? temp.Game2 : null,
+                    Game3 = temp.Game3 > -1 ? temp.Game3 : null,
+                    Game4 = temp.Game4 > -1 ? temp.Game4 : null,
+                    TotalScore = temp.Total > -1 ? temp.Total : null,
+                    Handicap = temp.HandyCap > -1 ? temp.HandyCap : 0,
+                    Bonus = temp.Bonus > -1 ? temp.Bonus : 0,
+                    MoneyWon = Convert.ToDecimal(temp.Cash),
+                    Notes = temp.Notes,
+                    IsComp = !string.IsNullOrWhiteSpace(temp.FinPPHG),
+                    // Mark imported games as finalized
+                    IsFinalized = true,
+                    // Ensure use flags are set only when a game value exists
+                    UseGame1 = temp.Game1 > -1 ? true : false,
+                    UseGame2 = temp.Game2 > -1 ? true : false,
+                    UseGame3 = temp.Game3 > -1 ? true : false,
+                    UseGame4 = temp.Game4 > -1 ? true : false
+                };
+
+                // Persist game to database to get Id
+                GameDB.AddOrUpdateGame(game);
+
+                // Create participant linking member, game and tournament
+                Participant participant = new Participant()
+                {
+                    Squad = 1,
+                    Member = member,
+                    Game = game,
+                    Tournament = tourn
+                };
+
+                // Persist participant (will avoid duplicates)
+                TournamentDB.AddMemberToTournament(participant);
+
+                // Track progress and returned rows
+                allGames++;
+                PlayerHistoryList.Add(playerH);
+                returnMe.Add(temp);
             }
         }
+
         return returnMe;
     }
 
