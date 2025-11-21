@@ -647,29 +647,24 @@ public partial class FrmMain : Form
     private void Btn_FinalizeData_Click(object sender, EventArgs e)
     {
         Cursor.Current = Cursors.WaitCursor;
-        IncrementFinalizeBar(0, "Step 1: Adding player games to the database.");
-        GameDB.AddOrUpdateSomeGames(GameImport);
 
-        IncrementFinalizeBar(25, "Step 2: Player games updated, beginning history import.");
-        UpdatePlayerHistory(PlayerHistoryList);
+        IncrementFinalizeBar(25, "Step 3: Setting averages and bonus pins from history.");
 
-        IncrementFinalizeBar(25, "Step 3: Games updated. Setting averages and bonus pins.");
-
+        // Update validMembers in memory with latest history values (do not persist here)
         for (int i = 0; i < validMembers.Count; i++)
         {
             List<PlayerHistoryViewModel> list = PlayerHistoryDB.GetLastFiveTournaments(validMembers[i].Number, RegionID);
             if (list.Count > 0)
             {
-                validMembers[i].StartAvg = list[0].AVG; //set new avg to last bowled adjusted avg
-                validMembers[i].Average = Convert.ToInt32(list[0].trueAVG); //last 30 game avg
-                validMembers[i].Bonus = list[0].Bonus; //last adjusted bonus pin
+                validMembers[i].StartAvg = list[0].AVG; // set new avg to last bowled adjusted avg
+                validMembers[i].Average = Convert.ToInt32(list[0].trueAVG); // last 30 game avg
+                validMembers[i].Bonus = list[0].Bonus; // last adjusted bonus pin
             }
         }
-        IncrementFinalizeBar(25, "Step 4: Averages and bonus pins set. Updating all members.");
-        UpdateMembers(validMembers);
-        IncrementFinalizeBar(25, "Members updated");
+
+        IncrementFinalizeBar(25, "Finalized in-memory member averages. No member DB update performed.");
         Cursor.Current = Cursors.Default;
-        MessageBox.Show($"{validMembers.Count} members have been imported and all their bowling history has been added to the database");
+        MessageBox.Show($"Import complete. {validMembers.Count} members processed; games and participants were added to the database.", "Import Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
         this.Close();
     }
     /// <summary>
@@ -683,22 +678,6 @@ public partial class FrmMain : Form
         lblFinalizeStatus.Text = msg;
         progressBarFinalize.Refresh();
         lblFinalizeStatus.Refresh();
-    }
-    /// <summary>
-    /// updates player history in the database
-    /// </summary>
-    /// <param name="playerHistory"></param>
-    private static void UpdatePlayerHistory(List<PlayerHistoryViewModel> playerHistory)
-    {
-        // NOTE: PlayerHistory entity is deprecated. This method needs refactoring to work with Game entities.
-        // PlayerHistoryDB.AddPlayerHistory no longer exists.
-        // Data should be added via Game entities through Participant/Tournament relationships.
-        
-        MessageBox.Show("Player history import is deprecated. Please use the import functionality in FrmMemberData instead, " +
-                      "which properly creates tournaments and links games through participants.",
-                      "Import Method Deprecated", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        
-        // TODO: Refactor this to use the new import mechanism that creates tournaments and participants
     }
 
     /// <summary>
