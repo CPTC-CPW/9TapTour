@@ -648,9 +648,9 @@ public partial class FrmMain : Form
     {
         Cursor.Current = Cursors.WaitCursor;
 
-        IncrementFinalizeBar(25, "Step 3: Setting averages and bonus pins from history.");
+        IncrementFinalizeBar(33, "Step 3: Setting averages and bonus pins from history.");
 
-        // Update validMembers in memory with latest history values (do not persist here)
+        // Update validMembers in memory with latest history values
         for (int i = 0; i < validMembers.Count; i++)
         {
             List<PlayerHistoryViewModel> list = PlayerHistoryDB.GetLastFiveTournaments(validMembers[i].Number, RegionID);
@@ -662,7 +662,11 @@ public partial class FrmMain : Form
             }
         }
 
-        IncrementFinalizeBar(25, "Finalized in-memory member averages. No member DB update performed.");
+        // Persist member updates to the DB (automatic)
+        IncrementFinalizeBar(33, "Saving member averages and bonus pins to database...");
+        UpdateMembers(validMembers);
+        IncrementFinalizeBar(34, "Members updated");
+
         Cursor.Current = Cursors.Default;
         MessageBox.Show($"Import complete. {validMembers.Count} members processed; games and participants were added to the database.", "Import Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
         this.Close();
@@ -688,10 +692,8 @@ public partial class FrmMain : Form
     {
         for (int i = 0; i < members.Count; i++)
         {
-            if (MemberDB.MemberExists(members[i]) == false)
-            {
-                MemberDB.AddOrUpdateMember(members[i]);
-            }
+            // Use AddOrUpdate to ensure existing members get their averages/bonus updated
+            MemberDB.AddOrUpdateMember(members[i]);
         }
     }
 
