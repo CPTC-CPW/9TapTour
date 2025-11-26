@@ -23,14 +23,6 @@ namespace NineTapTour.Forms
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public FrmMemberData CurrFrmMemberData { get; set; }
 
-        private FrmMemberScores CurrfrmScoresData { get; set; }
-
-        /// <summary>
-        /// If this property is set to true, the application will not prompt the user to cancel a close in progress.
-        /// Currently this is used to ensure the application restarts after restoring the database.
-        /// </summary>
-        private bool AppMustClose { get; set; }
-
         private FrmMainMenu MainMenu { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -228,9 +220,7 @@ namespace NineTapTour.Forms
         public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as FrmMemberScores;
-            OpenOrDisplayForm(ref newfrmMemberScores);
-            CurrfrmScoresData = newfrmMemberScores;
-            
+            OpenOrDisplayForm(ref newfrmMemberScores);     
         }
 
         /// <summary>
@@ -272,7 +262,6 @@ namespace NineTapTour.Forms
                 if (DatabaseManagement.RestoreDatabase())
                 {
                     MessageBox.Show("Database successfully restored from backup!");
-                    AppMustClose = true;
                     Application.Restart();
                 }
                 
