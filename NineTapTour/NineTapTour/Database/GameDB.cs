@@ -25,6 +25,18 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
+        /// Adds a Game that doesn't have an Id in the database. Updates a Game that has an id 
+        /// that exist in the database using an existing DbContext
+        /// </summary>
+        public static void AddOrUpdateGame(Game game, NineTapDb db)
+        {
+            db.Entry(game).State = db.Games.Any(g => g.Id == game.Id) ?
+                    EntityState.Modified : EntityState.Added;
+
+            db.SaveChanges();
+        }
+
+        /// <summary>
         /// Returns a game from the Games table by id. Returns null if not found
         /// </summary>
         /// <param name="gameID"></param>

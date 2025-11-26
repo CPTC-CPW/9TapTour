@@ -131,6 +131,16 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
+        /// Returns a member with the same memberNumber and regionID given using an existing DbContext
+        /// </summary>
+        public static Member GetMember(int memberNumber, int regionID, NineTapDb db)
+        {
+            return (from m in db.Members
+                        where m.Number == memberNumber && m.NineTapRegionID == regionID
+                        select m).SingleOrDefault() ?? new Member();
+        }
+
+        /// <summary>
         /// Returns a member with the same gameID given
         /// </summary>
         public static Member GetMemberByGameId(int gameID)
