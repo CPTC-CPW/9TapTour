@@ -65,69 +65,14 @@ public partial class FrmMain : Form
         txtStatus.Left = 10;
         this.Controls.Add(txtStatus);
     }
-
-    #region Member Info Static Ints
-    //MEMBER INFO STATIC INTS
-    static readonly int MemNumSpace = 6;     // Member Number
-    static readonly int DJoinedSpace = 8;    // Date Joined
-    static readonly int LNameSpace = 20;     // Last Name
-    static readonly int FNameSpace = 20;     // First Name
-    static readonly int MISpace = 2;         // Middle Initial
-    static readonly int EPhoneSpace = 15;    // Evening Phone
-    static readonly int DPhoneSpace = 15;    // Day Phone
-    static readonly int CPhoneSpace = 15;    // Cell Phone
-    static readonly int StreetSpace = 40;    // Street Address
-    static readonly int EmailSpace = 40;     // Email Address
-    static readonly int CitySpace = 20;      // City
-    static readonly int StateSpace = 2;      // State
-    static readonly int ZipSpace = 10;       // Zip
-    static readonly int NotesSpace = 200;    // Notes
-    static readonly int AVGSpace = 3;        // Average
-    static readonly int HCSpace = 2;         // Handicap
-    static readonly int BSpace = 2;          // Bonus
-    static readonly int LastBSpace = 8;      // Last Bowled
-    static readonly int YearEndTSpace = 2;   // Year End Tournaments
-    static readonly int MoneyESpace = 10;    // Money Earned
-    static readonly int RejoinDSpace = 8;    // Rejoin Date;
-    static readonly int ReferalSpace = 2;    // ReferalSpace;
-    static readonly int SSSpace = 11;        // Social Security
-    static readonly int CBSpace = 5;         // Check Box Spaceing, there are 7 total, only 5 are actually checked for information, repeated 7 times in Spaces array.
-    static readonly int DOBSpace = 8;        // Date Of Birth.
-    #endregion
-    #region PinFile Static Ints
-    // PIN FILE STATIC INTS
-    static readonly int PinFileMemNumSpace = 6;
-    static readonly int PinFileLastName = 20;
-    static readonly int PinFileFirstName = 20;
-    static readonly int PinFileMiddleName = 2;
-    static readonly int PinFileScratchScore1 = 3;
-    static readonly int PinFileScratchScore2 = 3;
-    static readonly int PinFileScratchScore3 = 3;
-    static readonly int PinFileScratchScore4 = 3;
-    static readonly int PinFileScratchScoreTotal = 4;
-    static readonly int PinFileHandicapScore1 = 3;
-    static readonly int PinFileHandicapScore2 = 3;
-    static readonly int PinFileHandicapScore3 = 3;
-    static readonly int PinFileHandicapScore4 = 3;
-    static readonly int PinFileHandicapScoreTotal = 4;
-    static readonly int PinFileNotes = 207; //notes + spaces to skip to get to the 0's ans 1's that control the squads
-    static readonly int morsecodeslot = 5; // all the 0 and 1s at the end of a players pin record. these series of 0s and 1s indicate their active or inactive status, male or female, senior. and bowling squad.
-    #endregion
-
+    
     public int RegionID;
     public int allGames;
 
     public List<Member> validMembers = [];      // Makes list of valid members
     public List<PlayerHistoryViewModel> PlayerHistoryList = [];
 
-    // Create array of spaces
-    readonly int[] Spaces = [ MemNumSpace, DJoinedSpace, LNameSpace, FNameSpace, MISpace, EPhoneSpace, DPhoneSpace, CPhoneSpace,
-                               StreetSpace, EmailSpace, CitySpace, StateSpace, ZipSpace, NotesSpace, AVGSpace, HCSpace, BSpace,
-                               LastBSpace, YearEndTSpace, MoneyESpace, RejoinDSpace, ReferalSpace, SSSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, DOBSpace];
-
     private static readonly List<ExcelRow> ALLEXCELDATAFROMALLPLAYERS = [];
-    private static readonly List<Tournament> TournamentList = [];
-    private static readonly List<Game> GameImport = [];
 
     /// <summary>
     /// When the user clicks on the open button file it will open a file selection window
@@ -136,6 +81,39 @@ public partial class FrmMain : Form
 
     private void BtnOpenFile_Click(object sender, EventArgs e)
     {
+        #region Member Info Static Ints
+        const int MemNumSpace = 6;     // Member Number
+        const int DJoinedSpace = 8;    // Date Joined
+        const int LNameSpace = 20;     // Last Name
+        const int FNameSpace = 20;     // First Name
+        const int MISpace = 2;         // Middle Initial
+        const int EPhoneSpace = 15;    // Evening Phone
+        const int DPhoneSpace = 15;    // Day Phone
+        const int CPhoneSpace = 15;    // Cell Phone
+        const int StreetSpace = 40;    // Street Address
+        const int EmailSpace = 40;     // Email Address
+        const int CitySpace = 20;      // City
+        const int StateSpace = 2;      // State
+        const int ZipSpace = 10;       // Zip
+        const int NotesSpace = 200;    // Notes
+        const int AVGSpace = 3;        // Average
+        const int HCSpace = 2;         // Handicap
+        const int BSpace = 2;          // Bonus
+        const int LastBSpace = 8;      // Last Bowled
+        const int YearEndTSpace = 2;   // Year End Tournaments
+        const int MoneyESpace = 10;    // Money Earned
+        const int RejoinDSpace = 8;    // Rejoin Date;
+        const int ReferalSpace = 2;    // ReferalSpace;
+        const int SSSpace = 11;        // Social Security
+        const int CBSpace = 5;         // Check Box Spaceing, there are 7 total, only 5 are actually checked for information, repeated 7 times in Spaces array.
+        const int DOBSpace = 8;        // Date Of Birth.
+        #endregion
+
+        int[] Spaces = [ MemNumSpace, DJoinedSpace, LNameSpace, FNameSpace, MISpace, EPhoneSpace, DPhoneSpace, CPhoneSpace,
+                        StreetSpace, EmailSpace, CitySpace, StateSpace, ZipSpace, NotesSpace, AVGSpace, HCSpace, BSpace,
+                        LastBSpace, YearEndTSpace, MoneyESpace, RejoinDSpace, ReferalSpace, SSSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, CBSpace, DOBSpace];
+
+
         // Configure OpenFileDialog
         ofdOpen.Filter = "Data Files (*.dat)|*.dat|Text Files (*.txt)|*.txt";
         ofdOpen.Title = "Please Select a member file to open";
