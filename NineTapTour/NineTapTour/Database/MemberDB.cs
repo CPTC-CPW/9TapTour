@@ -44,20 +44,8 @@ namespace NineTapTour.Database
                     }
                     if (db.Entry(temp).State == EntityState.Modified)
                     {
+                        // Add null check
                         temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.StartAvg.Value));
-#if DEBUG
-                        // For debugging purposes will send PLAYER UPDATED to the Console
-                        // DO NOT USE Messagebox as it bogs down the program
-                        Console.WriteLine("Player Updated");
-#endif
-                    }
-                    else
-                    {
-#if DEBUG
-                        // For debugging purposes will send PLAYER SAVED SUCCESSFULLY to the Console
-                        // DO NOT USE Messagebox as it bogs down the program
-                        Console.WriteLine("Player Saved Successfully");
-#endif
                     }
                     db.SaveChanges();
                 }
