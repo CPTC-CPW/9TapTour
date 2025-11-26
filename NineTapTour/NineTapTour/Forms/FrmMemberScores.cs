@@ -1177,17 +1177,12 @@ namespace NineTapTour.Forms
             List<Tournament> tours = [];
             FrmTourSearch tourSearch = new(tours, RegionID);
             tourSearch.ShowDialog();
-#if DEBUG
-            foreach (Tournament tour in tours)
-            {
-                Console.WriteLine(tour.TourneyNameDate);
-            }
-#endif
+
             //Populates dropdown box with tournaments
             if (tours.Count > 0)
             {
                 cbxTourneyDropDown.DataSource = tours;
-                cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
+                cbxTourneyDropDown.DisplayMember = nameof(Tournament.TourneyNameDate);
             }
         }
 
@@ -1218,8 +1213,6 @@ namespace NineTapTour.Forms
             Refresh();
         }
 
-        // NOTE: This listOfTopScore is never populated/ultilized
-        //List<TopScores> listOfTopScore = new List<TopScores>();
         readonly IComparer<MemberScores> scoreComparer = new Calculations.MemberScoresComparer();
 
         /// <summary>
