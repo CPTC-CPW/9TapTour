@@ -355,7 +355,6 @@ public partial class FrmMain : Form
             txtProgress.AppendText($"Processing: {Path.GetFileName(files[i])}\r\n");
             rows = ProcessExcelFile(files[i]);
         }
-        txtProgress.AppendText("Complete\r\n");
         return rows;
     }
 
@@ -377,94 +376,46 @@ public partial class FrmMain : Form
         {
             using (var workbook = new XLWorkbook(PathAndFileName))
             {
-                // Iterate all worksheets in the workbook
+                // Extract player information ONCE from the first worksheet that has it
+                string[] PlayerFinalFirstAndMiddle = new[] { "", "" };
+                string playerLastName = "";
+                int playerOrgAVG = -1;
+                int playerNumberAsInt = 0;
+
+                bool playerInfoExtracted = false;
+
+                // Find and extract player information from first worksheet with data
                 foreach (var ws in workbook.Worksheets)
                 {
-                    txtProgress.AppendText($" Processing Worksheet: {ws.Name}\r\n");
-
-                    string[] PlayerFinalFirstAndMiddle = new[] { "", "" };
-                    string playerLastName = "";
-                    string firstAndMiddle = "";
-
-                    // Parse header for player name
-                    string playerFullName = ws.Cell(1, 2).GetString();
-                    if (!string.IsNullOrWhiteSpace(playerFullName))
+                    if (!playerInfoExtracted)
                     {
-                        if (playerFullName.Contains(','))
+                        ExtractPlayerInfoFromWorksheet(ws, ref PlayerFinalFirstAndMiddle, ref playerLastName, 
+                            ref playerOrgAVG, ref playerNumberAsInt, PathAndFileName, splitters);
+                        
+                        if (playerNumberAsInt > 0)
                         {
-                            playerLastName = playerFullName[..playerFullName.IndexOf(',')];
-                            firstAndMiddle = playerFullName[(playerFullName.IndexOf(',') + 2)..];
-                        }
-                        else if (playerFullName.Contains('.'))
-                        {
-                            playerLastName = playerFullName[..playerFullName.IndexOf('.')];
-                            try
-                            {
-                                firstAndMiddle = playerFullName[(playerFullName.IndexOf('.') + 2)..];
-                            }
-                            catch (ArgumentOutOfRangeException)
-                            {
-                                int firstSpaceIndex = playerFullName.IndexOf(' ');
-                                firstAndMiddle = firstSpaceIndex > -1 ? playerFullName[..firstSpaceIndex] : playerFullName;
-                            }
+                            playerInfoExtracted = true;
                         }
                     }
+                }
 
-                    string[] first0middle1 = firstAndMiddle.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                    for (int i = 0; i < Math.Min(first0middle1.Length, PlayerFinalFirstAndMiddle.Length); i++)
-                    {
-                        PlayerFinalFirstAndMiddle[i] = first0middle1[i];
-                    }
+                // If we couldn't extract player info, abort
+                if (!playerInfoExtracted || playerNumberAsInt <= 0)
+                {
+                    txtProgress.AppendText($"  ERROR: Could not extract valid player information from {Path.GetFileName(PathAndFileName)}\r\n");
+                    return returnMe;
+                }
 
-                    int playerOrgAVG;
-                    try
-                    {
-                        playerOrgAVG = ws.Cell(1, 10).GetValue<int>();
-                    }
-                    catch (Exception)
-                    {
-                        string orgString = ws.Cell(1, 10).GetString();
-                        string[] afterSplit = orgString.Split('-', '*', 'L');
-                        if (afterSplit.Length > 0 && int.TryParse(afterSplit[0], out int val))
-                            playerOrgAVG = val;
-                        else
-                            playerOrgAVG = -1;
-                    }
+                // Load existing tournaments once for the entire workbook
+                List<Tournament> existingTournaments = TournamentDB.GetTournamentList(RegionID, db);
 
-                    string playerNumber = ws.Cell(1, 14).GetString();
-                    if (playerNumber == null)
-                    {
-                        MessageBox.Show($"Player number could not be read in excel file {PathAndFileName}. Program is unable to continue.");
-                        throw new ArgumentException($"While reading {PathAndFileName} a player number was not found in the file.");
-                    }
-
-                    // Some regions have letters in their player numbers, so strip non-numeric characters
-                    playerNumber = RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty);
-
-                    string[] playerNumberAfterSplit;
-                    int.TryParse(playerNumber, out int playerNumberAsInt);
-                    if (playerNumberAsInt != 0)
-                    {
-                        playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty));
-                    }
-                    else if (playerNumberAsInt == 0)
-                    {
-                        for (int i = 0; i < splitters.Length; i++)
-                        {
-                            try
-                            {
-                                playerNumberAfterSplit = playerNumber.Split(splitters[i]);
-                                playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumberAfterSplit[^1], string.Empty));
-                            }
-                            catch { }
-                        }
-                    }
+                // Now process each worksheet with the extracted player info
+                foreach (var ws in workbook.Worksheets)
+                {
+                    txtProgress.AppendText($"  Processing Worksheet: {ws.Name}...\r\n");
 
                     int lastRow = ws.LastRowUsed().RowNumber();
                     const int GameDataStartRow = 3;
-
-                    // Load existing tournaments for this region using the shared DbContext
-                    List<Tournament> existingTournaments = TournamentDB.GetTournamentList(RegionID, db);
 
                     for (int row = GameDataStartRow; row <= lastRow; row++)
                     {
@@ -494,7 +445,7 @@ public partial class FrmMain : Form
                             continue;
                         }
 
-                        // Populate excel row and game data
+                        // Populate excel row with reused player data
                         temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
                         temp.PlayerMiddleName = PlayerFinalFirstAndMiddle[1];
                         temp.PlayerLastName = playerLastName;
@@ -522,7 +473,6 @@ public partial class FrmMain : Form
                         try { if (!string.IsNullOrEmpty(temp.FinPPHG)) { temp.Cash = ws.Cell(row, 15).GetValue<double>(); } else { temp.Cash = 0; } } catch { temp.Cash = 0; }
                         temp.Notes = ws.Cell(row, 16).GetString();
 
-                        // Determine tournament for this row by date; create if it doesn't exist
                         DateTime rowDate = temp.Date != default(DateTime) ? temp.Date.Date : DateTime.Now.Date;
                         Tournament tourn = existingTournaments.FirstOrDefault(t => t.Date.Date == rowDate);
                         if (tourn == null)
@@ -553,7 +503,6 @@ public partial class FrmMain : Form
                             }
                         }
 
-                        // Build Game entity
                         Game game = new Game()
                         {
                             Game1 = temp.Game1 > -1 ? temp.Game1 : null,
@@ -566,9 +515,7 @@ public partial class FrmMain : Form
                             MoneyWon = Convert.ToDecimal(temp.Cash),
                             Notes = temp.Notes,
                             IsComp = !string.IsNullOrWhiteSpace(temp.FinPPHG),
-                            // Mark imported games as finalized
                             IsFinalized = true,
-                            // Ensure use flags are set only when a game value exists
                             UseGame1 = temp.Game1 > -1 ? true : false,
                             UseGame2 = temp.Game2 > -1 ? true : false,
                             UseGame3 = temp.Game3 > -1 ? true : false,
@@ -578,14 +525,11 @@ public partial class FrmMain : Form
                         GameDB.AddOrUpdateGame(game, db);
 
                         int squadNumber = 1;
-                        // Count existing participant records for this member in this tournament
                         int existingParticipantCount = db.Participants
                             .Count(p => p.Member.Id == member.Id && p.Tournament.Id == tourn.Id);
                         
-                        // Squad number starts at 1 and increments for each additional entry
                         squadNumber = existingParticipantCount + 1;
 
-                        // Create participant linking member, game and tournament
                         Participant participant = new Participant()
                         {
                             Squad = squadNumber,
@@ -600,7 +544,92 @@ public partial class FrmMain : Form
                     }
                 }
 
+                db.SaveChanges();
+                txtProgress.AppendText($"  File complete: {returnMe.Count} records saved.\r\n");
                 return returnMe;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Extracts player information (name, number, average) from the first worksheet with valid data.
+    /// Used once per workbook and reused for all sheets.
+    /// </summary>
+    private void ExtractPlayerInfoFromWorksheet(IXLWorksheet ws, ref string[] PlayerFinalFirstAndMiddle, 
+        ref string playerLastName, ref int playerOrgAVG, ref int playerNumberAsInt, 
+        string PathAndFileName, char[] splitters)
+    {
+        string firstAndMiddle = "";
+
+        // Parse header for player name
+        string playerFullName = ws.Cell(1, 2).GetString();
+        if (!string.IsNullOrWhiteSpace(playerFullName))
+        {
+            if (playerFullName.Contains(','))
+            {
+                playerLastName = playerFullName[..playerFullName.IndexOf(',')];
+                firstAndMiddle = playerFullName[(playerFullName.IndexOf(',') + 2)..];
+            }
+            else if (playerFullName.Contains('.'))
+            {
+                playerLastName = playerFullName[..playerFullName.IndexOf('.')];
+                try
+                {
+                    firstAndMiddle = playerFullName[(playerFullName.IndexOf('.') + 2)..];
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    int firstSpaceIndex = playerFullName.IndexOf(' ');
+                    firstAndMiddle = firstSpaceIndex > -1 ? playerFullName[..firstSpaceIndex] : playerFullName;
+                }
+            }
+        }
+
+        string[] first0middle1 = firstAndMiddle.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        for (int i = 0; i < Math.Min(first0middle1.Length, PlayerFinalFirstAndMiddle.Length); i++)
+        {
+            PlayerFinalFirstAndMiddle[i] = first0middle1[i];
+        }
+
+        try
+        {
+            playerOrgAVG = ws.Cell(1, 10).GetValue<int>();
+        }
+        catch (Exception)
+        {
+            string orgString = ws.Cell(1, 10).GetString();
+            string[] afterSplit = orgString.Split('-', '*', 'L');
+            if (afterSplit.Length > 0 && int.TryParse(afterSplit[0], out int val))
+                playerOrgAVG = val;
+            else
+                playerOrgAVG = -1;
+        }
+
+        string playerNumber = ws.Cell(1, 14).GetString();
+        if (playerNumber == null)
+        {
+            playerNumberAsInt = 0;
+            return;
+        }
+
+        playerNumber = RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty);
+
+        string[] playerNumberAfterSplit;
+        int.TryParse(playerNumber, out playerNumberAsInt);
+        if (playerNumberAsInt != 0)
+        {
+            playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty));
+        }
+        else if (playerNumberAsInt == 0)
+        {
+            for (int i = 0; i < splitters.Length; i++)
+            {
+                try
+                {
+                    playerNumberAfterSplit = playerNumber.Split(splitters[i]);
+                    playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumberAfterSplit[^1], string.Empty));
+                }
+                catch { }
             }
         }
     }
@@ -632,11 +661,7 @@ public partial class FrmMain : Form
         MessageBox.Show($"Import complete. {validMembers.Count} members processed; games and participants were added to the database.", "Import Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
         this.Close();
     }
-    /// <summary>
-    /// progress bar code the status of completion
-    /// </summary>
-    /// <param name="increment"></param>
-    /// <param name="msg"></param>
+
     private void IncrementFinalizeBar(int increment, string msg)
     {
         progressBarFinalize.Increment(increment);
@@ -645,10 +670,6 @@ public partial class FrmMain : Form
         lblFinalizeStatus.Refresh();
     }
 
-    /// <summary>
-    /// Checks members list if member does not exist it updates the list with adding or updating member
-    /// </summary>
-    /// <param name="members"></param>
     private static void UpdateMembers(List<Member> members)
     {
         for (int i = 0; i < members.Count; i++)
@@ -658,9 +679,6 @@ public partial class FrmMain : Form
         }
     }
 
-    /// <summary>
-    /// Allows user to change region for where they would like to import the member data to.
-    /// </summary>
     private void CbxRegionSelect_SelectedIndexChanged(object sender, EventArgs e)
     {
         List<NineTapRegion> r = NineTapRegionDB.GetRegionList();
