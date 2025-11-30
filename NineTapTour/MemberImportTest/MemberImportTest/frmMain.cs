@@ -67,9 +67,7 @@ public partial class FrmMain : Form
     }
     
     public int RegionID;
-
     public List<Member> validMembers = [];      // Makes list of valid members
-    public List<PlayerHistoryViewModel> PlayerHistoryList = [];
 
     /// <summary>
     /// When the user clicks on the open button file it will open a file selection window
@@ -600,8 +598,6 @@ public partial class FrmMain : Form
 
                         TournamentDB.AddMemberToTournament(participant, db);
 
-                        // Track progress and returned rows
-                        PlayerHistoryList.Add(playerH);
                         returnMe.Add(temp);
                     }
                 }
