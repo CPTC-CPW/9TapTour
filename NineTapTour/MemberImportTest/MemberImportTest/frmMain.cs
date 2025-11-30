@@ -67,7 +67,6 @@ public partial class FrmMain : Form
     }
     
     public int RegionID;
-    public int allGames;
 
     public List<Member> validMembers = [];      // Makes list of valid members
     public List<PlayerHistoryViewModel> PlayerHistoryList = [];
@@ -335,7 +334,6 @@ public partial class FrmMain : Form
     {
         using (var fbd = new FolderBrowserDialog())
         {
-            allGames = PlayerHistoryDB.GetNumberOfAllGames();
             DialogResult result = fbd.ShowDialog();
             if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
             {
@@ -603,7 +601,6 @@ public partial class FrmMain : Form
                         TournamentDB.AddMemberToTournament(participant, db);
 
                         // Track progress and returned rows
-                        allGames++;
                         PlayerHistoryList.Add(playerH);
                         returnMe.Add(temp);
                     }
