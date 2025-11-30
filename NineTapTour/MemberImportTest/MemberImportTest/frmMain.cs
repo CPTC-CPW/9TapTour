@@ -505,10 +505,8 @@ public partial class FrmMain : Form
                         if (member == null || member.IsActive != true)
                             continue;
 
-                        PlayerHistoryViewModel playerH = new PlayerHistoryViewModel();
-
-                        try { temp.GameTotal = ws.Cell(row, 1).GetValue<int>(); playerH.GamesPlayed = temp.GameTotal; } catch { temp.GameTotal = -1; }
-                        try { temp.Date = ws.Cell(row, 2).GetDateTime(); playerH.TournamentDate = temp.Date; } catch { temp.Date = new DateTime(); }
+                        try { temp.GameTotal = ws.Cell(row, 1).GetValue<int>(); } catch { temp.GameTotal = -1; }
+                        try { temp.Date = ws.Cell(row, 2).GetDateTime(); } catch { temp.Date = new DateTime(); }
                         try { temp.Game1 = ws.Cell(row, 3).GetValue<int>(); } catch { temp.Game1 = -1; }
                         try { temp.Game2 = ws.Cell(row, 4).GetValue<int>(); } catch { temp.Game2 = -1; }
                         try { temp.Game3 = ws.Cell(row, 5).GetValue<int>(); } catch { temp.Game3 = -1; }
