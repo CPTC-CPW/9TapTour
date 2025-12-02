@@ -44,8 +44,8 @@ namespace NineTapTour.Database
                     }
                     if (db.Entry(temp).State == EntityState.Modified)
                     {
-                        // Add null check
-                        temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.StartAvg.Value));
+                        if (temp.StartAvg != null)
+                            temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.StartAvg.Value));
                     }
                     db.SaveChanges();
                 }

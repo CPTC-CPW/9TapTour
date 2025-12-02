@@ -418,23 +418,7 @@ public partial class FrmMain : Form
 
                     for (int row = GameDataStartRow; row <= lastRow; row++)
                     {
-                        ExcelRow temp = new ExcelRow();
-
-                        string game1 = ws.Cell(row, 3).GetString();
-                        string game2 = ws.Cell(row, 4).GetString();
-                        string game3 = ws.Cell(row, 5).GetString();
-                        string game4 = ws.Cell(row, 6).GetString();
-                        string testFin = ws.Cell(row, 14).GetString();
-
-                        // There are no games in this row, proceed to next row
-                        if (string.IsNullOrWhiteSpace(game1) && string.IsNullOrWhiteSpace(game2) && string.IsNullOrWhiteSpace(game3) && string.IsNullOrWhiteSpace(game4))
-                            continue;
-
-                        // if both date and cash are empty, skip row
-                        if (string.IsNullOrWhiteSpace(ws.Cell(row, 2).GetString()) && string.IsNullOrWhiteSpace(ws.Cell(row, 15).GetString()))
-                        {
-                            continue;
-                        }
+                        ExcelRow temp = new();
 
                         // Populate excel row with reused player data
                         temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
@@ -454,6 +438,13 @@ public partial class FrmMain : Form
                         try { temp.Game3 = ws.Cell(row, 5).GetValue<int>(); } catch { temp.Game3 = -1; }
                         try { temp.Game4 = ws.Cell(row, 6).GetValue<int>(); } catch { temp.Game4 = -1; }
                         try { temp.Total = ws.Cell(row, 7).GetValue<int>(); } catch { temp.Total = -1; }
+
+                        if (temp.Game1 == -1 && temp.Game2 == -1 && temp.Game3 == -1 && temp.Game4 == -1)
+                        {
+                            // No game data in this row; skip it
+                            continue;
+                        }
+
                         try { temp.AverageOfRow = ws.Cell(row, 8).GetValue<double>(); } catch { temp.AverageOfRow = -1; }
                         try { temp.TrueAverage = ws.Cell(row, 9).GetValue<double>(); } catch { temp.TrueAverage = -1; }
                         try { temp.AVG = ws.Cell(row, 10).GetValue<int>(); } catch { temp.AVG = -1; }
