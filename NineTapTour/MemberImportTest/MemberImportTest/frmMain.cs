@@ -402,8 +402,7 @@ public partial class FrmMain : Form
                 // If we couldn't extract player info, abort
                 if (!playerInfoExtracted || playerNumberAsInt <= 0)
                 {
-                    txtProgress.AppendText($"  ERROR: Could not extract valid player information from {Path.GetFileName(PathAndFileName)}\r\n");
-                    return returnMe;
+                    throw new ArgumentException($"  ERROR: Could not extract valid player information from {Path.GetFileName(PathAndFileName)}\r\n");
                 }
 
                 // Load existing tournaments once for the entire workbook
@@ -427,20 +426,12 @@ public partial class FrmMain : Form
                         string game4 = ws.Cell(row, 6).GetString();
                         string testFin = ws.Cell(row, 14).GetString();
 
-                        if (!string.IsNullOrWhiteSpace(ws.Cell(row, 1).GetString()))
-                        {
-                            if (ws.Cell(row, 1).GetValue<int>() == 0 && string.IsNullOrWhiteSpace(ws.Cell(row, 15).GetString()))
-                            {
-                                continue;
-                            }
-                        }
-
-                        if (string.IsNullOrWhiteSpace(ws.Cell(row, 2).GetString()) && string.IsNullOrWhiteSpace(ws.Cell(row, 15).GetString()))
-                        {
+                        // There are no games in this row, proceed to next row
+                        if (string.IsNullOrWhiteSpace(game1) && string.IsNullOrWhiteSpace(game2) && string.IsNullOrWhiteSpace(game3) && string.IsNullOrWhiteSpace(game4))
                             continue;
-                        }
 
-                        if (string.IsNullOrWhiteSpace(game1) && string.IsNullOrWhiteSpace(game2) && string.IsNullOrWhiteSpace(game3) && string.IsNullOrWhiteSpace(game4) && !string.IsNullOrWhiteSpace(testFin))
+                        // if both date and cash are empty, skip row
+                        if (string.IsNullOrWhiteSpace(ws.Cell(row, 2).GetString()) && string.IsNullOrWhiteSpace(ws.Cell(row, 15).GetString()))
                         {
                             continue;
                         }
