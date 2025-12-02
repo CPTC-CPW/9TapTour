@@ -411,7 +411,7 @@ public partial class FrmMain : Form
                 // Now process each worksheet with the extracted player info
                 foreach (var ws in workbook.Worksheets)
                 {
-                    txtProgress.AppendText($"  Processing Worksheet: {ws.Name}...\r\n");
+                    // txtProgress.AppendText($"  Processing Worksheet: {ws.Name}...\r\n");
 
                     int lastRow = ws.LastRowUsed().RowNumber();
                     const int GameDataStartRow = 3;
@@ -439,7 +439,11 @@ public partial class FrmMain : Form
                         try { temp.Game4 = ws.Cell(row, 6).GetValue<int>(); } catch { temp.Game4 = -1; }
                         try { temp.Total = ws.Cell(row, 7).GetValue<int>(); } catch { temp.Total = -1; }
 
-                        if (temp.Game1 == -1 && temp.Game2 == -1 && temp.Game3 == -1 && temp.Game4 == -1)
+                        // Invalid rows may be blank, contain random zeros, or somehow have data read as 4 digit scores
+                        if ((temp.Game1 == -1 || temp.Game1 > 300 || temp.Game1 == 0) && 
+                            (temp.Game2 == -1 || temp.Game2 > 300 || temp.Game2 == 0) && 
+                            (temp.Game3 == -1 || temp.Game3 > 300 || temp.Game3 == 0) && 
+                            (temp.Game4 == -1 || temp.Game4 > 300 || temp.Game4 == 0))
                         {
                             // No game data in this row; skip it
                             continue;
