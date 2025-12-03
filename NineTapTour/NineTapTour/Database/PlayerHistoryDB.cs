@@ -288,6 +288,7 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
+                // Materialize the query first with ToList() since ScratchTotal is a calculated property
                 var games = db.Games
                     .Include(g => g.Participant)
                         .ThenInclude(p => p.Member)
@@ -295,10 +296,12 @@ namespace NineTapTour.Database
                     .Where(g => g.Participant.Member.Number == memberNum 
                              && g.Participant.Member.NineTapRegionID == regionID
                              && g.IsFinalized)
-                    .OrderByDescending(g => g.ScratchTotal)
                     .ToList();
 
-                return games.Select(g => new PlayerHistoryViewModel(
+                // Now order by ScratchTotal (calculated property) in memory
+                var orderedGames = games.OrderByDescending(g => g.ScratchTotal).ToList();
+
+                return orderedGames.Select(g => new PlayerHistoryViewModel(
                     g,
                     memberNum,
                     g.Participant.Tournament.Date,
