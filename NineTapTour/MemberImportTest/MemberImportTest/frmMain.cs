@@ -459,7 +459,13 @@ public partial class FrmMain : Form
                         try { if (!string.IsNullOrEmpty(temp.FinPPHG)) { temp.Cash = ws.Cell(row, 15).GetValue<double>(); } else { temp.Cash = 0; } } catch { temp.Cash = 0; }
                         temp.Notes = ws.Cell(row, 16).GetString();
 
-                        DateTime rowDate = temp.Date != default(DateTime) ? temp.Date.Date : DateTime.Now.Date;
+                        DateTime rowDate = temp.Date.Date;
+                        if (rowDate == DateTime.MinValue)
+                        {
+                            // Invalid date; skip this row
+                            continue;
+                        }
+
                         Tournament tourn = existingTournaments.FirstOrDefault(t => t.Date.Date == rowDate);
                         if (tourn == null)
                         {
