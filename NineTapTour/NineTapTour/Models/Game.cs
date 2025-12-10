@@ -10,7 +10,7 @@ namespace NineTapTour.Models
     {
         [Key]
         public int Id { get; set; }
-        public int? InputtedAvg { get; set; }
+        
         public int? Game1 { get; set; }
         public int? Game2 { get; set; }
         public int? Game3 { get; set; }
@@ -18,7 +18,6 @@ namespace NineTapTour.Models
 
         //Default as true, This would be used to calculate bonus pins, score, 
         //placestandings and especially repopulate Finalize tournament form.
-        // do we use bit or bool?
         [DefaultValue(true)]
         public bool? UseGame1 { get; set; }
         [DefaultValue(true)]
@@ -27,8 +26,24 @@ namespace NineTapTour.Models
         public bool? UseGame3 { get; set; }
         [DefaultValue(true)]
         public bool? UseGame4 { get; set; }
-       // We currently dont have a notes field, do we want one here?
-        public string Notes { get; set; } 
+
+        public string Notes { get; set; }
+
+        /// <summary>
+        /// The average for the 4 games entered for this participant in this tournament. Games are only
+        /// counted if they are marked as "used" (UseGameX = true).
+        /// </summary>
+        [NotMapped]
+        public double AverageForEntry
+        {
+            get
+            {
+                int gamesPlayed = GamesPlayed;
+                if (gamesPlayed == 0)
+                    return 0;
+                return (double)ScratchTotal / gamesPlayed;
+            }
+        }
 
         public int? Handicap { get; set; }
         public int? Bonus { get; set; }
@@ -100,20 +115,32 @@ namespace NineTapTour.Models
         // Properties migrated from FinalizeTemp
         [DefaultValue(false)]
         public bool IsFinalized { get; set; }
-        
+
+        #region Averages
+
+        /// <summary>
+        /// The League Average/True Average is the bowler's average for the last 30 games at this point in time.
+        /// </summary>
         public double LeagueAverage { get; set; }
-        
+
+        /// <summary>
+        /// The average adjusted for tournament conditions. The director assigns this average
+        /// (Described as AVG in old tournament import)
+        /// </summary>
         public int AdjustedAvg { get; set; }
-        
+
+        /// <summary>
+        /// Used during tournament finalization to indicate whether to keep the adjusted average
+        /// </summary>
         [DefaultValue(false)]
         public bool KeepAdjustedAvg { get; set; }
-        
-        public int GameAvg { get; set; }
-        
+        #endregion
+
+        /// <summary>
+        /// Total for all game scores + handicap per game + bonus per game
+        /// </summary>
         public int HandicapTotal { get; set; }
 
-        // Navigation property for EF Core (Phase 2: Added for PlayerHistory refactoring)
-        // One Game belongs to one Participant (inverse navigation)
         public virtual Participant Participant { get; set; }
 
         public List<int?> AllGameScores()

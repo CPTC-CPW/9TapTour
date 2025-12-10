@@ -133,7 +133,6 @@ namespace NineTapTour.Models
             Notes = game.Notes;
 
             // Averages
-            AverageForEntry = game.GameAvg;
             trueAVG = game.LeagueAverage;
             AVG = game.AdjustedAvg;
 

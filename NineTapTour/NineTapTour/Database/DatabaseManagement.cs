@@ -68,10 +68,10 @@ namespace NineTapTour.Database
             if (result == DialogResult.OK)
             {
                 using var backUpCmd = context.Database.GetDbConnection().CreateCommand();
-                context.Database.ExecuteSqlRaw($"USE master;DROP DATABASE [NineTapdb2021];"
+                context.Database.ExecuteSqlRaw($"USE master;DROP DATABASE [NineTapdb2025];"
                     + $"RESTORE DATABASE [NineTapDb2021] FILE = 'NineTapDb2021' FROM DISK = '{openFileDialog.FileName}' WITH FILE = 1,"
-                    + $"MOVE 'NineTapDb2021' TO '{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\\NineTapDb2021.mdf'," +
-                    $"MOVE 'NineTapDb2021_log' TO '{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\\NineTap2021.ldf', NOUNLOAD");
+                    + $"MOVE 'NineTapDb2025' TO '{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\\NineTapDb2025.mdf'," +
+                    $"MOVE 'NineTapDb2025_log' TO '{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\\NineTap2025.ldf', NOUNLOAD");
                 MessageBox.Show("Restore successful");
                 return true;
             }

@@ -38,7 +38,7 @@ namespace NineTapTour.Database
                     /* The if statement is so that you can update the handicap by changing the league average,
                      but it won't update if a member participated in a tournament, .Value solves the problem 
                      where startAvg is nullable but the method is just int not int? */
-                    if (temp.Average == 0)
+                    if (temp.Average == 0 && temp.StartAvg != null)
                     {
                         temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.StartAvg.Value));
                     }

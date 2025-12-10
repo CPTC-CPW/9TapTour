@@ -15,7 +15,7 @@ namespace NineTapTour.Database
         /// Calculates league average for given member based off last 30 games 
         /// or total games played if less than 30.
         /// </summary>
-        public static double LeagueAverage(Member mem)
+        public static double Get30GameAverage(Member mem)
         {
             // Represents the number of past games for the player
             int howManyGames = 30;
@@ -42,7 +42,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// This is a helper method for <see cref="LeagueAverage(Member)"/>
+        /// This is a helper method for <see cref="Get30GameAverage(Member)"/>
         /// that takes the useGames from the database to see if they are true or null.
         /// We are saying that null is true, because they are optional booleans in the database.
         /// (Assuming that during the import process these are not being updated)
@@ -123,7 +123,7 @@ namespace NineTapTour.Database
         /// <param name="memberNumber">The member number NOT id</param>
         /// <param name="regionId">The region id</param>
         /// <param name="tournamentId">The id of the tournament</param>
-        public static double GetLeagueAverage(int memberNumber, int regionId, int tournamentId)
+        public static double Get30GameAverage(int memberNumber, int regionId, int tournamentId)
         {
             int allGamesPlayed = 0;
             int totalScratchTotal = 0;
@@ -228,7 +228,6 @@ namespace NineTapTour.Database
                         game.LeagueAverage = temp.LeagueAverage;
                         game.AdjustedAvg = temp.AdjustedAvg;
                         game.KeepAdjustedAvg = temp.KeepAdjustedAvg;
-                        game.GameAvg = temp.GameAvg;
                         game.HandicapTotal = temp.HandicapTotal;
                         
                         // Update member handicap
@@ -236,7 +235,7 @@ namespace NineTapTour.Database
                         if (member != null)
                         {
                             member.Handicap = Calculations.Calculations.CalculateHandicapPins(
-                                Convert.ToInt16(LeagueAverage(member))
+                                Convert.ToInt16(Get30GameAverage(member))
                             );
                         }
                         
@@ -314,10 +313,6 @@ namespace NineTapTour.Database
                                LeagueAverage = g.LeagueAverage,
                                AdjustedAvg = g.AdjustedAvg,
                                KeepAdjustedAvg = g.KeepAdjustedAvg,
-                               GameAvg = g.GameAvg > 0 ? g.GameAvg : 
-                                   ((g.Game1 ?? 0) + (g.Game2 ?? 0) + (g.Game3 ?? 0) + (g.Game4 ?? 0)) / 
-                                   ((g.Game1.HasValue ? 1 : 0) + (g.Game2.HasValue ? 1 : 0) + 
-                                    (g.Game3.HasValue ? 1 : 0) + (g.Game4.HasValue ? 1 : 0)),
                                HandicapTotal = g.HandicapTotal > 0 ? g.HandicapTotal :
                                    ((g.Game1.HasValue ? (g.Game1 ?? 0) + (g.Handicap ?? 0) + (g.Bonus ?? 0) : 0) +
                                     (g.Game2.HasValue ? (g.Game2 ?? 0) + (g.Handicap ?? 0) + (g.Bonus ?? 0) : 0) +
@@ -368,7 +363,6 @@ namespace NineTapTour.Database
                                LeagueAverage = g.LeagueAverage,
                                AdjustedAvg = g.AdjustedAvg,
                                KeepAdjustedAvg = g.KeepAdjustedAvg,
-                               GameAvg = g.GameAvg,
                                HandicapTotal = g.HandicapTotal,
                                ScratchTotal = (g.Game1 ?? 0) + (g.Game2 ?? 0) + (g.Game3 ?? 0) + (g.Game4 ?? 0),
                                Handicap = g.Handicap ?? 0,

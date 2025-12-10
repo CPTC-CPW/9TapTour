@@ -1136,7 +1136,6 @@ public partial class FrmMemberData : Form
                     IsFinalized = true, // Mark as finalized since it's legacy data
                     AdjustedAvg = temp.AVG,
                     LeagueAverage = temp.TrueAverage,
-                    GameAvg = Convert.ToInt32(temp.AverageOfRow),
                     UseGame1 = temp.Game1 >= 0,
                     UseGame2 = temp.Game2 >= 0,
                     UseGame3 = temp.Game3 >= 0,

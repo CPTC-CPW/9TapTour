@@ -657,7 +657,6 @@ namespace NineTapTour.Forms
                 }
 
                 // Update calculated values on Game entity
-                game.GameAvg = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[ENTRY_AVERAGE_COLUMN].Value);
                 game.HandicapTotal = Convert.ToInt32(TournamentEntriesGrid.Rows[row].Cells[HANDICAP_TOTAL_COLUMN].Value);
                 game.LeagueAverage = Convert.ToDouble(TournamentEntriesGrid.Rows[row].Cells[THIRTY_ENTRY_AVERAGE_COLUMN].Value);
                 
@@ -1268,7 +1267,6 @@ namespace NineTapTour.Forms
                     #endregion
 
                     // Update Game entity with finalized data
-                    currGame.GameAvg = FinalizeTableList[i].GameAvg;
                     currGame.LeagueAverage = FinalizeTableList[i].LeagueAverage;
                     currGame.AdjustedAvg = Convert.ToInt32(TournamentEntriesGrid[ADJUSTED_AVG_COLUMN, currDataGridRowIndex].Value);
                     currGame.SidePot = GameDB.GetGame(currGameId).SidePot;
@@ -1338,7 +1336,6 @@ namespace NineTapTour.Forms
                     #endregion
 
                     currGame.Handicap = FinalizeTableList[i].Handicap;
-                    currGame.InputtedAvg = currGame.AdjustedAvg;
                     currGame.Notes = TournamentEntriesGrid[NOTES_COLUMN_, currDataGridRowIndex].Value.ToString();
                     currMember.StartAvg = currGame.AdjustedAvg;
                     
@@ -1448,7 +1445,7 @@ namespace NineTapTour.Forms
         /// <returns></returns>
         private double CalcThirtyLeagueAverage(int memberNum)
         {
-            return FinalizeTempDB.GetLeagueAverage(memberNum, RegionID, currTournament.Id);
+            return FinalizeTempDB.Get30GameAverage(memberNum, RegionID, currTournament.Id);
         }
 
         /// <summary>

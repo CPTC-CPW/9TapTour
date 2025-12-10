@@ -511,7 +511,14 @@ public partial class FrmMain : Form
                             UseGame1 = temp.Game1 > -1 ? true : false,
                             UseGame2 = temp.Game2 > -1 ? true : false,
                             UseGame3 = temp.Game3 > -1 ? true : false,
-                            UseGame4 = temp.Game4 > -1 ? true : false
+                            UseGame4 = temp.Game4 > -1 ? true : false,
+                            
+                            AdjustedAvg = temp.AVG,
+                            KeepAdjustedAvg = true,
+                            LeagueAverage = temp.TrueAverage,
+                            HandicapTotal = temp.HandyCap,
+                            PlaceStanding = Convert.ToInt32(temp.FinPPHG),
+                            SidePot = Convert.ToDecimal(temp.PotPro)
                         };
 
                         GameDB.AddOrUpdateGame(game, db);

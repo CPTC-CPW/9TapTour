@@ -351,7 +351,6 @@ namespace NineTapTour.Forms
                             Game4 = g.Game4 ?? 0,
                             ScratchTotal = g.ScratchTotal,
                             TotalScore = g.HandicapTotal,
-                            AverageForEntry = g.GameAvg,
                             trueAVG = g.LeagueAverage,
                             AVG = g.AdjustedAvg,
                             HandiCap = g.Handicap ?? 0,
@@ -417,7 +416,6 @@ namespace NineTapTour.Forms
                     newRow["Gm4"] = item.Game4;
                 newRow["Scratch Total"] = item.ScratchTotal;
                 newRow["Game Total w/HDCP"] = item.TotalScore;
-                newRow["Entry AVG"] = item.AverageForEntry;
                 newRow["30 Entry AVG"] = item.trueAVG;
 
                 if (item.AVG == 0)

@@ -153,7 +153,6 @@ namespace NineTapTour.Forms
                     }
 
                     const int headerRowsOffset = 4;
-                    const int numberOfColumns = 4;
                     int numMembers = temp.Count;
                     for (int row = 5; row <= numMembers + headerRowsOffset; row++)
                     {
