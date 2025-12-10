@@ -25,7 +25,7 @@ namespace NineTapTour.Forms.Tests
             List<int> expectedScores = [200, 175, 150];
             bool isLowestScorePresent = top3Scores.Any(score => score == minScore);
 
-            Assert.AreEqual(expectedScores.Count, top3Scores.Count); //ensure 3 scores are returned when given 4
+            Assert.HasCount(expectedScores.Count, top3Scores); //ensure 3 scores are returned when given 4
             Assert.IsFalse(isLowestScorePresent);                    //ensure lowest is dropped
 
             for (int i = 0; i < expectedScores.Count; i++)
@@ -48,8 +48,8 @@ namespace NineTapTour.Forms.Tests
             List<int> result2 = FrmTournamentStats.GetTop3OutOf4(testScores.GetRange(0, 2));
 
             //ensure list of scores with less than 4 games do not drop any
-            Assert.AreEqual(result.Count, 3);
-            Assert.AreEqual(result2.Count, 2);
+            Assert.HasCount(3, result);
+            Assert.HasCount(2, result2);
         }
     }
 }

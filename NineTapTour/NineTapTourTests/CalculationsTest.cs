@@ -72,21 +72,21 @@ namespace NineTapTourTests
             members = Calculations.CalculatePlaceStandings(members);
 
             //check first bowler is A with 1000; lesser score (800) is removed
-            Assert.AreEqual(members[0].MemberId, 1);
-            Assert.AreEqual(members[0].Score, 1000);
-            Assert.AreEqual(members[0].placing, 1);
+            Assert.AreEqual(1, members[0].MemberId);
+            Assert.AreEqual(1000, members[0].Score);
+            Assert.AreEqual(1, members[0].placing);
 
             //check three way tie (next bowlers all have score of 800)
-            Assert.AreEqual(members[1].placing, 2);
-            Assert.AreEqual(members[2].placing, 2);
-            Assert.AreEqual(members[3].placing, 2);
+            Assert.AreEqual(2, members[1].placing);
+            Assert.AreEqual(2, members[2].placing);
+            Assert.AreEqual(2, members[3].placing);
 
             //next two members tie (next two bowlers tie with 650
-            Assert.AreEqual(members[4].placing, 5);
-            Assert.AreEqual(members[5].placing, 5);
+            Assert.AreEqual(5, members[4].placing);
+            Assert.AreEqual(5, members[5].placing);
 
             //last member in list (score of 500)
-            Assert.AreEqual(members[6].placing, 7);
+            Assert.AreEqual(7, members[6].placing);
         }
 
         [TestMethod]
@@ -100,7 +100,7 @@ namespace NineTapTourTests
         public void CalculateHandicapPins_ReturnsExpectedAmount(int avg, int expectedHandicap)
         {
             int handicapResult = Calculations.CalculateHandicapPins(avg);
-            Assert.AreEqual(handicapResult, expectedHandicap);
+            Assert.AreEqual(expectedHandicap, handicapResult);
         }
 
         [TestMethod]
