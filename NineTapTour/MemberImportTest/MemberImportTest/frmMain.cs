@@ -411,12 +411,10 @@ public partial class FrmMain : Form
                 // Now process each worksheet with the extracted player info
                 foreach (var ws in workbook.Worksheets)
                 {
-                    // txtProgress.AppendText($"  Processing Worksheet: {ws.Name}...\r\n");
-
-                    int lastRow = ws.LastRowUsed().RowNumber();
+                    const int GameDataLastRow = 46;
                     const int GameDataStartRow = 3;
 
-                    for (int row = GameDataStartRow; row <= lastRow; row++)
+                    for (int row = GameDataStartRow; row <= GameDataLastRow; row++)
                     {
                         ExcelRow temp = new();
 
@@ -439,11 +437,7 @@ public partial class FrmMain : Form
                         try { temp.Game4 = ws.Cell(row, 6).GetValue<int>(); } catch { temp.Game4 = -1; }
                         try { temp.Total = ws.Cell(row, 7).GetValue<int>(); } catch { temp.Total = -1; }
 
-                        // Invalid rows may be blank, contain random zeros, or somehow have data read as 4 digit scores
-                        if ((temp.Game1 == -1 || temp.Game1 > 300 || temp.Game1 == 0) && 
-                            (temp.Game2 == -1 || temp.Game2 > 300 || temp.Game2 == 0) && 
-                            (temp.Game3 == -1 || temp.Game3 > 300 || temp.Game3 == 0) && 
-                            (temp.Game4 == -1 || temp.Game4 > 300 || temp.Game4 == 0))
+                        if (temp.GameTotal == -1)
                         {
                             // No game data in this row; skip it
                             continue;
@@ -454,7 +448,8 @@ public partial class FrmMain : Form
                         try { temp.AVG = ws.Cell(row, 10).GetValue<int>(); } catch { temp.AVG = -1; }
                         try { temp.HandyCap = ws.Cell(row, 11).GetValue<int>(); } catch { temp.HandyCap = -1; }
                         try { temp.Bonus = ws.Cell(row, 12).GetValue<int>(); } catch { temp.Bonus = -1; }
-                        temp.PotPro = ws.Cell(row, 13).GetString();
+                        // Some PotPro entries have "x"
+                        try { temp.PotPro = ws.Cell(row, 13).GetValue<int>().ToString(); } catch { temp.PotPro = "0"; }
                         temp.FinPPHG = ws.Cell(row, 14).GetString();
                         try { if (!string.IsNullOrEmpty(temp.FinPPHG)) { temp.Cash = ws.Cell(row, 15).GetValue<double>(); } else { temp.Cash = 0; } } catch { temp.Cash = 0; }
                         temp.Notes = ws.Cell(row, 16).GetString();
@@ -495,6 +490,9 @@ public partial class FrmMain : Form
                             }
                         }
 
+                        // There are some cases where an entire entry will be all null games
+                        // this is due to tournament conditions such as invalid lane oilings.
+                        // The tournament is valid but none of the scores are counted due to inflated numbers.
                         Game game = new Game()
                         {
                             Game1 = temp.Game1 > -1 ? temp.Game1 : null,
@@ -517,7 +515,8 @@ public partial class FrmMain : Form
                             KeepAdjustedAvg = true,
                             LeagueAverage = temp.TrueAverage,
                             HandicapTotal = temp.HandyCap,
-                            PlaceStanding = Convert.ToInt32(temp.FinPPHG),
+                            // Place standing has many variations like (4th, 17th tie, 9thHM, and more)
+                            // PlaceStanding = Convert.ToInt32(temp.FinPPHG),
                             SidePot = Convert.ToDecimal(temp.PotPro)
                         };
 
