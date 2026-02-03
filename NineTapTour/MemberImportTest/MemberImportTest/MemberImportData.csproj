@@ -11,6 +11,7 @@
     <ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\NineTapTour.Core\NineTapTour.Core.csproj" />
     <ProjectReference Include="..\..\NineTapTour\NineTapTour.csproj" />
   </ItemGroup>
   <ItemGroup>

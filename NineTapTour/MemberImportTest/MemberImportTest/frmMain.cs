@@ -1,12 +1,10 @@
-﻿using MemberImportTest.Classes;
+﻿using NineTapTour.Core;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using ClosedXML.Excel;
 using NineTapTour.Database;
-using System.Text.RegularExpressions;
-using System.Globalization;
 using NineTapTour.Forms;
 using NineTapTour.Models;
 using System.Drawing;
