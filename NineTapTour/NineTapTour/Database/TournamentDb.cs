@@ -26,7 +26,8 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Adds the given Tournament into the database using an existing DbContext
+        /// Adds the given Tournament into the database using an existing DbContext.
+        /// NOTE: Does NOT call SaveChanges - caller controls when to save for batch operations.
         /// </summary>
         public static void AddTournament(Tournament tourn, NineTapDb db)
         {
@@ -34,7 +35,6 @@ namespace NineTapTour.Database
             db.Entry(tourn).State = db.Tournaments.Any(t => t.Id == tourn.Id) ?
                 EntityState.Modified :
                 EntityState.Added;
-            db.SaveChanges();
         }
 
         /// <summary>
@@ -216,7 +216,8 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Adds the given Participant to the Tournament using an existing DbContext
+        /// Adds the given Participant to the Tournament using an existing DbContext.
+        /// NOTE: Does NOT call SaveChanges - caller controls when to save for batch operations.
         /// </summary>
         public static void AddMemberToTournament(Participant player, NineTapDb db)
         {
@@ -261,16 +262,10 @@ namespace NineTapTour.Database
                 
                 db.Participants.Add(player);
                 
-                // Set states to Unchanged
-                db.Entry(player.Game).State = EntityState.Unchanged;
-                db.Entry(player.Tournament).State = EntityState.Unchanged;
-                db.Entry(player.Member).State = EntityState.Unchanged;
                 if (player.Tournament.TourneyRegion != null)
                 {
                     db.Entry(player.Tournament.TourneyRegion).State = EntityState.Unchanged;
                 }
-                
-                db.SaveChanges();
             }
             else
             {
@@ -291,7 +286,6 @@ namespace NineTapTour.Database
                 }
                 squadResult.Squad = player.Squad;
                 squadResult.Member = memberQuery.Member;
-                db.SaveChanges();
             }
         }
 
