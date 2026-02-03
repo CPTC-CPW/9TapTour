@@ -409,6 +409,9 @@ public partial class FrmMain : Form
                 // Load existing tournaments once for the entire workbook
                 List<Tournament> existingTournaments = TournamentDB.GetTournamentList(RegionID, db);
 
+                // PERFORMANCE: Cache region lookup to avoid repeated queries
+                var cachedRegion = db.NineTapRegion.Find(RegionID);
+
                 // PERFORMANCE: Look up member once per file instead of per row
                 var member = MemberDB.GetMember(playerNumberAsInt, RegionID, db);
                 if (member == null || member.IsActive != true)
@@ -485,7 +488,7 @@ public partial class FrmMain : Form
                                 IsOnlyThreeGames = false,
                             };
 
-                            tourn.TourneyRegion = db.NineTapRegion.Find(RegionID);
+                            tourn.TourneyRegion = cachedRegion;
 
                             TournamentDB.AddTournament(tourn, db);
                             existingTournaments.Add(tourn);
@@ -494,7 +497,7 @@ public partial class FrmMain : Form
                         {
                             if (tourn.TourneyRegion == null)
                             {
-                                tourn.TourneyRegion = db.NineTapRegion.Find(RegionID);
+                                tourn.TourneyRegion = cachedRegion;
                             }
                         }
 
