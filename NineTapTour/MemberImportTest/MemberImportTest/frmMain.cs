@@ -353,7 +353,8 @@ public partial class FrmMain : Form
                 continue;
             }
             txtProgress.AppendText($"Processing: {Path.GetFileName(files[i])}\r\n");
-            rows = ProcessExcelFile(files[i]);
+            // PERFORMANCE FIX: Accumulate results instead of overwriting
+            rows.AddRange(ProcessExcelFile(files[i]));
         }
         return rows;
     }
@@ -408,11 +409,22 @@ public partial class FrmMain : Form
                 // Load existing tournaments once for the entire workbook
                 List<Tournament> existingTournaments = TournamentDB.GetTournamentList(RegionID, db);
 
+                // PERFORMANCE: Look up member once per file instead of per row
+                var member = MemberDB.GetMember(playerNumberAsInt, RegionID, db);
+                if (member == null || member.IsActive != true)
+                {
+                    txtProgress.AppendText($"  WARNING: Member #{playerNumberAsInt} not found or inactive. Skipping file.\r\n");
+                    return returnMe;
+                }
+
                 // Now process each worksheet with the extracted player info
                 foreach (var ws in workbook.Worksheets)
                 {
                     const int GameDataLastRow = 46;
                     const int GameDataStartRow = 3;
+
+                    // PERFORMANCE: Track participant counts per tournament to avoid repeated DB queries
+                    Dictionary<int, int> tournamentSquadCounts = new Dictionary<int, int>();
 
                     for (int row = GameDataStartRow; row <= GameDataLastRow; row++)
                     {
@@ -424,10 +436,6 @@ public partial class FrmMain : Form
                         temp.PlayerLastName = playerLastName;
                         temp.PlayerOrginalAVG = playerOrgAVG;
                         temp.PlayerNumber = playerNumberAsInt;
-
-                        var member = MemberDB.GetMember(temp.PlayerNumber, RegionID, db);
-                        if (member == null || member.IsActive != true)
-                            continue;
 
                         try { temp.GameTotal = ws.Cell(row, 1).GetValue<int>(); } catch { temp.GameTotal = -1; }
                         try { temp.Date = ws.Cell(row, 2).GetDateTime(); } catch { temp.Date = new DateTime(); }
@@ -522,11 +530,16 @@ public partial class FrmMain : Form
 
                         GameDB.AddOrUpdateGame(game, db);
 
-                        int squadNumber = 1;
-                        int existingParticipantCount = db.Participants
-                            .Count(p => p.Member.Id == member.Id && p.Tournament.Id == tourn.Id);
-                        
-                        squadNumber = existingParticipantCount + 1;
+                        // PERFORMANCE: Use cached squad count instead of querying DB each time
+                        int squadNumber;
+                        if (!tournamentSquadCounts.ContainsKey(tourn.Id))
+                        {
+                            // First time seeing this tournament in this file - check existing count
+                            tournamentSquadCounts[tourn.Id] = db.Participants
+                                .Count(p => p.Member.Id == member.Id && p.Tournament.Id == tourn.Id);
+                        }
+                        tournamentSquadCounts[tourn.Id]++;
+                        squadNumber = tournamentSquadCounts[tourn.Id];
 
                         Participant participant = new Participant()
                         {
