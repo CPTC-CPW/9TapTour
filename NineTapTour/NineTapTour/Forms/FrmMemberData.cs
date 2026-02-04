@@ -8,7 +8,7 @@ using System.Drawing.Printing;
 using System.Data;
 using NineTapTour.Models;
 using ClosedXML.Excel;
-using NineTapTour.Core;
+using NineTapTour.Core.Models;
 
 namespace NineTapTour.Forms;
 

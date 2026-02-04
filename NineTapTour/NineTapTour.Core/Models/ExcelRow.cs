@@ -1,4 +1,4 @@
-﻿namespace NineTapTour.Core;
+﻿namespace NineTapTour.Core.Models;
 
 public class ExcelRow
 {
