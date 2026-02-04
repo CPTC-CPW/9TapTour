@@ -806,14 +806,11 @@ namespace NineTapTour.Forms
             }
         }
         /// <summary>
-        /// clears memberNum, txtScratchScores, and High Game textboxes
+        /// Triggers clearing memberNum, txtScratchScores, and High Game textboxes
         /// </summary>
         private void Clear()
         {
             txtMemberNum.Clear();
-            //            richTextBox1.Clear();
-            //            richTextBox2.Clear();
-            //            richTextBox3.Clear();
         }
 
         /// <summary>
