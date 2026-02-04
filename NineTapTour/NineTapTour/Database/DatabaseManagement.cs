@@ -16,7 +16,7 @@ namespace NineTapTour.Database
         /// </summary>
         private static string CreateBackupName()
         {
-            return "NineTapDb2021_" + DateTime.Now.ToString("dd-MM-yyyy-hmmss") + ".bak";
+            return "NineTapDb2025_" + DateTime.Now.ToString("dd-MM-yyyy-hmmss") + ".bak";
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace NineTapTour.Database
         {
             // Raw SQL with EF Core
             // https://www.learnentityframeworkcore.com/raw-sql
-            const string dbName = "NineTapDb2021";
+            const string dbName = "NineTapDb2025";
             using NineTapDb context = new();
 
             SaveFileDialog saveFileDialog = new()
@@ -69,7 +69,7 @@ namespace NineTapTour.Database
             {
                 using var backUpCmd = context.Database.GetDbConnection().CreateCommand();
                 context.Database.ExecuteSqlRaw($"USE master;DROP DATABASE [NineTapdb2025];"
-                    + $"RESTORE DATABASE [NineTapDb2021] FILE = 'NineTapDb2021' FROM DISK = '{openFileDialog.FileName}' WITH FILE = 1,"
+                    + $"RESTORE DATABASE [NineTapDb2025] FILE = 'NineTapDb2025' FROM DISK = '{openFileDialog.FileName}' WITH FILE = 1,"
                     + $"MOVE 'NineTapDb2025' TO '{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\\NineTapDb2025.mdf'," +
                     $"MOVE 'NineTapDb2025_log' TO '{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\\NineTap2025.ldf', NOUNLOAD");
                 MessageBox.Show("Restore successful");
