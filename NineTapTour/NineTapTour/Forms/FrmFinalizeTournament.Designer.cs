@@ -132,7 +132,6 @@
             this.playerTournamentHistoryGrid.ReadOnly = true;
             this.playerTournamentHistoryGrid.Size = new System.Drawing.Size(1447, 375);
             this.playerTournamentHistoryGrid.TabIndex = 2;
-            this.playerTournamentHistoryGrid.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DataGridView2_ColumnHeaderMouseClick);
             // 
             // lblMemberNumber
             // 
