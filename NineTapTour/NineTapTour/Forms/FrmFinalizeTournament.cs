@@ -29,6 +29,9 @@ namespace NineTapTour.Forms
         private DataGridView dgvTournament;
         private DataGridView dgvDetail;
 
+        private List<WinnerListMemberViewModel> _currentTournamentBowlers;
+        private int _displayedDetailMemberNumber = -1;
+
         public FrmFinalizeTournament(Tournament selectedTournament, int regionID)
         {
             this.selectedTournament = selectedTournament;
@@ -41,6 +44,7 @@ namespace NineTapTour.Forms
         {
             BuildGrids();
             LoadTournamentGrid();
+            dgvTournament.SelectionChanged += DgvTournament_SelectionChanged;
         }
 
         private void BuildGrids()
@@ -147,8 +151,8 @@ namespace NineTapTour.Forms
 
         private void LoadTournamentGrid()
         {
-            List<WinnerListMemberViewModel> bowlers = TournamentDB.GetWinnerListMemberData(selectedTournament.Id);
-            List<ExcelMember> members = BuildExcelMemberList(bowlers);
+            _currentTournamentBowlers = TournamentDB.GetWinnerListMemberData(selectedTournament.Id);
+            List<ExcelMember> members = BuildExcelMemberList(_currentTournamentBowlers);
 
             // Compute the correct placement for each member using only their best entry
             List<ExcelMember> deduped = CalcService.CalculatePlaceStandings(members, removeDuplicates: true);
@@ -385,6 +389,150 @@ namespace NineTapTour.Forms
             string colName = dgvTournament.Columns[e.ColumnIndex].Name;
             if (colName is "colGame1Check" or "colGame2Check" or "colGame3Check" or "colGame4Check")
                 RecalculateTournamentRow(e.RowIndex);
+        }
+
+        private void DgvTournament_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvTournament.SelectedRows.Count == 0) return;
+            var row = dgvTournament.SelectedRows[0];
+            if (row.Cells["colMemberNumber"].Value is not int memberNumber) return;
+            if (memberNumber == _displayedDetailMemberNumber) return;
+            string name = row.Cells["colName"].Value as string ?? string.Empty;
+            _displayedDetailMemberNumber = memberNumber;
+            LoadDetailGrid(memberNumber, name);
+        }
+
+        /// <summary>
+        /// Populates <see cref="dgvDetail"/> with all tournament entries for the given member.
+        /// Current-tournament rows appear at the top with a blue highlight.
+        /// The 30 AVG cell is highlighted light green for the most recent 30 finalized entries.
+        /// </summary>
+        private void LoadDetailGrid(int memberNumber, string memberName)
+        {
+            const int thirtyGameWindow = 30;
+
+            List<PlayerHistoryViewModel> history =
+                PlayerHistoryDB.GetMemberPlayerHistory(memberNumber, regionID);
+
+            dgvDetail.Rows.Clear();
+
+            // --- Current tournament rows (blue highlight) ---
+            foreach (WinnerListMemberViewModel b in _currentTournamentBowlers.Where(b => b.MemberNumber == memberNumber))
+            {
+                int g1    = Convert.ToInt32(b.Game1);
+                int g2    = Convert.ToInt32(b.Game2);
+                int g3    = Convert.ToInt32(b.Game3);
+                int g4    = Convert.ToInt32(b.Game4);
+                int hdcp  = Convert.ToInt32(b.Handicap);
+                int bonus = Convert.ToInt32(b.Bonus);
+
+                int validGames = (g1 > 0 ? 1 : 0) + (g2 > 0 ? 1 : 0) + (g3 > 0 ? 1 : 0) + (g4 > 0 ? 1 : 0);
+                int scratch    = g1 + g2 + g3 + g4;
+                int wHdcp      = scratch + (validGames * (hdcp + bonus));
+                int entry      = validGames > 0 ? scratch / validGames : 0;
+
+                int rowIdx = dgvDetail.Rows.Add(
+                    validGames,
+                    selectedTournament.Date.ToShortDateString(),
+                    g1 > 0 ? (object)g1 : null,
+                    g2 > 0 ? (object)g2 : null,
+                    g3 > 0 ? (object)g3 : null,
+                    g4 > 0 ? (object)g4 : null,
+                    scratch,
+                    wHdcp,
+                    entry,
+                    null,                                        // 30 AVG — not yet computed
+                    null,                                        // Adjusted AVG
+                    hdcp,
+                    bonus,
+                    b.SidePot > 0 ? (object)b.SidePot : null,
+                    null,                                        // Place — not yet finalized
+                    b.MoneyWon > 0 ? (object)b.MoneyWon : null,
+                    null                                         // Notes
+                );
+                dgvDetail.Rows[rowIdx].DefaultCellStyle.BackColor = Color.LightBlue;
+            }
+
+            // --- Finalized historical rows (ordered by date descending from DB) ---
+            for (int i = 0; i < history.Count; i++)
+            {
+                PlayerHistoryViewModel h = history[i];
+                int wHdcp = h.TotalScore + (h.GamesPlayed * (h.HandiCap + h.Bonus));
+                int entry = h.GamesPlayed > 0 ? h.TotalScore / h.GamesPlayed : 0;
+
+                int rowIdx = dgvDetail.Rows.Add(
+                    h.GamesPlayed,
+                    h.TournamentDate.ToShortDateString(),
+                    h.Game1 > 0 ? (object)h.Game1 : null,
+                    h.Game2 > 0 ? (object)h.Game2 : null,
+                    h.Game3 > 0 ? (object)h.Game3 : null,
+                    h.Game4 > 0 ? (object)h.Game4 : null,
+                    h.TotalScore,
+                    wHdcp,
+                    entry,
+                    h.trueAVG > 0 ? (object)Math.Round(h.trueAVG, 1) : null,
+                    h.AVG > 0 ? (object)h.AVG : null,
+                    h.HandiCap,
+                    h.Bonus,
+                    !string.IsNullOrEmpty(h.ProPot) && h.ProPot != "0" ? (object)h.ProPot : null,
+                    !string.IsNullOrEmpty(h.PPHG) ? (object)h.PPHG : null,
+                    h.MoneyWon > 0 ? (object)h.MoneyWon : null,
+                    h.Notes
+                );
+
+                // Highlight the 30 AVG cell for entries within the rolling 30-game window
+                if (i < thirtyGameWindow)
+                    dgvDetail.Rows[rowIdx].Cells["colDetail30Avg"].Style.BackColor = Color.LightGreen;
+            }
+
+            UpdateDetailGridHeaders(history.Take(thirtyGameWindow).ToList());
+
+            double leagueAvg = history.FirstOrDefault()?.trueAVG ?? 0;
+            lblPlayerInfo.Text = $"Mem#   {memberNumber}        {memberName,-35}AVG   {(int)Math.Round(leagueAvg)}";
+        }
+
+        /// <summary>
+        /// Updates the column headers of <see cref="dgvDetail"/> to show the sum (or computed
+        /// average) of the provided entries — typically the last 30 finalized games.
+        /// </summary>
+        private void UpdateDetailGridHeaders(List<PlayerHistoryViewModel> last30)
+        {
+            if (last30.Count == 0)
+            {
+                dgvDetail.Columns["colDetailGames"].HeaderText    = "Games";
+                dgvDetail.Columns["colDetailGame1"].HeaderText    = "Game1";
+                dgvDetail.Columns["colDetailGame2"].HeaderText    = "Game2";
+                dgvDetail.Columns["colDetailGame3"].HeaderText    = "Game3";
+                dgvDetail.Columns["colDetailGame4"].HeaderText    = "Game4";
+                dgvDetail.Columns["colDetailScratch"].HeaderText  = "Scratch";
+                dgvDetail.Columns["colDetailWHdcp"].HeaderText    = "w/HDCP";
+                dgvDetail.Columns["colDetailEntry"].HeaderText    = "Entry";
+                dgvDetail.Columns["colDetail30Avg"].HeaderText    = "30 AVG";
+                dgvDetail.Columns["colDetailEarnings"].HeaderText = "Earnings";
+                return;
+            }
+
+            int     totalGames = last30.Sum(h => h.GamesPlayed);
+            int     game1Sum   = last30.Sum(h => h.Game1 ?? 0);
+            int     game2Sum   = last30.Sum(h => h.Game2 ?? 0);
+            int     game3Sum   = last30.Sum(h => h.Game3 ?? 0);
+            int     game4Sum   = last30.Sum(h => h.Game4 ?? 0);
+            int     scratch    = last30.Sum(h => h.TotalScore);
+            int     wHdcpSum   = last30.Sum(h => h.TotalScore + h.GamesPlayed * (h.HandiCap + h.Bonus));
+            int     entryAvg   = totalGames > 0 ? scratch / totalGames : 0;
+            double  avg30      = totalGames > 0 ? (double)scratch / totalGames : 0;
+            decimal earnings   = last30.Sum(h => h.MoneyWon);
+
+            dgvDetail.Columns["colDetailGames"].HeaderText    = $"Games\n({totalGames})";
+            dgvDetail.Columns["colDetailGame1"].HeaderText    = $"Game1\n({game1Sum})";
+            dgvDetail.Columns["colDetailGame2"].HeaderText    = $"Game2\n({game2Sum})";
+            dgvDetail.Columns["colDetailGame3"].HeaderText    = $"Game3\n({game3Sum})";
+            dgvDetail.Columns["colDetailGame4"].HeaderText    = $"Game4\n({game4Sum})";
+            dgvDetail.Columns["colDetailScratch"].HeaderText  = $"Scratch\n({scratch})";
+            dgvDetail.Columns["colDetailWHdcp"].HeaderText    = $"w/HDCP\n({wHdcpSum})";
+            dgvDetail.Columns["colDetailEntry"].HeaderText    = $"Entry\n({entryAvg})";
+            dgvDetail.Columns["colDetail30Avg"].HeaderText    = $"30 AVG\n({avg30:0.#})";
+            dgvDetail.Columns["colDetailEarnings"].HeaderText = $"Earnings\n({earnings:0.00})";
         }
     }
 }
