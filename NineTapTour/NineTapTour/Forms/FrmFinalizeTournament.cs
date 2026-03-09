@@ -190,26 +190,34 @@ namespace NineTapTour.Forms
                 return y.TotalScore.CompareTo(x.TotalScore);
             });
 
+            // Lookup for original nullable game scores — avoids null-vs-0 ambiguity
+            var bowlerByGameId = _currentTournamentBowlers.ToDictionary(b => b.GameId);
+
             dgvTournament.Rows.Clear();
             foreach (ExcelMember m in members)
             {
-                // Default: a game is checked when its score is non-zero
-                bool g1Checked = m.Game1Score > 0;
-                bool g2Checked = m.Game2Score > 0;
-                bool g3Checked = m.Game3Score > 0;
-                bool g4Checked = m.Game4Score > 0;
+                WinnerListMemberViewModel orig = bowlerByGameId[m.GameId];
+
+                // A game is checked when it has a recorded score (non-null)
+                bool g1Checked = orig.Game1.HasValue;
+                bool g2Checked = orig.Game2.HasValue;
+                bool g3Checked = orig.Game3.HasValue;
+                bool g4Checked = orig.Game4.HasValue;
 
                 // 3-of-4: uncheck the lowest-scoring game when all 4 are present
                 if (selectedTournament.ThreeOutOf4)
                 {
-                    var validScores = new List<(int score, int game)>
+                    var validScores = new[]
                     {
-                        (m.Game1Score, 1), (m.Game2Score, 2), (m.Game3Score, 3), (m.Game4Score, 4)
-                    }.Where(x => x.score > 0).ToList();
+                        (Score: orig.Game1, Game: 1),
+                        (Score: orig.Game2, Game: 2),
+                        (Score: orig.Game3, Game: 3),
+                        (Score: orig.Game4, Game: 4)
+                    }.Where(x => x.Score.HasValue).ToList();
 
                     if (validScores.Count == 4)
                     {
-                        int lowestGame = validScores.MinBy(x => x.score).game;
+                        int lowestGame = validScores.MinBy(x => x.Score!.Value).Game;
                         if      (lowestGame == 1) g1Checked = false;
                         else if (lowestGame == 2) g2Checked = false;
                         else if (lowestGame == 3) g3Checked = false;
@@ -217,24 +225,24 @@ namespace NineTapTour.Forms
                     }
                 }
 
-                int scratch      = (g1Checked ? m.Game1Score : 0) + (g2Checked ? m.Game2Score : 0)
-                                 + (g3Checked ? m.Game3Score : 0) + (g4Checked ? m.Game4Score : 0);
+                int scratch      = (g1Checked ? (orig.Game1 ?? 0) : 0) + (g2Checked ? (orig.Game2 ?? 0) : 0)
+                                 + (g3Checked ? (orig.Game3 ?? 0) : 0) + (g4Checked ? (orig.Game4 ?? 0) : 0);
                 int checkedGames = (g1Checked ? 1 : 0) + (g2Checked ? 1 : 0)
                                  + (g3Checked ? 1 : 0) + (g4Checked ? 1 : 0);
                 int hdcpTotal    = scratch + (checkedGames * (m.Handicap + m.Bonus));
                 int entryAvg     = checkedGames > 0 ? scratch / checkedGames : 0;
 
                 dgvTournament.Rows.Add(
-                    m.PlaceStanding > 0 ? (object)m.PlaceStanding : null,  // blank for duplicate entries
+                    m.PlaceStanding > 0 ? (object)m.PlaceStanding : null,
                     m.MemberNumber,
                     m.Name,
-                    m.Game1Score > 0 ? (object)m.Game1Score : null,
+                    orig.Game1,   // null if game not played
                     g1Checked,
-                    m.Game2Score > 0 ? (object)m.Game2Score : null,
+                    orig.Game2,
                     g2Checked,
-                    m.Game3Score > 0 ? (object)m.Game3Score : null,
+                    orig.Game3,
                     g3Checked,
-                    m.Game4Score > 0 ? (object)m.Game4Score : null,
+                    orig.Game4,
                     g4Checked,
                     scratch,
                     hdcpTotal,
@@ -278,23 +286,18 @@ namespace NineTapTour.Forms
 
                 if (selectedTournament.ThreeOutOf4)
                 {
-                    // Compute TotalScore from the top 3 valid games without modifying game scores,
-                    // so all 4 raw scores remain available for display in the grid.
-                    List<int> scores = new[] { m.Game1Score, m.Game2Score, m.Game3Score, m.Game4Score }
-                        .Where(x => x > 0).ToList();
+                    List<int> scores = new[] { b.Game1, b.Game2, b.Game3, b.Game4 }
+                        .Where(g => g.HasValue).Select(g => g.Value).ToList();
                     if (scores.Count == 4)
                         scores.Remove(scores.Min());
                     m.TotalScore = scores.Sum() + (scores.Count * (m.Handicap + m.Bonus));
                 }
                 else
                 {
-                    int validGames = 0;
-                    if (m.Game1Score > 0) validGames++;
-                    if (m.Game2Score > 0) validGames++;
-                    if (m.Game3Score > 0) validGames++;
-                    if (m.Game4Score > 0) validGames++;
-                    m.TotalScore = m.Game1Score + m.Game2Score + m.Game3Score + m.Game4Score
-                                 + (validGames * (m.Handicap + m.Bonus));
+                    int validGames = (b.Game1.HasValue ? 1 : 0) + (b.Game2.HasValue ? 1 : 0)
+                                   + (b.Game3.HasValue ? 1 : 0) + (b.Game4.HasValue ? 1 : 0);
+                    int scratch    = (b.Game1 ?? 0) + (b.Game2 ?? 0) + (b.Game3 ?? 0) + (b.Game4 ?? 0);
+                    m.TotalScore   = scratch + (validGames * (m.Handicap + m.Bonus));
                 }
 
                 members.Add(m);
@@ -358,13 +361,18 @@ namespace NineTapTour.Forms
             int hdcp  = Convert.ToInt32(row.Cells["colHdcp"].Value  ?? 0);
             int bonus = Convert.ToInt32(row.Cells["colBonus"].Value ?? 0);
 
+            bool c1 = row.Cells["colGame1Check"].Value as bool? ?? false;
+            bool c2 = row.Cells["colGame2Check"].Value as bool? ?? false;
+            bool c3 = row.Cells["colGame3Check"].Value as bool? ?? false;
+            bool c4 = row.Cells["colGame4Check"].Value as bool? ?? false;
+
             int g1 = GetCheckedScore("colGame1", "colGame1Check");
             int g2 = GetCheckedScore("colGame2", "colGame2Check");
             int g3 = GetCheckedScore("colGame3", "colGame3Check");
             int g4 = GetCheckedScore("colGame4", "colGame4Check");
 
             int scratch      = g1 + g2 + g3 + g4;
-            int checkedGames = (g1 > 0 ? 1 : 0) + (g2 > 0 ? 1 : 0) + (g3 > 0 ? 1 : 0) + (g4 > 0 ? 1 : 0);
+            int checkedGames = (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0) + (c4 ? 1 : 0);
             int hdcpTotal    = scratch + (checkedGames * (hdcp + bonus));
             int entryAvg     = checkedGames > 0 ? scratch / checkedGames : 0;
 
@@ -463,10 +471,10 @@ namespace NineTapTour.Forms
                 int rowIdx = dgvDetail.Rows.Add(
                     h.GamesPlayed,
                     h.TournamentDate.ToShortDateString(),
-                    h.Game1 > 0 ? (object)h.Game1 : null,
-                    h.Game2 > 0 ? (object)h.Game2 : null,
-                    h.Game3 > 0 ? (object)h.Game3 : null,
-                    h.Game4 > 0 ? (object)h.Game4 : null,
+                    h.Game1.HasValue ? (object)h.Game1.Value : null,
+                    h.Game2.HasValue ? (object)h.Game2.Value : null,
+                    h.Game3.HasValue ? (object)h.Game3.Value : null,
+                    h.Game4.HasValue ? (object)h.Game4.Value : null,
                     h.TotalScore,
                     wHdcp,
                     entry,
@@ -485,7 +493,8 @@ namespace NineTapTour.Forms
                     dgvDetail.Rows[rowIdx].Cells["colDetail30Avg"].Style.BackColor = Color.LightGreen;
             }
 
-            UpdateDetailGridHeaders(history.Take(thirtyGameWindow).ToList());
+            decimal lifetimeEarnings = history.Sum(h => h.MoneyWon);
+            UpdateDetailGridHeaders(history.Take(thirtyGameWindow).ToList(), lifetimeEarnings);
 
             double leagueAvg = history.FirstOrDefault()?.trueAVG ?? 0;
             lblPlayerInfo.Text = $"Mem#   {memberNumber}        {memberName,-35}AVG   {(int)Math.Round(leagueAvg)}";
@@ -495,7 +504,7 @@ namespace NineTapTour.Forms
         /// Updates the column headers of <see cref="dgvDetail"/> to show the sum (or computed
         /// average) of the provided entries — typically the last 30 finalized games.
         /// </summary>
-        private void UpdateDetailGridHeaders(List<PlayerHistoryViewModel> last30)
+        private void UpdateDetailGridHeaders(List<PlayerHistoryViewModel> last30, decimal lifetimeEarnings)
         {
             if (last30.Count == 0)
             {
@@ -508,7 +517,7 @@ namespace NineTapTour.Forms
                 dgvDetail.Columns["colDetailWHdcp"].HeaderText    = "w/HDCP";
                 dgvDetail.Columns["colDetailEntry"].HeaderText    = "Entry";
                 dgvDetail.Columns["colDetail30Avg"].HeaderText    = "30 AVG";
-                dgvDetail.Columns["colDetailEarnings"].HeaderText = "Earnings";
+                dgvDetail.Columns["colDetailEarnings"].HeaderText = $"Earnings\n({lifetimeEarnings:0.00})";
                 return;
             }
 
@@ -521,7 +530,6 @@ namespace NineTapTour.Forms
             int     wHdcpSum   = last30.Sum(h => h.TotalScore + h.GamesPlayed * (h.HandiCap + h.Bonus));
             int     entryAvg   = totalGames > 0 ? scratch / totalGames : 0;
             double  avg30      = totalGames > 0 ? (double)scratch / totalGames : 0;
-            decimal earnings   = last30.Sum(h => h.MoneyWon);
 
             dgvDetail.Columns["colDetailGames"].HeaderText    = $"Games\n({totalGames})";
             dgvDetail.Columns["colDetailGame1"].HeaderText    = $"Game1\n({game1Sum})";
@@ -532,7 +540,7 @@ namespace NineTapTour.Forms
             dgvDetail.Columns["colDetailWHdcp"].HeaderText    = $"w/HDCP\n({wHdcpSum})";
             dgvDetail.Columns["colDetailEntry"].HeaderText    = $"Entry\n({entryAvg})";
             dgvDetail.Columns["colDetail30Avg"].HeaderText    = $"30 AVG\n({avg30:0.#})";
-            dgvDetail.Columns["colDetailEarnings"].HeaderText = $"Earnings\n({earnings:0.00})";
+            dgvDetail.Columns["colDetailEarnings"].HeaderText = $"Earnings\n({lifetimeEarnings:0.00})";
         }
     }
 }
