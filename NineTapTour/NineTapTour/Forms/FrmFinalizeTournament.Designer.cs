@@ -28,10 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "FrmFinalizeTournament";
+            SuspendLayout();
+            // 
+            // FrmFinalizeTournament
+            // 
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(1366, 768);
+            MinimumSize = new System.Drawing.Size(900, 500);
+            Name = "FrmFinalizeTournament";
+            Text = "Finalize Tournament Results";
+            Load += FrmFinalizeTournament_Load;
+            ResumeLayout(false);
         }
 
         #endregion
