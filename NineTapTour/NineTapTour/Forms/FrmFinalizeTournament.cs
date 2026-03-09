@@ -166,18 +166,23 @@ namespace NineTapTour.Forms
                     : 0;
             }
 
-            // Display order: group all entries for the same player together by name,
-            // placed entry first within each group, then unplaced duplicates by score
+            // Display order: groups ordered by best place standing, all entries for the
+            // same member clustered together, placed entry first within each group
             members.Sort((x, y) =>
             {
-                int nameCompare = string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase);
-                if (nameCompare != 0) return nameCompare;
+                // Primary: order groups by the member's best place standing
+                int xBest = bestStandingByMember[x.MemberNumber];
+                int yBest = bestStandingByMember[y.MemberNumber];
+                if (xBest != yBest) return xBest.CompareTo(yBest);
 
+                // Tied members: keep each member's own entries together by member number
+                if (x.MemberNumber != y.MemberNumber) return x.MemberNumber.CompareTo(y.MemberNumber);
+
+                // Same member: placed entry first, then higher scores first
                 bool xPlaced = x.PlaceStanding > 0;
                 bool yPlaced = y.PlaceStanding > 0;
                 if (xPlaced && !yPlaced) return -1;
                 if (!xPlaced && yPlaced) return 1;
-                if (xPlaced)             return x.PlaceStanding.CompareTo(y.PlaceStanding);
                 return y.TotalScore.CompareTo(x.TotalScore);
             });
 
