@@ -426,9 +426,12 @@ namespace NineTapTour.Forms
                             int.TryParse(dt.Rows[i + 1][PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out nextPlace);
                             if (nextPlace == currentPlace) isTie = true;
                         }
-                        string sidePotValue = "0";
-                        if (decimal.TryParse(row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString(), out var spVal))
-                            sidePotValue = spVal.ToString();
+                        // Parse the progressive pot once; spVal = 0 if the cell is empty or non-numeric.
+                        decimal.TryParse(row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString(), out decimal spVal);
+                        // Use InvariantCulture so the decimal separator in the formula literal is always "."
+                        // regardless of the system locale (e.g. prevents "20,5" in German locales).
+                        string sidePotValue = spVal.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
                         // Use ordinal with tie for place standing
                         ws.Cell(excelRow, 1).Value = GetOrdinalWithTie(currentPlace, isTie);
                         ws.Cell(excelRow, 2).Value = row[FULLNAME_COLUMN_NAME]?.ToString();
@@ -442,7 +445,8 @@ namespace NineTapTour.Forms
                         ws.Cell(excelRow, 11).Value = row[PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T');
                         ws.Cell(excelRow, 12).Value = row[MEMBER_ID_COLUMN_NAME]?.ToString();
                         ws.Cell(excelRow, 15).FormulaA1 = $"=I{excelRow}-M{excelRow}-N{excelRow}+{sidePotValue}";
-                        ws.Cell(excelRow, 8).Value = row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString();
+                        // Write as a numeric value so Excel treats it as a number, not text.
+                        ws.Cell(excelRow, 8).Value = spVal;
 
                         // Any entry that placed 1st–3rd gets a progressive pot row directly below it.
                         // The template pre-formats those rows at positions 5, 7, and 9 (covering excelRows 4, 6, 8).
@@ -455,8 +459,8 @@ namespace NineTapTour.Forms
                                 ws.Row(excelRow + 1).InsertRowsAbove(1);
                                 ws.Range($"G{excelRow + 1}:H{excelRow + 1}").Merge();
                             }
-                            ws.Cell(excelRow + 1, 9).Value =
-                                decimal.TryParse(row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString(), out decimal sp) ? sp : 0;
+                            // Reuse the already-parsed value — no second TryParse needed.
+                            ws.Cell(excelRow + 1, 9).Value = spVal;
                             excelRow++;
                         }
 
