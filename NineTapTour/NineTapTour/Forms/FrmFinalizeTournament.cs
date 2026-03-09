@@ -149,10 +149,40 @@ namespace NineTapTour.Forms
         {
             List<WinnerListMemberViewModel> bowlers = TournamentDB.GetWinnerListMemberData(selectedTournament.Id);
             List<ExcelMember> members = BuildExcelMemberList(bowlers);
-            List<ExcelMember> ranked  = CalcService.CalculatePlaceStandings(members, removeDuplicates: false);
+
+            // Compute the correct placement for each member using only their best entry
+            List<ExcelMember> deduped = CalcService.CalculatePlaceStandings(members, removeDuplicates: true);
+            Dictionary<int, int> bestStandingByMember = deduped.ToDictionary(m => m.MemberNumber, m => m.PlaceStanding);
+
+            // Sort all entries by score descending so the best entry per member is encountered first
+            members.Sort((x, y) => y.TotalScore.CompareTo(x.TotalScore));
+
+            // First occurrence of each member gets the standing; every duplicate entry gets 0
+            var seenMembers = new HashSet<int>();
+            foreach (ExcelMember m in members)
+            {
+                m.PlaceStanding = seenMembers.Add(m.MemberNumber)
+                    ? bestStandingByMember[m.MemberNumber]
+                    : 0;
+            }
+
+            // Display order: group all entries for the same player together by name,
+            // placed entry first within each group, then unplaced duplicates by score
+            members.Sort((x, y) =>
+            {
+                int nameCompare = string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase);
+                if (nameCompare != 0) return nameCompare;
+
+                bool xPlaced = x.PlaceStanding > 0;
+                bool yPlaced = y.PlaceStanding > 0;
+                if (xPlaced && !yPlaced) return -1;
+                if (!xPlaced && yPlaced) return 1;
+                if (xPlaced)             return x.PlaceStanding.CompareTo(y.PlaceStanding);
+                return y.TotalScore.CompareTo(x.TotalScore);
+            });
 
             dgvTournament.Rows.Clear();
-            foreach (ExcelMember m in ranked)
+            foreach (ExcelMember m in members)
             {
                 // Default: a game is checked when its score is non-zero
                 bool g1Checked = m.Game1Score > 0;
@@ -186,7 +216,7 @@ namespace NineTapTour.Forms
                 int entryAvg     = checkedGames > 0 ? scratch / checkedGames : 0;
 
                 dgvTournament.Rows.Add(
-                    m.PlaceStanding,
+                    m.PlaceStanding > 0 ? (object)m.PlaceStanding : null,  // blank for duplicate entries
                     m.MemberNumber,
                     m.Name,
                     m.Game1Score > 0 ? (object)m.Game1Score : null,
