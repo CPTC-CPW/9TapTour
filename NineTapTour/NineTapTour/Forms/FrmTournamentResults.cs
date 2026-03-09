@@ -444,11 +444,19 @@ namespace NineTapTour.Forms
                         ws.Cell(excelRow, 15).FormulaA1 = $"=I{excelRow}-M{excelRow}-N{excelRow}+{sidePotValue}";
                         ws.Cell(excelRow, 8).Value = row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString();
 
-                        // After printing bowler, check if the next row is a progressive pot row
-                        if (excelRow + 1 == 5 || excelRow + 1 == 7 || excelRow + 1 == 9)
+                        // Any entry that placed 1st–3rd gets a progressive pot row directly below it.
+                        // The template pre-formats those rows at positions 5, 7, and 9 (covering excelRows 4, 6, 8).
+                        // When extra ties push a 4th (or more) top-3 entry past row 8, insert a new row so the
+                        // progressive pot slot is always present regardless of how many bowlers tied into places 1–3.
+                        if (currentPlace >= 1 && currentPlace <= 3)
                         {
-                            int sidePotIndex = i; // Use the same bowler's sidepot
-                            ws.Cell(excelRow + 1, 9).Value = clientRequested[sidePotIndex].SidePot;
+                            if (excelRow > 8)
+                            {
+                                ws.Row(excelRow + 1).InsertRowsAbove(1);
+                                ws.Range($"G{excelRow + 1}:H{excelRow + 1}").Merge();
+                            }
+                            ws.Cell(excelRow + 1, 9).Value =
+                                decimal.TryParse(row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString(), out decimal sp) ? sp : 0;
                             excelRow++;
                         }
 
