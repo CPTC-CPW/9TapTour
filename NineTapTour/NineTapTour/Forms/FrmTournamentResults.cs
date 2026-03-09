@@ -88,10 +88,10 @@ namespace NineTapTour.Forms
                 int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
                 Game g = GameDB.GetGame(gameId);
 
-                g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
+                g.PlaceStanding = ParsePlaceStanding(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
                 g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
 
-                // if user enters something other than a decimal number, set SidePot to 0.00 and enter the string into notes
+                // if user enters something other than a decimal number
                 if (Decimal.TryParse(Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value), out decimal _))
                 {
                     g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
@@ -188,6 +188,21 @@ namespace NineTapTour.Forms
                 newRow[GAME_ID_COLUMN_NAME] = tr;
                 newRow[PROGRESSIVEPOT_COLUMN_NAME] = "0.00";
                 dt.Rows.Add(newRow);
+            }
+
+            // Append "T" to the place standing of any tied rows (same numeric place as a neighbour)
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                if (!int.TryParse(dt.Rows[i][PLACE_STANDING_COLUMN_NAME]?.ToString(), out int place) || place == 0)
+                    continue;
+                bool isTie = (i > 0
+                                && int.TryParse(dt.Rows[i - 1][PLACE_STANDING_COLUMN_NAME]?.ToString(), out int prev)
+                                && prev == place)
+                           || (i < dt.Rows.Count - 1
+                                && int.TryParse(dt.Rows[i + 1][PLACE_STANDING_COLUMN_NAME]?.ToString(), out int next)
+                                && next == place);
+                if (isTie)
+                    dt.Rows[i][PLACE_STANDING_COLUMN_NAME] = $"{place}T";
             }
 
             // If there is data in datatable rows, then set datatable as source for datagridview
@@ -342,6 +357,16 @@ namespace NineTapTour.Forms
             return $"{place}{suffix}{(isTie ? "T" : "" )}";
         }
 
+        /// <summary>
+        /// Parses a place-standing cell value that may have a trailing "T" tie indicator
+        /// and returns the numeric portion as a <see cref="byte"/>.
+        /// </summary>
+        private static byte ParsePlaceStanding(object value)
+        {
+            string s = value?.ToString()?.TrimEnd('T') ?? "0";
+            return byte.TryParse(s, out byte result) ? result : (byte)0;
+        }
+
         private void ExportToExcel()
         {
             // Saves participants' place standing and earnings won to the database
@@ -350,7 +375,7 @@ namespace NineTapTour.Forms
                 int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
                 Game g = GameDB.GetGame(gameId);
 
-                g.PlaceStanding = Convert.ToByte(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
+                g.PlaceStanding = ParsePlaceStanding(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
                 g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
                 g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
                 
@@ -386,19 +411,19 @@ namespace NineTapTour.Forms
 
                         var row = dt.Rows[i];
                         int currentPlace = 0;
-                        int.TryParse(row[PLACE_STANDING_COLUMN_NAME]?.ToString(), out currentPlace);
+                        int.TryParse(row[PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out currentPlace);
                         // Check for tie: if previous or next row has the same place
                         bool isTie = false;
                         if (i > 0)
                         {
                             int prevPlace = 0;
-                            int.TryParse(dt.Rows[i - 1][PLACE_STANDING_COLUMN_NAME]?.ToString(), out prevPlace);
+                            int.TryParse(dt.Rows[i - 1][PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out prevPlace);
                             if (prevPlace == currentPlace) isTie = true;
                         }
                         if (i < dt.Rows.Count - 1)
                         {
                             int nextPlace = 0;
-                            int.TryParse(dt.Rows[i + 1][PLACE_STANDING_COLUMN_NAME]?.ToString(), out nextPlace);
+                            int.TryParse(dt.Rows[i + 1][PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out nextPlace);
                             if (nextPlace == currentPlace) isTie = true;
                         }
                         string sidePotValue = "0";
@@ -414,7 +439,7 @@ namespace NineTapTour.Forms
                                 ? val.ToString("C0")
                                 : row[EARNINGS_COLUMN_NAME]?.ToString()
                             : "$0";
-                        ws.Cell(excelRow, 11).Value = row[PLACE_STANDING_COLUMN_NAME]?.ToString();
+                        ws.Cell(excelRow, 11).Value = row[PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T');
                         ws.Cell(excelRow, 12).Value = row[MEMBER_ID_COLUMN_NAME]?.ToString();
                         ws.Cell(excelRow, 15).FormulaA1 = $"=I{excelRow}-M{excelRow}-N{excelRow}+{sidePotValue}";
                         ws.Cell(excelRow, 8).Value = row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString();
