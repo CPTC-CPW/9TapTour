@@ -72,6 +72,8 @@ namespace NineTapTour.Forms
 
             // Top grid
             dgvTournament = CreateTournamentGrid();
+            dgvTournament.CurrentCellDirtyStateChanged += DgvTournament_CurrentCellDirtyStateChanged;
+            dgvTournament.CellValueChanged             += DgvTournament_CellValueChanged;
             splitMain.Panel1.Controls.Add(dgvTournament);
 
             // Player info label at the top of the lower panel
@@ -131,7 +133,7 @@ namespace NineTapTour.Forms
                 new DataGridViewTextBoxColumn  { Name = "colHdcpTotal",    HeaderText = "HDCP\nTotal",     Width = 55,  ReadOnly = true },
                 new DataGridViewTextBoxColumn  { Name = "colEntryAvg",     HeaderText = "Entry\nAVG",      Width = 50,  ReadOnly = true },
                 new DataGridViewTextBoxColumn  { Name = "col30EntryAvg",   HeaderText = "30\nEntry\nAVG",  Width = 55,  ReadOnly = true },
-                new DataGridViewTextBoxColumn  { Name = "colAdjAvg",       HeaderText = "ADJ\nAVG",        Width = 50,  ReadOnly = true },
+                new DataGridViewTextBoxColumn  { Name = "colAdjAvg",       HeaderText = "ADJ\nAVG",        Width = 50  },
                 new DataGridViewCheckBoxColumn { Name = "colDirCheck",     HeaderText = "Director\nCheck", Width = 58  },
                 new DataGridViewTextBoxColumn  { Name = "colSquad",        HeaderText = "Squad",           Width = 45,  ReadOnly = true },
                 new DataGridViewTextBoxColumn  { Name = "colHdcp",         HeaderText = "HDCP",            Width = 45,  ReadOnly = true },
@@ -147,35 +149,65 @@ namespace NineTapTour.Forms
         {
             List<WinnerListMemberViewModel> bowlers = TournamentDB.GetWinnerListMemberData(selectedTournament.Id);
             List<ExcelMember> members = BuildExcelMemberList(bowlers);
-            List<ExcelMember> ranked = CalcService.CalculatePlaceStandings(members, removeDuplicates: false);
+            List<ExcelMember> ranked  = CalcService.CalculatePlaceStandings(members, removeDuplicates: false);
 
             dgvTournament.Rows.Clear();
             foreach (ExcelMember m in ranked)
             {
-                int scratch = m.Game1Score + m.Game2Score + m.Game3Score + m.Game4Score;
+                // Default: a game is checked when its score is non-zero
+                bool g1Checked = m.Game1Score > 0;
+                bool g2Checked = m.Game2Score > 0;
+                bool g3Checked = m.Game3Score > 0;
+                bool g4Checked = m.Game4Score > 0;
+
+                // 3-of-4: uncheck the lowest-scoring game when all 4 are present
+                if (selectedTournament.ThreeOutOf4)
+                {
+                    var validScores = new List<(int score, int game)>
+                    {
+                        (m.Game1Score, 1), (m.Game2Score, 2), (m.Game3Score, 3), (m.Game4Score, 4)
+                    }.Where(x => x.score > 0).ToList();
+
+                    if (validScores.Count == 4)
+                    {
+                        int lowestGame = validScores.MinBy(x => x.score).game;
+                        if      (lowestGame == 1) g1Checked = false;
+                        else if (lowestGame == 2) g2Checked = false;
+                        else if (lowestGame == 3) g3Checked = false;
+                        else if (lowestGame == 4) g4Checked = false;
+                    }
+                }
+
+                int scratch      = (g1Checked ? m.Game1Score : 0) + (g2Checked ? m.Game2Score : 0)
+                                 + (g3Checked ? m.Game3Score : 0) + (g4Checked ? m.Game4Score : 0);
+                int checkedGames = (g1Checked ? 1 : 0) + (g2Checked ? 1 : 0)
+                                 + (g3Checked ? 1 : 0) + (g4Checked ? 1 : 0);
+                int hdcpTotal    = scratch + (checkedGames * (m.Handicap + m.Bonus));
+                int entryAvg     = checkedGames > 0 ? scratch / checkedGames : 0;
+
                 dgvTournament.Rows.Add(
                     m.PlaceStanding,
                     m.MemberNumber,
                     m.Name,
                     m.Game1Score > 0 ? (object)m.Game1Score : null,
-                    m.Game1Score > 0,
+                    g1Checked,
                     m.Game2Score > 0 ? (object)m.Game2Score : null,
-                    m.Game2Score > 0,
+                    g2Checked,
                     m.Game3Score > 0 ? (object)m.Game3Score : null,
-                    m.Game3Score > 0,
+                    g3Checked,
                     m.Game4Score > 0 ? (object)m.Game4Score : null,
-                    m.Game4Score > 0,
+                    g4Checked,
                     scratch,
-                    m.TotalScore,
-                    null, // Entry AVG
-                    null, // 30 Entry AVG
-                    null, // ADJ AVG
+                    hdcpTotal,
+                    entryAvg,
+                    null,  // 30 Entry AVG
+                    0,     // ADJ AVG — user editable, defaults to 0
                     false,
-                    null, // Squad
+                    null,  // Squad
                     m.Handicap,
                     m.Bonus,
                     m.SidePot,
-                    null  // Notes
+                    null   // Notes
                 );
             }
         }
@@ -207,17 +239,12 @@ namespace NineTapTour.Forms
 
                 if (selectedTournament.ThreeOutOf4)
                 {
-                    List<int> scores = [m.Game1Score, m.Game2Score, m.Game3Score, m.Game4Score];
-                    scores.RemoveAll(x => x == 0);
+                    // Compute TotalScore from the top 3 valid games without modifying game scores,
+                    // so all 4 raw scores remain available for display in the grid.
+                    List<int> scores = new[] { m.Game1Score, m.Game2Score, m.Game3Score, m.Game4Score }
+                        .Where(x => x > 0).ToList();
                     if (scores.Count == 4)
-                    {
-                        int minScore = scores.Min();
-                        scores.Remove(minScore);
-                        if      (m.Game1Score == minScore) m.Game1Score = 0;
-                        else if (m.Game2Score == minScore) m.Game2Score = 0;
-                        else if (m.Game3Score == minScore) m.Game3Score = 0;
-                        else if (m.Game4Score == minScore) m.Game4Score = 0;
-                    }
+                        scores.Remove(scores.Min());
                     m.TotalScore = scores.Sum() + (scores.Count * (m.Handicap + m.Bonus));
                 }
                 else
@@ -272,6 +299,57 @@ namespace NineTapTour.Forms
             );
 
             return dgv;
+        }
+
+        /// <summary>
+        /// Recomputes Scratch Total, HDCP Total, and Entry AVG for the given row
+        /// based on which game checkboxes are currently checked.
+        /// </summary>
+        private void RecalculateTournamentRow(int rowIndex)
+        {
+            var row = dgvTournament.Rows[rowIndex];
+
+            int GetCheckedScore(string scoreCol, string checkCol)
+            {
+                bool isChecked = row.Cells[checkCol].Value as bool? ?? false;
+                if (!isChecked) return 0;
+                return Convert.ToInt32(row.Cells[scoreCol].Value ?? 0);
+            }
+
+            int hdcp  = Convert.ToInt32(row.Cells["colHdcp"].Value  ?? 0);
+            int bonus = Convert.ToInt32(row.Cells["colBonus"].Value ?? 0);
+
+            int g1 = GetCheckedScore("colGame1", "colGame1Check");
+            int g2 = GetCheckedScore("colGame2", "colGame2Check");
+            int g3 = GetCheckedScore("colGame3", "colGame3Check");
+            int g4 = GetCheckedScore("colGame4", "colGame4Check");
+
+            int scratch      = g1 + g2 + g3 + g4;
+            int checkedGames = (g1 > 0 ? 1 : 0) + (g2 > 0 ? 1 : 0) + (g3 > 0 ? 1 : 0) + (g4 > 0 ? 1 : 0);
+            int hdcpTotal    = scratch + (checkedGames * (hdcp + bonus));
+            int entryAvg     = checkedGames > 0 ? scratch / checkedGames : 0;
+
+            row.Cells["colScratchTotal"].Value = scratch;
+            row.Cells["colHdcpTotal"].Value    = hdcpTotal;
+            row.Cells["colEntryAvg"].Value     = entryAvg;
+        }
+
+        /// <summary>
+        /// Commits a checkbox edit the moment the cell becomes dirty so that
+        /// <see cref="DgvTournament_CellValueChanged"/> fires immediately on click.
+        /// </summary>
+        private void DgvTournament_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (dgvTournament.IsCurrentCellDirty)
+                dgvTournament.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        }
+
+        private void DgvTournament_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            string colName = dgvTournament.Columns[e.ColumnIndex].Name;
+            if (colName is "colGame1Check" or "colGame2Check" or "colGame3Check" or "colGame4Check")
+                RecalculateTournamentRow(e.RowIndex);
         }
     }
 }
