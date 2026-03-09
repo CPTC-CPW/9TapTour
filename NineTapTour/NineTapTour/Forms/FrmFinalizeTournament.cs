@@ -46,6 +46,7 @@ namespace NineTapTour.Forms
             BuildGrids();
             LoadTournamentGrid();
             dgvTournament.SelectionChanged += DgvTournament_SelectionChanged;
+            DgvTournament_SelectionChanged(dgvTournament, EventArgs.Empty);
         }
 
         private void BuildGrids()
