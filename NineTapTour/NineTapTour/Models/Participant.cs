@@ -16,11 +16,11 @@ namespace NineTapTour.Models
         [Required]
         public Member Member { get; set; }
 
+        [Required]
         public Game Game { get; set; }
+
+        [Required]
         public Tournament Tournament { get; set; }
-
-
-        public int ParticipantRegionID { get; set; }
         #endregion
 
 

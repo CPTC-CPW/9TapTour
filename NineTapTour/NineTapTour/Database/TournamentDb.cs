@@ -26,6 +26,18 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
+        /// Adds the given Tournament into the database using an existing DbContext.
+        /// NOTE: Does NOT call SaveChanges - caller controls when to save for batch operations.
+        /// </summary>
+        public static void AddTournament(Tournament tourn, NineTapDb db)
+        {
+            //checks if tournament is new or already existing in db
+            db.Entry(tourn).State = db.Tournaments.Any(t => t.Id == tourn.Id) ?
+                EntityState.Modified :
+                EntityState.Added;
+        }
+
+        /// <summary>
         /// Updates the given Tournament in the database
         /// </summary>
         /// <exception cref="ArgumentException">Thrown if tournament argument not found in database</exception>
@@ -46,17 +58,30 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Returns the list of Tournaments ordered by Date descending
+        /// Returns the list of Tournaments ordered by Date descending (Phase 6: uses TourneyRegion FK)
         /// </summary>
         public static List<Tournament> GetTournamentList(int regionID)
         {
             using (NineTapDb db = new())
             {
+                // Phase 6: Use Tournament.TourneyRegion.NineTapRegionID for proper FK relationship
                 return [.. (from t in db.Tournaments
                         orderby t.Date descending
-                        where t.TourneyRegion == regionID
+                        where t.TourneyRegion.NineTapRegionID == regionID
                         select t)];
             }
+        }
+
+        /// <summary>
+        /// Returns the list of Tournaments ordered by Date descending using an existing DbContext (Phase 6: uses TourneyRegion FK)
+        /// </summary>
+        public static List<Tournament> GetTournamentList(int regionID, NineTapDb db)
+        {
+            // Phase 6: Use Tournament.TourneyRegion.NineTapRegionID for proper FK relationship
+            return [.. (from t in db.Tournaments
+                    orderby t.Date descending
+                    where t.TourneyRegion.NineTapRegionID == regionID
+                    select t)];
         }
 
         /// <summary>
@@ -136,18 +161,35 @@ namespace NineTapTour.Database
         public static void AddMemberToTournament(Participant player)
         {
             using var db = new NineTapDb();
-            bool isMemberInTournament = (from p in db.Participants
-                                            where player.Member.Id == p.Member.Id
-                                            && player.Tournament.Id == p.Tournament.Id
-                                            && player.Squad == p.Squad
-                                            select p).Any();
+            
+            // Use AsNoTracking to avoid tracking entities in the duplicate check query
+            bool isMemberInTournament = db.Participants
+                .AsNoTracking()
+                .Any(p => p.Member.Id == player.Member.Id
+                       && p.Tournament.Id == player.Tournament.Id
+                       && p.Squad == player.Squad);
+            
             if (!isMemberInTournament)
             {
                 player.Id = 0; // New participants will get an auto generated id
+                
+                // Attach related entities to this context before adding the participant
+                db.Attach(player.Member);
+                db.Attach(player.Tournament);
+                db.Attach(player.Game);
+                if (player.Tournament.TourneyRegion != null)
+                {
+                    db.Attach(player.Tournament.TourneyRegion);
+                }
+                
                 db.Participants.Add(player);
-                // We only want to add a the current person. Tournament and Member data is not changed here.
+                
+                // Set states to Unchanged
+                db.Entry(player.Game).State = EntityState.Unchanged;
                 db.Entry(player.Tournament).State = EntityState.Unchanged;
                 db.Entry(player.Member).State = EntityState.Unchanged;
+                db.Entry(player.Tournament.TourneyRegion).State = EntityState.Unchanged;
+                
                 db.SaveChanges();
             }
             else
@@ -170,6 +212,80 @@ namespace NineTapTour.Database
                 squadResult.Squad = player.Squad;
                 squadResult.Member = memberQuery.Member;
                 db.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Adds the given Participant to the Tournament using an existing DbContext.
+        /// NOTE: Does NOT call SaveChanges - caller controls when to save for batch operations.
+        /// </summary>
+        public static void AddMemberToTournament(Participant player, NineTapDb db)
+        {
+            // Use AsNoTracking to avoid tracking entities in the duplicate check query
+            bool isMemberInTournament = db.Participants
+                .AsNoTracking()
+                .Any(p => p.Member.Id == player.Member.Id
+                       && p.Tournament.Id == player.Tournament.Id
+                       && p.Squad == player.Squad);
+            
+            if (!isMemberInTournament)
+            {
+                player.Id = 0; // New participants will get an auto generated id
+                
+                // Ensure related entities are tracked by this context
+                var memberEntry = db.Entry(player.Member);
+                if (memberEntry.State == EntityState.Detached)
+                {
+                    db.Attach(player.Member);
+                }
+                
+                var tournamentEntry = db.Entry(player.Tournament);
+                if (tournamentEntry.State == EntityState.Detached)
+                {
+                    db.Attach(player.Tournament);
+                }
+                
+                var gameEntry = db.Entry(player.Game);
+                if (gameEntry.State == EntityState.Detached)
+                {
+                    db.Attach(player.Game);
+                }
+                
+                if (player.Tournament.TourneyRegion != null)
+                {
+                    var regionEntry = db.Entry(player.Tournament.TourneyRegion);
+                    if (regionEntry.State == EntityState.Detached)
+                    {
+                        db.Attach(player.Tournament.TourneyRegion);
+                    }
+                }
+                
+                db.Participants.Add(player);
+                
+                if (player.Tournament.TourneyRegion != null)
+                {
+                    db.Entry(player.Tournament.TourneyRegion).State = EntityState.Unchanged;
+                }
+            }
+            else
+            {
+                Game result = db.Games.SingleOrDefault(g => g.Id == player.Game.Id);
+                Participant squadResult = db.Participants.SingleOrDefault(p => p.Id == player.Id);
+                Participant memberQuery = db.Participants.Include(m => m.Member)
+                    .Where(m => m.Member.Id == player.Member.Id).FirstOrDefault();
+                result.Game1 = player.Game.Game1;
+                result.Game2 = player.Game.Game2;
+                result.Game3 = player.Game.Game3;
+                result.Game4 = player.Game.Game4;
+                result.MoneyWon = player.Game.MoneyWon;
+                result.IsComp = player.Game.IsComp;
+
+                if (squadResult == null)
+                {
+                    squadResult = new Participant();
+                }
+                squadResult.Squad = player.Squad;
+                squadResult.Member = memberQuery.Member;
             }
         }
 

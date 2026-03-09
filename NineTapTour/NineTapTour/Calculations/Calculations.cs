@@ -1,10 +1,10 @@
-﻿﻿using NineTapTour.Database;
+﻿using NineTapTour.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
- using NineTapTour.Models;
+using NineTapTour.Models;
 
 namespace NineTapTour.Calculations
 {
@@ -90,7 +90,7 @@ namespace NineTapTour.Calculations
 
             // Gets the amount of entries the member has for the tournament
             int membersGameEntryCount = FinalizeTempDB.GetMembersGameEntryCount(currTournamentId, memNum);
-            List<PlayerHistory> latestGames = PlayerHistoryDB.GetLastQtyGamesMoneyWon(memNum, RegionID, 15);
+            List<PlayerHistoryViewModel> latestGames = PlayerHistoryDB.GetLastQtyGamesMoneyWon(memNum, RegionID, 15);
 
             // If a player didnt win money, they might gain bonus pins
             return AddToBonusPins(currentBonusPins, latestGames, membersGameEntryCount);
@@ -103,7 +103,7 @@ namespace NineTapTour.Calculations
         /// <param name="currentBonusPins">Bonus pins before calculating new bonus pins</param>
         /// <param name="latestGames">a member's player history</param>
         /// <param name="currTourneyEntryCount">this is the number of losses in the current game</param>
-        public static int AddToBonusPins(int currentBonusPins, List<PlayerHistory> latestGames, int currTourneyEntryCount)
+        public static int AddToBonusPins(int currentBonusPins, List<PlayerHistoryViewModel> latestGames, int currTourneyEntryCount)
         {
             int additionalBonus = 0;
 
@@ -198,7 +198,7 @@ namespace NineTapTour.Calculations
         /// <param name="latestGames">a member's player history</param>
         /// <param name="currTourneyEntryCount">this is the number of losses in the current game</param>
         /// <param name="minLosses">minimum number of losses to determine if bonus is earned</param>
-        private static bool DoesGetBonus(List<PlayerHistory> latestGames, int currTourneyEntryCount, int minLosses)
+        private static bool DoesGetBonus(List<PlayerHistoryViewModel> latestGames, int currTourneyEntryCount, int minLosses)
         {
             // Introduce local const variable to represent the multiple of three loses
             // For if player gets a bonus
@@ -223,7 +223,7 @@ namespace NineTapTour.Calculations
         /// </summary>
         /// <param name="latestGames">Games to find last cashed tourney in</param>
         /// <returns>First index of last cashed tourney. -1 if not found</returns>
-        private static int FindLastCashedTourneyIndex(List<PlayerHistory> latestGames)
+        private static int FindLastCashedTourneyIndex(List<PlayerHistoryViewModel> latestGames)
         {
             for (int i = 0; i < latestGames.Count; i++)
             {
@@ -243,7 +243,7 @@ namespace NineTapTour.Calculations
         /// <summary>
         /// Returns true if the player won money, returns false otherwise
         /// </summary>
-        private static bool PlayerDidCash(PlayerHistory playerHistory)
+        private static bool PlayerDidCash(PlayerHistoryViewModel playerHistory)
         {
             return playerHistory.MoneyWon > 0;
         }
@@ -322,7 +322,7 @@ namespace NineTapTour.Calculations
         /// </summary>
         /// <param name="members"></param>
         /// <returns>Dictionary of FinalizeTemps and ints where ints are placings. Sorted by highest score with duplicate members last</returns>
-        public static Dictionary<FinalizeTemp, int> CalculatePlaceStandings(List<FinalizeTemp> members, Tournament tournament)
+        public static Dictionary<GameViewModel, int> CalculatePlaceStandings(List<GameViewModel> members, Tournament tournament)
         {
             // A list of no members will return an empty list
             if (members.Count == 0)
@@ -337,11 +337,11 @@ namespace NineTapTour.Calculations
             members.Sort((a, b) => b.HandicapTotal.CompareTo(a.HandicapTotal));
 
             // Removes duplicate members
-            List<FinalizeTemp> removals = RemoveDuplicateBowlers(members);
+            List<GameViewModel> removals = RemoveDuplicateBowlers(members);
 
 
             // links FinalizeTemp to an integer used for placing
-            var membersPlacingMap = new Dictionary<FinalizeTemp, int>();
+            var membersPlacingMap = new Dictionary<GameViewModel, int>();
             foreach (var member in members)
             {
                 membersPlacingMap.Add(member, 0);
@@ -361,8 +361,8 @@ namespace NineTapTour.Calculations
             // Calculate each member's placing
             for (int currPosition = 1; currPosition < members.Count; currPosition++)
             {
-                FinalizeTemp currMember = members[currPosition];
-                FinalizeTemp prevMember = members[currPosition - 1];
+                GameViewModel currMember = members[currPosition];
+                GameViewModel prevMember = members[currPosition - 1];
 
                 // Tied scores will have the same place standing
                 if (currMember.HandicapTotal == prevMember.HandicapTotal)
@@ -378,7 +378,7 @@ namespace NineTapTour.Calculations
             }
 
             // Add duplicate entries to end of list
-            foreach (FinalizeTemp member in removals)
+            foreach (GameViewModel member in removals)
             {
                 membersPlacingMap.Add(member, 0);
             }
@@ -399,9 +399,9 @@ namespace NineTapTour.Calculations
         /// </summary>
         /// <param name="members">The list of bowlers</param>
         /// <param name="isPositive">Wether or not to add or substract from handicap total</param>
-        private static void AlterHandicapTotalAccordingToMinimumGameScore(List<FinalizeTemp> members, bool isPositive)
+        private static void AlterHandicapTotalAccordingToMinimumGameScore(List<GameViewModel> members, bool isPositive)
         {
-            foreach (FinalizeTemp currMember in members)
+            foreach (GameViewModel currMember in members)
             {
                 //puts the four games of the current member into a list so that the minimum value can be found easier.
                 List<int?> games =
@@ -427,11 +427,24 @@ namespace NineTapTour.Calculations
         }
 
         /// <summary>
-        /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding
+        /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding.
+        /// Duplicate entries are removed; only the highest score per member is kept.
         /// </summary>
         /// <param name="members"></param>
         /// <returns>List of ExcelMembers with duplicate members removed ordered by TotalScore with assigned placement</returns>
         public static List<ExcelMember> CalculatePlaceStandings(List<ExcelMember> members)
+            => CalculatePlaceStandings(members, removeDuplicates: true);
+
+        /// <summary>
+        /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding.
+        /// </summary>
+        /// <param name="members"></param>
+        /// <param name="removeDuplicates">
+        /// When <see langword="true"/>, only the highest score for each member is kept before ranking.
+        /// When <see langword="false"/>, all entries are ranked as-is.
+        /// </param>
+        /// <returns>List of ExcelMembers ordered by TotalScore with assigned placement</returns>
+        public static List<ExcelMember> CalculatePlaceStandings(List<ExcelMember> members, bool removeDuplicates)
         {
             // No members, no place standings
             if (members.Count == 0)
@@ -442,9 +455,21 @@ namespace NineTapTour.Calculations
             // Makes copy so original list won't be affected
             members = [.. members];
 
-            //remove duplicates
-            RemoveDuplicateBowlers(members);
+            if (removeDuplicates)
+            {
+                RemoveDuplicateBowlers(members);
+            }
 
+            GiveExcelMembersPlaceStandings(members);
+
+            return members;
+        }
+
+        /// <summary>
+        /// Modifies the original list and gives ExcelMembers their place standings.
+        /// </summary>
+        private static void GiveExcelMembersPlaceStandings(List<ExcelMember> members)
+        {
             // The first member in the list when sorted by score will be in first place
             int place = 1;
             members.Sort((x, y) => y.TotalScore.CompareTo(x.TotalScore));
@@ -467,16 +492,15 @@ namespace NineTapTour.Calculations
                 // Placing is still added if members tied
                 place++;
             }
-            return members;
         }
 
         /// <summary>
         /// Removes the lower scores of duplicate bowlers in the list
         /// </summary>
         /// <returns>list of removed FinalizeTemps</returns>
-        private static List<FinalizeTemp> RemoveDuplicateBowlers(List<FinalizeTemp> members)
+        private static List<GameViewModel> RemoveDuplicateBowlers(List<GameViewModel> members)
         {
-            List<FinalizeTemp> removal = [];
+            List<GameViewModel> removal = [];
             for (int i = 0; i < members.Count; i++)
             {
                 bool isCurrIndexRemoved = false;
@@ -499,7 +523,7 @@ namespace NineTapTour.Calculations
                 }
 
                 // Removes all members who are in removal list
-                foreach (FinalizeTemp deleteMember in removal)
+                foreach (GameViewModel deleteMember in removal)
                 {
                     members.Remove(deleteMember);
                 }

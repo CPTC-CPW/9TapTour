@@ -102,7 +102,7 @@ namespace NineTapTour.Forms
             Font drawFont = new("Arial", 12);
             SolidBrush drawBrush = new(Color.White);
             PointF drawPoint = new(10, 2);
-            g.DrawString("Version: 2.5.2", drawFont, drawBrush, drawPoint);
+            g.DrawString("Version: 3.0.0", drawFont, drawBrush, drawPoint);
 #if DEBUG
             drawBrush.Color = Color.Red;
             drawPoint.Y += 16;
@@ -119,20 +119,9 @@ namespace NineTapTour.Forms
             {
                 frmPleaseWait pl = new();
                 pl.Show();
-                //Delete Player History where HisID = selected regionID
-                List<PlayerHistory> phis = PlayerHistoryDB.GetAllPlayerHistory(regionID);
-                foreach (var p in phis)
-                {
-                    PlayerHistoryDB.DeletePlayerHistory(p);
-                }
 
-                // Delete FinilizeTemp where FinalizeID = selected regionID
-                List<FinalizeTemp> fin = FinalizeTempDB.GetFinalizeListByRegionID(regionID);
-
-                foreach (var f in fin)
-                {
-                    FinalizeTempDB.DeleteFinalizeTemp(f);
-                }
+                // NOTE: Player history is stored in Game entity and will be deleted with games
+                // No separate PlayerHistory deletion needed
 
                 // Delete Participants where Participant RegionID = regionID
                 List<Participant> par = FinalizeTempDB.GetParticipantListByRegionID(regionID);

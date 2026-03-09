@@ -9,13 +9,13 @@ using NineTapTour.Models;
 
 namespace NineTapTour.Database
 {
-    class FinalizeTempDB
+    public class FinalizeTempDB
     {
         /// <summary>
         /// Calculates league average for given member based off last 30 games 
         /// or total games played if less than 30.
         /// </summary>
-        public static double LeagueAverage(Member mem)
+        public static double Get30GameAverage(Member mem)
         {
             // Represents the number of past games for the player
             int howManyGames = 30;
@@ -42,7 +42,7 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// This is a helper method for <see cref="LeagueAverage(Member)"/>
+        /// This is a helper method for <see cref="Get30GameAverage(Member)"/>
         /// that takes the useGames from the database to see if they are true or null.
         /// We are saying that null is true, because they are optional booleans in the database.
         /// (Assuming that during the import process these are not being updated)
@@ -123,7 +123,7 @@ namespace NineTapTour.Database
         /// <param name="memberNumber">The member number NOT id</param>
         /// <param name="regionId">The region id</param>
         /// <param name="tournamentId">The id of the tournament</param>
-        public static double GetLeagueAverage(int memberNumber, int regionId, int tournamentId)
+        public static double Get30GameAverage(int memberNumber, int regionId, int tournamentId)
         {
             int allGamesPlayed = 0;
             int totalScratchTotal = 0;
@@ -165,228 +165,211 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
-                var curHistory = (from f in db.FinalizeTemp
-                                  where f.FinalizeRegionID == regionId &&
-                                        f.MemberNumber == memberNumber &&
-                                        f.TournamentID == tournamentId
+                // Phase 6: Use Tournament.TourneyRegion.NineTapRegionID for proper FK relationship
+                var curHistory = (from p in db.Participants
+                                  join m in db.Members on p.Member.Id equals m.Id
+                                  join g in db.Games on p.Game.Id equals g.Id
+                                  join t in db.Tournaments on p.Tournament.Id equals t.Id
+                                  where m.Number == memberNumber &&
+                                        t.TourneyRegion.NineTapRegionID == regionId && // Phase 6: Use navigation property
+                                        t.Id == tournamentId
                                   select new CurrentHistory
                                   {
-                                      ScratchTotal = f.ScratchTotal,
-                                      UseGame1 = f.UseGame1,
-                                      UseGame2 = f.UseGame2,
-                                      UseGame3 = f.UseGame3,
-                                      UseGame4 = f.UseGame4
+                                      ScratchTotal = (g.Game1 ?? 0) + (g.Game2 ?? 0) + (g.Game3 ?? 0) + (g.Game4 ?? 0),
+                                      UseGame1 = g.UseGame1 ?? true,
+                                      UseGame2 = g.UseGame2 ?? true,
+                                      UseGame3 = g.UseGame3 ?? true,
+                                      UseGame4 = g.UseGame4 ?? true
                                   }).ToList();
 
                 return curHistory;
             }
-
         }
 
         public static List<PreviousHistory> GetPreviousHistory(int memberNumber, int regionId, List<CurrentHistory> curHistory)
         {
             using (var db = new NineTapDb())
             {
-                var prevHistory = (from p in db.PlayerHistory
-                                   where p.MemberNumber == memberNumber && p.regionID == regionId
-                                   orderby p.TournamentDate descending
-                                   select new PreviousHistory
-                                   {
-                                       TournamentDate = p.TournamentDate,
-                                       GamesPlayed = p.GamesPlayed,
-                                       TotalScore = p.TotalScore
-                                   }).Take(30 - curHistory.Count).ToList();
+                // Phase 5: Use Member.NineTapRegionID instead of Participant.ParticipantRegionID
+                var prevHistory = (from p in db.Participants
+                                  join m in db.Members on p.Member.Id equals m.Id
+                                  join g in db.Games on p.Game.Id equals g.Id
+                                  join t in db.Tournaments on p.Tournament.Id equals t.Id
+                                  where m.Number == memberNumber 
+                                     && m.NineTapRegionID == regionId // Changed from p.ParticipantRegionID
+                                     && g.IsFinalized // Only finalized games
+                                  orderby t.Date descending
+                                  select new PreviousHistory
+                                  {
+                                      TournamentDate = t.Date,
+                                      GamesPlayed = g.GamesPlayed,
+                                      TotalScore = g.ScratchTotal
+                                  }).Take(30 - curHistory.Count).ToList();
                 return prevHistory;
             }
         }
 
         /// <summary>
-        /// Updates the FinalizeTemp with the same ID if it already exists in the database,
-        /// otherwise adds the FinalizeTemp to the database
+        /// [Phase 4 REFACTORED] Updates Game entity with finalization properties.
+        /// FinalizeTemp writes are deprecated - only Games table is updated.
         /// </summary>
-        public static void AddFinalizeTemp(FinalizeTemp temp)
+        public static void AddFinalizeTemp(GameViewModel temp)
         {
             using(var db = new NineTapDb())
             {
                 try
                 {
-                    // Checks if tournament is new or already existing in the database
-                    if (!db.FinalizeTemp.Any(f => f.GameId == temp.GameId))
+                    // Phase 4: Only update Games table, skip FinalizeTemp entirely
+                    Game game = db.Games.FirstOrDefault(g => g.Id == temp.GameId);
+                    if (game != null)
                     {
-                        temp.FinalizeID = 0; // Finalize record will get auto generated id
-                        db.Entry(temp).State = EntityState.Added;
-
-                        /* There is a problem in the database's member's average, so it was not 
-                            used, but I believe it should be. The problem might be when a tournament 
-                            record is added, it is not updating the member's average in the database. */
-                        // Updates the handicap of a member that participated in the tournament in the database
-                        db.Members.First(x => x.Id == temp.MemberId).Handicap = 
-                            Calculations.Calculations.CalculateHandicapPins(
-                                Convert.ToInt16(LeagueAverage(db.Members.First(x => x.Id == temp.MemberId)))
+                        // Phase 4: Removed game.TournamentID (redundant - stored in Participant)
+                        // Update finalization properties on Game entity
+                        game.LeagueAverage = temp.LeagueAverage;
+                        game.AdjustedAvg = temp.AdjustedAvg;
+                        game.KeepAdjustedAvg = temp.KeepAdjustedAvg;
+                        game.HandicapTotal = temp.HandicapTotal;
+                        
+                        // Update member handicap
+                        var member = db.Members.FirstOrDefault(x => x.Id == temp.MemberId);
+                        if (member != null)
+                        {
+                            member.Handicap = Calculations.Calculations.CalculateHandicapPins(
+                                Convert.ToInt16(Get30GameAverage(member))
                             );
-                        db.SaveChanges();
-                    }
-                    else
-                    {
-                        db.Entry(temp).State = EntityState.Modified;
+                        }
+                        
                         db.SaveChanges();
                     }
                 }
-                catch (SqlException ex)
+                catch (Exception ex)
                 {
-                    throw new Exception("Error Number : " + ex.Number + " - " + ex.Message);
+                    throw new Exception($"Error updating game finalization data: {ex.Message}", ex);
                 }
             }
         }
 
         /// <summary>
-        /// Finds and returns the FinalizeTemp with the same ID as the GameID given,
-        /// returns an empty FinalizeTemp if none were found
+        /// [DEPRECATED - Phase 3] Finds and returns the FinalizeTemp with the same ID as the GameID given.
+        /// Use GameDB.GetGame() instead.
         /// </summary>
-        public static FinalizeTemp GetFinalizeID(Game currentG)
+        [Obsolete("This method is deprecated. Use GameDB.GetGame() to get game data directly.")]
+        public static GameViewModel GetFinalizeID(Game currentG)
         {
             using (var db = new NineTapDb())
             {
-                var finalizeTemp = (from par in db.FinalizeTemp
-                                    where par.GameId == currentG.Id
-                                    select par).SingleOrDefault();
-                //return empty finalize object if none are found to retain original behavior
-                return finalizeTemp is null ? new FinalizeTemp() : finalizeTemp;
+                // Return empty object for backward compatibility during transition
+                return new GameViewModel { GameId = currentG.Id };
             }
         }
 
         /// <summary>
         /// Gets and returns a list of all participant objects for the tournament given
+        /// (Phase 5: Optimized with direct projection and uses Member.NineTapRegionID)
         /// </summary>
-        public static List<FinalizeTemp> GetAllInitialParticipantGameList(Tournament tourn)
+        public static List<GameViewModel> GetAllInitialParticipantGameList(Tournament tourn)
         {
             using (var db = new NineTapDb())
             {
-                var temp = (from p in db.Participants
-                            join m in db.Members on p.Member.Id equals m.Id
-                            join g in db.Games on p.Game.Id equals g.Id
-                            join t in db.Tournaments on p.Tournament.Id equals t.Id
-                            where tourn.Id == p.Tournament.Id
-                            orderby m.FirstName descending
-                            select new
-                            {
-                                g.Id,
-                                m.FirstName,
-                                m.LastName,
-                                MemberId = m.Id,
-                                p.Squad,
-                                g.Game1,
-                                g.Game2,
-                                g.Game3,
-                                g.Game4,
-                                g.UseGame1,
-                                g.UseGame2,
-                                g.UseGame3,
-                                g.UseGame4,
-                                g.Notes,
-                                g.Handicap,
-                                g.Bonus,
-                                m.Number,
-                                t.TourneyRegion
-                            }).ToList();
-
-                List<FinalizeTemp> ParticipantList = [];
-                // Populates ParticipantList with the data pulled from the database
-                foreach (var item in temp)
-                {
-                    FinalizeTemp NewParticipant = new();
-
-                    // Populates the names and ID's
-                    NewParticipant.GameId = item.Id;
-                    NewParticipant.MemberId = item.MemberId;
-                    NewParticipant.MemberNumber = item.Number;
-                    NewParticipant.FirstName = item.FirstName;
-                    NewParticipant.LastName = item.LastName;
-                    NewParticipant.Squad = item.Squad;
-
-                    // Populates the Games
-                    NewParticipant.Game1 = item.Game1;
-                    NewParticipant.Game2 = item.Game2;
-                    NewParticipant.Game3 = item.Game3;
-                    NewParticipant.Game4 = item.Game4;
-                    NewParticipant.UseGame1 = item.UseGame1 ?? item.Game1.HasValue;
-                    NewParticipant.UseGame2 = item.UseGame2 ?? item.Game2.HasValue;
-                    NewParticipant.UseGame3 = item.UseGame3 ?? item.Game3.HasValue;
-                    NewParticipant.UseGame4 = item.UseGame4 ?? item.Game4.HasValue;
-                    NewParticipant.Notes = item.Notes;
-                    NewParticipant.ScratchTotal = (item.Game1 ?? 0) + (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0);
-
-                    // Increases GamesPlayed by 1 for each game1-4 with a value
-                    int GamesPlayed = 0;
-                    if (item.Game1.HasValue)
-                        GamesPlayed++;
-                    if (item.Game2.HasValue)
-                        GamesPlayed++;
-                    if (item.Game3.HasValue)
-                        GamesPlayed++;
-                    if (item.Game4.HasValue)
-                        GamesPlayed++;
-
-                    // Used GamesPlayed to calculate the GameAvg
-                    NewParticipant.GameAvg = ((item.Game1 ?? 0) +
-                        (item.Game2 ?? 0) + (item.Game3 ?? 0) + (item.Game4 ?? 0)) / GamesPlayed;
-
-                    // Popualtes the handicaps
-                    NewParticipant.Handicap = item.Handicap ?? 0;
-                    NewParticipant.Bonus = item.Bonus ?? 0;
-
-                    // Calcualates the HandicapTotal
-                    int HandicapTotal = (item.Game1 != null) ? ((item.Game1 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
-                    HandicapTotal += (item.Game2 != null) ? ((item.Game2 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
-                    HandicapTotal += (item.Game3 != null) ? ((item.Game3 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
-                    HandicapTotal += (item.Game4 != null) ? ((item.Game4 ?? 0) + (item.Handicap ?? 0) + (item.Bonus ?? 0)) : 0;
-                    NewParticipant.HandicapTotal = HandicapTotal;
-
-                    NewParticipant.FinalizeRegionID = item.TourneyRegion;
-
-                    ParticipantList.Add(NewParticipant);
-                }
-                return ParticipantList;
+                return [.. (from p in db.Participants
+                           join m in db.Members on p.Member.Id equals m.Id
+                           join g in db.Games on p.Game.Id equals g.Id
+                           join t in db.Tournaments on p.Tournament.Id equals t.Id
+                           where tourn.Id == p.Tournament.Id
+                           orderby m.FirstName descending
+                           select new GameViewModel
+                           {
+                               // IDs
+                               GameId = g.Id,
+                               MemberId = m.Id,
+                               MemberNumber = m.Number,
+                               
+                               // Names
+                               FirstName = m.FirstName,
+                               LastName = m.LastName,
+                               
+                               // Squad
+                               Squad = p.Squad,
+                               
+                               // Game Scores
+                               Game1 = g.Game1,
+                               Game2 = g.Game2,
+                               Game3 = g.Game3,
+                               Game4 = g.Game4,
+                               
+                               // Use Game flags (null-coalesce with HasValue)
+                               UseGame1 = g.UseGame1 ?? g.Game1.HasValue,
+                               UseGame2 = g.UseGame2 ?? g.Game2.HasValue,
+                               UseGame3 = g.UseGame3 ?? g.Game3.HasValue,
+                               UseGame4 = g.UseGame4 ?? g.Game4.HasValue,
+                               
+                               // Notes
+                               Notes = g.Notes,
+                               
+                               // Calculated totals
+                               ScratchTotal = (g.Game1 ?? 0) + (g.Game2 ?? 0) + (g.Game3 ?? 0) + (g.Game4 ?? 0),
+                               
+                               // Finalization data from Game
+                               LeagueAverage = g.LeagueAverage,
+                               AdjustedAvg = g.AdjustedAvg,
+                               KeepAdjustedAvg = g.KeepAdjustedAvg,
+                               HandicapTotal = g.HandicapTotal > 0 ? g.HandicapTotal :
+                                   ((g.Game1.HasValue ? (g.Game1 ?? 0) + (g.Handicap ?? 0) + (g.Bonus ?? 0) : 0) +
+                                    (g.Game2.HasValue ? (g.Game2 ?? 0) + (g.Handicap ?? 0) + (g.Bonus ?? 0) : 0) +
+                                    (g.Game3.HasValue ? (g.Game3 ?? 0) + (g.Handicap ?? 0) + (g.Bonus ?? 0) : 0) +
+                                    (g.Game4.HasValue ? (g.Game4 ?? 0) + (g.Handicap ?? 0) + (g.Bonus ?? 0) : 0)),
+                               
+                               // Handicap and Bonus
+                               Handicap = g.Handicap ?? 0,
+                               Bonus = g.Bonus ?? 0,
+                               
+                               // Phase 5: Use Member.NineTapRegionID instead of Participant.ParticipantRegionID
+                               FinalizeRegionID = m.NineTapRegionID
+                           }).ToList()];
             }
         }
 
         /// <summary>
-        /// Makes and returns a list from the FinalizeTemp Table to be used in dataview source
+        /// Gets finalization data for a tournament from Games table (Phase 5: Uses Member relationships).
+        /// Returns data in FinalizeTemp format for UI compatibility.
         /// </summary>
-        public static List<FinalizeTemp> GetListFromTable(Tournament tourn)
+        public static List<GameViewModel> GetListFromTable(Tournament tourn)
         {
             using (var db = new NineTapDb())
             {
-                // Returns a list of participants with the same TournamentID
-                return [.. db.FinalizeTemp
-                    .Where(p => p.TournamentID == tourn.Id)
-                    .OrderBy(p => p.FirstName)
-                    .ThenBy(p => p.Squad)];
-            }
-        }
-
-        /// <summary>
-        /// Gets and returns a list of FinalizeTemp with the same RegionID as the ID given
-        /// </summary>
-        public static List<FinalizeTemp> GetFinalizeListByRegionID(int RegionID)
-        {
-            using (var db = new NineTapDb())
-            {
-                return [.. (from f in db.FinalizeTemp
-                        where f.FinalizeRegionID == RegionID
-                        select f)];
-            }
-        }
-
-        /// <summary>
-        /// Deletes the FinalizeTemp given from the database
-        /// </summary>
-        public static void DeleteFinalizeTemp(FinalizeTemp ft)
-        {
-            using (var db = new NineTapDb())
-            {
-                db.Entry(ft).State = EntityState.Deleted;
-                db.SaveChanges();
+                // Phase 5: Use Member.NineTapRegionID instead of Participant.ParticipantRegionID
+                return [.. (from p in db.Participants
+                           join m in db.Members on p.Member.Id equals m.Id
+                           join g in db.Games on p.Game.Id equals g.Id
+                           where p.Tournament.Id == tourn.Id
+                           orderby m.FirstName, p.Squad
+                           select new GameViewModel
+                           {
+                               TournamentID = tourn.Id, // Use Tournament from Participant
+                               GameId = g.Id,
+                               MemberId = m.Id,
+                               MemberNumber = m.Number,
+                               FirstName = m.FirstName,
+                               LastName = m.LastName,
+                               Squad = p.Squad,
+                               Game1 = g.Game1,
+                               Game2 = g.Game2,
+                               Game3 = g.Game3,
+                               Game4 = g.Game4,
+                               UseGame1 = g.UseGame1 ?? true,
+                               UseGame2 = g.UseGame2 ?? true,
+                               UseGame3 = g.UseGame3 ?? true,
+                               UseGame4 = g.UseGame4 ?? true,
+                               LeagueAverage = g.LeagueAverage,
+                               AdjustedAvg = g.AdjustedAvg,
+                               KeepAdjustedAvg = g.KeepAdjustedAvg,
+                               HandicapTotal = g.HandicapTotal,
+                               ScratchTotal = (g.Game1 ?? 0) + (g.Game2 ?? 0) + (g.Game3 ?? 0) + (g.Game4 ?? 0),
+                               Handicap = g.Handicap ?? 0,
+                               Bonus = g.Bonus ?? 0,
+                               Notes = g.Notes,
+                               FinalizeRegionID = m.NineTapRegionID // Phase 5: Use Member RegionID
+                           })];
             }
         }
 
@@ -405,14 +388,16 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Returns a list of Participants with a RegionID the same as the ID given
+        /// Returns a list of Participants with a RegionID the same as the ID given (Phase 5: queries via Member)
         /// </summary>
         public static List<Participant> GetParticipantListByRegionID(int RegionID)
         {
             using (var db = new NineTapDb())
             {
+                // Phase 5: Query via Member.NineTapRegionID instead of Participant.ParticipantRegionID
                 return [.. (from p in db.Participants
-                        where p.ParticipantRegionID == RegionID
+                        join m in db.Members on p.Member.Id equals m.Id
+                        where m.NineTapRegionID == RegionID
                         select p).Include(nameof(Participant.Member))];
             }
                 
@@ -431,20 +416,23 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Returns a list of the Games with the same RegionID as the ID given
+        /// Returns a list of the Games with the same RegionID as the ID given (Phase 5: queries via Member).
         /// </summary>
         public static List<Game> GetGameListByRegionID(int RegionID)
         {
             using (var db = new NineTapDb())
             {
-                return [.. (from g in db.Games
-                where g.gameRegionID == RegionID
-                select g)];
+                // Phase 5: Query Games via Member.NineTapRegionID
+                return [.. (from p in db.Participants
+                           join m in db.Members on p.Member.Id equals m.Id
+                           join g in db.Games on p.Game.Id equals g.Id
+                           where m.NineTapRegionID == RegionID
+                           select g)];
             }
         }
 
         /// <summary>
-        /// Returns the total amount of comp entries for the tournament
+        /// Returns the total amount of comp entries for the tournament (Phase 3: reads from Games only).
         /// </summary>
         /// <param name="tourneyId">The id property for the tournament</param>
         /// <returns>Qty of comp entries</returns>
@@ -452,44 +440,40 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
-                return db.FinalizeTemp
-                        .Join(db.Games, ft => ft.GameId, g => g.Id,
-                                   (ft, g) => new { g.IsComp, ft.TournamentID })
-                        .Where(ftg => ftg.TournamentID == tourneyId && ftg.IsComp)
-                        .Count();
+                // Phase 3: Read from Games via Participants join
+                return (from p in db.Participants
+                       join g in db.Games on p.Game.Id equals g.Id
+                       where p.Tournament.Id == tourneyId && g.IsComp
+                       select g).Count();
             }
         }
 
         /// <summary>
-        /// Gets the entry quantity for a member in a tournament
+        /// Gets the entry quantity for a member in a tournament (Phase 3: reads from Games only).
         /// </summary>
         /// <returns>the amount of enties in tournament by a member</returns>
         public static int GetMembersGameEntryCount(int tourneyId, int memberNum)
         {
             using (var db = new NineTapDb())
             {
-                return db.FinalizeTemp
-                        .Where(ft => ft.TournamentID == tourneyId && ft.MemberNumber == memberNum)
-                        .Count();
+                // Phase 3: Read from Games via Participants join
+                return (from p in db.Participants
+                       join m in db.Members on p.Member.Id equals m.Id
+                       join g in db.Games on p.Game.Id equals g.Id
+                       where p.Tournament.Id == tourneyId && m.Number == memberNum
+                       select g).Count();
             }
         }
 
         /// <summary>
-        /// Returns true if a Game has the same GameID in the Database 
-        /// as the GameID in the PlayerHistory given, returns false otherwise
+        /// Returns true if a Game exists in the database (checks Games table only).
         /// </summary>
-        public static bool GameExists(PlayerHistory Temp)
+        public static bool GameExists(PlayerHistoryViewModel Temp)
         {
             using (var db = new NineTapDb())
             {
-                if (db.FinalizeTemp.Any(m => m.GameId == Temp.GameID))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                // Check Games table instead of FinalizeTemp
+                return db.Games.Any(g => g.Id == Temp.GameID);
             }
         }
     }

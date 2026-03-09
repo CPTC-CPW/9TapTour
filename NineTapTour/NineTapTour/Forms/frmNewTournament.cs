@@ -49,7 +49,14 @@ namespace NineTapTour.Forms
             NewTournament.Sponsors = txtSponsors.Text;
             NewTournament.Notes = rtxtNotes.Text;
             bool errors = false;
-            NewTournament.TourneyRegion = ((FrmMain)MdiParent).RegionID;
+            
+            // Phase 6: Load NineTapRegion entity for proper FK relationship
+            int regionId = ((FrmMain)MdiParent).RegionID;
+            using (var db = new NineTapDb())
+            {
+                NewTournament.TourneyRegion = db.NineTapRegion.Find(regionId);
+            }
+            
             int numSquads;
             bool validateSquads = int.TryParse(txtSquads.Text, out numSquads);
 
@@ -96,7 +103,7 @@ namespace NineTapTour.Forms
                     {
                         TournamentDB.AddTournament(NewTournament);
                         MessageBox.Show(@"Tournament Created Successfully.");
-                        ((FrmMain)MdiParent).TournamentList = TournamentDB.GetTournamentList(NewTournament.TourneyRegion);
+                        ((FrmMain)MdiParent).TournamentList = TournamentDB.GetTournamentList(regionId); // Phase 6: Use regionId
                     }
                 }
                 else
@@ -117,7 +124,7 @@ namespace NineTapTour.Forms
                         if (TournamentDB.UpdateTournament(NewTournament))
                         {
                             MessageBox.Show(@"Tournament modified.");
-                            ((FrmMain)MdiParent).TournamentList = TournamentDB.GetTournamentList(NewTournament.TourneyRegion);
+                            ((FrmMain)MdiParent).TournamentList = TournamentDB.GetTournamentList(regionId); // Phase 6: Use regionId
                         }
                         else
                         {

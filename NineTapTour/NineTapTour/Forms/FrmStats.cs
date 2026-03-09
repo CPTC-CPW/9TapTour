@@ -19,7 +19,7 @@ namespace NineTapTour.Forms
         private readonly int memId;
         private readonly int memNum;
         private readonly string memName;
-        readonly List<PlayerHistory> ph;
+        readonly List<PlayerHistoryViewModel> ph;
         readonly int RegionID;
 
 
@@ -328,31 +328,38 @@ namespace NineTapTour.Forms
         {
             DataTable dtGames = new();
             var db = new NineTapDb();
-            var temp = (from p in db.PlayerHistory
-                        where p.MemberNumber == memNum && p.regionID == RegionID
-                        orderby p.TournamentDate descending, p.hisID descending
+            
+            // Phase 3: Query from Games table instead of PlayerHistory
+            // Phase 4: Query from Games table via Participant (use Member.NineTapRegionID)
+            var temp = (from p in db.Participants
+                        join m in db.Members on p.Member.Id equals m.Id
+                        join g in db.Games on p.Game.Id equals g.Id
+                        join t in db.Tournaments on p.Tournament.Id equals t.Id
+                        where m.Number == memNum 
+                           && m.NineTapRegionID == RegionID // Phase 5: Use Member.NineTapRegionID
+                           && g.IsFinalized // Only finalized games
+                        orderby t.Date descending, g.Id descending
                         select new
                         {
-                            p.hisID,
-                            p.GameID,
-                            p.GamesPlayed,
-                            p.TournamentDate,
-                            p.Game1,
-                            p.Game2,
-                            p.Game3,
-                            p.Game4,
-                            ScratchTotal = p.Game1 + p.Game2 + p.Game3 + p.Game4,
-                            TotalScore = (p.Game1 + p.Bonus + p.HandiCap) + (p.Game2 + p.Bonus + p.HandiCap) + (p.Game3 + p.Bonus + p.HandiCap) + (p.Game4 + p.Bonus + p.HandiCap),
-                            p.AverageForEntry,
-                            p.trueAVG,
-                            p.AVG,
-                            p.HandiCap,
-                            p.Bonus,
-                            p.ProPot,
-                            p.MoneyWon,
-                            p.PPHG,
-                            p.Notes
-                        });
+                            hisID = g.Id,
+                            GameID = g.Id,
+                            GamesPlayed = g.GamesPlayed,
+                            TournamentDate = t.Date,
+                            Game1 = g.Game1 ?? 0,
+                            Game2 = g.Game2 ?? 0,
+                            Game3 = g.Game3 ?? 0,
+                            Game4 = g.Game4 ?? 0,
+                            ScratchTotal = g.ScratchTotal,
+                            TotalScore = g.HandicapTotal,
+                            trueAVG = g.LeagueAverage,
+                            AVG = g.AdjustedAvg,
+                            HandiCap = g.Handicap ?? 0,
+                            Bonus = g.Bonus ?? 0,
+                            ProPot = g.SidePot,  // Don't ToString() in LINQ expression
+                            MoneyWon = g.MoneyWon ?? 0,
+                            PPHG = g.PlaceStanding,  // Don't ToString() in LINQ expression
+                            Notes = g.Notes
+                        }).ToList(); // Materialize first, then transform
 
             dtGames.Columns.Add("Games").ReadOnly = true;
             dtGames.Columns.Add("Date", typeof(DateTime));
@@ -409,7 +416,6 @@ namespace NineTapTour.Forms
                     newRow["Gm4"] = item.Game4;
                 newRow["Scratch Total"] = item.ScratchTotal;
                 newRow["Game Total w/HDCP"] = item.TotalScore;
-                newRow["Entry AVG"] = Convert.ToDouble((item.Game1 + item.Game2 + item.Game3 + item.Game4) / item.GamesPlayed);
                 newRow["30 Entry AVG"] = item.trueAVG;
 
                 if (item.AVG == 0)
@@ -418,9 +424,9 @@ namespace NineTapTour.Forms
                     newRow["Adj. AVG"] = item.AVG;
                 newRow["HDCP"] = item.HandiCap;
                 newRow["Bonus"] = item.Bonus;
-                newRow["Pro Pot"] = item.ProPot;
+                newRow["Pro Pot"] = item.ProPot?.ToString() ?? "0"; // Convert after materializing
                 newRow[moneyWonWithTotal] = item.MoneyWon;
-                newRow["Place"] = item.PPHG;
+                newRow["Place"] = item.PPHG?.ToString() ?? ""; // Convert after materializing
                 newRow["Notes"] = item.Notes;
                 newRow["GmID"] = item.GameID;
 
@@ -450,7 +456,7 @@ namespace NineTapTour.Forms
                 lblStartAvg.Text = 0.ToString();
             }
 
-            List<PlayerHistory> Last30 = PlayerHistoryDB.GetTop30FromPlayerHistory(mem.Number);
+            List<PlayerHistoryViewModel> Last30 = PlayerHistoryDB.GetTop30FromPlayerHistory(mem.Number);
             int game1AVG = 0;
             int game2AVG = 0;
             int game3AVG = 0;
@@ -571,13 +577,20 @@ namespace NineTapTour.Forms
 
         private void btnSaveChanges_Click(object sender, EventArgs e)
         {
-            //grab untouched playerhistory
-            List<PlayerHistory> pHist = PlayerHistoryDB.GetMemberPlayerHistory(mem.Number, RegionID);
+            //grab untouched player history view models
+            List<PlayerHistoryViewModel> pHist = PlayerHistoryDB.GetMemberPlayerHistory(mem.Number, RegionID);
 
             //RESTORE THE DATAGRID BACK TO THE DATE DESCINDING 
             dataGridView1.Sort(dataGridView1.Columns["Date"], System.ComponentModel.ListSortDirection.Descending);
             
-            //if valid, store new info from slots in playerhistory
+            // NOTE: PlayerHistoryViewModel is read-only. Updates should be made through Game entities.
+            // This section needs refactoring to update Game entities directly via GameDB
+            MessageBox.Show("Save functionality needs to be updated to work with the new data model. " +
+                          "Please use the Finalize Tournament form to make adjustments to game data.",
+                          "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            
+            /* TODO: Refactor this to update Game entities instead of PlayerHistory
+            //if valid, store new info from slots in player history view model
             for(int saveX = 0; saveX < dataGridView1.RowCount; saveX++)
             {
                 for(int saveY = 1; saveY < dataGridView1.ColumnCount;) //start loop at 1 to avoid editing "games played" slot
@@ -617,7 +630,7 @@ namespace NineTapTour.Forms
 
                     saveY++;
 
-                    //skip total score with handicap. not apart of Playerhistory class
+                    //skip total score with handicap. not apart of player history view model
                     saveY++;
 
                     pHist[saveX].AverageForEntry = Convert.ToDouble(pHist[saveX].TotalScore / pHist[saveX].GamesPlayed);
@@ -662,16 +675,8 @@ namespace NineTapTour.Forms
                     saveY++;
                 }
             }
+            */
 
-            //update info
-            foreach(var item in pHist)
-            {
-                /* Prevents stats from disappearing from frmStats after Save button is clicked. 
-                   RegionID in PlayerHistory class was being reset to default value of zero. */
-                item.regionID = RegionID;
-
-                PlayerHistoryDB.AddOrUpdatePlayerHistory(item);
-            }
             //refresh page
             dataGridView1.DataSource = tableview();
         }

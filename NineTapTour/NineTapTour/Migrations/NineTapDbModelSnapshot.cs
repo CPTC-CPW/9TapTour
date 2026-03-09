@@ -17,102 +17,10 @@ namespace NineTapTour.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "10.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("NineTapTour.Models.FinalizeTemp", b =>
-                {
-                    b.Property<int>("FinalizeID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FinalizeID"));
-
-                    b.Property<int>("AdjustedAvg")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Bonus")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FinalizeRegionID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Game1")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Game2")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Game3")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Game4")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GameAvg")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GameId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Handicap")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HandicapTotal")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("KeepAdjustedAvg")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("LeagueAverage")
-                        .HasColumnType("float");
-
-                    b.Property<int>("MemberId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MemberNumber")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ScratchTotal")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Squad")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TournamentID")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("UseGame1")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("UseGame2")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("UseGame3")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("UseGame4")
-                        .HasColumnType("bit");
-
-                    b.HasKey("FinalizeID");
-
-                    b.HasIndex("FinalizeRegionID");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("FinalizeTemps", (string)null);
-                });
 
             modelBuilder.Entity("NineTapTour.Models.Game", b =>
                 {
@@ -121,6 +29,9 @@ namespace NineTapTour.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AdjustedAvg")
+                        .HasColumnType("int");
 
                     b.Property<int?>("Bonus")
                         .HasColumnType("int");
@@ -140,11 +51,20 @@ namespace NineTapTour.Migrations
                     b.Property<int?>("Handicap")
                         .HasColumnType("int");
 
-                    b.Property<int?>("InputtedAvg")
+                    b.Property<int>("HandicapTotal")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsComp")
                         .HasColumnType("bit");
+
+                    b.Property<bool>("IsFinalized")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("KeepAdjustedAvg")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("LeagueAverage")
+                        .HasColumnType("float");
 
                     b.Property<decimal?>("MoneyWon")
                         .HasColumnType("decimal(18,2)");
@@ -169,9 +89,6 @@ namespace NineTapTour.Migrations
 
                     b.Property<bool?>("UseGame4")
                         .HasColumnType("bit");
-
-                    b.Property<int>("gameRegionID")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -311,120 +228,24 @@ namespace NineTapTour.Migrations
                     b.Property<int>("MemberId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ParticipantRegionID")
-                        .HasColumnType("int");
-
                     b.Property<int>("Squad")
                         .HasColumnType("int")
                         .HasColumnName("SquadNumber");
 
-                    b.Property<int?>("TournamentId")
+                    b.Property<int>("TournamentId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GameId");
+                    b.HasIndex("GameId")
+                        .IsUnique()
+                        .HasFilter("[GameId] IS NOT NULL");
 
                     b.HasIndex("MemberId");
 
                     b.HasIndex("TournamentId");
 
                     b.ToTable("Participants");
-                });
-
-            modelBuilder.Entity("NineTapTour.Models.PlayerHistory", b =>
-                {
-                    b.Property<int>("hisID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("hisID"));
-
-                    b.Property<int>("AVG")
-                        .HasColumnType("int");
-
-                    b.Property<double>("AverageForEntry")
-                        .HasColumnType("float");
-
-                    b.Property<int>("Bonus")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Game1")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Game2")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Game3")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Game4")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GameID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GamesPlayed")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HandiCap")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MemberNumber")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("MoneyWon")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PPHG")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProPot")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TotalScore")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("TournamentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("regionID")
-                        .HasColumnType("int");
-
-                    b.Property<double>("trueAVG")
-                        .HasColumnType("float");
-
-                    b.HasKey("hisID");
-
-                    b.HasIndex("GameID");
-
-                    b.HasIndex("regionID");
-
-                    b.ToTable("PlayerHistories", (string)null);
-                });
-
-            modelBuilder.Entity("NineTapTour.Models.Squad", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("GameId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Number")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("Squads");
                 });
 
             modelBuilder.Entity("NineTapTour.Models.Tournament", b =>
@@ -466,31 +287,14 @@ namespace NineTapTour.Migrations
                     b.Property<bool>("ThreeOutOf4")
                         .HasColumnType("bit");
 
-                    b.Property<int>("TourneyRegion")
+                    b.Property<int>("TourneyRegionNineTapRegionID")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TourneyRegionNineTapRegionID");
+
                     b.ToTable("Tournaments");
-                });
-
-            modelBuilder.Entity("NineTapTour.Models.FinalizeTemp", b =>
-                {
-                    b.HasOne("NineTapTour.Models.NineTapRegion", "FinalizeRegion")
-                        .WithMany()
-                        .HasForeignKey("FinalizeRegionID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NineTapTour.Models.Game", "Game")
-                        .WithMany()
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FinalizeRegion");
-
-                    b.Navigation("Game");
                 });
 
             modelBuilder.Entity("NineTapTour.Models.Member", b =>
@@ -507,8 +311,8 @@ namespace NineTapTour.Migrations
             modelBuilder.Entity("NineTapTour.Models.Participant", b =>
                 {
                     b.HasOne("NineTapTour.Models.Game", "Game")
-                        .WithMany()
-                        .HasForeignKey("GameId");
+                        .WithOne("Participant")
+                        .HasForeignKey("NineTapTour.Models.Participant", "GameId");
 
                     b.HasOne("NineTapTour.Models.Member", "Member")
                         .WithMany()
@@ -518,7 +322,9 @@ namespace NineTapTour.Migrations
 
                     b.HasOne("NineTapTour.Models.Tournament", "Tournament")
                         .WithMany("Participant")
-                        .HasForeignKey("TournamentId");
+                        .HasForeignKey("TournamentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Game");
 
@@ -527,32 +333,20 @@ namespace NineTapTour.Migrations
                     b.Navigation("Tournament");
                 });
 
-            modelBuilder.Entity("NineTapTour.Models.PlayerHistory", b =>
+            modelBuilder.Entity("NineTapTour.Models.Tournament", b =>
                 {
-                    b.HasOne("NineTapTour.Models.Game", "Game")
+                    b.HasOne("NineTapTour.Models.NineTapRegion", "TourneyRegion")
                         .WithMany()
-                        .HasForeignKey("GameID")
+                        .HasForeignKey("TourneyRegionNineTapRegionID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("NineTapTour.Models.NineTapRegion", "NineTapRegion")
-                        .WithMany()
-                        .HasForeignKey("regionID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Game");
-
-                    b.Navigation("NineTapRegion");
+                    b.Navigation("TourneyRegion");
                 });
 
-            modelBuilder.Entity("NineTapTour.Models.Squad", b =>
+            modelBuilder.Entity("NineTapTour.Models.Game", b =>
                 {
-                    b.HasOne("NineTapTour.Models.Game", "Game")
-                        .WithMany()
-                        .HasForeignKey("GameId");
-
-                    b.Navigation("Game");
+                    b.Navigation("Participant");
                 });
 
             modelBuilder.Entity("NineTapTour.Models.Tournament", b =>

@@ -38,26 +38,14 @@ namespace NineTapTour.Database
                     /* The if statement is so that you can update the handicap by changing the league average,
                      but it won't update if a member participated in a tournament, .Value solves the problem 
                      where startAvg is nullable but the method is just int not int? */
-                    if (temp.Average == 0)
+                    if (temp.Average == 0 && temp.StartAvg != null)
                     {
                         temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.StartAvg.Value));
                     }
                     if (db.Entry(temp).State == EntityState.Modified)
                     {
-                        temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.StartAvg.Value));
-#if DEBUG
-                        // For debugging purposes will send PLAYER UPDATED to the Console
-                        // DO NOT USE Messagebox as it bogs down the program
-                        Console.WriteLine("Player Updated");
-#endif
-                    }
-                    else
-                    {
-#if DEBUG
-                        // For debugging purposes will send PLAYER SAVED SUCCESSFULLY to the Console
-                        // DO NOT USE Messagebox as it bogs down the program
-                        Console.WriteLine("Player Saved Successfully");
-#endif
+                        if (temp.StartAvg != null)
+                            temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.StartAvg.Value));
                     }
                     db.SaveChanges();
                 }
@@ -140,6 +128,16 @@ namespace NineTapTour.Database
                             where m.Number == memberNumber && m.NineTapRegionID == regionID
                             select m).SingleOrDefault() ?? new Member();
             }
+        }
+
+        /// <summary>
+        /// Returns a member with the same memberNumber and regionID given using an existing DbContext
+        /// </summary>
+        public static Member GetMember(int memberNumber, int regionID, NineTapDb db)
+        {
+            return (from m in db.Members
+                        where m.Number == memberNumber && m.NineTapRegionID == regionID
+                        select m).SingleOrDefault() ?? new Member();
         }
 
         /// <summary>

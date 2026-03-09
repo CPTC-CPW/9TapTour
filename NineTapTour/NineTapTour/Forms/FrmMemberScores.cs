@@ -492,7 +492,8 @@ namespace NineTapTour.Forms
                 player.Member = currentMem;
 
                 player.Game = new Game();
-                player.ParticipantRegionID = RegionID;
+                // Phase 5: Removed player.ParticipantRegionID = RegionID; 
+                // Region is already stored in player.Member.NineTapRegionID
                 var db = new NineTapDb();
 
                 int gameId = GameDB.GetGameID(db, currentMem.Id, currTourney.Id, squad);
@@ -556,8 +557,6 @@ namespace NineTapTour.Forms
                         player.Game.Bonus = currentGame.Bonus;
                         player.Game.Handicap = currentGame.Handicap;
                     }
-
-                    player.Game.gameRegionID = RegionID;
 
                     // if compEntry checkbox is checked, set IsComp to true in game table
                     if (cbCompEntry.Checked)
@@ -807,14 +806,11 @@ namespace NineTapTour.Forms
             }
         }
         /// <summary>
-        /// clears memberNum, txtScratchScores, and High Game textboxes
+        /// Triggers clearing memberNum, txtScratchScores, and High Game textboxes
         /// </summary>
         private void Clear()
         {
             txtMemberNum.Clear();
-            //            richTextBox1.Clear();
-            //            richTextBox2.Clear();
-            //            richTextBox3.Clear();
         }
 
         /// <summary>
@@ -1178,17 +1174,12 @@ namespace NineTapTour.Forms
             List<Tournament> tours = [];
             FrmTourSearch tourSearch = new(tours, RegionID);
             tourSearch.ShowDialog();
-#if DEBUG
-            foreach (Tournament tour in tours)
-            {
-                Console.WriteLine(tour.TourneyNameDate);
-            }
-#endif
+
             //Populates dropdown box with tournaments
             if (tours.Count > 0)
             {
                 cbxTourneyDropDown.DataSource = tours;
-                cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
+                cbxTourneyDropDown.DisplayMember = nameof(Tournament.TourneyNameDate);
             }
         }
 
@@ -1219,8 +1210,6 @@ namespace NineTapTour.Forms
             Refresh();
         }
 
-        // NOTE: This listOfTopScore is never populated/ultilized
-        //List<TopScores> listOfTopScore = new List<TopScores>();
         readonly IComparer<MemberScores> scoreComparer = new Calculations.MemberScoresComparer();
 
         /// <summary>
@@ -1752,20 +1741,9 @@ namespace NineTapTour.Forms
 
             if (g != null)
             {
-                //Delete from player history
-                PlayerHistory p = PlayerHistoryDB.GetPlayerHistoryByGameID(g.Id);
-                if (p != null)
-                {
-                    PlayerHistoryDB.DeletePlayerHistory(p);
-                }
-
-                //Delete from FinalizeTemp
-                FinalizeTemp ft = FinalizeTempDB.GetFinalizeID(g);
-                if (ft.FinalizeID != 0) // See if FinalizeTemp was an empty object (not found)
-                {
-                    FinalizeTempDB.DeleteFinalizeTemp(ft);
-                }
-
+                // NOTE: Player history data is stored in the Game entity
+                // No separate PlayerHistory deletion needed - it will be handled by Game entity cascade
+                
                 //Delete from Participants list
                 Participant par = FinalizeTempDB.GetParticipantByGameId(g.Id);
                 FinalizeTempDB.DeleteParticipant(par);
@@ -1778,7 +1756,7 @@ namespace NineTapTour.Forms
                 PlayerHistoryDB.DeleteGame(g);
 
                 // Corrects any changes to the members stats after finalizing to the last accurate data
-                PlayerHistory temp = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number, RegionID);
+                PlayerHistoryViewModel temp = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number, RegionID);
                 if (temp != null)
                 {
                     currentMem.Handicap = temp.HandiCap;

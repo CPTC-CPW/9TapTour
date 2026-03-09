@@ -72,21 +72,21 @@ namespace NineTapTourTests
             members = Calculations.CalculatePlaceStandings(members);
 
             //check first bowler is A with 1000; lesser score (800) is removed
-            Assert.AreEqual(members[0].MemberId, 1);
-            Assert.AreEqual(members[0].Score, 1000);
-            Assert.AreEqual(members[0].placing, 1);
+            Assert.AreEqual(1, members[0].MemberId);
+            Assert.AreEqual(1000, members[0].Score);
+            Assert.AreEqual(1, members[0].placing);
 
             //check three way tie (next bowlers all have score of 800)
-            Assert.AreEqual(members[1].placing, 2);
-            Assert.AreEqual(members[2].placing, 2);
-            Assert.AreEqual(members[3].placing, 2);
+            Assert.AreEqual(2, members[1].placing);
+            Assert.AreEqual(2, members[2].placing);
+            Assert.AreEqual(2, members[3].placing);
 
             //next two members tie (next two bowlers tie with 650
-            Assert.AreEqual(members[4].placing, 5);
-            Assert.AreEqual(members[5].placing, 5);
+            Assert.AreEqual(5, members[4].placing);
+            Assert.AreEqual(5, members[5].placing);
 
             //last member in list (score of 500)
-            Assert.AreEqual(members[6].placing, 7);
+            Assert.AreEqual(7, members[6].placing);
         }
 
         [TestMethod]
@@ -100,7 +100,7 @@ namespace NineTapTourTests
         public void CalculateHandicapPins_ReturnsExpectedAmount(int avg, int expectedHandicap)
         {
             int handicapResult = Calculations.CalculateHandicapPins(avg);
-            Assert.AreEqual(handicapResult, expectedHandicap);
+            Assert.AreEqual(expectedHandicap, handicapResult);
         }
 
         [TestMethod]
@@ -140,142 +140,142 @@ namespace NineTapTourTests
         public void AddToBonusPins_ReturnsExpectedBonusPins(int currentBonusPins, int currTourneyEntryCount, int playerHistoryListNum,
                                                             int expectedBonusPins)
         {
-            List<PlayerHistory> latestTournaments = GetPlayerHistoryTestData(playerHistoryListNum);
+            List<PlayerHistoryViewModel> latestTournaments = GetPlayerHistoryTestData(playerHistoryListNum);
 
             int resultBonusPins = Calculations.AddToBonusPins(currentBonusPins, latestTournaments, currTourneyEntryCount);
 
             Assert.AreEqual(expectedBonusPins, resultBonusPins);
         }
 
-        private static List<PlayerHistory> GetPlayerHistoryTestData(int listNum)
+        private static List<PlayerHistoryViewModel> GetPlayerHistoryTestData(int listNum)
         {
             return listNum switch
             {
                 // Did not cash last 3
                 0 => [
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0, Bonus = 0
                         },
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0, Bonus = 0
                         }
                 ],
                 // Cashed 2nd tournament ago
                 1 => [
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 1
                         },
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0
                         }
                 ],
                 // Cashed 3rd tournament ago
                 2 => [
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
                         },
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 1
                         }
                 ],
                 // Cashed 4th tournament ago
                 3 => [
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
                         },
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0
                         },
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,28), MoneyWon = 1
                         }
                 ],
                 // Cashed 3rd tournament ago but not last 3 entries (multiple tournament entry)
                 4 => [
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
                         },
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
                         },
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 1
                         }
                 ],
                 // Cashed 2nd tournament ago as multiple entry but not the other 2
                 5 => [
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
                         },
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 1
                         },
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0
                         }
                 ],
                 // Did not cash last 3 with a multiple entry
                 6 => [
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
                         },
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
                         },
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0
                         }
                 ],
                 // Cashed 3rd tournament ago as multiple entry but not the other 2
                 7 => [
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0
                         },
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0
                         },
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 1
                         }
                 ],
                 8 => [
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0, Bonus = 5
                         },
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0, Bonus = 5
                         }
                 ],
                 // Gained a bonus pin last tournament
                 9 => [
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,30), MoneyWon = 0, Bonus = 1
                         },
-                        new PlayerHistory()
+                        new PlayerHistoryViewModel()
                         {
                             TournamentDate = new DateTime(17,12,29), MoneyWon = 0, Bonus = 0
                         }
