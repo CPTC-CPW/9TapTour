@@ -31,6 +31,7 @@ namespace NineTapTour.Forms
 
         private List<WinnerListMemberViewModel> _currentTournamentBowlers;
         private int _displayedDetailMemberNumber = -1;
+        private readonly HashSet<int> _invalidRowIndices = [];
 
         public FrmFinalizeTournament(Tournament selectedTournament, int regionID)
         {
@@ -63,8 +64,7 @@ namespace NineTapTour.Forms
                 Size   = new Size(160, 26),
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
-            btnFinalizeTournament.Location = new Point(ClientSize.Width - btnFinalizeTournament.Width - 12, 7);
-
+            btnFinalizeTournament.Click += BtnFinalizeTournament_Click;
             pnlToolbar.Controls.AddRange([chkDirCheck, chkAdjAvg, btnFinalizeTournament]);
 
             // --- SplitContainer (top grid / bottom grid) ---
@@ -78,6 +78,7 @@ namespace NineTapTour.Forms
             dgvTournament = CreateTournamentGrid();
             dgvTournament.CurrentCellDirtyStateChanged += DgvTournament_CurrentCellDirtyStateChanged;
             dgvTournament.CellValueChanged             += DgvTournament_CellValueChanged;
+            dgvTournament.RowPostPaint                 += DgvTournament_RowPostPaint;
             splitMain.Panel1.Controls.Add(dgvTournament);
 
             // Player info label at the top of the lower panel
@@ -102,6 +103,9 @@ namespace NineTapTour.Forms
             Controls.Add(pnlToolbar);
 
             ResumeLayout(true);
+
+            // Set after layout so pnlToolbar already has its docked width
+            btnFinalizeTournament.Location = new Point(pnlToolbar.ClientSize.Width - btnFinalizeTournament.Width - 12, 7);
 
             splitMain.SplitterDistance = splitMain.Height / 2;
         }
@@ -232,7 +236,7 @@ namespace NineTapTour.Forms
                 int hdcpTotal    = scratch + (checkedGames * (m.Handicap + m.Bonus));
                 int entryAvg     = checkedGames > 0 ? scratch / checkedGames : 0;
 
-                dgvTournament.Rows.Add(
+                int rowIdx = dgvTournament.Rows.Add(
                     m.PlaceStanding > 0 ? (object)m.PlaceStanding : null,
                     m.MemberNumber,
                     m.Name,
@@ -256,6 +260,7 @@ namespace NineTapTour.Forms
                     m.SidePot,
                     null   // Notes
                 );
+                dgvTournament.Rows[rowIdx].Tag = m.GameId;
             }
         }
 
@@ -395,8 +400,133 @@ namespace NineTapTour.Forms
         {
             if (e.RowIndex < 0) return;
             string colName = dgvTournament.Columns[e.ColumnIndex].Name;
+
             if (colName is "colGame1Check" or "colGame2Check" or "colGame3Check" or "colGame4Check")
+            {
                 RecalculateTournamentRow(e.RowIndex);
+                UpdateGameUseFlags(e.RowIndex);
+            }
+
+            if (colName is "colDirCheck" or "colAdjAvg")
+            {
+                ValidateRow(e.RowIndex);
+                dgvTournament.InvalidateRow(e.RowIndex);
+            }
+        }
+
+        /// <summary>
+        /// Persists the current game-check states to the database for the given row.
+        /// </summary>
+        private void UpdateGameUseFlags(int rowIndex)
+        {
+            var row = dgvTournament.Rows[rowIndex];
+            if (row.Tag is not int gameId) return;
+
+            Game game = GameDB.GetGame(gameId);
+            if (game == null) return;
+
+            game.UseGame1 = row.Cells["colGame1Check"].Value as bool? ?? false;
+            game.UseGame2 = row.Cells["colGame2Check"].Value as bool? ?? false;
+            game.UseGame3 = row.Cells["colGame3Check"].Value as bool? ?? false;
+            game.UseGame4 = row.Cells["colGame4Check"].Value as bool? ?? false;
+
+            GameDB.AddOrUpdateGame(game);
+        }
+
+        /// <summary>
+        /// Checks whether the given row passes finalization validation (Director Check
+        /// is checked and ADJ AVG is non-zero) and updates <see cref="_invalidRowIndices"/>.
+        /// </summary>
+        private void ValidateRow(int rowIndex)
+        {
+            var row = dgvTournament.Rows[rowIndex];
+            bool dirChecked = row.Cells["colDirCheck"].Value as bool? ?? false;
+            int adjAvg = 0;
+            if (row.Cells["colAdjAvg"].Value != null)
+                int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
+
+            if (!dirChecked || adjAvg == 0)
+                _invalidRowIndices.Add(rowIndex);
+            else
+                _invalidRowIndices.Remove(rowIndex);
+        }
+
+        /// <summary>
+        /// Draws a red border around rows that failed finalization validation.
+        /// </summary>
+        private void DgvTournament_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            if (!_invalidRowIndices.Contains(e.RowIndex)) return;
+
+            using var pen = new Pen(Color.Red, 2);
+            var rect = new Rectangle(
+                e.RowBounds.Left + 1,
+                e.RowBounds.Top,
+                e.RowBounds.Width - 3,
+                e.RowBounds.Height - 1);
+            e.Graphics.DrawRectangle(pen, rect);
+        }
+
+        /// <summary>
+        /// Validates every row and, if all pass, marks all games as finalized in the database.
+        /// </summary>
+        private void BtnFinalizeTournament_Click(object sender, EventArgs e)
+        {
+            _invalidRowIndices.Clear();
+
+            for (int i = 0; i < dgvTournament.Rows.Count; i++)
+                ValidateRow(i);
+
+            dgvTournament.Invalidate();
+
+            if (_invalidRowIndices.Count > 0)
+            {
+                MessageBox.Show(
+                    "Some rows are missing a Director Check or have a zero Adjusted Average.\n" +
+                    "Please fix the highlighted rows before finalizing.",
+                    "Validation Failed",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            FinalizeAllGames();
+        }
+
+        /// <summary>
+        /// Marks every game in the tournament as finalized, persists the adjusted average,
+        /// and sets <see cref="Tournament.IsTournamentFinalized"/>.
+        /// </summary>
+        private void FinalizeAllGames()
+        {
+            using var db = new NineTapDb();
+
+            for (int i = 0; i < dgvTournament.Rows.Count; i++)
+            {
+                var row = dgvTournament.Rows[i];
+                if (row.Tag is not int gameId) continue;
+
+                Game game = db.Games.Find(gameId);
+                if (game == null) continue;
+
+                game.IsFinalized = true;
+                int adjAvg = 0;
+                if (row.Cells["colAdjAvg"].Value != null)
+                    int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
+                game.AdjustedAvg = adjAvg;
+            }
+
+            Tournament tourn = db.Tournaments.Find(selectedTournament.Id);
+            if (tourn != null)
+                tourn.IsTournamentFinalized = true;
+
+            db.SaveChanges();
+
+            MessageBox.Show(
+                "Tournament has been finalized successfully.",
+                "Finalized",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
         }
 
         private void DgvTournament_SelectionChanged(object sender, EventArgs e)
