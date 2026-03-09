@@ -427,11 +427,24 @@ namespace NineTapTour.Calculations
         }
 
         /// <summary>
-        /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding
+        /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding.
+        /// Duplicate entries are removed; only the highest score per member is kept.
         /// </summary>
         /// <param name="members"></param>
         /// <returns>List of ExcelMembers with duplicate members removed ordered by TotalScore with assigned placement</returns>
         public static List<ExcelMember> CalculatePlaceStandings(List<ExcelMember> members)
+            => CalculatePlaceStandings(members, removeDuplicates: true);
+
+        /// <summary>
+        /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding.
+        /// </summary>
+        /// <param name="members"></param>
+        /// <param name="removeDuplicates">
+        /// When <see langword="true"/>, only the highest score for each member is kept before ranking.
+        /// When <see langword="false"/>, all entries are ranked as-is.
+        /// </param>
+        /// <returns>List of ExcelMembers ordered by TotalScore with assigned placement</returns>
+        public static List<ExcelMember> CalculatePlaceStandings(List<ExcelMember> members, bool removeDuplicates)
         {
             // No members, no place standings
             if (members.Count == 0)
@@ -442,9 +455,21 @@ namespace NineTapTour.Calculations
             // Makes copy so original list won't be affected
             members = [.. members];
 
-            //remove duplicates
-            RemoveDuplicateBowlers(members);
+            if (removeDuplicates)
+            {
+                RemoveDuplicateBowlers(members);
+            }
 
+            GiveExcelMembersPlaceStandings(members);
+
+            return members;
+        }
+
+        /// <summary>
+        /// Modifies the original list and gives ExcelMembers their place standings.
+        /// </summary>
+        private static void GiveExcelMembersPlaceStandings(List<ExcelMember> members)
+        {
             // The first member in the list when sorted by score will be in first place
             int place = 1;
             members.Sort((x, y) => y.TotalScore.CompareTo(x.TotalScore));
@@ -467,7 +492,6 @@ namespace NineTapTour.Calculations
                 // Placing is still added if members tied
                 place++;
             }
-            return members;
         }
 
         /// <summary>
