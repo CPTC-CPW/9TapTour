@@ -1,9 +1,13 @@
-﻿using NineTapTour.Models;
+﻿using CalcService = NineTapTour.Calculations.Calculations;
+using NineTapTour.Database;
+using NineTapTour.Models;
+using NineTapTour.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -36,6 +40,7 @@ namespace NineTapTour.Forms
         private void FrmFinalizeTournament_Load(object sender, EventArgs e)
         {
             BuildGrids();
+            LoadTournamentGrid();
         }
 
         private void BuildGrids()
@@ -136,6 +141,99 @@ namespace NineTapTour.Forms
             );
 
             return dgv;
+        }
+
+        private void LoadTournamentGrid()
+        {
+            List<WinnerListMemberViewModel> bowlers = TournamentDB.GetWinnerListMemberData(selectedTournament.Id);
+            List<ExcelMember> members = BuildExcelMemberList(bowlers);
+            List<ExcelMember> ranked = CalcService.CalculatePlaceStandings(members, removeDuplicates: false);
+
+            dgvTournament.Rows.Clear();
+            foreach (ExcelMember m in ranked)
+            {
+                int scratch = m.Game1Score + m.Game2Score + m.Game3Score + m.Game4Score;
+                dgvTournament.Rows.Add(
+                    m.PlaceStanding,
+                    m.MemberNumber,
+                    m.Name,
+                    m.Game1Score > 0 ? (object)m.Game1Score : null,
+                    m.Game1Score > 0,
+                    m.Game2Score > 0 ? (object)m.Game2Score : null,
+                    m.Game2Score > 0,
+                    m.Game3Score > 0 ? (object)m.Game3Score : null,
+                    m.Game3Score > 0,
+                    m.Game4Score > 0 ? (object)m.Game4Score : null,
+                    m.Game4Score > 0,
+                    scratch,
+                    m.TotalScore,
+                    null, // Entry AVG
+                    null, // 30 Entry AVG
+                    null, // ADJ AVG
+                    false,
+                    null, // Squad
+                    m.Handicap,
+                    m.Bonus,
+                    m.SidePot,
+                    null  // Notes
+                );
+            }
+        }
+
+        /// <summary>
+        /// Converts a list of <see cref="WinnerListMemberViewModel"/> into a list of <see cref="ExcelMember"/>,
+        /// calculating each member's <see cref="ExcelMember.TotalScore"/> (with handicap and bonus)
+        /// according to the tournament format.
+        /// </summary>
+        private List<ExcelMember> BuildExcelMemberList(List<WinnerListMemberViewModel> bowlers)
+        {
+            List<ExcelMember> members = [];
+            foreach (var b in bowlers)
+            {
+                ExcelMember m = new()
+                {
+                    MemberNumber = b.MemberNumber,
+                    Name         = b.BowlerName,
+                    Handicap     = Convert.ToInt32(b.Handicap),
+                    Bonus        = Convert.ToInt32(b.Bonus),
+                    MoneyWon     = b.MoneyWon,
+                    SidePot      = b.SidePot,
+                    GameId       = b.GameId,
+                    Game1Score   = Convert.ToInt32(b.Game1),
+                    Game2Score   = Convert.ToInt32(b.Game2),
+                    Game3Score   = Convert.ToInt32(b.Game3),
+                    Game4Score   = Convert.ToInt32(b.Game4)
+                };
+
+                if (selectedTournament.ThreeOutOf4)
+                {
+                    List<int> scores = [m.Game1Score, m.Game2Score, m.Game3Score, m.Game4Score];
+                    scores.RemoveAll(x => x == 0);
+                    if (scores.Count == 4)
+                    {
+                        int minScore = scores.Min();
+                        scores.Remove(minScore);
+                        if      (m.Game1Score == minScore) m.Game1Score = 0;
+                        else if (m.Game2Score == minScore) m.Game2Score = 0;
+                        else if (m.Game3Score == minScore) m.Game3Score = 0;
+                        else if (m.Game4Score == minScore) m.Game4Score = 0;
+                    }
+                    m.TotalScore = scores.Sum() + (scores.Count * (m.Handicap + m.Bonus));
+                }
+                else
+                {
+                    int validGames = 0;
+                    if (m.Game1Score > 0) validGames++;
+                    if (m.Game2Score > 0) validGames++;
+                    if (m.Game3Score > 0) validGames++;
+                    if (m.Game4Score > 0) validGames++;
+                    m.TotalScore = m.Game1Score + m.Game2Score + m.Game3Score + m.Game4Score
+                                 + (validGames * (m.Handicap + m.Bonus));
+                }
+
+                members.Add(m);
+            }
+            return members;
         }
 
         private DataGridView CreateDetailGrid()
