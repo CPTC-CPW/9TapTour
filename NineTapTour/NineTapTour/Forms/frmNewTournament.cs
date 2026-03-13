@@ -42,19 +42,20 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            Tournament NewTournament = new();
-            NewTournament.Date = dtpDate.Value.Date;
-            NewTournament.Location = txtLocation.Text;
-            NewTournament.Event = txtEvent.Text;
-            NewTournament.Sponsors = txtSponsors.Text;
-            NewTournament.Notes = rtxtNotes.Text;
+            Tournament newTournament = new();
+            newTournament.Date = dtpDate.Value.Date;
+            newTournament.Location = txtLocation.Text;
+            newTournament.Event = txtEvent.Text;
+            newTournament.Sponsors = txtSponsors.Text;
+            newTournament.Notes = rtxtNotes.Text;
             bool errors = false;
             
             // Phase 6: Load NineTapRegion entity for proper FK relationship
             int regionId = ((FrmMain)MdiParent).RegionID;
             using (var db = new NineTapDb())
             {
-                NewTournament.TourneyRegion = db.NineTapRegion.Find(regionId);
+                newTournament.TourneyRegion = db.NineTapRegion.Find(regionId);
+                db.SaveChanges();
             }
             
             int numSquads;
@@ -69,7 +70,7 @@ namespace NineTapTour.Forms
                 }
                 else
                 {
-                    NewTournament.Squads = Convert.ToInt32(txtSquads.Text);
+                    newTournament.Squads = Convert.ToInt32(txtSquads.Text);
                     errors = false;
                 }
             }
@@ -81,16 +82,16 @@ namespace NineTapTour.Forms
 
             if (rdoDoubles.Checked)
             {
-                NewTournament.Doubles = true;
+                newTournament.Doubles = true;
             }
             else if (rdo3OutOf4.Checked)
             {
-                NewTournament.ThreeOutOf4 = true;
+                newTournament.ThreeOutOf4 = true;
             }
             else if (rdoThreeGame.Checked)
             {
-                NewTournament.ThreeOutOf4 = true;
-                NewTournament.IsOnlyThreeGames = true;
+                newTournament.ThreeOutOf4 = true;
+                newTournament.IsOnlyThreeGames = true;
             }
 
 
@@ -101,7 +102,7 @@ namespace NineTapTour.Forms
                 {
                     if (!errors)
                     {
-                        TournamentDB.AddTournament(NewTournament);
+                        TournamentDB.AddTournament(newTournament);
                         MessageBox.Show(@"Tournament Created Successfully.");
                         ((FrmMain)MdiParent).TournamentList = TournamentDB.GetTournamentList(regionId); // Phase 6: Use regionId
                     }
@@ -112,16 +113,16 @@ namespace NineTapTour.Forms
 
                     if (dr == DialogResult.Yes)
                     {
-                        NewTournament.Id = tourToEdit.Id;
-                        NewTournament = TournamentDB.GetTourneyByID(tourToEdit.Id);
+                        newTournament.Id = tourToEdit.Id;
+                        newTournament = TournamentDB.GetTourneyByID(tourToEdit.Id);
                         // Editing Tournament with form data
-                        NewTournament.Date = dtpDate.Value.Date;
-                        NewTournament.Location = txtLocation.Text;
-                        NewTournament.Event = txtEvent.Text;
-                        NewTournament.Sponsors = txtSponsors.Text;
-                        NewTournament.Notes = rtxtNotes.Text;
+                        newTournament.Date = dtpDate.Value.Date;
+                        newTournament.Location = txtLocation.Text;
+                        newTournament.Event = txtEvent.Text;
+                        newTournament.Sponsors = txtSponsors.Text;
+                        newTournament.Notes = rtxtNotes.Text;
 
-                        if (TournamentDB.UpdateTournament(NewTournament))
+                        if (TournamentDB.UpdateTournament(newTournament))
                         {
                             MessageBox.Show(@"Tournament modified.");
                             ((FrmMain)MdiParent).TournamentList = TournamentDB.GetTournamentList(regionId); // Phase 6: Use regionId
@@ -137,7 +138,7 @@ namespace NineTapTour.Forms
             {
                 if (!errors)
                 {
-                    Tournament currTourney = NewTournament;
+                    Tournament currTourney = newTournament;
                     clearTournamentForm();
 
                     var newFrmMemberScores = Application.OpenForms["FrmMemberScores"] as FrmMemberScores;
