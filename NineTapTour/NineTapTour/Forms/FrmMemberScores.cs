@@ -214,6 +214,14 @@ namespace NineTapTour.Forms
             txtHandicapScore3.Clear();
             txtHandicapScore4.Clear();
             txtMoney.Clear();
+
+            // Reset squad radio buttons to default
+            RadioButton[] squadRadioButtons = { rdoSquad1, rdoSquad2, rdoSquad3, rdoSquad4, rdoSquad5, rdoSquad6, rdoSquad7, rdoSquad8 };
+
+            foreach (RadioButton radioButton in squadRadioButtons)
+            {
+                radioButton.Visible = false;
+            }
         }
 
         #region GetMember
@@ -1101,6 +1109,15 @@ namespace NineTapTour.Forms
             if (TempVariablesForGlobalLevel.MoneyEarnings != null && prevTourneyId != currTourneyId)
             {
                 TempVariablesForGlobalLevel.MoneyEarnings.Clear();
+            }
+
+            // Show the correct number of squads for the tournament
+            int numSquads = FrmMemberScoresHelpers.selectedTournament.Squads;
+            RadioButton[] squadRadioButtons = { rdoSquad1, rdoSquad2, rdoSquad3, rdoSquad4, rdoSquad5, rdoSquad6, rdoSquad7, rdoSquad8 };
+
+            for (int i = 0; i < numSquads; i++)
+            {
+                squadRadioButtons[i].Visible = true;
             }
         }
 
