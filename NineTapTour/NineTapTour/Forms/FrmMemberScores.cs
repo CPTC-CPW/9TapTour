@@ -469,8 +469,8 @@ namespace NineTapTour.Forms
             ReEnableNavigation();
             FrmMemberScoresHelpers.
 
-                        // When the user clicks the Add/Update record button, the scores are added to the database
-                        unsavedBowlerData = false;
+            // When the user clicks the Add/Update record button, the scores are added to the database
+            unsavedBowlerData = false;
 
             if (AreAllScratchScoreBoxesEmpty())
             {
@@ -482,8 +482,8 @@ namespace NineTapTour.Forms
                 Tournament currTourney = TournamentDB.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
                 FrmMemberScoresHelpers.
 
-                                //get all the current members participating in the current tournament
-                                overallListOfParticipants = TournamentDB.GetTournamentMemberList(currTourney);
+                //get all the current members participating in the current tournament
+                overallListOfParticipants = TournamentDB.GetTournamentMemberList(currTourney);
 
                 int squad = GetCurrentSquadNumber();
 
@@ -545,7 +545,7 @@ namespace NineTapTour.Forms
                         ? null
                         : (int?)Convert.ToInt32((scratchArray[3].Text));
 
-                    Game currentGame = GetScoresById(currentMem.Id);
+                    Game? currentGame = GetScoresById(currentMem.Id);
 
                     if (currentGame == null)
                     {
@@ -785,12 +785,13 @@ namespace NineTapTour.Forms
 
         /// <summary>
         /// gets the scores from games table by joining participants and tourneys by id 
-        /// where member id = participant.member ID and selectedtourney id = tourney id
+        /// where member id = participant.member ID and selectedtourney id = tourney id.
+        /// If the game is not found, a null is returned
         /// </summary>
         /// <param name="memberID"></param>
         /// <returns></returns>
 
-        public Game GetScoresById(int memberID)
+        public Game? GetScoresById(int memberID)
         {
             int squad = GetCurrentSquadNumber();
 
@@ -1019,6 +1020,14 @@ namespace NineTapTour.Forms
             // resets the fields when a different tournament is selected
             ResetFields();
 
+            // Reset squad radio buttons to default
+            RadioButton[] squadRadioButtons = { rdoSquad1, rdoSquad2, rdoSquad3, rdoSquad4, rdoSquad5, rdoSquad6, rdoSquad7, rdoSquad8 };
+
+            foreach (RadioButton radioButton in squadRadioButtons)
+            {
+                radioButton.Visible = false;
+            }
+
             // Used to find out if user actually clicked a different tournament instead of just Member Scores loading.
             int prevTourneyId = (FrmMemberScoresHelpers.selectedTournament == null) ? 0 : FrmMemberScoresHelpers.selectedTournament.Id;
             FrmMemberScoresHelpers.
@@ -1101,6 +1110,14 @@ namespace NineTapTour.Forms
             if (TempVariablesForGlobalLevel.MoneyEarnings != null && prevTourneyId != currTourneyId)
             {
                 TempVariablesForGlobalLevel.MoneyEarnings.Clear();
+            }
+
+            // Show the correct number of squads for the tournament
+            int numSquads = FrmMemberScoresHelpers.selectedTournament.Squads;
+
+            for (int i = 0; i < numSquads; i++)
+            {
+                squadRadioButtons[i].Visible = true;
             }
         }
 

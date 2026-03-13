@@ -165,6 +165,7 @@ namespace NineTapTour.Database
             // Use AsNoTracking to avoid tracking entities in the duplicate check query
             bool isMemberInTournament = db.Participants
                 .AsNoTracking()
+                .Include(p => p.Tournament.TourneyRegion)
                 .Any(p => p.Member.Id == player.Member.Id
                        && p.Tournament.Id == player.Tournament.Id
                        && p.Squad == player.Squad);
@@ -177,15 +178,16 @@ namespace NineTapTour.Database
                 db.Attach(player.Member);
                 db.Attach(player.Tournament);
                 db.Attach(player.Game);
-                if (player.Tournament.TourneyRegion != null)
+                if (player.Tournament.TourneyRegion == null)
                 {
-                    db.Attach(player.Tournament.TourneyRegion);
+                    player.Tournament.TourneyRegion = db.NineTapRegion.First();
                 }
-                
+                db.Attach(player.Tournament.TourneyRegion);
+
                 db.Participants.Add(player);
                 
                 // Set states to Unchanged
-                db.Entry(player.Game).State = EntityState.Unchanged;
+                // db.Entry(player.Game).State = EntityState.Unchanged; // If the member is new, a game would be too
                 db.Entry(player.Tournament).State = EntityState.Unchanged;
                 db.Entry(player.Member).State = EntityState.Unchanged;
                 db.Entry(player.Tournament.TourneyRegion).State = EntityState.Unchanged;
@@ -194,7 +196,7 @@ namespace NineTapTour.Database
             }
             else
             {
-                Game result = db.Games.SingleOrDefault(g => g.Id == player.Game.Id);
+                Game? result = db.Games.SingleOrDefault(g => g.Id == player.Game.Id);
                 Participant squadResult = db.Participants.SingleOrDefault(p => p.Id == player.Id);
                 Participant memberQuery = db.Participants.Include(m => m.Member)
                     .Where(m => m.Member.Id == player.Member.Id).FirstOrDefault();
