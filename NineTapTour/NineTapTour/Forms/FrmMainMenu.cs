@@ -103,7 +103,7 @@ namespace NineTapTour.Forms
             Font drawFont = new("Arial", 12);
             SolidBrush drawBrush = new(Color.White);
             PointF drawPoint = new(10, 2);
-            g.DrawString("Version: 3.0.1", drawFont, drawBrush, drawPoint);
+            g.DrawString("Version: 3.0.2", drawFont, drawBrush, drawPoint);
 #if DEBUG
             drawBrush.Color = Color.Red;
             drawPoint.Y += 16;
