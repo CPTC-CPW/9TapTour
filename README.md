@@ -5,12 +5,12 @@ Please review the following and reference the [project Wiki](https://github.com/
 
 ## Getting Started With 9TapTour Step-By-Step Instructions
 - **Note:** This is for those who have added the project to a computer without an exsisting copy of 9TapTour and/or the database.
-- We are using Visual Studio 2026 and SQL Server Management Studio in this Example. This will also work using Visual Studio 2026+.
+- We are using Visual Studio 2019 and SQL Server Management Studio in this Example. This will also work using Visual Studio 2017+.
 
 1. After cloning 9-Tap Tour make sure that you build the solution to get all dependencies from the project.
 ![Building Solution in Visual Studio](9TT-Doc/Building-Solution.PNG)
 
-2. In VS2026 Go to Tools -> NuGet Package Manager -> Package Manager Console.
+2. In VS2019 Go to Tools -> NuGet Package Manager -> Package Manager Console.
 ![Opening Package Manager Console](9TT-Doc/PackageMC.PNG)
 
 3. In the Package Manager Console Enter `Update-Database` and Run it.
