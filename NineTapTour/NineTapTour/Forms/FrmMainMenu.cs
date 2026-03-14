@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NineTapTour.Models;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace NineTapTour.Forms
@@ -102,7 +103,7 @@ namespace NineTapTour.Forms
             Font drawFont = new("Arial", 12);
             SolidBrush drawBrush = new(Color.White);
             PointF drawPoint = new(10, 2);
-            g.DrawString("Version: 3.0.1", drawFont, drawBrush, drawPoint);
+            g.DrawString("Version: 3.0.2", drawFont, drawBrush, drawPoint);
 #if DEBUG
             drawBrush.Color = Color.Red;
             drawPoint.Y += 16;
@@ -120,46 +121,24 @@ namespace NineTapTour.Forms
                 frmPleaseWait pl = new();
                 pl.Show();
 
-                // NOTE: Player history is stored in Game entity and will be deleted with games
-                // No separate PlayerHistory deletion needed
+                using NineTapDb db = new();
 
-                // Delete Participants where Participant RegionID = regionID
-                List<Participant> par = FinalizeTempDB.GetParticipantListByRegionID(regionID);
+                // Bulk delete Participants for this region (via Member.NineTapRegionID)
+                db.Participants.Where(p => p.Member.NineTapRegionID == regionID).ExecuteDelete();
 
-                foreach (var p in par)
-                {
-                    FinalizeTempDB.DeleteParticipant(p);
-                }
+                // Bulk delete Games for this region (via Participant.Member.NineTapRegionID)
+                db.Games.Where(g => g.Participant.Member.NineTapRegionID == regionID).ExecuteDelete();
 
-                // Delete Games where GameRegionID = regionID
-                List<Game> gam = FinalizeTempDB.GetGameListByRegionID(regionID);
+                // Bulk delete Tournaments for this region (via TourneyRegion)
+                db.Tournaments.Where(t => t.TourneyRegion.NineTapRegionID == regionID).ExecuteDelete();
 
-                foreach (var g in gam)
-                {
-                    PlayerHistoryDB.DeleteGame(g);
-                }
+                // Bulk delete Members for this region
+                db.Members.Where(m => m.NineTapRegionID == regionID).ExecuteDelete();
 
-                //delete Tournaments where Tournament RegionID = Region ID
-                List<Tournament> tourn = TournamentDB.GetTournamentList(regionID);
+                // Delete the region itself
+                db.NineTapRegion.Where(r => r.NineTapRegionID == regionID).ExecuteDelete();
 
-                foreach (var t in tourn)
-                {
-                    TournamentDB.DeleteTournament(t);
-                }
-
-                //Delete from Member Table where Memmber RegionID is = selected region ID
-                List<Member> mem = MemberDB.GetMemberList(regionID);
-
-                foreach (var m in mem)
-                {
-                    MemberDB.DeleteMember(m);
-                }
-
-                //delete  the region itself
-                NineTapRegion ntr = NineTapRegionDB.GetRegionByID(regionID);
-                NineTapRegionDB.DeleteRegion(ntr);
-
-                if (NineTapRegionDB.GetNumberOfRegions() == 0) // recreate the local region select again if it nothing exists here anymore
+                if (NineTapRegionDB.GetNumberOfRegions() == 0)
                 {
                     NineTapRegion n = new();
                     n.NineTapRegionName = "Local";

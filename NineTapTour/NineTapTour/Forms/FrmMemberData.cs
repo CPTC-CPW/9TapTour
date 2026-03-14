@@ -15,9 +15,6 @@ namespace NineTapTour.Forms;
 public partial class FrmMemberData : Form
 {
     private Member currentMem;
-
-    private int _memberNum;
-
     private int RegionID;
     
     /// <summary>
@@ -129,31 +126,29 @@ public partial class FrmMemberData : Form
             c.BackColor = Color.White;
         }
 
-			foreach(Control d in panel5.Controls)
-			{
-				d.BackColor = Color.LightGray;
-			}
+		foreach(Control d in panel5.Controls)
+		{
+			d.BackColor = Color.LightGray;
+		}
 
-        int memberCount = MemberDB.GetMemberListCount(RegionID);
+        int highestMemberNumber = MemberDB.GetLastMemberNumber(RegionID);
 
         // set txtMemberNumber.Text back to one if there is no one in the the 
         // current selected region added yet
-        if (memberCount == 0)
+        if (highestMemberNumber == 0)
         {
             txtMemberNumber.Text = "1";
         }
         // if last region selected had more members then current selected 
         // region, set txtmemberNumber.Text to its highest member count for the selcted region
-        else if(Convert.ToInt16(txtMemberNumber.Text) > memberCount)
+        else if(Convert.ToInt16(txtMemberNumber.Text) > highestMemberNumber)
         {
-            txtMemberNumber.Text = memberCount.ToString();
+            txtMemberNumber.Text = highestMemberNumber.ToString();
         }
-
-        _memberNum = Convert.ToInt32(txtMemberNumber.Text);
 
         if (searchMem == null)
         {
-            currentMem = MemberDB.GetMember(_memberNum,RegionID);
+            currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNumber.Text), RegionID);
             List<PlayerHistoryViewModel> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
             if (last5.Count >= 1)
             {   //whatever the bowler director decides his average to be is right. 
@@ -174,17 +169,14 @@ public partial class FrmMemberData : Form
         else
         {
             currentMem = searchMem;
-            _memberNum = currentMem.Number;
         }
 
         if (currentMem.Id == 0)
         {
             currentMem = new Member
             {
-                Number = _memberNum
+                Number = Convert.ToInt32(txtMemberNumber.Text)
             };
-            
-            txtMemberNumber.Text = _memberNum.ToString();
 
             // Personal Info
             txtMemberNumber.Text = currentMem.Number.ToString();
@@ -278,7 +270,6 @@ public partial class FrmMemberData : Form
             txtBonus.Text = currentMem.Bonus.ToString();
 
             // Misc. Info
-            //TODO: Pull datetime from database correctly 
             if (currentMem.DateOfBirth.HasValue)
             {
                 txtDOB.Text = currentMem.DateOfBirth.Value.ToString("MM/dd/yyyy");
@@ -574,17 +565,14 @@ public partial class FrmMemberData : Form
 
             // check to see if memberId exists before putting it in 
             // current selected regions database
-            int memId;
             if (MemberDB.MemberExists(temp))
             {
-                memId = MemberDB.GetMemberIdByNumber(temp.Number, RegionID);
+                temp.Id = MemberDB.GetMemberIdByNumber(temp.Number, RegionID);
             }
             else
             {
-                memId = MemberDB.GetMemberListCount(RegionID) + 1;
+                temp.Number = MemberDB.GetLastMemberNumber(RegionID) + 1;
             }
-
-            temp.Id = memId;
 
             //Set average for the new member
             List<PlayerHistoryViewModel> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
@@ -701,7 +689,7 @@ public partial class FrmMemberData : Form
     {
         //turns on a loading cursor while new bowler is loaded.
         Cursor.Current = Cursors.WaitCursor;
-        int memberCount = MemberDB.GetMemberListCount(RegionID);
+        int memberCount = MemberDB.GetLastMemberNumber(RegionID);
         if (memberCount == 0 ||
             currentMem.Number >= memberCount)
         {
@@ -752,7 +740,7 @@ public partial class FrmMemberData : Form
             txtDOB.LostFocus += AddPlaceholderText;
 
             //get latest member number, or set to 1 if no members in database
-            int nextMemberNumber = MemberDB.GetMemberListCount(RegionID) + 1;
+            int nextMemberNumber = MemberDB.GetLastMemberNumber(RegionID) + 1;
             txtMemberNumber.Text = nextMemberNumber.ToString();
 
             currentMem = new Member
@@ -792,7 +780,7 @@ public partial class FrmMemberData : Form
     /// <param name="e"></param>
     private void BtnLastRecord_Click(object sender, EventArgs e)
     {
-        txtMemberNumber.Text = MemberDB.GetMemberListCount(RegionID).ToString();
+        txtMemberNumber.Text = MemberDB.GetLastMemberNumber(RegionID).ToString();
         UpdateMemberInfo();
     }
     
