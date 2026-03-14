@@ -565,17 +565,14 @@ public partial class FrmMemberData : Form
 
             // check to see if memberId exists before putting it in 
             // current selected regions database
-            int memberNumber;
             if (MemberDB.MemberExists(temp))
             {
-                memberNumber = MemberDB.GetMemberIdByNumber(temp.Number, RegionID);
+                temp.Id = MemberDB.GetMemberIdByNumber(temp.Number, RegionID);
             }
             else
             {
-                memberNumber = MemberDB.GetLastMemberNumber(RegionID) + 1;
+                temp.Number = MemberDB.GetLastMemberNumber(RegionID) + 1;
             }
-
-            temp.Number = memberNumber;
 
             //Set average for the new member
             List<PlayerHistoryViewModel> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
