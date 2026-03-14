@@ -15,9 +15,6 @@ namespace NineTapTour.Forms;
 public partial class FrmMemberData : Form
 {
     private Member currentMem;
-
-    private int _memberNum;
-
     private int RegionID;
     
     /// <summary>
@@ -149,11 +146,9 @@ public partial class FrmMemberData : Form
             txtMemberNumber.Text = highestMemberNumber.ToString();
         }
 
-        _memberNum = Convert.ToInt32(txtMemberNumber.Text);
-
         if (searchMem == null)
         {
-            currentMem = MemberDB.GetMember(_memberNum,RegionID);
+            currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNumber.Text), RegionID);
             List<PlayerHistoryViewModel> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
             if (last5.Count >= 1)
             {   //whatever the bowler director decides his average to be is right. 
@@ -174,17 +169,14 @@ public partial class FrmMemberData : Form
         else
         {
             currentMem = searchMem;
-            _memberNum = currentMem.Number;
         }
 
         if (currentMem.Id == 0)
         {
             currentMem = new Member
             {
-                Number = _memberNum
+                Number = Convert.ToInt32(txtMemberNumber.Text)
             };
-            
-            txtMemberNumber.Text = _memberNum.ToString();
 
             // Personal Info
             txtMemberNumber.Text = currentMem.Number.ToString();
