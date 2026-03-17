@@ -467,14 +467,10 @@ public partial class FrmMemberData : Form
             temp.Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male;
 
             //if member was born more than 50 years ago, then member is a senior. If member is a senior, check the isSenior checkbox and set temp.IsSenior to true
-            DateTime senior = DateTime.Now.AddYears(-50);
-            if (senior >= temp.DateOfBirth)
+            if (temp.DateOfBirth.HasValue)
             {
-                chbSenior.Checked = true;
-            }
-            else
-            {
-                chbSenior.Checked = false;
+                DateTime senior = DateTime.Now.AddYears(-50);
+                chbSenior.Checked = senior >= temp.DateOfBirth.Value;
             }
             temp.IsSenior = chbSenior.Checked;
 
@@ -538,7 +534,7 @@ public partial class FrmMemberData : Form
             temp.Notes = txtNotes.Text;
 
             temp.Referrals = (txtReferrals.Text) == string.Empty ? 0 : 
-                Convert.ToInt16(txtReferrals.Text);
+                Convert.ToInt32(txtReferrals.Text);
 
             if (!String.IsNullOrWhiteSpace(txtLastPayment.Text))
             {
@@ -564,6 +560,7 @@ public partial class FrmMemberData : Form
             else
             {
                 temp.Number = MemberDB.GetLastMemberNumber(RegionID) + 1;
+                txtMemberNumber.Text = temp.Number.ToString();
             }
 
             //Set average for the new member
