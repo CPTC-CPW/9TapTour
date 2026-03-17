@@ -183,7 +183,9 @@ public partial class FrmTournamentResults : Form
             dt.Rows.Add(newRow);
         }
 
-        // Append "T" to the place standing of any tied rows (same numeric place as a neighbour)
+        // Append "T" to the place standing of any tied rows (same numeric place as a neighbor)
+        // Temporarily set the place standing column to editable so we can modify the values, then set it back to read-only when done
+        dt.Columns[PLACE_STANDING_COLUMN_NAME].ReadOnly = false;
         for (int i = 0; i < dt.Rows.Count; i++)
         {
             if (!int.TryParse(dt.Rows[i][PLACE_STANDING_COLUMN_NAME]?.ToString(), out int place) || place == 0)
@@ -197,6 +199,7 @@ public partial class FrmTournamentResults : Form
             if (isTie)
                 dt.Rows[i][PLACE_STANDING_COLUMN_NAME] = $"{place}T";
         }
+        dt.Columns[PLACE_STANDING_COLUMN_NAME].ReadOnly = true;
 
         // If there is data in datatable rows, then set datatable as source for datagridview
         // Hide the GameId and MemberId columns and don't allow user to add rows
