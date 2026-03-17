@@ -68,8 +68,10 @@ public partial class FrmTournamentResults : Form
         base.OnFormClosing(e);
 
         if (e.CloseReason == CloseReason.WindowsShutDown) return;
+        if (dgvTournamentResults.DataSource == null || dt.Rows.Count == 0) return;
+
         List<double> Winnings = [];
-        for (int winningList = 0; winningList < dgvTournamentResults.RowCount; winningList++)
+        for (int winningList = 0; winningList < dt.Rows.Count; winningList++)
         {
             Winnings.Add(Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
         }
