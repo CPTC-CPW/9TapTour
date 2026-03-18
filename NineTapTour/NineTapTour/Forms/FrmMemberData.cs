@@ -113,7 +113,6 @@ public partial class FrmMemberData : Form
     public void UpdateMemberInfo()
     {
         RegionID = ((FrmMain)MdiParent).RegionID;
-        Member searchMem = null;
 
         lblLastNameValidation.Visible = false;
         lblFirstNameValidation.Visible = false;
@@ -141,34 +140,27 @@ public partial class FrmMemberData : Form
         }
         // if last region selected had more members then current selected 
         // region, set txtmemberNumber.Text to its highest member count for the selcted region
-        else if(Convert.ToInt16(txtMemberNumber.Text) > highestMemberNumber)
+        else if(Convert.ToInt32(txtMemberNumber.Text) > highestMemberNumber)
         {
             txtMemberNumber.Text = highestMemberNumber.ToString();
         }
 
-        if (searchMem == null)
-        {
-            currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNumber.Text), RegionID);
-            List<PlayerHistoryViewModel> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
-            if (last5.Count >= 1)
-            {   //whatever the bowler director decides his average to be is right. 
-                // don't pull from the player history page
-                txtAverage.Text = currentMem.StartAvg.ToString(); 
-                currentMem.StartAvg = Convert.ToInt16(txtAverage.Text);
-                txt30GameAvg.Text = Convert.ToInt16(last5[0].trueAVG).ToString();
-                currentMem.Average = Convert.ToInt32(last5[0].trueAVG);
-                txtBonus.Text = currentMem.Bonus.ToString();
-            }
-            else
-            {
-                txtAverage.Text = currentMem.StartAvg.ToString();
-                txt30GameAvg.Text = 0.ToString();
-                txtBonus.Text = currentMem.Bonus.ToString();
-            }
+        currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNumber.Text), RegionID);
+        List<PlayerHistoryViewModel> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
+        if (last5.Count >= 1)
+        {   //whatever the bowler director decides his average to be is right. 
+            // don't pull from the player history page
+            txtAverage.Text = (currentMem.StartAvg ?? 0).ToString();
+            currentMem.StartAvg = Convert.ToInt16(txtAverage.Text);
+            txt30GameAvg.Text = Convert.ToInt16(last5[0].trueAVG).ToString();
+            currentMem.Average = Convert.ToInt32(last5[0].trueAVG);
+            txtBonus.Text = currentMem.Bonus.ToString();
         }
         else
         {
-            currentMem = searchMem;
+            txtAverage.Text = (currentMem.StartAvg ?? 0).ToString();
+            txt30GameAvg.Text = 0.ToString();
+            txtBonus.Text = currentMem.Bonus.ToString();
         }
 
         if (currentMem.Id == 0)
@@ -475,14 +467,10 @@ public partial class FrmMemberData : Form
             temp.Gender = (rdoFemale.Checked) ? MemberGenders.Female : MemberGenders.Male;
 
             //if member was born more than 50 years ago, then member is a senior. If member is a senior, check the isSenior checkbox and set temp.IsSenior to true
-            DateTime senior = DateTime.Now.AddYears(-50);
-            if (senior >= temp.DateOfBirth)
+            if (temp.DateOfBirth.HasValue)
             {
-                chbSenior.Checked = true;
-            }
-            else
-            {
-                chbSenior.Checked = false;
+                DateTime senior = DateTime.Now.AddYears(-50);
+                chbSenior.Checked = senior >= temp.DateOfBirth.Value;
             }
             temp.IsSenior = chbSenior.Checked;
 
@@ -546,7 +534,7 @@ public partial class FrmMemberData : Form
             temp.Notes = txtNotes.Text;
 
             temp.Referrals = (txtReferrals.Text) == string.Empty ? 0 : 
-                Convert.ToInt16(txtReferrals.Text);
+                Convert.ToInt32(txtReferrals.Text);
 
             if (!String.IsNullOrWhiteSpace(txtLastPayment.Text))
             {
@@ -572,6 +560,7 @@ public partial class FrmMemberData : Form
             else
             {
                 temp.Number = MemberDB.GetLastMemberNumber(RegionID) + 1;
+                txtMemberNumber.Text = temp.Number.ToString();
             }
 
             //Set average for the new member
