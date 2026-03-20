@@ -123,7 +123,7 @@ namespace NineTapTour.Database
         /// <param name="memberNumber">The member number NOT id</param>
         /// <param name="regionId">The region id</param>
         /// <param name="tournamentId">The id of the tournament</param>
-        public static double Get30GameAverage(int memberNumber, int regionId, int tournamentId)
+        public static double Get30GameAverage(int memberNumber, int tournamentId)
         {
             int allGamesPlayed = 0;
             int totalScratchTotal = 0;
@@ -131,14 +131,14 @@ namespace NineTapTour.Database
             {
                 /*
                     Going through the database to get all of a player's ScratchTotals and the 4 UseGames
-                    to help with calculating the leauge Average
+                    to help with calculating the league Average
                  */
-                List<CurrentHistory> currentHistory = GetCurrentHistory(memberNumber, regionId, tournamentId);
+                List<CurrentHistory> currentHistory = GetCurrentHistory(memberNumber, tournamentId);
                 /*
                     Going through the database to get all of a player's GamePlayed and ScratchTotals Excluding
                     those from the current game.
                 */
-                List<PreviousHistory> previousHistory = GetPreviousHistory(memberNumber, regionId, currentHistory);
+                List<PreviousHistory> previousHistory = GetPreviousHistory(memberNumber, currentHistory);
 
                 // Looping through the current player history adding up there scratch totals & games played
                 foreach (var c in currentHistory)
@@ -161,7 +161,7 @@ namespace NineTapTour.Database
             }
         }
 
-        public static List<CurrentHistory> GetCurrentHistory(int memberNumber, int regionId, int tournamentId)
+        public static List<CurrentHistory> GetCurrentHistory(int memberNumber, int tournamentId)
         {
             using (var db = new NineTapDb())
             {
@@ -171,7 +171,6 @@ namespace NineTapTour.Database
                                   join g in db.Games on p.Game.Id equals g.Id
                                   join t in db.Tournaments on p.Tournament.Id equals t.Id
                                   where m.Number == memberNumber &&
-                                        t.TourneyRegion.NineTapRegionID == regionId && // Phase 6: Use navigation property
                                         t.Id == tournamentId
                                   select new CurrentHistory
                                   {
@@ -186,18 +185,16 @@ namespace NineTapTour.Database
             }
         }
 
-        public static List<PreviousHistory> GetPreviousHistory(int memberNumber, int regionId, List<CurrentHistory> curHistory)
+        public static List<PreviousHistory> GetPreviousHistory(int memberNumber, List<CurrentHistory> curHistory)
         {
             using (var db = new NineTapDb())
             {
-                // Phase 5: Use Member.NineTapRegionID instead of Participant.ParticipantRegionID
                 var prevHistory = (from p in db.Participants
                                   join m in db.Members on p.Member.Id equals m.Id
                                   join g in db.Games on p.Game.Id equals g.Id
                                   join t in db.Tournaments on p.Tournament.Id equals t.Id
                                   where m.Number == memberNumber 
-                                     && m.NineTapRegionID == regionId // Changed from p.ParticipantRegionID
-                                     && g.IsFinalized // Only finalized games
+                                     && g.IsFinalized
                                   orderby t.Date descending
                                   select new PreviousHistory
                                   {
@@ -322,9 +319,6 @@ namespace NineTapTour.Database
                                // Handicap and Bonus
                                Handicap = g.Handicap ?? 0,
                                Bonus = g.Bonus ?? 0,
-                               
-                               // Phase 5: Use Member.NineTapRegionID instead of Participant.ParticipantRegionID
-                               FinalizeRegionID = m.NineTapRegionID
                            }).ToList()];
             }
         }
@@ -367,8 +361,7 @@ namespace NineTapTour.Database
                                ScratchTotal = (g.Game1 ?? 0) + (g.Game2 ?? 0) + (g.Game3 ?? 0) + (g.Game4 ?? 0),
                                Handicap = g.Handicap ?? 0,
                                Bonus = g.Bonus ?? 0,
-                               Notes = g.Notes,
-                               FinalizeRegionID = m.NineTapRegionID // Phase 5: Use Member RegionID
+                               Notes = g.Notes
                            })];
             }
         }
@@ -388,22 +381,6 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Returns a list of Participants with a RegionID the same as the ID given (Phase 5: queries via Member)
-        /// </summary>
-        public static List<Participant> GetParticipantListByRegionID(int RegionID)
-        {
-            using (var db = new NineTapDb())
-            {
-                // Phase 5: Query via Member.NineTapRegionID instead of Participant.ParticipantRegionID
-                return [.. (from p in db.Participants
-                        join m in db.Members on p.Member.Id equals m.Id
-                        where m.NineTapRegionID == RegionID
-                        select p).Include(nameof(Participant.Member))];
-            }
-                
-        }
-
-        /// <summary>
         /// Deletes the Participant given from the database
         /// </summary>
         public static void DeleteParticipant(Participant p)
@@ -412,22 +389,6 @@ namespace NineTapTour.Database
             {
                 db.Entry(p).State = EntityState.Deleted;
                 db.SaveChanges();
-            }
-        }
-
-        /// <summary>
-        /// Returns a list of the Games with the same RegionID as the ID given (Phase 5: queries via Member).
-        /// </summary>
-        public static List<Game> GetGameListByRegionID(int RegionID)
-        {
-            using (var db = new NineTapDb())
-            {
-                // Phase 5: Query Games via Member.NineTapRegionID
-                return [.. (from p in db.Participants
-                           join m in db.Members on p.Member.Id equals m.Id
-                           join g in db.Games on p.Game.Id equals g.Id
-                           where m.NineTapRegionID == RegionID
-                           select g)];
             }
         }
 

@@ -25,9 +25,6 @@ namespace NineTapTour.Forms
 
         private FrmMainMenu MainMenu { get; set; }
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int RegionID { get; set; }
-
         private Size MaxWorkAreaScreenSize { get; set; }
         
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -49,8 +46,8 @@ namespace NineTapTour.Forms
             var migrator = new NineTapDb().Database.GetService<IMigrator>();
             migrator.Migrate();
 
-            MembersList = MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
-            TournamentList = TournamentDB.GetTournamentList(RegionID);
+            MembersList = MemberDB.GetMemberList().OrderBy(m => m.Number);
+            TournamentList = TournamentDB.GetTournamentList();
 
             //sets the height and width of the parent form... this can not be resized later... all child forms must 
             //fit in its bounds... the only exception is using a scrollbar on the side or bottom...
@@ -59,7 +56,6 @@ namespace NineTapTour.Forms
             //on start up make sure regionID is set 
             var mainMenu = Application.OpenForms["MainMenu"] as FrmMainMenu;
             OpenOrDisplayForm(ref mainMenu);
-            RegionID = mainMenu.getRegionID();
             MainMenu = mainMenu;
 
             //sets the first item of the menu bar to the active item and highlights it.
@@ -245,8 +241,7 @@ namespace NineTapTour.Forms
         private void updateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             //update the regionID
-            RegionID = MainMenu.getRegionID();
-            var UpdatefrmActiveMem = new FrmUpdateActiveMem(RegionID);          
+            var UpdatefrmActiveMem = new FrmUpdateActiveMem();          
             UpdatefrmActiveMem.Show();
         }
 
@@ -287,7 +282,7 @@ namespace NineTapTour.Forms
             // currLabelPrint = newfrmPrintLabel;
 
             // opens new label print form
-            FrmLabelPrint labelsToPrint = new(RegionID);
+            FrmLabelPrint labelsToPrint = new();
             labelsToPrint.ShowDialog();
 
         }

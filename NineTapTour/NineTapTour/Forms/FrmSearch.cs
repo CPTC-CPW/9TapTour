@@ -19,7 +19,6 @@ namespace NineTapTour.Forms
 {
     public partial class FrmSearch : Form
     {
-        readonly int RegionID;
         bool isChecked = false;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -28,10 +27,9 @@ namespace NineTapTour.Forms
         /// <summary>
         /// Opens the "Search" form.
         /// </summary>
-        public FrmSearch(int RegionID)
+        public FrmSearch()
         {
             InitializeComponent();
-            this.RegionID = RegionID;
         }
 
         private void FrmSearch_Load(object sender, EventArgs e)

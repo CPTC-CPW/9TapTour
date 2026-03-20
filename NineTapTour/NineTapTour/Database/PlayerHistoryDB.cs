@@ -33,8 +33,7 @@ namespace NineTapTour.Database
                 return games.Select(g => new PlayerHistoryViewModel(
                     g,
                     memberNum,
-                    g.Participant.Tournament.Date,
-                    g.Participant.Member.NineTapRegionID
+                    g.Participant.Tournament.Date
                 )).ToList();
             }
         }
@@ -43,7 +42,7 @@ namespace NineTapTour.Database
         /// Returns player histories from Games table (single source of truth).
         /// Gets the specified number of most recent finalized games for a member.
         /// </summary>
-        public static List<PlayerHistoryViewModel> GetPlayerHistories(int memberNum, int regionID, int numEntries)
+        public static List<PlayerHistoryViewModel> GetPlayerHistories(int memberNum, int numEntries)
         {
             using NineTapDb db = new();
             
@@ -53,8 +52,7 @@ namespace NineTapTour.Database
                     .ThenInclude(p => p.Member)
                 .Include(g => g.Participant.Tournament)
                 .Where(g => g.Participant.Member.Number == memberNum 
-                         && g.Participant.Member.NineTapRegionID == regionID
-                         && g.IsFinalized) // Only finalized games
+                         && g.IsFinalized)
                 .OrderByDescending(g => g.Participant.Tournament.Date)
                 .ThenByDescending(g => g.ScratchTotal)
                 .Take(numEntries)
@@ -64,8 +62,7 @@ namespace NineTapTour.Database
             return games.Select(g => new PlayerHistoryViewModel(
                 g,
                 memberNum,
-                g.Participant.Tournament.Date,
-                regionID
+                g.Participant.Tournament.Date
             )).ToList();
         }
 
@@ -80,10 +77,10 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Returns a list of all player histories with the given memberNumber and regionID.
+        /// Returns a list of all player histories with the given memberNumber.
         /// Queries from Games table (single source of truth).
         /// </summary>
-        public static List<PlayerHistoryViewModel> GetMemberPlayerHistory(int memberNum, int regionID)
+        public static List<PlayerHistoryViewModel> GetMemberPlayerHistory(int memberNum)
         {
             using (var db = new NineTapDb())
             {
@@ -93,8 +90,7 @@ namespace NineTapTour.Database
                         .ThenInclude(p => p.Member)
                     .Include(g => g.Participant.Tournament)
                     .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.Participant.Member.NineTapRegionID == regionID
-                             && g.IsFinalized) // Only finalized games
+                             && g.IsFinalized)
                     .OrderByDescending(g => g.Participant.Tournament.Date)
                     .ToList();
 
@@ -102,17 +98,15 @@ namespace NineTapTour.Database
                 return games.Select(g => new PlayerHistoryViewModel(
                     g,
                     memberNum,
-                    g.Participant.Tournament.Date,
-                    regionID
+                    g.Participant.Tournament.Date
                 )).ToList();
             }
         }
 
         /// <summary>
-        /// Returns a list of the last 30 player histories with the given memberNumber and regionID.
-        /// Queries from Games table (single source of truth).
+        /// Returns a list of the last 30 player histories with the given memberNumber
         /// </summary>
-        public static List<PlayerHistoryViewModel> GetMemberPlayerHistoryCount(int memberNum, int regionID)
+        public static List<PlayerHistoryViewModel> GetMemberPlayerHistoryCount(int memberNum)
         {
             using (var db = new NineTapDb())
             {
@@ -121,7 +115,6 @@ namespace NineTapTour.Database
                         .ThenInclude(p => p.Member)
                     .Include(g => g.Participant.Tournament)
                     .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.Participant.Member.NineTapRegionID == regionID
                              && g.IsFinalized) // Only finalized games
                     .OrderByDescending(g => g.Participant.Tournament.Date)
                     .ThenByDescending(g => g.MoneyWon)
@@ -131,17 +124,15 @@ namespace NineTapTour.Database
                 return games.Select(g => new PlayerHistoryViewModel(
                     g,
                     memberNum,
-                    g.Participant.Tournament.Date,
-                    regionID
+                    g.Participant.Tournament.Date
                 )).ToList();
             }
         }
 
         /// <summary>
-        /// Returns a list of all player histories with the given regionID.
-        /// Queries from Games table (single source of truth).
+        /// Returns a list of all player histories.
         /// </summary>
-        public static List<PlayerHistoryViewModel> GetAllPlayerHistory(int regionID)
+        public static List<PlayerHistoryViewModel> GetAllPlayerHistory()
         {
             using (var db = new NineTapDb())
             {
@@ -149,24 +140,23 @@ namespace NineTapTour.Database
                     .Include(g => g.Participant)
                         .ThenInclude(p => p.Member)
                     .Include(g => g.Participant.Tournament)
-                    .Where(g => g.Participant.Member.NineTapRegionID == regionID && g.IsFinalized)
+                    .Where(g => g.IsFinalized)
                     .OrderByDescending(g => g.Participant.Tournament.Date)
                     .ToList();
 
                 return games.Select(g => new PlayerHistoryViewModel(
                     g,
                     g.Participant.Member.Number,
-                    g.Participant.Tournament.Date,
-                    regionID
+                    g.Participant.Tournament.Date
                 )).ToList();
             }
         }
 
         /// <summary>
         /// Gets the last quantity of games selecting only the tournament date and money won.
-        /// Used to calculate bonus pins. Queries from Games table (single source of truth).
+        /// Used to calculate bonus pins.
         /// </summary>
-        public static List<PlayerHistoryViewModel> GetLastQtyGamesMoneyWon(int memberNum, int regionID, int howmany)
+        public static List<PlayerHistoryViewModel> GetLastQtyGamesMoneyWon(int memberNum, int howmany)
         {
             using(var db = new NineTapDb())
             {
@@ -174,8 +164,7 @@ namespace NineTapTour.Database
                     .Include(g => g.Participant)
                         .ThenInclude(p => p.Member)
                     .Include(g => g.Participant.Tournament)
-                    .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.Participant.Member.NineTapRegionID == regionID
+                    .Where(g => g.Participant.Member.Number == memberNum
                              && g.IsFinalized)
                     .OrderByDescending(g => g.Participant.Tournament.Date)
                     .Take(howmany)
@@ -197,7 +186,7 @@ namespace NineTapTour.Database
         /// Only grabs games where AVG was adjusted so bonus pins aren't affected by bowling in multiple squads.
         /// Queries from Games table (single source of truth).
         /// </summary>
-        public static List<PlayerHistoryViewModel> GetLastFiveTournaments(int memberNum, int regionID)
+        public static List<PlayerHistoryViewModel> GetLastFiveTournaments(int memberNum)
         {
             const int HOW_MANY = 5;
             using (var db = new NineTapDb())
@@ -282,9 +271,8 @@ namespace NineTapTour.Database
 
         /// <summary>
         /// Returns a list of player histories ordered by TotalScore descending.
-        /// Queries from Games table (single source of truth).
         /// </summary>
-        public static List<PlayerHistoryViewModel> GetMemberPlayerHistoryByTotal(int memberNum, int regionID)
+        public static List<PlayerHistoryViewModel> GetMemberPlayerHistoryByTotal(int memberNum)
         {
             using (var db = new NineTapDb())
             {
@@ -293,8 +281,7 @@ namespace NineTapTour.Database
                     .Include(g => g.Participant)
                         .ThenInclude(p => p.Member)
                     .Include(g => g.Participant.Tournament)
-                    .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.Participant.Member.NineTapRegionID == regionID
+                    .Where(g => g.Participant.Member.Number == memberNum
                              && g.IsFinalized)
                     .ToList();
 
@@ -338,10 +325,9 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Returns the total money won by a member in a region.
-        /// Queries from Games table (single source of truth).
+        /// Returns the total money won by a member.
         /// </summary>
-        public static decimal GetTotalMoneyWon(int memberNum, int regionID)
+        public static decimal GetTotalMoneyWon(int memberNum)
         {
             using (var db = new NineTapDb())
             {
@@ -350,7 +336,6 @@ namespace NineTapTour.Database
                     .Include(g => g.Participant)
                         .ThenInclude(p => p.Member)
                     .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.Participant.Member.NineTapRegionID == regionID
                              && g.IsFinalized) // Only finalized games
                     .Select(g => (decimal?)(g.MoneyWon ?? 0))
                     .Sum() ?? 0;

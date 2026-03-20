@@ -116,7 +116,6 @@
             this.cbxRegionSelect.Name = "cbxRegionSelect";
             this.cbxRegionSelect.Size = new System.Drawing.Size(121, 21);
             this.cbxRegionSelect.TabIndex = 3;
-            this.cbxRegionSelect.SelectedIndexChanged += new System.EventHandler(this.cbxRegionSelect_SelectedIndexChanged);
             // 
             // btnAdd
             // 
@@ -126,7 +125,6 @@
             this.btnAdd.TabIndex = 4;
             this.btnAdd.Text = "Add Region";
             this.btnAdd.UseVisualStyleBackColor = true;
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // btnDropDataBase1
             // 
@@ -159,7 +157,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainMenu";
             this.Text = "MainMenu";
-            this.Load += new System.EventHandler(this.MainMenu_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.MainMenu_Paint);
             this.ResumeLayout(false);
 

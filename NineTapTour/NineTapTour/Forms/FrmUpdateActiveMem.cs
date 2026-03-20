@@ -12,18 +12,16 @@ namespace NineTapTour.Forms
 {
     public partial class FrmUpdateActiveMem : Form
     {
-        readonly int RegionID;
         DateTime targetDate;
         readonly List<Member> InActiveList;
         readonly List<Member> AllMembers;
-        public FrmUpdateActiveMem(int RID)
+        public FrmUpdateActiveMem()
         {
             InitializeComponent();
-            RegionID = RID;
             dateTimePicker1.Value = DateTime.Today.AddDays(-180);
             targetDate = dateTimePicker1.Value;
-            InActiveList = MemberDB.GetMemberList(RegionID);
-            AllMembers = MemberDB.GetMemberList(RegionID);
+            InActiveList = MemberDB.GetMemberList();
+            AllMembers = MemberDB.GetMemberList();
             UpdateList();
         }
 
@@ -31,7 +29,7 @@ namespace NineTapTour.Forms
         {
             if (AllMembers == null)
             {
-                MessageBox.Show("There are no members within this region in the database");
+                MessageBox.Show("There are no members in the database");
                 return;
             }
             AllMembers.Sort(new MemberNumComparer());

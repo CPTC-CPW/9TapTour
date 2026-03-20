@@ -15,20 +15,18 @@ namespace NineTapTour.Forms
 {
     public partial class FrmLabelPrint : Form
     {
-        readonly int RegionID;
         List<Member> AllMems;
         List<Member> ActiveMems;
         List<Member> Labels;
 
-        public FrmLabelPrint(int RegionID)
+        public FrmLabelPrint()
         {
             InitializeComponent();
-            this.RegionID = RegionID;
         }
 
         private void FrmLabelPrint_Load(object sender, EventArgs e)
         {         
-            AllMems = MemberDB.GetMemberList(RegionID);
+            AllMems = MemberDB.GetMemberList();
             ActiveMems = [];
             Labels = [];
 

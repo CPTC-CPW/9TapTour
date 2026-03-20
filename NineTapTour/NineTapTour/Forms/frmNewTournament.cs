@@ -50,14 +50,6 @@ namespace NineTapTour.Forms
             newTournament.Notes = rtxtNotes.Text;
             bool errors = false;
             
-            // Phase 6: Load NineTapRegion entity for proper FK relationship
-            int regionId = ((FrmMain)MdiParent).RegionID;
-            using (var db = new NineTapDb())
-            {
-                newTournament.TourneyRegion = db.NineTapRegion.Find(regionId);
-                db.SaveChanges();
-            }
-            
             int numSquads;
             bool validateSquads = int.TryParse(txtSquads.Text, out numSquads);
 
@@ -104,7 +96,7 @@ namespace NineTapTour.Forms
                     {
                         TournamentDB.AddTournament(newTournament);
                         MessageBox.Show(@"Tournament Created Successfully.");
-                        ((FrmMain)MdiParent).TournamentList = TournamentDB.GetTournamentList(regionId); // Phase 6: Use regionId
+                        ((FrmMain)MdiParent).TournamentList = TournamentDB.GetTournamentList();
                     }
                 }
                 else
@@ -125,7 +117,7 @@ namespace NineTapTour.Forms
                         if (TournamentDB.UpdateTournament(newTournament))
                         {
                             MessageBox.Show(@"Tournament modified.");
-                            ((FrmMain)MdiParent).TournamentList = TournamentDB.GetTournamentList(regionId); // Phase 6: Use regionId
+                            ((FrmMain)MdiParent).TournamentList = TournamentDB.GetTournamentList();
                         }
                         else
                         {
@@ -168,12 +160,6 @@ namespace NineTapTour.Forms
                 btnSubmit.Text = "Update Tournament";
                 lblEdit.Text = "Currently Editing " + tourToEdit.TourneyNameDate;
             }
-#if DEBUG
-            else
-            {
-                Console.WriteLine("Search returned a null. probably was closed.");
-            }
-#endif
         }
 
         private void btnClear_Click(object sender, EventArgs e)
