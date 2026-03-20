@@ -144,7 +144,7 @@ namespace NineTapTour.Forms
 
         private void btnEditTour_Click(object sender, EventArgs e)
         {
-            FrmTourSearch getEdit = new(((FrmMain)MdiParent).RegionID);
+            FrmTourSearch getEdit = new();
             getEdit.ShowDialog();
             tourToEdit = getEdit.getResult();
 

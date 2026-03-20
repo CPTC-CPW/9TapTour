@@ -717,7 +717,7 @@ public partial class FrmMemberData : Form
             txtDOB.LostFocus += AddPlaceholderText;
 
             //get latest member number, or set to 1 if no members in database
-            int nextMemberNumber = MemberDB.GetLastMemberNumber(RegionID) + 1;
+            int nextMemberNumber = MemberDB.GetLastMemberNumber() + 1;
             txtMemberNumber.Text = nextMemberNumber.ToString();
 
             currentMem = new Member
@@ -757,7 +757,7 @@ public partial class FrmMemberData : Form
     /// <param name="e"></param>
     private void BtnLastRecord_Click(object sender, EventArgs e)
     {
-        txtMemberNumber.Text = MemberDB.GetLastMemberNumber(RegionID).ToString();
+        txtMemberNumber.Text = MemberDB.GetLastMemberNumber().ToString();
         UpdateMemberInfo();
     }
     
@@ -784,7 +784,7 @@ public partial class FrmMemberData : Form
     private void BtnStats_Click(object sender, EventArgs e)
     {
         FrmStats p = new(currentMem.Number, currentMem.FirstName + 
-            currentMem.LastName + currentMem.MiddleInitial, currentMem, RegionID);
+            currentMem.LastName + currentMem.MiddleInitial, currentMem);
         p.ShowDialog();
     }
 
@@ -922,7 +922,7 @@ public partial class FrmMemberData : Form
         if (ofdOpen.ShowDialog() == DialogResult.OK)
         {
             List<PlayerHistoryViewModel> AlreadyImportedPH = 
-                PlayerHistoryDB.GetMemberPlayerHistory(currentMem.Number, RegionID);
+                PlayerHistoryDB.GetMemberPlayerHistory(currentMem.Number);
 
             if (AlreadyImportedPH.Count > 0)
             {
@@ -946,7 +946,7 @@ public partial class FrmMemberData : Form
             }
 
             // Update member's averages after import
-            List<PlayerHistoryViewModel> reset = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
+            List<PlayerHistoryViewModel> reset = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number);
             if (reset.Count > 0)
             {
                 currentMem.StartAvg = reset[0].AVG;
@@ -962,7 +962,7 @@ public partial class FrmMemberData : Form
             }
 
             // Grabs the total money won by the member
-            decimal moneySum = PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number, RegionID);
+            decimal moneySum = PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number);
 
             currentMem.MoneyEarned += moneySum; 
 
@@ -1049,7 +1049,7 @@ public partial class FrmMemberData : Form
                 if (!tournamentsCache.ContainsKey(tournamentDate))
                 {
                     // Check if tournament already exists in database
-                    List<Tournament> existingTournaments = TournamentDB.GetTournamentList(RegionID)
+                    List<Tournament> existingTournaments = TournamentDB.GetTournamentList()
                         .Where(t => t.Date.Date == tournamentDate).ToList();
                     
                     if (existingTournaments.Count > 0)

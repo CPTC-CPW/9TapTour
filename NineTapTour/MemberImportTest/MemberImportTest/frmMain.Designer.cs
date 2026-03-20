@@ -115,7 +115,6 @@
             cbxRegionSelect.Name = "cbxRegionSelect";
             cbxRegionSelect.Size = new System.Drawing.Size(140, 23);
             cbxRegionSelect.TabIndex = 11;
-            cbxRegionSelect.SelectedIndexChanged += CbxRegionSelect_SelectedIndexChanged;
             // 
             // progressBarFinalize
             // 

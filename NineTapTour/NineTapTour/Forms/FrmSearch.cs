@@ -45,7 +45,6 @@ namespace NineTapTour.Forms
             using (NineTapDb db = new())
             {
                 var query = from m in db.Members
-                            where m.NineTapRegionID == RegionID
                             select m;
 
                 // Member Number?
@@ -155,7 +154,7 @@ namespace NineTapTour.Forms
         private void FillGrid()
         {
             dtagrdResults.DataSource = null;
-            List<Member> memList = MemberDB.GetMemberList(RegionID);
+            List<Member> memList = MemberDB.GetMemberList();
             dtagrdResults.DataSource = memList;
             AdvancedViewCheck();
         }

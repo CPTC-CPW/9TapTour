@@ -77,7 +77,7 @@ namespace NineTapTour.Calculations
         /// <param name="currTournamentId">Id of the current tournament</param>
         /// <returns>Adjusted bonus pins after current tournament</returns>
         public static int GetAdjustedBonusPins(int memberPlacement, int totalEntries, int compEntries, int currentBonusPins,
-                                                int memNum, int RegionID, int currTournamentId)
+                                                int memNum, int currTournamentId)
         {
             // Calculates if the member is on the place standing
             int lowestPlacementToCash = GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
@@ -90,7 +90,7 @@ namespace NineTapTour.Calculations
 
             // Gets the amount of entries the member has for the tournament
             int membersGameEntryCount = FinalizeTempDB.GetMembersGameEntryCount(currTournamentId, memNum);
-            List<PlayerHistoryViewModel> latestGames = PlayerHistoryDB.GetLastQtyGamesMoneyWon(memNum, RegionID, 15);
+            List<PlayerHistoryViewModel> latestGames = PlayerHistoryDB.GetLastQtyGamesMoneyWon(memNum, 15);
 
             // If a player didnt win money, they might gain bonus pins
             return AddToBonusPins(currentBonusPins, latestGames, membersGameEntryCount);

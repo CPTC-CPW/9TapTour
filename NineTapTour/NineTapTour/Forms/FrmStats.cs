@@ -20,15 +20,13 @@ namespace NineTapTour.Forms
         private readonly int memNum;
         private readonly string memName;
         readonly List<PlayerHistoryViewModel> ph;
-        readonly int RegionID;
 
 
-        public FrmStats(int memberId, string memberName, Member currentMem, int RegionID)
+        public FrmStats(int memberId, string memberName, Member currentMem)
         {
             InitializeComponent();
             this.memId = memberId;
             this.memNum = currentMem.Number;
-            this.RegionID = RegionID;
             this.memName = memberName;
             this.mem = currentMem;
             this.dataGridView1.DoubleBuffered(false);
@@ -97,7 +95,7 @@ namespace NineTapTour.Forms
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
 
-            ph = PlayerHistoryDB.GetMemberPlayerHistoryByTotal(memNum, RegionID);
+            ph = PlayerHistoryDB.GetMemberPlayerHistoryByTotal(memNum);
         }
 
         struct statHolder
@@ -329,15 +327,12 @@ namespace NineTapTour.Forms
             DataTable dtGames = new();
             var db = new NineTapDb();
             
-            // Phase 3: Query from Games table instead of PlayerHistory
-            // Phase 4: Query from Games table via Participant (use Member.NineTapRegionID)
             var temp = (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
                         join g in db.Games on p.Game.Id equals g.Id
                         join t in db.Tournaments on p.Tournament.Id equals t.Id
                         where m.Number == memNum 
-                           && m.NineTapRegionID == RegionID // Phase 5: Use Member.NineTapRegionID
-                           && g.IsFinalized // Only finalized games
+                           && g.IsFinalized
                         orderby t.Date descending, g.Id descending
                         select new
                         {
@@ -377,7 +372,7 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Pro Pot").ReadOnly = true;
             dtGames.Columns.Add("Place").ReadOnly = true;
 
-            string moneyWonWithTotal = $"Money Won ({PlayerHistoryDB.GetTotalMoneyWon(memNum, RegionID)})";
+            string moneyWonWithTotal = $"Money Won ({PlayerHistoryDB.GetTotalMoneyWon(memNum)})";
             dtGames.Columns.Add(moneyWonWithTotal, typeof(Decimal));
             dtGames.Columns.Add("Notes");
             dtGames.Columns.Add("GmID").ReadOnly = true;
@@ -578,7 +573,7 @@ namespace NineTapTour.Forms
         private void btnSaveChanges_Click(object sender, EventArgs e)
         {
             //grab untouched player history view models
-            List<PlayerHistoryViewModel> pHist = PlayerHistoryDB.GetMemberPlayerHistory(mem.Number, RegionID);
+            List<PlayerHistoryViewModel> pHist = PlayerHistoryDB.GetMemberPlayerHistory(mem.Number);
 
             //RESTORE THE DATAGRID BACK TO THE DATE DESCINDING 
             dataGridView1.Sort(dataGridView1.Columns["Date"], System.ComponentModel.ListSortDirection.Descending);

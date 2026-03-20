@@ -16,7 +16,6 @@ namespace NineTapTour.Forms
     public partial class FrmFinalizeTournament : Form
     {
         private Tournament selectedTournament;
-        private int regionID;
 
         // Top-level controls — access these to adjust later
         private Panel pnlToolbar;
@@ -33,10 +32,9 @@ namespace NineTapTour.Forms
         private int _displayedDetailMemberNumber = -1;
         private readonly HashSet<int> _invalidRowIndices = [];
 
-        public FrmFinalizeTournament(Tournament selectedTournament, int regionID)
+        public FrmFinalizeTournament(Tournament selectedTournament)
         {
             this.selectedTournament = selectedTournament;
-            this.regionID = regionID;
 
             InitializeComponent();
         }
@@ -551,7 +549,7 @@ namespace NineTapTour.Forms
             const int thirtyGameWindow = 30;
 
             List<PlayerHistoryViewModel> history =
-                PlayerHistoryDB.GetMemberPlayerHistory(memberNumber, regionID);
+                PlayerHistoryDB.GetMemberPlayerHistory(memberNumber);
 
             dgvDetail.Rows.Clear();
 
