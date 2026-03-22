@@ -77,6 +77,7 @@ namespace NineTapTour.Forms
 
             // Top grid
             dgvTournament = CreateTournamentGrid();
+            dgvTournament.DoubleBuffered(true);
             dgvTournament.CurrentCellDirtyStateChanged += DgvTournament_CurrentCellDirtyStateChanged;
             dgvTournament.CellValueChanged             += DgvTournament_CellValueChanged;
             dgvTournament.RowPostPaint                 += DgvTournament_RowPostPaint;
@@ -96,6 +97,7 @@ namespace NineTapTour.Forms
 
             // Bottom grid — add Fill first so Top-docked pnlPlayerInfo is processed first
             dgvDetail = CreateDetailGrid();
+            dgvDetail.DoubleBuffered(true);
             splitMain.Panel2.Controls.Add(dgvDetail);
             splitMain.Panel2.Controls.Add(pnlPlayerInfo);
 
