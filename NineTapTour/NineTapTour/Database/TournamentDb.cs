@@ -333,7 +333,8 @@ namespace NineTapTour.Database
                             Game2 = g.Game2,
                             Game3 = g.Game3,
                             Game4 = g.Game4,
-                            IsComp = g.IsComp
+                            IsComp = g.IsComp,
+                            LeagueAverage = g.LeagueAverage
                         })];
             }
         }
