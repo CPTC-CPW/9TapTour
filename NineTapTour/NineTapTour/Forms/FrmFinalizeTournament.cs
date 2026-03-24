@@ -408,7 +408,27 @@ namespace NineTapTour.Forms
                 UpdateGameUseFlags(e.RowIndex);
             }
 
-            if (colName is "colDirCheck" or "colAdjAvg")
+            if (colName == "colDirCheck")
+            {
+                bool newValue = dgvTournament.Rows[e.RowIndex].Cells["colDirCheck"].Value as bool? ?? false;
+                object memberNumber = dgvTournament.Rows[e.RowIndex].Cells["colMemberNumber"].Value;
+
+                foreach (DataGridViewRow row in dgvTournament.Rows)
+                {
+                    if (row.Index == e.RowIndex) continue;
+                    if (Equals(row.Cells["colMemberNumber"].Value, memberNumber))
+                    {
+                        row.Cells["colDirCheck"].Value = newValue;
+                        ValidateRow(row.Index);
+                        dgvTournament.InvalidateRow(row.Index);
+                    }
+                }
+
+                ValidateRow(e.RowIndex);
+                dgvTournament.InvalidateRow(e.RowIndex);
+            }
+
+            if (colName == "colAdjAvg")
             {
                 ValidateRow(e.RowIndex);
                 dgvTournament.InvalidateRow(e.RowIndex);
