@@ -47,7 +47,6 @@ namespace NineTapTour.Forms
             listSearch.DataSource = null;
 
             List<Tournament> tourList = [];
-            StringBuilder whereClause = new();
 
             using (NineTapDb db = new())
             {
