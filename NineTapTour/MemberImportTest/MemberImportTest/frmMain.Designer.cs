@@ -34,9 +34,7 @@
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             btnSelectExcelFolder = new System.Windows.Forms.Button();
-            label3 = new System.Windows.Forms.Label();
             btn_FinalizeData = new System.Windows.Forms.Button();
-            cbxRegionSelect = new System.Windows.Forms.ComboBox();
             progressBarFinalize = new System.Windows.Forms.ProgressBar();
             lblFinalizeStatus = new System.Windows.Forms.Label();
             txtProgress = new System.Windows.Forms.TextBox();
@@ -69,7 +67,7 @@
             label2.Location = new System.Drawing.Point(663, 135);
             label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(149, 15);
+            label2.Size = new System.Drawing.Size(150, 15);
             label2.TabIndex = 4;
             label2.Text = "Import Members Excel files";
             // 
@@ -85,16 +83,6 @@
             btnSelectExcelFolder.UseVisualStyleBackColor = true;
             btnSelectExcelFolder.Click += Button1_Click;
             // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(190, 10);
-            label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(78, 15);
-            label3.TabIndex = 6;
-            label3.Text = "Region Select";
-            // 
             // btn_FinalizeData
             // 
             btn_FinalizeData.Enabled = false;
@@ -106,16 +94,6 @@
             btn_FinalizeData.Text = "Finalize";
             btn_FinalizeData.UseVisualStyleBackColor = true;
             btn_FinalizeData.Click += Btn_FinalizeData_Click;
-            // 
-            // cbxRegionSelect
-            // 
-            cbxRegionSelect.FormattingEnabled = true;
-            cbxRegionSelect.Location = new System.Drawing.Point(161, 32);
-            cbxRegionSelect.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            cbxRegionSelect.Name = "cbxRegionSelect";
-            cbxRegionSelect.Size = new System.Drawing.Size(140, 23);
-            cbxRegionSelect.TabIndex = 11;
-            cbxRegionSelect.SelectedIndexChanged += CbxRegionSelect_SelectedIndexChanged;
             // 
             // progressBarFinalize
             // 
@@ -152,10 +130,8 @@
             ClientSize = new System.Drawing.Size(917, 427);
             Controls.Add(lblFinalizeStatus);
             Controls.Add(progressBarFinalize);
-            Controls.Add(cbxRegionSelect);
             Controls.Add(txtProgress);
             Controls.Add(btn_FinalizeData);
-            Controls.Add(label3);
             Controls.Add(btnSelectExcelFolder);
             Controls.Add(label2);
             Controls.Add(label1);
@@ -176,9 +152,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnSelectExcelFolder;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btn_FinalizeData;
-        private System.Windows.Forms.ComboBox cbxRegionSelect;
         private System.Windows.Forms.ProgressBar progressBarFinalize;
         private System.Windows.Forms.Label lblFinalizeStatus;
         private System.Windows.Forms.TextBox txtProgress;

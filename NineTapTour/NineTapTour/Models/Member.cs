@@ -83,9 +83,6 @@ namespace NineTapTour.Models
         public bool IsSenior { get; set; }
 
         public decimal MoneyEarned { get; set; }
-
-        public int NineTapRegionID { get; set; }
-        public virtual NineTapRegion NineTapRegion { get; set; }
         #endregion
 
         public override string ToString()

@@ -20,7 +20,6 @@ namespace NineTapTour.Forms
     /// </summary>
     public partial class FrmMemberScores : Form
     {
-        public int RegionID;
         Member currentMem;
 
         TextBox[] scratchArray = new TextBox[4];
@@ -109,8 +108,6 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void FrmMemberScores_Load(object sender, EventArgs e)
         {
-            RegionID = ((FrmMain)MdiParent).RegionID;
-
             scratchArray = [txtScratchScore1, txtScratchScore2, txtScratchScore3, txtScratchScore4];
             handicappArray = [txtHandicapScore1, txtHandicapScore2, txtHandicapScore3, txtHandicapScore4];
 
@@ -140,9 +137,6 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void FrmMemberScores_Activated(object sender, EventArgs e)
         {
-
-            RegionID = ((FrmMain)MdiParent).RegionID;
-
             //added in this line inorder to prevent the reset of the drop down list on memberscores form when switching between forms
             int tempcbx = cbxTourneyDropDown.SelectedIndex;
             rdoHandicapScore.Visible = false;
@@ -152,7 +146,7 @@ namespace NineTapTour.Forms
 
             MemberStatus("", Color.Black, SystemColors.Control, true);
 
-            List<Tournament> temp2 = TournamentDB.GetTournamentList(RegionID);
+            List<Tournament> temp2 = TournamentDB.GetTournamentList();
 
             ((FrmMain)MdiParent).TournamentList = temp2;
             cbxTourneyDropDown.DataSource = temp2;
@@ -258,7 +252,7 @@ namespace NineTapTour.Forms
                 }
 
                 int memberNumber = Convert.ToInt32(txtMemberNum.Text);
-                currentMem = MemberDB.GetMember(memberNumber, RegionID);
+                currentMem = MemberDB.GetMember(memberNumber);
                 if (currentMem != null)
                 {
                     if (currentMem.IsActive)
@@ -488,7 +482,7 @@ namespace NineTapTour.Forms
                 int squad = GetCurrentSquadNumber();
 
                 //get the member from the database using the number from the memnum textbox
-                currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
+                currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNum.Text));
                 player.Member = currentMem;
 
                 player.Game = new Game();
@@ -716,7 +710,7 @@ namespace NineTapTour.Forms
             {
                 if (txtMemberNum.Text != "" && txtMemberNum.Text.All(Char.IsDigit))
                 {
-                    currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNum.Text), RegionID);
+                    currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNum.Text));
 
                     int currentSquadNumber = GetCurrentSquadNumber();
 
@@ -1189,7 +1183,7 @@ namespace NineTapTour.Forms
         private void BtnTourSearch_Click(object sender, EventArgs e)
         {
             List<Tournament> tours = [];
-            FrmTourSearch tourSearch = new(tours, RegionID);
+            FrmTourSearch tourSearch = new(tours);
             tourSearch.ShowDialog();
 
             //Populates dropdown box with tournaments
@@ -1430,7 +1424,7 @@ namespace NineTapTour.Forms
 
         private void BtnTournamentsByYear_Click(object sender, EventArgs e)
         {
-            FrmTournamentsByYear listTournaments = new(RegionID);
+            FrmTournamentsByYear listTournaments = new();
             listTournaments.ShowDialog();
         }
 
@@ -1443,7 +1437,7 @@ namespace NineTapTour.Forms
 
         private void BtnRecapByPin_Click(object sender, EventArgs e)
         {
-            FrmSelection selectTournament = new(RegionID)
+            FrmSelection selectTournament = new()
             {
                 StartPosition = FormStartPosition.CenterParent
             };
@@ -1497,7 +1491,7 @@ namespace NineTapTour.Forms
         /// </summary>
         public void PopulateSelectedTournament(Tournament currentTournament)
         {
-            List<Tournament> temp2 = TournamentDB.GetTournamentList(RegionID);
+            List<Tournament> temp2 = TournamentDB.GetTournamentList();
 
             for (int i = 0; i < temp2.Count; i++)
             {
@@ -1530,7 +1524,7 @@ namespace NineTapTour.Forms
                 Cursor.Current = Cursors.WaitCursor;
                 Application.DoEvents();
 
-                var newFrmFinalizeTournament = new FrmFinalizeTournament(FrmMemberScoresHelpers.selectedTournament, RegionID)
+                var newFrmFinalizeTournament = new FrmFinalizeTournament(FrmMemberScoresHelpers.selectedTournament)
                 {
                     Dock = DockStyle.Right,
                     WindowState = FormWindowState.Normal
@@ -1773,7 +1767,7 @@ namespace NineTapTour.Forms
                 PlayerHistoryDB.DeleteGame(g);
 
                 // Corrects any changes to the members stats after finalizing to the last accurate data
-                PlayerHistoryViewModel temp = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number, RegionID);
+                PlayerHistoryViewModel temp = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
                 if (temp != null)
                 {
                     currentMem.Handicap = temp.HandiCap;

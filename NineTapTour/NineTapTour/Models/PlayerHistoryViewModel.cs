@@ -110,13 +110,12 @@ namespace NineTapTour.Models
         /// <summary>
         /// Constructor to create ViewModel from Game entity and related data
         /// </summary>
-        public PlayerHistoryViewModel(Game game, int memberNumber, DateTime tournamentDate, int regionId)
+        public PlayerHistoryViewModel(Game game, int memberNumber, DateTime tournamentDate)
         {
             hisID = game.Id;
             GameID = game.Id;
             MemberNumber = memberNumber;
             TournamentDate = tournamentDate;
-            regionID = regionId;
 
             // Game scores
             Game1 = game.Game1;

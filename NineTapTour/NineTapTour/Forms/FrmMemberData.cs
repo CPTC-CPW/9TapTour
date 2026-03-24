@@ -15,7 +15,6 @@ namespace NineTapTour.Forms;
 public partial class FrmMemberData : Form
 {
     private Member currentMem;
-    private int RegionID;
     
     /// <summary>
     /// Opens the "Member Data" Form.
@@ -42,7 +41,6 @@ public partial class FrmMemberData : Form
             ChangeBackColorOnFocus(ctrl);                
         }
 
-        RegionID = ((FrmMain)MdiParent).RegionID;
         UpdateMemberInfo();
     }
     
@@ -112,8 +110,6 @@ public partial class FrmMemberData : Form
     /// </summary>
     public void UpdateMemberInfo()
     {
-        RegionID = ((FrmMain)MdiParent).RegionID;
-
         lblLastNameValidation.Visible = false;
         lblFirstNameValidation.Visible = false;
         lblAverageValidation.Visible = false;
@@ -130,23 +126,16 @@ public partial class FrmMemberData : Form
 			d.BackColor = Color.LightGray;
 		}
 
-        int highestMemberNumber = MemberDB.GetLastMemberNumber(RegionID);
+        int highestMemberNumber = MemberDB.GetLastMemberNumber();
 
-        // set txtMemberNumber.Text back to one if there is no one in the the 
-        // current selected region added yet
+        // set txtMemberNumber.Text back to one if there is no one
         if (highestMemberNumber == 0)
         {
             txtMemberNumber.Text = "1";
         }
-        // if last region selected had more members then current selected 
-        // region, set txtmemberNumber.Text to its highest member count for the selcted region
-        else if(Convert.ToInt32(txtMemberNumber.Text) > highestMemberNumber)
-        {
-            txtMemberNumber.Text = highestMemberNumber.ToString();
-        }
 
-        currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNumber.Text), RegionID);
-        List<PlayerHistoryViewModel> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
+        currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNumber.Text));
+        List<PlayerHistoryViewModel> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number);
         if (last5.Count >= 1)
         {   //whatever the bowler director decides his average to be is right. 
             // don't pull from the player history page
@@ -349,7 +338,7 @@ public partial class FrmMemberData : Form
             }                
 
             currentMem.MoneyEarned = 
-                PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number, RegionID);
+                PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number);
 
             txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
         }
@@ -549,22 +538,21 @@ public partial class FrmMemberData : Form
             }
 
             temp.IsLifetimeMember = chbLifetime.Checked;
-            temp.NineTapRegionID = RegionID;
 
             // check to see if memberId exists before putting it in 
             // current selected regions database
             if (MemberDB.MemberExists(temp))
             {
-                temp.Id = MemberDB.GetMemberIdByNumber(temp.Number, RegionID);
+                temp.Id = MemberDB.GetMemberIdByNumber(temp.Number);
             }
             else
             {
-                temp.Number = MemberDB.GetLastMemberNumber(RegionID) + 1;
+                temp.Number = MemberDB.GetLastMemberNumber() + 1;
                 txtMemberNumber.Text = temp.Number.ToString();
             }
 
             //Set average for the new member
-            List<PlayerHistoryViewModel> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
+            List<PlayerHistoryViewModel> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number);
             if (last5.Count >= 1)
             {   // sets the average to that of their last adjusted average
                 if (Convert.ToInt32(txtAverage.Text) == last5[0].AVG)
@@ -632,7 +620,7 @@ public partial class FrmMemberData : Form
                 MessageBox.Show("Member saved");
                 #endif
                 ((FrmMain)MdiParent).MembersList =
-                    MemberDB.GetMemberList(RegionID).OrderBy(m => m.Number);
+                    MemberDB.GetMemberList().OrderBy(m => m.Number);
                 UpdateMemberInfo();
             }
             
@@ -651,7 +639,7 @@ public partial class FrmMemberData : Form
     {
         //cursor begins when arrow is clicked
         Cursor.Current = Cursors.WaitCursor;
-        List<Member> m = MemberDB.GetMemberList(RegionID);
+        List<Member> m = MemberDB.GetMemberList();
         if (m.Count == 0 || currentMem.Number <= m[0].Number)
         {
             //turns loading cursor off.
@@ -678,7 +666,7 @@ public partial class FrmMemberData : Form
     {
         //turns on a loading cursor while new bowler is loaded.
         Cursor.Current = Cursors.WaitCursor;
-        int memberCount = MemberDB.GetLastMemberNumber(RegionID);
+        int memberCount = MemberDB.GetLastMemberNumber();
         if (memberCount == 0 ||
             currentMem.Number >= memberCount)
         {
@@ -729,7 +717,7 @@ public partial class FrmMemberData : Form
             txtDOB.LostFocus += AddPlaceholderText;
 
             //get latest member number, or set to 1 if no members in database
-            int nextMemberNumber = MemberDB.GetLastMemberNumber(RegionID) + 1;
+            int nextMemberNumber = MemberDB.GetLastMemberNumber() + 1;
             txtMemberNumber.Text = nextMemberNumber.ToString();
 
             currentMem = new Member
@@ -753,7 +741,7 @@ public partial class FrmMemberData : Form
     {
         try
         {
-            txtMemberNumber.Text = MemberDB.GetMemberList(RegionID)[0].Number.ToString();
+            txtMemberNumber.Text = MemberDB.GetMemberList()[0].Number.ToString();
             UpdateMemberInfo();
         }
         catch
@@ -769,7 +757,7 @@ public partial class FrmMemberData : Form
     /// <param name="e"></param>
     private void BtnLastRecord_Click(object sender, EventArgs e)
     {
-        txtMemberNumber.Text = MemberDB.GetLastMemberNumber(RegionID).ToString();
+        txtMemberNumber.Text = MemberDB.GetLastMemberNumber().ToString();
         UpdateMemberInfo();
     }
     
@@ -781,7 +769,7 @@ public partial class FrmMemberData : Form
     /// <param name="e"></param>
     private void BtnMemberSearch_Click(object sender, EventArgs e)
     {
-        FrmSearch SearchForm = new(RegionID);
+        FrmSearch SearchForm = new();
         SearchForm.ShowDialog();
 
         if (SearchForm.searchResult > 0)
@@ -796,7 +784,7 @@ public partial class FrmMemberData : Form
     private void BtnStats_Click(object sender, EventArgs e)
     {
         FrmStats p = new(currentMem.Number, currentMem.FirstName + 
-            currentMem.LastName + currentMem.MiddleInitial, currentMem, RegionID);
+            currentMem.LastName + currentMem.MiddleInitial, currentMem);
         p.ShowDialog();
     }
 
@@ -934,7 +922,7 @@ public partial class FrmMemberData : Form
         if (ofdOpen.ShowDialog() == DialogResult.OK)
         {
             List<PlayerHistoryViewModel> AlreadyImportedPH = 
-                PlayerHistoryDB.GetMemberPlayerHistory(currentMem.Number, RegionID);
+                PlayerHistoryDB.GetMemberPlayerHistory(currentMem.Number);
 
             if (AlreadyImportedPH.Count > 0)
             {
@@ -958,7 +946,7 @@ public partial class FrmMemberData : Form
             }
 
             // Update member's averages after import
-            List<PlayerHistoryViewModel> reset = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number, RegionID);
+            List<PlayerHistoryViewModel> reset = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number);
             if (reset.Count > 0)
             {
                 currentMem.StartAvg = reset[0].AVG;
@@ -974,7 +962,7 @@ public partial class FrmMemberData : Form
             }
 
             // Grabs the total money won by the member
-            decimal moneySum = PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number, RegionID);
+            decimal moneySum = PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number);
 
             currentMem.MoneyEarned += moneySum; 
 
@@ -1025,9 +1013,6 @@ public partial class FrmMemberData : Form
                 playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumberAfterSplit[^1], string.Empty));
             }
             
-            // Get the region for tournament creation
-            NineTapRegion region = NineTapRegionDB.GetRegionByID(RegionID);
-            
             // Data rows start at row 3 (or 4 for Hawaii)
             int rowNum = isRegionHawaii ? 4 : 3;
             int lastRow = ws.LastRowUsed().RowNumber();
@@ -1064,7 +1049,7 @@ public partial class FrmMemberData : Form
                 if (!tournamentsCache.ContainsKey(tournamentDate))
                 {
                     // Check if tournament already exists in database
-                    List<Tournament> existingTournaments = TournamentDB.GetTournamentList(RegionID)
+                    List<Tournament> existingTournaments = TournamentDB.GetTournamentList()
                         .Where(t => t.Date.Date == tournamentDate).ToList();
                     
                     if (existingTournaments.Count > 0)
@@ -1084,7 +1069,6 @@ public partial class FrmMemberData : Form
                             Doubles = false,
                             ThreeOutOf4 = false,
                             IsOnlyThreeGames = false,
-                            TourneyRegion = region,
                             IsTournamentFinalized = false
                         };
                         

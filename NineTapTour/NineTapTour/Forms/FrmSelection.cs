@@ -14,18 +14,16 @@ namespace NineTapTour.Forms
 {
     public partial class FrmSelection : Form
     {
-        private readonly int _regionId;
         public Tournament selectedTournament;
-        public FrmSelection(int RegionId)
+        public FrmSelection()
         {
             InitializeComponent();
-            _regionId = RegionId;
             PopulateTournamentCbo();
         }
 
         public void PopulateTournamentCbo()
         {
-            List<Tournament> allTournaments = TournamentDB.GetTournamentList(_regionId);
+            List<Tournament> allTournaments = TournamentDB.GetTournamentList();
             cbxTournaments.DataSource = allTournaments;
             cbxTournaments.DisplayMember = nameof(Tournament.TourneyNameDate);
         }

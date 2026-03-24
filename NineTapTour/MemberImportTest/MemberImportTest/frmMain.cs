@@ -22,22 +22,6 @@ public partial class FrmMain : Form
     {
         InitializeComponent();
         InitializeConvertXlsControls();
-        List<NineTapRegion> r = NineTapRegionDB.GetRegionList();
-
-        // Create a default local region if there are no regions in the database
-        if (r.Count == 0)
-        {
-            NineTapRegion defaultRegion = new()
-            {
-                NineTapRegionName = "Local",
-            };
-
-            NineTapRegionDB.AddRegion(defaultRegion);
-            r.Add(defaultRegion);
-        }
-        cbxRegionSelect.DataSource = r;
-        cbxRegionSelect.DisplayMember = nameof(NineTapRegion.NineTapRegionName);
-        RegionID = r[cbxRegionSelect.SelectedIndex].NineTapRegionID;
     }
 
     private void InitializeConvertXlsControls()
@@ -152,7 +136,7 @@ public partial class FrmMain : Form
             if (idx + recordLength > file.Length)
                 break;
 
-            var m = new Member { NineTapRegionID = RegionID };
+            var m = new Member();
 
             int pos = idx;
             for (int s = 0; s < Spaces.Length; s++)
@@ -405,13 +389,10 @@ public partial class FrmMain : Form
                 }
 
                 // Load existing tournaments once for the entire workbook
-                List<Tournament> existingTournaments = TournamentDB.GetTournamentList(RegionID, db);
-
-                // PERFORMANCE: Cache region lookup to avoid repeated queries
-                var cachedRegion = db.NineTapRegion.Find(RegionID);
+                List<Tournament> existingTournaments = TournamentDB.GetTournamentList(db);
 
                 // PERFORMANCE: Look up member once per file instead of per row
-                var member = MemberDB.GetMember(playerNumberAsInt, RegionID, db);
+                var member = MemberDB.GetMember(playerNumberAsInt, db);
                 if (member == null || member.IsActive != true)
                 {
                     txtProgress.AppendText($"  WARNING: Member #{playerNumberAsInt} not found or inactive. Skipping file.\r\n");
@@ -486,17 +467,8 @@ public partial class FrmMain : Form
                                 IsOnlyThreeGames = false,
                             };
 
-                            tourn.TourneyRegion = cachedRegion;
-
                             TournamentDB.AddTournament(tourn, db);
                             existingTournaments.Add(tourn);
-                        }
-                        else
-                        {
-                            if (tourn.TourneyRegion == null)
-                            {
-                                tourn.TourneyRegion = cachedRegion;
-                            }
                         }
 
                         // There are some cases where an entire entry will be all null games
@@ -655,7 +627,7 @@ public partial class FrmMain : Form
         // Update validMembers in memory with latest history values
         for (int i = 0; i < validMembers.Count; i++)
         {
-            List<PlayerHistoryViewModel> list = PlayerHistoryDB.GetLastFiveTournaments(validMembers[i].Number, RegionID);
+            List<PlayerHistoryViewModel> list = PlayerHistoryDB.GetLastFiveTournaments(validMembers[i].Number);
             if (list.Count > 0)
             {
                 validMembers[i].StartAvg = list[0].AVG; // set new avg to last bowled adjusted avg
@@ -689,12 +661,6 @@ public partial class FrmMain : Form
             // Use AddOrUpdate to ensure existing members get their averages/bonus updated
             MemberDB.AddOrUpdateMember(members[i]);
         }
-    }
-
-    private void CbxRegionSelect_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        List<NineTapRegion> r = NineTapRegionDB.GetRegionList();
-        RegionID = r[cbxRegionSelect.SelectedIndex].NineTapRegionID;
     }
 
     private void FrmMain_Paint(object sender, PaintEventArgs e)

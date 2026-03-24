@@ -119,7 +119,7 @@ namespace NineTapTour.Database
                 return (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
                         join g in db.Games on p.Game.Id equals g.Id
-                        where m.Number == memberNumber && m.NineTapRegionID == regionId && g.IsFinalized
+                        where m.Number == memberNumber && g.IsFinalized
                         select g).ToList();
             }
         }

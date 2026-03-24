@@ -57,50 +57,49 @@ public class MemberDB
     }
 
     /// <summary>
-    /// Returns true if the Member is found in the database by comparing Member Number and RegionID
+    /// Returns true if the Member is found in the database by comparing Member Number
     /// </summary>
     public static bool MemberExists(Member Temp)
     {
         using (var db = new NineTapDb())
         {
-            return db.Members.Any(m => m.Number == Temp.Number && m.NineTapRegionID == Temp.NineTapRegionID);
+            return db.Members.Any(m => m.Number == Temp.Number);
         }
     }
 
     /// <summary>
-    /// Returns a list of all of the members with the same regionID as the one given
+    /// Returns a list of all of the members
     /// </summary>
-    public static List<Member> GetMemberList(int regionID)
+    public static List<Member> GetMemberList()
     {
         using (var db = new NineTapDb())
         {
             return [.. (from m in db.Members
                     orderby  m.Number
-                    where m.NineTapRegionID == regionID
                     select m)];
         }
     }
 
     /// <summary>
-    /// Returns a member with the same memberNumber and regionID given
+    /// Returns a member with the given memberNumber
     /// </summary>
-    public static Member GetMember(int memberNumber, int regionID)
+    public static Member GetMember(int memberNumber)
     {
         using (var db = new NineTapDb())
         {
             return (from m in db.Members
-                    where m.Number == memberNumber && m.NineTapRegionID == regionID
+                    where m.Number == memberNumber
                     select m).SingleOrDefault() ?? new Member();
         }
     }
 
     /// <summary>
-    /// Returns a member with the same memberNumber and regionID given using an existing DbContext
+    /// Returns a member with the same memberNumber
     /// </summary>
-    public static Member GetMember(int memberNumber, int regionID, NineTapDb db)
+    public static Member GetMember(int memberNumber, NineTapDb db)
     {
         return (from m in db.Members
-                where m.Number == memberNumber && m.NineTapRegionID == regionID
+                where m.Number == memberNumber
                 select m).SingleOrDefault() ?? new Member();
     }
 
@@ -123,13 +122,12 @@ public class MemberDB
     /// <summary>
     /// Returns the ID of a member based on their Member Number
     /// </summary>
-    public static int GetMemberIdByNumber(int memberNumber, int regionId)
+    public static int GetMemberIdByNumber(int memberNumber)
     {
         using (NineTapDb db = new())
         {
             return (from m in db.Members
-                    where m.Number == memberNumber &&
-                        m.NineTapRegionID == regionId
+                    where m.Number == memberNumber
                     select m.Id).SingleOrDefault();
         }
 
@@ -158,15 +156,14 @@ public class MemberDB
     }
 
     /// <summary>
-    /// Returns the highest Member Number of the specified region, or 0 if there are no members in that region
+    /// Returns the highest Member Number, or 0 if there are no members
     /// </summary>
     /// <param name="regionID"></param>
     /// <returns></returns>
-    public static int GetLastMemberNumber(int regionID)
+    public static int GetLastMemberNumber()
     {
         using var db = new NineTapDb();
         return db.Members
-            .Where(m => m.NineTapRegionID == regionID)
             .Max(m => (int?)m.Number) ?? 0;
     }
 }
