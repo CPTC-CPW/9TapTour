@@ -31,12 +31,18 @@ namespace NineTapTour.Forms
         readonly Participant player = new();
         readonly List<int> howManySquadsCanBeFiltered = [];
 
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int wMsg, bool wParam, int lParam);
+
+        private const int WM_SETREDRAW = 11;
+
         /// <summary>
         /// instantiates all form buttons.
         /// </summary>
         public FrmMemberScores()
         {
             InitializeComponent();
+            DoubleBuffered = true;
         }
         /// <summary>
         /// initializes all the radio buttons on the form and sets them to their correct default status.
@@ -137,52 +143,61 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void FrmMemberScores_Activated(object sender, EventArgs e)
         {
-            //added in this line inorder to prevent the reset of the drop down list on memberscores form when switching between forms
-            int tempcbx = cbxTourneyDropDown.SelectedIndex;
-            rdoHandicapScore.Visible = false;
-            rdoScratchScore.Visible = false;
-            cbxTourneyDropDown.Visible = false;
-            ResetFields();
-
-            MemberStatus("", Color.Black, SystemColors.Control, true);
-
-            List<Tournament> temp2 = TournamentDB.GetTournamentList();
-
-            ((FrmMain)MdiParent).TournamentList = temp2;
-            cbxTourneyDropDown.DataSource = temp2;
-            cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
-            cbxTourneyDropDown.ValueMember = "Id";
-
-            if (temp2.Count > 0)
+            SendMessage(Handle, WM_SETREDRAW, false, 0);
+            SuspendLayout();
+            try
             {
-                var item = temp2.Max(x => x.Id);
-                cbxTourneyDropDown.SelectedValue = item;
+                //added in this line inorder to prevent the reset of the drop down list on memberscores form when switching between forms
+                int tempcbx = cbxTourneyDropDown.SelectedIndex;
+                rdoHandicapScore.Visible = false;
+                rdoScratchScore.Visible = false;
+                cbxTourneyDropDown.Visible = false;
+                ResetFields();
+
+                MemberStatus("", Color.Black, SystemColors.Control, true);
+
+                List<Tournament> temp2 = TournamentDB.GetTournamentList();
+
+                ((FrmMain)MdiParent).TournamentList = temp2;
+                cbxTourneyDropDown.DataSource = temp2;
+                cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
+                cbxTourneyDropDown.ValueMember = "Id";
+
+                if (temp2.Count > 0)
+                {
+                    var item = temp2.Max(x => x.Id);
+                    cbxTourneyDropDown.SelectedValue = item;
+                }
+
+                Clear();
+                cbxTourneyDropDown.Visible = true;
+
+                if (cbxTourneyDropDown.SelectedIndex >= 0 && cbxTourneyDropDown.Visible && cbxTourneyDropDown.SelectedIndex.ToString() != null)
+                {
+                    // resets the current index to zero when changing the tournament
+                    currentIndex = 0;
+                    FrmMemberScoresHelpers.
+                                    overallListOfParticipants = TournamentDB.GetTournamentMemberList(FrmMemberScoresHelpers.selectedTournament);
+                    RecordIndex(FrmMemberScoresHelpers.overallListOfParticipants);
+
+                    btnDelete.Enabled = true;
+
+                    // sets focus to member num because that is what a user will need next
+                    rdoHandicapScore.Visible = true;
+                    rdoScratchScore.Visible = true;
+                    txtMemberNum.Focus();
+                }
+                // Clicks LastMemberButton when frm is activated.
+                // this will make sure the person entering scores 
+                // does not accidently enter a bowler in the wrong squad.
+                MoveToLastRecordOfMemberScores();
             }
-
-            Clear();
-            cbxTourneyDropDown.Visible = true;
-
-            if (cbxTourneyDropDown.SelectedIndex >= 0 && cbxTourneyDropDown.Visible && cbxTourneyDropDown.SelectedIndex.ToString() != null)
+            finally
             {
-                // resets the current index to zero when changing the tournament
-                currentIndex = 0;
-                FrmMemberScoresHelpers.
-                                overallListOfParticipants = TournamentDB.GetTournamentMemberList(FrmMemberScoresHelpers.selectedTournament);
-                RecordIndex(FrmMemberScoresHelpers.overallListOfParticipants);
-
-                btnDelete.Enabled = true;
-
+                ResumeLayout(false);
+                SendMessage(Handle, WM_SETREDRAW, true, 0);
                 Refresh();
-                // sets focus to member num because that is what a user will need next
-                rdoHandicapScore.Visible = true;
-                rdoScratchScore.Visible = true;
-                txtMemberNum.Focus();
             }
-            // Clicks LastMemberButton when frm is activated.
-            // this will make sure the person entering scores 
-            // does not accidently enter a bowler in the wrong squad.
-            MoveToLastRecordOfMemberScores();
-
         }
 
         /// <summary>
@@ -1011,107 +1026,117 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void CbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // resets the fields when a different tournament is selected
-            ResetFields();
-
-            // Reset squad radio buttons to default
-            RadioButton[] squadRadioButtons = { rdoSquad1, rdoSquad2, rdoSquad3, rdoSquad4, rdoSquad5, rdoSquad6, rdoSquad7, rdoSquad8 };
-
-            foreach (RadioButton radioButton in squadRadioButtons)
+            SendMessage(Handle, WM_SETREDRAW, false, 0);
+            SuspendLayout();
+            try
             {
-                radioButton.Visible = false;
-            }
+                // resets the fields when a different tournament is selected
+                ResetFields();
 
-            // Used to find out if user actually clicked a different tournament instead of just Member Scores loading.
-            int prevTourneyId = (FrmMemberScoresHelpers.selectedTournament == null) ? 0 : FrmMemberScoresHelpers.selectedTournament.Id;
-            FrmMemberScoresHelpers.
+                // Reset squad radio buttons to default
+                RadioButton[] squadRadioButtons = { rdoSquad1, rdoSquad2, rdoSquad3, rdoSquad4, rdoSquad5, rdoSquad6, rdoSquad7, rdoSquad8 };
 
-                        // assigns the selectedTournament variable as the selected Tournament from the comboBox
-                        selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
+                foreach (RadioButton radioButton in squadRadioButtons)
+                {
+                    radioButton.Visible = false;
+                }
 
-            if (FrmMemberScoresHelpers.selectedTournament.Doubles)
-            {
-                txtScratchScore3.Visible = false;
-                txtScratchScore4.Visible = false;
-                txtHandicapScore3.Visible = false;
-                txtHandicapScore4.Visible = false;
-            }
-            else if (FrmMemberScoresHelpers.selectedTournament.IsOnlyThreeGames)
-            {
-                txtScratchScore4.Visible = false;
-                txtHandicapScore4.Visible = false;
-            }
-            else
-            {
-                txtScratchScore3.Visible = true;
-                txtHandicapScore3.Visible = true;
-                txtScratchScore4.Visible = true;
-                txtHandicapScore4.Visible = true;
-            }
-
-            int currTourneyId;
-
-            // determines whether the tournament is a double tourney or not, then enables or disables the single and/or double textBox selection option
-            if (FrmMemberScoresHelpers.selectedTournament == null)
-            {
-                rdoScratchScore.Visible = false;
-                txtMemberNum.Enabled = false;
-                btnRecapByPin.Enabled = false;
-
-                RadioIntialize();
-                rdoHandicapScore.Visible = false;
-                rdoScratchScore.Visible = false;
-
-                currTourneyId = 0;
-            }
-            else
-            {
-                rdoScratchScore.Visible = true;
-                txtMemberNum.Enabled = true;
-                EnableButtonsWhenValidTournamentSelected();
-                RadioIntialize();
-                btnDelete.Enabled = true;
-                rdoHandicapScore.Visible = true;
-                rdoScratchScore.Visible = true;
-
-                currTourneyId = FrmMemberScoresHelpers.selectedTournament.Id;
-            }
-
-            if (cbxTourneyDropDown.SelectedIndex < 0)
-            {
-                lblRecord.Text = "Record 0" + " / " + "0";
-                rdoHandicapScore.Visible = false;
-                rdoScratchScore.Visible = false;
-                DisableButtonsWhenValidTournamentSelected();
-            }
-
-            if (cbxTourneyDropDown.SelectedIndex >= 0 && cbxTourneyDropDown.Visible)
-            {
-                // resets the current index to zero when changing the tournament
-                currentIndex = 0;
+                // Used to find out if user actually clicked a different tournament instead of just Member Scores loading.
+                int prevTourneyId = (FrmMemberScoresHelpers.selectedTournament == null) ? 0 : FrmMemberScoresHelpers.selectedTournament.Id;
                 FrmMemberScoresHelpers.
-                                // Gets the record for the selected tournament
-                                overallListOfParticipants = TournamentDB.GetTournamentMemberList(FrmMemberScoresHelpers.selectedTournament);
-                RecordIndex(FrmMemberScoresHelpers.overallListOfParticipants);
+
+                            // assigns the selectedTournament variable as the selected Tournament from the comboBox
+                            selectedTournament = (Tournament)cbxTourneyDropDown.SelectedItem;
+
+                if (FrmMemberScoresHelpers.selectedTournament.Doubles)
+                {
+                    txtScratchScore3.Visible = false;
+                    txtScratchScore4.Visible = false;
+                    txtHandicapScore3.Visible = false;
+                    txtHandicapScore4.Visible = false;
+                }
+                else if (FrmMemberScoresHelpers.selectedTournament.IsOnlyThreeGames)
+                {
+                    txtScratchScore4.Visible = false;
+                    txtHandicapScore4.Visible = false;
+                }
+                else
+                {
+                    txtScratchScore3.Visible = true;
+                    txtHandicapScore3.Visible = true;
+                    txtScratchScore4.Visible = true;
+                    txtHandicapScore4.Visible = true;
+                }
+
+                int currTourneyId;
+
+                // determines whether the tournament is a double tourney or not, then enables or disables the single and/or double textBox selection option
+                if (FrmMemberScoresHelpers.selectedTournament == null)
+                {
+                    rdoScratchScore.Visible = false;
+                    txtMemberNum.Enabled = false;
+                    btnRecapByPin.Enabled = false;
+
+                    RadioIntialize();
+                    rdoHandicapScore.Visible = false;
+                    rdoScratchScore.Visible = false;
+
+                    currTourneyId = 0;
+                }
+                else
+                {
+                    rdoScratchScore.Visible = true;
+                    txtMemberNum.Enabled = true;
+                    EnableButtonsWhenValidTournamentSelected();
+                    RadioIntialize();
+                    btnDelete.Enabled = true;
+                    rdoHandicapScore.Visible = true;
+                    rdoScratchScore.Visible = true;
+
+                    currTourneyId = FrmMemberScoresHelpers.selectedTournament.Id;
+                }
+
+                if (cbxTourneyDropDown.SelectedIndex < 0)
+                {
+                    lblRecord.Text = "Record 0" + " / " + "0";
+                    rdoHandicapScore.Visible = false;
+                    rdoScratchScore.Visible = false;
+                    DisableButtonsWhenValidTournamentSelected();
+                }
+
+                if (cbxTourneyDropDown.SelectedIndex >= 0 && cbxTourneyDropDown.Visible)
+                {
+                    // resets the current index to zero when changing the tournament
+                    currentIndex = 0;
+                    FrmMemberScoresHelpers.
+                                    // Gets the record for the selected tournament
+                                    overallListOfParticipants = TournamentDB.GetTournamentMemberList(FrmMemberScoresHelpers.selectedTournament);
+                    RecordIndex(FrmMemberScoresHelpers.overallListOfParticipants);
+                    rdoHandicapScore.Visible = true;
+                    rdoScratchScore.Visible = true;
+
+                    // sets focus to member num because that is what a user will need next
+                    txtMemberNum.Focus();
+                }
+                // clear the temp variables for the money earned for tourn results
+                if (TempVariablesForGlobalLevel.MoneyEarnings != null && prevTourneyId != currTourneyId)
+                {
+                    TempVariablesForGlobalLevel.MoneyEarnings.Clear();
+                }
+
+                // Show the correct number of squads for the tournament
+                int numSquads = FrmMemberScoresHelpers.selectedTournament.Squads;
+
+                for (int i = 0; i < numSquads; i++)
+                {
+                    squadRadioButtons[i].Visible = true;
+                }
+            }
+            finally
+            {
+                ResumeLayout(false);
+                SendMessage(Handle, WM_SETREDRAW, true, 0);
                 Refresh();
-                rdoHandicapScore.Visible = true;
-                rdoScratchScore.Visible = true;
-
-                // sets focus to member num becuse that is what a user will need next
-                txtMemberNum.Focus();
-            }
-            // clear the temp variables for the money earned for tourn results
-            if (TempVariablesForGlobalLevel.MoneyEarnings != null && prevTourneyId != currTourneyId)
-            {
-                TempVariablesForGlobalLevel.MoneyEarnings.Clear();
-            }
-
-            // Show the correct number of squads for the tournament
-            int numSquads = FrmMemberScoresHelpers.selectedTournament.Squads;
-
-            for (int i = 0; i < numSquads; i++)
-            {
-                squadRadioButtons[i].Visible = true;
             }
         }
 
