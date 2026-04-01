@@ -1772,8 +1772,7 @@ namespace NineTapTour.Forms
                 {
                     currentMem.Handicap = temp.HandiCap;
                     currentMem.Bonus = temp.Bonus;
-                    currentMem.StartAvg = temp.AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
-                    currentMem.Average = Convert.ToInt32(temp.trueAVG);
+                    currentMem.Average = temp.AVG; // avg will have to be adjusted manually by director if last player history avg was not correct
                 }
                 else
                 {

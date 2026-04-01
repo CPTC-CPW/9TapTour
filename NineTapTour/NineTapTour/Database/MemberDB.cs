@@ -35,17 +35,9 @@ public class MemberDB
                     db.Entry(temp).State = EntityState.Added;
                 }
 
-                /* The if statement is so that you can update the handicap by changing the league average,
-                 but it won't update if a member participated in a tournament, .Value solves the problem 
-                 where startAvg is nullable but the method is just int not int? */
-                if (temp.Average == 0 && temp.StartAvg != null)
+                if (temp.Average != null)
                 {
-                    temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.StartAvg.Value));
-                }
-                if (db.Entry(temp).State == EntityState.Modified)
-                {
-                    if (temp.StartAvg != null)
-                        temp.Handicap = Calculations.Calculations.CalculateHandicapPins((temp.StartAvg.Value));
+                    temp.Handicap = Calculations.Calculations.CalculateHandicapPins(temp.Average.Value);
                 }
                 db.SaveChanges();
             }
