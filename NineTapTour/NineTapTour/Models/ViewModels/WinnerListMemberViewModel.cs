@@ -41,5 +41,11 @@ namespace NineTapTour.Models.ViewModels
         public int? Game4 { get; set; }
 
         public bool IsComp { get; set; }
+
+        /// <summary>
+        /// The bowler's 30-game league average at the time of the tournament entry.
+        /// Used to detect sandbagging (score 40+ pins below average).
+        /// </summary>
+        public double LeagueAverage { get; set; }
     }
 }

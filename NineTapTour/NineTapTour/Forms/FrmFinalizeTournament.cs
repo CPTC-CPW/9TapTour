@@ -32,6 +32,8 @@ namespace NineTapTour.Forms
         private int _displayedDetailMemberNumber = -1;
         private readonly HashSet<int> _invalidRowIndices = [];
 
+        private static readonly string[] GameScoreColumns = ["colGame1", "colGame2", "colGame3", "colGame4"];
+
         public FrmFinalizeTournament(Tournament selectedTournament)
         {
             this.selectedTournament = selectedTournament;
@@ -262,6 +264,7 @@ namespace NineTapTour.Forms
                     null   // Notes
                 );
                 dgvTournament.Rows[rowIdx].Tag = m.GameId;
+                ApplySandbaggingHighlight(rowIdx, orig.LeagueAverage);
             }
         }
 
@@ -408,6 +411,19 @@ namespace NineTapTour.Forms
                 UpdateGameUseFlags(e.RowIndex);
             }
 
+            if (GameScoreColumns.Contains(colName))
+            {
+                RecalculateTournamentRow(e.RowIndex);
+                // Re-evaluate sandbagging highlight using the stored league average in the row tag
+                var row = dgvTournament.Rows[e.RowIndex];
+                if (row.Tag is int gameId)
+                {
+                    WinnerListMemberViewModel orig = _currentTournamentBowlers.FirstOrDefault(b => b.GameId == gameId);
+                    if (orig != null)
+                        ApplySandbaggingHighlight(e.RowIndex, orig.LeagueAverage);
+                }
+            }
+
             if (colName is "colDirCheck" or "colAdjAvg")
             {
                 ValidateRow(e.RowIndex);
@@ -539,6 +555,35 @@ namespace NineTapTour.Forms
             string name = row.Cells["colName"].Value as string ?? string.Empty;
             _displayedDetailMemberNumber = memberNumber;
             LoadDetailGrid(memberNumber, name);
+        }
+
+        /// <summary>
+        /// Highlights game cells (Game 1–4) in yellow when the score is 40 or more pins
+        /// below the bowler's league average, indicating potential sandbagging.
+        /// Clears any existing sandbagging highlight on cells that do not trigger the condition.
+        /// Does nothing when <paramref name="leagueAverage"/> is zero (average not yet set).
+        /// </summary>
+        private void ApplySandbaggingHighlight(int rowIndex, double leagueAverage)
+        {
+            const int sandbagThreshold = 40;
+            var row = dgvTournament.Rows[rowIndex];
+
+            foreach (string scoreCol in GameScoreColumns)
+            {
+                var cell = row.Cells[scoreCol];
+                if (leagueAverage > 0
+                    && cell.Value != null
+                    && int.TryParse(cell.Value.ToString(), out int score)
+                    && score > 0
+                    && (leagueAverage - score) >= sandbagThreshold)
+                {
+                    cell.Style.BackColor = Color.Yellow;
+                }
+                else
+                {
+                    cell.Style.BackColor = Color.Empty;
+                }
+            }
         }
 
         /// <summary>
