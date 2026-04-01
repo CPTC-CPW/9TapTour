@@ -197,7 +197,7 @@ public partial class FrmMain : Form
                         if (!string.IsNullOrWhiteSpace(seg)) m.Notes = seg;
                         break;
                     case 14: // Average
-                        if (int.TryParse(seg, out var avg)) { m.StartAvg = avg; m.Average = avg; }
+                        if (int.TryParse(seg, out var avg)) { m.Average = avg; }
                         break;
                     case 15: // Handicap
                         if (int.TryParse(seg, out var hc)) m.Handicap = hc;
@@ -630,8 +630,7 @@ public partial class FrmMain : Form
             List<PlayerHistoryViewModel> list = PlayerHistoryDB.GetLastFiveTournaments(validMembers[i].Number);
             if (list.Count > 0)
             {
-                validMembers[i].StartAvg = list[0].AVG; // set new avg to last bowled adjusted avg
-                validMembers[i].Average = Convert.ToInt32(list[0].trueAVG); // last 30 game avg
+                validMembers[i].Average = list[0].AVG; // set new avg to last bowled adjusted avg
                 validMembers[i].Bonus = list[0].Bonus; // last adjusted bonus pin
             }
         }

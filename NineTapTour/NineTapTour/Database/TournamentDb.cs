@@ -334,7 +334,7 @@ namespace NineTapTour.Database
                             Game3 = g.Game3,
                             Game4 = g.Game4,
                             IsComp = g.IsComp,
-                            LeagueAverage = g.LeagueAverage
+                            LeagueAverage = (double)(m.Average ?? 0)
                         })];
             }
         }

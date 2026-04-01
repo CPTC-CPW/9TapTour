@@ -139,15 +139,13 @@ public partial class FrmMemberData : Form
         if (last5.Count >= 1)
         {   //whatever the bowler director decides his average to be is right. 
             // don't pull from the player history page
-            txtAverage.Text = (currentMem.StartAvg ?? 0).ToString();
-            currentMem.StartAvg = Convert.ToInt16(txtAverage.Text);
+            txtAverage.Text = (currentMem.Average ?? 0).ToString();
             txt30GameAvg.Text = Convert.ToInt16(last5[0].trueAVG).ToString();
-            currentMem.Average = Convert.ToInt32(last5[0].trueAVG);
             txtBonus.Text = currentMem.Bonus.ToString();
         }
         else
         {
-            txtAverage.Text = (currentMem.StartAvg ?? 0).ToString();
+            txtAverage.Text = (currentMem.Average ?? 0).ToString();
             txt30GameAvg.Text = 0.ToString();
             txtBonus.Text = currentMem.Bonus.ToString();
         }
@@ -238,7 +236,7 @@ public partial class FrmMemberData : Form
             *********************************************************************************/
             try
             {
-                currentMem.Handicap = Calculations.Calculations.CalculateHandicapPins((currentMem.StartAvg.Value));
+                currentMem.Handicap = Calculations.Calculations.CalculateHandicapPins((currentMem.Average.Value));
             }
             catch
             {
@@ -477,20 +475,15 @@ public partial class FrmMemberData : Form
             temp.SecondaryPhone = txtPhone2.Text;
 
             // Score Info
-            /****************************************************************************
-            / This used to say Average = 0; which will make the average in the database 0.
-            / This code block assigns txt30GameAvg.Text to temp.Average.
-            *****************************************************************************/
-            if (Int32.TryParse(txt30GameAvg.Text, out int thirtyGameAverage))
+            if (Int32.TryParse(txtAverage.Text, out int leagueAverage))
             {
-                temp.Average = thirtyGameAverage;
+                temp.Average = leagueAverage;
             }
             else
             {
                 temp.Average = 0;
             }
 
-            /****************************************************************************/
             temp.Handicap = 
                 Calculations.Calculations.CalculateHandicapPins(temp.Average.Value);
             
@@ -558,10 +551,9 @@ public partial class FrmMemberData : Form
                 if (Convert.ToInt32(txtAverage.Text) == last5[0].AVG)
                 {
                     txtAverage.Text = last5[0].AVG.ToString();
-                    temp.StartAvg = last5[0].AVG;
+                    temp.Average = last5[0].AVG;
 
                     txt30GameAvg.Text = last5[0].trueAVG.ToString();
-                    temp.Average = Convert.ToInt16(last5[0].trueAVG);
 
                     temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : 
                         Convert.ToInt16(txtBonus.Text);
@@ -569,9 +561,8 @@ public partial class FrmMemberData : Form
                 else
                 {   // catches if director wants to change their average 
                     // manually regardless of there player history
-                    temp.StartAvg = Convert.ToInt32(txtAverage.Text);
+                    temp.Average = Convert.ToInt32(txtAverage.Text);
                     txt30GameAvg.Text = last5[0].trueAVG.ToString();
-                    temp.Average = Convert.ToInt16(last5[0].trueAVG);
                     temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : 
                         Convert.ToInt16(txtBonus.Text);
                 }
@@ -581,15 +572,13 @@ public partial class FrmMemberData : Form
                 txtAverage.Text = 0.ToString();
                 txt30GameAvg.Text = 0.ToString();
                 temp.Average = 0;
-                temp.StartAvg = 0;
                 temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : 
                     Convert.ToInt16(txtBonus.Text);
             }
             else
             {
-                temp.StartAvg = Convert.ToInt16(txtAverage.Text);
-                temp.Average = 0;
-                txtAverage.Text = temp.StartAvg.ToString();
+                temp.Average = Convert.ToInt16(txtAverage.Text);
+                txtAverage.Text = temp.Average.ToString();
                 txt30GameAvg.Text = 0.ToString();
                 temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : 
                     Convert.ToInt16(txtBonus.Text);
@@ -949,14 +938,13 @@ public partial class FrmMemberData : Form
             List<PlayerHistoryViewModel> reset = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number);
             if (reset.Count > 0)
             {
-                currentMem.StartAvg = reset[0].AVG;
-                currentMem.Average = Convert.ToInt32(reset[0].trueAVG);
+                currentMem.Average = reset[0].AVG;
                 currentMem.Handicap = Calculations.Calculations
-                    .CalculateHandicapPins(Convert.ToInt32(currentMem.StartAvg));
+                    .CalculateHandicapPins(Convert.ToInt32(currentMem.Average));
 
                 currentMem.Bonus = reset[0].Bonus;
-                txtAverage.Text = currentMem.StartAvg.ToString();
-                txt30GameAvg.Text = currentMem.Average.ToString();
+                txtAverage.Text = currentMem.Average.ToString();
+                txt30GameAvg.Text = Convert.ToInt32(reset[0].trueAVG).ToString();
                 txtHandicap.Text = currentMem.Handicap.ToString();
                 txtBonus.Text = currentMem.Bonus.ToString();
             }

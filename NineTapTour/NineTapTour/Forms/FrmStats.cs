@@ -444,7 +444,7 @@ namespace NineTapTour.Forms
 
             try
             {
-                lblStartAvg.Text = mem.StartAvg.ToString();
+                lblStartAvg.Text = mem.Average.ToString();
             }
             catch
             {
