@@ -48,7 +48,7 @@
             // menMain
             // 
             this.menMain.BackColor = System.Drawing.Color.White;
-            this.menMain.ImageScalingSize = new System.Drawing.Size(32, 32);
+            this.menMain.ImageScalingSize = new System.Drawing.Size(16, 16);
             this.menMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mainMenuToolStripMenuItem,
             this.memberToolStripMenuItem,
