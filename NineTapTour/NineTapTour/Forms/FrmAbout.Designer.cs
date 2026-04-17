@@ -23,48 +23,53 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmAbout));
-            this.pbAboutFormLogo = new System.Windows.Forms.PictureBox();
-            this.lblFrmAboutText = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.pbAboutFormLogo)).BeginInit();
-            this.SuspendLayout();
+            pbAboutFormLogo = new System.Windows.Forms.PictureBox();
+            lblFrmAboutText = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)pbAboutFormLogo).BeginInit();
+            SuspendLayout();
             // 
             // pbAboutFormLogo
             // 
-            this.pbAboutFormLogo.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.pbAboutFormLogo.Image = global::NineTapTour.Properties.Resources._9taplogo1;
-            this.pbAboutFormLogo.Location = new System.Drawing.Point(297, 12);
-            this.pbAboutFormLogo.Name = "pbAboutFormLogo";
-            this.pbAboutFormLogo.Size = new System.Drawing.Size(266, 159);
-            this.pbAboutFormLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbAboutFormLogo.TabIndex = 1;
-            this.pbAboutFormLogo.TabStop = false;
+            pbAboutFormLogo.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            pbAboutFormLogo.Image = Properties.Resources._9taplogo1;
+            pbAboutFormLogo.Location = new System.Drawing.Point(346, 14);
+            pbAboutFormLogo.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pbAboutFormLogo.Name = "pbAboutFormLogo";
+            pbAboutFormLogo.Size = new System.Drawing.Size(310, 183);
+            pbAboutFormLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            pbAboutFormLogo.TabIndex = 1;
+            pbAboutFormLogo.TabStop = false;
             // 
             // lblFrmAboutText
             // 
-            this.lblFrmAboutText.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.lblFrmAboutText.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFrmAboutText.ForeColor = System.Drawing.SystemColors.Control;
-            this.lblFrmAboutText.Location = new System.Drawing.Point(130, 197);
-            this.lblFrmAboutText.Name = "lblFrmAboutText";
-            this.lblFrmAboutText.Size = new System.Drawing.Size(670, 350);
-            this.lblFrmAboutText.TabIndex = 2;
-            this.lblFrmAboutText.Text = resources.GetString("lblFrmAboutText.Text");
+            lblFrmAboutText.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            lblFrmAboutText.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            lblFrmAboutText.ForeColor = System.Drawing.SystemColors.Control;
+            lblFrmAboutText.Location = new System.Drawing.Point(152, 227);
+            lblFrmAboutText.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblFrmAboutText.Name = "lblFrmAboutText";
+            lblFrmAboutText.Size = new System.Drawing.Size(782, 404);
+            lblFrmAboutText.TabIndex = 2;
+            lblFrmAboutText.Text = resources.GetString("lblFrmAboutText.Text");
             // 
             // FrmAbout
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(102)))));
-            this.ClientSize = new System.Drawing.Size(849, 450);
-            this.Controls.Add(this.lblFrmAboutText);
-            this.Controls.Add(this.pbAboutFormLogo);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "FrmAbout";
-            this.Text = "About";
-            ((System.ComponentModel.ISupportInitialize)(this.pbAboutFormLogo)).EndInit();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.FromArgb(0, 0, 102);
+            ClientSize = new System.Drawing.Size(990, 519);
+            Controls.Add(lblFrmAboutText);
+            Controls.Add(pbAboutFormLogo);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "FrmAbout";
+            Text = "About";
+            ((System.ComponentModel.ISupportInitialize)pbAboutFormLogo).EndInit();
+            ResumeLayout(false);
 
         }
 

@@ -143,7 +143,7 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         public void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var aboutForm = Application.OpenForms["About"] as FrmAbout;
+            var aboutForm = Application.OpenForms["FrmAbout"] as FrmAbout;
             OpenOrDisplayForm(ref aboutForm);
         }
 
