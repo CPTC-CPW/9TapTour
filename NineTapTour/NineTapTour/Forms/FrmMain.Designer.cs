@@ -173,6 +173,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "9 Tap Tour";
             this.Load += new System.EventHandler(this.FrmMain_Load);
+            this.MdiChildActivate += new System.EventHandler(this.FrmMain_MdiChildActivate);
             this.menMain.ResumeLayout(false);
             this.menMain.PerformLayout();
             this.ResumeLayout(false);

@@ -238,6 +238,23 @@ namespace NineTapTour.Forms
             }
         }
 
+        private void FrmMain_MdiChildActivate(object sender, EventArgs e)
+        {
+            foreach (ToolStripItem item in menMain.Items)
+            {
+                var typeName = item.GetType().ToString();
+                // Hide MDI control strip items (system icon on the left and window control
+                // buttons on the right) that Windows merges into the MenuStrip whenever a
+                // maximized MDI child with a standard form border is activated.
+                if (typeName.StartsWith("System.Windows.Forms.MdiControlStrip") ||
+                    item.Text == "")
+                {
+                    item.Visible = false;
+                }
+            }
+            menMain.PerformLayout();
+        }
+
         private void updateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             //update the regionID
