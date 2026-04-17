@@ -80,6 +80,7 @@ namespace NineTapTour.Forms
             dgvTournament.DoubleBuffered(true);
             dgvTournament.CurrentCellDirtyStateChanged += DgvTournament_CurrentCellDirtyStateChanged;
             dgvTournament.CellValueChanged             += DgvTournament_CellValueChanged;
+            dgvTournament.CellEndEdit                  += DgvTournament_CellEndEdit;
             dgvTournament.RowPostPaint                 += DgvTournament_RowPostPaint;
             splitMain.Panel1.Controls.Add(dgvTournament);
 
@@ -205,14 +206,18 @@ namespace NineTapTour.Forms
             {
                 WinnerListMemberViewModel orig = bowlerByGameId[m.GameId];
 
-                // A game is checked when it has a recorded score (non-null)
+                // A game is checked when it has a recorded score (non-null) — used as default
+                // when UseGame flags have never been explicitly saved.
                 bool g1Checked = orig.Game1.HasValue;
                 bool g2Checked = orig.Game2.HasValue;
                 bool g3Checked = orig.Game3.HasValue;
                 bool g4Checked = orig.Game4.HasValue;
 
                 // 3-of-4: uncheck the lowest-scoring game when all 4 are present
-                if (selectedTournament.ThreeOutOf4)
+                // Only auto-apply when the flags have never been explicitly saved
+                bool useGameNeverSaved = orig.UseGame1 == null && orig.UseGame2 == null
+                                      && orig.UseGame3 == null && orig.UseGame4 == null;
+                if (selectedTournament.ThreeOutOf4 && useGameNeverSaved)
                 {
                     var validScores = new[]
                     {
@@ -225,19 +230,25 @@ namespace NineTapTour.Forms
                     if (validScores.Count == 4)
                     {
                         int lowestGame = validScores.MinBy(x => x.Score!.Value).Game;
-                        if      (lowestGame == 1) g1Checked = false;
+                        if (lowestGame == 1) g1Checked = false;
                         else if (lowestGame == 2) g2Checked = false;
                         else if (lowestGame == 3) g3Checked = false;
                         else if (lowestGame == 4) g4Checked = false;
                     }
                 }
 
-                int scratch      = (g1Checked ? (orig.Game1 ?? 0) : 0) + (g2Checked ? (orig.Game2 ?? 0) : 0)
+                // Restore explicitly saved use-game flags (overrides defaults and 3-of-4 auto logic)
+                if (orig.UseGame1.HasValue) g1Checked = orig.UseGame1.Value;
+                if (orig.UseGame2.HasValue) g2Checked = orig.UseGame2.Value;
+                if (orig.UseGame3.HasValue) g3Checked = orig.UseGame3.Value;
+                if (orig.UseGame4.HasValue) g4Checked = orig.UseGame4.Value;
+
+                int scratch = (g1Checked ? (orig.Game1 ?? 0) : 0) + (g2Checked ? (orig.Game2 ?? 0) : 0)
                                  + (g3Checked ? (orig.Game3 ?? 0) : 0) + (g4Checked ? (orig.Game4 ?? 0) : 0);
                 int checkedGames = (g1Checked ? 1 : 0) + (g2Checked ? 1 : 0)
                                  + (g3Checked ? 1 : 0) + (g4Checked ? 1 : 0);
-                int hdcpTotal    = scratch + (checkedGames * (m.Handicap + m.Bonus));
-                int entryAvg     = checkedGames > 0 ? scratch / checkedGames : 0;
+                int hdcpTotal = scratch + (checkedGames * (m.Handicap + m.Bonus));
+                int entryAvg = checkedGames > 0 ? scratch / checkedGames : 0;
 
                 int rowIdx = dgvTournament.Rows.Add(
                     m.PlaceStanding > 0 ? (object)m.PlaceStanding : null,
@@ -255,8 +266,8 @@ namespace NineTapTour.Forms
                     hdcpTotal,
                     entryAvg,
                     null,  // 30 Entry AVG
-                    0,     // ADJ AVG — user editable, defaults to 0
-                    false,
+                    orig.AdjustedAvg > 0 ? (object)orig.AdjustedAvg : 0,  // ADJ AVG — restored from DB
+                    orig.KeepAdjustedAvg,  // Director Check — restored from DB
                     null,  // Squad
                     m.Handicap,
                     m.Bonus,
@@ -266,6 +277,10 @@ namespace NineTapTour.Forms
                 dgvTournament.Rows[rowIdx].Tag = m.GameId;
                 ApplySandbaggingHighlight(rowIdx, orig.LeagueAverage);
             }
+
+            // Validate all rows so previously-valid rows are not incorrectly flagged on open
+            for (int i = 0; i < dgvTournament.Rows.Count; i++)
+                ValidateRow(i);
         }
 
         /// <summary>
@@ -408,7 +423,7 @@ namespace NineTapTour.Forms
             if (colName is "colGame1Check" or "colGame2Check" or "colGame3Check" or "colGame4Check")
             {
                 RecalculateTournamentRow(e.RowIndex);
-                UpdateGameUseFlags(e.RowIndex);
+                PersistRowToDatabase(e.RowIndex);
             }
 
             if (colName == "colDirCheck")
@@ -444,6 +459,33 @@ namespace NineTapTour.Forms
                 }
             }
 
+            if (colName is "colDirCheck" or "colAdjAvg")
+            {
+                ValidateRow(e.RowIndex);
+                dgvTournament.InvalidateRow(e.RowIndex);
+            }
+
+            // Refresh detail grid when game checkboxes change
+            if (colName is "colGame1Check" or "colGame2Check" or "colGame3Check" or "colGame4Check")
+            {
+                _displayedDetailMemberNumber = -1;
+                DgvTournament_SelectionChanged(dgvTournament, EventArgs.Empty);
+            }
+
+            // Persist Director Check to the database immediately (checkbox commit)
+            if (colName == "colDirCheck")
+                PersistRowToDatabase(e.RowIndex);
+        }
+
+        /// <summary>
+        /// Fires when a cell finishes editing (loses focus). Used for text columns
+        /// like ADJ AVG, Bonus, game scores, and notes so we don't trigger per-keystroke.
+        /// </summary>
+        private void DgvTournament_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            string colName = dgvTournament.Columns[e.ColumnIndex].Name;
+
             if (colName == "colAdjAvg")
             {
                 // Auto-calculate HDCP from ADJ AVG
@@ -470,22 +512,90 @@ namespace NineTapTour.Forms
                         RecalculateTournamentRow(row.Index);
                         ValidateRow(row.Index);
                         dgvTournament.InvalidateRow(row.Index);
+                        PersistRowToDatabase(row.Index);
                     }
                 }
-            }
 
-            if (colName is "colDirCheck" or "colAdjAvg")
-            {
                 ValidateRow(e.RowIndex);
                 dgvTournament.InvalidateRow(e.RowIndex);
             }
 
-            // Refresh detail grid when editable tournament columns change
+            // Persist edited text columns to the database on focus loss
+            if (colName is "colAdjAvg" or "colBonus" or "colEarnings" or "colNotes"
+                or "colGame1" or "colGame2" or "colGame3" or "colGame4")
+            {
+                PersistRowToDatabase(e.RowIndex);
+            }
+
+            // Refresh detail grid when editable tournament columns change (on focus loss)
             if (colName is "colAdjAvg" or "colBonus" or "colGame1" or "colGame2" or "colGame3" or "colGame4")
             {
                 _displayedDetailMemberNumber = -1;
                 DgvTournament_SelectionChanged(dgvTournament, EventArgs.Empty);
             }
+        }
+
+        private static int? ParseCellInt(object cellValue)
+        {
+            if (cellValue == null) return null;
+            if (cellValue is int i) return i;
+            return int.TryParse(cellValue.ToString(), out int parsed) ? parsed : null;
+        }
+
+        /// <summary>
+        /// Persists editable column values from the tournament grid row to the Game record in the database.
+        /// </summary>
+        private void PersistRowToDatabase(int rowIndex)
+        {
+            var row = dgvTournament.Rows[rowIndex];
+            if (row.Tag is not int gameId) return;
+
+            Game game = GameDB.GetGame(gameId);
+            if (game == null) return;
+
+            // Game scores — parse safely whether value is a boxed int or a typed string
+            game.Game1 = ParseCellInt(row.Cells["colGame1"].Value);
+            game.Game2 = ParseCellInt(row.Cells["colGame2"].Value);
+            game.Game3 = ParseCellInt(row.Cells["colGame3"].Value);
+            game.Game4 = ParseCellInt(row.Cells["colGame4"].Value);
+
+            // Use-game flags
+            game.UseGame1 = row.Cells["colGame1Check"].Value as bool? ?? false;
+            game.UseGame2 = row.Cells["colGame2Check"].Value as bool? ?? false;
+            game.UseGame3 = row.Cells["colGame3Check"].Value as bool? ?? false;
+            game.UseGame4 = row.Cells["colGame4Check"].Value as bool? ?? false;
+
+            // ADJ AVG
+            int adjAvg = 0;
+            if (row.Cells["colAdjAvg"].Value != null)
+                int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
+            game.AdjustedAvg = adjAvg;
+
+            // Handicap
+            int hdcp = 0;
+            if (row.Cells["colHdcp"].Value != null)
+                int.TryParse(row.Cells["colHdcp"].Value.ToString(), out hdcp);
+            game.Handicap = hdcp;
+
+            // Bonus
+            int bonus = 0;
+            if (row.Cells["colBonus"].Value != null)
+                int.TryParse(row.Cells["colBonus"].Value.ToString(), out bonus);
+            game.Bonus = bonus;
+
+            // Director Check → persisted as KeepAdjustedAvg
+            game.KeepAdjustedAvg = row.Cells["colDirCheck"].Value as bool? ?? false;
+
+            // Earnings
+            decimal earnings = 0;
+            if (row.Cells["colEarnings"].Value != null)
+                decimal.TryParse(row.Cells["colEarnings"].Value.ToString(), out earnings);
+            game.MoneyWon = earnings > 0 ? earnings : null;
+
+            // Notes
+            game.Notes = row.Cells["colNotes"].Value as string;
+
+            GameDB.AddOrUpdateGame(game);
         }
 
         /// <summary>

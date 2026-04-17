@@ -47,5 +47,20 @@ namespace NineTapTour.Models.ViewModels
         /// Used to detect sandbagging (score 40+ pins below average).
         /// </summary>
         public double LeagueAverage { get; set; }
+
+        /// <summary>Director-assigned adjusted average persisted from a prior session.</summary>
+        public int AdjustedAvg { get; set; }
+
+        /// <summary>
+        /// Nullable so we can distinguish "explicitly set" from "never touched".
+        /// When null, LoadTournamentGrid falls back to Game1.HasValue (first-open default).
+        /// </summary>
+        public bool? UseGame1 { get; set; }
+        public bool? UseGame2 { get; set; }
+        public bool? UseGame3 { get; set; }
+        public bool? UseGame4 { get; set; }
+
+        /// <summary>Maps to the Director Check checkbox — persisted as Game.KeepAdjustedAvg.</summary>
+        public bool KeepAdjustedAvg { get; set; }
     }
 }
