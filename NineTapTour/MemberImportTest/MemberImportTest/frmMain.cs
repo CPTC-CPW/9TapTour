@@ -438,8 +438,6 @@ public partial class FrmMain : Form
                         try { temp.AVG = ws.Cell(row, 10).GetValue<int>(); } catch { temp.AVG = -1; }
                         try { temp.HandyCap = ws.Cell(row, 11).GetValue<int>(); } catch { temp.HandyCap = -1; }
                         try { temp.Bonus = ws.Cell(row, 12).GetValue<int>(); } catch { temp.Bonus = -1; }
-                        // Some PotPro entries have "x"
-                        try { temp.PotPro = ws.Cell(row, 13).GetValue<int>().ToString(); } catch { temp.PotPro = "0"; }
                         temp.FinPPHG = ws.Cell(row, 14).GetString();
                         try { if (!string.IsNullOrEmpty(temp.FinPPHG)) { temp.Cash = ws.Cell(row, 15).GetValue<double>(); } else { temp.Cash = 0; } } catch { temp.Cash = 0; }
                         temp.Notes = ws.Cell(row, 16).GetString();
@@ -498,7 +496,6 @@ public partial class FrmMain : Form
                             HandicapTotal = temp.HandyCap,
                             // Place standing has many variations like (4th, 17th tie, 9thHM, and more)
                             // PlaceStanding = Convert.ToInt32(temp.FinPPHG),
-                            SidePot = Convert.ToDecimal(temp.PotPro)
                         };
 
                         GameDB.AddOrUpdateGame(game, db);

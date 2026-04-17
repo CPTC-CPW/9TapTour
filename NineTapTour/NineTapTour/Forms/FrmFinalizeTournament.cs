@@ -300,7 +300,6 @@ namespace NineTapTour.Forms
                     Handicap     = Convert.ToInt32(b.Handicap),
                     Bonus        = Convert.ToInt32(b.Bonus),
                     MoneyWon     = b.MoneyWon,
-                    SidePot      = b.SidePot,
                     GameId       = b.GameId,
                     Game1Score   = Convert.ToInt32(b.Game1),
                     Game2Score   = Convert.ToInt32(b.Game2),
@@ -358,7 +357,6 @@ namespace NineTapTour.Forms
                 new DataGridViewTextBoxColumn { Name = "colDetailAdjustedAvg", HeaderText = "Adjusted\nAVG", Width = 65,  ReadOnly = true },
                 new DataGridViewTextBoxColumn { Name = "colDetailHandicap",    HeaderText = "Handicap",      Width = 60,  ReadOnly = true },
                 new DataGridViewTextBoxColumn { Name = "colDetailBonus",       HeaderText = "Bonus",         Width = 50  },
-                new DataGridViewTextBoxColumn { Name = "colDetailProPot",      HeaderText = "Pro\nPot",      Width = 50  },
                 new DataGridViewTextBoxColumn { Name = "colDetailPlace",       HeaderText = "Place",         Width = 50  },
                 new DataGridViewTextBoxColumn { Name = "colDetailEarnings",    HeaderText = "Earnings",      Width = 70  },
                 new DataGridViewTextBoxColumn { Name = "colDetailNotes",       HeaderText = "Notes",         AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill }
@@ -867,7 +865,6 @@ namespace NineTapTour.Forms
                     adjAvg > 0 ? (object)adjAvg : null,          // Adjusted AVG from tournament grid
                     hdcp,
                     bonus,
-                    null,                                        // Pro Pot
                     null,                                        // Place — not yet finalized
                     b.MoneyWon > 0 ? (object)b.MoneyWon : null,
                     null                                         // Notes
@@ -909,7 +906,6 @@ namespace NineTapTour.Forms
                         h.AVG > 0 ? (object)h.AVG : null,
                         h.HandiCap,
                         h.Bonus,
-                        !string.IsNullOrEmpty(h.ProPot) && h.ProPot != "0" ? (object)h.ProPot : null,
                         !string.IsNullOrEmpty(h.PPHG) ? (object)h.PPHG : null,
                         dateEarnings > 0 ? (object)dateEarnings : null,
                         h.Notes
