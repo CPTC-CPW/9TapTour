@@ -80,6 +80,7 @@ namespace NineTapTour.Forms
             dgvTournament.DoubleBuffered(true);
             dgvTournament.CurrentCellDirtyStateChanged += DgvTournament_CurrentCellDirtyStateChanged;
             dgvTournament.CellValueChanged             += DgvTournament_CellValueChanged;
+            dgvTournament.CellEndEdit                  += DgvTournament_CellEndEdit;
             dgvTournament.RowPostPaint                 += DgvTournament_RowPostPaint;
             splitMain.Panel1.Controls.Add(dgvTournament);
 
@@ -149,7 +150,7 @@ namespace NineTapTour.Forms
                 new DataGridViewTextBoxColumn  { Name = "colSquad",        HeaderText = "Squad",           Width = 45,  ReadOnly = true },
                 new DataGridViewTextBoxColumn  { Name = "colHdcp",         HeaderText = "HDCP",            Width = 45,  ReadOnly = true },
                 new DataGridViewTextBoxColumn  { Name = "colBonus",        HeaderText = "Bonus",           Width = 45  },
-                new DataGridViewTextBoxColumn  { Name = "colProPot",       HeaderText = "Pro\nPot",        Width = 45  },
+                new DataGridViewTextBoxColumn  { Name = "colEarnings",     HeaderText = "Earnings",        Width = 60  },
                 new DataGridViewTextBoxColumn  { Name = "colNotes",        HeaderText = "Notes",           AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill }
             );
 
@@ -205,14 +206,18 @@ namespace NineTapTour.Forms
             {
                 WinnerListMemberViewModel orig = bowlerByGameId[m.GameId];
 
-                // A game is checked when it has a recorded score (non-null)
+                // A game is checked when it has a recorded score (non-null) — used as default
+                // when UseGame flags have never been explicitly saved.
                 bool g1Checked = orig.Game1.HasValue;
                 bool g2Checked = orig.Game2.HasValue;
                 bool g3Checked = orig.Game3.HasValue;
                 bool g4Checked = orig.Game4.HasValue;
 
                 // 3-of-4: uncheck the lowest-scoring game when all 4 are present
-                if (selectedTournament.ThreeOutOf4)
+                // Only auto-apply when the flags have never been explicitly saved
+                bool useGameNeverSaved = orig.UseGame1 == null && orig.UseGame2 == null
+                                      && orig.UseGame3 == null && orig.UseGame4 == null;
+                if (selectedTournament.ThreeOutOf4 && useGameNeverSaved)
                 {
                     var validScores = new[]
                     {
@@ -225,19 +230,25 @@ namespace NineTapTour.Forms
                     if (validScores.Count == 4)
                     {
                         int lowestGame = validScores.MinBy(x => x.Score!.Value).Game;
-                        if      (lowestGame == 1) g1Checked = false;
+                        if (lowestGame == 1) g1Checked = false;
                         else if (lowestGame == 2) g2Checked = false;
                         else if (lowestGame == 3) g3Checked = false;
                         else if (lowestGame == 4) g4Checked = false;
                     }
                 }
 
-                int scratch      = (g1Checked ? (orig.Game1 ?? 0) : 0) + (g2Checked ? (orig.Game2 ?? 0) : 0)
+                // Restore explicitly saved use-game flags (overrides defaults and 3-of-4 auto logic)
+                if (orig.UseGame1.HasValue) g1Checked = orig.UseGame1.Value;
+                if (orig.UseGame2.HasValue) g2Checked = orig.UseGame2.Value;
+                if (orig.UseGame3.HasValue) g3Checked = orig.UseGame3.Value;
+                if (orig.UseGame4.HasValue) g4Checked = orig.UseGame4.Value;
+
+                int scratch = (g1Checked ? (orig.Game1 ?? 0) : 0) + (g2Checked ? (orig.Game2 ?? 0) : 0)
                                  + (g3Checked ? (orig.Game3 ?? 0) : 0) + (g4Checked ? (orig.Game4 ?? 0) : 0);
                 int checkedGames = (g1Checked ? 1 : 0) + (g2Checked ? 1 : 0)
                                  + (g3Checked ? 1 : 0) + (g4Checked ? 1 : 0);
-                int hdcpTotal    = scratch + (checkedGames * (m.Handicap + m.Bonus));
-                int entryAvg     = checkedGames > 0 ? scratch / checkedGames : 0;
+                int hdcpTotal = scratch + (checkedGames * (m.Handicap + m.Bonus));
+                int entryAvg = checkedGames > 0 ? scratch / checkedGames : 0;
 
                 int rowIdx = dgvTournament.Rows.Add(
                     m.PlaceStanding > 0 ? (object)m.PlaceStanding : null,
@@ -255,17 +266,21 @@ namespace NineTapTour.Forms
                     hdcpTotal,
                     entryAvg,
                     null,  // 30 Entry AVG
-                    0,     // ADJ AVG — user editable, defaults to 0
-                    false,
+                    orig.AdjustedAvg > 0 ? (object)orig.AdjustedAvg : 0,  // ADJ AVG — restored from DB
+                    orig.KeepAdjustedAvg,  // Director Check — restored from DB
                     null,  // Squad
                     m.Handicap,
                     m.Bonus,
-                    m.SidePot,
+                    m.MoneyWon > 0 ? (object)m.MoneyWon : null,  // Earnings
                     null   // Notes
                 );
                 dgvTournament.Rows[rowIdx].Tag = m.GameId;
                 ApplySandbaggingHighlight(rowIdx, orig.LeagueAverage);
             }
+
+            // Validate all rows so previously-valid rows are not incorrectly flagged on open
+            for (int i = 0; i < dgvTournament.Rows.Count; i++)
+                ValidateRow(i);
         }
 
         /// <summary>
@@ -408,7 +423,7 @@ namespace NineTapTour.Forms
             if (colName is "colGame1Check" or "colGame2Check" or "colGame3Check" or "colGame4Check")
             {
                 RecalculateTournamentRow(e.RowIndex);
-                UpdateGameUseFlags(e.RowIndex);
+                PersistRowToDatabase(e.RowIndex);
             }
 
             if (colName == "colDirCheck")
@@ -449,6 +464,138 @@ namespace NineTapTour.Forms
                 ValidateRow(e.RowIndex);
                 dgvTournament.InvalidateRow(e.RowIndex);
             }
+
+            // Refresh detail grid when game checkboxes change
+            if (colName is "colGame1Check" or "colGame2Check" or "colGame3Check" or "colGame4Check")
+            {
+                _displayedDetailMemberNumber = -1;
+                DgvTournament_SelectionChanged(dgvTournament, EventArgs.Empty);
+            }
+
+            // Persist Director Check to the database immediately (checkbox commit)
+            if (colName == "colDirCheck")
+                PersistRowToDatabase(e.RowIndex);
+        }
+
+        /// <summary>
+        /// Fires when a cell finishes editing (loses focus). Used for text columns
+        /// like ADJ AVG, Bonus, game scores, and notes so we don't trigger per-keystroke.
+        /// </summary>
+        private void DgvTournament_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            string colName = dgvTournament.Columns[e.ColumnIndex].Name;
+
+            if (colName == "colAdjAvg")
+            {
+                // Auto-calculate HDCP from ADJ AVG
+                int adjAvg = 0;
+                if (dgvTournament.Rows[e.RowIndex].Cells["colAdjAvg"].Value != null)
+                    int.TryParse(dgvTournament.Rows[e.RowIndex].Cells["colAdjAvg"].Value.ToString(), out adjAvg);
+
+                if (adjAvg > 0)
+                {
+                    int newHdcp = CalcService.CalculateHandicapPins(adjAvg);
+                    dgvTournament.Rows[e.RowIndex].Cells["colHdcp"].Value = newHdcp;
+                    RecalculateTournamentRow(e.RowIndex);
+                }
+
+                // Copy ADJ AVG to all other entries for the same member
+                object memberNumber = dgvTournament.Rows[e.RowIndex].Cells["colMemberNumber"].Value;
+                foreach (DataGridViewRow row in dgvTournament.Rows)
+                {
+                    if (row.Index == e.RowIndex) continue;
+                    if (Equals(row.Cells["colMemberNumber"].Value, memberNumber))
+                    {
+                        row.Cells["colAdjAvg"].Value = dgvTournament.Rows[e.RowIndex].Cells["colAdjAvg"].Value;
+                        row.Cells["colHdcp"].Value = dgvTournament.Rows[e.RowIndex].Cells["colHdcp"].Value;
+                        RecalculateTournamentRow(row.Index);
+                        ValidateRow(row.Index);
+                        dgvTournament.InvalidateRow(row.Index);
+                        PersistRowToDatabase(row.Index);
+                    }
+                }
+
+                ValidateRow(e.RowIndex);
+                dgvTournament.InvalidateRow(e.RowIndex);
+            }
+
+            // Persist edited text columns to the database on focus loss
+            if (colName is "colAdjAvg" or "colBonus" or "colEarnings" or "colNotes"
+                or "colGame1" or "colGame2" or "colGame3" or "colGame4")
+            {
+                PersistRowToDatabase(e.RowIndex);
+            }
+
+            // Refresh detail grid when editable tournament columns change (on focus loss)
+            if (colName is "colAdjAvg" or "colBonus" or "colGame1" or "colGame2" or "colGame3" or "colGame4")
+            {
+                _displayedDetailMemberNumber = -1;
+                DgvTournament_SelectionChanged(dgvTournament, EventArgs.Empty);
+            }
+        }
+
+        private static int? ParseCellInt(object cellValue)
+        {
+            if (cellValue == null) return null;
+            if (cellValue is int i) return i;
+            return int.TryParse(cellValue.ToString(), out int parsed) ? parsed : null;
+        }
+
+        /// <summary>
+        /// Persists editable column values from the tournament grid row to the Game record in the database.
+        /// </summary>
+        private void PersistRowToDatabase(int rowIndex)
+        {
+            var row = dgvTournament.Rows[rowIndex];
+            if (row.Tag is not int gameId) return;
+
+            Game game = GameDB.GetGame(gameId);
+            if (game == null) return;
+
+            // Game scores — parse safely whether value is a boxed int or a typed string
+            game.Game1 = ParseCellInt(row.Cells["colGame1"].Value);
+            game.Game2 = ParseCellInt(row.Cells["colGame2"].Value);
+            game.Game3 = ParseCellInt(row.Cells["colGame3"].Value);
+            game.Game4 = ParseCellInt(row.Cells["colGame4"].Value);
+
+            // Use-game flags
+            game.UseGame1 = row.Cells["colGame1Check"].Value as bool? ?? false;
+            game.UseGame2 = row.Cells["colGame2Check"].Value as bool? ?? false;
+            game.UseGame3 = row.Cells["colGame3Check"].Value as bool? ?? false;
+            game.UseGame4 = row.Cells["colGame4Check"].Value as bool? ?? false;
+
+            // ADJ AVG
+            int adjAvg = 0;
+            if (row.Cells["colAdjAvg"].Value != null)
+                int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
+            game.AdjustedAvg = adjAvg;
+
+            // Handicap
+            int hdcp = 0;
+            if (row.Cells["colHdcp"].Value != null)
+                int.TryParse(row.Cells["colHdcp"].Value.ToString(), out hdcp);
+            game.Handicap = hdcp;
+
+            // Bonus
+            int bonus = 0;
+            if (row.Cells["colBonus"].Value != null)
+                int.TryParse(row.Cells["colBonus"].Value.ToString(), out bonus);
+            game.Bonus = bonus;
+
+            // Director Check → persisted as KeepAdjustedAvg
+            game.KeepAdjustedAvg = row.Cells["colDirCheck"].Value as bool? ?? false;
+
+            // Earnings
+            decimal earnings = 0;
+            if (row.Cells["colEarnings"].Value != null)
+                decimal.TryParse(row.Cells["colEarnings"].Value.ToString(), out earnings);
+            game.MoneyWon = earnings > 0 ? earnings : null;
+
+            // Notes
+            game.Notes = row.Cells["colNotes"].Value as string;
+
+            GameDB.AddOrUpdateGame(game);
         }
 
         /// <summary>
@@ -538,6 +685,9 @@ namespace NineTapTour.Forms
         {
             using var db = new NineTapDb();
 
+            // Track which members we've already updated so we do it once per member
+            var updatedMembers = new HashSet<int>();
+
             for (int i = 0; i < dgvTournament.Rows.Count; i++)
             {
                 var row = dgvTournament.Rows[i];
@@ -551,6 +701,35 @@ namespace NineTapTour.Forms
                 if (row.Cells["colAdjAvg"].Value != null)
                     int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
                 game.AdjustedAvg = adjAvg;
+
+                // Update handicap on the game from the grid
+                int hdcp = 0;
+                if (row.Cells["colHdcp"].Value != null)
+                    int.TryParse(row.Cells["colHdcp"].Value.ToString(), out hdcp);
+                game.Handicap = hdcp;
+
+                // Update bonus on the game from the grid
+                int bonus = 0;
+                if (row.Cells["colBonus"].Value != null)
+                    int.TryParse(row.Cells["colBonus"].Value.ToString(), out bonus);
+                game.Bonus = bonus;
+
+                // Compute league average for this game
+                int memberNumber = Convert.ToInt32(row.Cells["colMemberNumber"].Value);
+                double leagueAvg = FinalizeTempDB.Get30GameAverage(memberNumber, selectedTournament.Id);
+                game.LeagueAverage = leagueAvg;
+
+                // Update the Member record once per member
+                if (updatedMembers.Add(memberNumber))
+                {
+                    Member member = MemberDB.GetMember(memberNumber, db);
+                    if (member != null && member.Id > 0)
+                    {
+                        member.Average = adjAvg;
+                        member.Handicap = CalcService.CalculateHandicapPins(adjAvg);
+                        member.Bonus = bonus;
+                    }
+                }
             }
 
             Tournament tourn = db.Tournaments.Find(selectedTournament.Id);
@@ -621,35 +800,74 @@ namespace NineTapTour.Forms
             dgvDetail.Rows.Clear();
 
             // --- Current tournament rows (blue highlight) ---
-            foreach (WinnerListMemberViewModel b in _currentTournamentBowlers.Where(b => b.MemberNumber == memberNumber))
-            {
-                int g1    = Convert.ToInt32(b.Game1);
-                int g2    = Convert.ToInt32(b.Game2);
-                int g3    = Convert.ToInt32(b.Game3);
-                int g4    = Convert.ToInt32(b.Game4);
-                int hdcp  = Convert.ToInt32(b.Handicap);
-                int bonus = Convert.ToInt32(b.Bonus);
+            // Pull live values from dgvTournament so edits are immediately reflected.
+            // Entries are reversed so the first entry for the member appears at the top.
+            var currentEntries = _currentTournamentBowlers
+                .Where(b => b.MemberNumber == memberNumber)
+                .Reverse()
+                .ToList();
 
-                int validGames = (g1 > 0 ? 1 : 0) + (g2 > 0 ? 1 : 0) + (g3 > 0 ? 1 : 0) + (g4 > 0 ? 1 : 0);
-                int scratch    = g1 + g2 + g3 + g4;
+            foreach (WinnerListMemberViewModel b in currentEntries)
+            {
+                // Find the matching tournament grid row to read live-edited values
+                DataGridViewRow tournRow = null;
+                foreach (DataGridViewRow r in dgvTournament.Rows)
+                {
+                    if (r.Tag is int gid && gid == b.GameId) { tournRow = r; break; }
+                }
+
+                int? dg1, dg2, dg3, dg4;
+                int hdcp, bonus;
+                if (tournRow != null)
+                {
+                    bool c1 = tournRow.Cells["colGame1Check"].Value as bool? ?? false;
+                    bool c2 = tournRow.Cells["colGame2Check"].Value as bool? ?? false;
+                    bool c3 = tournRow.Cells["colGame3Check"].Value as bool? ?? false;
+                    bool c4 = tournRow.Cells["colGame4Check"].Value as bool? ?? false;
+
+                    dg1 = c1 ? ParseCellInt(tournRow.Cells["colGame1"].Value) : null;
+                    dg2 = c2 ? ParseCellInt(tournRow.Cells["colGame2"].Value) : null;
+                    dg3 = c3 ? ParseCellInt(tournRow.Cells["colGame3"].Value) : null;
+                    dg4 = c4 ? ParseCellInt(tournRow.Cells["colGame4"].Value) : null;
+
+                    hdcp  = Convert.ToInt32(tournRow.Cells["colHdcp"].Value  ?? 0);
+                    bonus = Convert.ToInt32(tournRow.Cells["colBonus"].Value ?? 0);
+                }
+                else
+                {
+                    dg1 = b.UseGame1 == false ? null : (b.Game1.HasValue ? (int?)b.Game1.Value : null);
+                    dg2 = b.UseGame2 == false ? null : (b.Game2.HasValue ? (int?)b.Game2.Value : null);
+                    dg3 = b.UseGame3 == false ? null : (b.Game3.HasValue ? (int?)b.Game3.Value : null);
+                    dg4 = b.UseGame4 == false ? null : (b.Game4.HasValue ? (int?)b.Game4.Value : null);
+                    hdcp  = Convert.ToInt32(b.Handicap);
+                    bonus = Convert.ToInt32(b.Bonus);
+                }
+
+                int adjAvg = 0;
+                if (tournRow?.Cells["colAdjAvg"].Value != null)
+                    int.TryParse(tournRow.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
+
+                int validGames = (dg1.HasValue ? 1 : 0) + (dg2.HasValue ? 1 : 0)
+                               + (dg3.HasValue ? 1 : 0) + (dg4.HasValue ? 1 : 0);
+                int scratch    = (dg1 ?? 0) + (dg2 ?? 0) + (dg3 ?? 0) + (dg4 ?? 0);
                 int wHdcp      = scratch + (validGames * (hdcp + bonus));
                 int entry      = validGames > 0 ? scratch / validGames : 0;
 
                 int rowIdx = dgvDetail.Rows.Add(
                     validGames,
                     selectedTournament.Date.ToShortDateString(),
-                    g1 > 0 ? (object)g1 : null,
-                    g2 > 0 ? (object)g2 : null,
-                    g3 > 0 ? (object)g3 : null,
-                    g4 > 0 ? (object)g4 : null,
+                    dg1.HasValue ? (object)dg1.Value : null,
+                    dg2.HasValue ? (object)dg2.Value : null,
+                    dg3.HasValue ? (object)dg3.Value : null,
+                    dg4.HasValue ? (object)dg4.Value : null,
                     scratch,
                     wHdcp,
                     entry,
                     null,                                        // 30 AVG — not yet computed
-                    null,                                        // Adjusted AVG
+                    adjAvg > 0 ? (object)adjAvg : null,          // Adjusted AVG from tournament grid
                     hdcp,
                     bonus,
-                    b.SidePot > 0 ? (object)b.SidePot : null,
+                    null,                                        // Pro Pot
                     null,                                        // Place — not yet finalized
                     b.MoneyWon > 0 ? (object)b.MoneyWon : null,
                     null                                         // Notes
@@ -658,35 +876,50 @@ namespace NineTapTour.Forms
             }
 
             // --- Finalized historical rows (ordered by date descending from DB) ---
-            for (int i = 0; i < history.Count; i++)
+            // Group by tournament date, reverse entries within each date so the first
+            // entry comes first, and place earnings on that first entry only.
+            var historyByDate = history.GroupBy(h => h.TournamentDate.Date).ToList();
+            int historyIndex = 0;
+            foreach (var dateGroup in historyByDate)
             {
-                PlayerHistoryViewModel h = history[i];
-                int wHdcp = h.TotalScore + (h.GamesPlayed * (h.HandiCap + h.Bonus));
-                int entry = h.GamesPlayed > 0 ? h.TotalScore / h.GamesPlayed : 0;
+                var entriesForDate = dateGroup.Reverse().ToList();
+                for (int j = 0; j < entriesForDate.Count; j++)
+                {
+                    PlayerHistoryViewModel h = entriesForDate[j];
+                    int wHdcp = h.TotalScore + (h.GamesPlayed * (h.HandiCap + h.Bonus));
+                    int entry = h.GamesPlayed > 0 ? h.TotalScore / h.GamesPlayed : 0;
 
-                int rowIdx = dgvDetail.Rows.Add(
-                    h.GamesPlayed,
-                    h.TournamentDate.ToShortDateString(),
-                    h.Game1.HasValue ? (object)h.Game1.Value : null,
-                    h.Game2.HasValue ? (object)h.Game2.Value : null,
-                    h.Game3.HasValue ? (object)h.Game3.Value : null,
-                    h.Game4.HasValue ? (object)h.Game4.Value : null,
-                    h.TotalScore,
-                    wHdcp,
-                    entry,
-                    h.trueAVG > 0 ? (object)Math.Round(h.trueAVG, 1) : null,
-                    h.AVG > 0 ? (object)h.AVG : null,
-                    h.HandiCap,
-                    h.Bonus,
-                    !string.IsNullOrEmpty(h.ProPot) && h.ProPot != "0" ? (object)h.ProPot : null,
-                    !string.IsNullOrEmpty(h.PPHG) ? (object)h.PPHG : null,
-                    h.MoneyWon > 0 ? (object)h.MoneyWon : null,
-                    h.Notes
-                );
+                    // Earnings appear only on the first (top) entry for each date
+                    bool isFirstForDate = j == 0;
+                    decimal dateEarnings = isFirstForDate
+                        ? entriesForDate.Sum(e => e.MoneyWon)
+                        : 0;
 
-                // Highlight the 30 AVG cell for entries within the rolling 30-game window
-                if (i < thirtyGameWindow)
-                    dgvDetail.Rows[rowIdx].Cells["colDetail30Avg"].Style.BackColor = Color.LightGreen;
+                    int rowIdx = dgvDetail.Rows.Add(
+                        h.GamesPlayed,
+                        h.TournamentDate.ToShortDateString(),
+                        h.Game1.HasValue ? (object)h.Game1.Value : null,
+                        h.Game2.HasValue ? (object)h.Game2.Value : null,
+                        h.Game3.HasValue ? (object)h.Game3.Value : null,
+                        h.Game4.HasValue ? (object)h.Game4.Value : null,
+                        h.TotalScore,
+                        wHdcp,
+                        entry,
+                        h.trueAVG > 0 ? (object)Math.Round(h.trueAVG, 1) : null,
+                        h.AVG > 0 ? (object)h.AVG : null,
+                        h.HandiCap,
+                        h.Bonus,
+                        !string.IsNullOrEmpty(h.ProPot) && h.ProPot != "0" ? (object)h.ProPot : null,
+                        !string.IsNullOrEmpty(h.PPHG) ? (object)h.PPHG : null,
+                        dateEarnings > 0 ? (object)dateEarnings : null,
+                        h.Notes
+                    );
+
+                    // Highlight the 30 AVG cell for entries within the rolling 30-game window
+                    if (historyIndex < thirtyGameWindow)
+                        dgvDetail.Rows[rowIdx].Cells["colDetail30Avg"].Style.BackColor = Color.LightGreen;
+                    historyIndex++;
+                }
             }
 
             decimal lifetimeEarnings = history.Sum(h => h.MoneyWon);

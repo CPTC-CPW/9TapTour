@@ -334,7 +334,13 @@ namespace NineTapTour.Database
                             Game3 = g.Game3,
                             Game4 = g.Game4,
                             IsComp = g.IsComp,
-                            LeagueAverage = (double)(m.Average ?? 0)
+                            LeagueAverage = (double)(m.Average ?? 0),
+                            AdjustedAvg = g.AdjustedAvg,
+                            UseGame1 = g.UseGame1,
+                            UseGame2 = g.UseGame2,
+                            UseGame3 = g.UseGame3,
+                            UseGame4 = g.UseGame4,
+                            KeepAdjustedAvg = g.KeepAdjustedAvg
                         })];
             }
         }
