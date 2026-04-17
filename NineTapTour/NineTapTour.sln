@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A2A1CA84-C780-479F-8B3B-43E18B06798F}"
 	ProjectSection(SolutionItems) = preProject
 		..\.github\workflows\main.yml = ..\.github\workflows\main.yml
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NineTapTour.Core", "NineTapTour.Core\NineTapTour.Core.csproj", "{18212151-8466-46B5-9886-962120052ADA}"
