@@ -800,8 +800,14 @@ namespace NineTapTour.Forms
             dgvDetail.Rows.Clear();
 
             // --- Current tournament rows (blue highlight) ---
-            // Pull live values from dgvTournament so edits are immediately reflected
-            foreach (WinnerListMemberViewModel b in _currentTournamentBowlers.Where(b => b.MemberNumber == memberNumber))
+            // Pull live values from dgvTournament so edits are immediately reflected.
+            // Entries are reversed so the first entry for the member appears at the top.
+            var currentEntries = _currentTournamentBowlers
+                .Where(b => b.MemberNumber == memberNumber)
+                .Reverse()
+                .ToList();
+
+            foreach (WinnerListMemberViewModel b in currentEntries)
             {
                 // Find the matching tournament grid row to read live-edited values
                 DataGridViewRow tournRow = null;
@@ -810,22 +816,29 @@ namespace NineTapTour.Forms
                     if (r.Tag is int gid && gid == b.GameId) { tournRow = r; break; }
                 }
 
-                int g1, g2, g3, g4, hdcp, bonus;
+                int? dg1, dg2, dg3, dg4;
+                int hdcp, bonus;
                 if (tournRow != null)
                 {
-                    g1    = Convert.ToInt32(tournRow.Cells["colGame1"].Value ?? 0);
-                    g2    = Convert.ToInt32(tournRow.Cells["colGame2"].Value ?? 0);
-                    g3    = Convert.ToInt32(tournRow.Cells["colGame3"].Value ?? 0);
-                    g4    = Convert.ToInt32(tournRow.Cells["colGame4"].Value ?? 0);
-                    hdcp  = Convert.ToInt32(tournRow.Cells["colHdcp"].Value ?? 0);
+                    bool c1 = tournRow.Cells["colGame1Check"].Value as bool? ?? false;
+                    bool c2 = tournRow.Cells["colGame2Check"].Value as bool? ?? false;
+                    bool c3 = tournRow.Cells["colGame3Check"].Value as bool? ?? false;
+                    bool c4 = tournRow.Cells["colGame4Check"].Value as bool? ?? false;
+
+                    dg1 = c1 ? ParseCellInt(tournRow.Cells["colGame1"].Value) : null;
+                    dg2 = c2 ? ParseCellInt(tournRow.Cells["colGame2"].Value) : null;
+                    dg3 = c3 ? ParseCellInt(tournRow.Cells["colGame3"].Value) : null;
+                    dg4 = c4 ? ParseCellInt(tournRow.Cells["colGame4"].Value) : null;
+
+                    hdcp  = Convert.ToInt32(tournRow.Cells["colHdcp"].Value  ?? 0);
                     bonus = Convert.ToInt32(tournRow.Cells["colBonus"].Value ?? 0);
                 }
                 else
                 {
-                    g1    = Convert.ToInt32(b.Game1);
-                    g2    = Convert.ToInt32(b.Game2);
-                    g3    = Convert.ToInt32(b.Game3);
-                    g4    = Convert.ToInt32(b.Game4);
+                    dg1 = b.UseGame1 == false ? null : (b.Game1.HasValue ? (int?)b.Game1.Value : null);
+                    dg2 = b.UseGame2 == false ? null : (b.Game2.HasValue ? (int?)b.Game2.Value : null);
+                    dg3 = b.UseGame3 == false ? null : (b.Game3.HasValue ? (int?)b.Game3.Value : null);
+                    dg4 = b.UseGame4 == false ? null : (b.Game4.HasValue ? (int?)b.Game4.Value : null);
                     hdcp  = Convert.ToInt32(b.Handicap);
                     bonus = Convert.ToInt32(b.Bonus);
                 }
@@ -834,18 +847,19 @@ namespace NineTapTour.Forms
                 if (tournRow?.Cells["colAdjAvg"].Value != null)
                     int.TryParse(tournRow.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
 
-                int validGames = (g1 > 0 ? 1 : 0) + (g2 > 0 ? 1 : 0) + (g3 > 0 ? 1 : 0) + (g4 > 0 ? 1 : 0);
-                int scratch    = g1 + g2 + g3 + g4;
+                int validGames = (dg1.HasValue ? 1 : 0) + (dg2.HasValue ? 1 : 0)
+                               + (dg3.HasValue ? 1 : 0) + (dg4.HasValue ? 1 : 0);
+                int scratch    = (dg1 ?? 0) + (dg2 ?? 0) + (dg3 ?? 0) + (dg4 ?? 0);
                 int wHdcp      = scratch + (validGames * (hdcp + bonus));
                 int entry      = validGames > 0 ? scratch / validGames : 0;
 
                 int rowIdx = dgvDetail.Rows.Add(
                     validGames,
                     selectedTournament.Date.ToShortDateString(),
-                    g1 > 0 ? (object)g1 : null,
-                    g2 > 0 ? (object)g2 : null,
-                    g3 > 0 ? (object)g3 : null,
-                    g4 > 0 ? (object)g4 : null,
+                    dg1.HasValue ? (object)dg1.Value : null,
+                    dg2.HasValue ? (object)dg2.Value : null,
+                    dg3.HasValue ? (object)dg3.Value : null,
+                    dg4.HasValue ? (object)dg4.Value : null,
                     scratch,
                     wHdcp,
                     entry,
