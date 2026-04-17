@@ -1025,7 +1025,6 @@ public partial class FrmMemberData : Form
                 temp.AVG = ws.Cell(row, 10).GetValue<int?>() ?? -1;
                 temp.HandyCap = ws.Cell(row, 11).GetValue<int?>() ?? -1000;
                 temp.Bonus = ws.Cell(row, 12).GetValue<int?>() ?? -1;
-                temp.PotPro = ws.Cell(row, 13).GetString();
                 temp.FinPPHG = ws.Cell(row, 14).GetString();
                 temp.Cash = ws.Cell(row, 15).GetValue<double?>() ?? 0;
                 temp.Notes = ws.Cell(row, 16).GetString();

@@ -86,11 +86,6 @@ namespace NineTapTour.Models
         public int AVG { get; set; }
 
         /// <summary>
-        /// Pro pot / side pot (stored as string for compatibility)
-        /// </summary>
-        public string ProPot { get; set; }
-
-        /// <summary>
         /// Progressive Post High Game - Place standing (stored as string for compatibility)
         /// </summary>
         public string PPHG { get; set; }
@@ -136,7 +131,6 @@ namespace NineTapTour.Models
             AVG = game.AdjustedAvg;
 
             // String conversions
-            ProPot = game.SidePot?.ToString() ?? "0";
             PPHG = game.PlaceStanding?.ToString() ?? string.Empty;
         }
 
@@ -161,7 +155,6 @@ namespace NineTapTour.Models
             double averageForEntry,
             double trueAvg,
             int adjustedAvg,
-            string proPot,
             string pphg,
             int regionId)
         {
@@ -182,7 +175,6 @@ namespace NineTapTour.Models
             AverageForEntry = averageForEntry;
             trueAVG = trueAvg;
             AVG = adjustedAvg;
-            ProPot = proPot;
             PPHG = pphg;
             regionID = regionId;
         }

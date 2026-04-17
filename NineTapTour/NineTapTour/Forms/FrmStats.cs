@@ -75,19 +75,16 @@ namespace NineTapTour.Forms
             column = dataGridView1.Columns[12]; // Bonus
             column.Width = 45;
 
-            column = dataGridView1.Columns[13]; // Pro Pot
+            column = dataGridView1.Columns[13]; // Place
             column.Width = 45;
 
-            column = dataGridView1.Columns[14]; // Place
+            column = dataGridView1.Columns[14]; // Money Won
             column.Width = 45;
 
-            column = dataGridView1.Columns[15]; // Money Won
-            column.Width = 45;
-
-            column = dataGridView1.Columns[16]; // Notes
+            column = dataGridView1.Columns[15]; // Notes
             column.Width = 180;
 
-            column = dataGridView1.Columns[17]; // game ID
+            column = dataGridView1.Columns[16]; // game ID
             column.Width = 45;
 
             foreach (DataGridViewColumn col in dataGridView1.Columns) // to center header cell titles
@@ -350,7 +347,6 @@ namespace NineTapTour.Forms
                             AVG = g.AdjustedAvg,
                             HandiCap = g.Handicap ?? 0,
                             Bonus = g.Bonus ?? 0,
-                            ProPot = g.SidePot,  // Don't ToString() in LINQ expression
                             MoneyWon = g.MoneyWon ?? 0,
                             PPHG = g.PlaceStanding,  // Don't ToString() in LINQ expression
                             Notes = g.Notes
@@ -369,7 +365,6 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Adj. AVG");
             dtGames.Columns.Add("HDCP").ReadOnly = true;
             dtGames.Columns.Add("Bonus").ReadOnly = true;
-            dtGames.Columns.Add("Pro Pot").ReadOnly = true;
             dtGames.Columns.Add("Place").ReadOnly = true;
 
             string moneyWonWithTotal = $"Money Won ({PlayerHistoryDB.GetTotalMoneyWon(memNum)})";
@@ -419,7 +414,6 @@ namespace NineTapTour.Forms
                     newRow["Adj. AVG"] = item.AVG;
                 newRow["HDCP"] = item.HandiCap;
                 newRow["Bonus"] = item.Bonus;
-                newRow["Pro Pot"] = item.ProPot?.ToString() ?? "0"; // Convert after materializing
                 newRow[moneyWonWithTotal] = item.MoneyWon;
                 newRow["Place"] = item.PPHG?.ToString() ?? ""; // Convert after materializing
                 newRow["Notes"] = item.Notes;
@@ -531,7 +525,7 @@ namespace NineTapTour.Forms
             else if (columnName == "Bonus")
             {
                 int currBonus = Convert.ToInt32(currCell.Value);
-                const int MONEY_WON_INDEX = 15;
+                const int MONEY_WON_INDEX = 14;
                 double currMoneyWon = Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[MONEY_WON_INDEX].Value);
                 bool currBonusHasReset = false;
 
