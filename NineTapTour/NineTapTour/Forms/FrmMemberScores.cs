@@ -37,6 +37,7 @@ namespace NineTapTour.Forms
         public FrmMemberScores()
         {
             InitializeComponent();
+            DoubleBuffered = true;
         }
         /// <summary>
         /// initializes all the radio buttons on the form and sets them to their correct default status.
@@ -44,6 +45,8 @@ namespace NineTapTour.Forms
         /// </summary>
         private void RadioIntialize()
         {
+            SuspendLayout();
+            flpMemberScores.SuspendLayout();
             rdoSquad1.TabStop = false;
             rdoSquad2.TabStop = false;
             rdoSquad3.TabStop = false;
@@ -98,6 +101,8 @@ namespace NineTapTour.Forms
                     cbFilterSquad8.Visible = true;
                 }
             }
+            flpMemberScores.ResumeLayout(true);
+            ResumeLayout(true);
         }
 
         /// <summary>
@@ -137,8 +142,8 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void FrmMemberScores_Activated(object sender, EventArgs e)
         {
-            //added in this line inorder to prevent the reset of the drop down list on memberscores form when switching between forms
-            int tempcbx = cbxTourneyDropDown.SelectedIndex;
+            SuspendLayout();
+            flpMemberScores.SuspendLayout();
             rdoHandicapScore.Visible = false;
             rdoScratchScore.Visible = false;
             cbxTourneyDropDown.Visible = false;
@@ -162,27 +167,20 @@ namespace NineTapTour.Forms
             Clear();
             cbxTourneyDropDown.Visible = true;
 
-            if (cbxTourneyDropDown.SelectedIndex >= 0 && cbxTourneyDropDown.Visible && cbxTourneyDropDown.SelectedIndex.ToString() != null)
+            if (cbxTourneyDropDown.SelectedIndex >= 0)
             {
-                // resets the current index to zero when changing the tournament
-                currentIndex = 0;
-                FrmMemberScoresHelpers.
-                                overallListOfParticipants = TournamentDB.GetTournamentMemberList(FrmMemberScoresHelpers.selectedTournament);
-                RecordIndex(FrmMemberScoresHelpers.overallListOfParticipants);
-
                 btnDelete.Enabled = true;
-
-                Refresh();
-                // sets focus to member num because that is what a user will need next
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
                 txtMemberNum.Focus();
             }
-            // Clicks LastMemberButton when frm is activated.
-            // this will make sure the person entering scores 
-            // does not accidently enter a bowler in the wrong squad.
-            MoveToLastRecordOfMemberScores();
 
+            flpMemberScores.ResumeLayout(true);
+            ResumeLayout(true);
+
+            // Move to last record so the person entering scores
+            // does not accidentally enter a bowler in the wrong squad.
+            MoveToLastRecordOfMemberScores();
         }
 
         /// <summary>
@@ -217,10 +215,7 @@ namespace NineTapTour.Forms
         {
             if (currentGame != null)
             {
-                Tournament tourney = TournamentDB.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
-                int total = TournamentDB.GetTotalNumberParticipantsInTournament(tourney);
-
-                lblRecord.Text = "Record " + (currentIndex + 1) + " / " + total;
+                lblRecord.Text = "Record " + (currentIndex + 1) + " / " + FrmMemberScoresHelpers.overallListOfParticipants.Count;
 
                 cbCompEntry.Checked = currentGame.IsComp;
 
@@ -641,7 +636,9 @@ namespace NineTapTour.Forms
             {
                 currentIndex = 0;
                 int playerSquadNumber = players[currentIndex].Squad;
+                switchingParticipents = true;
                 CheckSquadCheckBoxes(playerSquadNumber);
+                switchingParticipents = false;
 
                 lblRecord.Text = "Record " + (currentIndex + 1) + " / " + players.Count;
                 txtMemberNum.Text = players[currentIndex].Member.Number.ToString();
@@ -1011,6 +1008,9 @@ namespace NineTapTour.Forms
         /// <param name="e"></param>
         private void CbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
+            SuspendLayout();
+            flpMemberScores.SuspendLayout();
+
             // resets the fields when a different tournament is selected
             ResetFields();
 
@@ -1113,6 +1113,9 @@ namespace NineTapTour.Forms
             {
                 squadRadioButtons[i].Visible = true;
             }
+
+            flpMemberScores.ResumeLayout(true);
+            ResumeLayout(true);
         }
 
         /// <summary>
@@ -1791,14 +1794,13 @@ namespace NineTapTour.Forms
 
         private void CheckBoxSquadNumber_CheckedChanged(object sender, EventArgs e)
         {
-            //only run the code the code for the radio button that is checked
-            if ((sender as RadioButton).Checked)
+            // Only run when the radio button is checked and not during programmatic navigation
+            if ((sender as RadioButton).Checked && !switchingParticipents)
             {
                 ScoreAndTotalClear();
                 RecordIndexOnSquadSwitch();
                 FillMember();
             }
-
         }
 
         /// <summary>
