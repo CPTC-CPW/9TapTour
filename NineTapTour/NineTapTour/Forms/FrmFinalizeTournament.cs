@@ -22,6 +22,7 @@ namespace NineTapTour.Forms
         private CheckBox chkDirCheck;
         private CheckBox chkAdjAvg;
         private Button btnFinalizeTournament;
+        private Button btnUndoFinalize;
         private SplitContainer splitMain;
         private Panel pnlPlayerInfo;
         private Label lblPlayerInfo;
@@ -46,6 +47,16 @@ namespace NineTapTour.Forms
         // Set to true once FinalizeAllGames completes successfully this session.
         private bool _isFinalized = false;
 
+        // Snapshot of each game's editable fields taken at form-open time.
+        // "Undo Changes" writes these values back to the DB and reloads the grid,
+        // reverting any director edits made during the current session.
+        private record GameSnapshot(
+            int? Game1, int? Game2, int? Game3, int? Game4,
+            bool? UseGame1, bool? UseGame2, bool? UseGame3, bool? UseGame4,
+            int AdjustedAvg, bool KeepAdjustedAvg,
+            int? Handicap, int? Bonus, decimal? MoneyWon, string Notes);
+        private readonly Dictionary<int, GameSnapshot> _gameSnapshot = [];
+
         public FrmFinalizeTournament(Tournament selectedTournament)
         {
             this.selectedTournament = selectedTournament;
@@ -60,6 +71,19 @@ namespace NineTapTour.Forms
             dgvTournament.SelectionChanged += DgvTournament_SelectionChanged;
             DgvTournament_SelectionChanged(dgvTournament, EventArgs.Empty);
             FormClosing += FrmFinalizeTournament_FormClosing;
+
+            // Snapshot all editable game fields immediately after load so "Undo Changes"
+            // can restore the original DB state for the rest of the session.
+            using (var db = new NineTapDb())
+            {
+                var gameIds = _currentTournamentBowlers.Select(b => b.GameId).ToHashSet();
+                foreach (var g in db.Games.Where(g => gameIds.Contains(g.Id)))
+                    _gameSnapshot[g.Id] = new GameSnapshot(
+                        g.Game1, g.Game2, g.Game3, g.Game4,
+                        g.UseGame1, g.UseGame2, g.UseGame3, g.UseGame4,
+                        g.AdjustedAvg, g.KeepAdjustedAvg,
+                        g.Handicap, g.Bonus, g.MoneyWon, g.Notes);
+            }
         }
 
         private void FrmFinalizeTournament_FormClosing(object sender, FormClosingEventArgs e)
@@ -88,12 +112,20 @@ namespace NineTapTour.Forms
 
             btnFinalizeTournament = new Button
             {
-                Text   = "Finalize Tournament",
-                Size   = new Size(160, 26),
-                Anchor = AnchorStyles.Top | AnchorStyles.Right
+                Text = "Finalize Tournament",
+                Size = new Size(160, 26)
             };
             btnFinalizeTournament.Click += BtnFinalizeTournament_Click;
-            pnlToolbar.Controls.AddRange([chkDirCheck, chkAdjAvg, btnFinalizeTournament]);
+
+            btnUndoFinalize = new Button
+            {
+                Text    = "Undo Changes",
+                Size    = new Size(160, 26),
+                Enabled = true
+            };
+            btnUndoFinalize.Click += BtnUndoFinalize_Click;
+            pnlToolbar.Controls.AddRange([chkDirCheck, chkAdjAvg, btnFinalizeTournament, btnUndoFinalize]);
+            pnlToolbar.Resize += (s, _) => PinToolbarButtons();
 
             // --- SplitContainer (top grid / bottom grid) ---
             splitMain = new SplitContainer
@@ -136,9 +168,16 @@ namespace NineTapTour.Forms
             ResumeLayout(true);
 
             // Set after layout so pnlToolbar already has its docked width
-            btnFinalizeTournament.Location = new Point(pnlToolbar.ClientSize.Width - btnFinalizeTournament.Width - 12, 7);
+            PinToolbarButtons();
 
             splitMain.SplitterDistance = splitMain.Height / 2;
+        }
+
+        private void PinToolbarButtons()
+        {
+            int x = pnlToolbar.ClientSize.Width - btnFinalizeTournament.Width - 12;
+            btnFinalizeTournament.Location = new Point(x, 7);
+            btnUndoFinalize.Location       = new Point(x - btnUndoFinalize.Width - 8, 7);
         }
 
         private DataGridView CreateTournamentGrid()
@@ -835,10 +874,65 @@ namespace NineTapTour.Forms
             db.SaveChanges();
 
             _isFinalized = true;
+            btnUndoFinalize.Enabled       = false;
+            btnFinalizeTournament.Enabled = false;
 
             MessageBox.Show(
                 "Tournament has been finalized successfully.",
                 "Finalized",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+
+        private void BtnUndoFinalize_Click(object sender, EventArgs e)
+        {
+            var result = MessageBox.Show(
+                "This will revert all grid changes back to the values loaded when the form was opened.\n\nAre you sure?",
+                "Undo Changes",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+            if (result != DialogResult.Yes) return;
+
+            UndoChanges();
+        }
+
+        /// <summary>
+        /// Restores every game record to the values captured at form-open time,
+        /// then reloads the grid. Only available before finalization.
+        /// </summary>
+        private void UndoChanges()
+        {
+            using var db = new NineTapDb();
+
+            foreach (var (gameId, snap) in _gameSnapshot)
+            {
+                Game game = db.Games.Find(gameId);
+                if (game == null) continue;
+
+                game.Game1          = snap.Game1;
+                game.Game2          = snap.Game2;
+                game.Game3          = snap.Game3;
+                game.Game4          = snap.Game4;
+                game.UseGame1       = snap.UseGame1;
+                game.UseGame2       = snap.UseGame2;
+                game.UseGame3       = snap.UseGame3;
+                game.UseGame4       = snap.UseGame4;
+                game.AdjustedAvg    = snap.AdjustedAvg;
+                game.KeepAdjustedAvg = snap.KeepAdjustedAvg;
+                game.Handicap       = snap.Handicap;
+                game.Bonus          = snap.Bonus;
+                game.MoneyWon       = snap.MoneyWon;
+                game.Notes          = snap.Notes;
+            }
+
+            db.SaveChanges();
+
+            _invalidRowIndices.Clear();
+            LoadTournamentGrid();
+
+            MessageBox.Show(
+                "All changes have been reverted to the original values.",
+                "Changes Reverted",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
         }
