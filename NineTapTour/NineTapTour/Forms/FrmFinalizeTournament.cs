@@ -34,6 +34,11 @@ namespace NineTapTour.Forms
 
         private static readonly string[] GameScoreColumns = ["colGame1", "colGame2", "colGame3", "colGame4"];
 
+        // GameIds whose colBonus cell shows a post-deduction preview value.
+        // The original (pre-deduction) bonus is kept in Game.Bonus; only Member.Bonus
+        // receives the deducted value on finalization.
+        private readonly HashSet<int> _cashingGameIds = [];
+
         public FrmFinalizeTournament(Tournament selectedTournament)
         {
             this.selectedTournament = selectedTournament;
@@ -159,12 +164,18 @@ namespace NineTapTour.Forms
 
         private void LoadTournamentGrid()
         {
+            _cashingGameIds.Clear();
             _currentTournamentBowlers = TournamentDB.GetWinnerListMemberData(selectedTournament.Id);
             List<ExcelMember> members = BuildExcelMemberList(_currentTournamentBowlers);
 
             // Compute the correct placement for each member using only their best entry
             List<ExcelMember> deduped = CalcService.CalculatePlaceStandings(members, removeDuplicates: true);
             Dictionary<int, int> bestStandingByMember = deduped.ToDictionary(m => m.MemberNumber, m => m.PlaceStanding);
+
+            // Determine the cash line so bonus deductions can be previewed in the grid
+            int totalEntries = _currentTournamentBowlers.Count;
+            int compEntries  = _currentTournamentBowlers.Count(b => b.IsComp);
+            int cashLine     = CalcService.GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
 
             // Sort all entries by score descending so the best entry per member is encountered first
             members.Sort((x, y) => y.TotalScore.CompareTo(x.TotalScore));
@@ -247,7 +258,16 @@ namespace NineTapTour.Forms
                                  + (g3Checked ? (orig.Game3 ?? 0) : 0) + (g4Checked ? (orig.Game4 ?? 0) : 0);
                 int checkedGames = (g1Checked ? 1 : 0) + (g2Checked ? 1 : 0)
                                  + (g3Checked ? 1 : 0) + (g4Checked ? 1 : 0);
-                int hdcpTotal = scratch + (checkedGames * (m.Handicap + m.Bonus));
+                // Pre-deduct bonus for members who will cash (placing within cash line)
+                int memberPlacing = bestStandingByMember.TryGetValue(m.MemberNumber, out int p) ? p : 0;
+                bool isCashing    = memberPlacing > 0 && memberPlacing <= cashLine;
+                int displayBonus  = isCashing
+                    ? CalcService.DeductFromBonusPins(memberPlacing, m.Bonus)
+                    : m.Bonus;
+                if (isCashing)
+                    _cashingGameIds.Add(m.GameId);
+
+                int hdcpTotal = scratch + (checkedGames * (m.Handicap + displayBonus));
                 int entryAvg = checkedGames > 0 ? scratch / checkedGames : 0;
 
                 int rowIdx = dgvTournament.Rows.Add(
@@ -270,7 +290,7 @@ namespace NineTapTour.Forms
                     orig.KeepAdjustedAvg,  // Director Check — restored from DB
                     null,  // Squad
                     m.Handicap,
-                    m.Bonus,
+                    displayBonus,
                     m.MoneyWon > 0 ? (object)m.MoneyWon : null,  // Earnings
                     null   // Notes
                 );
@@ -575,11 +595,21 @@ namespace NineTapTour.Forms
                 int.TryParse(row.Cells["colHdcp"].Value.ToString(), out hdcp);
             game.Handicap = hdcp;
 
-            // Bonus
+            // Bonus — for cashing entries the cell shows a post-deduction preview;
+            // preserve the original pre-deduction value in the Game record so reopening
+            // the form does not deduct again on each open.
             int bonus = 0;
             if (row.Cells["colBonus"].Value != null)
                 int.TryParse(row.Cells["colBonus"].Value.ToString(), out bonus);
-            game.Bonus = bonus;
+            if (_cashingGameIds.Contains(gameId))
+            {
+                WinnerListMemberViewModel orig = _currentTournamentBowlers.FirstOrDefault(b => b.GameId == gameId);
+                game.Bonus = orig != null ? Convert.ToInt32(orig.Bonus) : bonus;
+            }
+            else
+            {
+                game.Bonus = bonus;
+            }
 
             // Director Check → persisted as KeepAdjustedAvg
             game.KeepAdjustedAvg = row.Cells["colDirCheck"].Value as bool? ?? false;
@@ -706,11 +736,20 @@ namespace NineTapTour.Forms
                     int.TryParse(row.Cells["colHdcp"].Value.ToString(), out hdcp);
                 game.Handicap = hdcp;
 
-                // Update bonus on the game from the grid
+                // Update bonus on the game from the grid — preserve the original pre-deduction
+                // value for cashing entries so the Game record is not corrupted across sessions.
                 int bonus = 0;
                 if (row.Cells["colBonus"].Value != null)
                     int.TryParse(row.Cells["colBonus"].Value.ToString(), out bonus);
-                game.Bonus = bonus;
+                if (_cashingGameIds.Contains(gameId))
+                {
+                    WinnerListMemberViewModel orig = _currentTournamentBowlers.FirstOrDefault(b => b.GameId == gameId);
+                    game.Bonus = orig != null ? Convert.ToInt32(orig.Bonus) : bonus;
+                }
+                else
+                {
+                    game.Bonus = bonus;
+                }
 
                 // Compute league average for this game
                 int memberNumber = Convert.ToInt32(row.Cells["colMemberNumber"].Value);
@@ -725,6 +764,7 @@ namespace NineTapTour.Forms
                     {
                         member.Average = adjAvg;
                         member.Handicap = CalcService.CalculateHandicapPins(adjAvg);
+                        // Bonus already reflects any deduction (applied at grid load time)
                         member.Bonus = bonus;
                     }
                 }
