@@ -43,6 +43,9 @@ namespace NineTapTour.Forms
         // Like _cashingGameIds, the original bonus is preserved in Game.Bonus.
         private readonly HashSet<int> _thirdEntryBonusMemberNumbers = [];
 
+        // Set to true once FinalizeAllGames completes successfully this session.
+        private bool _isFinalized = false;
+
         public FrmFinalizeTournament(Tournament selectedTournament)
         {
             this.selectedTournament = selectedTournament;
@@ -56,6 +59,21 @@ namespace NineTapTour.Forms
             LoadTournamentGrid();
             dgvTournament.SelectionChanged += DgvTournament_SelectionChanged;
             DgvTournament_SelectionChanged(dgvTournament, EventArgs.Empty);
+            FormClosing += FrmFinalizeTournament_FormClosing;
+        }
+
+        private void FrmFinalizeTournament_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (_isFinalized) return;
+
+            var result = MessageBox.Show(
+                "The tournament has not been finalized yet. Member records (Average, Handicap, Bonus) will not be updated until you finalize.\n\nClose anyway?",
+                "Tournament Not Finalized",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (result == DialogResult.No)
+                e.Cancel = true;
         }
 
         private void BuildGrids()
@@ -815,6 +833,8 @@ namespace NineTapTour.Forms
                 tourn.IsTournamentFinalized = true;
 
             db.SaveChanges();
+
+            _isFinalized = true;
 
             MessageBox.Show(
                 "Tournament has been finalized successfully.",
