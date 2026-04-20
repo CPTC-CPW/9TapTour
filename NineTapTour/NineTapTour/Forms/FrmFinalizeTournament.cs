@@ -22,6 +22,7 @@ namespace NineTapTour.Forms
         private CheckBox chkDirCheck;
         private CheckBox chkAdjAvg;
         private Button btnFinalizeTournament;
+        private Button btnUndoFinalize;
         private SplitContainer splitMain;
         private Panel pnlPlayerInfo;
         private Label lblPlayerInfo;
@@ -33,6 +34,28 @@ namespace NineTapTour.Forms
         private readonly HashSet<int> _invalidRowIndices = [];
 
         private static readonly string[] GameScoreColumns = ["colGame1", "colGame2", "colGame3", "colGame4"];
+
+        // GameIds whose colBonus cell shows a post-deduction preview value.
+        // The original (pre-deduction) bonus is kept in Game.Bonus; only Member.Bonus
+        // receives the deducted value on finalization.
+        private readonly HashSet<int> _cashingGameIds = [];
+
+        // Member numbers whose colBonus cell has been bumped +1 for reaching their 3rd total entry.
+        // Like _cashingGameIds, the original bonus is preserved in Game.Bonus.
+        private readonly HashSet<int> _thirdEntryBonusMemberNumbers = [];
+
+        // Set to true once FinalizeAllGames completes successfully this session.
+        private bool _isFinalized = false;
+
+        // Snapshot of each game's editable fields taken at form-open time.
+        // "Undo Changes" writes these values back to the DB and reloads the grid,
+        // reverting any director edits made during the current session.
+        private record GameSnapshot(
+            int? Game1, int? Game2, int? Game3, int? Game4,
+            bool? UseGame1, bool? UseGame2, bool? UseGame3, bool? UseGame4,
+            int AdjustedAvg, bool KeepAdjustedAvg,
+            int? Handicap, int? Bonus, decimal? MoneyWon, string Notes);
+        private readonly Dictionary<int, GameSnapshot> _gameSnapshot = [];
 
         public FrmFinalizeTournament(Tournament selectedTournament)
         {
@@ -47,6 +70,34 @@ namespace NineTapTour.Forms
             LoadTournamentGrid();
             dgvTournament.SelectionChanged += DgvTournament_SelectionChanged;
             DgvTournament_SelectionChanged(dgvTournament, EventArgs.Empty);
+            FormClosing += FrmFinalizeTournament_FormClosing;
+
+            // Snapshot all editable game fields immediately after load so "Undo Changes"
+            // can restore the original DB state for the rest of the session.
+            using (var db = new NineTapDb())
+            {
+                var gameIds = _currentTournamentBowlers.Select(b => b.GameId).ToHashSet();
+                foreach (var g in db.Games.Where(g => gameIds.Contains(g.Id)))
+                    _gameSnapshot[g.Id] = new GameSnapshot(
+                        g.Game1, g.Game2, g.Game3, g.Game4,
+                        g.UseGame1, g.UseGame2, g.UseGame3, g.UseGame4,
+                        g.AdjustedAvg, g.KeepAdjustedAvg,
+                        g.Handicap, g.Bonus, g.MoneyWon, g.Notes);
+            }
+        }
+
+        private void FrmFinalizeTournament_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (_isFinalized) return;
+
+            var result = MessageBox.Show(
+                "The tournament has not been finalized yet. Member records (Average, Handicap, Bonus) will not be updated until you finalize.\n\nClose anyway?",
+                "Tournament Not Finalized",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (result == DialogResult.No)
+                e.Cancel = true;
         }
 
         private void BuildGrids()
@@ -61,12 +112,20 @@ namespace NineTapTour.Forms
 
             btnFinalizeTournament = new Button
             {
-                Text   = "Finalize Tournament",
-                Size   = new Size(160, 26),
-                Anchor = AnchorStyles.Top | AnchorStyles.Right
+                Text = "Finalize Tournament",
+                Size = new Size(160, 26)
             };
             btnFinalizeTournament.Click += BtnFinalizeTournament_Click;
-            pnlToolbar.Controls.AddRange([chkDirCheck, chkAdjAvg, btnFinalizeTournament]);
+
+            btnUndoFinalize = new Button
+            {
+                Text    = "Undo Changes",
+                Size    = new Size(160, 26),
+                Enabled = true
+            };
+            btnUndoFinalize.Click += BtnUndoFinalize_Click;
+            pnlToolbar.Controls.AddRange([chkDirCheck, chkAdjAvg, btnFinalizeTournament, btnUndoFinalize]);
+            pnlToolbar.Resize += (s, _) => PinToolbarButtons();
 
             // --- SplitContainer (top grid / bottom grid) ---
             splitMain = new SplitContainer
@@ -109,9 +168,16 @@ namespace NineTapTour.Forms
             ResumeLayout(true);
 
             // Set after layout so pnlToolbar already has its docked width
-            btnFinalizeTournament.Location = new Point(pnlToolbar.ClientSize.Width - btnFinalizeTournament.Width - 12, 7);
+            PinToolbarButtons();
 
             splitMain.SplitterDistance = splitMain.Height / 2;
+        }
+
+        private void PinToolbarButtons()
+        {
+            int x = pnlToolbar.ClientSize.Width - btnFinalizeTournament.Width - 12;
+            btnFinalizeTournament.Location = new Point(x, 7);
+            btnUndoFinalize.Location       = new Point(x - btnUndoFinalize.Width - 8, 7);
         }
 
         private DataGridView CreateTournamentGrid()
@@ -159,12 +225,38 @@ namespace NineTapTour.Forms
 
         private void LoadTournamentGrid()
         {
+            _cashingGameIds.Clear();
+            _thirdEntryBonusMemberNumbers.Clear();
             _currentTournamentBowlers = TournamentDB.GetWinnerListMemberData(selectedTournament.Id);
             List<ExcelMember> members = BuildExcelMemberList(_currentTournamentBowlers);
 
             // Compute the correct placement for each member using only their best entry
             List<ExcelMember> deduped = CalcService.CalculatePlaceStandings(members, removeDuplicates: true);
             Dictionary<int, int> bestStandingByMember = deduped.ToDictionary(m => m.MemberNumber, m => m.PlaceStanding);
+
+            // Determine the cash line so bonus deductions can be previewed in the grid
+            int totalEntries = _currentTournamentBowlers.Count;
+            int compEntries  = _currentTournamentBowlers.Count(b => b.IsComp);
+            int cashLine     = CalcService.GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
+
+            // Count current-tournament entries per member and finalized historical entries per member.
+            // Used to detect members reaching their 3rd total entry in this tournament.
+            var currentCountByMember = _currentTournamentBowlers
+                .GroupBy(b => b.MemberNumber)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            var historicalCountByMember = new Dictionary<int, int>();
+            using (var db = new NineTapDb())
+            {
+                var historicalCounts = db.Participants
+                    .Where(p => p.Tournament.Id != selectedTournament.Id
+                             && p.Game.IsFinalized)
+                    .GroupBy(p => p.Member.Number)
+                    .Select(g => new { MemberNumber = g.Key, Count = g.Count() })
+                    .ToList();
+                foreach (var item in historicalCounts)
+                    historicalCountByMember[item.MemberNumber] = item.Count;
+            }
 
             // Sort all entries by score descending so the best entry per member is encountered first
             members.Sort((x, y) => y.TotalScore.CompareTo(x.TotalScore));
@@ -247,7 +339,29 @@ namespace NineTapTour.Forms
                                  + (g3Checked ? (orig.Game3 ?? 0) : 0) + (g4Checked ? (orig.Game4 ?? 0) : 0);
                 int checkedGames = (g1Checked ? 1 : 0) + (g2Checked ? 1 : 0)
                                  + (g3Checked ? 1 : 0) + (g4Checked ? 1 : 0);
-                int hdcpTotal = scratch + (checkedGames * (m.Handicap + m.Bonus));
+                // Pre-deduct bonus for members who will cash (placing within cash line)
+                int memberPlacing = bestStandingByMember.TryGetValue(m.MemberNumber, out int p) ? p : 0;
+                bool isCashing    = memberPlacing > 0 && memberPlacing <= cashLine;
+                int displayBonus  = isCashing
+                    ? CalcService.DeductFromBonusPins(memberPlacing, m.Bonus)
+                    : m.Bonus;
+                if (isCashing)
+                    _cashingGameIds.Add(m.GameId);
+
+                // Award +1 bonus pin to new bowlers reaching their 3rd total entry
+                // (history + current tournament), but only when they are not cashing.
+                if (!isCashing)
+                {
+                    int histCount    = historicalCountByMember.TryGetValue(m.MemberNumber, out int hc) ? hc : 0;
+                    int currCount    = currentCountByMember.TryGetValue(m.MemberNumber, out int cc) ? cc : 0;
+                    if (histCount + currCount == 3)
+                    {
+                        displayBonus = CalcService.ValidateBonusPins(displayBonus + 1);
+                        _thirdEntryBonusMemberNumbers.Add(m.MemberNumber);
+                    }
+                }
+
+                int hdcpTotal = scratch + (checkedGames * (m.Handicap + displayBonus));
                 int entryAvg = checkedGames > 0 ? scratch / checkedGames : 0;
 
                 int rowIdx = dgvTournament.Rows.Add(
@@ -270,7 +384,7 @@ namespace NineTapTour.Forms
                     orig.KeepAdjustedAvg,  // Director Check — restored from DB
                     null,  // Squad
                     m.Handicap,
-                    m.Bonus,
+                    displayBonus,
                     m.MoneyWon > 0 ? (object)m.MoneyWon : null,  // Earnings
                     null   // Notes
                 );
@@ -575,11 +689,22 @@ namespace NineTapTour.Forms
                 int.TryParse(row.Cells["colHdcp"].Value.ToString(), out hdcp);
             game.Handicap = hdcp;
 
-            // Bonus
+            // Bonus — for cashing entries the cell shows a post-deduction preview;
+            // preserve the original pre-deduction value in the Game record so reopening
+            // the form does not deduct again on each open.
+            int memberNumberForBonus = row.Cells["colMemberNumber"].Value is int mn ? mn : 0;
             int bonus = 0;
             if (row.Cells["colBonus"].Value != null)
                 int.TryParse(row.Cells["colBonus"].Value.ToString(), out bonus);
-            game.Bonus = bonus;
+            if (_cashingGameIds.Contains(gameId) || _thirdEntryBonusMemberNumbers.Contains(memberNumberForBonus))
+            {
+                WinnerListMemberViewModel orig = _currentTournamentBowlers.FirstOrDefault(b => b.GameId == gameId);
+                game.Bonus = orig != null ? Convert.ToInt32(orig.Bonus) : bonus;
+            }
+            else
+            {
+                game.Bonus = bonus;
+            }
 
             // Director Check → persisted as KeepAdjustedAvg
             game.KeepAdjustedAvg = row.Cells["colDirCheck"].Value as bool? ?? false;
@@ -706,14 +831,23 @@ namespace NineTapTour.Forms
                     int.TryParse(row.Cells["colHdcp"].Value.ToString(), out hdcp);
                 game.Handicap = hdcp;
 
-                // Update bonus on the game from the grid
+                // Compute league average for this game
+                int memberNumber = Convert.ToInt32(row.Cells["colMemberNumber"].Value);
+
+                // Update bonus on the game from the grid — preserve the original pre-deduction
+                // value for cashing/third-entry members so the Game record is not corrupted across sessions.
                 int bonus = 0;
                 if (row.Cells["colBonus"].Value != null)
                     int.TryParse(row.Cells["colBonus"].Value.ToString(), out bonus);
-                game.Bonus = bonus;
-
-                // Compute league average for this game
-                int memberNumber = Convert.ToInt32(row.Cells["colMemberNumber"].Value);
+                if (_cashingGameIds.Contains(gameId) || _thirdEntryBonusMemberNumbers.Contains(memberNumber))
+                {
+                    WinnerListMemberViewModel orig = _currentTournamentBowlers.FirstOrDefault(b => b.GameId == gameId);
+                    game.Bonus = orig != null ? Convert.ToInt32(orig.Bonus) : bonus;
+                }
+                else
+                {
+                    game.Bonus = bonus;
+                }
                 double leagueAvg = FinalizeTempDB.Get30GameAverage(memberNumber, selectedTournament.Id);
                 game.LeagueAverage = leagueAvg;
 
@@ -725,6 +859,9 @@ namespace NineTapTour.Forms
                     {
                         member.Average = adjAvg;
                         member.Handicap = CalcService.CalculateHandicapPins(adjAvg);
+                        // Use the cell value so any manual director edits are respected.
+                        // The grid already shows the correct adjusted bonus (deducted for
+                        // cashers, +1 for third-entry new bowlers) from LoadTournamentGrid.
                         member.Bonus = bonus;
                     }
                 }
@@ -736,9 +873,66 @@ namespace NineTapTour.Forms
 
             db.SaveChanges();
 
+            _isFinalized = true;
+            btnUndoFinalize.Enabled       = false;
+            btnFinalizeTournament.Enabled = false;
+
             MessageBox.Show(
                 "Tournament has been finalized successfully.",
                 "Finalized",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+
+        private void BtnUndoFinalize_Click(object sender, EventArgs e)
+        {
+            var result = MessageBox.Show(
+                "This will revert all grid changes back to the values loaded when the form was opened.\n\nAre you sure?",
+                "Undo Changes",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+            if (result != DialogResult.Yes) return;
+
+            UndoChanges();
+        }
+
+        /// <summary>
+        /// Restores every game record to the values captured at form-open time,
+        /// then reloads the grid. Only available before finalization.
+        /// </summary>
+        private void UndoChanges()
+        {
+            using var db = new NineTapDb();
+
+            foreach (var (gameId, snap) in _gameSnapshot)
+            {
+                Game game = db.Games.Find(gameId);
+                if (game == null) continue;
+
+                game.Game1          = snap.Game1;
+                game.Game2          = snap.Game2;
+                game.Game3          = snap.Game3;
+                game.Game4          = snap.Game4;
+                game.UseGame1       = snap.UseGame1;
+                game.UseGame2       = snap.UseGame2;
+                game.UseGame3       = snap.UseGame3;
+                game.UseGame4       = snap.UseGame4;
+                game.AdjustedAvg    = snap.AdjustedAvg;
+                game.KeepAdjustedAvg = snap.KeepAdjustedAvg;
+                game.Handicap       = snap.Handicap;
+                game.Bonus          = snap.Bonus;
+                game.MoneyWon       = snap.MoneyWon;
+                game.Notes          = snap.Notes;
+            }
+
+            db.SaveChanges();
+
+            _invalidRowIndices.Clear();
+            LoadTournamentGrid();
+
+            MessageBox.Show(
+                "All changes have been reverted to the original values.",
+                "Changes Reverted",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
         }

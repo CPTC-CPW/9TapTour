@@ -173,6 +173,14 @@ namespace NineTapTour.Forms
                 rdoHandicapScore.Visible = true;
                 rdoScratchScore.Visible = true;
                 txtMemberNum.Focus();
+
+                // SelectedIndexChanged fires while the dropdown is hidden, so the
+                // participant list is never loaded on activation. Load it explicitly now.
+                if (FrmMemberScoresHelpers.selectedTournament != null)
+                {
+                    FrmMemberScoresHelpers.overallListOfParticipants =
+                        TournamentDB.GetTournamentMemberList(FrmMemberScoresHelpers.selectedTournament);
+                }
             }
 
             flpMemberScores.ResumeLayout(true);
