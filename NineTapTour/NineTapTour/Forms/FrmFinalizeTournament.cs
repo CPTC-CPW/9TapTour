@@ -39,6 +39,10 @@ namespace NineTapTour.Forms
         // receives the deducted value on finalization.
         private readonly HashSet<int> _cashingGameIds = [];
 
+        // Member numbers whose colBonus cell has been bumped +1 for reaching their 3rd total entry.
+        // Like _cashingGameIds, the original bonus is preserved in Game.Bonus.
+        private readonly HashSet<int> _thirdEntryBonusMemberNumbers = [];
+
         public FrmFinalizeTournament(Tournament selectedTournament)
         {
             this.selectedTournament = selectedTournament;
@@ -165,6 +169,7 @@ namespace NineTapTour.Forms
         private void LoadTournamentGrid()
         {
             _cashingGameIds.Clear();
+            _thirdEntryBonusMemberNumbers.Clear();
             _currentTournamentBowlers = TournamentDB.GetWinnerListMemberData(selectedTournament.Id);
             List<ExcelMember> members = BuildExcelMemberList(_currentTournamentBowlers);
 
@@ -176,6 +181,25 @@ namespace NineTapTour.Forms
             int totalEntries = _currentTournamentBowlers.Count;
             int compEntries  = _currentTournamentBowlers.Count(b => b.IsComp);
             int cashLine     = CalcService.GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
+
+            // Count current-tournament entries per member and finalized historical entries per member.
+            // Used to detect members reaching their 3rd total entry in this tournament.
+            var currentCountByMember = _currentTournamentBowlers
+                .GroupBy(b => b.MemberNumber)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            var historicalCountByMember = new Dictionary<int, int>();
+            using (var db = new NineTapDb())
+            {
+                var historicalCounts = db.Participants
+                    .Where(p => p.Tournament.Id != selectedTournament.Id
+                             && p.Game.IsFinalized)
+                    .GroupBy(p => p.Member.Number)
+                    .Select(g => new { MemberNumber = g.Key, Count = g.Count() })
+                    .ToList();
+                foreach (var item in historicalCounts)
+                    historicalCountByMember[item.MemberNumber] = item.Count;
+            }
 
             // Sort all entries by score descending so the best entry per member is encountered first
             members.Sort((x, y) => y.TotalScore.CompareTo(x.TotalScore));
@@ -266,6 +290,19 @@ namespace NineTapTour.Forms
                     : m.Bonus;
                 if (isCashing)
                     _cashingGameIds.Add(m.GameId);
+
+                // Award +1 bonus pin to new bowlers reaching their 3rd total entry
+                // (history + current tournament), but only when they are not cashing.
+                if (!isCashing)
+                {
+                    int histCount    = historicalCountByMember.TryGetValue(m.MemberNumber, out int hc) ? hc : 0;
+                    int currCount    = currentCountByMember.TryGetValue(m.MemberNumber, out int cc) ? cc : 0;
+                    if (histCount + currCount == 3)
+                    {
+                        displayBonus = CalcService.ValidateBonusPins(displayBonus + 1);
+                        _thirdEntryBonusMemberNumbers.Add(m.MemberNumber);
+                    }
+                }
 
                 int hdcpTotal = scratch + (checkedGames * (m.Handicap + displayBonus));
                 int entryAvg = checkedGames > 0 ? scratch / checkedGames : 0;
@@ -598,10 +635,11 @@ namespace NineTapTour.Forms
             // Bonus — for cashing entries the cell shows a post-deduction preview;
             // preserve the original pre-deduction value in the Game record so reopening
             // the form does not deduct again on each open.
+            int memberNumberForBonus = row.Cells["colMemberNumber"].Value is int mn ? mn : 0;
             int bonus = 0;
             if (row.Cells["colBonus"].Value != null)
                 int.TryParse(row.Cells["colBonus"].Value.ToString(), out bonus);
-            if (_cashingGameIds.Contains(gameId))
+            if (_cashingGameIds.Contains(gameId) || _thirdEntryBonusMemberNumbers.Contains(memberNumberForBonus))
             {
                 WinnerListMemberViewModel orig = _currentTournamentBowlers.FirstOrDefault(b => b.GameId == gameId);
                 game.Bonus = orig != null ? Convert.ToInt32(orig.Bonus) : bonus;
@@ -736,12 +774,15 @@ namespace NineTapTour.Forms
                     int.TryParse(row.Cells["colHdcp"].Value.ToString(), out hdcp);
                 game.Handicap = hdcp;
 
+                // Compute league average for this game
+                int memberNumber = Convert.ToInt32(row.Cells["colMemberNumber"].Value);
+
                 // Update bonus on the game from the grid — preserve the original pre-deduction
-                // value for cashing entries so the Game record is not corrupted across sessions.
+                // value for cashing/third-entry members so the Game record is not corrupted across sessions.
                 int bonus = 0;
                 if (row.Cells["colBonus"].Value != null)
                     int.TryParse(row.Cells["colBonus"].Value.ToString(), out bonus);
-                if (_cashingGameIds.Contains(gameId))
+                if (_cashingGameIds.Contains(gameId) || _thirdEntryBonusMemberNumbers.Contains(memberNumber))
                 {
                     WinnerListMemberViewModel orig = _currentTournamentBowlers.FirstOrDefault(b => b.GameId == gameId);
                     game.Bonus = orig != null ? Convert.ToInt32(orig.Bonus) : bonus;
@@ -750,9 +791,6 @@ namespace NineTapTour.Forms
                 {
                     game.Bonus = bonus;
                 }
-
-                // Compute league average for this game
-                int memberNumber = Convert.ToInt32(row.Cells["colMemberNumber"].Value);
                 double leagueAvg = FinalizeTempDB.Get30GameAverage(memberNumber, selectedTournament.Id);
                 game.LeagueAverage = leagueAvg;
 
@@ -764,7 +802,9 @@ namespace NineTapTour.Forms
                     {
                         member.Average = adjAvg;
                         member.Handicap = CalcService.CalculateHandicapPins(adjAvg);
-                        // Bonus already reflects any deduction (applied at grid load time)
+                        // Use the cell value so any manual director edits are respected.
+                        // The grid already shows the correct adjusted bonus (deducted for
+                        // cashers, +1 for third-entry new bowlers) from LoadTournamentGrid.
                         member.Bonus = bonus;
                     }
                 }
