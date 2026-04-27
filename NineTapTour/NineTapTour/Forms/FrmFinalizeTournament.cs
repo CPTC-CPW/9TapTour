@@ -44,6 +44,12 @@ namespace NineTapTour.Forms
         // Like _cashingGameIds, the original bonus is preserved in Game.Bonus.
         private readonly HashSet<int> _thirdEntryBonusMemberNumbers = [];
 
+        // Best place standing per member number, computed in LoadTournamentGrid and consumed
+        // by LoadDetailGrid to populate the Place column for current-tournament entries.
+        private Dictionary<int, int> _bestStandingByMember = [];
+        // Game IDs whose entry received a non-zero place standing (the "primary" entry).
+        private readonly HashSet<int> _placedGameIds = [];
+
         // Set to true once FinalizeAllGames completes successfully this session.
         private bool _isFinalized = false;
 
@@ -227,12 +233,13 @@ namespace NineTapTour.Forms
         {
             _cashingGameIds.Clear();
             _thirdEntryBonusMemberNumbers.Clear();
+            _placedGameIds.Clear();
             _currentTournamentBowlers = TournamentDB.GetWinnerListMemberData(selectedTournament.Id);
             List<ExcelMember> members = BuildExcelMemberList(_currentTournamentBowlers);
 
             // Compute the correct placement for each member using only their best entry
             List<ExcelMember> deduped = CalcService.CalculatePlaceStandings(members, removeDuplicates: true);
-            Dictionary<int, int> bestStandingByMember = deduped.ToDictionary(m => m.MemberNumber, m => m.PlaceStanding);
+            _bestStandingByMember = deduped.ToDictionary(m => m.MemberNumber, m => m.PlaceStanding);
 
             // Determine the cash line so bonus deductions can be previewed in the grid
             int totalEntries = _currentTournamentBowlers.Count;
@@ -266,17 +273,20 @@ namespace NineTapTour.Forms
             foreach (ExcelMember m in members)
             {
                 m.PlaceStanding = seenMembers.Add(m.MemberNumber)
-                    ? bestStandingByMember[m.MemberNumber]
+                    ? _bestStandingByMember[m.MemberNumber]
                     : 0;
             }
+
+            foreach (ExcelMember m in members)
+                if (m.PlaceStanding > 0) _placedGameIds.Add(m.GameId);
 
             // Display order: groups ordered by best place standing, all entries for the
             // same member clustered together, placed entry first within each group
             members.Sort((x, y) =>
             {
                 // Primary: order groups by the member's best place standing
-                int xBest = bestStandingByMember[x.MemberNumber];
-                int yBest = bestStandingByMember[y.MemberNumber];
+                int xBest = _bestStandingByMember[x.MemberNumber];
+                int yBest = _bestStandingByMember[y.MemberNumber];
                 if (xBest != yBest) return xBest.CompareTo(yBest);
 
                 // Tied members: keep each member's own entries together by member number
@@ -340,7 +350,7 @@ namespace NineTapTour.Forms
                 int checkedGames = (g1Checked ? 1 : 0) + (g2Checked ? 1 : 0)
                                  + (g3Checked ? 1 : 0) + (g4Checked ? 1 : 0);
                 // Pre-deduct bonus for members who will cash (placing within cash line)
-                int memberPlacing = bestStandingByMember.TryGetValue(m.MemberNumber, out int p) ? p : 0;
+                int memberPlacing = _bestStandingByMember.TryGetValue(m.MemberNumber, out int p) ? p : 0;
                 bool isCashing    = memberPlacing > 0 && memberPlacing <= cashLine;
                 int displayBonus  = isCashing
                     ? CalcService.DeductFromBonusPins(memberPlacing, m.Bonus)
@@ -382,7 +392,7 @@ namespace NineTapTour.Forms
                     null,  // 30 Entry AVG
                     orig.AdjustedAvg > 0 ? (object)orig.AdjustedAvg : 0,  // ADJ AVG — restored from DB
                     orig.KeepAdjustedAvg,  // Director Check — restored from DB
-                    null,  // Squad
+                    orig.Squad,
                     m.Handicap,
                     displayBonus,
                     m.MoneyWon > 0 ? (object)m.MoneyWon : null,  // Earnings
@@ -1059,7 +1069,7 @@ namespace NineTapTour.Forms
                     adjAvg > 0 ? (object)adjAvg : null,          // Adjusted AVG from tournament grid
                     hdcp,
                     bonus,
-                    null,                                        // Place — not yet finalized
+                    (_placedGameIds.Contains(b.GameId) && _bestStandingByMember.TryGetValue(memberNumber, out int ps)) ? (object)ps : null,
                     b.MoneyWon > 0 ? (object)b.MoneyWon : null,
                     null                                         // Notes
                 );

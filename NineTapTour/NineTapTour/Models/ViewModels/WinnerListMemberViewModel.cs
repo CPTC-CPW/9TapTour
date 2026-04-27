@@ -62,5 +62,7 @@ namespace NineTapTour.Models.ViewModels
 
         /// <summary>Maps to the Director Check checkbox — persisted as Game.KeepAdjustedAvg.</summary>
         public bool KeepAdjustedAvg { get; set; }
+
+        public int Squad { get; set; }
     }
 }
