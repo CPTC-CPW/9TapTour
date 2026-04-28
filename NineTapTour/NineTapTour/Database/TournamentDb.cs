@@ -340,7 +340,8 @@ namespace NineTapTour.Database
                             UseGame2 = g.UseGame2,
                             UseGame3 = g.UseGame3,
                             UseGame4 = g.UseGame4,
-                            KeepAdjustedAvg = g.KeepAdjustedAvg
+                            KeepAdjustedAvg = g.KeepAdjustedAvg,
+                            Squad = p.Squad
                         })];
             }
         }
