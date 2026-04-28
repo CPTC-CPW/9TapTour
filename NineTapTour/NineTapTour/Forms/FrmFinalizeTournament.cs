@@ -395,7 +395,9 @@ namespace NineTapTour.Forms
                     orig.Squad,
                     m.Handicap,
                     displayBonus,
-                    (m.MoneyWon ?? 0) + (orig.SidePot ?? 0) > 0 ? (object)((m.MoneyWon ?? 0) + (orig.SidePot ?? 0)) : null,  // Earnings (MoneyWon + SidePot)
+                    _placedGameIds.Contains(m.GameId)
+                        ? ((m.MoneyWon ?? 0) + (orig.SidePot ?? 0) > 0 ? (object)((m.MoneyWon ?? 0) + (orig.SidePot ?? 0)) : null)
+                        : (m.MoneyWon > 0 ? (object)m.MoneyWon : null),  // Earnings (SidePot only on placed entry)
                     null   // Notes
                 );
                 dgvTournament.Rows[rowIdx].Tag = m.GameId;
@@ -1070,7 +1072,9 @@ namespace NineTapTour.Forms
                     hdcp,
                     bonus,
                     (_placedGameIds.Contains(b.GameId) && _bestStandingByMember.TryGetValue(memberNumber, out int ps)) ? (object)ps : null,
-                    (b.MoneyWon ?? 0) + (b.SidePot ?? 0) > 0 ? (object)((b.MoneyWon ?? 0) + (b.SidePot ?? 0)) : null,  // Earnings (MoneyWon + SidePot)
+                    _placedGameIds.Contains(b.GameId)
+                        ? ((b.MoneyWon ?? 0) + (b.SidePot ?? 0) > 0 ? (object)((b.MoneyWon ?? 0) + (b.SidePot ?? 0)) : null)
+                        : (b.MoneyWon > 0 ? (object)b.MoneyWon : null),  // Earnings (SidePot only on placed entry)
                     null                                         // Notes
                 );
                 dgvDetail.Rows[rowIdx].DefaultCellStyle.BackColor = Color.LightBlue;
