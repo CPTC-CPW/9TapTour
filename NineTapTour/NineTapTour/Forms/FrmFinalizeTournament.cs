@@ -49,6 +49,9 @@ namespace NineTapTour.Forms
         private Dictionary<int, int> _bestStandingByMember = [];
         // Game IDs whose entry received a non-zero place standing (the "primary" entry).
         private readonly HashSet<int> _placedGameIds = [];
+        // Per member: (Scratch, Games) from the last (30 − currentEntryCount) finalized
+        // entries in prior tournaments. Combined with live grid values in UpdateAll30AvgForMember.
+        private Dictionary<int, (int Scratch, int Games)> _history30ByMember = [];
 
         // Set to true once FinalizeAllGames completes successfully this session.
         private bool _isFinalized = false;
@@ -311,6 +314,56 @@ namespace NineTapTour.Forms
                     historicalCountByMember[item.MemberNumber] = item.Count;
             }
 
+            // Precompute per-member historical scratch/games for the 30-entry AVG preview.
+            // We load the last (30 − currentCount) finalized entries per member so that
+            // adding in live current-entry values gives an up-to-date running average.
+            _history30ByMember.Clear();
+            var memberNumbersInTournament = _currentTournamentBowlers
+                .Select(b => b.MemberNumber).Distinct().ToHashSet();
+            using (var dbH = new NineTapDb())
+            {
+                var allHistory = dbH.Participants
+                    .Where(p => p.Tournament.Id != selectedTournament.Id
+                             && p.Game.IsFinalized
+                             && memberNumbersInTournament.Contains(p.Member.Number))
+                    .OrderByDescending(p => p.Tournament.Date)
+                    .ThenByDescending(p => p.Game.Id)
+                    .Select(p => new
+                    {
+                        MemberNumber = p.Member.Number,
+                        G1 = p.Game.Game1, G2 = p.Game.Game2,
+                        G3 = p.Game.Game3, G4 = p.Game.Game4,
+                        U1 = p.Game.UseGame1, U2 = p.Game.UseGame2,
+                        U3 = p.Game.UseGame3, U4 = p.Game.UseGame4
+                    })
+                    .ToList();
+
+                foreach (var grp in allHistory.GroupBy(x => x.MemberNumber))
+                {
+                    int memberNum = grp.Key;
+                    int currCount = currentCountByMember.TryGetValue(memberNum, out int cc) ? cc : 0;
+                    int limit     = Math.Max(30 - currCount, 0);
+                    int totalScratch = 0, totalGames = 0, taken = 0;
+                    foreach (var g in grp)
+                    {
+                        if (taken >= limit) break;
+                        int gCount = (g.U1 != false && g.G1.HasValue ? 1 : 0)
+                                   + (g.U2 != false && g.G2.HasValue ? 1 : 0)
+                                   + (g.U3 != false && g.G3.HasValue ? 1 : 0)
+                                   + (g.U4 != false && g.G4.HasValue ? 1 : 0);
+                        if (gCount == 0) continue;
+                        totalScratch += (g.U1 != false ? (g.G1 ?? 0) : 0)
+                                      + (g.U2 != false ? (g.G2 ?? 0) : 0)
+                                      + (g.U3 != false ? (g.G3 ?? 0) : 0)
+                                      + (g.U4 != false ? (g.G4 ?? 0) : 0);
+                        totalGames   += gCount;
+                        taken++;
+                    }
+                    if (totalGames > 0)
+                        _history30ByMember[memberNum] = (totalScratch, totalGames);
+                }
+            }
+
             // Sort all entries by score descending so the best entry per member is encountered first
             members.Sort((x, y) => y.TotalScore.CompareTo(x.TotalScore));
 
@@ -456,6 +509,10 @@ namespace NineTapTour.Forms
                     dgvTournament.Rows[rowIdx].Cells["colDay1Place"].Value = day1Place > 0 ? day1Place : null;
                 }
             }
+
+            // Populate 30 Entry AVG for all member rows now that all entries are loaded
+            foreach (int memberNum in _currentTournamentBowlers.Select(b => b.MemberNumber).Distinct())
+                UpdateAll30AvgForMember(memberNum);
 
             // Validate all rows so previously-valid rows are not incorrectly flagged on open
             for (int i = 0; i < dgvTournament.Rows.Count; i++)
@@ -729,6 +786,46 @@ namespace NineTapTour.Forms
             row.Cells["colScratchTotal"].Value = scratch;
             row.Cells["colHdcpTotal"].Value    = hdcpTotal;
             row.Cells["colEntryAvg"].Value     = entryAvg;
+
+            if (row.Cells["colMemberNumber"].Value is int memberNum30)
+                UpdateAll30AvgForMember(memberNum30);
+        }
+
+        /// <summary>
+        /// Recomputes and updates the col30EntryAvg cell for every row belonging to the
+        /// given member, combining live current-tournament game data with the pre-loaded
+        /// historical scratch/games stored in <see cref="_history30ByMember"/>.
+        /// </summary>
+        private void UpdateAll30AvgForMember(int memberNumber)
+        {
+            int currScratch = 0, currGames = 0;
+            foreach (DataGridViewRow row in dgvTournament.Rows)
+            {
+                if (row.Cells["colMemberNumber"].Value is not int mn || mn != memberNumber) continue;
+                bool c1 = row.Cells["colGame1Check"].Value as bool? ?? false;
+                bool c2 = row.Cells["colGame2Check"].Value as bool? ?? false;
+                bool c3 = row.Cells["colGame3Check"].Value as bool? ?? false;
+                bool c4 = row.Cells["colGame4Check"].Value as bool? ?? false;
+
+                currScratch += (c1 ? Convert.ToInt32(row.Cells["colGame1"].Value ?? 0) : 0)
+                             + (c2 ? Convert.ToInt32(row.Cells["colGame2"].Value ?? 0) : 0)
+                             + (c3 ? Convert.ToInt32(row.Cells["colGame3"].Value ?? 0) : 0)
+                             + (c4 ? Convert.ToInt32(row.Cells["colGame4"].Value ?? 0) : 0);
+                currGames   += (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0) + (c4 ? 1 : 0);
+            }
+
+            _history30ByMember.TryGetValue(memberNumber, out var hist);
+            int totalGames   = hist.Games + currGames;
+            int totalScratch = hist.Scratch + currScratch;
+            double avg30     = totalGames > 0
+                ? Math.Round((double)totalScratch / totalGames, 1) : 0;
+            object avgVal = avg30 > 0 ? (object)avg30 : null;
+
+            foreach (DataGridViewRow row in dgvTournament.Rows)
+            {
+                if (row.Cells["colMemberNumber"].Value is not int mn || mn != memberNumber) continue;
+                row.Cells["col30EntryAvg"].Value = avgVal;
+            }
         }
 
         /// <summary>
@@ -821,8 +918,6 @@ namespace NineTapTour.Forms
 
                 if (adjAvg > 0)
                 {
-                    int newHdcp = CalcService.CalculateHandicapPins(adjAvg);
-                    dgvTournament.Rows[e.RowIndex].Cells["colHdcp"].Value = newHdcp;
                     RecalculateTournamentRow(e.RowIndex);
                 }
 
@@ -834,7 +929,6 @@ namespace NineTapTour.Forms
                     if (Equals(row.Cells["colMemberNumber"].Value, memberNumber))
                     {
                         row.Cells["colAdjAvg"].Value = dgvTournament.Rows[e.RowIndex].Cells["colAdjAvg"].Value;
-                        row.Cells["colHdcp"].Value = dgvTournament.Rows[e.RowIndex].Cells["colHdcp"].Value;
                         RecalculateTournamentRow(row.Index);
                         ValidateRow(row.Index);
                         dgvTournament.InvalidateRow(row.Index);
@@ -1362,6 +1456,13 @@ namespace NineTapTour.Forms
                 .Reverse()
                 .ToList();
 
+            // Pre-compute the historical portion of the 30-entry AVG window
+            int histLimit     = Math.Max(30 - currentEntries.Count, 0);
+            int histScratch30 = history.Take(histLimit).Sum(h => h.TotalScore);
+            int histGames30   = history.Take(histLimit).Sum(h => h.GamesPlayed);
+            int currScratch30 = 0, currGames30 = 0;
+            var currentDetailRowIndices = new List<int>();
+
             foreach (WinnerListMemberViewModel b in currentEntries)
             {
                 // Find the matching tournament grid row to read live-edited values
@@ -1428,8 +1529,21 @@ namespace NineTapTour.Forms
                         : (b.MoneyWon > 0 ? (object)b.MoneyWon : null),  // Earnings (SidePot only on placed entry)
                     null                                         // Notes
                 );
+                currScratch30 += scratch;
+                currGames30   += validGames;
+                currentDetailRowIndices.Add(rowIdx);
                 dgvDetail.Rows[rowIdx].DefaultCellStyle.BackColor = Color.LightBlue;
+                if (_cashingGameIds.Contains(b.GameId))
+                    dgvDetail.Rows[rowIdx].Cells["colDetailBonus"].Style.BackColor = Color.LightSalmon;
             }
+
+            // Fill in the 30 Entry AVG on current-tournament rows
+            double preview30Avg = (histGames30 + currGames30) > 0
+                ? Math.Round((double)(histScratch30 + currScratch30) / (histGames30 + currGames30), 1)
+                : 0;
+            object preview30Val = preview30Avg > 0 ? (object)preview30Avg : null;
+            foreach (int ri in currentDetailRowIndices)
+                dgvDetail.Rows[ri].Cells["colDetail30Avg"].Value = preview30Val;
 
             // --- Finalized historical rows (ordered by date descending from DB) ---
             // Group by tournament date, reverse entries within each date so the first
@@ -1470,6 +1584,8 @@ namespace NineTapTour.Forms
                         h.Notes
                     );
 
+                    if (h.MoneyWon > 0)
+                        dgvDetail.Rows[rowIdx].Cells["colDetailBonus"].Style.BackColor = Color.LightSalmon;
                     // Highlight the 30 AVG cell for entries within the rolling 30-game window
                     if (historyIndex < thirtyGameWindow)
                         dgvDetail.Rows[rowIdx].Cells["colDetail30Avg"].Style.BackColor = Color.LightGreen;
@@ -1478,7 +1594,7 @@ namespace NineTapTour.Forms
             }
 
             decimal lifetimeEarnings = history.Sum(h => h.MoneyWon);
-            UpdateDetailGridHeaders(history.Take(thirtyGameWindow).ToList(), lifetimeEarnings);
+            UpdateDetailGridHeaders(history.Take(thirtyGameWindow).ToList(), lifetimeEarnings, preview30Avg);
 
             double leagueAvg = history.FirstOrDefault()?.trueAVG ?? 0;
             lblPlayerInfo.Text = $"Mem#   {memberNumber}        {memberName,-35}AVG   {(int)Math.Round(leagueAvg)}";
@@ -1488,7 +1604,7 @@ namespace NineTapTour.Forms
         /// Updates the column headers of <see cref="dgvDetail"/> to show the sum (or computed
         /// average) of the provided entries — typically the last 30 finalized games.
         /// </summary>
-        private void UpdateDetailGridHeaders(List<PlayerHistoryViewModel> last30, decimal lifetimeEarnings)
+        private void UpdateDetailGridHeaders(List<PlayerHistoryViewModel> last30, decimal lifetimeEarnings, double preview30Avg = 0)
         {
             if (last30.Count == 0)
             {
@@ -1523,7 +1639,8 @@ namespace NineTapTour.Forms
             dgvDetail.Columns["colDetailScratch"].HeaderText  = $"Scratch\n({scratch})";
             dgvDetail.Columns["colDetailWHdcp"].HeaderText    = $"w/HDCP\n({wHdcpSum})";
             dgvDetail.Columns["colDetailEntry"].HeaderText    = $"Entry\n({entryAvg})";
-            dgvDetail.Columns["colDetail30Avg"].HeaderText    = $"30 AVG\n({avg30:0.#})";
+            double headerAvg30 = preview30Avg > 0 ? preview30Avg : avg30;
+            dgvDetail.Columns["colDetail30Avg"].HeaderText    = $"30 AVG\n({headerAvg30:0.#})";
             dgvDetail.Columns["colDetailEarnings"].HeaderText = $"Earnings\n({lifetimeEarnings:0.00})";
         }
     }
