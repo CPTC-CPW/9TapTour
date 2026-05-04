@@ -64,5 +64,15 @@ namespace NineTapTour.Models.ViewModels
         public bool KeepAdjustedAvg { get; set; }
 
         public int Squad { get; set; }
+
+        /// <summary>
+        /// The database Member.Id (primary key) — used to cross-reference Day 1 and doubles entries.
+        /// </summary>
+        public int MemberId { get; set; }
+
+        /// <summary>
+        /// For 2-day tournaments: true when this entry is a Day 2 (finals) round entry.
+        /// </summary>
+        public bool? IsDay2 { get; set; }
     }
 }

@@ -72,6 +72,7 @@
             grpStats = new System.Windows.Forms.GroupBox();
             chkIgnoreUnscoredGames = new System.Windows.Forms.CheckBox();
             cbCompEntry = new System.Windows.Forms.CheckBox();
+            chkIsDay2 = new System.Windows.Forms.CheckBox();
             lblMoney = new System.Windows.Forms.Label();
             txtMoney = new System.Windows.Forms.TextBox();
             lblPlayer2 = new System.Windows.Forms.Label();
@@ -116,6 +117,7 @@
             btnPlaceStandings = new System.Windows.Forms.Button();
             btnFinalizeTounament = new System.Windows.Forms.Button();
             btnTournamentResults = new System.Windows.Forms.Button();
+            btnManagePairings = new System.Windows.Forms.Button();
             panel1 = new System.Windows.Forms.Panel();
             flpMemberScores = new System.Windows.Forms.FlowLayoutPanel();
             panel5 = new System.Windows.Forms.Panel();
@@ -664,6 +666,7 @@
             // 
             grpStats.Controls.Add(chkIgnoreUnscoredGames);
             grpStats.Controls.Add(cbCompEntry);
+            grpStats.Controls.Add(chkIsDay2);
             grpStats.Controls.Add(lblMoney);
             grpStats.Controls.Add(txtMoney);
             grpStats.Controls.Add(lblPlayer2);
@@ -715,6 +718,19 @@
             cbCompEntry.TabStop = false;
             cbCompEntry.Text = "Comp Entry";
             cbCompEntry.UseVisualStyleBackColor = true;
+            // 
+            // chkIsDay2
+            // 
+            chkIsDay2.AutoSize = true;
+            chkIsDay2.Location = new System.Drawing.Point(288, 70);
+            chkIsDay2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkIsDay2.Name = "chkIsDay2";
+            chkIsDay2.Size = new System.Drawing.Size(85, 19);
+            chkIsDay2.TabIndex = 27;
+            chkIsDay2.TabStop = false;
+            chkIsDay2.Text = "Day 2 Entry";
+            chkIsDay2.UseVisualStyleBackColor = true;
+            chkIsDay2.Visible = false;
             // 
             // lblMoney
             // 
@@ -905,7 +921,6 @@
             // lbxHighSelected
             // 
             lbxHighSelected.FormattingEnabled = true;
-            lbxHighSelected.ItemHeight = 15;
             lbxHighSelected.Location = new System.Drawing.Point(21, 90);
             lbxHighSelected.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             lbxHighSelected.Name = "lbxHighSelected";
@@ -1260,6 +1275,18 @@
             btnTournamentResults.UseVisualStyleBackColor = true;
             btnTournamentResults.Click += BtnTournamentResults_Click;
             // 
+            // btnManagePairings
+            // 
+            btnManagePairings.Location = new System.Drawing.Point(5, 237);
+            btnManagePairings.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnManagePairings.Name = "btnManagePairings";
+            btnManagePairings.Size = new System.Drawing.Size(234, 27);
+            btnManagePairings.TabIndex = 43;
+            btnManagePairings.Text = "Manage Pairings";
+            btnManagePairings.UseVisualStyleBackColor = true;
+            btnManagePairings.Visible = false;
+            btnManagePairings.Click += BtnManagePairings_Click;
+            // 
             // panel1
             // 
             panel1.Controls.Add(lblLastName);
@@ -1293,7 +1320,7 @@
             flpMemberScores.Location = new System.Drawing.Point(0, 0);
             flpMemberScores.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             flpMemberScores.Name = "flpMemberScores";
-            flpMemberScores.Size = new System.Drawing.Size(1216, 807);
+            flpMemberScores.Size = new System.Drawing.Size(1230, 782);
             flpMemberScores.TabIndex = 1;
             flpMemberScores.SizeChanged += FlpMemberScores_SizeChanged;
             // 
@@ -1334,10 +1361,11 @@
             // 
             panel4.Controls.Add(grpComments);
             panel4.Controls.Add(btnFinalizeTounament);
+            panel4.Controls.Add(btnManagePairings);
             panel4.Location = new System.Drawing.Point(956, 633);
             panel4.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             panel4.Name = "panel4";
-            panel4.Size = new System.Drawing.Size(247, 246);
+            panel4.Size = new System.Drawing.Size(247, 275);
             panel4.TabIndex = 46;
             // 
             // FrmMemberScores
@@ -1346,7 +1374,7 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoScroll = true;
             BackColor = System.Drawing.Color.White;
-            ClientSize = new System.Drawing.Size(1216, 807);
+            ClientSize = new System.Drawing.Size(1230, 782);
             Controls.Add(flpMemberScores);
             ForeColor = System.Drawing.SystemColors.ControlText;
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
@@ -1483,5 +1511,7 @@
         private System.Windows.Forms.RadioButton rdoGameSC;
         private System.Windows.Forms.RadioButton rdoGameHC;
         private System.Windows.Forms.CheckBox chkIgnoreUnscoredGames;
+        private System.Windows.Forms.CheckBox chkIsDay2;
+        private System.Windows.Forms.Button btnManagePairings;
     }
 }

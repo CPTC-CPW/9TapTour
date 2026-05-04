@@ -86,6 +86,8 @@ namespace NineTapTour.Forms
                 newTournament.IsOnlyThreeGames = true;
             }
 
+            newTournament.IsTwoDay = chkTwoDay.Checked;
+
 
             try
             {
@@ -156,6 +158,7 @@ namespace NineTapTour.Forms
                 txtSponsors.Text = tourToEdit.Sponsors;
                 rdoDoubles.Checked = tourToEdit.Doubles ? true : false;
                 rdo3OutOf4.Checked = tourToEdit.ThreeOutOf4 ? true : false;
+                chkTwoDay.Checked = tourToEdit.IsTwoDay;
                 rtxtNotes.Text = tourToEdit.Notes;
                 btnSubmit.Text = "Update Tournament";
                 lblEdit.Text = "Currently Editing " + tourToEdit.TourneyNameDate;
@@ -180,6 +183,7 @@ namespace NineTapTour.Forms
             txtSponsors.Clear();
             rdoDoubles.Checked = false;
             rdo3OutOf4.Checked = false;
+            chkTwoDay.Checked = false;
             //Disables the double tournament Radio Button
             //To enable Double tournament set rdoDoubles.Enabled to true
             rdoDoubles.Enabled = false;
@@ -261,6 +265,11 @@ namespace NineTapTour.Forms
             {
                 rdoDoubles.Enabled = true;
             }
+        }
+
+        private void chkTwoDay_CheckedChanged(object sender, EventArgs e)
+        {
+            checkCleared();
         }
 
         private void FrmNewTournament_Load(object sender, EventArgs e)
