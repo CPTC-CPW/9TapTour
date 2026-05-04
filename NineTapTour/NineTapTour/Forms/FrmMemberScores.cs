@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using CalcService = NineTapTour.Calculations.Calculations;
 using NineTapTour.Database;
 using NineTapTour.Models;
 using NineTapTour.Models.ViewModels;
@@ -275,8 +276,13 @@ namespace NineTapTour.Forms
 
                     Game currentGame = GetScoresById(currentMem.Id);
 
-                    txtHandicap.Text = currentMem.Handicap.ToString();
-                    txtBonusPins.Text = currentMem.Bonus.ToString();
+                    PlayerHistoryViewModel latestHistory = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
+                    int displayHandicap = latestHistory != null && latestHistory.AVG > 0
+                        ? CalcService.CalculateHandicapPins(latestHistory.AVG)
+                        : (currentMem.Handicap ?? 0);
+                    int displayBonus = latestHistory != null ? latestHistory.Bonus : currentMem.Bonus;
+                    txtHandicap.Text = displayHandicap.ToString();
+                    txtBonusPins.Text = displayBonus.ToString();
 
                     GetScores(currentGame);
 
@@ -553,8 +559,11 @@ namespace NineTapTour.Forms
 
                     if (currentGame == null)
                     {
-                        player.Game.Bonus = currentMem.Bonus;
-                        player.Game.Handicap = currentMem.Handicap;
+                        PlayerHistoryViewModel latestHistory = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
+                        player.Game.Handicap = latestHistory != null && latestHistory.AVG > 0
+                            ? CalcService.CalculateHandicapPins(latestHistory.AVG)
+                            : currentMem.Handicap;
+                        player.Game.Bonus = latestHistory != null ? latestHistory.Bonus : currentMem.Bonus;
                     }
                     else
                     {
