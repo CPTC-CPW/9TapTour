@@ -1450,10 +1450,34 @@ namespace NineTapTour.Forms
 
             // --- Current tournament rows (blue highlight) ---
             // Pull live values from dgvTournament so edits are immediately reflected.
-            // Entries are reversed so the first entry for the member appears at the top.
+            // Entries are sorted by w/HDCP descending (highest score first).
             var currentEntries = _currentTournamentBowlers
                 .Where(b => b.MemberNumber == memberNumber)
-                .Reverse()
+                .OrderByDescending(b =>
+                {
+                    DataGridViewRow tr = null;
+                    foreach (DataGridViewRow r in dgvTournament.Rows)
+                        if (r.Tag is int gid && gid == b.GameId) { tr = r; break; }
+                    if (tr != null)
+                    {
+                        bool c1 = tr.Cells["colGame1Check"].Value as bool? ?? false;
+                        bool c2 = tr.Cells["colGame2Check"].Value as bool? ?? false;
+                        bool c3 = tr.Cells["colGame3Check"].Value as bool? ?? false;
+                        bool c4 = tr.Cells["colGame4Check"].Value as bool? ?? false;
+                        int s  = (c1 ? Convert.ToInt32(tr.Cells["colGame1"].Value ?? 0) : 0)
+                               + (c2 ? Convert.ToInt32(tr.Cells["colGame2"].Value ?? 0) : 0)
+                               + (c3 ? Convert.ToInt32(tr.Cells["colGame3"].Value ?? 0) : 0)
+                               + (c4 ? Convert.ToInt32(tr.Cells["colGame4"].Value ?? 0) : 0);
+                        int gc = (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0) + (c4 ? 1 : 0);
+                        int h  = Convert.ToInt32(tr.Cells["colHdcp"].Value  ?? 0);
+                        int bn = Convert.ToInt32(tr.Cells["colBonus"].Value ?? 0);
+                        return s + gc * (h + bn);
+                    }
+                    int scratch = (b.Game1 ?? 0) + (b.Game2 ?? 0) + (b.Game3 ?? 0) + (b.Game4 ?? 0);
+                    int games   = (b.Game1.HasValue ? 1 : 0) + (b.Game2.HasValue ? 1 : 0)
+                                + (b.Game3.HasValue ? 1 : 0) + (b.Game4.HasValue ? 1 : 0);
+                    return scratch + games * (Convert.ToInt32(b.Handicap) + Convert.ToInt32(b.Bonus));
+                })
                 .ToList();
 
             // Pre-compute the historical portion of the 30-entry AVG window
@@ -1533,7 +1557,9 @@ namespace NineTapTour.Forms
                 currGames30   += validGames;
                 currentDetailRowIndices.Add(rowIdx);
                 dgvDetail.Rows[rowIdx].DefaultCellStyle.BackColor = Color.LightBlue;
-                if (_cashingGameIds.Contains(b.GameId))
+                // Only highlight the bonus cell on the single entry the bowler cashed with
+                // (placed entry), not on every entry for that member.
+                if (_cashingGameIds.Contains(b.GameId) && _placedGameIds.Contains(b.GameId))
                     dgvDetail.Rows[rowIdx].Cells["colDetailBonus"].Style.BackColor = Color.LightSalmon;
             }
 
