@@ -3,6 +3,7 @@ using CalcService = NineTapTour.Calculations.Calculations;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -33,6 +34,11 @@ public partial class FrmTournamentResults : Form
     List<ExcelMember> clientRequested = [];
     List<ExcelMember> winners = [];
 
+    // Team View controls (doubles only)
+    private DataGridView dgvTeamView;
+    private Button btnTeamView;
+    private bool _inTeamView = false;
+
     /* Floor directors get a comp entry into tournament when they help with tournament. 
      * They don't pay the entry fee, but do qualify to cash.
      */
@@ -58,6 +64,14 @@ public partial class FrmTournamentResults : Form
         {
             lblTournamentName.Text += " (3 OUT OF 4 TOURNAMENT)";
         }
+
+        // For doubles tournaments the director enters the number of *teams* they want to place
+        if (tourny.Doubles)
+        {
+            lblClientRequestCount.Text = "How many teams would you like places for?";
+        }
+
+        InitTeamViewControls();
 
         // Create a List<ExcelMember> and populate it with this tournament's participants
         winners = BuildWinnersList();
@@ -176,7 +190,19 @@ public partial class FrmTournamentResults : Form
             {
                 newRow[EARNINGS_COLUMN_NAME] = earnings;
             }
-            newRow[PLACE_STANDING_COLUMN_NAME] = tr + 1;
+            // For doubles, consecutive filler rows share a team place (2 rows per team slot)
+            int fillerPlace;
+            if (tourny.Doubles)
+            {
+                int filledTeams   = clientRequested.Count / 2;
+                int fillerOffset  = tr - clientRequested.Count;
+                fillerPlace = filledTeams + fillerOffset / 2 + 1;
+            }
+            else
+            {
+                fillerPlace = tr + 1;
+            }
+            newRow[PLACE_STANDING_COLUMN_NAME] = fillerPlace;
             newRow[FULLNAME_COLUMN_NAME] = "";
             newRow[HANDICAP_COLUMN_NAME] = "";
             newRow[TOTAL_SCORE_COLUMN_NAME] = "";
@@ -248,6 +274,9 @@ public partial class FrmTournamentResults : Form
         List<WinnerListMemberViewModel> bowlers = TournamentDB.GetWinnerListMemberData(tourny.Id);
 
         totalTournamentEntries = bowlers.Count;
+
+        if (tourny.Doubles)
+            return BuildWinnersListDoubles(bowlers);
 
         // Batch-query each member's previous tournament handicap and bonus.
         // Uses the same min/max cash logic as FrmFinalizeTournament and FrmMemberScores.
@@ -353,6 +382,258 @@ public partial class FrmTournamentResults : Form
             tournyBowlers.Add(m);
         }
         return tournyBowlers;
+    }
+
+    /// <summary>
+    /// Builds the winners list for a doubles tournament.
+    /// Each DoublesTeam produces two ExcelMember entries with the same PlaceStanding and
+    /// TotalScore (combined team HDCP total) so they appear as ties in the results grid.
+    /// MoneyWon is already stored at the individual 50% share by FrmFinalizeTournament.
+    /// </summary>
+    private List<ExcelMember> BuildWinnersListDoubles(List<WinnerListMemberViewModel> bowlers)
+    {
+        // Build prevHBByMember (same logic as the singles path)
+        var memberNumbers = bowlers.Select(b => b.MemberNumber).Distinct().ToHashSet();
+        var prevHBByMember = new Dictionary<int, (int Hdcp, int Bonus)>();
+        using (var dbPrev = new NineTapDb())
+        {
+            var latestApproved = dbPrev.Participants
+                .Where(p => memberNumbers.Contains(p.Member.Number)
+                         && p.Tournament.Id != tourny.Id
+                         && p.Game.IsFinalized
+                         && p.Game.AdjustedAvg > 0)
+                .GroupBy(p => p.Member.Number)
+                .Select(g => new { MemberNumber = g.Key, LatestDate = g.Max(p => p.Tournament.Date) })
+                .ToList();
+
+            foreach (var item in latestApproved)
+            {
+                var prevEntries = dbPrev.Participants
+                    .Where(p => p.Member.Number == item.MemberNumber
+                             && p.Tournament.Id != tourny.Id
+                             && p.Game.IsFinalized
+                             && p.Tournament.Date == item.LatestDate)
+                    .Select(p => new { p.Game.AdjustedAvg, Bonus = p.Game.Bonus ?? 0, MoneyWon = p.Game.MoneyWon ?? 0 })
+                    .ToList();
+
+                if (prevEntries.Count == 0) continue;
+
+                var withAvg  = prevEntries.FirstOrDefault(e => e.AdjustedAvg > 0);
+                int prevHdcp = withAvg != null ? CalcService.CalculateHandicapPins(withAvg.AdjustedAvg) : 0;
+                int prevBonus = prevEntries.Any(e => e.MoneyWon > 0)
+                    ? prevEntries.Min(e => e.Bonus)
+                    : prevEntries.Max(e => e.Bonus);
+
+                prevHBByMember[item.MemberNumber] = (prevHdcp, prevBonus);
+            }
+        }
+
+        // Load doubles teams and match to bowler entries
+        List<DoublesTeam> teams = DoublesTeamDB.GetTeamsByTournament(tourny.Id);
+        var bowlersByMemberId   = bowlers.GroupBy(b => b.MemberId).ToDictionary(g => g.Key, g => g.ToList());
+
+        var teamRows = new List<(int CombinedHdcpTotal,
+                                 WinnerListMemberViewModel M1, WinnerListMemberViewModel M2,
+                                 int H1, int B1, int H2, int B2)>();
+
+        foreach (var team in teams)
+        {
+            if (!bowlersByMemberId.TryGetValue(team.Member1.Id, out var e1)) continue;
+            if (!bowlersByMemberId.TryGetValue(team.Member2.Id, out var e2)) continue;
+
+            var m1 = e1.FirstOrDefault(e => e.Squad == team.Squad);
+            var m2 = e2.FirstOrDefault(e => e.Squad == team.Squad);
+            if (m1 == null || m2 == null) continue;
+
+            bool has1 = prevHBByMember.TryGetValue(m1.MemberNumber, out var hb1);
+            bool has2 = prevHBByMember.TryGetValue(m2.MemberNumber, out var hb2);
+
+            int hdcp1  = has1 && hb1.Hdcp > 0 ? hb1.Hdcp : Convert.ToInt32(m1.Handicap);
+            int hdcp2  = has2 && hb2.Hdcp > 0 ? hb2.Hdcp : Convert.ToInt32(m2.Handicap);
+            int bonus1 = has1 ? hb1.Bonus : Convert.ToInt32(m1.Bonus);
+            int bonus2 = has2 ? hb2.Bonus : Convert.ToInt32(m2.Bonus);
+
+            int combinedHdcpTotal = (m1.Game1 ?? 0) + (m1.Game2 ?? 0)
+                                  + (m2.Game1 ?? 0) + (m2.Game2 ?? 0)
+                                  + 2 * (hdcp1 + bonus1)
+                                  + 2 * (hdcp2 + bonus2);
+
+            teamRows.Add((combinedHdcpTotal, m1, m2, hdcp1, bonus1, hdcp2, bonus2));
+        }
+
+        // Sort descending, assign places with tie detection
+        teamRows.Sort((a, b) => b.CombinedHdcpTotal.CompareTo(a.CombinedHdcpTotal));
+        var teamPlaces = new int[teamRows.Count];
+        if (teamRows.Count > 0)
+        {
+            teamPlaces[0] = 1;
+            for (int i = 1; i < teamRows.Count; i++)
+                teamPlaces[i] = teamRows[i].CombinedHdcpTotal == teamRows[i - 1].CombinedHdcpTotal
+                    ? teamPlaces[i - 1]
+                    : i + 1;
+        }
+
+        var result = new List<ExcelMember>();
+        for (int t = 0; t < teamRows.Count; t++)
+        {
+            var (combinedHdcpTotal, m1, m2, h1, b1, h2, b2) = teamRows[t];
+            int place = teamPlaces[t];
+
+            if (m1.IsComp) compEntries++;
+            if (m2.IsComp) compEntries++;
+
+            result.Add(new ExcelMember
+            {
+                MemberNumber  = m1.MemberNumber,
+                Name          = m1.BowlerName,
+                Handicap      = h1,
+                Bonus         = b1,
+                MoneyWon      = m1.MoneyWon,    // already stored as 50% share by FrmFinalizeTournament
+                SidePot       = m1.SidePot,
+                GameId        = m1.GameId,
+                Game1Score    = m1.Game1 ?? 0,
+                Game2Score    = m1.Game2 ?? 0,
+                Game3Score    = 0,
+                Game4Score    = 0,
+                TotalScore    = combinedHdcpTotal,
+                PlaceStanding = place
+            });
+
+            result.Add(new ExcelMember
+            {
+                MemberNumber  = m2.MemberNumber,
+                Name          = m2.BowlerName,
+                Handicap      = h2,
+                Bonus         = b2,
+                MoneyWon      = m2.MoneyWon,
+                SidePot       = m2.SidePot,
+                GameId        = m2.GameId,
+                Game1Score    = m2.Game1 ?? 0,
+                Game2Score    = m2.Game2 ?? 0,
+                Game3Score    = 0,
+                Game4Score    = 0,
+                TotalScore    = combinedHdcpTotal,
+                PlaceStanding = place
+            });
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Creates the Team View button and grid overlay for doubles tournaments.
+    /// </summary>
+    private void InitTeamViewControls()
+    {
+        if (!tourny.Doubles) return;
+
+        btnTeamView = new Button
+        {
+            Text    = "Team View",
+            Size    = new Size(105, 23),
+            Location = new Point(btnPaste.Right + 8, btnPaste.Top)
+        };
+        btnTeamView.Click += BtnTeamView_Click;
+        Controls.Add(btnTeamView);
+
+        dgvTeamView = new DataGridView
+        {
+            Location               = dgvTournamentResults.Location,
+            Size                   = dgvTournamentResults.Size,
+            Visible                = false,
+            AllowUserToAddRows     = false,
+            AllowUserToDeleteRows  = false,
+            ReadOnly               = true,
+            AutoSizeColumnsMode    = DataGridViewAutoSizeColumnsMode.None,
+            ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize,
+            SelectionMode          = DataGridViewSelectionMode.FullRowSelect,
+            Anchor                 = dgvTournamentResults.Anchor
+        };
+        dgvTeamView.DoubleBuffered(true);
+        Controls.Add(dgvTeamView);
+    }
+
+    private void BtnTeamView_Click(object sender, EventArgs e)
+    {
+        if (dgvTeamView == null) return;
+        _inTeamView = !_inTeamView;
+
+        if (_inTeamView)
+        {
+            if (clientRequested.Count > 0)
+                PopulateTeamView();
+            dgvTeamView.Visible         = true;
+            dgvTournamentResults.Visible = false;
+            btnTeamView.Text             = "Individual View";
+        }
+        else
+        {
+            dgvTeamView.Visible          = false;
+            dgvTournamentResults.Visible = true;
+            btnTeamView.Text             = "Team View";
+        }
+    }
+
+    /// <summary>
+    /// Rebuilds <see cref="dgvTeamView"/> from <see cref="clientRequested"/>,
+    /// collapsing each DoublesTeam into one row showing both partners' data.
+    /// </summary>
+    private void PopulateTeamView()
+    {
+        dgvTeamView.Columns.Clear();
+        dgvTeamView.Rows.Clear();
+
+        dgvTeamView.Columns.AddRange(
+            new DataGridViewTextBoxColumn { Name = "tvPlace",   HeaderText = "Place",          Width = 55 },
+            new DataGridViewTextBoxColumn { Name = "tvMember1", HeaderText = "Member 1",       AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill },
+            new DataGridViewTextBoxColumn { Name = "tvHB1",     HeaderText = "M1 H/B",         Width = 75 },
+            new DataGridViewTextBoxColumn { Name = "tvMember2", HeaderText = "Member 2",       AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill },
+            new DataGridViewTextBoxColumn { Name = "tvHB2",     HeaderText = "M2 H/B",         Width = 75 },
+            new DataGridViewTextBoxColumn { Name = "tvTotal",   HeaderText = "Combined Total", Width = 90 },
+            new DataGridViewTextBoxColumn { Name = "tvEarn1",   HeaderText = "M1 Earnings",    Width = 85 },
+            new DataGridViewTextBoxColumn { Name = "tvEarn2",   HeaderText = "M2 Earnings",    Width = 85 }
+        );
+
+        // Match team pairings using the DoublesTeam table so partners are always
+        // correctly grouped regardless of tie-sort ordering.
+        List<DoublesTeam> teams  = DoublesTeamDB.GetTeamsByTournament(tourny.Id);
+        var usedGameIds           = new HashSet<int>();
+
+        var teamPairs = new List<(ExcelMember M1, ExcelMember M2, int Place)>();
+        foreach (var team in teams)
+        {
+            var m1 = clientRequested.FirstOrDefault(
+                m => m.MemberNumber == team.Member1.Number && !usedGameIds.Contains(m.GameId));
+            var m2 = clientRequested.FirstOrDefault(
+                m => m.MemberNumber == team.Member2.Number && !usedGameIds.Contains(m.GameId));
+            if (m1 == null || m2 == null) continue;
+            usedGameIds.Add(m1.GameId);
+            usedGameIds.Add(m2.GameId);
+            teamPairs.Add((m1, m2, m1.PlaceStanding));
+        }
+        teamPairs.Sort((a, b) => a.Place.CompareTo(b.Place));
+
+        Color[] teamColors = [SystemColors.Window, Color.AliceBlue];
+
+        for (int i = 0; i < teamPairs.Count; i++)
+        {
+            var (m1, m2, place) = teamPairs[i];
+            bool isTie = (i > 0 && teamPairs[i - 1].Place == place)
+                      || (i < teamPairs.Count - 1 && teamPairs[i + 1].Place == place);
+            string placeStr = isTie ? $"{place}T" : $"{place}";
+
+            string earn1 = m1.MoneyWon.HasValue ? m1.MoneyWon.Value.ToString("C2") : "$0.00";
+            string earn2 = m2.MoneyWon.HasValue ? m2.MoneyWon.Value.ToString("C2") : "$0.00";
+
+            int rowIdx = dgvTeamView.Rows.Add(
+                placeStr,
+                m1.Name, $"{m1.Handicap} + {m1.Bonus}",
+                m2.Name, $"{m2.Handicap} + {m2.Bonus}",
+                m1.TotalScore,   // combined total is the same for both members
+                earn1, earn2);
+
+            dgvTeamView.Rows[rowIdx].DefaultCellStyle.BackColor = teamColors[i % 2];
+        }
     }
 
     private void BtnExportToExcel_Click(object sender, EventArgs e)
@@ -563,10 +844,15 @@ public partial class FrmTournamentResults : Form
                 tbClientInputCount.Enabled = false;
 
                 // Create list of participants list for client request of how many show up in tournament results
+                // For doubles, clientInput is a team count; MakeTopMembersByPlacementList filters by place
+                // standing <= clientInput, which already returns both members per team.
                 clientRequested = Calculations.Calculations.MakeTopMembersByPlacementList(winners, clientInput);
 
+                // For doubles the grid shows 2 rows per team; scale the display slot count accordingly
+                int gridRowCount = tourny.Doubles ? clientInput * 2 : clientInput;
+
                 // Create datagridview and populate with cashedWinners list
-                CreateDataGridView(clientRequested, clientInput);
+                CreateDataGridView(clientRequested, gridRowCount);
             }
             catch (FormatException)
             {
