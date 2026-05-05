@@ -24,28 +24,29 @@ namespace NineTapTour.Database
 
         /// <summary>
         /// Returns true if a pairing between memberId1 and memberId2 already exists in
-        /// the tournament (order-independent: (A,B) == (B,A)).
+        /// the tournament for the given squad (order-independent: (A,B) == (B,A)).
         /// </summary>
-        public static bool TeamExists(int tournamentId, int memberId1, int memberId2)
+        public static bool TeamExists(int tournamentId, int memberId1, int memberId2, int squad)
         {
             using var db = new NineTapDb();
             return db.DoublesTeams.Any(dt =>
                 dt.Tournament.Id == tournamentId &&
+                dt.Squad == squad &&
                 ((dt.Member1.Id == memberId1 && dt.Member2.Id == memberId2) ||
                  (dt.Member1.Id == memberId2 && dt.Member2.Id == memberId1)));
         }
 
         /// <summary>
-        /// Creates a new doubles pairing for the tournament.
-        /// Returns false (without saving) if the pairing already exists or if
+        /// Creates a new doubles pairing for the tournament and squad.
+        /// Returns false (without saving) if the pairing already exists in that squad or if
         /// both member IDs are the same.
         /// </summary>
-        public static bool AddTeam(int tournamentId, int memberId1, int memberId2)
+        public static bool AddTeam(int tournamentId, int memberId1, int memberId2, int squad)
         {
             if (memberId1 == memberId2)
                 return false;
 
-            if (TeamExists(tournamentId, memberId1, memberId2))
+            if (TeamExists(tournamentId, memberId1, memberId2, squad))
                 return false;
 
             using var db = new NineTapDb();
@@ -61,7 +62,8 @@ namespace NineTapTour.Database
             {
                 Tournament = tournament,
                 Member1 = member1,
-                Member2 = member2
+                Member2 = member2,
+                Squad = squad
             };
 
             db.DoublesTeams.Add(team);

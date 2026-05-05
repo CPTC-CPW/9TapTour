@@ -239,6 +239,8 @@ namespace NineTapTour.Forms
         private void rdoDoubles_CheckedChanged(object sender, EventArgs e)
         {
             checkCleared();
+            if (rdoDoubles.Checked)
+                txtSquads.Text = "5";   // doubles tournaments default to 5 squads
             if (rdo3OutOf4.Enabled)
             {
                 rdo3OutOf4.Enabled = false;

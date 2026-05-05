@@ -68,6 +68,11 @@ namespace NineTapTour.Forms
         // Set to true once FinalizeAllGames completes successfully this session.
         private bool _isFinalized = false;
 
+        // Team View overlay (doubles only) — read-only summary with one row per team.
+        private DataGridView dgvTeamView;
+        private Button btnTeamView;
+        private bool _inTeamView = false;
+
         // Snapshot of each game's editable fields taken at form-open time.
         // "Undo Changes" writes these values back to the DB and reloads the grid,
         // reverting any director edits made during the current session.
@@ -79,10 +84,10 @@ namespace NineTapTour.Forms
         private readonly Dictionary<int, GameSnapshot> _gameSnapshot = [];
 
         /// <summary>
-        /// Tag type for doubles rows: carries both members' game IDs so persistence
-        /// and finalization can update both game records from the combined team row.
+        /// Tag type for individual doubles rows: carries this member's game ID and the
+        /// partner's game ID so the partner row can be located for combined HDCP recalculation.
         /// </summary>
-        private record DoublesRowTag(int GameId1, int GameId2);
+        private record DoubleMemberRowTag(int MyGameId, int PartnerGameId);
 
         public FrmFinalizeTournament(Tournament selectedTournament)
         {
@@ -107,8 +112,8 @@ namespace NineTapTour.Forms
                 var gameIds = new HashSet<int>();
                 foreach (DataGridViewRow row in dgvTournament.Rows)
                 {
-                    if (row.Tag is int gId)        gameIds.Add(gId);
-                    else if (row.Tag is DoublesRowTag drt) { gameIds.Add(drt.GameId1); gameIds.Add(drt.GameId2); }
+                    if (row.Tag is int gId)                     gameIds.Add(gId);
+                    else if (row.Tag is DoubleMemberRowTag dmt) gameIds.Add(dmt.MyGameId);
                 }
                 foreach (var g in db.Games.Where(g => gameIds.Contains(g.Id)))
                     _gameSnapshot[g.Id] = new GameSnapshot(
@@ -157,7 +162,16 @@ namespace NineTapTour.Forms
                 Enabled = true
             };
             btnUndoFinalize.Click += BtnUndoFinalize_Click;
-            pnlToolbar.Controls.AddRange([chkDirCheck, chkAdjAvg, btnFinalizeTournament, btnUndoFinalize]);
+
+            btnTeamView = new Button
+            {
+                Text    = "Team View",
+                Size    = new Size(100, 26),
+                Visible = false   // shown only for doubles after the grid is loaded
+            };
+            btnTeamView.Click += BtnTeamView_Click;
+
+            pnlToolbar.Controls.AddRange([chkDirCheck, chkAdjAvg, btnFinalizeTournament, btnUndoFinalize, btnTeamView]);
             pnlToolbar.Resize += (s, _) => PinToolbarButtons();
 
             // --- SplitContainer (top grid / bottom grid) ---
@@ -175,6 +189,24 @@ namespace NineTapTour.Forms
             dgvTournament.CellEndEdit                  += DgvTournament_CellEndEdit;
             dgvTournament.RowPostPaint                 += DgvTournament_RowPostPaint;
             splitMain.Panel1.Controls.Add(dgvTournament);
+
+            // Team View overlay — sits in the same panel as dgvTournament, hidden by default
+            dgvTeamView = new DataGridView
+            {
+                Dock                        = DockStyle.Fill,
+                AllowUserToAddRows          = false,
+                AllowUserToDeleteRows       = false,
+                ReadOnly                    = true,
+                Visible                     = false,
+                AutoSizeColumnsMode         = DataGridViewAutoSizeColumnsMode.None,
+                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing,
+                ColumnHeadersHeight         = 52,
+                SelectionMode               = DataGridViewSelectionMode.FullRowSelect,
+                RowHeadersWidth             = 25
+            };
+            dgvTeamView.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            dgvTeamView.DoubleBuffered(true);
+            splitMain.Panel1.Controls.Add(dgvTeamView);
 
             // Player info label at the top of the lower panel
             pnlPlayerInfo = new Panel { Dock = DockStyle.Top, Height = 36 };
@@ -211,6 +243,8 @@ namespace NineTapTour.Forms
             int x = pnlToolbar.ClientSize.Width - btnFinalizeTournament.Width - 12;
             btnFinalizeTournament.Location = new Point(x, 7);
             btnUndoFinalize.Location       = new Point(x - btnUndoFinalize.Width - 8, 7);
+            if (btnTeamView != null)
+                btnTeamView.Location       = new Point(x - btnUndoFinalize.Width - btnTeamView.Width - 16, 7);
         }
 
         private DataGridView CreateTournamentGrid()
@@ -594,151 +628,254 @@ namespace NineTapTour.Forms
 
         /// <summary>
         /// Builds the tournament grid for doubles tournaments.
-        /// Each row represents one DoublesTeam, showing both members' scores side-by-side.
-        /// colGame1/colGame2 = Member 1's Game 1 / Game 2.
-        /// colGame3/colGame4 = Member 2's Game 1 / Game 2.
-        /// The best squad (highest combined scratch) is selected per team.
-        /// Lower-scoring squad entries remain in the database but are excluded from the grid.
+        /// Each DoublesTeam produces two individual rows (one per member) that share the
+        /// same place standing and combined HDCP total, making them appear as ties.
+        /// colGame3 / colGame4 are hidden because each member only bowls 2 games.
         /// </summary>
         private void LoadTournamentGridDoubles()
         {
+            // --- Build prevTournHBByMember for all members in this tournament ---
+            var memberNumbersInTournament = _currentTournamentBowlers
+                .Select(b => b.MemberNumber).Distinct().ToHashSet();
+
+            _prevTournHBByMember.Clear();
+            using (var dbPrev = new NineTapDb())
+            {
+                var latestApproved = dbPrev.Participants
+                    .Where(p => memberNumbersInTournament.Contains(p.Member.Number)
+                             && p.Tournament.Id != selectedTournament.Id
+                             && p.Game.IsFinalized
+                             && p.Game.AdjustedAvg > 0)
+                    .GroupBy(p => p.Member.Number)
+                    .Select(g => new { MemberNumber = g.Key, LatestDate = g.Max(p => p.Tournament.Date) })
+                    .ToList();
+
+                foreach (var item in latestApproved)
+                {
+                    var prevEntries = dbPrev.Participants
+                        .Where(p => p.Member.Number == item.MemberNumber
+                                 && p.Tournament.Id != selectedTournament.Id
+                                 && p.Game.IsFinalized
+                                 && p.Tournament.Date == item.LatestDate)
+                        .Select(p => new { p.Game.AdjustedAvg, Bonus = p.Game.Bonus ?? 0, MoneyWon = p.Game.MoneyWon ?? 0 })
+                        .ToList();
+
+                    if (prevEntries.Count == 0) continue;
+
+                    var withAvg  = prevEntries.FirstOrDefault(e => e.AdjustedAvg > 0);
+                    int prevHdcp = withAvg != null ? CalcService.CalculateHandicapPins(withAvg.AdjustedAvg) : 0;
+                    int prevBonus = prevEntries.Any(e => e.MoneyWon > 0)
+                        ? prevEntries.Min(e => e.Bonus)
+                        : prevEntries.Max(e => e.Bonus);
+
+                    _prevTournHBByMember[item.MemberNumber] = (prevHdcp, prevBonus);
+                }
+            }
+
+            // --- Precompute 30-entry history for each member ---
+            _history30ByMember.Clear();
+            using (var dbH = new NineTapDb())
+            {
+                var allHistory = dbH.Participants
+                    .Where(p => p.Tournament.Id != selectedTournament.Id
+                             && p.Game.IsFinalized
+                             && memberNumbersInTournament.Contains(p.Member.Number))
+                    .OrderByDescending(p => p.Tournament.Date)
+                    .ThenByDescending(p => p.Game.Id)
+                    .Select(p => new
+                    {
+                        MemberNumber = p.Member.Number,
+                        G1 = p.Game.Game1, G2 = p.Game.Game2,
+                        G3 = p.Game.Game3, G4 = p.Game.Game4,
+                        U1 = p.Game.UseGame1, U2 = p.Game.UseGame2,
+                        U3 = p.Game.UseGame3, U4 = p.Game.UseGame4
+                    })
+                    .ToList();
+
+                foreach (var grp in allHistory.GroupBy(x => x.MemberNumber))
+                {
+                    int memberNum = grp.Key;
+                    // Each member has 1 entry per doubles squad (2 games)
+                    int limit = Math.Max(30 - 2, 0); // 2 current games
+                    int totalScratch = 0, totalGames = 0, taken = 0;
+                    foreach (var g in grp)
+                    {
+                        if (taken >= limit) break;
+                        int gCount = (g.U1 != false && g.G1.HasValue ? 1 : 0)
+                                   + (g.U2 != false && g.G2.HasValue ? 1 : 0)
+                                   + (g.U3 != false && g.G3.HasValue ? 1 : 0)
+                                   + (g.U4 != false && g.G4.HasValue ? 1 : 0);
+                        if (gCount == 0) continue;
+                        totalScratch += (g.U1 != false ? (g.G1 ?? 0) : 0)
+                                      + (g.U2 != false ? (g.G2 ?? 0) : 0)
+                                      + (g.U3 != false ? (g.G3 ?? 0) : 0)
+                                      + (g.U4 != false ? (g.G4 ?? 0) : 0);
+                        totalGames   += gCount;
+                        taken++;
+                    }
+                    if (totalGames > 0)
+                        _history30ByMember[memberNum] = (totalScratch, totalGames);
+                }
+            }
+
+            // --- Build team list with combined HDCP totals ---
             List<DoublesTeam> teams = DoublesTeamDB.GetTeamsByTournament(selectedTournament.Id);
 
-            // Index all entries by MemberId for quick lookup
             var bowlersByMemberId = _currentTournamentBowlers
                 .GroupBy(b => b.MemberId)
                 .ToDictionary(g => g.Key, g => g.ToList());
 
-            dgvTournament.Rows.Clear();
-
-            // Build a list of all team-squad combinations, tagging each with whether it is
-            // the best squad for that team.  Best = highest combined scratch.
-            // We collect these first so we can sort all rows across teams by best-squad scratch
-            // (mirroring the non-doubles "group by member, placed entry first" order).
-            var teamRows = new List<(int BestScratch, bool IsBest, WinnerListMemberViewModel M1, WinnerListMemberViewModel M2)>();
+            var teamRows = new List<(int CombinedHdcpTotal,
+                                     WinnerListMemberViewModel M1, WinnerListMemberViewModel M2,
+                                     int Hdcp1, int BaseBonus1,
+                                     int Hdcp2, int BaseBonus2)>();
 
             foreach (var team in teams)
             {
-                int mem1Id = team.Member1.Id;
-                int mem2Id = team.Member2.Id;
+                if (!bowlersByMemberId.TryGetValue(team.Member1.Id, out var entries1)) continue;
+                if (!bowlersByMemberId.TryGetValue(team.Member2.Id, out var entries2)) continue;
 
-                if (!bowlersByMemberId.TryGetValue(mem1Id, out var entries1)) continue;
-                if (!bowlersByMemberId.TryGetValue(mem2Id, out var entries2)) continue;
+                var m1 = entries1.FirstOrDefault(e => e.Squad == team.Squad);
+                var m2 = entries2.FirstOrDefault(e => e.Squad == team.Squad);
+                if (m1 == null || m2 == null) continue;
 
-                // Find squads where BOTH members have entries
-                var squadsWithBoth = entries1
-                    .Select(e => e.Squad)
-                    .Intersect(entries2.Select(e => e.Squad))
-                    .ToList();
+                bool has1 = _prevTournHBByMember.TryGetValue(m1.MemberNumber, out var hb1);
+                bool has2 = _prevTournHBByMember.TryGetValue(m2.MemberNumber, out var hb2);
 
-                if (squadsWithBoth.Count == 0) continue;
+                int hdcp1     = has1 && hb1.Hdcp > 0 ? hb1.Hdcp : Convert.ToInt32(m1.Handicap);
+                int hdcp2     = has2 && hb2.Hdcp > 0 ? hb2.Hdcp : Convert.ToInt32(m2.Handicap);
+                int baseBonus1 = has1 ? hb1.Bonus : Convert.ToInt32(m1.Bonus);
+                int baseBonus2 = has2 ? hb2.Bonus : Convert.ToInt32(m2.Bonus);
 
-                // Determine the best squad (highest combined scratch) for place standings
-                int bestCombined = int.MinValue;
-                int bestSquad = -1;
-                foreach (int squad in squadsWithBoth)
-                {
-                    var m1 = entries1.First(e => e.Squad == squad);
-                    var m2 = entries2.First(e => e.Squad == squad);
-                    int combined = (m1.Game1 ?? 0) + (m1.Game2 ?? 0)
-                                 + (m2.Game1 ?? 0) + (m2.Game2 ?? 0);
-                    if (combined > bestCombined)
-                    {
-                        bestCombined = combined;
-                        bestSquad = squad;
-                    }
-                }
+                int scratch1 = (m1.Game1 ?? 0) + (m1.Game2 ?? 0);
+                int scratch2 = (m2.Game1 ?? 0) + (m2.Game2 ?? 0);
+                int combinedHdcpTotal = scratch1 + scratch2
+                    + 2 * (hdcp1 + baseBonus1)
+                    + 2 * (hdcp2 + baseBonus2);
 
-                // Add ALL squads for this team — best first, then the rest by squad number
-                var orderedSquads = squadsWithBoth
-                    .OrderByDescending(s => s == bestSquad)   // best squad first
-                    .ThenBy(s => s)                           // remaining in order
-                    .ToList();
-
-                foreach (int squad in orderedSquads)
-                {
-                    var m1 = entries1.First(e => e.Squad == squad);
-                    var m2 = entries2.First(e => e.Squad == squad);
-                    int combined = (m1.Game1 ?? 0) + (m1.Game2 ?? 0)
-                                 + (m2.Game1 ?? 0) + (m2.Game2 ?? 0);
-                    teamRows.Add((bestCombined, squad == bestSquad, m1, m2));
-                }
+                teamRows.Add((combinedHdcpTotal, m1, m2, hdcp1, baseBonus1, hdcp2, baseBonus2));
             }
 
-            // Sort: groups ordered by best-squad scratch descending; within each group, best entry first
-            teamRows.Sort((a, b) =>
-            {
-                if (a.BestScratch != b.BestScratch)
-                    return b.BestScratch.CompareTo(a.BestScratch); // higher best scratch first
-                if (a.IsBest != b.IsBest)
-                    return a.IsBest ? -1 : 1;                      // best entry before duplicates
-                return b.M1.Squad.CompareTo(a.M1.Squad);           // tie-break by squad descending
-            });
+            // Sort descending by combined HDCP total
+            teamRows.Sort((a, b) => b.CombinedHdcpTotal.CompareTo(a.CombinedHdcpTotal));
 
-            // Assign place standings to best-squad rows in order of best scratch
-            int rank = 1;
-            foreach (var (_, isBest, _, _) in teamRows.Where(r => r.IsBest))
+            // --- Assign place standings with tie detection ---
+            int totalTeams = teamRows.Count;
+            int compTeams  = 0;   // doubles teams are not comp entries in the current model
+            int cashLine   = totalTeams > 0 ? CalcService.GetQtyOfMembersThatCanPlace(totalTeams, compTeams) : 0;
+
+            var teamPlaces = new int[totalTeams];
+            if (totalTeams > 0)
             {
-                // rank is assigned below when adding rows
-                _ = rank++;
+                teamPlaces[0] = 1;
+                for (int i = 1; i < totalTeams; i++)
+                    teamPlaces[i] = teamRows[i].CombinedHdcpTotal == teamRows[i - 1].CombinedHdcpTotal
+                        ? teamPlaces[i - 1]
+                        : i + 1;
             }
 
-            int placeCounter = 1;
-            foreach (var (bestScratch, isBest, m1, m2) in teamRows)
+            // --- Populate grid ---
+            dgvTournament.Rows.Clear();
+
+            Color[] teamColors = [SystemColors.Window, Color.AliceBlue];
+
+            for (int t = 0; t < totalTeams; t++)
             {
-                int combinedScratch = (m1.Game1 ?? 0) + (m1.Game2 ?? 0)
-                                    + (m2.Game1 ?? 0) + (m2.Game2 ?? 0);
-                int hdcpTotal = combinedScratch
-                    + 2 * Convert.ToInt32(m1.Handicap) + 2 * Convert.ToInt32(m1.Bonus)
-                    + 2 * Convert.ToInt32(m2.Handicap) + 2 * Convert.ToInt32(m2.Bonus);
-                int combinedBonus = Convert.ToInt32(m1.Bonus) + Convert.ToInt32(m2.Bonus);
-                int combinedHdcp  = Convert.ToInt32(m1.Handicap) + Convert.ToInt32(m2.Handicap);
-                int gamesPlayed   = (m1.Game1.HasValue ? 1 : 0) + (m1.Game2.HasValue ? 1 : 0)
-                                  + (m2.Game1.HasValue ? 1 : 0) + (m2.Game2.HasValue ? 1 : 0);
+                var (combinedHdcpTotal, m1, m2, hdcp1, baseBonus1, hdcp2, baseBonus2) = teamRows[t];
+                int  place     = teamPlaces[t];
+                bool isCashing = place <= cashLine;
+                Color rowColor = teamColors[t % 2];
 
-                int thisPlace = isBest ? placeCounter : 0;
-                if (isBest) placeCounter++;
+                // Half-rate bonus preview (cashing pairs lose fewer pins)
+                int previewBonus1 = ComputeHalfRateBonus(baseBonus1, place, isCashing);
+                int previewBonus2 = ComputeHalfRateBonus(baseBonus2, place, isCashing);
 
-                string teamName   = $"{m1.BowlerName} / {m2.BowlerName}";
-                string teamNumber = $"{m1.MemberNumber} / {m2.MemberNumber}";
+                if (isCashing)
+                {
+                    _cashingGameIds.Add(m1.GameId);
+                    _cashingGameIds.Add(m2.GameId);
+                }
 
-                int rowIdx = dgvTournament.Rows.Add(
-                    thisPlace > 0 ? (object)thisPlace : null,  // Standing (null for non-best squads)
-                    teamNumber,
-                    teamName,
-                    m1.Game1,
-                    m1.Game1.HasValue,
-                    m1.Game2,
-                    m1.Game2.HasValue,
-                    m2.Game1,
-                    m2.Game1.HasValue,
-                    m2.Game2,
-                    m2.Game2.HasValue,
-                    combinedScratch,
-                    hdcpTotal,
-                    gamesPlayed > 0 ? combinedScratch / gamesPlayed : 0,  // Entry AVG
-                    null,          // 30 Entry AVG
+                _baseBonusByGameId[m1.GameId] = baseBonus1;
+                _baseBonusByGameId[m2.GameId] = baseBonus2;
+
+                _placedGameIds.Add(m1.GameId);
+                _placedGameIds.Add(m2.GameId);
+
+                // ---- Row for Member 1 ----
+                bool m1g1c = m1.UseGame1 ?? m1.Game1.HasValue;
+                bool m1g2c = m1.UseGame2 ?? m1.Game2.HasValue;
+                int  s1    = (m1g1c ? m1.Game1 ?? 0 : 0) + (m1g2c ? m1.Game2 ?? 0 : 0);
+                int  g1c   = (m1g1c ? 1 : 0) + (m1g2c ? 1 : 0);
+
+                int rowIdx1 = dgvTournament.Rows.Add(
+                    (object)place,
+                    m1.MemberNumber,
+                    m1.BowlerName,
+                    m1.Game1, m1g1c,
+                    m1.Game2, m1g2c,
+                    null, false, null, false,   // colGame3/4 will be hidden
+                    s1,
+                    combinedHdcpTotal,
+                    g1c > 0 ? s1 / g1c : 0,
+                    null,   // 30 Entry AVG
                     m1.AdjustedAvg > 0 ? (object)m1.AdjustedAvg : 0,
                     m1.KeepAdjustedAvg,
                     m1.Squad,
-                    combinedHdcp,
-                    combinedBonus,
-                    isBest && (m1.MoneyWon ?? 0) > 0 ? (object)m1.MoneyWon : null,
-                    null  // Notes
+                    hdcp1,
+                    previewBonus1,
+                    m1.MoneyWon > 0 ? (object)m1.MoneyWon : null,
+                    $"Partner: {m2.BowlerName}"
                 );
+                dgvTournament.Rows[rowIdx1].Tag = new DoubleMemberRowTag(m1.GameId, m2.GameId);
+                dgvTournament.Rows[rowIdx1].DefaultCellStyle.BackColor = rowColor;
 
-                dgvTournament.Rows[rowIdx].Tag = new DoublesRowTag(m1.GameId, m2.GameId);
+                // ---- Row for Member 2 ----
+                bool m2g1c = m2.UseGame1 ?? m2.Game1.HasValue;
+                bool m2g2c = m2.UseGame2 ?? m2.Game2.HasValue;
+                int  s2    = (m2g1c ? m2.Game1 ?? 0 : 0) + (m2g2c ? m2.Game2 ?? 0 : 0);
+                int  g2c   = (m2g1c ? 1 : 0) + (m2g2c ? 1 : 0);
 
-                if (isBest)
-                {
-                    _placedGameIds.Add(m1.GameId);
-                    _placedGameIds.Add(m2.GameId);
-                }
+                int rowIdx2 = dgvTournament.Rows.Add(
+                    (object)place,
+                    m2.MemberNumber,
+                    m2.BowlerName,
+                    m2.Game1, m2g1c,
+                    m2.Game2, m2g2c,
+                    null, false, null, false,
+                    s2,
+                    combinedHdcpTotal,
+                    g2c > 0 ? s2 / g2c : 0,
+                    null,
+                    m2.AdjustedAvg > 0 ? (object)m2.AdjustedAvg : 0,
+                    m2.KeepAdjustedAvg,
+                    m2.Squad,
+                    hdcp2,
+                    previewBonus2,
+                    m2.MoneyWon > 0 ? (object)m2.MoneyWon : null,
+                    $"Partner: {m1.BowlerName}"
+                );
+                dgvTournament.Rows[rowIdx2].Tag = new DoubleMemberRowTag(m2.GameId, m1.GameId);
+                dgvTournament.Rows[rowIdx2].DefaultCellStyle.BackColor = rowColor;
             }
+
+            // Populate 30-entry AVG for each member
+            foreach (int memberNum in memberNumbersInTournament)
+                UpdateAll30AvgForMember(memberNum);
+
+            // Hide columns not used in doubles (each member bowls only 2 games)
+            dgvTournament.Columns["colGame3"].Visible      = false;
+            dgvTournament.Columns["colGame3Check"].Visible = false;
+            dgvTournament.Columns["colGame4"].Visible      = false;
+            dgvTournament.Columns["colGame4Check"].Visible = false;
 
             // Validate all rows
             for (int i = 0; i < dgvTournament.Rows.Count; i++)
                 ValidateRow(i);
+
+            // Show the Team View toggle now that the doubles grid is loaded
+            btnTeamView.Visible = true;
+            PinToolbarButtons();
         }
 
         /// <summary>
@@ -867,15 +1004,61 @@ namespace NineTapTour.Forms
 
             int scratch      = g1 + g2 + g3 + g4;
             int checkedGames = (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0) + (c4 ? 1 : 0);
-            // Use the un-deducted base bonus for colHdcpTotal so it matches FrmTournamentResults.
-            // If no base bonus is stored (e.g. for a new row), fall back to colBonus.
-            int baseBonus = row.Tag is int gId && _baseBonusByGameId.TryGetValue(gId, out int bb) ? bb : bonus;
+
+            // Resolve the base (pre-deduction) bonus for HDCP Total calculation
+            int myGameIdForBase = row.Tag is int gId0 ? gId0
+                                : row.Tag is DoubleMemberRowTag dmt0 ? dmt0.MyGameId : 0;
+            int baseBonus = myGameIdForBase > 0 && _baseBonusByGameId.TryGetValue(myGameIdForBase, out int bb)
+                ? bb : bonus;
+
+            // --- Doubles individual rows: use only 2 games; combine with partner for HDCP total ---
+            if (row.Tag is DoubleMemberRowTag dmt)
+            {
+                int myGames = (c1 ? 1 : 0) + (c2 ? 1 : 0);
+                int myScratch = g1 + g2;
+                int entryAvg  = myGames > 0 ? myScratch / myGames : 0;
+
+                row.Cells["colScratchTotal"].Value = myScratch;
+                row.Cells["colEntryAvg"].Value     = entryAvg;
+
+                var partnerRow = FindDoublePartnerRow(row);
+                if (partnerRow != null)
+                {
+                    bool pc1 = partnerRow.Cells["colGame1Check"].Value as bool? ?? false;
+                    bool pc2 = partnerRow.Cells["colGame2Check"].Value as bool? ?? false;
+                    int pg1  = pc1 ? Convert.ToInt32(partnerRow.Cells["colGame1"].Value ?? 0) : 0;
+                    int pg2  = pc2 ? Convert.ToInt32(partnerRow.Cells["colGame2"].Value ?? 0) : 0;
+                    int partnerScratch = pg1 + pg2;
+                    int partnerGames   = (pc1 ? 1 : 0) + (pc2 ? 1 : 0);
+                    int partnerHdcp    = Convert.ToInt32(partnerRow.Cells["colHdcp"].Value ?? 0);
+                    int partnerBaseBonus = partnerRow.Tag is DoubleMemberRowTag pd
+                                       && _baseBonusByGameId.TryGetValue(pd.MyGameId, out int pbb)
+                        ? pbb : Convert.ToInt32(partnerRow.Cells["colBonus"].Value ?? 0);
+
+                    int combinedHdcpTotal = myScratch + partnerScratch
+                        + myGames * (hdcp + baseBonus)
+                        + partnerGames * (partnerHdcp + partnerBaseBonus);
+
+                    row.Cells["colHdcpTotal"].Value        = combinedHdcpTotal;
+                    partnerRow.Cells["colHdcpTotal"].Value = combinedHdcpTotal;
+                }
+                else
+                {
+                    row.Cells["colHdcpTotal"].Value = myScratch + myGames * (hdcp + baseBonus);
+                }
+
+                if (row.Cells["colMemberNumber"].Value is int memberNum30d)
+                    UpdateAll30AvgForMember(memberNum30d);
+                return;
+            }
+
+            // --- Standard (singles) path ---
             int hdcpTotal    = scratch + (checkedGames * (hdcp + baseBonus));
-            int entryAvg     = checkedGames > 0 ? scratch / checkedGames : 0;
+            int entryAvgStd  = checkedGames > 0 ? scratch / checkedGames : 0;
 
             row.Cells["colScratchTotal"].Value = scratch;
             row.Cells["colHdcpTotal"].Value    = hdcpTotal;
-            row.Cells["colEntryAvg"].Value     = entryAvg;
+            row.Cells["colEntryAvg"].Value     = entryAvgStd;
 
             if (row.Cells["colMemberNumber"].Value is int memberNum30)
                 UpdateAll30AvgForMember(memberNum30);
@@ -1059,14 +1242,14 @@ namespace NineTapTour.Forms
         {
             var row = dgvTournament.Rows[rowIndex];
 
-            // Doubles rows carry two game IDs; persist common fields to both games
-            if (row.Tag is DoublesRowTag drt)
-            {
-                PersistDoublesRowToDatabase(row, drt.GameId1, drt.GameId2);
+            // Resolve game ID — either a singles int tag or a doubles individual-member tag
+            int gameId;
+            if (row.Tag is int directGameId)
+                gameId = directGameId;
+            else if (row.Tag is DoubleMemberRowTag dmt)
+                gameId = dmt.MyGameId;
+            else
                 return;
-            }
-
-            if (row.Tag is not int gameId) return;
 
             Game game = GameDB.GetGame(gameId);
             if (game == null) return;
@@ -1128,65 +1311,123 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        /// Persists a doubles team row to both member game records.
-        /// colGame1/colGame2 belong to gameId1; colGame3/colGame4 belong to gameId2.
-        /// Director Check, Earnings, and Notes are shared and written to both games.
+        /// For a doubles individual row, finds the partner's row (the row whose
+        /// <see cref="DoubleMemberRowTag.MyGameId"/> equals this row's
+        /// <see cref="DoubleMemberRowTag.PartnerGameId"/>).
+        /// Returns null when the row is not a doubles row or the partner is not in the grid.
         /// </summary>
-        private void PersistDoublesRowToDatabase(DataGridViewRow row, int gameId1, int gameId2)
+        private DataGridViewRow FindDoublePartnerRow(DataGridViewRow row)
         {
-            bool dirChecked = row.Cells["colDirCheck"].Value as bool? ?? false;
-            decimal earnings = 0;
-            if (row.Cells["colEarnings"].Value != null)
-                decimal.TryParse(row.Cells["colEarnings"].Value.ToString(), out earnings);
-            string notes = row.Cells["colNotes"].Value as string;
-
-            // Helper to persist a single game in the pair
-            void PersistOne(int gameId, int? g1, int? g2, bool? u1, bool? u2)
+            if (row.Tag is not DoubleMemberRowTag dmt) return null;
+            foreach (DataGridViewRow r in dgvTournament.Rows)
             {
-                Game game = GameDB.GetGame(gameId);
-                if (game == null) return;
+                if (r.Index == row.Index) continue;
+                if (r.Tag is DoubleMemberRowTag d && d.MyGameId == dmt.PartnerGameId)
+                    return r;
+            }
+            return null;
+        }
 
-                game.Game1 = g1;
-                game.Game2 = g2;
-                game.UseGame1 = u1;
-                game.UseGame2 = u2;
+        /// <summary>
+        /// Applies the 9-Tap half-rate bonus rule for doubles tournaments.
+        /// Cashers lose half as many bonus pins (magnitude rounded up so the bowler
+        /// retains more pins). Non-cashers keep their base bonus unchanged.
+        /// </summary>
+        private int ComputeHalfRateBonus(int baseBonus, int place, bool isCashing)
+        {
+            if (!isCashing) return baseBonus;
+            int normalResult = CalcService.DeductFromBonusPins(place, baseBonus);
+            int delta        = normalResult - baseBonus; // negative for cashers
+            // Round the magnitude up so the deduction is slightly larger (bowler loses
+            // slightly more than a pure half, which is the standard rounding convention).
+            int halfDelta = delta >= 0
+                ? (int)Math.Ceiling(delta / 2.0)
+                : -(int)Math.Ceiling(-delta / 2.0);
+            return baseBonus + halfDelta;
+        }
 
-                int adjAvg = 0;
-                if (row.Cells["colAdjAvg"].Value != null)
-                    int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
-                game.AdjustedAvg = adjAvg;
+        private void BtnTeamView_Click(object sender, EventArgs e)
+        {
+            _inTeamView = !_inTeamView;
+            if (_inTeamView)
+            {
+                BuildTeamView();
+                dgvTeamView.Visible  = true;
+                dgvTournament.Visible = false;
+                btnTeamView.Text     = "Individual View";
+            }
+            else
+            {
+                dgvTeamView.Visible  = false;
+                dgvTournament.Visible = true;
+                btnTeamView.Text     = "Team View";
+            }
+        }
 
-                int hdcp = 0;
-                if (row.Cells["colHdcp"].Value != null)
-                    int.TryParse(row.Cells["colHdcp"].Value.ToString(), out hdcp);
+        /// <summary>
+        /// Rebuilds <see cref="dgvTeamView"/> from the current doubles grid rows,
+        /// collapsing each team into a single read-only summary row.
+        /// </summary>
+        private void BuildTeamView()
+        {
+            dgvTeamView.Columns.Clear();
+            dgvTeamView.Rows.Clear();
 
-                int bonus = 0;
-                if (row.Cells["colBonus"].Value != null)
-                    int.TryParse(row.Cells["colBonus"].Value.ToString(), out bonus);
+            dgvTeamView.Columns.AddRange(
+                new DataGridViewTextBoxColumn { Name = "tvPlace",    HeaderText = "Place",           Width = 55 },
+                new DataGridViewTextBoxColumn { Name = "tvMember1",  HeaderText = "Member 1",        Width = 160 },
+                new DataGridViewTextBoxColumn { Name = "tvMember2",  HeaderText = "Member 2",        Width = 160 },
+                new DataGridViewTextBoxColumn { Name = "tvScratch1", HeaderText = "M1\nScratch",     Width = 65 },
+                new DataGridViewTextBoxColumn { Name = "tvScratch2", HeaderText = "M2\nScratch",     Width = 65 },
+                new DataGridViewTextBoxColumn { Name = "tvHdcpTotal",HeaderText = "Combined\nHDCP",  Width = 80 },
+                new DataGridViewTextBoxColumn { Name = "tvBonus1",   HeaderText = "M1\nBonus",       Width = 55 },
+                new DataGridViewTextBoxColumn { Name = "tvBonus2",   HeaderText = "M2\nBonus",       Width = 55 },
+                new DataGridViewTextBoxColumn { Name = "tvEarn1",    HeaderText = "M1\nEarnings",    Width = 75 },
+                new DataGridViewTextBoxColumn { Name = "tvEarn2",    HeaderText = "M2\nEarnings",    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill }
+            );
 
-                // For doubles each member has individual HDCP/bonus tracked in their game
-                // The grid shows combined values — split evenly for storage (director can adjust)
-                game.Handicap = hdcp / 2;
-                game.Bonus    = bonus / 2;
-
-                game.KeepAdjustedAvg = dirChecked;
-                game.MoneyWon        = earnings > 0 ? earnings / 2 : null;
-                game.Notes           = notes;
-
-                GameDB.AddOrUpdateGame(game);
+            int CellInt(DataGridViewCell cell)
+            {
+                if (cell.Value is int i) return i;
+                if (cell.Value != null && int.TryParse(cell.Value.ToString(), out int p)) return p;
+                return 0;
             }
 
-            PersistOne(gameId1,
-                ParseCellInt(row.Cells["colGame1"].Value),
-                ParseCellInt(row.Cells["colGame2"].Value),
-                row.Cells["colGame1Check"].Value as bool? ?? false,
-                row.Cells["colGame2Check"].Value as bool? ?? false);
+            Color[] teamColors = [SystemColors.Window, Color.AliceBlue];
 
-            PersistOne(gameId2,
-                ParseCellInt(row.Cells["colGame3"].Value),
-                ParseCellInt(row.Cells["colGame4"].Value),
-                row.Cells["colGame3Check"].Value as bool? ?? false,
-                row.Cells["colGame4Check"].Value as bool? ?? false);
+            // LoadTournamentGridDoubles always writes rows in consecutive pairs: [M1, M2, M1, M2, ...]
+            // Step through 2 at a time — avoids any partner-lookup fragility.
+            var doublesRows = dgvTournament.Rows
+                .Cast<DataGridViewRow>()
+                .Where(r => r.Tag is DoubleMemberRowTag)
+                .ToList();
+
+            for (int i = 0; i + 1 < doublesRows.Count; i += 2)
+            {
+                DataGridViewRow row     = doublesRows[i];
+                DataGridViewRow partner = doublesRows[i + 1];
+
+                int place     = CellInt(row.Cells["colStanding"]);
+                string name1  = row.Cells["colName"].Value?.ToString() ?? "";
+                string name2  = partner.Cells["colName"].Value?.ToString() ?? "";
+                int scratch1  = CellInt(row.Cells["colScratchTotal"]);
+                int scratch2  = CellInt(partner.Cells["colScratchTotal"]);
+                int hdcpTotal = CellInt(row.Cells["colHdcpTotal"]);
+                int bonus1    = CellInt(row.Cells["colBonus"]);
+                int bonus2    = CellInt(partner.Cells["colBonus"]);
+                string earn1  = row.Cells["colEarnings"].Value?.ToString() ?? "";
+                string earn2  = partner.Cells["colEarnings"].Value?.ToString() ?? "";
+
+                int rowIdx = dgvTeamView.Rows.Add(
+                    place > 0 ? (object)place : "",
+                    name1, name2,
+                    scratch1, scratch2,
+                    hdcpTotal,
+                    bonus1, bonus2,
+                    earn1, earn2);
+
+                dgvTeamView.Rows[rowIdx].DefaultCellStyle.BackColor = teamColors[(i / 2) % 2];
+            }
         }
 
         /// <summary>
@@ -1196,19 +1437,14 @@ namespace NineTapTour.Forms
         {
             var row = dgvTournament.Rows[rowIndex];
 
-            // Doubles rows: persist both games' use flags independently
-            if (row.Tag is DoublesRowTag drt)
+            // Doubles rows: persist individual game's use flags
+            if (row.Tag is DoubleMemberRowTag dmt)
             {
-                void PersistFlags(int gameId, string uc1, string uc2)
-                {
-                    Game game = GameDB.GetGame(gameId);
-                    if (game == null) return;
-                    game.UseGame1 = row.Cells[uc1].Value as bool? ?? false;
-                    game.UseGame2 = row.Cells[uc2].Value as bool? ?? false;
-                    GameDB.AddOrUpdateGame(game);
-                }
-                PersistFlags(drt.GameId1, "colGame1Check", "colGame2Check");
-                PersistFlags(drt.GameId2, "colGame3Check", "colGame4Check");
+                Game dblGame = GameDB.GetGame(dmt.MyGameId);
+                if (dblGame == null) return;
+                dblGame.UseGame1 = row.Cells["colGame1Check"].Value as bool? ?? false;
+                dblGame.UseGame2 = row.Cells["colGame2Check"].Value as bool? ?? false;
+                GameDB.AddOrUpdateGame(dblGame);
                 return;
             }
 
@@ -1300,64 +1536,57 @@ namespace NineTapTour.Forms
             {
                 var row = dgvTournament.Rows[i];
 
-                // Doubles rows: finalize both member game records
-                if (row.Tag is DoublesRowTag drt)
+                // Doubles individual rows: finalize each member's own game record
+                if (row.Tag is DoubleMemberRowTag dmt)
                 {
+                    Game dblGame = db.Games.Find(dmt.MyGameId);
+                    if (dblGame == null) continue;
+
                     int dblAdjAvg = 0;
                     if (row.Cells["colAdjAvg"].Value != null)
                         int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out dblAdjAvg);
-                    bool dirChecked = row.Cells["colDirCheck"].Value as bool? ?? false;
-                    int combinedBonus = 0;
-                    if (row.Cells["colBonus"].Value != null)
-                        int.TryParse(row.Cells["colBonus"].Value.ToString(), out combinedBonus);
 
-                    void FinalizeDoublesMemberGame(int gameId, int? g1, int? g2, bool? u1, bool? u2, int memberNum)
+                    dblGame.Game1           = ParseCellInt(row.Cells["colGame1"].Value);
+                    dblGame.Game2           = ParseCellInt(row.Cells["colGame2"].Value);
+                    dblGame.UseGame1        = row.Cells["colGame1Check"].Value as bool? ?? false;
+                    dblGame.UseGame2        = row.Cells["colGame2Check"].Value as bool? ?? false;
+                    dblGame.IsFinalized     = true;
+                    dblGame.AdjustedAvg     = dblAdjAvg;
+                    dblGame.KeepAdjustedAvg = row.Cells["colDirCheck"].Value as bool? ?? false;
+
+                    int dblHdcp = 0;
+                    if (row.Cells["colHdcp"].Value != null)
+                        int.TryParse(row.Cells["colHdcp"].Value.ToString(), out dblHdcp);
+                    dblGame.Handicap = dblHdcp;
+
+                    int dblMemberNum = row.Cells["colMemberNumber"].Value is int dblMn ? dblMn : 0;
+                    dblGame.LeagueAverage = FinalizeTempDB.Get30GameAverage(dblMemberNum, selectedTournament.Id);
+
+                    // Half-rate bonus: look up the original pre-tournament base bonus
+                    WinnerListMemberViewModel dblOrigEntry =
+                        _currentTournamentBowlers.FirstOrDefault(b => b.GameId == dmt.MyGameId);
+                    int dblBaseBonus = dblOrigEntry != null ? Convert.ToInt32(dblOrigEntry.Bonus) : 0;
+                    int dblPlace     = row.Cells["colStanding"].Value is int dblP ? dblP : 0;
+                    bool dblCashing  = _cashingGameIds.Contains(dmt.MyGameId);
+                    dblGame.Bonus    = ComputeHalfRateBonus(dblBaseBonus, dblPlace, dblCashing);
+
+                    // Director entered the full place prize; save each member's 50% share
+                    decimal dblEarnings = 0;
+                    if (row.Cells["colEarnings"].Value != null)
+                        decimal.TryParse(row.Cells["colEarnings"].Value.ToString(), out dblEarnings);
+                    dblGame.MoneyWon      = dblEarnings > 0 ? dblEarnings / 2m : null;
+                    dblGame.PlaceStanding = dblPlace > 0 ? (int?)dblPlace : null;
+
+                    if (dblMemberNum > 0 && updatedMembers.Add(dblMemberNum))
                     {
-                        Game game = db.Games.Find(gameId);
-                        if (game == null) return;
-
-                        game.Game1 = g1;
-                        game.Game2 = g2;
-                        game.UseGame1 = u1 ?? false;
-                        game.UseGame2 = u2 ?? false;
-                        game.IsFinalized    = true;
-                        game.AdjustedAvg    = dblAdjAvg;
-                        game.KeepAdjustedAvg = dirChecked;
-                        game.Bonus          = combinedBonus / 2;
-                        game.LeagueAverage  = FinalizeTempDB.Get30GameAverage(memberNum, selectedTournament.Id);
-
-                        if (updatedMembers.Add(memberNum))
+                        Member dblMember = MemberDB.GetMember(dblMemberNum, db);
+                        if (dblMember != null && dblMember.Id > 0)
                         {
-                            Member member = MemberDB.GetMember(memberNum, db);
-                            if (member != null && member.Id > 0)
-                            {
-                                member.Average   = dblAdjAvg;
-                                member.Handicap  = CalcService.CalculateHandicapPins(dblAdjAvg);
-                                member.Bonus     = combinedBonus / 2;
-                            }
+                            dblMember.Average  = dblAdjAvg;
+                            dblMember.Handicap = CalcService.CalculateHandicapPins(dblAdjAvg);
+                            dblMember.Bonus    = dblGame.Bonus ?? 0;
                         }
                     }
-
-                    // Parse member numbers from the combined "Num1 / Num2" cell
-                    string rawNum = row.Cells["colMemberNumber"].Value?.ToString() ?? "";
-                    var parts = rawNum.Split('/');
-                    int mem1Num = parts.Length > 0 && int.TryParse(parts[0].Trim(), out int n1) ? n1 : 0;
-                    int mem2Num = parts.Length > 1 && int.TryParse(parts[1].Trim(), out int n2) ? n2 : 0;
-
-                    FinalizeDoublesMemberGame(drt.GameId1,
-                        ParseCellInt(row.Cells["colGame1"].Value),
-                        ParseCellInt(row.Cells["colGame2"].Value),
-                        row.Cells["colGame1Check"].Value as bool?,
-                        row.Cells["colGame2Check"].Value as bool?,
-                        mem1Num);
-
-                    FinalizeDoublesMemberGame(drt.GameId2,
-                        ParseCellInt(row.Cells["colGame3"].Value),
-                        ParseCellInt(row.Cells["colGame4"].Value),
-                        row.Cells["colGame3Check"].Value as bool?,
-                        row.Cells["colGame4Check"].Value as bool?,
-                        mem2Num);
-
                     continue;
                 }
 

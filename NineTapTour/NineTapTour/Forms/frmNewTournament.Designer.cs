@@ -239,6 +239,7 @@
             rdo3OutOf4.TabStop = true;
             rdo3OutOf4.Text = "3 out of 4 Tournament";
             rdo3OutOf4.UseVisualStyleBackColor = true;
+            rdo3OutOf4.CheckedChanged += rdo3OutOf4_CheckedChanged;
             // 
             // rdoDoubles
             // 
@@ -251,6 +252,7 @@
             rdoDoubles.TabStop = true;
             rdoDoubles.Text = "Doubles Tournament";
             rdoDoubles.UseVisualStyleBackColor = true;
+            rdoDoubles.CheckedChanged += rdoDoubles_CheckedChanged;
             // 
             // rdoSingles
             // 
