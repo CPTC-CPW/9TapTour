@@ -1394,19 +1394,18 @@ namespace NineTapTour.Forms
             }
 
             Color[] teamColors = [SystemColors.Window, Color.AliceBlue];
-            var addedGameIds   = new HashSet<int>();
-            int teamIndex      = 0;
 
-            foreach (DataGridViewRow row in dgvTournament.Rows)
+            // LoadTournamentGridDoubles always writes rows in consecutive pairs: [M1, M2, M1, M2, ...]
+            // Step through 2 at a time — avoids any partner-lookup fragility.
+            var doublesRows = dgvTournament.Rows
+                .Cast<DataGridViewRow>()
+                .Where(r => r.Tag is DoubleMemberRowTag)
+                .ToList();
+
+            for (int i = 0; i + 1 < doublesRows.Count; i += 2)
             {
-                if (row.Tag is not DoubleMemberRowTag dmt) continue;
-                if (addedGameIds.Contains(dmt.MyGameId)) continue;
-
-                DataGridViewRow partner = FindDoublePartnerRow(row);
-                if (partner == null) continue;
-
-                addedGameIds.Add(dmt.MyGameId);
-                addedGameIds.Add(dmt.PartnerGameId);
+                DataGridViewRow row     = doublesRows[i];
+                DataGridViewRow partner = doublesRows[i + 1];
 
                 int place     = CellInt(row.Cells["colStanding"]);
                 string name1  = row.Cells["colName"].Value?.ToString() ?? "";
@@ -1427,8 +1426,7 @@ namespace NineTapTour.Forms
                     bonus1, bonus2,
                     earn1, earn2);
 
-                dgvTeamView.Rows[rowIdx].DefaultCellStyle.BackColor = teamColors[teamIndex % 2];
-                teamIndex++;
+                dgvTeamView.Rows[rowIdx].DefaultCellStyle.BackColor = teamColors[(i / 2) % 2];
             }
         }
 

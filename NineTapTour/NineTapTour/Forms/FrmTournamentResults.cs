@@ -96,7 +96,10 @@ public partial class FrmTournamentResults : Form
         for (int currentIndex = 0; currentIndex < clientRequested.Count; currentIndex++)
         {
             int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
-            Game g = GameDB.GetGame(gameId);
+            // Use the form-level context's identity map (Find) so EF Core never sees two
+            // instances of the same Game key — fixes the "already being tracked" exception.
+            Game g = db.Games.Find(gameId);
+            if (g == null) continue;
 
             g.PlaceStanding = ParsePlaceStanding(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
             g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
@@ -112,7 +115,7 @@ public partial class FrmTournamentResults : Form
             }
 
             // Phase 4: Removed g.gameRegionID assignment - stored in Participant entity
-            db.Entry(g).State = EntityState.Modified;
+            // db.Entry is not needed — Find already tracks the entity in the form-level context.
             db.SaveChanges();
         }
     }
@@ -531,7 +534,7 @@ public partial class FrmTournamentResults : Form
         {
             Text    = "Team View",
             Size    = new Size(105, 23),
-            Location = new Point(btnPaste.Right + 8, btnPaste.Top)
+            Location = new Point(tbClientInputCount.Right + 8, btnPaste.Top)
         };
         btnTeamView.Click += BtnTeamView_Click;
         Controls.Add(btnTeamView);
@@ -594,21 +597,15 @@ public partial class FrmTournamentResults : Form
             new DataGridViewTextBoxColumn { Name = "tvEarn2",   HeaderText = "M2 Earnings",    Width = 85 }
         );
 
-        // Match team pairings using the DoublesTeam table so partners are always
-        // correctly grouped regardless of tie-sort ordering.
-        List<DoublesTeam> teams  = DoublesTeamDB.GetTeamsByTournament(tourny.Id);
-        var usedGameIds           = new HashSet<int>();
-
+        // BuildWinnersListDoubles always writes `winners` in consecutive pairs: [T1M1, T1M2, T2M1, T2M2, ...]
+        // Step through by 2 to reconstruct team pairings — avoids re-querying DoublesTeamDB and
+        // any member-number matching fragility (e.g. the same member in multiple squads).
         var teamPairs = new List<(ExcelMember M1, ExcelMember M2, int Place)>();
-        foreach (var team in teams)
+        for (int i = 0; i + 1 < winners.Count; i += 2)
         {
-            var m1 = clientRequested.FirstOrDefault(
-                m => m.MemberNumber == team.Member1.Number && !usedGameIds.Contains(m.GameId));
-            var m2 = clientRequested.FirstOrDefault(
-                m => m.MemberNumber == team.Member2.Number && !usedGameIds.Contains(m.GameId));
-            if (m1 == null || m2 == null) continue;
-            usedGameIds.Add(m1.GameId);
-            usedGameIds.Add(m2.GameId);
+            var m1 = winners[i];
+            var m2 = winners[i + 1];
+            if (m1.PlaceStanding > clientInput) continue;
             teamPairs.Add((m1, m2, m1.PlaceStanding));
         }
         teamPairs.Sort((a, b) => a.Place.CompareTo(b.Place));
@@ -843,10 +840,22 @@ public partial class FrmTournamentResults : Form
                 clientInput = Convert.ToInt32(tbClientInputCount.Text);
                 tbClientInputCount.Enabled = false;
 
-                // Create list of participants list for client request of how many show up in tournament results
-                // For doubles, clientInput is a team count; MakeTopMembersByPlacementList filters by place
-                // standing <= clientInput, which already returns both members per team.
-                clientRequested = Calculations.Calculations.MakeTopMembersByPlacementList(winners, clientInput);
+                // For doubles, clientInput = number of teams. Both members of each team share
+                // the same PlaceStanding (set by BuildWinnersListDoubles), so we filter directly
+                // instead of calling MakeTopMembersByPlacementList, which re-ranks by TotalScore
+                // and would place tied pairs at 1,1,3,3,5,5... causing only half as many teams
+                // to pass a simple <= clientInput threshold.
+                if (tourny.Doubles)
+                {
+                    clientRequested = [.. winners
+                        .Where(m => m.PlaceStanding <= clientInput)
+                        .OrderBy(m => m.PlaceStanding)
+                        .ThenBy(m => m.MemberNumber)];
+                }
+                else
+                {
+                    clientRequested = Calculations.Calculations.MakeTopMembersByPlacementList(winners, clientInput);
+                }
 
                 // For doubles the grid shows 2 rows per team; scale the display slot count accordingly
                 int gridRowCount = tourny.Doubles ? clientInput * 2 : clientInput;
