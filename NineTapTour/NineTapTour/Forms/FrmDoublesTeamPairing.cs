@@ -39,9 +39,15 @@ namespace NineTapTour.Forms
         // Dynamic partner rows (y=72+)
         private Panel pnlPartners;
         private readonly List<(TextBox NumBox, Label NameLabel)> _partnerControls = new();
+        private List<Member> _existingPartnersForBowler = new();
+        private bool _populatingPartners = false;
 
         // Pairings grid
         private DataGridView dgvPairings;
+
+        // Secondary squad picker (shown when cboSquad = "All Squads")
+        private Label lblAddSquad;
+        private ComboBox cboAddSquad;
 
         // Bottom bar
         private Button btnClose;
@@ -93,7 +99,7 @@ namespace NineTapTour.Forms
             for (int s = 1; s <= _tournament.Squads; s++)
                 cboSquad.Items.Add($"Squad {s}");
             cboSquad.SelectedIndex = 0;
-            cboSquad.SelectedIndexChanged += (sender, e) => LoadPairings();
+            cboSquad.SelectedIndexChanged += CboSquad_SelectedIndexChanged;
 
             // Bowler + partner-count row (y=40)
             lblBowlerNum = new Label { Text = "Bowler #:", Location = new Point(8, 44), AutoSize = true };
@@ -113,12 +119,25 @@ namespace NineTapTour.Forms
             };
             btnAddPairs.Click += BtnAddPairs_Click;
 
+            // Secondary squad picker — visible only when cboSquad = "All Squads" (y=40)
+            lblAddSquad = new Label { Text = "for Squad:", Location = new Point(552, 44), AutoSize = true, Visible = false };
+            cboAddSquad = new ComboBox
+            {
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Location      = new Point(625, 40),
+                Width         = 80,
+                Visible       = false
+            };
+            for (int s = 1; s <= _tournament.Squads; s++)
+                cboAddSquad.Items.Add($"Squad {s}");
+            cboAddSquad.SelectedIndex = 0;
+
             // Partner rows container (y=72)
             pnlPartners = new Panel { Location = new Point(0, 72), Width = pnlInput.Width, Height = 0 };
             pnlInput.Resize += (s2, e2) => pnlPartners.Width = pnlInput.Width;
 
             // Wire events
-            txtBowlerNumber.Leave   += (s2, e2) => LookupMemberName(txtBowlerNumber, lblBowlerName);
+            txtBowlerNumber.Leave   += (s2, e2) => LookupBowlerAndPopulate();
             txtBowlerNumber.KeyDown += TxtBowlerNumber_KeyDown;
             txtPartnerCount.KeyDown += TxtPartnerCount_KeyDown;
             txtPartnerCount.Leave   += (s2, e2) => RebuildPartnerControls();
@@ -131,6 +150,8 @@ namespace NineTapTour.Forms
             pnlInput.Controls.Add(lblPartnerCountLabel);
             pnlInput.Controls.Add(txtPartnerCount);
             pnlInput.Controls.Add(btnAddPairs);
+            pnlInput.Controls.Add(lblAddSquad);
+            pnlInput.Controls.Add(cboAddSquad);
             pnlInput.Controls.Add(pnlPartners);
 
             // --- Pairings grid ---
@@ -175,6 +196,11 @@ namespace NineTapTour.Forms
             Controls.Add(pnlInput);
             Controls.Add(lblHeader);
 
+            // Initialise secondary squad picker visibility to match initial cboSquad state
+            bool startAllSquads = cboSquad.SelectedIndex == 0;
+            lblAddSquad.Visible = startAllSquads;
+            cboAddSquad.Visible = startAllSquads;
+
             ResumeLayout(false);
         }
 
@@ -188,7 +214,7 @@ namespace NineTapTour.Forms
             _partnerControls.Clear();
             btnAddPairs.Enabled = false;
 
-            if (!int.TryParse(txtPartnerCount.Text.Trim(), out int count) || count < 1 || count > 8)
+            if (!int.TryParse(txtPartnerCount.Text.Trim(), out int count) || count < 1 || count > 20)
             {
                 pnlPartners.Height = 0;
                 pnlInput.Height    = 76;
@@ -204,6 +230,15 @@ namespace NineTapTour.Forms
                 var numBox  = new TextBox { Location = new Point(88, y), Width = 65 };
                 var nameLbl = new Label   { Location = new Point(160, y + 4), Width = 200, AutoSize = false, Text = string.Empty };
 
+                // Pre-fill existing partners
+                if (i < _existingPartnersForBowler.Count)
+                {
+                    var p = _existingPartnersForBowler[i];
+                    numBox.Text   = p.Number.ToString();
+                    nameLbl.Text  = $"{p.FirstName} {p.LastName}";
+                    nameLbl.ForeColor = Color.Gray;   // visual hint: already paired
+                }
+
                 numBox.Leave   += (s2, e2) => LookupMemberName((TextBox)s2, nameLbl);
                 numBox.KeyDown += (s2, e2) => TxtPartnerBox_KeyDown((TextBox)s2, capturedIndex, e2);
 
@@ -217,20 +252,31 @@ namespace NineTapTour.Forms
             pnlInput.Height     = 76 + pnlPartners.Height;
             btnAddPairs.Enabled = true;
 
-            if (_partnerControls.Count > 0)
-                _partnerControls[0].NumBox.Focus();
+            // Focus the first slot that has no pre-filled value
+            int firstEmpty = _existingPartnersForBowler.Count;
+            if (firstEmpty < _partnerControls.Count)
+                _partnerControls[firstEmpty].NumBox.Focus();
+            else
+                btnAddPairs.Focus();
         }
 
         // ----------------------------------------------------------------
         // Keyboard navigation
         // ----------------------------------------------------------------
 
+        private void CboSquad_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            bool allSquads = cboSquad.SelectedIndex == 0;
+            lblAddSquad.Visible = allSquads;
+            cboAddSquad.Visible = allSquads;
+            LoadPairings();
+        }
+
         private void TxtBowlerNumber_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Tab)
             {
-                LookupMemberName(txtBowlerNumber, lblBowlerName);
-                txtPartnerCount.Focus();
+                LookupBowlerAndPopulate();
                 e.SuppressKeyPress = true;
             }
         }
@@ -261,6 +307,47 @@ namespace NineTapTour.Forms
         // Member name look-up
         // ----------------------------------------------------------------
 
+        /// <summary>
+        /// Looks up the bowler name, then auto-populates existing partners
+        /// in the target squad so the director can see who is already paired.
+        /// </summary>
+        private void LookupBowlerAndPopulate()
+        {
+            if (_populatingPartners) return;
+            _populatingPartners = true;
+            try
+            {
+            LookupMemberName(txtBowlerNumber, lblBowlerName);
+            _existingPartnersForBowler.Clear();
+
+            if (!int.TryParse(txtBowlerNumber.Text.Trim(), out int mainNum))
+                return;
+            int mainId = MemberDB.GetMemberIdByNumber(mainNum);
+            if (mainId == 0) return;
+
+            int targetSquad = GetTargetSquad();
+            if (targetSquad == 0) return;
+
+            // Find all existing partners for this bowler in the target squad
+            List<DoublesTeam> allTeams = DoublesTeamDB.GetTeamsByTournament(_tournament.Id);
+            _existingPartnersForBowler = allTeams
+                .Where(t => t.Squad == targetSquad &&
+                            (t.Member1.Id == mainId || t.Member2.Id == mainId))
+                .Select(t => t.Member1.Id == mainId ? t.Member2 : t.Member1)
+                .ToList();
+
+            // Set count to at least the number of existing partners; keep whatever the user
+            // already typed if it's higher so we show extra empty slots.
+            int requested = int.TryParse(txtPartnerCount.Text.Trim(), out int c) && c > 0 ? c : 0;
+            int newCount  = Math.Max(requested, _existingPartnersForBowler.Count);
+            if (newCount == 0) newCount = 1;   // always show at least one slot
+
+            txtPartnerCount.Text = newCount.ToString();
+            RebuildPartnerControls();
+            } // end try
+            finally { _populatingPartners = false; }
+        }
+
         private static void LookupMemberName(TextBox txt, Label lbl)
         {
             lbl.ForeColor = SystemColors.ControlText;
@@ -285,13 +372,26 @@ namespace NineTapTour.Forms
         // Add pairs
         // ----------------------------------------------------------------
 
+        /// <summary>
+        /// Returns the 1-based target squad for adding pairs.
+        /// Uses cboSquad when a specific squad is selected,
+        /// otherwise falls back to the inline cboAddSquad picker.
+        /// </summary>
+        private int GetTargetSquad()
+        {
+            if (cboSquad.SelectedIndex > 0)
+                return cboSquad.SelectedIndex;   // SelectedIndex == squad number (1-based)
+            if (cboAddSquad.SelectedIndex >= 0)
+                return cboAddSquad.SelectedIndex + 1;
+            return 0;
+        }
+
         private void BtnAddPairs_Click(object sender, EventArgs e)
         {
-            int selectedSquad = cboSquad.SelectedIndex;   // 0=All, 1=Squad1, etc.
-
-            if (selectedSquad == 0)
+            int targetSquad = GetTargetSquad();
+            if (targetSquad == 0)
             {
-                MessageBox.Show("Please select a specific squad before adding pairs.", "Squad Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Please select which squad to add pairs to.", "Squad Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -308,11 +408,11 @@ namespace NineTapTour.Forms
                 return;
             }
 
-            HashSet<int> validIds = GetValidMemberIds(selectedSquad);
+            HashSet<int> validIds = GetValidMemberIds(targetSquad);
 
             if (!validIds.Contains(mainId))
             {
-                MessageBox.Show($"Bowler #{mainNum} has not been entered into Squad {selectedSquad} yet.", "Not In Squad", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"Bowler #{mainNum} has not been entered into Squad {targetSquad} yet.", "Not In Squad", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -339,23 +439,23 @@ namespace NineTapTour.Forms
                 if (partnerId == mainId)
                 {
                     skipped++;
-                    skipReasons.Add($"#{partnerNum} is the same bowler as #{mainNum} — a bowler cannot be paired with themselves");
+                    skipReasons.Add($"#{partnerNum} is the same bowler as #{mainNum} \u2014 a bowler cannot be paired with themselves");
                     continue;
                 }
                 if (!validIds.Contains(partnerId))
                 {
                     skipped++;
-                    skipReasons.Add($"#{partnerNum} has not been entered into Squad {selectedSquad}");
+                    skipReasons.Add($"#{partnerNum} has not been entered into Squad {targetSquad}");
                     continue;
                 }
 
-                bool ok = DoublesTeamDB.AddTeam(_tournament.Id, mainId, partnerId, selectedSquad);
+                bool ok = DoublesTeamDB.AddTeam(_tournament.Id, mainId, partnerId, targetSquad);
                 if (ok)
                     added++;
                 else
                 {
                     skipped++;
-                    skipReasons.Add($"#{mainNum} / #{partnerNum} are already paired in Squad {selectedSquad}");
+                    skipReasons.Add($"#{mainNum} / #{partnerNum} are already paired in Squad {targetSquad}");
                 }
             }
 
@@ -375,6 +475,7 @@ namespace NineTapTour.Forms
             txtPartnerCount.Clear();
             pnlPartners.Controls.Clear();
             _partnerControls.Clear();
+            _existingPartnersForBowler.Clear();
             pnlPartners.Height  = 0;
             pnlInput.Height     = 76;
             btnAddPairs.Enabled = false;
