@@ -223,5 +223,51 @@ namespace NineTapTour.Database
                     .Sum();
             }
         }
+
+        /// <summary>
+        /// Returns all finalized entries for the member's most recent tournament.
+        /// The "most recent tournament" is identified by the most recent tournament that
+        /// has an adjusted-avg entry for this member. All entries (including multi-squad)
+        /// for that tournament are returned so callers can determine the correct bonus
+        /// carry-forward: highest bonus when no cash, lowest bonus when the player cashed.
+        /// </summary>
+        public static List<PlayerHistoryViewModel> GetEntriesForMostRecentTournament(int memberNum)
+        {
+            using var db = new NineTapDb();
+
+            // Identify the tournament ID of the most recent tournament where this member
+            // has a finalized, adjusted-avg entry (the director-approved record).
+            int mostRecentTournamentId = db.Games
+                .Include(g => g.Participant)
+                    .ThenInclude(p => p.Member)
+                .Include(g => g.Participant.Tournament)
+                .Where(g => g.Participant.Member.Number == memberNum
+                         && g.IsFinalized
+                         && g.AdjustedAvg > 0)
+                .OrderByDescending(g => g.Participant.Tournament.Date)
+                .ThenByDescending(g => g.Id)
+                .Select(g => g.Participant.Tournament.Id)
+                .FirstOrDefault();
+
+            if (mostRecentTournamentId == 0)
+                return [];
+
+            // Return ALL finalized entries for that tournament (multiple squads included)
+            // so the caller can evaluate cash status and min/max bonus across all entries.
+            var games = db.Games
+                .Include(g => g.Participant)
+                    .ThenInclude(p => p.Member)
+                .Include(g => g.Participant.Tournament)
+                .Where(g => g.Participant.Member.Number == memberNum
+                         && g.IsFinalized
+                         && g.Participant.Tournament.Id == mostRecentTournamentId)
+                .ToList();
+
+            return games.Select(g => new PlayerHistoryViewModel(
+                g,
+                memberNum,
+                g.Participant.Tournament.Date
+            )).ToList();
+        }
     }
 }

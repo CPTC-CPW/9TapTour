@@ -50,6 +50,7 @@
             rdoDoubles = new System.Windows.Forms.RadioButton();
             rdoSingles = new System.Windows.Forms.RadioButton();
             rdoThreeGame = new System.Windows.Forms.RadioButton();
+            chkTwoDay = new System.Windows.Forms.CheckBox();
             SuspendLayout();
             // 
             // lblDate
@@ -274,6 +275,18 @@
             rdoThreeGame.Text = "3 Game Tournament";
             rdoThreeGame.UseVisualStyleBackColor = true;
             // 
+            // chkTwoDay
+            // 
+            chkTwoDay.AutoSize = true;
+            chkTwoDay.Location = new System.Drawing.Point(25, 272);
+            chkTwoDay.Margin = new System.Windows.Forms.Padding(4);
+            chkTwoDay.Name = "chkTwoDay";
+            chkTwoDay.Size = new System.Drawing.Size(130, 19);
+            chkTwoDay.TabIndex = 25;
+            chkTwoDay.Text = "2-Day Tournament";
+            chkTwoDay.UseVisualStyleBackColor = true;
+            chkTwoDay.CheckedChanged += chkTwoDay_CheckedChanged;
+            // 
             // FrmNewTournament
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -281,6 +294,7 @@
             BackColor = System.Drawing.Color.White;
             ClientSize = new System.Drawing.Size(368, 502);
             Controls.Add(rdoThreeGame);
+            Controls.Add(chkTwoDay);
             Controls.Add(rdoSingles);
             Controls.Add(rdoDoubles);
             Controls.Add(rdo3OutOf4);
@@ -335,5 +349,6 @@
         private System.Windows.Forms.RadioButton rdoDoubles;
         private System.Windows.Forms.RadioButton rdoSingles;
         private System.Windows.Forms.RadioButton rdoThreeGame;
+        private System.Windows.Forms.CheckBox chkTwoDay;
     }
 }

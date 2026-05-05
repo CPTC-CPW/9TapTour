@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using CalcService = NineTapTour.Calculations.Calculations;
 using NineTapTour.Database;
 using NineTapTour.Models;
 using NineTapTour.Models.ViewModels;
@@ -201,6 +202,7 @@ namespace NineTapTour.Forms
             txtFirstName.Clear();
             txtMiddleInitial.Clear();
             cbCompEntry.Checked = false;
+            chkIsDay2.Checked = false;
             txtHandicap.Clear();
             txtBonusPins.Clear();
             txtScratchScore1.Clear();
@@ -274,8 +276,18 @@ namespace NineTapTour.Forms
 
                     Game currentGame = GetScoresById(currentMem.Id);
 
-                    txtHandicap.Text = currentMem.Handicap.ToString();
-                    txtBonusPins.Text = currentMem.Bonus.ToString();
+                    var lastTourneyEntries = PlayerHistoryDB.GetEntriesForMostRecentTournament(currentMem.Number);
+                    var entryWithAvg = lastTourneyEntries.FirstOrDefault(e => e.AVG > 0);
+                    int displayHandicap = entryWithAvg != null
+                        ? CalcService.CalculateHandicapPins(entryWithAvg.AVG)
+                        : (currentMem.Handicap ?? 0);
+                    int displayBonus = lastTourneyEntries.Count > 0
+                        ? (lastTourneyEntries.Any(e => e.MoneyWon > 0)
+                            ? lastTourneyEntries.Min(e => e.Bonus)
+                            : lastTourneyEntries.Max(e => e.Bonus))
+                        : currentMem.Bonus;
+                    txtHandicap.Text = displayHandicap.ToString();
+                    txtBonusPins.Text = displayBonus.ToString();
 
                     GetScores(currentGame);
 
@@ -509,6 +521,12 @@ namespace NineTapTour.Forms
                 player.Tournament = currTourney;
                 player.Squad = squad;
 
+                // For 2-day tournaments, tag the participant as Day 1 or Day 2 per the checkbox
+                if (currTourney.IsTwoDay)
+                    player.IsDay2 = chkIsDay2.Checked;
+                else
+                    player.IsDay2 = null;
+
                 //defaults money earned to 0, or enters text box amount
                 if (txtMoney.Text == "" || txtMoney.Text == null)
                     player.Game.MoneyWon = 0;
@@ -546,8 +564,16 @@ namespace NineTapTour.Forms
 
                     if (currentGame == null)
                     {
-                        player.Game.Bonus = currentMem.Bonus;
-                        player.Game.Handicap = currentMem.Handicap;
+                        var lastTourneyEntries = PlayerHistoryDB.GetEntriesForMostRecentTournament(currentMem.Number);
+                        var entryWithAvg = lastTourneyEntries.FirstOrDefault(e => e.AVG > 0);
+                        player.Game.Handicap = entryWithAvg != null
+                            ? CalcService.CalculateHandicapPins(entryWithAvg.AVG)
+                            : currentMem.Handicap;
+                        player.Game.Bonus = lastTourneyEntries.Count > 0
+                            ? (lastTourneyEntries.Any(e => e.MoneyWon > 0)
+                                ? lastTourneyEntries.Min(e => e.Bonus)
+                                : lastTourneyEntries.Max(e => e.Bonus))
+                            : currentMem.Bonus;
                     }
                     else
                     {
@@ -1043,11 +1069,13 @@ namespace NineTapTour.Forms
                 txtScratchScore4.Visible = false;
                 txtHandicapScore3.Visible = false;
                 txtHandicapScore4.Visible = false;
+                btnManagePairings.Visible = true;
             }
             else if (FrmMemberScoresHelpers.selectedTournament.IsOnlyThreeGames)
             {
                 txtScratchScore4.Visible = false;
                 txtHandicapScore4.Visible = false;
+                btnManagePairings.Visible = false;
             }
             else
             {
@@ -1055,7 +1083,12 @@ namespace NineTapTour.Forms
                 txtHandicapScore3.Visible = true;
                 txtScratchScore4.Visible = true;
                 txtHandicapScore4.Visible = true;
+                btnManagePairings.Visible = false;
             }
+
+            // Show Day 2 Entry checkbox only for 2-day tournaments
+            chkIsDay2.Visible = FrmMemberScoresHelpers.selectedTournament.IsTwoDay;
+            chkIsDay2.Checked = false;
 
             int currTourneyId;
 
@@ -1171,7 +1204,11 @@ namespace NineTapTour.Forms
 
 
             //Checks all score boxes and asks if you want to enter member without scores
-            bool areAnyGamesScoresEmpty = string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim());
+            // Doubles tournaments only use games 1 and 2 (games 3 and 4 are hidden),
+            // so only those two count toward the "missing score" check.
+            bool areAnyGamesScoresEmpty = FrmMemberScoresHelpers.selectedTournament.Doubles
+                ? string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim())
+                : string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim());
             bool areAnyFirst3BoxesEmptyForThreeGameTournament = FrmMemberScoresHelpers.selectedTournament.IsOnlyThreeGames && (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()));
             if ((areAnyGamesScoresEmpty && !FrmMemberScoresHelpers.selectedTournament.IsOnlyThreeGames) || areAnyFirst3BoxesEmptyForThreeGameTournament)
             {
@@ -1546,6 +1583,17 @@ namespace NineTapTour.Forms
             //This sets it back to default arrow after the DGV is finish loading.
             Cursor.Current = Cursors.Default;
             Application.DoEvents();
+        }
+
+        private void BtnManagePairings_Click(object sender, EventArgs e)
+        {
+            if (cbxTourneyDropDown.SelectedIndex < 0)
+            {
+                MessageBox.Show("Please select a tournament first.");
+                return;
+            }
+            using var form = new FrmDoublesTeamPairing(FrmMemberScoresHelpers.selectedTournament);
+            form.ShowDialog(this);
         }
 
         /*******************************************************************************

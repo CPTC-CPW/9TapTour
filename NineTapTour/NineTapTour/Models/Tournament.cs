@@ -33,7 +33,13 @@ public class Tournament
     }
 
     public bool IsTournamentFinalized { get; set; }
-    
+
+    /// <summary>
+    /// If set to true, this tournament spans two days.
+    /// Day 1 squads are qualifier rounds; Day 2 squads are the finals.
+    /// </summary>
+    public bool IsTwoDay { get; set; }
+
 }
 
 public class TournamentDTO

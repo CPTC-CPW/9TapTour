@@ -21,6 +21,24 @@ public class NineTapDb : DbContext
             .WithOne(g => g.Participant)
             .HasForeignKey<Participant>("GameId") // Shadow property for foreign key
             .IsRequired(false); // Game can exist without Participant during creation
+
+        // DoublesTeam has two FK references to Members on the same table,
+        // which would create multiple cascade paths in SQL Server.
+        // Use ClientSetNull (no DB-level cascade) to avoid the error.
+        builder.Entity<DoublesTeam>()
+            .HasOne(dt => dt.Member1)
+            .WithMany()
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<DoublesTeam>()
+            .HasOne(dt => dt.Member2)
+            .WithMany()
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<DoublesTeam>()
+            .HasOne(dt => dt.Tournament)
+            .WithMany()
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -36,4 +54,5 @@ public class NineTapDb : DbContext
     public virtual DbSet<Game> Games { get; set; }
     public virtual DbSet<Tournament> Tournaments { get; set; }
     public virtual DbSet<Participant> Participants { get; set; }
+    public virtual DbSet<DoublesTeam> DoublesTeams { get; set; }
 }

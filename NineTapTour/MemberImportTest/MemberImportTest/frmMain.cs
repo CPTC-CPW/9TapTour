@@ -459,7 +459,7 @@ public partial class FrmMain : Form
                                 Event = $"Imported Tourney - {rowDate}",
                                 Notes = string.Empty,
                                 Sponsors = string.Empty,
-                                Squads = 1,
+                                Squads = 4,
                                 Doubles = false,
                                 ThreeOutOf4 = false,
                                 IsOnlyThreeGames = false,
@@ -500,13 +500,12 @@ public partial class FrmMain : Form
 
                         GameDB.AddOrUpdateGame(game, db);
 
-                        // PERFORMANCE: Use cached squad count instead of querying DB each time
+                        // Squad numbering is 1-based per player per tournament within this import run.
+                        // Always start from 1 for the first entry read, regardless of any existing DB records.
                         int squadNumber;
                         if (!tournamentSquadCounts.ContainsKey(tourn.Id))
                         {
-                            // First time seeing this tournament in this file - check existing count
-                            tournamentSquadCounts[tourn.Id] = db.Participants
-                                .Count(p => p.Member.Id == member.Id && p.Tournament.Id == tourn.Id);
+                            tournamentSquadCounts[tourn.Id] = 0;
                         }
                         tournamentSquadCounts[tourn.Id]++;
                         squadNumber = tournamentSquadCounts[tourn.Id];
@@ -665,7 +664,7 @@ public partial class FrmMain : Form
         Font drawFont = new("Arial", 12);
         SolidBrush drawBrush = new(Color.Black);
         PointF drawPoint = new(20, 2);
-        g.DrawString("Version: 3.0.5", drawFont, drawBrush, drawPoint);
+        g.DrawString("Version: 3.0.6", drawFont, drawBrush, drawPoint);
 #if DEBUG
         drawBrush.Color = Color.Red;
         drawPoint.Y += 16;

@@ -1,4 +1,5 @@
 ﻿using NineTapTour.Database;
+using CalcService = NineTapTour.Calculations.Calculations;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -248,6 +249,43 @@ public partial class FrmTournamentResults : Form
 
         totalTournamentEntries = bowlers.Count;
 
+        // Batch-query each member's previous tournament handicap and bonus.
+        // Uses the same min/max cash logic as FrmFinalizeTournament and FrmMemberScores.
+        var memberNumbers = bowlers.Select(b => b.MemberNumber).Distinct().ToHashSet();
+        var prevHBByMember = new Dictionary<int, (int Hdcp, int Bonus)>();
+        using (var dbPrev = new NineTapDb())
+        {
+            var latestApproved = dbPrev.Participants
+                .Where(p => memberNumbers.Contains(p.Member.Number)
+                         && p.Tournament.Id != tourny.Id
+                         && p.Game.IsFinalized
+                         && p.Game.AdjustedAvg > 0)
+                .GroupBy(p => p.Member.Number)
+                .Select(g => new { MemberNumber = g.Key, LatestDate = g.Max(p => p.Tournament.Date) })
+                .ToList();
+
+            foreach (var item in latestApproved)
+            {
+                var prevEntries = dbPrev.Participants
+                    .Where(p => p.Member.Number == item.MemberNumber
+                             && p.Tournament.Id != tourny.Id
+                             && p.Game.IsFinalized
+                             && p.Tournament.Date == item.LatestDate)
+                    .Select(p => new { p.Game.AdjustedAvg, Bonus = p.Game.Bonus ?? 0, MoneyWon = p.Game.MoneyWon ?? 0 })
+                    .ToList();
+
+                if (prevEntries.Count == 0) continue;
+
+                var withAvg  = prevEntries.FirstOrDefault(e => e.AdjustedAvg > 0);
+                int prevHdcp = withAvg != null ? CalcService.CalculateHandicapPins(withAvg.AdjustedAvg) : 0;
+                int prevBonus = prevEntries.Any(e => e.MoneyWon > 0)
+                    ? prevEntries.Min(e => e.Bonus)
+                    : prevEntries.Max(e => e.Bonus);
+
+                prevHBByMember[item.MemberNumber] = (prevHdcp, prevBonus);
+            }
+        }
+
         foreach (var b in bowlers)
         {
             if (b.IsComp)
@@ -255,12 +293,13 @@ public partial class FrmTournamentResults : Form
                 compEntries++;
             }
 
+            bool hasPrevHB = prevHBByMember.TryGetValue(b.MemberNumber, out var prevHB);
             ExcelMember m = new()
             {
                 MemberNumber = b.MemberNumber,
                 Name = b.BowlerName,
-                Handicap = Convert.ToInt32(b.Handicap),
-                Bonus = Convert.ToInt32(b.Bonus),
+                Handicap = hasPrevHB && prevHB.Hdcp > 0 ? prevHB.Hdcp : Convert.ToInt32(b.Handicap),
+                Bonus    = hasPrevHB ? prevHB.Bonus : Convert.ToInt32(b.Bonus),
                 MoneyWon = b.MoneyWon,
                 SidePot = b.SidePot,
                 GameId = b.GameId,

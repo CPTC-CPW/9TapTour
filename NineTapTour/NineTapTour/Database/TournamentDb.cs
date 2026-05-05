@@ -322,6 +322,7 @@ namespace NineTapTour.Database
                         select new WinnerListMemberViewModel
                         {
                             PlaceStanding = g.PlaceStanding,
+                            MemberId = m.Id,
                             MemberNumber = memberNumber,
                             BowlerName = name,
                             Handicap = g.Handicap,
@@ -341,7 +342,8 @@ namespace NineTapTour.Database
                             UseGame3 = g.UseGame3,
                             UseGame4 = g.UseGame4,
                             KeepAdjustedAvg = g.KeepAdjustedAvg,
-                            Squad = p.Squad
+                            Squad = p.Squad,
+                            IsDay2 = p.IsDay2
                         })];
             }
         }

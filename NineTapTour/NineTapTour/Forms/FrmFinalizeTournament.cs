@@ -49,6 +49,21 @@ namespace NineTapTour.Forms
         private Dictionary<int, int> _bestStandingByMember = [];
         // Game IDs whose entry received a non-zero place standing (the "primary" entry).
         private readonly HashSet<int> _placedGameIds = [];
+        // Per member: (Scratch, Games) from the last (30 − currentEntryCount) finalized
+        // entries in prior tournaments. Combined with live grid values in UpdateAll30AvgForMember.
+        private Dictionary<int, (int Scratch, int Games)> _history30ByMember = [];
+
+        // Per game: the un-deducted carry-forward bonus from the previous tournament.
+        // Used in colHdcpTotal and RecalculateTournamentRow so the displayed total matches
+        // FrmTournamentResults (which also uses prevBonus without deduction).
+        // colBonus still shows the deducted/bumped preview value for the director's reference.
+        private Dictionary<int, int> _baseBonusByGameId = [];
+
+        // Per member: handicap and base bonus derived from the member's most recent finalized
+        // tournament (excluding the current tournament). Used as the source for colHdcp and
+        // the base bonus in colBonus / HDCP Total, overriding the potentially-stale per-entry
+        // Game.Handicap / Game.Bonus snapshots.
+        private Dictionary<int, (int Hdcp, int Bonus)> _prevTournHBByMember = [];
 
         // Set to true once FinalizeAllGames completes successfully this session.
         private bool _isFinalized = false;
@@ -62,6 +77,12 @@ namespace NineTapTour.Forms
             int AdjustedAvg, bool KeepAdjustedAvg,
             int? Handicap, int? Bonus, decimal? MoneyWon, string Notes);
         private readonly Dictionary<int, GameSnapshot> _gameSnapshot = [];
+
+        /// <summary>
+        /// Tag type for doubles rows: carries both members' game IDs so persistence
+        /// and finalization can update both game records from the combined team row.
+        /// </summary>
+        private record DoublesRowTag(int GameId1, int GameId2);
 
         public FrmFinalizeTournament(Tournament selectedTournament)
         {
@@ -82,7 +103,13 @@ namespace NineTapTour.Forms
             // can restore the original DB state for the rest of the session.
             using (var db = new NineTapDb())
             {
-                var gameIds = _currentTournamentBowlers.Select(b => b.GameId).ToHashSet();
+                // Collect all game IDs from grid rows (handles both singles int tags and DoublesRowTag)
+                var gameIds = new HashSet<int>();
+                foreach (DataGridViewRow row in dgvTournament.Rows)
+                {
+                    if (row.Tag is int gId)        gameIds.Add(gId);
+                    else if (row.Tag is DoublesRowTag drt) { gameIds.Add(drt.GameId1); gameIds.Add(drt.GameId2); }
+                }
                 foreach (var g in db.Games.Where(g => gameIds.Contains(g.Id)))
                     _gameSnapshot[g.Id] = new GameSnapshot(
                         g.Game1, g.Game2, g.Game3, g.Game4,
@@ -226,6 +253,18 @@ namespace NineTapTour.Forms
                 new DataGridViewTextBoxColumn  { Name = "colNotes",        HeaderText = "Notes",           AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill }
             );
 
+            // 2-day tournaments: add a read-only column showing the bowler's Day 1 qualifier place
+            if (selectedTournament.IsTwoDay)
+            {
+                dgv.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name       = "colDay1Place",
+                    HeaderText = "Day 1\nPlace",
+                    Width      = 55,
+                    ReadOnly   = true
+                });
+            }
+
             return dgv;
         }
 
@@ -234,7 +273,73 @@ namespace NineTapTour.Forms
             _cashingGameIds.Clear();
             _thirdEntryBonusMemberNumbers.Clear();
             _placedGameIds.Clear();
+            _baseBonusByGameId.Clear();
             _currentTournamentBowlers = TournamentDB.GetWinnerListMemberData(selectedTournament.Id);
+
+            // 2-day tournaments: build a Day 1 place lookup, then restrict the grid
+            // to Day 2 (finals) entries only.
+            Dictionary<int, int> day1PlaceByMemberId = [];
+            if (selectedTournament.IsTwoDay)
+            {
+                var day1Bowlers = _currentTournamentBowlers.Where(b => b.IsDay2 != true).ToList();
+                foreach (var b in day1Bowlers)
+                    day1PlaceByMemberId[b.MemberId] = b.PlaceStanding ?? 0;
+
+                _currentTournamentBowlers = _currentTournamentBowlers
+                    .Where(b => b.IsDay2 == true)
+                    .ToList();
+            }
+
+            // Doubles tournaments: delegate to the doubles grid builder
+            if (selectedTournament.Doubles)
+            {
+                LoadTournamentGridDoubles();
+                return;
+            }
+
+            // Pre-compute member numbers and previous-tournament H/B BEFORE BuildExcelMemberList
+            // so that place standings (and therefore isCashing) are based on the correct H/B.
+            var memberNumbersInTournament = _currentTournamentBowlers
+                .Select(b => b.MemberNumber).Distinct().ToHashSet();
+
+            _prevTournHBByMember.Clear();
+            using (var dbPrev = new NineTapDb())
+            {
+                var latestApprovedEntries = dbPrev.Participants
+                    .Where(p => memberNumbersInTournament.Contains(p.Member.Number)
+                             && p.Tournament.Id != selectedTournament.Id
+                             && p.Game.IsFinalized
+                             && p.Game.AdjustedAvg > 0)
+                    .GroupBy(p => p.Member.Number)
+                    .Select(g => new
+                    {
+                        MemberNumber = g.Key,
+                        LatestDate = g.Max(p => p.Tournament.Date)
+                    })
+                    .ToList();
+
+                foreach (var item in latestApprovedEntries)
+                {
+                    var prevEntries = dbPrev.Participants
+                        .Where(p => p.Member.Number == item.MemberNumber
+                                 && p.Tournament.Id != selectedTournament.Id
+                                 && p.Game.IsFinalized
+                                 && p.Tournament.Date == item.LatestDate)
+                        .Select(p => new { p.Game.AdjustedAvg, Bonus = p.Game.Bonus ?? 0, MoneyWon = p.Game.MoneyWon ?? 0 })
+                        .ToList();
+
+                    if (prevEntries.Count == 0) continue;
+
+                    var withAvg   = prevEntries.FirstOrDefault(e => e.AdjustedAvg > 0);
+                    int prevHdcp  = withAvg != null ? CalcService.CalculateHandicapPins(withAvg.AdjustedAvg) : 0;
+                    int prevBonus = prevEntries.Any(e => e.MoneyWon > 0)
+                        ? prevEntries.Min(e => e.Bonus)
+                        : prevEntries.Max(e => e.Bonus);
+
+                    _prevTournHBByMember[item.MemberNumber] = (prevHdcp, prevBonus);
+                }
+            }
+
             List<ExcelMember> members = BuildExcelMemberList(_currentTournamentBowlers);
 
             // Compute the correct placement for each member using only their best entry
@@ -263,6 +368,54 @@ namespace NineTapTour.Forms
                     .ToList();
                 foreach (var item in historicalCounts)
                     historicalCountByMember[item.MemberNumber] = item.Count;
+            }
+
+            // Precompute per-member historical scratch/games for the 30-entry AVG preview.
+            // We load the last (30 − currentCount) finalized entries per member so that
+            // adding in live current-entry values gives an up-to-date running average.
+            _history30ByMember.Clear();
+            using (var dbH = new NineTapDb())
+            {
+                var allHistory = dbH.Participants
+                    .Where(p => p.Tournament.Id != selectedTournament.Id
+                             && p.Game.IsFinalized
+                             && memberNumbersInTournament.Contains(p.Member.Number))
+                    .OrderByDescending(p => p.Tournament.Date)
+                    .ThenByDescending(p => p.Game.Id)
+                    .Select(p => new
+                    {
+                        MemberNumber = p.Member.Number,
+                        G1 = p.Game.Game1, G2 = p.Game.Game2,
+                        G3 = p.Game.Game3, G4 = p.Game.Game4,
+                        U1 = p.Game.UseGame1, U2 = p.Game.UseGame2,
+                        U3 = p.Game.UseGame3, U4 = p.Game.UseGame4
+                    })
+                    .ToList();
+
+                foreach (var grp in allHistory.GroupBy(x => x.MemberNumber))
+                {
+                    int memberNum = grp.Key;
+                    int currCount = currentCountByMember.TryGetValue(memberNum, out int cc) ? cc : 0;
+                    int limit     = Math.Max(30 - currCount, 0);
+                    int totalScratch = 0, totalGames = 0, taken = 0;
+                    foreach (var g in grp)
+                    {
+                        if (taken >= limit) break;
+                        int gCount = (g.U1 != false && g.G1.HasValue ? 1 : 0)
+                                   + (g.U2 != false && g.G2.HasValue ? 1 : 0)
+                                   + (g.U3 != false && g.G3.HasValue ? 1 : 0)
+                                   + (g.U4 != false && g.G4.HasValue ? 1 : 0);
+                        if (gCount == 0) continue;
+                        totalScratch += (g.U1 != false ? (g.G1 ?? 0) : 0)
+                                      + (g.U2 != false ? (g.G2 ?? 0) : 0)
+                                      + (g.U3 != false ? (g.G3 ?? 0) : 0)
+                                      + (g.U4 != false ? (g.G4 ?? 0) : 0);
+                        totalGames   += gCount;
+                        taken++;
+                    }
+                    if (totalGames > 0)
+                        _history30ByMember[memberNum] = (totalScratch, totalGames);
+                }
             }
 
             // Sort all entries by score descending so the best entry per member is encountered first
@@ -349,12 +502,20 @@ namespace NineTapTour.Forms
                                  + (g3Checked ? (orig.Game3 ?? 0) : 0) + (g4Checked ? (orig.Game4 ?? 0) : 0);
                 int checkedGames = (g1Checked ? 1 : 0) + (g2Checked ? 1 : 0)
                                  + (g3Checked ? 1 : 0) + (g4Checked ? 1 : 0);
+                // Use the previous tournament's H/B as the primary source.
+                // Fall back to Game.Handicap / Game.Bonus when no prior history exists,
+                // then to computing handicap from the current ADJ AVG as a last resort.
+                bool hasPrevHB = _prevTournHBByMember.TryGetValue(m.MemberNumber, out var prevHB);
+                int baseBonus = hasPrevHB
+                    ? prevHB.Bonus
+                    : Convert.ToInt32(m.Bonus);
+
                 // Pre-deduct bonus for members who will cash (placing within cash line)
                 int memberPlacing = _bestStandingByMember.TryGetValue(m.MemberNumber, out int p) ? p : 0;
                 bool isCashing    = memberPlacing > 0 && memberPlacing <= cashLine;
                 int displayBonus  = isCashing
-                    ? CalcService.DeductFromBonusPins(memberPlacing, m.Bonus)
-                    : m.Bonus;
+                    ? CalcService.DeductFromBonusPins(memberPlacing, baseBonus)
+                    : baseBonus;
                 if (isCashing)
                     _cashingGameIds.Add(m.GameId);
 
@@ -371,7 +532,18 @@ namespace NineTapTour.Forms
                     }
                 }
 
-                int hdcpTotal = scratch + (checkedGames * (m.Handicap + displayBonus));
+                // Store the un-deducted carry-forward bonus so RecalculateTournamentRow and
+                // the initial hdcpTotal use prevBonus (matching FrmTournamentResults.TotalScore).
+                _baseBonusByGameId[m.GameId] = baseBonus;
+
+                int displayHdcp = hasPrevHB && prevHB.Hdcp > 0
+                    ? prevHB.Hdcp
+                    : (m.Handicap > 0
+                        ? m.Handicap
+                        : (orig.AdjustedAvg > 0 ? CalcService.CalculateHandicapPins(orig.AdjustedAvg) : 0));
+                // colHdcpTotal uses the un-deducted baseBonus so it matches FrmTournamentResults.
+                // colBonus still shows displayBonus (deducted/bumped preview) separately.
+                int hdcpTotal = scratch + (checkedGames * (displayHdcp + baseBonus));
                 int entryAvg = checkedGames > 0 ? scratch / checkedGames : 0;
 
                 int rowIdx = dgvTournament.Rows.Add(
@@ -393,7 +565,7 @@ namespace NineTapTour.Forms
                     orig.AdjustedAvg > 0 ? (object)orig.AdjustedAvg : 0,  // ADJ AVG — restored from DB
                     orig.KeepAdjustedAvg,  // Director Check — restored from DB
                     orig.Squad,
-                    m.Handicap,
+                    displayHdcp,
                     displayBonus,
                     _placedGameIds.Contains(m.GameId)
                         ? ((m.MoneyWon ?? 0) + (orig.SidePot ?? 0) > 0 ? (object)((m.MoneyWon ?? 0) + (orig.SidePot ?? 0)) : null)
@@ -402,9 +574,169 @@ namespace NineTapTour.Forms
                 );
                 dgvTournament.Rows[rowIdx].Tag = m.GameId;
                 ApplySandbaggingHighlight(rowIdx, orig.LeagueAverage);
+
+                // 2-day: populate the Day 1 qualifier place column
+                if (selectedTournament.IsTwoDay && dgvTournament.Columns.Contains("colDay1Place"))
+                {
+                    int day1Place = day1PlaceByMemberId.TryGetValue(orig.MemberId, out int dp) ? dp : 0;
+                    dgvTournament.Rows[rowIdx].Cells["colDay1Place"].Value = day1Place > 0 ? day1Place : null;
+                }
             }
 
+            // Populate 30 Entry AVG for all member rows now that all entries are loaded
+            foreach (int memberNum in _currentTournamentBowlers.Select(b => b.MemberNumber).Distinct())
+                UpdateAll30AvgForMember(memberNum);
+
             // Validate all rows so previously-valid rows are not incorrectly flagged on open
+            for (int i = 0; i < dgvTournament.Rows.Count; i++)
+                ValidateRow(i);
+        }
+
+        /// <summary>
+        /// Builds the tournament grid for doubles tournaments.
+        /// Each row represents one DoublesTeam, showing both members' scores side-by-side.
+        /// colGame1/colGame2 = Member 1's Game 1 / Game 2.
+        /// colGame3/colGame4 = Member 2's Game 1 / Game 2.
+        /// The best squad (highest combined scratch) is selected per team.
+        /// Lower-scoring squad entries remain in the database but are excluded from the grid.
+        /// </summary>
+        private void LoadTournamentGridDoubles()
+        {
+            List<DoublesTeam> teams = DoublesTeamDB.GetTeamsByTournament(selectedTournament.Id);
+
+            // Index all entries by MemberId for quick lookup
+            var bowlersByMemberId = _currentTournamentBowlers
+                .GroupBy(b => b.MemberId)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            dgvTournament.Rows.Clear();
+
+            // Build a list of all team-squad combinations, tagging each with whether it is
+            // the best squad for that team.  Best = highest combined scratch.
+            // We collect these first so we can sort all rows across teams by best-squad scratch
+            // (mirroring the non-doubles "group by member, placed entry first" order).
+            var teamRows = new List<(int BestScratch, bool IsBest, WinnerListMemberViewModel M1, WinnerListMemberViewModel M2)>();
+
+            foreach (var team in teams)
+            {
+                int mem1Id = team.Member1.Id;
+                int mem2Id = team.Member2.Id;
+
+                if (!bowlersByMemberId.TryGetValue(mem1Id, out var entries1)) continue;
+                if (!bowlersByMemberId.TryGetValue(mem2Id, out var entries2)) continue;
+
+                // Find squads where BOTH members have entries
+                var squadsWithBoth = entries1
+                    .Select(e => e.Squad)
+                    .Intersect(entries2.Select(e => e.Squad))
+                    .ToList();
+
+                if (squadsWithBoth.Count == 0) continue;
+
+                // Determine the best squad (highest combined scratch) for place standings
+                int bestCombined = int.MinValue;
+                int bestSquad = -1;
+                foreach (int squad in squadsWithBoth)
+                {
+                    var m1 = entries1.First(e => e.Squad == squad);
+                    var m2 = entries2.First(e => e.Squad == squad);
+                    int combined = (m1.Game1 ?? 0) + (m1.Game2 ?? 0)
+                                 + (m2.Game1 ?? 0) + (m2.Game2 ?? 0);
+                    if (combined > bestCombined)
+                    {
+                        bestCombined = combined;
+                        bestSquad = squad;
+                    }
+                }
+
+                // Add ALL squads for this team — best first, then the rest by squad number
+                var orderedSquads = squadsWithBoth
+                    .OrderByDescending(s => s == bestSquad)   // best squad first
+                    .ThenBy(s => s)                           // remaining in order
+                    .ToList();
+
+                foreach (int squad in orderedSquads)
+                {
+                    var m1 = entries1.First(e => e.Squad == squad);
+                    var m2 = entries2.First(e => e.Squad == squad);
+                    int combined = (m1.Game1 ?? 0) + (m1.Game2 ?? 0)
+                                 + (m2.Game1 ?? 0) + (m2.Game2 ?? 0);
+                    teamRows.Add((bestCombined, squad == bestSquad, m1, m2));
+                }
+            }
+
+            // Sort: groups ordered by best-squad scratch descending; within each group, best entry first
+            teamRows.Sort((a, b) =>
+            {
+                if (a.BestScratch != b.BestScratch)
+                    return b.BestScratch.CompareTo(a.BestScratch); // higher best scratch first
+                if (a.IsBest != b.IsBest)
+                    return a.IsBest ? -1 : 1;                      // best entry before duplicates
+                return b.M1.Squad.CompareTo(a.M1.Squad);           // tie-break by squad descending
+            });
+
+            // Assign place standings to best-squad rows in order of best scratch
+            int rank = 1;
+            foreach (var (_, isBest, _, _) in teamRows.Where(r => r.IsBest))
+            {
+                // rank is assigned below when adding rows
+                _ = rank++;
+            }
+
+            int placeCounter = 1;
+            foreach (var (bestScratch, isBest, m1, m2) in teamRows)
+            {
+                int combinedScratch = (m1.Game1 ?? 0) + (m1.Game2 ?? 0)
+                                    + (m2.Game1 ?? 0) + (m2.Game2 ?? 0);
+                int hdcpTotal = combinedScratch
+                    + 2 * Convert.ToInt32(m1.Handicap) + 2 * Convert.ToInt32(m1.Bonus)
+                    + 2 * Convert.ToInt32(m2.Handicap) + 2 * Convert.ToInt32(m2.Bonus);
+                int combinedBonus = Convert.ToInt32(m1.Bonus) + Convert.ToInt32(m2.Bonus);
+                int combinedHdcp  = Convert.ToInt32(m1.Handicap) + Convert.ToInt32(m2.Handicap);
+                int gamesPlayed   = (m1.Game1.HasValue ? 1 : 0) + (m1.Game2.HasValue ? 1 : 0)
+                                  + (m2.Game1.HasValue ? 1 : 0) + (m2.Game2.HasValue ? 1 : 0);
+
+                int thisPlace = isBest ? placeCounter : 0;
+                if (isBest) placeCounter++;
+
+                string teamName   = $"{m1.BowlerName} / {m2.BowlerName}";
+                string teamNumber = $"{m1.MemberNumber} / {m2.MemberNumber}";
+
+                int rowIdx = dgvTournament.Rows.Add(
+                    thisPlace > 0 ? (object)thisPlace : null,  // Standing (null for non-best squads)
+                    teamNumber,
+                    teamName,
+                    m1.Game1,
+                    m1.Game1.HasValue,
+                    m1.Game2,
+                    m1.Game2.HasValue,
+                    m2.Game1,
+                    m2.Game1.HasValue,
+                    m2.Game2,
+                    m2.Game2.HasValue,
+                    combinedScratch,
+                    hdcpTotal,
+                    gamesPlayed > 0 ? combinedScratch / gamesPlayed : 0,  // Entry AVG
+                    null,          // 30 Entry AVG
+                    m1.AdjustedAvg > 0 ? (object)m1.AdjustedAvg : 0,
+                    m1.KeepAdjustedAvg,
+                    m1.Squad,
+                    combinedHdcp,
+                    combinedBonus,
+                    isBest && (m1.MoneyWon ?? 0) > 0 ? (object)m1.MoneyWon : null,
+                    null  // Notes
+                );
+
+                dgvTournament.Rows[rowIdx].Tag = new DoublesRowTag(m1.GameId, m2.GameId);
+
+                if (isBest)
+                {
+                    _placedGameIds.Add(m1.GameId);
+                    _placedGameIds.Add(m2.GameId);
+                }
+            }
+
+            // Validate all rows
             for (int i = 0; i < dgvTournament.Rows.Count; i++)
                 ValidateRow(i);
         }
@@ -419,12 +751,13 @@ namespace NineTapTour.Forms
             List<ExcelMember> members = [];
             foreach (var b in bowlers)
             {
+                bool hasPrevHBbem = _prevTournHBByMember.TryGetValue(b.MemberNumber, out var prevHBbem);
                 ExcelMember m = new()
                 {
                     MemberNumber = b.MemberNumber,
                     Name         = b.BowlerName,
-                    Handicap     = Convert.ToInt32(b.Handicap),
-                    Bonus        = Convert.ToInt32(b.Bonus),
+                    Handicap     = hasPrevHBbem && prevHBbem.Hdcp > 0 ? prevHBbem.Hdcp : Convert.ToInt32(b.Handicap),
+                    Bonus        = hasPrevHBbem ? prevHBbem.Bonus : Convert.ToInt32(b.Bonus),
                     MoneyWon     = b.MoneyWon,
                     GameId       = b.GameId,
                     Game1Score   = Convert.ToInt32(b.Game1),
@@ -507,6 +840,19 @@ namespace NineTapTour.Forms
             }
 
             int hdcp  = Convert.ToInt32(row.Cells["colHdcp"].Value  ?? 0);
+            // When no stored handicap is available, derive it from the ADJ AVG entered by the director.
+            // This only fills in a missing value — it never overwrites a valid stored handicap (Phase 1).
+            if (hdcp == 0)
+            {
+                int adjAvg = 0;
+                if (row.Cells["colAdjAvg"].Value != null)
+                    int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
+                if (adjAvg > 0)
+                {
+                    hdcp = CalcService.CalculateHandicapPins(adjAvg);
+                    row.Cells["colHdcp"].Value = hdcp;
+                }
+            }
             int bonus = Convert.ToInt32(row.Cells["colBonus"].Value ?? 0);
 
             bool c1 = row.Cells["colGame1Check"].Value as bool? ?? false;
@@ -521,12 +867,55 @@ namespace NineTapTour.Forms
 
             int scratch      = g1 + g2 + g3 + g4;
             int checkedGames = (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0) + (c4 ? 1 : 0);
-            int hdcpTotal    = scratch + (checkedGames * (hdcp + bonus));
+            // Use the un-deducted base bonus for colHdcpTotal so it matches FrmTournamentResults.
+            // If no base bonus is stored (e.g. for a new row), fall back to colBonus.
+            int baseBonus = row.Tag is int gId && _baseBonusByGameId.TryGetValue(gId, out int bb) ? bb : bonus;
+            int hdcpTotal    = scratch + (checkedGames * (hdcp + baseBonus));
             int entryAvg     = checkedGames > 0 ? scratch / checkedGames : 0;
 
             row.Cells["colScratchTotal"].Value = scratch;
             row.Cells["colHdcpTotal"].Value    = hdcpTotal;
             row.Cells["colEntryAvg"].Value     = entryAvg;
+
+            if (row.Cells["colMemberNumber"].Value is int memberNum30)
+                UpdateAll30AvgForMember(memberNum30);
+        }
+
+        /// <summary>
+        /// Recomputes and updates the col30EntryAvg cell for every row belonging to the
+        /// given member, combining live current-tournament game data with the pre-loaded
+        /// historical scratch/games stored in <see cref="_history30ByMember"/>.
+        /// </summary>
+        private void UpdateAll30AvgForMember(int memberNumber)
+        {
+            int currScratch = 0, currGames = 0;
+            foreach (DataGridViewRow row in dgvTournament.Rows)
+            {
+                if (row.Cells["colMemberNumber"].Value is not int mn || mn != memberNumber) continue;
+                bool c1 = row.Cells["colGame1Check"].Value as bool? ?? false;
+                bool c2 = row.Cells["colGame2Check"].Value as bool? ?? false;
+                bool c3 = row.Cells["colGame3Check"].Value as bool? ?? false;
+                bool c4 = row.Cells["colGame4Check"].Value as bool? ?? false;
+
+                currScratch += (c1 ? Convert.ToInt32(row.Cells["colGame1"].Value ?? 0) : 0)
+                             + (c2 ? Convert.ToInt32(row.Cells["colGame2"].Value ?? 0) : 0)
+                             + (c3 ? Convert.ToInt32(row.Cells["colGame3"].Value ?? 0) : 0)
+                             + (c4 ? Convert.ToInt32(row.Cells["colGame4"].Value ?? 0) : 0);
+                currGames   += (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0) + (c4 ? 1 : 0);
+            }
+
+            _history30ByMember.TryGetValue(memberNumber, out var hist);
+            int totalGames   = hist.Games + currGames;
+            int totalScratch = hist.Scratch + currScratch;
+            double avg30     = totalGames > 0
+                ? Math.Round((double)totalScratch / totalGames, 1) : 0;
+            object avgVal = avg30 > 0 ? (object)avg30 : null;
+
+            foreach (DataGridViewRow row in dgvTournament.Rows)
+            {
+                if (row.Cells["colMemberNumber"].Value is not int mn || mn != memberNumber) continue;
+                row.Cells["col30EntryAvg"].Value = avgVal;
+            }
         }
 
         /// <summary>
@@ -619,8 +1008,6 @@ namespace NineTapTour.Forms
 
                 if (adjAvg > 0)
                 {
-                    int newHdcp = CalcService.CalculateHandicapPins(adjAvg);
-                    dgvTournament.Rows[e.RowIndex].Cells["colHdcp"].Value = newHdcp;
                     RecalculateTournamentRow(e.RowIndex);
                 }
 
@@ -632,7 +1019,6 @@ namespace NineTapTour.Forms
                     if (Equals(row.Cells["colMemberNumber"].Value, memberNumber))
                     {
                         row.Cells["colAdjAvg"].Value = dgvTournament.Rows[e.RowIndex].Cells["colAdjAvg"].Value;
-                        row.Cells["colHdcp"].Value = dgvTournament.Rows[e.RowIndex].Cells["colHdcp"].Value;
                         RecalculateTournamentRow(row.Index);
                         ValidateRow(row.Index);
                         dgvTournament.InvalidateRow(row.Index);
@@ -672,6 +1058,14 @@ namespace NineTapTour.Forms
         private void PersistRowToDatabase(int rowIndex)
         {
             var row = dgvTournament.Rows[rowIndex];
+
+            // Doubles rows carry two game IDs; persist common fields to both games
+            if (row.Tag is DoublesRowTag drt)
+            {
+                PersistDoublesRowToDatabase(row, drt.GameId1, drt.GameId2);
+                return;
+            }
+
             if (row.Tag is not int gameId) return;
 
             Game game = GameDB.GetGame(gameId);
@@ -734,11 +1128,90 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
+        /// Persists a doubles team row to both member game records.
+        /// colGame1/colGame2 belong to gameId1; colGame3/colGame4 belong to gameId2.
+        /// Director Check, Earnings, and Notes are shared and written to both games.
+        /// </summary>
+        private void PersistDoublesRowToDatabase(DataGridViewRow row, int gameId1, int gameId2)
+        {
+            bool dirChecked = row.Cells["colDirCheck"].Value as bool? ?? false;
+            decimal earnings = 0;
+            if (row.Cells["colEarnings"].Value != null)
+                decimal.TryParse(row.Cells["colEarnings"].Value.ToString(), out earnings);
+            string notes = row.Cells["colNotes"].Value as string;
+
+            // Helper to persist a single game in the pair
+            void PersistOne(int gameId, int? g1, int? g2, bool? u1, bool? u2)
+            {
+                Game game = GameDB.GetGame(gameId);
+                if (game == null) return;
+
+                game.Game1 = g1;
+                game.Game2 = g2;
+                game.UseGame1 = u1;
+                game.UseGame2 = u2;
+
+                int adjAvg = 0;
+                if (row.Cells["colAdjAvg"].Value != null)
+                    int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
+                game.AdjustedAvg = adjAvg;
+
+                int hdcp = 0;
+                if (row.Cells["colHdcp"].Value != null)
+                    int.TryParse(row.Cells["colHdcp"].Value.ToString(), out hdcp);
+
+                int bonus = 0;
+                if (row.Cells["colBonus"].Value != null)
+                    int.TryParse(row.Cells["colBonus"].Value.ToString(), out bonus);
+
+                // For doubles each member has individual HDCP/bonus tracked in their game
+                // The grid shows combined values — split evenly for storage (director can adjust)
+                game.Handicap = hdcp / 2;
+                game.Bonus    = bonus / 2;
+
+                game.KeepAdjustedAvg = dirChecked;
+                game.MoneyWon        = earnings > 0 ? earnings / 2 : null;
+                game.Notes           = notes;
+
+                GameDB.AddOrUpdateGame(game);
+            }
+
+            PersistOne(gameId1,
+                ParseCellInt(row.Cells["colGame1"].Value),
+                ParseCellInt(row.Cells["colGame2"].Value),
+                row.Cells["colGame1Check"].Value as bool? ?? false,
+                row.Cells["colGame2Check"].Value as bool? ?? false);
+
+            PersistOne(gameId2,
+                ParseCellInt(row.Cells["colGame3"].Value),
+                ParseCellInt(row.Cells["colGame4"].Value),
+                row.Cells["colGame3Check"].Value as bool? ?? false,
+                row.Cells["colGame4Check"].Value as bool? ?? false);
+        }
+
+        /// <summary>
         /// Persists the current game-check states to the database for the given row.
         /// </summary>
         private void UpdateGameUseFlags(int rowIndex)
         {
             var row = dgvTournament.Rows[rowIndex];
+
+            // Doubles rows: persist both games' use flags independently
+            if (row.Tag is DoublesRowTag drt)
+            {
+                void PersistFlags(int gameId, string uc1, string uc2)
+                {
+                    Game game = GameDB.GetGame(gameId);
+                    if (game == null) return;
+                    game.UseGame1 = row.Cells[uc1].Value as bool? ?? false;
+                    game.UseGame2 = row.Cells[uc2].Value as bool? ?? false;
+                    GameDB.AddOrUpdateGame(game);
+                }
+                PersistFlags(drt.GameId1, "colGame1Check", "colGame2Check");
+                PersistFlags(drt.GameId2, "colGame3Check", "colGame4Check");
+                return;
+            }
+
             if (row.Tag is not int gameId) return;
 
             Game game = GameDB.GetGame(gameId);
@@ -826,6 +1299,68 @@ namespace NineTapTour.Forms
             for (int i = 0; i < dgvTournament.Rows.Count; i++)
             {
                 var row = dgvTournament.Rows[i];
+
+                // Doubles rows: finalize both member game records
+                if (row.Tag is DoublesRowTag drt)
+                {
+                    int dblAdjAvg = 0;
+                    if (row.Cells["colAdjAvg"].Value != null)
+                        int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out dblAdjAvg);
+                    bool dirChecked = row.Cells["colDirCheck"].Value as bool? ?? false;
+                    int combinedBonus = 0;
+                    if (row.Cells["colBonus"].Value != null)
+                        int.TryParse(row.Cells["colBonus"].Value.ToString(), out combinedBonus);
+
+                    void FinalizeDoublesMemberGame(int gameId, int? g1, int? g2, bool? u1, bool? u2, int memberNum)
+                    {
+                        Game game = db.Games.Find(gameId);
+                        if (game == null) return;
+
+                        game.Game1 = g1;
+                        game.Game2 = g2;
+                        game.UseGame1 = u1 ?? false;
+                        game.UseGame2 = u2 ?? false;
+                        game.IsFinalized    = true;
+                        game.AdjustedAvg    = dblAdjAvg;
+                        game.KeepAdjustedAvg = dirChecked;
+                        game.Bonus          = combinedBonus / 2;
+                        game.LeagueAverage  = FinalizeTempDB.Get30GameAverage(memberNum, selectedTournament.Id);
+
+                        if (updatedMembers.Add(memberNum))
+                        {
+                            Member member = MemberDB.GetMember(memberNum, db);
+                            if (member != null && member.Id > 0)
+                            {
+                                member.Average   = dblAdjAvg;
+                                member.Handicap  = CalcService.CalculateHandicapPins(dblAdjAvg);
+                                member.Bonus     = combinedBonus / 2;
+                            }
+                        }
+                    }
+
+                    // Parse member numbers from the combined "Num1 / Num2" cell
+                    string rawNum = row.Cells["colMemberNumber"].Value?.ToString() ?? "";
+                    var parts = rawNum.Split('/');
+                    int mem1Num = parts.Length > 0 && int.TryParse(parts[0].Trim(), out int n1) ? n1 : 0;
+                    int mem2Num = parts.Length > 1 && int.TryParse(parts[1].Trim(), out int n2) ? n2 : 0;
+
+                    FinalizeDoublesMemberGame(drt.GameId1,
+                        ParseCellInt(row.Cells["colGame1"].Value),
+                        ParseCellInt(row.Cells["colGame2"].Value),
+                        row.Cells["colGame1Check"].Value as bool?,
+                        row.Cells["colGame2Check"].Value as bool?,
+                        mem1Num);
+
+                    FinalizeDoublesMemberGame(drt.GameId2,
+                        ParseCellInt(row.Cells["colGame3"].Value),
+                        ParseCellInt(row.Cells["colGame4"].Value),
+                        row.Cells["colGame3Check"].Value as bool?,
+                        row.Cells["colGame4Check"].Value as bool?,
+                        mem2Num);
+
+                    continue;
+                }
+
                 if (row.Tag is not int gameId) continue;
 
                 Game game = db.Games.Find(gameId);
@@ -1005,11 +1540,52 @@ namespace NineTapTour.Forms
 
             // --- Current tournament rows (blue highlight) ---
             // Pull live values from dgvTournament so edits are immediately reflected.
-            // Entries are reversed so the first entry for the member appears at the top.
-            var currentEntries = _currentTournamentBowlers
+            // Entries are sorted by w/HDCP descending when the member cashed,
+            // or by squad number ascending when they did not cash.
+            bool memberCashed = _currentTournamentBowlers
                 .Where(b => b.MemberNumber == memberNumber)
-                .Reverse()
-                .ToList();
+                .Any(b => _cashingGameIds.Contains(b.GameId));
+
+            var currentEntries = memberCashed
+                ? _currentTournamentBowlers
+                    .Where(b => b.MemberNumber == memberNumber)
+                    .OrderByDescending(b =>
+                    {
+                        DataGridViewRow tr = null;
+                        foreach (DataGridViewRow r in dgvTournament.Rows)
+                            if (r.Tag is int gid && gid == b.GameId) { tr = r; break; }
+                        if (tr != null)
+                        {
+                            bool c1 = tr.Cells["colGame1Check"].Value as bool? ?? false;
+                            bool c2 = tr.Cells["colGame2Check"].Value as bool? ?? false;
+                            bool c3 = tr.Cells["colGame3Check"].Value as bool? ?? false;
+                            bool c4 = tr.Cells["colGame4Check"].Value as bool? ?? false;
+                            int s  = (c1 ? Convert.ToInt32(tr.Cells["colGame1"].Value ?? 0) : 0)
+                                   + (c2 ? Convert.ToInt32(tr.Cells["colGame2"].Value ?? 0) : 0)
+                                   + (c3 ? Convert.ToInt32(tr.Cells["colGame3"].Value ?? 0) : 0)
+                                   + (c4 ? Convert.ToInt32(tr.Cells["colGame4"].Value ?? 0) : 0);
+                            int gc = (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0) + (c4 ? 1 : 0);
+                            int h  = Convert.ToInt32(tr.Cells["colHdcp"].Value  ?? 0);
+                            int bn = Convert.ToInt32(tr.Cells["colBonus"].Value ?? 0);
+                            return s + gc * (h + bn);
+                        }
+                        int scratch = (b.Game1 ?? 0) + (b.Game2 ?? 0) + (b.Game3 ?? 0) + (b.Game4 ?? 0);
+                        int games   = (b.Game1.HasValue ? 1 : 0) + (b.Game2.HasValue ? 1 : 0)
+                                    + (b.Game3.HasValue ? 1 : 0) + (b.Game4.HasValue ? 1 : 0);
+                        return scratch + games * (Convert.ToInt32(b.Handicap) + Convert.ToInt32(b.Bonus));
+                    })
+                    .ToList()
+                : _currentTournamentBowlers
+                    .Where(b => b.MemberNumber == memberNumber)
+                    .OrderByDescending(b => b.Squad)
+                    .ToList();
+
+            // Pre-compute the historical portion of the 30-entry AVG window
+            int histLimit     = Math.Max(30 - currentEntries.Count, 0);
+            int histScratch30 = history.Take(histLimit).Sum(h => h.TotalScore);
+            int histGames30   = history.Take(histLimit).Sum(h => h.GamesPlayed);
+            int currScratch30 = 0, currGames30 = 0;
+            var currentDetailRowIndices = new List<int>();
 
             foreach (WinnerListMemberViewModel b in currentEntries)
             {
@@ -1077,8 +1653,23 @@ namespace NineTapTour.Forms
                         : (b.MoneyWon > 0 ? (object)b.MoneyWon : null),  // Earnings (SidePot only on placed entry)
                     null                                         // Notes
                 );
+                currScratch30 += scratch;
+                currGames30   += validGames;
+                currentDetailRowIndices.Add(rowIdx);
                 dgvDetail.Rows[rowIdx].DefaultCellStyle.BackColor = Color.LightBlue;
+                // Only highlight the bonus cell on the single entry the bowler cashed with
+                // (placed entry), not on every entry for that member.
+                if (_cashingGameIds.Contains(b.GameId) && _placedGameIds.Contains(b.GameId))
+                    dgvDetail.Rows[rowIdx].Cells["colDetailBonus"].Style.BackColor = Color.LightSalmon;
             }
+
+            // Fill in the 30 Entry AVG on current-tournament rows
+            double preview30Avg = (histGames30 + currGames30) > 0
+                ? Math.Round((double)(histScratch30 + currScratch30) / (histGames30 + currGames30), 1)
+                : 0;
+            object preview30Val = preview30Avg > 0 ? (object)preview30Avg : null;
+            foreach (int ri in currentDetailRowIndices)
+                dgvDetail.Rows[ri].Cells["colDetail30Avg"].Value = preview30Val;
 
             // --- Finalized historical rows (ordered by date descending from DB) ---
             // Group by tournament date, reverse entries within each date so the first
@@ -1119,6 +1710,8 @@ namespace NineTapTour.Forms
                         h.Notes
                     );
 
+                    if (h.MoneyWon > 0)
+                        dgvDetail.Rows[rowIdx].Cells["colDetailBonus"].Style.BackColor = Color.LightSalmon;
                     // Highlight the 30 AVG cell for entries within the rolling 30-game window
                     if (historyIndex < thirtyGameWindow)
                         dgvDetail.Rows[rowIdx].Cells["colDetail30Avg"].Style.BackColor = Color.LightGreen;
@@ -1127,7 +1720,7 @@ namespace NineTapTour.Forms
             }
 
             decimal lifetimeEarnings = history.Sum(h => h.MoneyWon);
-            UpdateDetailGridHeaders(history.Take(thirtyGameWindow).ToList(), lifetimeEarnings);
+            UpdateDetailGridHeaders(history.Take(thirtyGameWindow).ToList(), lifetimeEarnings, preview30Avg);
 
             double leagueAvg = history.FirstOrDefault()?.trueAVG ?? 0;
             lblPlayerInfo.Text = $"Mem#   {memberNumber}        {memberName,-35}AVG   {(int)Math.Round(leagueAvg)}";
@@ -1137,7 +1730,7 @@ namespace NineTapTour.Forms
         /// Updates the column headers of <see cref="dgvDetail"/> to show the sum (or computed
         /// average) of the provided entries — typically the last 30 finalized games.
         /// </summary>
-        private void UpdateDetailGridHeaders(List<PlayerHistoryViewModel> last30, decimal lifetimeEarnings)
+        private void UpdateDetailGridHeaders(List<PlayerHistoryViewModel> last30, decimal lifetimeEarnings, double preview30Avg = 0)
         {
             if (last30.Count == 0)
             {
@@ -1172,7 +1765,8 @@ namespace NineTapTour.Forms
             dgvDetail.Columns["colDetailScratch"].HeaderText  = $"Scratch\n({scratch})";
             dgvDetail.Columns["colDetailWHdcp"].HeaderText    = $"w/HDCP\n({wHdcpSum})";
             dgvDetail.Columns["colDetailEntry"].HeaderText    = $"Entry\n({entryAvg})";
-            dgvDetail.Columns["colDetail30Avg"].HeaderText    = $"30 AVG\n({avg30:0.#})";
+            double headerAvg30 = preview30Avg > 0 ? preview30Avg : avg30;
+            dgvDetail.Columns["colDetail30Avg"].HeaderText    = $"30 AVG\n({headerAvg30:0.#})";
             dgvDetail.Columns["colDetailEarnings"].HeaderText = $"Earnings\n({lifetimeEarnings:0.00})";
         }
     }
