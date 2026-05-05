@@ -53,6 +53,18 @@ namespace NineTapTour.Forms
         // entries in prior tournaments. Combined with live grid values in UpdateAll30AvgForMember.
         private Dictionary<int, (int Scratch, int Games)> _history30ByMember = [];
 
+        // Per game: the un-deducted carry-forward bonus from the previous tournament.
+        // Used in colHdcpTotal and RecalculateTournamentRow so the displayed total matches
+        // FrmTournamentResults (which also uses prevBonus without deduction).
+        // colBonus still shows the deducted/bumped preview value for the director's reference.
+        private Dictionary<int, int> _baseBonusByGameId = [];
+
+        // Per member: handicap and base bonus derived from the member's most recent finalized
+        // tournament (excluding the current tournament). Used as the source for colHdcp and
+        // the base bonus in colBonus / HDCP Total, overriding the potentially-stale per-entry
+        // Game.Handicap / Game.Bonus snapshots.
+        private Dictionary<int, (int Hdcp, int Bonus)> _prevTournHBByMember = [];
+
         // Set to true once FinalizeAllGames completes successfully this session.
         private bool _isFinalized = false;
 
@@ -261,6 +273,7 @@ namespace NineTapTour.Forms
             _cashingGameIds.Clear();
             _thirdEntryBonusMemberNumbers.Clear();
             _placedGameIds.Clear();
+            _baseBonusByGameId.Clear();
             _currentTournamentBowlers = TournamentDB.GetWinnerListMemberData(selectedTournament.Id);
 
             // 2-day tournaments: build a Day 1 place lookup, then restrict the grid
@@ -282,6 +295,49 @@ namespace NineTapTour.Forms
             {
                 LoadTournamentGridDoubles();
                 return;
+            }
+
+            // Pre-compute member numbers and previous-tournament H/B BEFORE BuildExcelMemberList
+            // so that place standings (and therefore isCashing) are based on the correct H/B.
+            var memberNumbersInTournament = _currentTournamentBowlers
+                .Select(b => b.MemberNumber).Distinct().ToHashSet();
+
+            _prevTournHBByMember.Clear();
+            using (var dbPrev = new NineTapDb())
+            {
+                var latestApprovedEntries = dbPrev.Participants
+                    .Where(p => memberNumbersInTournament.Contains(p.Member.Number)
+                             && p.Tournament.Id != selectedTournament.Id
+                             && p.Game.IsFinalized
+                             && p.Game.AdjustedAvg > 0)
+                    .GroupBy(p => p.Member.Number)
+                    .Select(g => new
+                    {
+                        MemberNumber = g.Key,
+                        LatestDate = g.Max(p => p.Tournament.Date)
+                    })
+                    .ToList();
+
+                foreach (var item in latestApprovedEntries)
+                {
+                    var prevEntries = dbPrev.Participants
+                        .Where(p => p.Member.Number == item.MemberNumber
+                                 && p.Tournament.Id != selectedTournament.Id
+                                 && p.Game.IsFinalized
+                                 && p.Tournament.Date == item.LatestDate)
+                        .Select(p => new { p.Game.AdjustedAvg, Bonus = p.Game.Bonus ?? 0, MoneyWon = p.Game.MoneyWon ?? 0 })
+                        .ToList();
+
+                    if (prevEntries.Count == 0) continue;
+
+                    var withAvg   = prevEntries.FirstOrDefault(e => e.AdjustedAvg > 0);
+                    int prevHdcp  = withAvg != null ? CalcService.CalculateHandicapPins(withAvg.AdjustedAvg) : 0;
+                    int prevBonus = prevEntries.Any(e => e.MoneyWon > 0)
+                        ? prevEntries.Min(e => e.Bonus)
+                        : prevEntries.Max(e => e.Bonus);
+
+                    _prevTournHBByMember[item.MemberNumber] = (prevHdcp, prevBonus);
+                }
             }
 
             List<ExcelMember> members = BuildExcelMemberList(_currentTournamentBowlers);
@@ -318,8 +374,6 @@ namespace NineTapTour.Forms
             // We load the last (30 − currentCount) finalized entries per member so that
             // adding in live current-entry values gives an up-to-date running average.
             _history30ByMember.Clear();
-            var memberNumbersInTournament = _currentTournamentBowlers
-                .Select(b => b.MemberNumber).Distinct().ToHashSet();
             using (var dbH = new NineTapDb())
             {
                 var allHistory = dbH.Participants
@@ -448,12 +502,20 @@ namespace NineTapTour.Forms
                                  + (g3Checked ? (orig.Game3 ?? 0) : 0) + (g4Checked ? (orig.Game4 ?? 0) : 0);
                 int checkedGames = (g1Checked ? 1 : 0) + (g2Checked ? 1 : 0)
                                  + (g3Checked ? 1 : 0) + (g4Checked ? 1 : 0);
+                // Use the previous tournament's H/B as the primary source.
+                // Fall back to Game.Handicap / Game.Bonus when no prior history exists,
+                // then to computing handicap from the current ADJ AVG as a last resort.
+                bool hasPrevHB = _prevTournHBByMember.TryGetValue(m.MemberNumber, out var prevHB);
+                int baseBonus = hasPrevHB
+                    ? prevHB.Bonus
+                    : Convert.ToInt32(m.Bonus);
+
                 // Pre-deduct bonus for members who will cash (placing within cash line)
                 int memberPlacing = _bestStandingByMember.TryGetValue(m.MemberNumber, out int p) ? p : 0;
                 bool isCashing    = memberPlacing > 0 && memberPlacing <= cashLine;
                 int displayBonus  = isCashing
-                    ? CalcService.DeductFromBonusPins(memberPlacing, m.Bonus)
-                    : m.Bonus;
+                    ? CalcService.DeductFromBonusPins(memberPlacing, baseBonus)
+                    : baseBonus;
                 if (isCashing)
                     _cashingGameIds.Add(m.GameId);
 
@@ -470,7 +532,18 @@ namespace NineTapTour.Forms
                     }
                 }
 
-                int hdcpTotal = scratch + (checkedGames * (m.Handicap + displayBonus));
+                // Store the un-deducted carry-forward bonus so RecalculateTournamentRow and
+                // the initial hdcpTotal use prevBonus (matching FrmTournamentResults.TotalScore).
+                _baseBonusByGameId[m.GameId] = baseBonus;
+
+                int displayHdcp = hasPrevHB && prevHB.Hdcp > 0
+                    ? prevHB.Hdcp
+                    : (m.Handicap > 0
+                        ? m.Handicap
+                        : (orig.AdjustedAvg > 0 ? CalcService.CalculateHandicapPins(orig.AdjustedAvg) : 0));
+                // colHdcpTotal uses the un-deducted baseBonus so it matches FrmTournamentResults.
+                // colBonus still shows displayBonus (deducted/bumped preview) separately.
+                int hdcpTotal = scratch + (checkedGames * (displayHdcp + baseBonus));
                 int entryAvg = checkedGames > 0 ? scratch / checkedGames : 0;
 
                 int rowIdx = dgvTournament.Rows.Add(
@@ -492,7 +565,7 @@ namespace NineTapTour.Forms
                     orig.AdjustedAvg > 0 ? (object)orig.AdjustedAvg : 0,  // ADJ AVG — restored from DB
                     orig.KeepAdjustedAvg,  // Director Check — restored from DB
                     orig.Squad,
-                    m.Handicap,
+                    displayHdcp,
                     displayBonus,
                     _placedGameIds.Contains(m.GameId)
                         ? ((m.MoneyWon ?? 0) + (orig.SidePot ?? 0) > 0 ? (object)((m.MoneyWon ?? 0) + (orig.SidePot ?? 0)) : null)
@@ -678,12 +751,13 @@ namespace NineTapTour.Forms
             List<ExcelMember> members = [];
             foreach (var b in bowlers)
             {
+                bool hasPrevHBbem = _prevTournHBByMember.TryGetValue(b.MemberNumber, out var prevHBbem);
                 ExcelMember m = new()
                 {
                     MemberNumber = b.MemberNumber,
                     Name         = b.BowlerName,
-                    Handicap     = Convert.ToInt32(b.Handicap),
-                    Bonus        = Convert.ToInt32(b.Bonus),
+                    Handicap     = hasPrevHBbem && prevHBbem.Hdcp > 0 ? prevHBbem.Hdcp : Convert.ToInt32(b.Handicap),
+                    Bonus        = hasPrevHBbem ? prevHBbem.Bonus : Convert.ToInt32(b.Bonus),
                     MoneyWon     = b.MoneyWon,
                     GameId       = b.GameId,
                     Game1Score   = Convert.ToInt32(b.Game1),
@@ -766,6 +840,19 @@ namespace NineTapTour.Forms
             }
 
             int hdcp  = Convert.ToInt32(row.Cells["colHdcp"].Value  ?? 0);
+            // When no stored handicap is available, derive it from the ADJ AVG entered by the director.
+            // This only fills in a missing value — it never overwrites a valid stored handicap (Phase 1).
+            if (hdcp == 0)
+            {
+                int adjAvg = 0;
+                if (row.Cells["colAdjAvg"].Value != null)
+                    int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
+                if (adjAvg > 0)
+                {
+                    hdcp = CalcService.CalculateHandicapPins(adjAvg);
+                    row.Cells["colHdcp"].Value = hdcp;
+                }
+            }
             int bonus = Convert.ToInt32(row.Cells["colBonus"].Value ?? 0);
 
             bool c1 = row.Cells["colGame1Check"].Value as bool? ?? false;
@@ -780,7 +867,10 @@ namespace NineTapTour.Forms
 
             int scratch      = g1 + g2 + g3 + g4;
             int checkedGames = (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0) + (c4 ? 1 : 0);
-            int hdcpTotal    = scratch + (checkedGames * (hdcp + bonus));
+            // Use the un-deducted base bonus for colHdcpTotal so it matches FrmTournamentResults.
+            // If no base bonus is stored (e.g. for a new row), fall back to colBonus.
+            int baseBonus = row.Tag is int gId && _baseBonusByGameId.TryGetValue(gId, out int bb) ? bb : bonus;
+            int hdcpTotal    = scratch + (checkedGames * (hdcp + baseBonus));
             int entryAvg     = checkedGames > 0 ? scratch / checkedGames : 0;
 
             row.Cells["colScratchTotal"].Value = scratch;
