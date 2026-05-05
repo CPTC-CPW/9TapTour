@@ -276,11 +276,16 @@ namespace NineTapTour.Forms
 
                     Game currentGame = GetScoresById(currentMem.Id);
 
-                    PlayerHistoryViewModel latestHistory = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
-                    int displayHandicap = latestHistory != null && latestHistory.AVG > 0
-                        ? CalcService.CalculateHandicapPins(latestHistory.AVG)
+                    var lastTourneyEntries = PlayerHistoryDB.GetEntriesForMostRecentTournament(currentMem.Number);
+                    var entryWithAvg = lastTourneyEntries.FirstOrDefault(e => e.AVG > 0);
+                    int displayHandicap = entryWithAvg != null
+                        ? CalcService.CalculateHandicapPins(entryWithAvg.AVG)
                         : (currentMem.Handicap ?? 0);
-                    int displayBonus = latestHistory != null ? latestHistory.Bonus : currentMem.Bonus;
+                    int displayBonus = lastTourneyEntries.Count > 0
+                        ? (lastTourneyEntries.Any(e => e.MoneyWon > 0)
+                            ? lastTourneyEntries.Min(e => e.Bonus)
+                            : lastTourneyEntries.Max(e => e.Bonus))
+                        : currentMem.Bonus;
                     txtHandicap.Text = displayHandicap.ToString();
                     txtBonusPins.Text = displayBonus.ToString();
 
@@ -559,11 +564,16 @@ namespace NineTapTour.Forms
 
                     if (currentGame == null)
                     {
-                        PlayerHistoryViewModel latestHistory = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
-                        player.Game.Handicap = latestHistory != null && latestHistory.AVG > 0
-                            ? CalcService.CalculateHandicapPins(latestHistory.AVG)
+                        var lastTourneyEntries = PlayerHistoryDB.GetEntriesForMostRecentTournament(currentMem.Number);
+                        var entryWithAvg = lastTourneyEntries.FirstOrDefault(e => e.AVG > 0);
+                        player.Game.Handicap = entryWithAvg != null
+                            ? CalcService.CalculateHandicapPins(entryWithAvg.AVG)
                             : currentMem.Handicap;
-                        player.Game.Bonus = latestHistory != null ? latestHistory.Bonus : currentMem.Bonus;
+                        player.Game.Bonus = lastTourneyEntries.Count > 0
+                            ? (lastTourneyEntries.Any(e => e.MoneyWon > 0)
+                                ? lastTourneyEntries.Min(e => e.Bonus)
+                                : lastTourneyEntries.Max(e => e.Bonus))
+                            : currentMem.Bonus;
                     }
                     else
                     {

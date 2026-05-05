@@ -1450,35 +1450,45 @@ namespace NineTapTour.Forms
 
             // --- Current tournament rows (blue highlight) ---
             // Pull live values from dgvTournament so edits are immediately reflected.
-            // Entries are sorted by w/HDCP descending (highest score first).
-            var currentEntries = _currentTournamentBowlers
+            // Entries are sorted by w/HDCP descending when the member cashed,
+            // or by squad number ascending when they did not cash.
+            bool memberCashed = _currentTournamentBowlers
                 .Where(b => b.MemberNumber == memberNumber)
-                .OrderByDescending(b =>
-                {
-                    DataGridViewRow tr = null;
-                    foreach (DataGridViewRow r in dgvTournament.Rows)
-                        if (r.Tag is int gid && gid == b.GameId) { tr = r; break; }
-                    if (tr != null)
+                .Any(b => _cashingGameIds.Contains(b.GameId));
+
+            var currentEntries = memberCashed
+                ? _currentTournamentBowlers
+                    .Where(b => b.MemberNumber == memberNumber)
+                    .OrderByDescending(b =>
                     {
-                        bool c1 = tr.Cells["colGame1Check"].Value as bool? ?? false;
-                        bool c2 = tr.Cells["colGame2Check"].Value as bool? ?? false;
-                        bool c3 = tr.Cells["colGame3Check"].Value as bool? ?? false;
-                        bool c4 = tr.Cells["colGame4Check"].Value as bool? ?? false;
-                        int s  = (c1 ? Convert.ToInt32(tr.Cells["colGame1"].Value ?? 0) : 0)
-                               + (c2 ? Convert.ToInt32(tr.Cells["colGame2"].Value ?? 0) : 0)
-                               + (c3 ? Convert.ToInt32(tr.Cells["colGame3"].Value ?? 0) : 0)
-                               + (c4 ? Convert.ToInt32(tr.Cells["colGame4"].Value ?? 0) : 0);
-                        int gc = (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0) + (c4 ? 1 : 0);
-                        int h  = Convert.ToInt32(tr.Cells["colHdcp"].Value  ?? 0);
-                        int bn = Convert.ToInt32(tr.Cells["colBonus"].Value ?? 0);
-                        return s + gc * (h + bn);
-                    }
-                    int scratch = (b.Game1 ?? 0) + (b.Game2 ?? 0) + (b.Game3 ?? 0) + (b.Game4 ?? 0);
-                    int games   = (b.Game1.HasValue ? 1 : 0) + (b.Game2.HasValue ? 1 : 0)
-                                + (b.Game3.HasValue ? 1 : 0) + (b.Game4.HasValue ? 1 : 0);
-                    return scratch + games * (Convert.ToInt32(b.Handicap) + Convert.ToInt32(b.Bonus));
-                })
-                .ToList();
+                        DataGridViewRow tr = null;
+                        foreach (DataGridViewRow r in dgvTournament.Rows)
+                            if (r.Tag is int gid && gid == b.GameId) { tr = r; break; }
+                        if (tr != null)
+                        {
+                            bool c1 = tr.Cells["colGame1Check"].Value as bool? ?? false;
+                            bool c2 = tr.Cells["colGame2Check"].Value as bool? ?? false;
+                            bool c3 = tr.Cells["colGame3Check"].Value as bool? ?? false;
+                            bool c4 = tr.Cells["colGame4Check"].Value as bool? ?? false;
+                            int s  = (c1 ? Convert.ToInt32(tr.Cells["colGame1"].Value ?? 0) : 0)
+                                   + (c2 ? Convert.ToInt32(tr.Cells["colGame2"].Value ?? 0) : 0)
+                                   + (c3 ? Convert.ToInt32(tr.Cells["colGame3"].Value ?? 0) : 0)
+                                   + (c4 ? Convert.ToInt32(tr.Cells["colGame4"].Value ?? 0) : 0);
+                            int gc = (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0) + (c4 ? 1 : 0);
+                            int h  = Convert.ToInt32(tr.Cells["colHdcp"].Value  ?? 0);
+                            int bn = Convert.ToInt32(tr.Cells["colBonus"].Value ?? 0);
+                            return s + gc * (h + bn);
+                        }
+                        int scratch = (b.Game1 ?? 0) + (b.Game2 ?? 0) + (b.Game3 ?? 0) + (b.Game4 ?? 0);
+                        int games   = (b.Game1.HasValue ? 1 : 0) + (b.Game2.HasValue ? 1 : 0)
+                                    + (b.Game3.HasValue ? 1 : 0) + (b.Game4.HasValue ? 1 : 0);
+                        return scratch + games * (Convert.ToInt32(b.Handicap) + Convert.ToInt32(b.Bonus));
+                    })
+                    .ToList()
+                : _currentTournamentBowlers
+                    .Where(b => b.MemberNumber == memberNumber)
+                    .OrderByDescending(b => b.Squad)
+                    .ToList();
 
             // Pre-compute the historical portion of the 30-entry AVG window
             int histLimit     = Math.Max(30 - currentEntries.Count, 0);
