@@ -611,11 +611,8 @@ namespace NineTapTour.Forms
 
             dgvTournament.Rows.Clear();
 
-            // Build a list of all team-squad combinations, tagging each with whether it is
-            // the best squad for that team.  Best = highest combined scratch.
-            // We collect these first so we can sort all rows across teams by best-squad scratch
-            // (mirroring the non-doubles "group by member, placed entry first" order).
-            var teamRows = new List<(int BestScratch, bool IsBest, WinnerListMemberViewModel M1, WinnerListMemberViewModel M2)>();
+            // Each DoublesTeam is for a specific squad. Build one row per team.
+            var teamRows = new List<(int Scratch, WinnerListMemberViewModel M1, WinnerListMemberViewModel M2)>();
 
             foreach (var team in teams)
             {
@@ -625,66 +622,25 @@ namespace NineTapTour.Forms
                 if (!bowlersByMemberId.TryGetValue(mem1Id, out var entries1)) continue;
                 if (!bowlersByMemberId.TryGetValue(mem2Id, out var entries2)) continue;
 
-                // Find squads where BOTH members have entries
-                var squadsWithBoth = entries1
-                    .Select(e => e.Squad)
-                    .Intersect(entries2.Select(e => e.Squad))
-                    .ToList();
+                // Find the entry for the squad this team is registered in
+                var m1 = entries1.FirstOrDefault(e => e.Squad == team.Squad);
+                var m2 = entries2.FirstOrDefault(e => e.Squad == team.Squad);
+                if (m1 == null || m2 == null) continue;
 
-                if (squadsWithBoth.Count == 0) continue;
-
-                // Determine the best squad (highest combined scratch) for place standings
-                int bestCombined = int.MinValue;
-                int bestSquad = -1;
-                foreach (int squad in squadsWithBoth)
-                {
-                    var m1 = entries1.First(e => e.Squad == squad);
-                    var m2 = entries2.First(e => e.Squad == squad);
-                    int combined = (m1.Game1 ?? 0) + (m1.Game2 ?? 0)
-                                 + (m2.Game1 ?? 0) + (m2.Game2 ?? 0);
-                    if (combined > bestCombined)
-                    {
-                        bestCombined = combined;
-                        bestSquad = squad;
-                    }
-                }
-
-                // Add ALL squads for this team — best first, then the rest by squad number
-                var orderedSquads = squadsWithBoth
-                    .OrderByDescending(s => s == bestSquad)   // best squad first
-                    .ThenBy(s => s)                           // remaining in order
-                    .ToList();
-
-                foreach (int squad in orderedSquads)
-                {
-                    var m1 = entries1.First(e => e.Squad == squad);
-                    var m2 = entries2.First(e => e.Squad == squad);
-                    int combined = (m1.Game1 ?? 0) + (m1.Game2 ?? 0)
-                                 + (m2.Game1 ?? 0) + (m2.Game2 ?? 0);
-                    teamRows.Add((bestCombined, squad == bestSquad, m1, m2));
-                }
+                int combined = (m1.Game1 ?? 0) + (m1.Game2 ?? 0)
+                             + (m2.Game1 ?? 0) + (m2.Game2 ?? 0);
+                teamRows.Add((combined, m1, m2));
             }
 
-            // Sort: groups ordered by best-squad scratch descending; within each group, best entry first
-            teamRows.Sort((a, b) =>
-            {
-                if (a.BestScratch != b.BestScratch)
-                    return b.BestScratch.CompareTo(a.BestScratch); // higher best scratch first
-                if (a.IsBest != b.IsBest)
-                    return a.IsBest ? -1 : 1;                      // best entry before duplicates
-                return b.M1.Squad.CompareTo(a.M1.Squad);           // tie-break by squad descending
-            });
+            // Sort by combined scratch descending
+            teamRows.Sort((a, b) => b.Scratch.CompareTo(a.Scratch));
 
-            // Assign place standings to best-squad rows in order of best scratch
-            int rank = 1;
-            foreach (var (_, isBest, _, _) in teamRows.Where(r => r.IsBest))
-            {
-                // rank is assigned below when adding rows
-                _ = rank++;
-            }
+            // Count teams for rank tracking (used implicitly by placeCounter below)
+            int rank = teamRows.Count;
+            _ = rank; // suppress unused warning
 
             int placeCounter = 1;
-            foreach (var (bestScratch, isBest, m1, m2) in teamRows)
+            foreach (var (_, m1, m2) in teamRows)
             {
                 int combinedScratch = (m1.Game1 ?? 0) + (m1.Game2 ?? 0)
                                     + (m2.Game1 ?? 0) + (m2.Game2 ?? 0);
@@ -696,14 +652,11 @@ namespace NineTapTour.Forms
                 int gamesPlayed   = (m1.Game1.HasValue ? 1 : 0) + (m1.Game2.HasValue ? 1 : 0)
                                   + (m2.Game1.HasValue ? 1 : 0) + (m2.Game2.HasValue ? 1 : 0);
 
-                int thisPlace = isBest ? placeCounter : 0;
-                if (isBest) placeCounter++;
-
                 string teamName   = $"{m1.BowlerName} / {m2.BowlerName}";
                 string teamNumber = $"{m1.MemberNumber} / {m2.MemberNumber}";
 
                 int rowIdx = dgvTournament.Rows.Add(
-                    thisPlace > 0 ? (object)thisPlace : null,  // Standing (null for non-best squads)
+                    (object)placeCounter,
                     teamNumber,
                     teamName,
                     m1.Game1,
@@ -723,17 +676,15 @@ namespace NineTapTour.Forms
                     m1.Squad,
                     combinedHdcp,
                     combinedBonus,
-                    isBest && (m1.MoneyWon ?? 0) > 0 ? (object)m1.MoneyWon : null,
+                    (m1.MoneyWon ?? 0) > 0 ? (object)m1.MoneyWon : null,
                     null  // Notes
                 );
+                placeCounter++;
 
                 dgvTournament.Rows[rowIdx].Tag = new DoublesRowTag(m1.GameId, m2.GameId);
 
-                if (isBest)
-                {
-                    _placedGameIds.Add(m1.GameId);
-                    _placedGameIds.Add(m2.GameId);
-                }
+                _placedGameIds.Add(m1.GameId);
+                _placedGameIds.Add(m2.GameId);
             }
 
             // Validate all rows
