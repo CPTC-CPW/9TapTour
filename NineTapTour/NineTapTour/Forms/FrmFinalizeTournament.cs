@@ -287,18 +287,6 @@ namespace NineTapTour.Forms
                 new DataGridViewTextBoxColumn  { Name = "colNotes",        HeaderText = "Notes",           AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill }
             );
 
-            // 2-day tournaments: add a read-only column showing the bowler's Day 1 qualifier place
-            if (selectedTournament.IsTwoDay)
-            {
-                dgv.Columns.Add(new DataGridViewTextBoxColumn
-                {
-                    Name       = "colDay1Place",
-                    HeaderText = "Day 1\nPlace",
-                    Width      = 55,
-                    ReadOnly   = true
-                });
-            }
-
             return dgv;
         }
 
@@ -309,20 +297,6 @@ namespace NineTapTour.Forms
             _placedGameIds.Clear();
             _baseBonusByGameId.Clear();
             _currentTournamentBowlers = TournamentDB.GetWinnerListMemberData(selectedTournament.Id);
-
-            // 2-day tournaments: build a Day 1 place lookup, then restrict the grid
-            // to Day 2 (finals) entries only.
-            Dictionary<int, int> day1PlaceByMemberId = [];
-            if (selectedTournament.IsTwoDay)
-            {
-                var day1Bowlers = _currentTournamentBowlers.Where(b => b.IsDay2 != true).ToList();
-                foreach (var b in day1Bowlers)
-                    day1PlaceByMemberId[b.MemberId] = b.PlaceStanding ?? 0;
-
-                _currentTournamentBowlers = _currentTournamentBowlers
-                    .Where(b => b.IsDay2 == true)
-                    .ToList();
-            }
 
             // Doubles tournaments: delegate to the doubles grid builder
             if (selectedTournament.Doubles)
@@ -376,14 +350,41 @@ namespace NineTapTour.Forms
 
             List<ExcelMember> members = BuildExcelMemberList(_currentTournamentBowlers);
 
-            // Compute the correct placement for each member using only their best entry
-            List<ExcelMember> deduped = CalcService.CalculatePlaceStandings(members, removeDuplicates: true);
-            _bestStandingByMember = deduped.ToDictionary(m => m.MemberNumber, m => m.PlaceStanding);
+            // 2-day championships: use stored place standings (written by FrmTournamentResults)
+            // instead of recalculating from scores. _cashingGameIds is seeded from MoneyWon > 0;
+            // cashLine is unused (isCashing resolves to false, suppressing bonus deduction preview).
+            int cashLine;
+            if (selectedTournament.IsTwoDay)
+            {
+                var storedPlaceByGameId = _currentTournamentBowlers.ToDictionary(b => b.GameId, b => b.PlaceStanding ?? 0);
+                foreach (var m in members)
+                    m.PlaceStanding = storedPlaceByGameId.TryGetValue(m.GameId, out int sp) ? sp : 0;
 
-            // Determine the cash line so bonus deductions can be previewed in the grid
-            int totalEntries = _currentTournamentBowlers.Count;
-            int compEntries  = _currentTournamentBowlers.Count(b => b.IsComp);
-            int cashLine     = CalcService.GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
+                _bestStandingByMember = _currentTournamentBowlers
+                    .GroupBy(b => b.MemberNumber)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Where(b => (b.PlaceStanding ?? 0) > 0)
+                              .Select(b => b.PlaceStanding!.Value)
+                              .DefaultIfEmpty(int.MaxValue)
+                              .Min());
+
+                foreach (var b in _currentTournamentBowlers.Where(b => (b.MoneyWon ?? 0) > 0))
+                    _cashingGameIds.Add(b.GameId);
+
+                cashLine = 0; // unused; isCashing = false for all rows (no auto bonus deduction)
+            }
+            else
+            {
+                // Compute the correct placement for each member using only their best entry
+                List<ExcelMember> deduped = CalcService.CalculatePlaceStandings(members, removeDuplicates: true);
+                _bestStandingByMember = deduped.ToDictionary(m => m.MemberNumber, m => m.PlaceStanding);
+
+                // Determine the cash line so bonus deductions can be previewed in the grid
+                int totalEntries = _currentTournamentBowlers.Count;
+                int compEntries  = _currentTournamentBowlers.Count(b => b.IsComp);
+                cashLine         = CalcService.GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
+            }
 
             // Count current-tournament entries per member and finalized historical entries per member.
             // Used to detect members reaching their 3rd total entry in this tournament.
@@ -455,13 +456,16 @@ namespace NineTapTour.Forms
             // Sort all entries by score descending so the best entry per member is encountered first
             members.Sort((x, y) => y.TotalScore.CompareTo(x.TotalScore));
 
-            // First occurrence of each member gets the standing; every duplicate entry gets 0
-            var seenMembers = new HashSet<int>();
-            foreach (ExcelMember m in members)
+            if (!selectedTournament.IsTwoDay)
             {
-                m.PlaceStanding = seenMembers.Add(m.MemberNumber)
-                    ? _bestStandingByMember[m.MemberNumber]
-                    : 0;
+                // First occurrence of each member gets the standing; every duplicate entry gets 0
+                var seenMembers = new HashSet<int>();
+                foreach (ExcelMember m in members)
+                {
+                    m.PlaceStanding = seenMembers.Add(m.MemberNumber)
+                        ? _bestStandingByMember[m.MemberNumber]
+                        : 0;
+                }
             }
 
             foreach (ExcelMember m in members)
@@ -555,7 +559,8 @@ namespace NineTapTour.Forms
 
                 // Award +1 bonus pin to new bowlers reaching their 3rd total entry
                 // (history + current tournament), but only when they are not cashing.
-                if (!isCashing)
+                // Not applicable to 2-day championships (earnings are set manually).
+                if (!isCashing && !selectedTournament.IsTwoDay)
                 {
                     int histCount    = historicalCountByMember.TryGetValue(m.MemberNumber, out int hc) ? hc : 0;
                     int currCount    = currentCountByMember.TryGetValue(m.MemberNumber, out int cc) ? cc : 0;
@@ -608,13 +613,6 @@ namespace NineTapTour.Forms
                 );
                 dgvTournament.Rows[rowIdx].Tag = m.GameId;
                 ApplySandbaggingHighlight(rowIdx, orig.LeagueAverage);
-
-                // 2-day: populate the Day 1 qualifier place column
-                if (selectedTournament.IsTwoDay && dgvTournament.Columns.Contains("colDay1Place"))
-                {
-                    int day1Place = day1PlaceByMemberId.TryGetValue(orig.MemberId, out int dp) ? dp : 0;
-                    dgvTournament.Rows[rowIdx].Cells["colDay1Place"].Value = day1Place > 0 ? day1Place : null;
-                }
             }
 
             // Populate 30 Entry AVG for all member rows now that all entries are loaded

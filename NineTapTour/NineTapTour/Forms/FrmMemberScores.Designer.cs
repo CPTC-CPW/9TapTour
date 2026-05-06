@@ -72,7 +72,6 @@
             grpStats = new System.Windows.Forms.GroupBox();
             chkIgnoreUnscoredGames = new System.Windows.Forms.CheckBox();
             cbCompEntry = new System.Windows.Forms.CheckBox();
-            chkIsDay2 = new System.Windows.Forms.CheckBox();
             lblMoney = new System.Windows.Forms.Label();
             txtMoney = new System.Windows.Forms.TextBox();
             lblPlayer2 = new System.Windows.Forms.Label();
@@ -666,7 +665,6 @@
             // 
             grpStats.Controls.Add(chkIgnoreUnscoredGames);
             grpStats.Controls.Add(cbCompEntry);
-            grpStats.Controls.Add(chkIsDay2);
             grpStats.Controls.Add(lblMoney);
             grpStats.Controls.Add(txtMoney);
             grpStats.Controls.Add(lblPlayer2);
@@ -718,19 +716,6 @@
             cbCompEntry.TabStop = false;
             cbCompEntry.Text = "Comp Entry";
             cbCompEntry.UseVisualStyleBackColor = true;
-            // 
-            // chkIsDay2
-            // 
-            chkIsDay2.AutoSize = true;
-            chkIsDay2.Location = new System.Drawing.Point(288, 70);
-            chkIsDay2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            chkIsDay2.Name = "chkIsDay2";
-            chkIsDay2.Size = new System.Drawing.Size(85, 19);
-            chkIsDay2.TabIndex = 27;
-            chkIsDay2.TabStop = false;
-            chkIsDay2.Text = "Day 2 Entry";
-            chkIsDay2.UseVisualStyleBackColor = true;
-            chkIsDay2.Visible = false;
             // 
             // lblMoney
             // 
@@ -1511,7 +1496,6 @@
         private System.Windows.Forms.RadioButton rdoGameSC;
         private System.Windows.Forms.RadioButton rdoGameHC;
         private System.Windows.Forms.CheckBox chkIgnoreUnscoredGames;
-        private System.Windows.Forms.CheckBox chkIsDay2;
         private System.Windows.Forms.Button btnManagePairings;
     }
 }

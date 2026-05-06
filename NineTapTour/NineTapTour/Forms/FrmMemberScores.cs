@@ -202,7 +202,6 @@ namespace NineTapTour.Forms
             txtFirstName.Clear();
             txtMiddleInitial.Clear();
             cbCompEntry.Checked = false;
-            chkIsDay2.Checked = false;
             txtHandicap.Clear();
             txtBonusPins.Clear();
             txtScratchScore1.Clear();
@@ -520,12 +519,6 @@ namespace NineTapTour.Forms
                 //tournament property within the participants class.
                 player.Tournament = currTourney;
                 player.Squad = squad;
-
-                // For 2-day tournaments, tag the participant as Day 1 or Day 2 per the checkbox
-                if (currTourney.IsTwoDay)
-                    player.IsDay2 = chkIsDay2.Checked;
-                else
-                    player.IsDay2 = null;
 
                 //defaults money earned to 0, or enters text box amount
                 if (txtMoney.Text == "" || txtMoney.Text == null)
@@ -1085,10 +1078,6 @@ namespace NineTapTour.Forms
                 txtHandicapScore4.Visible = true;
                 btnManagePairings.Visible = false;
             }
-
-            // Show Day 2 Entry checkbox only for 2-day tournaments
-            chkIsDay2.Visible = FrmMemberScoresHelpers.selectedTournament.IsTwoDay;
-            chkIsDay2.Checked = false;
 
             int currTourneyId;
 
