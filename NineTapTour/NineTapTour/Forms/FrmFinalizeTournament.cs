@@ -310,10 +310,8 @@ namespace NineTapTour.Forms
             _baseBonusByGameId.Clear();
             _currentTournamentBowlers = TournamentDB.GetWinnerListMemberData(selectedTournament.Id);
 
-            // 2-day championships: FrmTournamentResults writes the final championship
-            // standings back to the existing (Day 1) game records — there are no separate
-            // IsDay2 = true entries in the current workflow.  Show all entries; the
-            // IsTwoDay branch below reads PlaceStanding directly from the stored records.
+            // 2-day championships: day tracking (Day 1 / Day 2) is not used.
+            // All entries are loaded; the IsTwoDay branch reads PlaceStanding directly.
             Dictionary<int, int> day1PlaceByMemberId = [];
 
             // Doubles tournaments: delegate to the doubles grid builder
