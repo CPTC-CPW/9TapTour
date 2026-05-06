@@ -744,7 +744,7 @@ public partial class FrmTournamentResults : Form
 
         // Set up the 2-day DataTable (no ReadOnly on DataTable columns so auto-fill can write freely)
         _dt2Day = new DataTable();
-        _dt2Day.Columns.Add(PLACE_STANDING_COLUMN_NAME);
+        _dt2Day.Columns.Add(PLACE_STANDING_COLUMN_NAME, typeof(int));
         _dt2Day.Columns.Add(MEMBER_NUMBER_COLUMN_NAME);
         _dt2Day.Columns.Add(FULLNAME_COLUMN_NAME);
         _dt2Day.Columns.Add(HANDICAP_COLUMN_NAME);
@@ -756,6 +756,7 @@ public partial class FrmTournamentResults : Form
         _dt2Day.Columns.Add(SQUAD_COLUMN_NAME);
 
         dgvTournamentResults.DataSource        = _dt2Day;
+        _dt2Day.DefaultView.Sort               = PLACE_STANDING_COLUMN_NAME + " ASC";
         dgvTournamentResults.AllowUserToAddRows = false;
 
         // Hide internal/lookup columns
@@ -780,6 +781,10 @@ public partial class FrmTournamentResults : Form
 
         // Wire the auto-fill event
         dgvTournamentResults.CellEndEdit += Dgv2Day_CellEndEdit;
+
+        // Reload any previously saved entries from the database so the director
+        // can close and reopen the form between rounds.
+        LoadExisting2DayData();
     }
 
     /// <summary>
@@ -822,11 +827,21 @@ public partial class FrmTournamentResults : Form
             _dt2Day.Rows.Add(newRow);
         }
 
-        // Move focus to the first Member Number cell in the new block
+        // Move focus to the first Member Number cell in the new block.
+        // DefaultView.Sort is active, so the DGV view index differs from the DataTable row index;
+        // find the view row that wraps the first newly-added DataRow.
         if (firstNewRow < _dt2Day.Rows.Count)
         {
-            dgvTournamentResults.CurrentCell = dgvTournamentResults[MEMBER_NUMBER_COLUMN_NAME, firstNewRow];
-            dgvTournamentResults.BeginEdit(true);
+            DataRow firstAdded = _dt2Day.Rows[firstNewRow];
+            for (int i = 0; i < dgvTournamentResults.Rows.Count; i++)
+            {
+                if (dgvTournamentResults.Rows[i].DataBoundItem is DataRowView drv && drv.Row == firstAdded)
+                {
+                    dgvTournamentResults.CurrentCell = dgvTournamentResults[MEMBER_NUMBER_COLUMN_NAME, i];
+                    dgvTournamentResults.BeginEdit(true);
+                    break;
+                }
+            }
         }
     }
 
@@ -843,11 +858,16 @@ public partial class FrmTournamentResults : Form
         string cellText = cellValue?.ToString()?.Trim() ?? "";
         if (!int.TryParse(cellText, out int memberNumber) || memberNumber <= 0) return;
 
-        var squadObj = _dt2Day.Rows[e.RowIndex][SQUAD_COLUMN_NAME];
+        // DataBoundItem is a DataRowView; capturing it now ensures we target the correct
+        // DataRow even after DefaultView.Sort may have reordered the displayed rows.
+        if (dgvTournamentResults.Rows[e.RowIndex].DataBoundItem is not DataRowView drv) return;
+        DataRow dataRow = drv.Row;
+
+        var squadObj = dataRow[SQUAD_COLUMN_NAME];
         int squad = squadObj != DBNull.Value && int.TryParse(squadObj.ToString(), out int sq) ? sq : 1;
 
         // Defer so the DataTable value is fully committed before reading it back
-        BeginInvoke(() => AutoFillMemberRow(e.RowIndex, memberNumber, squad));
+        BeginInvoke(() => AutoFillMemberRow(dataRow, memberNumber, squad));
     }
 
     /// <summary>
@@ -856,13 +876,13 @@ public partial class FrmTournamentResults : Form
     /// H/B is pulled from the member's most recent finalized previous tournament,
     /// matching the same logic used by BuildWinnersList and FrmMemberScores.
     /// </summary>
-    private void AutoFillMemberRow(int rowIndex, int memberNumber, int squad)
+    private void AutoFillMemberRow(DataRow dataRow, int memberNumber, int squad)
     {
         Member member = MemberDB.GetMember(memberNumber);
         if (member == null || member.Id == 0)
         {
             MessageBox.Show($"Member number {memberNumber} not found.");
-            _dt2Day.Rows[rowIndex][MEMBER_NUMBER_COLUMN_NAME] = DBNull.Value;
+            dataRow[MEMBER_NUMBER_COLUMN_NAME] = DBNull.Value;
             return;
         }
 
@@ -908,17 +928,55 @@ public partial class FrmTournamentResults : Form
         {
             MessageBox.Show($"No game entry found for member {memberNumber} in squad {squad}.\n" +
                             $"Make sure scores have been entered in Member Scores first.");
-            _dt2Day.Rows[rowIndex][MEMBER_NUMBER_COLUMN_NAME] = DBNull.Value;
+            dataRow[MEMBER_NUMBER_COLUMN_NAME] = DBNull.Value;
             return;
         }
 
         int totalScore = game.ScratchTotal + (game.GamesPlayed * (hdcp + bonus));
 
-        _dt2Day.Rows[rowIndex][FULLNAME_COLUMN_NAME]    = member.FirstName + " " + member.LastName;
-        _dt2Day.Rows[rowIndex][HANDICAP_COLUMN_NAME]    = $"{hdcp} + {bonus}";
-        _dt2Day.Rows[rowIndex][TOTAL_SCORE_COLUMN_NAME] = totalScore;
-        _dt2Day.Rows[rowIndex][MEMBER_ID_COLUMN_NAME]   = member.Number;
-        _dt2Day.Rows[rowIndex][GAME_ID_COLUMN_NAME]     = game.Id;
+        dataRow[FULLNAME_COLUMN_NAME]    = member.FirstName + " " + member.LastName;
+        dataRow[HANDICAP_COLUMN_NAME]    = $"{hdcp} + {bonus}";
+        dataRow[TOTAL_SCORE_COLUMN_NAME] = totalScore;
+        dataRow[MEMBER_ID_COLUMN_NAME]   = member.Number;
+        dataRow[GAME_ID_COLUMN_NAME]     = game.Id;
+    }
+
+    /// <summary>
+    /// Loads any previously saved 2-day results from the database into <see cref="_dt2Day"/>.
+    /// Called once during form load so the director can close and reopen the form between rounds.
+    /// </summary>
+    private void LoadExisting2DayData()
+    {
+        var saved = TournamentDB.GetWinnerListMemberData(tourny.Id)
+            .Where(b => b.PlaceStanding > 0)
+            .OrderBy(b => b.PlaceStanding)
+            .ToList();
+
+        if (saved.Count == 0) return;
+
+        foreach (var b in saved)
+        {
+            DataRow row = _dt2Day.NewRow();
+            row[PLACE_STANDING_COLUMN_NAME] = b.PlaceStanding.Value;
+            row[MEMBER_NUMBER_COLUMN_NAME]  = b.MemberNumber;
+            row[FULLNAME_COLUMN_NAME]       = "";
+            row[HANDICAP_COLUMN_NAME]       = "";
+            row[TOTAL_SCORE_COLUMN_NAME]    = "";
+            row[EARNINGS_COLUMN_NAME]       = b.MoneyWon ?? 0m;
+            row[PROGRESSIVEPOT_COLUMN_NAME] = b.SidePot?.ToString("F2") ?? "0.00";
+            row[MEMBER_ID_COLUMN_NAME]      = b.MemberId;
+            row[GAME_ID_COLUMN_NAME]        = b.GameId;
+            row[SQUAD_COLUMN_NAME]          = b.Squad;
+            _dt2Day.Rows.Add(row);
+        }
+
+        // Fill in Name, H/B, and TotalScore for each pre-loaded row
+        for (int i = 0; i < _dt2Day.Rows.Count; i++)
+        {
+            if (!int.TryParse(_dt2Day.Rows[i][MEMBER_NUMBER_COLUMN_NAME]?.ToString(), out int memberNumber)) continue;
+            int sq = int.TryParse(_dt2Day.Rows[i][SQUAD_COLUMN_NAME]?.ToString(), out int s) ? s : 1;
+            AutoFillMemberRow(_dt2Day.Rows[i], memberNumber, sq);
+        }
     }
 
     #endregion
