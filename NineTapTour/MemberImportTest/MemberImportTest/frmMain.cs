@@ -664,7 +664,7 @@ public partial class FrmMain : Form
         Font drawFont = new("Arial", 12);
         SolidBrush drawBrush = new(Color.Black);
         PointF drawPoint = new(20, 2);
-        g.DrawString("Version: 3.1.0", drawFont, drawBrush, drawPoint);
+        g.DrawString("Version: 3.1.1", drawFont, drawBrush, drawPoint);
 #if DEBUG
         drawBrush.Color = Color.Red;
         drawPoint.Y += 16;
