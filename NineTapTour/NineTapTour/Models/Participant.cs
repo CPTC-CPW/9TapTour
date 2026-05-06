@@ -13,12 +13,6 @@ namespace NineTapTour.Models
         [Column("SquadNumber")]
         public int Squad { get; set; }
 
-        /// <summary>
-        /// For 2-day tournaments: true when this entry belongs to the Day 2 (finals) round.
-        /// Null / false = Day 1 qualifier entry.
-        /// </summary>
-        public bool? IsDay2 { get; set; }
-
         #region Foreign Keys
         [Required]
         public Member Member { get; set; }

@@ -520,8 +520,6 @@ namespace NineTapTour.Forms
                 player.Tournament = currTourney;
                 player.Squad = squad;
 
-                player.IsDay2 = null;
-
                 //defaults money earned to 0, or enters text box amount
                 if (txtMoney.Text == "" || txtMoney.Text == null)
                     player.Game.MoneyWon = 0;
@@ -1080,9 +1078,6 @@ namespace NineTapTour.Forms
                 txtHandicapScore4.Visible = true;
                 btnManagePairings.Visible = false;
             }
-
-            chkIsDay2.Visible = false;
-            chkIsDay2.Checked = false;
 
             int currTourneyId;
 

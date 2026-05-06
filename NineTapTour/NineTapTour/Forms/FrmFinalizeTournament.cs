@@ -287,18 +287,6 @@ namespace NineTapTour.Forms
                 new DataGridViewTextBoxColumn  { Name = "colNotes",        HeaderText = "Notes",           AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill }
             );
 
-            // 2-day tournaments: add a read-only column showing the bowler's Day 1 qualifier place
-            if (selectedTournament.IsTwoDay)
-            {
-                dgv.Columns.Add(new DataGridViewTextBoxColumn
-                {
-                    Name       = "colDay1Place",
-                    HeaderText = "Day 1\nPlace",
-                    Width      = 55,
-                    ReadOnly   = true
-                });
-            }
-
             return dgv;
         }
 
@@ -309,10 +297,6 @@ namespace NineTapTour.Forms
             _placedGameIds.Clear();
             _baseBonusByGameId.Clear();
             _currentTournamentBowlers = TournamentDB.GetWinnerListMemberData(selectedTournament.Id);
-
-            // 2-day championships: day tracking (Day 1 / Day 2) is not used.
-            // All entries are loaded; the IsTwoDay branch reads PlaceStanding directly.
-            Dictionary<int, int> day1PlaceByMemberId = [];
 
             // Doubles tournaments: delegate to the doubles grid builder
             if (selectedTournament.Doubles)
@@ -629,13 +613,6 @@ namespace NineTapTour.Forms
                 );
                 dgvTournament.Rows[rowIdx].Tag = m.GameId;
                 ApplySandbaggingHighlight(rowIdx, orig.LeagueAverage);
-
-                // 2-day: populate the Day 1 qualifier place column
-                if (selectedTournament.IsTwoDay && dgvTournament.Columns.Contains("colDay1Place"))
-                {
-                    int day1Place = day1PlaceByMemberId.TryGetValue(orig.MemberId, out int dp) ? dp : 0;
-                    dgvTournament.Rows[rowIdx].Cells["colDay1Place"].Value = day1Place > 0 ? day1Place : null;
-                }
             }
 
             // Populate 30 Entry AVG for all member rows now that all entries are loaded
