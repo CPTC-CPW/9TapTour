@@ -25,6 +25,9 @@ public partial class FrmTournamentResults : Form
     const string MEMBER_ID_COLUMN_NAME = "Member ID";
     const string GAME_ID_COLUMN_NAME = "Game ID";
     const string PROGRESSIVEPOT_COLUMN_NAME = "Progressive Pot";
+    // 2-day mode only
+    const string MEMBER_NUMBER_COLUMN_NAME = "Member Number";
+    const string SQUAD_COLUMN_NAME = "Squad";
 
     readonly DataTable dt = new(); // Instantiate Data Table
     readonly NineTapDb db = new(); // Get access to database
@@ -38,6 +41,15 @@ public partial class FrmTournamentResults : Form
     private DataGridView dgvTeamView;
     private Button btnTeamView;
     private bool _inTeamView = false;
+
+    // 2-day championship controls
+    private DataTable _dt2Day;
+    private Panel _pnlRoundSetup;
+    private NumericUpDown _nudStartPlace;
+    private NumericUpDown _nudEndPlace;
+    private TextBox _txtRoundEarnings;
+    private ComboBox _cbxRoundSquad;
+    private Button _btnAddRound;
 
     /* Floor directors get a comp entry into tournament when they help with tournament. 
      * They don't pay the entry fee, but do qualify to cash.
@@ -71,18 +83,58 @@ public partial class FrmTournamentResults : Form
             lblClientRequestCount.Text = "How many teams would you like places for?";
         }
 
+        if (tourny.IsTwoDay)
+            lblTournamentName.Text += " (2-DAY CHAMPIONSHIP)";
+
         InitTeamViewControls();
 
-        // Create a List<ExcelMember> and populate it with this tournament's participants
-        winners = BuildWinnersList();
-        
-        ActiveControl = tbClientInputCount;
+        if (tourny.IsTwoDay)
+        {
+            InitTwoDayControls();
+        }
+        else
+        {
+            // Create a List<ExcelMember> and populate it with this tournament's participants
+            winners = BuildWinnersList();
+            ActiveControl = tbClientInputCount;
+        }
     }
     protected override void OnFormClosing(FormClosingEventArgs e)
     {
         base.OnFormClosing(e);
 
         if (e.CloseReason == CloseReason.WindowsShutDown) return;
+
+        if (tourny.IsTwoDay)
+        {
+            if (_dt2Day == null || _dt2Day.Rows.Count == 0) return;
+
+            List<double> twoDayWinnings = [];
+            for (int i = 0; i < _dt2Day.Rows.Count; i++)
+                twoDayWinnings.Add(Convert.ToDouble(_dt2Day.Rows[i][EARNINGS_COLUMN_NAME]));
+            TempVariablesForGlobalLevel.MoneyEarnings = twoDayWinnings;
+
+            for (int i = 0; i < _dt2Day.Rows.Count; i++)
+            {
+                var gameIdObj = _dt2Day.Rows[i][GAME_ID_COLUMN_NAME];
+                if (gameIdObj == DBNull.Value || !int.TryParse(gameIdObj.ToString(), out int gameId) || gameId <= 0) continue;
+
+                Game g = db.Games.Find(gameId);
+                if (g == null) continue;
+
+                g.PlaceStanding = ParsePlaceStanding(_dt2Day.Rows[i][PLACE_STANDING_COLUMN_NAME]);
+                g.MoneyWon = Convert.ToDecimal(_dt2Day.Rows[i][EARNINGS_COLUMN_NAME]);
+
+                if (decimal.TryParse(Convert.ToString(_dt2Day.Rows[i][PROGRESSIVEPOT_COLUMN_NAME]), out decimal _))
+                    g.SidePot = Convert.ToDecimal(_dt2Day.Rows[i][PROGRESSIVEPOT_COLUMN_NAME]);
+                else
+                    g.Notes = $"Progressive Pot was entered as: {Convert.ToString(_dt2Day.Rows[i][PROGRESSIVEPOT_COLUMN_NAME])}";
+
+                db.SaveChanges();
+            }
+            return;
+        }
+
         if (dgvTournamentResults.DataSource == null || dt.Rows.Count == 0) return;
 
         List<double> Winnings = [];
@@ -637,7 +689,240 @@ public partial class FrmTournamentResults : Form
     {
         ExportToExcel();
     }
-    
+
+    #region 2-Day Championship Entry
+
+    /// <summary>
+    /// Sets up the 2-day championship round-entry UI, hiding the normal "how many winners" controls
+    /// and replacing them with a round-setup panel. The existing dgvTournamentResults is reused,
+    /// bound to a new _dt2Day DataTable with an editable Member Number column.
+    /// </summary>
+    private void InitTwoDayControls()
+    {
+        lblClientRequestCount.Visible = false;
+        tbClientInputCount.Visible    = false;
+        btnPaste.Visible              = false;
+
+        // Build the round-setup panel
+        _pnlRoundSetup = new Panel
+        {
+            Location = new Point(34, 120),
+            Size     = new Size(dgvTournamentResults.Width, 35),
+            Anchor   = AnchorStyles.Top | AnchorStyles.Left
+        };
+
+        int x = 0;
+        _pnlRoundSetup.Controls.Add(new Label { Text = "Start Place:", AutoSize = true, Location = new Point(x, 8) });
+        x += 80;
+        _nudStartPlace = new NumericUpDown { Location = new Point(x, 4), Width = 55, Minimum = 1, Maximum = 999, Value = 1 };
+        _pnlRoundSetup.Controls.Add(_nudStartPlace);
+        x += 63;
+        _pnlRoundSetup.Controls.Add(new Label { Text = "End Place:", AutoSize = true, Location = new Point(x, 8) });
+        x += 73;
+        _nudEndPlace = new NumericUpDown { Location = new Point(x, 4), Width = 55, Minimum = 1, Maximum = 999, Value = 1 };
+        _pnlRoundSetup.Controls.Add(_nudEndPlace);
+        x += 63;
+        _pnlRoundSetup.Controls.Add(new Label { Text = "Earnings $:", AutoSize = true, Location = new Point(x, 8) });
+        x += 72;
+        _txtRoundEarnings = new TextBox { Location = new Point(x, 4), Width = 80, Text = "0.00" };
+        _pnlRoundSetup.Controls.Add(_txtRoundEarnings);
+        x += 88;
+        _pnlRoundSetup.Controls.Add(new Label { Text = "Squad:", AutoSize = true, Location = new Point(x, 8) });
+        x += 50;
+        _cbxRoundSquad = new ComboBox { Location = new Point(x, 4), Width = 60, DropDownStyle = ComboBoxStyle.DropDownList };
+        for (int s = 1; s <= tourny.Squads; s++)
+            _cbxRoundSquad.Items.Add(s);
+        if (_cbxRoundSquad.Items.Count > 0)
+            _cbxRoundSquad.SelectedIndex = 0;
+        _pnlRoundSetup.Controls.Add(_cbxRoundSquad);
+        x += 68;
+        _btnAddRound = new Button { Text = "Add Round", Location = new Point(x, 2), Size = new Size(90, 28) };
+        _btnAddRound.Click += BtnAddRound_Click;
+        _pnlRoundSetup.Controls.Add(_btnAddRound);
+
+        Controls.Add(_pnlRoundSetup);
+
+        // Set up the 2-day DataTable (no ReadOnly on DataTable columns so auto-fill can write freely)
+        _dt2Day = new DataTable();
+        _dt2Day.Columns.Add(PLACE_STANDING_COLUMN_NAME);
+        _dt2Day.Columns.Add(MEMBER_NUMBER_COLUMN_NAME);
+        _dt2Day.Columns.Add(FULLNAME_COLUMN_NAME);
+        _dt2Day.Columns.Add(HANDICAP_COLUMN_NAME);
+        _dt2Day.Columns.Add(TOTAL_SCORE_COLUMN_NAME);
+        _dt2Day.Columns.Add(EARNINGS_COLUMN_NAME);
+        _dt2Day.Columns.Add(PROGRESSIVEPOT_COLUMN_NAME);
+        _dt2Day.Columns.Add(MEMBER_ID_COLUMN_NAME);
+        _dt2Day.Columns.Add(GAME_ID_COLUMN_NAME);
+        _dt2Day.Columns.Add(SQUAD_COLUMN_NAME);
+
+        dgvTournamentResults.DataSource        = _dt2Day;
+        dgvTournamentResults.AllowUserToAddRows = false;
+
+        // Hide internal/lookup columns
+        dgvTournamentResults.Columns[MEMBER_ID_COLUMN_NAME].Visible = false;
+        dgvTournamentResults.Columns[GAME_ID_COLUMN_NAME].Visible   = false;
+        dgvTournamentResults.Columns[SQUAD_COLUMN_NAME].Visible     = false;
+
+        // ReadOnly at DGV level (DataTable columns remain writable for auto-fill)
+        dgvTournamentResults.Columns[PLACE_STANDING_COLUMN_NAME].ReadOnly = true;
+        dgvTournamentResults.Columns[FULLNAME_COLUMN_NAME].ReadOnly       = true;
+        dgvTournamentResults.Columns[HANDICAP_COLUMN_NAME].ReadOnly       = true;
+        dgvTournamentResults.Columns[TOTAL_SCORE_COLUMN_NAME].ReadOnly    = true;
+
+        // Column sizing
+        dgvTournamentResults.Columns[PLACE_STANDING_COLUMN_NAME].AutoSizeMode  = DataGridViewAutoSizeColumnMode.AllCells;
+        dgvTournamentResults.Columns[MEMBER_NUMBER_COLUMN_NAME].AutoSizeMode   = DataGridViewAutoSizeColumnMode.AllCells;
+        dgvTournamentResults.Columns[FULLNAME_COLUMN_NAME].AutoSizeMode        = DataGridViewAutoSizeColumnMode.Fill;
+        dgvTournamentResults.Columns[HANDICAP_COLUMN_NAME].AutoSizeMode        = DataGridViewAutoSizeColumnMode.AllCells;
+        dgvTournamentResults.Columns[TOTAL_SCORE_COLUMN_NAME].AutoSizeMode     = DataGridViewAutoSizeColumnMode.AllCells;
+        dgvTournamentResults.Columns[EARNINGS_COLUMN_NAME].AutoSizeMode        = DataGridViewAutoSizeColumnMode.AllCells;
+        dgvTournamentResults.Columns[PROGRESSIVEPOT_COLUMN_NAME].AutoSizeMode  = DataGridViewAutoSizeColumnMode.AllCells;
+
+        // Wire the auto-fill event
+        dgvTournamentResults.CellEndEdit += Dgv2Day_CellEndEdit;
+    }
+
+    /// <summary>
+    /// Adds one row per placing (from Start Place to End Place) into the 2-day grid,
+    /// pre-filling Place and Earnings from the round-setup panel.
+    /// </summary>
+    private void BtnAddRound_Click(object sender, EventArgs e)
+    {
+        int startPlace = (int)_nudStartPlace.Value;
+        int endPlace   = (int)_nudEndPlace.Value;
+
+        if (endPlace < startPlace)
+        {
+            MessageBox.Show("End place must be greater than or equal to start place.");
+            return;
+        }
+
+        if (!decimal.TryParse(_txtRoundEarnings.Text, out decimal earnings))
+        {
+            MessageBox.Show("Please enter a valid earnings amount (e.g. 50.00).");
+            return;
+        }
+
+        int squad = _cbxRoundSquad.SelectedItem != null ? (int)_cbxRoundSquad.SelectedItem : 1;
+
+        int firstNewRow = _dt2Day.Rows.Count;
+        for (int place = startPlace; place <= endPlace; place++)
+        {
+            DataRow newRow = _dt2Day.NewRow();
+            newRow[PLACE_STANDING_COLUMN_NAME] = place;
+            newRow[MEMBER_NUMBER_COLUMN_NAME]  = "";
+            newRow[FULLNAME_COLUMN_NAME]       = "";
+            newRow[HANDICAP_COLUMN_NAME]       = "";
+            newRow[TOTAL_SCORE_COLUMN_NAME]    = "";
+            newRow[EARNINGS_COLUMN_NAME]       = earnings;
+            newRow[PROGRESSIVEPOT_COLUMN_NAME] = "0.00";
+            newRow[MEMBER_ID_COLUMN_NAME]      = DBNull.Value;
+            newRow[GAME_ID_COLUMN_NAME]        = DBNull.Value;
+            newRow[SQUAD_COLUMN_NAME]          = squad;
+            _dt2Day.Rows.Add(newRow);
+        }
+
+        // Move focus to the first Member Number cell in the new block
+        if (firstNewRow < _dt2Day.Rows.Count)
+        {
+            dgvTournamentResults.CurrentCell = dgvTournamentResults[MEMBER_NUMBER_COLUMN_NAME, firstNewRow];
+            dgvTournamentResults.BeginEdit(true);
+        }
+    }
+
+    /// <summary>
+    /// Fires when the user finishes editing a cell in the 2-day grid.
+    /// If the edited cell is the Member Number column, triggers auto-fill for that row.
+    /// </summary>
+    private void Dgv2Day_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+    {
+        if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
+        if (dgvTournamentResults.Columns[e.ColumnIndex].Name != MEMBER_NUMBER_COLUMN_NAME) return;
+
+        var cellValue = dgvTournamentResults.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+        string cellText = cellValue?.ToString()?.Trim() ?? "";
+        if (!int.TryParse(cellText, out int memberNumber) || memberNumber <= 0) return;
+
+        var squadObj = _dt2Day.Rows[e.RowIndex][SQUAD_COLUMN_NAME];
+        int squad = squadObj != DBNull.Value && int.TryParse(squadObj.ToString(), out int sq) ? sq : 1;
+
+        // Defer so the DataTable value is fully committed before reading it back
+        BeginInvoke(() => AutoFillMemberRow(e.RowIndex, memberNumber, squad));
+    }
+
+    /// <summary>
+    /// Looks up the member and their game for the given squad, then auto-fills
+    /// Full Name, H/B*, Total Score, and the hidden Member ID / Game ID columns.
+    /// H/B is pulled from the member's most recent finalized previous tournament,
+    /// matching the same logic used by BuildWinnersList and FrmMemberScores.
+    /// </summary>
+    private void AutoFillMemberRow(int rowIndex, int memberNumber, int squad)
+    {
+        Member member = MemberDB.GetMember(memberNumber);
+        if (member == null || member.Id == 0)
+        {
+            MessageBox.Show($"Member number {memberNumber} not found.");
+            _dt2Day.Rows[rowIndex][MEMBER_NUMBER_COLUMN_NAME] = DBNull.Value;
+            return;
+        }
+
+        // Look up H/B from the most recent finalized tournament (same logic as BuildWinnersList)
+        int hdcp  = member.Handicap ?? 0;
+        int bonus = member.Bonus;
+
+        using (var dbPrev = new NineTapDb())
+        {
+            var latestDate = dbPrev.Participants
+                .Where(p => p.Member.Number == memberNumber
+                         && p.Tournament.Id != tourny.Id
+                         && p.Game.IsFinalized
+                         && p.Game.AdjustedAvg > 0)
+                .Select(p => (DateTime?)p.Tournament.Date)
+                .Max();
+
+            if (latestDate != null)
+            {
+                var prevEntries = dbPrev.Participants
+                    .Where(p => p.Member.Number == memberNumber
+                             && p.Tournament.Id != tourny.Id
+                             && p.Game.IsFinalized
+                             && p.Tournament.Date == latestDate)
+                    .Select(p => new { p.Game.AdjustedAvg, Bonus = p.Game.Bonus ?? 0, MoneyWon = p.Game.MoneyWon ?? 0 })
+                    .ToList();
+
+                if (prevEntries.Count > 0)
+                {
+                    var withAvg = prevEntries.FirstOrDefault(e => e.AdjustedAvg > 0);
+                    if (withAvg != null)
+                        hdcp = CalcService.CalculateHandicapPins(withAvg.AdjustedAvg);
+                    bonus = prevEntries.Any(e => e.MoneyWon > 0)
+                        ? prevEntries.Min(e => e.Bonus)
+                        : prevEntries.Max(e => e.Bonus);
+                }
+            }
+        }
+
+        // Get the game entry for this member + tournament + squad
+        Game game = GameDB.GetGameInTournament(member.Id, tourny.Id, squad);
+        if (game == null)
+        {
+            MessageBox.Show($"No game entry found for member {memberNumber} in squad {squad}.\n" +
+                            $"Make sure scores have been entered in Member Scores first.");
+            _dt2Day.Rows[rowIndex][MEMBER_NUMBER_COLUMN_NAME] = DBNull.Value;
+            return;
+        }
+
+        int totalScore = game.ScratchTotal + (game.GamesPlayed * (hdcp + bonus));
+
+        _dt2Day.Rows[rowIndex][FULLNAME_COLUMN_NAME]    = member.FirstName + " " + member.LastName;
+        _dt2Day.Rows[rowIndex][HANDICAP_COLUMN_NAME]    = $"{hdcp} + {bonus}";
+        _dt2Day.Rows[rowIndex][TOTAL_SCORE_COLUMN_NAME] = totalScore;
+        _dt2Day.Rows[rowIndex][MEMBER_ID_COLUMN_NAME]   = member.Number;
+        _dt2Day.Rows[rowIndex][GAME_ID_COLUMN_NAME]     = game.Id;
+    }
+
+    #endregion
+
     /// <summary>
     /// Returns the ordinal representation of a given place, optionally appending a tie indicator.
     /// </summary>
@@ -675,6 +960,32 @@ public partial class FrmTournamentResults : Form
 
     private void ExportToExcel()
     {
+        if (tourny.IsTwoDay)
+        {
+            // Save 2-day results to DB via the DGV (which is bound to _dt2Day)
+            for (int i = 0; i < dgvTournamentResults.RowCount; i++)
+            {
+                var gameIdCell = dgvTournamentResults[GAME_ID_COLUMN_NAME, i].Value;
+                if (gameIdCell == null || gameIdCell == DBNull.Value) continue;
+                if (!int.TryParse(gameIdCell.ToString(), out int gameId) || gameId <= 0) continue;
+
+                Game g = GameDB.GetGame(gameId);
+                if (g == null) continue;
+
+                g.PlaceStanding = ParsePlaceStanding(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, i].Value);
+                g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, i].Value);
+
+                if (decimal.TryParse(Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, i].Value), out decimal _))
+                    g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, i].Value);
+                else
+                    g.Notes = $"Progressive Pot was entered as: {Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, i].Value)}";
+
+                db.SaveChanges();
+            }
+            MessageBox.Show("2-Day championship results saved successfully.");
+            return;
+        }
+
         // Saves participants' place standing and earnings won to the database
         for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
         {
