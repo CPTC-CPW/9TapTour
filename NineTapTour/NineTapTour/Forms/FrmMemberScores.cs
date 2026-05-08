@@ -1530,13 +1530,10 @@ namespace NineTapTour.Forms
         {
             List<Tournament> temp2 = TournamentDB.GetTournamentList();
 
-            for (int i = 0; i < temp2.Count; i++)
-            {
-                if (temp2[i].Id == currentTournament.Id)
-                {
-                    cbxTourneyDropDown.SelectedIndex = i;
-                }
-            }
+            cbxTourneyDropDown.DataSource = temp2;
+            cbxTourneyDropDown.DisplayMember = nameof(Tournament.TourneyNameDate);
+            cbxTourneyDropDown.ValueMember = nameof(Tournament.Id);
+            cbxTourneyDropDown.SelectedValue = currentTournament.Id;
         }
 
         //opens the FinalizeTourn form, checks to make sure a tourn is selected.
