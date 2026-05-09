@@ -29,154 +29,136 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
-            this.menMain = new System.Windows.Forms.MenuStrip();
-            this.mainMenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.memberToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tournamentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.BackupDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.RestoreDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.updateInactiveMembersToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.userManualToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.labelPrintToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.updateInactiveMembersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.menMain.SuspendLayout();
-            this.SuspendLayout();
+            menMain = new System.Windows.Forms.MenuStrip();
+            mainMenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            memberToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            tournamentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            BackupDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            RestoreDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            updateInactiveMembersToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            labelPrintToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            updateInactiveMembersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            menMain.SuspendLayout();
+            SuspendLayout();
             // 
             // menMain
             // 
-            this.menMain.BackColor = System.Drawing.Color.White;
-            this.menMain.ImageScalingSize = new System.Drawing.Size(16, 16);
-            this.menMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mainMenuToolStripMenuItem,
-            this.memberToolStripMenuItem,
-            this.tournamentToolStripMenuItem,
-            this.AboutToolStripMenuItem,
-            this.toolsToolStripMenuItem});
-            this.menMain.Location = new System.Drawing.Point(0, 0);
-            this.menMain.Name = "menMain";
-            this.menMain.Size = new System.Drawing.Size(360, 24);
-            this.menMain.TabIndex = 1;
-            this.menMain.Text = "menuStrip1";
-            this.menMain.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.menMain_ItemAdded);
-            this.menMain.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menMain_ItemClicked);
+            menMain.BackColor = System.Drawing.Color.White;
+            menMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { mainMenuToolStripMenuItem, memberToolStripMenuItem, tournamentToolStripMenuItem, AboutToolStripMenuItem, toolsToolStripMenuItem });
+            menMain.Location = new System.Drawing.Point(0, 0);
+            menMain.Name = "menMain";
+            menMain.Padding = new System.Windows.Forms.Padding(13, 5, 0, 5);
+            menMain.Size = new System.Drawing.Size(780, 48);
+            menMain.TabIndex = 1;
+            menMain.Text = "menuStrip1";
+            menMain.ItemAdded += menMain_ItemAdded;
+            menMain.ItemClicked += menMain_ItemClicked;
             // 
             // mainMenuToolStripMenuItem
             // 
-            this.mainMenuToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
-            this.mainMenuToolStripMenuItem.Name = "mainMenuToolStripMenuItem";
-            this.mainMenuToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.mainMenuToolStripMenuItem.Text = "Home";
-            this.mainMenuToolStripMenuItem.Click += new System.EventHandler(this.mainMenuToolStripMenuItem_Click);
+            mainMenuToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
+            mainMenuToolStripMenuItem.Name = "mainMenuToolStripMenuItem";
+            mainMenuToolStripMenuItem.Size = new System.Drawing.Size(99, 38);
+            mainMenuToolStripMenuItem.Text = "Home";
+            mainMenuToolStripMenuItem.Click += mainMenuToolStripMenuItem_Click;
             // 
             // memberToolStripMenuItem
             // 
-            this.memberToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
-            this.memberToolStripMenuItem.Name = "memberToolStripMenuItem";
-            this.memberToolStripMenuItem.Size = new System.Drawing.Size(88, 20);
-            this.memberToolStripMenuItem.Text = "Member Info";
-            this.memberToolStripMenuItem.Click += new System.EventHandler(this.memberToolStripMenuItem_Click);
+            memberToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
+            memberToolStripMenuItem.Name = "memberToolStripMenuItem";
+            memberToolStripMenuItem.Size = new System.Drawing.Size(174, 38);
+            memberToolStripMenuItem.Text = "Member Info";
+            memberToolStripMenuItem.Click += memberToolStripMenuItem_Click;
             // 
             // tournamentToolStripMenuItem
             // 
-            this.tournamentToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
-            this.tournamentToolStripMenuItem.Name = "tournamentToolStripMenuItem";
-            this.tournamentToolStripMenuItem.Size = new System.Drawing.Size(101, 20);
-            this.tournamentToolStripMenuItem.Text = "Member Scores";
-            this.tournamentToolStripMenuItem.Click += new System.EventHandler(this.tournamentToolStripMenuItem_Click);
+            tournamentToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
+            tournamentToolStripMenuItem.Name = "tournamentToolStripMenuItem";
+            tournamentToolStripMenuItem.Size = new System.Drawing.Size(201, 38);
+            tournamentToolStripMenuItem.Text = "Member Scores";
+            tournamentToolStripMenuItem.Click += tournamentToolStripMenuItem_Click;
             // 
             // AboutToolStripMenuItem
             // 
-            this.AboutToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
-            this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
-            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.AboutToolStripMenuItem.Text = "About";
-            this.AboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
+            AboutToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
+            AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
+            AboutToolStripMenuItem.Size = new System.Drawing.Size(99, 38);
+            AboutToolStripMenuItem.Text = "About";
+            AboutToolStripMenuItem.Click += AboutToolStripMenuItem_Click;
             // 
             // toolsToolStripMenuItem
             // 
-            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.BackupDatabaseToolStripMenuItem,
-            this.RestoreDatabaseToolStripMenuItem,
-            this.updateInactiveMembersToolStripMenuItem1,
-            this.userManualToolStripMenuItem,
-            this.labelPrintToolStripMenuItem});
-            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
-            this.toolsToolStripMenuItem.Text = "Tools";
+            toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { BackupDatabaseToolStripMenuItem, RestoreDatabaseToolStripMenuItem, updateInactiveMembersToolStripMenuItem1, labelPrintToolStripMenuItem });
+            toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+            toolsToolStripMenuItem.Size = new System.Drawing.Size(89, 38);
+            toolsToolStripMenuItem.Text = "Tools";
             // 
             // BackupDatabaseToolStripMenuItem
             // 
-            this.BackupDatabaseToolStripMenuItem.Name = "BackupDatabaseToolStripMenuItem";
-            this.BackupDatabaseToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.BackupDatabaseToolStripMenuItem.Text = "Backup Database";
-            this.BackupDatabaseToolStripMenuItem.Click += new System.EventHandler(this.BackupDatabaseToolStripMenuItem_Click);
+            BackupDatabaseToolStripMenuItem.Name = "BackupDatabaseToolStripMenuItem";
+            BackupDatabaseToolStripMenuItem.Size = new System.Drawing.Size(421, 44);
+            BackupDatabaseToolStripMenuItem.Text = "Backup Database";
+            BackupDatabaseToolStripMenuItem.Click += BackupDatabaseToolStripMenuItem_Click;
             // 
             // RestoreDatabaseToolStripMenuItem
             // 
-            this.RestoreDatabaseToolStripMenuItem.Name = "RestoreDatabaseToolStripMenuItem";
-            this.RestoreDatabaseToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.RestoreDatabaseToolStripMenuItem.Text = "Restore Database";
-            this.RestoreDatabaseToolStripMenuItem.Click += new System.EventHandler(this.RestoreDatabaseToolStripMenuItem_Click);
+            RestoreDatabaseToolStripMenuItem.Name = "RestoreDatabaseToolStripMenuItem";
+            RestoreDatabaseToolStripMenuItem.Size = new System.Drawing.Size(421, 44);
+            RestoreDatabaseToolStripMenuItem.Text = "Restore Database";
+            RestoreDatabaseToolStripMenuItem.Click += RestoreDatabaseToolStripMenuItem_Click;
             // 
             // updateInactiveMembersToolStripMenuItem1
             // 
-            this.updateInactiveMembersToolStripMenuItem1.Name = "updateInactiveMembersToolStripMenuItem1";
-            this.updateInactiveMembersToolStripMenuItem1.Size = new System.Drawing.Size(209, 22);
-            this.updateInactiveMembersToolStripMenuItem1.Text = "Update Inactive Members";
-            this.updateInactiveMembersToolStripMenuItem1.Click += new System.EventHandler(this.updateInactiveMembersToolStripMenuItem1_Click);
-            // 
-            // userManualToolStripMenuItem
-            // 
-            this.userManualToolStripMenuItem.Name = "userManualToolStripMenuItem";
-            this.userManualToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.userManualToolStripMenuItem.Text = "User Manual";
-            this.userManualToolStripMenuItem.Click += new System.EventHandler(this.userManualToolStripMenuItem_Click);
+            updateInactiveMembersToolStripMenuItem1.Name = "updateInactiveMembersToolStripMenuItem1";
+            updateInactiveMembersToolStripMenuItem1.Size = new System.Drawing.Size(421, 44);
+            updateInactiveMembersToolStripMenuItem1.Text = "Update Inactive Members";
+            updateInactiveMembersToolStripMenuItem1.Click += updateInactiveMembersToolStripMenuItem1_Click;
             // 
             // labelPrintToolStripMenuItem
             // 
-            this.labelPrintToolStripMenuItem.Name = "labelPrintToolStripMenuItem";
-            this.labelPrintToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.labelPrintToolStripMenuItem.Text = "Print Member Labels";
-            this.labelPrintToolStripMenuItem.Click += new System.EventHandler(this.labelPrintToolStripMenuItem_Click);
+            labelPrintToolStripMenuItem.Name = "labelPrintToolStripMenuItem";
+            labelPrintToolStripMenuItem.Size = new System.Drawing.Size(421, 44);
+            labelPrintToolStripMenuItem.Text = "Print Member Labels";
+            labelPrintToolStripMenuItem.Click += labelPrintToolStripMenuItem_Click;
             // 
             // toolStripMenuItem1
             // 
-            this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.updateInactiveMembersToolStripMenuItem});
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(32, 19);
-            this.toolStripMenuItem1.Text = "Tools";
+            toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { updateInactiveMembersToolStripMenuItem });
+            toolStripMenuItem1.Name = "toolStripMenuItem1";
+            toolStripMenuItem1.Size = new System.Drawing.Size(32, 19);
+            toolStripMenuItem1.Text = "Tools";
             // 
             // updateInactiveMembersToolStripMenuItem
             // 
-            this.updateInactiveMembersToolStripMenuItem.Name = "updateInactiveMembersToolStripMenuItem";
-            this.updateInactiveMembersToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.updateInactiveMembersToolStripMenuItem.Text = "Update Inactive Members";
+            updateInactiveMembersToolStripMenuItem.Name = "updateInactiveMembersToolStripMenuItem";
+            updateInactiveMembersToolStripMenuItem.Size = new System.Drawing.Size(421, 44);
+            updateInactiveMembersToolStripMenuItem.Text = "Update Inactive Members";
             // 
             // FrmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
-            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(360, 196);
-            this.Controls.Add(this.menMain);
-            this.DoubleBuffered = true;
-            this.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.IsMdiContainer = true;
-            this.MainMenuStrip = this.menMain;
-            this.Name = "FrmMain";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "9 Tap Tour";
-            this.Load += new System.EventHandler(this.FrmMain_Load);
-            this.menMain.ResumeLayout(false);
-            this.menMain.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            AutoSize = true;
+            BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            ClientSize = new System.Drawing.Size(780, 482);
+            Controls.Add(menMain);
+            DoubleBuffered = true;
+            ForeColor = System.Drawing.SystemColors.ControlText;
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            IsMdiContainer = true;
+            MainMenuStrip = menMain;
+            Margin = new System.Windows.Forms.Padding(6, 7, 6, 7);
+            Name = "FrmMain";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "9 Tap Tour";
+            Load += FrmMain_Load;
+            menMain.ResumeLayout(false);
+            menMain.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 
@@ -193,7 +175,6 @@
         private System.Windows.Forms.ToolStripMenuItem BackupDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem RestoreDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mainMenuToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem userManualToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem labelPrintToolStripMenuItem;
     }
 }

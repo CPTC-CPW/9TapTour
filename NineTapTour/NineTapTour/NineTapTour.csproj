@@ -28,9 +28,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Update="Resources\9tapUserManual.docx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="..\ClientLicense.txt">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
