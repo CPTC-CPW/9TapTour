@@ -13,6 +13,49 @@ namespace NineTapTour.Database;
 public class ParticipantsDB
 {
     /// <summary>
+    /// Ensures a participant row (and empty game row) exists for the member in a tournament squad.
+    /// Returns true when the participant already existed or was created successfully.
+    /// </summary>
+    public static bool EnsureParticipantExists(int tournamentId, int memberId, int squad)
+    {
+        using var db = new NineTapDb();
+
+        bool exists = db.Participants.Any(p =>
+            p.Tournament.Id == tournamentId &&
+            p.Member.Id == memberId &&
+            p.Squad == squad);
+        if (exists)
+            return true;
+
+        var tournament = db.Tournaments.Find(tournamentId);
+        var member = db.Members.Find(memberId);
+        if (tournament == null || member == null)
+            return false;
+
+        var game = new Game
+        {
+            Bonus = member.Bonus,
+            Handicap = member.Handicap,
+            IsComp = false,
+            MoneyWon = 0
+        };
+
+        db.Games.Add(game);
+
+        var participant = new Participant
+        {
+            Tournament = tournament,
+            Member = member,
+            Squad = squad,
+            Game = game
+        };
+
+        db.Participants.Add(participant);
+        db.SaveChanges();
+        return true;
+    }
+
+    /// <summary>
     /// Returns a list of all participants in a tournament
     /// </summary>
     public static List<Participant> GetParticipants(int TournamentID)
