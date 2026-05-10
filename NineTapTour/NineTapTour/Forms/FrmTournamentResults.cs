@@ -1125,6 +1125,27 @@ public partial class FrmTournamentResults : Form
             ? BuildTeamViewExportTable()
             : dt;
 
+        // Preload membership-current status for rows that carry a numeric member number.
+        var memberNumbers = exportTable.Rows.Cast<DataRow>()
+            .Select(r => r[MEMBER_ID_COLUMN_NAME]?.ToString())
+            .Where(s => int.TryParse(s, out _))
+            .Select(int.Parse)
+            .Distinct()
+            .ToList();
+
+        var isMembershipCurrentByMemberNumber = new Dictionary<int, bool>();
+        if (memberNumbers.Count > 0)
+        {
+            using var dbMembers = new NineTapDb();
+            isMembershipCurrentByMemberNumber = dbMembers.Members
+                .Where(m => memberNumbers.Contains(m.Number))
+                .Select(m => new { m.Number, m.IsLifetimeMember, m.LastPayment })
+                .ToDictionary(
+                    x => x.Number,
+                    x => x.IsLifetimeMember
+                        || (x.LastPayment.HasValue && (x.LastPayment.Value.Year + 1) >= DateTime.Today.Year));
+        }
+
         try
         {
             using (var workbook = new XLWorkbook(saveFile))
@@ -1181,6 +1202,16 @@ public partial class FrmTournamentResults : Form
                     ws.Cell(excelRow, 15).FormulaA1 = $"=I{excelRow}-M{excelRow}-N{excelRow}+{sidePotValue}";
                     // Write as a numeric value so Excel treats it as a number, not text.
                     ws.Cell(excelRow, 8).Value = spVal;
+
+                    // Highlight Membership$ (Column M) when bowler earned money but membership is not current.
+                    if (decimal.TryParse(Convert.ToString(row[EARNINGS_COLUMN_NAME]), out decimal earnings)
+                        && earnings > 0
+                        && int.TryParse(Convert.ToString(row[MEMBER_ID_COLUMN_NAME]), out int memberNumber)
+                        && isMembershipCurrentByMemberNumber.TryGetValue(memberNumber, out bool isCurrent)
+                        && !isCurrent)
+                    {
+                        ws.Cell(excelRow, 13).Style.Fill.BackgroundColor = XLColor.Orange;
+                    }
 
                     // Any entry that placed 1st–3rd gets a progressive pot row directly below it.
                     // The template pre-formats those rows at positions 5, 7, and 9 (covering excelRows 4, 6, 8).

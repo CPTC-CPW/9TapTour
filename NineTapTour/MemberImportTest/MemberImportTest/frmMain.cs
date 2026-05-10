@@ -10,6 +10,7 @@ using NineTapTour.Models;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace MemberImportTest;
 
@@ -50,6 +51,70 @@ public partial class FrmMain : Form
     
     public int RegionID;
     public List<Member> validMembers = [];      // Makes list of valid members
+
+    private static bool TryParsePaidThroughYear(string token, out int paidThroughYear)
+    {
+        paidThroughYear = 0;
+        if (!int.TryParse(token, out int numeric))
+            return false;
+
+        if (token.Length == 2)
+        {
+            paidThroughYear = 2000 + numeric;
+            return true;
+        }
+
+        if (token.Length == 4 && numeric >= 2000 && numeric <= 2099)
+        {
+            paidThroughYear = numeric;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static void ParseFirstNameAndMembershipInfo(Member member, string seg)
+    {
+        if (string.IsNullOrWhiteSpace(seg))
+            return;
+
+        string[] tokens = seg.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        string parsedFirstName = string.Empty;
+
+        foreach (string raw in tokens)
+        {
+            string normalized = Regex.Replace(raw, "[^A-Za-z0-9]", string.Empty);
+            if (string.IsNullOrWhiteSpace(normalized))
+                continue;
+
+            if (normalized.Equals("life", StringComparison.OrdinalIgnoreCase)
+                || normalized.Equals("hof", StringComparison.OrdinalIgnoreCase))
+            {
+                member.IsLifetimeMember = true;
+                member.LastPayment = new DateTime(9999, 12, 31);
+                continue;
+            }
+
+            if (TryParsePaidThroughYear(normalized, out int paidThroughYear))
+            {
+                // Paid through YYYY means membership expires at the start of YYYY+1.
+                // Store LastPayment as YYYY-1 so existing report logic (+1 display) remains consistent.
+                int lastPaymentYear = Math.Max(1753, paidThroughYear - 1);
+                if (!member.IsLifetimeMember)
+                    member.LastPayment = new DateTime(lastPaymentYear, 12, 31);
+                continue;
+            }
+
+            if (string.IsNullOrWhiteSpace(parsedFirstName))
+                parsedFirstName = normalized;
+        }
+
+        if (string.IsNullOrWhiteSpace(parsedFirstName) && tokens.Length > 0)
+            parsedFirstName = tokens[0];
+
+        if (!string.IsNullOrWhiteSpace(parsedFirstName))
+            member.FirstName = parsedFirstName;
+    }
 
     /// <summary>
     /// When the user clicks on the open button file it will open a file selection window
@@ -163,11 +228,7 @@ public partial class FrmMain : Form
                         if (!string.IsNullOrWhiteSpace(seg)) m.LastName = seg;
                         break;
                     case 3: // First Name
-                        if (!string.IsNullOrWhiteSpace(seg))
-                        {
-                            var split = seg.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                            if (split.Length > 0) m.FirstName = split[0];
-                        }
+                        ParseFirstNameAndMembershipInfo(m, seg);
                         break;
                     case 4: // Middle Initial
                         if (!string.IsNullOrWhiteSpace(seg)) m.MiddleInitial = seg;
