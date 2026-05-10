@@ -685,6 +685,55 @@ public partial class FrmTournamentResults : Form
         }
     }
 
+    /// <summary>
+    /// Builds an export table that mirrors doubles Team View rows (one row per team).
+    /// Handicap is intentionally blank for team export, and Full Name contains both partners.
+    /// </summary>
+    private DataTable BuildTeamViewExportTable()
+    {
+        DataTable teamDt = new();
+        teamDt.Columns.Add(PLACE_STANDING_COLUMN_NAME).ReadOnly = true;
+        teamDt.Columns.Add(FULLNAME_COLUMN_NAME).ReadOnly = true;
+        teamDt.Columns.Add(HANDICAP_COLUMN_NAME).ReadOnly = true;
+        teamDt.Columns.Add(TOTAL_SCORE_COLUMN_NAME).ReadOnly = true;
+        teamDt.Columns.Add(EARNINGS_COLUMN_NAME).ReadOnly = true;
+        teamDt.Columns.Add(MEMBER_ID_COLUMN_NAME).ReadOnly = true;
+        teamDt.Columns.Add(GAME_ID_COLUMN_NAME).ReadOnly = true;
+        teamDt.Columns.Add(PROGRESSIVEPOT_COLUMN_NAME).ReadOnly = true;
+
+        // BuildWinnersListDoubles writes pairs consecutively: [T1M1, T1M2, T2M1, T2M2, ...]
+        var teamPairs = new List<(ExcelMember M1, ExcelMember M2, int Place)>();
+        for (int i = 0; i + 1 < winners.Count; i += 2)
+        {
+            var m1 = winners[i];
+            var m2 = winners[i + 1];
+            if (m1.PlaceStanding > clientInput) continue;
+            teamPairs.Add((m1, m2, m1.PlaceStanding));
+        }
+        teamPairs.Sort((a, b) => a.Place.CompareTo(b.Place));
+
+        foreach (var (m1, m2, place) in teamPairs)
+        {
+            decimal earn1 = m1.MoneyWon ?? 0m;
+            decimal earn2 = m2.MoneyWon ?? 0m;
+            decimal side1 = m1.SidePot ?? 0m;
+            decimal side2 = m2.SidePot ?? 0m;
+
+            DataRow row = teamDt.NewRow();
+            row[PLACE_STANDING_COLUMN_NAME] = place;
+            row[FULLNAME_COLUMN_NAME] = $"{m1.Name} & {m2.Name}";
+            row[HANDICAP_COLUMN_NAME] = ""; // user requested handicap ignored in team export
+            row[TOTAL_SCORE_COLUMN_NAME] = m1.TotalScore;
+            row[EARNINGS_COLUMN_NAME] = earn1 + earn2;
+            row[MEMBER_ID_COLUMN_NAME] = "";
+            row[GAME_ID_COLUMN_NAME] = "";
+            row[PROGRESSIVEPOT_COLUMN_NAME] = side1 + side2;
+            teamDt.Rows.Add(row);
+        }
+
+        return teamDt;
+    }
+
     private void BtnExportToExcel_Click(object sender, EventArgs e)
     {
         ExportToExcel();
@@ -1075,6 +1124,11 @@ public partial class FrmTournamentResults : Form
         string saveFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TournamentResultsCopy.xlsx");
         File.Copy(getFilePath, saveFile, true);
 
+        // Export Team View rows only when doubles Team View is active.
+        DataTable exportTable = (tourny.Doubles && _inTeamView)
+            ? BuildTeamViewExportTable()
+            : dt;
+
         try
         {
             using (var workbook = new XLWorkbook(saveFile))
@@ -1085,7 +1139,7 @@ public partial class FrmTournamentResults : Form
 
                 int excelRow = 4;
                 int i = 0;
-                while (i < dt.Rows.Count)
+                while (i < exportTable.Rows.Count)
                 {
                     if (excelRow >= 35)
                     {
@@ -1093,7 +1147,7 @@ public partial class FrmTournamentResults : Form
                         ws.Range($"G{excelRow}:H{excelRow}").Merge();
                     }
 
-                    var row = dt.Rows[i];
+                    var row = exportTable.Rows[i];
                     int currentPlace = 0;
                     int.TryParse(row[PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out currentPlace);
                     // Check for tie: if previous or next row has the same place
@@ -1101,13 +1155,13 @@ public partial class FrmTournamentResults : Form
                     if (i > 0)
                     {
                         int prevPlace = 0;
-                        int.TryParse(dt.Rows[i - 1][PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out prevPlace);
+                        int.TryParse(exportTable.Rows[i - 1][PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out prevPlace);
                         if (prevPlace == currentPlace) isTie = true;
                     }
-                    if (i < dt.Rows.Count - 1)
+                    if (i < exportTable.Rows.Count - 1)
                     {
                         int nextPlace = 0;
-                        int.TryParse(dt.Rows[i + 1][PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out nextPlace);
+                        int.TryParse(exportTable.Rows[i + 1][PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out nextPlace);
                         if (nextPlace == currentPlace) isTie = true;
                     }
                     // Parse the progressive pot once; spVal = 0 if the cell is empty or non-numeric.
@@ -1154,8 +1208,8 @@ public partial class FrmTournamentResults : Form
 
                 // Set total payout
                 double money = 0;
-                for (int k = 0; k < dt.Rows.Count; k++)
-                    money += Convert.ToDouble(dt.Rows[k][EARNINGS_COLUMN_NAME]);
+                for (int k = 0; k < exportTable.Rows.Count; k++)
+                    money += Convert.ToDouble(exportTable.Rows[k][EARNINGS_COLUMN_NAME]);
                 ws.Cell(2, 8).Value = money;
 
                 // Save dialog
