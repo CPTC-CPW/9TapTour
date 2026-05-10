@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NineTapTour.Models;
 using ClosedXML.Excel;
@@ -48,7 +49,6 @@ public partial class FrmTournamentResults : Form
     private NumericUpDown _nudStartPlace;
     private NumericUpDown _nudEndPlace;
     private TextBox _txtRoundEarnings;
-    private ComboBox _cbxRoundSquad;
     private Button _btnAddRound;
 
     /* Floor directors get a comp entry into tournament when they help with tournament. 
@@ -775,16 +775,7 @@ public partial class FrmTournamentResults : Form
         x += 72;
         _txtRoundEarnings = new TextBox { Location = new Point(x, 4), Width = 80, Text = "0.00" };
         _pnlRoundSetup.Controls.Add(_txtRoundEarnings);
-        x += 88;
-        _pnlRoundSetup.Controls.Add(new Label { Text = "Squad:", AutoSize = true, Location = new Point(x, 8) });
-        x += 50;
-        _cbxRoundSquad = new ComboBox { Location = new Point(x, 4), Width = 60, DropDownStyle = ComboBoxStyle.DropDownList };
-        for (int s = 1; s <= tourny.Squads; s++)
-            _cbxRoundSquad.Items.Add(s);
-        if (_cbxRoundSquad.Items.Count > 0)
-            _cbxRoundSquad.SelectedIndex = 0;
-        _pnlRoundSetup.Controls.Add(_cbxRoundSquad);
-        x += 68;
+        x += 100;
         _btnAddRound = new Button { Text = "Add Round", Location = new Point(x, 2), Size = new Size(90, 28) };
         _btnAddRound.Click += BtnAddRound_Click;
         _pnlRoundSetup.Controls.Add(_btnAddRound);
@@ -857,8 +848,6 @@ public partial class FrmTournamentResults : Form
             return;
         }
 
-        int squad = _cbxRoundSquad.SelectedItem != null ? (int)_cbxRoundSquad.SelectedItem : 1;
-
         int firstNewRow = _dt2Day.Rows.Count;
         for (int place = startPlace; place <= endPlace; place++)
         {
@@ -872,7 +861,7 @@ public partial class FrmTournamentResults : Form
             newRow[PROGRESSIVEPOT_COLUMN_NAME] = "0.00";
             newRow[MEMBER_ID_COLUMN_NAME]      = DBNull.Value;
             newRow[GAME_ID_COLUMN_NAME]        = DBNull.Value;
-            newRow[SQUAD_COLUMN_NAME]          = squad;
+            newRow[SQUAD_COLUMN_NAME]          = DBNull.Value;
             _dt2Day.Rows.Add(newRow);
         }
 
@@ -912,20 +901,17 @@ public partial class FrmTournamentResults : Form
         if (dgvTournamentResults.Rows[e.RowIndex].DataBoundItem is not DataRowView drv) return;
         DataRow dataRow = drv.Row;
 
-        var squadObj = dataRow[SQUAD_COLUMN_NAME];
-        int squad = squadObj != DBNull.Value && int.TryParse(squadObj.ToString(), out int sq) ? sq : 1;
-
         // Defer so the DataTable value is fully committed before reading it back
-        BeginInvoke(() => AutoFillMemberRow(dataRow, memberNumber, squad));
+        BeginInvoke(() => AutoFillMemberRow(dataRow, memberNumber));
     }
 
     /// <summary>
-    /// Looks up the member and their game for the given squad, then auto-fills
+    /// Looks up the member and their best game entry in this tournament across all squads, then auto-fills
     /// Full Name, H/B*, Total Score, and the hidden Member ID / Game ID columns.
     /// H/B is pulled from the member's most recent finalized previous tournament,
     /// matching the same logic used by BuildWinnersList and FrmMemberScores.
     /// </summary>
-    private void AutoFillMemberRow(DataRow dataRow, int memberNumber, int squad)
+    private void AutoFillMemberRow(DataRow dataRow, int memberNumber)
     {
         Member member = MemberDB.GetMember(memberNumber);
         if (member == null || member.Id == 0)
@@ -971,11 +957,22 @@ public partial class FrmTournamentResults : Form
             }
         }
 
-        // Get the game entry for this member + tournament + squad
-        Game game = GameDB.GetGameInTournament(member.Id, tourny.Id, squad);
+        // Get the highest-scoring game entry for this member in this tournament (all squads)
+        Game game;
+        using (var dbGame = new NineTapDb())
+        {
+            game = dbGame.Participants
+                .Where(p => p.Member.Id == member.Id && p.Tournament.Id == tourny.Id)
+                .Select(p => p.Game)
+                .OrderByDescending(g => g.ScratchTotal)
+                .ThenByDescending(g => g.GamesPlayed)
+                .ThenByDescending(g => g.Id)
+                .FirstOrDefault();
+        }
+
         if (game == null)
         {
-            MessageBox.Show($"No game entry found for member {memberNumber} in squad {squad}.\n" +
+            MessageBox.Show($"No game entry found for member {memberNumber} in this 2-day tournament.\n" +
                             $"Make sure scores have been entered in Member Scores first.");
             dataRow[MEMBER_NUMBER_COLUMN_NAME] = DBNull.Value;
             return;
@@ -1015,7 +1012,7 @@ public partial class FrmTournamentResults : Form
             row[PROGRESSIVEPOT_COLUMN_NAME] = b.SidePot?.ToString("F2") ?? "0.00";
             row[MEMBER_ID_COLUMN_NAME]      = b.MemberId;
             row[GAME_ID_COLUMN_NAME]        = b.GameId;
-            row[SQUAD_COLUMN_NAME]          = b.Squad;
+            row[SQUAD_COLUMN_NAME]          = DBNull.Value;
             _dt2Day.Rows.Add(row);
         }
 
@@ -1023,8 +1020,7 @@ public partial class FrmTournamentResults : Form
         for (int i = 0; i < _dt2Day.Rows.Count; i++)
         {
             if (!int.TryParse(_dt2Day.Rows[i][MEMBER_NUMBER_COLUMN_NAME]?.ToString(), out int memberNumber)) continue;
-            int sq = int.TryParse(_dt2Day.Rows[i][SQUAD_COLUMN_NAME]?.ToString(), out int s) ? s : 1;
-            AutoFillMemberRow(_dt2Day.Rows[i], memberNumber, sq);
+            AutoFillMemberRow(_dt2Day.Rows[i], memberNumber);
         }
     }
 
@@ -1195,6 +1191,7 @@ public partial class FrmTournamentResults : Form
                         if (excelRow > 8)
                         {
                             ws.Row(excelRow + 1).InsertRowsAbove(1);
+                            ws.Row(excelRow + 1).Style = ws.Row(9).Style;
                             ws.Range($"G{excelRow + 1}:H{excelRow + 1}").Merge();
                         }
                         // Reuse the already-parsed value — no second TryParse needed.
@@ -1296,6 +1293,28 @@ public partial class FrmTournamentResults : Form
     /// <summary>
     /// Populates dgvTournamentResults when clicked on
     /// </summary>
+    private static bool IsProgressivePotLine(string text)
+    {
+        return text.IndexOf("progressive", StringComparison.OrdinalIgnoreCase) >= 0;
+    }
+
+    private static bool TryExtractFirstAmount(string text, out decimal amount)
+    {
+        amount = 0m;
+        if (string.IsNullOrWhiteSpace(text))
+            return false;
+
+        Match match = Regex.Match(text.Replace(",", ""), @"-?\d+(\.\d+)?");
+        if (!match.Success)
+            return false;
+
+        return decimal.TryParse(
+            match.Value,
+            System.Globalization.NumberStyles.Number,
+            System.Globalization.CultureInfo.InvariantCulture,
+            out amount);
+    }
+
     private void BtnPaste_Click(object sender, EventArgs e)
     {
         // Stops this method from working if user didnt enter the number of winners
@@ -1313,52 +1332,35 @@ public partial class FrmTournamentResults : Form
             return;
         }
 
-        // Removes all $ symboles
-        clipboard = clipboard.Replace("$", "");
+        List<string> lines = [.. clipboard
+            .Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None)
+            .Select(s => s.Trim())
+            .Where(s => !string.IsNullOrWhiteSpace(s))];
 
-        // Lines becomes clipboard as an array
-        string[] lines = clipboard.Replace("\n", "").Split('\r');
-        // Lines2 becomes an empty version of lines
-        string[] lines2 = new string[lines.Length];
+        int nextEarningsRow = 0;
+        int lastAssignedEarningsRow = -1;
 
-        // Populates lines2 with all values in lines
-        for(int t = 0; t < lines.Length; t++)
+        foreach (string line in lines)
         {
-           lines2[t] = lines[t];
-        }
-        int row = 0;
-        int col = 4;
-
-        int pasteAble = Convert.ToInt32(tbClientInputCount.Text) + 3; // +3 for the pro pot entries
-        int pasteCount = lines.Length;
-        int paste;
-        if (pasteCount < pasteAble)
-        {
-            paste = pasteCount - 1;
-        }
-        else
-        {
-            paste = pasteAble; 
-        }
-
-        // Populates dgvTournamentResults
-        for (int i = 0; i < paste; i++)
-        {
-            string check = lines2[i];
-            if (check != "")
+            if (IsProgressivePotLine(line))
             {
-                if (i == 1 || i == 3 || i == 5)
+                if (lastAssignedEarningsRow >= 0
+                    && lastAssignedEarningsRow < dgvTournamentResults.RowCount
+                    && TryExtractFirstAmount(line, out decimal progressiveAmount))
                 {
-                    dgvTournamentResults[col + 3, row].Value = lines2[i];
-                    row++;
+                    dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, lastAssignedEarningsRow].Value = progressiveAmount;
                 }
-                else
-                {
-                    dgvTournamentResults[col, row].Value = lines2[i];
-                    if (i > 5) {
-                        row++;
-                    }
-                }
+                continue;
+            }
+
+            if (nextEarningsRow >= dgvTournamentResults.RowCount)
+                break;
+
+            if (TryExtractFirstAmount(line, out decimal earningsAmount))
+            {
+                dgvTournamentResults[EARNINGS_COLUMN_NAME, nextEarningsRow].Value = earningsAmount;
+                lastAssignedEarningsRow = nextEarningsRow;
+                nextEarningsRow++;
             }
         }
     }
