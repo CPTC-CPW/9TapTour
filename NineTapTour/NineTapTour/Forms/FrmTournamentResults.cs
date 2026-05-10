@@ -1112,13 +1112,36 @@ public partial class FrmTournamentResults : Form
             db.SaveChanges();
         }
 
-        string getFilePath = Path.GetFullPath("Resources/TournamentResultsTemplate.xlsx");
         string tourneyDate = tourny.Date.ToString("MM/dd/yyyy");
         string tournyDateDash = tourneyDate.Replace("/", "-");
         string tournamentDate = tournyDateDash; // Already formatted
         string fileName = tourny.Location + " " + tourny.Event + " " + tournamentDate + ".xlsx";
-        string saveFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TournamentResultsCopy.xlsx");
-        File.Copy(getFilePath, saveFile, true);
+
+        string saveFile;
+        DialogResult useExisting = MessageBox.Show(
+            "Would you like to write the results into an existing Excel file?",
+            "Export to Excel",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question);
+
+        if (useExisting == DialogResult.Yes)
+        {
+            using OpenFileDialog openDialog = new()
+            {
+                Title  = "Select Existing Results File",
+                Filter = FileHelper.GetExcelFilterStringForFileDialogs(),
+                FileName = fileName
+            };
+            if (openDialog.ShowDialog() != DialogResult.OK)
+                return;
+            saveFile = openDialog.FileName;
+        }
+        else
+        {
+            string getFilePath = Path.GetFullPath("Resources/TournamentResultsTemplate.xlsx");
+            saveFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TournamentResultsCopy.xlsx");
+            File.Copy(getFilePath, saveFile, true);
+        }
 
         // Export Team View rows only when doubles Team View is active.
         DataTable exportTable = (tourny.Doubles && _inTeamView)
