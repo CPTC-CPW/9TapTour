@@ -1582,6 +1582,34 @@ namespace NineTapTour.Forms
             form.ShowDialog(this);
         }
 
+        /// <summary>
+        /// Refreshes the participant list for the currently selected tournament.
+        /// Intended for post-import updates from FrmDoublesTeamPairing.
+        /// </summary>
+        public void RefreshParticipantsAfterDoublesImport()
+        {
+            if (FrmMemberScoresHelpers.selectedTournament == null)
+                return;
+
+            FrmMemberScoresHelpers.overallListOfParticipants =
+                TournamentDB.GetTournamentMemberList(FrmMemberScoresHelpers.selectedTournament);
+
+            int count = FrmMemberScoresHelpers.overallListOfParticipants.Count;
+            if (count == 0)
+            {
+                currentIndex = 0;
+                lblRecord.Text = "Record 0 / 0";
+                return;
+            }
+
+            if (currentIndex >= count)
+                currentIndex = count - 1;
+            if (currentIndex < 0)
+                currentIndex = 0;
+
+            lblRecord.Text = "Record " + (currentIndex + 1) + " / " + count;
+        }
+
         /*******************************************************************************
         When the report section buttons are clicked, it will take them to the FrmMemberScoresReports to ask for how many they want to take for printing
         ********************************************************************************/

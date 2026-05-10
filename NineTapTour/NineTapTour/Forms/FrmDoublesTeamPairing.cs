@@ -1,5 +1,6 @@
 ﻿using NineTapTour.Database;
 using NineTapTour.Models;
+using ClosedXML.Excel;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -16,6 +17,9 @@ namespace NineTapTour.Forms
     /// </summary>
     public class FrmDoublesTeamPairing : Form
     {
+        private const int BowlerPanelWidth = 260;
+        private const int BowlerPanelFixedHeight = 210;
+
         private readonly Tournament _tournament;
 
         // Header
@@ -35,6 +39,7 @@ namespace NineTapTour.Forms
         private Label lblPartnerCountLabel;
         private TextBox txtPartnerCount;
         private Button btnAddPairs;
+        private Button btnImportExcel;
 
         // Dynamic partner rows (y=72+)
         private Panel pnlPartners;
@@ -44,6 +49,20 @@ namespace NineTapTour.Forms
 
         // Pairings grid
         private DataGridView dgvPairings;
+
+        // Bowler navigation panel
+        private Panel pnlBowlerList;
+        private Label lblBowlerList;
+        private Panel pnlBowlerNavButtons;
+        private Button btnPrevBowler;
+        private Button btnNextBowler;
+        private ListBox lstBowlers;
+
+        // Summary panel
+        private Panel pnlSummary;
+        private Label lblTotalTeams;
+        private Label lblSquadBreakdown;
+        private Label lblDiscrepancies;
 
         // Secondary squad picker (shown when cboSquad = "All Squads")
         private Label lblAddSquad;
@@ -68,7 +87,7 @@ namespace NineTapTour.Forms
             SuspendLayout();
 
             Text            = "Doubles Pairings";
-            Size            = new Size(720, 580);
+            Size            = new Size(800, 640);
             MinimumSize     = new Size(600, 440);
             StartPosition   = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.Sizable;
@@ -113,11 +132,19 @@ namespace NineTapTour.Forms
             {
                 Text      = "Add Pairs",
                 Size      = new Size(90, 26),
-                Location  = new Point(455, 38),
+                Location  = new Point(452, 38),
                 BackColor = Color.LightGreen,
                 Enabled   = false
             };
             btnAddPairs.Click += BtnAddPairs_Click;
+
+            btnImportExcel = new Button
+            {
+                Text = "Import Excel",
+                Size = new Size(96, 26),
+                Location = new Point(548, 0)
+            };
+            btnImportExcel.Click += BtnImportExcel_Click;
 
             // Secondary squad picker — visible only when cboSquad = "All Squads" (y=40)
             lblAddSquad = new Label { Text = "for Squad:", Location = new Point(552, 44), AutoSize = true, Visible = false };
@@ -150,9 +177,70 @@ namespace NineTapTour.Forms
             pnlInput.Controls.Add(lblPartnerCountLabel);
             pnlInput.Controls.Add(txtPartnerCount);
             pnlInput.Controls.Add(btnAddPairs);
+            pnlInput.Controls.Add(btnImportExcel);
             pnlInput.Controls.Add(lblAddSquad);
             pnlInput.Controls.Add(cboAddSquad);
             pnlInput.Controls.Add(pnlPartners);
+
+            // --- Summary panel ---
+            pnlSummary = new Panel { Dock = DockStyle.Top, Height = 52, Padding = new Padding(8, 4, 8, 4) };
+            lblTotalTeams = new Label { Location = new Point(8, 6), AutoSize = true, Text = "Total Teams: 0" };
+            lblSquadBreakdown = new Label { Location = new Point(8, 24), AutoSize = true, Text = "By Squad: none" };
+            lblDiscrepancies = new Label { Location = new Point(360, 6), Size = new Size(340, 38), AutoSize = false, Text = "Discrepancies: none" };
+            pnlSummary.Controls.Add(lblTotalTeams);
+            pnlSummary.Controls.Add(lblSquadBreakdown);
+            pnlSummary.Controls.Add(lblDiscrepancies);
+
+            // --- Bowler list panel ---
+            pnlBowlerList = new Panel
+            {
+                Dock = DockStyle.None,
+                Width = BowlerPanelWidth,
+                Height = BowlerPanelFixedHeight,
+                MinimumSize = new Size(BowlerPanelWidth, BowlerPanelFixedHeight),
+                MaximumSize = new Size(BowlerPanelWidth, BowlerPanelFixedHeight),
+                Anchor = AnchorStyles.Right | AnchorStyles.Bottom,
+                Padding = new Padding(6)
+            };
+            lblBowlerList = new Label
+            {
+                Text = "Imported Bowlers",
+                Dock = DockStyle.Top,
+                Height = 20,
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            pnlBowlerNavButtons = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 30
+            };
+            btnPrevBowler = new Button
+            {
+                Text = "Previous",
+                Size = new Size(92, 24),
+                Location = new Point(0, 3)
+            };
+            btnPrevBowler.Click += BtnPrevBowler_Click;
+
+            btnNextBowler = new Button
+            {
+                Text = "Next",
+                Size = new Size(92, 24),
+                Location = new Point(98, 3)
+            };
+            btnNextBowler.Click += BtnNextBowler_Click;
+
+            pnlBowlerNavButtons.Controls.Add(btnPrevBowler);
+            pnlBowlerNavButtons.Controls.Add(btnNextBowler);
+
+            lstBowlers = new ListBox
+            {
+                Dock = DockStyle.Fill
+            };
+            lstBowlers.SelectedIndexChanged += LstBowlers_SelectedIndexChanged;
+            pnlBowlerList.Controls.Add(lstBowlers);
+            pnlBowlerList.Controls.Add(pnlBowlerNavButtons);
+            pnlBowlerList.Controls.Add(lblBowlerList);
 
             // --- Pairings grid ---
             dgvPairings = new DataGridView
@@ -192,7 +280,9 @@ namespace NineTapTour.Forms
                                              (pnlBottom.Height - btnClose.Height) / 2);
 
             Controls.Add(dgvPairings);
+            Controls.Add(pnlBowlerList);
             Controls.Add(pnlBottom);
+            Controls.Add(pnlSummary);
             Controls.Add(pnlInput);
             Controls.Add(lblHeader);
 
@@ -201,7 +291,24 @@ namespace NineTapTour.Forms
             lblAddSquad.Visible = startAllSquads;
             cboAddSquad.Visible = startAllSquads;
 
+            PositionBowlerPanel();
+            Resize += (s2, e2) => PositionBowlerPanel();
+
+            PopulateBowlersList();
+
             ResumeLayout(false);
+        }
+
+        private void PositionBowlerPanel()
+        {
+            int x = ClientSize.Width - pnlBowlerList.Width - 8;
+            int y = ClientSize.Height - pnlBowlerList.Height - 48; // keep clear of bottom bar
+
+            if (x < 0) x = 0;
+            if (y < lblHeader.Bottom + 4) y = lblHeader.Bottom + 4;
+
+            pnlBowlerList.Location = new Point(x, y);
+            pnlBowlerList.BringToFront();
         }
 
         // ----------------------------------------------------------------
@@ -214,10 +321,18 @@ namespace NineTapTour.Forms
             _partnerControls.Clear();
             btnAddPairs.Enabled = false;
 
-            if (!int.TryParse(txtPartnerCount.Text.Trim(), out int count) || count < 1 || count > 20)
+            if (!int.TryParse(txtPartnerCount.Text.Trim(), out int count) || count < 0 || count > 20)
             {
                 pnlPartners.Height = 0;
                 pnlInput.Height    = 76;
+                return;
+            }
+
+            if (count == 0)
+            {
+                pnlPartners.Height = 0;
+                pnlInput.Height = 76;
+                btnAddPairs.Enabled = true;
                 return;
             }
 
@@ -328,21 +443,18 @@ namespace NineTapTour.Forms
             int targetSquad = GetTargetSquad();
             if (targetSquad == 0) return;
 
-            // Find all existing partners for this bowler in the target squad
-            List<DoublesTeam> allTeams = DoublesTeamDB.GetTeamsByTournament(_tournament.Id);
-            _existingPartnersForBowler = allTeams
-                .Where(t => t.Squad == targetSquad &&
-                            (t.Member1.Id == mainId || t.Member2.Id == mainId))
-                .Select(t => t.Member1.Id == mainId ? t.Member2 : t.Member1)
+            // Show only partners this bowler has explicitly claimed.
+            List<DoublesPartnerClaim> allClaims = DoublesPartnerClaimDB.GetClaimsByTournament(_tournament.Id);
+            _existingPartnersForBowler = allClaims
+                .Where(c => c.Squad == targetSquad && c.SourceMember.Id == mainId)
+                .Select(c => c.PartnerMember)
                 .ToList();
 
-            // Set count to at least the number of existing partners; keep whatever the user
-            // already typed if it's higher so we show extra empty slots.
-            int requested = int.TryParse(txtPartnerCount.Text.Trim(), out int c) && c > 0 ? c : 0;
-            int newCount  = Math.Max(requested, _existingPartnersForBowler.Count);
-            if (newCount == 0) newCount = 1;   // always show at least one slot
+            int expectedCount = DoublesPartnerPlanDB.GetExpectedPartnerCount(_tournament.Id, mainId, targetSquad);
 
-            txtPartnerCount.Text = newCount.ToString();
+            // Always show exactly the planned partner count for the selected bowler.
+            // This prevents stale higher counts when navigating between bowlers.
+            txtPartnerCount.Text = expectedCount.ToString();
             RebuildPartnerControls();
             } // end try
             finally { _populatingPartners = false; }
@@ -416,15 +528,29 @@ namespace NineTapTour.Forms
                 return;
             }
 
-            int added = 0, skipped = 0;
+            int expectedCount = int.TryParse(txtPartnerCount.Text.Trim(), out int parsedExpected)
+                ? Math.Max(0, parsedExpected)
+                : 0;
+            DoublesPartnerPlanDB.UpsertPlan(_tournament.Id, mainId, targetSquad, expectedCount);
+
+            int claimsAdded = 0;
+            int teamsAdded = 0;
+            int skipped = 0;
+            int partnerEntriesAttempted = 0;
             var skipReasons = new List<string>();
 
             foreach (var (numBox, _) in _partnerControls)
             {
-                if (!int.TryParse(numBox.Text.Trim(), out int partnerNum))
+                string partnerText = numBox.Text.Trim();
+                if (string.IsNullOrWhiteSpace(partnerText))
+                    continue;
+
+                partnerEntriesAttempted++;
+
+                if (!int.TryParse(partnerText, out int partnerNum))
                 {
                     skipped++;
-                    skipReasons.Add($"'{numBox.Text.Trim()}' is not a valid number");
+                    skipReasons.Add($"'{partnerText}' is not a valid number");
                     continue;
                 }
 
@@ -449,24 +575,40 @@ namespace NineTapTour.Forms
                     continue;
                 }
 
-                bool ok = DoublesTeamDB.AddTeam(_tournament.Id, mainId, partnerId, targetSquad);
-                if (ok)
-                    added++;
-                else
+                bool claimAdded = DoublesPartnerClaimDB.AddClaim(_tournament.Id, mainId, partnerId, targetSquad);
+                if (!claimAdded)
                 {
                     skipped++;
-                    skipReasons.Add($"#{mainNum} / #{partnerNum} are already paired in Squad {targetSquad}");
+                    skipReasons.Add($"#{mainNum} already listed #{partnerNum} in Squad {targetSquad}");
+                    continue;
                 }
+
+                claimsAdded++;
+
+                bool teamAdded = DoublesTeamDB.AddTeam(_tournament.Id, mainId, partnerId, targetSquad);
+                if (teamAdded)
+                    teamsAdded++;
             }
 
-            if (skipped > 0)
+            if (claimsAdded > 0 || skipped > 0)
             {
                 string details = string.Join("\n  \u2022 ", skipReasons);
                 MessageBox.Show(
-                    $"{added} pairing(s) added, {skipped} skipped:\n  \u2022 {details}",
+                    $"{claimsAdded} partner claim(s) saved, {teamsAdded} unique team(s) created, {skipped} skipped"
+                    + (skipReasons.Count > 0 ? $":\n  \u2022 {details}" : "."),
                     "Add Pairs Result",
                     MessageBoxButtons.OK,
-                    added == 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+                    claimsAdded == 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(
+                    partnerEntriesAttempted == 0
+                        ? $"Saved expected partner count ({expectedCount}) for bowler #{mainNum} in Squad {targetSquad}."
+                        : "No changes were made.",
+                    "Add Pairs Result",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             }
 
             // Reset inputs
@@ -482,6 +624,320 @@ namespace NineTapTour.Forms
             txtBowlerNumber.Focus();
 
             LoadPairings();
+        }
+
+        private void BtnImportExcel_Click(object sender, EventArgs e)
+        {
+            using var open = new OpenFileDialog
+            {
+                Title = "Import Doubles Bowlers",
+                Filter = "Excel Files (*.xlsx)|*.xlsx",
+                Multiselect = false
+            };
+
+            if (open.ShowDialog(this) != DialogResult.OK)
+                return;
+
+            var summary = ImportBowlersAndExpectedCounts(open.FileName);
+
+            string details = summary.Errors.Count > 0
+                ? "\n\nIssues:\n- " + string.Join("\n- ", summary.Errors.Take(25))
+                : string.Empty;
+
+            if (summary.Errors.Count > 25)
+                details += $"\n- ...and {summary.Errors.Count - 25} more.";
+
+            MessageBox.Show(
+                $"Import complete.\nRows processed: {summary.RowsProcessed}\nPlans added/updated: {summary.PlansUpserted}\nParticipants created: {summary.ParticipantsCreated}\nRows skipped: {summary.RowsSkipped}{details}",
+                "Doubles Import",
+                MessageBoxButtons.OK,
+                summary.Errors.Count > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+
+            RefreshOwnerParticipants();
+            LoadPairings();
+            PopulateBowlersList(selectFirst: true);
+        }
+
+        private void RefreshOwnerParticipants()
+        {
+            FrmMemberScoresHelpers.overallListOfParticipants = TournamentDB.GetTournamentMemberList(_tournament);
+            if (Owner is FrmMemberScores memberScoresForm)
+                memberScoresForm.RefreshParticipantsAfterDoublesImport();
+        }
+
+        private ImportSummary ImportBowlersAndExpectedCounts(string filePath)
+        {
+            var summary = new ImportSummary();
+
+            using var workbook = new XLWorkbook(filePath);
+            foreach (var ws in workbook.Worksheets)
+            {
+                if (!TryParseSquadSheetName(ws.Name, out int squad))
+                    continue;
+
+                if (squad < 1 || squad > _tournament.Squads)
+                {
+                    summary.Errors.Add($"Sheet '{ws.Name}': squad is out of range for this tournament.");
+                    continue;
+                }
+
+                int row = 9;
+                while (!ws.Cell(row, 2).IsEmpty())
+                {
+                    summary.RowsProcessed++;
+
+                    if (ws.Cell(row, 3).IsEmpty())
+                    {
+                        summary.RowsSkipped++;
+                        row++;
+                        continue;
+                    }
+
+                    if (!TryReadIntCell(ws, row, 3, out int memberNumber))
+                    {
+                        summary.RowsSkipped++;
+                        summary.Errors.Add($"Sheet '{ws.Name}', row {row}: invalid member number in column C.");
+                        row++;
+                        continue;
+                    }
+
+                    if (!TryReadIntCell(ws, row, 10, out int expectedCount))
+                    {
+                        summary.RowsSkipped++;
+                        summary.Errors.Add($"Sheet '{ws.Name}', row {row}: invalid partner count in column J.");
+                        row++;
+                        continue;
+                    }
+
+                    if (expectedCount < 0)
+                    {
+                        summary.RowsSkipped++;
+                        summary.Errors.Add($"Sheet '{ws.Name}', row {row}: partner count cannot be negative.");
+                        row++;
+                        continue;
+                    }
+
+                    int memberId = MemberDB.GetMemberIdByNumber(memberNumber);
+                    if (memberId == 0)
+                    {
+                        summary.RowsSkipped++;
+                        summary.Errors.Add($"Sheet '{ws.Name}', row {row}: member #{memberNumber} not found.");
+                        row++;
+                        continue;
+                    }
+
+                    bool participantAlreadyExisted = ParticipantExists(memberId, squad);
+                    bool ensured = ParticipantsDB.EnsureParticipantExists(_tournament.Id, memberId, squad);
+                    if (!ensured)
+                    {
+                        summary.RowsSkipped++;
+                        summary.Errors.Add($"Sheet '{ws.Name}', row {row}: could not create participant for #{memberNumber}.");
+                        row++;
+                        continue;
+                    }
+
+                    if (!participantAlreadyExisted)
+                        summary.ParticipantsCreated++;
+
+                    DoublesPartnerPlanDB.UpsertPlan(_tournament.Id, memberId, squad, expectedCount);
+                    summary.PlansUpserted++;
+
+                    row++;
+                }
+            }
+
+            return summary;
+        }
+
+        private bool ParticipantExists(int memberId, int squad)
+        {
+            using var db = new NineTapDb();
+            return db.Participants.Any(p =>
+                p.Tournament.Id == _tournament.Id &&
+                p.Member.Id == memberId &&
+                p.Squad == squad);
+        }
+
+        private static bool TryReadIntCell(IXLWorksheet ws, int row, int column, out int value)
+        {
+            value = 0;
+            var cell = ws.Cell(row, column);
+            if (cell.IsEmpty())
+                return false;
+
+            if (cell.TryGetValue<int>(out int asInt))
+            {
+                value = asInt;
+                return true;
+            }
+
+            if (cell.TryGetValue<double>(out double asDouble))
+            {
+                value = Convert.ToInt32(Math.Round(asDouble));
+                return true;
+            }
+
+            return int.TryParse(cell.GetString().Trim(), out value);
+        }
+
+        private static bool TryParseSquadSheetName(string sheetName, out int squad)
+        {
+            squad = 0;
+            if (string.IsNullOrWhiteSpace(sheetName))
+                return false;
+
+            string normalized = sheetName.Trim();
+            if (!normalized.StartsWith("Squad ", StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            return int.TryParse(normalized.Substring(6).Trim(), out squad);
+        }
+
+        private void PopulateBowlersList(bool selectFirst = false)
+        {
+            int previousMemberId = lstBowlers.SelectedItem is BowlerListItem selected ? selected.MemberId : 0;
+
+            using var db = new NineTapDb();
+            var participants = db.Participants
+                .Where(p => p.Tournament.Id == _tournament.Id)
+                .Select(p => new
+                {
+                    p.Squad,
+                    MemberId = p.Member.Id,
+                    p.Member.Number,
+                    p.Member.FirstName,
+                    p.Member.LastName
+                })
+                .ToList();
+
+            if (cboSquad.SelectedIndex > 0)
+                participants = participants.Where(p => p.Squad == cboSquad.SelectedIndex).ToList();
+
+            var plans = DoublesPartnerPlanDB.GetPlansByTournament(_tournament.Id);
+            var claims = DoublesPartnerClaimDB.GetClaimsByTournament(_tournament.Id);
+
+            var items = participants
+                .OrderBy(p => p.Squad)
+                .ThenBy(p => p.Number)
+                .Select(p => new BowlerListItem
+                {
+                    Squad = p.Squad,
+                    MemberId = p.MemberId,
+                    MemberNumber = p.Number,
+                    Display = $"S{p.Squad}  #{p.Number}  {p.FirstName} {p.LastName}  (Planned {plans.FirstOrDefault(x => x.Squad == p.Squad && x.Member.Id == p.MemberId)?.ExpectedPartnerCount ?? 0}, Entered {claims.Count(c => c.Squad == p.Squad && c.SourceMember.Id == p.MemberId)})"
+                })
+                .ToList();
+
+            lstBowlers.BeginUpdate();
+            lstBowlers.DataSource = null;
+            lstBowlers.DataSource = items;
+            lstBowlers.DisplayMember = nameof(BowlerListItem.Display);
+            lstBowlers.EndUpdate();
+
+            if (items.Count == 0)
+            {
+                UpdateBowlerNavButtons();
+                return;
+            }
+
+            if (selectFirst)
+            {
+                lstBowlers.SelectedIndex = 0;
+                UpdateBowlerNavButtons();
+                return;
+            }
+
+            int restoreIndex = items.FindIndex(i => i.MemberId == previousMemberId);
+            if (restoreIndex >= 0)
+                lstBowlers.SelectedIndex = restoreIndex;
+
+            UpdateBowlerNavButtons();
+        }
+
+        private void LstBowlers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lstBowlers.SelectedItem is not BowlerListItem item)
+                return;
+
+            if (cboSquad.SelectedIndex == 0)
+                cboAddSquad.SelectedIndex = Math.Max(0, item.Squad - 1);
+
+            txtBowlerNumber.Text = item.MemberNumber.ToString();
+            LookupBowlerAndPopulate();
+            UpdateBowlerNavButtons();
+        }
+
+        private void BtnPrevBowler_Click(object sender, EventArgs e)
+        {
+            if (lstBowlers.Items.Count == 0)
+                return;
+
+            if (lstBowlers.SelectedIndex <= 0)
+                lstBowlers.SelectedIndex = lstBowlers.Items.Count - 1;
+            else
+                lstBowlers.SelectedIndex--;
+        }
+
+        private void BtnNextBowler_Click(object sender, EventArgs e)
+        {
+            if (lstBowlers.Items.Count == 0)
+                return;
+
+            if (lstBowlers.SelectedIndex < 0 || lstBowlers.SelectedIndex >= lstBowlers.Items.Count - 1)
+                lstBowlers.SelectedIndex = 0;
+            else
+                lstBowlers.SelectedIndex++;
+        }
+
+        private void UpdateBowlerNavButtons()
+        {
+            bool hasBowlers = lstBowlers.Items.Count > 0;
+            btnPrevBowler.Enabled = hasBowlers;
+            btnNextBowler.Enabled = hasBowlers;
+        }
+
+        private sealed class BowlerListItem
+        {
+            public int Squad { get; set; }
+            public int MemberId { get; set; }
+            public int MemberNumber { get; set; }
+            public string Display { get; set; }
+        }
+
+        private void UpdateSummaryLabels(List<DoublesTeam> teams)
+        {
+            lblTotalTeams.Text = $"Total Teams (Tournament): {teams.Count}";
+
+            var bySquad = teams
+                .GroupBy(t => t.Squad)
+                .OrderBy(g => g.Key)
+                .Select(g => $"S{g.Key}: {g.Count()}");
+
+            lblSquadBreakdown.Text = "By Squad: " + (bySquad.Any() ? string.Join(" | ", bySquad) : "none");
+
+            var plans = DoublesPartnerPlanDB.GetPlansByTournament(_tournament.Id);
+            var claims = DoublesPartnerClaimDB.GetClaimsByTournament(_tournament.Id);
+
+            int countMismatches = plans.Count(p =>
+                claims.Count(c => c.Squad == p.Squad && c.SourceMember.Id == p.Member.Id) != p.ExpectedPartnerCount);
+
+            int reciprocalMissing = claims.Count(c =>
+                !claims.Any(r =>
+                    r.Squad == c.Squad &&
+                    r.SourceMember.Id == c.PartnerMember.Id &&
+                    r.PartnerMember.Id == c.SourceMember.Id));
+
+            lblDiscrepancies.Text = $"Discrepancies: count mismatch {countMismatches}, missing reciprocal {reciprocalMissing}";
+            lblDiscrepancies.ForeColor = (countMismatches > 0 || reciprocalMissing > 0) ? Color.DarkRed : Color.DarkGreen;
+        }
+
+        private sealed class ImportSummary
+        {
+            public int RowsProcessed { get; set; }
+            public int RowsSkipped { get; set; }
+            public int PlansUpserted { get; set; }
+            public int ParticipantsCreated { get; set; }
+            public List<string> Errors { get; } = new();
         }
 
         // ----------------------------------------------------------------
@@ -533,6 +989,7 @@ namespace NineTapTour.Forms
 
             dgvPairings.Rows.Clear();
             List<DoublesTeam> teams = DoublesTeamDB.GetTeamsByTournament(_tournament.Id);
+            List<DoublesTeam> allTeams = [.. teams];
 
             if (selectedSquad > 0)
                 teams = teams.FindAll(t => t.Squad == selectedSquad);
@@ -552,6 +1009,9 @@ namespace NineTapTour.Forms
                     $"{team.Member2.FirstName} {team.Member2.LastName}"
                 );
             }
+
+            UpdateSummaryLabels(allTeams);
+            PopulateBowlersList();
         }
     }
 }
