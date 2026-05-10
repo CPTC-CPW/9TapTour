@@ -39,6 +39,7 @@ namespace NineTapTour.Forms
         {
             InitializeComponent();
             DoubleBuffered = true;
+            db = new NineTapDb();
         }
         /// <summary>
         /// initializes all the radio buttons on the form and sets them to their correct default status.
@@ -1259,6 +1260,7 @@ namespace NineTapTour.Forms
         }
 
         readonly IComparer<MemberScores> scoreComparer = new Calculations.MemberScoresComparer();
+        private readonly NineTapDb db = new(); // Get access to database for doubles team lookups
 
         /// <summary>
         /// Refresh game scores displayed in the score listbox
@@ -1768,6 +1770,12 @@ namespace NineTapTour.Forms
                 }
                 #endregion
 
+                // For doubles tournaments, combine partner scores into team standings
+                if (FrmMemberScoresHelpers.selectedTournament.Doubles)
+                {
+                    temp = CombineDoublesSeriesToTeams(temp, FrmMemberScoresHelpers.selectedTournament.Id, squadList.Contains(0) ? null : squadList);
+                }
+
                 temp.Sort(scoreComparer);
 
                 if (temp.Count != 0)
@@ -1780,6 +1788,74 @@ namespace NineTapTour.Forms
                     MessageBox.Show("Error: No Participants in selected Squad.");
                 }
             }
+        }
+
+        /// <summary>
+        /// Combines individual doubles player standings into team standings.
+        /// Each DoublesTeam's two members' scores are summed into a single team entry.
+        /// Partners are matched by name as "FirstName1 LastName1 & FirstName2 LastName2".
+        /// </summary>
+        /// <param name="individualScores">The list of individual player standings.</param>
+        /// <param name="tournamentId">The tournament ID to load doubles team pairings from.</param>
+        /// <param name="squadFilter">Optional list of squad numbers to filter teams by. Null means all squads.</param>
+        /// <returns>A list of TeamMemberScores representing team standings, sorted by combined score descending.</returns>
+        private List<MemberScores> CombineDoublesSeriesToTeams(List<MemberScores> individualScores, int tournamentId, List<int> squadFilter)
+        {
+            var combinedTeams = new List<MemberScores>();
+
+            // Load all doubles teams for this tournament
+            List<DoublesTeam> allTeams = DoublesTeamDB.GetTeamsByTournament(tournamentId);
+
+            // Filter teams by squad list if provided
+            List<DoublesTeam> teams = squadFilter == null 
+                ? allTeams 
+                : allTeams.Where(t => squadFilter.Contains(t.Squad)).ToList();
+
+            // Process each team pairing
+            foreach (var team in teams)
+            {
+                // Find both members' scores in the individual standings
+                var member1Scores = individualScores.FirstOrDefault(s => s.MemberId == team.Member1.Number);
+                var member2Scores = individualScores.FirstOrDefault(s => s.MemberId == team.Member2.Number);
+
+                // Skip this team if either member is not found in the standings
+                if (member1Scores == null || member2Scores == null)
+                    continue;
+
+                // Create a combined team entry
+                var teamScores = new TeamMemberScores
+                {
+                    // Combined team naming: "FirstName1 LastName1 & FirstName2 LastName2"
+                    FirstName = $"{member1Scores.FirstName} {member1Scores.LastName} &",
+                    LastName = $"{member2Scores.FirstName} {member2Scores.LastName}",
+
+                    // Sum both partners' scores
+                    Score = (member1Scores.Score ?? 0) + (member2Scores.Score ?? 0),
+
+                    // Use first partner's payment info as the team's overall status
+                    Paid = member1Scores.Paid && member2Scores.Paid,
+                    LastPaymentYear = member1Scores.LastPaymentYear,
+
+                    // Store individual partner data
+                    Partner1MemberId = team.Member1.Number,
+                    Partner1FirstName = team.Member1.FirstName,
+                    Partner1LastName = team.Member1.LastName,
+                    Partner1Score = member1Scores.Score,
+
+                    Partner2MemberId = team.Member2.Number,
+                    Partner2FirstName = team.Member2.FirstName,
+                    Partner2LastName = team.Member2.LastName,
+                    Partner2Score = member2Scores.Score,
+
+                    // Use first partner's member ID as a reference
+                    MemberId = team.Member1.Number,
+                    IsTeam = true
+                };
+
+                combinedTeams.Add(teamScores);
+            }
+
+            return combinedTeams;
         }
 
         private void BtnDelete_Click(object sender, EventArgs e)
