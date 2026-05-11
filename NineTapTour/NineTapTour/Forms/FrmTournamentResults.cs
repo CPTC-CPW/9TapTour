@@ -957,13 +957,15 @@ public partial class FrmTournamentResults : Form
             }
         }
 
-        // Get the highest-scoring game entry for this member in this tournament (all squads)
+        // Get the highest-scoring game entry for this member in this tournament (all squads).
+        // ScratchTotal is [NotMapped] so ordering must happen client-side after fetching candidates.
         Game game;
         using (var dbGame = new NineTapDb())
         {
             game = dbGame.Participants
                 .Where(p => p.Member.Id == member.Id && p.Tournament.Id == tourny.Id)
                 .Select(p => p.Game)
+                .AsEnumerable()
                 .OrderByDescending(g => g.ScratchTotal)
                 .ThenByDescending(g => g.GamesPlayed)
                 .ThenByDescending(g => g.Id)
