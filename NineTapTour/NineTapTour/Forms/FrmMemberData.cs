@@ -921,16 +921,16 @@ public partial class FrmMemberData : Form
             }
 
             // Update member's averages after import
-            List<PlayerHistoryViewModel> reset = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number);
-            if (reset.Count > 0)
+            PlayerHistoryViewModel reset = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
+            if (reset != null)
             {
-                currentMem.Average = reset[0].AVG;
+                currentMem.Average = reset.AVG;
                 currentMem.Handicap = Calculations.Calculations
                     .CalculateHandicapPins(Convert.ToInt32(currentMem.Average));
 
-                currentMem.Bonus = reset[0].Bonus;
+                currentMem.Bonus = reset.Bonus;
                 txtAverage.Text = currentMem.Average.ToString();
-                txt30GameAvg.Text = Convert.ToInt32(reset[0].trueAVG).ToString();
+                txt30GameAvg.Text = Convert.ToInt32(reset.trueAVG).ToString();
                 txtHandicap.Text = currentMem.Handicap.ToString();
                 txtBonus.Text = currentMem.Bonus.ToString();
             }
