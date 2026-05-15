@@ -135,20 +135,17 @@ public partial class FrmMemberData : Form
         }
 
         currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNumber.Text));
-        List<PlayerHistoryViewModel> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number);
-        if (last5.Count >= 1)
-        {   //whatever the bowler director decides his average to be is right. 
-            // don't pull from the player history page
-            txtAverage.Text = (currentMem.Average ?? 0).ToString();
-            txt30GameAvg.Text = Convert.ToInt16(last5[0].trueAVG).ToString();
-            txtBonus.Text = currentMem.Bonus.ToString();
+        PlayerHistoryViewModel mostRecent = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
+        if (mostRecent != null)
+        {
+            txt30GameAvg.Text = Convert.ToInt16(mostRecent.trueAVG).ToString();
         }
         else
         {
-            txtAverage.Text = (currentMem.Average ?? 0).ToString();
             txt30GameAvg.Text = 0.ToString();
-            txtBonus.Text = currentMem.Bonus.ToString();
         }
+        txtAverage.Text = (currentMem.Average ?? 0).ToString();
+        txtBonus.Text = currentMem.Bonus.ToString();
 
         if (currentMem.Id == 0)
         {
