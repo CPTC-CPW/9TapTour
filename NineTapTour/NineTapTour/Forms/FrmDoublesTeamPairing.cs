@@ -46,6 +46,7 @@ namespace NineTapTour.Forms
         private readonly List<(TextBox NumBox, Label NameLabel)> _partnerControls = new();
         private List<Member> _existingPartnersForBowler = new();
         private bool _populatingPartners = false;
+        private bool _suppressBowlerLoad = false;
 
         // Pairings grid
         private DataGridView dgvPairings;
@@ -355,7 +356,7 @@ namespace NineTapTour.Forms
                     nameLbl.ForeColor = Color.Gray;   // visual hint: already paired
                 }
 
-                numBox.Leave   += (s2, e2) => { LookupMemberName((TextBox)s2, nameLbl); TrySaveClaim(capturedIndex); };
+                numBox.Leave   += (s2, e2) => { LookupMemberName((TextBox)s2, nameLbl); TrySavePlan(); TrySaveClaim(capturedIndex); };
                 numBox.KeyDown += (s2, e2) => TxtPartnerBox_KeyDown((TextBox)s2, capturedIndex, e2);
 
                 pnlPartners.Controls.Add(lbl);
@@ -551,8 +552,7 @@ namespace NineTapTour.Forms
 
             if (claimAdded)
                 ShowAutoSaveStatus($"#{mainNum} & #{partnerNum} saved (Squad {targetSquad}).");
-            else
-                ShowAutoSaveStatus($"#{mainNum} already lists #{partnerNum}.");
+            // If claim already existed (e.g. pre-filled box was tabbed through), show nothing
         }
 
         private void ShowAutoSaveStatus(string message, bool error = false)
@@ -824,34 +824,44 @@ namespace NineTapTour.Forms
                 })
                 .ToList();
 
-            lstBowlers.BeginUpdate();
-            lstBowlers.DataSource = null;
-            lstBowlers.DataSource = items;
-            lstBowlers.DisplayMember = nameof(BowlerListItem.Display);
-            lstBowlers.EndUpdate();
-
-            if (items.Count == 0)
+            _suppressBowlerLoad = true;
+            try
             {
-                UpdateBowlerNavButtons();
-                return;
-            }
+                lstBowlers.BeginUpdate();
+                lstBowlers.DataSource = null;
+                lstBowlers.DataSource = items;
+                lstBowlers.DisplayMember = nameof(BowlerListItem.Display);
+                lstBowlers.EndUpdate();
 
-            if (selectFirst)
+                if (items.Count == 0)
+                {
+                    UpdateBowlerNavButtons();
+                    return;
+                }
+
+                if (selectFirst)
+                {
+                    _suppressBowlerLoad = false; // allow LookupBowlerAndPopulate for this deliberate selection
+                    lstBowlers.SelectedIndex = 0;
+                    UpdateBowlerNavButtons();
+                    return;
+                }
+
+                int restoreIndex = items.FindIndex(i => i.MemberId == previousMemberId);
+                if (restoreIndex >= 0)
+                    lstBowlers.SelectedIndex = restoreIndex;
+            }
+            finally
             {
-                lstBowlers.SelectedIndex = 0;
-                UpdateBowlerNavButtons();
-                return;
+                _suppressBowlerLoad = false;
             }
-
-            int restoreIndex = items.FindIndex(i => i.MemberId == previousMemberId);
-            if (restoreIndex >= 0)
-                lstBowlers.SelectedIndex = restoreIndex;
 
             UpdateBowlerNavButtons();
         }
 
         private void LstBowlers_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_suppressBowlerLoad) return;
             if (lstBowlers.SelectedItem is not BowlerListItem item)
                 return;
 
