@@ -305,7 +305,7 @@ public partial class FrmMemberData : Form
                 rdoInActive.Checked = true;
             }
 
-            if (currentMem.Gender.ToString() == MemberGenders.Female.ToString())
+            if (currentMem.Gender == MemberGenders.Female)
             {
                 rdoFemale.Checked = true;
             }
