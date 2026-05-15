@@ -551,38 +551,29 @@ public partial class FrmMemberData : Form
                 if (Convert.ToInt32(txtAverage.Text) == last5[0].AVG)
                 {
                     txtAverage.Text = last5[0].AVG.ToString();
-                    temp.Average = last5[0].AVG;
-
-                    txt30GameAvg.Text = last5[0].trueAVG.ToString();
-
-                    temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : 
-                        Convert.ToInt16(txtBonus.Text);
+                    temp.Average = last5[0].AVG;       
                 }
                 else
                 {   // catches if director wants to change their average 
                     // manually regardless of there player history
                     temp.Average = Convert.ToInt32(txtAverage.Text);
-                    txt30GameAvg.Text = last5[0].trueAVG.ToString();
-                    temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : 
-                        Convert.ToInt16(txtBonus.Text);
                 }
+                txt30GameAvg.Text = last5[0].trueAVG.ToString();
             }
             else if (txtAverage.Text == "")
             {
                 txtAverage.Text = 0.ToString();
                 txt30GameAvg.Text = 0.ToString();
                 temp.Average = 0;
-                temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : 
-                    Convert.ToInt16(txtBonus.Text);
             }
             else
             {
                 temp.Average = Convert.ToInt16(txtAverage.Text);
                 txtAverage.Text = temp.Average.ToString();
                 txt30GameAvg.Text = 0.ToString();
-                temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : 
-                    Convert.ToInt16(txtBonus.Text);
             }
+            temp.Bonus = (txtBonus.Text == string.Empty) ? 0 :
+                    Convert.ToInt16(txtBonus.Text);
 
             // Adds Member to Database
             if (!Int32.TryParse(txtBonus.Text, out int tempBonusPins)) {
@@ -591,8 +582,6 @@ public partial class FrmMemberData : Form
 
             if (tempBonusPins >= 0 && tempBonusPins <= 5)
             {
-                // Left blank because this is simply making sure it is going to import 
-                // correct data into [dbo].[Members]
                 temp.Bonus = tempBonusPins;
             }
             else
@@ -606,7 +595,7 @@ public partial class FrmMemberData : Form
             {
                 MemberDB.AddOrUpdateMember(temp);
                 #if DEBUG
-                MessageBox.Show("Member saved");
+                    MessageBox.Show("Member saved");
                 #endif
                 ((FrmMain)MdiParent).MembersList =
                     MemberDB.GetMemberList().OrderBy(m => m.Number);
