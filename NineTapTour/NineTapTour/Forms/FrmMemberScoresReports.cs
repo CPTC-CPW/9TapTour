@@ -159,8 +159,16 @@ namespace NineTapTour.Forms
                         int idx = row - 5;
                         ws.Cell(row, 1).Value = temp[idx].placing;
                         ws.Cell(row, 2).Value = temp[idx].Score;
-                        ws.Cell(row, 3).Value = temp[idx].MemberId;
-                        ws.Cell(row, 4).Value = temp[idx].LastName + ", " + temp[idx].FirstName;
+                        if (temp[idx] is TeamMemberScores t)
+                        {
+                            ws.Cell(row, 3).Value = $"{t.Partner1MemberId} & {t.Partner2MemberId}";
+                            ws.Cell(row, 4).Value = $"{t.Partner1FirstName} {t.Partner1LastName} & {t.Partner2FirstName} {t.Partner2LastName}";
+                        }
+                        else
+                        {
+                            ws.Cell(row, 3).Value = temp[idx].MemberId;
+                            ws.Cell(row, 4).Value = temp[idx].LastName + ", " + temp[idx].FirstName;
+                        }
                         if (printDuesOffset == 1)
                         {
                             string paymentYear = temp[idx].LastPaymentYear;

@@ -61,4 +61,20 @@ public static class DoublesPartnerClaimDB
         db.SaveChanges();
         return true;
     }
+
+    /// <summary>
+    /// Removes the directional claims for both member1→member2 and member2→member1
+    /// in the given squad, validating each exists before attempting deletion.
+    /// </summary>
+    public static void RemoveClaimsForPair(int tournamentId, int memberId1, int memberId2, int squad)
+    {
+        using var db = new NineTapDb();
+        var claimsToRemove = db.DoublesPartnerClaims.Where(c =>
+            c.Tournament.Id == tournamentId &&
+            c.Squad == squad &&
+            ((c.SourceMember.Id == memberId1 && c.PartnerMember.Id == memberId2) ||
+             (c.SourceMember.Id == memberId2 && c.PartnerMember.Id == memberId1)));
+        db.DoublesPartnerClaims.RemoveRange(claimsToRemove);
+        db.SaveChanges();
+    }
 }

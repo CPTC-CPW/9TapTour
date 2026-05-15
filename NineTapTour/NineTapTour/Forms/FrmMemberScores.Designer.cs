@@ -64,6 +64,7 @@
             lblRecord = new System.Windows.Forms.Label();
             btnDelete = new System.Windows.Forms.Button();
             btnLeftArrow = new System.Windows.Forms.Button();
+            lblNoScores = new System.Windows.Forms.Label();
             btnNew = new System.Windows.Forms.Button();
             btnRecapByPin = new System.Windows.Forms.Button();
             btnStats = new System.Windows.Forms.Button();
@@ -523,11 +524,12 @@
             grpRecord.Controls.Add(lblRecord);
             grpRecord.Controls.Add(btnDelete);
             grpRecord.Controls.Add(btnLeftArrow);
+            grpRecord.Controls.Add(lblNoScores);
             grpRecord.Location = new System.Drawing.Point(4, 633);
             grpRecord.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             grpRecord.Name = "grpRecord";
             grpRecord.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            grpRecord.Size = new System.Drawing.Size(282, 203);
+            grpRecord.Size = new System.Drawing.Size(282, 225);
             grpRecord.TabIndex = 17;
             grpRecord.TabStop = false;
             grpRecord.Text = "Record";
@@ -603,6 +605,16 @@
             btnLeftArrow.Text = "<";
             btnLeftArrow.UseVisualStyleBackColor = true;
             btnLeftArrow.Click += BtnLeftArrow_Click;
+            // 
+            // lblNoScores
+            // 
+            lblNoScores.AutoSize = true;
+            lblNoScores.Location = new System.Drawing.Point(8, 172);
+            lblNoScores.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblNoScores.Name = "lblNoScores";
+            lblNoScores.Size = new System.Drawing.Size(0, 15);
+            lblNoScores.TabIndex = 21;
+            lblNoScores.Text = "No scores: —";
             // 
             // btnNew
             // 
@@ -1452,6 +1464,7 @@
         private System.Windows.Forms.Panel pnlMemStat;
         private System.Windows.Forms.Label lblMemberL;
         private System.Windows.Forms.Label lblRecord;
+        private System.Windows.Forms.Label lblNoScores;
         private System.Windows.Forms.Button btnNewTournament;
         private System.Windows.Forms.ComboBox cbxTourneyDropDown;
         private System.Windows.Forms.GroupBox grpScoreType;

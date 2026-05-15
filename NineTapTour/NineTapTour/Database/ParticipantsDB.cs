@@ -56,6 +56,26 @@ public class ParticipantsDB
     }
 
     /// <summary>
+    /// Returns the count of participants who have not yet had any scores entered (Game1 is null),
+    /// both as a total and broken down by squad.
+    /// </summary>
+    public static (int Total, Dictionary<int, int> BySquad) GetParticipantNoScoreCounts(int tournamentId)
+    {
+        using var db = new NineTapDb();
+        var rows = db.Participants
+            .Include(p => p.Game)
+            .Where(p => p.Tournament.Id == tournamentId && p.Game.Game1 == null)
+            .Select(p => p.Squad)
+            .ToList();
+
+        var bySquad = rows
+            .GroupBy(squad => squad)
+            .ToDictionary(g => g.Key, g => g.Count());
+
+        return (rows.Count, bySquad);
+    }
+
+    /// <summary>
     /// Returns a list of all participants in a tournament
     /// </summary>
     public static List<Participant> GetParticipants(int TournamentID)

@@ -242,7 +242,11 @@ namespace NineTapTour.Database
                 graphic.DrawString(tempMemberList[i + (index * numBowlersPerPage)].Score.ToString(), font, dBrush, startX + 48, startY + 173 + (i * 19));
 
                 //draw the member number
-                graphic.DrawString(tempMemberList[i + (index * numBowlersPerPage)].MemberId.ToString(), font, dBrush, startX + 120, startY + 173 + (i * 19));
+                var _ms = tempMemberList[i + (index * numBowlersPerPage)];
+                string memberNumString = (_ms is NineTapTour.Models.TeamMemberScores tms)
+                    ? $"{tms.Partner1MemberId} & {tms.Partner2MemberId}"
+                    : _ms.MemberId.ToString();
+                graphic.DrawString(memberNumString, font, dBrush, startX + 120, startY + 173 + (i * 19));
 
                 // Decides if the last date the member paid their dues prints on the page
                 string unpaid = string.Empty;
@@ -268,7 +272,9 @@ namespace NineTapTour.Database
 
                 //create name string containing lastname, firstname, and last payment
                 //Changed: instead of showing last payment every time it shows the year as the "unpaid"
-                string nameString = tempMemberList[i + (index * numBowlersPerPage)].LastName + ", " + tempMemberList[i + (index * numBowlersPerPage)].FirstName;
+                string nameString = (tempMemberList[i + (index * numBowlersPerPage)] is NineTapTour.Models.TeamMemberScores teamEntry)
+                    ? $"{teamEntry.Partner1FirstName} {teamEntry.Partner1LastName} & {teamEntry.Partner2FirstName} {teamEntry.Partner2LastName}"
+                    : tempMemberList[i + (index * numBowlersPerPage)].LastName + ", " + tempMemberList[i + (index * numBowlersPerPage)].FirstName;
 
                 //draw name string
                 graphic.DrawString(nameString, font, dBrush, startX + 200, startY + 173 + (i * 19));
