@@ -135,20 +135,17 @@ public partial class FrmMemberData : Form
         }
 
         currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNumber.Text));
-        List<PlayerHistoryViewModel> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number);
-        if (last5.Count >= 1)
-        {   //whatever the bowler director decides his average to be is right. 
-            // don't pull from the player history page
-            txtAverage.Text = (currentMem.Average ?? 0).ToString();
-            txt30GameAvg.Text = Convert.ToInt16(last5[0].trueAVG).ToString();
-            txtBonus.Text = currentMem.Bonus.ToString();
+        PlayerHistoryViewModel mostRecent = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
+        if (mostRecent != null)
+        {
+            txt30GameAvg.Text = Convert.ToInt16(mostRecent.trueAVG).ToString();
         }
         else
         {
-            txtAverage.Text = (currentMem.Average ?? 0).ToString();
             txt30GameAvg.Text = 0.ToString();
-            txtBonus.Text = currentMem.Bonus.ToString();
         }
+        txtAverage.Text = (currentMem.Average ?? 0).ToString();
+        txtBonus.Text = currentMem.Bonus.ToString();
 
         if (currentMem.Id == 0)
         {
@@ -308,7 +305,7 @@ public partial class FrmMemberData : Form
                 rdoInActive.Checked = true;
             }
 
-            if (currentMem.Gender.ToString() == MemberGenders.Female.ToString())
+            if (currentMem.Gender == MemberGenders.Female)
             {
                 rdoFemale.Checked = true;
             }
@@ -545,44 +542,35 @@ public partial class FrmMemberData : Form
             }
 
             //Set average for the new member
-            List<PlayerHistoryViewModel> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number);
-            if (last5.Count >= 1)
+            PlayerHistoryViewModel mostRecent = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
+            if (mostRecent != null)
             {   // sets the average to that of their last adjusted average
-                if (Convert.ToInt32(txtAverage.Text) == last5[0].AVG)
+                if (Convert.ToInt32(txtAverage.Text) == mostRecent.AVG)
                 {
-                    txtAverage.Text = last5[0].AVG.ToString();
-                    temp.Average = last5[0].AVG;
-
-                    txt30GameAvg.Text = last5[0].trueAVG.ToString();
-
-                    temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : 
-                        Convert.ToInt16(txtBonus.Text);
+                    txtAverage.Text = mostRecent.AVG.ToString();
+                    temp.Average = mostRecent.AVG;       
                 }
                 else
                 {   // catches if director wants to change their average 
                     // manually regardless of there player history
                     temp.Average = Convert.ToInt32(txtAverage.Text);
-                    txt30GameAvg.Text = last5[0].trueAVG.ToString();
-                    temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : 
-                        Convert.ToInt16(txtBonus.Text);
                 }
+                txt30GameAvg.Text = mostRecent.trueAVG.ToString();
             }
             else if (txtAverage.Text == "")
             {
                 txtAverage.Text = 0.ToString();
                 txt30GameAvg.Text = 0.ToString();
                 temp.Average = 0;
-                temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : 
-                    Convert.ToInt16(txtBonus.Text);
             }
             else
             {
                 temp.Average = Convert.ToInt16(txtAverage.Text);
                 txtAverage.Text = temp.Average.ToString();
                 txt30GameAvg.Text = 0.ToString();
-                temp.Bonus = (txtBonus.Text == string.Empty) ? 0 : 
-                    Convert.ToInt16(txtBonus.Text);
             }
+            temp.Bonus = (txtBonus.Text == string.Empty) ? 0 :
+                    Convert.ToInt16(txtBonus.Text);
 
             // Adds Member to Database
             if (!Int32.TryParse(txtBonus.Text, out int tempBonusPins)) {
@@ -591,8 +579,6 @@ public partial class FrmMemberData : Form
 
             if (tempBonusPins >= 0 && tempBonusPins <= 5)
             {
-                // Left blank because this is simply making sure it is going to import 
-                // correct data into [dbo].[Members]
                 temp.Bonus = tempBonusPins;
             }
             else
@@ -606,7 +592,7 @@ public partial class FrmMemberData : Form
             {
                 MemberDB.AddOrUpdateMember(temp);
                 #if DEBUG
-                MessageBox.Show("Member saved");
+                    MessageBox.Show("Member saved");
                 #endif
                 ((FrmMain)MdiParent).MembersList =
                     MemberDB.GetMemberList().OrderBy(m => m.Number);
@@ -935,16 +921,16 @@ public partial class FrmMemberData : Form
             }
 
             // Update member's averages after import
-            List<PlayerHistoryViewModel> reset = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number);
-            if (reset.Count > 0)
+            PlayerHistoryViewModel reset = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
+            if (reset != null)
             {
-                currentMem.Average = reset[0].AVG;
+                currentMem.Average = reset.AVG;
                 currentMem.Handicap = Calculations.Calculations
                     .CalculateHandicapPins(Convert.ToInt32(currentMem.Average));
 
-                currentMem.Bonus = reset[0].Bonus;
+                currentMem.Bonus = reset.Bonus;
                 txtAverage.Text = currentMem.Average.ToString();
-                txt30GameAvg.Text = Convert.ToInt32(reset[0].trueAVG).ToString();
+                txt30GameAvg.Text = Convert.ToInt32(reset.trueAVG).ToString();
                 txtHandicap.Text = currentMem.Handicap.ToString();
                 txtBonus.Text = currentMem.Bonus.ToString();
             }
