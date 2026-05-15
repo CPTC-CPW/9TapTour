@@ -64,6 +64,7 @@ namespace NineTapTour.Forms
         private Label lblTotalTeams;
         private Label lblSquadBreakdown;
         private Label lblDiscrepancies;
+        private Button btnFixDiscrepancies;
 
         // Secondary squad picker (shown when cboSquad = "All Squads")
         private Label lblAddSquad;
@@ -188,10 +189,19 @@ namespace NineTapTour.Forms
             pnlSummary = new Panel { Dock = DockStyle.Top, Height = 52, Padding = new Padding(8, 4, 8, 4) };
             lblTotalTeams = new Label { Location = new Point(8, 6), AutoSize = true, Text = "Total Teams: 0" };
             lblSquadBreakdown = new Label { Location = new Point(8, 24), AutoSize = true, Text = "By Squad: none" };
-            lblDiscrepancies = new Label { Location = new Point(360, 6), Size = new Size(340, 38), AutoSize = false, Text = "Discrepancies: none" };
+            lblDiscrepancies = new Label { Location = new Point(360, 6), Size = new Size(245, 38), AutoSize = false, Text = "Discrepancies: none" };
+            btnFixDiscrepancies = new Button
+            {
+                Text     = "Fix Issues...",
+                Size     = new Size(110, 26),
+                Location = new Point(612, 12),
+                Enabled  = false
+            };
+            btnFixDiscrepancies.Click += BtnFixDiscrepancies_Click;
             pnlSummary.Controls.Add(lblTotalTeams);
             pnlSummary.Controls.Add(lblSquadBreakdown);
             pnlSummary.Controls.Add(lblDiscrepancies);
+            pnlSummary.Controls.Add(btnFixDiscrepancies);
 
             // --- Bowler list panel ---
             pnlBowlerList = new Panel
@@ -935,6 +945,14 @@ namespace NineTapTour.Forms
 
             lblDiscrepancies.Text = $"Discrepancies: count mismatch {countMismatches}, missing reciprocal {reciprocalMissing}";
             lblDiscrepancies.ForeColor = (countMismatches > 0 || reciprocalMissing > 0) ? Color.DarkRed : Color.DarkGreen;
+            btnFixDiscrepancies.Enabled = (countMismatches > 0 || reciprocalMissing > 0);
+        }
+
+        private void BtnFixDiscrepancies_Click(object sender, EventArgs e)
+        {
+            using var dlg = new FrmDoublesDiscrepancies(_tournament);
+            dlg.ShowDialog(this);
+            LoadPairings();
         }
 
         private sealed class ImportSummary
