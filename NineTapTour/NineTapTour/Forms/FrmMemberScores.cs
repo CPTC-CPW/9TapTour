@@ -281,13 +281,8 @@ namespace NineTapTour.Forms
                     int displayHandicap = entryWithAvg != null
                         ? CalcService.CalculateHandicapPins(entryWithAvg.AVG)
                         : (currentMem.Handicap ?? 0);
-                    int displayBonus = lastTourneyEntries.Count > 0
-                        ? (lastTourneyEntries.Any(e => e.MoneyWon > 0)
-                            ? lastTourneyEntries.Min(e => e.Bonus)
-                            : lastTourneyEntries.Max(e => e.Bonus))
-                        : currentMem.Bonus;
                     txtHandicap.Text = displayHandicap.ToString();
-                    txtBonusPins.Text = displayBonus.ToString();
+                    txtBonusPins.Text = currentMem.Bonus.ToString();
 
                     GetScores(currentGame);
 
@@ -563,11 +558,7 @@ namespace NineTapTour.Forms
                         player.Game.Handicap = entryWithAvg != null
                             ? CalcService.CalculateHandicapPins(entryWithAvg.AVG)
                             : currentMem.Handicap;
-                        player.Game.Bonus = lastTourneyEntries.Count > 0
-                            ? (lastTourneyEntries.Any(e => e.MoneyWon > 0)
-                                ? lastTourneyEntries.Min(e => e.Bonus)
-                                : lastTourneyEntries.Max(e => e.Bonus))
-                            : currentMem.Bonus;
+                        player.Game.Bonus = currentMem.Bonus;
                     }
                     else
                     {
