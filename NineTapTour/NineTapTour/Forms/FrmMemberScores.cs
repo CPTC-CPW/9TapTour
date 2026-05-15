@@ -191,6 +191,7 @@ namespace NineTapTour.Forms
             // Move to last record so the person entering scores
             // does not accidentally enter a bowler in the wrong squad.
             MoveToLastRecordOfMemberScores();
+            UpdateNoScoresLabel();
         }
 
         /// <summary>
@@ -604,6 +605,7 @@ namespace NineTapTour.Forms
                     }
                 }
                 Refresh();
+                UpdateNoScoresLabel();
             }
             else
             {
@@ -1138,6 +1140,7 @@ namespace NineTapTour.Forms
 
             flpMemberScores.ResumeLayout(true);
             ResumeLayout(true);
+            UpdateNoScoresLabel();
         }
 
         /// <summary>
@@ -1592,6 +1595,7 @@ namespace NineTapTour.Forms
             {
                 currentIndex = 0;
                 lblRecord.Text = "Record 0 / 0";
+                UpdateNoScoresLabel();
                 return;
             }
 
@@ -1601,6 +1605,7 @@ namespace NineTapTour.Forms
                 currentIndex = 0;
 
             lblRecord.Text = "Record " + (currentIndex + 1) + " / " + count;
+            UpdateNoScoresLabel();
         }
 
         /*******************************************************************************
@@ -1816,9 +1821,9 @@ namespace NineTapTour.Forms
                 // Create a combined team entry
                 var teamScores = new TeamMemberScores
                 {
-                    // Combined team naming: "FirstName1 LastName1 & FirstName2 LastName2"
-                    FirstName = $"{member1Scores.FirstName} {member1Scores.LastName} &",
-                    LastName = $"{member2Scores.FirstName} {member2Scores.LastName}",
+                    // FirstName/LastName intentionally left empty; reports use Partner1*/Partner2* fields
+                    FirstName = string.Empty,
+                    LastName = string.Empty,
 
                     // Sum both partners' scores
                     Score = (member1Scores.Score ?? 0) + (member2Scores.Score ?? 0),
@@ -1869,6 +1874,7 @@ namespace NineTapTour.Forms
 
             RemoveParticipantFromTournament();
             RefreshMemberScoresForm();
+            UpdateNoScoresLabel();
 
             Cursor.Current = Cursors.Default;
             ReEnableNavigation();
@@ -1884,6 +1890,24 @@ namespace NineTapTour.Forms
             FrmMemberScoresHelpers.overallListOfParticipants = TournamentDB.GetTournamentMemberList(FrmMemberScoresHelpers.selectedTournament);
             cbxTourneyDropDown.DisplayMember = nameof(Tournament.TourneyNameDate);
             cbxTourneyDropDown.ValueMember = nameof(Tournament.Id);
+        }
+
+        /// <summary>
+        /// Updates the lblNoScores label with how many participants in the current tournament
+        /// have not yet had any scores entered, total and per-squad.
+        /// </summary>
+        private void UpdateNoScoresLabel()
+        {
+            if (FrmMemberScoresHelpers.selectedTournament == null)
+            {
+                lblNoScores.Text = "No scores: \u2014";
+                return;
+            }
+            var (total, bySquad) = ParticipantsDB.GetParticipantNoScoreCounts(FrmMemberScoresHelpers.selectedTournament.Id);
+            string breakdown = bySquad.Count > 0
+                ? "  |  " + string.Join(", ", bySquad.OrderBy(kv => kv.Key).Select(kv => $"Sq{kv.Key}: {kv.Value}"))
+                : string.Empty;
+            lblNoScores.Text = $"No scores: {total} total{breakdown}";
         }
 
         private void RemoveParticipantFromTournament()
