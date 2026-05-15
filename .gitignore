@@ -2,6 +2,9 @@
 Thumbs.db
 ehthumbs.db
 
+# VS Code language service cache files
+*.lscache
+
 # Folder config file
 Desktop.ini
 
