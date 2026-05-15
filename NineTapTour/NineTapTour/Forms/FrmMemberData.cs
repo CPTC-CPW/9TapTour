@@ -542,20 +542,20 @@ public partial class FrmMemberData : Form
             }
 
             //Set average for the new member
-            List<PlayerHistoryViewModel> last5 = PlayerHistoryDB.GetLastFiveTournaments(currentMem.Number);
-            if (last5.Count >= 1)
+            PlayerHistoryViewModel mostRecent = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
+            if (mostRecent != null)
             {   // sets the average to that of their last adjusted average
-                if (Convert.ToInt32(txtAverage.Text) == last5[0].AVG)
+                if (Convert.ToInt32(txtAverage.Text) == mostRecent.AVG)
                 {
-                    txtAverage.Text = last5[0].AVG.ToString();
-                    temp.Average = last5[0].AVG;       
+                    txtAverage.Text = mostRecent.AVG.ToString();
+                    temp.Average = mostRecent.AVG;       
                 }
                 else
                 {   // catches if director wants to change their average 
                     // manually regardless of there player history
                     temp.Average = Convert.ToInt32(txtAverage.Text);
                 }
-                txt30GameAvg.Text = last5[0].trueAVG.ToString();
+                txt30GameAvg.Text = mostRecent.trueAVG.ToString();
             }
             else if (txtAverage.Text == "")
             {
