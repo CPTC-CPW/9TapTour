@@ -1088,10 +1088,11 @@ public partial class FrmTournamentResults : Form
                 db.SaveChanges();
             }
             MessageBox.Show("2-Day championship results saved successfully.");
-            return;
+            // Falls through to Excel export below.
         }
 
         // Saves participants' place standing and earnings won to the database
+        if (!tourny.IsTwoDay)
         for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
         {
             int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
@@ -1145,10 +1146,12 @@ public partial class FrmTournamentResults : Form
             File.Copy(getFilePath, saveFile, true);
         }
 
-        // Export Team View rows only when doubles Team View is active.
-        DataTable exportTable = (tourny.Doubles && _inTeamView)
-            ? BuildTeamViewExportTable()
-            : dt;
+        // Select the source table: 2-day grid (sorted by Place), doubles Team View, or the standard winners table.
+        DataTable exportTable = tourny.IsTwoDay
+            ? _dt2Day.DefaultView.ToTable()
+            : (tourny.Doubles && _inTeamView)
+                ? BuildTeamViewExportTable()
+                : dt;
 
         // Preload membership-current status for rows that carry a numeric member number.
         var memberNumbers = exportTable.Rows.Cast<DataRow>()
@@ -1183,15 +1186,25 @@ public partial class FrmTournamentResults : Form
                 int i = 0;
                 while (i < exportTable.Rows.Count)
                 {
-                    if (excelRow >= 35)
+                    var row = exportTable.Rows[i];
+                    int currentPlace = 0;
+                    int.TryParse(row[PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out currentPlace);
+
+                    // For top-3 entries that fall beyond the template's pre-formatted rows (4, 6, 8):
+                    // insert a new row styled like the 3rd-place template row so G:H is merged correctly.
+                    if (currentPlace >= 1 && currentPlace <= 3 && excelRow > 8)
+                    {
+                        ws.Row(excelRow).InsertRowsAbove(1);
+                        ws.Row(excelRow).Style = ws.Row(8).Style;
+                        ws.Range($"G{excelRow}:H{excelRow}").Merge();
+                    }
+                    // For regular late entries beyond the template range (not top-3):
+                    else if (excelRow >= 35)
                     {
                         ws.Row(excelRow).InsertRowsAbove(1);
                         ws.Range($"G{excelRow}:H{excelRow}").Merge();
                     }
 
-                    var row = exportTable.Rows[i];
-                    int currentPlace = 0;
-                    int.TryParse(row[PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out currentPlace);
                     // Check for tie: if previous or next row has the same place
                     bool isTie = false;
                     if (i > 0)
@@ -1228,10 +1241,9 @@ public partial class FrmTournamentResults : Form
                     // Write as a numeric value so Excel treats it as a number, not text.
                     ws.Cell(excelRow, 8).Value = spVal;
 
-                    // Highlight Membership$ (Column M) when bowler earned money but membership is not current.
-                    if (decimal.TryParse(Convert.ToString(row[EARNINGS_COLUMN_NAME]), out decimal earnings)
-                        && earnings > 0
-                        && int.TryParse(Convert.ToString(row[MEMBER_ID_COLUMN_NAME]), out int memberNumber)
+                    // Highlight Membership$ (Column M) when membership is not current,
+                    // regardless of whether the bowler earned money this tournament.
+                    if (int.TryParse(Convert.ToString(row[MEMBER_ID_COLUMN_NAME]), out int memberNumber)
                         && isMembershipCurrentByMemberNumber.TryGetValue(memberNumber, out bool isCurrent)
                         && !isCurrent)
                     {
