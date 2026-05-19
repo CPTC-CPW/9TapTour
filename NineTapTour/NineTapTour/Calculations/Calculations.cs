@@ -22,7 +22,7 @@ public static class Calculations
     // 1st place: All bonus pins removed
     const int FIRST_PLACE = 1;
 
-    // 2ed-5th place: 3 bonus pins removed
+    // 2nd-5th place: 3 bonus pins removed
     const int MAX_PLACEMENT_DEDUCT_3_PINS = 5;
     const int DEDUCT_3 = 3;
 
@@ -34,7 +34,7 @@ public static class Calculations
     const int DEDUCT_1 = 1;
 
     // Members may not have more then 5 bonus pins
-    // And no less then 0
+    // And no less than 0
     const int MAX_BONUS_PINS_ALLOWED = 5;
     const int MIN_BONUS_PINS_ALLOWED = 0;
 
@@ -145,7 +145,7 @@ public static class Calculations
             newBonusPinAmount = MIN_BONUS_PINS_ALLOWED;
         }
 
-        // 2ed-5th place, 3 bonus pins removed
+        // 2nd-5th place, 3 bonus pins removed
         else if (memberPlaced <= MAX_PLACEMENT_DEDUCT_3_PINS)
         {
             newBonusPinAmount -= DEDUCT_3;
@@ -160,7 +160,7 @@ public static class Calculations
         // 11th+ place, 1 bonus pin removed
         else newBonusPinAmount -= DEDUCT_1;
 
-        // Checks if bonus pins are less then 0 before returning;
+        // Checks if bonus pins are less than 0 before returning;
         return ValidateBonusPins(newBonusPinAmount);
     }
 
@@ -173,7 +173,7 @@ public static class Calculations
     /// </returns>
     public static int ValidateBonusPins(int bonusPins)
     {
-        // Bonus pins cannot be less then 0
+        // Bonus pins cannot be less than 0
         if (bonusPins < MIN_BONUS_PINS_ALLOWED)
         {
             return MIN_BONUS_PINS_ALLOWED;
