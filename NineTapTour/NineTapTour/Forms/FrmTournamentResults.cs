@@ -275,10 +275,10 @@ public partial class FrmTournamentResults : Form
             if (!int.TryParse(dt.Rows[i][PLACE_STANDING_COLUMN_NAME]?.ToString(), out int place) || place == 0)
                 continue;
             bool isTie = (i > 0
-                            && int.TryParse(dt.Rows[i - 1][PLACE_STANDING_COLUMN_NAME]?.ToString(), out int prev)
+                            && int.TryParse(dt.Rows[i - 1][PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out int prev)
                             && prev == place)
                        || (i < dt.Rows.Count - 1
-                            && int.TryParse(dt.Rows[i + 1][PLACE_STANDING_COLUMN_NAME]?.ToString(), out int next)
+                            && int.TryParse(dt.Rows[i + 1][PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out int next)
                             && next == place);
             if (isTie)
                 dt.Rows[i][PLACE_STANDING_COLUMN_NAME] = $"{place}T";
@@ -1035,6 +1035,19 @@ public partial class FrmTournamentResults : Form
     /// <param name="isTie">A boolean indicating whether to append a tie indicator. If <see langword="true"/>, "T" is appended to the
     /// result.</param>
     /// <returns>A string representing the ordinal form of the specified place, with an optional tie indicator.</returns>
+    /// <summary>
+    /// Copies both the row-level default style and every cell's individual style from
+    /// <paramref name="fromRow"/> to <paramref name="toRow"/> so that inserted rows
+    /// look identical to the template row they are based on.
+    /// </summary>
+    private static void CopyRowCellStyles(IXLWorksheet ws, int fromRow, int toRow)
+    {
+        ws.Row(toRow).Style = ws.Row(fromRow).Style;
+        int lastCol = ws.LastColumnUsed()?.ColumnNumber() ?? 15;
+        for (int col = 1; col <= lastCol; col++)
+            ws.Cell(toRow, col).Style = ws.Cell(fromRow, col).Style;
+    }
+
     private static string GetOrdinalWithTie(int place, bool isTie)
     {
         string suffix;
@@ -1193,13 +1206,14 @@ public partial class FrmTournamentResults : Form
                     if (currentPlace >= 1 && currentPlace <= 3 && excelRow > 8)
                     {
                         ws.Row(excelRow).InsertRowsAbove(1);
-                        ws.Row(excelRow).Style = ws.Row(8).Style;
+                        CopyRowCellStyles(ws, 8, excelRow);
                         ws.Range($"G{excelRow}:H{excelRow}").Merge();
                     }
                     // For regular late entries beyond the template range (not top-3):
                     else if (excelRow >= 35)
                     {
                         ws.Row(excelRow).InsertRowsAbove(1);
+                        CopyRowCellStyles(ws, excelRow - 1, excelRow);
                         ws.Range($"G{excelRow}:H{excelRow}").Merge();
                     }
 
@@ -1257,7 +1271,7 @@ public partial class FrmTournamentResults : Form
                         if (excelRow > 8)
                         {
                             ws.Row(excelRow + 1).InsertRowsAbove(1);
-                            ws.Row(excelRow + 1).Style = ws.Row(9).Style;
+                            CopyRowCellStyles(ws, 9, excelRow + 1);
                             ws.Range($"G{excelRow + 1}:H{excelRow + 1}").Merge();
                         }
                         // Reuse the already-parsed value — no second TryParse needed.
