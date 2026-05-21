@@ -1048,6 +1048,34 @@ public partial class FrmTournamentResults : Form
             ws.Cell(toRow, col).Style = ws.Cell(fromRow, col).Style;
     }
 
+    /// <summary>
+    /// Restores cross-worksheet formulas that reference the Results sheet to their original
+    /// template values, undoing the automatic row-shift that ClosedXML applies during
+    /// InsertRowsAbove.
+    /// </summary>
+    private static void RestoreCrossSheetFormulas(
+        XLWorkbook workbook,
+        string resultsSheetName,
+        Dictionary<(string sheetName, int row, int col), string> originalFormulas)
+    {
+        if (originalFormulas.Count == 0) return;
+
+        foreach (var sheet in workbook.Worksheets)
+        {
+            if (sheet.Name.Equals(resultsSheetName, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            foreach (var cell in sheet.CellsUsed())
+            {
+                if (!cell.HasFormula) continue;
+
+                var key = (sheet.Name, cell.Address.RowNumber, cell.Address.ColumnNumber);
+                if (originalFormulas.TryGetValue(key, out string originalFormula))
+                    cell.FormulaA1 = originalFormula;
+            }
+        }
+    }
+
     private static string GetOrdinalWithTie(int place, bool isTie)
     {
         string suffix;
@@ -1193,6 +1221,32 @@ public partial class FrmTournamentResults : Form
                 ws.Cell(1, 1).Value = tourny.Location + tourny.Event;
                 ws.Cell(2, 1).Value = tourny.Date;
 
+                // Snapshot cross-sheet formulas that reference the Results sheet BEFORE any
+                // row insertions.  ClosedXML's InsertRowsAbove updates these formula strings
+                // automatically, but it shifts every reference whose row >= the insertion point
+                // regardless of whether that row is above or below it, causing incorrect results.
+                // After all insertions we restore the originals and apply the correct shift.
+                string resultsName = ws.Name;
+                var crossSheetFormulaSnapshot =
+                    new Dictionary<(string sheetName, int row, int col), string>();
+                foreach (var otherSheet in workbook.Worksheets)
+                {
+                    if (otherSheet.Name.Equals(resultsName, StringComparison.OrdinalIgnoreCase))
+                        continue;
+                    foreach (var snapCell in otherSheet.CellsUsed())
+                    {
+                        if (snapCell.HasFormula
+                            && snapCell.FormulaA1.IndexOf(
+                                resultsName, StringComparison.OrdinalIgnoreCase) >= 0)
+                        {
+                            crossSheetFormulaSnapshot[
+                                (otherSheet.Name,
+                                 snapCell.Address.RowNumber,
+                                 snapCell.Address.ColumnNumber)] = snapCell.FormulaA1;
+                        }
+                    }
+                }
+
                 int excelRow = 4;
                 int i = 0;
                 while (i < exportTable.Rows.Count)
@@ -1282,6 +1336,11 @@ public partial class FrmTournamentResults : Form
                     i++;
                     excelRow++;
                 }
+
+                // Restore original cross-sheet formulas: ClosedXML shifts them when rows are
+                // inserted, but the template references should remain at their original positions.
+                if (crossSheetFormulaSnapshot.Count > 0)
+                    RestoreCrossSheetFormulas(workbook, resultsName, crossSheetFormulaSnapshot);
 
                 // Set total payout
                 double money = 0;
