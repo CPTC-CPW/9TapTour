@@ -1087,8 +1087,6 @@ public partial class FrmTournamentResults : Form
 
                 db.SaveChanges();
             }
-            MessageBox.Show("2-Day championship results saved successfully.");
-            // Falls through to Excel export below.
         }
 
         // Saves participants' place standing and earnings won to the database
