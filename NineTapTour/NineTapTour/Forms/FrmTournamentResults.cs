@@ -275,10 +275,10 @@ public partial class FrmTournamentResults : Form
             if (!int.TryParse(dt.Rows[i][PLACE_STANDING_COLUMN_NAME]?.ToString(), out int place) || place == 0)
                 continue;
             bool isTie = (i > 0
-                            && int.TryParse(dt.Rows[i - 1][PLACE_STANDING_COLUMN_NAME]?.ToString(), out int prev)
+                            && int.TryParse(dt.Rows[i - 1][PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out int prev)
                             && prev == place)
                        || (i < dt.Rows.Count - 1
-                            && int.TryParse(dt.Rows[i + 1][PLACE_STANDING_COLUMN_NAME]?.ToString(), out int next)
+                            && int.TryParse(dt.Rows[i + 1][PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out int next)
                             && next == place);
             if (isTie)
                 dt.Rows[i][PLACE_STANDING_COLUMN_NAME] = $"{place}T";
@@ -1035,6 +1035,24 @@ public partial class FrmTournamentResults : Form
     /// <param name="isTie">A boolean indicating whether to append a tie indicator. If <see langword="true"/>, "T" is appended to the
     /// result.</param>
     /// <returns>A string representing the ordinal form of the specified place, with an optional tie indicator.</returns>
+    /// <summary>
+    /// Copies both the row-level default style and every cell's individual style from
+    /// <paramref name="fromRow"/> to <paramref name="toRow"/> so that inserted rows
+    /// look identical to the template row they are based on.
+    /// </summary>
+    private static void CopyRowCellStyles(IXLWorksheet ws, int fromRow, int toRow)
+    {
+        ws.Row(toRow).Style = ws.Row(fromRow).Style;
+        int lastCol = ws.LastColumnUsed()?.ColumnNumber() ?? 15;
+        for (int col = 1; col <= lastCol; col++)
+            ws.Cell(toRow, col).Style = ws.Cell(fromRow, col).Style;
+    }
+
+    /// <summary>
+    /// Restores cross-worksheet formulas that reference the Results sheet to their original
+    /// template values, undoing the automatic row-shift that ClosedXML applies during
+    /// InsertRowsAbove.
+    /// </summary>
     private static string GetOrdinalWithTie(int place, bool isTie)
     {
         string suffix;
@@ -1087,11 +1105,10 @@ public partial class FrmTournamentResults : Form
 
                 db.SaveChanges();
             }
-            MessageBox.Show("2-Day championship results saved successfully.");
-            return;
         }
 
         // Saves participants' place standing and earnings won to the database
+        if (!tourny.IsTwoDay)
         for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
         {
             int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
@@ -1145,10 +1162,12 @@ public partial class FrmTournamentResults : Form
             File.Copy(getFilePath, saveFile, true);
         }
 
-        // Export Team View rows only when doubles Team View is active.
-        DataTable exportTable = (tourny.Doubles && _inTeamView)
-            ? BuildTeamViewExportTable()
-            : dt;
+        // Select the source table: 2-day grid (sorted by Place), doubles Team View, or the standard winners table.
+        DataTable exportTable = tourny.IsTwoDay
+            ? _dt2Day.DefaultView.ToTable()
+            : (tourny.Doubles && _inTeamView)
+                ? BuildTeamViewExportTable()
+                : dt;
 
         // Preload membership-current status for rows that carry a numeric member number.
         var memberNumbers = exportTable.Rows.Cast<DataRow>()
@@ -1183,15 +1202,18 @@ public partial class FrmTournamentResults : Form
                 int i = 0;
                 while (i < exportTable.Rows.Count)
                 {
-                    if (excelRow >= 35)
-                    {
-                        ws.Row(excelRow).InsertRowsAbove(1);
-                        ws.Range($"G{excelRow}:H{excelRow}").Merge();
-                    }
-
                     var row = exportTable.Rows[i];
                     int currentPlace = 0;
                     int.TryParse(row[PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out currentPlace);
+
+                    // For regular late entries beyond the template range:
+                    if (excelRow >= 35)
+                    {
+                        ws.Row(excelRow).InsertRowsAbove(1);
+                        CopyRowCellStyles(ws, excelRow - 1, excelRow);
+                        ws.Range($"G{excelRow}:H{excelRow}").Merge();
+                    }
+
                     // Check for tie: if previous or next row has the same place
                     bool isTie = false;
                     if (i > 0)
@@ -1228,10 +1250,9 @@ public partial class FrmTournamentResults : Form
                     // Write as a numeric value so Excel treats it as a number, not text.
                     ws.Cell(excelRow, 8).Value = spVal;
 
-                    // Highlight Membership$ (Column M) when bowler earned money but membership is not current.
-                    if (decimal.TryParse(Convert.ToString(row[EARNINGS_COLUMN_NAME]), out decimal earnings)
-                        && earnings > 0
-                        && int.TryParse(Convert.ToString(row[MEMBER_ID_COLUMN_NAME]), out int memberNumber)
+                    // Highlight Membership$ (Column M) when membership is not current,
+                    // regardless of whether the bowler earned money this tournament.
+                    if (int.TryParse(Convert.ToString(row[MEMBER_ID_COLUMN_NAME]), out int memberNumber)
                         && isMembershipCurrentByMemberNumber.TryGetValue(memberNumber, out bool isCurrent)
                         && !isCurrent)
                     {
@@ -1247,7 +1268,7 @@ public partial class FrmTournamentResults : Form
                         if (excelRow > 8)
                         {
                             ws.Row(excelRow + 1).InsertRowsAbove(1);
-                            ws.Row(excelRow + 1).Style = ws.Row(9).Style;
+                            CopyRowCellStyles(ws, 9, excelRow + 1);
                             ws.Range($"G{excelRow + 1}:H{excelRow + 1}").Merge();
                         }
                         // Reuse the already-parsed value — no second TryParse needed.
