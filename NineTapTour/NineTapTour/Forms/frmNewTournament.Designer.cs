@@ -51,6 +51,10 @@
             rdoSingles = new System.Windows.Forms.RadioButton();
             rdoThreeGame = new System.Windows.Forms.RadioButton();
             rdoTwoDay = new System.Windows.Forms.RadioButton();
+            pnlTwoDayGames = new System.Windows.Forms.Panel();
+            rdoTwoDayThreeGame = new System.Windows.Forms.RadioButton();
+            rdoTwoDayFourGame = new System.Windows.Forms.RadioButton();
+            pnlTwoDayGames.SuspendLayout();
             SuspendLayout();
             // 
             // lblDate
@@ -96,7 +100,7 @@
             // lblNotes
             // 
             lblNotes.AutoSize = true;
-            lblNotes.Location = new System.Drawing.Point(22, 325);
+            lblNotes.Location = new System.Drawing.Point(22, 350);
             lblNotes.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             lblNotes.Name = "lblNotes";
             lblNotes.Size = new System.Drawing.Size(108, 15);
@@ -146,7 +150,7 @@
             // rtxtNotes
             // 
             rtxtNotes.BackColor = System.Drawing.SystemColors.Control;
-            rtxtNotes.Location = new System.Drawing.Point(21, 344);
+            rtxtNotes.Location = new System.Drawing.Point(21, 369);
             rtxtNotes.Margin = new System.Windows.Forms.Padding(4);
             rtxtNotes.Name = "rtxtNotes";
             rtxtNotes.Size = new System.Drawing.Size(280, 110);
@@ -157,7 +161,7 @@
             // btnSubmit
             // 
             btnSubmit.Enabled = false;
-            btnSubmit.Location = new System.Drawing.Point(21, 461);
+            btnSubmit.Location = new System.Drawing.Point(21, 486);
             btnSubmit.Margin = new System.Windows.Forms.Padding(4);
             btnSubmit.Name = "btnSubmit";
             btnSubmit.Size = new System.Drawing.Size(158, 26);
@@ -168,7 +172,7 @@
             // 
             // btnCancel
             // 
-            btnCancel.Location = new System.Drawing.Point(214, 461);
+            btnCancel.Location = new System.Drawing.Point(214, 486);
             btnCancel.Margin = new System.Windows.Forms.Padding(4);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new System.Drawing.Size(88, 26);
@@ -212,7 +216,7 @@
             // lblsquads
             // 
             lblsquads.AutoSize = true;
-            lblsquads.Location = new System.Drawing.Point(22, 292);
+            lblsquads.Location = new System.Drawing.Point(22, 317);
             lblsquads.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             lblsquads.Name = "lblsquads";
             lblsquads.Size = new System.Drawing.Size(106, 15);
@@ -222,7 +226,7 @@
             // txtSquads
             // 
             txtSquads.BackColor = System.Drawing.SystemColors.Control;
-            txtSquads.Location = new System.Drawing.Point(186, 289);
+            txtSquads.Location = new System.Drawing.Point(186, 314);
             txtSquads.Margin = new System.Windows.Forms.Padding(4);
             txtSquads.Name = "txtSquads";
             txtSquads.Size = new System.Drawing.Size(116, 23);
@@ -290,14 +294,48 @@
             rdoTwoDay.UseVisualStyleBackColor = true;
             rdoTwoDay.CheckedChanged += rdoTwoDay_CheckedChanged;
             // 
+            // pnlTwoDayGames
+            // 
+            pnlTwoDayGames.Controls.Add(rdoTwoDayThreeGame);
+            pnlTwoDayGames.Controls.Add(rdoTwoDayFourGame);
+            pnlTwoDayGames.Location = new System.Drawing.Point(45, 293);
+            pnlTwoDayGames.Name = "pnlTwoDayGames";
+            pnlTwoDayGames.Size = new System.Drawing.Size(290, 24);
+            pnlTwoDayGames.TabIndex = 26;
+            pnlTwoDayGames.Visible = false;
+            // 
+            // rdoTwoDayThreeGame
+            // 
+            rdoTwoDayThreeGame.AutoSize = true;
+            rdoTwoDayThreeGame.Checked = true;
+            rdoTwoDayThreeGame.Location = new System.Drawing.Point(0, 3);
+            rdoTwoDayThreeGame.Name = "rdoTwoDayThreeGame";
+            rdoTwoDayThreeGame.Size = new System.Drawing.Size(125, 19);
+            rdoTwoDayThreeGame.TabIndex = 0;
+            rdoTwoDayThreeGame.TabStop = true;
+            rdoTwoDayThreeGame.Text = "3 Game (default)";
+            rdoTwoDayThreeGame.UseVisualStyleBackColor = true;
+            // 
+            // rdoTwoDayFourGame
+            // 
+            rdoTwoDayFourGame.AutoSize = true;
+            rdoTwoDayFourGame.Location = new System.Drawing.Point(140, 3);
+            rdoTwoDayFourGame.Name = "rdoTwoDayFourGame";
+            rdoTwoDayFourGame.Size = new System.Drawing.Size(62, 19);
+            rdoTwoDayFourGame.TabIndex = 1;
+            rdoTwoDayFourGame.TabStop = true;
+            rdoTwoDayFourGame.Text = "4 Game";
+            rdoTwoDayFourGame.UseVisualStyleBackColor = true;
+            // 
             // FrmNewTournament
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             BackColor = System.Drawing.Color.White;
-            ClientSize = new System.Drawing.Size(368, 502);
+            ClientSize = new System.Drawing.Size(368, 527);
             Controls.Add(rdoThreeGame);
             Controls.Add(rdoTwoDay);
+            Controls.Add(pnlTwoDayGames);
             Controls.Add(rdoSingles);
             Controls.Add(rdoDoubles);
             Controls.Add(rdo3OutOf4);
@@ -325,6 +363,8 @@
             Text = "New Tournament";
             TopMost = true;
             Load += FrmNewTournament_Load;
+            pnlTwoDayGames.ResumeLayout(false);
+            pnlTwoDayGames.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -353,5 +393,8 @@
         private System.Windows.Forms.RadioButton rdoSingles;
         private System.Windows.Forms.RadioButton rdoThreeGame;
         private System.Windows.Forms.RadioButton rdoTwoDay;
+        private System.Windows.Forms.Panel pnlTwoDayGames;
+        private System.Windows.Forms.RadioButton rdoTwoDayThreeGame;
+        private System.Windows.Forms.RadioButton rdoTwoDayFourGame;
     }
 }

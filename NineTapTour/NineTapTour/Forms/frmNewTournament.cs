@@ -80,7 +80,7 @@ namespace NineTapTour.Forms
             {
                 newTournament.ThreeOutOf4 = true;
             }
-            else if (rdoThreeGame.Checked)
+            else if (rdoThreeGame.Checked || (rdoTwoDay.Checked && rdoTwoDayThreeGame.Checked))
             {
                 newTournament.ThreeOutOf4 = true;
                 newTournament.IsOnlyThreeGames = true;
@@ -159,6 +159,11 @@ namespace NineTapTour.Forms
                 rdoDoubles.Checked = tourToEdit.Doubles ? true : false;
                 rdo3OutOf4.Checked = tourToEdit.ThreeOutOf4 ? true : false;
                 rdoTwoDay.Checked = tourToEdit.IsTwoDay;
+                if (tourToEdit.IsTwoDay)
+                {
+                    rdoTwoDayThreeGame.Checked = tourToEdit.IsOnlyThreeGames;
+                    rdoTwoDayFourGame.Checked = !tourToEdit.IsOnlyThreeGames;
+                }
                 rtxtNotes.Text = tourToEdit.Notes;
                 btnSubmit.Text = "Update Tournament";
                 lblEdit.Text = "Currently Editing " + tourToEdit.TourneyNameDate;
@@ -188,6 +193,8 @@ namespace NineTapTour.Forms
             //To enable Double tournament set rdoDoubles.Enabled to true
             rdoDoubles.Enabled = false;
             rdo3OutOf4.Enabled = true;
+            pnlTwoDayGames.Visible = false;
+            rdoTwoDayThreeGame.Checked = true;
             rtxtNotes.Clear();
             tourToEdit = null;
             lblEdit.Text = "";
@@ -273,6 +280,9 @@ namespace NineTapTour.Forms
         private void rdoTwoDay_CheckedChanged(object sender, EventArgs e)
         {
             checkCleared();
+            pnlTwoDayGames.Visible = rdoTwoDay.Checked;
+            if (rdoTwoDay.Checked)
+                rdoTwoDayThreeGame.Checked = true;
         }
 
         private void FrmNewTournament_Load(object sender, EventArgs e)
