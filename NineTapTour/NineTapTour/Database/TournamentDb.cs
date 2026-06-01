@@ -322,6 +322,7 @@ namespace NineTapTour.Database
                         select new WinnerListMemberViewModel
                         {
                             PlaceStanding = g.PlaceStanding,
+                            PlaceStandingLabel = g.PlaceStandingLabel,
                             MemberId = m.Id,
                             MemberNumber = memberNumber,
                             BowlerName = name,
