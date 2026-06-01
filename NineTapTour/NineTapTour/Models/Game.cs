@@ -109,6 +109,11 @@ namespace NineTapTour.Models
         public decimal? SidePot { get; set; }
         public int? PlaceStanding { get; set;}
 
+        /// <summary>
+        /// A string label for the PlaceStanding property, used for display purposes (e.g., "46th - 59th"). This is
+        /// used for 2-Day tournaments for groupings.
+        public string PlaceStandingLabel { get; set; }
+
         [DefaultValue(false)]
         public bool IsComp { get; set; } // comp is someone who bowls for free because they are helping with tournament 
 

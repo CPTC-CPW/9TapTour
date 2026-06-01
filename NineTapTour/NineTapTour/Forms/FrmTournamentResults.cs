@@ -29,6 +29,8 @@ public partial class FrmTournamentResults : Form
     // 2-day mode only
     const string MEMBER_NUMBER_COLUMN_NAME = "Member Number";
     const string SQUAD_COLUMN_NAME = "Squad";
+    const string PLACE_GROUP_LABEL_COLUMN_NAME = "Place Group Label";
+    const string PLACE_SORT_START_COLUMN_NAME = "Place Sort Start";
 
     readonly DataTable dt = new(); // Instantiate Data Table
     readonly NineTapDb db = new(); // Get access to database
@@ -119,10 +121,17 @@ public partial class FrmTournamentResults : Form
                 var gameIdObj = _dt2Day.Rows[i][GAME_ID_COLUMN_NAME];
                 if (gameIdObj == DBNull.Value || !int.TryParse(gameIdObj.ToString(), out int gameId) || gameId <= 0) continue;
 
+                if (!TryGet2DayPlaceGroup(_dt2Day.Rows[i], out int placeStart, out string placeLabel))
+                {
+                    MessageBox.Show($"Invalid place grouping on row {i + 1}. Use a numeric place or a range like 46th - 59th.");
+                    continue;
+                }
+
                 Game g = db.Games.Find(gameId);
                 if (g == null) continue;
 
-                g.PlaceStanding = ParsePlaceStanding(_dt2Day.Rows[i][PLACE_STANDING_COLUMN_NAME]);
+                g.PlaceStanding = placeStart;
+                g.PlaceStandingLabel = placeLabel;
                 g.MoneyWon = Convert.ToDecimal(_dt2Day.Rows[i][EARNINGS_COLUMN_NAME]);
 
                 if (decimal.TryParse(Convert.ToString(_dt2Day.Rows[i][PROGRESSIVEPOT_COLUMN_NAME]), out decimal _))
@@ -154,6 +163,7 @@ public partial class FrmTournamentResults : Form
             if (g == null) continue;
 
             g.PlaceStanding = ParsePlaceStanding(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
+            g.PlaceStandingLabel = null;
             g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
 
             // if user enters something other than a decimal number
@@ -784,7 +794,9 @@ public partial class FrmTournamentResults : Form
 
         // Set up the 2-day DataTable (no ReadOnly on DataTable columns so auto-fill can write freely)
         _dt2Day = new DataTable();
-        _dt2Day.Columns.Add(PLACE_STANDING_COLUMN_NAME, typeof(int));
+        _dt2Day.Columns.Add(PLACE_STANDING_COLUMN_NAME);
+        _dt2Day.Columns.Add(PLACE_GROUP_LABEL_COLUMN_NAME);
+        _dt2Day.Columns.Add(PLACE_SORT_START_COLUMN_NAME, typeof(int));
         _dt2Day.Columns.Add(MEMBER_NUMBER_COLUMN_NAME);
         _dt2Day.Columns.Add(FULLNAME_COLUMN_NAME);
         _dt2Day.Columns.Add(HANDICAP_COLUMN_NAME);
@@ -796,13 +808,15 @@ public partial class FrmTournamentResults : Form
         _dt2Day.Columns.Add(SQUAD_COLUMN_NAME);
 
         dgvTournamentResults.DataSource        = _dt2Day;
-        _dt2Day.DefaultView.Sort               = PLACE_STANDING_COLUMN_NAME + " ASC";
+    _dt2Day.DefaultView.Sort               = PLACE_SORT_START_COLUMN_NAME + " ASC";
         dgvTournamentResults.AllowUserToAddRows = false;
 
         // Hide internal/lookup columns
         dgvTournamentResults.Columns[MEMBER_ID_COLUMN_NAME].Visible = false;
         dgvTournamentResults.Columns[GAME_ID_COLUMN_NAME].Visible   = false;
         dgvTournamentResults.Columns[SQUAD_COLUMN_NAME].Visible     = false;
+        dgvTournamentResults.Columns[PLACE_GROUP_LABEL_COLUMN_NAME].Visible = false;
+        dgvTournamentResults.Columns[PLACE_SORT_START_COLUMN_NAME].Visible  = false;
 
         // ReadOnly at DGV level (DataTable columns remain writable for auto-fill)
         dgvTournamentResults.Columns[PLACE_STANDING_COLUMN_NAME].ReadOnly = true;
@@ -848,11 +862,15 @@ public partial class FrmTournamentResults : Form
             return;
         }
 
+        string placeGroupLabel = Build2DayPlaceGroupLabel(startPlace, endPlace);
+
         int firstNewRow = _dt2Day.Rows.Count;
         for (int place = startPlace; place <= endPlace; place++)
         {
             DataRow newRow = _dt2Day.NewRow();
-            newRow[PLACE_STANDING_COLUMN_NAME] = place;
+            newRow[PLACE_STANDING_COLUMN_NAME] = placeGroupLabel;
+            newRow[PLACE_GROUP_LABEL_COLUMN_NAME] = placeGroupLabel;
+            newRow[PLACE_SORT_START_COLUMN_NAME] = startPlace;
             newRow[MEMBER_NUMBER_COLUMN_NAME]  = "";
             newRow[FULLNAME_COLUMN_NAME]       = "";
             newRow[HANDICAP_COLUMN_NAME]       = "";
@@ -1005,7 +1023,14 @@ public partial class FrmTournamentResults : Form
         foreach (var b in saved)
         {
             DataRow row = _dt2Day.NewRow();
-            row[PLACE_STANDING_COLUMN_NAME] = b.PlaceStanding.Value;
+            int placeStart = b.PlaceStanding ?? 0;
+            string placeLabel = string.IsNullOrWhiteSpace(b.PlaceStandingLabel)
+                ? (placeStart > 0 ? GetOrdinalWithTie(placeStart, false) : "")
+                : b.PlaceStandingLabel;
+
+            row[PLACE_STANDING_COLUMN_NAME] = placeLabel;
+            row[PLACE_GROUP_LABEL_COLUMN_NAME] = placeLabel;
+            row[PLACE_SORT_START_COLUMN_NAME] = placeStart;
             row[MEMBER_NUMBER_COLUMN_NAME]  = b.MemberNumber;
             row[FULLNAME_COLUMN_NAME]       = "";
             row[HANDICAP_COLUMN_NAME]       = "";
@@ -1081,6 +1106,53 @@ public partial class FrmTournamentResults : Form
         return byte.TryParse(s, out byte result) ? result : (byte)0;
     }
 
+    private static string Build2DayPlaceGroupLabel(int startPlace, int endPlace)
+    {
+        return $"{GetOrdinalWithTie(startPlace, false)} - {GetOrdinalWithTie(endPlace, false)}";
+    }
+
+    private static bool TryParsePlaceStartFromText(string text, out int placeStart)
+    {
+        placeStart = 0;
+        if (string.IsNullOrWhiteSpace(text)) return false;
+
+        Match range = Regex.Match(text.Trim(), @"^(\d+)(st|nd|rd|th)?\s*-\s*(\d+)(st|nd|rd|th)?$", RegexOptions.IgnoreCase);
+        if (range.Success)
+            return int.TryParse(range.Groups[1].Value, out placeStart) && placeStart > 0;
+
+        Match single = Regex.Match(text.Trim(), @"^(\d+)(st|nd|rd|th|T)?$", RegexOptions.IgnoreCase);
+        return single.Success
+            && int.TryParse(single.Groups[1].Value, out placeStart)
+            && placeStart > 0;
+    }
+
+    private bool TryGet2DayPlaceGroup(DataRow row, out int placeStart, out string placeLabel)
+    {
+        placeStart = 0;
+        placeLabel = "";
+
+        string explicitLabel = row.Table.Columns.Contains(PLACE_GROUP_LABEL_COLUMN_NAME)
+            ? Convert.ToString(row[PLACE_GROUP_LABEL_COLUMN_NAME])?.Trim() ?? ""
+            : "";
+        string displayValue = Convert.ToString(row[PLACE_STANDING_COLUMN_NAME])?.Trim() ?? "";
+
+        string sourceText = !string.IsNullOrWhiteSpace(explicitLabel) ? explicitLabel : displayValue;
+        if (!TryParsePlaceStartFromText(sourceText, out placeStart))
+            return false;
+
+        if (string.IsNullOrWhiteSpace(explicitLabel))
+            placeLabel = sourceText;
+        else
+            placeLabel = explicitLabel;
+
+        if (row.Table.Columns.Contains(PLACE_SORT_START_COLUMN_NAME))
+            row[PLACE_SORT_START_COLUMN_NAME] = placeStart;
+        if (row.Table.Columns.Contains(PLACE_GROUP_LABEL_COLUMN_NAME))
+            row[PLACE_GROUP_LABEL_COLUMN_NAME] = placeLabel;
+
+        return true;
+    }
+
     private void ExportToExcel()
     {
         if (tourny.IsTwoDay)
@@ -1095,7 +1167,15 @@ public partial class FrmTournamentResults : Form
                 Game g = GameDB.GetGame(gameId);
                 if (g == null) continue;
 
-                g.PlaceStanding = ParsePlaceStanding(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, i].Value);
+                if (dgvTournamentResults.Rows[i].DataBoundItem is not DataRowView dataRowView) continue;
+                if (!TryGet2DayPlaceGroup(dataRowView.Row, out int placeStart, out string placeLabel))
+                {
+                    MessageBox.Show($"Invalid place grouping on row {i + 1}. Use a numeric place or a range like 46th - 59th.");
+                    continue;
+                }
+
+                g.PlaceStanding = placeStart;
+                g.PlaceStandingLabel = placeLabel;
                 g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, i].Value);
 
                 if (decimal.TryParse(Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, i].Value), out decimal _))
@@ -1115,6 +1195,7 @@ public partial class FrmTournamentResults : Form
             Game g = GameDB.GetGame(gameId);
 
             g.PlaceStanding = ParsePlaceStanding(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
+            g.PlaceStandingLabel = null;
             g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
 
             // if user enters something other than a decimal number
@@ -1204,7 +1285,18 @@ public partial class FrmTournamentResults : Form
                 {
                     var row = exportTable.Rows[i];
                     int currentPlace = 0;
-                    int.TryParse(row[PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out currentPlace);
+                    string placeDisplay = row[PLACE_STANDING_COLUMN_NAME]?.ToString() ?? "";
+                    if (tourny.IsTwoDay)
+                    {
+                        if (TryParsePlaceStartFromText(row[PLACE_GROUP_LABEL_COLUMN_NAME]?.ToString(), out int parsedFromLabel))
+                            currentPlace = parsedFromLabel;
+                        else if (TryParsePlaceStartFromText(placeDisplay, out int parsedFromDisplay))
+                            currentPlace = parsedFromDisplay;
+                    }
+                    else
+                    {
+                        int.TryParse(placeDisplay.TrimEnd('T'), out currentPlace);
+                    }
 
                     // For regular late entries beyond the template range:
                     if (excelRow >= 35)
@@ -1234,8 +1326,18 @@ public partial class FrmTournamentResults : Form
                     // regardless of the system locale (e.g. prevents "20,5" in German locales).
                     string sidePotValue = spVal.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
-                    // Use ordinal with tie for place standing
-                    ws.Cell(excelRow, 1).Value = GetOrdinalWithTie(currentPlace, isTie);
+                    if (tourny.IsTwoDay)
+                    {
+                        string groupedLabel = row[PLACE_GROUP_LABEL_COLUMN_NAME]?.ToString();
+                        ws.Cell(excelRow, 1).Value = string.IsNullOrWhiteSpace(groupedLabel)
+                            ? placeDisplay
+                            : groupedLabel;
+                    }
+                    else
+                    {
+                        // Use ordinal with tie for place standing
+                        ws.Cell(excelRow, 1).Value = GetOrdinalWithTie(currentPlace, isTie);
+                    }
                     ws.Cell(excelRow, 2).Value = row[FULLNAME_COLUMN_NAME]?.ToString();
                     ws.Cell(excelRow, 6).Value = row[HANDICAP_COLUMN_NAME]?.ToString();
                     ws.Cell(excelRow, 7).Value = row[TOTAL_SCORE_COLUMN_NAME]?.ToString();
@@ -1244,7 +1346,7 @@ public partial class FrmTournamentResults : Form
                             ? val.ToString("C0")
                             : row[EARNINGS_COLUMN_NAME]?.ToString()
                         : "$0";
-                    ws.Cell(excelRow, 11).Value = row[PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T');
+                    ws.Cell(excelRow, 11).Value = currentPlace;
                     ws.Cell(excelRow, 12).Value = row[MEMBER_ID_COLUMN_NAME]?.ToString();
                     ws.Cell(excelRow, 15).FormulaA1 = $"=I{excelRow}-M{excelRow}-N{excelRow}+{sidePotValue}";
                     // Write as a numeric value so Excel treats it as a number, not text.

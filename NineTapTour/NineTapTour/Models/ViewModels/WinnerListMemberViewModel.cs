@@ -14,6 +14,11 @@ namespace NineTapTour.Models.ViewModels
     {
         public int? PlaceStanding { get; set; }
 
+        /// <summary>
+        /// A string label for the PlaceStanding property, used for display purposes (e.g., "46th - 59th"). This is used for 2-Day tournaments for groupings.
+        /// </summary>
+        public string PlaceStandingLabel { get; set; }
+
         public int MemberNumber { get; set; }
 
         /// <summary>
