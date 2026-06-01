@@ -615,6 +615,13 @@ namespace NineTapTour.Forms
                 ApplySandbaggingHighlight(rowIdx, orig.LeagueAverage);
             }
 
+            // If the tournament is a 3 game format, hide the Game 4 column and its checkbox column since they are not used.
+            if (selectedTournament.IsOnlyThreeGames)
+            {
+                dgvTournament.Columns["colGame4"].Visible = false;
+                dgvTournament.Columns["colGame4Check"].Visible = false;
+            }
+
             // Populate 30 Entry AVG for all member rows now that all entries are loaded
             foreach (int memberNum in _currentTournamentBowlers.Select(b => b.MemberNumber).Distinct())
                 UpdateAll30AvgForMember(memberNum);
