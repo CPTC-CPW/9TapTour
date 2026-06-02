@@ -471,25 +471,45 @@ namespace NineTapTour.Forms
             foreach (ExcelMember m in members)
                 if (m.PlaceStanding > 0) _placedGameIds.Add(m.GameId);
 
-            // Display order: groups ordered by best place standing, all entries for the
-            // same member clustered together, placed entry first within each group
-            members.Sort((x, y) =>
+            // Display order:
+            // - 2-day: grouped by round group (PlaceStanding), sorted by score within each group
+            // - Non-2-day: groups ordered by best place standing, all entries for the
+            //   same member clustered together, placed entry first within each group
+            if (selectedTournament.IsTwoDay)
             {
-                // Primary: order groups by the member's best place standing
-                int xBest = _bestStandingByMember[x.MemberNumber];
-                int yBest = _bestStandingByMember[y.MemberNumber];
-                if (xBest != yBest) return xBest.CompareTo(yBest);
+                // 2-day: sort by round group's PlaceStanding, then by score (high to low) within each group
+                members.Sort((x, y) =>
+                {
+                    // Primary: order by round group (PlaceStanding)
+                    if (x.PlaceStanding != y.PlaceStanding)
+                        return x.PlaceStanding.CompareTo(y.PlaceStanding);
 
-                // Tied members: keep each member's own entries together by member number
-                if (x.MemberNumber != y.MemberNumber) return x.MemberNumber.CompareTo(y.MemberNumber);
+                    // Within same round group: higher scores first
+                    return y.TotalScore.CompareTo(x.TotalScore);
+                });
+            }
+            else
+            {
+                // Non-2-day: groups ordered by best place standing, all entries for the
+                // same member clustered together, placed entry first within each group
+                members.Sort((x, y) =>
+                {
+                    // Primary: order groups by the member's best place standing
+                    int xBest = _bestStandingByMember[x.MemberNumber];
+                    int yBest = _bestStandingByMember[y.MemberNumber];
+                    if (xBest != yBest) return xBest.CompareTo(yBest);
 
-                // Same member: placed entry first, then higher scores first
-                bool xPlaced = x.PlaceStanding > 0;
-                bool yPlaced = y.PlaceStanding > 0;
-                if (xPlaced && !yPlaced) return -1;
-                if (!xPlaced && yPlaced) return 1;
-                return y.TotalScore.CompareTo(x.TotalScore);
-            });
+                    // Tied members: keep each member's own entries together by member number
+                    if (x.MemberNumber != y.MemberNumber) return x.MemberNumber.CompareTo(y.MemberNumber);
+
+                    // Same member: placed entry first, then higher scores first
+                    bool xPlaced = x.PlaceStanding > 0;
+                    bool yPlaced = y.PlaceStanding > 0;
+                    if (xPlaced && !yPlaced) return -1;
+                    if (!xPlaced && yPlaced) return 1;
+                    return y.TotalScore.CompareTo(x.TotalScore);
+                });
+            }
 
             // Lookup for original nullable game scores — avoids null-vs-0 ambiguity
             var bowlerByGameId = _currentTournamentBowlers.ToDictionary(b => b.GameId);

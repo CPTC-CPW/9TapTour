@@ -808,7 +808,7 @@ public partial class FrmTournamentResults : Form
         _dt2Day.Columns.Add(SQUAD_COLUMN_NAME);
 
         dgvTournamentResults.DataSource        = _dt2Day;
-    _dt2Day.DefaultView.Sort               = PLACE_SORT_START_COLUMN_NAME + " ASC";
+        _dt2Day.DefaultView.Sort               = PLACE_SORT_START_COLUMN_NAME + " ASC, " + TOTAL_SCORE_COLUMN_NAME + " DESC";
         dgvTournamentResults.AllowUserToAddRows = false;
 
         // Hide internal/lookup columns
@@ -1278,6 +1278,10 @@ public partial class FrmTournamentResults : Form
                 var ws = workbook.Worksheet(1);
                 ws.Cell(1, 1).Value = tourny.Location + tourny.Event;
                 ws.Cell(2, 1).Value = tourny.Date;
+
+                // For 2-Day tournaments, we need to change "Total Score" header
+                if (tourny.IsTwoDay)
+                    ws.Cell(3, 7).Value = "Qualifying Score";
 
                 int excelRow = 4;
                 int i = 0;
