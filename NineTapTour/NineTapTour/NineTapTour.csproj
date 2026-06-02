@@ -37,7 +37,6 @@
     <Content Include="Resources\9tap.gif" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Icon\9tap.ico" />
     <Content Include="Resources\BowlingPin1.png" />
     <Content Include="Resources\9taplogo1.png" />
   </ItemGroup>
