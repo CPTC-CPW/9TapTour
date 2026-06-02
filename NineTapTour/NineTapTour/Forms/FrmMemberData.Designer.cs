@@ -1252,7 +1252,6 @@
             this.Name = "FrmMemberData";
             this.Text = "Member Info";
             this.Load += new System.EventHandler(this.MemberDataForm_Load);
-            this.Leave += new System.EventHandler(this.FrmMemberData_Leave);
             this.Resize += new System.EventHandler(this.FrmMemberData_Resize);
             this.grpMemberInfo.ResumeLayout(false);
             this.grpMemberInfo.PerformLayout();
