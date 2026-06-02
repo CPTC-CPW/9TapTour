@@ -33,8 +33,9 @@ namespace NineTapTour.Forms
         {
             InitializeComponent();
 
-            //this size is the height and width of the primary screen minus the start bar (if the user has a start bar)
             MaxWorkAreaScreenSize = new Size( Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height );
+            Size = MaxWorkAreaScreenSize;
+            WindowState = FormWindowState.Maximized;
 
             // Run migrations on startup
             var migrator = new NineTapDb().Database.GetService<IMigrator>();
@@ -42,10 +43,6 @@ namespace NineTapTour.Forms
 
             MembersList = MemberDB.GetMemberList().OrderBy(m => m.Number);
             TournamentList = TournamentDB.GetTournamentList();
-
-            //sets the height and width of the parent form... this can not be resized later... all child forms must 
-            //fit in its bounds... the only exception is using a scrollbar on the side or bottom...
-            SetHeightAndWidth(MaxWorkAreaScreenSize);
             
             var mainMenu = Application.OpenForms["MainMenu"] as FrmMainMenu;
             OpenOrDisplayForm(ref mainMenu);
@@ -53,16 +50,6 @@ namespace NineTapTour.Forms
             //sets the first item of the menu bar to the active item and highlights it.
             ActiveItem = (System.Windows.Forms.ToolStripMenuItem)menMain.Items[0];
             ActiveItem.BackColor = SystemColors.ActiveCaption;
-        }
-
-        /// <summary>
-        /// This methoud takes in a Size (width and height) and will set the application to that size
-        /// this size should be set to the working area of the primary monitor...
-        /// </summary>
-        /// <param name="workingArea">The working array of the primary monitor</param>
-        private void SetHeightAndWidth(Size workingArea)
-        {
-            this.Size = workingArea;
         }
 
         /// <summary>
