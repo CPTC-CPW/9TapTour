@@ -27,10 +27,6 @@ namespace NineTapTour.Forms
 
         private Size MaxWorkAreaScreenSize { get; set; }
         
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public System.Windows.Forms.ToolStripMenuItem Home { get; set; }
-
-
         /// <summary>
         /// Opens Main form 
         /// Retrieves information from the database in order.
@@ -230,24 +226,11 @@ namespace NineTapTour.Forms
                 
             }
         }
-
-        private void FrmMain_Load(object sender, EventArgs e)
-        {
-            Home = mainMenuToolStripMenuItem;
-        }
-
         
         private void labelPrintToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // next 3 lines were setting up for working the labels within the app parent still not fully functional as they didnt pass RegionID
-            // var newfrmPrintLabel = Application.OpenForms["FrmLabelPrint"] as FrmLabelPrint;
-            // OpenOrDisplayForm(ref newfrmPrintLabel);
-            // currLabelPrint = newfrmPrintLabel;
-
-            // opens new label print form
             FrmLabelPrint labelsToPrint = new();
             labelsToPrint.ShowDialog();
-
         }
     }
 }

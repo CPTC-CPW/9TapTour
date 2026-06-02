@@ -154,7 +154,6 @@
             Name = "FrmMain";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             Text = "9 Tap Tour";
-            Load += FrmMain_Load;
             menMain.ResumeLayout(false);
             menMain.PerformLayout();
             ResumeLayout(false);
