@@ -598,8 +598,6 @@ public partial class FrmMemberData : Form
                 #if DEBUG
                     MessageBox.Show("Member saved");
                 #endif
-                ((FrmMain)MdiParent).MembersList =
-                    MemberDB.GetMemberList().OrderBy(m => m.Number);
                 UpdateMemberInfo();
             }
             

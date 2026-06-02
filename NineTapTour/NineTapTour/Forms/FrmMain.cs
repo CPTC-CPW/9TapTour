@@ -13,9 +13,6 @@ namespace NineTapTour.Forms
 {
     public partial class FrmMain : Form
     {
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public IOrderedEnumerable<Member> MembersList { get; set; }
-
         public System.Windows.Forms.ToolStripMenuItem ActiveItem;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -38,8 +35,6 @@ namespace NineTapTour.Forms
             // Run migrations on startup
             var migrator = new NineTapDb().Database.GetService<IMigrator>();
             migrator.Migrate();
-
-            MembersList = MemberDB.GetMemberList().OrderBy(m => m.Number);
             
             var mainMenu = Application.OpenForms["MainMenu"] as FrmMainMenu;
             OpenOrDisplayForm(ref mainMenu);
