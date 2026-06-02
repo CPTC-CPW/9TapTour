@@ -1279,6 +1279,10 @@ public partial class FrmTournamentResults : Form
                 ws.Cell(1, 1).Value = tourny.Location + tourny.Event;
                 ws.Cell(2, 1).Value = tourny.Date;
 
+                // For 2-Day tournaments, we need to change "Total Score" header
+                if (tourny.IsTwoDay)
+                    ws.Cell(3, 7).Value = "Qualifying Score";
+
                 int excelRow = 4;
                 int i = 0;
                 while (i < exportTable.Rows.Count)
