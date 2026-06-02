@@ -98,7 +98,6 @@ namespace NineTapTour.Forms
                     {
                         TournamentDB.AddTournament(newTournament);
                         MessageBox.Show(@"Tournament Created Successfully.");
-                        ((FrmMain)MdiParent).TournamentList = TournamentDB.GetTournamentList();
                     }
                 }
                 else
@@ -119,7 +118,6 @@ namespace NineTapTour.Forms
                         if (TournamentDB.UpdateTournament(newTournament))
                         {
                             MessageBox.Show(@"Tournament modified.");
-                            ((FrmMain)MdiParent).TournamentList = TournamentDB.GetTournamentList();
                         }
                         else
                         {

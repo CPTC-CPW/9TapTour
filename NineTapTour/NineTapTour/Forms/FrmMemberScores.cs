@@ -153,16 +153,14 @@ namespace NineTapTour.Forms
 
             MemberStatus("", Color.Black, SystemColors.Control, true);
 
-            List<Tournament> temp2 = TournamentDB.GetTournamentList();
+            List<Tournament> allTournaments = TournamentDB.GetTournamentList();
+            cbxTourneyDropDown.DataSource = allTournaments;
+            cbxTourneyDropDown.DisplayMember = nameof(Tournament.TourneyNameDate);
+            cbxTourneyDropDown.ValueMember = nameof(Tournament.Id);
 
-            ((FrmMain)MdiParent).TournamentList = temp2;
-            cbxTourneyDropDown.DataSource = temp2;
-            cbxTourneyDropDown.DisplayMember = "TourneyNameDate";
-            cbxTourneyDropDown.ValueMember = "Id";
-
-            if (temp2.Count > 0)
+            if (allTournaments.Count > 0)
             {
-                var item = temp2.Max(x => x.Id);
+                int item = allTournaments.Max(x => x.Id);
                 cbxTourneyDropDown.SelectedValue = item;
             }
 

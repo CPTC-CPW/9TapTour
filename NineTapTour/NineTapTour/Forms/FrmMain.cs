@@ -16,8 +16,6 @@ namespace NineTapTour.Forms
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IOrderedEnumerable<Member> MembersList { get; set; }
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<Tournament> TournamentList { get; set; }
         public System.Windows.Forms.ToolStripMenuItem ActiveItem;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -42,7 +40,6 @@ namespace NineTapTour.Forms
             migrator.Migrate();
 
             MembersList = MemberDB.GetMemberList().OrderBy(m => m.Number);
-            TournamentList = TournamentDB.GetTournamentList();
             
             var mainMenu = Application.OpenForms["MainMenu"] as FrmMainMenu;
             OpenOrDisplayForm(ref mainMenu);
