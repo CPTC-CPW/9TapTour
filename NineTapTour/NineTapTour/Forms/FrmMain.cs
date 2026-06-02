@@ -86,11 +86,12 @@ namespace NineTapTour.Forms
                 form = new T
                 {
                     MdiParent = this,
-                    Dock = DockStyle.Fill                      
-               
                 };
             }
             form.WindowState = FormWindowState.Maximized;
+            form.ControlBox = false;
+            form.MinimizeBox = false;
+            form.MaximizeBox = false;
             form.Show();
         }
 
@@ -183,28 +184,8 @@ namespace NineTapTour.Forms
             OpenOrDisplayForm(ref newfrmMemberScores);     
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void menMain_ItemAdded(object sender, ToolStripItemEventArgs e)
-        {
-            var s = e.Item.GetType().ToString();
-            if (s == "System.Windows.Forms.MdiControlStrip+ControlBoxMenuItem")
-            {
-                e.Item.Visible = false;
-            }
-
-            if (e.Item.Text == "")
-            {
-                e.Item.Visible = false;
-            }
-        }
-
         private void updateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            //update the regionID
             var UpdatefrmActiveMem = new FrmUpdateActiveMem();          
             UpdatefrmActiveMem.Show();
         }
@@ -223,7 +204,6 @@ namespace NineTapTour.Forms
                     MessageBox.Show("Database successfully restored from backup!");
                     Application.Restart();
                 }
-                
             }
         }
         
