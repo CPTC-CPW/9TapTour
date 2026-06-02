@@ -55,7 +55,7 @@
             menMain.TabIndex = 1;
             menMain.Text = "menuStrip1";
             menMain.ItemAdded += menMain_ItemAdded;
-            menMain.ItemClicked += menMain_ItemClicked;
+            menMain.ItemClicked += MainMenuToolStrip_ItemClicked;
             // 
             // mainMenuToolStripMenuItem
             // 
@@ -165,9 +165,9 @@
         #endregion
 
         private System.Windows.Forms.MenuStrip menMain;
-        private System.Windows.Forms.ToolStripMenuItem memberToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem tournamentToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem AboutToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem memberToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem tournamentToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem AboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem updateInactiveMembersToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;

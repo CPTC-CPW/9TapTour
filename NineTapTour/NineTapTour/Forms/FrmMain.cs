@@ -51,7 +51,7 @@ namespace NineTapTour.Forms
 
             //sets the height and width of the parent form... this can not be resized later... all child forms must 
             //fit in its bounds... the only exception is using a scrollbar on the side or bottom...
-            setHeightAndWidth(MaxWorkAreaScreenSize);
+            SetHeightAndWidth(MaxWorkAreaScreenSize);
             
             //on start up make sure regionID is set 
             var mainMenu = Application.OpenForms["MainMenu"] as FrmMainMenu;
@@ -64,11 +64,11 @@ namespace NineTapTour.Forms
         }
 
         /// <summary>
-        ///     this methoud takes in a Size (width and height) and will set the application to that size
-        ///     this size should be set to the working area of the primary monitior...
+        /// This methoud takes in a Size (width and height) and will set the application to that size
+        /// this size should be set to the working area of the primary monitor...
         /// </summary>
         /// <param name="workingArea">The working array of the primary monitor</param>
-        private void setHeightAndWidth(Size workingArea)
+        private void SetHeightAndWidth(Size workingArea)
         {
             this.Size = workingArea;
         }
@@ -81,11 +81,9 @@ namespace NineTapTour.Forms
         public void OpenOrDisplayForm<T>(ref T form) where T : Form, new()
         {
             if (form != null)
-            {
-                    
+            {   
                 form.BringToFront();
-                form.Activate();
-                    
+                form.Activate();   
             }
             else
             {
@@ -100,40 +98,28 @@ namespace NineTapTour.Forms
             form.Show();
         }
 
-        //method to highlight menu item to show user which page they have open
-        //also to disable button to current page
-        private void menMain_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        /// <summary>
+        /// Shows the current page the user is currently viewing and disables the menu item for that page. 
+        /// Highlights the active menu item and unhighlights the previous active menu item.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainMenuToolStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            if (ActiveItem != null)
+            ToolStripMenuItem currentItem = (ToolStripMenuItem)e.ClickedItem;
+            if (currentItem.HasDropDownItems)
             {
-                ActiveItem.BackColor = SystemColors.Control;
+                return;
             }
 
-            ActiveItem = (System.Windows.Forms.ToolStripMenuItem)e.ClickedItem;
+            // Unhighlight the previous active menu item and enable it
+            ActiveItem.Enabled = true;
+            ActiveItem?.BackColor = SystemColors.Control;
 
-            if (!ActiveItem.HasDropDownItems)
-            {
-                ActiveItem.BackColor = SystemColors.ActiveCaption;
-            }
-
-            MenuStrip currentMenu = sender as MenuStrip;
-            for (int i = 0; i < currentMenu.Items.Count; i++)
-            {
-                // sets enabled to true for all items in currentMenu
-                // unless item is the clickedItem(activeItem)
-                // or clicked item has a drop down list
-                if (!ActiveItem.HasDropDownItems)
-                {
-                    if (ActiveItem == currentMenu.Items[i])
-                    {
-                        currentMenu.Items[i].Enabled = false;
-                    }
-                    else
-                    {
-                        currentMenu.Items[i].Enabled = true;
-                    }
-                }
-            }
+            // Set the new active menu item and highlight it
+            ActiveItem = currentItem;
+            ActiveItem.BackColor = SystemColors.ActiveCaption;
+            ActiveItem.Enabled = false;
         }
 
         /// <summary>
@@ -147,24 +133,6 @@ namespace NineTapTour.Forms
             OpenOrDisplayForm(ref aboutForm);
         }
 
-        //this method is for the buttons on the main form
-        public void menuHighlight(string itemName)
-        {
-            if (ActiveItem != null)
-            {
-                ActiveItem.BackColor = SystemColors.Control;
-            }
-
-            for(int i = 0; i <= menMain.Items.Count; i++)
-            {
-                if (itemName == menMain.Items[i].Text)
-                {
-                    ActiveItem = (System.Windows.Forms.ToolStripMenuItem)menMain.Items[i];
-                    break;
-                }
-            }
-            ActiveItem.BackColor = SystemColors.ActiveCaption;
-        }
         /// <summary>
         /// 
         /// </summary>
