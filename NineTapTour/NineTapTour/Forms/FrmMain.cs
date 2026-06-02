@@ -23,8 +23,6 @@ namespace NineTapTour.Forms
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public FrmMemberData CurrFrmMemberData { get; set; }
 
-        private FrmMainMenu MainMenu { get; set; }
-
         private Size MaxWorkAreaScreenSize { get; set; }
         
         /// <summary>
@@ -49,10 +47,8 @@ namespace NineTapTour.Forms
             //fit in its bounds... the only exception is using a scrollbar on the side or bottom...
             SetHeightAndWidth(MaxWorkAreaScreenSize);
             
-            //on start up make sure regionID is set 
             var mainMenu = Application.OpenForms["MainMenu"] as FrmMainMenu;
             OpenOrDisplayForm(ref mainMenu);
-            MainMenu = mainMenu;
 
             //sets the first item of the menu bar to the active item and highlights it.
             ActiveItem = (System.Windows.Forms.ToolStripMenuItem)menMain.Items[0];
