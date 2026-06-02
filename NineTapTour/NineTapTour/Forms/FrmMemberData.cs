@@ -320,8 +320,12 @@ public partial class FrmMemberData : Form
             {
                 txtLastPayment.Text = 
                     currentMem.LastPayment.Value.ToString("MM/dd/yyyy");
-                txtPaidTo.Text =
-                    currentMem.LastPayment.Value.AddYears(1).ToString("yyyy");
+
+                // Lifetime members have a paid to date of 9999, so only set paid to date if not a lifetime member
+                if (!currentMem.IsLifetimeMember)
+                {
+                    txtPaidTo.Text = currentMem.LastPayment.Value.AddYears(1).ToString("yyyy");
+                }
 
                 CheckPayment();
             }
