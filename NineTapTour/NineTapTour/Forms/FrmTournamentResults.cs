@@ -808,7 +808,7 @@ public partial class FrmTournamentResults : Form
         _dt2Day.Columns.Add(SQUAD_COLUMN_NAME);
 
         dgvTournamentResults.DataSource        = _dt2Day;
-    _dt2Day.DefaultView.Sort               = PLACE_SORT_START_COLUMN_NAME + " ASC";
+        _dt2Day.DefaultView.Sort               = PLACE_SORT_START_COLUMN_NAME + " ASC, " + TOTAL_SCORE_COLUMN_NAME + " DESC";
         dgvTournamentResults.AllowUserToAddRows = false;
 
         // Hide internal/lookup columns
