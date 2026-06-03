@@ -101,7 +101,7 @@ public partial class FrmMain : Form
     /// <summary>
     /// Opens the 'Main Menu' form when the "Main Menu" menu item is clicked.
     /// </summary>
-    public void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
+    public void MainMenuToolStripMenuItem_Click(object sender, EventArgs e)
     {
         if (FrmMemberScoresHelpers.unsavedBowlerData)
         {
@@ -121,7 +121,7 @@ public partial class FrmMain : Form
     /// <summary>
     /// Opens the 'Member Data' form when the "Member Data" menu item is clicked.
     /// </summary>
-    public void memberToolStripMenuItem_Click(object sender, EventArgs e)
+    public void MemberDataToolStripMenuItem_Click(object sender, EventArgs e)
     {
         if (FrmMemberScoresHelpers.unsavedBowlerData)
         {
@@ -139,13 +139,13 @@ public partial class FrmMain : Form
     /// <summary>
     /// Opens the 'Member Scores' form when the "Member Scores" menu item is clicked.
     /// </summary>
-    public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
+    public void TournamentToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as FrmMemberScores;
         OpenOrDisplayForm(ref newfrmMemberScores);     
     }
 
-    private void updateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
+    private void UpdateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
     {
         var UpdatefrmActiveMem = new FrmUpdateActiveMem();          
         UpdatefrmActiveMem.Show();
@@ -168,7 +168,7 @@ public partial class FrmMain : Form
         }
     }
     
-    private void labelPrintToolStripMenuItem_Click(object sender, EventArgs e)
+    private void LabelPrintToolStripMenuItem_Click(object sender, EventArgs e)
     {
         FrmLabelPrint labelsToPrint = new();
         labelsToPrint.ShowDialog();

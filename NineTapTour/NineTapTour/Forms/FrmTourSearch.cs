@@ -38,7 +38,7 @@ public partial class FrmTourSearch : Form
         listSearch.SelectionMode = SelectionMode.One;
     }
 
-    private void btnSearch_Click(object sender, EventArgs e)
+    private void BtnSearch_Click(object sender, EventArgs e)
     {
         listSearch.DataSource = null;
 
@@ -84,15 +84,15 @@ public partial class FrmTourSearch : Form
 
             var results = query.Select(t => new
             {
-                Location = t.Location,
-                Event = t.Event,
-                Date = t.Date,
-                Id = t.Id,
-                Sponsors = t.Sponsors,
+                t.Location,
+                t.Event,
+                t.Date,
+                t.Id,
+                t.Sponsors,
                 IsDoubles = t.Doubles,
                 Is3OutOf4 = t.ThreeOutOf4,
-                Participant = t.Participant,
-                Notes = t.Notes
+                t.Participant,
+                t.Notes
             }).ToList();
 
             tourList = [.. results.Select(x=> new Tournament
@@ -121,7 +121,7 @@ public partial class FrmTourSearch : Form
         }
     }
 
-    private void btnAccept_Click(object sender, EventArgs e)
+    private void BtnAccept_Click(object sender, EventArgs e)
     {
         if (!single)
         {
@@ -138,7 +138,7 @@ public partial class FrmTourSearch : Form
         }
     }
 
-    private void listSearch_SelectedIndexChanged(object sender, EventArgs e)
+    private void ListSearch_SelectedIndexChanged(object sender, EventArgs e)
     {
         if (listSearch.SelectedIndex != -1)
         {
@@ -152,7 +152,7 @@ public partial class FrmTourSearch : Form
         }
     }
 
-    private void btnClear_Click(object sender, EventArgs e)
+    private void BtnClear_Click(object sender, EventArgs e)
     {
         listSearch.DataSource = null;
         txtSearch.Text = null;
@@ -163,12 +163,12 @@ public partial class FrmTourSearch : Form
         btnClear.Enabled = false;
     }
 
-    private void txtSearch_TextChanged(object sender, EventArgs e)
+    private void TxtSearch_TextChanged(object sender, EventArgs e)
     {
-        decideCanClear();
+        DecideCanClear();
     }
 
-    private void decideCanClear()
+    private void DecideCanClear()
     {
         if (String.IsNullOrWhiteSpace(txtSearch.Text.Trim()) && String.IsNullOrWhiteSpace(txtEvent.Text.Trim()) && !chkDate.Checked)
         {
@@ -185,17 +185,17 @@ public partial class FrmTourSearch : Form
         }
     }
 
-    private void txtEvent_TextChanged(object sender, EventArgs e)
+    private void TxtEvent_TextChanged(object sender, EventArgs e)
     {
-        decideCanClear();
+        DecideCanClear();
     }
 
-    private void txtDate_TextChanged(object sender, EventArgs e)
+    private void TxtDate_TextChanged(object sender, EventArgs e)
     {
-        decideCanClear();
+        DecideCanClear();
     }
 
-    private void chkDate_CheckedChanged(object sender, EventArgs e)
+    private void ChkDate_CheckedChanged(object sender, EventArgs e)
     {
         if (chkDate.Checked)
         {
@@ -207,10 +207,10 @@ public partial class FrmTourSearch : Form
             dtpFrom.Enabled = false;
             dtpTo.Enabled = false;
         }
-        decideCanClear();
+        DecideCanClear();
     }
 
-    private void dtpTo_ValueChanged(object sender, EventArgs e)
+    private void DtpTo_ValueChanged(object sender, EventArgs e)
     {
         if (dtpTo.Value < dtpFrom.Value)
         {
@@ -218,7 +218,7 @@ public partial class FrmTourSearch : Form
         }
     }
 
-    private void dtpFrom_ValueChanged(object sender, EventArgs e)
+    private void DtpFrom_ValueChanged(object sender, EventArgs e)
     {
         if (dtpFrom.Value > dtpTo.Value)
         {
@@ -230,7 +230,7 @@ public partial class FrmTourSearch : Form
     /// If you didn't pass a list, the result of your search will be set here.
     /// </summary>
     /// <returns></returns>
-    public Tournament getResult()
+    public Tournament GetResult()
     {
         return singleTour;
     }

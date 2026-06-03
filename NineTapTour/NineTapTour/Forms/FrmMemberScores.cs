@@ -1031,7 +1031,7 @@ public partial class FrmMemberScores : Form
         ResetFields();
 
         // Reset squad radio buttons to default
-        RadioButton[] squadRadioButtons = { rdoSquad1, rdoSquad2, rdoSquad3, rdoSquad4, rdoSquad5, rdoSquad6, rdoSquad7, rdoSquad8 };
+        RadioButton[] squadRadioButtons = [rdoSquad1, rdoSquad2, rdoSquad3, rdoSquad4, rdoSquad5, rdoSquad6, rdoSquad7, rdoSquad8];
 
         foreach (RadioButton radioButton in squadRadioButtons)
         {
@@ -1790,7 +1790,7 @@ public partial class FrmMemberScores : Form
     /// <param name="tournamentId">The tournament ID to load doubles team pairings from.</param>
     /// <param name="squadFilter">Optional list of squad numbers to filter teams by. Null means all squads.</param>
     /// <returns>A list of TeamMemberScores representing team standings, sorted by combined score descending.</returns>
-    private List<MemberScores> CombineDoublesSeriesToTeams(List<MemberScores> individualScores, int tournamentId, List<int> squadFilter)
+    private static List<MemberScores> CombineDoublesSeriesToTeams(List<MemberScores> individualScores, int tournamentId, List<int> squadFilter)
     {
         var combinedTeams = new List<MemberScores>();
 

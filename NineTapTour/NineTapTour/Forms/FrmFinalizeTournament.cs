@@ -16,7 +16,7 @@ namespace NineTapTour.Forms;
 
 public partial class FrmFinalizeTournament : Form
 {
-    private Tournament selectedTournament;
+    private readonly Tournament selectedTournament;
 
     // Top-level controls — access these to adjust later
     private Panel pnlToolbar;
@@ -52,19 +52,19 @@ public partial class FrmFinalizeTournament : Form
     private readonly HashSet<int> _placedGameIds = [];
     // Per member: (Scratch, Games) from the last (30 − currentEntryCount) finalized
     // entries in prior tournaments. Combined with live grid values in UpdateAll30AvgForMember.
-    private Dictionary<int, (int Scratch, int Games)> _history30ByMember = [];
+    private readonly Dictionary<int, (int Scratch, int Games)> _history30ByMember = [];
 
     // Per game: the un-deducted carry-forward bonus from the previous tournament.
     // Used in colHdcpTotal and RecalculateTournamentRow so the displayed total matches
     // FrmTournamentResults (which also uses prevBonus without deduction).
     // colBonus still shows the deducted/bumped preview value for the director's reference.
-    private Dictionary<int, int> _baseBonusByGameId = [];
+    private readonly Dictionary<int, int> _baseBonusByGameId = [];
 
     // Per member: handicap and base bonus derived from the member's most recent finalized
     // tournament (excluding the current tournament). Used as the source for colHdcp and
     // the base bonus in colBonus / HDCP Total, overriding the potentially-stale per-entry
     // Game.Handicap / Game.Bonus snapshots.
-    private Dictionary<int, (int Hdcp, int Bonus)> _prevTournHBByMember = [];
+    private readonly Dictionary<int, (int Hdcp, int Bonus)> _prevTournHBByMember = [];
 
     // Set to true once FinalizeAllGames completes successfully this session.
     private bool _isFinalized = false;
@@ -107,22 +107,20 @@ public partial class FrmFinalizeTournament : Form
 
         // Snapshot all editable game fields immediately after load so "Undo Changes"
         // can restore the original DB state for the rest of the session.
-        using (var db = new NineTapDb())
+        using var db = new NineTapDb();
+        // Collect all game IDs from grid rows (handles both singles int tags and DoublesRowTag)
+        var gameIds = new HashSet<int>();
+        foreach (DataGridViewRow row in dgvTournament.Rows)
         {
-            // Collect all game IDs from grid rows (handles both singles int tags and DoublesRowTag)
-            var gameIds = new HashSet<int>();
-            foreach (DataGridViewRow row in dgvTournament.Rows)
-            {
-                if (row.Tag is int gId)                     gameIds.Add(gId);
-                else if (row.Tag is DoubleMemberRowTag dmt) gameIds.Add(dmt.MyGameId);
-            }
-            foreach (var g in db.Games.Where(g => gameIds.Contains(g.Id)))
-                _gameSnapshot[g.Id] = new GameSnapshot(
-                    g.Game1, g.Game2, g.Game3, g.Game4,
-                    g.UseGame1, g.UseGame2, g.UseGame3, g.UseGame4,
-                    g.AdjustedAvg, g.KeepAdjustedAvg,
-                    g.Handicap, g.Bonus, g.MoneyWon, g.Notes);
+            if (row.Tag is int gId) gameIds.Add(gId);
+            else if (row.Tag is DoubleMemberRowTag dmt) gameIds.Add(dmt.MyGameId);
         }
+        foreach (var g in db.Games.Where(g => gameIds.Contains(g.Id)))
+            _gameSnapshot[g.Id] = new GameSnapshot(
+                g.Game1, g.Game2, g.Game3, g.Game4,
+                g.UseGame1, g.UseGame2, g.UseGame3, g.UseGame4,
+                g.AdjustedAvg, g.KeepAdjustedAvg,
+                g.Handicap, g.Bonus, g.MoneyWon, g.Notes);
     }
 
     private void FrmFinalizeTournament_FormClosing(object sender, FormClosingEventArgs e)
@@ -244,11 +242,10 @@ public partial class FrmFinalizeTournament : Form
         int x = pnlToolbar.ClientSize.Width - btnFinalizeTournament.Width - 12;
         btnFinalizeTournament.Location = new Point(x, 7);
         btnUndoFinalize.Location       = new Point(x - btnUndoFinalize.Width - 8, 7);
-        if (btnTeamView != null)
-            btnTeamView.Location       = new Point(x - btnUndoFinalize.Width - btnTeamView.Width - 16, 7);
+        btnTeamView?.Location          = new Point(x - btnUndoFinalize.Width - btnTeamView.Width - 16, 7);
     }
 
-    private DataGridView CreateTournamentGrid()
+    private static DataGridView CreateTournamentGrid()
     {
         var dgv = new DataGridView
         {
@@ -950,7 +947,7 @@ public partial class FrmFinalizeTournament : Form
         return members;
     }
 
-    private DataGridView CreateDetailGrid()
+    private static DataGridView CreateDetailGrid()
     {
         var dgv = new DataGridView
         {
@@ -1038,7 +1035,7 @@ public partial class FrmFinalizeTournament : Form
             ? bb : bonus;
 
         // --- Doubles individual rows: use only 2 games; combine with partner for HDCP total ---
-        if (row.Tag is DoubleMemberRowTag dmt)
+        if (row.Tag is DoubleMemberRowTag)
         {
             int myGames = (c1 ? 1 : 0) + (c2 ? 1 : 0);
             int myScratch = g1 + g2;
@@ -1359,7 +1356,7 @@ public partial class FrmFinalizeTournament : Form
     /// Cashers lose half as many bonus pins (magnitude rounded up so the bowler
     /// retains more pins). Non-cashers keep their base bonus unchanged.
     /// </summary>
-    private int ComputeHalfRateBonus(int baseBonus, int place, bool isCashing)
+    private static int ComputeHalfRateBonus(int baseBonus, int place, bool isCashing)
     {
         if (!isCashing) return baseBonus;
         int normalResult = CalcService.DeductFromBonusPins(place, baseBonus);
@@ -1412,7 +1409,7 @@ public partial class FrmFinalizeTournament : Form
             new DataGridViewTextBoxColumn { Name = "tvEarn2",    HeaderText = "M2\nEarnings",    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill }
         );
 
-        int CellInt(DataGridViewCell cell)
+        static int CellInt(DataGridViewCell cell)
         {
             if (cell.Value is int i) return i;
             if (cell.Value != null && int.TryParse(cell.Value.ToString(), out int p)) return p;
@@ -1670,8 +1667,7 @@ public partial class FrmFinalizeTournament : Form
         }
 
         Tournament tourn = db.Tournaments.Find(selectedTournament.Id);
-        if (tourn != null)
-            tourn.IsTournamentFinalized = true;
+        tourn?.IsTournamentFinalized = true;
 
         db.SaveChanges();
 

@@ -43,12 +43,9 @@ public partial class FrmUpdateActiveMem : Form
         }
     }
 
-    private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
-    {
-        targetDate = dateTimePicker1.Value;
-    }
+    private void DateTimePicker1_ValueChanged(object sender, EventArgs e) => targetDate = dateTimePicker1.Value;
 
-    private void btnUpdateActive_Click(object sender, EventArgs e)
+    private void BtnUpdateActive_Click(object sender, EventArgs e)
     {
         if (InactiveListCheckBox.CheckedItems.Count == 0)
         {
@@ -72,7 +69,7 @@ public partial class FrmUpdateActiveMem : Form
         }
     }
 
-    private void btnCheckInactive_Click(object sender, EventArgs e)
+    private void BtnCheckInactive_Click(object sender, EventArgs e)
     {
         for (int i = 0; i < InactiveListCheckBox.Items.Count; i++)
         {

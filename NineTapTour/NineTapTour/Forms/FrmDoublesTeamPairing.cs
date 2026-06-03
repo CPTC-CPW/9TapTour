@@ -43,8 +43,8 @@ public class FrmDoublesTeamPairing : Form
 
     // Dynamic partner rows (y=72+)
     private Panel pnlPartners;
-    private readonly List<(TextBox NumBox, Label NameLabel)> _partnerControls = new();
-    private List<Member> _existingPartnersForBowler = new();
+    private readonly List<(TextBox NumBox, Label NameLabel)> _partnerControls = [];
+    private List<Member> _existingPartnersForBowler = [];
     private bool _populatingPartners = false;
     private bool _suppressBowlerLoad = false;
 

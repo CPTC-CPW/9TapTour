@@ -76,7 +76,7 @@
             this.cbxYear.Name = "cbxYear";
             this.cbxYear.Size = new System.Drawing.Size(82, 21);
             this.cbxYear.TabIndex = 3;
-            this.cbxYear.SelectedIndexChanged += new System.EventHandler(this.cbxYear_SelectedIndexChanged);
+            this.cbxYear.SelectedIndexChanged += new System.EventHandler(this.CbxYear_SelectedIndexChanged);
             // 
             // btnSearch
             // 
@@ -87,7 +87,7 @@
             this.btnSearch.TabIndex = 4;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
-            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            this.btnSearch.Click += new System.EventHandler(this.BtnSearch_Click);
             // 
             // TournamentsByYear
             // 

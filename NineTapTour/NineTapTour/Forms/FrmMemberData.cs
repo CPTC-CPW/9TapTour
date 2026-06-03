@@ -896,13 +896,8 @@ public partial class FrmMemberData : Form
 
             string fileName = ofdOpen.FileName;
 
-            frmPleaseWait please = new();
-            please.Show();
-
             // Process the Excel file and create tournaments/participants
             List<ExcelRow> rows = ProcessExcelFile(fileName); 
-            
-            please.Close();
 
             foreach(var r in rows)
             {
@@ -947,7 +942,7 @@ public partial class FrmMemberData : Form
     {
         List<ExcelRow> returnMe = [];
         // Dictionary to track tournaments by date
-        Dictionary<DateTime, Tournament> tournamentsCache = new();
+        Dictionary<DateTime, Tournament> tournamentsCache = [];
         
         using (var workbook = new XLWorkbook(PathAndFileName))
         {
@@ -982,28 +977,30 @@ public partial class FrmMemberData : Form
             
             for (int row = rowNum; row <= lastRow; row++)
             {
-                ExcelRow temp = new();
-                temp.PlayerFirstName = PlayerFinalFirstAndMiddle[0];
-                temp.PlayerMiddleName = PlayerFinalFirstAndMiddle.Length > 1 ? PlayerFinalFirstAndMiddle[1] : "";
-                temp.PlayerLastName = playerLastName;
-                temp.PlayerOrginalAVG = playerOrgAVG;
-                temp.PlayerNumber = playerNumberAsInt;
-                temp.GameTotal = ws.Cell(row, 1).GetValue<int?>() ?? -1;
-                temp.Date = ws.Cell(row, 2).GetDateTime();
-                temp.Game1 = ws.Cell(row, 3).GetValue<int?>() ?? -1;
-                temp.Game2 = ws.Cell(row, 4).GetValue<int?>() ?? -1;
-                temp.Game3 = ws.Cell(row, 5).GetValue<int?>() ?? -1;
-                temp.Game4 = ws.Cell(row, 6).GetValue<int?>() ?? -1;
-                temp.Total = ws.Cell(row, 7).GetValue<int?>() ?? -1;
-                temp.AverageOfRow = ws.Cell(row, 8).GetValue<double?>() ?? -1;
-                temp.TrueAverage = ws.Cell(row, 9).GetValue<double?>() ?? -1;
-                temp.AVG = ws.Cell(row, 10).GetValue<int?>() ?? -1;
-                temp.HandyCap = ws.Cell(row, 11).GetValue<int?>() ?? -1000;
-                temp.Bonus = ws.Cell(row, 12).GetValue<int?>() ?? -1;
-                temp.FinPPHG = ws.Cell(row, 14).GetString();
-                temp.Cash = ws.Cell(row, 15).GetValue<double?>() ?? 0;
-                temp.Notes = ws.Cell(row, 16).GetString();
-                
+                ExcelRow temp = new()
+                {
+                    PlayerFirstName = PlayerFinalFirstAndMiddle[0],
+                    PlayerMiddleName = PlayerFinalFirstAndMiddle.Length > 1 ? PlayerFinalFirstAndMiddle[1] : "",
+                    PlayerLastName = playerLastName,
+                    PlayerOrginalAVG = playerOrgAVG,
+                    PlayerNumber = playerNumberAsInt,
+                    GameTotal = ws.Cell(row, 1).GetValue<int?>() ?? -1,
+                    Date = ws.Cell(row, 2).GetDateTime(),
+                    Game1 = ws.Cell(row, 3).GetValue<int?>() ?? -1,
+                    Game2 = ws.Cell(row, 4).GetValue<int?>() ?? -1,
+                    Game3 = ws.Cell(row, 5).GetValue<int?>() ?? -1,
+                    Game4 = ws.Cell(row, 6).GetValue<int?>() ?? -1,
+                    Total = ws.Cell(row, 7).GetValue<int?>() ?? -1,
+                    AverageOfRow = ws.Cell(row, 8).GetValue<double?>() ?? -1,
+                    TrueAverage = ws.Cell(row, 9).GetValue<double?>() ?? -1,
+                    AVG = ws.Cell(row, 10).GetValue<int?>() ?? -1,
+                    HandyCap = ws.Cell(row, 11).GetValue<int?>() ?? -1000,
+                    Bonus = ws.Cell(row, 12).GetValue<int?>() ?? -1,
+                    FinPPHG = ws.Cell(row, 14).GetString(),
+                    Cash = ws.Cell(row, 15).GetValue<double?>() ?? 0,
+                    Notes = ws.Cell(row, 16).GetString()
+                };
+
                 // Create or get tournament for this date
                 Tournament tournament;
                 DateTime tournamentDate = temp.Date.Date; // Normalize to date only
@@ -1046,7 +1043,7 @@ public partial class FrmMemberData : Form
                 }
                 
                 // Create Game entity
-                Game game = new Game
+                Game game = new()
                 {
                     Game1 = temp.Game1 >= 0 ? temp.Game1 : null,
                     Game2 = temp.Game2 >= 0 ? temp.Game2 : null,
@@ -1066,7 +1063,7 @@ public partial class FrmMemberData : Form
                 };
                 
                 // Create Participant linking member, game, and tournament
-                Participant participant = new Participant
+                Participant participant = new()
                 {
                     Member = currentMem,
                     Game = game,

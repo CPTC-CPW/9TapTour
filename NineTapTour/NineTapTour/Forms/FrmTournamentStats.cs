@@ -34,25 +34,21 @@ public partial class FrmTournamentStats : Form
     {
         if (!FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4)
         {
-            Tournament selectedTournament = new();
-            selectedTournament = FrmMemberScoresHelpers.selectedTournament;
+            Tournament selectedTournament = FrmMemberScoresHelpers.selectedTournament;
             lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
             // Grabs a list of TournamentStatsList from the database
-            List<TournamentStatsList> statsList = 
-                TournamentStatsListDB.GetTournamentStatsList(selectedTournament.Id);
+            List<TournamentStatsList> statsList = TournamentStatsListDB.GetTournamentStatsList(selectedTournament.Id);
             
             // Send to form
             dgvTournamentStats.DataSource = BuildDataTable(statsList);
         }
         else
         {
-            Tournament selectedTournament = new();
-            selectedTournament = FrmMemberScoresHelpers.selectedTournament;
+            Tournament selectedTournament = FrmMemberScoresHelpers.selectedTournament;
             lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
-            List<TournamentStatsList> statsList =
-                TournamentStatsListDB.Get3OutOf4TournamentStatsList(selectedTournament.Id);
+            List<TournamentStatsList> statsList = TournamentStatsListDB.Get3OutOf4TournamentStatsList(selectedTournament.Id);
 
             // send to form
             dgvTournamentStats.DataSource = BuildDataTable(statsList);
@@ -123,7 +119,7 @@ public partial class FrmTournamentStats : Form
     /// </summary>
     /// <param name="statsList"></param>
     /// <returns>Datatable object</returns>
-    private DataTable BuildDataTable(List<TournamentStatsList> statsList)
+    private static DataTable BuildDataTable(List<TournamentStatsList> statsList)
     {
         DataTable data = new("Tournament Stats");
 

@@ -122,7 +122,7 @@ public partial class FrmLabelPrint : Form
         List<Member> nextMemberLabels = [.. Labels.Skip((currPage) * PageSize).Take(PageSize)];
 
         // If more than 30 members remaining another page will be printed
-        e.HasMorePages = (currPage * PageSize + PageSize >= Labels.Count) ? false : true;
+        e.HasMorePages = currPage * PageSize + PageSize < Labels.Count;
 
         // Print out 1 sheet of members, e.HasMorePages = true will cause print to be triggered again automatically
         PrintLabelSheetOf10(nextMemberLabels, e);
@@ -142,8 +142,8 @@ public partial class FrmLabelPrint : Form
 
         int startX = 55;
         int startY = 55;
-        int offsetX = 0;
-        int offsetY = 0;
+        int offsetX;
+        int offsetY;
 
         int start = 0;
         if(tbStartWhere.Text != "")
@@ -209,9 +209,4 @@ public partial class FrmLabelPrint : Form
         }
         UpdatePrintListBox();
     }
-
-
-    private DateTime lastKeyPressed;
-
-    private String searchWho;
 }

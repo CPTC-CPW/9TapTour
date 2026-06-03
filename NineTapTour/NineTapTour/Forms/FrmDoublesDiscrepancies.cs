@@ -423,8 +423,6 @@ public class FrmDoublesDiscrepancies : Form
 
     private void UpdateBulkButtons()
     {
-        bool hasRows = dgvIssues.Rows.Count > 0;
-
         bool hasReciprocal = false;
         bool hasMismatch   = false;
         foreach (DataGridViewRow row in dgvIssues.Rows)

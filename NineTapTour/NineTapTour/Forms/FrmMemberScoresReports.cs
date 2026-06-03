@@ -94,11 +94,7 @@ public partial class FrmMemberScoresReports : Form
                 printDues = true;
             }
             temp = Calculations.TournamentCalculations.MakeTopMembersByPlacementList(temp, numMembers); // results of inquiry
-            // loads the loading screen if takes long time
-            frmPleaseWait please = new();
-            please.Show();
             ExportToExcel(); // Exports to excel file
-            please.Close();
 
             this.Close();
         }
@@ -111,7 +107,7 @@ public partial class FrmMemberScoresReports : Form
 
     private void ExportToExcel()
     {
-        string reportTypeToSave = "";
+        string reportTypeToSave;
         string reportLabelToSave = "Game";
         if (reportTypeNum == ReportType.HighSeriesScratch)
         {
@@ -137,71 +133,69 @@ public partial class FrmMemberScoresReports : Form
         try
         {
             File.Copy(getFilePath, saveFile, true);
-            using (var workbook = new XLWorkbook(saveFile))
+            using var workbook = new XLWorkbook(saveFile);
+            var ws = workbook.Worksheet(1);
+            ws.Cell(3, 1).Value = selectedTournament.Location;
+            ws.Cell(3, 4).Value = selectedTournament.Event;
+            ws.Cell(3, 5).Value = selectedTournament.Date;
+            ws.Cell(4, 2).Value = reportLabelToSave;
+
+            int printDuesOffset = 0;
+            if (printDues)
             {
-                var ws = workbook.Worksheet(1);
-                ws.Cell(3, 1).Value = selectedTournament.Location;
-                ws.Cell(3, 4).Value = selectedTournament.Event;
-                ws.Cell(3, 5).Value = selectedTournament.Date;
-                ws.Cell(4, 2).Value = reportLabelToSave;
+                ws.Cell(4, 5).Value = "Membership Paid To";
+                printDuesOffset = 1;
+            }
 
-                int printDuesOffset = 0;
-                if (printDues)
+            const int headerRowsOffset = 4;
+            int numMembers = temp.Count;
+            for (int row = 5; row <= numMembers + headerRowsOffset; row++)
+            {
+                int idx = row - 5;
+                ws.Cell(row, 1).Value = temp[idx].placing;
+                ws.Cell(row, 2).Value = temp[idx].Score;
+                if (temp[idx] is TeamMemberScores t)
                 {
-                    ws.Cell(4, 5).Value = "Membership Paid To";
-                    printDuesOffset = 1;
+                    ws.Cell(row, 3).Value = $"{t.Partner1MemberId} & {t.Partner2MemberId}";
+                    ws.Cell(row, 4).Value = $"{t.Partner1FirstName} {t.Partner1LastName} & {t.Partner2FirstName} {t.Partner2LastName}";
                 }
-
-                const int headerRowsOffset = 4;
-                int numMembers = temp.Count;
-                for (int row = 5; row <= numMembers + headerRowsOffset; row++)
+                else
                 {
-                    int idx = row - 5;
-                    ws.Cell(row, 1).Value = temp[idx].placing;
-                    ws.Cell(row, 2).Value = temp[idx].Score;
-                    if (temp[idx] is TeamMemberScores t)
+                    ws.Cell(row, 3).Value = temp[idx].MemberId;
+                    ws.Cell(row, 4).Value = temp[idx].LastName + ", " + temp[idx].FirstName;
+                }
+                if (printDuesOffset == 1)
+                {
+                    string paymentYear = temp[idx].LastPaymentYear;
+                    if (!string.IsNullOrEmpty(paymentYear))
                     {
-                        ws.Cell(row, 3).Value = $"{t.Partner1MemberId} & {t.Partner2MemberId}";
-                        ws.Cell(row, 4).Value = $"{t.Partner1FirstName} {t.Partner1LastName} & {t.Partner2FirstName} {t.Partner2LastName}";
-                    }
-                    else
-                    {
-                        ws.Cell(row, 3).Value = temp[idx].MemberId;
-                        ws.Cell(row, 4).Value = temp[idx].LastName + ", " + temp[idx].FirstName;
-                    }
-                    if (printDuesOffset == 1)
-                    {
-                        string paymentYear = temp[idx].LastPaymentYear;
-                        if (!string.IsNullOrEmpty(paymentYear))
+                        if (paymentYear != "life ")
                         {
-                            if (paymentYear != "life ")
+                            if (int.TryParse(paymentYear, out int year))
                             {
-                                if (int.TryParse(paymentYear, out int year))
-                                {
-                                    year += 1;
-                                    paymentYear = year.ToString();
-                                }
-                                ws.Cell(row, 5).Value = paymentYear;
+                                year += 1;
+                                paymentYear = year.ToString();
                             }
-                            else
-                            {
-                                ws.Cell(row, 5).Value = temp[idx].LastPaymentYear;
-                            }
+                            ws.Cell(row, 5).Value = paymentYear;
+                        }
+                        else
+                        {
+                            ws.Cell(row, 5).Value = temp[idx].LastPaymentYear;
                         }
                     }
                 }
+            }
 
-                SaveFileDialog savefile = new()
-                {
-                    Filter = FileHelper.GetExcelFilterStringForFileDialogs(),
-                    FileName = fileName
-                };
-                DialogResult result = savefile.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    workbook.SaveAs(savefile.FileName);
-                    MessageBox.Show("Excel file created , you can find the file at: " + savefile.FileName);
-                }
+            SaveFileDialog savefile = new()
+            {
+                Filter = FileHelper.GetExcelFilterStringForFileDialogs(),
+                FileName = fileName
+            };
+            DialogResult result = savefile.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                workbook.SaveAs(savefile.FileName);
+                MessageBox.Show("Excel file created , you can find the file at: " + savefile.FileName);
             }
         }
         catch (Exception ex)

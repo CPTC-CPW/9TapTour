@@ -43,7 +43,7 @@
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(200, 20);
             this.dateTimePicker1.TabIndex = 0;
-            this.dateTimePicker1.ValueChanged += new System.EventHandler(this.dateTimePicker1_ValueChanged);
+            this.dateTimePicker1.ValueChanged += new System.EventHandler(this.DateTimePicker1_ValueChanged);
             // 
             // btnUpdateActive
             // 
@@ -53,7 +53,7 @@
             this.btnUpdateActive.TabIndex = 1;
             this.btnUpdateActive.Text = "Update";
             this.btnUpdateActive.UseVisualStyleBackColor = true;
-            this.btnUpdateActive.Click += new System.EventHandler(this.btnUpdateActive_Click);
+            this.btnUpdateActive.Click += new System.EventHandler(this.BtnUpdateActive_Click);
             // 
             // checkedListBox1
             // 
@@ -82,7 +82,7 @@
             this.btnCheckInactive.TabIndex = 4;
             this.btnCheckInactive.Text = "Check All";
             this.btnCheckInactive.UseVisualStyleBackColor = true;
-            this.btnCheckInactive.Click += new System.EventHandler(this.btnCheckInactive_Click);
+            this.btnCheckInactive.Click += new System.EventHandler(this.BtnCheckInactive_Click);
             // 
             // label2
             // 
