@@ -972,7 +972,7 @@ public partial class FrmMemberData : Form
             }
             else if (playerNumberAsInt == 0)
             {
-                var playerNumberAfterSplit = playerNumber.Split('/');
+                string[] playerNumberAfterSplit = playerNumber.Split('/');
                 playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumberAfterSplit[^1], string.Empty));
             }
             

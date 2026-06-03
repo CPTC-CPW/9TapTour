@@ -118,7 +118,7 @@ public partial class FrmTournamentResults : Form
 
             for (int i = 0; i < _dt2Day.Rows.Count; i++)
             {
-                var gameIdObj = _dt2Day.Rows[i][GAME_ID_COLUMN_NAME];
+                object gameIdObj = _dt2Day.Rows[i][GAME_ID_COLUMN_NAME];
                 if (gameIdObj == DBNull.Value || !int.TryParse(gameIdObj.ToString(), out int gameId) || gameId <= 0) continue;
 
                 if (!TryGet2DayPlaceGroup(_dt2Day.Rows[i], out int placeStart, out string placeLabel))
@@ -528,7 +528,7 @@ public partial class FrmTournamentResults : Form
 
         // Sort descending, assign places with tie detection
         teamRows.Sort((a, b) => b.CombinedHdcpTotal.CompareTo(a.CombinedHdcpTotal));
-        var teamPlaces = new int[teamRows.Count];
+        int[] teamPlaces = new int[teamRows.Count];
         if (teamRows.Count > 0)
         {
             teamPlaces[0] = 1;
@@ -910,7 +910,7 @@ public partial class FrmTournamentResults : Form
         if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
         if (dgvTournamentResults.Columns[e.ColumnIndex].Name != MEMBER_NUMBER_COLUMN_NAME) return;
 
-        var cellValue = dgvTournamentResults.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+        object cellValue = dgvTournamentResults.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
         string cellText = cellValue?.ToString()?.Trim() ?? "";
         if (!int.TryParse(cellText, out int memberNumber) || memberNumber <= 0) return;
 
@@ -1160,7 +1160,7 @@ public partial class FrmTournamentResults : Form
             // Save 2-day results to DB via the DGV (which is bound to _dt2Day)
             for (int i = 0; i < dgvTournamentResults.RowCount; i++)
             {
-                var gameIdCell = dgvTournamentResults[GAME_ID_COLUMN_NAME, i].Value;
+                object gameIdCell = dgvTournamentResults[GAME_ID_COLUMN_NAME, i].Value;
                 if (gameIdCell == null || gameIdCell == DBNull.Value) continue;
                 if (!int.TryParse(gameIdCell.ToString(), out int gameId) || gameId <= 0) continue;
 
@@ -1346,7 +1346,7 @@ public partial class FrmTournamentResults : Form
                     ws.Cell(excelRow, 6).Value = row[HANDICAP_COLUMN_NAME]?.ToString();
                     ws.Cell(excelRow, 7).Value = row[TOTAL_SCORE_COLUMN_NAME]?.ToString();
                     ws.Cell(excelRow, 9).Value = row[EARNINGS_COLUMN_NAME] != null
-                        ? double.TryParse(row[EARNINGS_COLUMN_NAME].ToString(), out var val)
+                        ? double.TryParse(row[EARNINGS_COLUMN_NAME].ToString(), out double val)
                             ? val.ToString("C0")
                             : row[EARNINGS_COLUMN_NAME]?.ToString()
                         : "$0";
