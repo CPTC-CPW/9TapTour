@@ -5,7 +5,7 @@
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>9tap_white.ico</ApplicationIcon>
+    <ApplicationIcon>Icon\9tap_white.ico</ApplicationIcon>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>ClientLicense.txt</PackageLicenseFile>
   </PropertyGroup>
@@ -17,7 +17,6 @@
 		<SupportedPlatform Include="windows" />
 	</ItemGroup>
   <ItemGroup>
-    <Content Include="9tap_white.ico" />
     <Content Include="Resources\SeriesReportTemplate.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
