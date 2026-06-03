@@ -46,22 +46,22 @@
             // 
             // menMain
             // 
+            menMain.AllowMerge = false;
             menMain.BackColor = System.Drawing.Color.White;
             menMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { mainMenuToolStripMenuItem, memberToolStripMenuItem, tournamentToolStripMenuItem, AboutToolStripMenuItem, toolsToolStripMenuItem });
             menMain.Location = new System.Drawing.Point(0, 0);
             menMain.Name = "menMain";
-            menMain.Padding = new System.Windows.Forms.Padding(13, 5, 0, 5);
-            menMain.Size = new System.Drawing.Size(780, 48);
+            menMain.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
+            menMain.Size = new System.Drawing.Size(420, 24);
             menMain.TabIndex = 1;
             menMain.Text = "menuStrip1";
-            menMain.ItemAdded += menMain_ItemAdded;
-            menMain.ItemClicked += menMain_ItemClicked;
+            menMain.ItemClicked += MainMenuToolStrip_ItemClicked;
             // 
             // mainMenuToolStripMenuItem
             // 
             mainMenuToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
             mainMenuToolStripMenuItem.Name = "mainMenuToolStripMenuItem";
-            mainMenuToolStripMenuItem.Size = new System.Drawing.Size(99, 38);
+            mainMenuToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             mainMenuToolStripMenuItem.Text = "Home";
             mainMenuToolStripMenuItem.Click += mainMenuToolStripMenuItem_Click;
             // 
@@ -69,7 +69,7 @@
             // 
             memberToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
             memberToolStripMenuItem.Name = "memberToolStripMenuItem";
-            memberToolStripMenuItem.Size = new System.Drawing.Size(174, 38);
+            memberToolStripMenuItem.Size = new System.Drawing.Size(88, 20);
             memberToolStripMenuItem.Text = "Member Info";
             memberToolStripMenuItem.Click += memberToolStripMenuItem_Click;
             // 
@@ -77,7 +77,7 @@
             // 
             tournamentToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
             tournamentToolStripMenuItem.Name = "tournamentToolStripMenuItem";
-            tournamentToolStripMenuItem.Size = new System.Drawing.Size(201, 38);
+            tournamentToolStripMenuItem.Size = new System.Drawing.Size(101, 20);
             tournamentToolStripMenuItem.Text = "Member Scores";
             tournamentToolStripMenuItem.Click += tournamentToolStripMenuItem_Click;
             // 
@@ -85,7 +85,7 @@
             // 
             AboutToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
             AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
-            AboutToolStripMenuItem.Size = new System.Drawing.Size(99, 38);
+            AboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             AboutToolStripMenuItem.Text = "About";
             AboutToolStripMenuItem.Click += AboutToolStripMenuItem_Click;
             // 
@@ -93,34 +93,34 @@
             // 
             toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { BackupDatabaseToolStripMenuItem, RestoreDatabaseToolStripMenuItem, updateInactiveMembersToolStripMenuItem1, labelPrintToolStripMenuItem });
             toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            toolsToolStripMenuItem.Size = new System.Drawing.Size(89, 38);
+            toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             toolsToolStripMenuItem.Text = "Tools";
             // 
             // BackupDatabaseToolStripMenuItem
             // 
             BackupDatabaseToolStripMenuItem.Name = "BackupDatabaseToolStripMenuItem";
-            BackupDatabaseToolStripMenuItem.Size = new System.Drawing.Size(421, 44);
+            BackupDatabaseToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             BackupDatabaseToolStripMenuItem.Text = "Backup Database";
             BackupDatabaseToolStripMenuItem.Click += BackupDatabaseToolStripMenuItem_Click;
             // 
             // RestoreDatabaseToolStripMenuItem
             // 
             RestoreDatabaseToolStripMenuItem.Name = "RestoreDatabaseToolStripMenuItem";
-            RestoreDatabaseToolStripMenuItem.Size = new System.Drawing.Size(421, 44);
+            RestoreDatabaseToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             RestoreDatabaseToolStripMenuItem.Text = "Restore Database";
             RestoreDatabaseToolStripMenuItem.Click += RestoreDatabaseToolStripMenuItem_Click;
             // 
             // updateInactiveMembersToolStripMenuItem1
             // 
             updateInactiveMembersToolStripMenuItem1.Name = "updateInactiveMembersToolStripMenuItem1";
-            updateInactiveMembersToolStripMenuItem1.Size = new System.Drawing.Size(421, 44);
+            updateInactiveMembersToolStripMenuItem1.Size = new System.Drawing.Size(209, 22);
             updateInactiveMembersToolStripMenuItem1.Text = "Update Inactive Members";
             updateInactiveMembersToolStripMenuItem1.Click += updateInactiveMembersToolStripMenuItem1_Click;
             // 
             // labelPrintToolStripMenuItem
             // 
             labelPrintToolStripMenuItem.Name = "labelPrintToolStripMenuItem";
-            labelPrintToolStripMenuItem.Size = new System.Drawing.Size(421, 44);
+            labelPrintToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             labelPrintToolStripMenuItem.Text = "Print Member Labels";
             labelPrintToolStripMenuItem.Click += labelPrintToolStripMenuItem_Click;
             // 
@@ -134,27 +134,25 @@
             // updateInactiveMembersToolStripMenuItem
             // 
             updateInactiveMembersToolStripMenuItem.Name = "updateInactiveMembersToolStripMenuItem";
-            updateInactiveMembersToolStripMenuItem.Size = new System.Drawing.Size(421, 44);
+            updateInactiveMembersToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             updateInactiveMembersToolStripMenuItem.Text = "Update Inactive Members";
             // 
             // FrmMain
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSize = true;
             BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            ClientSize = new System.Drawing.Size(780, 482);
+            ClientSize = new System.Drawing.Size(420, 226);
             Controls.Add(menMain);
             DoubleBuffered = true;
             ForeColor = System.Drawing.SystemColors.ControlText;
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             IsMdiContainer = true;
             MainMenuStrip = menMain;
-            Margin = new System.Windows.Forms.Padding(6, 7, 6, 7);
             Name = "FrmMain";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             Text = "9 Tap Tour";
-            Load += FrmMain_Load;
             menMain.ResumeLayout(false);
             menMain.PerformLayout();
             ResumeLayout(false);
@@ -165,9 +163,9 @@
         #endregion
 
         private System.Windows.Forms.MenuStrip menMain;
-        private System.Windows.Forms.ToolStripMenuItem memberToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem tournamentToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem AboutToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem memberToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem tournamentToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem AboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem updateInactiveMembersToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;

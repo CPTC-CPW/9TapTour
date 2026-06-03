@@ -598,8 +598,6 @@ public partial class FrmMemberData : Form
                 #if DEBUG
                     MessageBox.Show("Member saved");
                 #endif
-                ((FrmMain)MdiParent).MembersList =
-                    MemberDB.GetMemberList().OrderBy(m => m.Number);
                 UpdateMemberInfo();
             }
             
@@ -870,19 +868,6 @@ public partial class FrmMemberData : Form
         {
             lblPaymentInfo.Visible = false;
         }
-    }
-        
-    /// <summary>
-    /// This action event assigns current form as currFrmMemberData in
-    /// FrmMains' global Variable property when leaving form. This allows 
-    /// the program to later check whether FrmMemberData has 
-    /// been changed without saving.
-    /// /// </summary>
-    /// /// <param name="sender"></param>
-    /// /// <param name="e"></param>
-    private void FrmMemberData_Leave(object sender, EventArgs e)
-    {
-        ((FrmMain)MdiParent).CurrFrmMemberData = this;
     }
 
     /// <summary>

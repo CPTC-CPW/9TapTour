@@ -43,9 +43,7 @@ public partial class FrmMainMenu : Form
     /// <param name="e"></param>
     private void btnAbout_Click(object sender, EventArgs e)
     {
-        ((FrmMain)MdiParent).menuHighlight(btnAbout.Text); // Highlighting corresponding tab; "About"
-        ((FrmMain)MdiParent).AboutToolStripMenuItem_Click(sender, e); // Activate the click method for About
-        enableHomeNavigation();
+        ((FrmMain)MdiParent).AboutToolStripMenuItem.PerformClick(); // Activate the click method for About
     }
 
     /// <summary>
@@ -55,18 +53,7 @@ public partial class FrmMainMenu : Form
     /// <param name="e"></param>
     private void btnMemberData_Click(object sender, EventArgs e)
     {
-        ((FrmMain)MdiParent).menuHighlight(btnMemberData.Text); //"Member Info"
-        ((FrmMain)MdiParent).memberToolStripMenuItem_Click(sender, e);
-
-        enableHomeNavigation();
-    }
-
-    private void enableHomeNavigation()
-    {
-        if (FrmMain.ActiveForm is not FrmMainMenu)
-        {
-            ((FrmMain)MdiParent).Home.Enabled = true;
-        }
+        ((FrmMain)MdiParent).memberToolStripMenuItem.PerformClick();
     }
 
     /// <summary>
@@ -76,9 +63,7 @@ public partial class FrmMainMenu : Form
     /// <param name="e"></param>
     private void btnMemberScores_Click(object sender, EventArgs e)
     {
-        ((FrmMain)MdiParent).menuHighlight(btnMemberScores.Text); // "Member Scores"
-        ((FrmMain)MdiParent).tournamentToolStripMenuItem_Click(sender, e);
-        enableHomeNavigation();
+        ((FrmMain)MdiParent).tournamentToolStripMenuItem.PerformClick();
     }
 
     private void MainMenu_Paint(object sender, PaintEventArgs e)
@@ -87,7 +72,7 @@ public partial class FrmMainMenu : Form
         Font drawFont = new("Arial", 12);
         SolidBrush drawBrush = new(Color.White);
         PointF drawPoint = new(10, 2);
-        g.DrawString("Version: 3.1.4", drawFont, drawBrush, drawPoint);
+        g.DrawString("Version: 3.1.5", drawFont, drawBrush, drawPoint);
 #if DEBUG
         drawBrush.Color = Color.Red;
         drawPoint.Y += 16;
