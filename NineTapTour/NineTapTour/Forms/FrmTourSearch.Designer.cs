@@ -51,7 +51,7 @@
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(260, 20);
             this.txtSearch.TabIndex = 0;
-            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            this.txtSearch.TextChanged += new System.EventHandler(this.TxtSearch_TextChanged);
             // 
             // btnSearch
             // 
@@ -62,7 +62,7 @@
             this.btnSearch.TabIndex = 3;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
-            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            this.btnSearch.Click += new System.EventHandler(this.BtnSearch_Click);
             // 
             // btnAccept
             // 
@@ -73,7 +73,7 @@
             this.btnAccept.TabIndex = 5;
             this.btnAccept.Text = "Accept";
             this.btnAccept.UseVisualStyleBackColor = true;
-            this.btnAccept.Click += new System.EventHandler(this.btnAccept_Click);
+            this.btnAccept.Click += new System.EventHandler(this.BtnAccept_Click);
             // 
             // btnClear
             // 
@@ -84,7 +84,7 @@
             this.btnClear.TabIndex = 4;
             this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
             // 
             // txtEvent
             // 
@@ -93,7 +93,7 @@
             this.txtEvent.Name = "txtEvent";
             this.txtEvent.Size = new System.Drawing.Size(259, 20);
             this.txtEvent.TabIndex = 1;
-            this.txtEvent.TextChanged += new System.EventHandler(this.txtEvent_TextChanged);
+            this.txtEvent.TextChanged += new System.EventHandler(this.TxtEvent_TextChanged);
             // 
             // label1
             // 
@@ -120,7 +120,7 @@
             this.dtpFrom.Name = "dtpFrom";
             this.dtpFrom.Size = new System.Drawing.Size(200, 20);
             this.dtpFrom.TabIndex = 11;
-            this.dtpFrom.ValueChanged += new System.EventHandler(this.dtpFrom_ValueChanged);
+            this.dtpFrom.ValueChanged += new System.EventHandler(this.DtpFrom_ValueChanged);
             // 
             // listSearch
             // 
@@ -131,7 +131,7 @@
             this.listSearch.Size = new System.Drawing.Size(260, 160);
             this.listSearch.TabIndex = 6;
             this.listSearch.TabStop = false;
-            this.listSearch.SelectedIndexChanged += new System.EventHandler(this.listSearch_SelectedIndexChanged);
+            this.listSearch.SelectedIndexChanged += new System.EventHandler(this.ListSearch_SelectedIndexChanged);
             // 
             // dtpTo
             // 
@@ -140,7 +140,7 @@
             this.dtpTo.Name = "dtpTo";
             this.dtpTo.Size = new System.Drawing.Size(200, 20);
             this.dtpTo.TabIndex = 12;
-            this.dtpTo.ValueChanged += new System.EventHandler(this.dtpTo_ValueChanged);
+            this.dtpTo.ValueChanged += new System.EventHandler(this.DtpTo_ValueChanged);
             // 
             // label4
             // 
@@ -169,7 +169,7 @@
             this.chkDate.TabIndex = 15;
             this.chkDate.Text = "Search by date";
             this.chkDate.UseVisualStyleBackColor = true;
-            this.chkDate.CheckedChanged += new System.EventHandler(this.chkDate_CheckedChanged);
+            this.chkDate.CheckedChanged += new System.EventHandler(this.ChkDate_CheckedChanged);
             // 
             // FrmTourSearch
             // 

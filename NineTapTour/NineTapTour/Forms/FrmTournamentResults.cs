@@ -1,5 +1,5 @@
 ﻿using NineTapTour.Database;
-using CalcService = NineTapTour.Calculations.Calculations;
+using CalcService = NineTapTour.Calculations.TournamentCalculations;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,6 +12,7 @@ using NineTapTour.Models;
 using ClosedXML.Excel;
 using NineTapTour.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using NineTapTour.Helpers;
 
 namespace NineTapTour.Forms;
 
@@ -118,7 +119,7 @@ public partial class FrmTournamentResults : Form
 
             for (int i = 0; i < _dt2Day.Rows.Count; i++)
             {
-                var gameIdObj = _dt2Day.Rows[i][GAME_ID_COLUMN_NAME];
+                object gameIdObj = _dt2Day.Rows[i][GAME_ID_COLUMN_NAME];
                 if (gameIdObj == DBNull.Value || !int.TryParse(gameIdObj.ToString(), out int gameId) || gameId <= 0) continue;
 
                 if (!TryGet2DayPlaceGroup(_dt2Day.Rows[i], out int placeStart, out string placeLabel))
@@ -528,7 +529,7 @@ public partial class FrmTournamentResults : Form
 
         // Sort descending, assign places with tie detection
         teamRows.Sort((a, b) => b.CombinedHdcpTotal.CompareTo(a.CombinedHdcpTotal));
-        var teamPlaces = new int[teamRows.Count];
+        int[] teamPlaces = new int[teamRows.Count];
         if (teamRows.Count > 0)
         {
             teamPlaces[0] = 1;
@@ -910,7 +911,7 @@ public partial class FrmTournamentResults : Form
         if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
         if (dgvTournamentResults.Columns[e.ColumnIndex].Name != MEMBER_NUMBER_COLUMN_NAME) return;
 
-        var cellValue = dgvTournamentResults.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+        object cellValue = dgvTournamentResults.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
         string cellText = cellValue?.ToString()?.Trim() ?? "";
         if (!int.TryParse(cellText, out int memberNumber) || memberNumber <= 0) return;
 
@@ -1116,17 +1117,17 @@ public partial class FrmTournamentResults : Form
         placeStart = 0;
         if (string.IsNullOrWhiteSpace(text)) return false;
 
-        Match range = Regex.Match(text.Trim(), @"^(\d+)(st|nd|rd|th)?\s*-\s*(\d+)(st|nd|rd|th)?$", RegexOptions.IgnoreCase);
+        Match range = RegexHelpers.PlacingRange().Match(text.Trim());
         if (range.Success)
             return int.TryParse(range.Groups[1].Value, out placeStart) && placeStart > 0;
 
-        Match single = Regex.Match(text.Trim(), @"^(\d+)(st|nd|rd|th|T)?$", RegexOptions.IgnoreCase);
+        Match single = RegexHelpers.SinglePlacing().Match(text.Trim());
         return single.Success
             && int.TryParse(single.Groups[1].Value, out placeStart)
             && placeStart > 0;
     }
 
-    private bool TryGet2DayPlaceGroup(DataRow row, out int placeStart, out string placeLabel)
+    private static bool TryGet2DayPlaceGroup(DataRow row, out int placeStart, out string placeLabel)
     {
         placeStart = 0;
         placeLabel = "";
@@ -1160,7 +1161,7 @@ public partial class FrmTournamentResults : Form
             // Save 2-day results to DB via the DGV (which is bound to _dt2Day)
             for (int i = 0; i < dgvTournamentResults.RowCount; i++)
             {
-                var gameIdCell = dgvTournamentResults[GAME_ID_COLUMN_NAME, i].Value;
+                object gameIdCell = dgvTournamentResults[GAME_ID_COLUMN_NAME, i].Value;
                 if (gameIdCell == null || gameIdCell == DBNull.Value) continue;
                 if (!int.TryParse(gameIdCell.ToString(), out int gameId) || gameId <= 0) continue;
 
@@ -1273,137 +1274,135 @@ public partial class FrmTournamentResults : Form
 
         try
         {
-            using (var workbook = new XLWorkbook(saveFile))
+            using var workbook = new XLWorkbook(saveFile);
+            var ws = workbook.Worksheet(1);
+            ws.Cell(1, 1).Value = tourny.Location + tourny.Event;
+            ws.Cell(2, 1).Value = tourny.Date;
+
+            // For 2-Day tournaments, we need to change "Total Score" header
+            if (tourny.IsTwoDay)
+                ws.Cell(3, 7).Value = "Qualifying Score";
+
+            int excelRow = 4;
+            int i = 0;
+            while (i < exportTable.Rows.Count)
             {
-                var ws = workbook.Worksheet(1);
-                ws.Cell(1, 1).Value = tourny.Location + tourny.Event;
-                ws.Cell(2, 1).Value = tourny.Date;
-
-                // For 2-Day tournaments, we need to change "Total Score" header
+                var row = exportTable.Rows[i];
+                int currentPlace = 0;
+                string placeDisplay = row[PLACE_STANDING_COLUMN_NAME]?.ToString() ?? "";
                 if (tourny.IsTwoDay)
-                    ws.Cell(3, 7).Value = "Qualifying Score";
-
-                int excelRow = 4;
-                int i = 0;
-                while (i < exportTable.Rows.Count)
                 {
-                    var row = exportTable.Rows[i];
-                    int currentPlace = 0;
-                    string placeDisplay = row[PLACE_STANDING_COLUMN_NAME]?.ToString() ?? "";
-                    if (tourny.IsTwoDay)
-                    {
-                        if (TryParsePlaceStartFromText(row[PLACE_GROUP_LABEL_COLUMN_NAME]?.ToString(), out int parsedFromLabel))
-                            currentPlace = parsedFromLabel;
-                        else if (TryParsePlaceStartFromText(placeDisplay, out int parsedFromDisplay))
-                            currentPlace = parsedFromDisplay;
-                    }
-                    else
-                    {
-                        int.TryParse(placeDisplay.TrimEnd('T'), out currentPlace);
-                    }
+                    if (TryParsePlaceStartFromText(row[PLACE_GROUP_LABEL_COLUMN_NAME]?.ToString(), out int parsedFromLabel))
+                        currentPlace = parsedFromLabel;
+                    else if (TryParsePlaceStartFromText(placeDisplay, out int parsedFromDisplay))
+                        currentPlace = parsedFromDisplay;
+                }
+                else
+                {
+                    int.TryParse(placeDisplay.TrimEnd('T'), out currentPlace);
+                }
 
-                    // For regular late entries beyond the template range:
-                    if (excelRow >= 35)
-                    {
-                        ws.Row(excelRow).InsertRowsAbove(1);
-                        CopyRowCellStyles(ws, excelRow - 1, excelRow);
-                        ws.Range($"G{excelRow}:H{excelRow}").Merge();
-                    }
+                // For regular late entries beyond the template range:
+                if (excelRow >= 35)
+                {
+                    ws.Row(excelRow).InsertRowsAbove(1);
+                    CopyRowCellStyles(ws, excelRow - 1, excelRow);
+                    ws.Range($"G{excelRow}:H{excelRow}").Merge();
+                }
 
-                    // Check for tie: if previous or next row has the same place
-                    bool isTie = false;
-                    if (i > 0)
-                    {
-                        int prevPlace = 0;
-                        int.TryParse(exportTable.Rows[i - 1][PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out prevPlace);
-                        if (prevPlace == currentPlace) isTie = true;
-                    }
-                    if (i < exportTable.Rows.Count - 1)
-                    {
-                        int nextPlace = 0;
-                        int.TryParse(exportTable.Rows[i + 1][PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out nextPlace);
-                        if (nextPlace == currentPlace) isTie = true;
-                    }
-                    // Parse the progressive pot once; spVal = 0 if the cell is empty or non-numeric.
-                    decimal.TryParse(row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString(), out decimal spVal);
-                    // Use InvariantCulture so the decimal separator in the formula literal is always "."
-                    // regardless of the system locale (e.g. prevents "20,5" in German locales).
-                    string sidePotValue = spVal.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                // Check for tie: if previous or next row has the same place
+                bool isTie = false;
+                if (i > 0)
+                {
+                    int prevPlace = 0;
+                    int.TryParse(exportTable.Rows[i - 1][PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out prevPlace);
+                    if (prevPlace == currentPlace) isTie = true;
+                }
+                if (i < exportTable.Rows.Count - 1)
+                {
+                    int nextPlace = 0;
+                    int.TryParse(exportTable.Rows[i + 1][PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out nextPlace);
+                    if (nextPlace == currentPlace) isTie = true;
+                }
+                // Parse the progressive pot once; spVal = 0 if the cell is empty or non-numeric.
+                decimal.TryParse(row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString(), out decimal spVal);
+                // Use InvariantCulture so the decimal separator in the formula literal is always "."
+                // regardless of the system locale (e.g. prevents "20,5" in German locales).
+                string sidePotValue = spVal.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
-                    if (tourny.IsTwoDay)
-                    {
-                        string groupedLabel = row[PLACE_GROUP_LABEL_COLUMN_NAME]?.ToString();
-                        ws.Cell(excelRow, 1).Value = string.IsNullOrWhiteSpace(groupedLabel)
-                            ? placeDisplay
-                            : groupedLabel;
-                    }
-                    else
-                    {
-                        // Use ordinal with tie for place standing
-                        ws.Cell(excelRow, 1).Value = GetOrdinalWithTie(currentPlace, isTie);
-                    }
-                    ws.Cell(excelRow, 2).Value = row[FULLNAME_COLUMN_NAME]?.ToString();
-                    ws.Cell(excelRow, 6).Value = row[HANDICAP_COLUMN_NAME]?.ToString();
-                    ws.Cell(excelRow, 7).Value = row[TOTAL_SCORE_COLUMN_NAME]?.ToString();
-                    ws.Cell(excelRow, 9).Value = row[EARNINGS_COLUMN_NAME] != null
-                        ? double.TryParse(row[EARNINGS_COLUMN_NAME].ToString(), out var val)
-                            ? val.ToString("C0")
-                            : row[EARNINGS_COLUMN_NAME]?.ToString()
-                        : "$0";
-                    ws.Cell(excelRow, 11).Value = currentPlace;
-                    ws.Cell(excelRow, 12).Value = row[MEMBER_ID_COLUMN_NAME]?.ToString();
-                    ws.Cell(excelRow, 15).FormulaA1 = $"=I{excelRow}-M{excelRow}-N{excelRow}+{sidePotValue}";
-                    // Write as a numeric value so Excel treats it as a number, not text.
-                    ws.Cell(excelRow, 8).Value = spVal;
+                if (tourny.IsTwoDay)
+                {
+                    string groupedLabel = row[PLACE_GROUP_LABEL_COLUMN_NAME]?.ToString();
+                    ws.Cell(excelRow, 1).Value = string.IsNullOrWhiteSpace(groupedLabel)
+                        ? placeDisplay
+                        : groupedLabel;
+                }
+                else
+                {
+                    // Use ordinal with tie for place standing
+                    ws.Cell(excelRow, 1).Value = GetOrdinalWithTie(currentPlace, isTie);
+                }
+                ws.Cell(excelRow, 2).Value = row[FULLNAME_COLUMN_NAME]?.ToString();
+                ws.Cell(excelRow, 6).Value = row[HANDICAP_COLUMN_NAME]?.ToString();
+                ws.Cell(excelRow, 7).Value = row[TOTAL_SCORE_COLUMN_NAME]?.ToString();
+                ws.Cell(excelRow, 9).Value = row[EARNINGS_COLUMN_NAME] != null
+                    ? double.TryParse(row[EARNINGS_COLUMN_NAME].ToString(), out double val)
+                        ? val.ToString("C0")
+                        : row[EARNINGS_COLUMN_NAME]?.ToString()
+                    : "$0";
+                ws.Cell(excelRow, 11).Value = currentPlace;
+                ws.Cell(excelRow, 12).Value = row[MEMBER_ID_COLUMN_NAME]?.ToString();
+                ws.Cell(excelRow, 15).FormulaA1 = $"=I{excelRow}-M{excelRow}-N{excelRow}+{sidePotValue}";
+                // Write as a numeric value so Excel treats it as a number, not text.
+                ws.Cell(excelRow, 8).Value = spVal;
 
-                    // Highlight Membership$ (Column M) when membership is not current,
-                    // regardless of whether the bowler earned money this tournament.
-                    if (int.TryParse(Convert.ToString(row[MEMBER_ID_COLUMN_NAME]), out int memberNumber)
-                        && isMembershipCurrentByMemberNumber.TryGetValue(memberNumber, out bool isCurrent)
-                        && !isCurrent)
-                    {
-                        ws.Cell(excelRow, 13).Style.Fill.BackgroundColor = XLColor.Orange;
-                    }
+                // Highlight Membership$ (Column M) when membership is not current,
+                // regardless of whether the bowler earned money this tournament.
+                if (int.TryParse(Convert.ToString(row[MEMBER_ID_COLUMN_NAME]), out int memberNumber)
+                    && isMembershipCurrentByMemberNumber.TryGetValue(memberNumber, out bool isCurrent)
+                    && !isCurrent)
+                {
+                    ws.Cell(excelRow, 13).Style.Fill.BackgroundColor = XLColor.Orange;
+                }
 
-                    // Any entry that placed 1st–3rd gets a progressive pot row directly below it.
-                    // The template pre-formats those rows at positions 5, 7, and 9 (covering excelRows 4, 6, 8).
-                    // When extra ties push a 4th (or more) top-3 entry past row 8, insert a new row so the
-                    // progressive pot slot is always present regardless of how many bowlers tied into places 1–3.
-                    if (currentPlace >= 1 && currentPlace <= 3)
+                // Any entry that placed 1st–3rd gets a progressive pot row directly below it.
+                // The template pre-formats those rows at positions 5, 7, and 9 (covering excelRows 4, 6, 8).
+                // When extra ties push a 4th (or more) top-3 entry past row 8, insert a new row so the
+                // progressive pot slot is always present regardless of how many bowlers tied into places 1–3.
+                if (currentPlace >= 1 && currentPlace <= 3)
+                {
+                    if (excelRow > 8)
                     {
-                        if (excelRow > 8)
-                        {
-                            ws.Row(excelRow + 1).InsertRowsAbove(1);
-                            CopyRowCellStyles(ws, 9, excelRow + 1);
-                            ws.Range($"G{excelRow + 1}:H{excelRow + 1}").Merge();
-                        }
-                        // Reuse the already-parsed value — no second TryParse needed.
-                        ws.Cell(excelRow + 1, 9).Value = spVal;
-                        excelRow++;
+                        ws.Row(excelRow + 1).InsertRowsAbove(1);
+                        CopyRowCellStyles(ws, 9, excelRow + 1);
+                        ws.Range($"G{excelRow + 1}:H{excelRow + 1}").Merge();
                     }
-
-                    i++;
+                    // Reuse the already-parsed value — no second TryParse needed.
+                    ws.Cell(excelRow + 1, 9).Value = spVal;
                     excelRow++;
                 }
 
-                // Set total payout
-                double money = 0;
-                for (int k = 0; k < exportTable.Rows.Count; k++)
-                    money += Convert.ToDouble(exportTable.Rows[k][EARNINGS_COLUMN_NAME]);
-                ws.Cell(2, 8).Value = money;
+                i++;
+                excelRow++;
+            }
 
-                // Save dialog
-                SaveFileDialog savefile = new()
-                {
-                    Filter = FileHelper.GetExcelFilterStringForFileDialogs(),
-                    FileName = fileName
-                };
-                DialogResult result = savefile.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    workbook.SaveAs(savefile.FileName);
-                    MessageBox.Show("Excel file created , you can find the file at: " + savefile.FileName);
-                }
+            // Set total payout
+            double money = 0;
+            for (int k = 0; k < exportTable.Rows.Count; k++)
+                money += Convert.ToDouble(exportTable.Rows[k][EARNINGS_COLUMN_NAME]);
+            ws.Cell(2, 8).Value = money;
+
+            // Save dialog
+            SaveFileDialog savefile = new()
+            {
+                Filter = FileHelper.GetExcelFilterStringForFileDialogs(),
+                FileName = fileName
+            };
+            DialogResult result = savefile.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                workbook.SaveAs(savefile.FileName);
+                MessageBox.Show("Excel file created , you can find the file at: " + savefile.FileName);
             }
         }
         catch (Exception ex)
@@ -1457,7 +1456,7 @@ public partial class FrmTournamentResults : Form
                 }
                 else
                 {
-                    clientRequested = Calculations.Calculations.MakeTopMembersByPlacementList(winners, clientInput);
+                    clientRequested = Calculations.TournamentCalculations.MakeTopMembersByPlacementList(winners, clientInput);
                 }
 
                 // For doubles the grid shows 2 rows per team; scale the display slot count accordingly
@@ -1478,7 +1477,7 @@ public partial class FrmTournamentResults : Form
     /// </summary>
     private static bool IsProgressivePotLine(string text)
     {
-        return text.IndexOf("progressive", StringComparison.OrdinalIgnoreCase) >= 0;
+        return text.Contains("progressive", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool TryExtractFirstAmount(string text, out decimal amount)

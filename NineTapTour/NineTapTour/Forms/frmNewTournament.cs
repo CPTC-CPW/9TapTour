@@ -146,7 +146,7 @@ namespace NineTapTour.Forms
         {
             FrmTourSearch getEdit = new();
             getEdit.ShowDialog();
-            tourToEdit = getEdit.getResult();
+            tourToEdit = getEdit.GetResult();
 
             if (tourToEdit != null)
             {

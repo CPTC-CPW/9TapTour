@@ -63,7 +63,7 @@
             mainMenuToolStripMenuItem.Name = "mainMenuToolStripMenuItem";
             mainMenuToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             mainMenuToolStripMenuItem.Text = "Home";
-            mainMenuToolStripMenuItem.Click += mainMenuToolStripMenuItem_Click;
+            mainMenuToolStripMenuItem.Click += MainMenuToolStripMenuItem_Click;
             // 
             // memberToolStripMenuItem
             // 
@@ -71,7 +71,7 @@
             memberToolStripMenuItem.Name = "memberToolStripMenuItem";
             memberToolStripMenuItem.Size = new System.Drawing.Size(88, 20);
             memberToolStripMenuItem.Text = "Member Info";
-            memberToolStripMenuItem.Click += memberToolStripMenuItem_Click;
+            memberToolStripMenuItem.Click += MemberDataToolStripMenuItem_Click;
             // 
             // tournamentToolStripMenuItem
             // 
@@ -79,7 +79,7 @@
             tournamentToolStripMenuItem.Name = "tournamentToolStripMenuItem";
             tournamentToolStripMenuItem.Size = new System.Drawing.Size(101, 20);
             tournamentToolStripMenuItem.Text = "Member Scores";
-            tournamentToolStripMenuItem.Click += tournamentToolStripMenuItem_Click;
+            tournamentToolStripMenuItem.Click += TournamentToolStripMenuItem_Click;
             // 
             // AboutToolStripMenuItem
             // 
@@ -115,14 +115,14 @@
             updateInactiveMembersToolStripMenuItem1.Name = "updateInactiveMembersToolStripMenuItem1";
             updateInactiveMembersToolStripMenuItem1.Size = new System.Drawing.Size(209, 22);
             updateInactiveMembersToolStripMenuItem1.Text = "Update Inactive Members";
-            updateInactiveMembersToolStripMenuItem1.Click += updateInactiveMembersToolStripMenuItem1_Click;
+            updateInactiveMembersToolStripMenuItem1.Click += UpdateInactiveMembersToolStripMenuItem1_Click;
             // 
             // labelPrintToolStripMenuItem
             // 
             labelPrintToolStripMenuItem.Name = "labelPrintToolStripMenuItem";
             labelPrintToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             labelPrintToolStripMenuItem.Text = "Print Member Labels";
-            labelPrintToolStripMenuItem.Click += labelPrintToolStripMenuItem_Click;
+            labelPrintToolStripMenuItem.Click += LabelPrintToolStripMenuItem_Click;
             // 
             // toolStripMenuItem1
             // 
