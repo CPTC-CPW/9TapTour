@@ -28,1256 +28,1232 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMemberData));
-            this.txtLastName = new System.Windows.Forms.TextBox();
-            this.txtFirstName = new System.Windows.Forms.TextBox();
-            this.txtMiddleInitial = new System.Windows.Forms.TextBox();
-            this.lblLastName = new System.Windows.Forms.Label();
-            this.lblFirstName = new System.Windows.Forms.Label();
-            this.lblMiddleIntial = new System.Windows.Forms.Label();
-            this.lblMemberNum = new System.Windows.Forms.Label();
-            this.txtMemberNumber = new System.Windows.Forms.TextBox();
-            this.grpMemberInfo = new System.Windows.Forms.GroupBox();
-            this.txtDOB = new System.Windows.Forms.TextBox();
-            this.lblStateValidation = new System.Windows.Forms.Label();
-            this.lblSSNValidation = new System.Windows.Forms.Label();
-            this.lblReferralsValidation = new System.Windows.Forms.Label();
-            this.lblDateJoinedValidation = new System.Windows.Forms.Label();
-            this.lblDOBValidation = new System.Windows.Forms.Label();
-            this.txtRejoinDate = new System.Windows.Forms.MaskedTextBox();
-            this.txtDateJoined = new System.Windows.Forms.MaskedTextBox();
-            this.txtDOBMasked = new System.Windows.Forms.MaskedTextBox();
-            this.chbSocial = new System.Windows.Forms.CheckBox();
-            this.txtZip = new System.Windows.Forms.MaskedTextBox();
-            this.txtSSN = new System.Windows.Forms.MaskedTextBox();
-            this.txtPhone2 = new System.Windows.Forms.MaskedTextBox();
-            this.txtPhone = new System.Windows.Forms.MaskedTextBox();
-            this.lblEmail = new System.Windows.Forms.Label();
-            this.lblDOB = new System.Windows.Forms.Label();
-            this.lblRefferals = new System.Windows.Forms.Label();
-            this.lblPhoneNumber2 = new System.Windows.Forms.Label();
-            this.lblPhoneNumber = new System.Windows.Forms.Label();
-            this.lblDateJoined = new System.Windows.Forms.Label();
-            this.lblRejoinDate = new System.Windows.Forms.Label();
-            this.lblZip = new System.Windows.Forms.Label();
-            this.lblState = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtReferrals = new System.Windows.Forms.TextBox();
-            this.lblAddress = new System.Windows.Forms.Label();
-            this.lblSSN = new System.Windows.Forms.Label();
-            this.txtState = new System.Windows.Forms.TextBox();
-            this.txtCity = new System.Windows.Forms.TextBox();
-            this.txtAddress = new System.Windows.Forms.TextBox();
-            this.txtEmail = new System.Windows.Forms.TextBox();
-            this.groupRecord = new System.Windows.Forms.GroupBox();
-            this.cbHaw = new System.Windows.Forms.CheckBox();
-            this.btnImportData = new System.Windows.Forms.Button();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.btnNew = new System.Windows.Forms.Button();
-            this.grpRecordNumber = new System.Windows.Forms.GroupBox();
-            this.btnLastRecord = new System.Windows.Forms.Button();
-            this.btnFirstRecord = new System.Windows.Forms.Button();
-            this.btnRightArrow = new System.Windows.Forms.Button();
-            this.btnArrowLeft = new System.Windows.Forms.Button();
-            this.grpStats = new System.Windows.Forms.GroupBox();
-            this.btnStats = new System.Windows.Forms.Button();
-            this.grpSearchBy = new System.Windows.Forms.GroupBox();
-            this.btnMemberSearch = new System.Windows.Forms.Button();
-            this.grpPrinter = new System.Windows.Forms.GroupBox();
-            this.btnPrintActive = new System.Windows.Forms.Button();
-            this.btnThisRecap = new System.Windows.Forms.Button();
-            this.rdoFemale = new System.Windows.Forms.RadioButton();
-            this.rdoActive = new System.Windows.Forms.RadioButton();
-            this.rdoInActive = new System.Windows.Forms.RadioButton();
-            this.rdoMale = new System.Windows.Forms.RadioButton();
-            this.grpGender = new System.Windows.Forms.GroupBox();
-            this.grpStatus = new System.Windows.Forms.GroupBox();
-            this.chbSenior = new System.Windows.Forms.CheckBox();
-            this.chbLifetime = new System.Windows.Forms.CheckBox();
-            this.lblLastPaid = new System.Windows.Forms.Label();
-            this.lblPaymentInfo = new System.Windows.Forms.Label();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.txtLastPayment = new System.Windows.Forms.MaskedTextBox();
-            this.flpMemberData = new System.Windows.Forms.FlowLayoutPanel();
-            this.panel7 = new System.Windows.Forms.Panel();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.lblAverageValidation = new System.Windows.Forms.Label();
-            this.txtLastBowled = new System.Windows.Forms.MaskedTextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txt30GameAvg = new System.Windows.Forms.TextBox();
-            this.lblLastBowled = new System.Windows.Forms.Label();
-            this.lblMoneyEarned = new System.Windows.Forms.Label();
-            this.lblYET = new System.Windows.Forms.Label();
-            this.txtMoneyEarned = new System.Windows.Forms.TextBox();
-            this.txtEligibility = new System.Windows.Forms.TextBox();
-            this.lblBonus = new System.Windows.Forms.Label();
-            this.lblTournAvg = new System.Windows.Forms.Label();
-            this.lblAverage = new System.Windows.Forms.Label();
-            this.txtHandicap = new System.Windows.Forms.TextBox();
-            this.txtBonus = new System.Windows.Forms.TextBox();
-            this.txtAverage = new System.Windows.Forms.TextBox();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.lblFirstNameValidation = new System.Windows.Forms.Label();
-            this.lblLastNameValidation = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.txtNotes = new System.Windows.Forms.TextBox();
-            this.lblNotes = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.txtPaidTo = new System.Windows.Forms.TextBox();
-            this.lblPaidTo = new System.Windows.Forms.Label();
-            this.grpMemberInfo.SuspendLayout();
-            this.groupRecord.SuspendLayout();
-            this.grpRecordNumber.SuspendLayout();
-            this.grpStats.SuspendLayout();
-            this.grpSearchBy.SuspendLayout();
-            this.grpPrinter.SuspendLayout();
-            this.grpGender.SuspendLayout();
-            this.grpStatus.SuspendLayout();
-            this.flpMemberData.SuspendLayout();
-            this.panel7.SuspendLayout();
-            this.panel5.SuspendLayout();
-            this.panel4.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.SuspendLayout();
+            txtLastName = new System.Windows.Forms.TextBox();
+            txtFirstName = new System.Windows.Forms.TextBox();
+            txtMiddleInitial = new System.Windows.Forms.TextBox();
+            lblLastName = new System.Windows.Forms.Label();
+            lblFirstName = new System.Windows.Forms.Label();
+            lblMiddleIntial = new System.Windows.Forms.Label();
+            lblMemberNum = new System.Windows.Forms.Label();
+            txtMemberNumber = new System.Windows.Forms.TextBox();
+            grpMemberInfo = new System.Windows.Forms.GroupBox();
+            txtDOB = new System.Windows.Forms.TextBox();
+            lblStateValidation = new System.Windows.Forms.Label();
+            lblSSNValidation = new System.Windows.Forms.Label();
+            lblReferralsValidation = new System.Windows.Forms.Label();
+            lblDateJoinedValidation = new System.Windows.Forms.Label();
+            lblDOBValidation = new System.Windows.Forms.Label();
+            txtRejoinDate = new System.Windows.Forms.MaskedTextBox();
+            txtDateJoined = new System.Windows.Forms.MaskedTextBox();
+            txtDOBMasked = new System.Windows.Forms.MaskedTextBox();
+            chbSocial = new System.Windows.Forms.CheckBox();
+            txtZip = new System.Windows.Forms.MaskedTextBox();
+            txtSSN = new System.Windows.Forms.MaskedTextBox();
+            txtPhone2 = new System.Windows.Forms.MaskedTextBox();
+            txtPhone = new System.Windows.Forms.MaskedTextBox();
+            lblEmail = new System.Windows.Forms.Label();
+            lblDOB = new System.Windows.Forms.Label();
+            lblRefferals = new System.Windows.Forms.Label();
+            lblPhoneNumber2 = new System.Windows.Forms.Label();
+            lblPhoneNumber = new System.Windows.Forms.Label();
+            lblDateJoined = new System.Windows.Forms.Label();
+            lblRejoinDate = new System.Windows.Forms.Label();
+            lblZip = new System.Windows.Forms.Label();
+            lblState = new System.Windows.Forms.Label();
+            label1 = new System.Windows.Forms.Label();
+            txtReferrals = new System.Windows.Forms.TextBox();
+            lblAddress = new System.Windows.Forms.Label();
+            lblSSN = new System.Windows.Forms.Label();
+            txtState = new System.Windows.Forms.TextBox();
+            txtCity = new System.Windows.Forms.TextBox();
+            txtAddress = new System.Windows.Forms.TextBox();
+            txtEmail = new System.Windows.Forms.TextBox();
+            groupRecord = new System.Windows.Forms.GroupBox();
+            cbHaw = new System.Windows.Forms.CheckBox();
+            btnImportData = new System.Windows.Forms.Button();
+            btnSave = new System.Windows.Forms.Button();
+            btnNew = new System.Windows.Forms.Button();
+            grpRecordNumber = new System.Windows.Forms.GroupBox();
+            btnLastRecord = new System.Windows.Forms.Button();
+            btnFirstRecord = new System.Windows.Forms.Button();
+            btnRightArrow = new System.Windows.Forms.Button();
+            btnArrowLeft = new System.Windows.Forms.Button();
+            grpStats = new System.Windows.Forms.GroupBox();
+            btnStats = new System.Windows.Forms.Button();
+            grpSearchBy = new System.Windows.Forms.GroupBox();
+            btnMemberSearch = new System.Windows.Forms.Button();
+            grpPrinter = new System.Windows.Forms.GroupBox();
+            btnPrintActive = new System.Windows.Forms.Button();
+            btnThisRecap = new System.Windows.Forms.Button();
+            rdoFemale = new System.Windows.Forms.RadioButton();
+            rdoActive = new System.Windows.Forms.RadioButton();
+            rdoInActive = new System.Windows.Forms.RadioButton();
+            rdoMale = new System.Windows.Forms.RadioButton();
+            grpGender = new System.Windows.Forms.GroupBox();
+            grpStatus = new System.Windows.Forms.GroupBox();
+            chbSenior = new System.Windows.Forms.CheckBox();
+            chbLifetime = new System.Windows.Forms.CheckBox();
+            lblLastPaid = new System.Windows.Forms.Label();
+            lblPaymentInfo = new System.Windows.Forms.Label();
+            toolTip1 = new System.Windows.Forms.ToolTip(components);
+            txtLastPayment = new System.Windows.Forms.MaskedTextBox();
+            flpMemberData = new System.Windows.Forms.FlowLayoutPanel();
+            panel7 = new System.Windows.Forms.Panel();
+            panel5 = new System.Windows.Forms.Panel();
+            lblAverageValidation = new System.Windows.Forms.Label();
+            txtLastBowled = new System.Windows.Forms.MaskedTextBox();
+            label2 = new System.Windows.Forms.Label();
+            txt30GameAvg = new System.Windows.Forms.TextBox();
+            lblLastBowled = new System.Windows.Forms.Label();
+            lblMoneyEarned = new System.Windows.Forms.Label();
+            txtMoneyEarned = new System.Windows.Forms.TextBox();
+            lblBonus = new System.Windows.Forms.Label();
+            lblTournAvg = new System.Windows.Forms.Label();
+            lblAverage = new System.Windows.Forms.Label();
+            txtHandicap = new System.Windows.Forms.TextBox();
+            txtBonus = new System.Windows.Forms.TextBox();
+            txtAverage = new System.Windows.Forms.TextBox();
+            panel4 = new System.Windows.Forms.Panel();
+            lblFirstNameValidation = new System.Windows.Forms.Label();
+            lblLastNameValidation = new System.Windows.Forms.Label();
+            panel1 = new System.Windows.Forms.Panel();
+            txtNotes = new System.Windows.Forms.TextBox();
+            lblNotes = new System.Windows.Forms.Label();
+            panel2 = new System.Windows.Forms.Panel();
+            txtPaidTo = new System.Windows.Forms.TextBox();
+            lblPaidTo = new System.Windows.Forms.Label();
+            grpMemberInfo.SuspendLayout();
+            groupRecord.SuspendLayout();
+            grpRecordNumber.SuspendLayout();
+            grpStats.SuspendLayout();
+            grpSearchBy.SuspendLayout();
+            grpPrinter.SuspendLayout();
+            grpGender.SuspendLayout();
+            grpStatus.SuspendLayout();
+            flpMemberData.SuspendLayout();
+            panel7.SuspendLayout();
+            panel5.SuspendLayout();
+            panel4.SuspendLayout();
+            panel1.SuspendLayout();
+            panel2.SuspendLayout();
+            SuspendLayout();
             // 
             // txtLastName
             // 
-            this.txtLastName.BackColor = System.Drawing.SystemColors.Control;
-            this.txtLastName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtLastName.Location = new System.Drawing.Point(4, 31);
-            this.txtLastName.MaxLength = 50;
-            this.txtLastName.Name = "txtLastName";
-            this.txtLastName.Size = new System.Drawing.Size(226, 37);
-            this.txtLastName.TabIndex = 3;
-            this.txtLastName.Tag = "White";
-            this.txtLastName.TextChanged += new System.EventHandler(this.TxtLastName_TextChanged);
+            txtLastName.BackColor = System.Drawing.SystemColors.Control;
+            txtLastName.Font = new System.Drawing.Font("Calibri", 18F);
+            txtLastName.Location = new System.Drawing.Point(4, 31);
+            txtLastName.MaxLength = 50;
+            txtLastName.Name = "txtLastName";
+            txtLastName.Size = new System.Drawing.Size(226, 37);
+            txtLastName.TabIndex = 3;
+            txtLastName.Tag = "White";
+            txtLastName.TextChanged += TxtLastName_TextChanged;
             // 
             // txtFirstName
             // 
-            this.txtFirstName.BackColor = System.Drawing.SystemColors.Control;
-            this.txtFirstName.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtFirstName.Location = new System.Drawing.Point(238, 31);
-            this.txtFirstName.MaxLength = 50;
-            this.txtFirstName.Name = "txtFirstName";
-            this.txtFirstName.Size = new System.Drawing.Size(232, 37);
-            this.txtFirstName.TabIndex = 5;
-            this.txtFirstName.TextChanged += new System.EventHandler(this.TxtFirstName_TextChanged);
+            txtFirstName.BackColor = System.Drawing.SystemColors.Control;
+            txtFirstName.Font = new System.Drawing.Font("Calibri", 18F);
+            txtFirstName.Location = new System.Drawing.Point(238, 31);
+            txtFirstName.MaxLength = 50;
+            txtFirstName.Name = "txtFirstName";
+            txtFirstName.Size = new System.Drawing.Size(232, 37);
+            txtFirstName.TabIndex = 5;
+            txtFirstName.TextChanged += TxtFirstName_TextChanged;
             // 
             // txtMiddleInitial
             // 
-            this.txtMiddleInitial.BackColor = System.Drawing.SystemColors.Control;
-            this.txtMiddleInitial.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtMiddleInitial.Location = new System.Drawing.Point(488, 31);
-            this.txtMiddleInitial.MaxLength = 10;
-            this.txtMiddleInitial.Name = "txtMiddleInitial";
-            this.txtMiddleInitial.Size = new System.Drawing.Size(119, 37);
-            this.txtMiddleInitial.TabIndex = 7;
+            txtMiddleInitial.BackColor = System.Drawing.SystemColors.Control;
+            txtMiddleInitial.Font = new System.Drawing.Font("Calibri", 18F);
+            txtMiddleInitial.Location = new System.Drawing.Point(488, 31);
+            txtMiddleInitial.MaxLength = 10;
+            txtMiddleInitial.Name = "txtMiddleInitial";
+            txtMiddleInitial.Size = new System.Drawing.Size(119, 37);
+            txtMiddleInitial.TabIndex = 7;
             // 
             // lblLastName
             // 
-            this.lblLastName.AutoSize = true;
-            this.lblLastName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.lblLastName.Location = new System.Drawing.Point(4, 9);
-            this.lblLastName.Name = "lblLastName";
-            this.lblLastName.Size = new System.Drawing.Size(80, 19);
-            this.lblLastName.TabIndex = 2;
-            this.lblLastName.Text = "Last Name";
+            lblLastName.AutoSize = true;
+            lblLastName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
+            lblLastName.Location = new System.Drawing.Point(4, 9);
+            lblLastName.Name = "lblLastName";
+            lblLastName.Size = new System.Drawing.Size(80, 19);
+            lblLastName.TabIndex = 2;
+            lblLastName.Text = "Last Name";
             // 
             // lblFirstName
             // 
-            this.lblFirstName.AutoSize = true;
-            this.lblFirstName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.lblFirstName.Location = new System.Drawing.Point(242, 9);
-            this.lblFirstName.Name = "lblFirstName";
-            this.lblFirstName.Size = new System.Drawing.Size(82, 19);
-            this.lblFirstName.TabIndex = 4;
-            this.lblFirstName.Text = "First Name";
+            lblFirstName.AutoSize = true;
+            lblFirstName.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
+            lblFirstName.Location = new System.Drawing.Point(242, 9);
+            lblFirstName.Name = "lblFirstName";
+            lblFirstName.Size = new System.Drawing.Size(82, 19);
+            lblFirstName.TabIndex = 4;
+            lblFirstName.Text = "First Name";
             // 
             // lblMiddleIntial
             // 
-            this.lblMiddleIntial.AutoSize = true;
-            this.lblMiddleIntial.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.lblMiddleIntial.Location = new System.Drawing.Point(490, 9);
-            this.lblMiddleIntial.Name = "lblMiddleIntial";
-            this.lblMiddleIntial.Size = new System.Drawing.Size(103, 19);
-            this.lblMiddleIntial.TabIndex = 6;
-            this.lblMiddleIntial.Text = "Middle Initial ";
+            lblMiddleIntial.AutoSize = true;
+            lblMiddleIntial.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
+            lblMiddleIntial.Location = new System.Drawing.Point(490, 9);
+            lblMiddleIntial.Name = "lblMiddleIntial";
+            lblMiddleIntial.Size = new System.Drawing.Size(103, 19);
+            lblMiddleIntial.TabIndex = 6;
+            lblMiddleIntial.Text = "Middle Initial ";
             // 
             // lblMemberNum
             // 
-            this.lblMemberNum.AutoSize = true;
-            this.lblMemberNum.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.lblMemberNum.Location = new System.Drawing.Point(51, 88);
-            this.lblMemberNum.Name = "lblMemberNum";
-            this.lblMemberNum.Size = new System.Drawing.Size(127, 19);
-            this.lblMemberNum.TabIndex = 1;
-            this.lblMemberNum.Text = "Member Number";
+            lblMemberNum.AutoSize = true;
+            lblMemberNum.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
+            lblMemberNum.Location = new System.Drawing.Point(51, 88);
+            lblMemberNum.Name = "lblMemberNum";
+            lblMemberNum.Size = new System.Drawing.Size(127, 19);
+            lblMemberNum.TabIndex = 1;
+            lblMemberNum.Text = "Member Number";
             // 
             // txtMemberNumber
             // 
-            this.txtMemberNumber.Font = new System.Drawing.Font("Calibri", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtMemberNumber.Location = new System.Drawing.Point(21, 9);
-            this.txtMemberNumber.Multiline = true;
-            this.txtMemberNumber.Name = "txtMemberNumber";
-            this.txtMemberNumber.ReadOnly = true;
-            this.txtMemberNumber.Size = new System.Drawing.Size(186, 73);
-            this.txtMemberNumber.TabIndex = 0;
-            this.txtMemberNumber.TabStop = false;
-            this.txtMemberNumber.Text = "1";
-            this.txtMemberNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            txtMemberNumber.Font = new System.Drawing.Font("Calibri", 36F);
+            txtMemberNumber.Location = new System.Drawing.Point(21, 9);
+            txtMemberNumber.Multiline = true;
+            txtMemberNumber.Name = "txtMemberNumber";
+            txtMemberNumber.ReadOnly = true;
+            txtMemberNumber.Size = new System.Drawing.Size(186, 73);
+            txtMemberNumber.TabIndex = 0;
+            txtMemberNumber.TabStop = false;
+            txtMemberNumber.Text = "1";
+            txtMemberNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // grpMemberInfo
             // 
-            this.grpMemberInfo.Controls.Add(this.txtDOB);
-            this.grpMemberInfo.Controls.Add(this.lblStateValidation);
-            this.grpMemberInfo.Controls.Add(this.lblSSNValidation);
-            this.grpMemberInfo.Controls.Add(this.lblReferralsValidation);
-            this.grpMemberInfo.Controls.Add(this.lblDateJoinedValidation);
-            this.grpMemberInfo.Controls.Add(this.lblDOBValidation);
-            this.grpMemberInfo.Controls.Add(this.txtRejoinDate);
-            this.grpMemberInfo.Controls.Add(this.txtDateJoined);
-            this.grpMemberInfo.Controls.Add(this.txtDOBMasked);
-            this.grpMemberInfo.Controls.Add(this.chbSocial);
-            this.grpMemberInfo.Controls.Add(this.txtZip);
-            this.grpMemberInfo.Controls.Add(this.txtSSN);
-            this.grpMemberInfo.Controls.Add(this.txtPhone2);
-            this.grpMemberInfo.Controls.Add(this.txtPhone);
-            this.grpMemberInfo.Controls.Add(this.lblEmail);
-            this.grpMemberInfo.Controls.Add(this.lblDOB);
-            this.grpMemberInfo.Controls.Add(this.lblRefferals);
-            this.grpMemberInfo.Controls.Add(this.lblPhoneNumber2);
-            this.grpMemberInfo.Controls.Add(this.lblPhoneNumber);
-            this.grpMemberInfo.Controls.Add(this.lblDateJoined);
-            this.grpMemberInfo.Controls.Add(this.lblRejoinDate);
-            this.grpMemberInfo.Controls.Add(this.lblZip);
-            this.grpMemberInfo.Controls.Add(this.lblState);
-            this.grpMemberInfo.Controls.Add(this.label1);
-            this.grpMemberInfo.Controls.Add(this.txtReferrals);
-            this.grpMemberInfo.Controls.Add(this.lblAddress);
-            this.grpMemberInfo.Controls.Add(this.lblSSN);
-            this.grpMemberInfo.Controls.Add(this.txtState);
-            this.grpMemberInfo.Controls.Add(this.txtCity);
-            this.grpMemberInfo.Controls.Add(this.txtAddress);
-            this.grpMemberInfo.Controls.Add(this.txtEmail);
-            this.grpMemberInfo.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.grpMemberInfo.Location = new System.Drawing.Point(360, 93);
-            this.grpMemberInfo.Margin = new System.Windows.Forms.Padding(16, 3, 3, 3);
-            this.grpMemberInfo.Name = "grpMemberInfo";
-            this.grpMemberInfo.Size = new System.Drawing.Size(469, 278);
-            this.grpMemberInfo.TabIndex = 8;
-            this.grpMemberInfo.TabStop = false;
-            this.grpMemberInfo.Text = "Member Information";
+            grpMemberInfo.Controls.Add(txtDOB);
+            grpMemberInfo.Controls.Add(lblStateValidation);
+            grpMemberInfo.Controls.Add(lblSSNValidation);
+            grpMemberInfo.Controls.Add(lblReferralsValidation);
+            grpMemberInfo.Controls.Add(lblDateJoinedValidation);
+            grpMemberInfo.Controls.Add(lblDOBValidation);
+            grpMemberInfo.Controls.Add(txtRejoinDate);
+            grpMemberInfo.Controls.Add(txtDateJoined);
+            grpMemberInfo.Controls.Add(txtDOBMasked);
+            grpMemberInfo.Controls.Add(chbSocial);
+            grpMemberInfo.Controls.Add(txtZip);
+            grpMemberInfo.Controls.Add(txtSSN);
+            grpMemberInfo.Controls.Add(txtPhone2);
+            grpMemberInfo.Controls.Add(txtPhone);
+            grpMemberInfo.Controls.Add(lblEmail);
+            grpMemberInfo.Controls.Add(lblDOB);
+            grpMemberInfo.Controls.Add(lblRefferals);
+            grpMemberInfo.Controls.Add(lblPhoneNumber2);
+            grpMemberInfo.Controls.Add(lblPhoneNumber);
+            grpMemberInfo.Controls.Add(lblDateJoined);
+            grpMemberInfo.Controls.Add(lblRejoinDate);
+            grpMemberInfo.Controls.Add(lblZip);
+            grpMemberInfo.Controls.Add(lblState);
+            grpMemberInfo.Controls.Add(label1);
+            grpMemberInfo.Controls.Add(txtReferrals);
+            grpMemberInfo.Controls.Add(lblAddress);
+            grpMemberInfo.Controls.Add(lblSSN);
+            grpMemberInfo.Controls.Add(txtState);
+            grpMemberInfo.Controls.Add(txtCity);
+            grpMemberInfo.Controls.Add(txtAddress);
+            grpMemberInfo.Controls.Add(txtEmail);
+            grpMemberInfo.Font = new System.Drawing.Font("Calibri", 9.75F);
+            grpMemberInfo.Location = new System.Drawing.Point(360, 93);
+            grpMemberInfo.Margin = new System.Windows.Forms.Padding(16, 3, 3, 3);
+            grpMemberInfo.Name = "grpMemberInfo";
+            grpMemberInfo.Size = new System.Drawing.Size(469, 278);
+            grpMemberInfo.TabIndex = 8;
+            grpMemberInfo.TabStop = false;
+            grpMemberInfo.Text = "Member Information";
             // 
             // txtDOB
             // 
-            this.txtDOB.BackColor = System.Drawing.SystemColors.Control;
-            this.txtDOB.Location = new System.Drawing.Point(25, 41);
-            this.txtDOB.Name = "txtDOB";
-            this.txtDOB.Size = new System.Drawing.Size(109, 23);
-            this.txtDOB.TabIndex = 10;
-            this.txtDOB.TextChanged += new System.EventHandler(this.TxtDOB_TextChanged);
+            txtDOB.BackColor = System.Drawing.SystemColors.Control;
+            txtDOB.Location = new System.Drawing.Point(25, 41);
+            txtDOB.Name = "txtDOB";
+            txtDOB.Size = new System.Drawing.Size(109, 23);
+            txtDOB.TabIndex = 10;
+            txtDOB.TextChanged += TxtDOB_TextChanged;
             // 
             // lblStateValidation
             // 
-            this.lblStateValidation.AutoSize = true;
-            this.lblStateValidation.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblStateValidation.ForeColor = System.Drawing.Color.Red;
-            this.lblStateValidation.Location = new System.Drawing.Point(171, 119);
-            this.lblStateValidation.Name = "lblStateValidation";
-            this.lblStateValidation.Size = new System.Drawing.Size(59, 15);
-            this.lblStateValidation.TabIndex = 83;
-            this.lblStateValidation.Text = "Required.";
-            this.lblStateValidation.Visible = false;
+            lblStateValidation.AutoSize = true;
+            lblStateValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblStateValidation.ForeColor = System.Drawing.Color.Red;
+            lblStateValidation.Location = new System.Drawing.Point(171, 119);
+            lblStateValidation.Name = "lblStateValidation";
+            lblStateValidation.Size = new System.Drawing.Size(59, 15);
+            lblStateValidation.TabIndex = 83;
+            lblStateValidation.Text = "Required.";
+            lblStateValidation.Visible = false;
             // 
             // lblSSNValidation
             // 
-            this.lblSSNValidation.AutoSize = true;
-            this.lblSSNValidation.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblSSNValidation.ForeColor = System.Drawing.Color.Red;
-            this.lblSSNValidation.Location = new System.Drawing.Point(370, 23);
-            this.lblSSNValidation.Name = "lblSSNValidation";
-            this.lblSSNValidation.Size = new System.Drawing.Size(59, 15);
-            this.lblSSNValidation.TabIndex = 82;
-            this.lblSSNValidation.Text = "Required.";
-            this.lblSSNValidation.Visible = false;
+            lblSSNValidation.AutoSize = true;
+            lblSSNValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblSSNValidation.ForeColor = System.Drawing.Color.Red;
+            lblSSNValidation.Location = new System.Drawing.Point(370, 23);
+            lblSSNValidation.Name = "lblSSNValidation";
+            lblSSNValidation.Size = new System.Drawing.Size(59, 15);
+            lblSSNValidation.TabIndex = 82;
+            lblSSNValidation.Text = "Required.";
+            lblSSNValidation.Visible = false;
             // 
             // lblReferralsValidation
             // 
-            this.lblReferralsValidation.AutoSize = true;
-            this.lblReferralsValidation.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblReferralsValidation.ForeColor = System.Drawing.Color.Red;
-            this.lblReferralsValidation.Location = new System.Drawing.Point(404, 215);
-            this.lblReferralsValidation.Name = "lblReferralsValidation";
-            this.lblReferralsValidation.Size = new System.Drawing.Size(59, 15);
-            this.lblReferralsValidation.TabIndex = 81;
-            this.lblReferralsValidation.Text = "Required.";
-            this.lblReferralsValidation.Visible = false;
+            lblReferralsValidation.AutoSize = true;
+            lblReferralsValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblReferralsValidation.ForeColor = System.Drawing.Color.Red;
+            lblReferralsValidation.Location = new System.Drawing.Point(404, 215);
+            lblReferralsValidation.Name = "lblReferralsValidation";
+            lblReferralsValidation.Size = new System.Drawing.Size(59, 15);
+            lblReferralsValidation.TabIndex = 81;
+            lblReferralsValidation.Text = "Required.";
+            lblReferralsValidation.Visible = false;
             // 
             // lblDateJoinedValidation
             // 
-            this.lblDateJoinedValidation.AutoSize = true;
-            this.lblDateJoinedValidation.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblDateJoinedValidation.ForeColor = System.Drawing.Color.Red;
-            this.lblDateJoinedValidation.Location = new System.Drawing.Point(342, 77);
-            this.lblDateJoinedValidation.Name = "lblDateJoinedValidation";
-            this.lblDateJoinedValidation.Size = new System.Drawing.Size(85, 15);
-            this.lblDateJoinedValidation.TabIndex = 79;
-            this.lblDateJoinedValidation.Text = "Date required.";
-            this.lblDateJoinedValidation.Visible = false;
+            lblDateJoinedValidation.AutoSize = true;
+            lblDateJoinedValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblDateJoinedValidation.ForeColor = System.Drawing.Color.Red;
+            lblDateJoinedValidation.Location = new System.Drawing.Point(342, 77);
+            lblDateJoinedValidation.Name = "lblDateJoinedValidation";
+            lblDateJoinedValidation.Size = new System.Drawing.Size(85, 15);
+            lblDateJoinedValidation.TabIndex = 79;
+            lblDateJoinedValidation.Text = "Date required.";
+            lblDateJoinedValidation.Visible = false;
             // 
             // lblDOBValidation
             // 
-            this.lblDOBValidation.AutoSize = true;
-            this.lblDOBValidation.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblDOBValidation.ForeColor = System.Drawing.Color.Red;
-            this.lblDOBValidation.Location = new System.Drawing.Point(143, 44);
-            this.lblDOBValidation.Name = "lblDOBValidation";
-            this.lblDOBValidation.Size = new System.Drawing.Size(132, 15);
-            this.lblDOBValidation.TabIndex = 76;
-            this.lblDOBValidation.Text = "Date of birth incorrect.";
-            this.lblDOBValidation.Visible = false;
+            lblDOBValidation.AutoSize = true;
+            lblDOBValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblDOBValidation.ForeColor = System.Drawing.Color.Red;
+            lblDOBValidation.Location = new System.Drawing.Point(143, 44);
+            lblDOBValidation.Name = "lblDOBValidation";
+            lblDOBValidation.Size = new System.Drawing.Size(132, 15);
+            lblDOBValidation.TabIndex = 76;
+            lblDOBValidation.Text = "Date of birth incorrect.";
+            lblDOBValidation.Visible = false;
             // 
             // txtRejoinDate
             // 
-            this.txtRejoinDate.BackColor = System.Drawing.SystemColors.Control;
-            this.txtRejoinDate.Location = new System.Drawing.Point(344, 181);
-            this.txtRejoinDate.Mask = "00/00/0000";
-            this.txtRejoinDate.Name = "txtRejoinDate";
-            this.txtRejoinDate.Size = new System.Drawing.Size(100, 23);
-            this.txtRejoinDate.TabIndex = 30;
-            this.txtRejoinDate.ValidatingType = typeof(System.DateTime);
-            this.txtRejoinDate.Click += new System.EventHandler(this.MtxtBox_Click);
+            txtRejoinDate.BackColor = System.Drawing.SystemColors.Control;
+            txtRejoinDate.Location = new System.Drawing.Point(344, 181);
+            txtRejoinDate.Mask = "00/00/0000";
+            txtRejoinDate.Name = "txtRejoinDate";
+            txtRejoinDate.Size = new System.Drawing.Size(100, 23);
+            txtRejoinDate.TabIndex = 30;
+            txtRejoinDate.ValidatingType = typeof(System.DateTime);
+            txtRejoinDate.Click += MtxtBox_Click;
             // 
             // txtDateJoined
             // 
-            this.txtDateJoined.BackColor = System.Drawing.SystemColors.Control;
-            this.txtDateJoined.Location = new System.Drawing.Point(344, 111);
-            this.txtDateJoined.Mask = "00/00/0000";
-            this.txtDateJoined.Name = "txtDateJoined";
-            this.txtDateJoined.Size = new System.Drawing.Size(100, 23);
-            this.txtDateJoined.TabIndex = 28;
-            this.txtDateJoined.ValidatingType = typeof(System.DateTime);
-            this.txtDateJoined.Click += new System.EventHandler(this.MtxtBox_Click);
+            txtDateJoined.BackColor = System.Drawing.SystemColors.Control;
+            txtDateJoined.Location = new System.Drawing.Point(344, 111);
+            txtDateJoined.Mask = "00/00/0000";
+            txtDateJoined.Name = "txtDateJoined";
+            txtDateJoined.Size = new System.Drawing.Size(100, 23);
+            txtDateJoined.TabIndex = 28;
+            txtDateJoined.ValidatingType = typeof(System.DateTime);
+            txtDateJoined.Click += MtxtBox_Click;
             // 
             // txtDOBMasked
             // 
-            this.txtDOBMasked.Location = new System.Drawing.Point(25, 41);
-            this.txtDOBMasked.Mask = "00/00/0000";
-            this.txtDOBMasked.Name = "txtDOBMasked";
-            this.txtDOBMasked.Size = new System.Drawing.Size(109, 23);
-            this.txtDOBMasked.TabIndex = 0;
-            this.txtDOBMasked.TabStop = false;
-            this.txtDOBMasked.ValidatingType = typeof(System.DateTime);
-            this.txtDOBMasked.Click += new System.EventHandler(this.MtxtBox_Click);
+            txtDOBMasked.Location = new System.Drawing.Point(25, 41);
+            txtDOBMasked.Mask = "00/00/0000";
+            txtDOBMasked.Name = "txtDOBMasked";
+            txtDOBMasked.Size = new System.Drawing.Size(109, 23);
+            txtDOBMasked.TabIndex = 0;
+            txtDOBMasked.TabStop = false;
+            txtDOBMasked.ValidatingType = typeof(System.DateTime);
+            txtDOBMasked.Click += MtxtBox_Click;
             // 
             // chbSocial
             // 
-            this.chbSocial.AutoSize = true;
-            this.chbSocial.Location = new System.Drawing.Point(323, 45);
-            this.chbSocial.Name = "chbSocial";
-            this.chbSocial.Size = new System.Drawing.Size(15, 14);
-            this.chbSocial.TabIndex = 33;
-            this.chbSocial.UseVisualStyleBackColor = true;
-            this.chbSocial.CheckedChanged += new System.EventHandler(this.ChbSocial_CheckedChanged);
+            chbSocial.AutoSize = true;
+            chbSocial.Location = new System.Drawing.Point(323, 45);
+            chbSocial.Name = "chbSocial";
+            chbSocial.Size = new System.Drawing.Size(15, 14);
+            chbSocial.TabIndex = 33;
+            chbSocial.UseVisualStyleBackColor = true;
+            chbSocial.CheckedChanged += ChbSocial_CheckedChanged;
             // 
             // txtZip
             // 
-            this.txtZip.BackColor = System.Drawing.SystemColors.Control;
-            this.txtZip.HideSelection = false;
-            this.txtZip.Location = new System.Drawing.Point(245, 137);
-            this.txtZip.Mask = "00000";
-            this.txtZip.Name = "txtZip";
-            this.txtZip.ShortcutsEnabled = false;
-            this.txtZip.Size = new System.Drawing.Size(70, 23);
-            this.txtZip.TabIndex = 20;
-            this.txtZip.Click += new System.EventHandler(this.MtxtBox_Click);
+            txtZip.BackColor = System.Drawing.SystemColors.Control;
+            txtZip.HideSelection = false;
+            txtZip.Location = new System.Drawing.Point(245, 137);
+            txtZip.Mask = "00000";
+            txtZip.Name = "txtZip";
+            txtZip.ShortcutsEnabled = false;
+            txtZip.Size = new System.Drawing.Size(70, 23);
+            txtZip.TabIndex = 20;
+            txtZip.Click += MtxtBox_Click;
             // 
             // txtSSN
             // 
-            this.txtSSN.BackColor = System.Drawing.SystemColors.Control;
-            this.txtSSN.Location = new System.Drawing.Point(344, 41);
-            this.txtSSN.Mask = "000-00-0000";
-            this.txtSSN.Name = "txtSSN";
-            this.txtSSN.PasswordChar = '*';
-            this.txtSSN.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtSSN.Size = new System.Drawing.Size(100, 23);
-            this.txtSSN.TabIndex = 12;
-            this.txtSSN.Click += new System.EventHandler(this.MtxtBox_Click);
+            txtSSN.BackColor = System.Drawing.SystemColors.Control;
+            txtSSN.Location = new System.Drawing.Point(344, 41);
+            txtSSN.Mask = "000-00-0000";
+            txtSSN.Name = "txtSSN";
+            txtSSN.PasswordChar = '*';
+            txtSSN.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            txtSSN.Size = new System.Drawing.Size(100, 23);
+            txtSSN.TabIndex = 12;
+            txtSSN.Click += MtxtBox_Click;
             // 
             // txtPhone2
             // 
-            this.txtPhone2.BackColor = System.Drawing.SystemColors.Control;
-            this.txtPhone2.Location = new System.Drawing.Point(139, 185);
-            this.txtPhone2.Mask = "(999) 000-0000";
-            this.txtPhone2.Name = "txtPhone2";
-            this.txtPhone2.Size = new System.Drawing.Size(100, 23);
-            this.txtPhone2.TabIndex = 24;
-            this.txtPhone2.Click += new System.EventHandler(this.MtxtBox_Click);
+            txtPhone2.BackColor = System.Drawing.SystemColors.Control;
+            txtPhone2.Location = new System.Drawing.Point(139, 185);
+            txtPhone2.Mask = "(999) 000-0000";
+            txtPhone2.Name = "txtPhone2";
+            txtPhone2.Size = new System.Drawing.Size(100, 23);
+            txtPhone2.TabIndex = 24;
+            txtPhone2.Click += MtxtBox_Click;
             // 
             // txtPhone
             // 
-            this.txtPhone.BackColor = System.Drawing.SystemColors.Control;
-            this.txtPhone.Location = new System.Drawing.Point(25, 185);
-            this.txtPhone.Mask = "(999) 000-0000";
-            this.txtPhone.Name = "txtPhone";
-            this.txtPhone.Size = new System.Drawing.Size(100, 23);
-            this.txtPhone.TabIndex = 22;
-            this.txtPhone.Click += new System.EventHandler(this.MtxtBox_Click);
+            txtPhone.BackColor = System.Drawing.SystemColors.Control;
+            txtPhone.Location = new System.Drawing.Point(25, 185);
+            txtPhone.Mask = "(999) 000-0000";
+            txtPhone.Name = "txtPhone";
+            txtPhone.Size = new System.Drawing.Size(100, 23);
+            txtPhone.TabIndex = 22;
+            txtPhone.Click += MtxtBox_Click;
             // 
             // lblEmail
             // 
-            this.lblEmail.AutoSize = true;
-            this.lblEmail.Location = new System.Drawing.Point(22, 215);
-            this.lblEmail.Name = "lblEmail";
-            this.lblEmail.Size = new System.Drawing.Size(38, 15);
-            this.lblEmail.TabIndex = 25;
-            this.lblEmail.Text = "Email";
+            lblEmail.AutoSize = true;
+            lblEmail.Location = new System.Drawing.Point(22, 215);
+            lblEmail.Name = "lblEmail";
+            lblEmail.Size = new System.Drawing.Size(38, 15);
+            lblEmail.TabIndex = 25;
+            lblEmail.Text = "Email";
             // 
             // lblDOB
             // 
-            this.lblDOB.AutoSize = true;
-            this.lblDOB.Location = new System.Drawing.Point(22, 23);
-            this.lblDOB.Name = "lblDOB";
-            this.lblDOB.Size = new System.Drawing.Size(76, 15);
-            this.lblDOB.TabIndex = 9;
-            this.lblDOB.Text = "Date of Birth";
+            lblDOB.AutoSize = true;
+            lblDOB.Location = new System.Drawing.Point(22, 23);
+            lblDOB.Name = "lblDOB";
+            lblDOB.Size = new System.Drawing.Size(76, 15);
+            lblDOB.TabIndex = 9;
+            lblDOB.Text = "Date of Birth";
             // 
             // lblRefferals
             // 
-            this.lblRefferals.AutoSize = true;
-            this.lblRefferals.Location = new System.Drawing.Point(341, 215);
-            this.lblRefferals.Name = "lblRefferals";
-            this.lblRefferals.Size = new System.Drawing.Size(57, 15);
-            this.lblRefferals.TabIndex = 31;
-            this.lblRefferals.Text = "Referrals";
+            lblRefferals.AutoSize = true;
+            lblRefferals.Location = new System.Drawing.Point(341, 215);
+            lblRefferals.Name = "lblRefferals";
+            lblRefferals.Size = new System.Drawing.Size(57, 15);
+            lblRefferals.TabIndex = 31;
+            lblRefferals.Text = "Referrals";
             // 
             // lblPhoneNumber2
             // 
-            this.lblPhoneNumber2.AutoSize = true;
-            this.lblPhoneNumber2.Location = new System.Drawing.Point(136, 167);
-            this.lblPhoneNumber2.Name = "lblPhoneNumber2";
-            this.lblPhoneNumber2.Size = new System.Drawing.Size(97, 15);
-            this.lblPhoneNumber2.TabIndex = 23;
-            this.lblPhoneNumber2.Text = "Phone Number 2";
+            lblPhoneNumber2.AutoSize = true;
+            lblPhoneNumber2.Location = new System.Drawing.Point(136, 167);
+            lblPhoneNumber2.Name = "lblPhoneNumber2";
+            lblPhoneNumber2.Size = new System.Drawing.Size(97, 15);
+            lblPhoneNumber2.TabIndex = 23;
+            lblPhoneNumber2.Text = "Phone Number 2";
             // 
             // lblPhoneNumber
             // 
-            this.lblPhoneNumber.AutoSize = true;
-            this.lblPhoneNumber.Location = new System.Drawing.Point(22, 167);
-            this.lblPhoneNumber.Name = "lblPhoneNumber";
-            this.lblPhoneNumber.Size = new System.Drawing.Size(87, 15);
-            this.lblPhoneNumber.TabIndex = 21;
-            this.lblPhoneNumber.Text = "Phone Number";
+            lblPhoneNumber.AutoSize = true;
+            lblPhoneNumber.Location = new System.Drawing.Point(22, 167);
+            lblPhoneNumber.Name = "lblPhoneNumber";
+            lblPhoneNumber.Size = new System.Drawing.Size(87, 15);
+            lblPhoneNumber.TabIndex = 21;
+            lblPhoneNumber.Text = "Phone Number";
             // 
             // lblDateJoined
             // 
-            this.lblDateJoined.AutoSize = true;
-            this.lblDateJoined.Location = new System.Drawing.Point(341, 92);
-            this.lblDateJoined.Name = "lblDateJoined";
-            this.lblDateJoined.Size = new System.Drawing.Size(70, 15);
-            this.lblDateJoined.TabIndex = 27;
-            this.lblDateJoined.Text = "Date Joined";
+            lblDateJoined.AutoSize = true;
+            lblDateJoined.Location = new System.Drawing.Point(341, 92);
+            lblDateJoined.Name = "lblDateJoined";
+            lblDateJoined.Size = new System.Drawing.Size(70, 15);
+            lblDateJoined.TabIndex = 27;
+            lblDateJoined.Text = "Date Joined";
             // 
             // lblRejoinDate
             // 
-            this.lblRejoinDate.AutoSize = true;
-            this.lblRejoinDate.Location = new System.Drawing.Point(342, 157);
-            this.lblRejoinDate.Name = "lblRejoinDate";
-            this.lblRejoinDate.Size = new System.Drawing.Size(70, 15);
-            this.lblRejoinDate.TabIndex = 29;
-            this.lblRejoinDate.Text = "Rejoin Date";
+            lblRejoinDate.AutoSize = true;
+            lblRejoinDate.Location = new System.Drawing.Point(342, 157);
+            lblRejoinDate.Name = "lblRejoinDate";
+            lblRejoinDate.Size = new System.Drawing.Size(70, 15);
+            lblRejoinDate.TabIndex = 29;
+            lblRejoinDate.Text = "Rejoin Date";
             // 
             // lblZip
             // 
-            this.lblZip.AutoSize = true;
-            this.lblZip.Location = new System.Drawing.Point(242, 119);
-            this.lblZip.Name = "lblZip";
-            this.lblZip.Size = new System.Drawing.Size(24, 15);
-            this.lblZip.TabIndex = 19;
-            this.lblZip.Text = "Zip";
+            lblZip.AutoSize = true;
+            lblZip.Location = new System.Drawing.Point(242, 119);
+            lblZip.Name = "lblZip";
+            lblZip.Size = new System.Drawing.Size(24, 15);
+            lblZip.TabIndex = 19;
+            lblZip.Text = "Zip";
             // 
             // lblState
             // 
-            this.lblState.AutoSize = true;
-            this.lblState.Location = new System.Drawing.Point(136, 119);
-            this.lblState.Name = "lblState";
-            this.lblState.Size = new System.Drawing.Size(34, 15);
-            this.lblState.TabIndex = 17;
-            this.lblState.Text = "State";
+            lblState.AutoSize = true;
+            lblState.Location = new System.Drawing.Point(136, 119);
+            lblState.Name = "lblState";
+            lblState.Size = new System.Drawing.Size(34, 15);
+            lblState.TabIndex = 17;
+            lblState.Text = "State";
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(22, 119);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(28, 15);
-            this.label1.TabIndex = 15;
-            this.label1.Text = "City";
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(22, 119);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(28, 15);
+            label1.TabIndex = 15;
+            label1.Text = "City";
             // 
             // txtReferrals
             // 
-            this.txtReferrals.BackColor = System.Drawing.SystemColors.Control;
-            this.txtReferrals.Location = new System.Drawing.Point(344, 233);
-            this.txtReferrals.MaxLength = 50;
-            this.txtReferrals.Name = "txtReferrals";
-            this.txtReferrals.Size = new System.Drawing.Size(54, 23);
-            this.txtReferrals.TabIndex = 32;
+            txtReferrals.BackColor = System.Drawing.SystemColors.Control;
+            txtReferrals.Location = new System.Drawing.Point(344, 233);
+            txtReferrals.MaxLength = 50;
+            txtReferrals.Name = "txtReferrals";
+            txtReferrals.Size = new System.Drawing.Size(54, 23);
+            txtReferrals.TabIndex = 32;
             // 
             // lblAddress
             // 
-            this.lblAddress.AutoSize = true;
-            this.lblAddress.Location = new System.Drawing.Point(22, 71);
-            this.lblAddress.Name = "lblAddress";
-            this.lblAddress.Size = new System.Drawing.Size(51, 15);
-            this.lblAddress.TabIndex = 13;
-            this.lblAddress.Text = "Address";
+            lblAddress.AutoSize = true;
+            lblAddress.Location = new System.Drawing.Point(22, 71);
+            lblAddress.Name = "lblAddress";
+            lblAddress.Size = new System.Drawing.Size(51, 15);
+            lblAddress.TabIndex = 13;
+            lblAddress.Text = "Address";
             // 
             // lblSSN
             // 
-            this.lblSSN.AutoSize = true;
-            this.lblSSN.Location = new System.Drawing.Point(341, 23);
-            this.lblSSN.Name = "lblSSN";
-            this.lblSSN.Size = new System.Drawing.Size(27, 15);
-            this.lblSSN.TabIndex = 11;
-            this.lblSSN.Text = "SSN";
+            lblSSN.AutoSize = true;
+            lblSSN.Location = new System.Drawing.Point(341, 23);
+            lblSSN.Name = "lblSSN";
+            lblSSN.Size = new System.Drawing.Size(27, 15);
+            lblSSN.TabIndex = 11;
+            lblSSN.Text = "SSN";
             // 
             // txtState
             // 
-            this.txtState.BackColor = System.Drawing.SystemColors.Control;
-            this.txtState.Location = new System.Drawing.Point(139, 137);
-            this.txtState.MaxLength = 2;
-            this.txtState.Name = "txtState";
-            this.txtState.Size = new System.Drawing.Size(32, 23);
-            this.txtState.TabIndex = 18;
+            txtState.BackColor = System.Drawing.SystemColors.Control;
+            txtState.Location = new System.Drawing.Point(139, 137);
+            txtState.MaxLength = 2;
+            txtState.Name = "txtState";
+            txtState.Size = new System.Drawing.Size(32, 23);
+            txtState.TabIndex = 18;
             // 
             // txtCity
             // 
-            this.txtCity.BackColor = System.Drawing.SystemColors.Control;
-            this.txtCity.Location = new System.Drawing.Point(25, 137);
-            this.txtCity.MaxLength = 20;
-            this.txtCity.Name = "txtCity";
-            this.txtCity.Size = new System.Drawing.Size(100, 23);
-            this.txtCity.TabIndex = 16;
+            txtCity.BackColor = System.Drawing.SystemColors.Control;
+            txtCity.Location = new System.Drawing.Point(25, 137);
+            txtCity.MaxLength = 20;
+            txtCity.Name = "txtCity";
+            txtCity.Size = new System.Drawing.Size(100, 23);
+            txtCity.TabIndex = 16;
             // 
             // txtAddress
             // 
-            this.txtAddress.BackColor = System.Drawing.SystemColors.Control;
-            this.txtAddress.Location = new System.Drawing.Point(25, 89);
-            this.txtAddress.MaxLength = 75;
-            this.txtAddress.Name = "txtAddress";
-            this.txtAddress.Size = new System.Drawing.Size(290, 23);
-            this.txtAddress.TabIndex = 14;
+            txtAddress.BackColor = System.Drawing.SystemColors.Control;
+            txtAddress.Location = new System.Drawing.Point(25, 89);
+            txtAddress.MaxLength = 75;
+            txtAddress.Name = "txtAddress";
+            txtAddress.Size = new System.Drawing.Size(290, 23);
+            txtAddress.TabIndex = 14;
             // 
             // txtEmail
             // 
-            this.txtEmail.BackColor = System.Drawing.SystemColors.Control;
-            this.txtEmail.Location = new System.Drawing.Point(25, 233);
-            this.txtEmail.MaxLength = 50;
-            this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(290, 23);
-            this.txtEmail.TabIndex = 26;
+            txtEmail.BackColor = System.Drawing.SystemColors.Control;
+            txtEmail.Location = new System.Drawing.Point(25, 233);
+            txtEmail.MaxLength = 50;
+            txtEmail.Name = "txtEmail";
+            txtEmail.Size = new System.Drawing.Size(290, 23);
+            txtEmail.TabIndex = 26;
             // 
             // groupRecord
             // 
-            this.groupRecord.Controls.Add(this.cbHaw);
-            this.groupRecord.Controls.Add(this.btnImportData);
-            this.groupRecord.Controls.Add(this.btnSave);
-            this.groupRecord.Controls.Add(this.btnNew);
-            this.groupRecord.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.groupRecord.Location = new System.Drawing.Point(854, 3);
-            this.groupRecord.Margin = new System.Windows.Forms.Padding(3, 3, 20, 3);
-            this.groupRecord.Name = "groupRecord";
-            this.groupRecord.Size = new System.Drawing.Size(108, 131);
-            this.groupRecord.TabIndex = 100;
-            this.groupRecord.TabStop = false;
-            this.groupRecord.Text = "Record";
+            groupRecord.Controls.Add(cbHaw);
+            groupRecord.Controls.Add(btnImportData);
+            groupRecord.Controls.Add(btnSave);
+            groupRecord.Controls.Add(btnNew);
+            groupRecord.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
+            groupRecord.Location = new System.Drawing.Point(854, 3);
+            groupRecord.Margin = new System.Windows.Forms.Padding(3, 3, 20, 3);
+            groupRecord.Name = "groupRecord";
+            groupRecord.Size = new System.Drawing.Size(108, 131);
+            groupRecord.TabIndex = 100;
+            groupRecord.TabStop = false;
+            groupRecord.Text = "Record";
             // 
             // cbHaw
             // 
-            this.cbHaw.AutoSize = true;
-            this.cbHaw.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.cbHaw.Location = new System.Drawing.Point(6, 102);
-            this.cbHaw.Name = "cbHaw";
-            this.cbHaw.Size = new System.Drawing.Size(84, 23);
-            this.cbHaw.TabIndex = 106;
-            this.cbHaw.TabStop = false;
-            this.cbHaw.Text = "Hawaii ?";
-            this.cbHaw.UseVisualStyleBackColor = true;
+            cbHaw.AutoSize = true;
+            cbHaw.Font = new System.Drawing.Font("Calibri", 12F);
+            cbHaw.Location = new System.Drawing.Point(6, 102);
+            cbHaw.Name = "cbHaw";
+            cbHaw.Size = new System.Drawing.Size(84, 23);
+            cbHaw.TabIndex = 106;
+            cbHaw.TabStop = false;
+            cbHaw.Text = "Hawaii ?";
+            cbHaw.UseVisualStyleBackColor = true;
             // 
             // btnImportData
             // 
-            this.btnImportData.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnImportData.Location = new System.Drawing.Point(19, 72);
-            this.btnImportData.Name = "btnImportData";
-            this.btnImportData.Size = new System.Drawing.Size(75, 23);
-            this.btnImportData.TabIndex = 104;
-            this.btnImportData.TabStop = false;
-            this.btnImportData.Text = "Import";
-            this.btnImportData.UseVisualStyleBackColor = true;
-            this.btnImportData.Click += new System.EventHandler(this.BtnImportData_Click);
+            btnImportData.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold);
+            btnImportData.Location = new System.Drawing.Point(19, 72);
+            btnImportData.Name = "btnImportData";
+            btnImportData.Size = new System.Drawing.Size(75, 23);
+            btnImportData.TabIndex = 104;
+            btnImportData.TabStop = false;
+            btnImportData.Text = "Import";
+            btnImportData.UseVisualStyleBackColor = true;
+            btnImportData.Click += BtnImportData_Click;
             // 
             // btnSave
             // 
-            this.btnSave.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnSave.Location = new System.Drawing.Point(17, 45);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 104;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
+            btnSave.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold);
+            btnSave.Location = new System.Drawing.Point(17, 45);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new System.Drawing.Size(75, 23);
+            btnSave.TabIndex = 104;
+            btnSave.Text = "Save";
+            btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += BtnSave_Click;
             // 
             // btnNew
             // 
-            this.btnNew.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnNew.Location = new System.Drawing.Point(17, 19);
-            this.btnNew.Name = "btnNew";
-            this.btnNew.Size = new System.Drawing.Size(75, 23);
-            this.btnNew.TabIndex = 102;
-            this.btnNew.Text = "New";
-            this.btnNew.UseVisualStyleBackColor = true;
-            this.btnNew.Click += new System.EventHandler(this.BtnNew_Click);
+            btnNew.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold);
+            btnNew.Location = new System.Drawing.Point(17, 19);
+            btnNew.Name = "btnNew";
+            btnNew.Size = new System.Drawing.Size(75, 23);
+            btnNew.TabIndex = 102;
+            btnNew.Text = "New";
+            btnNew.UseVisualStyleBackColor = true;
+            btnNew.Click += BtnNew_Click;
             // 
             // grpRecordNumber
             // 
-            this.grpRecordNumber.Controls.Add(this.btnLastRecord);
-            this.grpRecordNumber.Controls.Add(this.btnFirstRecord);
-            this.grpRecordNumber.Controls.Add(this.btnRightArrow);
-            this.grpRecordNumber.Controls.Add(this.btnArrowLeft);
-            this.grpRecordNumber.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.grpRecordNumber.Location = new System.Drawing.Point(3, 537);
-            this.grpRecordNumber.Margin = new System.Windows.Forms.Padding(3, 3, 30, 3);
-            this.grpRecordNumber.Name = "grpRecordNumber";
-            this.grpRecordNumber.Size = new System.Drawing.Size(195, 100);
-            this.grpRecordNumber.TabIndex = 64;
-            this.grpRecordNumber.TabStop = false;
-            this.grpRecordNumber.Text = "Record Number";
+            grpRecordNumber.Controls.Add(btnLastRecord);
+            grpRecordNumber.Controls.Add(btnFirstRecord);
+            grpRecordNumber.Controls.Add(btnRightArrow);
+            grpRecordNumber.Controls.Add(btnArrowLeft);
+            grpRecordNumber.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
+            grpRecordNumber.Location = new System.Drawing.Point(3, 537);
+            grpRecordNumber.Margin = new System.Windows.Forms.Padding(3, 3, 30, 3);
+            grpRecordNumber.Name = "grpRecordNumber";
+            grpRecordNumber.Size = new System.Drawing.Size(195, 100);
+            grpRecordNumber.TabIndex = 64;
+            grpRecordNumber.TabStop = false;
+            grpRecordNumber.Text = "Record Number";
             // 
             // btnLastRecord
             // 
-            this.btnLastRecord.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnLastRecord.Location = new System.Drawing.Point(98, 62);
-            this.btnLastRecord.Name = "btnLastRecord";
-            this.btnLastRecord.Size = new System.Drawing.Size(89, 25);
-            this.btnLastRecord.TabIndex = 68;
-            this.btnLastRecord.TabStop = false;
-            this.btnLastRecord.Text = "Last Record";
-            this.btnLastRecord.UseVisualStyleBackColor = true;
-            this.btnLastRecord.Click += new System.EventHandler(this.BtnLastRecord_Click);
+            btnLastRecord.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold);
+            btnLastRecord.Location = new System.Drawing.Point(98, 62);
+            btnLastRecord.Name = "btnLastRecord";
+            btnLastRecord.Size = new System.Drawing.Size(89, 25);
+            btnLastRecord.TabIndex = 68;
+            btnLastRecord.TabStop = false;
+            btnLastRecord.Text = "Last Record";
+            btnLastRecord.UseVisualStyleBackColor = true;
+            btnLastRecord.Click += BtnLastRecord_Click;
             // 
             // btnFirstRecord
             // 
-            this.btnFirstRecord.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnFirstRecord.Location = new System.Drawing.Point(7, 62);
-            this.btnFirstRecord.Name = "btnFirstRecord";
-            this.btnFirstRecord.Size = new System.Drawing.Size(89, 25);
-            this.btnFirstRecord.TabIndex = 67;
-            this.btnFirstRecord.TabStop = false;
-            this.btnFirstRecord.Text = "First Record";
-            this.btnFirstRecord.UseVisualStyleBackColor = true;
-            this.btnFirstRecord.Click += new System.EventHandler(this.BtnFirstRecord_Click);
+            btnFirstRecord.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold);
+            btnFirstRecord.Location = new System.Drawing.Point(7, 62);
+            btnFirstRecord.Name = "btnFirstRecord";
+            btnFirstRecord.Size = new System.Drawing.Size(89, 25);
+            btnFirstRecord.TabIndex = 67;
+            btnFirstRecord.TabStop = false;
+            btnFirstRecord.Text = "First Record";
+            btnFirstRecord.UseVisualStyleBackColor = true;
+            btnFirstRecord.Click += BtnFirstRecord_Click;
             // 
             // btnRightArrow
             // 
-            this.btnRightArrow.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnRightArrow.Location = new System.Drawing.Point(115, 25);
-            this.btnRightArrow.Name = "btnRightArrow";
-            this.btnRightArrow.Size = new System.Drawing.Size(55, 33);
-            this.btnRightArrow.TabIndex = 66;
-            this.btnRightArrow.TabStop = false;
-            this.btnRightArrow.Text = ">";
-            this.btnRightArrow.UseVisualStyleBackColor = true;
-            this.btnRightArrow.Click += new System.EventHandler(this.BtnRightArrow_Click);
+            btnRightArrow.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold);
+            btnRightArrow.Location = new System.Drawing.Point(115, 25);
+            btnRightArrow.Name = "btnRightArrow";
+            btnRightArrow.Size = new System.Drawing.Size(55, 33);
+            btnRightArrow.TabIndex = 66;
+            btnRightArrow.TabStop = false;
+            btnRightArrow.Text = ">";
+            btnRightArrow.UseVisualStyleBackColor = true;
+            btnRightArrow.Click += BtnRightArrow_Click;
             // 
             // btnArrowLeft
             // 
-            this.btnArrowLeft.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnArrowLeft.Location = new System.Drawing.Point(24, 25);
-            this.btnArrowLeft.Name = "btnArrowLeft";
-            this.btnArrowLeft.Size = new System.Drawing.Size(55, 33);
-            this.btnArrowLeft.TabIndex = 65;
-            this.btnArrowLeft.TabStop = false;
-            this.btnArrowLeft.Text = "<";
-            this.btnArrowLeft.UseVisualStyleBackColor = true;
-            this.btnArrowLeft.Click += new System.EventHandler(this.BtnArrowLeft_Click);
+            btnArrowLeft.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold);
+            btnArrowLeft.Location = new System.Drawing.Point(24, 25);
+            btnArrowLeft.Name = "btnArrowLeft";
+            btnArrowLeft.Size = new System.Drawing.Size(55, 33);
+            btnArrowLeft.TabIndex = 65;
+            btnArrowLeft.TabStop = false;
+            btnArrowLeft.Text = "<";
+            btnArrowLeft.UseVisualStyleBackColor = true;
+            btnArrowLeft.Click += BtnArrowLeft_Click;
             // 
             // grpStats
             // 
-            this.grpStats.Controls.Add(this.btnStats);
-            this.grpStats.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.grpStats.Location = new System.Drawing.Point(231, 537);
-            this.grpStats.Margin = new System.Windows.Forms.Padding(3, 3, 30, 3);
-            this.grpStats.Name = "grpStats";
-            this.grpStats.Size = new System.Drawing.Size(79, 94);
-            this.grpStats.TabIndex = 69;
-            this.grpStats.TabStop = false;
-            this.grpStats.Text = "Stats";
+            grpStats.Controls.Add(btnStats);
+            grpStats.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
+            grpStats.Location = new System.Drawing.Point(231, 537);
+            grpStats.Margin = new System.Windows.Forms.Padding(3, 3, 30, 3);
+            grpStats.Name = "grpStats";
+            grpStats.Size = new System.Drawing.Size(79, 94);
+            grpStats.TabIndex = 69;
+            grpStats.TabStop = false;
+            grpStats.Text = "Stats";
             // 
             // btnStats
             // 
-            this.btnStats.Location = new System.Drawing.Point(6, 41);
-            this.btnStats.Name = "btnStats";
-            this.btnStats.Size = new System.Drawing.Size(66, 34);
-            this.btnStats.TabIndex = 70;
-            this.btnStats.TabStop = false;
-            this.btnStats.Text = "Stats";
-            this.btnStats.UseVisualStyleBackColor = true;
-            this.btnStats.Click += new System.EventHandler(this.BtnStats_Click);
+            btnStats.Location = new System.Drawing.Point(6, 41);
+            btnStats.Name = "btnStats";
+            btnStats.Size = new System.Drawing.Size(66, 34);
+            btnStats.TabIndex = 70;
+            btnStats.TabStop = false;
+            btnStats.Text = "Stats";
+            btnStats.UseVisualStyleBackColor = true;
+            btnStats.Click += BtnStats_Click;
             // 
             // grpSearchBy
             // 
-            this.grpSearchBy.Controls.Add(this.btnMemberSearch);
-            this.grpSearchBy.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.grpSearchBy.Location = new System.Drawing.Point(343, 537);
-            this.grpSearchBy.Margin = new System.Windows.Forms.Padding(3, 3, 30, 3);
-            this.grpSearchBy.Name = "grpSearchBy";
-            this.grpSearchBy.Size = new System.Drawing.Size(115, 100);
-            this.grpSearchBy.TabIndex = 71;
-            this.grpSearchBy.TabStop = false;
-            this.grpSearchBy.Text = "Search";
+            grpSearchBy.Controls.Add(btnMemberSearch);
+            grpSearchBy.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
+            grpSearchBy.Location = new System.Drawing.Point(343, 537);
+            grpSearchBy.Margin = new System.Windows.Forms.Padding(3, 3, 30, 3);
+            grpSearchBy.Name = "grpSearchBy";
+            grpSearchBy.Size = new System.Drawing.Size(115, 100);
+            grpSearchBy.TabIndex = 71;
+            grpSearchBy.TabStop = false;
+            grpSearchBy.Text = "Search";
             // 
             // btnMemberSearch
             // 
-            this.btnMemberSearch.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnMemberSearch.Location = new System.Drawing.Point(0, 33);
-            this.btnMemberSearch.Name = "btnMemberSearch";
-            this.btnMemberSearch.Size = new System.Drawing.Size(109, 52);
-            this.btnMemberSearch.TabIndex = 72;
-            this.btnMemberSearch.TabStop = false;
-            this.btnMemberSearch.Text = "Member Search";
-            this.btnMemberSearch.UseVisualStyleBackColor = true;
-            this.btnMemberSearch.Click += new System.EventHandler(this.BtnMemberSearch_Click);
+            btnMemberSearch.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold);
+            btnMemberSearch.Location = new System.Drawing.Point(0, 33);
+            btnMemberSearch.Name = "btnMemberSearch";
+            btnMemberSearch.Size = new System.Drawing.Size(109, 52);
+            btnMemberSearch.TabIndex = 72;
+            btnMemberSearch.TabStop = false;
+            btnMemberSearch.Text = "Member Search";
+            btnMemberSearch.UseVisualStyleBackColor = true;
+            btnMemberSearch.Click += BtnMemberSearch_Click;
             // 
             // grpPrinter
             // 
-            this.grpPrinter.Controls.Add(this.btnPrintActive);
-            this.grpPrinter.Controls.Add(this.btnThisRecap);
-            this.grpPrinter.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.grpPrinter.Location = new System.Drawing.Point(491, 537);
-            this.grpPrinter.Name = "grpPrinter";
-            this.grpPrinter.Size = new System.Drawing.Size(173, 85);
-            this.grpPrinter.TabIndex = 73;
-            this.grpPrinter.TabStop = false;
-            this.grpPrinter.Text = "Print Recaps";
+            grpPrinter.Controls.Add(btnPrintActive);
+            grpPrinter.Controls.Add(btnThisRecap);
+            grpPrinter.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
+            grpPrinter.Location = new System.Drawing.Point(491, 537);
+            grpPrinter.Name = "grpPrinter";
+            grpPrinter.Size = new System.Drawing.Size(173, 85);
+            grpPrinter.TabIndex = 73;
+            grpPrinter.TabStop = false;
+            grpPrinter.Text = "Print Recaps";
             // 
             // btnPrintActive
             // 
-            this.btnPrintActive.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnPrintActive.Location = new System.Drawing.Point(6, 53);
-            this.btnPrintActive.Name = "btnPrintActive";
-            this.btnPrintActive.Size = new System.Drawing.Size(161, 23);
-            this.btnPrintActive.TabIndex = 75;
-            this.btnPrintActive.TabStop = false;
-            this.btnPrintActive.Text = "Print Active Members";
-            this.btnPrintActive.UseVisualStyleBackColor = true;
-            this.btnPrintActive.Click += new System.EventHandler(this.BtnPrintActive_Click);
+            btnPrintActive.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold);
+            btnPrintActive.Location = new System.Drawing.Point(6, 53);
+            btnPrintActive.Name = "btnPrintActive";
+            btnPrintActive.Size = new System.Drawing.Size(161, 23);
+            btnPrintActive.TabIndex = 75;
+            btnPrintActive.TabStop = false;
+            btnPrintActive.Text = "Print Active Members";
+            btnPrintActive.UseVisualStyleBackColor = true;
+            btnPrintActive.Click += BtnPrintActive_Click;
             // 
             // btnThisRecap
             // 
-            this.btnThisRecap.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnThisRecap.Location = new System.Drawing.Point(6, 23);
-            this.btnThisRecap.Name = "btnThisRecap";
-            this.btnThisRecap.Size = new System.Drawing.Size(161, 23);
-            this.btnThisRecap.TabIndex = 74;
-            this.btnThisRecap.TabStop = false;
-            this.btnThisRecap.Text = "Print Single";
-            this.btnThisRecap.UseVisualStyleBackColor = true;
-            this.btnThisRecap.Click += new System.EventHandler(this.BtnThisRecap_Click);
+            btnThisRecap.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Bold);
+            btnThisRecap.Location = new System.Drawing.Point(6, 23);
+            btnThisRecap.Name = "btnThisRecap";
+            btnThisRecap.Size = new System.Drawing.Size(161, 23);
+            btnThisRecap.TabIndex = 74;
+            btnThisRecap.TabStop = false;
+            btnThisRecap.Text = "Print Single";
+            btnThisRecap.UseVisualStyleBackColor = true;
+            btnThisRecap.Click += BtnThisRecap_Click;
             // 
             // rdoFemale
             // 
-            this.rdoFemale.AutoSize = true;
-            this.rdoFemale.Location = new System.Drawing.Point(11, 19);
-            this.rdoFemale.Name = "rdoFemale";
-            this.rdoFemale.Size = new System.Drawing.Size(64, 19);
-            this.rdoFemale.TabIndex = 52;
-            this.rdoFemale.TabStop = true;
-            this.rdoFemale.Text = "Female";
-            this.rdoFemale.UseVisualStyleBackColor = true;
-            this.rdoFemale.KeyDown += new System.Windows.Forms.KeyEventHandler(this.RdoFemale_KeyDown);
+            rdoFemale.AutoSize = true;
+            rdoFemale.Location = new System.Drawing.Point(11, 19);
+            rdoFemale.Name = "rdoFemale";
+            rdoFemale.Size = new System.Drawing.Size(64, 19);
+            rdoFemale.TabIndex = 52;
+            rdoFemale.TabStop = true;
+            rdoFemale.Text = "Female";
+            rdoFemale.UseVisualStyleBackColor = true;
+            rdoFemale.KeyDown += RdoFemale_KeyDown;
             // 
             // rdoActive
             // 
-            this.rdoActive.AutoSize = true;
-            this.rdoActive.Checked = true;
-            this.rdoActive.Location = new System.Drawing.Point(11, 23);
-            this.rdoActive.Name = "rdoActive";
-            this.rdoActive.Size = new System.Drawing.Size(57, 19);
-            this.rdoActive.TabIndex = 48;
-            this.rdoActive.TabStop = true;
-            this.rdoActive.Text = "Active";
-            this.rdoActive.UseVisualStyleBackColor = true;
+            rdoActive.AutoSize = true;
+            rdoActive.Checked = true;
+            rdoActive.Location = new System.Drawing.Point(11, 23);
+            rdoActive.Name = "rdoActive";
+            rdoActive.Size = new System.Drawing.Size(57, 19);
+            rdoActive.TabIndex = 48;
+            rdoActive.TabStop = true;
+            rdoActive.Text = "Active";
+            rdoActive.UseVisualStyleBackColor = true;
             // 
             // rdoInActive
             // 
-            this.rdoInActive.AutoSize = true;
-            this.rdoInActive.Location = new System.Drawing.Point(11, 46);
-            this.rdoInActive.Name = "rdoInActive";
-            this.rdoInActive.Size = new System.Drawing.Size(68, 19);
-            this.rdoInActive.TabIndex = 49;
-            this.rdoInActive.TabStop = true;
-            this.rdoInActive.Text = "InActive";
-            this.rdoInActive.UseVisualStyleBackColor = true;
+            rdoInActive.AutoSize = true;
+            rdoInActive.Location = new System.Drawing.Point(11, 46);
+            rdoInActive.Name = "rdoInActive";
+            rdoInActive.Size = new System.Drawing.Size(68, 19);
+            rdoInActive.TabIndex = 49;
+            rdoInActive.TabStop = true;
+            rdoInActive.Text = "InActive";
+            rdoInActive.UseVisualStyleBackColor = true;
             // 
             // rdoMale
             // 
-            this.rdoMale.AutoSize = true;
-            this.rdoMale.Location = new System.Drawing.Point(11, 42);
-            this.rdoMale.Name = "rdoMale";
-            this.rdoMale.Size = new System.Drawing.Size(53, 19);
-            this.rdoMale.TabIndex = 53;
-            this.rdoMale.TabStop = true;
-            this.rdoMale.Text = "Male";
-            this.rdoMale.UseVisualStyleBackColor = true;
+            rdoMale.AutoSize = true;
+            rdoMale.Location = new System.Drawing.Point(11, 42);
+            rdoMale.Name = "rdoMale";
+            rdoMale.Size = new System.Drawing.Size(53, 19);
+            rdoMale.TabIndex = 53;
+            rdoMale.TabStop = true;
+            rdoMale.Text = "Male";
+            rdoMale.UseVisualStyleBackColor = true;
             // 
             // grpGender
             // 
-            this.grpGender.Controls.Add(this.rdoFemale);
-            this.grpGender.Controls.Add(this.rdoMale);
-            this.grpGender.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.grpGender.Location = new System.Drawing.Point(172, 15);
-            this.grpGender.Name = "grpGender";
-            this.grpGender.Size = new System.Drawing.Size(101, 71);
-            this.grpGender.TabIndex = 51;
-            this.grpGender.TabStop = false;
-            this.grpGender.Text = "Gender";
+            grpGender.Controls.Add(rdoFemale);
+            grpGender.Controls.Add(rdoMale);
+            grpGender.Font = new System.Drawing.Font("Calibri", 9.75F);
+            grpGender.Location = new System.Drawing.Point(172, 15);
+            grpGender.Name = "grpGender";
+            grpGender.Size = new System.Drawing.Size(101, 71);
+            grpGender.TabIndex = 51;
+            grpGender.TabStop = false;
+            grpGender.Text = "Gender";
             // 
             // grpStatus
             // 
-            this.grpStatus.Controls.Add(this.rdoInActive);
-            this.grpStatus.Controls.Add(this.rdoActive);
-            this.grpStatus.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.grpStatus.Location = new System.Drawing.Point(3, 10);
-            this.grpStatus.Name = "grpStatus";
-            this.grpStatus.Size = new System.Drawing.Size(101, 79);
-            this.grpStatus.TabIndex = 47;
-            this.grpStatus.TabStop = false;
-            this.grpStatus.Text = "Status";
+            grpStatus.Controls.Add(rdoInActive);
+            grpStatus.Controls.Add(rdoActive);
+            grpStatus.Font = new System.Drawing.Font("Calibri", 9.75F);
+            grpStatus.Location = new System.Drawing.Point(3, 10);
+            grpStatus.Name = "grpStatus";
+            grpStatus.Size = new System.Drawing.Size(101, 79);
+            grpStatus.TabIndex = 47;
+            grpStatus.TabStop = false;
+            grpStatus.Text = "Status";
             // 
             // chbSenior
             // 
-            this.chbSenior.AutoSize = true;
-            this.chbSenior.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.chbSenior.Location = new System.Drawing.Point(114, 44);
-            this.chbSenior.Name = "chbSenior";
-            this.chbSenior.Size = new System.Drawing.Size(61, 19);
-            this.chbSenior.TabIndex = 50;
-            this.chbSenior.Text = "Senior";
-            this.chbSenior.UseVisualStyleBackColor = true;
-            this.chbSenior.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ChbSenior_KeyDown);
+            chbSenior.AutoSize = true;
+            chbSenior.Font = new System.Drawing.Font("Calibri", 9.75F);
+            chbSenior.Location = new System.Drawing.Point(114, 44);
+            chbSenior.Name = "chbSenior";
+            chbSenior.Size = new System.Drawing.Size(61, 19);
+            chbSenior.TabIndex = 50;
+            chbSenior.Text = "Senior";
+            chbSenior.UseVisualStyleBackColor = true;
+            chbSenior.KeyDown += ChbSenior_KeyDown;
             // 
             // chbLifetime
             // 
-            this.chbLifetime.AutoSize = true;
-            this.chbLifetime.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.chbLifetime.Location = new System.Drawing.Point(3, 3);
-            this.chbLifetime.Name = "chbLifetime";
-            this.chbLifetime.Size = new System.Drawing.Size(116, 19);
-            this.chbLifetime.TabIndex = 56;
-            this.chbLifetime.Text = "Lifetime Member";
-            this.chbLifetime.UseVisualStyleBackColor = true;
-            this.chbLifetime.CheckedChanged += new System.EventHandler(this.ChbLifetime_CheckedChanged);
+            chbLifetime.AutoSize = true;
+            chbLifetime.Font = new System.Drawing.Font("Calibri", 9.75F);
+            chbLifetime.Location = new System.Drawing.Point(3, 3);
+            chbLifetime.Name = "chbLifetime";
+            chbLifetime.Size = new System.Drawing.Size(116, 19);
+            chbLifetime.TabIndex = 56;
+            chbLifetime.Text = "Lifetime Member";
+            chbLifetime.UseVisualStyleBackColor = true;
+            chbLifetime.CheckedChanged += ChbLifetime_CheckedChanged;
             // 
             // lblLastPaid
             // 
-            this.lblLastPaid.AutoSize = true;
-            this.lblLastPaid.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblLastPaid.Location = new System.Drawing.Point(6, 28);
-            this.lblLastPaid.Name = "lblLastPaid";
-            this.lblLastPaid.Size = new System.Drawing.Size(107, 15);
-            this.lblLastPaid.TabIndex = 55;
-            this.lblLastPaid.Text = "Last Payment Date";
+            lblLastPaid.AutoSize = true;
+            lblLastPaid.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblLastPaid.Location = new System.Drawing.Point(6, 28);
+            lblLastPaid.Name = "lblLastPaid";
+            lblLastPaid.Size = new System.Drawing.Size(107, 15);
+            lblLastPaid.TabIndex = 55;
+            lblLastPaid.Text = "Last Payment Date";
             // 
             // lblPaymentInfo
             // 
-            this.lblPaymentInfo.AutoSize = true;
-            this.lblPaymentInfo.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblPaymentInfo.ForeColor = System.Drawing.Color.Red;
-            this.lblPaymentInfo.Location = new System.Drawing.Point(125, 6);
-            this.lblPaymentInfo.Name = "lblPaymentInfo";
-            this.lblPaymentInfo.Size = new System.Drawing.Size(129, 15);
-            this.lblPaymentInfo.TabIndex = 57;
-            this.lblPaymentInfo.Text = "Yearly Payment is due.";
-            this.lblPaymentInfo.Visible = false;
+            lblPaymentInfo.AutoSize = true;
+            lblPaymentInfo.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblPaymentInfo.ForeColor = System.Drawing.Color.Red;
+            lblPaymentInfo.Location = new System.Drawing.Point(125, 6);
+            lblPaymentInfo.Name = "lblPaymentInfo";
+            lblPaymentInfo.Size = new System.Drawing.Size(129, 15);
+            lblPaymentInfo.TabIndex = 57;
+            lblPaymentInfo.Text = "Yearly Payment is due.";
+            lblPaymentInfo.Visible = false;
             // 
             // txtLastPayment
             // 
-            this.txtLastPayment.BackColor = System.Drawing.SystemColors.Control;
-            this.txtLastPayment.Location = new System.Drawing.Point(127, 23);
-            this.txtLastPayment.Mask = "00/00/0000";
-            this.txtLastPayment.Name = "txtLastPayment";
-            this.txtLastPayment.Size = new System.Drawing.Size(127, 21);
-            this.txtLastPayment.TabIndex = 58;
-            this.txtLastPayment.ValidatingType = typeof(System.DateTime);
-            this.txtLastPayment.Click += new System.EventHandler(this.MtxtBox_Click);
+            txtLastPayment.BackColor = System.Drawing.SystemColors.Control;
+            txtLastPayment.Location = new System.Drawing.Point(127, 23);
+            txtLastPayment.Mask = "00/00/0000";
+            txtLastPayment.Name = "txtLastPayment";
+            txtLastPayment.Size = new System.Drawing.Size(127, 21);
+            txtLastPayment.TabIndex = 58;
+            txtLastPayment.ValidatingType = typeof(System.DateTime);
+            txtLastPayment.Click += MtxtBox_Click;
             // 
             // flpMemberData
             // 
-            this.flpMemberData.AutoScroll = true;
-            this.flpMemberData.AutoSize = true;
-            this.flpMemberData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpMemberData.Controls.Add(this.panel7);
-            this.flpMemberData.Controls.Add(this.groupRecord);
-            this.flpMemberData.Controls.Add(this.grpRecordNumber);
-            this.flpMemberData.Controls.Add(this.grpStats);
-            this.flpMemberData.Controls.Add(this.grpSearchBy);
-            this.flpMemberData.Controls.Add(this.grpPrinter);
-            this.flpMemberData.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpMemberData.Location = new System.Drawing.Point(0, 0);
-            this.flpMemberData.Name = "flpMemberData";
-            this.flpMemberData.Size = new System.Drawing.Size(996, 749);
-            this.flpMemberData.TabIndex = 34;
-            this.flpMemberData.SizeChanged += new System.EventHandler(this.FlpMemberScores_SizeChanged);
+            flpMemberData.AutoScroll = true;
+            flpMemberData.AutoSize = true;
+            flpMemberData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            flpMemberData.Controls.Add(panel7);
+            flpMemberData.Controls.Add(groupRecord);
+            flpMemberData.Controls.Add(grpRecordNumber);
+            flpMemberData.Controls.Add(grpStats);
+            flpMemberData.Controls.Add(grpSearchBy);
+            flpMemberData.Controls.Add(grpPrinter);
+            flpMemberData.Dock = System.Windows.Forms.DockStyle.Fill;
+            flpMemberData.Location = new System.Drawing.Point(0, 0);
+            flpMemberData.Name = "flpMemberData";
+            flpMemberData.Size = new System.Drawing.Size(996, 749);
+            flpMemberData.TabIndex = 34;
+            flpMemberData.SizeChanged += FlpMemberScores_SizeChanged;
             // 
             // panel7
             // 
-            this.panel7.Controls.Add(this.txtMemberNumber);
-            this.panel7.Controls.Add(this.panel5);
-            this.panel7.Controls.Add(this.grpMemberInfo);
-            this.panel7.Controls.Add(this.panel4);
-            this.panel7.Controls.Add(this.lblMemberNum);
-            this.panel7.Controls.Add(this.panel1);
-            this.panel7.Location = new System.Drawing.Point(3, 3);
-            this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(845, 528);
-            this.panel7.TabIndex = 0;
+            panel7.Controls.Add(txtMemberNumber);
+            panel7.Controls.Add(panel5);
+            panel7.Controls.Add(grpMemberInfo);
+            panel7.Controls.Add(panel4);
+            panel7.Controls.Add(lblMemberNum);
+            panel7.Controls.Add(panel1);
+            panel7.Location = new System.Drawing.Point(3, 3);
+            panel7.Name = "panel7";
+            panel7.Size = new System.Drawing.Size(845, 528);
+            panel7.TabIndex = 0;
             // 
             // panel5
             // 
-            this.panel5.Controls.Add(this.lblAverageValidation);
-            this.panel5.Controls.Add(this.txtLastBowled);
-            this.panel5.Controls.Add(this.label2);
-            this.panel5.Controls.Add(this.txt30GameAvg);
-            this.panel5.Controls.Add(this.lblLastBowled);
-            this.panel5.Controls.Add(this.lblMoneyEarned);
-            this.panel5.Controls.Add(this.lblYET);
-            this.panel5.Controls.Add(this.txtMoneyEarned);
-            this.panel5.Controls.Add(this.txtEligibility);
-            this.panel5.Controls.Add(this.lblBonus);
-            this.panel5.Controls.Add(this.lblTournAvg);
-            this.panel5.Controls.Add(this.lblAverage);
-            this.panel5.Controls.Add(this.txtHandicap);
-            this.panel5.Controls.Add(this.txtBonus);
-            this.panel5.Controls.Add(this.txtAverage);
-            this.panel5.Location = new System.Drawing.Point(360, 377);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(482, 147);
-            this.panel5.TabIndex = 80;
+            panel5.Controls.Add(lblAverageValidation);
+            panel5.Controls.Add(txtLastBowled);
+            panel5.Controls.Add(label2);
+            panel5.Controls.Add(txt30GameAvg);
+            panel5.Controls.Add(lblLastBowled);
+            panel5.Controls.Add(lblMoneyEarned);
+            panel5.Controls.Add(txtMoneyEarned);
+            panel5.Controls.Add(lblBonus);
+            panel5.Controls.Add(lblTournAvg);
+            panel5.Controls.Add(lblAverage);
+            panel5.Controls.Add(txtHandicap);
+            panel5.Controls.Add(txtBonus);
+            panel5.Controls.Add(txtAverage);
+            panel5.Location = new System.Drawing.Point(360, 377);
+            panel5.Name = "panel5";
+            panel5.Size = new System.Drawing.Size(482, 147);
+            panel5.TabIndex = 80;
             // 
             // lblAverageValidation
             // 
-            this.lblAverageValidation.AutoSize = true;
-            this.lblAverageValidation.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblAverageValidation.ForeColor = System.Drawing.Color.Red;
-            this.lblAverageValidation.Location = new System.Drawing.Point(57, 0);
-            this.lblAverageValidation.Name = "lblAverageValidation";
-            this.lblAverageValidation.Size = new System.Drawing.Size(182, 15);
-            this.lblAverageValidation.TabIndex = 75;
-            this.lblAverageValidation.Text = "Average must be between 1-300.";
-            this.lblAverageValidation.Visible = false;
+            lblAverageValidation.AutoSize = true;
+            lblAverageValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblAverageValidation.ForeColor = System.Drawing.Color.Red;
+            lblAverageValidation.Location = new System.Drawing.Point(57, 0);
+            lblAverageValidation.Name = "lblAverageValidation";
+            lblAverageValidation.Size = new System.Drawing.Size(182, 15);
+            lblAverageValidation.TabIndex = 75;
+            lblAverageValidation.Text = "Average must be between 1-300.";
+            lblAverageValidation.Visible = false;
             // 
             // txtLastBowled
             // 
-            this.txtLastBowled.BackColor = System.Drawing.SystemColors.Control;
-            this.txtLastBowled.Location = new System.Drawing.Point(375, 118);
-            this.txtLastBowled.Mask = "00/00/0000";
-            this.txtLastBowled.Name = "txtLastBowled";
-            this.txtLastBowled.Size = new System.Drawing.Size(103, 21);
-            this.txtLastBowled.TabIndex = 94;
-            this.txtLastBowled.ValidatingType = typeof(System.DateTime);
-            this.txtLastBowled.Click += new System.EventHandler(this.MtxtBox_Click);
+            txtLastBowled.BackColor = System.Drawing.SystemColors.Control;
+            txtLastBowled.Location = new System.Drawing.Point(245, 116);
+            txtLastBowled.Mask = "00/00/0000";
+            txtLastBowled.Name = "txtLastBowled";
+            txtLastBowled.Size = new System.Drawing.Size(103, 21);
+            txtLastBowled.TabIndex = 94;
+            txtLastBowled.ValidatingType = typeof(System.DateTime);
+            txtLastBowled.Click += MtxtBox_Click;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label2.Location = new System.Drawing.Point(145, 23);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(101, 15);
-            this.label2.TabIndex = 49;
-            this.label2.Text = "30 Game Average";
+            label2.AutoSize = true;
+            label2.Font = new System.Drawing.Font("Calibri", 9.75F);
+            label2.Location = new System.Drawing.Point(145, 23);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(101, 15);
+            label2.TabIndex = 49;
+            label2.Text = "30 Game Average";
             // 
             // txt30GameAvg
             // 
-            this.txt30GameAvg.BackColor = System.Drawing.SystemColors.Control;
-            this.txt30GameAvg.Enabled = false;
-            this.txt30GameAvg.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txt30GameAvg.Location = new System.Drawing.Point(150, 41);
-            this.txt30GameAvg.MaxLength = 20;
-            this.txt30GameAvg.Name = "txt30GameAvg";
-            this.txt30GameAvg.ReadOnly = true;
-            this.txt30GameAvg.Size = new System.Drawing.Size(89, 47);
-            this.txt30GameAvg.TabIndex = 84;
-            this.txt30GameAvg.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            txt30GameAvg.BackColor = System.Drawing.SystemColors.Control;
+            txt30GameAvg.Enabled = false;
+            txt30GameAvg.Font = new System.Drawing.Font("Calibri", 24F);
+            txt30GameAvg.Location = new System.Drawing.Point(150, 41);
+            txt30GameAvg.MaxLength = 20;
+            txt30GameAvg.Name = "txt30GameAvg";
+            txt30GameAvg.ReadOnly = true;
+            txt30GameAvg.Size = new System.Drawing.Size(89, 47);
+            txt30GameAvg.TabIndex = 84;
+            txt30GameAvg.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // lblLastBowled
             // 
-            this.lblLastBowled.AutoSize = true;
-            this.lblLastBowled.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblLastBowled.Location = new System.Drawing.Point(372, 100);
-            this.lblLastBowled.Name = "lblLastBowled";
-            this.lblLastBowled.Size = new System.Drawing.Size(72, 15);
-            this.lblLastBowled.TabIndex = 59;
-            this.lblLastBowled.Text = "Last Bowled";
+            lblLastBowled.AutoSize = true;
+            lblLastBowled.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblLastBowled.Location = new System.Drawing.Point(245, 100);
+            lblLastBowled.Name = "lblLastBowled";
+            lblLastBowled.Size = new System.Drawing.Size(72, 15);
+            lblLastBowled.TabIndex = 59;
+            lblLastBowled.Text = "Last Bowled";
             // 
             // lblMoneyEarned
             // 
-            this.lblMoneyEarned.AutoSize = true;
-            this.lblMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblMoneyEarned.Location = new System.Drawing.Point(198, 100);
-            this.lblMoneyEarned.Name = "lblMoneyEarned";
-            this.lblMoneyEarned.Size = new System.Drawing.Size(85, 15);
-            this.lblMoneyEarned.TabIndex = 57;
-            this.lblMoneyEarned.Text = "Money Earned";
-            // 
-            // lblYET
-            // 
-            this.lblYET.AutoSize = true;
-            this.lblYET.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblYET.Location = new System.Drawing.Point(17, 100);
-            this.lblYET.Name = "lblYET";
-            this.lblYET.Size = new System.Drawing.Size(60, 15);
-            this.lblYET.TabIndex = 55;
-            this.lblYET.Text = "Eligibility";
+            lblMoneyEarned.AutoSize = true;
+            lblMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblMoneyEarned.Location = new System.Drawing.Point(45, 100);
+            lblMoneyEarned.Name = "lblMoneyEarned";
+            lblMoneyEarned.Size = new System.Drawing.Size(85, 15);
+            lblMoneyEarned.TabIndex = 57;
+            lblMoneyEarned.Text = "Money Earned";
             // 
             // txtMoneyEarned
             // 
-            this.txtMoneyEarned.BackColor = System.Drawing.SystemColors.Control;
-            this.txtMoneyEarned.Enabled = false;
-            this.txtMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtMoneyEarned.Location = new System.Drawing.Point(201, 118);
-            this.txtMoneyEarned.Name = "txtMoneyEarned";
-            this.txtMoneyEarned.Size = new System.Drawing.Size(100, 23);
-            this.txtMoneyEarned.TabIndex = 92;
-            this.txtMoneyEarned.TabStop = false;
-            // 
-            // txtEligibility
-            // 
-            this.txtEligibility.BackColor = System.Drawing.SystemColors.Control;
-            this.txtEligibility.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtEligibility.Location = new System.Drawing.Point(20, 118);
-            this.txtEligibility.MaxLength = 20;
-            this.txtEligibility.Name = "txtEligibility";
-            this.txtEligibility.Size = new System.Drawing.Size(124, 23);
-            this.txtEligibility.TabIndex = 90;
+            txtMoneyEarned.BackColor = System.Drawing.SystemColors.Control;
+            txtMoneyEarned.Enabled = false;
+            txtMoneyEarned.Font = new System.Drawing.Font("Calibri", 9.75F);
+            txtMoneyEarned.Location = new System.Drawing.Point(44, 116);
+            txtMoneyEarned.Name = "txtMoneyEarned";
+            txtMoneyEarned.Size = new System.Drawing.Size(100, 23);
+            txtMoneyEarned.TabIndex = 92;
+            txtMoneyEarned.TabStop = false;
             // 
             // lblBonus
             // 
-            this.lblBonus.AutoSize = true;
-            this.lblBonus.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblBonus.Location = new System.Drawing.Point(364, 23);
-            this.lblBonus.Name = "lblBonus";
-            this.lblBonus.Size = new System.Drawing.Size(41, 15);
-            this.lblBonus.TabIndex = 53;
-            this.lblBonus.Text = "Bonus";
+            lblBonus.AutoSize = true;
+            lblBonus.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblBonus.Location = new System.Drawing.Point(364, 23);
+            lblBonus.Name = "lblBonus";
+            lblBonus.Size = new System.Drawing.Size(41, 15);
+            lblBonus.TabIndex = 53;
+            lblBonus.Text = "Bonus";
             // 
             // lblTournAvg
             // 
-            this.lblTournAvg.AutoSize = true;
-            this.lblTournAvg.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblTournAvg.Location = new System.Drawing.Point(256, 23);
-            this.lblTournAvg.Name = "lblTournAvg";
-            this.lblTournAvg.Size = new System.Drawing.Size(60, 15);
-            this.lblTournAvg.TabIndex = 51;
-            this.lblTournAvg.Text = "Handicap";
+            lblTournAvg.AutoSize = true;
+            lblTournAvg.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblTournAvg.Location = new System.Drawing.Point(256, 23);
+            lblTournAvg.Name = "lblTournAvg";
+            lblTournAvg.Size = new System.Drawing.Size(60, 15);
+            lblTournAvg.TabIndex = 51;
+            lblTournAvg.Text = "Handicap";
             // 
             // lblAverage
             // 
-            this.lblAverage.AutoSize = true;
-            this.lblAverage.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblAverage.Location = new System.Drawing.Point(68, 23);
-            this.lblAverage.Name = "lblAverage";
-            this.lblAverage.Size = new System.Drawing.Size(50, 15);
-            this.lblAverage.TabIndex = 47;
-            this.lblAverage.Text = "Average\r\n";
+            lblAverage.AutoSize = true;
+            lblAverage.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblAverage.Location = new System.Drawing.Point(68, 23);
+            lblAverage.Name = "lblAverage";
+            lblAverage.Size = new System.Drawing.Size(50, 15);
+            lblAverage.TabIndex = 47;
+            lblAverage.Text = "Average\r\n";
             // 
             // txtHandicap
             // 
-            this.txtHandicap.BackColor = System.Drawing.SystemColors.Control;
-            this.txtHandicap.Enabled = false;
-            this.txtHandicap.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtHandicap.Location = new System.Drawing.Point(245, 41);
-            this.txtHandicap.MaxLength = 20;
-            this.txtHandicap.Name = "txtHandicap";
-            this.txtHandicap.ReadOnly = true;
-            this.txtHandicap.Size = new System.Drawing.Size(89, 47);
-            this.txtHandicap.TabIndex = 86;
-            this.txtHandicap.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            txtHandicap.BackColor = System.Drawing.SystemColors.Control;
+            txtHandicap.Enabled = false;
+            txtHandicap.Font = new System.Drawing.Font("Calibri", 24F);
+            txtHandicap.Location = new System.Drawing.Point(245, 41);
+            txtHandicap.MaxLength = 20;
+            txtHandicap.Name = "txtHandicap";
+            txtHandicap.ReadOnly = true;
+            txtHandicap.Size = new System.Drawing.Size(89, 47);
+            txtHandicap.TabIndex = 86;
+            txtHandicap.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtBonus
             // 
-            this.txtBonus.BackColor = System.Drawing.SystemColors.Control;
-            this.txtBonus.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtBonus.Location = new System.Drawing.Point(340, 41);
-            this.txtBonus.MaxLength = 20;
-            this.txtBonus.Name = "txtBonus";
-            this.txtBonus.Size = new System.Drawing.Size(89, 47);
-            this.txtBonus.TabIndex = 88;
-            this.txtBonus.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            txtBonus.BackColor = System.Drawing.SystemColors.Control;
+            txtBonus.Font = new System.Drawing.Font("Calibri", 24F);
+            txtBonus.Location = new System.Drawing.Point(340, 41);
+            txtBonus.MaxLength = 20;
+            txtBonus.Name = "txtBonus";
+            txtBonus.Size = new System.Drawing.Size(89, 47);
+            txtBonus.TabIndex = 88;
+            txtBonus.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtAverage
             // 
-            this.txtAverage.BackColor = System.Drawing.SystemColors.Control;
-            this.txtAverage.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtAverage.Location = new System.Drawing.Point(45, 41);
-            this.txtAverage.MaxLength = 20;
-            this.txtAverage.Name = "txtAverage";
-            this.txtAverage.Size = new System.Drawing.Size(99, 47);
-            this.txtAverage.TabIndex = 82;
-            this.txtAverage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtAverage.TextChanged += new System.EventHandler(this.TxtAverage_TextChanged);
+            txtAverage.BackColor = System.Drawing.SystemColors.Control;
+            txtAverage.Font = new System.Drawing.Font("Calibri", 24F);
+            txtAverage.Location = new System.Drawing.Point(45, 41);
+            txtAverage.MaxLength = 20;
+            txtAverage.Name = "txtAverage";
+            txtAverage.Size = new System.Drawing.Size(99, 47);
+            txtAverage.TabIndex = 82;
+            txtAverage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            txtAverage.TextChanged += TxtAverage_TextChanged;
             // 
             // panel4
             // 
-            this.panel4.Controls.Add(this.lblFirstNameValidation);
-            this.panel4.Controls.Add(this.lblLastNameValidation);
-            this.panel4.Controls.Add(this.lblLastName);
-            this.panel4.Controls.Add(this.txtLastName);
-            this.panel4.Controls.Add(this.lblFirstName);
-            this.panel4.Controls.Add(this.txtFirstName);
-            this.panel4.Controls.Add(this.lblMiddleIntial);
-            this.panel4.Controls.Add(this.txtMiddleInitial);
-            this.panel4.Location = new System.Drawing.Point(232, 3);
-            this.panel4.Margin = new System.Windows.Forms.Padding(25, 3, 3, 3);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(610, 72);
-            this.panel4.TabIndex = 0;
+            panel4.Controls.Add(lblFirstNameValidation);
+            panel4.Controls.Add(lblLastNameValidation);
+            panel4.Controls.Add(lblLastName);
+            panel4.Controls.Add(txtLastName);
+            panel4.Controls.Add(lblFirstName);
+            panel4.Controls.Add(txtFirstName);
+            panel4.Controls.Add(lblMiddleIntial);
+            panel4.Controls.Add(txtMiddleInitial);
+            panel4.Location = new System.Drawing.Point(232, 3);
+            panel4.Margin = new System.Windows.Forms.Padding(25, 3, 3, 3);
+            panel4.Name = "panel4";
+            panel4.Size = new System.Drawing.Size(610, 72);
+            panel4.TabIndex = 0;
             // 
             // lblFirstNameValidation
             // 
-            this.lblFirstNameValidation.AutoSize = true;
-            this.lblFirstNameValidation.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblFirstNameValidation.ForeColor = System.Drawing.Color.Red;
-            this.lblFirstNameValidation.Location = new System.Drawing.Point(330, 9);
-            this.lblFirstNameValidation.Name = "lblFirstNameValidation";
-            this.lblFirstNameValidation.Size = new System.Drawing.Size(118, 15);
-            this.lblFirstNameValidation.TabIndex = 78;
-            this.lblFirstNameValidation.Text = "First name required.";
-            this.lblFirstNameValidation.Visible = false;
+            lblFirstNameValidation.AutoSize = true;
+            lblFirstNameValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblFirstNameValidation.ForeColor = System.Drawing.Color.Red;
+            lblFirstNameValidation.Location = new System.Drawing.Point(330, 9);
+            lblFirstNameValidation.Name = "lblFirstNameValidation";
+            lblFirstNameValidation.Size = new System.Drawing.Size(118, 15);
+            lblFirstNameValidation.TabIndex = 78;
+            lblFirstNameValidation.Text = "First name required.";
+            lblFirstNameValidation.Visible = false;
             // 
             // lblLastNameValidation
             // 
-            this.lblLastNameValidation.AutoSize = true;
-            this.lblLastNameValidation.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblLastNameValidation.ForeColor = System.Drawing.Color.Red;
-            this.lblLastNameValidation.Location = new System.Drawing.Point(86, 9);
-            this.lblLastNameValidation.Name = "lblLastNameValidation";
-            this.lblLastNameValidation.Size = new System.Drawing.Size(115, 15);
-            this.lblLastNameValidation.TabIndex = 77;
-            this.lblLastNameValidation.Text = "Last name required.";
-            this.lblLastNameValidation.Visible = false;
+            lblLastNameValidation.AutoSize = true;
+            lblLastNameValidation.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblLastNameValidation.ForeColor = System.Drawing.Color.Red;
+            lblLastNameValidation.Location = new System.Drawing.Point(86, 9);
+            lblLastNameValidation.Name = "lblLastNameValidation";
+            lblLastNameValidation.Size = new System.Drawing.Size(115, 15);
+            lblLastNameValidation.TabIndex = 77;
+            lblLastNameValidation.Text = "Last name required.";
+            lblLastNameValidation.Visible = false;
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.txtNotes);
-            this.panel1.Controls.Add(this.lblNotes);
-            this.panel1.Controls.Add(this.panel2);
-            this.panel1.Controls.Add(this.grpStatus);
-            this.panel1.Controls.Add(this.chbSenior);
-            this.panel1.Controls.Add(this.grpGender);
-            this.panel1.Location = new System.Drawing.Point(12, 110);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(309, 414);
-            this.panel1.TabIndex = 48;
+            panel1.Controls.Add(txtNotes);
+            panel1.Controls.Add(lblNotes);
+            panel1.Controls.Add(panel2);
+            panel1.Controls.Add(grpStatus);
+            panel1.Controls.Add(chbSenior);
+            panel1.Controls.Add(grpGender);
+            panel1.Location = new System.Drawing.Point(12, 110);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(309, 414);
+            panel1.TabIndex = 48;
             // 
             // txtNotes
             // 
-            this.txtNotes.BackColor = System.Drawing.SystemColors.Control;
-            this.txtNotes.Location = new System.Drawing.Point(6, 188);
-            this.txtNotes.MaxLength = 750;
-            this.txtNotes.Multiline = true;
-            this.txtNotes.Name = "txtNotes";
-            this.txtNotes.Size = new System.Drawing.Size(298, 218);
-            this.txtNotes.TabIndex = 61;
-            this.txtNotes.TabStop = false;
+            txtNotes.BackColor = System.Drawing.SystemColors.Control;
+            txtNotes.Location = new System.Drawing.Point(6, 188);
+            txtNotes.MaxLength = 750;
+            txtNotes.Multiline = true;
+            txtNotes.Name = "txtNotes";
+            txtNotes.Size = new System.Drawing.Size(298, 218);
+            txtNotes.TabIndex = 61;
+            txtNotes.TabStop = false;
             // 
             // lblNotes
             // 
-            this.lblNotes.AutoSize = true;
-            this.lblNotes.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.lblNotes.Location = new System.Drawing.Point(5, 168);
-            this.lblNotes.Name = "lblNotes";
-            this.lblNotes.Size = new System.Drawing.Size(49, 19);
-            this.lblNotes.TabIndex = 60;
-            this.lblNotes.Text = "Notes";
+            lblNotes.AutoSize = true;
+            lblNotes.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Bold);
+            lblNotes.Location = new System.Drawing.Point(5, 168);
+            lblNotes.Name = "lblNotes";
+            lblNotes.Size = new System.Drawing.Size(49, 19);
+            lblNotes.TabIndex = 60;
+            lblNotes.Text = "Notes";
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.txtPaidTo);
-            this.panel2.Controls.Add(this.lblPaidTo);
-            this.panel2.Controls.Add(this.chbLifetime);
-            this.panel2.Controls.Add(this.lblLastPaid);
-            this.panel2.Controls.Add(this.txtLastPayment);
-            this.panel2.Controls.Add(this.lblPaymentInfo);
-            this.panel2.Location = new System.Drawing.Point(3, 95);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(285, 70);
-            this.panel2.TabIndex = 55;
+            panel2.Controls.Add(txtPaidTo);
+            panel2.Controls.Add(lblPaidTo);
+            panel2.Controls.Add(chbLifetime);
+            panel2.Controls.Add(lblLastPaid);
+            panel2.Controls.Add(txtLastPayment);
+            panel2.Controls.Add(lblPaymentInfo);
+            panel2.Location = new System.Drawing.Point(3, 95);
+            panel2.Name = "panel2";
+            panel2.Size = new System.Drawing.Size(285, 70);
+            panel2.TabIndex = 55;
             // 
             // txtPaidTo
             // 
-            this.txtPaidTo.BackColor = System.Drawing.SystemColors.Control;
-            this.txtPaidTo.Enabled = false;
-            this.txtPaidTo.Location = new System.Drawing.Point(126, 47);
-            this.txtPaidTo.Name = "txtPaidTo";
-            this.txtPaidTo.Size = new System.Drawing.Size(54, 21);
-            this.txtPaidTo.TabIndex = 75;
+            txtPaidTo.BackColor = System.Drawing.SystemColors.Control;
+            txtPaidTo.Enabled = false;
+            txtPaidTo.Location = new System.Drawing.Point(126, 47);
+            txtPaidTo.Name = "txtPaidTo";
+            txtPaidTo.Size = new System.Drawing.Size(54, 21);
+            txtPaidTo.TabIndex = 75;
             // 
             // lblPaidTo
             // 
-            this.lblPaidTo.AutoSize = true;
-            this.lblPaidTo.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblPaidTo.Location = new System.Drawing.Point(6, 48);
-            this.lblPaidTo.Name = "lblPaidTo";
-            this.lblPaidTo.Size = new System.Drawing.Size(118, 15);
-            this.lblPaidTo.TabIndex = 75;
-            this.lblPaidTo.Text = "Membership paid to";
+            lblPaidTo.AutoSize = true;
+            lblPaidTo.Font = new System.Drawing.Font("Calibri", 9.75F);
+            lblPaidTo.Location = new System.Drawing.Point(6, 48);
+            lblPaidTo.Name = "lblPaidTo";
+            lblPaidTo.Size = new System.Drawing.Size(118, 15);
+            lblPaidTo.TabIndex = 75;
+            lblPaidTo.Text = "Membership paid to";
             // 
             // FrmMemberData
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoScroll = true;
-            this.AutoScrollMinSize = new System.Drawing.Size(100, 100);
-            this.AutoSize = true;
-            this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(996, 749);
-            this.Controls.Add(this.flpMemberData);
-            this.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.HelpButton = true;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.KeyPreview = true;
-            this.Name = "FrmMemberData";
-            this.Text = "Member Info";
-            this.Load += new System.EventHandler(this.MemberDataForm_Load);
-            this.Resize += new System.EventHandler(this.FrmMemberData_Resize);
-            this.grpMemberInfo.ResumeLayout(false);
-            this.grpMemberInfo.PerformLayout();
-            this.groupRecord.ResumeLayout(false);
-            this.groupRecord.PerformLayout();
-            this.grpRecordNumber.ResumeLayout(false);
-            this.grpStats.ResumeLayout(false);
-            this.grpSearchBy.ResumeLayout(false);
-            this.grpPrinter.ResumeLayout(false);
-            this.grpGender.ResumeLayout(false);
-            this.grpGender.PerformLayout();
-            this.grpStatus.ResumeLayout(false);
-            this.grpStatus.PerformLayout();
-            this.flpMemberData.ResumeLayout(false);
-            this.panel7.ResumeLayout(false);
-            this.panel7.PerformLayout();
-            this.panel5.ResumeLayout(false);
-            this.panel5.PerformLayout();
-            this.panel4.ResumeLayout(false);
-            this.panel4.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            AutoScroll = true;
+            AutoScrollMinSize = new System.Drawing.Size(100, 100);
+            AutoSize = true;
+            BackColor = System.Drawing.Color.White;
+            ClientSize = new System.Drawing.Size(996, 749);
+            Controls.Add(flpMemberData);
+            Font = new System.Drawing.Font("Calibri", 8.25F);
+            HelpButton = true;
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            KeyPreview = true;
+            Name = "FrmMemberData";
+            Text = "Member Info";
+            Load += MemberDataForm_Load;
+            Resize += FrmMemberData_Resize;
+            grpMemberInfo.ResumeLayout(false);
+            grpMemberInfo.PerformLayout();
+            groupRecord.ResumeLayout(false);
+            groupRecord.PerformLayout();
+            grpRecordNumber.ResumeLayout(false);
+            grpStats.ResumeLayout(false);
+            grpSearchBy.ResumeLayout(false);
+            grpPrinter.ResumeLayout(false);
+            grpGender.ResumeLayout(false);
+            grpGender.PerformLayout();
+            grpStatus.ResumeLayout(false);
+            grpStatus.PerformLayout();
+            flpMemberData.ResumeLayout(false);
+            panel7.ResumeLayout(false);
+            panel7.PerformLayout();
+            panel5.ResumeLayout(false);
+            panel5.PerformLayout();
+            panel4.ResumeLayout(false);
+            panel4.PerformLayout();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 
@@ -1357,9 +1333,7 @@
         private System.Windows.Forms.TextBox txt30GameAvg;
         private System.Windows.Forms.Label lblLastBowled;
         private System.Windows.Forms.Label lblMoneyEarned;
-        private System.Windows.Forms.Label lblYET;
         private System.Windows.Forms.TextBox txtMoneyEarned;
-        private System.Windows.Forms.TextBox txtEligibility;
         private System.Windows.Forms.Label lblBonus;
         private System.Windows.Forms.Label lblTournAvg;
         private System.Windows.Forms.Label lblAverage;
