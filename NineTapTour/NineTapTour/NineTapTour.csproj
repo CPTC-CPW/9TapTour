@@ -5,7 +5,7 @@
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>9tap_white.ico</ApplicationIcon>
+    <ApplicationIcon>Icon\9tap_white.ico</ApplicationIcon>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>ClientLicense.txt</PackageLicenseFile>
   </PropertyGroup>
@@ -17,7 +17,6 @@
 		<SupportedPlatform Include="windows" />
 	</ItemGroup>
   <ItemGroup>
-    <Content Include="9tap_white.ico" />
     <Content Include="Resources\SeriesReportTemplate.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -42,7 +41,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.105.0" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.1" />

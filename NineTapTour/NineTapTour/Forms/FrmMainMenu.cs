@@ -65,7 +65,7 @@ public partial class FrmMainMenu : Form
         Font drawFont = new("Arial", 12);
         SolidBrush drawBrush = new(Color.White);
         PointF drawPoint = new(10, 2);
-        g.DrawString("Version: 3.1.5", drawFont, drawBrush, drawPoint);
+        g.DrawString("Version: 3.1.6", drawFont, drawBrush, drawPoint);
 #if DEBUG
         drawBrush.Color = Color.Red;
         drawPoint.Y += 16;
