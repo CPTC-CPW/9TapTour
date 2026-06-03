@@ -5,12 +5,14 @@ using System.Drawing;
 using NineTapTour.Models;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System.ComponentModel;
 
 namespace NineTapTour.Forms;
 
 public partial class FrmMain : Form
 {
+    /// <summary>
+    /// Keeps track of the currently active menu item on the menu strip.
+    /// </summary>
     public ToolStripMenuItem ActiveItem;
     
     /// <summary>
@@ -90,8 +92,6 @@ public partial class FrmMain : Form
     /// <summary>
     /// Opens the 'About' form
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
     public void AboutToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var aboutForm = Application.OpenForms["FrmAbout"] as FrmAbout;
@@ -99,10 +99,8 @@ public partial class FrmMain : Form
     }
 
     /// <summary>
-    /// 
+    /// Opens the 'Main Menu' form when the "Main Menu" menu item is clicked.
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
     public void mainMenuToolStripMenuItem_Click(object sender, EventArgs e)
     {
         if (FrmMemberScoresHelpers.unsavedBowlerData)
@@ -121,10 +119,8 @@ public partial class FrmMain : Form
     }
 
     /// <summary>
-    /// 
+    /// Opens the 'Member Data' form when the "Member Data" menu item is clicked.
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
     public void memberToolStripMenuItem_Click(object sender, EventArgs e)
     {
         if (FrmMemberScoresHelpers.unsavedBowlerData)
@@ -141,10 +137,8 @@ public partial class FrmMain : Form
     }
 
     /// <summary>
-    /// 
+    /// Opens the 'Member Scores' form when the "Member Scores" menu item is clicked.
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
     public void tournamentToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as FrmMemberScores;
