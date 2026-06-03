@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace NineTapTour.Forms
+namespace NineTapTour.Helpers
 {
     public static class ExtensionMethods
     {

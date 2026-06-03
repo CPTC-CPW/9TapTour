@@ -19,7 +19,7 @@ namespace NineTapTourTests
             List<MemberScores> members = GetMemberScoreTestData();
             int numBowlersWithDuplicates = members.Count;
 
-            members = Calculations.CalculatePlaceStandings(members);
+            members = TournamentCalculations.CalculatePlaceStandings(members);
 
             int numBowlersAfterPlaceStandingsCalculation = members.Count;
 
@@ -69,7 +69,7 @@ namespace NineTapTourTests
         public void CalculatePlaceStandings_DisplaysTiesForBowlersWithSameScores()
         {
             List<MemberScores> members = GetMemberScoreTestData();
-            members = Calculations.CalculatePlaceStandings(members);
+            members = TournamentCalculations.CalculatePlaceStandings(members);
 
             //check first bowler is A with 1000; lesser score (800) is removed
             Assert.AreEqual(1, members[0].MemberId);
@@ -99,7 +99,7 @@ namespace NineTapTourTests
         [DataRow(120, 70)] // max handicap should be 70
         public void CalculateHandicapPins_ReturnsExpectedAmount(int avg, int expectedHandicap)
         {
-            int handicapResult = Calculations.CalculateHandicapPins(avg);
+            int handicapResult = TournamentCalculations.CalculateHandicapPins(avg);
             Assert.AreEqual(expectedHandicap, handicapResult);
         }
 
@@ -111,7 +111,7 @@ namespace NineTapTourTests
         [DataRow(100, 4, 19)]
         public void CalculateNumberOfMembersThatCanPlaceInATournament_ReturnsExpectedAmount(int totalParticipants, int compParticipants, int expectedNumThatCanPlace)
         {
-            decimal resultNumThatCanPlace = Calculations.GetQtyOfMembersThatCanPlace(totalParticipants, compParticipants);
+            decimal resultNumThatCanPlace = TournamentCalculations.GetQtyOfMembersThatCanPlace(totalParticipants, compParticipants);
             Assert.AreEqual(expectedNumThatCanPlace, resultNumThatCanPlace);
         }
 
@@ -142,7 +142,7 @@ namespace NineTapTourTests
         {
             List<PlayerHistoryViewModel> latestTournaments = GetPlayerHistoryTestData(playerHistoryListNum);
 
-            int resultBonusPins = Calculations.AddToBonusPins(currentBonusPins, latestTournaments, currTourneyEntryCount);
+            int resultBonusPins = TournamentCalculations.AddToBonusPins(currentBonusPins, latestTournaments, currTourneyEntryCount);
 
             Assert.AreEqual(expectedBonusPins, resultBonusPins);
         }

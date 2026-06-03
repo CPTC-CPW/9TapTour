@@ -1,4 +1,4 @@
-﻿using CalcService = NineTapTour.Calculations.Calculations;
+﻿using CalcService = NineTapTour.Calculations.TournamentCalculations;
 using NineTapTour.Database;
 using NineTapTour.Models;
 using NineTapTour.Models.ViewModels;

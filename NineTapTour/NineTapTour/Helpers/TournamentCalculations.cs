@@ -6,7 +6,7 @@ using NineTapTour.Models;
 
 namespace NineTapTour.Calculations;
 
-public static class Calculations
+public static class TournamentCalculations
 {
     /// <summary>
     /// Constants are based on 9-Tap Rules for adding and deducting pins based on type

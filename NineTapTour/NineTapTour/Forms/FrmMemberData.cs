@@ -233,11 +233,11 @@ public partial class FrmMemberData : Form
             *********************************************************************************/
             try
             {
-                currentMem.Handicap = Calculations.Calculations.CalculateHandicapPins((currentMem.Average.Value));
+                currentMem.Handicap = Calculations.TournamentCalculations.CalculateHandicapPins((currentMem.Average.Value));
             }
             catch
             {
-                currentMem.Handicap = Calculations.Calculations.CalculateHandicapPins((0));
+                currentMem.Handicap = Calculations.TournamentCalculations.CalculateHandicapPins((0));
             }
 
             txtHandicap.Text = currentMem.Handicap.ToString(); 
@@ -486,7 +486,7 @@ public partial class FrmMemberData : Form
             }
 
             temp.Handicap = 
-                Calculations.Calculations.CalculateHandicapPins(temp.Average.Value);
+                Calculations.TournamentCalculations.CalculateHandicapPins(temp.Average.Value);
             
             // Misc. Info
             if (!String.IsNullOrWhiteSpace(txtRejoinDate.Text))
@@ -914,7 +914,7 @@ public partial class FrmMemberData : Form
             if (reset != null)
             {
                 currentMem.Average = reset.AVG;
-                currentMem.Handicap = Calculations.Calculations
+                currentMem.Handicap = Calculations.TournamentCalculations
                     .CalculateHandicapPins(Convert.ToInt32(currentMem.Average));
 
                 currentMem.Bonus = reset.Bonus;

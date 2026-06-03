@@ -37,7 +37,7 @@ public class MemberDB
 
                 if (temp.Average != null)
                 {
-                    temp.Handicap = Calculations.Calculations.CalculateHandicapPins(temp.Average.Value);
+                    temp.Handicap = Calculations.TournamentCalculations.CalculateHandicapPins(temp.Average.Value);
                 }
                 db.SaveChanges();
             }

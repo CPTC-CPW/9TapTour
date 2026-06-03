@@ -231,7 +231,7 @@ namespace NineTapTour.Database
                         var member = db.Members.FirstOrDefault(x => x.Id == temp.MemberId);
                         if (member != null)
                         {
-                            member.Handicap = Calculations.Calculations.CalculateHandicapPins(
+                            member.Handicap = Calculations.TournamentCalculations.CalculateHandicapPins(
                                 Convert.ToInt16(Get30GameAverage(member))
                             );
                         }

@@ -50,7 +50,7 @@ public partial class FrmMemberScoresReports : Form
                 printDues = true;
             }
 
-            temp = Calculations.Calculations.MakeTopMembersByPlacementList(temp, numMembers);
+            temp = Calculations.TournamentCalculations.MakeTopMembersByPlacementList(temp, numMembers);
             // print( go to print class )
             int? manualCutoffLine = null;
             if(int.TryParse(txtCutoffLine.Text, out int result))
@@ -93,7 +93,7 @@ public partial class FrmMemberScoresReports : Form
             {
                 printDues = true;
             }
-            temp = Calculations.Calculations.MakeTopMembersByPlacementList(temp, numMembers); // results of inquiry
+            temp = Calculations.TournamentCalculations.MakeTopMembersByPlacementList(temp, numMembers); // results of inquiry
             // loads the loading screen if takes long time
             frmPleaseWait please = new();
             please.Show();
