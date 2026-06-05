@@ -155,23 +155,6 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Returns total games played by a member
-        /// </summary>
-        public static int GetTotalGamesPlayed(int memberNum)
-        {
-            using (var db = new NineTapDb())
-            {
-                return db.Games
-                    .Include(g => g.Participant)
-                        .ThenInclude(p => p.Member)
-                    .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.IsFinalized)
-                    .Select(g => g.GamesPlayed)
-                    .Sum();
-            }
-        }
-
-        /// <summary>
         /// Returns all finalized entries for the member's most recent tournament.
         /// The "most recent tournament" is identified by the most recent tournament that
         /// has an adjusted-avg entry for this member. All entries (including multi-squad)
