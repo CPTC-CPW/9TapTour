@@ -114,7 +114,6 @@
             btnNewTournament = new System.Windows.Forms.Button();
             btnTourSearch = new System.Windows.Forms.Button();
             btnTournamentsByYear = new System.Windows.Forms.Button();
-            btnPlaceStandings = new System.Windows.Forms.Button();
             btnFinalizeTounament = new System.Windows.Forms.Button();
             btnTournamentResults = new System.Windows.Forms.Button();
             btnManagePairings = new System.Windows.Forms.Button();
@@ -612,7 +611,7 @@
             lblNoScores.Location = new System.Drawing.Point(8, 172);
             lblNoScores.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             lblNoScores.Name = "lblNoScores";
-            lblNoScores.Size = new System.Drawing.Size(0, 15);
+            lblNoScores.Size = new System.Drawing.Size(77, 15);
             lblNoScores.TabIndex = 21;
             lblNoScores.Text = "No scores: —";
             // 
@@ -827,7 +826,7 @@
             // grpTournamentFile
             // 
             grpTournamentFile.Controls.Add(cbxTourneyDropDown);
-            grpTournamentFile.Location = new System.Drawing.Point(4, 70);
+            grpTournamentFile.Location = new System.Drawing.Point(1, 52);
             grpTournamentFile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             grpTournamentFile.Name = "grpTournamentFile";
             grpTournamentFile.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -1207,7 +1206,7 @@
             // 
             // btnNewTournament
             // 
-            btnNewTournament.Location = new System.Drawing.Point(7, 37);
+            btnNewTournament.Location = new System.Drawing.Point(4, 19);
             btnNewTournament.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnNewTournament.Name = "btnNewTournament";
             btnNewTournament.Size = new System.Drawing.Size(223, 27);
@@ -1219,7 +1218,7 @@
             // 
             // btnTourSearch
             // 
-            btnTourSearch.Location = new System.Drawing.Point(7, 147);
+            btnTourSearch.Location = new System.Drawing.Point(4, 129);
             btnTourSearch.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnTourSearch.Name = "btnTourSearch";
             btnTourSearch.Size = new System.Drawing.Size(220, 27);
@@ -1230,7 +1229,7 @@
             // 
             // btnTournamentsByYear
             // 
-            btnTournamentsByYear.Location = new System.Drawing.Point(7, 180);
+            btnTournamentsByYear.Location = new System.Drawing.Point(4, 162);
             btnTournamentsByYear.Margin = new System.Windows.Forms.Padding(1);
             btnTournamentsByYear.Name = "btnTournamentsByYear";
             btnTournamentsByYear.Size = new System.Drawing.Size(220, 27);
@@ -1238,17 +1237,6 @@
             btnTournamentsByYear.Text = "List Tournaments By Year";
             btnTournamentsByYear.UseVisualStyleBackColor = true;
             btnTournamentsByYear.Click += BtnTournamentsByYear_Click;
-            // 
-            // btnPlaceStandings
-            // 
-            btnPlaceStandings.Location = new System.Drawing.Point(7, 1);
-            btnPlaceStandings.Margin = new System.Windows.Forms.Padding(1);
-            btnPlaceStandings.Name = "btnPlaceStandings";
-            btnPlaceStandings.Size = new System.Drawing.Size(220, 27);
-            btnPlaceStandings.TabIndex = 35;
-            btnPlaceStandings.Text = "Tournament Place Standings";
-            btnPlaceStandings.UseVisualStyleBackColor = true;
-            btnPlaceStandings.Click += BtnPlaceStandings_Click;
             // 
             // btnFinalizeTounament
             // 
@@ -1333,7 +1321,6 @@
             // 
             // panel2
             // 
-            panel2.Controls.Add(btnPlaceStandings);
             panel2.Controls.Add(grpTournamentFile);
             panel2.Controls.Add(btnNewTournament);
             panel2.Controls.Add(btnTourSearch);
@@ -1474,7 +1461,6 @@
         private System.Windows.Forms.Label lblPlayer1;
         private System.Windows.Forms.Button btnTourSearch;
         private System.Windows.Forms.Button btnTournamentsByYear;
-        private System.Windows.Forms.Button btnPlaceStandings;
         private System.Windows.Forms.Button btnRecapByPin;
         private System.Windows.Forms.RadioButton rdoSquad8;
         private System.Windows.Forms.RadioButton rdoSquad6;
