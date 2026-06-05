@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMemberData));
             txtLastName = new System.Windows.Forms.TextBox();
             txtFirstName = new System.Windows.Forms.TextBox();
             txtMiddleInitial = new System.Windows.Forms.TextBox();
@@ -71,7 +70,6 @@
             txtAddress = new System.Windows.Forms.TextBox();
             txtEmail = new System.Windows.Forms.TextBox();
             groupRecord = new System.Windows.Forms.GroupBox();
-            cbHaw = new System.Windows.Forms.CheckBox();
             btnImportData = new System.Windows.Forms.Button();
             btnSave = new System.Windows.Forms.Button();
             btnNew = new System.Windows.Forms.Button();
@@ -579,7 +577,6 @@
             // 
             // groupRecord
             // 
-            groupRecord.Controls.Add(cbHaw);
             groupRecord.Controls.Add(btnImportData);
             groupRecord.Controls.Add(btnSave);
             groupRecord.Controls.Add(btnNew);
@@ -587,22 +584,10 @@
             groupRecord.Location = new System.Drawing.Point(854, 3);
             groupRecord.Margin = new System.Windows.Forms.Padding(3, 3, 20, 3);
             groupRecord.Name = "groupRecord";
-            groupRecord.Size = new System.Drawing.Size(108, 131);
+            groupRecord.Size = new System.Drawing.Size(108, 107);
             groupRecord.TabIndex = 100;
             groupRecord.TabStop = false;
             groupRecord.Text = "Record";
-            // 
-            // cbHaw
-            // 
-            cbHaw.AutoSize = true;
-            cbHaw.Font = new System.Drawing.Font("Calibri", 12F);
-            cbHaw.Location = new System.Drawing.Point(6, 102);
-            cbHaw.Name = "cbHaw";
-            cbHaw.Size = new System.Drawing.Size(84, 23);
-            cbHaw.TabIndex = 106;
-            cbHaw.TabStop = false;
-            cbHaw.Text = "Hawaii ?";
-            cbHaw.UseVisualStyleBackColor = true;
             // 
             // btnImportData
             // 
@@ -1223,7 +1208,6 @@
             Controls.Add(flpMemberData);
             Font = new System.Drawing.Font("Calibri", 8.25F);
             HelpButton = true;
-            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
             Name = "FrmMemberData";
             Text = "Member Info";
@@ -1232,7 +1216,6 @@
             grpMemberInfo.ResumeLayout(false);
             grpMemberInfo.PerformLayout();
             groupRecord.ResumeLayout(false);
-            groupRecord.PerformLayout();
             grpRecordNumber.ResumeLayout(false);
             grpStats.ResumeLayout(false);
             grpSearchBy.ResumeLayout(false);
@@ -1348,7 +1331,6 @@
         private System.Windows.Forms.Label lblSSNValidation;
         private System.Windows.Forms.Label lblStateValidation;
         private System.Windows.Forms.Label lblReferralsValidation;
-        private System.Windows.Forms.CheckBox cbHaw;
         private System.Windows.Forms.TextBox txtPaidTo;
         private System.Windows.Forms.Label lblPaidTo;
         private System.Windows.Forms.TextBox txtDOB;
