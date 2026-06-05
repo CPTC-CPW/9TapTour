@@ -272,10 +272,9 @@ public partial class FrmMemberScores : Form
 
                 Game currentGame = GetScoresById(currentMem.Id);
 
-                var lastTourneyEntries = PlayerHistoryDB.GetEntriesForMostRecentTournament(currentMem.Number);
-                var entryWithAvg = lastTourneyEntries.FirstOrDefault(e => e.AVG > 0);
-                int displayHandicap = entryWithAvg != null
-                    ? CalcService.CalculateHandicapPins(entryWithAvg.AVG)
+                int? mostRecentAvg = PlayerHistoryDB.GetMostRecentAverage(currentMem.Number);
+                int displayHandicap = mostRecentAvg != null
+                    ? CalcService.CalculateHandicapPins(mostRecentAvg.Value)
                     : (currentMem.Handicap ?? 0);
                 txtHandicap.Text = displayHandicap.ToString();
                 txtBonusPins.Text = currentMem.Bonus.ToString();
@@ -549,10 +548,9 @@ public partial class FrmMemberScores : Form
 
                 if (currentGame == null)
                 {
-                    var lastTourneyEntries = PlayerHistoryDB.GetEntriesForMostRecentTournament(currentMem.Number);
-                    var entryWithAvg = lastTourneyEntries.FirstOrDefault(e => e.AVG > 0);
-                    player.Game.Handicap = entryWithAvg != null
-                        ? CalcService.CalculateHandicapPins(entryWithAvg.AVG)
+                    int? mostRecentAdjAvg = PlayerHistoryDB.GetMostRecentAverage(currentMem.Number);
+                    player.Game.Handicap = mostRecentAdjAvg != null
+                        ? CalcService.CalculateHandicapPins(mostRecentAdjAvg.Value)
                         : currentMem.Handicap;
                     player.Game.Bonus = currentMem.Bonus;
                 }
