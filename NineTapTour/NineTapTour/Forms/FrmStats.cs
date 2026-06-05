@@ -446,7 +446,7 @@ namespace NineTapTour.Forms
                 lblStartAvg.Text = 0.ToString();
             }
 
-            List<PlayerHistoryViewModel> Last30 = PlayerHistoryDB.GetTop30FromPlayerHistory(mem.Number);
+            List<PlayerHistoryViewModel> Last30 = PlayerHistoryDB.GetMemberPlayerHistory(mem.Number).Take(30).ToList();
             int game1AVG = 0;
             int game2AVG = 0;
             int game3AVG = 0;

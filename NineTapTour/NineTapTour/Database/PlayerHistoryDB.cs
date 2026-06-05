@@ -12,33 +12,6 @@ namespace NineTapTour.Database
     public class PlayerHistoryDB
     {
         /// <summary>
-        /// Returns the top 30 player histories with the same MemberNumber as the one given.
-        /// Queries from Games table (single source of truth).
-        /// </summary>
-        public static List<PlayerHistoryViewModel> GetTop30FromPlayerHistory(int memberNum)
-        {
-            const int howmany = 30;
-            using (var db = new NineTapDb())
-            {
-                var games = db.Games
-                    .Include(g => g.Participant)
-                        .ThenInclude(p => p.Member)
-                    .Include(g => g.Participant.Tournament)
-                    .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.IsFinalized)
-                    .OrderByDescending(g => g.Participant.Tournament.Date)
-                    .Take(howmany)
-                    .ToList();
-
-                return games.Select(g => new PlayerHistoryViewModel(
-                    g,
-                    memberNum,
-                    g.Participant.Tournament.Date
-                )).ToList();
-            }
-        }
-
-        /// <summary>
         /// Returns a list of all player histories with the given memberNumber.
         /// Queries from Games table (single source of truth).
         /// </summary>
