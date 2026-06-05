@@ -196,7 +196,8 @@ namespace NineTapTour.Database
                                   where m.Number == memberNumber 
                                      && g.IsFinalized
                                   orderby t.Date descending
-                                  select new PreviousHistory
+                                  orderby g.MoneyWon descending
+                                   select new PreviousHistory
                                   {
                                       TournamentDate = t.Date,
                                       GamesPlayed = g.GamesPlayed,
