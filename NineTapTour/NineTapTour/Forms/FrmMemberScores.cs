@@ -1125,7 +1125,6 @@ public partial class FrmMemberScores : Form
         }
 
         btnRightArrow.Enabled = true;
-        btnPlaceStandings.Enabled = true;
         btnRecapByPin.Enabled = true;
     }
 
@@ -1455,16 +1454,6 @@ public partial class FrmMemberScores : Form
                 Print.PrintByTour(selectTournament.selectedTournament);
             }
         }
-    }
-
-    private void BtnPlaceStandings_Click(object sender, EventArgs e)
-    {
-        MessageBox.Show("The place standings feature will be implemented in the future",
-            "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-        // Saved for future use - Client wants this saved
-        //FrmTournamentPlaceStandings form = new FrmTournamentPlaceStandings();
-        //form.ShowDialog();
     }
 
     //runs fill member when enter key is pressed on text box
