@@ -23,7 +23,6 @@ public partial class FrmMemberScores : Form
     TextBox[] scratchArray = new TextBox[4];
     TextBox[] handicappArray = new TextBox[4];
 
-    public bool switchingParticipents = false;
     //Count for record counting
     int currentIndex = 0;
     readonly Participant player = new();
@@ -650,9 +649,7 @@ public partial class FrmMemberScores : Form
         {
             currentIndex = 0;
             int playerSquadNumber = players[currentIndex].Squad;
-            switchingParticipents = true;
             CheckSquadCheckBoxes(playerSquadNumber);
-            switchingParticipents = false;
 
             lblRecord.Text = "Record " + (currentIndex + 1) + " / " + players.Count;
             txtMemberNum.Text = players[currentIndex].Member.Number.ToString();
@@ -770,19 +767,16 @@ public partial class FrmMemberScores : Form
 
     public void RecordIndexOnSquadSwitch()
     {
-        if (FrmMemberScoresHelpers.selectedTournament.Doubles == false && switchingParticipents == false)
+        if (txtMemberNum.Text != "")
         {
-            if (txtMemberNum.Text != "")
+            int squad = GetCurrentSquadNumber();
+            for (int i = 0; i < FrmMemberScoresHelpers.overallListOfParticipants.Count; i++)
             {
-                int squad = GetCurrentSquadNumber();
-                for (int i = 0; i < FrmMemberScoresHelpers.overallListOfParticipants.Count; i++)
+                if (currentMem.Id == FrmMemberScoresHelpers.overallListOfParticipants[i].Member.Id && FrmMemberScoresHelpers.overallListOfParticipants[i].Squad == squad)
                 {
-                    if (currentMem.Id == FrmMemberScoresHelpers.overallListOfParticipants[i].Member.Id && FrmMemberScoresHelpers.overallListOfParticipants[i].Squad == squad)
-                    {
-                        lblRecord.Text = "Record " + (i + 1) + " / " + FrmMemberScoresHelpers.overallListOfParticipants.Count;
-                        currentIndex = i;
-                        break;
-                    }
+                    lblRecord.Text = "Record " + (i + 1) + " / " + FrmMemberScoresHelpers.overallListOfParticipants.Count;
+                    currentIndex = i;
+                    break;
                 }
             }
         }
@@ -826,7 +820,6 @@ public partial class FrmMemberScores : Form
     /// <param name="e"></param>
     private void BtnRightArrow_Click(object sender, EventArgs e)
     {
-        switchingParticipents = true;
         currentIndex++;
 
         // Disables buttons and breaks function
@@ -856,7 +849,6 @@ public partial class FrmMemberScores : Form
         lblRecord.Text = "Record " + (currentIndex + 1) + " / " + FrmMemberScoresHelpers.overallListOfParticipants.Count;
 
         FillMember();
-        switchingParticipents = false;
     }
 
     /// <summary>
@@ -864,8 +856,6 @@ public partial class FrmMemberScores : Form
     /// </summary>
     private void BtnLeftArrow_Click(object sender, EventArgs e)
     {
-        switchingParticipents = true;
-
         currentIndex--;
         // Disables buttons and breaks function
         // if already at the first record
@@ -894,8 +884,6 @@ public partial class FrmMemberScores : Form
         lblRecord.Text = "Record " + (currentIndex + 1) + " / " + FrmMemberScoresHelpers.overallListOfParticipants.Count;
 
         FillMember();
-
-        switchingParticipents = false;
     }
 
     /// <summary>
@@ -905,9 +893,6 @@ public partial class FrmMemberScores : Form
     /// <param name="e"></param>
     private void BtnFirstRecord_Click(object sender, EventArgs e)
     {
-
-        switchingParticipents = true;
-
         // Disables buttons and breaks function
         // if already at the 1st record
         if (currentIndex <= -1)
@@ -936,11 +921,7 @@ public partial class FrmMemberScores : Form
             // if there are no more records go back to.
             btnLeftArrow.Enabled = false;
             btnFirstRecord.Enabled = false;
-
-
-            switchingParticipents = false;
         }
-
     }
 
     /// <summary>
@@ -958,8 +939,6 @@ public partial class FrmMemberScores : Form
         //If there are no participants in the current tournament
         if (FrmMemberScoresHelpers.overallListOfParticipants == null)
             return;
-
-        switchingParticipents = true;
 
         // Disables buttons and breaks function
         // if already at the last record
@@ -987,9 +966,6 @@ public partial class FrmMemberScores : Form
         // if there are no more records go to.
         btnLastRecord.Enabled = false;
         btnRightArrow.Enabled = false;
-
-
-        switchingParticipents = false;
     }
 
     /// <summary>
@@ -1948,12 +1924,11 @@ public partial class FrmMemberScores : Form
 
     private void CheckBoxSquadNumber_CheckedChanged(object sender, EventArgs e)
     {
-        // Only run when the radio button is checked and not during programmatic navigation
-        if ((sender as RadioButton).Checked && !switchingParticipents)
+        if ((sender as RadioButton).Checked)
         {
             ScoreAndTotalClear();
-            RecordIndexOnSquadSwitch();
             FillMember();
+            RecordIndexOnSquadSwitch();
         }
     }
 
