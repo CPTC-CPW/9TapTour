@@ -164,33 +164,6 @@ namespace NineTapTour.Database
         }
 
         /// <summary>
-        /// Returns a list of player histories ordered by TotalScore descending.
-        /// </summary>
-        public static List<PlayerHistoryViewModel> GetMemberPlayerHistoryByTotal(int memberNum)
-        {
-            using (var db = new NineTapDb())
-            {
-                // Materialize the query first with ToList() since ScratchTotal is a calculated property
-                var games = db.Games
-                    .Include(g => g.Participant)
-                        .ThenInclude(p => p.Member)
-                    .Include(g => g.Participant.Tournament)
-                    .Where(g => g.Participant.Member.Number == memberNum
-                             && g.IsFinalized)
-                    .ToList();
-
-                // Now order by ScratchTotal (calculated property) in memory
-                var orderedGames = games.OrderByDescending(g => g.ScratchTotal).ToList();
-
-                return orderedGames.Select(g => new PlayerHistoryViewModel(
-                    g,
-                    memberNum,
-                    g.Participant.Tournament.Date
-                )).ToList();
-            }
-        }
-
-        /// <summary>
         /// Returns the total money won by a member.
         /// </summary>
         public static decimal GetTotalMoneyWon(int memberNum)

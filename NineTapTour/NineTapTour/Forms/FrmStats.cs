@@ -93,7 +93,7 @@ namespace NineTapTour.Forms
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
 
-            ph = PlayerHistoryDB.GetMemberPlayerHistoryByTotal(memNum);
+            ph = PlayerHistoryDB.GetMemberPlayerHistory(memNum);
         }
 
         struct statHolder
