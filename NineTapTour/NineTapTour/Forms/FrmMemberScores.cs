@@ -776,9 +776,12 @@ public partial class FrmMemberScores : Form
                 {
                     lblRecord.Text = "Record " + (i + 1) + " / " + FrmMemberScoresHelpers.overallListOfParticipants.Count;
                     currentIndex = i;
-                    break;
+                    return;
                 }
             }
+
+            // if no break occurs, set the current index to that of the next potential index
+            lblRecord.Text = "Record " + (FrmMemberScoresHelpers.overallListOfParticipants.Count + 1) + " / " + FrmMemberScoresHelpers.overallListOfParticipants.Count;
         }
     }
 
