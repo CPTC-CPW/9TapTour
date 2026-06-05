@@ -54,6 +54,7 @@ namespace NineTapTour.Database
                     .Where(g => g.Participant.Member.Number == memberNum 
                              && g.IsFinalized)
                     .OrderByDescending(g => g.Participant.Tournament.Date)
+                    .ThenByDescending(g => g.MoneyWon) // Ensure entries are ordered by place standing within the same tournament date (legacy tournaments do not have places stored)
                     .ToList();
 
                 // Convert Game entities to PlayerHistoryViewModel
