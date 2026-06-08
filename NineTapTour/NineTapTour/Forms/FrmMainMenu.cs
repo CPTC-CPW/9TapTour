@@ -61,15 +61,9 @@ public partial class FrmMainMenu : Form
 
     private void MainMenu_Paint(object sender, PaintEventArgs e)
     {
-        Graphics g = e.Graphics;
-        Font drawFont = new("Arial", 12);
-        SolidBrush drawBrush = new(Color.White);
-        PointF drawPoint = new(10, 2);
-        g.DrawString("Version: 3.1.6", drawFont, drawBrush, drawPoint);
+        Text = "Version: 3.1.7";
 #if DEBUG
-        drawBrush.Color = Color.Red;
-        drawPoint.Y += 16;
-        g.DrawString("DEVELOPMENT VERSION NOT FOR PRODUCTION", drawFont, drawBrush, drawPoint);
+        Text += " DEVELOPMENT ONLY";
 #endif
     }
 
