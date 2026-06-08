@@ -67,7 +67,7 @@
             label2.Location = new System.Drawing.Point(663, 135);
             label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(150, 15);
+            label2.Size = new System.Drawing.Size(149, 15);
             label2.TabIndex = 4;
             label2.Text = "Import Members Excel files";
             // 
@@ -140,7 +140,7 @@
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Name = "FrmMain";
             Text = "Import Test";
-            Paint += FrmMain_Paint;
+            Load += FrmMain_Load;
             ResumeLayout(false);
             PerformLayout();
         }

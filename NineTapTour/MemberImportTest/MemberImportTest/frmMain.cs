@@ -48,7 +48,7 @@ public partial class FrmMain : Form
         txtStatus.Left = 10;
         this.Controls.Add(txtStatus);
     }
-    
+
     public int RegionID;
     public List<Member> validMembers = [];      // Makes list of valid members
 
@@ -308,40 +308,40 @@ public partial class FrmMain : Form
                         // intentionally ignore other indices
                         break;
                 }
-        } // end segments loop
+            } // end segments loop
 
-        // Basic validation: require numeric member number and last name
-        if (m.Number > 0 && !string.IsNullOrWhiteSpace(m.LastName))
+            // Basic validation: require numeric member number and last name
+            if (m.Number > 0 && !string.IsNullOrWhiteSpace(m.LastName))
+            {
+                // Normalize dates within SQL safe range
+                if (m.DateOfBirth.HasValue && m.DateOfBirth.Value < new DateTime(1753, 1, 1))
+                    m.DateOfBirth = new DateTime(1753, 1, 1);
+
+                if (m.JoinDate < new DateTime(1753, 1, 1))
+                    m.JoinDate = new DateTime(1753, 1, 1);
+
+                validMembers.Add(m);
+                addedMembers++;
+            }
+
+            // Advance to next candidate record
+            memberCount++;
+            currentIndex = idx + recordLength;
+        } // end while
+
+        // Persist parsed members (skip ones that already exist)
+        int persisted = 0;
+        for (int j = 0; j < validMembers.Count; j++)
         {
-            // Normalize dates within SQL safe range
-            if (m.DateOfBirth.HasValue && m.DateOfBirth.Value < new DateTime(1753, 1, 1))
-                m.DateOfBirth = new DateTime(1753, 1, 1);
-
-            if (m.JoinDate < new DateTime(1753, 1, 1))
-                m.JoinDate = new DateTime(1753, 1, 1);
-
-            validMembers.Add(m);
-            addedMembers++;
+            if (!NineTapTour.Database.MemberDB.MemberExists(validMembers[j]))
+            {
+                NineTapTour.Database.MemberDB.AddOrUpdateMember(validMembers[j]);
+                persisted++;
+            }
         }
 
-        // Advance to next candidate record
-        memberCount++;
-        currentIndex = idx + recordLength;
-    } // end while
-
-    // Persist parsed members (skip ones that already exist)
-    int persisted = 0;
-    for (int j = 0; j < validMembers.Count; j++)
-    {
-        if (!NineTapTour.Database.MemberDB.MemberExists(validMembers[j]))
-        {
-            NineTapTour.Database.MemberDB.AddOrUpdateMember(validMembers[j]);
-            persisted++;
-        }
-    }
-
-    MessageBox.Show($"{persisted} new members added. {validMembers.Count - persisted} were already present.", "Import Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-    btnSelectExcelFolder.Enabled = true;
+        MessageBox.Show($"{persisted} new members added. {validMembers.Count - persisted} were already present.", "Import Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        btnSelectExcelFolder.Enabled = true;
     }
 
     /// <summary>
@@ -433,9 +433,9 @@ public partial class FrmMain : Form
                 {
                     if (!playerInfoExtracted)
                     {
-                        ExtractPlayerInfoFromWorksheet(ws, ref PlayerFinalFirstAndMiddle, ref playerLastName, 
+                        ExtractPlayerInfoFromWorksheet(ws, ref PlayerFinalFirstAndMiddle, ref playerLastName,
                             ref playerOrgAVG, ref playerNumberAsInt, PathAndFileName, splitters);
-                        
+
                         if (playerNumberAsInt > 0)
                         {
                             playerInfoExtracted = true;
@@ -550,7 +550,7 @@ public partial class FrmMain : Form
                             UseGame2 = temp.Game2 > -1 ? true : false,
                             UseGame3 = temp.Game3 > -1 ? true : false,
                             UseGame4 = temp.Game4 > -1 ? true : false,
-                            
+
                             AdjustedAvg = temp.AVG,
                             KeepAdjustedAvg = true,
                             LeagueAverage = temp.TrueAverage,
@@ -596,8 +596,8 @@ public partial class FrmMain : Form
     /// Extracts player information (name, number, average) from the first worksheet with valid data.
     /// Used once per workbook and reused for all sheets.
     /// </summary>
-    private void ExtractPlayerInfoFromWorksheet(IXLWorksheet ws, ref string[] PlayerFinalFirstAndMiddle, 
-        ref string playerLastName, ref int playerOrgAVG, ref int playerNumberAsInt, 
+    private void ExtractPlayerInfoFromWorksheet(IXLWorksheet ws, ref string[] PlayerFinalFirstAndMiddle,
+        ref string playerLastName, ref int playerOrgAVG, ref int playerNumberAsInt,
         string PathAndFileName, char[] splitters)
     {
         string firstAndMiddle = "";
@@ -719,20 +719,6 @@ public partial class FrmMain : Form
         }
     }
 
-    private void FrmMain_Paint(object sender, PaintEventArgs e)
-    {
-        Graphics g = e.Graphics;
-        Font drawFont = new("Arial", 12);
-        SolidBrush drawBrush = new(Color.Black);
-        PointF drawPoint = new(20, 2);
-        g.DrawString("Version: 3.1.6", drawFont, drawBrush, drawPoint);
-#if DEBUG
-        drawBrush.Color = Color.Red;
-        drawPoint.Y += 16;
-        g.DrawString("DEVELOPMENT VERSION NOT FOR PRODUCTION", drawFont, drawBrush, drawPoint);
-#endif
-    }
-
     private async void btnConvertXls_Click(object sender, EventArgs e)
     {
         DialogResult accept = MessageBox.Show("Do you want to convert your old .xls files into the newer .xlsx format? This will create a copy and your original files will not be deleted. You only need to do this one time." +
@@ -782,5 +768,13 @@ public partial class FrmMain : Form
             }
             process.WaitForExit();
         }
+    }
+
+    private void FrmMain_Load(object sender, EventArgs e)
+    {
+        Text = "Version: 3.1.7";
+#if DEBUG
+        Text += " DEVELOPMENT ONLY";
+#endif
     }
 }

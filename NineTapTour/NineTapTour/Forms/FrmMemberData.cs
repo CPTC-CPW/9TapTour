@@ -955,11 +955,8 @@ public partial class FrmMemberData : Form
             string[] first0middle1 = firstAndMiddle.Split(' ');
             int playerOrgAVG = ws.Cell(1, 10).GetValue<int?>() ?? -1;
             string playerNumber = ws.Cell(1, 14).GetString();
-            bool isRegionHawaii = (cbHaw.Checked);
-            if (isRegionHawaii)
-            {
-                playerNumber = RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty);
-            }
+            playerNumber = RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty);
+
             int.TryParse(playerNumber, out int playerNumberAsInt);
             if (playerNumberAsInt != 0)
             {
@@ -971,8 +968,7 @@ public partial class FrmMemberData : Form
                 playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumberAfterSplit[^1], string.Empty));
             }
             
-            // Data rows start at row 3 (or 4 for Hawaii)
-            int rowNum = isRegionHawaii ? 4 : 3;
+            int rowNum = 3;
             int lastRow = ws.LastRowUsed().RowNumber();
             
             for (int row = rowNum; row <= lastRow; row++)

@@ -1,266 +1,88 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NineTapTour.Models;
-using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 
-namespace NineTapTour.Database
+namespace NineTapTour.Database;
+
+public class PlayerHistoryDB
 {
-    public class PlayerHistoryDB
+    /// <summary>
+    /// Returns a list of all player histories with the given memberNumber.
+    /// Queries from Games table (single source of truth).
+    /// </summary>
+    public static List<PlayerHistoryViewModel> GetMemberPlayerHistory(int memberNum)
     {
-        /// <summary>
-        /// Returns the top 30 player histories with the same MemberNumber as the one given.
-        /// Queries from Games table (single source of truth).
-        /// </summary>
-        public static List<PlayerHistoryViewModel> GetTop30FromPlayerHistory(int memberNum)
+        using (var db = new NineTapDb())
         {
-            const int howmany = 30;
-            using (var db = new NineTapDb())
-            {
-                var games = db.Games
-                    .Include(g => g.Participant)
-                        .ThenInclude(p => p.Member)
-                    .Include(g => g.Participant.Tournament)
-                    .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.IsFinalized)
-                    .OrderByDescending(g => g.Participant.Tournament.Date)
-                    .Take(howmany)
-                    .ToList();
-
-                return games.Select(g => new PlayerHistoryViewModel(
-                    g,
-                    memberNum,
-                    g.Participant.Tournament.Date
-                )).ToList();
-            }
-        }
-
-        /// <summary>
-        /// Returns a list of all player histories with the given memberNumber.
-        /// Queries from Games table (single source of truth).
-        /// </summary>
-        public static List<PlayerHistoryViewModel> GetMemberPlayerHistory(int memberNum)
-        {
-            using (var db = new NineTapDb())
-            {
-                // Query from Games table instead of PlayerHistory
-                var games = db.Games
-                    .Include(g => g.Participant)
-                        .ThenInclude(p => p.Member)
-                    .Include(g => g.Participant.Tournament)
-                    .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.IsFinalized)
-                    .OrderByDescending(g => g.Participant.Tournament.Date)
-                    .ToList();
-
-                // Convert Game entities to PlayerHistoryViewModel
-                return games.Select(g => new PlayerHistoryViewModel(
-                    g,
-                    memberNum,
-                    g.Participant.Tournament.Date
-                )).ToList();
-            }
-        }
-
-        /// <summary>
-        /// Gets the last quantity of games selecting only the tournament date and money won.
-        /// Used to calculate bonus pins.
-        /// </summary>
-        public static List<PlayerHistoryViewModel> GetLastQtyGamesMoneyWon(int memberNum, int howmany)
-        {
-            using(var db = new NineTapDb())
-            {
-                var games = db.Games
-                    .Include(g => g.Participant)
-                        .ThenInclude(p => p.Member)
-                    .Include(g => g.Participant.Tournament)
-                    .Where(g => g.Participant.Member.Number == memberNum
-                             && g.IsFinalized)
-                    .OrderByDescending(g => g.Participant.Tournament.Date)
-                    .Take(howmany)
-                    .ToList();
-
-                return games.Select(g => new PlayerHistoryViewModel
-                {
-                    TournamentDate = g.Participant.Tournament.Date,
-                    MoneyWon = g.MoneyWon ?? 0,
-                    GameID = g.Id,
-                    MemberNumber = memberNum
-                }).ToList();
-            }
-        }
-
-        /// <summary>
-        /// Returns a list of the last 5 finalized games where AVG was adjusted.
-        /// Only grabs games where AVG was adjusted so bonus pins aren't affected by bowling in multiple squads.
-        /// Queries from Games table (single source of truth).
-        /// </summary>
-        public static List<PlayerHistoryViewModel> GetLastFiveTournaments(int memberNum)
-        {
-            const int HOW_MANY = 5;
-            using (var db = new NineTapDb())
-            {
-                var games = db.Games
-                    .Include(g => g.Participant)
-                        .ThenInclude(p => p.Member)
-                    .Include(g => g.Participant.Tournament)
-                    .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.IsFinalized
-                             && g.AdjustedAvg > 0) // Only games where AVG was adjusted
-                    .OrderByDescending(g => g.Participant.Tournament.Date)
-                    .ThenByDescending(g => g.Id)
-                    .Take(HOW_MANY)
-                    .ToList();
-
-                return games.Select(g => new PlayerHistoryViewModel(
-                    g,
-                    memberNum,
-                    g.Participant.Tournament.Date
-                )).ToList();
-            }
-        }
-
-        /// <summary>
-        /// Returns the most recent finalized game where AVG was adjusted.
-        /// Only grabs games where AVG was adjusted so bonus pins aren't affected by bowling in multiple squads.
-        /// Returns null if no recent player history is found.
-        /// </summary>
-        public static PlayerHistoryViewModel GetMostRecentTournament(int memberNum)
-        {
-            using var db = new NineTapDb();
-            
-            var game = db.Games
+            // Query from Games table instead of PlayerHistory
+            var games = db.Games
                 .Include(g => g.Participant)
                     .ThenInclude(p => p.Member)
                 .Include(g => g.Participant.Tournament)
-                .Where(g => g.Participant.Member.Number == memberNum
-                         && g.IsFinalized
-                         && g.AdjustedAvg > 0) // Only games where AVG was adjusted
+                .Where(g => g.Participant.Member.Number == memberNum 
+                         && g.IsFinalized)
                 .OrderByDescending(g => g.Participant.Tournament.Date)
-                .ThenByDescending(g => g.Id)
-                .FirstOrDefault();
+                .ThenByDescending(g => g.MoneyWon) // Ensure entries are ordered by place standing within the same tournament date (legacy tournaments do not have places stored)
+                .ToList();
 
-            return game == null ? null : new PlayerHistoryViewModel(
-                game,
+            // Convert Game entities to PlayerHistoryViewModel
+            return games.Select(g => new PlayerHistoryViewModel(
+                g,
                 memberNum,
-                game.Participant.Tournament.Date
-            );
+                g.Participant.Tournament.Date
+            )).ToList();
         }
+    }
 
-        /// <summary>
-        /// Deletes the given Game from the database
-        /// </summary>
-        public static void DeleteGame(Game game)
+    /// <summary>
+    /// Gets the last quantity of games selecting only the tournament date and money won.
+    /// Used to calculate bonus pins.
+    /// </summary>
+    public static List<PlayerHistoryViewModel> GetLastQtyGamesMoneyWon(int memberNum, int howmany)
+    {
+        using(var db = new NineTapDb())
         {
-            using (var db = new NineTapDb())
-            {
-                db.Entry(game).State = EntityState.Deleted;
-                db.SaveChanges();
-            }
-        }
-
-        /// <summary>
-        /// Returns a list of player histories ordered by TotalScore descending.
-        /// </summary>
-        public static List<PlayerHistoryViewModel> GetMemberPlayerHistoryByTotal(int memberNum)
-        {
-            using (var db = new NineTapDb())
-            {
-                // Materialize the query first with ToList() since ScratchTotal is a calculated property
-                var games = db.Games
-                    .Include(g => g.Participant)
-                        .ThenInclude(p => p.Member)
-                    .Include(g => g.Participant.Tournament)
-                    .Where(g => g.Participant.Member.Number == memberNum
-                             && g.IsFinalized)
-                    .ToList();
-
-                // Now order by ScratchTotal (calculated property) in memory
-                var orderedGames = games.OrderByDescending(g => g.ScratchTotal).ToList();
-
-                return orderedGames.Select(g => new PlayerHistoryViewModel(
-                    g,
-                    memberNum,
-                    g.Participant.Tournament.Date
-                )).ToList();
-            }
-        }
-
-        /// <summary>
-        /// Returns the total money won by a member.
-        /// </summary>
-        public static decimal GetTotalMoneyWon(int memberNum)
-        {
-            using (var db = new NineTapDb())
-            {
-                // Query from Games table instead of PlayerHistory
-                return db.Games
-                    .Include(g => g.Participant)
-                        .ThenInclude(p => p.Member)
-                    .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.IsFinalized) // Only finalized games
-                    .Select(g => (decimal?)(g.MoneyWon ?? 0))
-                    .Sum() ?? 0;
-            }
-        }
-
-        /// <summary>
-        /// Returns total games played by a member
-        /// </summary>
-        public static int GetTotalGamesPlayed(int memberNum)
-        {
-            using (var db = new NineTapDb())
-            {
-                return db.Games
-                    .Include(g => g.Participant)
-                        .ThenInclude(p => p.Member)
-                    .Where(g => g.Participant.Member.Number == memberNum 
-                             && g.IsFinalized)
-                    .Select(g => g.GamesPlayed)
-                    .Sum();
-            }
-        }
-
-        /// <summary>
-        /// Returns all finalized entries for the member's most recent tournament.
-        /// The "most recent tournament" is identified by the most recent tournament that
-        /// has an adjusted-avg entry for this member. All entries (including multi-squad)
-        /// for that tournament are returned so callers can determine the correct bonus
-        /// carry-forward: highest bonus when no cash, lowest bonus when the player cashed.
-        /// </summary>
-        public static List<PlayerHistoryViewModel> GetEntriesForMostRecentTournament(int memberNum)
-        {
-            using var db = new NineTapDb();
-
-            // Identify the tournament ID of the most recent tournament where this member
-            // has a finalized, adjusted-avg entry (the director-approved record).
-            int mostRecentTournamentId = db.Games
-                .Include(g => g.Participant)
-                    .ThenInclude(p => p.Member)
-                .Include(g => g.Participant.Tournament)
-                .Where(g => g.Participant.Member.Number == memberNum
-                         && g.IsFinalized
-                         && g.AdjustedAvg > 0)
-                .OrderByDescending(g => g.Participant.Tournament.Date)
-                .ThenByDescending(g => g.Id)
-                .Select(g => g.Participant.Tournament.Id)
-                .FirstOrDefault();
-
-            if (mostRecentTournamentId == 0)
-                return [];
-
-            // Return ALL finalized entries for that tournament (multiple squads included)
-            // so the caller can evaluate cash status and min/max bonus across all entries.
             var games = db.Games
                 .Include(g => g.Participant)
                     .ThenInclude(p => p.Member)
                 .Include(g => g.Participant.Tournament)
                 .Where(g => g.Participant.Member.Number == memberNum
+                         && g.IsFinalized)
+                .OrderByDescending(g => g.Participant.Tournament.Date)
+                .Take(howmany)
+                .ToList();
+
+            return games.Select(g => new PlayerHistoryViewModel
+            {
+                TournamentDate = g.Participant.Tournament.Date,
+                MoneyWon = g.MoneyWon ?? 0,
+                GameID = g.Id,
+                MemberNumber = memberNum
+            }).ToList();
+        }
+    }
+
+    /// <summary>
+    /// Returns a list of the last 5 finalized games where AVG was adjusted.
+    /// Only grabs games where AVG was adjusted so bonus pins aren't affected by bowling in multiple squads.
+    /// Queries from Games table (single source of truth).
+    /// </summary>
+    public static List<PlayerHistoryViewModel> GetLastFiveTournaments(int memberNum)
+    {
+        const int HOW_MANY = 5;
+        using (var db = new NineTapDb())
+        {
+            var games = db.Games
+                .Include(g => g.Participant)
+                    .ThenInclude(p => p.Member)
+                .Include(g => g.Participant.Tournament)
+                .Where(g => g.Participant.Member.Number == memberNum 
                          && g.IsFinalized
-                         && g.Participant.Tournament.Id == mostRecentTournamentId)
+                         && g.AdjustedAvg > 0) // Only games where AVG was adjusted
+                .OrderByDescending(g => g.Participant.Tournament.Date)
+                .ThenByDescending(g => g.Id)
+                .Take(HOW_MANY)
                 .ToList();
 
             return games.Select(g => new PlayerHistoryViewModel(
@@ -269,5 +91,78 @@ namespace NineTapTour.Database
                 g.Participant.Tournament.Date
             )).ToList();
         }
+    }
+
+    /// <summary>
+    /// Returns the most recent finalized game where AVG was adjusted.
+    /// Only grabs games where AVG was adjusted so bonus pins aren't affected by bowling in multiple squads.
+    /// Returns null if no recent player history is found.
+    /// </summary>
+    public static PlayerHistoryViewModel GetMostRecentTournament(int memberNum)
+    {
+        using var db = new NineTapDb();
+        
+        var game = db.Games
+            .Include(g => g.Participant)
+                .ThenInclude(p => p.Member)
+            .Include(g => g.Participant.Tournament)
+            .Where(g => g.Participant.Member.Number == memberNum
+                     && g.IsFinalized
+                     && g.AdjustedAvg > 0) // Only games where AVG was adjusted
+            .OrderByDescending(g => g.Participant.Tournament.Date)
+            .ThenByDescending(g => g.Id)
+            .FirstOrDefault();
+
+        return game == null ? null : new PlayerHistoryViewModel(
+            game,
+            memberNum,
+            game.Participant.Tournament.Date
+        );
+    }
+
+    /// <summary>
+    /// Deletes the given Game from the database
+    /// </summary>
+    public static void DeleteGame(Game game)
+    {
+        using (var db = new NineTapDb())
+        {
+            db.Entry(game).State = EntityState.Deleted;
+            db.SaveChanges();
+        }
+    }
+
+    /// <summary>
+    /// Returns the total money won by a member.
+    /// </summary>
+    public static decimal GetTotalMoneyWon(int memberNum)
+    {
+        using (var db = new NineTapDb())
+        {
+            // Query from Games table instead of PlayerHistory
+            return db.Games
+                .Include(g => g.Participant)
+                    .ThenInclude(p => p.Member)
+                .Where(g => g.Participant.Member.Number == memberNum 
+                         && g.IsFinalized) // Only finalized games
+                .Select(g => (decimal?)(g.MoneyWon ?? 0))
+                .Sum() ?? 0;
+        }
+    }
+
+    public static int? GetMostRecentAverage(int memberNum)
+    {
+        using var db = new NineTapDb();
+        var game = db.Games
+            .Include(g => g.Participant)
+                .ThenInclude(p => p.Member)
+            .Include(g => g.Participant.Tournament)
+            .Where(g => g.Participant.Member.Number == memberNum
+                     && g.IsFinalized
+                     && g.AdjustedAvg > 0) // Only games where AVG was adjusted
+            .OrderByDescending(g => g.Participant.Tournament.Date)
+            .ThenByDescending(g => g.Id)
+            .FirstOrDefault();
+        return game?.AdjustedAvg ?? null;
     }
 }
