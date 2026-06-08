@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMainMenu));
             btnMemberData = new System.Windows.Forms.Button();
             btnMemberScores = new System.Windows.Forms.Button();
             btnAbout = new System.Windows.Forms.Button();
@@ -137,11 +136,10 @@
             Controls.Add(btnMemberData);
             DoubleBuffered = true;
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Name = "FrmMainMenu";
             Text = "MainMenu";
-            Paint += MainMenu_Paint;
+            Load += FrmMainMenu_Load;
             ResumeLayout(false);
 
         }

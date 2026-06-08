@@ -59,16 +59,6 @@ public partial class FrmMainMenu : Form
         ((FrmMain)MdiParent).tournamentToolStripMenuItem.PerformClick();
     }
 
-    private void MainMenu_Paint(object sender, PaintEventArgs e)
-    {
-        Text = "Version: 3.1.7";
-#if DEBUG
-        Text += " DEVELOPMENT ONLY";
-#endif
-    }
-
-    // This is the code behind for the delete database button. Per Rob, we don't need this 
-    // at this time. Keeping the code incase it's needed in the future.
     private void btnDropDataBase1_Click_1(object sender, EventArgs e)
     {
         if (MessageBox.Show("This will permanently delete and recreate the entire database. All data will be lost. Are you sure?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
@@ -81,5 +71,13 @@ public partial class FrmMainMenu : Form
 
             MessageBox.Show("Database was successfully dropped and recreated!");
         }
+    }
+
+    private void FrmMainMenu_Load(object sender, EventArgs e)
+    {
+        Text = "Version: 3.1.7";
+#if DEBUG
+        Text += " DEVELOPMENT ONLY";
+#endif
     }
 }
