@@ -71,7 +71,9 @@ public class ExcelRow
     public double AverageOfRow { get; set; }
 
     /// <summary>
-    /// 
+    /// The true average is for as many entries up to 43 in the weekly books per page
+    /// this application cuts off at 30 entries and is tracked as 30 game average
+    /// in the finalize form it is under 30 Entry AVG
     /// </summary>
     public double TrueAverage { get; set; }
 
