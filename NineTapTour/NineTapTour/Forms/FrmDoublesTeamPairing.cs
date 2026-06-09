@@ -108,7 +108,7 @@ public class FrmDoublesTeamPairing : Form
         // --- Input panel (top-docked) ---
         pnlInput = new Panel { Dock = DockStyle.Top, Height = 76, Padding = new Padding(8, 0, 8, 4) };
 
-        // Squad row (y=8)
+        // Squad row 
         lblSquad = new Label { Text = "Squad:", Location = new Point(8, 12), AutoSize = true };
         cboSquad = new ComboBox
         {
@@ -122,8 +122,8 @@ public class FrmDoublesTeamPairing : Form
         cboSquad.SelectedIndex = 0;
         cboSquad.SelectedIndexChanged += CboSquad_SelectedIndexChanged;
 
-        // Bowler + partner-count row (y=40)
-        lblBowlerNum = new Label { Text = "Bowler #:", Location = new Point(8, 44), AutoSize = true };
+        // Member + partner-count row
+        lblBowlerNum = new Label { Text = "Member #:", Location = new Point(8, 44), AutoSize = true };
         txtBowlerNumber = new TextBox { Location = new Point(68, 40), Width = 65 };
         lblBowlerName   = new Label  { Location = new Point(140, 44), Width = 170, AutoSize = false, Text = string.Empty };
 
@@ -132,7 +132,7 @@ public class FrmDoublesTeamPairing : Form
 
         lblAutoSaveStatus = new Label
         {
-            Location  = new Point(452, 44),
+            Location  = new Point(200, 12),
             Width     = 250,
             AutoSize  = false,
             Text      = string.Empty
@@ -149,7 +149,7 @@ public class FrmDoublesTeamPairing : Form
         var toolTip = new ToolTip();
         toolTip.SetToolTip(btnImportExcel, "Only .xlsx (Excel 2007+) format is supported. .xls files cannot be imported.");
 
-        // Secondary squad picker — visible only when cboSquad = "All Squads" (y=40)
+        // Secondary squad picker — visible only when cboSquad = "All Squads"
         lblAddSquad = new Label { Text = "for Squad:", Location = new Point(552, 44), AutoSize = true, Visible = false };
         cboAddSquad = new ComboBox
         {
