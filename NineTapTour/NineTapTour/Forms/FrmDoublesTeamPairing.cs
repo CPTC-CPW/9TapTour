@@ -89,8 +89,8 @@ public class FrmDoublesTeamPairing : Form
         SuspendLayout();
 
         Text            = "Doubles Pairings";
-        Size            = new Size(800, 640);
-        MinimumSize     = new Size(600, 440);
+        Size            = new Size(1100, 640);
+        MinimumSize     = new Size(1100, 440);
         StartPosition   = FormStartPosition.CenterParent;
         FormBorderStyle = FormBorderStyle.Sizable;
 
