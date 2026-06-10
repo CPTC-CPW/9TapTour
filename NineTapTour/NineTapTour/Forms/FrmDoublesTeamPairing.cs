@@ -124,7 +124,7 @@ public class FrmDoublesTeamPairing : Form
 
         // Member + partner-count row
         lblBowlerNum = new Label { Text = "Member #:", Location = new Point(8, 44), AutoSize = true };
-        txtBowlerNumber = new TextBox { Location = new Point(68, 40), Width = 65 };
+        txtBowlerNumber = new TextBox { Location = new Point(75, 40), Width = 65 };
         lblBowlerName   = new Label  { Location = new Point(140, 44), Width = 170, AutoSize = false, Text = string.Empty };
 
         lblPartnerCountLabel = new Label { Text = "# of Partners:", Location = new Point(318, 44), AutoSize = true };
