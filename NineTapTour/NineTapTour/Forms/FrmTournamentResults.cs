@@ -1472,14 +1472,6 @@ public partial class FrmTournamentResults : Form
         }
     }
 
-    /// <summary>
-    /// Populates dgvTournamentResults when clicked on
-    /// </summary>
-    private static bool IsProgressivePotLine(string text)
-    {
-        return text.Contains("progressive", StringComparison.OrdinalIgnoreCase);
-    }
-
     private static bool TryExtractFirstAmount(string text, out decimal amount)
     {
         amount = 0m;
@@ -1519,31 +1511,34 @@ public partial class FrmTournamentResults : Form
             .Select(s => s.Trim())
             .Where(s => !string.IsNullOrWhiteSpace(s))];
 
-        int nextEarningsRow = 0;
-        int lastAssignedEarningsRow = -1;
+        int currentRow = 0;
+        int placesProcessed = 0; // Track which place we're on (1st, 2nd, 3rd)
+        bool expectProgressivePot = false; // Flag to track if next line should be progressive pot
 
         foreach (string line in lines)
         {
-            if (IsProgressivePotLine(line))
-            {
-                if (lastAssignedEarningsRow >= 0
-                    && lastAssignedEarningsRow < dgvTournamentResults.RowCount
-                    && TryExtractFirstAmount(line, out decimal progressiveAmount))
-                {
-                    dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, lastAssignedEarningsRow].Value = progressiveAmount;
-                }
-                continue;
-            }
-
-            if (nextEarningsRow >= dgvTournamentResults.RowCount)
+            // Stop processing if we've filled all rows in the grid
+            if (currentRow >= dgvTournamentResults.RowCount)
                 break;
 
-            if (TryExtractFirstAmount(line, out decimal earningsAmount))
+            // Only assign progressive pot if we just assigned earnings and were expecting it
+            if (expectProgressivePot 
+                && lines.Count <= dgvTournamentResults.RowCount
+                && TryExtractFirstAmount(line, out decimal progressiveAmount))
             {
-                dgvTournamentResults[EARNINGS_COLUMN_NAME, nextEarningsRow].Value = earningsAmount;
-                lastAssignedEarningsRow = nextEarningsRow;
-                nextEarningsRow++;
+                dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentRow].Value = progressiveAmount;
+                expectProgressivePot = false; // Reset flag after processing
             }
+            else
+            {
+                TryExtractFirstAmount(line, out decimal earningsAmount);
+                dgvTournamentResults[EARNINGS_COLUMN_NAME, currentRow].Value = earningsAmount;
+                placesProcessed++;
+
+                // After 1st, 2nd, and 3rd place, expect a progressive pot line next
+                expectProgressivePot = placesProcessed <= 3;
+            }
+            currentRow++;
         }
     }
 }
