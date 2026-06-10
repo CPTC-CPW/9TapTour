@@ -89,8 +89,8 @@ public class FrmDoublesTeamPairing : Form
         SuspendLayout();
 
         Text            = "Doubles Pairings";
-        Size            = new Size(800, 640);
-        MinimumSize     = new Size(600, 440);
+        Size            = new Size(1100, 640);
+        MinimumSize     = new Size(1100, 440);
         StartPosition   = FormStartPosition.CenterParent;
         FormBorderStyle = FormBorderStyle.Sizable;
 
@@ -211,7 +211,6 @@ public class FrmDoublesTeamPairing : Form
             Height = BowlerPanelFixedHeight,
             MinimumSize = new Size(BowlerPanelWidth, BowlerPanelFixedHeight),
             MaximumSize = new Size(BowlerPanelWidth, BowlerPanelFixedHeight),
-            Anchor = AnchorStyles.Right | AnchorStyles.Bottom,
             Padding = new Padding(6)
         };
         lblBowlerList = new Label
@@ -254,6 +253,9 @@ public class FrmDoublesTeamPairing : Form
         pnlBowlerList.Controls.Add(pnlBowlerNavButtons);
         pnlBowlerList.Controls.Add(lblBowlerList);
 
+        // --- Spacer before pairings grid ---
+        Panel pnlSpacer = new Panel { Dock = DockStyle.Top, Height = 60 };
+
         // --- Pairings grid ---
         dgvPairings = new DataGridView
         {
@@ -294,6 +296,7 @@ public class FrmDoublesTeamPairing : Form
                                          (pnlBottom.Height - btnClose.Height) / 2);
 
         Controls.Add(dgvPairings);
+        Controls.Add(pnlSpacer);
         Controls.Add(pnlBowlerList);
         Controls.Add(pnlBottom);
         Controls.Add(pnlSummary);
@@ -315,13 +318,7 @@ public class FrmDoublesTeamPairing : Form
 
     private void PositionBowlerPanel()
     {
-        int x = ClientSize.Width - pnlBowlerList.Width - 8;
-        int y = ClientSize.Height - pnlBowlerList.Height - 48; // keep clear of bottom bar
-
-        if (x < 0) x = 0;
-        if (y < lblHeader.Bottom + 4) y = lblHeader.Bottom + 4;
-
-        pnlBowlerList.Location = new Point(x, y);
+        pnlBowlerList.Location = new Point(740, 2);
         pnlBowlerList.BringToFront();
     }
 
