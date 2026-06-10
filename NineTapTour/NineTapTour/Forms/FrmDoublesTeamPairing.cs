@@ -254,6 +254,9 @@ public class FrmDoublesTeamPairing : Form
         pnlBowlerList.Controls.Add(pnlBowlerNavButtons);
         pnlBowlerList.Controls.Add(lblBowlerList);
 
+        // --- Spacer before pairings grid ---
+        Panel pnlSpacer = new Panel { Dock = DockStyle.Top, Height = 60 };
+
         // --- Pairings grid ---
         dgvPairings = new DataGridView
         {
@@ -294,6 +297,7 @@ public class FrmDoublesTeamPairing : Form
                                          (pnlBottom.Height - btnClose.Height) / 2);
 
         Controls.Add(dgvPairings);
+        Controls.Add(pnlSpacer);
         Controls.Add(pnlBowlerList);
         Controls.Add(pnlBottom);
         Controls.Add(pnlSummary);
