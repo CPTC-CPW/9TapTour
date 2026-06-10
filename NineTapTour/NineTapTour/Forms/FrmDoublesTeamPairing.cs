@@ -124,7 +124,7 @@ public class FrmDoublesTeamPairing : Form
 
         // Member + partner-count row
         lblBowlerNum = new Label { Text = "Member #:", Location = new Point(8, 44), AutoSize = true };
-        txtBowlerNumber = new TextBox { Location = new Point(68, 40), Width = 65 };
+        txtBowlerNumber = new TextBox { Location = new Point(75, 40), Width = 65 };
         lblBowlerName   = new Label  { Location = new Point(140, 44), Width = 170, AutoSize = false, Text = string.Empty };
 
         lblPartnerCountLabel = new Label { Text = "# of Partners:", Location = new Point(318, 44), AutoSize = true };
@@ -380,8 +380,19 @@ public class FrmDoublesTeamPairing : Form
 
         // Focus the first slot that has no pre-filled value
         int firstEmpty = _existingPartnersForBowler.Count;
+
+        // Delays the focus so the other controls can be built and avoid a cascade of focus/leave events
         if (firstEmpty < _partnerControls.Count)
-            _partnerControls[firstEmpty].NumBox.Focus();
+        {
+            var target = _partnerControls[firstEmpty].NumBox;
+
+            BeginInvoke(new Action(() =>
+            {
+                if (!target.IsDisposed && target.IsHandleCreated)
+                    target.Focus();
+            }));
+        }
+
     }
 
     // ----------------------------------------------------------------
