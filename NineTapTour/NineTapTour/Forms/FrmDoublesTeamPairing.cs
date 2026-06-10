@@ -211,7 +211,6 @@ public class FrmDoublesTeamPairing : Form
             Height = BowlerPanelFixedHeight,
             MinimumSize = new Size(BowlerPanelWidth, BowlerPanelFixedHeight),
             MaximumSize = new Size(BowlerPanelWidth, BowlerPanelFixedHeight),
-            Anchor = AnchorStyles.Right | AnchorStyles.Bottom,
             Padding = new Padding(6)
         };
         lblBowlerList = new Label
