@@ -380,8 +380,19 @@ public class FrmDoublesTeamPairing : Form
 
         // Focus the first slot that has no pre-filled value
         int firstEmpty = _existingPartnersForBowler.Count;
+
+        // Delays the focus so the other controls can be built and avoid a cascade of focus/leave events
         if (firstEmpty < _partnerControls.Count)
-            _partnerControls[firstEmpty].NumBox.Focus();
+        {
+            var target = _partnerControls[firstEmpty].NumBox;
+
+            BeginInvoke(new Action(() =>
+            {
+                if (!target.IsDisposed && target.IsHandleCreated)
+                    target.Focus();
+            }));
+        }
+
     }
 
     // ----------------------------------------------------------------
