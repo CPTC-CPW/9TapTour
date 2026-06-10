@@ -1522,9 +1522,7 @@ public partial class FrmTournamentResults : Form
                 break;
 
             // Only assign progressive pot if we just assigned earnings and were expecting it
-            if (expectProgressivePot 
-                && lines.Count <= dgvTournamentResults.RowCount
-                && TryExtractFirstAmount(line, out decimal progressiveAmount))
+            if (expectProgressivePot && TryExtractFirstAmount(line, out decimal progressiveAmount))
             {
                 // Subtracting one to ensure progressive pot goes to the correct bowler
                 dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentRow - 1].Value = progressiveAmount;
