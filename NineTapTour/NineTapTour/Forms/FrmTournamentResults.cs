@@ -1526,7 +1526,8 @@ public partial class FrmTournamentResults : Form
                 && lines.Count <= dgvTournamentResults.RowCount
                 && TryExtractFirstAmount(line, out decimal progressiveAmount))
             {
-                dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentRow].Value = progressiveAmount;
+                // Subtracting one to ensure progressive pot goes to the correct bowler
+                dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentRow - 1].Value = progressiveAmount;
                 expectProgressivePot = false; // Reset flag after processing
             }
             else
@@ -1537,8 +1538,8 @@ public partial class FrmTournamentResults : Form
 
                 // After 1st, 2nd, and 3rd place, expect a progressive pot line next
                 expectProgressivePot = placesProcessed <= 3;
+                currentRow++;
             }
-            currentRow++;
         }
     }
 }
