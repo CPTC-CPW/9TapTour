@@ -315,13 +315,7 @@ public class FrmDoublesTeamPairing : Form
 
     private void PositionBowlerPanel()
     {
-        int x = ClientSize.Width - pnlBowlerList.Width - 8;
-        int y = ClientSize.Height - pnlBowlerList.Height - 48; // keep clear of bottom bar
-
-        if (x < 0) x = 0;
-        if (y < lblHeader.Bottom + 4) y = lblHeader.Bottom + 4;
-
-        pnlBowlerList.Location = new Point(x, y);
+        pnlBowlerList.Location = new Point(740, 2);
         pnlBowlerList.BringToFront();
     }
 
