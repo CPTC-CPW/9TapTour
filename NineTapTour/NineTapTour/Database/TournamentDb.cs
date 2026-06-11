@@ -302,6 +302,14 @@ namespace NineTapTour.Database
         {
             using (var db = new NineTapDb())
             {
+                // Delete games
+                var gamesToDelete = db.Games.Where(g => g.Participant.Tournament.Id == tourn.Id).ToList();
+                db.Games.RemoveRange(gamesToDelete);
+
+                // Delete participants
+                var participantsToDelete = db.Participants.Where(p => p.Tournament.Id == tourn.Id).ToList();
+                db.Participants.RemoveRange(participantsToDelete);
+               
                 db.Entry(tourn).State = EntityState.Deleted;
                 db.SaveChanges();
             }
