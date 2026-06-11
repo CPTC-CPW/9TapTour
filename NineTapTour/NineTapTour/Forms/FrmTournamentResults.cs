@@ -366,16 +366,14 @@ public partial class FrmTournamentResults : Form
                              && p.Tournament.Id != tourny.Id
                              && p.Game.IsFinalized
                              && p.Tournament.Date == item.LatestDate)
-                    .Select(p => new { p.Game.AdjustedAvg, Bonus = p.Game.Bonus ?? 0, MoneyWon = p.Game.MoneyWon ?? 0 })
+                    .Select(p => new {p.Member.Number, p.Game.AdjustedAvg, Bonus = p.Member.Bonus, MoneyWon = p.Game.MoneyWon ?? 0 })
                     .ToList();
 
                 if (prevEntries.Count == 0) continue;
 
                 var withAvg  = prevEntries.FirstOrDefault(e => e.AdjustedAvg > 0);
                 int prevHdcp = withAvg != null ? CalcService.CalculateHandicapPins(withAvg.AdjustedAvg) : 0;
-                int prevBonus = prevEntries.Any(e => e.MoneyWon > 0)
-                    ? prevEntries.Min(e => e.Bonus)
-                    : prevEntries.Max(e => e.Bonus);
+                int prevBonus = prevEntries.Where(p => p.Number == item.MemberNumber).Select(p => p.Bonus).Single();
 
                 prevHBByMember[item.MemberNumber] = (prevHdcp, prevBonus);
             }
@@ -479,16 +477,14 @@ public partial class FrmTournamentResults : Form
                              && p.Tournament.Id != tourny.Id
                              && p.Game.IsFinalized
                              && p.Tournament.Date == item.LatestDate)
-                    .Select(p => new { p.Game.AdjustedAvg, Bonus = p.Game.Bonus ?? 0, MoneyWon = p.Game.MoneyWon ?? 0 })
+                    .Select(p => new {p.Member.Number, p.Game.AdjustedAvg, Bonus = p.Member.Bonus, MoneyWon = p.Game.MoneyWon ?? 0 })
                     .ToList();
 
                 if (prevEntries.Count == 0) continue;
 
                 var withAvg  = prevEntries.FirstOrDefault(e => e.AdjustedAvg > 0);
                 int prevHdcp = withAvg != null ? CalcService.CalculateHandicapPins(withAvg.AdjustedAvg) : 0;
-                int prevBonus = prevEntries.Any(e => e.MoneyWon > 0)
-                    ? prevEntries.Min(e => e.Bonus)
-                    : prevEntries.Max(e => e.Bonus);
+                int prevBonus = prevEntries.Where(p => p.Number == item.MemberNumber).Select(p => p.Bonus).Single();
 
                 prevHBByMember[item.MemberNumber] = (prevHdcp, prevBonus);
             }
