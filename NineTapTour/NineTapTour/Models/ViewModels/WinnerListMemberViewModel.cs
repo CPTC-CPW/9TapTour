@@ -31,6 +31,11 @@ namespace NineTapTour.Models.ViewModels
 
         public int? Bonus { get; set; }
 
+        /// <summary>
+        /// The member's current bonus pins from the Member record, independent of game history.
+        /// </summary>
+        public int MemberBonus { get; set; }
+
         public decimal? MoneyWon { get; set; }
 
         public decimal? SidePot { get; set; }
