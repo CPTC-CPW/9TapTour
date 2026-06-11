@@ -140,6 +140,14 @@ public partial class FrmMemberScores : Form
     /// <param name="e"></param>
     private void FrmMemberScores_Activated(object sender, EventArgs e)
     {
+        RefreshForm();
+    }
+
+    /// <summary>
+    /// This refreshes the list of tournaments and participants for the selected tournaments
+    /// </summary>
+    private void RefreshForm()
+    {
         SuspendLayout();
         flpMemberScores.SuspendLayout();
         rdoHandicapScore.Visible = false;
@@ -2104,6 +2112,8 @@ public partial class FrmMemberScores : Form
             // Grab selected tournament
             Tournament selectedTournament = FrmMemberScoresHelpers.selectedTournament;
             TournamentDB.DeleteTournament(selectedTournament);
+
+            RefreshForm();
         }
     }
 }
