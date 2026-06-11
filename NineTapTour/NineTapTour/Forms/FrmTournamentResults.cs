@@ -344,42 +344,10 @@ public partial class FrmTournamentResults : Form
         if (tourny.Doubles)
             return BuildWinnersListDoubles(bowlers);
 
-        // Batch-query each member's previous tournament handicap and bonus.
-        // Uses the same min/max cash logic as FrmFinalizeTournament and FrmMemberScores.
+        // Batch-query each member's handicap from their most recent finalized prior tournament.
+        // Bonus is read directly from the Member record via MemberBonus (not game history).
         var memberNumbers = bowlers.Select(b => b.MemberNumber).Distinct().ToHashSet();
-        var prevHBByMember = new Dictionary<int, (int Hdcp, int Bonus)>();
-        using (var dbPrev = new NineTapDb())
-        {
-            var latestApproved = dbPrev.Participants
-                .Where(p => memberNumbers.Contains(p.Member.Number)
-                         && p.Tournament.Id != tourny.Id
-                         && p.Game.IsFinalized
-                         && p.Game.AdjustedAvg > 0)
-                .GroupBy(p => p.Member.Number)
-                .Select(g => new { MemberNumber = g.Key, LatestDate = g.Max(p => p.Tournament.Date) })
-                .ToList();
-
-            foreach (var item in latestApproved)
-            {
-                var prevEntries = dbPrev.Participants
-                    .Where(p => p.Member.Number == item.MemberNumber
-                             && p.Tournament.Id != tourny.Id
-                             && p.Game.IsFinalized
-                             && p.Tournament.Date == item.LatestDate)
-                    .Select(p => new { p.Game.AdjustedAvg, Bonus = p.Game.Bonus ?? 0, MoneyWon = p.Game.MoneyWon ?? 0 })
-                    .ToList();
-
-                if (prevEntries.Count == 0) continue;
-
-                var withAvg  = prevEntries.FirstOrDefault(e => e.AdjustedAvg > 0);
-                int prevHdcp = withAvg != null ? CalcService.CalculateHandicapPins(withAvg.AdjustedAvg) : 0;
-                int prevBonus = prevEntries.Any(e => e.MoneyWon > 0)
-                    ? prevEntries.Min(e => e.Bonus)
-                    : prevEntries.Max(e => e.Bonus);
-
-                prevHBByMember[item.MemberNumber] = (prevHdcp, prevBonus);
-            }
-        }
+        var prevHdcpByMember = BuildPrevHdcpByMember(memberNumbers, tourny.Id);
 
         foreach (var b in bowlers)
         {
@@ -388,13 +356,14 @@ public partial class FrmTournamentResults : Form
                 compEntries++;
             }
 
-            bool hasPrevHB = prevHBByMember.TryGetValue(b.MemberNumber, out var prevHB);
             ExcelMember m = new()
             {
                 MemberNumber = b.MemberNumber,
                 Name = b.BowlerName,
-                Handicap = hasPrevHB && prevHB.Hdcp > 0 ? prevHB.Hdcp : Convert.ToInt32(b.Handicap),
-                Bonus    = hasPrevHB ? prevHB.Bonus : Convert.ToInt32(b.Bonus),
+                Handicap = prevHdcpByMember.TryGetValue(b.MemberNumber, out int prevHdcp) && prevHdcp > 0
+                    ? prevHdcp
+                    : Convert.ToInt32(b.Handicap),
+                Bonus = b.MemberBonus,
                 MoneyWon = b.MoneyWon,
                 SidePot = b.SidePot,
                 GameId = b.GameId,
@@ -458,43 +427,11 @@ public partial class FrmTournamentResults : Form
     /// </summary>
     private List<ExcelMember> BuildWinnersListDoubles(List<WinnerListMemberViewModel> bowlers)
     {
-        // Build prevHBByMember (same logic as the singles path)
+        // Batch-query each member's handicap from their most recent finalized prior tournament.
+        // Bonus is read directly from the Member record via MemberBonus (not game history).
         var memberNumbers = bowlers.Select(b => b.MemberNumber).Distinct().ToHashSet();
-        var prevHBByMember = new Dictionary<int, (int Hdcp, int Bonus)>();
-        using (var dbPrev = new NineTapDb())
-        {
-            var latestApproved = dbPrev.Participants
-                .Where(p => memberNumbers.Contains(p.Member.Number)
-                         && p.Tournament.Id != tourny.Id
-                         && p.Game.IsFinalized
-                         && p.Game.AdjustedAvg > 0)
-                .GroupBy(p => p.Member.Number)
-                .Select(g => new { MemberNumber = g.Key, LatestDate = g.Max(p => p.Tournament.Date) })
-                .ToList();
+        var prevHdcpByMember = BuildPrevHdcpByMember(memberNumbers, tourny.Id);
 
-            foreach (var item in latestApproved)
-            {
-                var prevEntries = dbPrev.Participants
-                    .Where(p => p.Member.Number == item.MemberNumber
-                             && p.Tournament.Id != tourny.Id
-                             && p.Game.IsFinalized
-                             && p.Tournament.Date == item.LatestDate)
-                    .Select(p => new { p.Game.AdjustedAvg, Bonus = p.Game.Bonus ?? 0, MoneyWon = p.Game.MoneyWon ?? 0 })
-                    .ToList();
-
-                if (prevEntries.Count == 0) continue;
-
-                var withAvg  = prevEntries.FirstOrDefault(e => e.AdjustedAvg > 0);
-                int prevHdcp = withAvg != null ? CalcService.CalculateHandicapPins(withAvg.AdjustedAvg) : 0;
-                int prevBonus = prevEntries.Any(e => e.MoneyWon > 0)
-                    ? prevEntries.Min(e => e.Bonus)
-                    : prevEntries.Max(e => e.Bonus);
-
-                prevHBByMember[item.MemberNumber] = (prevHdcp, prevBonus);
-            }
-        }
-
-        // Load doubles teams and match to bowler entries
         List<DoublesTeam> teams = DoublesTeamDB.GetTeamsByTournament(tourny.Id);
         var bowlersByMemberId   = bowlers.GroupBy(b => b.MemberId).ToDictionary(g => g.Key, g => g.ToList());
 
@@ -511,13 +448,10 @@ public partial class FrmTournamentResults : Form
             var m2 = e2.FirstOrDefault(e => e.Squad == team.Squad);
             if (m1 == null || m2 == null) continue;
 
-            bool has1 = prevHBByMember.TryGetValue(m1.MemberNumber, out var hb1);
-            bool has2 = prevHBByMember.TryGetValue(m2.MemberNumber, out var hb2);
-
-            int hdcp1  = has1 && hb1.Hdcp > 0 ? hb1.Hdcp : Convert.ToInt32(m1.Handicap);
-            int hdcp2  = has2 && hb2.Hdcp > 0 ? hb2.Hdcp : Convert.ToInt32(m2.Handicap);
-            int bonus1 = has1 ? hb1.Bonus : Convert.ToInt32(m1.Bonus);
-            int bonus2 = has2 ? hb2.Bonus : Convert.ToInt32(m2.Bonus);
+            int hdcp1  = prevHdcpByMember.TryGetValue(m1.MemberNumber, out int ph1) && ph1 > 0 ? ph1 : Convert.ToInt32(m1.Handicap);
+            int hdcp2  = prevHdcpByMember.TryGetValue(m2.MemberNumber, out int ph2) && ph2 > 0 ? ph2 : Convert.ToInt32(m2.Handicap);
+            int bonus1 = m1.MemberBonus;
+            int bonus2 = m2.MemberBonus;
 
             int combinedHdcpTotal = (m1.Game1 ?? 0) + (m1.Game2 ?? 0)
                                   + (m2.Game1 ?? 0) + (m2.Game2 ?? 0)
@@ -581,6 +515,47 @@ public partial class FrmTournamentResults : Form
                 TotalScore    = combinedHdcpTotal,
                 PlaceStanding = place
             });
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Batch-queries the most recent finalized tournament prior to this one for each member
+    /// in <paramref name="memberNumbers"/> and returns the handicap computed from that
+    /// entry's AdjustedAvg. Members with no qualifying prior entry are absent from the result.
+    /// Bonus is intentionally excluded — callers should read it directly from
+    /// <see cref="WinnerListMemberViewModel.MemberBonus"/> or <see cref="Member.Bonus"/>.
+    /// </summary>
+    private Dictionary<int, int> BuildPrevHdcpByMember(HashSet<int> memberNumbers, int excludeTournamentId)
+    {
+        var result = new Dictionary<int, int>();
+        if (memberNumbers.Count == 0) return result;
+
+        using var dbPrev = new NineTapDb();
+
+        var latestDates = dbPrev.Participants
+            .Where(p => memberNumbers.Contains(p.Member.Number)
+                     && p.Tournament.Id != excludeTournamentId
+                     && p.Game.IsFinalized
+                     && p.Game.AdjustedAvg > 0)
+            .GroupBy(p => p.Member.Number)
+            .Select(g => new { MemberNumber = g.Key, LatestDate = g.Max(p => p.Tournament.Date) })
+            .ToList();
+
+        foreach (var item in latestDates)
+        {
+            int? adjAvg = dbPrev.Participants
+                .Where(p => p.Member.Number == item.MemberNumber
+                         && p.Tournament.Id != excludeTournamentId
+                         && p.Game.IsFinalized
+                         && p.Tournament.Date == item.LatestDate
+                         && p.Game.AdjustedAvg > 0)
+                .Select(p => (int?)p.Game.AdjustedAvg)
+                .FirstOrDefault();
+
+            if (adjAvg.HasValue)
+                result[item.MemberNumber] = CalcService.CalculateHandicapPins(adjAvg.Value);
         }
 
         return result;
@@ -927,8 +902,8 @@ public partial class FrmTournamentResults : Form
     /// <summary>
     /// Looks up the member and their best game entry in this tournament across all squads, then auto-fills
     /// Full Name, H/B*, Total Score, and the hidden Member ID / Game ID columns.
-    /// H/B is pulled from the member's most recent finalized previous tournament,
-    /// matching the same logic used by BuildWinnersList and FrmMemberScores.
+    /// Handicap is derived from the member's most recent finalized previous tournament's AdjustedAvg.
+    /// Bonus is read directly from the Member record, not from game history.
     /// </summary>
     private void AutoFillMemberRow(DataRow dataRow, int memberNumber)
     {
@@ -940,41 +915,13 @@ public partial class FrmTournamentResults : Form
             return;
         }
 
-        // Look up H/B from the most recent finalized tournament (same logic as BuildWinnersList)
-        int hdcp  = member.Handicap ?? 0;
+        // Bonus always comes from the Member record.
+        // Handicap comes from the most recent finalized prior tournament's AdjustedAvg (falls back to Member.Handicap).
         int bonus = member.Bonus;
-
-        using (var dbPrev = new NineTapDb())
-        {
-            var latestDate = dbPrev.Participants
-                .Where(p => p.Member.Number == memberNumber
-                         && p.Tournament.Id != tourny.Id
-                         && p.Game.IsFinalized
-                         && p.Game.AdjustedAvg > 0)
-                .Select(p => (DateTime?)p.Tournament.Date)
-                .Max();
-
-            if (latestDate != null)
-            {
-                var prevEntries = dbPrev.Participants
-                    .Where(p => p.Member.Number == memberNumber
-                             && p.Tournament.Id != tourny.Id
-                             && p.Game.IsFinalized
-                             && p.Tournament.Date == latestDate)
-                    .Select(p => new { p.Game.AdjustedAvg, Bonus = p.Game.Bonus ?? 0, MoneyWon = p.Game.MoneyWon ?? 0 })
-                    .ToList();
-
-                if (prevEntries.Count > 0)
-                {
-                    var withAvg = prevEntries.FirstOrDefault(e => e.AdjustedAvg > 0);
-                    if (withAvg != null)
-                        hdcp = CalcService.CalculateHandicapPins(withAvg.AdjustedAvg);
-                    bonus = prevEntries.Any(e => e.MoneyWon > 0)
-                        ? prevEntries.Min(e => e.Bonus)
-                        : prevEntries.Max(e => e.Bonus);
-                }
-            }
-        }
+        var prevHdcpByMember = BuildPrevHdcpByMember(new HashSet<int> { memberNumber }, tourny.Id);
+        int hdcp = prevHdcpByMember.TryGetValue(memberNumber, out int prevHdcp)
+            ? prevHdcp
+            : (member.Handicap ?? 0);
 
         // Get the highest-scoring game entry for this member in this tournament (all squads).
         // ScratchTotal is [NotMapped] so ordering must happen client-side after fetching candidates.

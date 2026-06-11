@@ -328,6 +328,7 @@ namespace NineTapTour.Database
                             BowlerName = name,
                             Handicap = g.Handicap,
                             Bonus = g.Bonus,
+                            MemberBonus = m.Bonus,
                             MoneyWon = g.MoneyWon,
                             SidePot = g.SidePot,
                             GameId = g.Id,
