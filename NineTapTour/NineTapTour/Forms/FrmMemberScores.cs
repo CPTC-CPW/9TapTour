@@ -1000,7 +1000,7 @@ public partial class FrmMemberScores : Form
     /// <param name="sender"></param>
     /// <param name="e"></param>
     private void CbxTourneyDropDown_SelectedIndexChanged(object sender, EventArgs e)
-    {
+            {
         SuspendLayout();
         flpMemberScores.SuspendLayout();
 
@@ -1764,8 +1764,8 @@ public partial class FrmMemberScores : Form
         List<DoublesTeam> allTeams = DoublesTeamDB.GetTeamsByTournament(tournamentId);
 
         // Filter teams by squad list if provided
-        List<DoublesTeam> teams = squadFilter == null 
-            ? allTeams 
+        List<DoublesTeam> teams = squadFilter == null
+            ? allTeams
             : allTeams.Where(t => squadFilter.Contains(t.Squad)).ToList();
 
         // Process each team pairing
@@ -1879,7 +1879,7 @@ public partial class FrmMemberScores : Form
         {
             // NOTE: Player history data is stored in the Game entity
             // No separate PlayerHistory deletion needed - it will be handled by Game entity cascade
-            
+
             //Delete from Participants list
             Participant par = FinalizeTempDB.GetParticipantByGameId(g.Id);
             FinalizeTempDB.DeleteParticipant(par);
@@ -2087,6 +2087,23 @@ public partial class FrmMemberScores : Form
             {
                 e.Cancel = true;
             }
+        }
+    }
+
+    private void btnDeleteTournament_Click(object sender, EventArgs e)
+    {
+        // if current tournament is selected
+        if (cbxTourneyDropDown.SelectedIndex >= 0)
+        {
+            DialogResult result = MessageBox.Show("Are you sure you want to delete this tournament", "Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (result == DialogResult.No) 
+            {
+                return;
+            }
+
+            // Grab selected tournament
+            Tournament selectedTournament = FrmMemberScoresHelpers.selectedTournament;
+            TournamentDB.DeleteTournament(selectedTournament);
         }
     }
 }
