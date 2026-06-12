@@ -42,6 +42,11 @@ namespace NineTapTour.Models
         public int? Partner1Score { get; set; }
 
         /// <summary>
+        /// Gets or sets the second team member's last membership payment year.
+        /// </summary>
+        public string Partner2LastPaymentYear { get; set; }
+
+        /// <summary>
         /// Gets or sets the second partner's individual score.
         /// </summary>
         public int? Partner2Score { get; set; }

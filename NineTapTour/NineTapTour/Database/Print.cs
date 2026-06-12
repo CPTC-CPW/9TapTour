@@ -251,23 +251,28 @@ namespace NineTapTour.Database
                 // Decides if the last date the member paid their dues prints on the page
                 string unpaid = string.Empty;
 
-                // Gets lastPaymentYear, and adds one year
-                string lastPaymentYear = tempMemberList[i + (index * numBowlersPerPage)].LastPaymentYear;
-                int year;
-                int.TryParse(lastPaymentYear, out year);
-                year += 1;
-
-                //handle members that don't have payment information
-                if (printDues && string.IsNullOrWhiteSpace(tempMemberList[i + (index * numBowlersPerPage)].LastPaymentYear))
+                if (printDues)
                 {
-                    unpaid = "N/A";
+                    var currentEntry = tempMemberList[i + (index * numBowlersPerPage)];
+                    if (currentEntry is NineTapTour.Models.TeamMemberScores tmsEntry)
+                    {
+                        unpaid = $"{FormatDuesYear(tmsEntry.LastPaymentYear)} & {FormatDuesYear(tmsEntry.Partner2LastPaymentYear)}";
+                    }
+                    else
+                    {
+                        unpaid = FormatDuesYear(currentEntry.LastPaymentYear);
+                    }
                 }
-                else if(printDues && lastPaymentYear.Equals("life "))
+
+                static string FormatDuesYear(string lastPaymentYear)
                 {
-                    unpaid = tempMemberList[i + (index * numBowlersPerPage)].LastPaymentYear;
-                } else if(printDues)
-                {
-                    unpaid = Convert.ToString(year);
+                    if (string.IsNullOrWhiteSpace(lastPaymentYear))
+                        return "N/A";
+                    if (lastPaymentYear.Equals("life "))
+                        return lastPaymentYear;
+                    if (int.TryParse(lastPaymentYear, out int year))
+                        return (year + 1).ToString();
+                    return lastPaymentYear;
                 }
 
                 //create name string containing lastname, firstname, and last payment

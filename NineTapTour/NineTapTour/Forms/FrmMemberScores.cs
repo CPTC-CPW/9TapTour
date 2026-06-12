@@ -193,7 +193,6 @@ public partial class FrmMemberScores : Form
         // Move to last record so the person entering scores
         // does not accidentally enter a bowler in the wrong squad.
         MoveToLastRecordOfMemberScores();
-        UpdateNoScoresLabel();
     }
 
     /// <summary>
@@ -605,7 +604,6 @@ public partial class FrmMemberScores : Form
                 }
             }
             Refresh();
-            UpdateNoScoresLabel();
         }
         else
         {
@@ -1120,7 +1118,6 @@ public partial class FrmMemberScores : Form
 
         flpMemberScores.ResumeLayout(true);
         ResumeLayout(true);
-        UpdateNoScoresLabel();
     }
 
     /// <summary>
@@ -1545,6 +1542,7 @@ public partial class FrmMemberScores : Form
         }
         using var form = new FrmDoublesTeamPairing(FrmMemberScoresHelpers.selectedTournament);
         form.ShowDialog(this);
+        RefreshForm();
     }
 
     /// <summary>
@@ -1564,7 +1562,6 @@ public partial class FrmMemberScores : Form
         {
             currentIndex = 0;
             lblRecord.Text = "Record 0 / 0";
-            UpdateNoScoresLabel();
             return;
         }
 
@@ -1574,7 +1571,6 @@ public partial class FrmMemberScores : Form
             currentIndex = 0;
 
         lblRecord.Text = "Record " + (currentIndex + 1) + " / " + count;
-        UpdateNoScoresLabel();
     }
 
     /*******************************************************************************
@@ -1811,6 +1807,7 @@ public partial class FrmMemberScores : Form
                 Partner2FirstName = team.Member2.FirstName,
                 Partner2LastName = team.Member2.LastName,
                 Partner2Score = member2Scores.Score,
+                Partner2LastPaymentYear = member2Scores.LastPaymentYear,
 
                 // Use first partner's member ID as a reference
                 MemberId = team.Member1.Number,
@@ -1843,7 +1840,6 @@ public partial class FrmMemberScores : Form
 
         RemoveParticipantFromTournament();
         RefreshMemberScoresForm();
-        UpdateNoScoresLabel();
 
         Cursor.Current = Cursors.Default;
         ReEnableNavigation();
@@ -1861,33 +1857,12 @@ public partial class FrmMemberScores : Form
         cbxTourneyDropDown.ValueMember = nameof(Tournament.Id);
     }
 
-    /// <summary>
-    /// Updates the lblNoScores label with how many participants in the current tournament
-    /// have not yet had any scores entered, total and per-squad.
-    /// </summary>
-    private void UpdateNoScoresLabel()
-    {
-        if (FrmMemberScoresHelpers.selectedTournament == null)
-        {
-            lblNoScores.Text = "No scores: \u2014";
-            return;
-        }
-        var (total, bySquad) = ParticipantsDB.GetParticipantNoScoreCounts(FrmMemberScoresHelpers.selectedTournament.Id);
-        string breakdown = bySquad.Count > 0
-            ? "  |  " + string.Join(", ", bySquad.OrderBy(kv => kv.Key).Select(kv => $"Sq{kv.Key}: {kv.Value}"))
-            : string.Empty;
-        lblNoScores.Text = $"No scores: {total} total{breakdown}";
-    }
-
     private void RemoveParticipantFromTournament()
     {
         Game g = GetScoresById(currentMem.Id);
 
         if (g != null)
         {
-            // NOTE: Player history data is stored in the Game entity
-            // No separate PlayerHistory deletion needed - it will be handled by Game entity cascade
-
             //Delete from Participants list
             Participant par = FinalizeTempDB.GetParticipantByGameId(g.Id);
             FinalizeTempDB.DeleteParticipant(par);

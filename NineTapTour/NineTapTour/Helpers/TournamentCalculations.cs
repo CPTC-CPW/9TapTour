@@ -266,6 +266,18 @@ public static class TournamentCalculations
     /// </summary>
     /// <param name="tempListOfMemberScores">list of MemberScores sorted by Score with placestanding, without duplicate members</param>
     public static List<MemberScores> CalculatePlaceStandings(List<MemberScores> tempListOfMemberScores)
+        => CalculatePlaceStandings(tempListOfMemberScores, removeDuplicates: true);
+
+    /// <summary>
+    /// Calculate place standings of bowlers. Ties between bowlers result in the same placestanding.
+    /// returned list is sorted by highest score
+    /// </summary>
+    /// <param name="tempListOfMemberScores">list of MemberScores to rank</param>
+    /// <param name="removeDuplicates">
+    /// When <see langword="true"/>, only the highest score for each member is kept before ranking.
+    /// When <see langword="false"/>, all entries are ranked as-is.
+    /// </param>
+    public static List<MemberScores> CalculatePlaceStandings(List<MemberScores> tempListOfMemberScores, bool removeDuplicates)
     {
         // A list of no members needs nothing done to it
         if (tempListOfMemberScores.Count == 0)
@@ -275,6 +287,9 @@ public static class TournamentCalculations
 
         // Makes copy so original list won't be affected
         tempListOfMemberScores = [.. tempListOfMemberScores];
+
+        if (removeDuplicates)
+            RemoveDuplicateBowlers(tempListOfMemberScores);
 
         GiveMembersPlaceStandings(tempListOfMemberScores);
 
@@ -288,8 +303,6 @@ public static class TournamentCalculations
     /// <param name="tempListOfMemberScores"></param>
     private static void GiveMembersPlaceStandings(List<MemberScores> tempListOfMemberScores)
     {
-        RemoveDuplicateBowlers(tempListOfMemberScores);
-
         // The first member ordered by score will will always score 1st place
         int place = 1;
         tempListOfMemberScores.Sort(new MemberScoresComparer());
@@ -650,8 +663,23 @@ public static class TournamentCalculations
     /// <param name="lowestPlacement">The lowest placement to accept (1st is highest)</param>
     /// <returns>List of MemberScores ordered by placement without duplicate MemberScore MemberIds to the lowest selected placement</returns>
     public static List<MemberScores> MakeTopMembersByPlacementList(List<MemberScores> members, int lowestPlacement)
+        => MakeTopMembersByPlacementList(members, lowestPlacement, isDoubles: false);
+
+    /// <summary>
+    /// Makes a list of Members ordered by placement, keeping only the highest score for each member (or all
+    /// entries for a doubles tournament). Players below the lowestPlacement threshold are not included.
+    /// </summary>
+    /// <param name="members">list of members to copy and process</param>
+    /// <param name="lowestPlacement">The lowest placement to accept (1st is highest)</param>
+    /// <param name="isDoubles">
+    /// When <see langword="true"/>, individual-bowler deduplication is skipped because each entry
+    /// already represents a unique team pairing. A bowler may appear more than once with different
+    /// partners or with the same partner on a different squad.
+    /// </param>
+    /// <returns>List of MemberScores ordered by placement to the lowest selected placement</returns>
+    public static List<MemberScores> MakeTopMembersByPlacementList(List<MemberScores> members, int lowestPlacement, bool isDoubles)
     {
-        members = CalculatePlaceStandings(members);
+        members = CalculatePlaceStandings(members, removeDuplicates: !isDoubles);
 
         // takes only top place members above lowest placement threshold
         return [.. members.Where(m => m.placing <= lowestPlacement)];
