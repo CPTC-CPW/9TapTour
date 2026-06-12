@@ -1806,6 +1806,7 @@ public partial class FrmMemberScores : Form
                 Partner2FirstName = team.Member2.FirstName,
                 Partner2LastName = team.Member2.LastName,
                 Partner2Score = member2Scores.Score,
+                Partner2LastPaymentYear = member2Scores.LastPaymentYear,
 
                 // Use first partner's member ID as a reference
                 MemberId = team.Member1.Number,

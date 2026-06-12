@@ -166,22 +166,20 @@ public partial class FrmMemberScoresReports : Form
                 }
                 if (printDuesOffset == 1)
                 {
-                    string paymentYear = temp[idx].LastPaymentYear;
-                    if (!string.IsNullOrEmpty(paymentYear))
+                    string cellValue = (temp[idx] is TeamMemberScores teamEntry)
+                        ? $"{FormatDuesYear(teamEntry.LastPaymentYear)} & {FormatDuesYear(teamEntry.Partner2LastPaymentYear)}"
+                        : FormatDuesYear(temp[idx].LastPaymentYear);
+                    ws.Cell(row, 5).Value = cellValue;
+
+                    static string FormatDuesYear(string lastPaymentYear)
                     {
-                        if (paymentYear != "life ")
-                        {
-                            if (int.TryParse(paymentYear, out int year))
-                            {
-                                year += 1;
-                                paymentYear = year.ToString();
-                            }
-                            ws.Cell(row, 5).Value = paymentYear;
-                        }
-                        else
-                        {
-                            ws.Cell(row, 5).Value = temp[idx].LastPaymentYear;
-                        }
+                        if (string.IsNullOrWhiteSpace(lastPaymentYear))
+                            return "N/A";
+                        if (lastPaymentYear.Equals("life "))
+                            return lastPaymentYear;
+                        if (int.TryParse(lastPaymentYear, out int year))
+                            return (year + 1).ToString();
+                        return lastPaymentYear;
                     }
                 }
             }
