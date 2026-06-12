@@ -1542,6 +1542,7 @@ public partial class FrmMemberScores : Form
         }
         using var form = new FrmDoublesTeamPairing(FrmMemberScoresHelpers.selectedTournament);
         form.ShowDialog(this);
+        RefreshForm();
     }
 
     /// <summary>
