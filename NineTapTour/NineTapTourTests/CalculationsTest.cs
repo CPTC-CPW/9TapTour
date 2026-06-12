@@ -147,6 +147,57 @@ namespace NineTapTourTests
             Assert.AreEqual(expectedBonusPins, resultBonusPins);
         }
 
+        [TestMethod]
+        public void MakeTopMembersByPlacementList_Doubles_DoesNotDeduplicateSameBowlerDifferentPartner()
+        {
+            // Bowler 1 appears twice — once paired with bowler 2, once with bowler 3.
+            // Both entries are valid and must survive deduplication.
+            List<MemberScores> doublesEntries =
+            [
+                new TeamMemberScores { MemberId = 1, Score = 1500, Partner1MemberId = 1, Partner2MemberId = 2 },
+                new TeamMemberScores { MemberId = 1, Score = 1400, Partner1MemberId = 1, Partner2MemberId = 3 },
+                new TeamMemberScores { MemberId = 4, Score = 1200, Partner1MemberId = 4, Partner2MemberId = 5 },
+            ];
+
+            List<MemberScores> result = TournamentCalculations.MakeTopMembersByPlacementList(doublesEntries, 3, isDoubles: true);
+
+            Assert.HasCount(3, result, "All three doubles entries should be kept");
+        }
+
+        [TestMethod]
+        public void MakeTopMembersByPlacementList_Doubles_AssignsCorrectPlacements()
+        {
+            List<MemberScores> doublesEntries =
+            [
+                new TeamMemberScores { MemberId = 1, Score = 1500, Partner1MemberId = 1, Partner2MemberId = 2 },
+                new TeamMemberScores { MemberId = 1, Score = 1400, Partner1MemberId = 1, Partner2MemberId = 3 },
+                new TeamMemberScores { MemberId = 4, Score = 1200, Partner1MemberId = 4, Partner2MemberId = 5 },
+            ];
+
+            List<MemberScores> result = TournamentCalculations.MakeTopMembersByPlacementList(doublesEntries, 3, isDoubles: true);
+
+            Assert.AreEqual(1, result[0].placing);
+            Assert.AreEqual(2, result[1].placing);
+            Assert.AreEqual(3, result[2].placing);
+        }
+
+        [TestMethod]
+        public void MakeTopMembersByPlacementList_NonDoubles_StillDeduplicatesSameBowler()
+        {
+            // Bowler 1 appears twice (different squads). Non-doubles should keep only the higher score.
+            List<MemberScores> members =
+            [
+                new MemberScores { MemberId = 1, Score = 1000 },
+                new MemberScores { MemberId = 1, Score = 800 },
+                new MemberScores { MemberId = 2, Score = 900 },
+            ];
+
+            List<MemberScores> result = TournamentCalculations.MakeTopMembersByPlacementList(members, 3, isDoubles: false);
+
+            Assert.HasCount(2, result, "Duplicate bowler 1 should be reduced to one entry");
+            Assert.IsTrue(result.All(m => m.MemberId != 1 || m.Score == 1000), "Only the higher score for bowler 1 should remain");
+        }
+
         private static List<PlayerHistoryViewModel> GetPlayerHistoryTestData(int listNum)
         {
             return listNum switch

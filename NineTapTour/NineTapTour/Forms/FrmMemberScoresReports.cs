@@ -50,7 +50,7 @@ public partial class FrmMemberScoresReports : Form
                 printDues = true;
             }
 
-            temp = Calculations.TournamentCalculations.MakeTopMembersByPlacementList(temp, numMembers);
+            temp = Calculations.TournamentCalculations.MakeTopMembersByPlacementList(temp, numMembers, selectedTournament.Doubles);
             // print( go to print class )
             int? manualCutoffLine = null;
             if(int.TryParse(txtCutoffLine.Text, out int result))
@@ -93,7 +93,7 @@ public partial class FrmMemberScoresReports : Form
             {
                 printDues = true;
             }
-            temp = Calculations.TournamentCalculations.MakeTopMembersByPlacementList(temp, numMembers); // results of inquiry
+            temp = Calculations.TournamentCalculations.MakeTopMembersByPlacementList(temp, numMembers, selectedTournament.Doubles); // results of inquiry
             ExportToExcel(); // Exports to excel file
 
             this.Close();
