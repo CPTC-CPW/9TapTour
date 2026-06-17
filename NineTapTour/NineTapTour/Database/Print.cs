@@ -96,14 +96,6 @@ namespace NineTapTour.Database
             {
                 tournamentType = "3of4 ";
             }
-            /***********************************************************
-             if doubles is working and is needed, uncomment the code below
-            ***********************************************************/
-            //else if(selectedTournament.Doubles)
-            //{
-            //    tournamentType = "doubles ";
-            //}
-            /************************************************************/
 
             // drawing the location and date(Month, Day, Year, e.g. May 13th 2019 = 5-13-2019
             graphic.DrawString(selectedTournament.Location + " " + tournamentType + string.Format("{0:M-d-yyyy}", selectedTournament.Date), font, dBrush, startX + 10, startY - 19);
@@ -226,10 +218,10 @@ namespace NineTapTour.Database
             // drawing the header of the data
             if (printDues)
             {
-                graphic.DrawString("       " + reportType + "     Mem No       Name                                  Membership Paid To", font, dBrush, startX + 8, startY + 133);
+                graphic.DrawString("       " + reportType + "     Mem No            Name                                           Membership Paid To", font, dBrush, startX + 8, startY + 133);
             }
             else {
-                graphic.DrawString("       " + reportType + "     Mem No       Name", font, dBrush, startX + 8, startY + 133);
+                graphic.DrawString("       " + reportType + "     Mem No            Name", font, dBrush, startX + 8, startY + 133);
             }
             graphic.DrawString(" **************************************************************************************************", starFont, dBrush, startX + 1, startY + 152);
 
@@ -282,7 +274,7 @@ namespace NineTapTour.Database
                     : tempMemberList[i + (index * numBowlersPerPage)].LastName + ", " + tempMemberList[i + (index * numBowlersPerPage)].FirstName;
 
                 //draw name string
-                graphic.DrawString(nameString, font, dBrush, startX + 200, startY + 173 + (i * 19));
+                graphic.DrawString(nameString, font, dBrush, startX + 230, startY + 173 + (i * 19));
 
                 //draw Membership Paid Through Column
                 graphic.DrawString(unpaid, font, dBrush, startX + 500, startY + 173 + (i * 19));
