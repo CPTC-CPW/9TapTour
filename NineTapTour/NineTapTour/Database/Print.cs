@@ -268,7 +268,6 @@ namespace NineTapTour.Database
                 }
 
                 //create name string containing lastname, firstname, and last payment
-                //Changed: instead of showing last payment every time it shows the year as the "unpaid"
                 string nameString = (tempMemberList[i + (index * numBowlersPerPage)] is NineTapTour.Models.TeamMemberScores teamEntry)
                     ? $"{teamEntry.Partner1FirstName} {teamEntry.Partner1LastName} & {teamEntry.Partner2FirstName} {teamEntry.Partner2LastName}"
                     : tempMemberList[i + (index * numBowlersPerPage)].LastName + ", " + tempMemberList[i + (index * numBowlersPerPage)].FirstName;
@@ -402,62 +401,6 @@ namespace NineTapTour.Database
             index = 0;
         }
 
-        // The fetching was moved to the print button, but I'll leave this code here in case it's ever needed.
-        /*
-        static public void printByTourDate(DateTime start, DateTime end)
-        {
-            //Set up components for printing
-            PrintDialog printDialog = new PrintDialog();
-            PrintDocument printDocument = new PrintDocument();
-            //add the document to the dialog box
-            printDialog.Document = printDocument;
-
-            //add the event handler that will do the printing
-            printDocument.PrintPage += new PrintPageEventHandler(printTourRecaps);
-
-            mems = TournamentDb.GetUniqueTourMembersByDate(start, end);
-            if (mems.Count > 0)
-            {
-                DialogResult result = printDialog.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    printDocument.Print();
-                }
-            }
-            index = 0;
-        }
-        */
-
-        static public void PrintAllMembers()
-        {
-            // Set up components for printing
-            PrintDialog printDialog = new();
-            PrintDocument printDocument = new();
-            //add the document to the dialog box
-            printDialog.Document = printDocument;
-
-            //add the event handler that will do the printing
-            printDocument.PrintPage += new PrintPageEventHandler(PrintTourRecaps);
-
-            using (NineTapDb db = new())
-            {
-                mems = [.. (from m in db.Members
-                        orderby m.LastName descending
-                        select m).Take(1)];
-            }
-
-            if (mems.Count > 0)
-            {
-                DialogResult result = printDialog.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    printDocument.Print();
-                }
-            }
-
-            index = 0;
-        }
-
         static public void PrintByMemberList(List<Member> members)
         {
             //Set up components for printing
@@ -543,17 +486,8 @@ namespace NineTapTour.Database
             City = mem.City;
             FirstName = mem.FirstName;
             LastName = mem.LastName;
-            /**************************************************************
-            edited this part because it used to say Average = (mem.Average != null) ? mem.Handicap.ToString() : "";
-
-            and added the bonus because there was no code for it(still not sure if I should add it)
-            Check if it is a good code
-            ***************************************************************/
             Average = (mem.Average != null) ? mem.Average.ToString() : "";
-            //Bonus = (mem.Bonus != null) ? mem.Bonus.Value : 0;//mem.Bonus;
             Bonus = mem.Bonus;//mem.Bonus;
-            /*************************************************************/
-            //Bonus pins default to 0 on the recap for all recaps printed.
 
         }
 
