@@ -40,7 +40,6 @@ public class FrmDoublesDiscrepancies : Form
     private DataGridView   dgvIssues;
     private Label          lblStatus;
     private Button         btnFixAllReciprocals;
-    private Button         btnSyncAllPlans;
     private Button         btnClose;
 
     // ----------------------------------------------------------------
@@ -86,14 +85,6 @@ public class FrmDoublesDiscrepancies : Form
         };
         btnFixAllReciprocals.Click += BtnFixAllReciprocals_Click;
 
-        btnSyncAllPlans = new Button
-        {
-            Text = "Sync All Plans",
-            Size = new Size(110, 28),
-            Location = new Point(154, 8)
-        };
-        btnSyncAllPlans.Click += BtnSyncAllPlans_Click;
-
         lblStatus = new Label
         {
             Location  = new Point(272, 14),
@@ -114,7 +105,6 @@ public class FrmDoublesDiscrepancies : Form
         btnClose.Click += (s, e) => { DialogResult = DialogResult.OK; Close(); };
 
         pnlBottom.Controls.Add(btnFixAllReciprocals);
-        pnlBottom.Controls.Add(btnSyncAllPlans);
         pnlBottom.Controls.Add(lblStatus);
         pnlBottom.Controls.Add(btnClose);
 
@@ -247,7 +237,7 @@ public class FrmDoublesDiscrepancies : Form
         {
             typeDisplay = "Count Mismatch";
             details     = $"Planned {item.PlannedCount}, Entered {item.ActualCount}";
-            fixText     = "Sync Plan";
+            fixText     = string.Empty;
         }
 
         int rowIndex = dgvIssues.Rows.Add(
@@ -322,11 +312,10 @@ public class FrmDoublesDiscrepancies : Form
         if (e.ColumnIndex == colFixIdx)
         {
             if (type == DiscrepancyType.MissingReciprocal)
+            {
                 FixReciprocal(srcId, partId, squad);
-            else
-                SyncPlan(srcId, squad, (int)row.Cells["colActual"].Value);
-
-            LoadDiscrepancies();
+                LoadDiscrepancies();
+            }
         }
         else if (e.ColumnIndex == colRemoveIdx && type == DiscrepancyType.MissingReciprocal)
         {
@@ -363,26 +352,6 @@ public class FrmDoublesDiscrepancies : Form
         LoadDiscrepancies();
     }
 
-    private void BtnSyncAllPlans_Click(object sender, EventArgs e)
-    {
-        var plans  = DoublesPartnerPlanDB.GetPlansByTournament(_tournament.Id);
-        var claims = DoublesPartnerClaimDB.GetClaimsByTournament(_tournament.Id);
-
-        int synced = 0;
-        foreach (var plan in plans)
-        {
-            int actual = claims.Count(c => c.Squad == plan.Squad && c.SourceMember.Id == plan.Member.Id);
-            if (actual != plan.ExpectedPartnerCount)
-            {
-                SyncPlan(plan.Member.Id, plan.Squad, actual);
-                synced++;
-            }
-        }
-
-        ShowStatus($"{synced} plan(s) synced.");
-        LoadDiscrepancies();
-    }
-
     // ----------------------------------------------------------------
     // Fix helpers
     // ----------------------------------------------------------------
@@ -394,12 +363,6 @@ public class FrmDoublesDiscrepancies : Form
         DoublesPartnerClaimDB.AddClaim(_tournament.Id, partnerId, srcId, squad);
         // Ensure the team record exists (order-independent; AddTeam is a no-op if duplicate)
         DoublesTeamDB.AddTeam(_tournament.Id, srcId, partnerId, squad);
-    }
-
-    /// <summary>Updates the plan's expected count to match actual claims entered.</summary>
-    private void SyncPlan(int memberId, int squad, int actualCount)
-    {
-        DoublesPartnerPlanDB.UpsertPlan(_tournament.Id, memberId, squad, actualCount);
     }
 
     /// <summary>Removes the directional claim A→B (and B→A if present) plus the team.</summary>
@@ -424,16 +387,13 @@ public class FrmDoublesDiscrepancies : Form
     private void UpdateBulkButtons()
     {
         bool hasReciprocal = false;
-        bool hasMismatch   = false;
         foreach (DataGridViewRow row in dgvIssues.Rows)
         {
             var type = (DiscrepancyType)(int)row.Cells["colType"].Value;
             if (type == DiscrepancyType.MissingReciprocal) hasReciprocal = true;
-            else if (type == DiscrepancyType.CountMismatch) hasMismatch   = true;
         }
 
         btnFixAllReciprocals.Enabled = hasReciprocal;
-        btnSyncAllPlans.Enabled      = hasMismatch;
     }
 
     private void ShowStatus(string message)
