@@ -1001,31 +1001,6 @@ public partial class FrmTournamentResults : Form
 
     #endregion
 
-    /// <summary>
-    /// Returns the ordinal representation of a given place, optionally appending a tie indicator.
-    /// </summary>
-    /// <param name="place">The numeric position to convert to an ordinal string. Must be a positive integer.</param>
-    /// <param name="isTie">A boolean indicating whether to append a tie indicator. If <see langword="true"/>, "T" is appended to the
-    /// result.</param>
-    /// <returns>A string representing the ordinal form of the specified place, with an optional tie indicator.</returns>
-    /// <summary>
-    /// Copies both the row-level default style and every cell's individual style from
-    /// <paramref name="fromRow"/> to <paramref name="toRow"/> so that inserted rows
-    /// look identical to the template row they are based on.
-    /// </summary>
-    private static void CopyRowCellStyles(IXLWorksheet ws, int fromRow, int toRow)
-    {
-        ws.Row(toRow).Style = ws.Row(fromRow).Style;
-        int lastCol = ws.LastColumnUsed()?.ColumnNumber() ?? 15;
-        for (int col = 1; col <= lastCol; col++)
-            ws.Cell(toRow, col).Style = ws.Cell(fromRow, col).Style;
-    }
-
-    /// <summary>
-    /// Restores cross-worksheet formulas that reference the Results sheet to their original
-    /// template values, undoing the automatic row-shift that ClosedXML applies during
-    /// InsertRowsAbove.
-    /// </summary>
     private static string GetOrdinalWithTie(int place, bool isTie)
     {
         string suffix;
@@ -1166,30 +1141,14 @@ public partial class FrmTournamentResults : Form
         string fileName = tourny.Location + " " + tourny.Event + " " + tournamentDate + ".xlsx";
 
         string saveFile;
-        DialogResult useExisting = MessageBox.Show(
-            "Would you like to write the results into an existing Excel file?",
-            "Export to Excel",
-            MessageBoxButtons.YesNo,
-            MessageBoxIcon.Question);
-
-        if (useExisting == DialogResult.Yes)
+        using OpenFileDialog openDialog = new()
         {
-            using OpenFileDialog openDialog = new()
-            {
-                Title  = "Select Existing Results File",
-                Filter = FileHelper.GetExcelFilterStringForFileDialogs(),
-                FileName = fileName
-            };
-            if (openDialog.ShowDialog() != DialogResult.OK)
-                return;
-            saveFile = openDialog.FileName;
-        }
-        else
-        {
-            string getFilePath = Path.GetFullPath("Resources/TournamentResultsTemplate.xlsx");
-            saveFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TournamentResultsCopy.xlsx");
-            File.Copy(getFilePath, saveFile, true);
-        }
+            Title  = "Select Existing Results File",
+            Filter = FileHelper.GetExcelFilterStringForFileDialogs(),
+        };
+        if (openDialog.ShowDialog() != DialogResult.OK)
+            return;
+        saveFile = openDialog.FileName;
 
         // Select the source table: 2-day grid (sorted by Place), doubles Team View, or the standard winners table.
         DataTable exportTable = tourny.IsTwoDay
@@ -1247,14 +1206,6 @@ public partial class FrmTournamentResults : Form
                 else
                 {
                     int.TryParse(placeDisplay.TrimEnd('T'), out currentPlace);
-                }
-
-                // For regular late entries beyond the template range:
-                if (excelRow >= 35)
-                {
-                    ws.Row(excelRow).InsertRowsAbove(1);
-                    CopyRowCellStyles(ws, excelRow - 1, excelRow);
-                    ws.Range($"G{excelRow}:H{excelRow}").Merge();
                 }
 
                 // Check for tie: if previous or next row has the same place
@@ -1318,13 +1269,6 @@ public partial class FrmTournamentResults : Form
                 // progressive pot slot is always present regardless of how many bowlers tied into places 1–3.
                 if (currentPlace >= 1 && currentPlace <= 3)
                 {
-                    if (excelRow > 8)
-                    {
-                        ws.Row(excelRow + 1).InsertRowsAbove(1);
-                        CopyRowCellStyles(ws, 9, excelRow + 1);
-                        ws.Range($"G{excelRow + 1}:H{excelRow + 1}").Merge();
-                    }
-                    // Reuse the already-parsed value — no second TryParse needed.
                     ws.Cell(excelRow + 1, 9).Value = spVal;
                     excelRow++;
                 }
