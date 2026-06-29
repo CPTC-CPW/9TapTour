@@ -1281,14 +1281,13 @@ public partial class FrmTournamentResults : Form
                 // Write as a numeric value so Excel treats it as a number, not text.
                 ws.Cell(excelRow, 8).Value = spVal;
 
-                // Highlight Membership$ (Column M) when membership is not current,
-                // regardless of whether the bowler earned money this tournament.
-                if (int.TryParse(Convert.ToString(row[MEMBER_ID_COLUMN_NAME]), out int memberNumber)
+                // Always explicitly set or clear the Membership$ (Column M) background so that
+                // pre-existing orange from a previous export never bleeds into a current member's row.
+                bool membershipNotCurrent = int.TryParse(Convert.ToString(row[MEMBER_ID_COLUMN_NAME]), out int memberNumber)
                     && isMembershipCurrentByMemberNumber.TryGetValue(memberNumber, out bool isCurrent)
-                    && !isCurrent)
-                {
-                    ws.Cell(excelRow, 13).Style.Fill.BackgroundColor = XLColor.Orange;
-                }
+                    && !isCurrent;
+                ws.Cell(excelRow, 13).Style.Fill.BackgroundColor =
+                    membershipNotCurrent ? XLColor.Orange : XLColor.NoColor;
 
                 if (currentPlace >= 1 && currentPlace <= 3)
                 {
