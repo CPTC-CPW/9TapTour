@@ -1157,6 +1157,22 @@ public partial class FrmTournamentResults : Form
                 ? BuildTeamViewExportTable()
                 : dt;
 
+        // For doubles: detect bowlers who placed multiple times and consolidate their earnings.
+        Dictionary<int, decimal> doublesConsolidatedEarnings = null;
+        HashSet<int> doublesSecondaryRowIndices = null;
+        Dictionary<int, List<string>> doublesPlaceLabelsForMemo = null;
+
+        if (tourny.Doubles && !_inTeamView && !tourny.IsTwoDay)
+        {
+            var consolidation = BuildDoublesConsolidation(exportTable);
+            if (consolidation.SecondaryRowIndices.Count > 0)
+            {
+                doublesConsolidatedEarnings = consolidation.CombinedEarnings;
+                doublesSecondaryRowIndices   = consolidation.SecondaryRowIndices;
+                doublesPlaceLabelsForMemo    = consolidation.PlaceLabelsForMemo;
+            }
+        }
+
         // Preload membership-current status for rows that carry a numeric member number.
         var memberNumbers = exportTable.Rows.Cast<DataRow>()
             .Select(r => r[MEMBER_ID_COLUMN_NAME]?.ToString())
@@ -1189,6 +1205,8 @@ public partial class FrmTournamentResults : Form
             if (tourny.IsTwoDay)
                 ws.Cell(3, 7).Value = "Qualifying Score";
 
+            var resultIdxToExcelRow        = new Dictionary<int, int>();
+            var excelRowsWithProgressivePot = new HashSet<int>();
             int excelRow = 4;
             int i = 0;
             while (i < exportTable.Rows.Count)
@@ -1243,11 +1261,20 @@ public partial class FrmTournamentResults : Form
                 ws.Cell(excelRow, 2).Value = row[FULLNAME_COLUMN_NAME]?.ToString();
                 ws.Cell(excelRow, 6).Value = row[HANDICAP_COLUMN_NAME]?.ToString();
                 ws.Cell(excelRow, 7).Value = row[TOTAL_SCORE_COLUMN_NAME]?.ToString();
-                ws.Cell(excelRow, 9).Value = row[EARNINGS_COLUMN_NAME] != null
-                    ? double.TryParse(row[EARNINGS_COLUMN_NAME].ToString(), out double val)
-                        ? val.ToString("C0")
-                        : row[EARNINGS_COLUMN_NAME]?.ToString()
-                    : "$0";
+                resultIdxToExcelRow[i] = excelRow;
+
+                double earningsForExcel = 0;
+                if (row[EARNINGS_COLUMN_NAME] != null)
+                    double.TryParse(row[EARNINGS_COLUMN_NAME].ToString(), out earningsForExcel);
+                if (doublesConsolidatedEarnings != null)
+                {
+                    if (doublesSecondaryRowIndices.Contains(i))
+                        earningsForExcel = 0;
+                    else if (int.TryParse(row[MEMBER_ID_COLUMN_NAME]?.ToString(), out int mNum)
+                             && doublesConsolidatedEarnings.TryGetValue(mNum, out decimal combined))
+                        earningsForExcel = (double)combined;
+                }
+                ws.Cell(excelRow, 9).Value = earningsForExcel.ToString("C0");
                 ws.Cell(excelRow, 11).Value = currentPlace;
                 ws.Cell(excelRow, 12).Value = row[MEMBER_ID_COLUMN_NAME]?.ToString();
                 ws.Cell(excelRow, 15).FormulaA1 = $"=I{excelRow}-M{excelRow}-N{excelRow}+{sidePotValue}";
@@ -1263,18 +1290,21 @@ public partial class FrmTournamentResults : Form
                     ws.Cell(excelRow, 13).Style.Fill.BackgroundColor = XLColor.Orange;
                 }
 
-                // Any entry that placed 1st–3rd gets a progressive pot row directly below it.
-                // The template pre-formats those rows at positions 5, 7, and 9 (covering excelRows 4, 6, 8).
-                // When extra ties push a 4th (or more) top-3 entry past row 8, insert a new row so the
-                // progressive pot slot is always present regardless of how many bowlers tied into places 1–3.
                 if (currentPlace >= 1 && currentPlace <= 3)
                 {
+                    excelRowsWithProgressivePot.Add(excelRow);
                     ws.Cell(excelRow + 1, 9).Value = spVal;
                     excelRow++;
                 }
 
                 i++;
                 excelRow++;
+            }
+
+            if (tourny.Doubles && doublesSecondaryRowIndices?.Count > 0)
+            {
+                UpdateCheckSheetsForDoubles(workbook, resultIdxToExcelRow, doublesSecondaryRowIndices,
+                    excelRowsWithProgressivePot, doublesPlaceLabelsForMemo, exportTable);
             }
 
             // Set total payout
@@ -1430,5 +1460,201 @@ public partial class FrmTournamentResults : Form
                 currentRow++;
             }
         }
+    }
+
+    /// <summary>
+    /// Groups exportTable rows by MemberNumber and identifies members who placed more than once
+    /// (possible in doubles when the same person bowled in multiple squads on different teams).
+    /// Returns: combined earnings for each multi-placer, the secondary row indices to zero out,
+    /// and the ordered place labels to use in the combined check's memo line.
+    /// </summary>
+    private (Dictionary<int, decimal> CombinedEarnings,
+             HashSet<int> SecondaryRowIndices,
+             Dictionary<int, List<string>> PlaceLabelsForMemo)
+        BuildDoublesConsolidation(DataTable exportTable)
+    {
+        var seen         = new Dictionary<int, int>();           // memberNum → first row index
+        var earningsMap  = new Dictionary<int, decimal>();
+        var labelsMap    = new Dictionary<int, List<string>>();
+        var secondary    = new HashSet<int>();
+
+        for (int i = 0; i < exportTable.Rows.Count; i++)
+        {
+            var row = exportTable.Rows[i];
+            if (!int.TryParse(row[MEMBER_ID_COLUMN_NAME]?.ToString(), out int memberNum) || memberNum <= 0)
+                continue;
+
+            decimal.TryParse(row[EARNINGS_COLUMN_NAME]?.ToString(), out decimal earn);
+            string placeStr = row[PLACE_STANDING_COLUMN_NAME]?.ToString() ?? "";
+            int.TryParse(placeStr.TrimEnd('T'), out int placeNum);
+            string placeLabel = placeNum > 0 ? GetOrdinalWithTie(placeNum, placeStr.EndsWith("T")) : "";
+
+            if (seen.TryAdd(memberNum, i))
+            {
+                earningsMap[memberNum] = earn;
+                labelsMap[memberNum]   = [placeLabel];
+            }
+            else
+            {
+                earningsMap[memberNum] += earn;
+                labelsMap[memberNum].Add(placeLabel);
+                secondary.Add(i);
+            }
+        }
+
+        // Only include members who placed more than once
+        var combined = earningsMap
+            .Where(kv => labelsMap[kv.Key].Count > 1)
+            .ToDictionary(kv => kv.Key, kv => kv.Value);
+
+        var memoLabels = labelsMap
+            .Where(kv => kv.Value.Count > 1)
+            .ToDictionary(kv => kv.Key, kv => kv.Value);
+
+        return (combined, secondary, memoLabels);
+    }
+
+    /// <summary>
+    /// For each non-Results worksheet, remaps formulas that reference Results rows belonging to
+    /// secondary (duplicate) bowler placements to the correct unique bowler row, and updates
+    /// progressive-pot earnings formulas accordingly.  Also writes the combined place-label memo
+    /// into the B3 cell of any single-check sheet that belongs to a multi-placer.
+    /// </summary>
+    private void UpdateCheckSheetsForDoubles(
+        XLWorkbook workbook,
+        Dictionary<int, int> resultIdxToExcelRow,
+        HashSet<int> secondaryResultIndices,
+        HashSet<int> excelRowsWithProgressivePot,
+        Dictionary<int, List<string>> multiPlacerPlaceLabels,
+        DataTable exportTable)
+    {
+        // All bowler excel rows in ascending order (including secondary)
+        var allBowlerRowsSorted = resultIdxToExcelRow.Values.OrderBy(r => r).ToList();
+
+        // Secondary excel rows
+        var secondaryExcelRows = secondaryResultIndices
+            .Where(i => resultIdxToExcelRow.ContainsKey(i))
+            .Select(i => resultIdxToExcelRow[i])
+            .ToHashSet();
+
+        // Unique sequence: bowler rows excluding secondary, in order
+        var uniqueSequence = allBowlerRowsSorted.Where(r => !secondaryExcelRows.Contains(r)).ToList();
+
+        // Map memberNum → primary excel row (first/best placement)
+        var memberToPrimaryRow = new Dictionary<int, int>();
+        for (int i = 0; i < exportTable.Rows.Count; i++)
+        {
+            if (!resultIdxToExcelRow.TryGetValue(i, out int exRow)) continue;
+            if (secondaryResultIndices.Contains(i)) continue;
+            if (!int.TryParse(exportTable.Rows[i][MEMBER_ID_COLUMN_NAME]?.ToString(), out int mn) || mn <= 0) continue;
+            memberToPrimaryRow.TryAdd(mn, exRow);
+        }
+
+        // Build memo text keyed by primary excel row
+        var memoByPrimaryRow = new Dictionary<int, string>();
+        foreach (var (mn, labels) in multiPlacerPlaceLabels)
+        {
+            if (memberToPrimaryRow.TryGetValue(mn, out int exRow))
+                memoByPrimaryRow[exRow] = string.Join(", ", labels);
+        }
+
+        var allBowlerRowsSet = new HashSet<int>(allBowlerRowsSorted);
+        var rowNumPattern    = new Regex(@"Results!([A-Z]+)(\d+)", RegexOptions.IgnoreCase);
+
+        foreach (var ws in workbook.Worksheets)
+        {
+            if (ws.Name.Equals("Results", StringComparison.OrdinalIgnoreCase)) continue;
+
+            var formulaCells = ws.CellsUsed().Where(c => c.HasFormula).ToList();
+            if (formulaCells.Count == 0) continue;
+
+            // Collect all Results bowler-row numbers this sheet references
+            var sheetRefRows = new HashSet<int>();
+            foreach (var cell in formulaCells)
+            {
+                foreach (Match m in rowNumPattern.Matches(cell.FormulaA1))
+                {
+                    if (int.TryParse(m.Groups[2].Value, out int rowNum) && allBowlerRowsSet.Contains(rowNum))
+                        sheetRefRows.Add(rowNum);
+                }
+            }
+            if (sheetRefRows.Count == 0) continue;
+
+            // Build old→new remap: position k in allBowlerRowsSorted → uniqueSequence[k]
+            var rowRemap = new Dictionary<int, int>();
+            foreach (int checkRow in sheetRefRows)
+            {
+                int pos = allBowlerRowsSorted.IndexOf(checkRow);
+                if (pos < 0 || pos >= uniqueSequence.Count) continue;
+                int newRow = uniqueSequence[pos];
+                if (newRow != checkRow)
+                    rowRemap[checkRow] = newRow;
+            }
+
+            // Apply formula remaps (process longer row numbers first to avoid partial matches)
+            if (rowRemap.Count > 0)
+            {
+                foreach (var cell in formulaCells)
+                {
+                    string formula = cell.FormulaA1;
+                    string updated = formula;
+                    foreach (var (oldRow, newRow) in rowRemap.OrderByDescending(kv => kv.Key))
+                    {
+                        bool newHasPot = excelRowsWithProgressivePot.Contains(newRow);
+                        updated = ApplyRowRemap(updated, oldRow, newRow, newHasPot);
+                    }
+                    if (!ReferenceEquals(updated, formula) && updated != formula)
+                        cell.FormulaA1 = updated;
+                }
+            }
+
+            // Update B3 memo for combined-earner checks (single-check-per-sheet: B3 is literally row 3 col B)
+            foreach (var (primaryRow, memoText) in memoByPrimaryRow)
+            {
+                if (!sheetRefRows.Contains(primaryRow)) continue;
+                foreach (var cell in formulaCells)
+                {
+                    string f = cell.FormulaA1.Trim();
+                    if (f.Equals("B3", StringComparison.OrdinalIgnoreCase) ||
+                        f.Equals("$B$3", StringComparison.OrdinalIgnoreCase))
+                    {
+                        cell.Value = memoText;
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Rewrites all Results!{col}{oldRow} references in <paramref name="formula"/> to point to
+    /// <paramref name="newRow"/>.  Column I is handled specially: if the new row has a
+    /// progressive-pot row below it the earnings formula expands to I{n}+I{n+1}, otherwise
+    /// it collapses to just I{n}.  A placeholder character prevents double-substitution.
+    /// </summary>
+    private static string ApplyRowRemap(string formula, int oldRow, int newRow, bool newHasPot)
+    {
+        const string ph = "\x01";
+
+        // Neutralize column I (handle progressive-pot combo and single ref uniformly)
+        string potCombo = $@"Results!I{oldRow}\s*\+\s*Results!I{oldRow + 1}";
+        formula = Regex.Replace(formula, potCombo, ph, RegexOptions.IgnoreCase);
+        formula = Regex.Replace(formula, $@"Results!I{oldRow}(?!\d)", ph, RegexOptions.IgnoreCase);
+
+        // Restore I with correct progressive-pot handling
+        string iValue = newHasPot
+            ? $"Results!I{newRow}+Results!I{newRow + 1}"
+            : $"Results!I{newRow}";
+        formula = formula.Replace(ph, iValue);
+
+        // Replace all remaining column references for oldRow → newRow (I already resolved above)
+        formula = Regex.Replace(
+            formula,
+            $@"Results!([A-Z]+){oldRow}(?!\d)",
+            m => m.Groups[1].Value.Equals("I", StringComparison.OrdinalIgnoreCase)
+                ? m.Value
+                : $"Results!{m.Groups[1].Value}{newRow}",
+            RegexOptions.IgnoreCase);
+
+        return formula;
     }
 }
