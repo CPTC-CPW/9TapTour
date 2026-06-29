@@ -15,7 +15,7 @@ namespace NineTapTour.Models
         /// <returns></returns>
         public static string GetExcelFilterStringForFileDialogs()
         {
-            return "Excel Files (*.xls;*.xlsx)|*.xls;*.xlsx";
+            return "Excel Files (*.xls;*.xlsx;*.xlsm)|*.xls;*.xlsx;*.xlsm";
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace NineTapTour.Models
         /// <returns></returns>
         public static bool IsValidExcelExtension(string extension)
         {
-            return extension == ".xlsx";
+            return extension == ".xlsx" || extension == ".xlsm";
         }
     }
 }
