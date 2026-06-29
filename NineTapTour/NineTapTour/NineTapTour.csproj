@@ -6,12 +6,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Icon\9tap_white.ico</ApplicationIcon>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageLicenseFile>ClientLicense.txt</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Resources\SeriesReportTemplate.xlsx" />
-    <None Remove="Resources\TournamentResultsTemplate.xlsx" />
   </ItemGroup>
 	<ItemGroup>
 		<SupportedPlatform Include="windows" />
@@ -20,16 +17,9 @@
     <Content Include="Resources\SeriesReportTemplate.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\TournamentResultsTemplate.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <None Include="..\ClientLicense.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
     </None>
   </ItemGroup>
   <ItemGroup>
