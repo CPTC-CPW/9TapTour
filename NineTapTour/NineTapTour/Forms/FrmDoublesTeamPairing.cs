@@ -809,7 +809,9 @@ public class FrmDoublesTeamPairing : Form
 
     private void PopulateBowlersList(bool selectFirst = false)
     {
-        int previousMemberId = lstBowlers.SelectedItem is BowlerListItem selected ? selected.MemberId : 0;
+        // Track both member and squad so multi-squad bowlers restore to the correct squad entry.
+        (int MemberId, int Squad) previousKey = lstBowlers.SelectedItem is BowlerListItem selected
+            ? (selected.MemberId, selected.Squad) : (0, 0);
 
         using var db = new NineTapDb();
         var participants = db.Participants
@@ -865,7 +867,10 @@ public class FrmDoublesTeamPairing : Form
                 return;
             }
 
-            int restoreIndex = items.FindIndex(i => i.MemberId == previousMemberId);
+            // Prefer exact (member + squad) match; fall back to first squad if not found.
+            int restoreIndex = items.FindIndex(i => i.MemberId == previousKey.MemberId && i.Squad == previousKey.Squad);
+            if (restoreIndex < 0)
+                restoreIndex = items.FindIndex(i => i.MemberId == previousKey.MemberId);
             if (restoreIndex >= 0)
                 lstBowlers.SelectedIndex = restoreIndex;
         }

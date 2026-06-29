@@ -154,10 +154,15 @@ public partial class FrmTournamentResults : Form
         }
         TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
 
-        // Save all changes made to the dataGridView
+        // Save all changes made to the dataGridView.
+        // Track processed GameIds so a member on multiple teams in the same squad (same Game
+        // record) is only written once — the first row wins, preventing a later row from
+        // overwriting the place and earnings already saved.
+        var savedGameIds = new HashSet<int>();
         for (int currentIndex = 0; currentIndex < clientRequested.Count; currentIndex++)
         {
             int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
+            if (!savedGameIds.Add(gameId)) continue;
             // Use the form-level context's identity map (Find) so EF Core never sees two
             // instances of the same Game key — fixes the "already being tracked" exception.
             Game g = db.Games.Find(gameId);
@@ -1110,11 +1115,15 @@ public partial class FrmTournamentResults : Form
             }
         }
 
-        // Saves participants' place standing and earnings won to the database
+        // Saves participants' place standing and earnings won to the database.
+        // Guard against duplicate GameIds (member on multiple teams in the same squad).
         if (!tourny.IsTwoDay)
+        {
+        var exportSavedGameIds = new HashSet<int>();
         for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
         {
             int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
+            if (!exportSavedGameIds.Add(gameId)) continue;
             Game g = GameDB.GetGame(gameId);
 
             g.PlaceStanding = ParsePlaceStanding(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
@@ -1134,6 +1143,7 @@ public partial class FrmTournamentResults : Form
             // Phase 4: Removed g.gameRegionID assignment - stored in Participant entity
             db.SaveChanges();
         }
+        } // end if (!tourny.IsTwoDay)
 
         string tourneyDate = tourny.Date.ToString("MM/dd/yyyy");
         string tournyDateDash = tourneyDate.Replace("/", "-");
@@ -1369,10 +1379,10 @@ public partial class FrmTournamentResults : Form
                 // to pass a simple <= clientInput threshold.
                 if (tourny.Doubles)
                 {
-                    clientRequested = [.. winners
-                        .Where(m => m.PlaceStanding <= clientInput)
-                        .OrderBy(m => m.PlaceStanding)
-                        .ThenBy(m => m.MemberNumber)];
+                    // Preserve the consecutive-pair order written by BuildWinnersListDoubles.
+                // Sorting by MemberNumber within the same place would interleave members
+                // from different tied teams, breaking the [T1M1, T1M2, T2M1, T2M2, ...] layout.
+                clientRequested = [.. winners.Where(m => m.PlaceStanding <= clientInput)];
                 }
                 else
                 {
