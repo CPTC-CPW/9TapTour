@@ -1119,36 +1119,35 @@ public partial class FrmTournamentResults : Form
         // Guard against duplicate GameIds (member on multiple teams in the same squad).
         if (!tourny.IsTwoDay)
         {
-        var exportSavedGameIds = new HashSet<int>();
-        for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
-        {
-            int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
-            if (!exportSavedGameIds.Add(gameId)) continue;
-            Game g = GameDB.GetGame(gameId);
-
-            g.PlaceStanding = ParsePlaceStanding(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
-            g.PlaceStandingLabel = null;
-            g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
-
-            // if user enters something other than a decimal number
-            if (Decimal.TryParse(Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value), out decimal _))
+            var exportSavedGameIds = new HashSet<int>();
+            for (int currentIndex = 0; currentIndex < dgvTournamentResults.RowCount; currentIndex++)
             {
-                g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
+                int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
+                if (!exportSavedGameIds.Add(gameId)) continue;
+                Game g = GameDB.GetGame(gameId);
+
+                g.PlaceStanding = ParsePlaceStanding(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
+                g.PlaceStandingLabel = null;
+                g.MoneyWon = Convert.ToDecimal(dgvTournamentResults[EARNINGS_COLUMN_NAME, currentIndex].Value);
+
+                // if user enters something other than a decimal number
+                if (Decimal.TryParse(Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value), out decimal _))
+                {
+                    g.SidePot = Convert.ToDecimal(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value);
+                }
+                else
+                {
+                    g.Notes = $"Progressive Pot was entered as: {Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value)}";
+                }
+                
+                // Phase 4: Removed g.gameRegionID assignment - stored in Participant entity
+                db.SaveChanges();
             }
-            else
-            {
-                g.Notes = $"Progressive Pot was entered as: {Convert.ToString(dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentIndex].Value)}";
-            }
-            
-            // Phase 4: Removed g.gameRegionID assignment - stored in Participant entity
-            db.SaveChanges();
-        }
         } // end if (!tourny.IsTwoDay)
 
         string tourneyDate = tourny.Date.ToString("MM/dd/yyyy");
         string tournyDateDash = tourneyDate.Replace("/", "-");
         string tournamentDate = tournyDateDash; // Already formatted
-        string fileName = tourny.Location + " " + tourny.Event + " " + tournamentDate + ".xlsx";
 
         string saveFile;
         using OpenFileDialog openDialog = new()
@@ -1159,6 +1158,11 @@ public partial class FrmTournamentResults : Form
         if (openDialog.ShowDialog() != DialogResult.OK)
             return;
         saveFile = openDialog.FileName;
+
+        // Preserve the template's extension (.xlsm keeps macros, .xlsx is default).
+        string templateExt = Path.GetExtension(saveFile).ToLowerInvariant();
+        string outputExt   = templateExt == ".xlsm" ? ".xlsm" : ".xlsx";
+        string fileName    = tourny.Location + " " + tourny.Event + " " + tournamentDate + outputExt;
 
         // Select the source table: 2-day grid (sorted by Place), doubles Team View, or the standard winners table.
         DataTable exportTable = tourny.IsTwoDay
@@ -1617,17 +1621,20 @@ public partial class FrmTournamentResults : Form
                 }
             }
 
-            // Update B3 memo for combined-earner checks (single-check-per-sheet: B3 is literally row 3 col B)
+            // Write the combined-places memo into the place label cell of the primary check.
+            // Each check's place is in the C column (e.g. C3, C20, C37) with formula
+            // =Results!A{n}. Primary rows are never remapped, so that formula is still
+            // intact here — we override the cell value to show all cashed places (e.g. "3rd, 7th").
             foreach (var (primaryRow, memoText) in memoByPrimaryRow)
             {
                 if (!sheetRefRows.Contains(primaryRow)) continue;
                 foreach (var cell in formulaCells)
                 {
                     string f = cell.FormulaA1.Trim();
-                    if (f.Equals("B3", StringComparison.OrdinalIgnoreCase) ||
-                        f.Equals("$B$3", StringComparison.OrdinalIgnoreCase))
+                    if (f.Equals($"Results!A{primaryRow}", StringComparison.OrdinalIgnoreCase))
                     {
                         cell.Value = memoText;
+                        break;
                     }
                 }
             }
