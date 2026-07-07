@@ -577,7 +577,7 @@ public partial class FrmTournamentResults : Form
         {
             Text    = "Team View",
             Size    = new Size(105, 23),
-            Location = new Point(tbClientInputCount.Right + 8, btnPaste.Top)
+            Location = new Point(tbClientInputCount.Right + 8, tbClientInputCount.Top)
         };
         btnTeamView.Click += BtnTeamView_Click;
         Controls.Add(btnTeamView);
@@ -741,7 +741,6 @@ public partial class FrmTournamentResults : Form
     {
         lblClientRequestCount.Visible = false;
         tbClientInputCount.Visible    = false;
-        btnPaste.Visible              = false;
 
         // Build the round-setup panel
         _pnlRoundSetup = new Panel
@@ -1083,6 +1082,78 @@ public partial class FrmTournamentResults : Form
 
     private void ExportToExcel()
     {
+        // Pick the template first so earnings and progressive pot can be read
+        // into the DGV before the DB save below.
+        string saveFile;
+        using OpenFileDialog openDialog = new()
+        {
+            Title  = "Select Existing Results File",
+            Filter = FileHelper.GetExcelFilterStringForFileDialogs(),
+        };
+        if (openDialog.ShowDialog() != DialogResult.OK)
+            return;
+        saveFile = openDialog.FileName;
+
+        // Preserve the template's extension (.xlsm keeps macros, .xlsx is default).
+        string templateExt = Path.GetExtension(saveFile).ToLowerInvariant();
+        string outputExt   = templateExt == ".xlsm" ? ".xlsm" : ".xlsx";
+
+        string tourneyDate    = tourny.Date.ToString("MM/dd/yyyy");
+        string tournamentDate = tourneyDate.Replace("/", "-");
+        string fileName       = tourny.Location + " " + tourny.Event + " " + tournamentDate + outputExt;
+
+        // For standard (non-2-day) tournaments, read earnings and progressive pot from
+        // the pre-filled template into the DGV so the DB save below records the correct values.
+        if (!tourny.IsTwoDay)
+        {
+            try
+            {
+                using var readWb = new XLWorkbook(saveFile);
+                var readWs = readWb.Worksheet(1);
+                int excelRow = 4;
+                for (int idx = 0; idx < dgvTournamentResults.RowCount; idx++)
+                {
+                    string placeStr = dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, idx].Value?.ToString() ?? "";
+                    int.TryParse(placeStr.TrimEnd('T'), out int place);
+
+                    // Earnings are always in col I of the bowler row.
+                    // The cell may be a plain number or a currency-formatted string ("$1,100"),
+                    // so strip "$" and "," before parsing as a fallback.
+                    var earningsVal = readWs.Cell(excelRow, 9).Value;
+                    decimal earnings;
+                    if (earningsVal.IsNumber)
+                    {
+                        earnings = (decimal)earningsVal.GetNumber();
+                    }
+                    else
+                    {
+                        string raw = readWs.Cell(excelRow, 9).GetString()
+                            .Replace("$", "").Replace(",", "").Trim();
+                        decimal.TryParse(raw, System.Globalization.NumberStyles.Number,
+                            System.Globalization.CultureInfo.InvariantCulture, out earnings);
+                    }
+                    dgvTournamentResults[EARNINGS_COLUMN_NAME, idx].Value = earnings;
+
+                    // The merged F/G/H cell on the next row contains "Progressive Pot" when
+                    // a pot row follows this bowler (always for places 1-3, and sometimes
+                    // beyond that when there are ties in the top 3).
+                    bool hasPotRow = readWs.Cell(excelRow + 1, 6).GetString()
+                        .Contains("Progressive Pot", StringComparison.OrdinalIgnoreCase);
+
+                    decimal pot = 0m;
+                    if (hasPotRow)
+                    {
+                        var potVal = readWs.Cell(excelRow + 1, 9).Value;
+                        pot = potVal.IsNumber ? (decimal)potVal.GetNumber() : 0m;
+                    }
+                    dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, idx].Value = pot;
+
+                    excelRow += hasPotRow ? 2 : 1;
+                }
+            }
+            catch { /* If the template cannot be read, proceed with DGV values as-is. */ }
+        }
+
         if (tourny.IsTwoDay)
         {
             // Save 2-day results to DB via the DGV (which is bound to _dt2Day)
@@ -1145,25 +1216,6 @@ public partial class FrmTournamentResults : Form
             }
         } // end if (!tourny.IsTwoDay)
 
-        string tourneyDate = tourny.Date.ToString("MM/dd/yyyy");
-        string tournyDateDash = tourneyDate.Replace("/", "-");
-        string tournamentDate = tournyDateDash; // Already formatted
-
-        string saveFile;
-        using OpenFileDialog openDialog = new()
-        {
-            Title  = "Select Existing Results File",
-            Filter = FileHelper.GetExcelFilterStringForFileDialogs(),
-        };
-        if (openDialog.ShowDialog() != DialogResult.OK)
-            return;
-        saveFile = openDialog.FileName;
-
-        // Preserve the template's extension (.xlsm keeps macros, .xlsx is default).
-        string templateExt = Path.GetExtension(saveFile).ToLowerInvariant();
-        string outputExt   = templateExt == ".xlsm" ? ".xlsm" : ".xlsx";
-        string fileName    = tourny.Location + " " + tourny.Event + " " + tournamentDate + outputExt;
-
         // Select the source table: 2-day grid (sorted by Place), doubles Team View, or the standard winners table.
         DataTable exportTable = tourny.IsTwoDay
             ? _dt2Day.DefaultView.ToTable()
@@ -1171,8 +1223,7 @@ public partial class FrmTournamentResults : Form
                 ? BuildTeamViewExportTable()
                 : dt;
 
-        // For doubles: detect bowlers who placed multiple times and consolidate their earnings.
-        Dictionary<int, decimal> doublesConsolidatedEarnings = null;
+        // For doubles: detect bowlers who placed multiple times and skip their duplicate checks.
         HashSet<int> doublesSecondaryRowIndices = null;
         Dictionary<int, List<string>> doublesPlaceLabelsForMemo = null;
 
@@ -1181,7 +1232,6 @@ public partial class FrmTournamentResults : Form
             var consolidation = BuildDoublesConsolidation(exportTable);
             if (consolidation.SecondaryRowIndices.Count > 0)
             {
-                doublesConsolidatedEarnings = consolidation.CombinedEarnings;
                 doublesSecondaryRowIndices   = consolidation.SecondaryRowIndices;
                 doublesPlaceLabelsForMemo    = consolidation.PlaceLabelsForMemo;
             }
@@ -1254,12 +1304,6 @@ public partial class FrmTournamentResults : Form
                     int.TryParse(exportTable.Rows[i + 1][PLACE_STANDING_COLUMN_NAME]?.ToString()?.TrimEnd('T'), out nextPlace);
                     if (nextPlace == currentPlace) isTie = true;
                 }
-                // Parse the progressive pot once; spVal = 0 if the cell is empty or non-numeric.
-                decimal.TryParse(row[PROGRESSIVEPOT_COLUMN_NAME]?.ToString(), out decimal spVal);
-                // Use InvariantCulture so the decimal separator in the formula literal is always "."
-                // regardless of the system locale (e.g. prevents "20,5" in German locales).
-                string sidePotValue = spVal.ToString(System.Globalization.CultureInfo.InvariantCulture);
-
                 if (tourny.IsTwoDay)
                 {
                     string groupedLabel = row[PLACE_GROUP_LABEL_COLUMN_NAME]?.ToString();
@@ -1277,23 +1321,8 @@ public partial class FrmTournamentResults : Form
                 ws.Cell(excelRow, 7).Value = row[TOTAL_SCORE_COLUMN_NAME]?.ToString();
                 resultIdxToExcelRow[i] = excelRow;
 
-                double earningsForExcel = 0;
-                if (row[EARNINGS_COLUMN_NAME] != null)
-                    double.TryParse(row[EARNINGS_COLUMN_NAME].ToString(), out earningsForExcel);
-                if (doublesConsolidatedEarnings != null)
-                {
-                    if (doublesSecondaryRowIndices.Contains(i))
-                        earningsForExcel = 0;
-                    else if (int.TryParse(row[MEMBER_ID_COLUMN_NAME]?.ToString(), out int mNum)
-                             && doublesConsolidatedEarnings.TryGetValue(mNum, out decimal combined))
-                        earningsForExcel = (double)combined;
-                }
-                ws.Cell(excelRow, 9).Value = earningsForExcel.ToString("C0");
                 ws.Cell(excelRow, 11).Value = currentPlace;
                 ws.Cell(excelRow, 12).Value = row[MEMBER_ID_COLUMN_NAME]?.ToString();
-                ws.Cell(excelRow, 15).FormulaA1 = $"=I{excelRow}-M{excelRow}-N{excelRow}+{sidePotValue}";
-                // Write as a numeric value so Excel treats it as a number, not text.
-                ws.Cell(excelRow, 8).Value = spVal;
 
                 // Always explicitly set or clear the Membership$ (Column M) background so that
                 // pre-existing orange from a previous export never bleeds into a current member's row.
@@ -1303,10 +1332,11 @@ public partial class FrmTournamentResults : Form
                 ws.Cell(excelRow, 13).Style.Fill.BackgroundColor =
                     membershipNotCurrent ? XLColor.Orange : XLColor.NoColor;
 
-                if (currentPlace >= 1 && currentPlace <= 3)
+                // Detect a pot row in the template by checking col F of the next row.
+                if (ws.Cell(excelRow + 1, 6).GetString()
+                        .Contains("Progressive Pot", StringComparison.OrdinalIgnoreCase))
                 {
                     excelRowsWithProgressivePot.Add(excelRow);
-                    ws.Cell(excelRow + 1, 9).Value = spVal;
                     excelRow++;
                 }
 
@@ -1319,12 +1349,6 @@ public partial class FrmTournamentResults : Form
                 UpdateCheckSheetsForDoubles(workbook, resultIdxToExcelRow, doublesSecondaryRowIndices,
                     excelRowsWithProgressivePot, doublesPlaceLabelsForMemo, exportTable);
             }
-
-            // Set total payout
-            double money = 0;
-            for (int k = 0; k < exportTable.Rows.Count; k++)
-                money += Convert.ToDouble(exportTable.Rows[k][EARNINGS_COLUMN_NAME]);
-            ws.Cell(2, 8).Value = money;
 
             // Save dialog
             SaveFileDialog savefile = new()
@@ -1402,75 +1426,6 @@ public partial class FrmTournamentResults : Form
             catch (FormatException)
             {
                 MessageBox.Show("Please enter a nunmber");
-            }
-        }
-    }
-
-    private static bool TryExtractFirstAmount(string text, out decimal amount)
-    {
-        amount = 0m;
-        if (string.IsNullOrWhiteSpace(text))
-            return false;
-
-        Match match = Regex.Match(text.Replace(",", ""), @"-?\d+(\.\d+)?");
-        if (!match.Success)
-            return false;
-
-        return decimal.TryParse(
-            match.Value,
-            System.Globalization.NumberStyles.Number,
-            System.Globalization.CultureInfo.InvariantCulture,
-            out amount);
-    }
-
-    private void BtnPaste_Click(object sender, EventArgs e)
-    {
-        // Stops this method from working if user didnt enter the number of winners
-        if (string.IsNullOrWhiteSpace(tbClientInputCount.Text))
-        {
-            MessageBox.Show("Please enter the number of winners first");
-            return;
-        }
-
-        // Stops this method from working if the user did not copy from Excel first
-        string clipboard = Clipboard.GetText();
-        if (string.IsNullOrWhiteSpace(clipboard))
-        {
-            MessageBox.Show("Please copy the earnings from Excel first");
-            return;
-        }
-
-        List<string> lines = [.. clipboard
-            .Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None)
-            .Select(s => s.Trim())
-            .Where(s => !string.IsNullOrWhiteSpace(s))];
-
-        int currentRow = 0;
-        int placesProcessed = 0; // Track which place we're on (1st, 2nd, 3rd)
-        bool expectProgressivePot = false; // Flag to track if next line should be progressive pot
-
-        foreach (string line in lines)
-        {
-            // Stop processing if we've filled all rows in the grid
-            if (currentRow >= dgvTournamentResults.RowCount)
-                break;
-
-            // Only assign progressive pot if we just assigned earnings and were expecting it
-            if (expectProgressivePot && TryExtractFirstAmount(line, out decimal progressiveAmount))
-            {
-                // Subtracting one to ensure progressive pot goes to the correct bowler
-                dgvTournamentResults[PROGRESSIVEPOT_COLUMN_NAME, currentRow - 1].Value = progressiveAmount;
-                expectProgressivePot = false; // Reset flag after processing
-            }
-            else
-            {
-                TryExtractFirstAmount(line, out decimal earningsAmount);
-                dgvTournamentResults[EARNINGS_COLUMN_NAME, currentRow].Value = earningsAmount;
-                placesProcessed++;
-
-                // After 1st, 2nd, and 3rd place, expect a progressive pot line next
-                expectProgressivePot = placesProcessed <= 3;
-                currentRow++;
             }
         }
     }
