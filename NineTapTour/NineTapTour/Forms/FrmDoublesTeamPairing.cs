@@ -17,7 +17,7 @@ namespace NineTapTour.Forms;
 /// </summary>
 public class FrmDoublesTeamPairing : Form
 {
-    private const int BowlerPanelWidth = 260;
+    private const int BowlerPanelWidth = 340;
     private const int BowlerPanelFixedHeight = 210;
 
     private readonly Tournament _tournament;
@@ -246,7 +246,8 @@ public class FrmDoublesTeamPairing : Form
 
         lstBowlers = new ListBox
         {
-            Dock = DockStyle.Fill
+            Dock = DockStyle.Fill,
+            HorizontalScrollbar = true
         };
         lstBowlers.SelectedIndexChanged += LstBowlers_SelectedIndexChanged;
         pnlBowlerList.Controls.Add(lstBowlers);
