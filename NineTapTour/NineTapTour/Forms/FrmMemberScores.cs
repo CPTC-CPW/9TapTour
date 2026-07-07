@@ -1776,8 +1776,8 @@ public partial class FrmMemberScores : Form
         foreach (var team in teams)
         {
             // Find both members' scores in the individual standings
-            var member1Scores = individualScores.FirstOrDefault(s => s.MemberId == team.Member1.Number);
-            var member2Scores = individualScores.FirstOrDefault(s => s.MemberId == team.Member2.Number);
+            var member1Scores = individualScores.FirstOrDefault(s => s.MemberId == team.Member1.Number && s.Squad == team.Squad);
+            var member2Scores = individualScores.FirstOrDefault(s => s.MemberId == team.Member2.Number && s.Squad == team.Squad);
 
             // Skip this team if either member is not found in the standings
             if (member1Scores == null || member2Scores == null)

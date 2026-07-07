@@ -306,12 +306,13 @@ ORDER BY Score DESC";
                         BonusPinValue = g.Game.Bonus,
                         Score = 0,
                         LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                        Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                            (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
+                        Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
+                            (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1)))),
+                        Squad = g.Squad
                     })];
 
             List<MemberScores> memberScores = [];
-         
+
             // Use member interim to manually add up the game scores to avoid trying to add null on the database end
             // and causing the players score to be null
             foreach (var memberInterim in memberInterimScores)
@@ -358,8 +359,9 @@ ORDER BY Score DESC";
                         LastName = g.Member.LastName,
                         Score = 0,
                         LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                        Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                            (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
+                        Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
+                            (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1)))),
+                        Squad = g.Squad
                     })];
 
             List<MemberScores> memberScores = [];
@@ -486,8 +488,9 @@ ORDER BY Score DESC";
                          BonusPinValue = g.Game.Bonus,
                          Score = 0,
                          LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                         Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                            (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
+                         Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
+                            (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1)))),
+                         Squad = squad
                      }).ToList());
 
             }
@@ -523,7 +526,7 @@ ORDER BY Score DESC";
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public static List<MemberScores> GetStandingsForThreeOf4ByFilterSeriesByScratch(List<int> squadList, int selectedTournament)
     {
@@ -606,8 +609,9 @@ ORDER BY Score DESC";
                          Game4Score = g.Game.Game4,
                          Score = 0,
                          LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                         Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
-                         (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
+                         Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
+                         (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1)))),
+                         Squad = squad
                      }).ToList());
             }
 
