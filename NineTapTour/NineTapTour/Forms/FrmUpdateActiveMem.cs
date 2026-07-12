@@ -3,22 +3,33 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using NineTapTour.Models;
+using NineTapTour.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NineTapTour.Forms;
 
 public partial class FrmUpdateActiveMem : Form
 {
     DateTime targetDate;
-    readonly List<Member> InActiveList;
     readonly List<Member> AllMembers;
+    readonly IMemberRepository _memberRepo;
+    readonly IDbContextFactory<NineTapDb> _dbFactory;
+
     public FrmUpdateActiveMem()
     {
         InitializeComponent();
+    }
+
+    [Microsoft.Extensions.DependencyInjection.ActivatorUtilitiesConstructor]
+    public FrmUpdateActiveMem(IMemberRepository memberRepo, IDbContextFactory<NineTapDb> dbFactory)
+    {
+        InitializeComponent();
+        _memberRepo = memberRepo;
+        _dbFactory = dbFactory;
         dateTimePicker1.Value = DateTime.Today.AddDays(-180);
         targetDate = dateTimePicker1.Value;
-        InActiveList = MemberDB.GetMemberList();
-        AllMembers = MemberDB.GetMemberList();
+        AllMembers = _memberRepo.GetMemberList();
         UpdateList();
     }
 
@@ -53,15 +64,13 @@ public partial class FrmUpdateActiveMem : Form
             return;
         }
 
-        var db = new NineTapDb();
         if (MessageBox.Show("Update the selected Members to inactive?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
         {
-          
+            using var db = _dbFactory.CreateDbContext();
             foreach (Member mem in InactiveListCheckBox.CheckedItems)
             {
                 mem.IsActive = false;
                 db.Entry(mem).State = EntityState.Modified;
-                    
             }
             db.SaveChanges();
             InactiveListCheckBox.Items.Clear();

@@ -26,6 +26,11 @@
     <Content Include="Resources\9tap.gif" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Resources\BowlingPin1.png" />
     <Content Include="Resources\9taplogo1.png" />
   </ItemGroup>
@@ -38,10 +43,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.9" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NineTapTour.Core\NineTapTour.Core.csproj" />
+    <ProjectReference Include="..\NineTapTour.Data\NineTapTour.Data.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">

@@ -7,8 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NineTapTour.Abstractions;
 using NineTapTour.Database;
 using NineTapTour.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NineTapTour.Forms
 {
@@ -17,9 +19,21 @@ namespace NineTapTour.Forms
         // If a new tournament was selected to edit, this will be set to something other than null.
         Tournament tourToEdit;
 
+        private readonly ITournamentRepository _tournamentRepo;
+        private readonly IServiceProvider _services;
+
         public FrmNewTournament()
         {
             InitializeComponent();
+            txtSquads.Text = 4.ToString();
+        }
+
+        [Microsoft.Extensions.DependencyInjection.ActivatorUtilitiesConstructor]
+        public FrmNewTournament(ITournamentRepository tournamentRepo, IServiceProvider services)
+        {
+            InitializeComponent();
+            _tournamentRepo = tournamentRepo;
+            _services = services;
             txtSquads.Text = 4.ToString();
         }
 
@@ -55,7 +69,7 @@ namespace NineTapTour.Forms
 
             if (validateSquads)
             {
-                if (numSquads < 1 || numSquads > 9)
+                if (numSquads < 1 || numSquads > 8)
                 {
                     MessageBox.Show("Squads must be between 1 - 8");
                     errors = true;
@@ -96,7 +110,7 @@ namespace NineTapTour.Forms
                 {
                     if (!errors)
                     {
-                        TournamentDB.AddTournament(newTournament);
+                        _tournamentRepo.AddTournament(newTournament);
                         MessageBox.Show(@"Tournament Created Successfully.");
                     }
                 }
@@ -106,8 +120,7 @@ namespace NineTapTour.Forms
 
                     if (dr == DialogResult.Yes)
                     {
-                        newTournament.Id = tourToEdit.Id;
-                        newTournament = TournamentDB.GetTourneyByID(tourToEdit.Id);
+                        newTournament = _tournamentRepo.GetTourneyByID(tourToEdit.Id);
                         // Editing Tournament with form data
                         newTournament.Date = dtpDate.Value.Date;
                         newTournament.Location = txtLocation.Text;
@@ -115,7 +128,7 @@ namespace NineTapTour.Forms
                         newTournament.Sponsors = txtSponsors.Text;
                         newTournament.Notes = rtxtNotes.Text;
 
-                        if (TournamentDB.UpdateTournament(newTournament))
+                        if (_tournamentRepo.UpdateTournament(newTournament))
                         {
                             MessageBox.Show(@"Tournament modified.");
                         }
@@ -133,8 +146,7 @@ namespace NineTapTour.Forms
                     Tournament currTourney = newTournament;
                     clearTournamentForm();
 
-                    var newFrmMemberScores = Application.OpenForms["FrmMemberScores"] as FrmMemberScores;
-                    ((FrmMain)MdiParent).OpenOrDisplayForm(ref newFrmMemberScores);
+                    var newFrmMemberScores = ((FrmMain)MdiParent).OpenChild<FrmMemberScores>();
 
                     //populates selected tournament with recently edited or created tournament back in MemberScores.
                     newFrmMemberScores.PopulateSelectedTournament(currTourney);
@@ -144,7 +156,7 @@ namespace NineTapTour.Forms
 
         private void btnEditTour_Click(object sender, EventArgs e)
         {
-            FrmTourSearch getEdit = new();
+            FrmTourSearch getEdit = _services.GetRequiredService<FrmTourSearch>();
             getEdit.ShowDialog();
             tourToEdit = getEdit.GetResult();
 

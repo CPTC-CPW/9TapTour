@@ -1,6 +1,9 @@
-﻿using NineTapTour.Database;
+﻿using NineTapTour.Abstractions;
+using NineTapTour.Database;
 using NineTapTour.Models;
 using ClosedXML.Excel;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -21,6 +24,13 @@ public class FrmDoublesTeamPairing : Form
     private const int BowlerPanelFixedHeight = 210;
 
     private readonly Tournament _tournament;
+
+    private readonly IDoublesRepository _doublesRepo;
+    private readonly IMemberRepository _memberRepo;
+    private readonly IParticipantRepository _participantRepo;
+    private readonly ITournamentRepository _tournamentRepo;
+    private readonly IDbContextFactory<NineTapDb> _dbFactory;
+    private readonly IServiceProvider _services;
 
     // Header
     private Label lblHeader;
@@ -77,9 +87,22 @@ public class FrmDoublesTeamPairing : Form
     // Construction
     // ----------------------------------------------------------------
 
-    public FrmDoublesTeamPairing(Tournament tournament)
+    public FrmDoublesTeamPairing(
+        Tournament tournament,
+        IDoublesRepository doublesRepo,
+        IMemberRepository memberRepo,
+        IParticipantRepository participantRepo,
+        ITournamentRepository tournamentRepo,
+        IDbContextFactory<NineTapDb> dbFactory,
+        IServiceProvider services)
     {
         _tournament = tournament;
+        _doublesRepo = doublesRepo;
+        _memberRepo = memberRepo;
+        _participantRepo = participantRepo;
+        _tournamentRepo = tournamentRepo;
+        _dbFactory = dbFactory;
+        _services = services;
         InitializeControls();
         LoadPairings();
     }
@@ -457,20 +480,20 @@ public class FrmDoublesTeamPairing : Form
 
         if (!int.TryParse(txtBowlerNumber.Text.Trim(), out int mainNum))
             return;
-        int mainId = MemberDB.GetMemberIdByNumber(mainNum);
+        int mainId = _memberRepo.GetMemberIdByNumber(mainNum);
         if (mainId == 0) return;
 
         int targetSquad = GetTargetSquad();
         if (targetSquad == 0) return;
 
         // Show only partners this bowler has explicitly claimed.
-        List<DoublesPartnerClaim> allClaims = DoublesPartnerClaimDB.GetClaimsByTournament(_tournament.Id);
+        List<DoublesPartnerClaim> allClaims = _doublesRepo.GetClaimsByTournament(_tournament.Id);
         _existingPartnersForBowler = allClaims
             .Where(c => c.Squad == targetSquad && c.SourceMember.Id == mainId)
             .Select(c => c.PartnerMember)
             .ToList();
 
-        int expectedCount = DoublesPartnerPlanDB.GetExpectedPartnerCount(_tournament.Id, mainId, targetSquad);
+        int expectedCount = _doublesRepo.GetExpectedPartnerCount(_tournament.Id, mainId, targetSquad);
 
         // Always show exactly the planned partner count for the selected bowler.
         // This prevents stale higher counts when navigating between bowlers.
@@ -480,7 +503,7 @@ public class FrmDoublesTeamPairing : Form
         finally { _populatingPartners = false; }
     }
 
-    private static void LookupMemberName(TextBox txt, Label lbl)
+    private void LookupMemberName(TextBox txt, Label lbl)
     {
         lbl.ForeColor = SystemColors.ControlText;
         if (!int.TryParse(txt.Text.Trim(), out int num))
@@ -488,7 +511,7 @@ public class FrmDoublesTeamPairing : Form
             lbl.Text = string.Empty;
             return;
         }
-        Member m = MemberDB.GetMember(num);
+        Member m = _memberRepo.GetMember(num);
         if (m != null && m.Id > 0)
         {
             lbl.Text = $"{m.FirstName} {m.LastName}";
@@ -526,12 +549,12 @@ public class FrmDoublesTeamPairing : Form
     {
         if (_populatingPartners) return;
         if (!int.TryParse(txtBowlerNumber.Text.Trim(), out int mainNum)) return;
-        int mainId = MemberDB.GetMemberIdByNumber(mainNum);
+        int mainId = _memberRepo.GetMemberIdByNumber(mainNum);
         if (mainId == 0) return;
         int targetSquad = GetTargetSquad();
         if (targetSquad == 0) return;
         if (!int.TryParse(txtPartnerCount.Text.Trim(), out int expectedCount) || expectedCount < 0) return;
-        DoublesPartnerPlanDB.UpsertPlan(_tournament.Id, mainId, targetSquad, expectedCount);
+        _doublesRepo.UpsertPlan(_tournament.Id, mainId, targetSquad, expectedCount);
         ShowAutoSaveStatus($"Plan saved: {expectedCount} partner(s) for #{mainNum}");
     }
 
@@ -545,7 +568,7 @@ public class FrmDoublesTeamPairing : Form
 
         if (!int.TryParse(txtBowlerNumber.Text.Trim(), out int mainNum))
             { ShowAutoSaveStatus("Enter a valid bowler number first.", error: true); return; }
-        int mainId = MemberDB.GetMemberIdByNumber(mainNum);
+        int mainId = _memberRepo.GetMemberIdByNumber(mainNum);
         if (mainId == 0)
             { ShowAutoSaveStatus($"Bowler #{mainNum} not found.", error: true); return; }
         int targetSquad = GetTargetSquad();
@@ -553,7 +576,7 @@ public class FrmDoublesTeamPairing : Form
             { ShowAutoSaveStatus("Select a squad first.", error: true); return; }
         if (!int.TryParse(partnerText, out int partnerNum))
             { ShowAutoSaveStatus($"'{partnerText}' is not a valid member number.", error: true); return; }
-        int partnerId = MemberDB.GetMemberIdByNumber(partnerNum);
+        int partnerId = _memberRepo.GetMemberIdByNumber(partnerNum);
         if (partnerId == 0)
             { ShowAutoSaveStatus($"#{partnerNum} not found.", error: true); return; }
         if (partnerId == mainId)
@@ -565,8 +588,8 @@ public class FrmDoublesTeamPairing : Form
         if (!validIds.Contains(partnerId))
             { ShowAutoSaveStatus($"#{partnerNum} not in Squad {targetSquad}.", error: true); return; }
 
-        bool claimAdded = DoublesPartnerClaimDB.AddClaim(_tournament.Id, mainId, partnerId, targetSquad);
-        DoublesTeamDB.AddTeam(_tournament.Id, mainId, partnerId, targetSquad);
+        bool claimAdded = _doublesRepo.AddClaim(_tournament.Id, mainId, partnerId, targetSquad);
+        _doublesRepo.AddTeam(_tournament.Id, mainId, partnerId, targetSquad);
         LoadPairings();
 
         if (claimAdded)
@@ -595,7 +618,7 @@ public class FrmDoublesTeamPairing : Form
         // Snapshot current state for re-import diff
         List<(int MemberNumber, int Squad)> prevParticipants;
         Dictionary<(int MemberNumber, int Squad), int> prevPlans;
-        using (var db = new NineTapDb())
+        using (var db = _dbFactory.CreateDbContext())
         {
             prevParticipants = db.Participants
                 .Where(p => p.Tournament.Id == _tournament.Id)
@@ -604,7 +627,7 @@ public class FrmDoublesTeamPairing : Form
                 .Select(x => (x.Number, x.Squad))
                 .ToList();
         }
-        var existingPlansList = DoublesPartnerPlanDB.GetPlansByTournament(_tournament.Id);
+        var existingPlansList = _doublesRepo.GetPlansByTournament(_tournament.Id);
         prevPlans = existingPlansList.ToDictionary(
             p => (p.Member.Number, p.Squad),
             p => p.ExpectedPartnerCount);
@@ -629,7 +652,7 @@ public class FrmDoublesTeamPairing : Form
                 }
             }
 
-            var updatedPlans = DoublesPartnerPlanDB.GetPlansByTournament(_tournament.Id);
+            var updatedPlans = _doublesRepo.GetPlansByTournament(_tournament.Id);
             var updatedPlanDict = updatedPlans.ToDictionary(
                 p => (p.Member.Number, p.Squad),
                 p => p.ExpectedPartnerCount);
@@ -674,7 +697,7 @@ public class FrmDoublesTeamPairing : Form
 
     private void RefreshOwnerParticipants()
     {
-        FrmMemberScoresHelpers.overallListOfParticipants = TournamentDB.GetTournamentMemberList(_tournament);
+        FrmMemberScoresHelpers.overallListOfParticipants = _tournamentRepo.GetTournamentMemberList(_tournament);
         if (Owner is FrmMemberScores memberScoresForm)
             memberScoresForm.RefreshParticipantsAfterDoublesImport();
     }
@@ -731,7 +754,7 @@ public class FrmDoublesTeamPairing : Form
                     continue;
                 }
 
-                int memberId = MemberDB.GetMemberIdByNumber(memberNumber);
+                int memberId = _memberRepo.GetMemberIdByNumber(memberNumber);
                 if (memberId == 0)
                 {
                     summary.RowsSkipped++;
@@ -741,7 +764,7 @@ public class FrmDoublesTeamPairing : Form
                 }
 
                 bool participantAlreadyExisted = ParticipantExists(memberId, squad);
-                bool ensured = ParticipantsDB.EnsureParticipantExists(_tournament.Id, memberId, squad);
+                bool ensured = _participantRepo.EnsureParticipantExists(_tournament.Id, memberId, squad);
                 if (!ensured)
                 {
                     summary.RowsSkipped++;
@@ -753,7 +776,7 @@ public class FrmDoublesTeamPairing : Form
                 if (!participantAlreadyExisted)
                     summary.ParticipantsCreated++;
 
-                DoublesPartnerPlanDB.UpsertPlan(_tournament.Id, memberId, squad, expectedCount);
+                _doublesRepo.UpsertPlan(_tournament.Id, memberId, squad, expectedCount);
                 summary.PlansUpserted++;
                 summary.ProcessedEntries.Add((memberNumber, squad));
 
@@ -766,7 +789,7 @@ public class FrmDoublesTeamPairing : Form
 
     private bool ParticipantExists(int memberId, int squad)
     {
-        using var db = new NineTapDb();
+        using var db = _dbFactory.CreateDbContext();
         return db.Participants.Any(p =>
             p.Tournament.Id == _tournament.Id &&
             p.Member.Id == memberId &&
@@ -808,13 +831,14 @@ public class FrmDoublesTeamPairing : Form
         return int.TryParse(normalized.Substring(6).Trim(), out squad);
     }
 
-    private void PopulateBowlersList(bool selectFirst = false)
+    private void PopulateBowlersList(bool selectFirst = false,
+        List<DoublesPartnerPlan> plans = null, List<DoublesPartnerClaim> claims = null)
     {
         // Track both member and squad so multi-squad bowlers restore to the correct squad entry.
         (int MemberId, int Squad) previousKey = lstBowlers.SelectedItem is BowlerListItem selected
             ? (selected.MemberId, selected.Squad) : (0, 0);
 
-        using var db = new NineTapDb();
+        using var db = _dbFactory.CreateDbContext();
         var participants = db.Participants
             .Where(p => p.Tournament.Id == _tournament.Id)
             .Select(p => new
@@ -830,8 +854,9 @@ public class FrmDoublesTeamPairing : Form
         if (cboSquad.SelectedIndex > 0)
             participants = participants.Where(p => p.Squad == cboSquad.SelectedIndex).ToList();
 
-        var plans = DoublesPartnerPlanDB.GetPlansByTournament(_tournament.Id);
-        var claims = DoublesPartnerClaimDB.GetClaimsByTournament(_tournament.Id);
+        // Callers that already fetched these (e.g. LoadPairings) pass them in to avoid re-querying.
+        plans ??= _doublesRepo.GetPlansByTournament(_tournament.Id);
+        claims ??= _doublesRepo.GetClaimsByTournament(_tournament.Id);
 
         var items = participants
             .OrderBy(p => p.Squad)
@@ -934,7 +959,8 @@ public class FrmDoublesTeamPairing : Form
         public string Display { get; set; }
     }
 
-    private void UpdateSummaryLabels(List<DoublesTeam> teams)
+    private void UpdateSummaryLabels(List<DoublesTeam> teams,
+        List<DoublesPartnerPlan> plans = null, List<DoublesPartnerClaim> claims = null)
     {
         lblTotalTeams.Text = $"Total Teams (Tournament): {teams.Count}";
 
@@ -945,8 +971,9 @@ public class FrmDoublesTeamPairing : Form
 
         lblSquadBreakdown.Text = "By Squad: " + (bySquad.Any() ? string.Join(" | ", bySquad) : "none");
 
-        var plans = DoublesPartnerPlanDB.GetPlansByTournament(_tournament.Id);
-        var claims = DoublesPartnerClaimDB.GetClaimsByTournament(_tournament.Id);
+        // Callers that already fetched these (e.g. LoadPairings) pass them in to avoid re-querying.
+        plans ??= _doublesRepo.GetPlansByTournament(_tournament.Id);
+        claims ??= _doublesRepo.GetClaimsByTournament(_tournament.Id);
 
         int countMismatches = plans.Count(p =>
             claims.Count(c => c.Squad == p.Squad && c.SourceMember.Id == p.Member.Id) != p.ExpectedPartnerCount);
@@ -964,7 +991,7 @@ public class FrmDoublesTeamPairing : Form
 
     private void BtnFixDiscrepancies_Click(object sender, EventArgs e)
     {
-        using var dlg = new FrmDoublesDiscrepancies(_tournament);
+        using var dlg = Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance<FrmDoublesDiscrepancies>(_services, _tournament);
         dlg.ShowDialog(this);
         LoadPairings();
     }
@@ -997,8 +1024,8 @@ public class FrmDoublesTeamPairing : Form
         int mem2Id = (int)row.Cells["colMem2Id"].Value;
         int squad  = (int)row.Cells["colSquad"].Value;
 
-        bool claim1Exists = DoublesPartnerClaimDB.ClaimExists(_tournament.Id, mem1Id, mem2Id, squad);
-        bool claim2Exists = DoublesPartnerClaimDB.ClaimExists(_tournament.Id, mem2Id, mem1Id, squad);
+        bool claim1Exists = _doublesRepo.ClaimExists(_tournament.Id, mem1Id, mem2Id, squad);
+        bool claim2Exists = _doublesRepo.ClaimExists(_tournament.Id, mem2Id, mem1Id, squad);
 
         string claimNote = (claim1Exists || claim2Exists)
             ? "\n\nThis will also remove the associated partner claims."
@@ -1007,8 +1034,8 @@ public class FrmDoublesTeamPairing : Form
         if (MessageBox.Show($"Remove this pairing?{claimNote}", "Confirm Remove", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
         {
             if (claim1Exists || claim2Exists)
-                DoublesPartnerClaimDB.RemoveClaimsForPair(_tournament.Id, mem1Id, mem2Id, squad);
-            DoublesTeamDB.RemoveTeam(teamId);
+                _doublesRepo.RemoveClaimsForPair(_tournament.Id, mem1Id, mem2Id, squad);
+            _doublesRepo.RemoveTeam(teamId);
             LoadPairings();
         }
     }
@@ -1019,7 +1046,7 @@ public class FrmDoublesTeamPairing : Form
 
     private HashSet<int> GetMemberIdsInSquad(int squad)
     {
-        using var db = new NineTapDb();
+        using var db = _dbFactory.CreateDbContext();
         return new HashSet<int>(
             db.Participants
               .Where(p => p.Tournament.Id == _tournament.Id && p.Squad == squad)
@@ -1032,7 +1059,7 @@ public class FrmDoublesTeamPairing : Form
             return GetMemberIdsInSquad(squadIndex);
 
         return new HashSet<int>(
-            TournamentDB.GetUniqueTourMembers(_tournament).Select(m => m.Id));
+            _tournamentRepo.GetUniqueTourMembers(_tournament).Select(m => m.Id));
     }
 
     // ----------------------------------------------------------------
@@ -1044,7 +1071,7 @@ public class FrmDoublesTeamPairing : Form
         int selectedSquad = cboSquad.SelectedIndex;   // 0=All, 1=Squad1, etc.
 
         dgvPairings.Rows.Clear();
-        List<DoublesTeam> teams = DoublesTeamDB.GetTeamsByTournament(_tournament.Id);
+        List<DoublesTeam> teams = _doublesRepo.GetTeamsByTournament(_tournament.Id);
         List<DoublesTeam> allTeams = [.. teams];
 
         if (selectedSquad > 0)
@@ -1068,7 +1095,10 @@ public class FrmDoublesTeamPairing : Form
             );
         }
 
-        UpdateSummaryLabels(allTeams);
-        PopulateBowlersList();
+        // Fetch plans/claims once and share them across both summary and bowler-list rendering.
+        var plans = _doublesRepo.GetPlansByTournament(_tournament.Id);
+        var claims = _doublesRepo.GetClaimsByTournament(_tournament.Id);
+        UpdateSummaryLabels(allTeams, plans, claims);
+        PopulateBowlersList(plans: plans, claims: claims);
     }
 }

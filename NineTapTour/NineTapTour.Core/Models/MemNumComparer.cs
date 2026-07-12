@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NineTapTour.Models
 {
-    class MemberNumComparer : IComparer<Member>
+    public class MemberNumComparer : IComparer<Member>
     {
         int IComparer<Member>.Compare(Member x, Member y)
         {

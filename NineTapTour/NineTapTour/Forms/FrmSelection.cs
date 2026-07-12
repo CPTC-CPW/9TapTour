@@ -1,4 +1,6 @@
-﻿using NineTapTour.Database;
+﻿using Microsoft.Extensions.DependencyInjection;
+using NineTapTour.Abstractions;
+using NineTapTour.Database;
 using NineTapTour.Models;
 using System;
 using System.Collections.Generic;
@@ -15,15 +17,24 @@ namespace NineTapTour.Forms
     public partial class FrmSelection : Form
     {
         public Tournament selectedTournament;
+        private readonly ITournamentRepository _tournamentRepo;
+
         public FrmSelection()
         {
             InitializeComponent();
+        }
+
+        [ActivatorUtilitiesConstructor]
+        public FrmSelection(ITournamentRepository tournamentRepo)
+        {
+            InitializeComponent();
+            _tournamentRepo = tournamentRepo;
             PopulateTournamentCbo();
         }
 
         public void PopulateTournamentCbo()
         {
-            List<Tournament> allTournaments = TournamentDB.GetTournamentList();
+            List<Tournament> allTournaments = _tournamentRepo.GetTournamentList();
             cbxTournaments.DataSource = allTournaments;
             cbxTournaments.DisplayMember = nameof(Tournament.TourneyNameDate);
         }

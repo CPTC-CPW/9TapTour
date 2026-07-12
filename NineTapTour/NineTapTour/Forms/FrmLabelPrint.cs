@@ -6,6 +6,8 @@ using System.Drawing.Printing;
 using System.Linq;
 using System.Windows.Forms;
 using NineTapTour.Models;
+using NineTapTour.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NineTapTour.Forms;
 
@@ -15,14 +17,23 @@ public partial class FrmLabelPrint : Form
     List<Member> ActiveMems;
     List<Member> Labels;
 
+    private readonly IMemberRepository _memberRepo;
+
     public FrmLabelPrint()
     {
         InitializeComponent();
     }
 
+    [Microsoft.Extensions.DependencyInjection.ActivatorUtilitiesConstructor]
+    public FrmLabelPrint(IMemberRepository memberRepo)
+    {
+        InitializeComponent();
+        _memberRepo = memberRepo;
+    }
+
     private void FrmLabelPrint_Load(object sender, EventArgs e)
     {         
-        AllMems = MemberDB.GetMemberList();
+        AllMems = _memberRepo.GetMemberList();
         ActiveMems = [];
         Labels = [];
 

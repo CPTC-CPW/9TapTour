@@ -27,27 +27,24 @@ namespace NineTapTour.Models
 
         public int CompareTo(Participant other)
         {
-            if (this.Game.AllGameScores().Where(sc => sc.HasValue).Sum() > other.Game.AllGameScores().Where(osc => osc.HasValue).Sum())
+            if (other is null)
             {
                 return 1;
             }
-            else
-            {
-                return 0;
-            }
+
+            int thisSum = this.Game.AllGameScores().Where(sc => sc.HasValue).Sum() ?? 0;
+            int otherSum = other.Game.AllGameScores().Where(osc => osc.HasValue).Sum() ?? 0;
+            return thisSum.CompareTo(otherSum);
         }
 
         public bool Equals(Participant other)
         {
-            if(Id == other.Id)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return other is not null && Id == other.Id;
         }
+
+        public override bool Equals(object obj) => Equals(obj as Participant);
+
+        public override int GetHashCode() => Id.GetHashCode();
 
         public override string ToString()
         {

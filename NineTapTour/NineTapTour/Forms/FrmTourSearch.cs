@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NineTapTour.Database;
 using NineTapTour.Models;
 
@@ -13,6 +15,26 @@ public partial class FrmTourSearch : Form
     readonly List<Tournament> tours;
     Tournament singleTour;
     readonly bool single;
+    private readonly IDbContextFactory<NineTapDb> _dbFactory;
+
+    /// <summary>Designer constructor. Do not use at runtime.</summary>
+    public FrmTourSearch()
+    {
+        InitializeComponent();
+    }
+
+    /// <summary>
+    /// If you don't pass a list, it assumes you will be trying to get a single item. If you don't
+    /// retrieve the found item after closing it, it will be useless.
+    /// </summary>
+    [ActivatorUtilitiesConstructor]
+    public FrmTourSearch(IDbContextFactory<NineTapDb> dbFactory)
+    {
+        InitializeComponent();
+        _dbFactory = dbFactory;
+        single = true;
+        listSearch.SelectionMode = SelectionMode.One;
+    }
 
     /// <summary>
     /// This takes a tour list and modifies it. The tour you pass in will
@@ -20,22 +42,12 @@ public partial class FrmTourSearch : Form
     /// However it will not be modified before the accept button is clicked,
     /// so the X can be pressed safely at any time.
     /// </summary>
-    /// <param name="tours"></param>
-    public FrmTourSearch(List<Tournament> tours)
+    public FrmTourSearch(List<Tournament> tours, IDbContextFactory<NineTapDb> dbFactory)
     {
         InitializeComponent();
+        _dbFactory = dbFactory;
         this.tours = tours;
         single = false;
-    }
-
-    /// <summary>
-    /// If you don't pass a list, it assumes you will be trying to get a single item. IF you don't retrieve the found item after closing it, it will be useless.
-    /// </summary>
-    public FrmTourSearch()
-    {
-        InitializeComponent();
-        single = true;
-        listSearch.SelectionMode = SelectionMode.One;
     }
 
     private void BtnSearch_Click(object sender, EventArgs e)
@@ -44,7 +56,7 @@ public partial class FrmTourSearch : Form
 
         List<Tournament> tourList = [];
 
-        using (NineTapDb db = new())
+        using (var db = _dbFactory.CreateDbContext())
         {
             var query = from t in db.Tournaments
                         select t;

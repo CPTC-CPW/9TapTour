@@ -3,7 +3,10 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <!-- Nullable is disabled so the EF model's string columns stay nullable, matching the existing
+         migration snapshot. Enabling it would make non-nullable string properties required columns,
+         diverging from the shipped schema. -->
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
 </Project>

@@ -1,5 +1,4 @@
-﻿using NineTapTour.Database;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using NineTapTour.Models;
@@ -63,35 +62,39 @@ public static class TournamentCalculations
     }
 
     /// <summary>
-    /// Returns the adjusted bonus pins after a tournament depending on if a bowler placed
-    /// and what ranking a bowler placed.
+    /// Computes a bowler's series score from up to four game scores. Scratch series exclude handicap
+    /// and bonus; handicap series add (handicap + bonus) for every game bowled. For a 3-of-4 tournament
+    /// in which all four games were bowled, the lowest game (and its handicap/bonus when included) is
+    /// dropped. Null game scores represent games that were not bowled and are ignored. The score is
+    /// summed in memory (rather than in SQL) so a not-yet-bowled game never turns the whole total null.
     /// </summary>
-    /// <param name="memberPlacement">Ranking a bowler placed. 0 if not placed</param>
-    /// <param name="totalEntries">Total entries for the tournament by all members</param>
-    /// <param name="compEntries">Entries that do not have to pay entry fee</param>
-    /// <param name="currentBonusPins">Bonus pins the participant had before this tournament</param>
-    /// <param name="memNum">Member number that used to identify bowler by user</param>
-    /// <param name="currTournamentId">Id of the current tournament</param>
-    /// <returns>Adjusted bonus pins after current tournament</returns>
-    public static int GetAdjustedBonusPins(int memberPlacement, int totalEntries, int compEntries, int currentBonusPins,
-                                            int memNum, int currTournamentId)
+    public static int ComputeSeriesScore(int?[] gameScores, int handicap, int bonus,
+        bool includeHandicap, bool isThreeOfFourTournament)
     {
-        // Calculates if the member is on the place standing
-        int lowestPlacementToCash = GetQtyOfMembersThatCanPlace(totalEntries, compEntries);
+        int perGameAddon = includeHandicap ? handicap + bonus : 0;
+        int score = 0;
+        int gamesBowled = 0;
 
-        // If player won money and are in the place standing, bonus pins are reduced
-        if (memberPlacement <= lowestPlacementToCash)
-        { 
-            return DeductFromBonusPins(memberPlacement, currentBonusPins);
+        foreach (int? game in gameScores)
+        {
+            if (game.HasValue)
+            {
+                score += game.Value + perGameAddon;
+                gamesBowled++;
+            }
         }
 
-        // Gets the amount of entries the member has for the tournament
-        int membersGameEntryCount = FinalizeTempDB.GetMembersGameEntryCount(currTournamentId, memNum);
-        List<PlayerHistoryViewModel> latestGames = PlayerHistoryDB.GetLastQtyGamesMoneyWon(memNum, 15);
+        if (isThreeOfFourTournament && gamesBowled == 4)
+        {
+            int lowestGame = gameScores.Where(g => g.HasValue).Min(g => g.Value);
+            score -= lowestGame + perGameAddon;
+        }
 
-        // If a player didnt win money, they might gain bonus pins
-        return AddToBonusPins(currentBonusPins, latestGames, membersGameEntryCount);
+        return score;
     }
+
+    // NOTE: GetAdjustedBonusPins (which orchestrated DB history lookups + the pure bonus-pin math)
+    // was relocated to BonusPinService so this class stays free of data-access dependencies.
 
 
     /// <summary>
@@ -349,6 +352,14 @@ public static class TournamentCalculations
         // Removes duplicate members
         List<GameViewModel> removals = RemoveDuplicateBowlers(members);
 
+        // For a 3-of-4 tournament, bowlers are ranked on their best 3 games. Drop each bowler's
+        // lowest game and re-sort BEFORE assigning placings so the order matches the values being
+        // ranked. The lowest game is added back afterward to restore the full HandicapTotal.
+        if (tournament.ThreeOutOf4)
+        {
+            AlterHandicapTotalAccordingToMinimumGameScore(members, isPositive: false);
+            members.Sort((a, b) => b.HandicapTotal.CompareTo(a.HandicapTotal));
+        }
 
         // links FinalizeTemp to an integer used for placing
         var membersPlacingMap = new Dictionary<GameViewModel, int>();
@@ -359,14 +370,6 @@ public static class TournamentCalculations
 
         int place = 1;
         membersPlacingMap[members[0]] = place++;
-
-        if (tournament.ThreeOutOf4)
-        {
-            //The variable to tell AlterHandicapTotalAccordingToMinimumGameScore to subtract the lowest scored game from handicaptotal
-            bool isPositive = false;
-            //subtracts the lowest scored game from handicap total so that the rankings are calculated correctly for a 
-            AlterHandicapTotalAccordingToMinimumGameScore(members, isPositive);
-        }
 
         // Calculate each member's placing
         for (int currPosition = 1; currPosition < members.Count; currPosition++)
@@ -510,38 +513,32 @@ public static class TournamentCalculations
     /// <returns>list of removed FinalizeTemps</returns>
     private static List<GameViewModel> RemoveDuplicateBowlers(List<GameViewModel> members)
     {
+        // Keep only the highest-scoring entry per member number; on a tie keep the first seen.
+        var best = new Dictionary<int, GameViewModel>();
         List<GameViewModel> removal = [];
-        for (int i = 0; i < members.Count; i++)
+        foreach (GameViewModel member in members)
         {
-            bool isCurrIndexRemoved = false;
-            for (int j = i + 1; j < members.Count; j++)
+            if (best.TryGetValue(member.MemberNumber, out GameViewModel existing))
             {
-                // If any two members have the same number
-                if (members[i].MemberNumber == members[j].MemberNumber)
+                if (member.HandicapTotal > existing.HandicapTotal)
                 {
-                    // Remove the inferior clone
-                    if (members[i].HandicapTotal >= members[j].HandicapTotal)
-                    {
-                        removal.Add(members[j]);
-                    }
-                    else
-                    {
-                        removal.Add(members[i]);
-                        isCurrIndexRemoved = true;
-                    }
+                    removal.Add(existing);
+                    best[member.MemberNumber] = member;
+                }
+                else
+                {
+                    removal.Add(member);
                 }
             }
-
-            // Removes all members who are in removal list
-            foreach (GameViewModel deleteMember in removal)
+            else
             {
-                members.Remove(deleteMember);
+                best[member.MemberNumber] = member;
             }
+        }
 
-            if (isCurrIndexRemoved)
-            {
-                i--;
-            }
+        foreach (GameViewModel deleteMember in removal)
+        {
+            members.Remove(deleteMember);
         }
         return removal;
     }
@@ -551,38 +548,32 @@ public static class TournamentCalculations
     /// </summary>
     private static void RemoveDuplicateBowlers(List<MemberScores> temp)
     {
+        // Keep only the highest-scoring entry per member; on a tie keep the first seen.
+        var best = new Dictionary<int, MemberScores>();
         List<MemberScores> removal = [];
-        for (int i = 0; i < temp.Count; i++)
+        foreach (MemberScores member in temp)
         {
-            bool isCurrIndexRemoved = false;
-            for (int j = i + 1; j < temp.Count; j++)
+            if (best.TryGetValue(member.MemberId, out MemberScores existing))
             {
-                // If any two members have the same Id
-                if (temp[i].MemberId == temp[j].MemberId)
+                if ((member.Score ?? 0) > (existing.Score ?? 0))
                 {
-                    // Removes the inferior clone
-                    if (temp[i].Score >= temp[j].Score)
-                    {
-                        removal.Add(temp[j]);
-                    }
-                    else
-                    {
-                        removal.Add(temp[i]);
-                        isCurrIndexRemoved = true;
-                    }
+                    removal.Add(existing);
+                    best[member.MemberId] = member;
+                }
+                else
+                {
+                    removal.Add(member);
                 }
             }
-
-            // Removes all members that are in the removal list
-            foreach (MemberScores deleteMember in removal)
+            else
             {
-                temp.Remove(deleteMember);
+                best[member.MemberId] = member;
             }
+        }
 
-            if (isCurrIndexRemoved)
-            {
-                i--;
-            }
+        foreach (MemberScores deleteMember in removal)
+        {
+            temp.Remove(deleteMember);
         }
     }
 
@@ -591,38 +582,32 @@ public static class TournamentCalculations
     /// </summary>
     private static void RemoveDuplicateBowlers(List<ExcelMember> members)
     {
+        // Keep only the highest-scoring entry per member number; on a tie keep the first seen.
+        var best = new Dictionary<int, ExcelMember>();
         List<ExcelMember> removal = [];
-        for (int i = 0; i < members.Count; i++)
+        foreach (ExcelMember member in members)
         {
-            bool isCurrIndexRemoved = false;
-            for (int j = i + 1; j < members.Count; j++)
+            if (best.TryGetValue(member.MemberNumber, out ExcelMember existing))
             {
-                // If any two members have the same Id
-                if (members[i].MemberNumber == members[j].MemberNumber)
+                if (member.TotalScore > existing.TotalScore)
                 {
-                    // Removes the inferior clone
-                    if (members[i].TotalScore >= members[j].TotalScore)
-                    {
-                        removal.Add(members[j]);
-                    }
-                    else
-                    {
-                        removal.Add(members[i]);
-                        isCurrIndexRemoved = true;
-                    }
+                    removal.Add(existing);
+                    best[member.MemberNumber] = member;
+                }
+                else
+                {
+                    removal.Add(member);
                 }
             }
-
-            foreach (ExcelMember deleteMember in removal)
+            else
             {
-                members.Remove(deleteMember);
+                best[member.MemberNumber] = member;
             }
+        }
 
-            // prevents from skipping over current index
-            if (isCurrIndexRemoved)
-            {
-                i--;
-            }
+        foreach (ExcelMember deleteMember in removal)
+        {
+            members.Remove(deleteMember);
         }
     }
 

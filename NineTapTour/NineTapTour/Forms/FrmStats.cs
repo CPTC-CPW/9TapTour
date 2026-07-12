@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +10,9 @@ using System.Linq;
 using NineTapTour.Database;
 using NineTapTour.Models;
 using NineTapTour.Helpers;
+using NineTapTour.Abstractions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NineTapTour.Forms
 {
@@ -21,11 +23,20 @@ namespace NineTapTour.Forms
         private readonly int memNum;
         private readonly string memName;
         readonly List<PlayerHistoryViewModel> ph;
+        private readonly IPlayerHistoryRepository _playerHistoryRepo;
+        private readonly IDbContextFactory<NineTapDb> _dbFactory;
 
 
-        public FrmStats(int memberId, string memberName, Member currentMem)
+        public FrmStats()
         {
             InitializeComponent();
+        }
+
+        public FrmStats(int memberId, string memberName, Member currentMem, IPlayerHistoryRepository playerHistoryRepo, IDbContextFactory<NineTapDb> dbFactory)
+        {
+            InitializeComponent();
+            _playerHistoryRepo = playerHistoryRepo;
+            _dbFactory = dbFactory;
             this.memId = memberId;
             this.memNum = currentMem.Number;
             this.memName = memberName;
@@ -93,7 +104,7 @@ namespace NineTapTour.Forms
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
 
-            ph = PlayerHistoryDB.GetMemberPlayerHistory(memNum);
+            ph = _playerHistoryRepo.GetMemberPlayerHistory(memNum);
         }
 
         struct statHolder
@@ -163,7 +174,7 @@ namespace NineTapTour.Forms
         public void populateStats()
         {
 
-            var db = new NineTapDb();
+            var db = _dbFactory.CreateDbContext();
 
             var temp = (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
@@ -323,7 +334,7 @@ namespace NineTapTour.Forms
         public DataTable tableview()
         {
             DataTable dtGames = new();
-            var db = new NineTapDb();
+            var db = _dbFactory.CreateDbContext();
             
             var temp = (from p in db.Participants
                         join m in db.Members on p.Member.Id equals m.Id
@@ -368,7 +379,7 @@ namespace NineTapTour.Forms
             dtGames.Columns.Add("Bonus").ReadOnly = true;
             dtGames.Columns.Add("Place").ReadOnly = true;
 
-            string moneyWonWithTotal = $"Money Won ({PlayerHistoryDB.GetTotalMoneyWon(memNum)})";
+            string moneyWonWithTotal = $"Money Won ({_playerHistoryRepo.GetTotalMoneyWon(memNum)})";
             dtGames.Columns.Add(moneyWonWithTotal, typeof(Decimal));
             dtGames.Columns.Add("Notes");
             dtGames.Columns.Add("GmID").ReadOnly = true;
@@ -446,7 +457,7 @@ namespace NineTapTour.Forms
                 lblStartAvg.Text = 0.ToString();
             }
 
-            List<PlayerHistoryViewModel> Last30 = PlayerHistoryDB.GetMemberPlayerHistory(mem.Number).Take(30).ToList();
+            List<PlayerHistoryViewModel> Last30 = _playerHistoryRepo.GetMemberPlayerHistory(mem.Number).Take(30).ToList();
             int game1AVG = 0;
             int game2AVG = 0;
             int game3AVG = 0;
@@ -464,11 +475,11 @@ namespace NineTapTour.Forms
                     game3AVG += Last30[i].Game3 ?? 0;
                     game4AVG += Last30[i].Game4 ?? 0;
                     scratchTotal += (Last30[i].Game1 ?? 0) + (Last30[i].Game2 ?? 0) + (Last30[i].Game3 ?? 0) + (Last30[i].Game4 ?? 0);
-                    int total = (Last30[i].Game1 != null) ? (Last30[i].Game1 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
-                    total += (Last30[i].Game2 != null) ? (Last30[i].Game2 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
-                    total += (Last30[i].Game3 != null) ? (Last30[i].Game3 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
-                    total += (Last30[i].Game4 != null) ? (Last30[i].Game4 ?? 0 + Last30[i].HandiCap + Last30[i].Bonus) : 0;
-                    gameTotal = total;
+                    int total = (Last30[i].Game1 != null) ? ((Last30[i].Game1 ?? 0) + Last30[i].HandiCap + Last30[i].Bonus) : 0;
+                    total += (Last30[i].Game2 != null) ? ((Last30[i].Game2 ?? 0) + Last30[i].HandiCap + Last30[i].Bonus) : 0;
+                    total += (Last30[i].Game3 != null) ? ((Last30[i].Game3 ?? 0) + Last30[i].HandiCap + Last30[i].Bonus) : 0;
+                    total += (Last30[i].Game4 != null) ? ((Last30[i].Game4 ?? 0) + Last30[i].HandiCap + Last30[i].Bonus) : 0;
+                    gameTotal += total;
                 }
                 game1AVG /= Last30.Count;
                 game2AVG /= Last30.Count;
@@ -568,7 +579,7 @@ namespace NineTapTour.Forms
         private void btnSaveChanges_Click(object sender, EventArgs e)
         {
             //grab untouched player history view models
-            List<PlayerHistoryViewModel> pHist = PlayerHistoryDB.GetMemberPlayerHistory(mem.Number);
+            List<PlayerHistoryViewModel> pHist = _playerHistoryRepo.GetMemberPlayerHistory(mem.Number);
 
             //RESTORE THE DATAGRID BACK TO THE DATE DESCINDING 
             dataGridView1.Sort(dataGridView1.Columns["Date"], System.ComponentModel.ListSortDirection.Descending);

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using ClosedXML.Excel;
+using NineTapTour.Abstractions;
 using NineTapTour.Database;
 using NineTapTour.Forms;
 using NineTapTour.Models;
@@ -11,6 +12,8 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MemberImportTest;
 
@@ -19,9 +22,24 @@ public partial class FrmMain : Form
     private Button btnConvertXls;
     private TextBox txtStatus;
 
+    private readonly IDbContextFactory<NineTapDb> _dbFactory;
+    private readonly IMemberRepository _memberRepo;
+    private readonly IPlayerHistoryRepository _playerHistoryRepo;
+
+    /// <summary>Designer constructor. Do not use at runtime.</summary>
     public FrmMain()
     {
         InitializeComponent();
+        InitializeConvertXlsControls();
+    }
+
+    [ActivatorUtilitiesConstructor]
+    public FrmMain(IDbContextFactory<NineTapDb> dbFactory, IMemberRepository memberRepo, IPlayerHistoryRepository playerHistoryRepo)
+    {
+        InitializeComponent();
+        _dbFactory = dbFactory;
+        _memberRepo = memberRepo;
+        _playerHistoryRepo = playerHistoryRepo;
         InitializeConvertXlsControls();
     }
 
@@ -333,9 +351,9 @@ public partial class FrmMain : Form
         int persisted = 0;
         for (int j = 0; j < validMembers.Count; j++)
         {
-            if (!NineTapTour.Database.MemberDB.MemberExists(validMembers[j]))
+            if (!_memberRepo.MemberExists(validMembers[j]))
             {
-                NineTapTour.Database.MemberDB.AddOrUpdateMember(validMembers[j]);
+                _memberRepo.AddOrUpdateMember(validMembers[j]);
                 persisted++;
             }
         }
@@ -408,6 +426,53 @@ public partial class FrmMain : Form
     /// </summary>
     /// <param name="PathAndFileName"></param>
     /// <returns></returns>
+    /// <summary>
+    /// Adds (or updates) a participant on an already-open import context so the whole file imports
+    /// under a single transaction. Mirrors the former TournamentDB.AddMemberToTournament(player, db).
+    /// </summary>
+    private static void AddParticipantToContext(NineTapDb db, Participant player)
+    {
+        bool isMemberInTournament = db.Participants
+            .AsNoTracking()
+            .Any(p => p.Member.Id == player.Member.Id
+                   && p.Tournament.Id == player.Tournament.Id
+                   && p.Squad == player.Squad);
+
+        if (!isMemberInTournament)
+        {
+            player.Id = 0;
+
+            if (db.Entry(player.Member).State == EntityState.Detached)
+                db.Attach(player.Member);
+            if (db.Entry(player.Tournament).State == EntityState.Detached)
+                db.Attach(player.Tournament);
+            if (db.Entry(player.Game).State == EntityState.Detached)
+                db.Attach(player.Game);
+
+            db.Participants.Add(player);
+        }
+        else
+        {
+            Game result = db.Games.SingleOrDefault(g => g.Id == player.Game.Id);
+            Participant squadResult = db.Participants.SingleOrDefault(p => p.Id == player.Id);
+            Participant memberQuery = db.Participants.Include(m => m.Member)
+                .Where(m => m.Member.Id == player.Member.Id).FirstOrDefault();
+            result.Game1 = player.Game.Game1;
+            result.Game2 = player.Game.Game2;
+            result.Game3 = player.Game.Game3;
+            result.Game4 = player.Game.Game4;
+            result.MoneyWon = player.Game.MoneyWon;
+            result.IsComp = player.Game.IsComp;
+
+            if (squadResult == null)
+            {
+                squadResult = new Participant();
+            }
+            squadResult.Squad = player.Squad;
+            squadResult.Member = memberQuery.Member;
+        }
+    }
+
     private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
     {
         txtProgress.AppendText($"Current File Being Processed: {Path.GetFileName(PathAndFileName)}\r\n");
@@ -416,7 +481,7 @@ public partial class FrmMain : Form
         char[] splitters = new[] { '/', '-' };
 
         // Create a single DbContext for the entire file import
-        using (var db = new NineTapDb())
+        using (var db = _dbFactory.CreateDbContext())
         {
             using (var workbook = new XLWorkbook(PathAndFileName))
             {
@@ -450,10 +515,10 @@ public partial class FrmMain : Form
                 }
 
                 // Load existing tournaments once for the entire workbook
-                List<Tournament> existingTournaments = TournamentDB.GetTournamentList(db);
+                List<Tournament> existingTournaments = [.. db.Tournaments.OrderByDescending(t => t.Date)];
 
                 // PERFORMANCE: Look up member once per file instead of per row
-                var member = MemberDB.GetMember(playerNumberAsInt, db);
+                var member = db.Members.SingleOrDefault(m => m.Number == playerNumberAsInt) ?? new Member();
                 if (member == null || member.IsActive != true)
                 {
                     txtProgress.AppendText($"  WARNING: Member #{playerNumberAsInt} not found or inactive. Skipping file.\r\n");
@@ -526,7 +591,8 @@ public partial class FrmMain : Form
                                 IsOnlyThreeGames = false,
                             };
 
-                            TournamentDB.AddTournament(tourn, db);
+                            db.Entry(tourn).State = db.Tournaments.Any(t => t.Id == tourn.Id)
+                                ? EntityState.Modified : EntityState.Added;
                             existingTournaments.Add(tourn);
                         }
 
@@ -559,7 +625,8 @@ public partial class FrmMain : Form
                             // PlaceStanding = Convert.ToInt32(temp.FinPPHG),
                         };
 
-                        GameDB.AddOrUpdateGame(game, db);
+                        db.Entry(game).State = db.Games.Any(g => g.Id == game.Id)
+                            ? EntityState.Modified : EntityState.Added;
 
                         // Squad numbering is 1-based per player per tournament within this import run.
                         // Always start from 1 for the first entry read, regardless of any existing DB records.
@@ -579,7 +646,7 @@ public partial class FrmMain : Form
                             Tournament = tourn
                         };
 
-                        TournamentDB.AddMemberToTournament(participant, db);
+                        AddParticipantToContext(db, participant);
 
                         returnMe.Add(temp);
                     }
@@ -684,7 +751,7 @@ public partial class FrmMain : Form
         // Update validMembers in memory with latest history values
         for (int i = 0; i < validMembers.Count; i++)
         {
-            List<PlayerHistoryViewModel> list = PlayerHistoryDB.GetLastFiveTournaments(validMembers[i].Number);
+            List<PlayerHistoryViewModel> list = _playerHistoryRepo.GetLastFiveTournaments(validMembers[i].Number);
             if (list.Count > 0)
             {
                 validMembers[i].Average = list[0].AVG; // set new avg to last bowled adjusted avg
@@ -710,12 +777,12 @@ public partial class FrmMain : Form
         lblFinalizeStatus.Refresh();
     }
 
-    private static void UpdateMembers(List<Member> members)
+    private void UpdateMembers(List<Member> members)
     {
         for (int i = 0; i < members.Count; i++)
         {
             // Use AddOrUpdate to ensure existing members get their averages/bonus updated
-            MemberDB.AddOrUpdateMember(members[i]);
+            _memberRepo.AddOrUpdateMember(members[i]);
         }
     }
 

@@ -1,4 +1,5 @@
 ﻿using CalcService = NineTapTour.Calculations.TournamentCalculations;
+using NineTapTour.Abstractions;
 using NineTapTour.Database;
 using NineTapTour.Models;
 using NineTapTour.Models.ViewModels;
@@ -11,12 +12,22 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using NineTapTour.Helpers;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NineTapTour.Forms;
 
 public partial class FrmFinalizeTournament : Form
 {
     private readonly Tournament selectedTournament;
+
+    private readonly IFinalizeRepository _finalizeRepo;
+    private readonly IGameRepository _gameRepo;
+    private readonly IMemberRepository _memberRepo;
+    private readonly ITournamentRepository _tournamentRepo;
+    private readonly IPlayerHistoryRepository _playerHistoryRepo;
+    private readonly IDoublesRepository _doublesRepo;
+    private readonly IDbContextFactory<NineTapDb> _dbFactory;
 
     // Top-level controls — access these to adjust later
     private Panel pnlToolbar;
@@ -90,8 +101,29 @@ public partial class FrmFinalizeTournament : Form
     /// </summary>
     private record DoubleMemberRowTag(int MyGameId, int PartnerGameId);
 
-    public FrmFinalizeTournament(Tournament selectedTournament)
+    public FrmFinalizeTournament()
     {
+        InitializeComponent();
+    }
+
+    public FrmFinalizeTournament(
+        Tournament selectedTournament,
+        IFinalizeRepository finalizeRepo,
+        IGameRepository gameRepo,
+        IMemberRepository memberRepo,
+        ITournamentRepository tournamentRepo,
+        IPlayerHistoryRepository playerHistoryRepo,
+        IDoublesRepository doublesRepo,
+        IDbContextFactory<NineTapDb> dbFactory)
+    {
+        _finalizeRepo = finalizeRepo;
+        _gameRepo = gameRepo;
+        _memberRepo = memberRepo;
+        _tournamentRepo = tournamentRepo;
+        _playerHistoryRepo = playerHistoryRepo;
+        _doublesRepo = doublesRepo;
+        _dbFactory = dbFactory;
+
         this.selectedTournament = selectedTournament;
 
         InitializeComponent();
@@ -107,7 +139,7 @@ public partial class FrmFinalizeTournament : Form
 
         // Snapshot all editable game fields immediately after load so "Undo Changes"
         // can restore the original DB state for the rest of the session.
-        using var db = new NineTapDb();
+        using var db = _dbFactory.CreateDbContext();
         // Collect all game IDs from grid rows (handles both singles int tags and DoublesRowTag)
         var gameIds = new HashSet<int>();
         foreach (DataGridViewRow row in dgvTournament.Rows)
@@ -294,7 +326,7 @@ public partial class FrmFinalizeTournament : Form
         _thirdEntryBonusMemberNumbers.Clear();
         _placedGameIds.Clear();
         _baseBonusByGameId.Clear();
-        _currentTournamentBowlers = TournamentDB.GetWinnerListMemberData(selectedTournament.Id);
+        _currentTournamentBowlers = _tournamentRepo.GetWinnerListMemberData(selectedTournament.Id);
 
         // Doubles tournaments: delegate to the doubles grid builder
         if (selectedTournament.Doubles)
@@ -309,7 +341,7 @@ public partial class FrmFinalizeTournament : Form
             .Select(b => b.MemberNumber).Distinct().ToHashSet();
 
         _prevTournHBByMember.Clear();
-        using (var dbPrev = new NineTapDb())
+        using (var dbPrev = _dbFactory.CreateDbContext())
         {
             var latestApprovedEntries = dbPrev.Participants
                 .Where(p => memberNumbersInTournament.Contains(p.Member.Number)
@@ -391,7 +423,7 @@ public partial class FrmFinalizeTournament : Form
             .ToDictionary(g => g.Key, g => g.Count());
 
         var historicalCountByMember = new Dictionary<int, int>();
-        using (var db = new NineTapDb())
+        using (var db = _dbFactory.CreateDbContext())
         {
             var historicalCounts = db.Participants
                 .Where(p => p.Tournament.Id != selectedTournament.Id
@@ -407,7 +439,7 @@ public partial class FrmFinalizeTournament : Form
         // We load the last (30 − currentCount) finalized entries per member so that
         // adding in live current-entry values gives an up-to-date running average.
         _history30ByMember.Clear();
-        using (var dbH = new NineTapDb())
+        using (var dbH = _dbFactory.CreateDbContext())
         {
             var allHistory = dbH.Participants
                 .Where(p => p.Tournament.Id != selectedTournament.Id
@@ -662,7 +694,7 @@ public partial class FrmFinalizeTournament : Form
             .Select(b => b.MemberNumber).Distinct().ToHashSet();
 
         _prevTournHBByMember.Clear();
-        using (var dbPrev = new NineTapDb())
+        using (var dbPrev = _dbFactory.CreateDbContext())
         {
             var latestApproved = dbPrev.Participants
                 .Where(p => memberNumbersInTournament.Contains(p.Member.Number)
@@ -697,7 +729,7 @@ public partial class FrmFinalizeTournament : Form
 
         // --- Precompute 30-entry history for each member ---
         _history30ByMember.Clear();
-        using (var dbH = new NineTapDb())
+        using (var dbH = _dbFactory.CreateDbContext())
         {
             var allHistory = dbH.Participants
                 .Where(p => p.Tournament.Id != selectedTournament.Id
@@ -742,7 +774,7 @@ public partial class FrmFinalizeTournament : Form
         }
 
         // --- Build team list with combined HDCP totals ---
-        List<DoublesTeam> teams = DoublesTeamDB.GetTeamsByTournament(selectedTournament.Id);
+        List<DoublesTeam> teams = _doublesRepo.GetTeamsByTournament(selectedTournament.Id);
 
         var bowlersByMemberId = _currentTournamentBowlers
             .GroupBy(b => b.MemberId)
@@ -1274,7 +1306,7 @@ public partial class FrmFinalizeTournament : Form
         else
             return;
 
-        Game game = GameDB.GetGame(gameId);
+        Game game = _gameRepo.GetGame(gameId);
         if (game == null) return;
 
         // Game scores — parse safely whether value is a boxed int or a typed string
@@ -1330,7 +1362,7 @@ public partial class FrmFinalizeTournament : Form
         // Notes
         game.Notes = row.Cells["colNotes"].Value as string;
 
-        GameDB.AddOrUpdateGame(game);
+        _gameRepo.AddOrUpdateGame(game);
     }
 
     /// <summary>
@@ -1463,17 +1495,17 @@ public partial class FrmFinalizeTournament : Form
         // Doubles rows: persist individual game's use flags
         if (row.Tag is DoubleMemberRowTag dmt)
         {
-            Game dblGame = GameDB.GetGame(dmt.MyGameId);
+            Game dblGame = _gameRepo.GetGame(dmt.MyGameId);
             if (dblGame == null) return;
             dblGame.UseGame1 = row.Cells["colGame1Check"].Value as bool? ?? false;
             dblGame.UseGame2 = row.Cells["colGame2Check"].Value as bool? ?? false;
-            GameDB.AddOrUpdateGame(dblGame);
+            _gameRepo.AddOrUpdateGame(dblGame);
             return;
         }
 
         if (row.Tag is not int gameId) return;
 
-        Game game = GameDB.GetGame(gameId);
+        Game game = _gameRepo.GetGame(gameId);
         if (game == null) return;
 
         game.UseGame1 = row.Cells["colGame1Check"].Value as bool? ?? false;
@@ -1481,7 +1513,7 @@ public partial class FrmFinalizeTournament : Form
         game.UseGame3 = row.Cells["colGame3Check"].Value as bool? ?? false;
         game.UseGame4 = row.Cells["colGame4Check"].Value as bool? ?? false;
 
-        GameDB.AddOrUpdateGame(game);
+        _gameRepo.AddOrUpdateGame(game);
     }
 
     /// <summary>
@@ -1550,10 +1582,24 @@ public partial class FrmFinalizeTournament : Form
     /// </summary>
     private void FinalizeAllGames()
     {
-        using var db = new NineTapDb();
+        using var db = _dbFactory.CreateDbContext();
 
         // Track which members we've already updated so we do it once per member
         var updatedMembers = new HashSet<int>();
+
+        // The 30-game league average depends only on the member number (the tournament is fixed
+        // for this pass), yet a member can appear on many rows (multiple squads, doubles teams).
+        // Cache each member's computed average so the expensive history queries run once per member.
+        var leagueAvgByMember = new Dictionary<int, double>();
+        double GetLeagueAverage(int memberNum)
+        {
+            if (!leagueAvgByMember.TryGetValue(memberNum, out double avg))
+            {
+                avg = _finalizeRepo.Get30GameAverage(memberNum, selectedTournament.Id);
+                leagueAvgByMember[memberNum] = avg;
+            }
+            return avg;
+        }
 
         for (int i = 0; i < dgvTournament.Rows.Count; i++)
         {
@@ -1583,7 +1629,7 @@ public partial class FrmFinalizeTournament : Form
                 dblGame.Handicap = dblHdcp;
 
                 int dblMemberNum = row.Cells["colMemberNumber"].Value is int dblMn ? dblMn : 0;
-                dblGame.LeagueAverage = FinalizeTempDB.Get30GameAverage(dblMemberNum, selectedTournament.Id);
+                dblGame.LeagueAverage = GetLeagueAverage(dblMemberNum);
 
                 // Half-rate bonus: look up the original pre-tournament base bonus
                 WinnerListMemberViewModel dblOrigEntry =
@@ -1602,7 +1648,7 @@ public partial class FrmFinalizeTournament : Form
 
                 if (dblMemberNum > 0 && updatedMembers.Add(dblMemberNum))
                 {
-                    Member dblMember = MemberDB.GetMember(dblMemberNum, db);
+                    Member dblMember = db.Members.FirstOrDefault(m => m.Number == dblMemberNum);
                     if (dblMember != null && dblMember.Id > 0)
                     {
                         dblMember.Average  = dblAdjAvg;
@@ -1647,13 +1693,13 @@ public partial class FrmFinalizeTournament : Form
             {
                 game.Bonus = bonus;
             }
-            double leagueAvg = FinalizeTempDB.Get30GameAverage(memberNumber, selectedTournament.Id);
+            double leagueAvg = GetLeagueAverage(memberNumber);
             game.LeagueAverage = leagueAvg;
 
             // Update the Member record once per member
             if (updatedMembers.Add(memberNumber))
             {
-                Member member = MemberDB.GetMember(memberNumber, db);
+                Member member = db.Members.FirstOrDefault(m => m.Number == memberNumber);
                 if (member != null && member.Id > 0)
                 {
                     member.Average = adjAvg;
@@ -1700,7 +1746,7 @@ public partial class FrmFinalizeTournament : Form
     /// </summary>
     private void UndoChanges()
     {
-        using var db = new NineTapDb();
+        using var db = _dbFactory.CreateDbContext();
 
         foreach (var (gameId, snap) in _gameSnapshot)
         {
@@ -1785,7 +1831,7 @@ public partial class FrmFinalizeTournament : Form
         const int thirtyGameWindow = 30;
 
         List<PlayerHistoryViewModel> history =
-            PlayerHistoryDB.GetMemberPlayerHistory(memberNumber);
+            _playerHistoryRepo.GetMemberPlayerHistory(memberNumber);
 
         dgvDetail.Rows.Clear();
 

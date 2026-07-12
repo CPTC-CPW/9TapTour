@@ -3,7 +3,7 @@
     /// <summary>
     /// Object used to fill DataTable for Tournament Stats Form
     /// </summary>
-    class TournamentStatsList
+    public class TournamentStatsList
     {
         public int Id { get; set; }
         public string FirstName { get; set; }

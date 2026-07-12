@@ -6,6 +6,9 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using NineTapTour.Models;
+using NineTapTour.Abstractions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NineTapTour.Forms;
 
@@ -13,15 +16,29 @@ public partial class FrmSearch : Form
 {
     bool isChecked = false;
 
+    private readonly IMemberRepository _memberRepo;
+    private readonly IDbContextFactory<NineTapDb> _dbFactory;
+
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public int searchResult { get; set; }
 
     /// <summary>
-    /// Opens the "Search" form.
+    /// Parameterless designer constructor.
     /// </summary>
     public FrmSearch()
     {
         InitializeComponent();
+    }
+
+    /// <summary>
+    /// Opens the "Search" form.
+    /// </summary>
+    [Microsoft.Extensions.DependencyInjection.ActivatorUtilitiesConstructor]
+    public FrmSearch(IMemberRepository memberRepo, IDbContextFactory<NineTapDb> dbFactory)
+    {
+        InitializeComponent();
+        _memberRepo = memberRepo;
+        _dbFactory = dbFactory;
     }
 
     private void FrmSearch_Load(object sender, EventArgs e)
@@ -32,9 +49,12 @@ public partial class FrmSearch : Form
     {
         dtagrdResults.DataSource = null;
 
+        // Reset so a prior "no results" search doesn't permanently disable the Advanced View toggle.
+        isChecked = false;
+
         List<Member> memList = [];
 
-        using (NineTapDb db = new())
+        using (var db = _dbFactory.CreateDbContext())
         {
             var query = from m in db.Members
                         select m;
@@ -146,7 +166,7 @@ public partial class FrmSearch : Form
     private void FillGrid()
     {
         dtagrdResults.DataSource = null;
-        List<Member> memList = MemberDB.GetMemberList();
+        List<Member> memList = _memberRepo.GetMemberList();
         dtagrdResults.DataSource = memList;
         AdvancedViewCheck();
     }

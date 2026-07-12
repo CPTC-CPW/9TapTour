@@ -25,4 +25,5 @@ jobs:
    - name: Build
      run: dotnet build NineTapTour/NineTapTour.sln --no-restore
    - name: Test
-     run: dotnet test NineTapTour/NineTapTour.sln --no-build --verbosity normal
+     # Integration tests (TestCategory=Integration) require SQL Server LocalDB and are run locally, not in CI.
+     run: dotnet test NineTapTour/NineTapTour.sln --no-build --verbosity normal --filter "TestCategory!=Integration"

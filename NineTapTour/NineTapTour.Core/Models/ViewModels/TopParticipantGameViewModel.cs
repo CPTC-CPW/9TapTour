@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NineTapTour.Forms;
 using NineTapTour.Models;
-using NineTapTour.Models.ViewModels;
 
 namespace NineTapTour.Models.ViewModels
 {
-    class TopParticipantGameViewModel
+    public class TopParticipantGameViewModel
     {
         public TopParticipantGameViewModel(int memberNo, string firstName, string lastName, int placing, int scratchTotal,
 
@@ -58,11 +56,18 @@ namespace NineTapTour.Models.ViewModels
         public int Bonus { get; set; }
         public int GameID { get; set; }
         public int Squad { get; set; }
+
+        /// <summary>
+        /// When true, display uses the best-3-of-4 totals. Set by the caller from the tournament
+        /// so this view model does not depend on global UI state.
+        /// </summary>
+        public bool IsThreeOutOf4 { get; set; }
+
         public string ScratchTotalToString
         {
             get
             {
-                if (FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4)
+                if (this.IsThreeOutOf4)
                 {
                     return $"{this.Top3ScratchScore,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
                 }
@@ -77,7 +82,7 @@ namespace NineTapTour.Models.ViewModels
         {
             get
             {
-                if (FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4)
+                if (this.IsThreeOutOf4)
                 {
                     return $"{this.Top3HandiScores,-10} {$"[{this.MemberNo}]",-16} {this.FirstName} {this.LastName}";
                 }

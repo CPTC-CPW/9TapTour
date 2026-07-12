@@ -6,6 +6,8 @@ using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using NineTapTour.Models;
+using NineTapTour.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NineTapTour.Forms;
 
@@ -15,9 +17,18 @@ namespace NineTapTour.Forms;
 public partial class FrmTournamentStats : Form
 {
 
+    private readonly ITournamentStatsRepository _statsRepo;
+
     public FrmTournamentStats()
     {
         InitializeComponent();
+    }
+
+    [ActivatorUtilitiesConstructor]
+    public FrmTournamentStats(ITournamentStatsRepository statsRepo)
+    {
+        InitializeComponent();
+        _statsRepo = statsRepo;
     }
 
     /// <summary>
@@ -38,7 +49,7 @@ public partial class FrmTournamentStats : Form
             lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
             // Grabs a list of TournamentStatsList from the database
-            List<TournamentStatsList> statsList = TournamentStatsListDB.GetTournamentStatsList(selectedTournament.Id);
+            List<TournamentStatsList> statsList = _statsRepo.GetTournamentStatsList(selectedTournament.Id);
             
             // Send to form
             dgvTournamentStats.DataSource = BuildDataTable(statsList);
@@ -48,7 +59,7 @@ public partial class FrmTournamentStats : Form
             Tournament selectedTournament = FrmMemberScoresHelpers.selectedTournament;
             lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
-            List<TournamentStatsList> statsList = TournamentStatsListDB.Get3OutOf4TournamentStatsList(selectedTournament.Id);
+            List<TournamentStatsList> statsList = _statsRepo.Get3OutOf4TournamentStatsList(selectedTournament.Id);
 
             // send to form
             dgvTournamentStats.DataSource = BuildDataTable(statsList);

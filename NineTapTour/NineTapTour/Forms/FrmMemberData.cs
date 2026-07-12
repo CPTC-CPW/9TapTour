@@ -9,19 +9,39 @@ using System.Data;
 using NineTapTour.Models;
 using ClosedXML.Excel;
 using NineTapTour.Core.Models;
+using NineTapTour.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NineTapTour.Forms;
 
 public partial class FrmMemberData : Form
 {
     private Member currentMem;
-    
+
+    private readonly IMemberRepository _memberRepo;
+    private readonly IPlayerHistoryRepository _playerHistoryRepo;
+    private readonly ITournamentRepository _tournamentRepo;
+    private readonly IServiceProvider _services;
+
     /// <summary>
-    /// Opens the "Member Data" Form.
+    /// Parameterless designer constructor.
     /// </summary>
     public FrmMemberData()
     {
         InitializeComponent();
+    }
+
+    /// <summary>
+    /// Opens the "Member Data" Form.
+    /// </summary>
+    [Microsoft.Extensions.DependencyInjection.ActivatorUtilitiesConstructor]
+    public FrmMemberData(IMemberRepository memberRepo, IPlayerHistoryRepository playerHistoryRepo, ITournamentRepository tournamentRepo, IServiceProvider services)
+    {
+        InitializeComponent();
+        _memberRepo = memberRepo;
+        _playerHistoryRepo = playerHistoryRepo;
+        _tournamentRepo = tournamentRepo;
+        _services = services;
         txtMiddleInitial.MaxLength = 1;
     }
 
@@ -126,7 +146,7 @@ public partial class FrmMemberData : Form
 			d.BackColor = Color.LightGray;
 		}
 
-        int highestMemberNumber = MemberDB.GetLastMemberNumber();
+        int highestMemberNumber = _memberRepo.GetLastMemberNumber();
 
         // set txtMemberNumber.Text back to one if there is no one
         if (highestMemberNumber == 0)
@@ -134,8 +154,8 @@ public partial class FrmMemberData : Form
             txtMemberNumber.Text = "1";
         }
 
-        currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNumber.Text));
-        PlayerHistoryViewModel mostRecent = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
+        currentMem = _memberRepo.GetMember(Convert.ToInt32(txtMemberNumber.Text));
+        PlayerHistoryViewModel mostRecent = _playerHistoryRepo.GetMostRecentTournament(currentMem.Number);
         if (mostRecent != null)
         {
             txt30GameAvg.Text = Convert.ToInt16(mostRecent.trueAVG).ToString();
@@ -336,8 +356,8 @@ public partial class FrmMemberData : Form
                 lblPaymentInfo.Visible = false;
             }                
 
-            currentMem.MoneyEarned = 
-                PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number);
+            currentMem.MoneyEarned =
+                _playerHistoryRepo.GetTotalMoneyWon(currentMem.Number);
 
             txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
         }
@@ -535,18 +555,18 @@ public partial class FrmMemberData : Form
 
             // check to see if memberId exists before putting it in 
             // current selected regions database
-            if (MemberDB.MemberExists(temp))
+            if (_memberRepo.MemberExists(temp))
             {
-                temp.Id = MemberDB.GetMemberIdByNumber(temp.Number);
+                temp.Id = _memberRepo.GetMemberIdByNumber(temp.Number);
             }
             else
             {
-                temp.Number = MemberDB.GetLastMemberNumber() + 1;
+                temp.Number = _memberRepo.GetLastMemberNumber() + 1;
                 txtMemberNumber.Text = temp.Number.ToString();
             }
 
             //Set average for the new member
-            PlayerHistoryViewModel mostRecent = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
+            PlayerHistoryViewModel mostRecent = _playerHistoryRepo.GetMostRecentTournament(currentMem.Number);
             if (mostRecent != null)
             {   // sets the average to that of their last adjusted average
                 if (Convert.ToInt32(txtAverage.Text) == mostRecent.AVG)
@@ -594,7 +614,7 @@ public partial class FrmMemberData : Form
 
             if (isValid)
             {
-                MemberDB.AddOrUpdateMember(temp);
+                _memberRepo.AddOrUpdateMember(temp);
                 #if DEBUG
                     MessageBox.Show("Member saved");
                 #endif
@@ -616,8 +636,8 @@ public partial class FrmMemberData : Form
     {
         //cursor begins when arrow is clicked
         Cursor.Current = Cursors.WaitCursor;
-        List<Member> m = MemberDB.GetMemberList();
-        if (m.Count == 0 || currentMem.Number <= m[0].Number)
+        int firstMemberNumber = _memberRepo.GetFirstMemberNumber();
+        if (firstMemberNumber == 0 || currentMem.Number <= firstMemberNumber)
         {
             //turns loading cursor off.
             Cursor.Current = Cursors.Default;
@@ -643,7 +663,7 @@ public partial class FrmMemberData : Form
     {
         //turns on a loading cursor while new bowler is loaded.
         Cursor.Current = Cursors.WaitCursor;
-        int memberCount = MemberDB.GetLastMemberNumber();
+        int memberCount = _memberRepo.GetLastMemberNumber();
         if (memberCount == 0 ||
             currentMem.Number >= memberCount)
         {
@@ -694,7 +714,7 @@ public partial class FrmMemberData : Form
             txtDOB.LostFocus += AddPlaceholderText;
 
             //get latest member number, or set to 1 if no members in database
-            int nextMemberNumber = MemberDB.GetLastMemberNumber() + 1;
+            int nextMemberNumber = _memberRepo.GetLastMemberNumber() + 1;
             txtMemberNumber.Text = nextMemberNumber.ToString();
 
             currentMem = new Member
@@ -716,15 +736,15 @@ public partial class FrmMemberData : Form
     /// <param name="e"></param>
     private void BtnFirstRecord_Click(object sender, EventArgs e)
     {
-        try
-        {
-            txtMemberNumber.Text = MemberDB.GetMemberList()[0].Number.ToString();
-            UpdateMemberInfo();
-        }
-        catch
+        int firstMemberNumber = _memberRepo.GetFirstMemberNumber();
+        if (firstMemberNumber == 0)
         {
             MessageBox.Show("There are no Members yet");
+            return;
         }
+
+        txtMemberNumber.Text = firstMemberNumber.ToString();
+        UpdateMemberInfo();
     }
 
     /// <summary>
@@ -734,7 +754,7 @@ public partial class FrmMemberData : Form
     /// <param name="e"></param>
     private void BtnLastRecord_Click(object sender, EventArgs e)
     {
-        txtMemberNumber.Text = MemberDB.GetLastMemberNumber().ToString();
+        txtMemberNumber.Text = _memberRepo.GetLastMemberNumber().ToString();
         UpdateMemberInfo();
     }
     
@@ -746,7 +766,7 @@ public partial class FrmMemberData : Form
     /// <param name="e"></param>
     private void BtnMemberSearch_Click(object sender, EventArgs e)
     {
-        FrmSearch SearchForm = new();
+        FrmSearch SearchForm = _services.GetRequiredService<FrmSearch>();
         SearchForm.ShowDialog();
 
         if (SearchForm.searchResult > 0)
@@ -760,7 +780,7 @@ public partial class FrmMemberData : Form
     // top of thew original data on the form finalize page
     private void BtnStats_Click(object sender, EventArgs e)
     {
-        FrmStats p = new(currentMem.Number, currentMem.FirstName + 
+        FrmStats p = Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance<FrmStats>(_services, currentMem.Number, currentMem.FirstName +
             currentMem.LastName + currentMem.MiddleInitial, currentMem);
         p.ShowDialog();
     }
@@ -797,7 +817,7 @@ public partial class FrmMemberData : Form
     /// </summary>
     private void BtnPrintActive_Click(object sender, EventArgs e)
     {
-        Print.PrintByActiveMembers(TournamentDB.GetAllActiveMembers());
+        Print.PrintByActiveMembers(_tournamentRepo.GetAllActiveMembers());
     }
 
     /// <summary>
@@ -885,8 +905,8 @@ public partial class FrmMemberData : Form
 
         if (ofdOpen.ShowDialog() == DialogResult.OK)
         {
-            List<PlayerHistoryViewModel> AlreadyImportedPH = 
-                PlayerHistoryDB.GetMemberPlayerHistory(currentMem.Number);
+            List<PlayerHistoryViewModel> AlreadyImportedPH =
+                _playerHistoryRepo.GetMemberPlayerHistory(currentMem.Number);
 
             if (AlreadyImportedPH.Count > 0)
             {
@@ -905,7 +925,7 @@ public partial class FrmMemberData : Form
             }
 
             // Update member's averages after import
-            PlayerHistoryViewModel reset = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
+            PlayerHistoryViewModel reset = _playerHistoryRepo.GetMostRecentTournament(currentMem.Number);
             if (reset != null)
             {
                 currentMem.Average = reset.AVG;
@@ -920,13 +940,13 @@ public partial class FrmMemberData : Form
             }
 
             // Grabs the total money won by the member
-            decimal moneySum = PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number);
+            decimal moneySum = _playerHistoryRepo.GetTotalMoneyWon(currentMem.Number);
 
-            currentMem.MoneyEarned += moneySum; 
+            currentMem.MoneyEarned += moneySum;
 
             txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
 
-            MemberDB.AddOrUpdateMember(currentMem);
+            _memberRepo.AddOrUpdateMember(currentMem);
             
             MessageBox.Show($"Import completed. {rows.Count} games imported across multiple tournaments.");
         }
@@ -941,8 +961,11 @@ public partial class FrmMemberData : Form
     private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
     {
         List<ExcelRow> returnMe = [];
-        // Dictionary to track tournaments by date
-        Dictionary<DateTime, Tournament> tournamentsCache = [];
+        // Dictionary to track tournaments by date. Preloaded once here so the import loop never
+        // re-queries the entire tournaments table for each distinct date encountered.
+        Dictionary<DateTime, Tournament> tournamentsCache = _tournamentRepo.GetTournamentList()
+            .GroupBy(t => t.Date.Date)
+            .ToDictionary(grp => grp.Key, grp => grp.First());
         
         using (var workbook = new XLWorkbook(PathAndFileName))
         {
@@ -1001,41 +1024,25 @@ public partial class FrmMemberData : Form
                 Tournament tournament;
                 DateTime tournamentDate = temp.Date.Date; // Normalize to date only
                 
-                if (!tournamentsCache.ContainsKey(tournamentDate))
+                if (!tournamentsCache.TryGetValue(tournamentDate, out tournament))
                 {
-                    // Check if tournament already exists in database
-                    List<Tournament> existingTournaments = TournamentDB.GetTournamentList()
-                        .Where(t => t.Date.Date == tournamentDate).ToList();
-                    
-                    if (existingTournaments.Count > 0)
+                    // Date not present in the preloaded set — create a new tournament for it.
+                    tournament = new Tournament
                     {
-                        tournament = existingTournaments[0];
-                    }
-                    else
-                    {
-                        // Create new tournament for this date
-                        tournament = new Tournament
-                        {
-                            Date = tournamentDate,
-                            Location = $"Imported - {tournamentDate:yyyy-MM-dd}",
-                            Event = "Legacy Data Import",
-                            Notes = "Tournament created from legacy data import",
-                            Squads = 1,
-                            Doubles = false,
-                            ThreeOutOf4 = false,
-                            IsOnlyThreeGames = false,
-                            IsTournamentFinalized = false
-                        };
-                        
-                        // Add tournament to database
-                        TournamentDB.AddTournament(tournament);
-                    }
-                    
+                        Date = tournamentDate,
+                        Location = $"Imported - {tournamentDate:yyyy-MM-dd}",
+                        Event = "Legacy Data Import",
+                        Notes = "Tournament created from legacy data import",
+                        Squads = 1,
+                        Doubles = false,
+                        ThreeOutOf4 = false,
+                        IsOnlyThreeGames = false,
+                        IsTournamentFinalized = false
+                    };
+
+                    // Add tournament to database
+                    _tournamentRepo.AddTournament(tournament);
                     tournamentsCache[tournamentDate] = tournament;
-                }
-                else
-                {
-                    tournament = tournamentsCache[tournamentDate];
                 }
                 
                 // Create Game entity
@@ -1068,7 +1075,7 @@ public partial class FrmMemberData : Form
                 };
                 
                 // Add participant (which will also save the game)
-                TournamentDB.AddMemberToTournament(participant);
+                _tournamentRepo.AddMemberToTournament(participant);
                 
                 returnMe.Add(temp);
             }

@@ -1,4 +1,6 @@
 ﻿using NineTapTour.Database;
+using NineTapTour.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -9,12 +11,21 @@ namespace NineTapTour.Forms;
 
 public partial class FrmMainMenu : Form
 {
+    private readonly IDatabaseAdminService _admin;
+
     /// <summary>
     /// Opens the "Main Menu" form.
     /// </summary>
     public FrmMainMenu()
     {
         InitializeComponent();
+    }
+
+    [Microsoft.Extensions.DependencyInjection.ActivatorUtilitiesConstructor]
+    public FrmMainMenu(IDatabaseAdminService admin)
+    {
+        InitializeComponent();
+        _admin = admin;
     }
 
     /// <summary>
@@ -63,11 +74,7 @@ public partial class FrmMainMenu : Form
     {
         if (MessageBox.Show("This will permanently delete and recreate the entire database. All data will be lost. Are you sure?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
         {
-            using (NineTapDb db = new())
-            {
-                db.Database.EnsureDeleted();
-                db.Database.Migrate();
-            }
+            _admin.DropAndRecreate();
 
             MessageBox.Show("Database was successfully dropped and recreated!");
         }

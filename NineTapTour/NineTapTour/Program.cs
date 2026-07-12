@@ -1,20 +1,22 @@
 ﻿using NineTapTour.Forms;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using NineTapTour.Data;
+using NineTapTour.Database;
+using NineTapTour.State;
 
 namespace NineTapTour
 {
     static class Program
     {
         /// <summary>
-        /// The main entry point for the application.
+        /// The composition root: builds the service provider, applies pending migrations, and
+        /// launches the main form resolved from dependency injection.
         /// </summary>
         [STAThread]
         static void Main()
@@ -24,7 +26,42 @@ namespace NineTapTour
 
             SetUpGlobalExceptionHandling();
 
-            Application.Run(new FrmMain());
+            IServiceProvider services = BuildServiceProvider();
+
+            // Bridge legacy static session-state access to the DI singleton until every form is
+            // fully converted to injected ITournamentSessionState.
+            NineTapTour.Models.FrmMemberScoresHelpers.Session =
+                services.GetRequiredService<ITournamentSessionState>();
+
+            // Apply any pending EF Core migrations once, at startup.
+            var factory = services.GetRequiredService<IDbContextFactory<NineTapDb>>();
+            using (var db = factory.CreateDbContext())
+            {
+                db.Database.Migrate();
+            }
+
+            Application.Run(services.GetRequiredService<FrmMain>());
+        }
+
+        /// <summary>
+        /// Configures dependency injection: configuration, the data layer (context factory +
+        /// repositories), shared session state, and the application forms.
+        /// </summary>
+        private static IServiceProvider BuildServiceProvider()
+        {
+            IConfiguration configuration = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false)
+                .Build();
+
+            var services = new ServiceCollection();
+
+            services.AddNineTapData(configuration.GetConnectionString("NineTapDb"));
+            services.AddSingleton<ITournamentSessionState, TournamentSessionState>();
+
+            NineTapTour.Forms.FormRegistration.AddForms(services);
+
+            return services.BuildServiceProvider();
         }
 
         private static void SetUpGlobalExceptionHandling()

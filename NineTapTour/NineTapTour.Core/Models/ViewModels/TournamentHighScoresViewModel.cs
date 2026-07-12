@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NineTapTour.Models.ViewModels
 {
-    class TournamentHighScoresViewModel
+    public class TournamentHighScoresViewModel
     {
         public int memberId { get; set; }
         public string FirstName { get; set; }

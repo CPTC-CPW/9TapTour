@@ -1,3 +1,4 @@
+using NineTapTour.Abstractions;
 using NineTapTour.Database;
 using NineTapTour.Models;
 using System;
@@ -35,6 +36,7 @@ public class FrmDoublesDiscrepancies : Form
     }
 
     private readonly Tournament _tournament;
+    private readonly IDoublesRepository _doublesRepo;
 
     private Label          lblTitle;
     private DataGridView   dgvIssues;
@@ -46,8 +48,9 @@ public class FrmDoublesDiscrepancies : Form
     // Construction
     // ----------------------------------------------------------------
 
-    public FrmDoublesDiscrepancies(Tournament tournament)
+    public FrmDoublesDiscrepancies(Tournament tournament, IDoublesRepository doublesRepo)
     {
+        _doublesRepo = doublesRepo;
         _tournament = tournament;
         InitializeControls();
         LoadDiscrepancies();
@@ -175,8 +178,8 @@ public class FrmDoublesDiscrepancies : Form
         dgvIssues.Rows.Clear();
         lblStatus.Text = string.Empty;
 
-        var plans  = DoublesPartnerPlanDB.GetPlansByTournament(_tournament.Id);
-        var claims = DoublesPartnerClaimDB.GetClaimsByTournament(_tournament.Id);
+        var plans  = _doublesRepo.GetPlansByTournament(_tournament.Id);
+        var claims = _doublesRepo.GetClaimsByTournament(_tournament.Id);
 
         // --- Missing reciprocals ---
         foreach (var claim in claims)
@@ -330,8 +333,8 @@ public class FrmDoublesDiscrepancies : Form
 
     private void BtnFixAllReciprocals_Click(object sender, EventArgs e)
     {
-        var plans  = DoublesPartnerPlanDB.GetPlansByTournament(_tournament.Id);
-        var claims = DoublesPartnerClaimDB.GetClaimsByTournament(_tournament.Id);
+        var plans  = _doublesRepo.GetPlansByTournament(_tournament.Id);
+        var claims = _doublesRepo.GetClaimsByTournament(_tournament.Id);
 
         int fixed_ = 0;
         foreach (var claim in claims)
@@ -360,24 +363,24 @@ public class FrmDoublesDiscrepancies : Form
     private void FixReciprocal(int srcId, int partnerId, int squad)
     {
         // Add the missing reverse claim
-        DoublesPartnerClaimDB.AddClaim(_tournament.Id, partnerId, srcId, squad);
+        _doublesRepo.AddClaim(_tournament.Id, partnerId, srcId, squad);
         // Ensure the team record exists (order-independent; AddTeam is a no-op if duplicate)
-        DoublesTeamDB.AddTeam(_tournament.Id, srcId, partnerId, squad);
+        _doublesRepo.AddTeam(_tournament.Id, srcId, partnerId, squad);
     }
 
     /// <summary>Removes the directional claim A→B (and B→A if present) plus the team.</summary>
     private void RemoveClaim(int srcId, int partnerId, int squad)
     {
-        DoublesPartnerClaimDB.RemoveClaimsForPair(_tournament.Id, srcId, partnerId, squad);
+        _doublesRepo.RemoveClaimsForPair(_tournament.Id, srcId, partnerId, squad);
 
         // Also remove the DoublesTeam if it exists
-        var teams = DoublesTeamDB.GetTeamsByTournament(_tournament.Id);
+        var teams = _doublesRepo.GetTeamsByTournament(_tournament.Id);
         var team  = teams.FirstOrDefault(t =>
             t.Squad == squad &&
             ((t.Member1.Id == srcId && t.Member2.Id == partnerId) ||
              (t.Member1.Id == partnerId && t.Member2.Id == srcId)));
         if (team != null)
-            DoublesTeamDB.RemoveTeam(team.Id);
+            _doublesRepo.RemoveTeam(team.Id);
     }
 
     // ----------------------------------------------------------------

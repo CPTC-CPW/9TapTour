@@ -2,15 +2,26 @@
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NineTapTour.Database;
 
 namespace NineTapTour.Forms;
 
 public partial class FrmTournamentsByYear : Form
 {
+    private readonly IDbContextFactory<NineTapDb> _dbFactory;
+
     public FrmTournamentsByYear()
     {
         InitializeComponent();
+    }
+
+    [Microsoft.Extensions.DependencyInjection.ActivatorUtilitiesConstructor]
+    public FrmTournamentsByYear(IDbContextFactory<NineTapDb> dbFactory)
+    {
+        InitializeComponent();
+        _dbFactory = dbFactory;
     }
 
     private void TournamentsByYear_Load(object sender, EventArgs e)
@@ -55,7 +66,7 @@ public partial class FrmTournamentsByYear : Form
     /// <param name="selectedYear">Year selected</param>
     public void PopulateTournamentsByYear(int selectedYear)
     {
-        NineTapDb db = new();
+        using NineTapDb db = _dbFactory.CreateDbContext();
         // Phase 6: Use Tournament.TourneyRegion.NineTapRegionID for proper FK relationship
         var tournaments = (from t in db.Tournaments
                            orderby t.Date descending

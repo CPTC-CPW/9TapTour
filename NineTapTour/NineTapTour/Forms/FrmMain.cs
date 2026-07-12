@@ -1,10 +1,11 @@
-﻿using NineTapTour.Database;
+﻿using NineTapTour.Abstractions;
+using NineTapTour.Database;
 using System;
+using System.Linq;
 using System.Windows.Forms;
 using System.Drawing;
 using NineTapTour.Models;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NineTapTour.Forms;
 
@@ -14,25 +15,30 @@ public partial class FrmMain : Form
     /// Keeps track of the currently active menu item on the menu strip.
     /// </summary>
     public ToolStripMenuItem ActiveItem;
-    
-    /// <summary>
-    /// Opens Main form 
-    /// Retrieves information from the database in order.
-    /// </summary>
+
+    private readonly IServiceProvider _services;
+
+    /// <summary>Designer constructor. Do not use at runtime.</summary>
     public FrmMain()
     {
         InitializeComponent();
+    }
+
+    /// <summary>
+    /// Opens the Main form. Child forms are created through the DI container.
+    /// </summary>
+    [ActivatorUtilitiesConstructor]
+    public FrmMain(IServiceProvider services)
+    {
+        InitializeComponent();
+        _services = services;
 
         // Set initial size of the application to the maximum size of the screen's working area and maximize the window
         Size = new Size( Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height );
         WindowState = FormWindowState.Maximized;
 
-        // Run migrations on startup
-        var migrator = new NineTapDb().Database.GetService<IMigrator>();
-        migrator.Migrate();
-        
-        var mainMenu = Application.OpenForms["MainMenu"] as FrmMainMenu;
-        OpenOrDisplayForm(ref mainMenu);
+        // Migrations are applied at startup in Program.Main.
+        OpenOrDisplayForm(() => _services.GetRequiredService<FrmMainMenu>());
 
         //sets the first item of the menu bar to the active item and highlights it.
         ActiveItem = (ToolStripMenuItem)menMain.Items[0];
@@ -40,30 +46,36 @@ public partial class FrmMain : Form
     }
 
     /// <summary>
-    /// Opens/Displays the specified form. Ensures the form is on top when selected.
+    /// Opens/displays the form of type <typeparamref name="T"/> as an MDI child, reusing an existing
+    /// open instance if there is one; otherwise the DI-provided <paramref name="factory"/> creates it.
     /// </summary>
-    /// <typeparam name="T">forms that have already been opened(?)</typeparam>
-    /// <param name="form">forms that haven't been opened yet(?)</param>
-    public void OpenOrDisplayForm<T>(ref T form) where T : Form, new()
+    public T OpenOrDisplayForm<T>(Func<T> factory) where T : Form
     {
+        T form = Application.OpenForms.OfType<T>().FirstOrDefault();
         if (form != null)
-        {   
+        {
             form.BringToFront();
-            form.Activate();   
+            form.Activate();
         }
         else
         {
-            form = new T
-            {
-                MdiParent = this,
-            };
+            form = factory();
+            form.MdiParent = this;
         }
         form.WindowState = FormWindowState.Maximized;
         form.ControlBox = false;
         form.MinimizeBox = false;
         form.MaximizeBox = false;
         form.Show();
+        return form;
     }
+
+    /// <summary>
+    /// Opens (or activates) the DI-resolved MDI child form of type <typeparamref name="T"/> and
+    /// returns the instance. Used by child forms that need to open a sibling without touching DI directly.
+    /// </summary>
+    public T OpenChild<T>() where T : Form
+        => OpenOrDisplayForm(() => _services.GetRequiredService<T>());
 
     /// <summary>
     /// Shows the current page the user is currently viewing and disables the menu item for that page. 
@@ -94,8 +106,7 @@ public partial class FrmMain : Form
     /// </summary>
     public void AboutToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        var aboutForm = Application.OpenForms["FrmAbout"] as FrmAbout;
-        OpenOrDisplayForm(ref aboutForm);
+        OpenOrDisplayForm(() => _services.GetRequiredService<FrmAbout>());
     }
 
     /// <summary>
@@ -113,9 +124,7 @@ public partial class FrmMain : Form
             FrmMemberScoresHelpers.unsavedBowlerData = false;
         }
 
-        var mainMenu = Application.OpenForms["MainMenu"] as FrmMainMenu;
-
-        OpenOrDisplayForm(ref mainMenu);
+        OpenOrDisplayForm(() => _services.GetRequiredService<FrmMainMenu>());
     }
 
     /// <summary>
@@ -132,8 +141,7 @@ public partial class FrmMain : Form
             }
             FrmMemberScoresHelpers.unsavedBowlerData = false;
         }
-        var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
-        OpenOrDisplayForm(ref newfrmMemberData);
+        OpenOrDisplayForm(() => _services.GetRequiredService<FrmMemberData>());
     }
 
     /// <summary>
@@ -141,36 +149,55 @@ public partial class FrmMain : Form
     /// </summary>
     public void TournamentToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as FrmMemberScores;
-        OpenOrDisplayForm(ref newfrmMemberScores);     
+        OpenOrDisplayForm(() => _services.GetRequiredService<FrmMemberScores>());
     }
 
     private void UpdateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
     {
-        var UpdatefrmActiveMem = new FrmUpdateActiveMem();          
-        UpdatefrmActiveMem.Show();
+        _services.GetRequiredService<FrmUpdateActiveMem>().Show();
     }
 
     private void BackupDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        DatabaseManagement.BackupDatabase();
+        var admin = _services.GetRequiredService<IDatabaseAdminService>();
+        using var saveFileDialog = new SaveFileDialog
+        {
+            Filter = "Backup file |*.bak",
+            DefaultExt = ".bak",
+            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            FileName = admin.CreateBackupName()
+        };
+        if (saveFileDialog.ShowDialog() == DialogResult.OK)
+        {
+            admin.BackupDatabase(saveFileDialog.FileName);
+            MessageBox.Show("Backup successful");
+        }
     }
 
     private void RestoreDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        if (MessageBox.Show("Restoring the database will restart the application.", "Warning", MessageBoxButtons.OKCancel) == DialogResult.OK)
+        if (MessageBox.Show("Restoring the database will restart the application.", "Warning", MessageBoxButtons.OKCancel) != DialogResult.OK)
         {
-            if (DatabaseManagement.RestoreDatabase())
-            {
-                MessageBox.Show("Database successfully restored from backup!");
-                Application.Restart();
-            }
+            return;
+        }
+
+        using var openFileDialog = new OpenFileDialog
+        {
+            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            Filter = "Backup file |*.bak",
+            DefaultExt = ".bak"
+        };
+        if (openFileDialog.ShowDialog() == DialogResult.OK)
+        {
+            _services.GetRequiredService<IDatabaseAdminService>().RestoreDatabase(openFileDialog.FileName);
+            MessageBox.Show("Database successfully restored from backup!");
+            Application.Restart();
         }
     }
-    
+
     private void LabelPrintToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        FrmLabelPrint labelsToPrint = new();
+        using var labelsToPrint = _services.GetRequiredService<FrmLabelPrint>();
         labelsToPrint.ShowDialog();
     }
 }

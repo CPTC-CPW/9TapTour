@@ -13,6 +13,8 @@ using ClosedXML.Excel;
 using NineTapTour.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using NineTapTour.Helpers;
+using NineTapTour.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NineTapTour.Forms;
 
@@ -34,8 +36,13 @@ public partial class FrmTournamentResults : Form
     const string PLACE_SORT_START_COLUMN_NAME = "Place Sort Start";
 
     readonly DataTable dt = new(); // Instantiate Data Table
-    readonly NineTapDb db = new(); // Get access to database
+    private readonly NineTapDb db; // Get access to database
     readonly Tournament tourny = FrmMemberScoresHelpers.selectedTournament; // Get Tournament
+
+    private readonly ITournamentRepository _tournamentRepo;
+    private readonly IMemberRepository _memberRepo;
+    private readonly IDoublesRepository _doublesRepo;
+    private readonly IDbContextFactory<NineTapDb> _dbFactory;
     static int totalTournamentEntries;  // Total number of entries for all squads in tournament
     static int clientInput; // how many winners the client wants to see
     List<ExcelMember> clientRequested = [];
@@ -63,6 +70,17 @@ public partial class FrmTournamentResults : Form
     public FrmTournamentResults()
     {
         InitializeComponent();
+    }
+
+    [Microsoft.Extensions.DependencyInjection.ActivatorUtilitiesConstructor]
+    public FrmTournamentResults(ITournamentRepository tournamentRepo, IMemberRepository memberRepo, IDoublesRepository doublesRepo, IDbContextFactory<NineTapDb> dbFactory)
+    {
+        InitializeComponent();
+        _tournamentRepo = tournamentRepo;
+        _memberRepo = memberRepo;
+        _doublesRepo = doublesRepo;
+        _dbFactory = dbFactory;
+        db = _dbFactory.CreateDbContext();
     }
     private void FrmTournamentResults_Load(object sender, EventArgs e)
     {
@@ -342,7 +360,7 @@ public partial class FrmTournamentResults : Form
     private List<ExcelMember> BuildWinnersList()
     {
         List<ExcelMember> tournyBowlers = [];
-        List<WinnerListMemberViewModel> bowlers = TournamentDB.GetWinnerListMemberData(tourny.Id);
+        List<WinnerListMemberViewModel> bowlers = _tournamentRepo.GetWinnerListMemberData(tourny.Id);
 
         totalTournamentEntries = bowlers.Count;
 
@@ -437,7 +455,7 @@ public partial class FrmTournamentResults : Form
         var memberNumbers = bowlers.Select(b => b.MemberNumber).Distinct().ToHashSet();
         var prevHdcpByMember = BuildPrevHdcpByMember(memberNumbers, tourny.Id);
 
-        List<DoublesTeam> teams = DoublesTeamDB.GetTeamsByTournament(tourny.Id);
+        List<DoublesTeam> teams = _doublesRepo.GetTeamsByTournament(tourny.Id);
         var bowlersByMemberId   = bowlers.GroupBy(b => b.MemberId).ToDictionary(g => g.Key, g => g.ToList());
 
         var teamRows = new List<(int CombinedHdcpTotal,
@@ -537,7 +555,7 @@ public partial class FrmTournamentResults : Form
         var result = new Dictionary<int, int>();
         if (memberNumbers.Count == 0) return result;
 
-        using var dbPrev = new NineTapDb();
+        using var dbPrev = _dbFactory.CreateDbContext();
 
         var latestDates = dbPrev.Participants
             .Where(p => memberNumbers.Contains(p.Member.Number)
@@ -911,7 +929,43 @@ public partial class FrmTournamentResults : Form
     /// </summary>
     private void AutoFillMemberRow(DataRow dataRow, int memberNumber)
     {
-        Member member = MemberDB.GetMember(memberNumber);
+        Member member = _memberRepo.GetMember(memberNumber);
+        var prevHdcpByMember = BuildPrevHdcpByMember(new HashSet<int> { memberNumber }, tourny.Id);
+
+        Game game = null;
+        if (member != null && member.Id != 0)
+        {
+            using var dbGame = _dbFactory.CreateDbContext();
+            game = GetBestGameForMember(dbGame, member.Id, tourny.Id);
+        }
+
+        ApplyMemberRow(dataRow, memberNumber, member, prevHdcpByMember, game);
+    }
+
+    /// <summary>
+    /// Highest-scoring game entry for a member in a tournament (across all squads). ScratchTotal /
+    /// GamesPlayed are [NotMapped], so the candidates are ordered client-side.
+    /// </summary>
+    private static Game GetBestGameForMember(NineTapDb db, int memberId, int tournamentId)
+    {
+        return db.Participants
+            .Where(p => p.Member.Id == memberId && p.Tournament.Id == tournamentId)
+            .Select(p => p.Game)
+            .AsEnumerable()
+            .OrderByDescending(g => g.ScratchTotal)
+            .ThenByDescending(g => g.GamesPlayed)
+            .ThenByDescending(g => g.Id)
+            .FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Fills Full Name, H/B, Total Score, and the hidden Member ID / Game ID columns for a row from
+    /// already-resolved member, handicap, and game data. Handicap comes from the member's most recent
+    /// finalized prior tournament (falls back to Member.Handicap); bonus is read from the Member record.
+    /// </summary>
+    private void ApplyMemberRow(DataRow dataRow, int memberNumber, Member member,
+                                IReadOnlyDictionary<int, int> prevHdcpByMember, Game game)
+    {
         if (member == null || member.Id == 0)
         {
             MessageBox.Show($"Member number {memberNumber} not found.");
@@ -919,28 +973,10 @@ public partial class FrmTournamentResults : Form
             return;
         }
 
-        // Bonus always comes from the Member record.
-        // Handicap comes from the most recent finalized prior tournament's AdjustedAvg (falls back to Member.Handicap).
         int bonus = member.Bonus;
-        var prevHdcpByMember = BuildPrevHdcpByMember(new HashSet<int> { memberNumber }, tourny.Id);
         int hdcp = prevHdcpByMember.TryGetValue(memberNumber, out int prevHdcp)
             ? prevHdcp
             : (member.Handicap ?? 0);
-
-        // Get the highest-scoring game entry for this member in this tournament (all squads).
-        // ScratchTotal is [NotMapped] so ordering must happen client-side after fetching candidates.
-        Game game;
-        using (var dbGame = new NineTapDb())
-        {
-            game = dbGame.Participants
-                .Where(p => p.Member.Id == member.Id && p.Tournament.Id == tourny.Id)
-                .Select(p => p.Game)
-                .AsEnumerable()
-                .OrderByDescending(g => g.ScratchTotal)
-                .ThenByDescending(g => g.GamesPlayed)
-                .ThenByDescending(g => g.Id)
-                .FirstOrDefault();
-        }
 
         if (game == null)
         {
@@ -965,7 +1001,7 @@ public partial class FrmTournamentResults : Form
     /// </summary>
     private void LoadExisting2DayData()
     {
-        var saved = TournamentDB.GetWinnerListMemberData(tourny.Id)
+        var saved = _tournamentRepo.GetWinnerListMemberData(tourny.Id)
             .Where(b => b.PlaceStanding > 0)
             .OrderBy(b => b.PlaceStanding)
             .ToList();
@@ -995,11 +1031,41 @@ public partial class FrmTournamentResults : Form
             _dt2Day.Rows.Add(row);
         }
 
-        // Fill in Name, H/B, and TotalScore for each pre-loaded row
+        // Fill in Name, H/B, and TotalScore for each pre-loaded row. Batch all lookups up front so
+        // this is a handful of queries total instead of ~4 per row.
+        var memberNumbers = saved.Select(b => b.MemberNumber).Distinct().ToHashSet();
+
+        Dictionary<int, Member> membersByNumber;
+        Dictionary<int, Game> bestGameByMember;
+        using (var dbBatch = _dbFactory.CreateDbContext())
+        {
+            membersByNumber = dbBatch.Members
+                .AsNoTracking()
+                .Where(m => memberNumbers.Contains(m.Number))
+                .ToDictionary(m => m.Number);
+
+            bestGameByMember = dbBatch.Participants
+                .Where(p => p.Tournament.Id == tourny.Id && memberNumbers.Contains(p.Member.Number))
+                .Select(p => new { p.Member.Number, p.Game })
+                .AsEnumerable()
+                .GroupBy(x => x.Number)
+                .ToDictionary(
+                    grp => grp.Key,
+                    grp => grp.Select(x => x.Game)
+                              .OrderByDescending(g => g.ScratchTotal)
+                              .ThenByDescending(g => g.GamesPlayed)
+                              .ThenByDescending(g => g.Id)
+                              .First());
+        }
+
+        var prevHdcpByMember = BuildPrevHdcpByMember(memberNumbers, tourny.Id);
+
         for (int i = 0; i < _dt2Day.Rows.Count; i++)
         {
             if (!int.TryParse(_dt2Day.Rows[i][MEMBER_NUMBER_COLUMN_NAME]?.ToString(), out int memberNumber)) continue;
-            AutoFillMemberRow(_dt2Day.Rows[i], memberNumber);
+            membersByNumber.TryGetValue(memberNumber, out Member member);
+            bestGameByMember.TryGetValue(memberNumber, out Game game);
+            ApplyMemberRow(_dt2Day.Rows[i], memberNumber, member, prevHdcpByMember, game);
         }
     }
 
@@ -1163,7 +1229,8 @@ public partial class FrmTournamentResults : Form
                 if (gameIdCell == null || gameIdCell == DBNull.Value) continue;
                 if (!int.TryParse(gameIdCell.ToString(), out int gameId) || gameId <= 0) continue;
 
-                Game g = GameDB.GetGame(gameId);
+                // Load through the form-level context so db.SaveChanges() below actually persists the edits.
+                Game g = db.Games.Find(gameId);
                 if (g == null) continue;
 
                 if (dgvTournamentResults.Rows[i].DataBoundItem is not DataRowView dataRowView) continue;
@@ -1195,7 +1262,9 @@ public partial class FrmTournamentResults : Form
             {
                 int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
                 if (!exportSavedGameIds.Add(gameId)) continue;
-                Game g = GameDB.GetGame(gameId);
+                // Load through the form-level context so db.SaveChanges() below actually persists the edits.
+                Game g = db.Games.Find(gameId);
+                if (g == null) continue;
 
                 g.PlaceStanding = ParsePlaceStanding(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
                 g.PlaceStandingLabel = null;
@@ -1248,7 +1317,7 @@ public partial class FrmTournamentResults : Form
         var isMembershipCurrentByMemberNumber = new Dictionary<int, bool>();
         if (memberNumbers.Count > 0)
         {
-            using var dbMembers = new NineTapDb();
+            using var dbMembers = _dbFactory.CreateDbContext();
             isMembershipCurrentByMemberNumber = dbMembers.Members
                 .Where(m => memberNumbers.Contains(m.Number))
                 .Select(m => new { m.Number, m.IsLifetimeMember, m.LastPayment })

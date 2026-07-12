@@ -54,7 +54,7 @@ namespace NineTapTour.Migrations
                     b.HasIndex("TournamentId", "SourceMemberId", "PartnerMemberId", "Squad")
                         .IsUnique();
 
-                    b.ToTable("DoublesPartnerClaims");
+                    b.ToTable("DoublesPartnerClaims", (string)null);
                 });
 
             modelBuilder.Entity("NineTapTour.Models.DoublesPartnerPlan", b =>
@@ -87,7 +87,7 @@ namespace NineTapTour.Migrations
                     b.HasIndex("TournamentId", "MemberId", "Squad")
                         .IsUnique();
 
-                    b.ToTable("DoublesPartnerPlans");
+                    b.ToTable("DoublesPartnerPlans", (string)null);
                 });
 
             modelBuilder.Entity("NineTapTour.Models.DoublesTeam", b =>
@@ -118,7 +118,7 @@ namespace NineTapTour.Migrations
 
                     b.HasIndex("TournamentId");
 
-                    b.ToTable("DoublesTeams");
+                    b.ToTable("DoublesTeams", (string)null);
                 });
 
             modelBuilder.Entity("NineTapTour.Models.Game", b =>
@@ -194,7 +194,7 @@ namespace NineTapTour.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Games");
+                    b.ToTable("Games", (string)null);
                 });
 
             modelBuilder.Entity("NineTapTour.Models.Member", b =>
@@ -289,7 +289,7 @@ namespace NineTapTour.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Members");
+                    b.ToTable("Members", (string)null);
                 });
 
             modelBuilder.Entity("NineTapTour.Models.Participant", b =>
@@ -323,7 +323,7 @@ namespace NineTapTour.Migrations
 
                     b.HasIndex("TournamentId");
 
-                    b.ToTable("Participants");
+                    b.ToTable("Participants", (string)null);
                 });
 
             modelBuilder.Entity("NineTapTour.Models.Tournament", b =>
@@ -370,7 +370,7 @@ namespace NineTapTour.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tournaments");
+                    b.ToTable("Tournaments", (string)null);
                 });
 
             modelBuilder.Entity("NineTapTour.Models.DoublesPartnerClaim", b =>
