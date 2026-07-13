@@ -93,6 +93,23 @@ public static class TournamentCalculations
         return score;
     }
 
+    /// <summary>
+    /// Computes the "half-rate" bonus-pin result for a doubles/cashing bowler: non-cashers keep their
+    /// base bonus, while cashers lose only half (rounded up in magnitude) of the normal deduction.
+    /// </summary>
+    public static int ComputeHalfRateBonus(int baseBonus, int place, bool isCashing)
+    {
+        if (!isCashing) return baseBonus;
+        int normalResult = DeductFromBonusPins(place, baseBonus);
+        int delta = normalResult - baseBonus; // negative for cashers
+        // Round the magnitude up so the deduction is slightly larger (bowler loses slightly more
+        // than a pure half, which is the standard rounding convention).
+        int halfDelta = delta >= 0
+            ? (int)Math.Ceiling(delta / 2.0)
+            : -(int)Math.Ceiling(-delta / 2.0);
+        return baseBonus + halfDelta;
+    }
+
     // NOTE: GetAdjustedBonusPins (which orchestrated DB history lookups + the pure bonus-pin math)
     // was relocated to BonusPinService so this class stays free of data-access dependencies.
 

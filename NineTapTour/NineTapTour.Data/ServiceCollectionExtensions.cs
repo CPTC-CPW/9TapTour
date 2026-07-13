@@ -27,6 +27,13 @@ namespace NineTapTour.Data
             services.AddSingleton<IFinalizeRepository, FinalizeRepository>();
             services.AddSingleton<IDatabaseAdminService, DatabaseAdminService>();
 
+            // Application services (orchestration/logic extracted from the forms).
+            services.AddSingleton<IFinalizationService, NineTapTour.Data.Services.FinalizationService>();
+            services.AddSingleton<IStandingsReportService, NineTapTour.Services.StandingsReportService>();
+            services.AddSingleton<ITournamentResultsService, NineTapTour.Data.Services.TournamentResultsService>();
+            services.AddSingleton<IDoublesDiscrepancyService, NineTapTour.Services.DoublesDiscrepancyService>();
+            services.AddSingleton<IMemberImportService, NineTapTour.Services.MemberImportService>();
+
             return services;
         }
     }

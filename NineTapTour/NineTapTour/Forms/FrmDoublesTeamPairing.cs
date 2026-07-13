@@ -29,6 +29,7 @@ public class FrmDoublesTeamPairing : Form
     private readonly IMemberRepository _memberRepo;
     private readonly IParticipantRepository _participantRepo;
     private readonly ITournamentRepository _tournamentRepo;
+    private readonly IDoublesDiscrepancyService _discrepancyService;
     private readonly IDbContextFactory<NineTapDb> _dbFactory;
     private readonly IServiceProvider _services;
 
@@ -93,6 +94,7 @@ public class FrmDoublesTeamPairing : Form
         IMemberRepository memberRepo,
         IParticipantRepository participantRepo,
         ITournamentRepository tournamentRepo,
+        IDoublesDiscrepancyService discrepancyService,
         IDbContextFactory<NineTapDb> dbFactory,
         IServiceProvider services)
     {
@@ -101,6 +103,7 @@ public class FrmDoublesTeamPairing : Form
         _memberRepo = memberRepo;
         _participantRepo = participantRepo;
         _tournamentRepo = tournamentRepo;
+        _discrepancyService = discrepancyService;
         _dbFactory = dbFactory;
         _services = services;
         InitializeControls();
@@ -975,14 +978,9 @@ public class FrmDoublesTeamPairing : Form
         plans ??= _doublesRepo.GetPlansByTournament(_tournament.Id);
         claims ??= _doublesRepo.GetClaimsByTournament(_tournament.Id);
 
-        int countMismatches = plans.Count(p =>
-            claims.Count(c => c.Squad == p.Squad && c.SourceMember.Id == p.Member.Id) != p.ExpectedPartnerCount);
-
-        int reciprocalMissing = claims.Count(c =>
-            !claims.Any(r =>
-                r.Squad == c.Squad &&
-                r.SourceMember.Id == c.PartnerMember.Id &&
-                r.PartnerMember.Id == c.SourceMember.Id));
+        var discrepancies = _discrepancyService.FindDiscrepancies(plans, claims);
+        int countMismatches = discrepancies.Count(d => d.Type == DoublesDiscrepancyType.CountMismatch);
+        int reciprocalMissing = discrepancies.Count(d => d.Type == DoublesDiscrepancyType.MissingReciprocal);
 
         lblDiscrepancies.Text = $"Discrepancies: count mismatch {countMismatches}, missing reciprocal {reciprocalMissing}";
         lblDiscrepancies.ForeColor = (countMismatches > 0 || reciprocalMissing > 0) ? Color.DarkRed : Color.DarkGreen;

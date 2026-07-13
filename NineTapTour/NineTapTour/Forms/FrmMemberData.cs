@@ -21,6 +21,7 @@ public partial class FrmMemberData : Form
     private readonly IMemberRepository _memberRepo;
     private readonly IPlayerHistoryRepository _playerHistoryRepo;
     private readonly ITournamentRepository _tournamentRepo;
+    private readonly IMemberImportService _importService;
     private readonly IServiceProvider _services;
 
     /// <summary>
@@ -35,12 +36,13 @@ public partial class FrmMemberData : Form
     /// Opens the "Member Data" Form.
     /// </summary>
     [Microsoft.Extensions.DependencyInjection.ActivatorUtilitiesConstructor]
-    public FrmMemberData(IMemberRepository memberRepo, IPlayerHistoryRepository playerHistoryRepo, ITournamentRepository tournamentRepo, IServiceProvider services)
+    public FrmMemberData(IMemberRepository memberRepo, IPlayerHistoryRepository playerHistoryRepo, ITournamentRepository tournamentRepo, IMemberImportService importService, IServiceProvider services)
     {
         InitializeComponent();
         _memberRepo = memberRepo;
         _playerHistoryRepo = playerHistoryRepo;
         _tournamentRepo = tournamentRepo;
+        _importService = importService;
         _services = services;
         txtMiddleInitial.MaxLength = 1;
     }
@@ -971,26 +973,12 @@ public partial class FrmMemberData : Form
         {
             var ws = workbook.Worksheet(1);
             string[] PlayerFinalFirstAndMiddle = ["", ""];
-            string playerLastName = "";
-            string firstAndMiddle = "";
             string playerFullName = ws.Cell(1, 2).GetString();
-            SplitName(ref playerLastName, ref firstAndMiddle, playerFullName);
+            (string playerLastName, string firstAndMiddle) = _importService.SplitName(playerFullName);
             string[] first0middle1 = firstAndMiddle.Split(' ');
             int playerOrgAVG = ws.Cell(1, 10).GetValue<int?>() ?? -1;
-            string playerNumber = ws.Cell(1, 14).GetString();
-            playerNumber = RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty);
+            int playerNumberAsInt = _importService.ParseMemberNumber(ws.Cell(1, 14).GetString());
 
-            int.TryParse(playerNumber, out int playerNumberAsInt);
-            if (playerNumberAsInt != 0)
-            {
-                playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty));
-            }
-            else if (playerNumberAsInt == 0)
-            {
-                string[] playerNumberAfterSplit = playerNumber.Split('/');
-                playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumberAfterSplit[^1], string.Empty));
-            }
-            
             int rowNum = 3;
             int lastRow = ws.LastRowUsed().RowNumber();
             
@@ -1046,25 +1034,8 @@ public partial class FrmMemberData : Form
                 }
                 
                 // Create Game entity
-                Game game = new()
-                {
-                    Game1 = temp.Game1 >= 0 ? temp.Game1 : null,
-                    Game2 = temp.Game2 >= 0 ? temp.Game2 : null,
-                    Game3 = temp.Game3 >= 0 ? temp.Game3 : null,
-                    Game4 = temp.Game4 >= 0 ? temp.Game4 : null,
-                    Handicap = temp.HandyCap >= 0 ? temp.HandyCap : null,
-                    Bonus = temp.Bonus >= 0 ? temp.Bonus : null,
-                    MoneyWon = temp.Cash > 0 ? Convert.ToDecimal(temp.Cash) : null,
-                    Notes = temp.Notes,
-                    IsFinalized = true, // Mark as finalized since it's legacy data
-                    AdjustedAvg = temp.AVG,
-                    LeagueAverage = temp.TrueAverage,
-                    UseGame1 = temp.Game1 >= 0,
-                    UseGame2 = temp.Game2 >= 0,
-                    UseGame3 = temp.Game3 >= 0,
-                    UseGame4 = temp.Game4 >= 0
-                };
-                
+                Game game = _importService.BuildGameFromRow(temp);
+
                 // Create Participant linking member, game, and tournament
                 Participant participant = new()
                 {
@@ -1081,27 +1052,6 @@ public partial class FrmMemberData : Form
             }
         }
         return returnMe;
-    }
-
-    /// <summary>
-    /// Takes the imported excel row for playerFullName and splits it into playerLastName and firstAndMiddle strings
-    /// </summary>
-    /// <param name="playerLastName"></param>
-    /// <param name="firstAndMiddle"></param>
-    /// <param name="playerFullName"></param>
-    private static void SplitName(ref string playerLastName, ref string firstAndMiddle, string playerFullName)
-    {
-        if (playerFullName.Contains(','))
-        {
-            playerLastName = playerFullName[..playerFullName.IndexOf(',')];
-            firstAndMiddle = playerFullName[(playerFullName.IndexOf(',') + 2)..];
-        }
-        // Checks to see if a period instead of a comma was accidentally placed in member name. (Rob's Request)
-        else if (playerFullName.Contains('.'))
-        {
-            playerLastName = playerFullName[..playerFullName.IndexOf('.')];
-            firstAndMiddle = playerFullName[(playerFullName.IndexOf('.') + 2)..];
-        }
     }
 
     /// <summary>

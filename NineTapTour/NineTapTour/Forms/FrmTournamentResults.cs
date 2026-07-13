@@ -43,6 +43,7 @@ public partial class FrmTournamentResults : Form
     private readonly IMemberRepository _memberRepo;
     private readonly IDoublesRepository _doublesRepo;
     private readonly IDbContextFactory<NineTapDb> _dbFactory;
+    private readonly ITournamentResultsService _resultsService;
     static int totalTournamentEntries;  // Total number of entries for all squads in tournament
     static int clientInput; // how many winners the client wants to see
     List<ExcelMember> clientRequested = [];
@@ -73,13 +74,14 @@ public partial class FrmTournamentResults : Form
     }
 
     [Microsoft.Extensions.DependencyInjection.ActivatorUtilitiesConstructor]
-    public FrmTournamentResults(ITournamentRepository tournamentRepo, IMemberRepository memberRepo, IDoublesRepository doublesRepo, IDbContextFactory<NineTapDb> dbFactory)
+    public FrmTournamentResults(ITournamentRepository tournamentRepo, IMemberRepository memberRepo, IDoublesRepository doublesRepo, IDbContextFactory<NineTapDb> dbFactory, ITournamentResultsService resultsService)
     {
         InitializeComponent();
         _tournamentRepo = tournamentRepo;
         _memberRepo = memberRepo;
         _doublesRepo = doublesRepo;
         _dbFactory = dbFactory;
+        _resultsService = resultsService;
         db = _dbFactory.CreateDbContext();
     }
     private void FrmTournamentResults_Load(object sender, EventArgs e)
@@ -115,8 +117,11 @@ public partial class FrmTournamentResults : Form
         }
         else
         {
-            // Create a List<ExcelMember> and populate it with this tournament's participants
-            winners = BuildWinnersList();
+            // Build this tournament's winners list (with entry counts) via the results service.
+            WinnersListResult winnersResult = _resultsService.BuildWinnersList(tourny.Id, tourny.Doubles, tourny.ThreeOutOf4);
+            totalTournamentEntries = winnersResult.TotalEntries;
+            compEntries = winnersResult.CompEntries;
+            winners = winnersResult.Bowlers;
             ActiveControl = tbClientInputCount;
         }
     }
@@ -357,192 +362,6 @@ public partial class FrmTournamentResults : Form
     /// Returns a list of tourament winners
     /// </summary>
     /// <returns> List<ExcelMember> </returns>
-    private List<ExcelMember> BuildWinnersList()
-    {
-        List<ExcelMember> tournyBowlers = [];
-        List<WinnerListMemberViewModel> bowlers = _tournamentRepo.GetWinnerListMemberData(tourny.Id);
-
-        totalTournamentEntries = bowlers.Count;
-
-        if (tourny.Doubles)
-            return BuildWinnersListDoubles(bowlers);
-
-        // Batch-query each member's handicap from their most recent finalized prior tournament.
-        // Bonus is read directly from the Member record via MemberBonus (not game history).
-        var memberNumbers = bowlers.Select(b => b.MemberNumber).Distinct().ToHashSet();
-        var prevHdcpByMember = BuildPrevHdcpByMember(memberNumbers, tourny.Id);
-
-        foreach (var b in bowlers)
-        {
-            if (b.IsComp)
-            {
-                compEntries++;
-            }
-
-            ExcelMember m = new()
-            {
-                MemberNumber = b.MemberNumber,
-                Name = b.BowlerName,
-                Handicap = prevHdcpByMember.TryGetValue(b.MemberNumber, out int prevHdcp) && prevHdcp > 0
-                    ? prevHdcp
-                    : Convert.ToInt32(b.Handicap),
-                Bonus = b.MemberBonus,
-                MoneyWon = b.MoneyWon,
-                SidePot = b.SidePot,
-                GameId = b.GameId,
-                // If the game scores are null then a 0 will be placed in the the game
-                Game1Score = Convert.ToInt32(b.Game1),
-                Game2Score = Convert.ToInt32(b.Game2),
-                Game3Score = Convert.ToInt32(b.Game3),
-                Game4Score = Convert.ToInt32(b.Game4)
-            };
-
-            if (tourny.ThreeOutOf4)
-            {
-                List<int> scores = [m.Game1Score, m.Game2Score, m.Game3Score, m.Game4Score];
-
-                // Remove the 0s from the scores list
-                scores.RemoveAll(x => x == 0);
-
-                // remove lowest score if there are 4 games
-                if (scores.Count == 4)
-                {
-                    int minScore = scores.Min();
-                    scores.Remove(minScore);
-                    if (m.Game1Score == minScore)
-                        m.Game1Score = 0;
-                    else if (m.Game2Score == minScore)
-                        m.Game2Score = 0;
-                    else if (m.Game3Score == minScore)
-                        m.Game3Score = 0;
-                    else if (m.Game4Score == minScore)
-                        m.Game4Score = 0;
-                }
-
-                m.TotalScore = scores.Sum()
-                    + (scores.Count * (m.Handicap + m.Bonus));
-            }
-            else
-            {
-                int totalValidGames = 0;
-                if (m.Game1Score > 0)
-                    totalValidGames++;
-                if (m.Game2Score > 0)
-                    totalValidGames++;
-                if (m.Game3Score > 0)
-                    totalValidGames++;
-                if (m.Game4Score > 0)
-                    totalValidGames++;
-                
-                m.TotalScore = m.Game1Score + m.Game2Score + m.Game3Score
-                    + m.Game4Score + (totalValidGames * (m.Handicap + m.Bonus));
-            }
-            tournyBowlers.Add(m);
-        }
-        return tournyBowlers;
-    }
-
-    /// <summary>
-    /// Builds the winners list for a doubles tournament.
-    /// Each DoublesTeam produces two ExcelMember entries with the same PlaceStanding and
-    /// TotalScore (combined team HDCP total) so they appear as ties in the results grid.
-    /// MoneyWon is already stored at the individual 50% share by FrmFinalizeTournament.
-    /// </summary>
-    private List<ExcelMember> BuildWinnersListDoubles(List<WinnerListMemberViewModel> bowlers)
-    {
-        // Batch-query each member's handicap from their most recent finalized prior tournament.
-        // Bonus is read directly from the Member record via MemberBonus (not game history).
-        var memberNumbers = bowlers.Select(b => b.MemberNumber).Distinct().ToHashSet();
-        var prevHdcpByMember = BuildPrevHdcpByMember(memberNumbers, tourny.Id);
-
-        List<DoublesTeam> teams = _doublesRepo.GetTeamsByTournament(tourny.Id);
-        var bowlersByMemberId   = bowlers.GroupBy(b => b.MemberId).ToDictionary(g => g.Key, g => g.ToList());
-
-        var teamRows = new List<(int CombinedHdcpTotal,
-                                 WinnerListMemberViewModel M1, WinnerListMemberViewModel M2,
-                                 int H1, int B1, int H2, int B2)>();
-
-        foreach (var team in teams)
-        {
-            if (!bowlersByMemberId.TryGetValue(team.Member1.Id, out var e1)) continue;
-            if (!bowlersByMemberId.TryGetValue(team.Member2.Id, out var e2)) continue;
-
-            var m1 = e1.FirstOrDefault(e => e.Squad == team.Squad);
-            var m2 = e2.FirstOrDefault(e => e.Squad == team.Squad);
-            if (m1 == null || m2 == null) continue;
-
-            int hdcp1  = prevHdcpByMember.TryGetValue(m1.MemberNumber, out int ph1) && ph1 > 0 ? ph1 : Convert.ToInt32(m1.Handicap);
-            int hdcp2  = prevHdcpByMember.TryGetValue(m2.MemberNumber, out int ph2) && ph2 > 0 ? ph2 : Convert.ToInt32(m2.Handicap);
-            int bonus1 = m1.MemberBonus;
-            int bonus2 = m2.MemberBonus;
-
-            int combinedHdcpTotal = (m1.Game1 ?? 0) + (m1.Game2 ?? 0)
-                                  + (m2.Game1 ?? 0) + (m2.Game2 ?? 0)
-                                  + 2 * (hdcp1 + bonus1)
-                                  + 2 * (hdcp2 + bonus2);
-
-            teamRows.Add((combinedHdcpTotal, m1, m2, hdcp1, bonus1, hdcp2, bonus2));
-        }
-
-        // Sort descending, assign places with tie detection
-        teamRows.Sort((a, b) => b.CombinedHdcpTotal.CompareTo(a.CombinedHdcpTotal));
-        int[] teamPlaces = new int[teamRows.Count];
-        if (teamRows.Count > 0)
-        {
-            teamPlaces[0] = 1;
-            for (int i = 1; i < teamRows.Count; i++)
-                teamPlaces[i] = teamRows[i].CombinedHdcpTotal == teamRows[i - 1].CombinedHdcpTotal
-                    ? teamPlaces[i - 1]
-                    : i + 1;
-        }
-
-        var result = new List<ExcelMember>();
-        for (int t = 0; t < teamRows.Count; t++)
-        {
-            var (combinedHdcpTotal, m1, m2, h1, b1, h2, b2) = teamRows[t];
-            int place = teamPlaces[t];
-
-            if (m1.IsComp) compEntries++;
-            if (m2.IsComp) compEntries++;
-
-            result.Add(new ExcelMember
-            {
-                MemberNumber  = m1.MemberNumber,
-                Name          = m1.BowlerName,
-                Handicap      = h1,
-                Bonus         = b1,
-                MoneyWon      = m1.MoneyWon,    // already stored as 50% share by FrmFinalizeTournament
-                SidePot       = m1.SidePot,
-                GameId        = m1.GameId,
-                Game1Score    = m1.Game1 ?? 0,
-                Game2Score    = m1.Game2 ?? 0,
-                Game3Score    = 0,
-                Game4Score    = 0,
-                TotalScore    = combinedHdcpTotal,
-                PlaceStanding = place
-            });
-
-            result.Add(new ExcelMember
-            {
-                MemberNumber  = m2.MemberNumber,
-                Name          = m2.BowlerName,
-                Handicap      = h2,
-                Bonus         = b2,
-                MoneyWon      = m2.MoneyWon,
-                SidePot       = m2.SidePot,
-                GameId        = m2.GameId,
-                Game1Score    = m2.Game1 ?? 0,
-                Game2Score    = m2.Game2 ?? 0,
-                Game3Score    = 0,
-                Game4Score    = 0,
-                TotalScore    = combinedHdcpTotal,
-                PlaceStanding = place
-            });
-        }
-
-        return result;
-    }
-
     /// <summary>
     /// Batch-queries the most recent finalized tournament prior to this one for each member
     /// in <paramref name="memberNumbers"/> and returns the handicap computed from that

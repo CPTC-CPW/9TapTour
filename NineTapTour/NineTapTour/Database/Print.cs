@@ -7,7 +7,6 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
 using NineTapTour.Models;
-using static NineTapTour.Database.ReportHelper;
 
 namespace NineTapTour.Database
 {

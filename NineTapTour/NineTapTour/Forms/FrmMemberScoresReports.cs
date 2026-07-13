@@ -4,7 +4,6 @@ using System.IO;
 using System.Windows.Forms;
 using NineTapTour.Database;
 using NineTapTour.Models;
-using static NineTapTour.Database.ReportHelper;
 using ClosedXML.Excel;
 
 namespace NineTapTour.Forms;

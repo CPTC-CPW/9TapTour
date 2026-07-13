@@ -11,7 +11,6 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using static NineTapTour.Database.ReportHelper;
 
 namespace NineTapTour.Forms;
 
@@ -41,6 +40,7 @@ public partial class FrmMemberScores : Form
     private readonly IDoublesRepository _doublesRepo;
     private readonly IDbContextFactory<NineTapDb> _dbFactory;
     private readonly IServiceProvider _services;
+    private readonly IStandingsReportService _standingsReportService;
 
     /// <summary>
     /// instantiates all form buttons.
@@ -64,7 +64,8 @@ public partial class FrmMemberScores : Form
         IPlayerHistoryRepository playerHistoryRepo,
         IDoublesRepository doublesRepo,
         IDbContextFactory<NineTapDb> dbFactory,
-        IServiceProvider services)
+        IServiceProvider services,
+        IStandingsReportService standingsReportService)
     {
         InitializeComponent();
 
@@ -76,6 +77,7 @@ public partial class FrmMemberScores : Form
         _finalizeRepo = finalizeRepo;
         _playerHistoryRepo = playerHistoryRepo;
         _doublesRepo = doublesRepo;
+        _standingsReportService = standingsReportService;
         _dbFactory = dbFactory;
         _services = services;
 
@@ -1322,8 +1324,7 @@ public partial class FrmMemberScores : Form
     {
         var listOfParticipants = _participantRepo.GetParticipants(FrmMemberScoresHelpers.selectedTournament.Id);
         listOfParticipants = GetFilteredParticipantListBySquad(listOfParticipants, GetSquadResultsNumberChecked());
-        var tourneyResults = GetTournamentPlacings(listOfParticipants, FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4, GetSelectedReportType());
-        return tourneyResults;
+        return _standingsReportService.BuildReport(listOfParticipants, FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4, GetSelectedReportType());
 
         List<Participant> GetFilteredParticipantListBySquad(List<Participant> listOfParticipants, int qualifyBySquadNumber)
         {
@@ -1358,106 +1359,6 @@ public partial class FrmMemberScores : Form
             }
 
             throw new InvalidOperationException("A report type must be selected");
-        }
-
-        (List<ParticipantsGameViewModel> ParticipantsGameScores, List<TopParticipantGameViewModel> Top3Scores)
-            GetTournamentPlacings(List<Participant> listOfParticipants, bool isThreeOfFourTournament, ReportType reportType)
-        {
-            var participantsGameViewModels = new List<ParticipantsGameViewModel>();
-            var topParticipantGameViewModels = new List<TopParticipantGameViewModel>();
-
-            // makes list of ParticipantsGameViewModel which will be used to populate scratch game and handicap game
-            // listboxes which only allow 1 top game per person per squad
-            foreach (Participant currParticipant in listOfParticipants)
-            {
-                // creates temp variable for PaticipantsGameViewModel to store necessary info for each person 
-                ParticipantsGameViewModel currTopScoreViewModel =
-                    new(
-                    /* MemberNo  */ currParticipant.Member.Number,
-                    /* FirstName */ currParticipant.Member.FirstName,
-                    /* LastName  */ currParticipant.Member.LastName,
-                    /* Squad */ currParticipant.Squad,
-                    /* HighScore */ currParticipant.Game.AllGameScores().Max(),
-                    /* Handicap  */ currParticipant.Member.Handicap,
-                    /* Bonus */ currParticipant.Member.Bonus
-                    );
-
-                // adds person to list<ParticipantsGameViewModel>
-                participantsGameViewModels.Add(currTopScoreViewModel);
-            }
-
-            foreach (Participant currParticipant in listOfParticipants)
-            {
-                //Gets all of the game scores that are valid (that have a value)
-                var allScoresWithOutNullGames = currParticipant.Game.AllGameScores().Where(g => g.HasValue).ToList();
-
-                //totals all games with out nulls/valid score
-                int? totalScore = allScoresWithOutNullGames.Sum();
-
-                //Sets a collection of all the games to a new variable.
-                var top4Games = allScoresWithOutNullGames;
-
-                //Sets a collection of all the games using the 3 out of 4 ruleset
-                var top3Games = FrmTournamentStats.GetTop3OutOf4([.. top4Games]);
-
-                int numberOfGames = top4Games.Count;
-
-                TopParticipantGameViewModel currTopScoreViewModel =
-                    new(
-                    /* MemberNo  */ currParticipant.Member.Number,
-                    /* FirstName */ currParticipant.Member.FirstName,
-                    /* LastName  */ currParticipant.Member.LastName,
-                    /* Placeing  */ 0,
-                    /* ScratchTotal */ currParticipant.Game.AllGameScores().Sum().Value,
-                    /* top3ScratchScore  */ top3Games.Sum(),
-                    /* top3HandicapScore */ top3Games.Sum() +
-                                            (Math.Min(3, numberOfGames) * currParticipant.Member.Handicap) +
-                                            (Math.Min(3, numberOfGames) * currParticipant.Game.Bonus),
-                    /* Game1 */ currParticipant.Game.Game1,
-                    /* Game2 */ currParticipant.Game.Game2,
-                    /* Game3 */ currParticipant.Game.Game3,
-                    /* Game4 */ currParticipant.Game.Game4,
-                    /* Handicap */ currParticipant.Game.Handicap,
-                    /* Bonus  */ currParticipant.Game.Bonus.Value,
-                    /* gameID */ currParticipant.Game.Id,
-                    /* squad  */ currParticipant.Squad
-                    );
-
-                currTopScoreViewModel.IsThreeOutOf4 = FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4;
-
-                topParticipantGameViewModels.Add(currTopScoreViewModel);
-            }
-
-
-            if (reportType == ReportType.HighGameHandicapGameSenior)
-            {
-                // display data in the list boxes
-                // orders list by highest handicap score game to lowest
-                participantsGameViewModels = [.. participantsGameViewModels.OrderByDescending(t => t.HighScore + t.Handicap + t.Bonus)];
-            }
-            else if (reportType == ReportType.HighGame)
-            {
-                // orders list by highest scratch score game to lowest
-                participantsGameViewModels = [.. participantsGameViewModels.OrderByDescending(t => t.HighScore)];
-            }
-            else if (reportType == ReportType.HighSeriesScratch && isThreeOfFourTournament)
-            {
-                topParticipantGameViewModels = [.. topParticipantGameViewModels.OrderByDescending(t => t.Top3ScratchScore)];
-            }
-            else if (reportType == ReportType.HighSeriesScratch && !isThreeOfFourTournament)
-            {
-                topParticipantGameViewModels = [.. topParticipantGameViewModels.OrderByDescending(t => t.ScratchTotal)];
-            }
-            else if (reportType == ReportType.HighSeriesHandicap && isThreeOfFourTournament)
-            {
-                topParticipantGameViewModels = [.. topParticipantGameViewModels.OrderByDescending(t => t.Top3HandiScores)];
-            }
-            else if (reportType == ReportType.HighSeriesHandicap && !isThreeOfFourTournament)
-            {
-                topParticipantGameViewModels = [.. topParticipantGameViewModels.OrderByDescending(t => t.HandicapScore)];
-            }
-
-            return (participantsGameViewModels, topParticipantGameViewModels);
         }
     }
 

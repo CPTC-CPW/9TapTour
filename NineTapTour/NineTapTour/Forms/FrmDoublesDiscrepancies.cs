@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using DiscrepancyType = NineTapTour.Models.DoublesDiscrepancyType;
 
 namespace NineTapTour.Forms;
 
@@ -17,8 +18,6 @@ namespace NineTapTour.Forms;
 /// </summary>
 public class FrmDoublesDiscrepancies : Form
 {
-    private enum DiscrepancyType { MissingReciprocal, CountMismatch }
-
     private sealed class DiscrepancyItem
     {
         public DiscrepancyType Type            { get; set; }
@@ -37,6 +36,7 @@ public class FrmDoublesDiscrepancies : Form
 
     private readonly Tournament _tournament;
     private readonly IDoublesRepository _doublesRepo;
+    private readonly IDoublesDiscrepancyService _discrepancyService;
 
     private Label          lblTitle;
     private DataGridView   dgvIssues;
@@ -48,9 +48,10 @@ public class FrmDoublesDiscrepancies : Form
     // Construction
     // ----------------------------------------------------------------
 
-    public FrmDoublesDiscrepancies(Tournament tournament, IDoublesRepository doublesRepo)
+    public FrmDoublesDiscrepancies(Tournament tournament, IDoublesRepository doublesRepo, IDoublesDiscrepancyService discrepancyService)
     {
         _doublesRepo = doublesRepo;
+        _discrepancyService = discrepancyService;
         _tournament = tournament;
         InitializeControls();
         LoadDiscrepancies();
@@ -181,47 +182,21 @@ public class FrmDoublesDiscrepancies : Form
         var plans  = _doublesRepo.GetPlansByTournament(_tournament.Id);
         var claims = _doublesRepo.GetClaimsByTournament(_tournament.Id);
 
-        // --- Missing reciprocals ---
-        foreach (var claim in claims)
+        foreach (var d in _discrepancyService.FindDiscrepancies(plans, claims))
         {
-            bool hasReciprocal = claims.Any(r =>
-                r.Squad == claim.Squad &&
-                r.SourceMember.Id == claim.PartnerMember.Id &&
-                r.PartnerMember.Id == claim.SourceMember.Id);
-
-            if (!hasReciprocal)
+            AddRow(new DiscrepancyItem
             {
-                AddRow(new DiscrepancyItem
-                {
-                    Type              = DiscrepancyType.MissingReciprocal,
-                    Squad             = claim.Squad,
-                    SourceMemberId    = claim.SourceMember.Id,
-                    SourceMemberNumber = claim.SourceMember.Number,
-                    SourceMemberName  = $"{claim.SourceMember.FirstName} {claim.SourceMember.LastName}",
-                    PartnerMemberId   = claim.PartnerMember.Id,
-                    PartnerMemberNumber = claim.PartnerMember.Number,
-                    PartnerMemberName = $"{claim.PartnerMember.FirstName} {claim.PartnerMember.LastName}"
-                });
-            }
-        }
-
-        // --- Count mismatches ---
-        foreach (var plan in plans)
-        {
-            int actual = claims.Count(c => c.Squad == plan.Squad && c.SourceMember.Id == plan.Member.Id);
-            if (actual != plan.ExpectedPartnerCount)
-            {
-                AddRow(new DiscrepancyItem
-                {
-                    Type               = DiscrepancyType.CountMismatch,
-                    Squad              = plan.Squad,
-                    SourceMemberId     = plan.Member.Id,
-                    SourceMemberNumber = plan.Member.Number,
-                    SourceMemberName   = $"{plan.Member.FirstName} {plan.Member.LastName}",
-                    PlannedCount       = plan.ExpectedPartnerCount,
-                    ActualCount        = actual
-                });
-            }
+                Type                = d.Type,
+                Squad               = d.Squad,
+                SourceMemberId      = d.SourceMemberId,
+                SourceMemberNumber  = d.SourceMemberNumber,
+                SourceMemberName    = d.SourceMemberName,
+                PartnerMemberId     = d.PartnerMemberId,
+                PartnerMemberNumber = d.PartnerMemberNumber,
+                PartnerMemberName   = d.PartnerMemberName,
+                PlannedCount        = d.PlannedCount,
+                ActualCount         = d.ActualCount
+            });
         }
 
         UpdateBulkButtons();

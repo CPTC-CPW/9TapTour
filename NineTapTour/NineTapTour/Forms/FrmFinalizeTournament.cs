@@ -28,6 +28,7 @@ public partial class FrmFinalizeTournament : Form
     private readonly IPlayerHistoryRepository _playerHistoryRepo;
     private readonly IDoublesRepository _doublesRepo;
     private readonly IDbContextFactory<NineTapDb> _dbFactory;
+    private readonly IFinalizationService _finalizationService;
 
     // Top-level controls — access these to adjust later
     private Panel pnlToolbar;
@@ -114,7 +115,8 @@ public partial class FrmFinalizeTournament : Form
         ITournamentRepository tournamentRepo,
         IPlayerHistoryRepository playerHistoryRepo,
         IDoublesRepository doublesRepo,
-        IDbContextFactory<NineTapDb> dbFactory)
+        IDbContextFactory<NineTapDb> dbFactory,
+        IFinalizationService finalizationService)
     {
         _finalizeRepo = finalizeRepo;
         _gameRepo = gameRepo;
@@ -123,6 +125,7 @@ public partial class FrmFinalizeTournament : Form
         _playerHistoryRepo = playerHistoryRepo;
         _doublesRepo = doublesRepo;
         _dbFactory = dbFactory;
+        _finalizationService = finalizationService;
 
         this.selectedTournament = selectedTournament;
 
@@ -842,8 +845,8 @@ public partial class FrmFinalizeTournament : Form
             Color rowColor = teamColors[t % 2];
 
             // Half-rate bonus preview (cashing pairs lose fewer pins)
-            int previewBonus1 = ComputeHalfRateBonus(baseBonus1, place, isCashing);
-            int previewBonus2 = ComputeHalfRateBonus(baseBonus2, place, isCashing);
+            int previewBonus1 = CalcService.ComputeHalfRateBonus(baseBonus1, place, isCashing);
+            int previewBonus2 = CalcService.ComputeHalfRateBonus(baseBonus2, place, isCashing);
 
             if (isCashing)
             {
@@ -1388,18 +1391,6 @@ public partial class FrmFinalizeTournament : Form
     /// Cashers lose half as many bonus pins (magnitude rounded up so the bowler
     /// retains more pins). Non-cashers keep their base bonus unchanged.
     /// </summary>
-    private static int ComputeHalfRateBonus(int baseBonus, int place, bool isCashing)
-    {
-        if (!isCashing) return baseBonus;
-        int normalResult = CalcService.DeductFromBonusPins(place, baseBonus);
-        int delta        = normalResult - baseBonus; // negative for cashers
-        // Round the magnitude up so the deduction is slightly larger (bowler loses
-        // slightly more than a pure half, which is the standard rounding convention).
-        int halfDelta = delta >= 0
-            ? (int)Math.Ceiling(delta / 2.0)
-            : -(int)Math.Ceiling(-delta / 2.0);
-        return baseBonus + halfDelta;
-    }
 
     private void BtnTeamView_Click(object sender, EventArgs e)
     {
@@ -1582,140 +1573,7 @@ public partial class FrmFinalizeTournament : Form
     /// </summary>
     private void FinalizeAllGames()
     {
-        using var db = _dbFactory.CreateDbContext();
-
-        // Track which members we've already updated so we do it once per member
-        var updatedMembers = new HashSet<int>();
-
-        // The 30-game league average depends only on the member number (the tournament is fixed
-        // for this pass), yet a member can appear on many rows (multiple squads, doubles teams).
-        // Cache each member's computed average so the expensive history queries run once per member.
-        var leagueAvgByMember = new Dictionary<int, double>();
-        double GetLeagueAverage(int memberNum)
-        {
-            if (!leagueAvgByMember.TryGetValue(memberNum, out double avg))
-            {
-                avg = _finalizeRepo.Get30GameAverage(memberNum, selectedTournament.Id);
-                leagueAvgByMember[memberNum] = avg;
-            }
-            return avg;
-        }
-
-        for (int i = 0; i < dgvTournament.Rows.Count; i++)
-        {
-            var row = dgvTournament.Rows[i];
-
-            // Doubles individual rows: finalize each member's own game record
-            if (row.Tag is DoubleMemberRowTag dmt)
-            {
-                Game dblGame = db.Games.Find(dmt.MyGameId);
-                if (dblGame == null) continue;
-
-                int dblAdjAvg = 0;
-                if (row.Cells["colAdjAvg"].Value != null)
-                    int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out dblAdjAvg);
-
-                dblGame.Game1           = ParseCellInt(row.Cells["colGame1"].Value);
-                dblGame.Game2           = ParseCellInt(row.Cells["colGame2"].Value);
-                dblGame.UseGame1        = row.Cells["colGame1Check"].Value as bool? ?? false;
-                dblGame.UseGame2        = row.Cells["colGame2Check"].Value as bool? ?? false;
-                dblGame.IsFinalized     = true;
-                dblGame.AdjustedAvg     = dblAdjAvg;
-                dblGame.KeepAdjustedAvg = row.Cells["colDirCheck"].Value as bool? ?? false;
-
-                int dblHdcp = 0;
-                if (row.Cells["colHdcp"].Value != null)
-                    int.TryParse(row.Cells["colHdcp"].Value.ToString(), out dblHdcp);
-                dblGame.Handicap = dblHdcp;
-
-                int dblMemberNum = row.Cells["colMemberNumber"].Value is int dblMn ? dblMn : 0;
-                dblGame.LeagueAverage = GetLeagueAverage(dblMemberNum);
-
-                // Half-rate bonus: look up the original pre-tournament base bonus
-                WinnerListMemberViewModel dblOrigEntry =
-                    _currentTournamentBowlers.FirstOrDefault(b => b.GameId == dmt.MyGameId);
-                int dblBaseBonus = dblOrigEntry != null ? Convert.ToInt32(dblOrigEntry.Bonus) : 0;
-                int dblPlace     = row.Cells["colStanding"].Value is int dblP ? dblP : 0;
-                bool dblCashing  = _cashingGameIds.Contains(dmt.MyGameId);
-                dblGame.Bonus    = ComputeHalfRateBonus(dblBaseBonus, dblPlace, dblCashing);
-
-                // Director entered the full place prize; save each member's 50% share
-                decimal dblEarnings = 0;
-                if (row.Cells["colEarnings"].Value != null)
-                    decimal.TryParse(row.Cells["colEarnings"].Value.ToString(), out dblEarnings);
-                dblGame.MoneyWon      = dblEarnings > 0 ? dblEarnings / 2m : null;
-                dblGame.PlaceStanding = dblPlace > 0 ? (int?)dblPlace : null;
-
-                if (dblMemberNum > 0 && updatedMembers.Add(dblMemberNum))
-                {
-                    Member dblMember = db.Members.FirstOrDefault(m => m.Number == dblMemberNum);
-                    if (dblMember != null && dblMember.Id > 0)
-                    {
-                        dblMember.Average  = dblAdjAvg;
-                        dblMember.Handicap = CalcService.CalculateHandicapPins(dblAdjAvg);
-                        dblMember.Bonus    = dblGame.Bonus ?? 0;
-                    }
-                }
-                continue;
-            }
-
-            if (row.Tag is not int gameId) continue;
-
-            Game game = db.Games.Find(gameId);
-            if (game == null) continue;
-
-            game.IsFinalized = true;
-            int adjAvg = 0;
-            if (row.Cells["colAdjAvg"].Value != null)
-                int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
-            game.AdjustedAvg = adjAvg;
-
-            // Update handicap on the game from the grid
-            int hdcp = 0;
-            if (row.Cells["colHdcp"].Value != null)
-                int.TryParse(row.Cells["colHdcp"].Value.ToString(), out hdcp);
-            game.Handicap = hdcp;
-
-            // Compute league average for this game
-            int memberNumber = Convert.ToInt32(row.Cells["colMemberNumber"].Value);
-
-            // Update bonus on the game from the grid — preserve the original pre-deduction
-            // value for cashing/third-entry members so the Game record is not corrupted across sessions.
-            int bonus = 0;
-            if (row.Cells["colBonus"].Value != null)
-                int.TryParse(row.Cells["colBonus"].Value.ToString(), out bonus);
-            if (_cashingGameIds.Contains(gameId) || _thirdEntryBonusMemberNumbers.Contains(memberNumber))
-            {
-                WinnerListMemberViewModel orig = _currentTournamentBowlers.FirstOrDefault(b => b.GameId == gameId);
-                game.Bonus = orig != null ? Convert.ToInt32(orig.Bonus) : bonus;
-            }
-            else
-            {
-                game.Bonus = bonus;
-            }
-            double leagueAvg = GetLeagueAverage(memberNumber);
-            game.LeagueAverage = leagueAvg;
-
-            // Update the Member record once per member
-            if (updatedMembers.Add(memberNumber))
-            {
-                Member member = db.Members.FirstOrDefault(m => m.Number == memberNumber);
-                if (member != null && member.Id > 0)
-                {
-                    member.Average = adjAvg;
-                    member.Handicap = CalcService.CalculateHandicapPins(adjAvg);
-                    // Use the cell value so any manual director edits are respected.
-                    // The grid already shows the correct adjusted bonus (deducted for
-                    // cashers, +1 for third-entry new bowlers) from LoadTournamentGrid.
-                    member.Bonus = bonus;
-                }
-            }
-        }
-
-        Tournament tourn = db.Tournaments.Find(selectedTournament.Id);
-        tourn?.IsTournamentFinalized = true;
-
-        db.SaveChanges();
+        _finalizationService.FinalizeTournament(selectedTournament.Id, GatherFinalizeRows());
 
         _isFinalized = true;
         btnUndoFinalize.Enabled       = false;
@@ -1726,6 +1584,107 @@ public partial class FrmFinalizeTournament : Form
             "Finalized",
             MessageBoxButtons.OK,
             MessageBoxIcon.Information);
+    }
+
+    /// <summary>
+    /// Reads the finalize grid rows into <see cref="FinalizeGameInput"/> DTOs so the finalize
+    /// sequencing/computation can run in <see cref="IFinalizationService"/> without the UI.
+    /// </summary>
+    private List<FinalizeGameInput> GatherFinalizeRows()
+    {
+        var rows = new List<FinalizeGameInput>();
+
+        for (int i = 0; i < dgvTournament.Rows.Count; i++)
+        {
+            var row = dgvTournament.Rows[i];
+
+            // Doubles individual rows.
+            if (row.Tag is DoubleMemberRowTag dmt)
+            {
+                int dblAdjAvg = 0;
+                if (row.Cells["colAdjAvg"].Value != null)
+                    int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out dblAdjAvg);
+
+                int dblHdcp = 0;
+                if (row.Cells["colHdcp"].Value != null)
+                    int.TryParse(row.Cells["colHdcp"].Value.ToString(), out dblHdcp);
+
+                int dblMemberNum = row.Cells["colMemberNumber"].Value is int dblMn ? dblMn : 0;
+                int dblPlace     = row.Cells["colStanding"].Value is int dblP ? dblP : 0;
+
+                decimal dblEarnings = 0;
+                if (row.Cells["colEarnings"].Value != null)
+                    decimal.TryParse(row.Cells["colEarnings"].Value.ToString(), out dblEarnings);
+
+                WinnerListMemberViewModel dblOrigEntry =
+                    _currentTournamentBowlers.FirstOrDefault(b => b.GameId == dmt.MyGameId);
+                int dblBaseBonus = dblOrigEntry != null ? Convert.ToInt32(dblOrigEntry.Bonus) : 0;
+
+                rows.Add(new FinalizeGameInput
+                {
+                    GameId = dmt.MyGameId,
+                    IsDoublesMember = true,
+                    MemberNumber = dblMemberNum,
+                    Game1 = ParseCellInt(row.Cells["colGame1"].Value),
+                    Game2 = ParseCellInt(row.Cells["colGame2"].Value),
+                    UseGame1 = row.Cells["colGame1Check"].Value as bool? ?? false,
+                    UseGame2 = row.Cells["colGame2Check"].Value as bool? ?? false,
+                    AdjustedAvg = dblAdjAvg,
+                    Handicap = dblHdcp,
+                    DirectorCheck = row.Cells["colDirCheck"].Value as bool? ?? false,
+                    PlaceStanding = dblPlace,
+                    Earnings = dblEarnings,
+                    IsCashing = _cashingGameIds.Contains(dmt.MyGameId),
+                    OriginalBaseBonus = dblBaseBonus,
+                });
+                continue;
+            }
+
+            if (row.Tag is not int gameId) continue;
+
+            int adjAvg = 0;
+            if (row.Cells["colAdjAvg"].Value != null)
+                int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
+
+            int hdcp = 0;
+            if (row.Cells["colHdcp"].Value != null)
+                int.TryParse(row.Cells["colHdcp"].Value.ToString(), out hdcp);
+
+            int memberNumber = Convert.ToInt32(row.Cells["colMemberNumber"].Value);
+
+            int bonus = 0;
+            if (row.Cells["colBonus"].Value != null)
+                int.TryParse(row.Cells["colBonus"].Value.ToString(), out bonus);
+
+            bool isCashing    = _cashingGameIds.Contains(gameId);
+            bool isThirdEntry = _thirdEntryBonusMemberNumbers.Contains(memberNumber);
+
+            int originalBaseBonus;
+            if (isCashing || isThirdEntry)
+            {
+                WinnerListMemberViewModel orig = _currentTournamentBowlers.FirstOrDefault(b => b.GameId == gameId);
+                originalBaseBonus = orig != null ? Convert.ToInt32(orig.Bonus) : bonus;
+            }
+            else
+            {
+                originalBaseBonus = bonus;
+            }
+
+            rows.Add(new FinalizeGameInput
+            {
+                GameId = gameId,
+                IsDoublesMember = false,
+                MemberNumber = memberNumber,
+                AdjustedAvg = adjAvg,
+                Handicap = hdcp,
+                BonusFromGrid = bonus,
+                IsCashing = isCashing,
+                IsThirdEntryBonus = isThirdEntry,
+                OriginalBaseBonus = originalBaseBonus,
+            });
+        }
+
+        return rows;
     }
 
     private void BtnUndoFinalize_Click(object sender, EventArgs e)
