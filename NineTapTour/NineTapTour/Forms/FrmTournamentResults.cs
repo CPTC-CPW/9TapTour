@@ -1360,6 +1360,9 @@ public partial class FrmTournamentResults : Form
             if (result == DialogResult.OK)
             {
                 workbook.SaveAs(savefile.FileName);
+                // ClosedXML corrupts check-signature image anchors on save when a sheet has
+                // multiple same-named pictures; restore the template's drawings untouched.
+                FileHelper.RestoreTemplateDrawings(saveFile, savefile.FileName);
                 MessageBox.Show("Excel file created , you can find the file at: " + savefile.FileName);
             }
         }
