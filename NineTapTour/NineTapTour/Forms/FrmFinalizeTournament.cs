@@ -275,6 +275,7 @@ public partial class FrmFinalizeTournament : Form
             new DataGridViewCheckBoxColumn { Name = "colDirCheck",     HeaderText = "Director\nCheck", Width = 58  },
             new DataGridViewTextBoxColumn  { Name = "colSquad",        HeaderText = "Squad",           Width = 45,  ReadOnly = true },
             new DataGridViewTextBoxColumn  { Name = "colHdcp",         HeaderText = "HDCP",            Width = 45,  ReadOnly = true },
+            new DataGridViewTextBoxColumn  { Name = "colNewHdcp",      HeaderText = "New\nHDCP",       Width = 50,  ReadOnly = true },
             new DataGridViewTextBoxColumn  { Name = "colBonus",        HeaderText = "Bonus",           Width = 45  },
             new DataGridViewTextBoxColumn  { Name = "colEarnings",     HeaderText = "Earnings",        Width = 60  },
             new DataGridViewTextBoxColumn  { Name = "colNotes",        HeaderText = "Notes",           AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill }
@@ -598,6 +599,10 @@ public partial class FrmFinalizeTournament : Form
             int hdcpTotal = scratch + (checkedGames * (displayHdcp + baseBonus));
             int entryAvg = checkedGames > 0 ? scratch / checkedGames : 0;
 
+            // ADJ AVG shown in the grid; also drives the New HDCP preview, matching
+            // the CalculateHandicapPins(adjAvg) write to Member.Handicap on finalize.
+            int displayAdjAvg = orig.AdjustedAvg > 0 ? orig.AdjustedAvg : (int)Math.Round(orig.LeagueAverage);
+
             int rowIdx = dgvTournament.Rows.Add(
                 m.PlaceStanding > 0 ? (object)m.PlaceStanding : null,
                 m.MemberNumber,
@@ -614,11 +619,11 @@ public partial class FrmFinalizeTournament : Form
                 hdcpTotal,
                 entryAvg,
                 null,  // 30 Entry AVG
-                // ADJ AVG — restored from DB, defaulting to the member's current average
-                orig.AdjustedAvg > 0 ? orig.AdjustedAvg : (int)Math.Round(orig.LeagueAverage),
+                displayAdjAvg,  // ADJ AVG — restored from DB, defaulting to the member's current average
                 orig.KeepAdjustedAvg,  // Director Check — restored from DB
                 orig.Squad,
                 displayHdcp,
+                displayAdjAvg > 0 ? (object)CalcService.CalculateHandicapPins(displayAdjAvg) : null,  // New HDCP preview
                 displayBonus,
                 _placedGameIds.Contains(m.GameId)
                     ? ((m.MoneyWon ?? 0) + (orig.SidePot ?? 0) > 0 ? (object)((m.MoneyWon ?? 0) + (orig.SidePot ?? 0)) : null)
@@ -826,6 +831,7 @@ public partial class FrmFinalizeTournament : Form
             bool m1g2c = m1.UseGame2 ?? m1.Game2.HasValue;
             int  s1    = (m1g1c ? m1.Game1 ?? 0 : 0) + (m1g2c ? m1.Game2 ?? 0 : 0);
             int  g1c   = (m1g1c ? 1 : 0) + (m1g2c ? 1 : 0);
+            int  adjAvg1 = m1.AdjustedAvg > 0 ? m1.AdjustedAvg : (int)Math.Round(m1.LeagueAverage);
 
             int rowIdx1 = dgvTournament.Rows.Add(
                 (object)place,
@@ -838,10 +844,11 @@ public partial class FrmFinalizeTournament : Form
                 combinedHdcpTotal,
                 g1c > 0 ? s1 / g1c : 0,
                 null,   // 30 Entry AVG
-                m1.AdjustedAvg > 0 ? m1.AdjustedAvg : (int)Math.Round(m1.LeagueAverage),
+                adjAvg1,
                 m1.KeepAdjustedAvg,
                 m1.Squad,
                 hdcp1,
+                adjAvg1 > 0 ? (object)CalcService.CalculateHandicapPins(adjAvg1) : null,  // New HDCP preview
                 previewBonus1,
                 m1.MoneyWon > 0 ? (object)m1.MoneyWon : null,
                 $"Partner: {m2.BowlerName}"
@@ -854,6 +861,7 @@ public partial class FrmFinalizeTournament : Form
             bool m2g2c = m2.UseGame2 ?? m2.Game2.HasValue;
             int  s2    = (m2g1c ? m2.Game1 ?? 0 : 0) + (m2g2c ? m2.Game2 ?? 0 : 0);
             int  g2c   = (m2g1c ? 1 : 0) + (m2g2c ? 1 : 0);
+            int  adjAvg2 = m2.AdjustedAvg > 0 ? m2.AdjustedAvg : (int)Math.Round(m2.LeagueAverage);
 
             int rowIdx2 = dgvTournament.Rows.Add(
                 (object)place,
@@ -866,10 +874,11 @@ public partial class FrmFinalizeTournament : Form
                 combinedHdcpTotal,
                 g2c > 0 ? s2 / g2c : 0,
                 null,
-                m2.AdjustedAvg > 0 ? m2.AdjustedAvg : (int)Math.Round(m2.LeagueAverage),
+                adjAvg2,
                 m2.KeepAdjustedAvg,
                 m2.Squad,
                 hdcp2,
+                adjAvg2 > 0 ? (object)CalcService.CalculateHandicapPins(adjAvg2) : null,  // New HDCP preview
                 previewBonus2,
                 m2.MoneyWon > 0 ? (object)m2.MoneyWon : null,
                 $"Partner: {m1.BowlerName}"
@@ -981,12 +990,30 @@ public partial class FrmFinalizeTournament : Form
     }
 
     /// <summary>
+    /// Updates the read-only New HDCP preview cell from the row's current ADJ AVG.
+    /// Shows the handicap the Member record will receive when the tournament is
+    /// finalized (FinalizeAllGames writes CalculateHandicapPins(adjAvg) to Member.Handicap).
+    /// </summary>
+    private void UpdateNewHdcpPreview(int rowIndex)
+    {
+        var row = dgvTournament.Rows[rowIndex];
+        int adjAvg = 0;
+        if (row.Cells["colAdjAvg"].Value != null)
+            int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
+        row.Cells["colNewHdcp"].Value = adjAvg > 0
+            ? (object)CalcService.CalculateHandicapPins(adjAvg)
+            : null;
+    }
+
+    /// <summary>
     /// Recomputes Scratch Total, HDCP Total, and Entry AVG for the given row
     /// based on which game checkboxes are currently checked.
     /// </summary>
     private void RecalculateTournamentRow(int rowIndex)
     {
         var row = dgvTournament.Rows[rowIndex];
+
+        UpdateNewHdcpPreview(rowIndex);
 
         int GetCheckedScore(string scoreCol, string checkCol)
         {
@@ -1212,6 +1239,10 @@ public partial class FrmFinalizeTournament : Form
             {
                 RecalculateTournamentRow(e.RowIndex);
             }
+
+            // Keep the New HDCP preview in sync even when ADJ AVG is cleared
+            // (RecalculateTournamentRow only runs above when adjAvg > 0).
+            UpdateNewHdcpPreview(e.RowIndex);
 
             // Copy ADJ AVG to all other entries for the same member
             object memberNumber = dgvTournament.Rows[e.RowIndex].Cells["colMemberNumber"].Value;
