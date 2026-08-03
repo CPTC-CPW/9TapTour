@@ -21,10 +21,6 @@
     <PackageReference Include="ClosedXML" Version="0.105.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\ClientLicense.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
     <Content Include="Convert-XlsToXlsx.ps1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
