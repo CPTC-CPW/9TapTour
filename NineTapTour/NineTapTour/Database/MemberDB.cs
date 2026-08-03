@@ -23,7 +23,19 @@ public class MemberDB
         {
             using (var db = new NineTapDb())
             {
-                bool doesMemberExist = db.Members.Any(m => m.Id == temp.Id);
+                // Members built from imports have Id 0 even when they already exist
+                // in the database, so resolve identity by Number before deciding
+                // between insert and update.
+                if (temp.Id == 0)
+                {
+                    temp.Id = db.Members
+                        .Where(m => m.Number == temp.Number)
+                        .OrderBy(m => m.Id)
+                        .Select(m => m.Id)
+                        .FirstOrDefault();
+                }
+
+                bool doesMemberExist = temp.Id != 0 && db.Members.Any(m => m.Id == temp.Id);
 
                 if (doesMemberExist)
                 {
