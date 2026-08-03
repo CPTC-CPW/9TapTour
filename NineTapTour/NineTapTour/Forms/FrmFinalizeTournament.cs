@@ -20,8 +20,6 @@ public partial class FrmFinalizeTournament : Form
 
     // Top-level controls — access these to adjust later
     private Panel pnlToolbar;
-    private CheckBox chkDirCheck;
-    private CheckBox chkAdjAvg;
     private Button btnFinalizeTournament;
     private Button btnUndoFinalize;
     private SplitContainer splitMain;
@@ -144,9 +142,6 @@ public partial class FrmFinalizeTournament : Form
         // --- Toolbar panel ---
         pnlToolbar = new Panel { Dock = DockStyle.Top, Height = 40 };
 
-        chkDirCheck = new CheckBox { Text = "Dir Check", Location = new Point(10, 10), AutoSize = true };
-        chkAdjAvg   = new CheckBox { Text = "Adj Avg",   Location = new Point(95, 10), AutoSize = true };
-
         btnFinalizeTournament = new Button
         {
             Text = "Finalize Tournament",
@@ -170,7 +165,7 @@ public partial class FrmFinalizeTournament : Form
         };
         btnTeamView.Click += BtnTeamView_Click;
 
-        pnlToolbar.Controls.AddRange([chkDirCheck, chkAdjAvg, btnFinalizeTournament, btnUndoFinalize, btnTeamView]);
+        pnlToolbar.Controls.AddRange([btnFinalizeTournament, btnUndoFinalize, btnTeamView]);
         pnlToolbar.Resize += (s, _) => PinToolbarButtons();
 
         // --- SplitContainer (top grid / bottom grid) ---
@@ -619,7 +614,8 @@ public partial class FrmFinalizeTournament : Form
                 hdcpTotal,
                 entryAvg,
                 null,  // 30 Entry AVG
-                orig.AdjustedAvg > 0 ? (object)orig.AdjustedAvg : 0,  // ADJ AVG — restored from DB
+                // ADJ AVG — restored from DB, defaulting to the member's current average
+                orig.AdjustedAvg > 0 ? orig.AdjustedAvg : (int)Math.Round(orig.LeagueAverage),
                 orig.KeepAdjustedAvg,  // Director Check — restored from DB
                 orig.Squad,
                 displayHdcp,
@@ -842,7 +838,7 @@ public partial class FrmFinalizeTournament : Form
                 combinedHdcpTotal,
                 g1c > 0 ? s1 / g1c : 0,
                 null,   // 30 Entry AVG
-                m1.AdjustedAvg > 0 ? (object)m1.AdjustedAvg : 0,
+                m1.AdjustedAvg > 0 ? m1.AdjustedAvg : (int)Math.Round(m1.LeagueAverage),
                 m1.KeepAdjustedAvg,
                 m1.Squad,
                 hdcp1,
@@ -870,7 +866,7 @@ public partial class FrmFinalizeTournament : Form
                 combinedHdcpTotal,
                 g2c > 0 ? s2 / g2c : 0,
                 null,
-                m2.AdjustedAvg > 0 ? (object)m2.AdjustedAvg : 0,
+                m2.AdjustedAvg > 0 ? m2.AdjustedAvg : (int)Math.Round(m2.LeagueAverage),
                 m2.KeepAdjustedAvg,
                 m2.Squad,
                 hdcp2,
