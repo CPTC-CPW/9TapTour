@@ -186,23 +186,7 @@ namespace NineTapTour.Database
             }
             else
             {
-                Game? result = db.Games.SingleOrDefault(g => g.Id == player.Game.Id);
-                Participant squadResult = db.Participants.SingleOrDefault(p => p.Id == player.Id);
-                Participant memberQuery = db.Participants.Include(m => m.Member)
-                    .Where(m => m.Member.Id == player.Member.Id).FirstOrDefault();
-                result.Game1 = player.Game.Game1;
-                result.Game2 = player.Game.Game2;
-                result.Game3 = player.Game.Game3;
-                result.Game4 = player.Game.Game4;
-                result.MoneyWon = player.Game.MoneyWon;
-                result.IsComp = player.Game.IsComp;
-
-                if (squadResult == null)
-                {
-                    squadResult = new Participant();
-                }
-                squadResult.Squad = player.Squad;
-                squadResult.Member = memberQuery.Member;
+                UpdateExistingParticipantScores(player, db);
                 db.SaveChanges();
             }
         }
@@ -247,24 +231,30 @@ namespace NineTapTour.Database
             }
             else
             {
-                Game result = db.Games.SingleOrDefault(g => g.Id == player.Game.Id);
-                Participant squadResult = db.Participants.SingleOrDefault(p => p.Id == player.Id);
-                Participant memberQuery = db.Participants.Include(m => m.Member)
-                    .Where(m => m.Member.Id == player.Member.Id).FirstOrDefault();
-                result.Game1 = player.Game.Game1;
-                result.Game2 = player.Game.Game2;
-                result.Game3 = player.Game.Game3;
-                result.Game4 = player.Game.Game4;
-                result.MoneyWon = player.Game.MoneyWon;
-                result.IsComp = player.Game.IsComp;
-
-                if (squadResult == null)
-                {
-                    squadResult = new Participant();
-                }
-                squadResult.Squad = player.Squad;
-                squadResult.Member = memberQuery.Member;
+                UpdateExistingParticipantScores(player, db);
             }
+        }
+
+        /// <summary>
+        /// Updates the scores on the Game of the Participant already in the tournament
+        /// that matches the given player's member, tournament, and squad. The lookup is
+        /// by member/tournament/squad because callers may pass a new, unsaved Game (Id 0).
+        /// NOTE: Does NOT call SaveChanges - caller controls when to save.
+        /// </summary>
+        private static void UpdateExistingParticipantScores(Participant player, NineTapDb db)
+        {
+            Participant existing = db.Participants
+                .Include(p => p.Game)
+                .First(p => p.Member.Id == player.Member.Id
+                         && p.Tournament.Id == player.Tournament.Id
+                         && p.Squad == player.Squad);
+
+            existing.Game.Game1 = player.Game.Game1;
+            existing.Game.Game2 = player.Game.Game2;
+            existing.Game.Game3 = player.Game.Game3;
+            existing.Game.Game4 = player.Game.Game4;
+            existing.Game.MoneyWon = player.Game.MoneyWon;
+            existing.Game.IsComp = player.Game.IsComp;
         }
 
         /// <summary>
