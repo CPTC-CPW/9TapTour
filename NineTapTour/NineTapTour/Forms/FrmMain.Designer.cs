@@ -33,6 +33,7 @@
             mainMenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             memberToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             tournamentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            reportsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             BackupDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -48,7 +49,7 @@
             // 
             menMain.AllowMerge = false;
             menMain.BackColor = System.Drawing.Color.White;
-            menMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { mainMenuToolStripMenuItem, memberToolStripMenuItem, tournamentToolStripMenuItem, AboutToolStripMenuItem, toolsToolStripMenuItem });
+            menMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { mainMenuToolStripMenuItem, memberToolStripMenuItem, tournamentToolStripMenuItem, reportsToolStripMenuItem, AboutToolStripMenuItem, toolsToolStripMenuItem });
             menMain.Location = new System.Drawing.Point(0, 0);
             menMain.Name = "menMain";
             menMain.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
@@ -80,9 +81,17 @@
             tournamentToolStripMenuItem.Size = new System.Drawing.Size(101, 20);
             tournamentToolStripMenuItem.Text = "Member Scores";
             tournamentToolStripMenuItem.Click += TournamentToolStripMenuItem_Click;
-            // 
+            //
+            // reportsToolStripMenuItem
+            //
+            reportsToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
+            reportsToolStripMenuItem.Name = "reportsToolStripMenuItem";
+            reportsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
+            reportsToolStripMenuItem.Text = "Reports";
+            reportsToolStripMenuItem.Click += ReportsToolStripMenuItem_Click;
+            //
             // AboutToolStripMenuItem
-            // 
+            //
             AboutToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
             AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
             AboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
@@ -165,6 +174,7 @@
         private System.Windows.Forms.MenuStrip menMain;
         public System.Windows.Forms.ToolStripMenuItem memberToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem tournamentToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem reportsToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem AboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem updateInactiveMembersToolStripMenuItem1;
