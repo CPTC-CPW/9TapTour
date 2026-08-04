@@ -145,6 +145,25 @@ public partial class FrmMain : Form
         OpenOrDisplayForm(ref newfrmMemberScores);     
     }
 
+    /// <summary>
+    /// Opens the 'Reports' form when the "Reports" menu item is clicked.
+    /// </summary>
+    public void ReportsToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        if (FrmMemberScoresHelpers.unsavedBowlerData)
+        {
+            DialogResult result = MessageBox.Show("You have unsaved bowler data, are you sure you want to switch screens?", "Unsaved Data", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            if (result == DialogResult.No)
+            {
+                return;
+            }
+            FrmMemberScoresHelpers.unsavedBowlerData = false;
+        }
+
+        var frmReports = Application.OpenForms["FrmReports"] as FrmReports;
+        OpenOrDisplayForm(ref frmReports);
+    }
+
     private void UpdateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
     {
         var UpdatefrmActiveMem = new FrmUpdateActiveMem();          
