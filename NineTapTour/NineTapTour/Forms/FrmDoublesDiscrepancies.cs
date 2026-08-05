@@ -1,11 +1,8 @@
-﻿using NineTapTour.Database;
-using NineTapTour.Core.Entities;
+﻿using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
-using NineTapTour.Core.Repositories;
+using NineTapTour.Core.Services;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace NineTapTour.Forms;
@@ -18,28 +15,8 @@ namespace NineTapTour.Forms;
 /// </summary>
 public class FrmDoublesDiscrepancies : Form
 {
-    private enum DiscrepancyType { MissingReciprocal, CountMismatch }
-
-    private sealed class DiscrepancyItem
-    {
-        public DiscrepancyType Type            { get; set; }
-        public int    Squad                    { get; set; }
-        public int    SourceMemberId           { get; set; }
-        public int    SourceMemberNumber       { get; set; }
-        public string SourceMemberName         { get; set; }
-        // MissingReciprocal only
-        public int    PartnerMemberId          { get; set; }
-        public int    PartnerMemberNumber      { get; set; }
-        public string PartnerMemberName        { get; set; }
-        // CountMismatch only
-        public int    PlannedCount             { get; set; }
-        public int    ActualCount              { get; set; }
-    }
-
     private readonly Tournament _tournament;
-    private readonly IDoublesTeamRepository doublesTeamRepository;
-    private readonly IDoublesPartnerPlanRepository doublesPartnerPlanRepository;
-    private readonly IDoublesPartnerClaimRepository doublesPartnerClaimRepository;
+    private readonly IDoublesPairingService doublesPairingService;
 
     private Label          lblTitle;
     private DataGridView   dgvIssues;
@@ -51,12 +28,10 @@ public class FrmDoublesDiscrepancies : Form
     // Construction
     // ----------------------------------------------------------------
 
-    public FrmDoublesDiscrepancies(Tournament tournament, IDoublesTeamRepository doublesTeamRepository, IDoublesPartnerPlanRepository doublesPartnerPlanRepository, IDoublesPartnerClaimRepository doublesPartnerClaimRepository)
+    public FrmDoublesDiscrepancies(Tournament tournament, IDoublesPairingService doublesPairingService)
     {
         _tournament = tournament;
-        this.doublesTeamRepository = doublesTeamRepository;
-        this.doublesPartnerPlanRepository = doublesPartnerPlanRepository;
-        this.doublesPartnerClaimRepository = doublesPartnerClaimRepository;
+        this.doublesPairingService = doublesPairingService;
         InitializeControls();
         LoadDiscrepancies();
     }
@@ -183,59 +158,16 @@ public class FrmDoublesDiscrepancies : Form
         dgvIssues.Rows.Clear();
         lblStatus.Text = string.Empty;
 
-        var plans  = doublesPartnerPlanRepository.GetPlansByTournament(_tournament.Id);
-        var claims = doublesPartnerClaimRepository.GetClaimsByTournament(_tournament.Id);
-
-        // --- Missing reciprocals ---
-        foreach (var claim in claims)
-        {
-            bool hasReciprocal = claims.Any(r =>
-                r.Squad == claim.Squad &&
-                r.SourceMember.Id == claim.PartnerMember.Id &&
-                r.PartnerMember.Id == claim.SourceMember.Id);
-
-            if (!hasReciprocal)
-            {
-                AddRow(new DiscrepancyItem
-                {
-                    Type              = DiscrepancyType.MissingReciprocal,
-                    Squad             = claim.Squad,
-                    SourceMemberId    = claim.SourceMember.Id,
-                    SourceMemberNumber = claim.SourceMember.Number,
-                    SourceMemberName  = $"{claim.SourceMember.FirstName} {claim.SourceMember.LastName}",
-                    PartnerMemberId   = claim.PartnerMember.Id,
-                    PartnerMemberNumber = claim.PartnerMember.Number,
-                    PartnerMemberName = $"{claim.PartnerMember.FirstName} {claim.PartnerMember.LastName}"
-                });
-            }
-        }
-
-        // --- Count mismatches ---
-        foreach (var plan in plans)
-        {
-            int actual = claims.Count(c => c.Squad == plan.Squad && c.SourceMember.Id == plan.Member.Id);
-            if (actual != plan.ExpectedPartnerCount)
-            {
-                AddRow(new DiscrepancyItem
-                {
-                    Type               = DiscrepancyType.CountMismatch,
-                    Squad              = plan.Squad,
-                    SourceMemberId     = plan.Member.Id,
-                    SourceMemberNumber = plan.Member.Number,
-                    SourceMemberName   = $"{plan.Member.FirstName} {plan.Member.LastName}",
-                    PlannedCount       = plan.ExpectedPartnerCount,
-                    ActualCount        = actual
-                });
-            }
-        }
+        foreach (DoublesDiscrepancy item in doublesPairingService.GetDiscrepancies(_tournament.Id))
+            AddRow(item);
 
         UpdateBulkButtons();
     }
 
-    private void AddRow(DiscrepancyItem item)
+    private void AddRow(DoublesDiscrepancy item)
     {
         string typeDisplay, details, fixText;
-        if (item.Type == DiscrepancyType.MissingReciprocal)
+        if (item.Type == DoublesDiscrepancyType.MissingReciprocal)
         {
             typeDisplay = "Missing Reciprocal";
             details     = $"#{item.SourceMemberNumber} claims #{item.PartnerMemberNumber} ({item.PartnerMemberName}), but #{item.PartnerMemberNumber} doesn't claim back";
@@ -265,7 +197,7 @@ public class FrmDoublesDiscrepancies : Form
         // Button text is set via CellFormatting below
         var row = dgvIssues.Rows[rowIndex];
         row.Cells["colFix"].Value    = fixText;
-        row.Cells["colRemove"].Value = item.Type == DiscrepancyType.MissingReciprocal
+        row.Cells["colRemove"].Value = item.Type == DoublesDiscrepancyType.MissingReciprocal
             ? "Remove Claim"
             : string.Empty;
     }
@@ -280,10 +212,10 @@ public class FrmDoublesDiscrepancies : Form
         var row = dgvIssues.Rows[e.RowIndex];
 
         // Colour code row by type
-        var type = (DiscrepancyType)(int)row.Cells["colType"].Value;
+        var type = (DoublesDiscrepancyType)(int)row.Cells["colType"].Value;
         if (e.ColumnIndex == dgvIssues.Columns["colTypeDisplay"].Index)
         {
-            e.CellStyle.ForeColor = type == DiscrepancyType.MissingReciprocal
+            e.CellStyle.ForeColor = type == DoublesDiscrepancyType.MissingReciprocal
                 ? Color.DarkOrange
                 : Color.DarkBlue;
             e.FormattingApplied = true;
@@ -292,7 +224,7 @@ public class FrmDoublesDiscrepancies : Form
         // Hide Remove button cell for CountMismatch rows
         if (e.ColumnIndex == dgvIssues.Columns["colRemove"].Index)
         {
-            if (type == DiscrepancyType.CountMismatch)
+            if (type == DoublesDiscrepancyType.CountMismatch)
             {
                 e.Value             = string.Empty;
                 e.FormattingApplied = true;
@@ -309,7 +241,7 @@ public class FrmDoublesDiscrepancies : Form
         if (e.RowIndex < 0) return;
 
         var row  = dgvIssues.Rows[e.RowIndex];
-        var type = (DiscrepancyType)(int)row.Cells["colType"].Value;
+        var type = (DoublesDiscrepancyType)(int)row.Cells["colType"].Value;
         int srcId   = (int)row.Cells["colSrcId"].Value;
         int partId  = (int)row.Cells["colPartId"].Value;
         int squad   = (int)row.Cells["colSquadData"].Value;
@@ -319,15 +251,15 @@ public class FrmDoublesDiscrepancies : Form
 
         if (e.ColumnIndex == colFixIdx)
         {
-            if (type == DiscrepancyType.MissingReciprocal)
+            if (type == DoublesDiscrepancyType.MissingReciprocal)
             {
-                FixReciprocal(srcId, partId, squad);
+                doublesPairingService.FixReciprocal(_tournament.Id, srcId, partId, squad);
                 LoadDiscrepancies();
             }
         }
-        else if (e.ColumnIndex == colRemoveIdx && type == DiscrepancyType.MissingReciprocal)
+        else if (e.ColumnIndex == colRemoveIdx && type == DoublesDiscrepancyType.MissingReciprocal)
         {
-            RemoveClaim(srcId, partId, squad);
+            doublesPairingService.RemoveClaimAndTeam(_tournament.Id, srcId, partId, squad);
             LoadDiscrepancies();
         }
     }
@@ -338,54 +270,10 @@ public class FrmDoublesDiscrepancies : Form
 
     private void BtnFixAllReciprocals_Click(object sender, EventArgs e)
     {
-        var plans  = doublesPartnerPlanRepository.GetPlansByTournament(_tournament.Id);
-        var claims = doublesPartnerClaimRepository.GetClaimsByTournament(_tournament.Id);
-
-        int fixed_ = 0;
-        foreach (var claim in claims)
-        {
-            bool hasReciprocal = claims.Any(r =>
-                r.Squad == claim.Squad &&
-                r.SourceMember.Id == claim.PartnerMember.Id &&
-                r.PartnerMember.Id == claim.SourceMember.Id);
-
-            if (!hasReciprocal)
-            {
-                FixReciprocal(claim.SourceMember.Id, claim.PartnerMember.Id, claim.Squad);
-                fixed_++;
-            }
-        }
+        int fixed_ = doublesPairingService.FixAllMissingReciprocals(_tournament.Id);
 
         ShowStatus($"{fixed_} reciprocal(s) added.");
         LoadDiscrepancies();
-    }
-
-    // ----------------------------------------------------------------
-    // Fix helpers
-    // ----------------------------------------------------------------
-
-    /// <summary>Adds the reverse claim B→A and ensures the DoublesTeam exists.</summary>
-    private void FixReciprocal(int srcId, int partnerId, int squad)
-    {
-        // Add the missing reverse claim
-        doublesPartnerClaimRepository.AddClaim(_tournament.Id, partnerId, srcId, squad);
-        // Ensure the team record exists (order-independent; AddTeam is a no-op if duplicate)
-        doublesTeamRepository.AddTeam(_tournament.Id, srcId, partnerId, squad);
-    }
-
-    /// <summary>Removes the directional claim A→B (and B→A if present) plus the team.</summary>
-    private void RemoveClaim(int srcId, int partnerId, int squad)
-    {
-        doublesPartnerClaimRepository.RemoveClaimsForPair(_tournament.Id, srcId, partnerId, squad);
-
-        // Also remove the DoublesTeam if it exists
-        var teams = doublesTeamRepository.GetTeamsByTournament(_tournament.Id);
-        var team  = teams.FirstOrDefault(t =>
-            t.Squad == squad &&
-            ((t.Member1.Id == srcId && t.Member2.Id == partnerId) ||
-             (t.Member1.Id == partnerId && t.Member2.Id == srcId)));
-        if (team != null)
-            doublesTeamRepository.RemoveTeam(team.Id);
     }
 
     // ----------------------------------------------------------------
@@ -397,8 +285,8 @@ public class FrmDoublesDiscrepancies : Form
         bool hasReciprocal = false;
         foreach (DataGridViewRow row in dgvIssues.Rows)
         {
-            var type = (DiscrepancyType)(int)row.Cells["colType"].Value;
-            if (type == DiscrepancyType.MissingReciprocal) hasReciprocal = true;
+            var type = (DoublesDiscrepancyType)(int)row.Cells["colType"].Value;
+            if (type == DoublesDiscrepancyType.MissingReciprocal) hasReciprocal = true;
         }
 
         btnFixAllReciprocals.Enabled = hasReciprocal;

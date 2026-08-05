@@ -1,12 +1,8 @@
-﻿using NineTapTour.Database;
-using NineTapTour.Core.Data;
-using NineTapTour.Core.Entities;
+﻿using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
 using NineTapTour.Core.Repositories;
 using NineTapTour.Core.Services;
 using NineTapTour.Services;
-using Microsoft.EntityFrameworkCore;
-using ClosedXML.Excel;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -31,11 +27,7 @@ public class FrmDoublesTeamPairing : Form
     private readonly ITournamentSession session;
     private readonly IMemberRepository memberRepository;
     private readonly ITournamentRepository tournamentRepository;
-    private readonly IParticipantRepository participantRepository;
-    private readonly IDoublesTeamRepository doublesTeamRepository;
-    private readonly IDoublesPartnerPlanRepository doublesPartnerPlanRepository;
-    private readonly IDoublesPartnerClaimRepository doublesPartnerClaimRepository;
-    private readonly IDbContextFactory<NineTapDb> dbFactory;
+    private readonly IDoublesPairingService doublesPairingService;
 
     // Header
     private Label lblHeader;
@@ -92,18 +84,14 @@ public class FrmDoublesTeamPairing : Form
     // Construction
     // ----------------------------------------------------------------
 
-    public FrmDoublesTeamPairing(Tournament tournament, IFormFactory formFactory, IMemberRepository memberRepository, ITournamentRepository tournamentRepository, IParticipantRepository participantRepository, IDoublesTeamRepository doublesTeamRepository, IDoublesPartnerPlanRepository doublesPartnerPlanRepository, IDoublesPartnerClaimRepository doublesPartnerClaimRepository, IDbContextFactory<NineTapDb> dbFactory, ITournamentSession session)
+    public FrmDoublesTeamPairing(Tournament tournament, IFormFactory formFactory, IMemberRepository memberRepository, ITournamentRepository tournamentRepository, ITournamentSession session, IDoublesPairingService doublesPairingService)
     {
         _tournament = tournament;
         _formFactory = formFactory;
         this.session = session;
         this.memberRepository = memberRepository;
         this.tournamentRepository = tournamentRepository;
-        this.participantRepository = participantRepository;
-        this.doublesTeamRepository = doublesTeamRepository;
-        this.doublesPartnerPlanRepository = doublesPartnerPlanRepository;
-        this.doublesPartnerClaimRepository = doublesPartnerClaimRepository;
-        this.dbFactory = dbFactory;
+        this.doublesPairingService = doublesPairingService;
         InitializeControls();
         LoadPairings();
     }
@@ -488,17 +476,12 @@ public class FrmDoublesTeamPairing : Form
         if (targetSquad == 0) return;
 
         // Show only partners this bowler has explicitly claimed.
-        List<DoublesPartnerClaim> allClaims = doublesPartnerClaimRepository.GetClaimsByTournament(_tournament.Id);
-        _existingPartnersForBowler = allClaims
-            .Where(c => c.Squad == targetSquad && c.SourceMember.Id == mainId)
-            .Select(c => c.PartnerMember)
-            .ToList();
-
-        int expectedCount = doublesPartnerPlanRepository.GetExpectedPartnerCount(_tournament.Id, mainId, targetSquad);
+        DoublesBowlerPlanState state = doublesPairingService.GetBowlerPlanState(_tournament.Id, mainId, targetSquad);
+        _existingPartnersForBowler = state.ClaimedPartners;
 
         // Always show exactly the planned partner count for the selected bowler.
         // This prevents stale higher counts when navigating between bowlers.
-        txtPartnerCount.Text = expectedCount.ToString();
+        txtPartnerCount.Text = state.ExpectedPartnerCount.ToString();
         RebuildPartnerControls();
         } // end try
         finally { _populatingPartners = false; }
@@ -549,14 +532,10 @@ public class FrmDoublesTeamPairing : Form
     private void TrySavePlan()
     {
         if (_populatingPartners) return;
-        if (!int.TryParse(txtBowlerNumber.Text.Trim(), out int mainNum)) return;
-        int mainId = memberRepository.GetMemberIdByNumber(mainNum);
-        if (mainId == 0) return;
-        int targetSquad = GetTargetSquad();
-        if (targetSquad == 0) return;
-        if (!int.TryParse(txtPartnerCount.Text.Trim(), out int expectedCount) || expectedCount < 0) return;
-        doublesPartnerPlanRepository.UpsertPlan(_tournament.Id, mainId, targetSquad, expectedCount);
-        ShowAutoSaveStatus($"Plan saved: {expectedCount} partner(s) for #{mainNum}");
+        DoublesPlanSaveResult result = doublesPairingService.SavePartnerPlan(
+            _tournament.Id, txtBowlerNumber.Text, GetTargetSquad(), txtPartnerCount.Text);
+        if (result.Saved)
+            ShowAutoSaveStatus(result.StatusMessage);
     }
 
     private void TrySaveClaim(int capturedIndex)
@@ -564,38 +543,17 @@ public class FrmDoublesTeamPairing : Form
         if (_populatingPartners) return;
         if (capturedIndex >= _partnerControls.Count) return;
         var (numBox, _) = _partnerControls[capturedIndex];
-        string partnerText = numBox.Text.Trim();
-        if (string.IsNullOrWhiteSpace(partnerText)) return;
 
-        if (!int.TryParse(txtBowlerNumber.Text.Trim(), out int mainNum))
-            { ShowAutoSaveStatus("Enter a valid bowler number first.", error: true); return; }
-        int mainId = memberRepository.GetMemberIdByNumber(mainNum);
-        if (mainId == 0)
-            { ShowAutoSaveStatus($"Bowler #{mainNum} not found.", error: true); return; }
-        int targetSquad = GetTargetSquad();
-        if (targetSquad == 0)
-            { ShowAutoSaveStatus("Select a squad first.", error: true); return; }
-        if (!int.TryParse(partnerText, out int partnerNum))
-            { ShowAutoSaveStatus($"'{partnerText}' is not a valid member number.", error: true); return; }
-        int partnerId = memberRepository.GetMemberIdByNumber(partnerNum);
-        if (partnerId == 0)
-            { ShowAutoSaveStatus($"#{partnerNum} not found.", error: true); return; }
-        if (partnerId == mainId)
-            { ShowAutoSaveStatus($"#{partnerNum} cannot be paired with themselves.", error: true); return; }
+        DoublesClaimSaveResult result = doublesPairingService.SavePartnerClaim(
+            _tournament, txtBowlerNumber.Text, numBox.Text, GetTargetSquad());
 
-        HashSet<int> validIds = GetValidMemberIds(targetSquad);
-        if (!validIds.Contains(mainId))
-            { ShowAutoSaveStatus($"#{mainNum} not in Squad {targetSquad}.", error: true); return; }
-        if (!validIds.Contains(partnerId))
-            { ShowAutoSaveStatus($"#{partnerNum} not in Squad {targetSquad}.", error: true); return; }
+        if (result.Persisted)
+            LoadPairings();
 
-        bool claimAdded = doublesPartnerClaimRepository.AddClaim(_tournament.Id, mainId, partnerId, targetSquad);
-        doublesTeamRepository.AddTeam(_tournament.Id, mainId, partnerId, targetSquad);
-        LoadPairings();
-
-        if (claimAdded)
-            ShowAutoSaveStatus($"#{mainNum} & #{partnerNum} saved (Squad {targetSquad}).");
-        // If claim already existed (e.g. pre-filled box was tabbed through), show nothing
+        // A null message means a silent no-op (empty input, or the claim already
+        // existed because a pre-filled box was tabbed through)
+        if (result.StatusMessage != null)
+            ShowAutoSaveStatus(result.StatusMessage, result.IsError);
     }
 
     private void ShowAutoSaveStatus(string message, bool error = false)
@@ -616,54 +574,8 @@ public class FrmDoublesTeamPairing : Form
         if (open.ShowDialog(this) != DialogResult.OK)
             return;
 
-        // Snapshot current state for re-import diff
-        List<(int MemberNumber, int Squad)> prevParticipants;
-        Dictionary<(int MemberNumber, int Squad), int> prevPlans;
-        using (var db = dbFactory.CreateDbContext())
-        {
-            prevParticipants = db.Participants
-                .Where(p => p.Tournament.Id == _tournament.Id)
-                .Select(p => new { p.Member.Number, p.Squad })
-                .AsEnumerable()
-                .Select(x => (x.Number, x.Squad))
-                .ToList();
-        }
-        var existingPlansList = doublesPartnerPlanRepository.GetPlansByTournament(_tournament.Id);
-        prevPlans = existingPlansList.ToDictionary(
-            p => (p.Member.Number, p.Squad),
-            p => p.ExpectedPartnerCount);
-
-        bool isReimport = prevParticipants.Count > 0;
-        var summary = ImportBowlersAndExpectedCounts(open.FileName);
-
-        // Compute re-import diff
-        if (isReimport)
-        {
-            var processedSet = summary.ProcessedEntries;
-            var allProcessedNums = new HashSet<int>(processedSet.Select(entry => entry.MemberNumber));
-
-            foreach (var (memberNumber, squad) in prevParticipants)
-            {
-                if (!processedSet.Contains((memberNumber, squad)))
-                {
-                    if (!allProcessedNums.Contains(memberNumber))
-                        summary.RemovedFromTournament.Add($"#{memberNumber} removed from tournament entirely");
-                    else
-                        summary.RemovedFromSquad.Add($"#{memberNumber} no longer in Squad {squad}");
-                }
-            }
-
-            var updatedPlans = doublesPartnerPlanRepository.GetPlansByTournament(_tournament.Id);
-            var updatedPlanDict = updatedPlans.ToDictionary(
-                p => (p.Member.Number, p.Squad),
-                p => p.ExpectedPartnerCount);
-
-            foreach (var kvp in prevPlans)
-            {
-                if (updatedPlanDict.TryGetValue(kvp.Key, out int newCount) && newCount != kvp.Value)
-                    summary.PartnerCountChanged.Add($"#{kvp.Key.MemberNumber} (Squad {kvp.Key.Squad}): {kvp.Value} \u2192 {newCount} partners");
-            }
-        }
+        DoublesImportSummary summary = doublesPairingService.ImportBowlersAndExpectedCounts(
+            _tournament.Id, _tournament.Squads, open.FileName);
 
         string details = summary.Errors.Count > 0
             ? "\n\nIssues:\n- " + string.Join("\n- ", summary.Errors.Take(25))
@@ -673,7 +585,7 @@ public class FrmDoublesTeamPairing : Form
             details += $"\n- ...and {summary.Errors.Count - 25} more.";
 
         string diffSection = string.Empty;
-        if (isReimport && (summary.RemovedFromTournament.Count > 0 || summary.RemovedFromSquad.Count > 0 || summary.PartnerCountChanged.Count > 0))
+        if (summary.RemovedFromTournament.Count > 0 || summary.RemovedFromSquad.Count > 0 || summary.PartnerCountChanged.Count > 0)
         {
             var diffLines = new List<string>();
             if (summary.RemovedFromTournament.Count > 0)
@@ -703,169 +615,21 @@ public class FrmDoublesTeamPairing : Form
             memberScoresForm.RefreshParticipantsAfterDoublesImport();
     }
 
-    private ImportSummary ImportBowlersAndExpectedCounts(string filePath)
-    {
-        var summary = new ImportSummary();
-
-        using var workbook = new XLWorkbook(filePath);
-        foreach (var ws in workbook.Worksheets)
-        {
-            if (!TryParseSquadSheetName(ws.Name, out int squad))
-                continue;
-
-            if (squad < 1 || squad > _tournament.Squads)
-            {
-                summary.Errors.Add($"Sheet '{ws.Name}': squad is out of range for this tournament.");
-                continue;
-            }
-
-            int row = 9;
-            while (!ws.Cell(row, 2).IsEmpty())
-            {
-                summary.RowsProcessed++;
-
-                if (ws.Cell(row, 3).IsEmpty())
-                {
-                    summary.RowsSkipped++;
-                    row++;
-                    continue;
-                }
-
-                if (!TryReadIntCell(ws, row, 3, out int memberNumber))
-                {
-                    summary.RowsSkipped++;
-                    summary.Errors.Add($"Sheet '{ws.Name}', row {row}: invalid member number in column C.");
-                    row++;
-                    continue;
-                }
-
-                if (!TryReadIntCell(ws, row, 10, out int expectedCount))
-                {
-                    summary.RowsSkipped++;
-                    summary.Errors.Add($"Sheet '{ws.Name}', row {row}: invalid partner count in column J.");
-                    row++;
-                    continue;
-                }
-
-                if (expectedCount < 0)
-                {
-                    summary.RowsSkipped++;
-                    summary.Errors.Add($"Sheet '{ws.Name}', row {row}: partner count cannot be negative.");
-                    row++;
-                    continue;
-                }
-
-                int memberId = memberRepository.GetMemberIdByNumber(memberNumber);
-                if (memberId == 0)
-                {
-                    summary.RowsSkipped++;
-                    summary.Errors.Add($"Sheet '{ws.Name}', row {row}: member #{memberNumber} not found.");
-                    row++;
-                    continue;
-                }
-
-                bool participantAlreadyExisted = ParticipantExists(memberId, squad);
-                bool ensured = participantRepository.EnsureParticipantExists(_tournament.Id, memberId, squad);
-                if (!ensured)
-                {
-                    summary.RowsSkipped++;
-                    summary.Errors.Add($"Sheet '{ws.Name}', row {row}: could not create participant for #{memberNumber}.");
-                    row++;
-                    continue;
-                }
-
-                if (!participantAlreadyExisted)
-                    summary.ParticipantsCreated++;
-
-                doublesPartnerPlanRepository.UpsertPlan(_tournament.Id, memberId, squad, expectedCount);
-                summary.PlansUpserted++;
-                summary.ProcessedEntries.Add((memberNumber, squad));
-
-                row++;
-            }
-        }
-
-        return summary;
-    }
-
-    private bool ParticipantExists(int memberId, int squad)
-    {
-        using var db = dbFactory.CreateDbContext();
-        return db.Participants.Any(p =>
-            p.Tournament.Id == _tournament.Id &&
-            p.Member.Id == memberId &&
-            p.Squad == squad);
-    }
-
-    private static bool TryReadIntCell(IXLWorksheet ws, int row, int column, out int value)
-    {
-        value = 0;
-        var cell = ws.Cell(row, column);
-        if (cell.IsEmpty())
-            return false;
-
-        if (cell.TryGetValue<int>(out int asInt))
-        {
-            value = asInt;
-            return true;
-        }
-
-        if (cell.TryGetValue<double>(out double asDouble))
-        {
-            value = Convert.ToInt32(Math.Round(asDouble));
-            return true;
-        }
-
-        return int.TryParse(cell.GetString().Trim(), out value);
-    }
-
-    private static bool TryParseSquadSheetName(string sheetName, out int squad)
-    {
-        squad = 0;
-        if (string.IsNullOrWhiteSpace(sheetName))
-            return false;
-
-        string normalized = sheetName.Trim();
-        if (!normalized.StartsWith("Squad ", StringComparison.OrdinalIgnoreCase))
-            return false;
-
-        return int.TryParse(normalized.Substring(6).Trim(), out squad);
-    }
-
     private void PopulateBowlersList(bool selectFirst = false)
     {
         // Track both member and squad so multi-squad bowlers restore to the correct squad entry.
         (int MemberId, int Squad) previousKey = lstBowlers.SelectedItem is BowlerListItem selected
             ? (selected.MemberId, selected.Squad) : (0, 0);
 
-        using var db = dbFactory.CreateDbContext();
-        var participants = db.Participants
-            .Where(p => p.Tournament.Id == _tournament.Id)
-            .Select(p => new
+        List<DoublesBowlerRosterEntry> roster = doublesPairingService.GetBowlerRoster(_tournament.Id, cboSquad.SelectedIndex);
+
+        List<BowlerListItem> items = roster
+            .Select(r => new BowlerListItem
             {
-                p.Squad,
-                MemberId = p.Member.Id,
-                p.Member.Number,
-                p.Member.FirstName,
-                p.Member.LastName
-            })
-            .ToList();
-
-        if (cboSquad.SelectedIndex > 0)
-            participants = participants.Where(p => p.Squad == cboSquad.SelectedIndex).ToList();
-
-        var plans = doublesPartnerPlanRepository.GetPlansByTournament(_tournament.Id);
-        var claims = doublesPartnerClaimRepository.GetClaimsByTournament(_tournament.Id);
-
-        var items = participants
-            .OrderBy(p => p.Squad)
-            .ThenBy(p => p.Number)
-            .Select(p => new BowlerListItem
-            {
-                Squad = p.Squad,
-                MemberId = p.MemberId,
-                MemberNumber = p.Number,
-                Display = $"S{p.Squad}  #{p.Number}  {p.FirstName} {p.LastName}  (Planned {plans.FirstOrDefault(x => x.Squad == p.Squad && x.Member.Id == p.MemberId)?.ExpectedPartnerCount ?? 0}, Entered {claims.Count(c => c.Squad == p.Squad && c.SourceMember.Id == p.MemberId)})"
+                Squad = r.Squad,
+                MemberId = r.MemberId,
+                MemberNumber = r.MemberNumber,
+                Display = $"S{r.Squad}  #{r.MemberNumber}  {r.FirstName} {r.LastName}  (Planned {r.PlannedCount}, Entered {r.EnteredCount})"
             })
             .ToList();
 
@@ -958,32 +722,17 @@ public class FrmDoublesTeamPairing : Form
         public string Display { get; set; }
     }
 
-    private void UpdateSummaryLabels(List<DoublesTeam> teams)
+    private void UpdateSummaryLabels(DoublesPairingsView view)
     {
-        lblTotalTeams.Text = $"Total Teams (Tournament): {teams.Count}";
+        lblTotalTeams.Text = $"Total Teams (Tournament): {view.TotalTeamCount}";
 
-        var bySquad = teams
-            .GroupBy(t => t.Squad)
-            .OrderBy(g => g.Key)
-            .Select(g => $"S{g.Key}: {g.Count()}");
+        var bySquad = view.TeamsBySquad.Select(g => $"S{g.Squad}: {g.Count}");
 
         lblSquadBreakdown.Text = "By Squad: " + (bySquad.Any() ? string.Join(" | ", bySquad) : "none");
 
-        var plans = doublesPartnerPlanRepository.GetPlansByTournament(_tournament.Id);
-        var claims = doublesPartnerClaimRepository.GetClaimsByTournament(_tournament.Id);
-
-        int countMismatches = plans.Count(p =>
-            claims.Count(c => c.Squad == p.Squad && c.SourceMember.Id == p.Member.Id) != p.ExpectedPartnerCount);
-
-        int reciprocalMissing = claims.Count(c =>
-            !claims.Any(r =>
-                r.Squad == c.Squad &&
-                r.SourceMember.Id == c.PartnerMember.Id &&
-                r.PartnerMember.Id == c.SourceMember.Id));
-
-        lblDiscrepancies.Text = $"Discrepancies: count mismatch {countMismatches}, missing reciprocal {reciprocalMissing}";
-        lblDiscrepancies.ForeColor = (countMismatches > 0 || reciprocalMissing > 0) ? Color.DarkRed : Color.DarkGreen;
-        btnFixDiscrepancies.Enabled = (countMismatches > 0 || reciprocalMissing > 0);
+        lblDiscrepancies.Text = $"Discrepancies: count mismatch {view.CountMismatches}, missing reciprocal {view.MissingReciprocals}";
+        lblDiscrepancies.ForeColor = (view.CountMismatches > 0 || view.MissingReciprocals > 0) ? Color.DarkRed : Color.DarkGreen;
+        btnFixDiscrepancies.Enabled = (view.CountMismatches > 0 || view.MissingReciprocals > 0);
     }
 
     private void BtnFixDiscrepancies_Click(object sender, EventArgs e)
@@ -991,19 +740,6 @@ public class FrmDoublesTeamPairing : Form
         using var dlg = _formFactory.Create<FrmDoublesDiscrepancies>(_tournament);
         dlg.ShowDialog(this);
         LoadPairings();
-    }
-
-    private sealed class ImportSummary
-    {
-        public int RowsProcessed { get; set; }
-        public int RowsSkipped { get; set; }
-        public int PlansUpserted { get; set; }
-        public int ParticipantsCreated { get; set; }
-        public List<string> Errors { get; } = new();
-        public HashSet<(int MemberNumber, int Squad)> ProcessedEntries { get; } = new();
-        public List<string> RemovedFromSquad { get; } = new();
-        public List<string> RemovedFromTournament { get; } = new();
-        public List<string> PartnerCountChanged { get; } = new();
     }
 
     // ----------------------------------------------------------------
@@ -1021,42 +757,17 @@ public class FrmDoublesTeamPairing : Form
         int mem2Id = (int)row.Cells["colMem2Id"].Value;
         int squad  = (int)row.Cells["colSquad"].Value;
 
-        bool claim1Exists = doublesPartnerClaimRepository.ClaimExists(_tournament.Id, mem1Id, mem2Id, squad);
-        bool claim2Exists = doublesPartnerClaimRepository.ClaimExists(_tournament.Id, mem2Id, mem1Id, squad);
+        bool hasClaims = doublesPairingService.PairHasClaims(_tournament.Id, mem1Id, mem2Id, squad);
 
-        string claimNote = (claim1Exists || claim2Exists)
+        string claimNote = hasClaims
             ? "\n\nThis will also remove the associated partner claims."
             : string.Empty;
 
         if (MessageBox.Show($"Remove this pairing?{claimNote}", "Confirm Remove", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
         {
-            if (claim1Exists || claim2Exists)
-                doublesPartnerClaimRepository.RemoveClaimsForPair(_tournament.Id, mem1Id, mem2Id, squad);
-            doublesTeamRepository.RemoveTeam(teamId);
+            doublesPairingService.RemovePairing(_tournament.Id, teamId, mem1Id, mem2Id, squad, hasClaims);
             LoadPairings();
         }
-    }
-
-    // ----------------------------------------------------------------
-    // Squad-aware helpers
-    // ----------------------------------------------------------------
-
-    private HashSet<int> GetMemberIdsInSquad(int squad)
-    {
-        using var db = dbFactory.CreateDbContext();
-        return new HashSet<int>(
-            db.Participants
-              .Where(p => p.Tournament.Id == _tournament.Id && p.Squad == squad)
-              .Select(p => p.Member.Id));
-    }
-
-    private HashSet<int> GetValidMemberIds(int squadIndex)
-    {
-        if (squadIndex > 0)
-            return GetMemberIdsInSquad(squadIndex);
-
-        return new HashSet<int>(
-            tournamentRepository.GetUniqueTourMembers(_tournament).Select(m => m.Id));
     }
 
     // ----------------------------------------------------------------
@@ -1068,17 +779,9 @@ public class FrmDoublesTeamPairing : Form
         int selectedSquad = cboSquad.SelectedIndex;   // 0=All, 1=Squad1, etc.
 
         dgvPairings.Rows.Clear();
-        List<DoublesTeam> teams = doublesTeamRepository.GetTeamsByTournament(_tournament.Id);
-        List<DoublesTeam> allTeams = [.. teams];
+        DoublesPairingsView view = doublesPairingService.GetPairingsView(_tournament.Id, selectedSquad);
 
-        if (selectedSquad > 0)
-            teams = teams.FindAll(t => t.Squad == selectedSquad);
-
-        // Sort: by squad asc, then by member1 number
-        teams.Sort((a, b) => a.Squad != b.Squad ? a.Squad.CompareTo(b.Squad)
-                                                : a.Member1.Number.CompareTo(b.Member1.Number));
-
-        foreach (var team in teams)
+        foreach (var team in view.Teams)
         {
             dgvPairings.Rows.Add(
                 team.Id,
@@ -1092,7 +795,7 @@ public class FrmDoublesTeamPairing : Form
             );
         }
 
-        UpdateSummaryLabels(allTeams);
+        UpdateSummaryLabels(view);
         PopulateBowlersList();
     }
 }
