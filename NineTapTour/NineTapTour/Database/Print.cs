@@ -1,24 +1,26 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
+using NineTapTour.Core.Abstractions;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
+using NineTapTour.Core.Printing;
 using static NineTapTour.Core.Calculations.ReportHelper;
 
 namespace NineTapTour.Database
 {
+    /// <summary>
+    /// Draws print content computed by <see cref="PrintContentBuilder"/>:
+    /// this class owns the PrintDocument/PrintDialog handling, fonts,
+    /// Graphics coordinates, and page-event state only.
+    /// </summary>
     static class Print
     {
-        public static void SinglePrint(MemberPrintObj mem, PrintPageEventArgs e)
+        public static void SinglePrint(RecapCardContent card, PrintPageEventArgs e)
         {
-            //get the total handicap to display on the card when printed
+            // The handicap is drawn once per game before the total
             int AmtOfTimesHandicapApplied = 4;
-            int totalHandicap = mem.Handicap * AmtOfTimesHandicapApplied; 
 
             //This is what prints the data
             Graphics graphic = e.Graphics;
@@ -33,9 +35,9 @@ namespace NineTapTour.Database
             int startY = 50;
 
             //draw handicap and average
-            graphic.DrawString(mem.Average, font, dBrush, startX + 490, startY - 8);
-            graphic.DrawString(mem.Handicap.ToString(), font, dBrush, startX + 605, startY - 8);
-            graphic.DrawString(mem.Bonus.ToString(), font, dBrush, startX + 730, startY - 8);
+            graphic.DrawString(card.AverageText, font, dBrush, startX + 490, startY - 8);
+            graphic.DrawString(card.HandicapText, font, dBrush, startX + 605, startY - 8);
+            graphic.DrawString(card.BonusText, font, dBrush, startX + 730, startY - 8);
 
             //draw the 4 handicaps for the game section of the card and the total handicap
             float offset = 39.55f;
@@ -44,39 +46,27 @@ namespace NineTapTour.Database
                 //this prints the handicap 4 times.
                 if (i <= AmtOfTimesHandicapApplied)
                 {
-                    graphic.DrawString(mem.Handicap.ToString(), font, dBrush, startX + 540, startY + 31 + i * offset);
+                    graphic.DrawString(card.HandicapText, font, dBrush, startX + 540, startY + 31 + i * offset);
                 }
                 //this prints the total handicap after it prints the handicap 4 separate times
                 if (i == AmtOfTimesHandicapApplied + 1)
                 {
-                    graphic.DrawString(totalHandicap.ToString(), font, dBrush, startX + 540, (startY + 50 + i * offset) - 1);
+                    graphic.DrawString(card.TotalHandicapText, font, dBrush, startX + 540, (startY + 50 + i * offset) - 1);
                 }
             }
-            //create name string containing lastname, firstname.
-            string nameString = mem.LastName + ", " + mem.FirstName;
             //draw name string
-            graphic.DrawString(nameString, font, dBrush, startX + 5, startY + 80);
+            graphic.DrawString(card.NameLine, font, dBrush, startX + 5, startY + 80);
             //draw city string
-            graphic.DrawString(mem.City, font, dBrush, startX + 5, startY + 121);
+            graphic.DrawString(card.CityLine, font, dBrush, startX + 5, startY + 121);
             //draw member number string
-            graphic.DrawString(mem.Number.ToString(), font, dBrush, startX + 80, startY + 238);
+            graphic.DrawString(card.MemberNumberText, font, dBrush, startX + 80, startY + 238);
         }
 
         /// <summary>
         /// For Printing the Report Sections
         /// </summary>
-        public static void ReportPrint(List<MemberScores> tempMemberList, Tournament selectedTournament, ReportType reportTypeNum, PrintPageEventArgs e, int? manualCutoff = null)
+        public static void ReportPrint(MemberReportContent content, int pageIndex, PrintPageEventArgs e)
         {
-            // This var is used to draw a line after the rows of money-winning members are printed
-            int winningPlaces;
-            if (tempMemberList.Count() < 5)
-            {
-                winningPlaces = 5;
-            }
-            else
-            {
-                winningPlaces = tempMemberList.Count() / 5;
-            }
             //This is what prints the data
             Graphics graphic = e.Graphics;
 
@@ -91,226 +81,47 @@ namespace NineTapTour.Database
             int startX = 15;
             int startY = 50;
 
-            string tournamentType = "";
-
-            if (selectedTournament.ThreeOutOf4)
-            {
-                tournamentType = "3of4 ";
-            }
-
             // drawing the location and date(Month, Day, Year, e.g. May 13th 2019 = 5-13-2019
-            graphic.DrawString(selectedTournament.Location + " " + tournamentType + string.Format("{0:M-d-yyyy}", selectedTournament.Date), font, dBrush, startX + 10, startY - 19);
+            graphic.DrawString(content.TournamentLine, font, dBrush, startX + 10, startY - 19);
 
-            string header = "9 Tap Tour High - ";
-
-            string reportType = "";
-
-            // for drawing the report type using the reportTypeNum
-            if (reportTypeNum == ReportType.HighGameHandicapGameSenior)
+            //The 'Through squad x' header is only drawn for Series Reports
+            if (content.SeriesSubtitle != null)
             {
-                reportType = "Game Senior";
-            }
-            else if (reportTypeNum == ReportType.HighGame)
-            {
-                reportType = "Game";
-            }
-            else if(reportTypeNum == ReportType.HighSeriesScratch)
-            {
-                //The 'Through squad x' header is only drawn for Series Reports
-                if (squadList[0] == 0) //'All Squads' is checked
-                {
-                    graphic.DrawString("Final", bigFont, dBrush, startX + 250, startY + 70);
-                }
-                else //A different squad is checked.
-                {
-                    //create helper ints and bool
-                    int min = squadList[0];
-                    int max = squadList[squadList.Count - 1];
-                    string list = string.Join(",", squadList.ToArray());
-                    bool consective = true;
-                    
-                    
-                    
-                    if(squadList.Count == 1) //if one squad
-                    {
-                        if(min == 1) // checks for squad 1 is test for progression based filter
-                        {
-                            graphic.DrawString("Through Squad " + min, bigFont, dBrush, startX + 250, startY + 70);
-                        }
-                        else
-                        {
-                            graphic.DrawString("Squad " + min, bigFont, dBrush, startX + 250, startY + 70);
-                        }
-                    }
-                    else //if more then one squad
-                    {
-                        //test to see if squads giving are consecutive
-                        for(int i = 1; i < squadList.Count; i++)
-                        {
-                            if(squadList[i] - squadList[i-1] != 1)
-                            {
-                                consective = false;
-                            }
-                        }
-
-                        if(squadList.Count == 2) //if filtering two squads
-                        {
-                            if(consective) //Calls if bool consecutive is true
-                            {
-                                if(min == 1)
-                                {
-                                    graphic.DrawString("Through Squad " + max, bigFont, dBrush, startX + 250, startY + 70);
-                                }
-                                else
-                                {
-                                graphic.DrawString("Squads " + min + " Through " + max, bigFont, dBrush, startX + 250, startY + 70);
-                                }
-                            }
-                            else // if bool not true
-                            {
-                                graphic.DrawString("Squad " + min + " and " + max, bigFont, dBrush, startX + 250, startY + 70);
-                            }
-                        }
-                        else // if three or more squads being filtered
-                        {
-                            if(consective)
-                            {
-                                if(min == 1)
-                                {
-                                    graphic.DrawString("Through squad" + max, bigFont, dBrush, startX + 250, startY + 70);
-                                }
-                                else
-                                {
-                                     graphic.DrawString("Squads " + min + " Through " + max, bigFont, dBrush, startX + 250, startY + 70);
-                                }
-                            }
-                            else
-                            {
-                                graphic.DrawString("Squads " + list, bigFont, dBrush, startX + 250, startY + 70); //how to print a list?
-                            }
-                        }
-
-                    }
-                }
-                reportType = "Series";
+                graphic.DrawString(content.SeriesSubtitle, bigFont, dBrush, startX + 250, startY + 70);
             }
 
-            //If Series button was clicked, should not say final based on qual by squad, rather by Filter Series by Squad. Still shows qual by squad filters on the listed players.
-            if (currentSquad == 0 && string.Equals(reportType, "Series"))
-            {
-                graphic.DrawString(header + reportType + " Standings", bigFont, dBrush, startX + 10, startY + 27);
-            }
             // drawing the report title
-            else if (currentSquad == 0)
-            {
-                graphic.DrawString(header + reportType + " Final Standings", bigFont, dBrush, startX + 10, startY + 27);
-            }
-            else
-            {
-                graphic.DrawString(header + reportType + "     Squad "  + currentSquad + " Standings " , bigFont, dBrush, startX + 10, startY + 27);
-            }
-
-
-            if (reportTypeNum == 0)
-            {
-                reportType = "Game";
-            }
+            graphic.DrawString(content.Title, bigFont, dBrush, startX + 10, startY + 27);
 
             // drawing the header of the data
-            if (printDues)
-            {
-                graphic.DrawString("       " + reportType + "     Mem No            Name                                           Membership Paid To", font, dBrush, startX + 8, startY + 133);
-            }
-            else {
-                graphic.DrawString("       " + reportType + "     Mem No            Name", font, dBrush, startX + 8, startY + 133);
-            }
+            graphic.DrawString(content.ColumnHeaderLine, font, dBrush, startX + 8, startY + 133);
             graphic.DrawString(" **************************************************************************************************", starFont, dBrush, startX + 1, startY + 152);
 
-            for (int i = 0; i < tempMemberList.Count - (index * numBowlersPerPage) && i < numBowlersPerPage; i++)
+            ReportPageContent page = content.Pages[pageIndex];
+            for (int i = 0; i < page.Rows.Count; i++)
             {
+                ReportRowContent row = page.Rows[i];
+
                 //draw number for what place they are
-                graphic.DrawString((tempMemberList[i + (index * numBowlersPerPage)].placing).ToString(), font, dBrush, startX + 6, startY + 173 + (i * 19));
+                graphic.DrawString(row.Placing, font, dBrush, startX + 6, startY + 173 + (i * 19));
 
                 //draw Score
-                graphic.DrawString(tempMemberList[i + (index * numBowlersPerPage)].Score.ToString(), font, dBrush, startX + 48, startY + 173 + (i * 19));
+                graphic.DrawString(row.Score, font, dBrush, startX + 48, startY + 173 + (i * 19));
 
                 //draw the member number
-                var _ms = tempMemberList[i + (index * numBowlersPerPage)];
-                string memberNumString = (_ms is NineTapTour.Core.Models.TeamMemberScores tms)
-                    ? $"{tms.Partner1MemberId} & {tms.Partner2MemberId}"
-                    : _ms.MemberId.ToString();
-                graphic.DrawString(memberNumString, font, dBrush, startX + 120, startY + 173 + (i * 19));
-
-                // Decides if the last date the member paid their dues prints on the page
-                string unpaid = string.Empty;
-
-                if (printDues)
-                {
-                    var currentEntry = tempMemberList[i + (index * numBowlersPerPage)];
-                    if (currentEntry is NineTapTour.Core.Models.TeamMemberScores tmsEntry)
-                    {
-                        unpaid = $"{FormatDuesYear(tmsEntry.LastPaymentYear)} & {FormatDuesYear(tmsEntry.Partner2LastPaymentYear)}";
-                    }
-                    else
-                    {
-                        unpaid = FormatDuesYear(currentEntry.LastPaymentYear);
-                    }
-                }
-
-                static string FormatDuesYear(string lastPaymentYear)
-                {
-                    if (string.IsNullOrWhiteSpace(lastPaymentYear))
-                        return "N/A";
-                    if (lastPaymentYear.Equals("life "))
-                        return lastPaymentYear;
-                    if (int.TryParse(lastPaymentYear, out int year))
-                        return (year + 1).ToString();
-                    return lastPaymentYear;
-                }
-
-                //create name string containing lastname, firstname, and last payment
-                string nameString = (tempMemberList[i + (index * numBowlersPerPage)] is NineTapTour.Core.Models.TeamMemberScores teamEntry)
-                    ? $"{teamEntry.Partner1FirstName} {teamEntry.Partner1LastName} & {teamEntry.Partner2FirstName} {teamEntry.Partner2LastName}"
-                    : tempMemberList[i + (index * numBowlersPerPage)].LastName + ", " + tempMemberList[i + (index * numBowlersPerPage)].FirstName;
+                graphic.DrawString(row.MemberNumber, font, dBrush, startX + 120, startY + 173 + (i * 19));
 
                 //draw name string
-                graphic.DrawString(nameString, font, dBrush, startX + 230, startY + 173 + (i * 19));
+                graphic.DrawString(row.Name, font, dBrush, startX + 230, startY + 173 + (i * 19));
 
                 //draw Membership Paid Through Column
-                graphic.DrawString(unpaid, font, dBrush, startX + 500, startY + 173 + (i * 19));
-                int currPage = index + 1;
-                if (manualCutoff.HasValue && i == manualCutoff - 1 - (currPage * numBowlersPerPage - numBowlersPerPage))
-                {
-                    if (IsInRange(index, numBowlersPerPage, manualCutoff.Value))
-                    {
-                        PrintCutoffLine(graphic, startX, startY, i);
-                    }
-                }
-                // Print a line after 20 percent of the members have been printed.
-                else if (!manualCutoff.HasValue && i == winningPlaces - 1 - (currPage * numBowlersPerPage - numBowlersPerPage)) // Subtract 1 to offset for index
-                {
-                    if (IsInRange(index, numBowlersPerPage, winningPlaces))
-                    {
-                        PrintCutoffLine(graphic, startX, startY, i);
-                    }
-                }
-            }
+                graphic.DrawString(row.DuesText, font, dBrush, startX + 500, startY + 173 + (i * 19));
 
-            // Local function to determine if cutoff/winners line needs to be drawn
-            // on the current page
-            bool IsInRange(int currIndex, int numBowlersPerPage, int placeToDrawLine)
-            {
-                // Calculate boundaries for page
-                int pageBoundaryMin = (currIndex + 1) * numBowlersPerPage - numBowlersPerPage;
-                int pageBoundaryMax = (currIndex + 1) * numBowlersPerPage;
-
-                int indexToDrawLine = placeToDrawLine - 1;
-
-                if (indexToDrawLine >= pageBoundaryMin && indexToDrawLine < pageBoundaryMax)
+                // Print the cutoff line after the last row of money-winning members
+                if (page.CutoffAfterRowIndex == i)
                 {
-                    return true;
+                    PrintCutoffLine(graphic, startX, startY, i);
                 }
-                return false;
             }
         }
 
@@ -327,13 +138,7 @@ namespace NineTapTour.Database
 
         static public void PrintMemberReport(List<MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList, bool printDues, int? manualCutoff)
         {
-            Print.temp = temp;
-            Print.selectedTournament = selectedTournament;
-            Print.reportTypeNum = reportTypeNum;
-            Print.currentSquad = currentSquad;
-            Print.squadList = squadList;
-            Print.printDues = printDues;
-            Print.manualCutoff = manualCutoff;
+            reportContent = PrintContentBuilder.BuildMemberReport(temp, selectedTournament, reportTypeNum, currentSquad, squadList, printDues, manualCutoff);
 
             // Set up components for printing
             PrintDialog printDialog = new();
@@ -357,19 +162,12 @@ namespace NineTapTour.Database
 
         static private void PrintReport(object sender, PrintPageEventArgs e)
         {
-            ReportPrint(temp, selectedTournament, reportTypeNum, e, manualCutoff);
+            ReportPrint(reportContent, index, e);
             index++;
-            e.HasMorePages = ((index * numBowlersPerPage) < temp.Count);
+            e.HasMorePages = (index < reportContent.Pages.Count);
         }
 
-        static List<MemberScores> temp = [];//for High score
-        static Tournament selectedTournament;
-        static ReportType reportTypeNum;
-        static int currentSquad;
-        static List<int> squadList;
-        static bool printDues;
-        static int? manualCutoff;
-        static readonly int numBowlersPerPage = 40;
+        static MemberReportContent reportContent;//for High score
         /************************************************************************/
 
         static List<Member> mems = [];
@@ -387,10 +185,9 @@ namespace NineTapTour.Database
 
             //add the event handler that will do the printing
             printDocument.PrintPage += new PrintPageEventHandler(PrintTourRecaps);
-            mems = tourMembers;
-            
+
             // Client wants the recaps ordered by last name first
-            mems = [.. mems.OrderBy(member => member.LastName).ThenBy(member => member.FirstName)];
+            mems = PrintContentBuilder.OrderMembersForRecaps(tourMembers);
 
             if (mems.Count > 0)
             {
@@ -427,7 +224,7 @@ namespace NineTapTour.Database
             index = 0;
         }
 
-        static public void PrintByActiveMembers(List<Member> members)
+        static public void PrintByActiveMembers(List<Member> members, IMessageService messageService)
         {
             PrintDialog printDialog = new();
             PrintDocument printDocument = new();
@@ -438,10 +235,10 @@ namespace NineTapTour.Database
 
             if (mems.Count > 0)
             {
-                DialogResult mboxResult =
-                        MessageBox.Show($"You are about to print {mems.Count} active members! Are you sure you want to continue?",
-                                            "Confirming Prints", MessageBoxButtons.YesNo);
-                if (mboxResult == DialogResult.Yes)
+                bool confirmed = messageService.Confirm(
+                    $"You are about to print {mems.Count} active members! Are you sure you want to continue?",
+                    "Confirming Prints");
+                if (confirmed)
                 {
                     DialogResult result = printDialog.ShowDialog();
                     if (result == DialogResult.OK)
@@ -455,50 +252,16 @@ namespace NineTapTour.Database
 
         static private void PrintActiveRecaps(object sender, PrintPageEventArgs e)
         {
-            SinglePrint(new MemberPrintObj(mems[index]), e);
+            SinglePrint(PrintContentBuilder.BuildRecapCard(mems[index]), e);
             index++;
             e.HasMorePages = (index < mems.Count);
         }
 
         static private void PrintTourRecaps(object sender, PrintPageEventArgs e)
         {
-            SinglePrint(new MemberPrintObj(mems[index]), e);
+            SinglePrint(PrintContentBuilder.BuildRecapCard(mems[index]), e);
             index++;
             e.HasMorePages = (index < mems.Count);
         }
-    }
-
-    class MemberPrintObj
-    {
-        public MemberPrintObj(int handicap, int memberNumber, string city, string firstName, string lastName, string average, int bonus)
-        {
-            Handicap = handicap;
-            Number = memberNumber.ToString();
-            City = city;
-            FirstName = firstName;
-            LastName = lastName;
-            Average = average;
-            Bonus = bonus;
-        }
-
-        public MemberPrintObj(Member mem)
-        {
-            Handicap = (mem.Handicap != null) ? (int) mem.Handicap : 0;
-            Number = mem.Number.ToString();
-            City = mem.City;
-            FirstName = mem.FirstName;
-            LastName = mem.LastName;
-            Average = (mem.Average != null) ? mem.Average.ToString() : "";
-            Bonus = mem.Bonus;//mem.Bonus;
-
-        }
-
-        public int Handicap;
-        public string Number;
-        public string City;
-        public string LastName;
-        public string FirstName;
-        public string Average;
-        public int Bonus;
     }
 }

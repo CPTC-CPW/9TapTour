@@ -9,9 +9,11 @@ using NineTapTour.Helpers;
 using NineTapTour.Core.Calculations;
 using System.Drawing.Printing;
 using System.Data;
+using NineTapTour.Core.Abstractions;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Import;
 using NineTapTour.Core.Models;
+using NineTapTour.Core.Printing;
 using NineTapTour.Core.Repositories;
 using NineTapTour.Services;
 
@@ -24,19 +26,21 @@ public partial class FrmMemberData : Form
     private readonly IPlayerHistoryRepository playerHistoryRepository;
     private readonly ITournamentRepository tournamentRepository;
     private readonly IMemberImportService memberImportService;
+    private readonly IMessageService messageService;
 
     private Member currentMem;
 
     /// <summary>
     /// Opens the "Member Data" Form.
     /// </summary>
-    public FrmMemberData(IFormFactory formFactory, IMemberRepository memberRepository, IPlayerHistoryRepository playerHistoryRepository, ITournamentRepository tournamentRepository, IMemberImportService memberImportService)
+    public FrmMemberData(IFormFactory formFactory, IMemberRepository memberRepository, IPlayerHistoryRepository playerHistoryRepository, ITournamentRepository tournamentRepository, IMemberImportService memberImportService, IMessageService messageService)
     {
         this.formFactory = formFactory;
         this.memberRepository = memberRepository;
         this.playerHistoryRepository = playerHistoryRepository;
         this.tournamentRepository = tournamentRepository;
         this.memberImportService = memberImportService;
+        this.messageService = messageService;
 
         InitializeComponent();
         txtMiddleInitial.MaxLength = 1;
@@ -814,7 +818,7 @@ public partial class FrmMemberData : Form
     /// </summary>
     private void BtnPrintActive_Click(object sender, EventArgs e)
     {
-        Print.PrintByActiveMembers(tournamentRepository.GetAllActiveMembers());
+        Print.PrintByActiveMembers(tournamentRepository.GetAllActiveMembers(), messageService);
     }
 
     /// <summary>
@@ -825,13 +829,13 @@ public partial class FrmMemberData : Form
     public void SinglePrint(object sender, PrintPageEventArgs e) 
     {
         NineTapTour.Database.Print.SinglePrint(
-            new MemberPrintObj(Convert.ToInt32(txtHandicap.Text), 
-                Convert.ToInt32(txtMemberNumber.Text), 
+            PrintContentBuilder.BuildRecapCard(Convert.ToInt32(txtHandicap.Text),
+                Convert.ToInt32(txtMemberNumber.Text),
                 txtCity.Text,
-                txtFirstName.Text, 
-                txtLastName.Text, 
-                txtAverage.Text, 
-                Convert.ToInt32(txtBonus.Text)), 
+                txtFirstName.Text,
+                txtLastName.Text,
+                txtAverage.Text,
+                Convert.ToInt32(txtBonus.Text)),
                 e);
     }
 
