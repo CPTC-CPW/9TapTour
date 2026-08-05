@@ -64,29 +64,6 @@ public partial class FrmTournamentStats : Form
     }
 
     /// <summary>
-    /// This method sorts scores and removes the lowest if 4 scores are present
-    /// It returns  a list with the 3 highest scores listOfValidScores
-    /// </summary>
-    /// <param name="scores"></param>  
-    public static List<int> GetTop3OutOf4(List<int?> scores)
-    {
-        List<int> listOfValidScores = [];
-        for (int i = 0; i < scores.Count; i++)
-        {
-            if (scores[i].HasValue)
-                listOfValidScores.Add(scores[i].Value);
-        }
-
-        //after sorting I want to get rid of lowest score  
-        listOfValidScores.Sort();
-        if (listOfValidScores.Count == 4)
-            listOfValidScores.Remove(listOfValidScores[0]);
-
-        listOfValidScores.Reverse();
-        return listOfValidScores;
-    }
-
-    /// <summary>
     /// BtnPrint_Click() is called when Print button is clicked on the tournamentStats form.
     /// </summary>
     /// <param name="sender"></param>

@@ -34,6 +34,7 @@ public static class CoreServiceConfiguration
         services.AddSingleton<IDatabaseMaintenanceService, DatabaseMaintenanceService>();
         services.AddSingleton<IFinalizeCalculationService, FinalizeCalculationService>();
         services.AddSingleton<IWinnersService, WinnersService>();
+        services.AddSingleton<IScoresService, ScoresService>();
         services.AddSingleton<ISeriesReportExcelExporter, SeriesReportExcelExporter>();
 
         services.AddSingleton<IMemberImportService, MemberImportService>();

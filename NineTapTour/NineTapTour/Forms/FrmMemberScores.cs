@@ -33,7 +33,6 @@ public partial class FrmMemberScores : Form
 
     //Count for record counting
     int currentIndex = 0;
-    readonly Participant player = new();
     readonly List<int> howManySquadsCanBeFiltered = [];
 
     private readonly IFormNavigator navigator;
@@ -47,6 +46,7 @@ public partial class FrmMemberScores : Form
     private readonly IFinalizeTempRepository finalizeTempRepository;
     private readonly IDoublesTeamRepository doublesTeamRepository;
     private readonly IDbContextFactory<NineTapDb> dbFactory;
+    private readonly IScoresService scoresService;
 
     /// <summary>
     /// instantiates all form buttons.
@@ -56,7 +56,7 @@ public partial class FrmMemberScores : Form
         ITournamentRepository tournamentRepository, IParticipantRepository participantRepository,
         IPlayerHistoryRepository playerHistoryRepository, IFinalizeTempRepository finalizeTempRepository,
         IDoublesTeamRepository doublesTeamRepository, IDbContextFactory<NineTapDb> dbFactory,
-        ITournamentSession session)
+        ITournamentSession session, IScoresService scoresService)
     {
         this.navigator = navigator;
         this.session = session;
@@ -69,6 +69,7 @@ public partial class FrmMemberScores : Form
         this.finalizeTempRepository = finalizeTempRepository;
         this.doublesTeamRepository = doublesTeamRepository;
         this.dbFactory = dbFactory;
+        this.scoresService = scoresService;
 
         InitializeComponent();
         DoubleBuffered = true;
@@ -397,11 +398,9 @@ public partial class FrmMemberScores : Form
             txtScratchTotal.Text = scratchTotal.ToString();
         }
 
-        //this code will adjust the scratch and handicap total (textboxes) only if its a 3of4 tournament ( taking out the lowest game) 
+        //this code will adjust the scratch and handicap total (textboxes) only if its a 3of4 tournament ( taking out the lowest game)
         if (txtScratchScore1.Text != "" && txtScratchScore2.Text != "" && txtScratchScore3.Text != "" && txtScratchScore4.Text != "")
         {
-            int handicapTotal = 0;
-
             if (session.SelectedTournament.ThreeOutOf4 == true)
             {
                 int[] scratchAsInt = new int[4];
@@ -430,14 +429,12 @@ public partial class FrmMemberScores : Form
                             handicapAsInt[g] = 0;
                         }
                     }
-                    handicapTotal += handicapAsInt[g];
                 }
 
-                scratchTotal -= scratchAsInt.Min();
-                handicapTotal -= handicapAsInt.Min();
+                ScoreTotals adjustedTotals = ScoresService.ComputeThreeOfFourAdjustedTotals(scratchAsInt, handicapAsInt);
 
-                txtScratchTotal.Text = scratchTotal.ToString();
-                txtHandicapTotal.Text = handicapTotal.ToString();
+                txtScratchTotal.Text = adjustedTotals.ScratchTotal.ToString();
+                txtHandicapTotal.Text = adjustedTotals.HandicapTotal.ToString();
             }
         }
 
@@ -519,45 +516,13 @@ public partial class FrmMemberScores : Form
         }
         else if (IsValid())
         {
-            //gets the current tournament from the database 
+            //gets the current tournament from the database
             Tournament currTourney = tournamentRepository.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
 
             //get all the current members participating in the current tournament
             session.Participants = tournamentRepository.GetTournamentMemberList(currTourney);
 
             int squad = GetCurrentSquadNumber();
-
-            //get the member from the database using the number from the memnum textbox
-            currentMem = memberRepository.GetMember(Convert.ToInt32(txtMemberNum.Text));
-            player.Member = currentMem;
-
-            player.Game = new Game();
-            // Phase 5: Removed player.ParticipantRegionID = RegionID; 
-            // Region is already stored in player.Member.NineTapRegionID
-            var db = dbFactory.CreateDbContext();
-
-            int gameId = gameRepository.GetGameID(db, currentMem.Id, currTourney.Id, squad);
-
-            int parID = participantRepository.GetParticipantID(db, currentMem.Id, currTourney.Id, squad);
-
-            if (parID != 0)
-            {
-                player.Id = parID;
-            }
-
-            player.Game.Id = gameId;
-
-            //selects the ID of the combo box of tournaments and stores the
-            //tournament property within the participants class.
-            player.Tournament = currTourney;
-            player.Squad = squad;
-
-            //defaults money earned to 0, or enters text box amount
-            if (txtMoney.Text == "" || txtMoney.Text == null)
-                player.Game.MoneyWon = 0;
-            else
-                player.Game.MoneyWon = Convert.ToDecimal(txtMoney.Text);
-
 
             if ((!ValidationHelper.IsNumeric(txtScratchScore1.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore1.Text))
                 || (!ValidationHelper.IsNumeric(txtScratchScore2.Text.Trim()) && !String.IsNullOrWhiteSpace(txtScratchScore2.Text))
@@ -569,53 +534,29 @@ public partial class FrmMemberScores : Form
             }
             else
             {
-                player.Game.Game1 = FormHelper.IsEmpty(txtScratchScore1)
-                    ? null
-                    : (int?)Convert.ToInt32((scratchArray[0].Text));
+                // Capture the control values into a POCO; the service performs the
+                // lookups, handicap/bonus carry-forward, and persistence.
+                ScoreEntryRequest request = new(
+                    currTourney.Id,
+                    Convert.ToInt32(txtMemberNum.Text),
+                    squad,
+                    FormHelper.IsEmpty(txtScratchScore1) ? null : (int?)Convert.ToInt32(scratchArray[0].Text),
+                    FormHelper.IsEmpty(txtScratchScore2) ? null : (int?)Convert.ToInt32(scratchArray[1].Text),
+                    FormHelper.IsEmpty(txtScratchScore3) ? null : (int?)Convert.ToInt32(scratchArray[2].Text),
+                    FormHelper.IsEmpty(txtScratchScore4) ? null : (int?)Convert.ToInt32(scratchArray[3].Text),
+                    //defaults money earned to 0, or enters text box amount
+                    txtMoney.Text == "" || txtMoney.Text == null ? 0 : Convert.ToDecimal(txtMoney.Text),
+                    cbCompEntry.Checked);
 
-                player.Game.Game2 = FormHelper.IsEmpty(txtScratchScore2)
-                    ? null
-                    : (int?)Convert.ToInt32((scratchArray[1].Text));
+                ScoreEntryResult result = scoresService.SaveScoreEntry(request);
+                currentMem = result.Member;
 
-                player.Game.Game3 = FormHelper.IsEmpty(txtScratchScore3)
-                    ? null
-                    : (int?)Convert.ToInt32((scratchArray[2].Text));
-
-                player.Game.Game4 = FormHelper.IsEmpty(txtScratchScore4)
-                    ? null
-                    : (int?)Convert.ToInt32((scratchArray[3].Text));
-
-                Game? currentGame = GetScoresById(currentMem.Id);
-
-                if (currentGame == null)
+                if (result.Success)
                 {
-                    int? mostRecentAdjAvg = playerHistoryRepository.GetMostRecentAverage(currentMem.Number);
-                    player.Game.Handicap = mostRecentAdjAvg != null
-                        ? CalcService.CalculateHandicapPins(mostRecentAdjAvg.Value)
-                        : currentMem.Handicap;
-                    player.Game.Bonus = currentMem.Bonus;
-                }
-                else
-                {
-                    player.Game.Bonus = currentGame.Bonus;
-                    player.Game.Handicap = currentGame.Handicap;
-                }
-
-                // if compEntry checkbox is checked, set IsComp to true in game table
-                if (cbCompEntry.Checked)
-                {
-                    player.Game.IsComp = true;
-                }
-
-                db.SaveChanges();
-
-                try
-                {
-                    tournamentRepository.AddMemberToTournament(player);
 #if DEBUG
                     MessageBox.Show(@"Bowler Added Successfully to Tournament!");
 #endif
-                    //if btnNew is being clicked 
+                    //if btnNew is being clicked
                     if (btnNew.ContainsFocus)
                     {
                         //clears score boxes
@@ -625,17 +566,9 @@ public partial class FrmMemberScores : Form
                     session.Participants = tournamentRepository.GetTournamentMemberList(currTourney);
                     RecordIndexAfterAddUpdate(session.Participants);
                 }
-                catch (MemberAccessException ex)
+                else
                 {
-                    MessageBox.Show(ex.Message);
-                }
-
-                //UPDATE LASTBOWLED DATE
-                //Sets last bowled to now and updates DB record
-                if (DateTime.Now > currentMem.LastBowled || currentMem.LastBowled == null)
-                {
-                    currentMem.LastBowled = DateTime.Now;
-                    memberRepository.AddOrUpdateMember(currentMem);
+                    MessageBox.Show(result.ErrorMessage);
                 }
             }
             Refresh();
@@ -1198,11 +1131,13 @@ public partial class FrmMemberScores : Form
         //Checks all score boxes and asks if you want to enter member without scores
         // Doubles tournaments only use games 1 and 2 (games 3 and 4 are hidden),
         // so only those two count toward the "missing score" check.
-        bool areAnyGamesScoresEmpty = session.SelectedTournament.Doubles
-            ? string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim())
-            : string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore4.Text.Trim());
-        bool areAnyFirst3BoxesEmptyForThreeGameTournament = session.SelectedTournament.IsOnlyThreeGames && (string.IsNullOrEmpty(txtScratchScore1.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore2.Text.Trim()) || string.IsNullOrEmpty(txtScratchScore3.Text.Trim()));
-        if ((areAnyGamesScoresEmpty && !session.SelectedTournament.IsOnlyThreeGames) || areAnyFirst3BoxesEmptyForThreeGameTournament)
+        if (ScoresService.AreRequiredScoresMissing(
+                session.SelectedTournament.Doubles,
+                session.SelectedTournament.IsOnlyThreeGames,
+                string.IsNullOrEmpty(txtScratchScore1.Text.Trim()),
+                string.IsNullOrEmpty(txtScratchScore2.Text.Trim()),
+                string.IsNullOrEmpty(txtScratchScore3.Text.Trim()),
+                string.IsNullOrEmpty(txtScratchScore4.Text.Trim())))
         {
             if (!chkIgnoreUnscoredGames.Checked)
             {
@@ -1261,7 +1196,6 @@ public partial class FrmMemberScores : Form
         Refresh();
     }
 
-    readonly IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
     private readonly NineTapDb db; // Get access to database for doubles team lookups
 
     /// <summary>
@@ -1308,23 +1242,13 @@ public partial class FrmMemberScores : Form
     private (List<ParticipantsGameViewModel> ParticipantsGameScores, List<TopParticipantGameViewModel> Top3Scores)
         GetResultsForCurrentParticipantList()
     {
-        var listOfParticipants = participantRepository.GetParticipants(session.SelectedTournament.Id);
-        listOfParticipants = GetFilteredParticipantListBySquad(listOfParticipants, GetSquadResultsNumberChecked());
-        var tourneyResults = GetTournamentPlacings(listOfParticipants, session.SelectedTournament.ThreeOutOf4, GetSelectedReportType());
-        return tourneyResults;
-
-        List<Participant> GetFilteredParticipantListBySquad(List<Participant> listOfParticipants, int qualifyBySquadNumber)
-        {
-            //TAKES A TOURNAMENT ID AND SQUAD NUMBER AND FILTERS FOR A LIST OF PARTICIPANTS.
-            if (qualifyBySquadNumber > 0 && qualifyBySquadNumber <= 8)
-                listOfParticipants = [.. listOfParticipants.Where(p => p.Squad == qualifyBySquadNumber)];
-
-            else if (howManySquadsCanBeFiltered.Count > 0 && qualifyBySquadNumber == 9)
-                //filters out each squad
-                //take the list of participants where => if the squad number equals to any of the filtered numbers.
-                listOfParticipants = [.. listOfParticipants.Where(p => howManySquadsCanBeFiltered.Any(h => h == p.Squad))];
-            return listOfParticipants;
-        }
+        LeaderboardResult tourneyResults = scoresService.GetTournamentLeaderboards(
+            session.SelectedTournament.Id,
+            session.SelectedTournament.ThreeOutOf4,
+            GetSelectedReportType(),
+            GetSquadResultsNumberChecked(),
+            howManySquadsCanBeFiltered);
+        return (tourneyResults.ParticipantsGameScores, tourneyResults.Top3Scores);
 
         ReportType GetSelectedReportType()
         {
@@ -1346,105 +1270,6 @@ public partial class FrmMemberScores : Form
             }
 
             throw new InvalidOperationException("A report type must be selected");
-        }
-
-        (List<ParticipantsGameViewModel> ParticipantsGameScores, List<TopParticipantGameViewModel> Top3Scores)
-            GetTournamentPlacings(List<Participant> listOfParticipants, bool isThreeOfFourTournament, ReportType reportType)
-        {
-            var participantsGameViewModels = new List<ParticipantsGameViewModel>();
-            var topParticipantGameViewModels = new List<TopParticipantGameViewModel>();
-
-            // makes list of ParticipantsGameViewModel which will be used to populate scratch game and handicap game
-            // listboxes which only allow 1 top game per person per squad
-            foreach (Participant currParticipant in listOfParticipants)
-            {
-                // creates temp variable for PaticipantsGameViewModel to store necessary info for each person 
-                ParticipantsGameViewModel currTopScoreViewModel =
-                    new(
-                    /* MemberNo  */ currParticipant.Member.Number,
-                    /* FirstName */ currParticipant.Member.FirstName,
-                    /* LastName  */ currParticipant.Member.LastName,
-                    /* Squad */ currParticipant.Squad,
-                    /* HighScore */ currParticipant.Game.AllGameScores().Max(),
-                    /* Handicap  */ currParticipant.Member.Handicap,
-                    /* Bonus */ currParticipant.Member.Bonus
-                    );
-
-                // adds person to list<ParticipantsGameViewModel>
-                participantsGameViewModels.Add(currTopScoreViewModel);
-            }
-
-            foreach (Participant currParticipant in listOfParticipants)
-            {
-                //Gets all of the game scores that are valid (that have a value)
-                var allScoresWithOutNullGames = currParticipant.Game.AllGameScores().Where(g => g.HasValue).ToList();
-
-                //totals all games with out nulls/valid score
-                int? totalScore = allScoresWithOutNullGames.Sum();
-
-                //Sets a collection of all the games to a new variable.
-                var top4Games = allScoresWithOutNullGames;
-
-                //Sets a collection of all the games using the 3 out of 4 ruleset
-                var top3Games = FrmTournamentStats.GetTop3OutOf4([.. top4Games]);
-
-                int numberOfGames = top4Games.Count;
-
-                TopParticipantGameViewModel currTopScoreViewModel =
-                    new(
-                    /* MemberNo  */ currParticipant.Member.Number,
-                    /* FirstName */ currParticipant.Member.FirstName,
-                    /* LastName  */ currParticipant.Member.LastName,
-                    /* Placeing  */ 0,
-                    /* ScratchTotal */ currParticipant.Game.AllGameScores().Sum().Value,
-                    /* top3ScratchScore  */ top3Games.Sum(),
-                    /* top3HandicapScore */ top3Games.Sum() +
-                                            (Math.Min(3, numberOfGames) * currParticipant.Member.Handicap) +
-                                            (Math.Min(3, numberOfGames) * currParticipant.Game.Bonus),
-                    /* Game1 */ currParticipant.Game.Game1,
-                    /* Game2 */ currParticipant.Game.Game2,
-                    /* Game3 */ currParticipant.Game.Game3,
-                    /* Game4 */ currParticipant.Game.Game4,
-                    /* Handicap */ currParticipant.Game.Handicap,
-                    /* Bonus  */ currParticipant.Game.Bonus.Value,
-                    /* gameID */ currParticipant.Game.Id,
-                    /* squad  */ currParticipant.Squad,
-                    /* threeOutOf4 */ session.SelectedTournament.ThreeOutOf4
-                    );
-
-                topParticipantGameViewModels.Add(currTopScoreViewModel);
-            }
-
-
-            if (reportType == ReportType.HighGameHandicapGameSenior)
-            {
-                // display data in the list boxes
-                // orders list by highest handicap score game to lowest
-                participantsGameViewModels = [.. participantsGameViewModels.OrderByDescending(t => t.HighScore + t.Handicap + t.Bonus)];
-            }
-            else if (reportType == ReportType.HighGame)
-            {
-                // orders list by highest scratch score game to lowest
-                participantsGameViewModels = [.. participantsGameViewModels.OrderByDescending(t => t.HighScore)];
-            }
-            else if (reportType == ReportType.HighSeriesScratch && isThreeOfFourTournament)
-            {
-                topParticipantGameViewModels = [.. topParticipantGameViewModels.OrderByDescending(t => t.Top3ScratchScore)];
-            }
-            else if (reportType == ReportType.HighSeriesScratch && !isThreeOfFourTournament)
-            {
-                topParticipantGameViewModels = [.. topParticipantGameViewModels.OrderByDescending(t => t.ScratchTotal)];
-            }
-            else if (reportType == ReportType.HighSeriesHandicap && isThreeOfFourTournament)
-            {
-                topParticipantGameViewModels = [.. topParticipantGameViewModels.OrderByDescending(t => t.Top3HandiScores)];
-            }
-            else if (reportType == ReportType.HighSeriesHandicap && !isThreeOfFourTournament)
-            {
-                topParticipantGameViewModels = [.. topParticipantGameViewModels.OrderByDescending(t => t.HandicapScore)];
-            }
-
-            return (participantsGameViewModels, topParticipantGameViewModels);
         }
     }
 
@@ -1671,8 +1496,7 @@ public partial class FrmMemberScores : Form
         }
         else
         {
-            List<MemberScores> temp = participantRepository.GetGameMemberScores(session.SelectedTournament.Id);
-            temp.Sort(scoreComparer);
+            List<MemberScores> temp = scoresService.GetGameScores(session.SelectedTournament.Id);
 
             //seriesCurrentSquad is not used in Game Report. Passes empty
             List<int> squadList = [];
@@ -1708,66 +1532,21 @@ public partial class FrmMemberScores : Form
         }
         else
         {
-            var temp = new List<MemberScores>();
-
             int qualifyBySquadNumber = GetSquadResultsNumberChecked();
 
             //Gets information from Filter Series by Squad checkboxes and gets the latest squad to pass when Series is clicked.
             List<bool> filterSeries = FormHelper.GetFilterSeriesList(GRPQBS1);
             List<int> squadList = ValidationHelper.SquadNumList(filterSeries);
 
-            // These 2 regions would recreate data that already exists on the page
-            #region PRINTING HANDICAP TOURNAMENT RESULTS
-            if (rdoHandicapScore.Checked)
-            {
-                if (session.SelectedTournament.ThreeOutOf4 && squadList.Contains(0))
-                {
-                    temp = participantRepository.GetStandingsForTournamentByHandicap(session.SelectedTournament.Id, true);
-                }
-                else if (session.SelectedTournament.ThreeOutOf4 && !squadList.Contains(0))
-                {
-                    temp = participantRepository.GetStandingsForTournamentByFilterSeriesByHandicap(squadList, session.SelectedTournament.Id, true);
-                }
-                else if (!session.SelectedTournament.ThreeOutOf4 && squadList.Contains(0))
-                {
-                    temp = participantRepository.GetStandingsForTournamentByHandicap(session.SelectedTournament.Id);
-                }
-                else if (!session.SelectedTournament.ThreeOutOf4 && !squadList.Contains(0))
-                {
-                    temp = participantRepository.GetStandingsForTournamentByFilterSeriesByHandicap(squadList, session.SelectedTournament.Id);
-                }
-            }
-            #endregion
-
-            #region PRINTING SCRATCH TOURNAMENT RESULTS
-            else if (rdoScratchScore.Checked)
-            {
-                if (session.SelectedTournament.ThreeOutOf4 && squadList.Contains(0))
-                {
-                    temp = participantRepository.GetStandingsForTournamentByScratch(session.SelectedTournament.Id, true);
-                }
-                else if (session.SelectedTournament.ThreeOutOf4 && !squadList.Contains(0))
-                {
-                    temp = participantRepository.GetStandingsForTournamentByFilterSeriesByScratch(squadList, session.SelectedTournament.Id, true);
-                }
-                else if (!session.SelectedTournament.ThreeOutOf4 && squadList.Contains(0))
-                {
-                    temp = participantRepository.GetStandingsForTournamentByScratch(session.SelectedTournament.Id);
-                }
-                else if (!session.SelectedTournament.ThreeOutOf4 && !squadList.Contains(0))
-                {
-                    temp = participantRepository.GetStandingsForTournamentByFilterSeriesByScratch(squadList, session.SelectedTournament.Id);
-                }
-            }
-            #endregion
-
-            // For doubles tournaments, combine partner scores into team standings
-            if (session.SelectedTournament.Doubles)
-            {
-                temp = CombineDoublesSeriesToTeams(temp, session.SelectedTournament.Id, squadList.Contains(0) ? null : squadList);
-            }
-
-            temp.Sort(scoreComparer);
+            // Selects the correct standings query for scratch/handicap, 3-of-4, and
+            // squad filtering, combines doubles partners into teams, and sorts.
+            List<MemberScores> temp = scoresService.GetSeriesStandings(
+                session.SelectedTournament.Id,
+                session.SelectedTournament.ThreeOutOf4,
+                session.SelectedTournament.Doubles,
+                rdoHandicapScore.Checked,
+                rdoScratchScore.Checked,
+                squadList);
 
             if (temp.Count != 0)
             {
@@ -1779,75 +1558,6 @@ public partial class FrmMemberScores : Form
                 MessageBox.Show("Error: No Participants in selected Squad.");
             }
         }
-    }
-
-    /// <summary>
-    /// Combines individual doubles player standings into team standings.
-    /// Each DoublesTeam's two members' scores are summed into a single team entry.
-    /// Partners are matched by name as "FirstName1 LastName1 & FirstName2 LastName2".
-    /// </summary>
-    /// <param name="individualScores">The list of individual player standings.</param>
-    /// <param name="tournamentId">The tournament ID to load doubles team pairings from.</param>
-    /// <param name="squadFilter">Optional list of squad numbers to filter teams by. Null means all squads.</param>
-    /// <returns>A list of TeamMemberScores representing team standings, sorted by combined score descending.</returns>
-    private List<MemberScores> CombineDoublesSeriesToTeams(List<MemberScores> individualScores, int tournamentId, List<int> squadFilter)
-    {
-        var combinedTeams = new List<MemberScores>();
-
-        // Load all doubles teams for this tournament
-        List<DoublesTeam> allTeams = doublesTeamRepository.GetTeamsByTournament(tournamentId);
-
-        // Filter teams by squad list if provided
-        List<DoublesTeam> teams = squadFilter == null
-            ? allTeams
-            : allTeams.Where(t => squadFilter.Contains(t.Squad)).ToList();
-
-        // Process each team pairing
-        foreach (var team in teams)
-        {
-            // Find both members' scores in the individual standings
-            var member1Scores = individualScores.FirstOrDefault(s => s.MemberId == team.Member1.Number && s.Squad == team.Squad);
-            var member2Scores = individualScores.FirstOrDefault(s => s.MemberId == team.Member2.Number && s.Squad == team.Squad);
-
-            // Skip this team if either member is not found in the standings
-            if (member1Scores == null || member2Scores == null)
-                continue;
-
-            // Create a combined team entry
-            var teamScores = new TeamMemberScores
-            {
-                // FirstName/LastName intentionally left empty; reports use Partner1*/Partner2* fields
-                FirstName = string.Empty,
-                LastName = string.Empty,
-
-                // Sum both partners' scores
-                Score = (member1Scores.Score ?? 0) + (member2Scores.Score ?? 0),
-
-                // Use first partner's payment info as the team's overall status
-                Paid = member1Scores.Paid && member2Scores.Paid,
-                LastPaymentYear = member1Scores.LastPaymentYear,
-
-                // Store individual partner data
-                Partner1MemberId = team.Member1.Number,
-                Partner1FirstName = team.Member1.FirstName,
-                Partner1LastName = team.Member1.LastName,
-                Partner1Score = member1Scores.Score,
-
-                Partner2MemberId = team.Member2.Number,
-                Partner2FirstName = team.Member2.FirstName,
-                Partner2LastName = team.Member2.LastName,
-                Partner2Score = member2Scores.Score,
-                Partner2LastPaymentYear = member2Scores.LastPaymentYear,
-
-                // Use first partner's member ID as a reference
-                MemberId = team.Member1.Number,
-                IsTeam = true
-            };
-
-            combinedTeams.Add(teamScores);
-        }
-
-        return combinedTeams;
     }
 
     private void BtnDelete_Click(object sender, EventArgs e)
