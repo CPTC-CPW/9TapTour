@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NineTapTour.Core.Data;
+using NineTapTour.Core.Export;
 using NineTapTour.Core.Import;
 using NineTapTour.Core.Repositories;
 using NineTapTour.Core.Services;
@@ -32,6 +33,8 @@ public static class CoreServiceConfiguration
         services.AddSingleton<ITournamentSession, TournamentSession>();
         services.AddSingleton<IDatabaseMaintenanceService, DatabaseMaintenanceService>();
         services.AddSingleton<IFinalizeCalculationService, FinalizeCalculationService>();
+        services.AddSingleton<IWinnersService, WinnersService>();
+        services.AddSingleton<ISeriesReportExcelExporter, SeriesReportExcelExporter>();
 
         services.AddSingleton<IMemberImportService, MemberImportService>();
         services.AddSingleton<IMemberHistoryImportService, MemberHistoryImportService>();

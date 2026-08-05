@@ -1,7 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NineTapTour.Core.Export;
 using NineTapTour.Core.Import;
 using NineTapTour.Core.Services;
-using NineTapTour.Forms;
 
 namespace NineTapTourTests.Characterization
 {
@@ -52,7 +52,7 @@ namespace NineTapTourTests.Characterization
         [DataRow("=results!a10", 10, 20, false, "=Results!a20")]
         public void ApplyRowRemap_MatchesCurrentBehavior(string formula, int oldRow, int newRow, bool newHasPot, string expected)
         {
-            Assert.AreEqual(expected, FrmTournamentResults.ApplyRowRemap(formula, oldRow, newRow, newHasPot));
+            Assert.AreEqual(expected, SeriesReportExcelExporter.ApplyRowRemap(formula, oldRow, newRow, newHasPot));
         }
     }
 
