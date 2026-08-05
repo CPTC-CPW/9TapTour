@@ -1090,7 +1090,7 @@ public partial class FrmMemberData : Form
     /// <param name="playerLastName"></param>
     /// <param name="firstAndMiddle"></param>
     /// <param name="playerFullName"></param>
-    private static void SplitName(ref string playerLastName, ref string firstAndMiddle, string playerFullName)
+    internal static void SplitName(ref string playerLastName, ref string firstAndMiddle, string playerFullName)
     {
         if (playerFullName.Contains(','))
         {

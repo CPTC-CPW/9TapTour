@@ -44,4 +44,7 @@
   <ItemGroup>
     <ProjectReference Include="..\NineTapTour.Core\NineTapTour.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="NineTapTourTests" />
+  </ItemGroup>
 </Project>

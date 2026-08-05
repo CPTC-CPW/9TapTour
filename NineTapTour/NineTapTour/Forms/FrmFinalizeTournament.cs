@@ -1385,7 +1385,7 @@ public partial class FrmFinalizeTournament : Form
     /// Cashers lose half as many bonus pins (magnitude rounded up so the bowler
     /// retains more pins). Non-cashers keep their base bonus unchanged.
     /// </summary>
-    private static int ComputeHalfRateBonus(int baseBonus, int place, bool isCashing)
+    internal static int ComputeHalfRateBonus(int baseBonus, int place, bool isCashing)
     {
         if (!isCashing) return baseBonus;
         int normalResult = CalcService.DeductFromBonusPins(place, baseBonus);

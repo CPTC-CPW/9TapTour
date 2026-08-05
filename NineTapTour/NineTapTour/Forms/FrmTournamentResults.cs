@@ -1610,7 +1610,7 @@ public partial class FrmTournamentResults : Form
     /// progressive-pot row below it the earnings formula expands to I{n}+I{n+1}, otherwise
     /// it collapses to just I{n}.  A placeholder character prevents double-substitution.
     /// </summary>
-    private static string ApplyRowRemap(string formula, int oldRow, int newRow, bool newHasPot)
+    internal static string ApplyRowRemap(string formula, int oldRow, int newRow, bool newHasPot)
     {
         const string ph = "\x01";
 
