@@ -1,5 +1,6 @@
 ﻿using NineTapTour.Database;
-using NineTapTour.Models;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

@@ -1,5 +1,8 @@
-﻿using NineTapTour.Database;
-using NineTapTour.Models;
+﻿using NineTapTour.Models;
+using NineTapTour.Database;
+using NineTapTour.Core.Data;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
 using NineTapTour.Services;
 using ClosedXML.Excel;
 using System;

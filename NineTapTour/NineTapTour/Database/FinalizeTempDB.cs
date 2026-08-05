@@ -1,11 +1,13 @@
-﻿using System;
+﻿using NineTapTour.Core.Data;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using NineTapTour.Models;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
 
 namespace NineTapTour.Database;
 
@@ -195,7 +197,7 @@ public class FinalizeTempDB
                     var member = db.Members.FirstOrDefault(x => x.Id == temp.MemberId);
                     if (member != null)
                     {
-                        member.Handicap = Calculations.TournamentCalculations.CalculateHandicapPins(
+                        member.Handicap = Core.Calculations.TournamentCalculations.CalculateHandicapPins(
                             Convert.ToInt16(Get30GameAverage(member))
                         );
                     }

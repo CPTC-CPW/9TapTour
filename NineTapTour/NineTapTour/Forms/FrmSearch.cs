@@ -1,11 +1,13 @@
 ﻿using NineTapTour.Database;
+using NineTapTour.Core.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
-using NineTapTour.Models;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
 
 namespace NineTapTour.Forms;
 

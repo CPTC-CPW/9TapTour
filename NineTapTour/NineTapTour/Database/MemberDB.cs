@@ -1,11 +1,13 @@
-﻿using System;
+﻿using NineTapTour.Core.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Windows.Forms;
-using NineTapTour.Models;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace NineTapTour.Database;
@@ -49,7 +51,7 @@ public class MemberDB
 
                 if (temp.Average != null)
                 {
-                    temp.Handicap = Calculations.TournamentCalculations.CalculateHandicapPins(temp.Average.Value);
+                    temp.Handicap = Core.Calculations.TournamentCalculations.CalculateHandicapPins(temp.Average.Value);
                 }
                 db.SaveChanges();
             }

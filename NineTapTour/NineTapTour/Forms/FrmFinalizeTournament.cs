@@ -1,7 +1,9 @@
-﻿using CalcService = NineTapTour.Calculations.TournamentCalculations;
+﻿using CalcService = NineTapTour.Core.Calculations.TournamentCalculations;
 using NineTapTour.Database;
-using NineTapTour.Models;
-using NineTapTour.Models.ViewModels;
+using NineTapTour.Core.Data;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
+using NineTapTour.Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

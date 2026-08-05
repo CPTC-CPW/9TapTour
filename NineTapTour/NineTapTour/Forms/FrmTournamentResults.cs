@@ -1,5 +1,9 @@
-﻿using NineTapTour.Database;
-using CalcService = NineTapTour.Calculations.TournamentCalculations;
+﻿using NineTapTour.Core.Calculations;
+using NineTapTour.Core.Export;
+using NineTapTour.Models;
+using NineTapTour.Database;
+using NineTapTour.Core.Data;
+using CalcService = NineTapTour.Core.Calculations.TournamentCalculations;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,9 +12,10 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using NineTapTour.Models;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
 using ClosedXML.Excel;
-using NineTapTour.Models.ViewModels;
+using NineTapTour.Core.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using NineTapTour.Helpers;
 
@@ -1417,7 +1422,7 @@ public partial class FrmTournamentResults : Form
                 }
                 else
                 {
-                    clientRequested = Calculations.TournamentCalculations.MakeTopMembersByPlacementList(winners, clientInput);
+                    clientRequested = Core.Calculations.TournamentCalculations.MakeTopMembersByPlacementList(winners, clientInput);
                 }
 
                 // For doubles the grid shows 2 rows per team; scale the display slot count accordingly

@@ -1,10 +1,12 @@
-﻿using System;
+﻿using NineTapTour.Core.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NineTapTour.Models;
-using NineTapTour.Models.ViewModels;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
+using NineTapTour.Core.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace NineTapTour.Database

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
-using NineTapTour.Models;
-using static NineTapTour.Database.ReportHelper;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
+using static NineTapTour.Core.Calculations.ReportHelper;
 
 namespace NineTapTour.Database
 {
@@ -64,7 +65,7 @@ namespace NineTapTour.Database
         /// <summary>
         /// For Printing the Report Sections
         /// </summary>
-        public static void ReportPrint(List<Models.MemberScores> tempMemberList, Tournament selectedTournament, ReportType reportTypeNum, PrintPageEventArgs e, int? manualCutoff = null)
+        public static void ReportPrint(List<MemberScores> tempMemberList, Tournament selectedTournament, ReportType reportTypeNum, PrintPageEventArgs e, int? manualCutoff = null)
         {
             // This var is used to draw a line after the rows of money-winning members are printed
             int winningPlaces;
@@ -235,7 +236,7 @@ namespace NineTapTour.Database
 
                 //draw the member number
                 var _ms = tempMemberList[i + (index * numBowlersPerPage)];
-                string memberNumString = (_ms is NineTapTour.Models.TeamMemberScores tms)
+                string memberNumString = (_ms is NineTapTour.Core.Models.TeamMemberScores tms)
                     ? $"{tms.Partner1MemberId} & {tms.Partner2MemberId}"
                     : _ms.MemberId.ToString();
                 graphic.DrawString(memberNumString, font, dBrush, startX + 120, startY + 173 + (i * 19));
@@ -246,7 +247,7 @@ namespace NineTapTour.Database
                 if (printDues)
                 {
                     var currentEntry = tempMemberList[i + (index * numBowlersPerPage)];
-                    if (currentEntry is NineTapTour.Models.TeamMemberScores tmsEntry)
+                    if (currentEntry is NineTapTour.Core.Models.TeamMemberScores tmsEntry)
                     {
                         unpaid = $"{FormatDuesYear(tmsEntry.LastPaymentYear)} & {FormatDuesYear(tmsEntry.Partner2LastPaymentYear)}";
                     }
@@ -268,7 +269,7 @@ namespace NineTapTour.Database
                 }
 
                 //create name string containing lastname, firstname, and last payment
-                string nameString = (tempMemberList[i + (index * numBowlersPerPage)] is NineTapTour.Models.TeamMemberScores teamEntry)
+                string nameString = (tempMemberList[i + (index * numBowlersPerPage)] is NineTapTour.Core.Models.TeamMemberScores teamEntry)
                     ? $"{teamEntry.Partner1FirstName} {teamEntry.Partner1LastName} & {teamEntry.Partner2FirstName} {teamEntry.Partner2LastName}"
                     : tempMemberList[i + (index * numBowlersPerPage)].LastName + ", " + tempMemberList[i + (index * numBowlersPerPage)].FirstName;
 
@@ -324,7 +325,7 @@ namespace NineTapTour.Database
             graphic.DrawLine(redPen, x1, y1, x2, y2);
         }
 
-        static public void PrintMemberReport(List<Models.MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList, bool printDues, int? manualCutoff)
+        static public void PrintMemberReport(List<MemberScores> temp, Tournament selectedTournament, ReportType reportTypeNum, int currentSquad, List<int> squadList, bool printDues, int? manualCutoff)
         {
             Print.temp = temp;
             Print.selectedTournament = selectedTournament;

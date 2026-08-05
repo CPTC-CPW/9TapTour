@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NineTapTour.Calculations;
-using NineTapTour.Models;
+﻿using NineTapTour.Core.Data;
+using Microsoft.EntityFrameworkCore;
+using NineTapTour.Core.Calculations;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
 using System;
 using System.Collections.Generic;
 using Microsoft.Data.SqlClient;

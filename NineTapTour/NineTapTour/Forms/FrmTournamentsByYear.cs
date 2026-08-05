@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using NineTapTour.Database;
+using NineTapTour.Core.Data;
 
 namespace NineTapTour.Forms;
 

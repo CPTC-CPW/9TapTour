@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NineTapTour.Database;
+using NineTapTour.Core.Calculations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace NineTapTour.Database.Tests
         [DataRow("90")]
         public void IsAverageValidTest(string testData)
         {
-            bool isValid = FormHelper.IsAverageValid(testData);
+            bool isValid = ValidationHelper.IsAverageValid(testData);
             Assert.IsTrue(isValid);
         }
     }

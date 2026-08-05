@@ -1,5 +1,7 @@
+﻿using NineTapTour.Core.Data;
 using Microsoft.EntityFrameworkCore;
-using NineTapTour.Models;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
 

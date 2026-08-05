@@ -4,7 +4,9 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using NineTapTour.Database;
-using NineTapTour.Models;
+using NineTapTour.Core.Data;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
 
 namespace NineTapTour.Forms;
 

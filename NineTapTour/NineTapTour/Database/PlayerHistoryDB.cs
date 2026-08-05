@@ -1,6 +1,8 @@
+﻿using NineTapTour.Core.Data;
 using System.Collections.Generic;
 using System.Linq;
-using NineTapTour.Models;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace NineTapTour.Database;

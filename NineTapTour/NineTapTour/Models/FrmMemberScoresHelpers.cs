@@ -1,4 +1,5 @@
-﻿using NineTapTour.Models;
+﻿using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
 using System.Collections.Generic;
 using System.Windows.Forms;
 

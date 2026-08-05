@@ -1,6 +1,7 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NineTapTour.Calculations;
-using NineTapTour.Models;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NineTapTour.Core.Calculations;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

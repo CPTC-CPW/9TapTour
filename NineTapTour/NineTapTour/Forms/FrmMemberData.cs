@@ -1,14 +1,17 @@
-﻿using System;
+﻿using NineTapTour.Core.Export;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using NineTapTour.Database;
+using NineTapTour.Helpers;
+using NineTapTour.Core.Calculations;
 using System.Drawing.Printing;
 using System.Data;
-using NineTapTour.Models;
-using ClosedXML.Excel;
+using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
+using ClosedXML.Excel;
 using NineTapTour.Services;
 
 namespace NineTapTour.Forms;
@@ -238,11 +241,11 @@ public partial class FrmMemberData : Form
             *********************************************************************************/
             try
             {
-                currentMem.Handicap = Calculations.TournamentCalculations.CalculateHandicapPins((currentMem.Average.Value));
+                currentMem.Handicap = Core.Calculations.TournamentCalculations.CalculateHandicapPins((currentMem.Average.Value));
             }
             catch
             {
-                currentMem.Handicap = Calculations.TournamentCalculations.CalculateHandicapPins((0));
+                currentMem.Handicap = Core.Calculations.TournamentCalculations.CalculateHandicapPins((0));
             }
 
             txtHandicap.Text = currentMem.Handicap.ToString(); 
@@ -358,7 +361,7 @@ public partial class FrmMemberData : Form
 			bool valid = true;
 
         // validate average textbox for being between 1-300
-        if (!FormHelper.IsAverageValid(txtAverage.Text))
+        if (!ValidationHelper.IsAverageValid(txtAverage.Text))
         {
             lblAverageValidation.Visible = true;
             txtAverage.Clear();
@@ -397,7 +400,7 @@ public partial class FrmMemberData : Form
         }
 
         // validate dateJoined textbox
-        if (!FormHelper.IsDateTimeValid(txtDateJoined.Text))
+        if (!ValidationHelper.IsDateTimeValid(txtDateJoined.Text))
         {
             lblDateJoinedValidation.Visible = true;
             txtDateJoined.BackColor = Color.LightPink;
@@ -409,7 +412,7 @@ public partial class FrmMemberData : Form
         {
             txtDOB.BackColor = SystemColors.Control;
         }
-        else if(!FormHelper.IsDateTimeValid(txtDOB.Text))
+        else if(!ValidationHelper.IsDateTimeValid(txtDOB.Text))
         {
             lblDOBValidation.Visible = true;
             txtDOB.BackColor = Color.LightPink;
@@ -491,7 +494,7 @@ public partial class FrmMemberData : Form
             }
 
             temp.Handicap = 
-                Calculations.TournamentCalculations.CalculateHandicapPins(temp.Average.Value);
+                Core.Calculations.TournamentCalculations.CalculateHandicapPins(temp.Average.Value);
             
             // Misc. Info
             if (!String.IsNullOrWhiteSpace(txtRejoinDate.Text))
@@ -914,7 +917,7 @@ public partial class FrmMemberData : Form
             if (reset != null)
             {
                 currentMem.Average = reset.AVG;
-                currentMem.Handicap = Calculations.TournamentCalculations
+                currentMem.Handicap = Core.Calculations.TournamentCalculations
                     .CalculateHandicapPins(Convert.ToInt32(currentMem.Average));
 
                 currentMem.Bonus = reset.Bonus;

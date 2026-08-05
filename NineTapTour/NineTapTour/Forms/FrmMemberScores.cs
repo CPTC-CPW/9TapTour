@@ -1,7 +1,12 @@
-﻿using CalcService = NineTapTour.Calculations.TournamentCalculations;
+﻿using NineTapTour.Models;
+using CalcService = NineTapTour.Core.Calculations.TournamentCalculations;
 using NineTapTour.Database;
-using NineTapTour.Models;
-using NineTapTour.Models.ViewModels;
+using NineTapTour.Helpers;
+using NineTapTour.Core.Calculations;
+using NineTapTour.Core.Data;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
+using NineTapTour.Core.ViewModels;
 using NineTapTour.Services;
 using System;
 using System.Collections.Generic;
@@ -9,7 +14,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using static NineTapTour.Database.ReportHelper;
+using static NineTapTour.Core.Calculations.ReportHelper;
 
 namespace NineTapTour.Forms;
 
@@ -1235,7 +1240,7 @@ public partial class FrmMemberScores : Form
         Refresh();
     }
 
-    readonly IComparer<MemberScores> scoreComparer = new Calculations.MemberScoresComparer();
+    readonly IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
     private readonly NineTapDb db = new(); // Get access to database for doubles team lookups
 
     /// <summary>
@@ -1382,7 +1387,8 @@ public partial class FrmMemberScores : Form
                     /* Handicap */ currParticipant.Game.Handicap,
                     /* Bonus  */ currParticipant.Game.Bonus.Value,
                     /* gameID */ currParticipant.Game.Id,
-                    /* squad  */ currParticipant.Squad
+                    /* squad  */ currParticipant.Squad,
+                    /* threeOutOf4 */ FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4
                     );
 
                 topParticipantGameViewModels.Add(currTopScoreViewModel);
@@ -1686,7 +1692,7 @@ public partial class FrmMemberScores : Form
 
             //Gets information from Filter Series by Squad checkboxes and gets the latest squad to pass when Series is clicked.
             List<bool> filterSeries = FormHelper.GetFilterSeriesList(GRPQBS1);
-            List<int> squadList = FormHelper.SquadNumList(filterSeries);
+            List<int> squadList = ValidationHelper.SquadNumList(filterSeries);
 
             // These 2 regions would recreate data that already exists on the page
             #region PRINTING HANDICAP TOURNAMENT RESULTS

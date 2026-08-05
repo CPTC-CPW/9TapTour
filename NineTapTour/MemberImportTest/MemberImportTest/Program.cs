@@ -1,5 +1,6 @@
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using NineTapTour.Database;
+using NineTapTour.Core.Data;
 using System;
 using System.Windows.Forms;
 

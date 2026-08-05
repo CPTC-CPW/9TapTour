@@ -1,9 +1,11 @@
-﻿using NineTapTour.Database;
+﻿using NineTapTour.Models;
+using NineTapTour.Database;
 using NineTapTour.Services;
 using System;
 using System.Windows.Forms;
 using System.Drawing;
-using NineTapTour.Models;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
 
 namespace NineTapTour.Forms;
 

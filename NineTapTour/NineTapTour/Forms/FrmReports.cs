@@ -1,11 +1,13 @@
+﻿using NineTapTour.Core.Export;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using ClosedXML.Excel;
-using NineTapTour.Calculations;
+using NineTapTour.Core.Calculations;
 using NineTapTour.Database;
-using NineTapTour.Models;
+using NineTapTour.Core.Entities;
+using NineTapTour.Core.Models;
 
 namespace NineTapTour.Forms;
 
