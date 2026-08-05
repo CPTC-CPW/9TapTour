@@ -10,9 +10,9 @@ namespace NineTapTour.IntegrationTests
 {
     /// <summary>
     /// Creates a unique LocalDB catalog for the test run, migrates it, seeds
-    /// the canonical dataset, and points DbConfig at it so every current
-    /// data-access path (static DB classes, new NineTapDb()) hits the test
-    /// catalog. The catalog is dropped when the assembly finishes.
+    /// the canonical dataset, and exposes a DbFactory pointed at it for
+    /// constructing repositories under test. The catalog is dropped when the
+    /// assembly finishes.
     /// </summary>
     [TestClass]
     public static class TestDatabase
@@ -20,6 +20,12 @@ namespace NineTapTour.IntegrationTests
         private const string ServerConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=60;Encrypt=False";
 
         public static string CatalogName { get; private set; }
+
+        /// <summary>
+        /// Factory pointed at the test catalog; repositories under test are
+        /// constructed with this.
+        /// </summary>
+        public static IDbContextFactory<NineTapDb> DbFactory { get; private set; }
 
         // Seeded tournament ids, captured after SaveChanges
         public static int ThreeOf4TournamentId { get; private set; }
@@ -36,14 +42,33 @@ namespace NineTapTour.IntegrationTests
         public static void CreateAndSeed(TestContext context)
         {
             CatalogName = $"NineTapDb_Test_{DateTime.Now:yyyyMMddHHmmss}_{Environment.ProcessId}";
-            DbConfig.ConnectionString = $"Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog={CatalogName};Integrated Security=True;Connect Timeout=60;Encrypt=False";
+            string connectionString = $"Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog={CatalogName};Integrated Security=True;Connect Timeout=60;Encrypt=False";
 
-            using (NineTapDb db = new())
+            DbContextOptionsBuilder<NineTapDb> optionsBuilder = new();
+            optionsBuilder.UseSqlServer(connectionString);
+            DbFactory = new TestDbFactory(optionsBuilder.Options);
+
+            using (NineTapDb db = DbFactory.CreateDbContext())
             {
                 db.Database.Migrate();
             }
 
             Seed();
+        }
+
+        private sealed class TestDbFactory : IDbContextFactory<NineTapDb>
+        {
+            private readonly DbContextOptions<NineTapDb> options;
+
+            public TestDbFactory(DbContextOptions<NineTapDb> options)
+            {
+                this.options = options;
+            }
+
+            public NineTapDb CreateDbContext()
+            {
+                return new NineTapDb(options);
+            }
         }
 
         [AssemblyCleanup]
@@ -70,7 +95,7 @@ namespace NineTapTour.IntegrationTests
         /// </summary>
         private static void Seed()
         {
-            using NineTapDb db = new();
+            using NineTapDb db = DbFactory.CreateDbContext();
 
             Member m101 = NewMember(101, "Alice", "Anderson", average: 150, handicap: 63, bonus: 2, isSenior: false, lastPayment: DateTime.Today, isLifetime: false);
             Member m102 = NewMember(102, "Bob", "Baker", average: 180, handicap: 36, bonus: 0, isSenior: true, lastPayment: DateTime.Today.AddYears(-2), isLifetime: false);

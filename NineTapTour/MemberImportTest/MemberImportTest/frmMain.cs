@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using ClosedXML.Excel;
+using Microsoft.EntityFrameworkCore;
 using NineTapTour.Database;
 using NineTapTour.Core.Data;
+using NineTapTour.Core.Repositories;
 using NineTapTour.Forms;
 using NineTapTour.Core.Entities;
 using System.Drawing;
@@ -22,8 +24,25 @@ public partial class FrmMain : Form
     private Button btnConvertXls;
     private TextBox txtStatus;
 
-    public FrmMain()
+    private readonly IMemberRepository memberRepository;
+    private readonly IGameRepository gameRepository;
+    private readonly ITournamentRepository tournamentRepository;
+    private readonly IPlayerHistoryRepository playerHistoryRepository;
+    private readonly IDbContextFactory<NineTapDb> dbFactory;
+
+    public FrmMain(
+        IMemberRepository memberRepository,
+        IGameRepository gameRepository,
+        ITournamentRepository tournamentRepository,
+        IPlayerHistoryRepository playerHistoryRepository,
+        IDbContextFactory<NineTapDb> dbFactory)
     {
+        this.memberRepository = memberRepository;
+        this.gameRepository = gameRepository;
+        this.tournamentRepository = tournamentRepository;
+        this.playerHistoryRepository = playerHistoryRepository;
+        this.dbFactory = dbFactory;
+
         InitializeComponent();
         InitializeConvertXlsControls();
     }
@@ -336,9 +355,9 @@ public partial class FrmMain : Form
         int persisted = 0;
         for (int j = 0; j < validMembers.Count; j++)
         {
-            if (!NineTapTour.Database.MemberDB.MemberExists(validMembers[j]))
+            if (!memberRepository.MemberExists(validMembers[j]))
             {
-                NineTapTour.Database.MemberDB.AddOrUpdateMember(validMembers[j]);
+                memberRepository.AddOrUpdateMember(validMembers[j]);
                 persisted++;
             }
         }
@@ -419,7 +438,7 @@ public partial class FrmMain : Form
         char[] splitters = new[] { '/', '-' };
 
         // Create a single DbContext for the entire file import
-        using (var db = new NineTapDb())
+        using (var db = dbFactory.CreateDbContext())
         {
             using (var workbook = new XLWorkbook(PathAndFileName))
             {
@@ -453,10 +472,10 @@ public partial class FrmMain : Form
                 }
 
                 // Load existing tournaments once for the entire workbook
-                List<Tournament> existingTournaments = TournamentDB.GetTournamentList(db);
+                List<Tournament> existingTournaments = tournamentRepository.GetTournamentList(db);
 
                 // PERFORMANCE: Look up member once per file instead of per row
-                var member = MemberDB.GetMember(playerNumberAsInt, db);
+                var member = memberRepository.GetMember(playerNumberAsInt, db);
                 if (member == null || member.IsActive != true)
                 {
                     txtProgress.AppendText($"  WARNING: Member #{playerNumberAsInt} not found or inactive. Skipping file.\r\n");
@@ -529,7 +548,7 @@ public partial class FrmMain : Form
                                 IsOnlyThreeGames = false,
                             };
 
-                            TournamentDB.AddTournament(tourn, db);
+                            tournamentRepository.AddTournament(tourn, db);
                             existingTournaments.Add(tourn);
                         }
 
@@ -562,7 +581,7 @@ public partial class FrmMain : Form
                             // PlaceStanding = Convert.ToInt32(temp.FinPPHG),
                         };
 
-                        GameDB.AddOrUpdateGame(game, db);
+                        gameRepository.AddOrUpdateGame(game, db);
 
                         // Squad numbering is 1-based per player per tournament within this import run.
                         // Always start from 1 for the first entry read, regardless of any existing DB records.
@@ -582,7 +601,7 @@ public partial class FrmMain : Form
                             Tournament = tourn
                         };
 
-                        TournamentDB.AddMemberToTournament(participant, db);
+                        tournamentRepository.AddMemberToTournament(participant, db);
 
                         returnMe.Add(temp);
                     }
@@ -687,7 +706,7 @@ public partial class FrmMain : Form
         // Update validMembers in memory with latest history values
         for (int i = 0; i < validMembers.Count; i++)
         {
-            List<PlayerHistoryViewModel> list = PlayerHistoryDB.GetLastFiveTournaments(validMembers[i].Number);
+            List<PlayerHistoryViewModel> list = playerHistoryRepository.GetLastFiveTournaments(validMembers[i].Number);
             if (list.Count > 0)
             {
                 validMembers[i].Average = list[0].AVG; // set new avg to last bowled adjusted avg
@@ -713,12 +732,12 @@ public partial class FrmMain : Form
         lblFinalizeStatus.Refresh();
     }
 
-    private static void UpdateMembers(List<Member> members)
+    private void UpdateMembers(List<Member> members)
     {
         for (int i = 0; i < members.Count; i++)
         {
             // Use AddOrUpdate to ensure existing members get their averages/bonus updated
-            MemberDB.AddOrUpdateMember(members[i]);
+            memberRepository.AddOrUpdateMember(members[i]);
         }
     }
 

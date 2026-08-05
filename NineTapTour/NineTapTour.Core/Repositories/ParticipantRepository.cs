@@ -1,26 +1,32 @@
-﻿using NineTapTour.Core.Data;
+#nullable disable
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using NineTapTour.Core.Calculations;
+using NineTapTour.Core.Data;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
 using System;
 using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace NineTapTour.Database;
+namespace NineTapTour.Core.Repositories;
 
-public class ParticipantsDB
+public class ParticipantRepository : IParticipantRepository
 {
+    private readonly IDbContextFactory<NineTapDb> dbFactory;
+
+    public ParticipantRepository(IDbContextFactory<NineTapDb> dbFactory)
+    {
+        this.dbFactory = dbFactory;
+    }
+
     /// <summary>
     /// Ensures a participant row (and empty game row) exists for the member in a tournament squad.
     /// Returns true when the participant already existed or was created successfully.
     /// </summary>
-    public static bool EnsureParticipantExists(int tournamentId, int memberId, int squad)
+    public bool EnsureParticipantExists(int tournamentId, int memberId, int squad)
     {
-        using var db = new NineTapDb();
+        using var db = dbFactory.CreateDbContext();
 
         bool exists = db.Participants.Any(p =>
             p.Tournament.Id == tournamentId &&
@@ -61,9 +67,9 @@ public class ParticipantsDB
     /// Returns the count of participants who have not yet had any scores entered (Game1 is null),
     /// both as a total and broken down by squad.
     /// </summary>
-    public static (int Total, Dictionary<int, int> BySquad) GetParticipantNoScoreCounts(int tournamentId)
+    public (int Total, Dictionary<int, int> BySquad) GetParticipantNoScoreCounts(int tournamentId)
     {
-        using var db = new NineTapDb();
+        using var db = dbFactory.CreateDbContext();
         var rows = db.Participants
             .Include(p => p.Game)
             .Where(p => p.Tournament.Id == tournamentId && p.Game.Game1 == null)
@@ -80,9 +86,9 @@ public class ParticipantsDB
     /// <summary>
     /// Returns a list of all participants in a tournament
     /// </summary>
-    public static List<Participant> GetParticipants(int TournamentID)
+    public List<Participant> GetParticipants(int TournamentID)
     {
-        using (var db = new NineTapDb())
+        using (var db = dbFactory.CreateDbContext())
         {
            return [.. db.Participants.Include("Member").Include("Game").Include("Tournament")
                 .Where(p => p.Tournament.Id == TournamentID)
@@ -93,9 +99,9 @@ public class ParticipantsDB
     /// <summary>
     /// Returns a list of MemberScores with the same given TournamentID
     /// </summary>
-    public static List<MemberScores> GetGameMemberScores(int TournamentID)
+    public List<MemberScores> GetGameMemberScores(int TournamentID)
     {
-        using (NineTapDb db = new())
+        using (var db = dbFactory.CreateDbContext())
         {
             return
             [
@@ -108,7 +114,7 @@ public class ParticipantsDB
                                             LastName = g.Member.LastName,
                                             Score = g.Game.Game1.Value,
                                             LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                                            Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
+                                            Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
                                                 (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                                         }),
                 .. (from g in (db.Participants.Include(b => b.Member)
@@ -121,7 +127,7 @@ public class ParticipantsDB
                 LastName = g.Member.LastName,
                 Score = g.Game.Game2.Value,
                 LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
+                Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
                 (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                 }),
                 .. (from g in (db.Participants.Include(b => b.Member)
@@ -134,7 +140,7 @@ public class ParticipantsDB
                 LastName = g.Member.LastName,
                 Score = g.Game.Game3.Value,
                 LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
+                Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
                    (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                 }),
                 .. (from g in (db.Participants.Include(b => b.Member)
@@ -147,7 +153,7 @@ public class ParticipantsDB
                 LastName = g.Member.LastName,
                 Score = g.Game.Game4.Value,
                 LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
+                Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
                    (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                 }),
             ];
@@ -157,11 +163,11 @@ public class ParticipantsDB
     /// <summary>
     /// Gets a list of Senior scores for the Senior Report
     /// </summary>
-    public static List<MemberScores> GetSeniorMemberScores(int selectedTourneyId)
+    public List<MemberScores> GetSeniorMemberScores(int selectedTourneyId)
     {
-        using (NineTapDb db = new())
+        using (var db = dbFactory.CreateDbContext())
         {
-            List<MemberScores> temp = 
+            List<MemberScores> temp =
                 [
                     .. (from g in db.Participants.Include(b => b.Member)
                     .Include(b => b.Game)
@@ -174,7 +180,7 @@ public class ParticipantsDB
                     LastName = g.Member.LastName,
                     Score = g.Game.Game1.Value,
                     LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                    Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
+                    Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
                         (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                     }),
                     .. (from g in (db.Participants.Include(nameof(Participant.Member))
@@ -188,7 +194,7 @@ public class ParticipantsDB
                     LastName = g.Member.LastName,
                     Score = g.Game.Game2.Value,
                     LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                    Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
+                    Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
                         (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                     }),
                     .. (from g in (db.Participants.Include(nameof(Participant.Member))
@@ -202,7 +208,7 @@ public class ParticipantsDB
                     LastName = g.Member.LastName,
                     Score = g.Game.Game3.Value,
                     LastPaymentYear = (g.Member.IsLifetimeMember) ? "life " : g.Member.LastPayment.Value.Year.ToString(),
-                    Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null && 
+                    Paid = (g.Member.IsLifetimeMember == true || !(g.Member.LastPayment != null &&
                         (g.Member.LastPayment.Value <= DateTime.Now.AddYears(-1))))
                     }),
                     .. (from g in (db.Participants.Include(nameof(Participant.Member))
@@ -226,11 +232,11 @@ public class ParticipantsDB
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
-    public static List<MemberScores> GetStandingsForThreeOf4ByScratch(int selectedTournament)
+    public List<MemberScores> GetStandingsForThreeOf4ByScratch(int selectedTournament)
     {
-        using (NineTapDb db = new())
+        using (var db = dbFactory.CreateDbContext())
         {
             string con = db.Database.GetDbConnection().ConnectionString;
             string query = @"SELECT MemberId
@@ -285,16 +291,16 @@ ORDER BY Score DESC";
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
-    public static List<MemberScores> GetStandingsForTournamentByHandicap(int selectedTournament, bool isThreeOfFourTournament = false)
+    public List<MemberScores> GetStandingsForTournamentByHandicap(int selectedTournament, bool isThreeOfFourTournament = false)
     {
-        using (NineTapDb db = new())
+        using (var db = dbFactory.CreateDbContext())
         {
             List<MemberScoresInterim> memberInterimScores = [.. (from g in (db.Participants.Include(b => b.Member)
                         .Include(b => b.Game)
                         .Where(b => b.Tournament.Id == selectedTournament))
-                    orderby ((g.Game.Game1 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game2 + g.Game.Bonus + g.Game.Handicap) + 
+                    orderby ((g.Game.Game1 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game2 + g.Game.Bonus + g.Game.Handicap) +
                         (g.Game.Game3 + g.Game.Bonus + g.Game.Handicap) + (g.Game.Game4 + g.Game.Bonus + g.Game.Handicap)) descending
                     select new MemberScoresInterim {
                         MemberId = g.Member.Number,
@@ -345,11 +351,11 @@ ORDER BY Score DESC";
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
-    public static List<MemberScores> GetStandingsForTournamentByScratch(int selectedTournament, bool isThreeOfFourTournament = false)
+    public List<MemberScores> GetStandingsForTournamentByScratch(int selectedTournament, bool isThreeOfFourTournament = false)
     {
-        using (NineTapDb db = new())
+        using (var db = dbFactory.CreateDbContext())
         {
             List<MemberScoresInterim> interimScores = [.. (from g in (db.Participants.Include(b => b.Member)
                         .Include(b => b.Game)
@@ -406,9 +412,9 @@ ORDER BY Score DESC";
     /// <param name="squadList">A list of all the selected squads</param>
     /// <param name="selectedTournament"></param>
     /// <returns></returns>
-    public static List<MemberScores> GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(List<int> squadList, int selectedTournament)
+    public List<MemberScores> GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(List<int> squadList, int selectedTournament)
     {
-        using (NineTapDb db = new())
+        using (var db = dbFactory.CreateDbContext())
         {
             string con = db.Database.GetDbConnection().ConnectionString;
             string query = $@"SELECT MemberId
@@ -463,11 +469,11 @@ ORDER BY Score DESC";
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
-    public static List<MemberScores> GetStandingsForTournamentByFilterSeriesByHandicap(List<int> squadList, int selectedTournament, bool isThreeOfFourTournament = false)
+    public List<MemberScores> GetStandingsForTournamentByFilterSeriesByHandicap(List<int> squadList, int selectedTournament, bool isThreeOfFourTournament = false)
     {
-        using (NineTapDb db = new())
+        using (var db = dbFactory.CreateDbContext())
         {
             List<MemberScoresInterim> returnedList = [];
             foreach (int squad in squadList)
@@ -476,7 +482,7 @@ ORDER BY Score DESC";
                     (from g in (db.Participants.Include(b => b.Member)
                          .Include(b => b.Game)
                          .Where(b => b.Tournament.Id == selectedTournament).Where(b => b.Squad == squad))
-                     orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 + 
+                     orderby (g.Game.Game1 + g.Game.Game2 + g.Game.Game3 + g.Game.Game4 +
                          (g.Game.Handicap * 4 + g.Game.Bonus * 4)) descending
                      select new MemberScoresInterim {
                          MemberId = g.Member.Number,
@@ -530,9 +536,9 @@ ORDER BY Score DESC";
     /// <summary>
     ///
     /// </summary>
-    public static List<MemberScores> GetStandingsForThreeOf4ByFilterSeriesByScratch(List<int> squadList, int selectedTournament)
+    public List<MemberScores> GetStandingsForThreeOf4ByFilterSeriesByScratch(List<int> squadList, int selectedTournament)
     {
-        using (NineTapDb db = new())
+        using (var db = dbFactory.CreateDbContext())
         {
             string con = db.Database.GetDbConnection().ConnectionString;
             string query = $@"SELECT MemberId
@@ -587,11 +593,11 @@ ORDER BY Score DESC";
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
-    public static List<MemberScores> GetStandingsForTournamentByFilterSeriesByScratch(List<int> squadList, int selectedTournament, bool isThreeOfFourTournament = false)
+    public List<MemberScores> GetStandingsForTournamentByFilterSeriesByScratch(List<int> squadList, int selectedTournament, bool isThreeOfFourTournament = false)
     {
-        using (NineTapDb db = new())
+        using (var db = dbFactory.CreateDbContext())
         {
             List<MemberScoresInterim> returnedList = [];
             foreach (int squad in squadList)
@@ -647,7 +653,7 @@ ORDER BY Score DESC";
         }
     }
 
-    public static int GetParticipantID(NineTapDb db, int memberId, int tournyId, int squad)
+    public int GetParticipantID(NineTapDb db, int memberId, int tournyId, int squad)
     {
         return (from p in db.Participants
                 where p.Member.Id == memberId
@@ -656,14 +662,3 @@ ORDER BY Score DESC";
                 select p.Id).FirstOrDefault();
     }
 }
-
-public class MemberScoresInterim : MemberScores
-{
-    public int? Game1Score { get; internal set; }
-    public int? Game2Score { get; internal set; }
-    public int? Game3Score { get; internal set; }
-    public int? Game4Score { get; internal set; }
-    public int? HandicapValue { get; internal set; }
-    public int? BonusPinValue { get; internal set; }
-}
-

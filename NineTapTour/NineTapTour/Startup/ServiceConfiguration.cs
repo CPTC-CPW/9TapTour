@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NineTapTour.Database;
 using NineTapTour.Core.Data;
+using NineTapTour.Core.Startup;
 using NineTapTour.Forms;
 using NineTapTour.Services;
 using System;
@@ -21,7 +22,7 @@ public static class ServiceConfiguration
         string connectionString = configuration.GetConnectionString("NineTapDb")
             ?? throw new InvalidOperationException("Connection string 'NineTapDb' is missing from appsettings.json.");
 
-        services.AddDbContextFactory<NineTapDb>(options => options.UseSqlServer(connectionString));
+        services.AddNineTapTourCore(connectionString);
 
         services.AddSingleton<IFormNavigator, FormNavigator>();
         services.AddSingleton<IFormFactory, FormFactory>();

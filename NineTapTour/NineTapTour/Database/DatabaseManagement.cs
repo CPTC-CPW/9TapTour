@@ -23,12 +23,12 @@ namespace NineTapTour.Database
         /// <summary>
         /// Backs up the current database with DateTime attached to a backup name
         /// </summary>
-        public static void BackupDatabase()
+        public static void BackupDatabase(IDbContextFactory<NineTapDb> dbFactory)
         {
             // Raw SQL with EF Core
             // https://www.learnentityframeworkcore.com/raw-sql
             const string dbName = "NineTapDb2025";
-            using NineTapDb context = new();
+            using NineTapDb context = dbFactory.CreateDbContext();
 
             SaveFileDialog saveFileDialog = new()
             {
@@ -53,9 +53,9 @@ namespace NineTapTour.Database
         /// Restores NineTap database from backup
         /// </summary>
         /// <returns>Returns true if database is restored and app must be restarted</returns>
-        public static bool RestoreDatabase()
+        public static bool RestoreDatabase(IDbContextFactory<NineTapDb> dbFactory)
         {
-            using NineTapDb context = new();
+            using NineTapDb context = dbFactory.CreateDbContext();
 
             OpenFileDialog openFileDialog = new()
             {

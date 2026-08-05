@@ -1,29 +1,31 @@
-﻿using NineTapTour.Core.Data;
-using System;
+#nullable disable
+using Microsoft.EntityFrameworkCore;
+using NineTapTour.Core.Data;
+using NineTapTour.Core.Entities;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data.SqlClient;
-using System.Windows.Forms;
-using NineTapTour.Core.Entities;
-using NineTapTour.Core.Models;
-using Microsoft.EntityFrameworkCore;
 
-namespace NineTapTour.Database;
+namespace NineTapTour.Core.Repositories;
 
-public class MemberDB
+public class MemberRepository : IMemberRepository
 {
+    private readonly IDbContextFactory<NineTapDb> dbFactory;
+
+    public MemberRepository(IDbContextFactory<NineTapDb> dbFactory)
+    {
+        this.dbFactory = dbFactory;
+    }
+
     /// <summary>
-    /// If the Member given is found in the database, updates that Memeber. 
+    /// If the Member given is found in the database, updates that Memeber.
     /// Otherwise, adds the new Memeber to the database
     /// </summary>
     /// <exception cref="DbUpdateException"></exception>
-    public static void AddOrUpdateMember(Member temp)
+    public void AddOrUpdateMember(Member temp)
     {
         try
         {
-            using (var db = new NineTapDb())
+            using (var db = dbFactory.CreateDbContext())
             {
                 // Members built from imports have Id 0 even when they already exist
                 // in the database, so resolve identity by Number before deciding
@@ -51,7 +53,7 @@ public class MemberDB
 
                 if (temp.Average != null)
                 {
-                    temp.Handicap = Core.Calculations.TournamentCalculations.CalculateHandicapPins(temp.Average.Value);
+                    temp.Handicap = Calculations.TournamentCalculations.CalculateHandicapPins(temp.Average.Value);
                 }
                 db.SaveChanges();
             }
@@ -65,9 +67,9 @@ public class MemberDB
     /// <summary>
     /// Returns true if the Member is found in the database by comparing Member Number
     /// </summary>
-    public static bool MemberExists(Member Temp)
+    public bool MemberExists(Member Temp)
     {
-        using (var db = new NineTapDb())
+        using (var db = dbFactory.CreateDbContext())
         {
             return db.Members.Any(m => m.Number == Temp.Number);
         }
@@ -76,9 +78,9 @@ public class MemberDB
     /// <summary>
     /// Returns a list of all of the members
     /// </summary>
-    public static List<Member> GetMemberList()
+    public List<Member> GetMemberList()
     {
-        using (var db = new NineTapDb())
+        using (var db = dbFactory.CreateDbContext())
         {
             return [.. (from m in db.Members
                     orderby  m.Number
@@ -89,9 +91,9 @@ public class MemberDB
     /// <summary>
     /// Returns a member with the given memberNumber
     /// </summary>
-    public static Member GetMember(int memberNumber)
+    public Member GetMember(int memberNumber)
     {
-        using (var db = new NineTapDb())
+        using (var db = dbFactory.CreateDbContext())
         {
             return (from m in db.Members
                     where m.Number == memberNumber
@@ -100,9 +102,10 @@ public class MemberDB
     }
 
     /// <summary>
-    /// Returns a member with the same memberNumber
+    /// Returns a member with the same memberNumber, using the caller's context
+    /// so multi-operation workflows can share one unit of work.
     /// </summary>
-    public static Member GetMember(int memberNumber, NineTapDb db)
+    public Member GetMember(int memberNumber, NineTapDb db)
     {
         return (from m in db.Members
                 where m.Number == memberNumber
@@ -112,9 +115,9 @@ public class MemberDB
     /// <summary>
     /// Returns a member with the same gameID given
     /// </summary>
-    public static Member GetMemberByGameId(int gameID)
+    public Member GetMemberByGameId(int gameID)
     {
-        using (NineTapDb db = new())
+        using (var db = dbFactory.CreateDbContext())
         {
             return db.Participants
                     .Include(b => b.Game)
@@ -122,30 +125,28 @@ public class MemberDB
                     .First(p => p.Game.Id == gameID)
                     .Member;
         }
-
     }
 
     /// <summary>
     /// Returns the ID of a member based on their Member Number
     /// </summary>
-    public static int GetMemberIdByNumber(int memberNumber)
+    public int GetMemberIdByNumber(int memberNumber)
     {
-        using (NineTapDb db = new())
+        using (var db = dbFactory.CreateDbContext())
         {
             return (from m in db.Members
                     where m.Number == memberNumber
                     select m.Id).SingleOrDefault();
         }
-
     }
 
     /// <summary>
     /// Returns a Member with the same memberID as the one given
     /// </summary>
-    public static int GetMemberNumberbyID(int memberID)
+    public int GetMemberNumberbyID(int memberID)
     {
         Member currentMember = new();
-        using (var db = new NineTapDb())
+        using (var db = dbFactory.CreateDbContext())
         {
             var temp = (from m in db.Members
                         where m.Id == memberID
@@ -164,11 +165,9 @@ public class MemberDB
     /// <summary>
     /// Returns the highest Member Number, or 0 if there are no members
     /// </summary>
-    /// <param name="regionID"></param>
-    /// <returns></returns>
-    public static int GetLastMemberNumber()
+    public int GetLastMemberNumber()
     {
-        using var db = new NineTapDb();
+        using var db = dbFactory.CreateDbContext();
         return db.Members
             .Max(m => (int?)m.Number) ?? 0;
     }

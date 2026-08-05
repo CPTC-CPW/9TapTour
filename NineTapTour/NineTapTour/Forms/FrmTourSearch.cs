@@ -7,6 +7,7 @@ using NineTapTour.Database;
 using NineTapTour.Core.Data;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace NineTapTour.Forms;
 
@@ -15,6 +16,7 @@ public partial class FrmTourSearch : Form
     readonly List<Tournament> tours;
     Tournament singleTour;
     readonly bool single;
+    private readonly IDbContextFactory<NineTapDb> dbFactory;
 
     /// <summary>
     /// This takes a tour list and modifies it. The tour you pass in will
@@ -23,8 +25,10 @@ public partial class FrmTourSearch : Form
     /// so the X can be pressed safely at any time.
     /// </summary>
     /// <param name="tours"></param>
-    public FrmTourSearch(List<Tournament> tours)
+    public FrmTourSearch(List<Tournament> tours, IDbContextFactory<NineTapDb> dbFactory)
     {
+        this.dbFactory = dbFactory;
+
         InitializeComponent();
         this.tours = tours;
         single = false;
@@ -33,8 +37,10 @@ public partial class FrmTourSearch : Form
     /// <summary>
     /// If you don't pass a list, it assumes you will be trying to get a single item. IF you don't retrieve the found item after closing it, it will be useless.
     /// </summary>
-    public FrmTourSearch()
+    public FrmTourSearch(IDbContextFactory<NineTapDb> dbFactory)
     {
+        this.dbFactory = dbFactory;
+
         InitializeComponent();
         single = true;
         listSearch.SelectionMode = SelectionMode.One;
@@ -46,7 +52,7 @@ public partial class FrmTourSearch : Form
 
         List<Tournament> tourList = [];
 
-        using (NineTapDb db = new())
+        using (NineTapDb db = dbFactory.CreateDbContext())
         {
             var query = from t in db.Tournaments
                         select t;

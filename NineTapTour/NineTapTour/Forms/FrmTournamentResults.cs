@@ -18,6 +18,7 @@ using ClosedXML.Excel;
 using NineTapTour.Core.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using NineTapTour.Helpers;
+using NineTapTour.Core.Repositories;
 
 namespace NineTapTour.Forms;
 
@@ -38,8 +39,14 @@ public partial class FrmTournamentResults : Form
     const string PLACE_GROUP_LABEL_COLUMN_NAME = "Place Group Label";
     const string PLACE_SORT_START_COLUMN_NAME = "Place Sort Start";
 
+    private readonly ITournamentRepository tournamentRepository;
+    private readonly IMemberRepository memberRepository;
+    private readonly IGameRepository gameRepository;
+    private readonly IDoublesTeamRepository doublesTeamRepository;
+    private readonly IDbContextFactory<NineTapDb> dbFactory;
+
     readonly DataTable dt = new(); // Instantiate Data Table
-    readonly NineTapDb db = new(); // Get access to database
+    readonly NineTapDb db; // Get access to database
     readonly Tournament tourny = FrmMemberScoresHelpers.selectedTournament; // Get Tournament
     static int totalTournamentEntries;  // Total number of entries for all squads in tournament
     static int clientInput; // how many winners the client wants to see
@@ -65,8 +72,20 @@ public partial class FrmTournamentResults : Form
     static int compEntries;
 
     #region Form Initilizers and Closers
-    public FrmTournamentResults()
+    public FrmTournamentResults(
+        ITournamentRepository tournamentRepository,
+        IMemberRepository memberRepository,
+        IGameRepository gameRepository,
+        IDoublesTeamRepository doublesTeamRepository,
+        IDbContextFactory<NineTapDb> dbFactory)
     {
+        this.tournamentRepository = tournamentRepository;
+        this.memberRepository = memberRepository;
+        this.gameRepository = gameRepository;
+        this.doublesTeamRepository = doublesTeamRepository;
+        this.dbFactory = dbFactory;
+        db = dbFactory.CreateDbContext();
+
         InitializeComponent();
     }
     private void FrmTournamentResults_Load(object sender, EventArgs e)
@@ -347,7 +366,7 @@ public partial class FrmTournamentResults : Form
     private List<ExcelMember> BuildWinnersList()
     {
         List<ExcelMember> tournyBowlers = [];
-        List<WinnerListMemberViewModel> bowlers = TournamentDB.GetWinnerListMemberData(tourny.Id);
+        List<WinnerListMemberViewModel> bowlers = tournamentRepository.GetWinnerListMemberData(tourny.Id);
 
         totalTournamentEntries = bowlers.Count;
 
@@ -442,7 +461,7 @@ public partial class FrmTournamentResults : Form
         var memberNumbers = bowlers.Select(b => b.MemberNumber).Distinct().ToHashSet();
         var prevHdcpByMember = BuildPrevHdcpByMember(memberNumbers, tourny.Id);
 
-        List<DoublesTeam> teams = DoublesTeamDB.GetTeamsByTournament(tourny.Id);
+        List<DoublesTeam> teams = doublesTeamRepository.GetTeamsByTournament(tourny.Id);
         var bowlersByMemberId   = bowlers.GroupBy(b => b.MemberId).ToDictionary(g => g.Key, g => g.ToList());
 
         var teamRows = new List<(int CombinedHdcpTotal,
@@ -542,7 +561,7 @@ public partial class FrmTournamentResults : Form
         var result = new Dictionary<int, int>();
         if (memberNumbers.Count == 0) return result;
 
-        using var dbPrev = new NineTapDb();
+        using var dbPrev = dbFactory.CreateDbContext();
 
         var latestDates = dbPrev.Participants
             .Where(p => memberNumbers.Contains(p.Member.Number)
@@ -916,7 +935,7 @@ public partial class FrmTournamentResults : Form
     /// </summary>
     private void AutoFillMemberRow(DataRow dataRow, int memberNumber)
     {
-        Member member = MemberDB.GetMember(memberNumber);
+        Member member = memberRepository.GetMember(memberNumber);
         if (member == null || member.Id == 0)
         {
             MessageBox.Show($"Member number {memberNumber} not found.");
@@ -935,7 +954,7 @@ public partial class FrmTournamentResults : Form
         // Get the highest-scoring game entry for this member in this tournament (all squads).
         // ScratchTotal is [NotMapped] so ordering must happen client-side after fetching candidates.
         Game game;
-        using (var dbGame = new NineTapDb())
+        using (var dbGame = dbFactory.CreateDbContext())
         {
             game = dbGame.Participants
                 .Where(p => p.Member.Id == member.Id && p.Tournament.Id == tourny.Id)
@@ -970,7 +989,7 @@ public partial class FrmTournamentResults : Form
     /// </summary>
     private void LoadExisting2DayData()
     {
-        var saved = TournamentDB.GetWinnerListMemberData(tourny.Id)
+        var saved = tournamentRepository.GetWinnerListMemberData(tourny.Id)
             .Where(b => b.PlaceStanding > 0)
             .OrderBy(b => b.PlaceStanding)
             .ToList();
@@ -1168,7 +1187,7 @@ public partial class FrmTournamentResults : Form
                 if (gameIdCell == null || gameIdCell == DBNull.Value) continue;
                 if (!int.TryParse(gameIdCell.ToString(), out int gameId) || gameId <= 0) continue;
 
-                Game g = GameDB.GetGame(gameId);
+                Game g = gameRepository.GetGame(gameId);
                 if (g == null) continue;
 
                 if (dgvTournamentResults.Rows[i].DataBoundItem is not DataRowView dataRowView) continue;
@@ -1200,7 +1219,7 @@ public partial class FrmTournamentResults : Form
             {
                 int gameId = Convert.ToInt32(dgvTournamentResults[GAME_ID_COLUMN_NAME, currentIndex].Value.ToString());
                 if (!exportSavedGameIds.Add(gameId)) continue;
-                Game g = GameDB.GetGame(gameId);
+                Game g = gameRepository.GetGame(gameId);
 
                 g.PlaceStanding = ParsePlaceStanding(dgvTournamentResults[PLACE_STANDING_COLUMN_NAME, currentIndex].Value);
                 g.PlaceStandingLabel = null;
@@ -1253,7 +1272,7 @@ public partial class FrmTournamentResults : Form
         var isMembershipCurrentByMemberNumber = new Dictionary<int, bool>();
         if (memberNumbers.Count > 0)
         {
-            using var dbMembers = new NineTapDb();
+            using var dbMembers = dbFactory.CreateDbContext();
             isMembershipCurrentByMemberNumber = dbMembers.Members
                 .Where(m => memberNumbers.Contains(m.Number))
                 .Select(m => new { m.Number, m.IsLifetimeMember, m.LastPayment })

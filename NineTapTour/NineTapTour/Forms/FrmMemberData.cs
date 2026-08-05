@@ -11,6 +11,7 @@ using System.Drawing.Printing;
 using System.Data;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
+using NineTapTour.Core.Repositories;
 using ClosedXML.Excel;
 using NineTapTour.Services;
 
@@ -19,15 +20,21 @@ namespace NineTapTour.Forms;
 public partial class FrmMemberData : Form
 {
     private readonly IFormFactory formFactory;
+    private readonly IMemberRepository memberRepository;
+    private readonly IPlayerHistoryRepository playerHistoryRepository;
+    private readonly ITournamentRepository tournamentRepository;
 
     private Member currentMem;
 
     /// <summary>
     /// Opens the "Member Data" Form.
     /// </summary>
-    public FrmMemberData(IFormFactory formFactory)
+    public FrmMemberData(IFormFactory formFactory, IMemberRepository memberRepository, IPlayerHistoryRepository playerHistoryRepository, ITournamentRepository tournamentRepository)
     {
         this.formFactory = formFactory;
+        this.memberRepository = memberRepository;
+        this.playerHistoryRepository = playerHistoryRepository;
+        this.tournamentRepository = tournamentRepository;
 
         InitializeComponent();
         txtMiddleInitial.MaxLength = 1;
@@ -134,7 +141,7 @@ public partial class FrmMemberData : Form
 			d.BackColor = Color.LightGray;
 		}
 
-        int highestMemberNumber = MemberDB.GetLastMemberNumber();
+        int highestMemberNumber = memberRepository.GetLastMemberNumber();
 
         // set txtMemberNumber.Text back to one if there is no one
         if (highestMemberNumber == 0)
@@ -142,8 +149,8 @@ public partial class FrmMemberData : Form
             txtMemberNumber.Text = "1";
         }
 
-        currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNumber.Text));
-        PlayerHistoryViewModel mostRecent = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
+        currentMem = memberRepository.GetMember(Convert.ToInt32(txtMemberNumber.Text));
+        PlayerHistoryViewModel mostRecent = playerHistoryRepository.GetMostRecentTournament(currentMem.Number);
         if (mostRecent != null)
         {
             txt30GameAvg.Text = Convert.ToInt16(mostRecent.trueAVG).ToString();
@@ -345,7 +352,7 @@ public partial class FrmMemberData : Form
             }                
 
             currentMem.MoneyEarned = 
-                PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number);
+                playerHistoryRepository.GetTotalMoneyWon(currentMem.Number);
 
             txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
         }
@@ -543,18 +550,18 @@ public partial class FrmMemberData : Form
 
             // check to see if memberId exists before putting it in 
             // current selected regions database
-            if (MemberDB.MemberExists(temp))
+            if (memberRepository.MemberExists(temp))
             {
-                temp.Id = MemberDB.GetMemberIdByNumber(temp.Number);
+                temp.Id = memberRepository.GetMemberIdByNumber(temp.Number);
             }
             else
             {
-                temp.Number = MemberDB.GetLastMemberNumber() + 1;
+                temp.Number = memberRepository.GetLastMemberNumber() + 1;
                 txtMemberNumber.Text = temp.Number.ToString();
             }
 
             //Set average for the new member
-            PlayerHistoryViewModel mostRecent = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
+            PlayerHistoryViewModel mostRecent = playerHistoryRepository.GetMostRecentTournament(currentMem.Number);
             if (mostRecent != null)
             {   // sets the average to that of their last adjusted average
                 if (Convert.ToInt32(txtAverage.Text) == mostRecent.AVG)
@@ -602,7 +609,7 @@ public partial class FrmMemberData : Form
 
             if (isValid)
             {
-                MemberDB.AddOrUpdateMember(temp);
+                memberRepository.AddOrUpdateMember(temp);
                 #if DEBUG
                     MessageBox.Show("Member saved");
                 #endif
@@ -624,7 +631,7 @@ public partial class FrmMemberData : Form
     {
         //cursor begins when arrow is clicked
         Cursor.Current = Cursors.WaitCursor;
-        List<Member> m = MemberDB.GetMemberList();
+        List<Member> m = memberRepository.GetMemberList();
         if (m.Count == 0 || currentMem.Number <= m[0].Number)
         {
             //turns loading cursor off.
@@ -651,7 +658,7 @@ public partial class FrmMemberData : Form
     {
         //turns on a loading cursor while new bowler is loaded.
         Cursor.Current = Cursors.WaitCursor;
-        int memberCount = MemberDB.GetLastMemberNumber();
+        int memberCount = memberRepository.GetLastMemberNumber();
         if (memberCount == 0 ||
             currentMem.Number >= memberCount)
         {
@@ -702,7 +709,7 @@ public partial class FrmMemberData : Form
             txtDOB.LostFocus += AddPlaceholderText;
 
             //get latest member number, or set to 1 if no members in database
-            int nextMemberNumber = MemberDB.GetLastMemberNumber() + 1;
+            int nextMemberNumber = memberRepository.GetLastMemberNumber() + 1;
             txtMemberNumber.Text = nextMemberNumber.ToString();
 
             currentMem = new Member
@@ -726,7 +733,7 @@ public partial class FrmMemberData : Form
     {
         try
         {
-            txtMemberNumber.Text = MemberDB.GetMemberList()[0].Number.ToString();
+            txtMemberNumber.Text = memberRepository.GetMemberList()[0].Number.ToString();
             UpdateMemberInfo();
         }
         catch
@@ -742,7 +749,7 @@ public partial class FrmMemberData : Form
     /// <param name="e"></param>
     private void BtnLastRecord_Click(object sender, EventArgs e)
     {
-        txtMemberNumber.Text = MemberDB.GetLastMemberNumber().ToString();
+        txtMemberNumber.Text = memberRepository.GetLastMemberNumber().ToString();
         UpdateMemberInfo();
     }
     
@@ -805,7 +812,7 @@ public partial class FrmMemberData : Form
     /// </summary>
     private void BtnPrintActive_Click(object sender, EventArgs e)
     {
-        Print.PrintByActiveMembers(TournamentDB.GetAllActiveMembers());
+        Print.PrintByActiveMembers(tournamentRepository.GetAllActiveMembers());
     }
 
     /// <summary>
@@ -894,7 +901,7 @@ public partial class FrmMemberData : Form
         if (ofdOpen.ShowDialog() == DialogResult.OK)
         {
             List<PlayerHistoryViewModel> AlreadyImportedPH = 
-                PlayerHistoryDB.GetMemberPlayerHistory(currentMem.Number);
+                playerHistoryRepository.GetMemberPlayerHistory(currentMem.Number);
 
             if (AlreadyImportedPH.Count > 0)
             {
@@ -913,7 +920,7 @@ public partial class FrmMemberData : Form
             }
 
             // Update member's averages after import
-            PlayerHistoryViewModel reset = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
+            PlayerHistoryViewModel reset = playerHistoryRepository.GetMostRecentTournament(currentMem.Number);
             if (reset != null)
             {
                 currentMem.Average = reset.AVG;
@@ -928,13 +935,13 @@ public partial class FrmMemberData : Form
             }
 
             // Grabs the total money won by the member
-            decimal moneySum = PlayerHistoryDB.GetTotalMoneyWon(currentMem.Number);
+            decimal moneySum = playerHistoryRepository.GetTotalMoneyWon(currentMem.Number);
 
             currentMem.MoneyEarned += moneySum; 
 
             txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
 
-            MemberDB.AddOrUpdateMember(currentMem);
+            memberRepository.AddOrUpdateMember(currentMem);
             
             MessageBox.Show($"Import completed. {rows.Count} games imported across multiple tournaments.");
         }
@@ -1012,7 +1019,7 @@ public partial class FrmMemberData : Form
                 if (!tournamentsCache.ContainsKey(tournamentDate))
                 {
                     // Check if tournament already exists in database
-                    List<Tournament> existingTournaments = TournamentDB.GetTournamentList()
+                    List<Tournament> existingTournaments = tournamentRepository.GetTournamentList()
                         .Where(t => t.Date.Date == tournamentDate).ToList();
                     
                     if (existingTournaments.Count > 0)
@@ -1036,7 +1043,7 @@ public partial class FrmMemberData : Form
                         };
                         
                         // Add tournament to database
-                        TournamentDB.AddTournament(tournament);
+                        tournamentRepository.AddTournament(tournament);
                     }
                     
                     tournamentsCache[tournamentDate] = tournament;
@@ -1076,7 +1083,7 @@ public partial class FrmMemberData : Form
                 };
                 
                 // Add participant (which will also save the game)
-                TournamentDB.AddMemberToTournament(participant);
+                tournamentRepository.AddMemberToTournament(participant);
                 
                 returnMe.Add(temp);
             }

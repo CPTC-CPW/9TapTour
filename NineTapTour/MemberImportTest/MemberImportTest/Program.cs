@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using NineTapTour.Database;
 using NineTapTour.Core.Data;
+using NineTapTour.Core.Startup;
 using System;
 using System.Windows.Forms;
 
@@ -25,9 +27,15 @@ namespace MemberImportTest
                 .AddJsonFile("appsettings.json", optional: true)
                 .Build();
 
-            DbConfig.ConnectionString = configuration.GetConnectionString("NineTapDb") ?? DbConfig.DefaultConnectionString;
+            string connectionString = configuration.GetConnectionString("NineTapDb") ?? NineTapDbFactory.DesignTimeConnectionString;
 
-            Application.Run(new FrmMain());
+            ServiceCollection services = new();
+            services.AddNineTapTourCore(connectionString);
+            services.AddTransient<FrmMain>();
+
+            using ServiceProvider provider = services.BuildServiceProvider();
+
+            Application.Run(provider.GetRequiredService<FrmMain>());
         }
     }
 }

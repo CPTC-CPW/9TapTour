@@ -6,8 +6,10 @@ using NineTapTour.Core.Calculations;
 using NineTapTour.Core.Data;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
+using NineTapTour.Core.Repositories;
 using NineTapTour.Core.ViewModels;
 using NineTapTour.Services;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -36,18 +38,38 @@ public partial class FrmMemberScores : Form
 
     private readonly IFormNavigator navigator;
     private readonly IFormFactory formFactory;
+    private readonly IMemberRepository memberRepository;
+    private readonly IGameRepository gameRepository;
+    private readonly ITournamentRepository tournamentRepository;
+    private readonly IParticipantRepository participantRepository;
+    private readonly IPlayerHistoryRepository playerHistoryRepository;
+    private readonly IFinalizeTempRepository finalizeTempRepository;
+    private readonly IDoublesTeamRepository doublesTeamRepository;
+    private readonly IDbContextFactory<NineTapDb> dbFactory;
 
     /// <summary>
     /// instantiates all form buttons.
     /// </summary>
-    public FrmMemberScores(IFormNavigator navigator, IFormFactory formFactory)
+    public FrmMemberScores(IFormNavigator navigator, IFormFactory formFactory,
+        IMemberRepository memberRepository, IGameRepository gameRepository,
+        ITournamentRepository tournamentRepository, IParticipantRepository participantRepository,
+        IPlayerHistoryRepository playerHistoryRepository, IFinalizeTempRepository finalizeTempRepository,
+        IDoublesTeamRepository doublesTeamRepository, IDbContextFactory<NineTapDb> dbFactory)
     {
         this.navigator = navigator;
         this.formFactory = formFactory;
+        this.memberRepository = memberRepository;
+        this.gameRepository = gameRepository;
+        this.tournamentRepository = tournamentRepository;
+        this.participantRepository = participantRepository;
+        this.playerHistoryRepository = playerHistoryRepository;
+        this.finalizeTempRepository = finalizeTempRepository;
+        this.doublesTeamRepository = doublesTeamRepository;
+        this.dbFactory = dbFactory;
 
         InitializeComponent();
         DoubleBuffered = true;
-        db = new NineTapDb();
+        db = dbFactory.CreateDbContext();
     }
     /// <summary>
     /// initializes all the radio buttons on the form and sets them to their correct default status.
@@ -169,7 +191,7 @@ public partial class FrmMemberScores : Form
 
         MemberStatus("", Color.Black, SystemColors.Control, true);
 
-        List<Tournament> allTournaments = TournamentDB.GetTournamentList();
+        List<Tournament> allTournaments = tournamentRepository.GetTournamentList();
         cbxTourneyDropDown.DataSource = allTournaments;
         cbxTourneyDropDown.DisplayMember = nameof(Tournament.TourneyNameDate);
         cbxTourneyDropDown.ValueMember = nameof(Tournament.Id);
@@ -195,7 +217,7 @@ public partial class FrmMemberScores : Form
             if (FrmMemberScoresHelpers.selectedTournament != null)
             {
                 FrmMemberScoresHelpers.overallListOfParticipants =
-                    TournamentDB.GetTournamentMemberList(FrmMemberScoresHelpers.selectedTournament);
+                    tournamentRepository.GetTournamentMemberList(FrmMemberScoresHelpers.selectedTournament);
             }
         }
 
@@ -271,7 +293,7 @@ public partial class FrmMemberScores : Form
             }
 
             int memberNumber = Convert.ToInt32(txtMemberNum.Text);
-            currentMem = MemberDB.GetMember(memberNumber);
+            currentMem = memberRepository.GetMember(memberNumber);
             if (currentMem != null)
             {
                 if (currentMem.IsActive)
@@ -290,7 +312,7 @@ public partial class FrmMemberScores : Form
 
                 Game currentGame = GetScoresById(currentMem.Id);
 
-                int? mostRecentAvg = PlayerHistoryDB.GetMostRecentAverage(currentMem.Number);
+                int? mostRecentAvg = playerHistoryRepository.GetMostRecentAverage(currentMem.Number);
                 int displayHandicap = mostRecentAvg != null
                     ? CalcService.CalculateHandicapPins(mostRecentAvg.Value)
                     : (currentMem.Handicap ?? 0);
@@ -496,26 +518,26 @@ public partial class FrmMemberScores : Form
         else if (IsValid())
         {
             //gets the current tournament from the database 
-            Tournament currTourney = TournamentDB.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+            Tournament currTourney = tournamentRepository.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
             FrmMemberScoresHelpers.
 
             //get all the current members participating in the current tournament
-            overallListOfParticipants = TournamentDB.GetTournamentMemberList(currTourney);
+            overallListOfParticipants = tournamentRepository.GetTournamentMemberList(currTourney);
 
             int squad = GetCurrentSquadNumber();
 
             //get the member from the database using the number from the memnum textbox
-            currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNum.Text));
+            currentMem = memberRepository.GetMember(Convert.ToInt32(txtMemberNum.Text));
             player.Member = currentMem;
 
             player.Game = new Game();
             // Phase 5: Removed player.ParticipantRegionID = RegionID; 
             // Region is already stored in player.Member.NineTapRegionID
-            var db = new NineTapDb();
+            var db = dbFactory.CreateDbContext();
 
-            int gameId = GameDB.GetGameID(db, currentMem.Id, currTourney.Id, squad);
+            int gameId = gameRepository.GetGameID(db, currentMem.Id, currTourney.Id, squad);
 
-            int parID = ParticipantsDB.GetParticipantID(db, currentMem.Id, currTourney.Id, squad);
+            int parID = participantRepository.GetParticipantID(db, currentMem.Id, currTourney.Id, squad);
 
             if (parID != 0)
             {
@@ -566,7 +588,7 @@ public partial class FrmMemberScores : Form
 
                 if (currentGame == null)
                 {
-                    int? mostRecentAdjAvg = PlayerHistoryDB.GetMostRecentAverage(currentMem.Number);
+                    int? mostRecentAdjAvg = playerHistoryRepository.GetMostRecentAverage(currentMem.Number);
                     player.Game.Handicap = mostRecentAdjAvg != null
                         ? CalcService.CalculateHandicapPins(mostRecentAdjAvg.Value)
                         : currentMem.Handicap;
@@ -588,7 +610,7 @@ public partial class FrmMemberScores : Form
 
                 try
                 {
-                    TournamentDB.AddMemberToTournament(player);
+                    tournamentRepository.AddMemberToTournament(player);
 #if DEBUG
                     MessageBox.Show(@"Bowler Added Successfully to Tournament!");
 #endif
@@ -599,7 +621,7 @@ public partial class FrmMemberScores : Form
                         ResetScores();
                     }
 
-                    FrmMemberScoresHelpers.overallListOfParticipants = TournamentDB.GetTournamentMemberList(currTourney);
+                    FrmMemberScoresHelpers.overallListOfParticipants = tournamentRepository.GetTournamentMemberList(currTourney);
                     RecordIndexAfterAddUpdate(FrmMemberScoresHelpers.overallListOfParticipants);
                 }
                 catch (MemberAccessException ex)
@@ -612,7 +634,7 @@ public partial class FrmMemberScores : Form
                 if (DateTime.Now > currentMem.LastBowled || currentMem.LastBowled == null)
                 {
                     currentMem.LastBowled = DateTime.Now;
-                    MemberDB.AddOrUpdateMember(currentMem);
+                    memberRepository.AddOrUpdateMember(currentMem);
                 }
             }
             Refresh();
@@ -736,7 +758,7 @@ public partial class FrmMemberScores : Form
         {
             if (txtMemberNum.Text != "" && txtMemberNum.Text.All(Char.IsDigit))
             {
-                currentMem = MemberDB.GetMember(Convert.ToInt32(txtMemberNum.Text));
+                currentMem = memberRepository.GetMember(Convert.ToInt32(txtMemberNum.Text));
 
                 int currentSquadNumber = GetCurrentSquadNumber();
 
@@ -818,7 +840,7 @@ public partial class FrmMemberScores : Form
         try
         {
             int selectedTournamentId = Convert.ToInt32(cbxTourneyDropDown.SelectedValue);
-            return GameDB.GetGameInTournament(memberID, selectedTournamentId, squad);
+            return gameRepository.GetGameInTournament(memberID, selectedTournamentId, squad);
         }
         catch (InvalidOperationException ex)
         {
@@ -1104,7 +1126,7 @@ public partial class FrmMemberScores : Form
             currentIndex = 0;
             FrmMemberScoresHelpers.
                             // Gets the record for the selected tournament
-                            overallListOfParticipants = TournamentDB.GetTournamentMemberList(FrmMemberScoresHelpers.selectedTournament);
+                            overallListOfParticipants = tournamentRepository.GetTournamentMemberList(FrmMemberScoresHelpers.selectedTournament);
             RecordIndex(FrmMemberScoresHelpers.overallListOfParticipants);
             Refresh();
             rdoHandicapScore.Visible = true;
@@ -1241,7 +1263,7 @@ public partial class FrmMemberScores : Form
     }
 
     readonly IComparer<MemberScores> scoreComparer = new MemberScoresComparer();
-    private readonly NineTapDb db = new(); // Get access to database for doubles team lookups
+    private readonly NineTapDb db; // Get access to database for doubles team lookups
 
     /// <summary>
     /// Refresh game scores displayed in the score listbox
@@ -1287,7 +1309,7 @@ public partial class FrmMemberScores : Form
     private (List<ParticipantsGameViewModel> ParticipantsGameScores, List<TopParticipantGameViewModel> Top3Scores)
         GetResultsForCurrentParticipantList()
     {
-        var listOfParticipants = ParticipantsDB.GetParticipants(FrmMemberScoresHelpers.selectedTournament.Id);
+        var listOfParticipants = participantRepository.GetParticipants(FrmMemberScoresHelpers.selectedTournament.Id);
         listOfParticipants = GetFilteredParticipantListBySquad(listOfParticipants, GetSquadResultsNumberChecked());
         var tourneyResults = GetTournamentPlacings(listOfParticipants, FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4, GetSelectedReportType());
         return tourneyResults;
@@ -1469,7 +1491,8 @@ public partial class FrmMemberScores : Form
                     "Confirm Tournament", MessageBoxButtons.YesNo);
             if (mboxResult == DialogResult.Yes)
             {
-                Print.PrintByTour(selectTournament.selectedTournament);
+                Print.PrintByTour(selectTournament.selectedTournament,
+                    tournamentRepository.GetUniqueTourMembers(selectTournament.selectedTournament));
             }
         }
     }
@@ -1489,8 +1512,8 @@ public partial class FrmMemberScores : Form
     /// </summary>
     private void UpdateRecordNumberAndRetrieveParticpant()
     {
-        Tournament currSelectedTournament = TournamentDB.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
-        List<Participant> allParticipantsInCurrTourney = TournamentDB.GetTournamentMemberList(currSelectedTournament);
+        Tournament currSelectedTournament = tournamentRepository.GetTourneyByID(Convert.ToInt32(cbxTourneyDropDown.SelectedValue));
+        List<Participant> allParticipantsInCurrTourney = tournamentRepository.GetTournamentMemberList(currSelectedTournament);
         UpdateRecordNumber(allParticipantsInCurrTourney);
         FillMember();
     }
@@ -1500,7 +1523,7 @@ public partial class FrmMemberScores : Form
     /// </summary>
     public void PopulateSelectedTournament(Tournament currentTournament)
     {
-        List<Tournament> temp2 = TournamentDB.GetTournamentList();
+        List<Tournament> temp2 = tournamentRepository.GetTournamentList();
 
         cbxTourneyDropDown.DataSource = temp2;
         cbxTourneyDropDown.DisplayMember = nameof(Tournament.TourneyNameDate);
@@ -1563,7 +1586,7 @@ public partial class FrmMemberScores : Form
             return;
 
         FrmMemberScoresHelpers.overallListOfParticipants =
-            TournamentDB.GetTournamentMemberList(FrmMemberScoresHelpers.selectedTournament);
+            tournamentRepository.GetTournamentMemberList(FrmMemberScoresHelpers.selectedTournament);
 
         int count = FrmMemberScoresHelpers.overallListOfParticipants.Count;
         if (count == 0)
@@ -1593,7 +1616,7 @@ public partial class FrmMemberScores : Form
         }
         else
         {
-            List<MemberScores> temp = ParticipantsDB.GetSeniorMemberScores(FrmMemberScoresHelpers.selectedTournament.Id);
+            List<MemberScores> temp = participantRepository.GetSeniorMemberScores(FrmMemberScoresHelpers.selectedTournament.Id);
 
             //squadList is not used in Senior Report. Passes empty list.
             List<int> squadList = [];
@@ -1649,7 +1672,7 @@ public partial class FrmMemberScores : Form
         }
         else
         {
-            List<MemberScores> temp = ParticipantsDB.GetGameMemberScores(FrmMemberScoresHelpers.selectedTournament.Id);
+            List<MemberScores> temp = participantRepository.GetGameMemberScores(FrmMemberScoresHelpers.selectedTournament.Id);
             temp.Sort(scoreComparer);
 
             //seriesCurrentSquad is not used in Game Report. Passes empty
@@ -1700,19 +1723,19 @@ public partial class FrmMemberScores : Form
             {
                 if (FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4 && squadList.Contains(0))
                 {
-                    temp = ParticipantsDB.GetStandingsForTournamentByHandicap(FrmMemberScoresHelpers.selectedTournament.Id, true);
+                    temp = participantRepository.GetStandingsForTournamentByHandicap(FrmMemberScoresHelpers.selectedTournament.Id, true);
                 }
                 else if (FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
                 {
-                    temp = ParticipantsDB.GetStandingsForTournamentByFilterSeriesByHandicap(squadList, FrmMemberScoresHelpers.selectedTournament.Id, true);
+                    temp = participantRepository.GetStandingsForTournamentByFilterSeriesByHandicap(squadList, FrmMemberScoresHelpers.selectedTournament.Id, true);
                 }
                 else if (!FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4 && squadList.Contains(0))
                 {
-                    temp = ParticipantsDB.GetStandingsForTournamentByHandicap(FrmMemberScoresHelpers.selectedTournament.Id);
+                    temp = participantRepository.GetStandingsForTournamentByHandicap(FrmMemberScoresHelpers.selectedTournament.Id);
                 }
                 else if (!FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
                 {
-                    temp = ParticipantsDB.GetStandingsForTournamentByFilterSeriesByHandicap(squadList, FrmMemberScoresHelpers.selectedTournament.Id);
+                    temp = participantRepository.GetStandingsForTournamentByFilterSeriesByHandicap(squadList, FrmMemberScoresHelpers.selectedTournament.Id);
                 }
             }
             #endregion
@@ -1722,19 +1745,19 @@ public partial class FrmMemberScores : Form
             {
                 if (FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4 && squadList.Contains(0))
                 {
-                    temp = ParticipantsDB.GetStandingsForTournamentByScratch(FrmMemberScoresHelpers.selectedTournament.Id, true);
+                    temp = participantRepository.GetStandingsForTournamentByScratch(FrmMemberScoresHelpers.selectedTournament.Id, true);
                 }
                 else if (FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
                 {
-                    temp = ParticipantsDB.GetStandingsForTournamentByFilterSeriesByScratch(squadList, FrmMemberScoresHelpers.selectedTournament.Id, true);
+                    temp = participantRepository.GetStandingsForTournamentByFilterSeriesByScratch(squadList, FrmMemberScoresHelpers.selectedTournament.Id, true);
                 }
                 else if (!FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4 && squadList.Contains(0))
                 {
-                    temp = ParticipantsDB.GetStandingsForTournamentByScratch(FrmMemberScoresHelpers.selectedTournament.Id);
+                    temp = participantRepository.GetStandingsForTournamentByScratch(FrmMemberScoresHelpers.selectedTournament.Id);
                 }
                 else if (!FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4 && !squadList.Contains(0))
                 {
-                    temp = ParticipantsDB.GetStandingsForTournamentByFilterSeriesByScratch(squadList, FrmMemberScoresHelpers.selectedTournament.Id);
+                    temp = participantRepository.GetStandingsForTournamentByFilterSeriesByScratch(squadList, FrmMemberScoresHelpers.selectedTournament.Id);
                 }
             }
             #endregion
@@ -1768,12 +1791,12 @@ public partial class FrmMemberScores : Form
     /// <param name="tournamentId">The tournament ID to load doubles team pairings from.</param>
     /// <param name="squadFilter">Optional list of squad numbers to filter teams by. Null means all squads.</param>
     /// <returns>A list of TeamMemberScores representing team standings, sorted by combined score descending.</returns>
-    private static List<MemberScores> CombineDoublesSeriesToTeams(List<MemberScores> individualScores, int tournamentId, List<int> squadFilter)
+    private List<MemberScores> CombineDoublesSeriesToTeams(List<MemberScores> individualScores, int tournamentId, List<int> squadFilter)
     {
         var combinedTeams = new List<MemberScores>();
 
         // Load all doubles teams for this tournament
-        List<DoublesTeam> allTeams = DoublesTeamDB.GetTeamsByTournament(tournamentId);
+        List<DoublesTeam> allTeams = doublesTeamRepository.GetTeamsByTournament(tournamentId);
 
         // Filter teams by squad list if provided
         List<DoublesTeam> teams = squadFilter == null
@@ -1860,7 +1883,7 @@ public partial class FrmMemberScores : Form
         ResetFields();
         Refresh();
         RecordIndex(FrmMemberScoresHelpers.overallListOfParticipants);
-        FrmMemberScoresHelpers.overallListOfParticipants = TournamentDB.GetTournamentMemberList(FrmMemberScoresHelpers.selectedTournament);
+        FrmMemberScoresHelpers.overallListOfParticipants = tournamentRepository.GetTournamentMemberList(FrmMemberScoresHelpers.selectedTournament);
         cbxTourneyDropDown.DisplayMember = nameof(Tournament.TourneyNameDate);
         cbxTourneyDropDown.ValueMember = nameof(Tournament.Id);
     }
@@ -1872,18 +1895,18 @@ public partial class FrmMemberScores : Form
         if (g != null)
         {
             //Delete from Participants list
-            Participant par = FinalizeTempDB.GetParticipantByGameId(g.Id);
-            FinalizeTempDB.DeleteParticipant(par);
+            Participant par = finalizeTempRepository.GetParticipantByGameId(g.Id);
+            finalizeTempRepository.DeleteParticipant(par);
             FrmMemberScoresHelpers.overallListOfParticipants.Remove(par);
             if (currentIndex + 1 == FrmMemberScoresHelpers.overallListOfParticipants.Count)
             {
                 currentIndex--;
             }
             //Delete the game itself
-            PlayerHistoryDB.DeleteGame(g);
+            playerHistoryRepository.DeleteGame(g);
 
             // Corrects any changes to the members stats after finalizing to the last accurate data
-            PlayerHistoryViewModel temp = PlayerHistoryDB.GetMostRecentTournament(currentMem.Number);
+            PlayerHistoryViewModel temp = playerHistoryRepository.GetMostRecentTournament(currentMem.Number);
             if (temp != null)
             {
                 currentMem.Handicap = temp.HandiCap;
@@ -1895,7 +1918,7 @@ public partial class FrmMemberScores : Form
                 MessageBox.Show("Current Stats Not added to Tournament yet.");
             }
 
-            MemberDB.AddOrUpdateMember(currentMem);
+            memberRepository.AddOrUpdateMember(currentMem);
         }
     }
 
@@ -2094,7 +2117,7 @@ public partial class FrmMemberScores : Form
 
             // Grab selected tournament
             Tournament selectedTournament = FrmMemberScoresHelpers.selectedTournament;
-            TournamentDB.DeleteTournament(selectedTournament);
+            tournamentRepository.DeleteTournament(selectedTournament);
 
             RefreshForm();
         }

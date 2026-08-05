@@ -1,27 +1,32 @@
-﻿using NineTapTour.Core.Data;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+#nullable disable
 using Microsoft.EntityFrameworkCore;
+using NineTapTour.Core.Data;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace NineTapTour.Database;
+namespace NineTapTour.Core.Repositories;
 
-public class FinalizeTempDB
+public class FinalizeTempRepository : IFinalizeTempRepository
 {
+    private readonly IDbContextFactory<NineTapDb> dbFactory;
+
+    public FinalizeTempRepository(IDbContextFactory<NineTapDb> dbFactory)
+    {
+        this.dbFactory = dbFactory;
+    }
+
     /// <summary>
-    /// Calculates league average for given member based off last 30 games 
+    /// Calculates league average for given member based off last 30 games
     /// or total games played if less than 30.
     /// </summary>
-    public static double Get30GameAverage(Member mem)
+    public double Get30GameAverage(Member mem)
     {
         // Represents the number of past games for the player
         int howManyGames = 30;
-        using(var db = new NineTapDb())
+        using(var db = dbFactory.CreateDbContext())
         {
             var getGames = (from p in db.Participants
                        join m in db.Members on p.Member.Id equals m.Id
@@ -35,7 +40,7 @@ public class FinalizeTempDB
             List<double> allAverages = [];
             foreach (var avg in getGames)
             {
-                allAverages.Add(Convert.ToDouble(avg.Game1 + avg.Game2 + avg.Game3 + avg.Game4) / 
+                allAverages.Add(Convert.ToDouble(avg.Game1 + avg.Game2 + avg.Game3 + avg.Game4) /
                     LeagueAverageHelper(avg.UseGame1, avg.UseGame2, avg.UseGame3, avg.UseGame4));
             }
 
@@ -53,14 +58,14 @@ public class FinalizeTempDB
     /// <param name="g2">UseGame2 From GameDB</param>
     /// <param name="g3">UseGame3 From GameDB</param>
     /// <param name="g4">UseGame4 From GameDB</param>
-    public static int LeagueAverageHelper(bool? g1, bool? g2, 
+    public int LeagueAverageHelper(bool? g1, bool? g2,
         bool? g3, bool? g4)
     {
         // Total games played (Max: 4)
         int totalGamesPlayed = 0;
         if (g1 == null || g1.Value)
         {
-            totalGamesPlayed++;  
+            totalGamesPlayed++;
         }
 
         if (g2 == null || g2.Value)
@@ -88,11 +93,11 @@ public class FinalizeTempDB
     /// <param name="memberNumber">The member number NOT id</param>
     /// <param name="regionId">The region id</param>
     /// <param name="tournamentId">The id of the tournament</param>
-    public static double Get30GameAverage(int memberNumber, int tournamentId)
+    public double Get30GameAverage(int memberNumber, int tournamentId)
     {
         int allGamesPlayed = 0;
         int totalScratchTotal = 0;
-        using (var db = new NineTapDb())
+        using (var db = dbFactory.CreateDbContext())
         {
             /*
                 Going through the database to get all of a player's ScratchTotals and the 4 UseGames
@@ -126,9 +131,9 @@ public class FinalizeTempDB
         }
     }
 
-    public static List<CurrentHistory> GetCurrentHistory(int memberNumber, int tournamentId)
+    public List<CurrentHistory> GetCurrentHistory(int memberNumber, int tournamentId)
     {
-        using (var db = new NineTapDb())
+        using (var db = dbFactory.CreateDbContext())
         {
             // Phase 6: Use Tournament.TourneyRegion.NineTapRegionID for proper FK relationship
             var curHistory = (from p in db.Participants
@@ -150,15 +155,15 @@ public class FinalizeTempDB
         }
     }
 
-    public static List<PreviousHistory> GetPreviousHistory(int memberNumber, List<CurrentHistory> curHistory)
+    public List<PreviousHistory> GetPreviousHistory(int memberNumber, List<CurrentHistory> curHistory)
     {
-        using (var db = new NineTapDb())
+        using (var db = dbFactory.CreateDbContext())
         {
             var prevHistory = (from p in db.Participants
                               join m in db.Members on p.Member.Id equals m.Id
                               join g in db.Games on p.Game.Id equals g.Id
                               join t in db.Tournaments on p.Tournament.Id equals t.Id
-                              where m.Number == memberNumber 
+                              where m.Number == memberNumber
                                  && g.IsFinalized
                               orderby t.Date descending
                               orderby g.MoneyWon descending
@@ -176,9 +181,9 @@ public class FinalizeTempDB
     /// [Phase 4 REFACTORED] Updates Game entity with finalization properties.
     /// FinalizeTemp writes are deprecated - only Games table is updated.
     /// </summary>
-    public static void AddFinalizeTemp(GameViewModel temp)
+    public void AddFinalizeTemp(GameViewModel temp)
     {
-        using(var db = new NineTapDb())
+        using(var db = dbFactory.CreateDbContext())
         {
             try
             {
@@ -192,7 +197,7 @@ public class FinalizeTempDB
                     game.AdjustedAvg = temp.AdjustedAvg;
                     game.KeepAdjustedAvg = temp.KeepAdjustedAvg;
                     game.HandicapTotal = temp.HandicapTotal;
-                    
+
                     // Update member handicap
                     var member = db.Members.FirstOrDefault(x => x.Id == temp.MemberId);
                     if (member != null)
@@ -201,7 +206,7 @@ public class FinalizeTempDB
                             Convert.ToInt16(Get30GameAverage(member))
                         );
                     }
-                    
+
                     db.SaveChanges();
                 }
             }
@@ -216,9 +221,9 @@ public class FinalizeTempDB
     /// Retrieves a single participant from a tournament based on given gameID.
     /// Return null if no participant is found
     /// </summary>
-    public static Participant GetParticipantByGameId (int gameID)
+    public Participant GetParticipantByGameId (int gameID)
     {
-        var db = new NineTapDb();
+        var db = dbFactory.CreateDbContext();
         return (from par in db.Participants
                where par.Game.Id == gameID
                // No tracking prevents EF from monitoring changes. This means
@@ -229,9 +234,9 @@ public class FinalizeTempDB
     /// <summary>
     /// Deletes the Participant given from the database
     /// </summary>
-    public static void DeleteParticipant(Participant p)
+    public void DeleteParticipant(Participant p)
     {
-        using (var db = new NineTapDb())
+        using (var db = dbFactory.CreateDbContext())
         {
             db.Entry(p).State = EntityState.Deleted;
             db.SaveChanges();
@@ -242,9 +247,9 @@ public class FinalizeTempDB
     /// Gets the entry quantity for a member in a tournament (Phase 3: reads from Games only).
     /// </summary>
     /// <returns>the amount of enties in tournament by a member</returns>
-    public static int GetMembersGameEntryCount(int tourneyId, int memberNum)
+    public int GetMembersGameEntryCount(int tourneyId, int memberNum)
     {
-        using (var db = new NineTapDb())
+        using (var db = dbFactory.CreateDbContext())
         {
             // Phase 3: Read from Games via Participants join
             return (from p in db.Participants

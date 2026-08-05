@@ -31,10 +31,6 @@ namespace NineTapTour
                 .AddJsonFile("appsettings.Development.json", optional: true)
                 .Build();
 
-            // Makes the configured connection string authoritative for the legacy
-            // new NineTapDb() call sites until they are all constructor injected.
-            DbConfig.ConnectionString = configuration.GetConnectionString("NineTapDb") ?? DbConfig.DefaultConnectionString;
-
             ServiceCollection services = new();
             services.AddNineTapTourServices(configuration);
 

@@ -1,17 +1,24 @@
-﻿using NineTapTour.Core.Data;
+#nullable disable
 using Microsoft.EntityFrameworkCore;
+using NineTapTour.Core.Data;
 using NineTapTour.Core.Entities;
-using NineTapTour.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NineTapTour.Database;
+namespace NineTapTour.Core.Repositories;
 
-public static class DoublesPartnerClaimDB
+public class DoublesPartnerClaimRepository : IDoublesPartnerClaimRepository
 {
-    public static List<DoublesPartnerClaim> GetClaimsByTournament(int tournamentId)
+    private readonly IDbContextFactory<NineTapDb> dbFactory;
+
+    public DoublesPartnerClaimRepository(IDbContextFactory<NineTapDb> dbFactory)
     {
-        using var db = new NineTapDb();
+        this.dbFactory = dbFactory;
+    }
+
+    public List<DoublesPartnerClaim> GetClaimsByTournament(int tournamentId)
+    {
+        using var db = dbFactory.CreateDbContext();
         return [.. db.DoublesPartnerClaims
             .Include(c => c.Tournament)
             .Include(c => c.SourceMember)
@@ -22,9 +29,9 @@ public static class DoublesPartnerClaimDB
             .ThenBy(c => c.PartnerMember.Number)];
     }
 
-    public static bool ClaimExists(int tournamentId, int sourceMemberId, int partnerMemberId, int squad)
+    public bool ClaimExists(int tournamentId, int sourceMemberId, int partnerMemberId, int squad)
     {
-        using var db = new NineTapDb();
+        using var db = dbFactory.CreateDbContext();
         return db.DoublesPartnerClaims.Any(c =>
             c.Tournament.Id == tournamentId &&
             c.Squad == squad &&
@@ -32,12 +39,12 @@ public static class DoublesPartnerClaimDB
             c.PartnerMember.Id == partnerMemberId);
     }
 
-    public static bool AddClaim(int tournamentId, int sourceMemberId, int partnerMemberId, int squad)
+    public bool AddClaim(int tournamentId, int sourceMemberId, int partnerMemberId, int squad)
     {
         if (sourceMemberId == partnerMemberId)
             return false;
 
-        using var db = new NineTapDb();
+        using var db = dbFactory.CreateDbContext();
 
         bool exists = db.DoublesPartnerClaims.Any(c =>
             c.Tournament.Id == tournamentId &&
@@ -68,9 +75,9 @@ public static class DoublesPartnerClaimDB
     /// Removes the directional claims for both member1→member2 and member2→member1
     /// in the given squad, validating each exists before attempting deletion.
     /// </summary>
-    public static void RemoveClaimsForPair(int tournamentId, int memberId1, int memberId2, int squad)
+    public void RemoveClaimsForPair(int tournamentId, int memberId1, int memberId2, int squad)
     {
-        using var db = new NineTapDb();
+        using var db = dbFactory.CreateDbContext();
         var claimsToRemove = db.DoublesPartnerClaims.Where(c =>
             c.Tournament.Id == tournamentId &&
             c.Squad == squad &&

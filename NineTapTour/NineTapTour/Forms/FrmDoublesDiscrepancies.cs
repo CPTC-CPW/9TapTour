@@ -1,6 +1,7 @@
 ﻿using NineTapTour.Database;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
+using NineTapTour.Core.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -36,6 +37,9 @@ public class FrmDoublesDiscrepancies : Form
     }
 
     private readonly Tournament _tournament;
+    private readonly IDoublesTeamRepository doublesTeamRepository;
+    private readonly IDoublesPartnerPlanRepository doublesPartnerPlanRepository;
+    private readonly IDoublesPartnerClaimRepository doublesPartnerClaimRepository;
 
     private Label          lblTitle;
     private DataGridView   dgvIssues;
@@ -47,9 +51,12 @@ public class FrmDoublesDiscrepancies : Form
     // Construction
     // ----------------------------------------------------------------
 
-    public FrmDoublesDiscrepancies(Tournament tournament)
+    public FrmDoublesDiscrepancies(Tournament tournament, IDoublesTeamRepository doublesTeamRepository, IDoublesPartnerPlanRepository doublesPartnerPlanRepository, IDoublesPartnerClaimRepository doublesPartnerClaimRepository)
     {
         _tournament = tournament;
+        this.doublesTeamRepository = doublesTeamRepository;
+        this.doublesPartnerPlanRepository = doublesPartnerPlanRepository;
+        this.doublesPartnerClaimRepository = doublesPartnerClaimRepository;
         InitializeControls();
         LoadDiscrepancies();
     }
@@ -176,8 +183,8 @@ public class FrmDoublesDiscrepancies : Form
         dgvIssues.Rows.Clear();
         lblStatus.Text = string.Empty;
 
-        var plans  = DoublesPartnerPlanDB.GetPlansByTournament(_tournament.Id);
-        var claims = DoublesPartnerClaimDB.GetClaimsByTournament(_tournament.Id);
+        var plans  = doublesPartnerPlanRepository.GetPlansByTournament(_tournament.Id);
+        var claims = doublesPartnerClaimRepository.GetClaimsByTournament(_tournament.Id);
 
         // --- Missing reciprocals ---
         foreach (var claim in claims)
@@ -331,8 +338,8 @@ public class FrmDoublesDiscrepancies : Form
 
     private void BtnFixAllReciprocals_Click(object sender, EventArgs e)
     {
-        var plans  = DoublesPartnerPlanDB.GetPlansByTournament(_tournament.Id);
-        var claims = DoublesPartnerClaimDB.GetClaimsByTournament(_tournament.Id);
+        var plans  = doublesPartnerPlanRepository.GetPlansByTournament(_tournament.Id);
+        var claims = doublesPartnerClaimRepository.GetClaimsByTournament(_tournament.Id);
 
         int fixed_ = 0;
         foreach (var claim in claims)
@@ -361,24 +368,24 @@ public class FrmDoublesDiscrepancies : Form
     private void FixReciprocal(int srcId, int partnerId, int squad)
     {
         // Add the missing reverse claim
-        DoublesPartnerClaimDB.AddClaim(_tournament.Id, partnerId, srcId, squad);
+        doublesPartnerClaimRepository.AddClaim(_tournament.Id, partnerId, srcId, squad);
         // Ensure the team record exists (order-independent; AddTeam is a no-op if duplicate)
-        DoublesTeamDB.AddTeam(_tournament.Id, srcId, partnerId, squad);
+        doublesTeamRepository.AddTeam(_tournament.Id, srcId, partnerId, squad);
     }
 
     /// <summary>Removes the directional claim A→B (and B→A if present) plus the team.</summary>
     private void RemoveClaim(int srcId, int partnerId, int squad)
     {
-        DoublesPartnerClaimDB.RemoveClaimsForPair(_tournament.Id, srcId, partnerId, squad);
+        doublesPartnerClaimRepository.RemoveClaimsForPair(_tournament.Id, srcId, partnerId, squad);
 
         // Also remove the DoublesTeam if it exists
-        var teams = DoublesTeamDB.GetTeamsByTournament(_tournament.Id);
+        var teams = doublesTeamRepository.GetTeamsByTournament(_tournament.Id);
         var team  = teams.FirstOrDefault(t =>
             t.Squad == squad &&
             ((t.Member1.Id == srcId && t.Member2.Id == partnerId) ||
              (t.Member1.Id == partnerId && t.Member2.Id == srcId)));
         if (team != null)
-            DoublesTeamDB.RemoveTeam(team.Id);
+            doublesTeamRepository.RemoveTeam(team.Id);
     }
 
     // ----------------------------------------------------------------

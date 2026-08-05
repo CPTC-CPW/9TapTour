@@ -1,14 +1,22 @@
-﻿using NineTapTour.Core.Data;
-using System.Collections.Generic;
-using System.Linq;
+#nullable disable
 using Microsoft.EntityFrameworkCore;
+using NineTapTour.Core.Data;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace NineTapTour.Database;
+namespace NineTapTour.Core.Repositories;
 
-public class ReportsDB
+public class ReportsRepository : IReportsRepository
 {
+    private readonly IDbContextFactory<NineTapDb> dbFactory;
+
+    public ReportsRepository(IDbContextFactory<NineTapDb> dbFactory)
+    {
+        this.dbFactory = dbFactory;
+    }
+
     /// <summary>
     /// Returns all finalized tournament entries flattened for report calculations,
     /// optionally filtered by tournament year range and/or a single member.
@@ -16,9 +24,9 @@ public class ReportsDB
     /// <param name="startYear">Earliest tournament year to include, or null for no lower bound</param>
     /// <param name="endYear">Latest tournament year to include, or null for no upper bound</param>
     /// <param name="memberNumber">If set, only entries for this member number are returned</param>
-    public static List<ReportGameEntry> GetReportEntries(int? startYear, int? endYear, int? memberNumber = null)
+    public List<ReportGameEntry> GetReportEntries(int? startYear, int? endYear, int? memberNumber = null)
     {
-        using var db = new NineTapDb();
+        using var db = dbFactory.CreateDbContext();
 
         var query = db.Games
             .Include(g => g.Participant)
@@ -67,9 +75,9 @@ public class ReportsDB
     /// Returns the distinct years that have at least one tournament, newest first.
     /// Used to populate the year dropdowns on the reports form.
     /// </summary>
-    public static List<int> GetTournamentYears()
+    public List<int> GetTournamentYears()
     {
-        using var db = new NineTapDb();
+        using var db = dbFactory.CreateDbContext();
         return db.Tournaments
             .Select(t => t.Date.Year)
             .Distinct()

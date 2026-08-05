@@ -6,8 +6,6 @@ namespace NineTapTour.Core.Data;
 
 public class NineTapDb : DbContext
 {
-    public NineTapDb() { }
-
     public NineTapDb(DbContextOptions<NineTapDb> options)
         : base(options)
     {
@@ -73,14 +71,6 @@ public class NineTapDb : DbContext
         builder.Entity<DoublesPartnerClaim>()
             .HasIndex("TournamentId", "SourceMemberId", "PartnerMemberId", "Squad")
             .IsUnique();
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlServer(DbConfig.ConnectionString);
-        }
     }
 
     // Add DbSets for each type to store in the database

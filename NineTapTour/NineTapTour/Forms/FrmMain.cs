@@ -1,9 +1,11 @@
-﻿using NineTapTour.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using NineTapTour.Models;
 using NineTapTour.Database;
 using NineTapTour.Services;
 using System;
 using System.Windows.Forms;
 using System.Drawing;
+using NineTapTour.Core.Data;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
 
@@ -13,6 +15,7 @@ public partial class FrmMain : Form
 {
     private readonly IFormNavigator navigator;
     private readonly IFormFactory formFactory;
+    private readonly IDbContextFactory<NineTapDb> dbFactory;
 
     /// <summary>
     /// Keeps track of the currently active menu item on the menu strip.
@@ -23,10 +26,11 @@ public partial class FrmMain : Form
     /// Opens Main form
     /// Retrieves information from the database in order.
     /// </summary>
-    public FrmMain(IFormNavigator navigator, IFormFactory formFactory)
+    public FrmMain(IFormNavigator navigator, IFormFactory formFactory, IDbContextFactory<NineTapDb> dbFactory)
     {
         this.navigator = navigator;
         this.formFactory = formFactory;
+        this.dbFactory = dbFactory;
 
         InitializeComponent();
 
@@ -148,14 +152,14 @@ public partial class FrmMain : Form
 
     private void BackupDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        DatabaseManagement.BackupDatabase();
+        DatabaseManagement.BackupDatabase(dbFactory);
     }
 
     private void RestoreDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
     {
         if (MessageBox.Show("Restoring the database will restart the application.", "Warning", MessageBoxButtons.OKCancel) == DialogResult.OK)
         {
-            if (DatabaseManagement.RestoreDatabase())
+            if (DatabaseManagement.RestoreDatabase(dbFactory))
             {
                 MessageBox.Show("Database successfully restored from backup!");
                 Application.Restart();

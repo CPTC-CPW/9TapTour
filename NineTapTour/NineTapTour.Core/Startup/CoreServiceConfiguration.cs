@@ -1,0 +1,32 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using NineTapTour.Core.Data;
+using NineTapTour.Core.Repositories;
+
+namespace NineTapTour.Core.Startup;
+
+public static class CoreServiceConfiguration
+{
+    /// <summary>
+    /// Registers the DbContext factory and all repositories. Shared by the
+    /// WinForms app, the import tool, tests, and (later) the website.
+    /// </summary>
+    public static IServiceCollection AddNineTapTourCore(this IServiceCollection services, string connectionString)
+    {
+        services.AddDbContextFactory<NineTapDb>(options => options.UseSqlServer(connectionString));
+
+        services.AddSingleton<IMemberRepository, MemberRepository>();
+        services.AddSingleton<IGameRepository, GameRepository>();
+        services.AddSingleton<ITournamentRepository, TournamentRepository>();
+        services.AddSingleton<ITournamentStatsRepository, TournamentStatsRepository>();
+        services.AddSingleton<IParticipantRepository, ParticipantRepository>();
+        services.AddSingleton<IPlayerHistoryRepository, PlayerHistoryRepository>();
+        services.AddSingleton<IReportsRepository, ReportsRepository>();
+        services.AddSingleton<IFinalizeTempRepository, FinalizeTempRepository>();
+        services.AddSingleton<IDoublesTeamRepository, DoublesTeamRepository>();
+        services.AddSingleton<IDoublesPartnerPlanRepository, DoublesPartnerPlanRepository>();
+        services.AddSingleton<IDoublesPartnerClaimRepository, DoublesPartnerClaimRepository>();
+
+        return services;
+    }
+}

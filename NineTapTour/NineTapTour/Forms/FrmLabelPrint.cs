@@ -7,23 +7,28 @@ using System.Linq;
 using System.Windows.Forms;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
+using NineTapTour.Core.Repositories;
 
 namespace NineTapTour.Forms;
 
 public partial class FrmLabelPrint : Form
 {
+    private readonly IMemberRepository memberRepository;
+
     List<Member> AllMems;
     List<Member> ActiveMems;
     List<Member> Labels;
 
-    public FrmLabelPrint()
+    public FrmLabelPrint(IMemberRepository memberRepository)
     {
+        this.memberRepository = memberRepository;
+
         InitializeComponent();
     }
 
     private void FrmLabelPrint_Load(object sender, EventArgs e)
-    {         
-        AllMems = MemberDB.GetMemberList();
+    {
+        AllMems = memberRepository.GetMemberList();
         ActiveMems = [];
         Labels = [];
 

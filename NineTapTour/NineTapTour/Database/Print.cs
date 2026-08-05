@@ -375,8 +375,9 @@ namespace NineTapTour.Database
         static List<Member> mems = [];
         static int index = 0;
 
-        // This is for the printbytourney button
-        static public void PrintByTour(Tournament tour)
+        // This is for the printbytourney button. The caller supplies the
+        // tournament's unique members so this class stays free of data access.
+        static public void PrintByTour(Tournament tour, List<Member> tourMembers)
         {
             //Set up components for printing
             PrintDialog printDialog = new();
@@ -386,7 +387,7 @@ namespace NineTapTour.Database
 
             //add the event handler that will do the printing
             printDocument.PrintPage += new PrintPageEventHandler(PrintTourRecaps);
-            mems = TournamentDB.GetUniqueTourMembers(tour);
+            mems = tourMembers;
             
             // Client wants the recaps ordered by last name first
             mems = [.. mems.OrderBy(member => member.LastName).ThenBy(member => member.FirstName)];

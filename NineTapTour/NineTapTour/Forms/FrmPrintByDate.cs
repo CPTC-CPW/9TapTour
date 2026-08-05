@@ -12,13 +12,21 @@ using NineTapTour.Database;
 using NineTapTour.Core.Data;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
+using NineTapTour.Core.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace NineTapTour.Forms
 {
     public partial class FrmPrintByDate : Form
     {
-        public FrmPrintByDate()
+        private readonly ITournamentRepository tournamentRepository;
+        private readonly IDbContextFactory<NineTapDb> dbFactory;
+
+        public FrmPrintByDate(ITournamentRepository tournamentRepository, IDbContextFactory<NineTapDb> dbFactory)
         {
+            this.tournamentRepository = tournamentRepository;
+            this.dbFactory = dbFactory;
+
             InitializeComponent();
         }
 
@@ -42,14 +50,14 @@ namespace NineTapTour.Forms
         List<Member> members;
         private void btnCheck_Click(object sender, EventArgs e)
         {
-            using (NineTapDb db = new())
+            using (NineTapDb db = dbFactory.CreateDbContext())
             {
                 tours = [.. (from t in db.Tournaments
                          orderby t.Date descending
                          where t.Date >= dateTimeStart.Value && t.Date <= dateTimeEnd.Value
                          select t)];
             }
-            members = TournamentDB.GetUniqueTourMembersByDate(dateTimeStart.Value, dateTimeEnd.Value);
+            members = tournamentRepository.GetUniqueTourMembersByDate(dateTimeStart.Value, dateTimeEnd.Value);
 
             if (tours.Count > 0)
             {

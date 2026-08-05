@@ -10,11 +10,15 @@ namespace NineTapTour.Forms;
 
 public partial class FrmMainMenu : Form
 {
+    private readonly IDbContextFactory<NineTapDb> dbFactory;
+
     /// <summary>
     /// Opens the "Main Menu" form.
     /// </summary>
-    public FrmMainMenu()
+    public FrmMainMenu(IDbContextFactory<NineTapDb> dbFactory)
     {
+        this.dbFactory = dbFactory;
+
         InitializeComponent();
     }
 
@@ -64,7 +68,7 @@ public partial class FrmMainMenu : Form
     {
         if (MessageBox.Show("This will permanently delete and recreate the entire database. All data will be lost. Are you sure?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
         {
-            using (NineTapDb db = new())
+            using (NineTapDb db = dbFactory.CreateDbContext())
             {
                 db.Database.EnsureDeleted();
                 db.Database.Migrate();

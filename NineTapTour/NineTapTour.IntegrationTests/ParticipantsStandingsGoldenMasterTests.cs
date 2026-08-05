@@ -1,6 +1,6 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NineTapTour.Core.Entities;
-using NineTapTour.Database;
+using NineTapTour.Core.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,10 +27,12 @@ namespace NineTapTour.IntegrationTests
         /// </summary>
         private static int DbId(int memberNumber) => TestDatabase.DbIdByNumber[memberNumber];
 
+        private static ParticipantRepository Repo => new(TestDatabase.DbFactory);
+
         [TestMethod]
         public void GetStandingsForThreeOf4ByScratch_ReturnsDropLowestTotalsOrderedDescending()
         {
-            List<MemberScores> result = ParticipantsDB.GetStandingsForThreeOf4ByScratch(TestDatabase.ThreeOf4TournamentId);
+            List<MemberScores> result = Repo.GetStandingsForThreeOf4ByScratch(TestDatabase.ThreeOf4TournamentId);
 
             AssertRows(result,
             [
@@ -56,13 +58,13 @@ namespace NineTapTour.IntegrationTests
             // games raises a SqlException). The EF-based standings queries
             // handle both situations.
             Assert.ThrowsExactly<InvalidCastException>(() =>
-                ParticipantsDB.GetStandingsForThreeOf4ByScratch(TestDatabase.RegularTournamentId));
+                Repo.GetStandingsForThreeOf4ByScratch(TestDatabase.RegularTournamentId));
         }
 
         [TestMethod]
         public void GetStandingsForThreeOutOf4ByFilterSeriesByHandicap_AllSquads()
         {
-            List<MemberScores> result = ParticipantsDB.GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(
+            List<MemberScores> result = Repo.GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(
                 [1, 2], TestDatabase.ThreeOf4TournamentId);
 
             AssertRows(result,
@@ -79,9 +81,9 @@ namespace NineTapTour.IntegrationTests
         [TestMethod]
         public void GetStandingsForThreeOutOf4ByFilterSeriesByHandicap_SingleSquadFilters()
         {
-            List<MemberScores> squad1 = ParticipantsDB.GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(
+            List<MemberScores> squad1 = Repo.GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(
                 [1], TestDatabase.ThreeOf4TournamentId);
-            List<MemberScores> squad2 = ParticipantsDB.GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(
+            List<MemberScores> squad2 = Repo.GetStandingsForThreeOutOf4ByFilterSeriesByHandicap(
                 [2], TestDatabase.ThreeOf4TournamentId);
 
             CollectionAssert.AreEqual(new[] { DbId(103), DbId(101), DbId(102) }, squad1.Select(r => r.MemberId).ToArray());
@@ -94,7 +96,7 @@ namespace NineTapTour.IntegrationTests
         [TestMethod]
         public void GetStandingsForThreeOf4ByFilterSeriesByScratch_AllSquads()
         {
-            List<MemberScores> result = ParticipantsDB.GetStandingsForThreeOf4ByFilterSeriesByScratch(
+            List<MemberScores> result = Repo.GetStandingsForThreeOf4ByFilterSeriesByScratch(
                 [1, 2], TestDatabase.ThreeOf4TournamentId);
 
             CollectionAssert.AreEqual(new[] { DbId(104), DbId(103), DbId(102), DbId(101), DbId(106), DbId(105) }, result.Select(r => r.MemberId).ToArray());
@@ -104,7 +106,7 @@ namespace NineTapTour.IntegrationTests
         [TestMethod]
         public void GetStandingsForTournamentByHandicap_ThreeOf4_MatchesRawSqlNumbers()
         {
-            List<MemberScores> result = ParticipantsDB.GetStandingsForTournamentByHandicap(
+            List<MemberScores> result = Repo.GetStandingsForTournamentByHandicap(
                 TestDatabase.ThreeOf4TournamentId, isThreeOfFourTournament: true);
 
             Dictionary<int, int?> scoreByMember = result.ToDictionary(r => r.MemberId, r => r.Score);
@@ -124,7 +126,7 @@ namespace NineTapTour.IntegrationTests
         [TestMethod]
         public void GetStandingsForTournamentByHandicap_Regular_HandlesMissingGames()
         {
-            List<MemberScores> result = ParticipantsDB.GetStandingsForTournamentByHandicap(
+            List<MemberScores> result = Repo.GetStandingsForTournamentByHandicap(
                 TestDatabase.RegularTournamentId);
 
             Assert.HasCount(4, result);
@@ -150,7 +152,7 @@ namespace NineTapTour.IntegrationTests
             // The interim projection never populates the per-game scores, so the
             // score summation loop adds nothing. Only the SQL-side ordering is
             // meaningful. This is current production behavior; freeze it.
-            List<MemberScores> result = ParticipantsDB.GetStandingsForTournamentByScratch(
+            List<MemberScores> result = Repo.GetStandingsForTournamentByScratch(
                 TestDatabase.ThreeOf4TournamentId);
 
             Assert.HasCount(6, result);
@@ -160,7 +162,7 @@ namespace NineTapTour.IntegrationTests
         [TestMethod]
         public void GetParticipants_ReturnsAllWithMemberAndGameLoaded()
         {
-            List<Participant> participants = ParticipantsDB.GetParticipants(TestDatabase.ThreeOf4TournamentId);
+            List<Participant> participants = Repo.GetParticipants(TestDatabase.ThreeOf4TournamentId);
 
             Assert.HasCount(6, participants);
             Assert.IsTrue(participants.All(p => p.Member != null && p.Game != null && p.Tournament != null));

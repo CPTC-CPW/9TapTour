@@ -1,18 +1,25 @@
-﻿using NineTapTour.Core.Data;
+#nullable disable
 using Microsoft.EntityFrameworkCore;
+using NineTapTour.Core.Data;
 using NineTapTour.Core.Entities;
-using NineTapTour.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NineTapTour.Database;
+namespace NineTapTour.Core.Repositories;
 
-public static class DoublesPartnerPlanDB
+public class DoublesPartnerPlanRepository : IDoublesPartnerPlanRepository
 {
-    public static List<DoublesPartnerPlan> GetPlansByTournament(int tournamentId)
+    private readonly IDbContextFactory<NineTapDb> dbFactory;
+
+    public DoublesPartnerPlanRepository(IDbContextFactory<NineTapDb> dbFactory)
     {
-        using var db = new NineTapDb();
+        this.dbFactory = dbFactory;
+    }
+
+    public List<DoublesPartnerPlan> GetPlansByTournament(int tournamentId)
+    {
+        using var db = dbFactory.CreateDbContext();
         return [.. db.DoublesPartnerPlans
             .Include(p => p.Member)
             .Include(p => p.Tournament)
@@ -21,23 +28,23 @@ public static class DoublesPartnerPlanDB
             .ThenBy(p => p.Member.Number)];
     }
 
-    public static int GetExpectedPartnerCount(int tournamentId, int memberId, int squad)
+    public int GetExpectedPartnerCount(int tournamentId, int memberId, int squad)
     {
-        using var db = new NineTapDb();
+        using var db = dbFactory.CreateDbContext();
         return db.DoublesPartnerPlans
             .Where(p => p.Tournament.Id == tournamentId && p.Member.Id == memberId && p.Squad == squad)
             .Select(p => (int?)p.ExpectedPartnerCount)
             .FirstOrDefault() ?? 0;
     }
 
-    public static void UpsertPlan(int tournamentId, int memberId, int squad, int expectedPartnerCount)
+    public void UpsertPlan(int tournamentId, int memberId, int squad, int expectedPartnerCount)
     {
-        using var db = new NineTapDb();
+        using var db = dbFactory.CreateDbContext();
         UpsertPlan(db, tournamentId, memberId, squad, expectedPartnerCount);
         db.SaveChanges();
     }
 
-    public static void UpsertPlan(NineTapDb db, int tournamentId, int memberId, int squad, int expectedPartnerCount)
+    public void UpsertPlan(NineTapDb db, int tournamentId, int memberId, int squad, int expectedPartnerCount)
     {
         var existing = db.DoublesPartnerPlans
             .Include(p => p.Member)
