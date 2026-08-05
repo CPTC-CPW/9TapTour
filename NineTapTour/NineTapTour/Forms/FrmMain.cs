@@ -1,68 +1,48 @@
 ﻿using NineTapTour.Database;
+using NineTapTour.Services;
 using System;
 using System.Windows.Forms;
 using System.Drawing;
 using NineTapTour.Models;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NineTapTour.Forms;
 
 public partial class FrmMain : Form
 {
+    private readonly IFormNavigator navigator;
+    private readonly IFormFactory formFactory;
+
     /// <summary>
     /// Keeps track of the currently active menu item on the menu strip.
     /// </summary>
     public ToolStripMenuItem ActiveItem;
-    
+
     /// <summary>
-    /// Opens Main form 
+    /// Opens Main form
     /// Retrieves information from the database in order.
     /// </summary>
-    public FrmMain()
+    public FrmMain(IFormNavigator navigator, IFormFactory formFactory)
     {
+        this.navigator = navigator;
+        this.formFactory = formFactory;
+
         InitializeComponent();
 
         // Set initial size of the application to the maximum size of the screen's working area and maximize the window
         Size = new Size( Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height );
         WindowState = FormWindowState.Maximized;
 
-        // Run migrations on startup
-        var migrator = new NineTapDb().Database.GetService<IMigrator>();
-        migrator.Migrate();
-        
-        var mainMenu = Application.OpenForms["MainMenu"] as FrmMainMenu;
-        OpenOrDisplayForm(ref mainMenu);
+        navigator.RegisterMdiParent(this);
 
         //sets the first item of the menu bar to the active item and highlights it.
         ActiveItem = (ToolStripMenuItem)menMain.Items[0];
         ActiveItem.BackColor = SystemColors.ActiveCaption;
     }
 
-    /// <summary>
-    /// Opens/Displays the specified form. Ensures the form is on top when selected.
-    /// </summary>
-    /// <typeparam name="T">forms that have already been opened(?)</typeparam>
-    /// <param name="form">forms that haven't been opened yet(?)</param>
-    public void OpenOrDisplayForm<T>(ref T form) where T : Form, new()
+    protected override void OnLoad(EventArgs e)
     {
-        if (form != null)
-        {   
-            form.BringToFront();
-            form.Activate();   
-        }
-        else
-        {
-            form = new T
-            {
-                MdiParent = this,
-            };
-        }
-        form.WindowState = FormWindowState.Maximized;
-        form.ControlBox = false;
-        form.MinimizeBox = false;
-        form.MaximizeBox = false;
-        form.Show();
+        base.OnLoad(e);
+        navigator.ShowSingleton<FrmMainMenu>();
     }
 
     /// <summary>
@@ -94,8 +74,7 @@ public partial class FrmMain : Form
     /// </summary>
     public void AboutToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        var aboutForm = Application.OpenForms["FrmAbout"] as FrmAbout;
-        OpenOrDisplayForm(ref aboutForm);
+        navigator.ShowSingleton<FrmAbout>();
     }
 
     /// <summary>
@@ -113,9 +92,7 @@ public partial class FrmMain : Form
             FrmMemberScoresHelpers.unsavedBowlerData = false;
         }
 
-        var mainMenu = Application.OpenForms["MainMenu"] as FrmMainMenu;
-
-        OpenOrDisplayForm(ref mainMenu);
+        navigator.ShowSingleton<FrmMainMenu>();
     }
 
     /// <summary>
@@ -132,8 +109,7 @@ public partial class FrmMain : Form
             }
             FrmMemberScoresHelpers.unsavedBowlerData = false;
         }
-        var newfrmMemberData = Application.OpenForms["FrmMemberData"] as FrmMemberData;
-        OpenOrDisplayForm(ref newfrmMemberData);
+        navigator.ShowSingleton<FrmMemberData>();
     }
 
     /// <summary>
@@ -141,8 +117,7 @@ public partial class FrmMain : Form
     /// </summary>
     public void TournamentToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        var newfrmMemberScores = Application.OpenForms["frmMemberScores"] as FrmMemberScores;
-        OpenOrDisplayForm(ref newfrmMemberScores);     
+        navigator.ShowSingleton<FrmMemberScores>();
     }
 
     /// <summary>
@@ -160,14 +135,13 @@ public partial class FrmMain : Form
             FrmMemberScoresHelpers.unsavedBowlerData = false;
         }
 
-        var frmReports = Application.OpenForms["FrmReports"] as FrmReports;
-        OpenOrDisplayForm(ref frmReports);
+        navigator.ShowSingleton<FrmReports>();
     }
 
     private void UpdateInactiveMembersToolStripMenuItem1_Click(object sender, EventArgs e)
     {
-        var UpdatefrmActiveMem = new FrmUpdateActiveMem();          
-        UpdatefrmActiveMem.Show();
+        var updateFrmActiveMem = formFactory.Create<FrmUpdateActiveMem>();
+        updateFrmActiveMem.Show();
     }
 
     private void BackupDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
@@ -189,7 +163,7 @@ public partial class FrmMain : Form
     
     private void LabelPrintToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        FrmLabelPrint labelsToPrint = new();
+        FrmLabelPrint labelsToPrint = formFactory.Create<FrmLabelPrint>();
         labelsToPrint.ShowDialog();
     }
 }

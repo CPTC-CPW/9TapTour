@@ -9,16 +9,23 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NineTapTour.Database;
 using NineTapTour.Models;
+using NineTapTour.Services;
 
 namespace NineTapTour.Forms
 {
     public partial class FrmNewTournament : Form
     {
+        private readonly IFormNavigator navigator;
+        private readonly IFormFactory formFactory;
+
         // If a new tournament was selected to edit, this will be set to something other than null.
         Tournament tourToEdit;
 
-        public FrmNewTournament()
+        public FrmNewTournament(IFormNavigator navigator, IFormFactory formFactory)
         {
+            this.navigator = navigator;
+            this.formFactory = formFactory;
+
             InitializeComponent();
             txtSquads.Text = 4.ToString();
         }
@@ -133,8 +140,7 @@ namespace NineTapTour.Forms
                     Tournament currTourney = newTournament;
                     clearTournamentForm();
 
-                    var newFrmMemberScores = Application.OpenForms["FrmMemberScores"] as FrmMemberScores;
-                    ((FrmMain)MdiParent).OpenOrDisplayForm(ref newFrmMemberScores);
+                    FrmMemberScores newFrmMemberScores = navigator.ShowSingleton<FrmMemberScores>();
 
                     //populates selected tournament with recently edited or created tournament back in MemberScores.
                     newFrmMemberScores.PopulateSelectedTournament(currTourney);
@@ -144,7 +150,7 @@ namespace NineTapTour.Forms
 
         private void btnEditTour_Click(object sender, EventArgs e)
         {
-            FrmTourSearch getEdit = new();
+            FrmTourSearch getEdit = formFactory.Create<FrmTourSearch>();
             getEdit.ShowDialog();
             tourToEdit = getEdit.GetResult();
 

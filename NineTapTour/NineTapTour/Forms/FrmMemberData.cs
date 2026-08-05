@@ -9,18 +9,23 @@ using System.Data;
 using NineTapTour.Models;
 using ClosedXML.Excel;
 using NineTapTour.Core.Models;
+using NineTapTour.Services;
 
 namespace NineTapTour.Forms;
 
 public partial class FrmMemberData : Form
 {
+    private readonly IFormFactory formFactory;
+
     private Member currentMem;
-    
+
     /// <summary>
     /// Opens the "Member Data" Form.
     /// </summary>
-    public FrmMemberData()
+    public FrmMemberData(IFormFactory formFactory)
     {
+        this.formFactory = formFactory;
+
         InitializeComponent();
         txtMiddleInitial.MaxLength = 1;
     }
@@ -746,7 +751,7 @@ public partial class FrmMemberData : Form
     /// <param name="e"></param>
     private void BtnMemberSearch_Click(object sender, EventArgs e)
     {
-        FrmSearch SearchForm = new();
+        FrmSearch SearchForm = formFactory.Create<FrmSearch>();
         SearchForm.ShowDialog();
 
         if (SearchForm.searchResult > 0)
@@ -760,7 +765,7 @@ public partial class FrmMemberData : Form
     // top of thew original data on the form finalize page
     private void BtnStats_Click(object sender, EventArgs e)
     {
-        FrmStats p = new(currentMem.Number, currentMem.FirstName + 
+        FrmStats p = formFactory.Create<FrmStats>(currentMem.Number, currentMem.FirstName +
             currentMem.LastName + currentMem.MiddleInitial, currentMem);
         p.ShowDialog();
     }

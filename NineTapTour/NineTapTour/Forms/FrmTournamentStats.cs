@@ -1,7 +1,6 @@
 ﻿using NineTapTour.Database;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
@@ -76,15 +75,6 @@ public partial class FrmTournamentStats : Form
 
         listOfValidScores.Reverse();
         return listOfValidScores;
-    }
-
-    /// <summary>
-    /// GetConnection() returns a connection string to the database within the quotes.
-    /// </summary>
-    /// <returns>Database ConnectionString</returns>
-    public static string GetConnection()
-    {
-        return ConfigurationManager.ConnectionStrings["NineTapDbConnection"].ConnectionString;
     }
 
     /// <summary>

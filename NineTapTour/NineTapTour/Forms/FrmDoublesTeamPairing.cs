@@ -1,5 +1,6 @@
 ﻿using NineTapTour.Database;
 using NineTapTour.Models;
+using NineTapTour.Services;
 using ClosedXML.Excel;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ public class FrmDoublesTeamPairing : Form
     private const int BowlerPanelFixedHeight = 210;
 
     private readonly Tournament _tournament;
+    private readonly IFormFactory _formFactory;
 
     // Header
     private Label lblHeader;
@@ -77,9 +79,10 @@ public class FrmDoublesTeamPairing : Form
     // Construction
     // ----------------------------------------------------------------
 
-    public FrmDoublesTeamPairing(Tournament tournament)
+    public FrmDoublesTeamPairing(Tournament tournament, IFormFactory formFactory)
     {
         _tournament = tournament;
+        _formFactory = formFactory;
         InitializeControls();
         LoadPairings();
     }
@@ -964,7 +967,7 @@ public class FrmDoublesTeamPairing : Form
 
     private void BtnFixDiscrepancies_Click(object sender, EventArgs e)
     {
-        using var dlg = new FrmDoublesDiscrepancies(_tournament);
+        using var dlg = _formFactory.Create<FrmDoublesDiscrepancies>(_tournament);
         dlg.ShowDialog(this);
         LoadPairings();
     }

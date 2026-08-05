@@ -2,6 +2,7 @@
 using NineTapTour.Database;
 using NineTapTour.Models;
 using NineTapTour.Models.ViewModels;
+using NineTapTour.Services;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -28,11 +29,17 @@ public partial class FrmMemberScores : Form
     readonly Participant player = new();
     readonly List<int> howManySquadsCanBeFiltered = [];
 
+    private readonly IFormNavigator navigator;
+    private readonly IFormFactory formFactory;
+
     /// <summary>
     /// instantiates all form buttons.
     /// </summary>
-    public FrmMemberScores()
+    public FrmMemberScores(IFormNavigator navigator, IFormFactory formFactory)
     {
+        this.navigator = navigator;
+        this.formFactory = formFactory;
+
         InitializeComponent();
         DoubleBuffered = true;
         db = new NineTapDb();
@@ -994,8 +1001,7 @@ public partial class FrmMemberScores : Form
     /// </summary>
     private void BtnNewTournament_Click(object sender, EventArgs e)
     {
-        var newfrmNewTournament = Application.OpenForms["frmNewTournament"] as FrmNewTournament;
-        ((FrmMain)MdiParent).OpenOrDisplayForm(ref newfrmNewTournament);
+        FrmNewTournament newfrmNewTournament = navigator.ShowSingleton<FrmNewTournament>();
         newfrmNewTournament.Dock = DockStyle.None;
         rdoSquad1.Checked = true;
     }
@@ -1191,7 +1197,7 @@ public partial class FrmMemberScores : Form
     private void BtnTourSearch_Click(object sender, EventArgs e)
     {
         List<Tournament> tours = [];
-        FrmTourSearch tourSearch = new(tours);
+        FrmTourSearch tourSearch = formFactory.Create<FrmTourSearch>(tours);
         tourSearch.ShowDialog();
 
         //Populates dropdown box with tournaments
@@ -1433,23 +1439,21 @@ public partial class FrmMemberScores : Form
 
     private void BtnTournamentsByYear_Click(object sender, EventArgs e)
     {
-        FrmTournamentsByYear listTournaments = new();
+        FrmTournamentsByYear listTournaments = formFactory.Create<FrmTournamentsByYear>();
         listTournaments.ShowDialog();
     }
 
     //Called when stats btn is clicked
     private void BtnStats_Click(object sender, EventArgs e)
     {
-        FrmTournamentStats tournamentStats = new();
+        FrmTournamentStats tournamentStats = formFactory.Create<FrmTournamentStats>();
         tournamentStats.ShowDialog();
     }
 
     private void BtnRecapByPin_Click(object sender, EventArgs e)
     {
-        FrmSelection selectTournament = new()
-        {
-            StartPosition = FormStartPosition.CenterParent
-        };
+        FrmSelection selectTournament = formFactory.Create<FrmSelection>();
+        selectTournament.StartPosition = FormStartPosition.CenterParent;
 
         DialogResult t = selectTournament.ShowDialog();
         if (t != DialogResult.Cancel)
@@ -1520,11 +1524,9 @@ public partial class FrmMemberScores : Form
             Cursor.Current = Cursors.WaitCursor;
             Application.DoEvents();
 
-            var newFrmFinalizeTournament = new FrmFinalizeTournament(FrmMemberScoresHelpers.selectedTournament)
-            {
-                Dock = DockStyle.Right,
-                WindowState = FormWindowState.Normal
-            };
+            var newFrmFinalizeTournament = formFactory.Create<FrmFinalizeTournament>(FrmMemberScoresHelpers.selectedTournament);
+            newFrmFinalizeTournament.Dock = DockStyle.Right;
+            newFrmFinalizeTournament.WindowState = FormWindowState.Normal;
             newFrmFinalizeTournament.ShowDialog();
         }
 
@@ -1540,7 +1542,7 @@ public partial class FrmMemberScores : Form
             MessageBox.Show("Please select a tournament first.");
             return;
         }
-        using var form = new FrmDoublesTeamPairing(FrmMemberScoresHelpers.selectedTournament);
+        using var form = formFactory.Create<FrmDoublesTeamPairing>(FrmMemberScoresHelpers.selectedTournament);
         form.ShowDialog(this);
         RefreshForm();
     }
@@ -1594,7 +1596,7 @@ public partial class FrmMemberScores : Form
             {
                 int currentsNum = GetSquadResultsNumberChecked();
 
-                FrmMemberScoresReports report = new(temp, FrmMemberScoresHelpers.selectedTournament, ReportType.HighGameHandicapGameSenior, currentsNum, squadList);
+                FrmMemberScoresReports report = formFactory.Create<FrmMemberScoresReports>(temp, FrmMemberScoresHelpers.selectedTournament, ReportType.HighGameHandicapGameSenior, currentsNum, squadList);
                 //report.Dock = DockStyle.Fill;
                 report.Show();
             }
@@ -1653,7 +1655,7 @@ public partial class FrmMemberScores : Form
             if (temp.Count != 0)
 
             {
-                FrmMemberScoresReports report = new(temp, FrmMemberScoresHelpers.selectedTournament, ReportType.HighGame, currentsNum, squadList);
+                FrmMemberScoresReports report = formFactory.Create<FrmMemberScoresReports>(temp, FrmMemberScoresHelpers.selectedTournament, ReportType.HighGame, currentsNum, squadList);
                 report.Show();
             }
             else
@@ -1741,7 +1743,7 @@ public partial class FrmMemberScores : Form
 
             if (temp.Count != 0)
             {
-                FrmMemberScoresReports report = new(temp, FrmMemberScoresHelpers.selectedTournament, ReportType.HighSeriesScratch, qualifyBySquadNumber, squadList);
+                FrmMemberScoresReports report = formFactory.Create<FrmMemberScoresReports>(temp, FrmMemberScoresHelpers.selectedTournament, ReportType.HighSeriesScratch, qualifyBySquadNumber, squadList);
                 report.Show();
             }
             else
@@ -1893,7 +1895,7 @@ public partial class FrmMemberScores : Form
 
     private void BtnTournamentResults_Click(object sender, EventArgs e)
     {
-        FrmTournamentResults form = new();
+        FrmTournamentResults form = formFactory.Create<FrmTournamentResults>();
         form.ShowDialog();
     }
 
