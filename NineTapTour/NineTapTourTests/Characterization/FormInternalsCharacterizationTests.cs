@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NineTapTour.Core.Import;
+using NineTapTour.Core.Services;
 using NineTapTour.Forms;
 
 namespace NineTapTourTests.Characterization
@@ -29,7 +30,7 @@ namespace NineTapTourTests.Characterization
         [DataRow(0, 1, true, 0)]   // nothing to deduct
         public void ComputeHalfRateBonus_MatchesCurrentBehavior(int baseBonus, int place, bool isCashing, int expected)
         {
-            Assert.AreEqual(expected, FrmFinalizeTournament.ComputeHalfRateBonus(baseBonus, place, isCashing));
+            Assert.AreEqual(expected, FinalizeCalculationService.ComputeHalfRateBonus(baseBonus, place, isCashing));
         }
     }
 

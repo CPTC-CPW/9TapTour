@@ -14,6 +14,7 @@ using System.Text;
 using System.Windows.Forms;
 using NineTapTour.Helpers;
 using NineTapTour.Core.Repositories;
+using NineTapTour.Core.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace NineTapTour.Forms;
@@ -28,6 +29,7 @@ public partial class FrmFinalizeTournament : Form
     private readonly IPlayerHistoryRepository playerHistoryRepository;
     private readonly IDoublesTeamRepository doublesTeamRepository;
     private readonly IDbContextFactory<NineTapDb> dbFactory;
+    private readonly IFinalizeCalculationService finalizeCalculationService;
 
     // Top-level controls — access these to adjust later
     private Panel pnlToolbar;
@@ -107,7 +109,8 @@ public partial class FrmFinalizeTournament : Form
         IFinalizeTempRepository finalizeTempRepository,
         IPlayerHistoryRepository playerHistoryRepository,
         IDoublesTeamRepository doublesTeamRepository,
-        IDbContextFactory<NineTapDb> dbFactory)
+        IDbContextFactory<NineTapDb> dbFactory,
+        IFinalizeCalculationService finalizeCalculationService)
     {
         this.selectedTournament = selectedTournament;
         this.tournamentRepository = tournamentRepository;
@@ -117,6 +120,7 @@ public partial class FrmFinalizeTournament : Form
         this.playerHistoryRepository = playerHistoryRepository;
         this.doublesTeamRepository = doublesTeamRepository;
         this.dbFactory = dbFactory;
+        this.finalizeCalculationService = finalizeCalculationService;
 
         InitializeComponent();
     }
@@ -348,23 +352,18 @@ public partial class FrmFinalizeTournament : Form
 
             foreach (var item in latestApprovedEntries)
             {
-                var prevEntries = dbPrev.Participants
+                List<PreviousEntrySnapshot> prevEntries = dbPrev.Participants
                     .Where(p => p.Member.Number == item.MemberNumber
                              && p.Tournament.Id != selectedTournament.Id
                              && p.Game.IsFinalized
                              && p.Tournament.Date == item.LatestDate)
-                    .Select(p => new { p.Game.AdjustedAvg, Bonus = p.Game.Bonus ?? 0, MoneyWon = p.Game.MoneyWon ?? 0 })
+                    .Select(p => new PreviousEntrySnapshot(p.Game.AdjustedAvg, p.Game.Bonus ?? 0, p.Game.MoneyWon ?? 0))
                     .ToList();
 
                 if (prevEntries.Count == 0) continue;
 
-                var withAvg   = prevEntries.FirstOrDefault(e => e.AdjustedAvg > 0);
-                int prevHdcp  = withAvg != null ? CalcService.CalculateHandicapPins(withAvg.AdjustedAvg) : 0;
-                int prevBonus = prevEntries.Any(e => e.MoneyWon > 0)
-                    ? prevEntries.Min(e => e.Bonus)
-                    : prevEntries.Max(e => e.Bonus);
-
-                _prevTournHBByMember[item.MemberNumber] = (prevHdcp, prevBonus);
+                _prevTournHBByMember[item.MemberNumber] =
+                    finalizeCalculationService.ComputePreviousHandicapAndBonus(prevEntries);
             }
         }
 
@@ -451,23 +450,9 @@ public partial class FrmFinalizeTournament : Form
             {
                 int memberNum = grp.Key;
                 int currCount = currentCountByMember.TryGetValue(memberNum, out int cc) ? cc : 0;
-                int limit     = Math.Max(30 - currCount, 0);
-                int totalScratch = 0, totalGames = 0, taken = 0;
-                foreach (var g in grp)
-                {
-                    if (taken >= limit) break;
-                    int gCount = (g.U1 != false && g.G1.HasValue ? 1 : 0)
-                               + (g.U2 != false && g.G2.HasValue ? 1 : 0)
-                               + (g.U3 != false && g.G3.HasValue ? 1 : 0)
-                               + (g.U4 != false && g.G4.HasValue ? 1 : 0);
-                    if (gCount == 0) continue;
-                    totalScratch += (g.U1 != false ? (g.G1 ?? 0) : 0)
-                                  + (g.U2 != false ? (g.G2 ?? 0) : 0)
-                                  + (g.U3 != false ? (g.G3 ?? 0) : 0)
-                                  + (g.U4 != false ? (g.G4 ?? 0) : 0);
-                    totalGames   += gCount;
-                    taken++;
-                }
+                (int totalScratch, int totalGames) = finalizeCalculationService.Compute30EntryHistory(
+                    grp.Select(g => new HistoryGameEntry(g.G1, g.G2, g.G3, g.G4, g.U1, g.U2, g.U3, g.U4)),
+                    currCount);
                 if (totalGames > 0)
                     _history30ByMember[memberNum] = (totalScratch, totalGames);
             }
@@ -539,47 +524,17 @@ public partial class FrmFinalizeTournament : Form
         {
             WinnerListMemberViewModel orig = bowlerByGameId[m.GameId];
 
-            // A game is checked when it has a recorded score (non-null) — used as default
-            // when UseGame flags have never been explicitly saved.
-            bool g1Checked = orig.Game1.HasValue;
-            bool g2Checked = orig.Game2.HasValue;
-            bool g3Checked = orig.Game3.HasValue;
-            bool g4Checked = orig.Game4.HasValue;
+            // A game is checked when it has a recorded score; 3-of-4 tournaments uncheck
+            // the lowest of four; explicitly saved use-game flags override both defaults.
+            UseGameFlags useFlags = finalizeCalculationService.DetermineUseGameDefaults(
+                orig.Game1, orig.Game2, orig.Game3, orig.Game4,
+                orig.UseGame1, orig.UseGame2, orig.UseGame3, orig.UseGame4,
+                selectedTournament.ThreeOutOf4);
+            bool g1Checked = useFlags.Game1;
+            bool g2Checked = useFlags.Game2;
+            bool g3Checked = useFlags.Game3;
+            bool g4Checked = useFlags.Game4;
 
-            // 3-of-4: uncheck the lowest-scoring game when all 4 are present
-            // Only auto-apply when the flags have never been explicitly saved
-            bool useGameNeverSaved = orig.UseGame1 == null && orig.UseGame2 == null
-                                  && orig.UseGame3 == null && orig.UseGame4 == null;
-            if (selectedTournament.ThreeOutOf4 && useGameNeverSaved)
-            {
-                var validScores = new[]
-                {
-                    (Score: orig.Game1, Game: 1),
-                    (Score: orig.Game2, Game: 2),
-                    (Score: orig.Game3, Game: 3),
-                    (Score: orig.Game4, Game: 4)
-                }.Where(x => x.Score.HasValue).ToList();
-
-                if (validScores.Count == 4)
-                {
-                    int lowestGame = validScores.MinBy(x => x.Score!.Value).Game;
-                    if (lowestGame == 1) g1Checked = false;
-                    else if (lowestGame == 2) g2Checked = false;
-                    else if (lowestGame == 3) g3Checked = false;
-                    else if (lowestGame == 4) g4Checked = false;
-                }
-            }
-
-            // Restore explicitly saved use-game flags (overrides defaults and 3-of-4 auto logic)
-            if (orig.UseGame1.HasValue) g1Checked = orig.UseGame1.Value;
-            if (orig.UseGame2.HasValue) g2Checked = orig.UseGame2.Value;
-            if (orig.UseGame3.HasValue) g3Checked = orig.UseGame3.Value;
-            if (orig.UseGame4.HasValue) g4Checked = orig.UseGame4.Value;
-
-            int scratch = (g1Checked ? (orig.Game1 ?? 0) : 0) + (g2Checked ? (orig.Game2 ?? 0) : 0)
-                             + (g3Checked ? (orig.Game3 ?? 0) : 0) + (g4Checked ? (orig.Game4 ?? 0) : 0);
-            int checkedGames = (g1Checked ? 1 : 0) + (g2Checked ? 1 : 0)
-                             + (g3Checked ? 1 : 0) + (g4Checked ? 1 : 0);
             // Use the previous tournament's H/B as the primary source.
             // Fall back to Game.Handicap / Game.Bonus when no prior history exists,
             // then to computing handicap from the current ADJ AVG as a last resort.
@@ -588,42 +543,35 @@ public partial class FrmFinalizeTournament : Form
                 ? prevHB.Bonus
                 : Convert.ToInt32(m.Bonus);
 
-            // Pre-deduct bonus for members who will cash (placing within cash line)
+            // Pre-deduct bonus for members who will cash and award the third-entry
+            // bonus pin preview (suppressed for cashers and 2-day championships).
             int memberPlacing = _bestStandingByMember.TryGetValue(m.MemberNumber, out int p) ? p : 0;
-            bool isCashing    = memberPlacing > 0 && memberPlacing <= cashLine;
-            int displayBonus  = isCashing
-                ? CalcService.DeductFromBonusPins(memberPlacing, baseBonus)
-                : baseBonus;
-            if (isCashing)
+            int histCount     = historicalCountByMember.TryGetValue(m.MemberNumber, out int hc) ? hc : 0;
+            int currCount     = currentCountByMember.TryGetValue(m.MemberNumber, out int cc) ? cc : 0;
+            BonusPreviewResult bonusPreview = finalizeCalculationService.ComputeBonusPreview(
+                baseBonus, memberPlacing, cashLine, selectedTournament.IsTwoDay, histCount, currCount);
+            int displayBonus = bonusPreview.DisplayBonus;
+            if (bonusPreview.IsCashing)
                 _cashingGameIds.Add(m.GameId);
-
-            // Award +1 bonus pin to new bowlers reaching their 3rd total entry
-            // (history + current tournament), but only when they are not cashing.
-            // Not applicable to 2-day championships (earnings are set manually).
-            if (!isCashing && !selectedTournament.IsTwoDay)
-            {
-                int histCount    = historicalCountByMember.TryGetValue(m.MemberNumber, out int hc) ? hc : 0;
-                int currCount    = currentCountByMember.TryGetValue(m.MemberNumber, out int cc) ? cc : 0;
-                if (histCount + currCount == 3)
-                {
-                    displayBonus = CalcService.ValidateBonusPins(displayBonus + 1);
-                    _thirdEntryBonusMemberNumbers.Add(m.MemberNumber);
-                }
-            }
+            if (bonusPreview.AwardedThirdEntryBonus)
+                _thirdEntryBonusMemberNumbers.Add(m.MemberNumber);
 
             // Store the un-deducted carry-forward bonus so RecalculateTournamentRow and
             // the initial hdcpTotal use prevBonus (matching FrmTournamentResults.TotalScore).
             _baseBonusByGameId[m.GameId] = baseBonus;
 
-            int displayHdcp = hasPrevHB && prevHB.Hdcp > 0
-                ? prevHB.Hdcp
-                : (m.Handicap > 0
-                    ? m.Handicap
-                    : (orig.AdjustedAvg > 0 ? CalcService.CalculateHandicapPins(orig.AdjustedAvg) : 0));
+            int displayHdcp = finalizeCalculationService.ResolveDisplayHandicap(
+                hasPrevHB ? prevHB.Hdcp : null, m.Handicap, orig.AdjustedAvg);
+
             // colHdcpTotal uses the un-deducted baseBonus so it matches FrmTournamentResults.
             // colBonus still shows displayBonus (deducted/bumped preview) separately.
-            int hdcpTotal = scratch + (checkedGames * (displayHdcp + baseBonus));
-            int entryAvg = checkedGames > 0 ? scratch / checkedGames : 0;
+            FinalizeRowResult rowCalc = finalizeCalculationService.RecalculateRow(new FinalizeRowInput(
+                orig.Game1, orig.Game2, orig.Game3, orig.Game4,
+                g1Checked, g2Checked, g3Checked, g4Checked,
+                displayHdcp, orig.AdjustedAvg, baseBonus));
+            int scratch   = rowCalc.ScratchTotal;
+            int hdcpTotal = rowCalc.HdcpTotal;
+            int entryAvg  = rowCalc.EntryAvg;
 
             // ADJ AVG shown in the grid; also drives the New HDCP preview, matching
             // the CalculateHandicapPins(adjAvg) write to Member.Handicap on finalize.
@@ -649,7 +597,7 @@ public partial class FrmFinalizeTournament : Form
                 orig.KeepAdjustedAvg,  // Director Check — restored from DB
                 orig.Squad,
                 displayHdcp,
-                displayAdjAvg > 0 ? (object)CalcService.CalculateHandicapPins(displayAdjAvg) : null,  // New HDCP preview
+                finalizeCalculationService.ComputeNewHdcpPreview(displayAdjAvg),  // New HDCP preview
                 displayBonus,
                 _placedGameIds.Contains(m.GameId)
                     ? ((m.MoneyWon ?? 0) + (orig.SidePot ?? 0) > 0 ? (object)((m.MoneyWon ?? 0) + (orig.SidePot ?? 0)) : null)
@@ -702,23 +650,18 @@ public partial class FrmFinalizeTournament : Form
 
             foreach (var item in latestApproved)
             {
-                var prevEntries = dbPrev.Participants
+                List<PreviousEntrySnapshot> prevEntries = dbPrev.Participants
                     .Where(p => p.Member.Number == item.MemberNumber
                              && p.Tournament.Id != selectedTournament.Id
                              && p.Game.IsFinalized
                              && p.Tournament.Date == item.LatestDate)
-                    .Select(p => new { p.Game.AdjustedAvg, Bonus = p.Game.Bonus ?? 0, MoneyWon = p.Game.MoneyWon ?? 0 })
+                    .Select(p => new PreviousEntrySnapshot(p.Game.AdjustedAvg, p.Game.Bonus ?? 0, p.Game.MoneyWon ?? 0))
                     .ToList();
 
                 if (prevEntries.Count == 0) continue;
 
-                var withAvg  = prevEntries.FirstOrDefault(e => e.AdjustedAvg > 0);
-                int prevHdcp = withAvg != null ? CalcService.CalculateHandicapPins(withAvg.AdjustedAvg) : 0;
-                int prevBonus = prevEntries.Any(e => e.MoneyWon > 0)
-                    ? prevEntries.Min(e => e.Bonus)
-                    : prevEntries.Max(e => e.Bonus);
-
-                _prevTournHBByMember[item.MemberNumber] = (prevHdcp, prevBonus);
+                _prevTournHBByMember[item.MemberNumber] =
+                    finalizeCalculationService.ComputePreviousHandicapAndBonus(prevEntries);
             }
         }
 
@@ -745,24 +688,10 @@ public partial class FrmFinalizeTournament : Form
             foreach (var grp in allHistory.GroupBy(x => x.MemberNumber))
             {
                 int memberNum = grp.Key;
-                // Each member has 1 entry per doubles squad (2 games)
-                int limit = Math.Max(30 - 2, 0); // 2 current games
-                int totalScratch = 0, totalGames = 0, taken = 0;
-                foreach (var g in grp)
-                {
-                    if (taken >= limit) break;
-                    int gCount = (g.U1 != false && g.G1.HasValue ? 1 : 0)
-                               + (g.U2 != false && g.G2.HasValue ? 1 : 0)
-                               + (g.U3 != false && g.G3.HasValue ? 1 : 0)
-                               + (g.U4 != false && g.G4.HasValue ? 1 : 0);
-                    if (gCount == 0) continue;
-                    totalScratch += (g.U1 != false ? (g.G1 ?? 0) : 0)
-                                  + (g.U2 != false ? (g.G2 ?? 0) : 0)
-                                  + (g.U3 != false ? (g.G3 ?? 0) : 0)
-                                  + (g.U4 != false ? (g.G4 ?? 0) : 0);
-                    totalGames   += gCount;
-                    taken++;
-                }
+                // Each member has 1 entry per doubles squad (2 current games)
+                (int totalScratch, int totalGames) = finalizeCalculationService.Compute30EntryHistory(
+                    grp.Select(g => new HistoryGameEntry(g.G1, g.G2, g.G3, g.G4, g.U1, g.U2, g.U3, g.U4)),
+                    currentEntryCount: 2);
                 if (totalGames > 0)
                     _history30ByMember[memberNum] = (totalScratch, totalGames);
             }
@@ -799,9 +728,9 @@ public partial class FrmFinalizeTournament : Form
 
             int scratch1 = (m1.Game1 ?? 0) + (m1.Game2 ?? 0);
             int scratch2 = (m2.Game1 ?? 0) + (m2.Game2 ?? 0);
-            int combinedHdcpTotal = scratch1 + scratch2
-                + 2 * (hdcp1 + baseBonus1)
-                + 2 * (hdcp2 + baseBonus2);
+            int combinedHdcpTotal = finalizeCalculationService.ComputeCombinedHdcpTotal(
+                scratch1, 2, hdcp1, baseBonus1,
+                scratch2, 2, hdcp2, baseBonus2);
 
             teamRows.Add((combinedHdcpTotal, m1, m2, hdcp1, baseBonus1, hdcp2, baseBonus2));
         }
@@ -814,15 +743,8 @@ public partial class FrmFinalizeTournament : Form
         int compTeams  = 0;   // doubles teams are not comp entries in the current model
         int cashLine   = totalTeams > 0 ? CalcService.GetQtyOfMembersThatCanPlace(totalTeams, compTeams) : 0;
 
-        int[] teamPlaces = new int[totalTeams];
-        if (totalTeams > 0)
-        {
-            teamPlaces[0] = 1;
-            for (int i = 1; i < totalTeams; i++)
-                teamPlaces[i] = teamRows[i].CombinedHdcpTotal == teamRows[i - 1].CombinedHdcpTotal
-                    ? teamPlaces[i - 1]
-                    : i + 1;
-        }
+        int[] teamPlaces = finalizeCalculationService.AssignTeamPlaces(
+            [.. teamRows.Select(r => r.CombinedHdcpTotal)]);
 
         // --- Populate grid ---
         dgvTournament.Rows.Clear();
@@ -837,8 +759,8 @@ public partial class FrmFinalizeTournament : Form
             Color rowColor = teamColors[t % 2];
 
             // Half-rate bonus preview (cashing pairs lose fewer pins)
-            int previewBonus1 = ComputeHalfRateBonus(baseBonus1, place, isCashing);
-            int previewBonus2 = ComputeHalfRateBonus(baseBonus2, place, isCashing);
+            int previewBonus1 = FinalizeCalculationService.ComputeHalfRateBonus(baseBonus1, place, isCashing);
+            int previewBonus2 = FinalizeCalculationService.ComputeHalfRateBonus(baseBonus2, place, isCashing);
 
             if (isCashing)
             {
@@ -874,7 +796,7 @@ public partial class FrmFinalizeTournament : Form
                 m1.KeepAdjustedAvg,
                 m1.Squad,
                 hdcp1,
-                adjAvg1 > 0 ? (object)CalcService.CalculateHandicapPins(adjAvg1) : null,  // New HDCP preview
+                finalizeCalculationService.ComputeNewHdcpPreview(adjAvg1),  // New HDCP preview
                 previewBonus1,
                 m1.MoneyWon > 0 ? (object)m1.MoneyWon : null,
                 $"Partner: {m2.BowlerName}"
@@ -904,7 +826,7 @@ public partial class FrmFinalizeTournament : Form
                 m2.KeepAdjustedAvg,
                 m2.Squad,
                 hdcp2,
-                adjAvg2 > 0 ? (object)CalcService.CalculateHandicapPins(adjAvg2) : null,  // New HDCP preview
+                finalizeCalculationService.ComputeNewHdcpPreview(adjAvg2),  // New HDCP preview
                 previewBonus2,
                 m2.MoneyWon > 0 ? (object)m2.MoneyWon : null,
                 $"Partner: {m1.BowlerName}"
@@ -957,21 +879,9 @@ public partial class FrmFinalizeTournament : Form
                 Game4Score   = Convert.ToInt32(b.Game4)
             };
 
-            if (selectedTournament.ThreeOutOf4)
-            {
-                List<int> scores = new[] { b.Game1, b.Game2, b.Game3, b.Game4 }
-                    .Where(g => g.HasValue).Select(g => g.Value).ToList();
-                if (scores.Count == 4)
-                    scores.Remove(scores.Min());
-                m.TotalScore = scores.Sum() + (scores.Count * (m.Handicap + m.Bonus));
-            }
-            else
-            {
-                int validGames = (b.Game1.HasValue ? 1 : 0) + (b.Game2.HasValue ? 1 : 0)
-                               + (b.Game3.HasValue ? 1 : 0) + (b.Game4.HasValue ? 1 : 0);
-                int scratch    = (b.Game1 ?? 0) + (b.Game2 ?? 0) + (b.Game3 ?? 0) + (b.Game4 ?? 0);
-                m.TotalScore   = scratch + (validGames * (m.Handicap + m.Bonus));
-            }
+            m.TotalScore = finalizeCalculationService.ComputeEntryTotalScore(
+                b.Game1, b.Game2, b.Game3, b.Game4,
+                m.Handicap, m.Bonus, selectedTournament.ThreeOutOf4);
 
             members.Add(m);
         }
@@ -1026,9 +936,7 @@ public partial class FrmFinalizeTournament : Form
         int adjAvg = 0;
         if (row.Cells["colAdjAvg"].Value != null)
             int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
-        row.Cells["colNewHdcp"].Value = adjAvg > 0
-            ? (object)CalcService.CalculateHandicapPins(adjAvg)
-            : null;
+        row.Cells["colNewHdcp"].Value = finalizeCalculationService.ComputeNewHdcpPreview(adjAvg);
     }
 
     /// <summary>
@@ -1041,41 +949,11 @@ public partial class FrmFinalizeTournament : Form
 
         UpdateNewHdcpPreview(rowIndex);
 
-        int GetCheckedScore(string scoreCol, string checkCol)
-        {
-            bool isChecked = row.Cells[checkCol].Value as bool? ?? false;
-            if (!isChecked) return 0;
-            return Convert.ToInt32(row.Cells[scoreCol].Value ?? 0);
-        }
-
         int hdcp  = Convert.ToInt32(row.Cells["colHdcp"].Value  ?? 0);
-        // When no stored handicap is available, derive it from the ADJ AVG entered by the director.
-        // This only fills in a missing value — it never overwrites a valid stored handicap (Phase 1).
-        if (hdcp == 0)
-        {
-            int adjAvg = 0;
-            if (row.Cells["colAdjAvg"].Value != null)
-                int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
-            if (adjAvg > 0)
-            {
-                hdcp = CalcService.CalculateHandicapPins(adjAvg);
-                row.Cells["colHdcp"].Value = hdcp;
-            }
-        }
         int bonus = Convert.ToInt32(row.Cells["colBonus"].Value ?? 0);
-
-        bool c1 = row.Cells["colGame1Check"].Value as bool? ?? false;
-        bool c2 = row.Cells["colGame2Check"].Value as bool? ?? false;
-        bool c3 = row.Cells["colGame3Check"].Value as bool? ?? false;
-        bool c4 = row.Cells["colGame4Check"].Value as bool? ?? false;
-
-        int g1 = GetCheckedScore("colGame1", "colGame1Check");
-        int g2 = GetCheckedScore("colGame2", "colGame2Check");
-        int g3 = GetCheckedScore("colGame3", "colGame3Check");
-        int g4 = GetCheckedScore("colGame4", "colGame4Check");
-
-        int scratch      = g1 + g2 + g3 + g4;
-        int checkedGames = (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0) + (c4 ? 1 : 0);
+        int adjAvg = 0;
+        if (row.Cells["colAdjAvg"].Value != null)
+            int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
 
         // Resolve the base (pre-deduction) bonus for HDCP Total calculation
         int myGameIdForBase = row.Tag is int gId0 ? gId0
@@ -1083,15 +961,27 @@ public partial class FrmFinalizeTournament : Form
         int baseBonus = myGameIdForBase > 0 && _baseBonusByGameId.TryGetValue(myGameIdForBase, out int bb)
             ? bb : bonus;
 
+        FinalizeRowResult calc = finalizeCalculationService.RecalculateRow(new FinalizeRowInput(
+            ParseCellInt(row.Cells["colGame1"].Value),
+            ParseCellInt(row.Cells["colGame2"].Value),
+            ParseCellInt(row.Cells["colGame3"].Value),
+            ParseCellInt(row.Cells["colGame4"].Value),
+            row.Cells["colGame1Check"].Value as bool? ?? false,
+            row.Cells["colGame2Check"].Value as bool? ?? false,
+            row.Cells["colGame3Check"].Value as bool? ?? false,
+            row.Cells["colGame4Check"].Value as bool? ?? false,
+            hdcp, adjAvg, baseBonus));
+
+        // A missing handicap was derived from the ADJ AVG — write it back to the grid.
+        // A valid stored handicap is never overwritten (Phase 1).
+        if (calc.HandicapWasDerived)
+            row.Cells["colHdcp"].Value = calc.ResolvedHandicap;
+
         // --- Doubles individual rows: use only 2 games; combine with partner for HDCP total ---
         if (row.Tag is DoubleMemberRowTag)
         {
-            int myGames = (c1 ? 1 : 0) + (c2 ? 1 : 0);
-            int myScratch = g1 + g2;
-            int entryAvg  = myGames > 0 ? myScratch / myGames : 0;
-
-            row.Cells["colScratchTotal"].Value = myScratch;
-            row.Cells["colEntryAvg"].Value     = entryAvg;
+            row.Cells["colScratchTotal"].Value = calc.ScratchTotal;
+            row.Cells["colEntryAvg"].Value     = calc.EntryAvg;
 
             var partnerRow = FindDoublePartnerRow(row);
             if (partnerRow != null)
@@ -1107,16 +997,16 @@ public partial class FrmFinalizeTournament : Form
                                    && _baseBonusByGameId.TryGetValue(pd.MyGameId, out int pbb)
                     ? pbb : Convert.ToInt32(partnerRow.Cells["colBonus"].Value ?? 0);
 
-                int combinedHdcpTotal = myScratch + partnerScratch
-                    + myGames * (hdcp + baseBonus)
-                    + partnerGames * (partnerHdcp + partnerBaseBonus);
+                int combinedHdcpTotal = finalizeCalculationService.ComputeCombinedHdcpTotal(
+                    calc.ScratchTotal, calc.CheckedGames, calc.ResolvedHandicap, baseBonus,
+                    partnerScratch, partnerGames, partnerHdcp, partnerBaseBonus);
 
                 row.Cells["colHdcpTotal"].Value        = combinedHdcpTotal;
                 partnerRow.Cells["colHdcpTotal"].Value = combinedHdcpTotal;
             }
             else
             {
-                row.Cells["colHdcpTotal"].Value = myScratch + myGames * (hdcp + baseBonus);
+                row.Cells["colHdcpTotal"].Value = calc.HdcpTotal;
             }
 
             if (row.Cells["colMemberNumber"].Value is int memberNum30d)
@@ -1125,12 +1015,9 @@ public partial class FrmFinalizeTournament : Form
         }
 
         // --- Standard (singles) path ---
-        int hdcpTotal    = scratch + (checkedGames * (hdcp + baseBonus));
-        int entryAvgStd  = checkedGames > 0 ? scratch / checkedGames : 0;
-
-        row.Cells["colScratchTotal"].Value = scratch;
-        row.Cells["colHdcpTotal"].Value    = hdcpTotal;
-        row.Cells["colEntryAvg"].Value     = entryAvgStd;
+        row.Cells["colScratchTotal"].Value = calc.ScratchTotal;
+        row.Cells["colHdcpTotal"].Value    = calc.HdcpTotal;
+        row.Cells["colEntryAvg"].Value     = calc.EntryAvg;
 
         if (row.Cells["colMemberNumber"].Value is int memberNum30)
             UpdateAll30AvgForMember(memberNum30);
@@ -1160,10 +1047,8 @@ public partial class FrmFinalizeTournament : Form
         }
 
         _history30ByMember.TryGetValue(memberNumber, out var hist);
-        int totalGames   = hist.Games + currGames;
-        int totalScratch = hist.Scratch + currScratch;
-        double avg30     = totalGames > 0
-            ? Math.Round((double)totalScratch / totalGames, 1) : 0;
+        double avg30 = finalizeCalculationService.Compute30EntryAverage(
+            hist.Scratch, hist.Games, currScratch, currGames);
         object avgVal = avg30 > 0 ? (object)avg30 : null;
 
         foreach (DataGridViewRow row in dgvTournament.Rows)
@@ -1361,15 +1246,15 @@ public partial class FrmFinalizeTournament : Form
         int bonus = 0;
         if (row.Cells["colBonus"].Value != null)
             int.TryParse(row.Cells["colBonus"].Value.ToString(), out bonus);
-        if (_cashingGameIds.Contains(gameId) || _thirdEntryBonusMemberNumbers.Contains(memberNumberForBonus))
-        {
-            WinnerListMemberViewModel orig = _currentTournamentBowlers.FirstOrDefault(b => b.GameId == gameId);
-            game.Bonus = orig != null ? Convert.ToInt32(orig.Bonus) : bonus;
-        }
-        else
-        {
-            game.Bonus = bonus;
-        }
+        bool preserveOriginalBonus = _cashingGameIds.Contains(gameId)
+            || _thirdEntryBonusMemberNumbers.Contains(memberNumberForBonus);
+        WinnerListMemberViewModel origBonusEntry = preserveOriginalBonus
+            ? _currentTournamentBowlers.FirstOrDefault(b => b.GameId == gameId)
+            : null;
+        game.Bonus = finalizeCalculationService.ResolvePersistedBonus(
+            preserveOriginalBonus,
+            origBonusEntry != null ? Convert.ToInt32(origBonusEntry.Bonus) : null,
+            bonus);
 
         // Director Check → persisted as KeepAdjustedAvg
         game.KeepAdjustedAvg = row.Cells["colDirCheck"].Value as bool? ?? false;
@@ -1402,24 +1287,6 @@ public partial class FrmFinalizeTournament : Form
                 return r;
         }
         return null;
-    }
-
-    /// <summary>
-    /// Applies the 9-Tap half-rate bonus rule for doubles tournaments.
-    /// Cashers lose half as many bonus pins (magnitude rounded up so the bowler
-    /// retains more pins). Non-cashers keep their base bonus unchanged.
-    /// </summary>
-    internal static int ComputeHalfRateBonus(int baseBonus, int place, bool isCashing)
-    {
-        if (!isCashing) return baseBonus;
-        int normalResult = CalcService.DeductFromBonusPins(place, baseBonus);
-        int delta        = normalResult - baseBonus; // negative for cashers
-        // Round the magnitude up so the deduction is slightly larger (bowler loses
-        // slightly more than a pure half, which is the standard rounding convention).
-        int halfDelta = delta >= 0
-            ? (int)Math.Ceiling(delta / 2.0)
-            : -(int)Math.Ceiling(-delta / 2.0);
-        return baseBonus + halfDelta;
     }
 
     private void BtnTeamView_Click(object sender, EventArgs e)
@@ -1549,7 +1416,7 @@ public partial class FrmFinalizeTournament : Form
         if (row.Cells["colAdjAvg"].Value != null)
             int.TryParse(row.Cells["colAdjAvg"].Value.ToString(), out adjAvg);
 
-        if (!dirChecked || adjAvg == 0)
+        if (!finalizeCalculationService.IsRowValid(dirChecked, adjAvg))
             _invalidRowIndices.Add(rowIndex);
         else
             _invalidRowIndices.Remove(rowIndex);
@@ -1644,7 +1511,7 @@ public partial class FrmFinalizeTournament : Form
                 int dblBaseBonus = dblOrigEntry != null ? Convert.ToInt32(dblOrigEntry.Bonus) : 0;
                 int dblPlace     = row.Cells["colStanding"].Value is int dblP ? dblP : 0;
                 bool dblCashing  = _cashingGameIds.Contains(dmt.MyGameId);
-                dblGame.Bonus    = ComputeHalfRateBonus(dblBaseBonus, dblPlace, dblCashing);
+                dblGame.Bonus    = FinalizeCalculationService.ComputeHalfRateBonus(dblBaseBonus, dblPlace, dblCashing);
 
                 // Director entered the full place prize; save each member's 50% share
                 decimal dblEarnings = 0;
@@ -1691,15 +1558,15 @@ public partial class FrmFinalizeTournament : Form
             int bonus = 0;
             if (row.Cells["colBonus"].Value != null)
                 int.TryParse(row.Cells["colBonus"].Value.ToString(), out bonus);
-            if (_cashingGameIds.Contains(gameId) || _thirdEntryBonusMemberNumbers.Contains(memberNumber))
-            {
-                WinnerListMemberViewModel orig = _currentTournamentBowlers.FirstOrDefault(b => b.GameId == gameId);
-                game.Bonus = orig != null ? Convert.ToInt32(orig.Bonus) : bonus;
-            }
-            else
-            {
-                game.Bonus = bonus;
-            }
+            bool preserveOriginalBonus = _cashingGameIds.Contains(gameId)
+                || _thirdEntryBonusMemberNumbers.Contains(memberNumber);
+            WinnerListMemberViewModel origBonusEntry = preserveOriginalBonus
+                ? _currentTournamentBowlers.FirstOrDefault(b => b.GameId == gameId)
+                : null;
+            game.Bonus = finalizeCalculationService.ResolvePersistedBonus(
+                preserveOriginalBonus,
+                origBonusEntry != null ? Convert.ToInt32(origBonusEntry.Bonus) : null,
+                bonus);
             double leagueAvg = finalizeTempRepository.Get30GameAverage(memberNumber, selectedTournament.Id);
             game.LeagueAverage = leagueAvg;
 
@@ -1807,17 +1674,14 @@ public partial class FrmFinalizeTournament : Form
     /// </summary>
     private void ApplySandbaggingHighlight(int rowIndex, double leagueAverage)
     {
-        const int sandbagThreshold = 40;
         var row = dgvTournament.Rows[rowIndex];
 
         foreach (string scoreCol in GameScoreColumns)
         {
             var cell = row.Cells[scoreCol];
-            if (leagueAverage > 0
-                && cell.Value != null
+            if (cell.Value != null
                 && int.TryParse(cell.Value.ToString(), out int score)
-                && score > 0
-                && (leagueAverage - score) >= sandbagThreshold)
+                && finalizeCalculationService.IsSandbaggingScore(leagueAverage, score))
             {
                 cell.Style.BackColor = Color.Yellow;
             }
@@ -1968,9 +1832,8 @@ public partial class FrmFinalizeTournament : Form
         }
 
         // Fill in the 30 Entry AVG on current-tournament rows
-        double preview30Avg = (histGames30 + currGames30) > 0
-            ? Math.Round((double)(histScratch30 + currScratch30) / (histGames30 + currGames30), 1)
-            : 0;
+        double preview30Avg = finalizeCalculationService.Compute30EntryAverage(
+            histScratch30, histGames30, currScratch30, currGames30);
         object preview30Val = preview30Avg > 0 ? (object)preview30Avg : null;
         foreach (int ri in currentDetailRowIndices)
             dgvDetail.Rows[ri].Cells["colDetail30Avg"].Value = preview30Val;

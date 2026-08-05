@@ -31,6 +31,7 @@ public static class CoreServiceConfiguration
 
         services.AddSingleton<ITournamentSession, TournamentSession>();
         services.AddSingleton<IDatabaseMaintenanceService, DatabaseMaintenanceService>();
+        services.AddSingleton<IFinalizeCalculationService, FinalizeCalculationService>();
 
         services.AddSingleton<IMemberImportService, MemberImportService>();
         services.AddSingleton<IMemberHistoryImportService, MemberHistoryImportService>();
