@@ -10,9 +10,9 @@ using NineTapTour.Core.Calculations;
 using System.Drawing.Printing;
 using System.Data;
 using NineTapTour.Core.Entities;
+using NineTapTour.Core.Import;
 using NineTapTour.Core.Models;
 using NineTapTour.Core.Repositories;
-using ClosedXML.Excel;
 using NineTapTour.Services;
 
 namespace NineTapTour.Forms;
@@ -23,18 +23,20 @@ public partial class FrmMemberData : Form
     private readonly IMemberRepository memberRepository;
     private readonly IPlayerHistoryRepository playerHistoryRepository;
     private readonly ITournamentRepository tournamentRepository;
+    private readonly IMemberImportService memberImportService;
 
     private Member currentMem;
 
     /// <summary>
     /// Opens the "Member Data" Form.
     /// </summary>
-    public FrmMemberData(IFormFactory formFactory, IMemberRepository memberRepository, IPlayerHistoryRepository playerHistoryRepository, ITournamentRepository tournamentRepository)
+    public FrmMemberData(IFormFactory formFactory, IMemberRepository memberRepository, IPlayerHistoryRepository playerHistoryRepository, ITournamentRepository tournamentRepository, IMemberImportService memberImportService)
     {
         this.formFactory = formFactory;
         this.memberRepository = memberRepository;
         this.playerHistoryRepository = playerHistoryRepository;
         this.tournamentRepository = tournamentRepository;
+        this.memberImportService = memberImportService;
 
         InitializeComponent();
         txtMiddleInitial.MaxLength = 1;
@@ -892,7 +894,6 @@ public partial class FrmMemberData : Form
     /// <param name="e"></param>
     private void BtnImportData_Click(object sender, EventArgs e)
     {
-        List<ExcelRow> CurrentExcelData = [];
         OpenFileDialog ofdOpen = new()
         {
             Filter = FileHelper.GetExcelFilterStringForFileDialogs()
@@ -900,215 +901,26 @@ public partial class FrmMemberData : Form
 
         if (ofdOpen.ShowDialog() == DialogResult.OK)
         {
-            List<PlayerHistoryViewModel> AlreadyImportedPH = 
-                playerHistoryRepository.GetMemberPlayerHistory(currentMem.Number);
+            ImportResult result = memberImportService.ImportMemberHistory(ofdOpen.FileName, currentMem);
 
-            if (AlreadyImportedPH.Count > 0)
+            if (result.Skipped > 0)
             {
-                MessageBox.Show("Member history has already been imported");
+                MessageBox.Show(MemberImportService.HistoryAlreadyImportedWarning);
                 return;
             }
 
-            string fileName = ofdOpen.FileName;
-
-            // Process the Excel file and create tournaments/participants
-            List<ExcelRow> rows = ProcessExcelFile(fileName); 
-
-            foreach(var r in rows)
+            // Refresh score info from the values the import wrote to the member
+            if (result.MostRecentTrueAverage.HasValue)
             {
-                CurrentExcelData.Add(r);
-            }
-
-            // Update member's averages after import
-            PlayerHistoryViewModel reset = playerHistoryRepository.GetMostRecentTournament(currentMem.Number);
-            if (reset != null)
-            {
-                currentMem.Average = reset.AVG;
-                currentMem.Handicap = Core.Calculations.TournamentCalculations
-                    .CalculateHandicapPins(Convert.ToInt32(currentMem.Average));
-
-                currentMem.Bonus = reset.Bonus;
                 txtAverage.Text = currentMem.Average.ToString();
-                txt30GameAvg.Text = Convert.ToInt32(reset.trueAVG).ToString();
+                txt30GameAvg.Text = Convert.ToInt32(result.MostRecentTrueAverage.Value).ToString();
                 txtHandicap.Text = currentMem.Handicap.ToString();
                 txtBonus.Text = currentMem.Bonus.ToString();
             }
 
-            // Grabs the total money won by the member
-            decimal moneySum = playerHistoryRepository.GetTotalMoneyWon(currentMem.Number);
-
-            currentMem.MoneyEarned += moneySum; 
-
             txtMoneyEarned.Text = currentMem.MoneyEarned.ToString("C");
 
-            memberRepository.AddOrUpdateMember(currentMem);
-            
-            MessageBox.Show($"Import completed. {rows.Count} games imported across multiple tournaments.");
-        }
-    }
-
-    /// <summary>
-    /// Processes excel file for member data import
-    /// Creates tournaments for each unique date and links games to member through participants
-    /// </summary>
-    /// <param name="PathAndFileName"></param>
-    /// <returns></returns>
-    private List<ExcelRow> ProcessExcelFile(string PathAndFileName)
-    {
-        List<ExcelRow> returnMe = [];
-        // Dictionary to track tournaments by date
-        Dictionary<DateTime, Tournament> tournamentsCache = [];
-        
-        using (var workbook = new XLWorkbook(PathAndFileName))
-        {
-            var ws = workbook.Worksheet(1);
-            string[] PlayerFinalFirstAndMiddle = ["", ""];
-            string playerLastName = "";
-            string firstAndMiddle = "";
-            string playerFullName = ws.Cell(1, 2).GetString();
-            SplitName(ref playerLastName, ref firstAndMiddle, playerFullName);
-            string[] first0middle1 = firstAndMiddle.Split(' ');
-            int playerOrgAVG = ws.Cell(1, 10).GetValue<int?>() ?? -1;
-            string playerNumber = ws.Cell(1, 14).GetString();
-            playerNumber = RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty);
-
-            int.TryParse(playerNumber, out int playerNumberAsInt);
-            if (playerNumberAsInt != 0)
-            {
-                playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumber, string.Empty));
-            }
-            else if (playerNumberAsInt == 0)
-            {
-                string[] playerNumberAfterSplit = playerNumber.Split('/');
-                playerNumberAsInt = Convert.ToInt32(RegexHelpers.StripNonNumericRegex().Replace(playerNumberAfterSplit[^1], string.Empty));
-            }
-            
-            int rowNum = 3;
-            int lastRow = ws.LastRowUsed().RowNumber();
-            
-            for (int row = rowNum; row <= lastRow; row++)
-            {
-                ExcelRow temp = new()
-                {
-                    PlayerFirstName = PlayerFinalFirstAndMiddle[0],
-                    PlayerMiddleName = PlayerFinalFirstAndMiddle.Length > 1 ? PlayerFinalFirstAndMiddle[1] : "",
-                    PlayerLastName = playerLastName,
-                    PlayerOrginalAVG = playerOrgAVG,
-                    PlayerNumber = playerNumberAsInt,
-                    GameTotal = ws.Cell(row, 1).GetValue<int?>() ?? -1,
-                    Date = ws.Cell(row, 2).GetDateTime(),
-                    Game1 = ws.Cell(row, 3).GetValue<int?>() ?? -1,
-                    Game2 = ws.Cell(row, 4).GetValue<int?>() ?? -1,
-                    Game3 = ws.Cell(row, 5).GetValue<int?>() ?? -1,
-                    Game4 = ws.Cell(row, 6).GetValue<int?>() ?? -1,
-                    Total = ws.Cell(row, 7).GetValue<int?>() ?? -1,
-                    AverageOfRow = ws.Cell(row, 8).GetValue<double?>() ?? -1,
-                    TrueAverage = ws.Cell(row, 9).GetValue<double?>() ?? -1,
-                    AVG = ws.Cell(row, 10).GetValue<int?>() ?? -1,
-                    HandyCap = ws.Cell(row, 11).GetValue<int?>() ?? -1000,
-                    Bonus = ws.Cell(row, 12).GetValue<int?>() ?? -1,
-                    FinPPHG = ws.Cell(row, 14).GetString(),
-                    Cash = ws.Cell(row, 15).GetValue<double?>() ?? 0,
-                    Notes = ws.Cell(row, 16).GetString()
-                };
-
-                // Create or get tournament for this date
-                Tournament tournament;
-                DateTime tournamentDate = temp.Date.Date; // Normalize to date only
-                
-                if (!tournamentsCache.ContainsKey(tournamentDate))
-                {
-                    // Check if tournament already exists in database
-                    List<Tournament> existingTournaments = tournamentRepository.GetTournamentList()
-                        .Where(t => t.Date.Date == tournamentDate).ToList();
-                    
-                    if (existingTournaments.Count > 0)
-                    {
-                        tournament = existingTournaments[0];
-                    }
-                    else
-                    {
-                        // Create new tournament for this date
-                        tournament = new Tournament
-                        {
-                            Date = tournamentDate,
-                            Location = $"Imported - {tournamentDate:yyyy-MM-dd}",
-                            Event = "Legacy Data Import",
-                            Notes = "Tournament created from legacy data import",
-                            Squads = 1,
-                            Doubles = false,
-                            ThreeOutOf4 = false,
-                            IsOnlyThreeGames = false,
-                            IsTournamentFinalized = false
-                        };
-                        
-                        // Add tournament to database
-                        tournamentRepository.AddTournament(tournament);
-                    }
-                    
-                    tournamentsCache[tournamentDate] = tournament;
-                }
-                else
-                {
-                    tournament = tournamentsCache[tournamentDate];
-                }
-                
-                // Create Game entity
-                Game game = new()
-                {
-                    Game1 = temp.Game1 >= 0 ? temp.Game1 : null,
-                    Game2 = temp.Game2 >= 0 ? temp.Game2 : null,
-                    Game3 = temp.Game3 >= 0 ? temp.Game3 : null,
-                    Game4 = temp.Game4 >= 0 ? temp.Game4 : null,
-                    Handicap = temp.HandyCap >= 0 ? temp.HandyCap : null,
-                    Bonus = temp.Bonus >= 0 ? temp.Bonus : null,
-                    MoneyWon = temp.Cash > 0 ? Convert.ToDecimal(temp.Cash) : null,
-                    Notes = temp.Notes,
-                    IsFinalized = true, // Mark as finalized since it's legacy data
-                    AdjustedAvg = temp.AVG,
-                    LeagueAverage = temp.TrueAverage,
-                    UseGame1 = temp.Game1 >= 0,
-                    UseGame2 = temp.Game2 >= 0,
-                    UseGame3 = temp.Game3 >= 0,
-                    UseGame4 = temp.Game4 >= 0
-                };
-                
-                // Create Participant linking member, game, and tournament
-                Participant participant = new()
-                {
-                    Member = currentMem,
-                    Game = game,
-                    Tournament = tournament,
-                    Squad = 1 // Default squad for imported data
-                };
-                
-                // Add participant (which will also save the game)
-                tournamentRepository.AddMemberToTournament(participant);
-                
-                returnMe.Add(temp);
-            }
-        }
-        return returnMe;
-    }
-
-    /// <summary>
-    /// Takes the imported excel row for playerFullName and splits it into playerLastName and firstAndMiddle strings
-    /// </summary>
-    /// <param name="playerLastName"></param>
-    /// <param name="firstAndMiddle"></param>
-    /// <param name="playerFullName"></param>
-    internal static void SplitName(ref string playerLastName, ref string firstAndMiddle, string playerFullName)
-    {
-        if (playerFullName.Contains(','))
-        {
-            playerLastName = playerFullName[..playerFullName.IndexOf(',')];
-            firstAndMiddle = playerFullName[(playerFullName.IndexOf(',') + 2)..];
-        }
-        // Checks to see if a period instead of a comma was accidentally placed in member name. (Rob's Request)
-        else if (playerFullName.Contains('.'))
-        {
-            playerLastName = playerFullName[..playerFullName.IndexOf('.')];
-            firstAndMiddle = playerFullName[(playerFullName.IndexOf('.') + 2)..];
+            MessageBox.Show($"Import completed. {result.Added} games imported across multiple tournaments.");
         }
     }
 

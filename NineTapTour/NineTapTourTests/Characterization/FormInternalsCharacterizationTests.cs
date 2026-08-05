@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NineTapTour.Core.Import;
 using NineTapTour.Forms;
 
 namespace NineTapTourTests.Characterization
@@ -68,7 +69,7 @@ namespace NineTapTourTests.Characterization
         {
             string last = "unchanged-last";
             string firstMiddle = "unchanged-first";
-            FrmMemberData.SplitName(ref last, ref firstMiddle, fullName);
+            NameParser.SplitName(ref last, ref firstMiddle, fullName);
             Assert.AreEqual(expectedLast, last);
             Assert.AreEqual(expectedFirstMiddle, firstMiddle);
         }
@@ -78,7 +79,7 @@ namespace NineTapTourTests.Characterization
         {
             string last = "unchanged-last";
             string firstMiddle = "unchanged-first";
-            FrmMemberData.SplitName(ref last, ref firstMiddle, "Madonna");
+            NameParser.SplitName(ref last, ref firstMiddle, "Madonna");
             Assert.AreEqual("unchanged-last", last);
             Assert.AreEqual("unchanged-first", firstMiddle);
         }

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NineTapTour.Core.Data;
+using NineTapTour.Core.Import;
 using NineTapTour.Core.Repositories;
 using NineTapTour.Core.Services;
 
@@ -30,6 +31,9 @@ public static class CoreServiceConfiguration
 
         services.AddSingleton<ITournamentSession, TournamentSession>();
         services.AddSingleton<IDatabaseMaintenanceService, DatabaseMaintenanceService>();
+
+        services.AddSingleton<IMemberImportService, MemberImportService>();
+        services.AddSingleton<IMemberHistoryImportService, MemberHistoryImportService>();
 
         return services;
     }
