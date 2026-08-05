@@ -17,13 +17,13 @@ namespace NineTapTour.Forms;
 public partial class FrmTournamentStats : Form
 {
 
-    private readonly ITournamentStatsRepository tournamentStatsRepository;
     private readonly ITournamentSession session;
+    private readonly IStatsService statsService;
 
-    public FrmTournamentStats(ITournamentStatsRepository tournamentStatsRepository, ITournamentSession session)
+    public FrmTournamentStats(ITournamentSession session, IStatsService statsService)
     {
-        this.tournamentStatsRepository = tournamentStatsRepository;
         this.session = session;
+        this.statsService = statsService;
 
         InitializeComponent();
     }
@@ -40,27 +40,15 @@ public partial class FrmTournamentStats : Form
     /// <param name="e"></param>
     public void TournamentStats_Load(object sender, EventArgs e)
     {
-        if (!session.SelectedTournament.ThreeOutOf4)
-        {
-            Tournament selectedTournament = session.SelectedTournament;
-            lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
+        Tournament selectedTournament = session.SelectedTournament;
+        lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
-            // Grabs a list of TournamentStatsList from the database
-            List<TournamentStatsList> statsList = tournamentStatsRepository.GetTournamentStatsList(selectedTournament.Id);
-            
-            // Send to form
-            dgvTournamentStats.DataSource = BuildDataTable(statsList);
-        }
-        else
-        {
-            Tournament selectedTournament = session.SelectedTournament;
-            lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
+        // Grabs a list of TournamentStatsList from the database; the service picks
+        // the 3-out-of-4 variant of the query when the tournament calls for it (M7.5)
+        List<TournamentStatsList> statsList = statsService.GetTournamentStats(selectedTournament.Id, selectedTournament.ThreeOutOf4);
 
-            List<TournamentStatsList> statsList = tournamentStatsRepository.Get3OutOf4TournamentStatsList(selectedTournament.Id);
-
-            // send to form
-            dgvTournamentStats.DataSource = BuildDataTable(statsList);
-        }
+        // Send to form
+        dgvTournamentStats.DataSource = BuildDataTable(statsList);
     }
 
     /// <summary>
