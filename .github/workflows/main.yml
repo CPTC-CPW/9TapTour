@@ -4,7 +4,7 @@ name: .NET CI
 # events but only for the main branch
 on:
  push:
-   branches: [ main ]
+   branches: [ main, 'refactor/**' ]
  pull_request:
    branches: [ main ]
 
@@ -24,5 +24,7 @@ jobs:
      run: dotnet restore NineTapTour/NineTapTour.sln
    - name: Build
      run: dotnet build NineTapTour/NineTapTour.sln --no-restore
+   - name: Start LocalDB
+     run: sqllocaldb start MSSQLLocalDB
    - name: Test
      run: dotnet test NineTapTour/NineTapTour.sln --no-build --verbosity normal
