@@ -70,6 +70,18 @@ namespace NineTapTour.Helpers
         }
 
         /// <summary>
+        /// check for empty text box
+        /// </summary>
+        public static bool IsEmpty(TextBox box)
+        {
+            if (string.IsNullOrEmpty(box.Text.Trim()))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Selects last index of inputted value of the textbox
         /// </summary>
         /// <param name="txtBox">TextBox to be passed in</param>

@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NineTapTour.Models;
+﻿using NineTapTour.Core.Abstractions;
+using Microsoft.EntityFrameworkCore;
 using NineTapTour.Database;
 using NineTapTour.Services;
 using System;
 using System.Windows.Forms;
 using System.Drawing;
 using NineTapTour.Core.Data;
+using NineTapTour.Core.Services;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
 
@@ -16,6 +17,10 @@ public partial class FrmMain : Form
     private readonly IFormNavigator navigator;
     private readonly IFormFactory formFactory;
     private readonly IDbContextFactory<NineTapDb> dbFactory;
+    private readonly ITournamentSession session;
+    private readonly IDatabaseMaintenanceService databaseMaintenance;
+    private readonly IFileDialogService fileDialogService;
+    private readonly IMessageService messageService;
 
     /// <summary>
     /// Keeps track of the currently active menu item on the menu strip.
@@ -26,11 +31,16 @@ public partial class FrmMain : Form
     /// Opens Main form
     /// Retrieves information from the database in order.
     /// </summary>
-    public FrmMain(IFormNavigator navigator, IFormFactory formFactory, IDbContextFactory<NineTapDb> dbFactory)
+    public FrmMain(IFormNavigator navigator, IFormFactory formFactory, IDbContextFactory<NineTapDb> dbFactory, ITournamentSession session,
+        IDatabaseMaintenanceService databaseMaintenance, IFileDialogService fileDialogService, IMessageService messageService)
     {
         this.navigator = navigator;
+        this.session = session;
         this.formFactory = formFactory;
         this.dbFactory = dbFactory;
+        this.databaseMaintenance = databaseMaintenance;
+        this.fileDialogService = fileDialogService;
+        this.messageService = messageService;
 
         InitializeComponent();
 
@@ -88,14 +98,14 @@ public partial class FrmMain : Form
     /// </summary>
     public void MainMenuToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        if (FrmMemberScoresHelpers.unsavedBowlerData)
+        if (session.HasUnsavedBowlerData)
         {
             DialogResult result = MessageBox.Show("You have unsaved bowler data, are you sure you want to switch screens?", "Unsaved Data", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             if (result == DialogResult.No)
             {
                 return;
             }
-            FrmMemberScoresHelpers.unsavedBowlerData = false;
+            session.HasUnsavedBowlerData = false;
         }
 
         navigator.ShowSingleton<FrmMainMenu>();
@@ -106,14 +116,14 @@ public partial class FrmMain : Form
     /// </summary>
     public void MemberDataToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        if (FrmMemberScoresHelpers.unsavedBowlerData)
+        if (session.HasUnsavedBowlerData)
         {
             DialogResult result = MessageBox.Show("You have unsaved bowler data, are you sure you want to switch screens?", "Unsaved Data", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             if (result == DialogResult.No)
             {
                 return;
             }
-            FrmMemberScoresHelpers.unsavedBowlerData = false;
+            session.HasUnsavedBowlerData = false;
         }
         navigator.ShowSingleton<FrmMemberData>();
     }
@@ -131,14 +141,14 @@ public partial class FrmMain : Form
     /// </summary>
     public void ReportsToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        if (FrmMemberScoresHelpers.unsavedBowlerData)
+        if (session.HasUnsavedBowlerData)
         {
             DialogResult result = MessageBox.Show("You have unsaved bowler data, are you sure you want to switch screens?", "Unsaved Data", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             if (result == DialogResult.No)
             {
                 return;
             }
-            FrmMemberScoresHelpers.unsavedBowlerData = false;
+            session.HasUnsavedBowlerData = false;
         }
 
         navigator.ShowSingleton<FrmReports>();
@@ -152,18 +162,33 @@ public partial class FrmMain : Form
 
     private void BackupDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        DatabaseManagement.BackupDatabase(dbFactory);
+        string backupPath = fileDialogService.PickSaveFile(
+            "Backup file |*.bak", ".bak", databaseMaintenance.CreateBackupName(),
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+        if (backupPath == null)
+        {
+            return;
+        }
+
+        databaseMaintenance.BackupTo(backupPath);
+        messageService.ShowInfo("Backup successful");
     }
 
     private void RestoreDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
     {
         if (MessageBox.Show("Restoring the database will restart the application.", "Warning", MessageBoxButtons.OKCancel) == DialogResult.OK)
         {
-            if (DatabaseManagement.RestoreDatabase(dbFactory))
+            string backupPath = fileDialogService.PickOpenFile(
+                "Backup file |*.bak", ".bak",
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+            if (backupPath == null)
             {
-                MessageBox.Show("Database successfully restored from backup!");
-                Application.Restart();
+                return;
             }
+
+            databaseMaintenance.RestoreFrom(backupPath);
+            messageService.ShowInfo("Database successfully restored from backup!");
+            Application.Restart();
         }
     }
     

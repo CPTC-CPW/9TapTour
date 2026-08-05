@@ -12,6 +12,16 @@ namespace NineTapTour.Core.Calculations
     public static class ValidationHelper
     {
         /// <summary>
+        /// Checks a string for numeric values
+        /// true if all are numeric
+        /// </summary>
+        public static bool IsNumeric(string str)
+        {
+            bool isNum = int.TryParse(str, out _);
+            return isNum;
+        }
+
+        /// <summary>
         /// Tests a string input for being an integer
         /// between 0-300 inclusive. Returns true if valid.
         /// </summary>

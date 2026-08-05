@@ -1,5 +1,4 @@
-﻿using NineTapTour.Models;
-using NineTapTour.Database;
+﻿using NineTapTour.Database;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,6 +7,7 @@ using System.Windows.Forms;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
 using NineTapTour.Core.Repositories;
+using NineTapTour.Core.Services;
 
 namespace NineTapTour.Forms;
 
@@ -18,10 +18,12 @@ public partial class FrmTournamentStats : Form
 {
 
     private readonly ITournamentStatsRepository tournamentStatsRepository;
+    private readonly ITournamentSession session;
 
-    public FrmTournamentStats(ITournamentStatsRepository tournamentStatsRepository)
+    public FrmTournamentStats(ITournamentStatsRepository tournamentStatsRepository, ITournamentSession session)
     {
         this.tournamentStatsRepository = tournamentStatsRepository;
+        this.session = session;
 
         InitializeComponent();
     }
@@ -38,9 +40,9 @@ public partial class FrmTournamentStats : Form
     /// <param name="e"></param>
     public void TournamentStats_Load(object sender, EventArgs e)
     {
-        if (!FrmMemberScoresHelpers.selectedTournament.ThreeOutOf4)
+        if (!session.SelectedTournament.ThreeOutOf4)
         {
-            Tournament selectedTournament = FrmMemberScoresHelpers.selectedTournament;
+            Tournament selectedTournament = session.SelectedTournament;
             lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
             // Grabs a list of TournamentStatsList from the database
@@ -51,7 +53,7 @@ public partial class FrmTournamentStats : Form
         }
         else
         {
-            Tournament selectedTournament = FrmMemberScoresHelpers.selectedTournament;
+            Tournament selectedTournament = session.SelectedTournament;
             lblTournamentName.Text = "Tournament ID: (" + selectedTournament.Id + ")\nTournament Location: " + selectedTournament.Location + "\nDate: " + selectedTournament.Date;
 
             List<TournamentStatsList> statsList = tournamentStatsRepository.Get3OutOf4TournamentStatsList(selectedTournament.Id);

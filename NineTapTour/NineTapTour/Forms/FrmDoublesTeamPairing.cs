@@ -1,9 +1,9 @@
-﻿using NineTapTour.Models;
-using NineTapTour.Database;
+﻿using NineTapTour.Database;
 using NineTapTour.Core.Data;
 using NineTapTour.Core.Entities;
 using NineTapTour.Core.Models;
 using NineTapTour.Core.Repositories;
+using NineTapTour.Core.Services;
 using NineTapTour.Services;
 using Microsoft.EntityFrameworkCore;
 using ClosedXML.Excel;
@@ -28,6 +28,7 @@ public class FrmDoublesTeamPairing : Form
 
     private readonly Tournament _tournament;
     private readonly IFormFactory _formFactory;
+    private readonly ITournamentSession session;
     private readonly IMemberRepository memberRepository;
     private readonly ITournamentRepository tournamentRepository;
     private readonly IParticipantRepository participantRepository;
@@ -91,10 +92,11 @@ public class FrmDoublesTeamPairing : Form
     // Construction
     // ----------------------------------------------------------------
 
-    public FrmDoublesTeamPairing(Tournament tournament, IFormFactory formFactory, IMemberRepository memberRepository, ITournamentRepository tournamentRepository, IParticipantRepository participantRepository, IDoublesTeamRepository doublesTeamRepository, IDoublesPartnerPlanRepository doublesPartnerPlanRepository, IDoublesPartnerClaimRepository doublesPartnerClaimRepository, IDbContextFactory<NineTapDb> dbFactory)
+    public FrmDoublesTeamPairing(Tournament tournament, IFormFactory formFactory, IMemberRepository memberRepository, ITournamentRepository tournamentRepository, IParticipantRepository participantRepository, IDoublesTeamRepository doublesTeamRepository, IDoublesPartnerPlanRepository doublesPartnerPlanRepository, IDoublesPartnerClaimRepository doublesPartnerClaimRepository, IDbContextFactory<NineTapDb> dbFactory, ITournamentSession session)
     {
         _tournament = tournament;
         _formFactory = formFactory;
+        this.session = session;
         this.memberRepository = memberRepository;
         this.tournamentRepository = tournamentRepository;
         this.participantRepository = participantRepository;
@@ -696,7 +698,7 @@ public class FrmDoublesTeamPairing : Form
 
     private void RefreshOwnerParticipants()
     {
-        FrmMemberScoresHelpers.overallListOfParticipants = tournamentRepository.GetTournamentMemberList(_tournament);
+        session.Participants = tournamentRepository.GetTournamentMemberList(_tournament);
         if (Owner is FrmMemberScores memberScoresForm)
             memberScoresForm.RefreshParticipantsAfterDoublesImport();
     }

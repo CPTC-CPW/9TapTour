@@ -1,6 +1,5 @@
 ﻿using NineTapTour.Core.Calculations;
 using NineTapTour.Core.Export;
-using NineTapTour.Models;
 using NineTapTour.Database;
 using NineTapTour.Core.Data;
 using CalcService = NineTapTour.Core.Calculations.TournamentCalculations;
@@ -19,6 +18,7 @@ using NineTapTour.Core.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using NineTapTour.Helpers;
 using NineTapTour.Core.Repositories;
+using NineTapTour.Core.Services;
 
 namespace NineTapTour.Forms;
 
@@ -40,6 +40,7 @@ public partial class FrmTournamentResults : Form
     const string PLACE_SORT_START_COLUMN_NAME = "Place Sort Start";
 
     private readonly ITournamentRepository tournamentRepository;
+    private readonly ITournamentSession session;
     private readonly IMemberRepository memberRepository;
     private readonly IGameRepository gameRepository;
     private readonly IDoublesTeamRepository doublesTeamRepository;
@@ -47,7 +48,7 @@ public partial class FrmTournamentResults : Form
 
     readonly DataTable dt = new(); // Instantiate Data Table
     readonly NineTapDb db; // Get access to database
-    readonly Tournament tourny = FrmMemberScoresHelpers.selectedTournament; // Get Tournament
+    readonly Tournament tourny; // Get Tournament
     static int totalTournamentEntries;  // Total number of entries for all squads in tournament
     static int clientInput; // how many winners the client wants to see
     List<ExcelMember> clientRequested = [];
@@ -77,14 +78,17 @@ public partial class FrmTournamentResults : Form
         IMemberRepository memberRepository,
         IGameRepository gameRepository,
         IDoublesTeamRepository doublesTeamRepository,
-        IDbContextFactory<NineTapDb> dbFactory)
+        IDbContextFactory<NineTapDb> dbFactory,
+        ITournamentSession session)
     {
         this.tournamentRepository = tournamentRepository;
+        this.session = session;
         this.memberRepository = memberRepository;
         this.gameRepository = gameRepository;
         this.doublesTeamRepository = doublesTeamRepository;
         this.dbFactory = dbFactory;
         db = dbFactory.CreateDbContext();
+        tourny = session.SelectedTournament;
 
         InitializeComponent();
     }
@@ -139,7 +143,7 @@ public partial class FrmTournamentResults : Form
             List<double> twoDayWinnings = [];
             for (int i = 0; i < _dt2Day.Rows.Count; i++)
                 twoDayWinnings.Add(Convert.ToDouble(_dt2Day.Rows[i][EARNINGS_COLUMN_NAME]));
-            TempVariablesForGlobalLevel.MoneyEarnings = twoDayWinnings;
+            session.MoneyEarnings = twoDayWinnings;
 
             for (int i = 0; i < _dt2Day.Rows.Count; i++)
             {
@@ -176,7 +180,7 @@ public partial class FrmTournamentResults : Form
         {
             Winnings.Add(Convert.ToDouble(dgvTournamentResults[EARNINGS_COLUMN_NAME, winningList].Value));
         }
-        TempVariablesForGlobalLevel.MoneyEarnings = Winnings;
+        session.MoneyEarnings = Winnings;
 
         // Save all changes made to the dataGridView.
         // Track processed GameIds so a member on multiple teams in the same squad (same Game
@@ -231,9 +235,9 @@ public partial class FrmTournamentResults : Form
         double earnings = 0.00;
 
         int MonEarnCount = 0;
-        if (TempVariablesForGlobalLevel.MoneyEarnings != null)
+        if (session.MoneyEarnings != null)
         {
-            MonEarnCount = TempVariablesForGlobalLevel.MoneyEarnings.Count;
+            MonEarnCount = session.MoneyEarnings.Count;
         }
 
         // Create rows and populate with each member's data for each row
@@ -244,7 +248,7 @@ public partial class FrmTournamentResults : Form
             {
                 if (wc < MonEarnCount)
                 {
-                    newRow[EARNINGS_COLUMN_NAME] = TempVariablesForGlobalLevel.MoneyEarnings[wc];
+                    newRow[EARNINGS_COLUMN_NAME] = session.MoneyEarnings[wc];
                 }
                 else
                 {
@@ -279,7 +283,7 @@ public partial class FrmTournamentResults : Form
             DataRow newRow = dt.NewRow();
             if (MonEarnCount > 0 && tr < MonEarnCount)
             {
-                newRow[EARNINGS_COLUMN_NAME] = TempVariablesForGlobalLevel.MoneyEarnings[tr];
+                newRow[EARNINGS_COLUMN_NAME] = session.MoneyEarnings[tr];
             }
             else
             {

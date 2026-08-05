@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NineTapTour.Core.Data;
 using NineTapTour.Core.Repositories;
+using NineTapTour.Core.Services;
 
 namespace NineTapTour.Core.Startup;
 
@@ -26,6 +27,9 @@ public static class CoreServiceConfiguration
         services.AddSingleton<IDoublesTeamRepository, DoublesTeamRepository>();
         services.AddSingleton<IDoublesPartnerPlanRepository, DoublesPartnerPlanRepository>();
         services.AddSingleton<IDoublesPartnerClaimRepository, DoublesPartnerClaimRepository>();
+
+        services.AddSingleton<ITournamentSession, TournamentSession>();
+        services.AddSingleton<IDatabaseMaintenanceService, DatabaseMaintenanceService>();
 
         return services;
     }

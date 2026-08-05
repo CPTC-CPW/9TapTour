@@ -26,6 +26,8 @@ public static class ServiceConfiguration
 
         services.AddSingleton<IFormNavigator, FormNavigator>();
         services.AddSingleton<IFormFactory, FormFactory>();
+        services.AddSingleton<Core.Abstractions.IMessageService, WinFormsMessageService>();
+        services.AddSingleton<Core.Abstractions.IFileDialogService, WinFormsFileDialogService>();
 
         // MDI shell and singleton child forms opened through IFormNavigator
         services.AddTransient<FrmMain>();
