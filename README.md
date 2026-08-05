@@ -21,6 +21,24 @@ The current build is being built on Windows machines through Visual Studio 2026 
 * [Download Visual Studio 2026](https://visualstudio.microsoft.com/downloads/)
 * [.NET 10 SDK](https://dotnet.microsoft.com/download/visual-studio-sdks) - Comes with VS2026
 
+## Architecture
+
+The solution is split so that all business logic is headless and reusable (for example by a future website):
+
+| Project | Role |
+| --- | --- |
+| `NineTapTour.Core` (`net10.0`) | Everything headless: EF Core entities + `NineTapDb` + migrations (`Data/`), repositories (`Repositories/`), business services (`Services/` — finalize math, winners/payouts, score entry, doubles pairing, stats, session state, DB maintenance), Excel import (`Import/`) and export (`Export/`), print content (`Printing/`), pure calculations (`Calculations/`), and the `IMessageService`/`IFileDialogService` UI abstractions (`Abstractions/`). Core never references WinForms — a unit test enforces this. |
+| `NineTapTour` (WinExe) | The WinForms shell. `Program.cs` is the DI composition root (configuration from `appsettings.json`, `ServiceCollection`, migrations run at startup). Forms are resolved from the container (`IFormNavigator` for MDI singletons, `IFormFactory` for dialogs) and receive repositories/services via constructor injection. Code-behind keeps only control wiring, grid read/write, dialogs, and GDI+ drawing. |
+| `MemberImportTest` (WinExe) | Thin shell over the shared Core import services. |
+| `NineTapTourTests` | Unit tests (MSTest): Core services, calculations, characterization golden masters. |
+| `NineTapTour.IntegrationTests` | Real LocalDB tests: a unique catalog is created, migrated, and seeded per run, then dropped. Includes golden masters for the standings SQL and a backup/restore round trip. |
+
+Conventions:
+* New business logic goes in `NineTapTour.Core` services, injected into forms via constructor parameters (registered in `CoreServiceConfiguration.AddNineTapTourCore` / `ServiceConfiguration.AddNineTapTourServices`).
+* Data access goes through the repository interfaces; repositories take `IDbContextFactory<NineTapDb>` and create short-lived contexts.
+* The connection string lives in `appsettings.json` (`ConnectionStrings:NineTapDb`).
+* `dotnet ef` commands target `NineTapTour.Core` (a design-time factory supplies the connection string).
+
 ### Coding Style Requirements
 Reference the [code style requirements](CodingStyle.md) for more information.
 
